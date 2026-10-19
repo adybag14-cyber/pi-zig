@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "d9a0ab51d667b108ea8e8398b8f69c54cedc69a6",
+  "current_source_head_at_record": "7d51e412f7e4192a0d606c3297e0829997866f35",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -36,8 +36,8 @@
   "application_qualification": false,
   "production_bridge_removed": false,
   "published_release": false,
-  "updated_utc": "2026-10-19T13:48:38.370837+00:00",
-  "record_note": "Active, incomplete port. Approved cleanup is complete and independently closed. Latest source intake includes actual mutable synchronous arguments, constructor/iterator/array-call bridges, intrinsic template conversion, shared async activation captures, Module search paths and Anthropic OAuth bodies. Finite source reviews and source declaration counts are not runtime qualification. The following ledger commit follows the recorded source head; the separate fresh Root execution grant pins the complete frozen commit including this ledger. Production bridge, whole-application, platform and release gates remain open.",
+  "updated_utc": "2026-10-19T14:52:26.371472+00:00",
+  "record_note": "Active, incomplete port. Approved cleanup remains complete. The fresh V7 and V11/V12 diagnostic negatives have complete independent closure; six V12 groups compiled and reported actual metadata, but no runtime acceptance transfers to the corrected head. Actual Module/realpath synchronous argument consumers, runtime value initializers, restored Linux errno source, shared FS type fixes and the portable C exception-sentinel helper are integrated. A fresh bounded eleven-group BuildQuery, complete independent audit and separate exact-artifact RuntimeOnly are next. Remaining complete SDK/application, loader/physical IO, transport, provider bodies, bridge removal, platforms and publication stay open.",
   "integrated_source_units": [
     "Reviewed VM union, Agent/Node/SDK guest operation guards, CJS compiler and source metadata bodies, Engine ownership, genuine Agent/session/auth owners, real Exec live waiter, Git/Chalk/Ignore/Semver consumers, actual InitialModel guest boundaries, genuine Anthropic auth, genuine PKCE body and ten declared controls, genuine RemoteCatalog bodies and nine declared controls.",
     "Actual public CLI parser10 controls, truncation9, Theme10 and extension helpers8; child dependency and11 real frontend/spawn/waiter controls; shared stdio lease assertion; genuine six-export output guard dependency; genuine DeviceCode12 controls including linked-VM loop-slot lifetime; RemoteCatalog now11 controls; PKCE actual host job checkpoints; optional CommonJS host-error correction and explicit component filters.",
@@ -67,7 +67,9 @@
     "Authority correction: original JavaScript untagged templates intrinsically ToString each substitution before evaluating the next. No live String.prototype.concat lookup is allowed. Actual compiler correction353970d4 integrated3d5ebe78, including18 declared controls and BC_VERSION29. The previously proposed native live-concat drafts were withdrawn and preserved; existing original Node argument bodies retained. Historical22:46 record is superseded only on this semantic interpretation.",
     "Genuine OAuth page10 and callback24, actual IncomingMessage21 and header checks13 integrated. Callback default now consumes genuine installed node:http; controlled HTTP inputs do not qualify physical HTTP/provider login. Physical net.Server/HTTP remains under implementation.",
     "Genuine SDK summary24, branch AF20,14-export public compaction3, EventBus14 and public context helpers20 integrated with actual shared owners. Summary Root peer closed at6EEE5077/83FECFDC/FACE0A50/07EA1127; exact c268 source mismatches versus accepted runtime are retained. Full157-export public namespace/application remains open.",
-    "Actual FS path helpers18, URL helpers19, physical stat/readlink provider and classic realpath21 integrated through3316c7cf. Root URL and classic algorithm/public CJS peer closed with explicit actual synchronous-argument reassignment dependency; physical Windows/Unix IO controls have not executed."
+    "Actual FS path helpers18, URL helpers19, physical stat/readlink provider and classic realpath21 integrated through3316c7cf. Root URL and classic algorithm/public CJS peer closed with explicit actual synchronous-argument reassignment dependency; physical Windows/Unix IO controls have not executed.",
+    "Actual Module from and classic realpath p/options now use the VM formal argument slots, preserving overwrite-before-retirement and captured aliasing. Four causal controls add two Module and two classic realpath cases (26/23 declared names). Runtime constructor initializers replace invalid extern struct defaults without weakening tests. Optional native process/path acquisition, restored exact retained Linux errno mapping and compiler identifier fixes are integrated.",
+    "V12 compiler corrections integrated through 7d51e412: SafeName uses the declared sentinel slice ABI; both Windows stat conditional choices have explicit u32 types; pure pi_js_exception C helper constructs the original sentinel for two retirement control sites. No VM algorithm, test names, assertions or runtime classification is changed."
   ],
   "combined_native_execution": {
     "scope": "Exact Windows component artifact and complete actual ordered metadata only; no whole-application or other-head acceptance.",
@@ -455,28 +457,117 @@
       "source_compiler_control_postseal": true,
       "controller_environment_restored": true,
       "initial_cache_absence": true
+    },
+    {
+      "status": "closed_fresh_compile_negative",
+      "head": "37cf599dfc696420042e0303fdd11c7930177ce4",
+      "mode": "BuildQuery",
+      "evidence": "../../evidence/root-vm-anthropic-v7-buildquery-20261019-135007",
+      "result_sha256": "0ED38FD5943FEB90B84D8746FF6605733E2E97A521FBDDD3F80E2B728D0108C8",
+      "independent_closure": "../../evidence/root-vm-anthropic-v7-control-20261019-135007/independent-negative-closure.json",
+      "closure_sha256": "247FC95E1F992BA6E5D493F2442750DE412DFCDF946FFB703A3F7B1910BFE396",
+      "attempted_groups": 1,
+      "runtime_started": false,
+      "qualification": false,
+      "failures": [
+        "Inspector local identifier shadows helper",
+        "Missing retained Linux errno map source"
+      ],
+      "source_compiler_control_postseal": true,
+      "all_native_and_outer_owners_absent": true
+    },
+    {
+      "status": "closed_diagnostic_compile_negative",
+      "head": "f32e185ebaab141e54efa5cd208f830b0c4ace49",
+      "mode": "DiagnosticBuildQuery",
+      "evidence": "../../evidence/root-vm-anthropic-v11-buildquery-20261019-140956",
+      "result_sha256": "2754CAD946A85EFFB8F9F0AE87559D65BA6B6E4A9BB19E70B059206711A3247C",
+      "independent_closure": "../../evidence/root-vm-anthropic-v11-control-20261019-140956/independent-negative-closure.json",
+      "closure_sha256": "963F00882816108A5F1AD040D88BB8C6ED93BF9DB30A22E0B45E1A2A4FA27F83",
+      "attempted_groups": 8,
+      "compiled_and_metadata_groups": 2,
+      "actual_metadata": {
+        "native-vm-borrowed-bridges": 18,
+        "vm-af-throw": 31
+      },
+      "runtime_started": false,
+      "qualification": false,
+      "source_compiler_control_postseal": true,
+      "all_native_and_outer_owners_absent": true,
+      "failures": [
+        "Runtime C value initializers used as compile-time field defaults",
+        "Boolean assertion type",
+        "Page and CommonJS identifier shadows"
+      ]
+    },
+    {
+      "status": "closed_pre_native_launch_negative",
+      "head": "4f52866045717202369c68fe8d24f018de14fec3",
+      "evidence": "../../evidence/root-vm-anthropic-v12-control-20261019-143219",
+      "independent_closure": "../../evidence/root-vm-anthropic-v12-control-20261019-143219/independent-pre-native-negative-closure.json",
+      "closure_sha256": "32AF3AD27CF24C95EEF1405212E43B9AD86954BB5BAE99B26B1D3A12C67595DA",
+      "failure": "Root omitted the two explicit private-cache paths. Unchanged driver rejected before proof creation or native execution. Corrected fresh launch record retained separately.",
+      "native_started": false,
+      "runtime_started": false,
+      "qualification": false
+    },
+    {
+      "status": "closed_diagnostic_compile_negative",
+      "head": "4f52866045717202369c68fe8d24f018de14fec3",
+      "mode": "DiagnosticBuildQuery",
+      "evidence": "../../evidence/root-vm-anthropic-v12-buildquery-20261019-143347",
+      "result_sha256": "EE6353254DEB92C216C399448B286DFFD707FD7C6708AAF5E88B7D12FEC41E3A",
+      "independent_closure": "../../evidence/root-vm-anthropic-v12-control-20261019-143347/independent-negative-closure.json",
+      "closure_sha256": "EAA5F25A472D84A6D0E131B258E4A1304983BF206A2DF63C99BC02A9E4252683",
+      "attempted_groups": 11,
+      "compiled_and_metadata_groups": 6,
+      "actual_metadata": {
+        "native-vm-sync-arguments": 23,
+        "native-vm-template-literal": 19,
+        "native-vm-borrowed-bridges": 18,
+        "vm-af-throw": 31,
+        "native-ai-oauth-anthropic-genuine-af": 26,
+        "native-node-fs-path-helpers": 19
+      },
+      "runtime_started": false,
+      "qualification": false,
+      "native_owner_count": 17,
+      "distinct_current_files_rehashed": 32458,
+      "source_compiler_control_postseal": true,
+      "all_native_and_outer_owners_absent": true,
+      "failures": [
+        "Two retirement controls use a translated JS_EXCEPTION macro unsupported by Zig's C union constant initialization",
+        "Shared SafeName pointer/sentinel-slice mismatch affects Module/search/classic/file-URL",
+        "Windows stat conditional literals need explicit u32 context"
+      ],
+      "audit_note": "One ISO timestamp omitted a trailing fractional zero; independent successor compares exact UTC 100ns ticks. Original audit source and receipts retained."
     }
   ],
   "next_native_batch": {
-    "status": "source_ready_for_frozen_root_buildquery_grant",
+    "status": "preparing_frozen_root_fresh_buildquery_grant",
     "mode": "BuildQuery",
-    "prepared_directory": "../../evidence/combined-native-batch-v7-prepared-20261018",
+    "prepared_directory": "../../evidence/combined-native-batch-v8-prepared-20261019",
     "driver_sha256": "4F816750747F32A4EA6D0E832D90C962955C03217B3BF341A3F104068BBFC2D4",
-    "independent_auditor_sha256": "83D3716AA0E6A43F4481794BC29A464C85A67A1620576ABFEBA714D73CCACF77",
+    "independent_auditor_sha256": "AAC4975B1DB4C64F844685E47612DC6CEF6E0069614B9501BCB6EC44E280D61A",
     "qualification_requested": true,
     "runtime_requested": false,
     "whole_matrix_source_groups": 62,
-    "whole_matrix_declared_named": 957,
+    "whole_matrix_declared_named": 961,
     "first_cohort": [
       "native-vm-sync-arguments",
       "native-vm-async-retirement",
       "native-vm-template-literal",
       "native-vm-borrowed-bridges",
       "vm-af-throw",
-      "native-ai-oauth-anthropic-genuine-af"
+      "native-ai-oauth-anthropic-genuine-af",
+      "native-node-module-creation",
+      "native-node-module-search-paths",
+      "native-node-fs-realpath-classic",
+      "native-node-fs-path-helpers",
+      "native-node-file-url-paths"
     ],
-    "first_cohort_declared_named": 136,
-    "scope": "First bounded six-group cohort uses one fresh shared cache pair and a separate complete metadata/artifact audit before exact-artifact RuntimeOnly. Other matrix groups remain required; no previous-head acceptance is transferred."
+    "first_cohort_declared_named": 242,
+    "scope": "One fresh cache pair for eleven explicitly ordered groups, complete source/compiler/control seals, independent raw metadata/artifact acceptance and then separate RuntimeOnly. Other matrix groups and whole application remain required."
   },
   "storage_cleanup": {
     "status": "completed_and_independently_verified",
@@ -536,14 +627,17 @@
     ],
     "terminal_hook_source": "9ca2acdf6115579a418fde52d3a523824df3e8a3",
     "terminal_hook_main": "7d33baa187e52e2238601c9a086588830e45a1ee",
-    "current_head": "d9a0ab51d667b108ea8e8398b8f69c54cedc69a6",
+    "current_head": "7d51e412f7e4192a0d606c3297e0829997866f35",
     "latest_reviewed_units": [
       "Module constructor24 and optional-builtin fixture correction",
       "Frontmatter19",
       "ModelRegistry27",
       "Synchronous VM argument22",
       "Module search-path20",
-      "Anthropic OAuth25 including actual activation GC and explicit-throw corrections"
+      "Anthropic OAuth25 including actual activation GC and explicit-throw corrections",
+      "Actual mutable-argument Module26 and classic realpath23 consumers",
+      "Runtime initializer and compiler identifier corrections",
+      "V12 shared FS types and portable C exception shim"
     ]
   }
 }
