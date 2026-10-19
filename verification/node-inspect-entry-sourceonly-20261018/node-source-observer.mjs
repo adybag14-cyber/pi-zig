@@ -11,8 +11,8 @@ if (digest(authority) !== "380aa09fae68e3279d0fb2469a24d75931a8098c84354347bf713
     throw new Error("Source inspector authority bytes changed");
 const observer = readFileSync(new URL("../../src/extensions/fixtures/native-node-inspect-observer.mjs", import.meta.url), "utf8");
 const body = "(function(inspect){\"use strict\";\n" + observer +
-    "\nconst controls = [" + "observeInspectShape,observeInspectPrimitives,observeInspectNumeric,observeInspectCapturedPrimordials,observeInspectCustomArguments,observeInspectOrdinaryCustomThrow,observeInspectTagCatch,observeInspectInstanceCatch,observeInspectProxyDetails,observeInspectDefaultAssignment" + "];" +
+    "\nconst controls = [" + "observeInspectShape,observeInspectPrimitives,observeInspectNumeric,observeInspectCapturedPrimordials,observeInspectCustomArguments,observeInspectOrdinaryCustomThrow,observeInspectTagCatch,observeInspectInstanceCatch,observeInspectProxyDetails,observeInspectDefaultAssignment,observeInspectTypedValues,observeInspectTypedLimits,observeInspectTypedCaptured,observeInspectTypedLengthReads,observeInspectTypedPrefix,observeInspectTypedOutputSet" + "];" +
     "\nreturn controls.map(function(control){control(inspect);return {name:control.name,passed:true};});\n})";
 const observe = runInThisContext(body, {filename:"actual-node-inspect-source-observer.js"});
 const results = observe(inspect);
-process.stdout.write(JSON.stringify({node:process.version,authoritySha256:digest(authority),observerSha256:digest(observer),declared:10,results},null,2)+"\n");
+process.stdout.write(JSON.stringify({node:process.version,authoritySha256:digest(authority),observerSha256:digest(observer),declared:16,results},null,2)+"\n");
