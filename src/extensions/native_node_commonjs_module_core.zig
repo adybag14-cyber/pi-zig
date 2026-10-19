@@ -38,9 +38,10 @@ fn createBody(s: *Scope, options: Options) !c.JSValue {
     if (s.engine.native_module_values.get(key)) |known| return a.duplicate(s.engine, known);
     // Both default values come from the actual built-in registry, never its
     // ESM snapshot record. Process/Stream must be installed by host startup.
-    const process = try s.own(try s.engine.requireBuiltin("node:process"));
-    if (!s.engine.native_module_values.contains("node:path")) try @import("node_path.zig").install(s.engine);
-    const paths = try s.own(try s.engine.requireBuiltin("node:path"));
+    const process = try s.own((try s.engine.requireBuiltin("node:process")) orelse return error.ActualModuleProcessRequired);
+    if (!s.engine.native_module_values.contains("node:path"))
+        try @import("node_path.zig").install(s.engine, s.engine.native_io orelse return error.ActualModuleIoRequired);
+    const paths = try s.own((try s.engine.requireBuiltin("node:path")) orelse return error.ActualModulePathsRequired);
     const prepared = try @import("native_node_argument_bootstrap.zig").prepare(s.engine);
     var original_inputs = [_]c.JSValue{
         prepared.internal_inspect, prepared.assert_function,
