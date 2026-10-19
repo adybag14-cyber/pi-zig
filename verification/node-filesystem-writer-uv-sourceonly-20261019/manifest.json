@@ -1,0 +1,108 @@
+{
+  "schema": "node-filesystem-writer-uv-source-only-v1",
+  "status": "source_only_unexecuted",
+  "date": "2026-10-19",
+  "owner_tree": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018",
+  "source_files": [
+    {
+      "path": "src/extensions/native_uv_fs_write.c",
+      "sha256": "62DB3206CE9CE22A723A339F31885B3651E7A2E3CE800FA1C37710B84E4B911B",
+      "bytes": 1444
+    },
+    {
+      "path": "src/extensions/native_uv_fs_write.h",
+      "sha256": "611A0B3917151340978BBAD171EA549F8F8FDE3988A35AC45EEC55D767ED95AB",
+      "bytes": 847
+    },
+    {
+      "path": "src/extensions/native_node_fs_write_io.zig",
+      "sha256": "EBC384E2E6D52B183FF0DB11B9D3F35EA807E8DFC8BE872C0B476DC457A594F6",
+      "bytes": 7321
+    },
+    {
+      "path": "src/extensions/native_node_fs_write_ops.zig",
+      "sha256": "B846C3C4A77EA3013F4036652B9F0C9C318845F9959C56BC7FF5B29E6AA1F6AB",
+      "bytes": 19434
+    },
+    {
+      "path": "src/native_node_fs_write_uv_test.zig",
+      "sha256": "2DB50112F3B60C9D64A639EDB19657CD6C477909A21BE063BE7952F62B536211",
+      "bytes": 24090
+    },
+    {
+      "path": "tools/build_native_node_network.zig",
+      "sha256": "8BFDE80A83241C476F014300F0AC31B353B2E1E6E41214E43B0B19BC76498FD2",
+      "bytes": 4416
+    },
+    {
+      "path": "verification/node-filesystem-writer-uv-sourceonly-20261019/main-build-intake.patch",
+      "sha256": "18876BA5E44483A820632B4DB557413E2363E87FB1B4D19C9715D4F91EF49A5C",
+      "bytes": 1814
+    },
+    {
+      "path": "verification/node-filesystem-writer-uv-sourceonly-20261019/README.md",
+      "sha256": "C5A1F7DD7ABD26FDDE11D5AB33CB8BD86F95AF8BB2578E67BE4B778A7E4293E6",
+      "bytes": 6420
+    },
+    {
+      "path": "build.zig",
+      "sha256": "17CCC0828C99F363DB4E22D3A49A968C3CEC040904115BAE3F49AE19A8EA293C",
+      "bytes": 389535
+    }
+  ],
+  "dependencies": {
+    "native_tcp_vendor_commit": "2b7b761ecdbe7f3b7cfd23768257fd7f9325bc6e",
+    "file_handle_physical_commit": "0f6952d6877af242f3d0eb1e68d4440a56ff4093",
+    "file_handle_c": "56590C33A17FBD7D1A69B8D7E07E6311031B576290858B832B1DFDF7F5AE05B0",
+    "file_handle_h": "10E429D64FE65DCC46DAE73B07E5AE2F0672D3B0E40333C99095E32986021D0D",
+    "uv_exception": "51D61C9725774D27D4E664216162A26F998378470B4EF648D6CE3229C8806E40"
+  },
+  "build": {
+    "target": "build-native-node-fs-write-uv",
+    "root": "src/native_node_fs_write_uv_test.zig",
+    "filter": "native actual filesystem writer",
+    "artifact_windows": "native-node-fs-write-uv.exe",
+    "declared_test_count": 12,
+    "install_only": true,
+    "platforms": [
+      "windows",
+      "linux"
+    ],
+    "network_helper_baseline": "8B2FAD905DC0D32D6E67180874E8E433E1AEFD740AE1861289C3FB891B371B02",
+    "main_build_patch_baseline": "6D5AD0F34455D4867355DECD30EDA71B389AE9932E42A39509BE6E43DFDF8EE0",
+    "read_only_main_patch_check": "passed",
+    "main_modified_by_agent": false,
+    "patch_context_successor": "Removed only whitespace-only unchanged context rows from peer-closed22DE; added source lines identical; read-only apply check passed."
+  },
+  "source_reviews": [
+    {
+      "reviewer": "sdk_owners",
+      "scope": "C/helper/raw packet physical owner; controls 7-10; final INT_MAX partial-write clamp",
+      "status": "closed_no_concrete_blocker"
+    },
+    {
+      "reviewer": "vm_foundation",
+      "scope": "Task/Registry/completion; genuine Fixture and controls 1-6,11-12; shared library helper/intake patch",
+      "status": "closed_no_concrete_blocker"
+    },
+    {
+      "reviewer": "root",
+      "scope": "Complete production/control/build read; identified signed synchronous write count then accepted finite correction proposal",
+      "status": "source_review_closed_with_corrected_count"
+    }
+  ],
+  "validation": {
+    "source_diff_check": "passed",
+    "compiler_executed": false,
+    "metadata_queried": false,
+    "runtime_executed": false,
+    "node_reference_captured": false,
+    "full_write_stream_qualified": false
+  },
+  "retained_limits": [
+    "Original callback validation and copied-buffer algorithms remain outside this unit.",
+    "Original WriteStream Source8 capture-required declaration remains unmodified and unqualified.",
+    "Full backing-buffer mutation and complete fs/promises require their genuine separate owners.",
+    "Windows/Linux physical execution remains Root's separate sealed grant."
+  ]
+}

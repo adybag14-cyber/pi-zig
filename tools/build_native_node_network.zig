@@ -1,4 +1,4 @@
-//! Build unchanged Node v24.13.0 libuv/llhttp sources and the native TCP owner.
+//! Build unchanged Node v24.13.0 libuv/llhttp and shared TCP/file I/O owners.
 //! SOURCE-MANIFEST.json pins every imported byte. No source generator is run.
 const std = @import("std");
 const uv_root = "vendor/node-v24.13.0/uv";
@@ -41,6 +41,8 @@ pub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builti
         .flags = &.{"-std=gnu11"},
     });
     module.addCSourceFile(.{ .file = b.path("src/extensions/native_uv_tcp.c"), .flags = flags });
+    module.addCSourceFile(.{ .file = b.path("src/extensions/native_uv_file_handle.c"), .flags = flags });
+    module.addCSourceFile(.{ .file = b.path("src/extensions/native_uv_fs_write.c"), .flags = flags });
     return library;
 }
 
