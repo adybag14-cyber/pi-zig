@@ -1,4 +1,5 @@
 'use strict';
+import process from 'node:process';
 // Authored observers of the selected genuine internal/options declarations.
 function optionsAssert(value, message) {
   if (!value) throw new Error(message);
@@ -110,95 +111,136 @@ function observeOptionsWarningFailure(api) {
   }
 }
 function observeOptionsChainRetirement(api) {
-  const descriptor = Object.getOwnPropertyDescriptor(globalThis, "process");
   const original = process;
+  const env = Object.getOwnPropertyDescriptor(original, "env");
   const emit = Object.getOwnPropertyDescriptor(original, "emitWarning");
-  let processReads = 0, warningCalls = 0;
-  Object.defineProperty(original, "emitWarning", {configurable:true, get() {
-    const holder = actualOptionsHolder(2);
-    return function() { void holder; warningCalls++; optionsAssert(this === original, "selected warning receiver"); };
+  let envReads = 0, warningCalls = 0;
+  Object.defineProperty(original, "env", {configurable:true, get() {
+    envReads++;
+    const environment = actualOptionsHolder(0);
+    Object.defineProperty(environment, "NODE_TLS_REJECT_UNAUTHORIZED", {value:"0"});
+    return environment;
   }});
-  Object.defineProperty(globalThis, "process", {configurable:true, get() {
-    if (++processReads === 2) {
-      optionsAssert(actualOptionsFreedCount(1) === 1, "env receiver retired before second process lookup");
-      return original;
-    }
-    const holder = actualOptionsHolder(0);
-    Object.defineProperty(holder, "env", {get() {
-      const environment = actualOptionsHolder(1);
-      Object.defineProperty(environment, "NODE_TLS_REJECT_UNAUTHORIZED", {get() {
-        optionsAssert(actualOptionsFreedCount(0) === 1, "process receiver retired before environment field getter");
-        return "0";
-      }});
-      return environment;
-    }});
-    return holder;
+  Object.defineProperty(original, "emitWarning", {configurable:true, get() {
+    optionsAssert(actualOptionsFreedCount(0) === 1, "env receiver retired before warning lookup");
+    const holder = actualOptionsHolder(2);
+    return function() {
+      void holder;
+      warningCalls++;
+      optionsAssert(this === original, "selected original wrapper receiver");
+      return actualOptionsHolder(1);
+    };
   }});
   try {
     optionsAssert(api.getAllowUnauthorized() === true, "ordinary chain completes");
-    optionsAssert(processReads === 2 && warningCalls === 1 && actualOptionsFreedCount(2) === 1, "warning callee retires before next statement");
+    optionsAssert(envReads === 1 && warningCalls === 1, "actual process properties are read live");
+    optionsAssert(actualOptionsFreedCount(1) === 1 && actualOptionsFreedCount(2) === 1, "discarded result and selected warning callee retire before next statement");
   } finally {
-    optionsRestore(globalThis, "process", descriptor);
+    optionsRestore(original, "env", env);
     optionsRestore(original, "emitWarning", emit);
   }
 }
 function observeOptionsPrivateData(api, route) {
   const reason = actualOptionsPrivateData();
-  const descriptor = Object.getOwnPropertyDescriptor(globalThis, "process");
+  const original = process;
+  const env = Object.getOwnPropertyDescriptor(original, "env");
+  const emit = Object.getOwnPropertyDescriptor(original, "emitWarning");
   let caught = 0;
   try {
     if (route === 0) {
       try { api.getOptionValue({ [Symbol.toPrimitive]() { throw reason; } }); }
       catch (error) { optionsAssert(error === reason, "computed-key DATA identity"); caught++; }
     } else {
-      const original = process;
       if (route === 1) {
-        Object.defineProperty(globalThis, "process", {configurable:true, get() { throw reason; }});
+        Object.defineProperty(original, "env", {configurable:true, get() { throw reason; }});
       } else {
-        Object.defineProperty(globalThis, "process", {configurable:true, value:{
-          env: {NODE_TLS_REJECT_UNAUTHORIZED:"0"},
-          get emitWarning() { if (route === 2) throw reason; return function() { throw reason; }; },
+        Object.defineProperty(original, "env", {configurable:true, value:{NODE_TLS_REJECT_UNAUTHORIZED:"0"}});
+        Object.defineProperty(original, "emitWarning", {configurable:true, get() {
+          if (route === 2) throw reason;
+          return function() { throw reason; };
         }});
       }
       try { api.getAllowUnauthorized(); }
-      catch (error) { optionsAssert(error === reason, "warning/process DATA identity"); caught++; }
-      void original;
+      catch (error) { optionsAssert(error === reason, "warning/environment DATA identity"); caught++; }
     }
     optionsAssert(caught === 1, "ordinary private DATA reaches one guest catch");
-  } finally { optionsRestore(globalThis, "process", descriptor); }
+  } finally {
+    optionsRestore(original, "env", env);
+    optionsRestore(original, "emitWarning", emit);
+  }
 }
 function observeOptionsFlaggedReturn(api) {
   const reason = actualOptionsFlaggedData();
   globalThis.actualOptionsSelectedData = reason;
-  const descriptor = Object.getOwnPropertyDescriptor(globalThis, "process");
+  const original = process;
+  const env = Object.getOwnPropertyDescriptor(original, "env");
+  const emit = Object.getOwnPropertyDescriptor(original, "emitWarning");
   let caught = 0;
-  Object.defineProperty(globalThis, "process", {configurable:true, value:{
-    env:{NODE_TLS_REJECT_UNAUTHORIZED:"0"},
-    emitWarning() { return reason; },
-  }});
+  Object.defineProperty(original, "env", {configurable:true, value:{NODE_TLS_REJECT_UNAUTHORIZED:"0"}});
+  Object.defineProperty(original, "emitWarning", {configurable:true, value:function() { return reason; }});
   try {
     let returned;
     try { returned = api.getAllowUnauthorized(); } catch { caught++; }
     optionsAssert(returned === true && caught === 0, "successful flagged warning result remains discarded DATA");
-  } finally { optionsRestore(globalThis, "process", descriptor); }
+  } finally {
+    optionsRestore(original, "env", env);
+    optionsRestore(original, "emitWarning", emit);
+  }
 }
-function installOptionsFatalRoute(retireProcess) {
-  Object.defineProperty(globalThis, "process", {configurable:true, get() {
-    actualOptionsProgress.process++;
-    if (!retireProcess) {
-      return {
-        env:{NODE_TLS_REJECT_UNAUTHORIZED:"0"},
-        get emitWarning() {
-          actualOptionsProgress.warning++;
-          return actualOptionsFatal();
-        },
-      };
-    }
-    const receiver = actualOptionsHolder(0);
-    Object.defineProperty(receiver, "env", {get() {
-      actualOptionsProgress.environment++;
-      return {get NODE_TLS_REJECT_UNAUTHORIZED() {actualOptionsProgress.value++; return "0";}};
+function installOptionsFatalRoute(retireEnvironment) {
+  Object.defineProperty(process, "env", {configurable:true, get() {
+    actualOptionsProgress.environment++;
+    const environment = retireEnvironment ? actualOptionsHolder(0) : {};
+    Object.defineProperty(environment, "NODE_TLS_REJECT_UNAUTHORIZED", {get() {
+      actualOptionsProgress.value++;
+      return "0";
     }});
-    return receiver;
+    return environment;
   }});
+  Object.defineProperty(process, "emitWarning", {configurable:true, get() {
+    actualOptionsProgress.warning++;
+    return actualOptionsFatal();
+  }});
+}
+
+function installOptionsCapturedProcess() {
+  const original = process;
+  const env = Object.getOwnPropertyDescriptor(original, "env");
+  const emit = Object.getOwnPropertyDescriptor(original, "emitWarning");
+  const record = {environment:0, warnings:0, tdz:false, result:false};
+  Object.defineProperty(original, "env", {configurable:true, get() {
+    record.environment++;
+    return {NODE_TLS_REJECT_UNAUTHORIZED:"0"};
+  }});
+  Object.defineProperty(original, "emitWarning", {configurable:true, value:function() {
+    optionsAssert(this === original && arguments.length === 1, "retained builtin process receiver");
+    record.warnings++;
+  }});
+  globalThis.actualOptionsCapturedProcessRecord = record;
+  globalThis.actualOptionsRestoreCapturedProcess = function() {
+    optionsRestore(original, "env", env);
+    optionsRestore(original, "emitWarning", emit);
+    delete globalThis.actualOptionsRestoreCapturedProcess;
+  };
+}
+function observeOptionsCapturedProcess(api) {
+  installOptionsCapturedProcess();
+  const record = globalThis.actualOptionsCapturedProcessRecord;
+  const descriptor = Object.getOwnPropertyDescriptor(globalThis, "process");
+  let globalReads = 0;
+  try {
+    Object.defineProperty(globalThis, "process", {configurable:true, get() {
+      globalReads++;
+      throw Error("late global process getter must not run");
+    }});
+    optionsAssert(api.getAllowUnauthorized() === true, "captured process survives global getter replacement");
+    Object.defineProperty(globalThis, "process", {configurable:true, value:{
+      get env() { throw Error("replacement process must not be selected"); },
+    }});
+    optionsAssert(api.getAllowUnauthorized() === true, "captured process survives global object replacement");
+    optionsAssert(globalReads === 0 && record.environment === 2 && record.warnings === 1, "live original fields and retained warning flag");
+  } finally {
+    optionsRestore(globalThis, "process", descriptor);
+    globalThis.actualOptionsRestoreCapturedProcess();
+  }
 }

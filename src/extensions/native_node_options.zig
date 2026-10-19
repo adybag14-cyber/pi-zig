@@ -13,6 +13,7 @@ const publication = @import("native_node_fs_private_publication.zig");
 const cache_key = "pi-native:private/node-options-values";
 const State = struct {
     engine: *a.v.em.Engine,
+    process: c.JSValue,
     values_binding: c.JSValue,
     embedder_binding: c.JSValue,
     options_dict: c.JSValue,
@@ -22,6 +23,7 @@ const State = struct {
 fn finalize(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
     const engine = state.engine;
+    c.JS_FreeValueRT(runtime, state.process);
     c.JS_FreeValueRT(runtime, state.values_binding);
     c.JS_FreeValueRT(runtime, state.embedder_binding);
     c.JS_FreeValueRT(runtime, state.options_dict);
@@ -31,6 +33,7 @@ fn finalize(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
 }
 fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
     const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
+    c.JS_MarkValue(runtime, state.process, marker);
     c.JS_MarkValue(runtime, state.values_binding, marker);
     c.JS_MarkValue(runtime, state.embedder_binding, marker);
     c.JS_MarkValue(runtime, state.options_dict, marker);
@@ -41,7 +44,7 @@ fn known(engine: *a.v.em.Engine, owner: c.JSValue) !*State {
     if (state.engine != engine) return error.ActualNodeOptionsOwnerRequired;
     return state;
 }
-fn stateBody(s: *Scope, inputs: binding.Exports) !c.JSValue {
+fn stateBody(s: *Scope, inputs: binding.Exports, process: c.JSValue) !c.JSValue {
     const registration = try s.beforeAllocation();
     var id: c.JSClassID = 0;
     if (c.JS_NewClassID(s.engine.runtime, &id) == 0) return error.OutOfMemory;
@@ -53,7 +56,7 @@ fn stateBody(s: *Scope, inputs: binding.Exports) !c.JSValue {
     if (c.pi_js_native_memory_reserve(s.engine.native_memory_owner, @sizeOf(State)) == 0) return error.OutOfMemory;
     errdefer c.pi_js_native_memory_release(s.engine.native_memory_owner, @sizeOf(State));
     const state = try s.engine.gpa.create(State);
-    state.* = .{ .engine = s.engine,
+    state.* = .{ .engine = s.engine, .process = a.duplicate(s.engine, process),
         .values_binding = a.duplicate(s.engine, inputs.values),
         .embedder_binding = a.duplicate(s.engine, inputs.embedder),
         .options_dict = c.pi_js_undefined(), .embedder_options = c.pi_js_undefined() };
@@ -101,24 +104,18 @@ fn refreshCallback(engine: *a.v.em.Engine, _: c.JSValue, _: *sync.Arguments, roo
 fn embedderCallback(engine: *a.v.em.Engine, _: c.JSValue, _: *sync.Arguments, roots: []const c.JSValue) !c.JSValue {
     return a.expression(engine, lazyBody, .{ try known(engine, roots[0]), Cell.embedder_options });
 }
-fn actualProcess(s: *Scope) !c.JSValue {
-    const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));
-    return a.duplicate(s.engine, try s.get(global, "process"));
-}
-fn environment(s: *Scope) !c.JSValue {
-    const process = try s.own(try a.expression(s.engine, actualProcess, .{}));
+fn environment(s: *Scope, process: c.JSValue) !c.JSValue {
     return a.duplicate(s.engine, try s.get(process, "env"));
 }
-fn unauthorizedValue(s: *Scope) !c.JSValue {
-    const env = try s.own(try a.expression(s.engine, environment, .{}));
+fn unauthorizedValue(s: *Scope, process: c.JSValue) !c.JSValue {
+    const env = try s.own(try a.expression(s.engine, environment, .{process}));
     return a.duplicate(s.engine, try s.get(env, "NODE_TLS_REJECT_UNAUTHORIZED"));
 }
-fn unauthorizedPredicate(s: *Scope) !c.JSValue {
-    const value = try s.own(try a.expression(s.engine, unauthorizedValue, .{}));
+fn unauthorizedPredicate(s: *Scope, process: c.JSValue) !c.JSValue {
+    const value = try s.own(try a.expression(s.engine, unauthorizedValue, .{process}));
     return a.boolean(s, s.equal(value, try s.text("0")));
 }
-fn warnUnauthorized(s: *Scope) !c.JSValue {
-    const process = try s.own(try a.expression(s.engine, actualProcess, .{}));
+fn warnUnauthorized(s: *Scope, process: c.JSValue) !c.JSValue {
     const emit = try s.get(process, "emitWarning");
     const text = try s.text("Setting the NODE_TLS_REJECT_UNAUTHORIZED " ++
         "environment variable to '0' makes TLS connections " ++
@@ -128,10 +125,10 @@ fn warnUnauthorized(s: *Scope) !c.JSValue {
     return c.pi_js_undefined();
 }
 fn unauthorizedBody(s: *Scope, state: *State) !c.JSValue {
-    const allowed = try a.condition(s.engine, unauthorizedPredicate, .{});
+    const allowed = try a.condition(s.engine, unauthorizedPredicate, .{state.process});
     if (allowed and state.warn_on_allow_unauthorized) {
         state.warn_on_allow_unauthorized = false;
-        _ = try a.expression(s.engine, warnUnauthorized, .{});
+        _ = try a.expression(s.engine, warnUnauthorized, .{state.process});
     }
     return a.boolean(s, allowed);
 }
@@ -139,6 +136,9 @@ fn unauthorizedCallback(engine: *a.v.em.Engine, _: c.JSValue, _: *sync.Arguments
     return a.expression(engine, unauthorizedBody, .{try known(engine, roots[0])});
 }
 fn createBody(s: *Scope) !c.JSValue {
+    // BuiltinLoader supplies process as the real wrapper parameter. The
+    // registered default is retained before evaluating this module body.
+    const process = try s.own((try s.engine.requireBuiltin("node:process")) orelse return error.ActualNodeOptionsProcessRequired);
     const inputs = try binding.create(s.engine);
     var incoming = [_]c.JSValue{ inputs.values, inputs.embedder };
     for (&incoming, 0..) |*slot, position| {
@@ -148,7 +148,7 @@ fn createBody(s: *Scope) !c.JSValue {
             return err;
         };
     }
-    const owner = try s.own(try a.expression(s.engine, stateBody, .{inputs}));
+    const owner = try s.own(try a.expression(s.engine, stateBody, .{ inputs, process }));
     const get_values = try s.own(try functions.createWithArguments(s.engine, "getCLIOptionsFromBinding", 0, true,
         .{ .formal_count = 0, .callback = lazyCallback }, &.{owner}));
     const get_option = try s.own(try functions.createWithArguments(s.engine, "getOptionValue", 1, true,

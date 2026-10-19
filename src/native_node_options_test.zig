@@ -123,7 +123,7 @@ const Fixture = struct {
             defer self.engine.freeValue(record);
             _ = try a.expression(self.engine, publishBody, .{ "actualNodeOptionsBindings", record });
             const evaluated = try self.engine.evalModule(@embedFile("extensions/fixtures/native-node-options-source.mjs") ++
-                "\nglobalThis.actualNodeOptions = createNodeOptionsSource(actualNodeOptionsBindings);\n", "actual-node-options-source.mjs");
+                "\nimport originalNodeOptionsProcess from 'node:process';\nglobalThis.actualNodeOptions = createNodeOptionsSource(actualNodeOptionsBindings, originalNodeOptionsProcess);\n", "actual-node-options-source.mjs");
             self.engine.freeValue(evaluated);
             self.owner = try self.value("actualNodeOptions");
         }
@@ -140,6 +140,10 @@ const Fixture = struct {
         const source = try std.mem.concat(self.engine.gpa, u8, &.{ @embedFile("extensions/fixtures/native-node-options-observer.mjs"), "\n", tail });
         defer self.engine.gpa.free(source);
         const result = try self.engine.evalModule(source, "actual-node-options-observer.mjs");
+        self.engine.freeValue(result);
+    }
+    fn runGlobal(self: *Fixture, source: []const u8) !void {
+        const result = try self.engine.eval(source, "actual-node-options-global-control.js", c.JS_EVAL_TYPE_GLOBAL | c.JS_EVAL_FLAG_STRICT);
         self.engine.freeValue(result);
     }
     fn value(self: *Fixture, name: [*:0]const u8) !c.JSValue {
@@ -401,10 +405,10 @@ test "native actual Node options real warning getter fatal prevents guest contin
             \\try{actualNodeOptions.getAllowUnauthorized();actualOptionsProgress.after++;}
             \\catch{actualOptionsProgress.caught++;}
         );
-        try verifyFatal(&fixture, result, record, .{ 2, 0, 0, 1, 0, 0 });
+        try verifyFatal(&fixture, result, record, .{ 0, 1, 1, 1, 0, 0 });
     }
 }
-test "native actual Node options process receiver retirement fatal prevents the next environment getter" {
+test "native actual Node options environment receiver retirement fatal prevents the warning getter" {
     inline for (.{ false, true }) |native| {
         var fixture: Fixture = undefined; try fixture.init(native); defer fixture.deinit();
         const record = try progress(&fixture); defer fixture.engine.freeValue(record);
@@ -414,7 +418,7 @@ test "native actual Node options process receiver retirement fatal prevents the 
             \\try{actualNodeOptions.getAllowUnauthorized();actualOptionsProgress.after++;}
             \\catch{actualOptionsProgress.caught++;}
         );
-        try verifyFatal(&fixture, result, record, .{ 1, 1, 0, 0, 0, 0 });
+        try verifyFatal(&fixture, result, record, .{ 0, 1, 1, 0, 0, 0 });
         try std.testing.expectEqual(@as(u32, 1), fixture.probe.freed[0]);
     }
 }
@@ -438,4 +442,210 @@ test "native actual Node options completed private owner preserves function and 
     try fixture.run("actualNodeOptions.refreshOptions();observeOptionsValues(actualNodeOptions);");
     try std.testing.expect(fixture.engine.node_options.? == retained);
     try std.testing.expect(retained.bootstrapped and retained.serialized);
+}
+
+
+// Native-only continuation controls. The real bootstrap Error's existing code
+// setter is the last guest operation before the native serializer tail. It
+// records its actual receiver and can exhaust a real heap/native quota there;
+// no production observer, synthetic result or outer invocation is installed.
+const TailLimit = enum { none, heap, native_vector };
+const TailProbe = struct {
+    engine: *a.v.em.Engine,
+    limit: TailLimit,
+    expected_code: c.JSValue,
+    original_reason: c.JSValue,
+    calls: u32 = 0,
+    code_matches: bool = false,
+    serialized_at_setter: bool = false,
+    generation_at_setter: u64 = 0,
+    reservation: usize = 0,
+    reservation_succeeded: bool = false,
+};
+var active_tail_probe: ?*TailProbe = null;
+fn recordTailCode(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const probe = active_tail_probe.?;
+    probe.calls += 1;
+    probe.code_matches = argc == 1 and c.JS_IsString(argv[0]) and
+        c.JS_IsStrictEqual(context, argv[0], probe.expected_code);
+    c.JS_FreeValue(context, probe.original_reason);
+    probe.original_reason = c.JS_DupValue(context, receiver);
+    probe.serialized_at_setter = probe.engine.node_options.?.serialized;
+    probe.generation_at_setter = probe.engine.native_allocation_generation;
+    switch (probe.limit) {
+        .none => {},
+        .heap => c.JS_SetMemoryLimit(probe.engine.runtime, 1),
+        .native_vector => {
+            const remaining = probe.engine.options.memory_limit -
+                c.pi_js_native_memory_used(probe.engine.native_memory_owner);
+            probe.reservation_succeeded =
+                c.pi_js_native_memory_reserve(probe.engine.native_memory_owner, remaining) == 1;
+            if (probe.reservation_succeeded) probe.reservation = remaining;
+        },
+    }
+    return c.pi_js_undefined();
+}
+const TailFixture = struct {
+    engine: *a.v.em.Engine,
+    pair: bindings.Exports,
+    probe: TailProbe,
+    fn init(self: *TailFixture, limit: TailLimit) !void {
+        self.engine = try a.v.em.Engine.init(std.testing.allocator, .{ .node_options = .{
+            .features = .{ .strip_types = true },
+            .values = .{ .conditions = &.{ "native-tail-first", "native-tail-last" } },
+        } });
+        errdefer self.engine.deinit();
+        self.pair = try bindings.create(self.engine);
+        errdefer {
+            self.engine.freeValue(self.pair.values);
+            self.engine.freeValue(self.pair.embedder);
+        }
+        const expected_code = try self.engine.checked(c.JS_NewString(self.engine.context, "ERR_OPTIONS_BEFORE_BOOTSTRAPPING"));
+        errdefer self.engine.freeValue(expected_code);
+        self.probe = .{
+            .engine = self.engine, .limit = limit, .expected_code = expected_code,
+            .original_reason = c.pi_js_undefined(),
+        };
+        active_tail_probe = &self.probe;
+        errdefer {
+            active_tail_probe = null;
+            self.engine.freeValue(self.probe.original_reason);
+        }
+        try self.engine.bindFunction("actualOptionsTailCode", recordTailCode, 1);
+        const setup = try self.engine.evalModule(
+            \\Object.defineProperty(Error.prototype,"code",{
+            \\  configurable:true,set:actualOptionsTailCode
+            \\});
+        , "actual-node-options-native-tail-setup.mjs");
+        self.engine.freeValue(setup);
+    }
+    fn restoreLimits(self: *TailFixture) void {
+        c.JS_SetMemoryLimit(self.engine.runtime, self.engine.options.memory_limit);
+        const reservation = self.probe.reservation;
+        self.probe.reservation = 0;
+        if (reservation != 0) c.pi_js_native_memory_release(self.engine.native_memory_owner, reservation);
+        self.probe.limit = .none;
+    }
+    fn deinit(self: *TailFixture) void {
+        self.restoreLimits();
+        if (c.JS_HasException(self.engine.context))
+            self.engine.freeValue(c.JS_GetException(self.engine.context));
+        self.engine.freeValue(self.pair.values);
+        self.engine.freeValue(self.pair.embedder);
+        self.engine.freeValue(self.probe.expected_code);
+        self.engine.freeValue(self.probe.original_reason);
+        self.engine.deinit();
+        active_tail_probe = null;
+    }
+    fn call(self: *TailFixture, values: bool) c.JSValue {
+        return c.JS_Call(self.engine.context, if (values) self.pair.values else self.pair.embedder,
+            c.pi_js_undefined(), 0, null);
+    }
+    fn expectSetter(self: *TailFixture, values: bool) !void {
+        try std.testing.expectEqual(@as(u32, 1), self.probe.calls);
+        try std.testing.expect(self.probe.code_matches and !self.probe.serialized_at_setter);
+        try std.testing.expect(c.JS_IsObject(self.probe.original_reason));
+        try std.testing.expectEqual(values, self.engine.node_options.?.serialized);
+    }
+    fn expectNewFatal(self: *TailFixture, reason: c.JSValue) !void {
+        try std.testing.expect(c.JS_IsUncatchableError(reason));
+        try std.testing.expect(!c.JS_IsStrictEqual(self.engine.context, reason, self.probe.original_reason));
+        var expected_generation = self.probe.generation_at_setter +% 1;
+        if (expected_generation == 0) expected_generation = 1;
+        try std.testing.expectEqual(expected_generation, self.engine.native_allocation_generation);
+        try std.testing.expectEqual(expected_generation, c.pi_js_native_allocation_error_generation(reason));
+    }
+};
+test "native actual Node options successful native tails retain the explicitly thrown bootstrap identity" {
+    inline for (.{ false, true }) |values| {
+        var fixture: TailFixture = undefined; try fixture.init(.none); defer fixture.deinit();
+        const result = fixture.call(values);
+        try std.testing.expect(c.JS_IsException(result));
+        try std.testing.expect(c.JS_HasException(fixture.engine.context));
+        const reason = c.JS_GetException(fixture.engine.context);
+        defer fixture.engine.freeValue(reason);
+        try fixture.expectSetter(values);
+        try std.testing.expect(c.JS_IsStrictEqual(fixture.engine.context, reason, fixture.probe.original_reason));
+        try std.testing.expect(!c.JS_IsUncatchableError(reason));
+        try std.testing.expectEqual(fixture.probe.generation_at_setter, fixture.engine.native_allocation_generation);
+    }
+}
+test "native actual Node options intrinsic serialization failure supersedes the ordinary bootstrap reason" {
+    inline for (.{ false, true }) |values| {
+        var fixture: TailFixture = undefined; try fixture.init(.heap); defer fixture.deinit();
+        const result = fixture.call(values);
+        fixture.restoreLimits();
+        try std.testing.expect(c.JS_IsException(result));
+        try std.testing.expect(c.JS_HasException(fixture.engine.context));
+        const reason = c.JS_GetException(fixture.engine.context);
+        defer fixture.engine.freeValue(reason);
+        try fixture.expectSetter(values);
+        try fixture.expectNewFatal(reason);
+    }
+}
+test "native actual Node options native vector allocation failure is recorded before rollback" {
+    var fixture: TailFixture = undefined; try fixture.init(.native_vector); defer fixture.deinit();
+    const result = fixture.call(true);
+    fixture.restoreLimits();
+    try std.testing.expect(fixture.probe.reservation_succeeded);
+    try std.testing.expect(c.JS_IsException(result));
+    try std.testing.expect(c.JS_HasException(fixture.engine.context));
+    const reason = c.JS_GetException(fixture.engine.context);
+    defer fixture.engine.freeValue(reason);
+    try fixture.expectSetter(true);
+    try fixture.expectNewFatal(reason);
+}
+test "native actual Node options admitted serializer arrays bypass inherited index setters and poisoned constructors" {
+    var fixture: Fixture = undefined; try fixture.init(true); defer fixture.deinit();
+    const record = try a.expression(fixture.engine, bindingRecord, .{});
+    defer fixture.engine.freeValue(record);
+    _ = try a.expression(fixture.engine, publishBody, .{ "actualOptionsBootstrapBinding", record });
+    try fixture.run(
+        \\const originalArray=Array, originalObject=Object, originalString=String;
+        \\const previous=originalObject.getOwnPropertyDescriptor(originalArray.prototype,"0");
+        \\let visits=0;
+        \\originalObject.defineProperty(originalArray.prototype,"0",{configurable:true,set(){++visits;}});
+        \\try {
+        \\  globalThis.Array=globalThis.Object=globalThis.String=function(){++visits;throw "poisoned constructor";};
+        \\  const record=actualOptionsBootstrapBinding.values();
+        \\  const conditions=record["--conditions"];
+        \\  optionsAssert(originalArray.isArray(conditions)&&conditions.length===3,"real intrinsic native list");
+        \\  optionsAssert(conditions[0]==="base"&&conditions[1]==="environment"&&conditions[2]==="command","original native elements");
+        \\  const item=originalObject.getOwnPropertyDescriptor(conditions,"0");
+        \\  optionsAssert(item&&item.value==="base"&&item.writable&&item.enumerable&&item.configurable,"intrinsic own array element");
+        \\  optionsAssert(originalObject.getPrototypeOf(record)===null&&visits===0,"native tail has no constructor or inherited setter calls");
+        \\} finally {
+        \\  globalThis.Array=originalArray; globalThis.Object=originalObject; globalThis.String=originalString;
+        \\  if(previous)originalObject.defineProperty(originalArray.prototype,"0",previous);
+        \\  else delete originalArray.prototype[0];
+        \\}
+    );
+}
+
+test "native actual Node options retains the real builtin process across late global replacement" {
+    try observe("observeOptionsCapturedProcess");
+}
+test "native actual Node options captured process survives an actual global lexical TDZ" {
+    inline for (.{ false, true }) |native| {
+        var fixture: Fixture = undefined; try fixture.init(native); defer fixture.deinit();
+        try fixture.run("installOptionsCapturedProcess();");
+        try fixture.runGlobal(
+            \\try {
+            \\  try { void process; }
+            \\  catch (reason) {
+            \\    if (!(reason instanceof ReferenceError)) throw reason;
+            \\    globalThis.actualOptionsCapturedProcessRecord.tdz = true;
+            \\  }
+            \\  globalThis.actualOptionsCapturedProcessRecord.result = actualNodeOptions.getAllowUnauthorized();
+            \\} finally { globalThis.actualOptionsRestoreCapturedProcess(); }
+            \\let process;
+        );
+        try fixture.run(
+            \\const record = globalThis.actualOptionsCapturedProcessRecord;
+            \\optionsAssert(record.tdz === true && record.result === true &&
+            \\  record.environment === 1 && record.warnings === 1,
+            \\  "actual global TDZ coexists with the retained builtin process parameter");
+        );
+        try fixture.engine.checkNativeEntry();
+    }
 }
