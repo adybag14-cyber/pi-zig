@@ -1,0 +1,46 @@
+{
+  "kind": "source-only-runtime-fixture-correction",
+  "unit": "writer-fixture-sentinel-allocation-extent",
+  "date": "2026-10-19",
+  "source_path": "src/native_node_fs_write_uv_test.zig",
+  "before": {
+    "sha256": "FE7E239C7A6D45C5EB9AC77E671BE67738DD2EEDBD4EF39FD6A6B6E53256B5EF",
+    "bytes": 24144
+  },
+  "after": {
+    "sha256": "A61923ACB199931C89CCAC0AC8A9C4D8AD0E56A55E44819557092C0320A40847",
+    "bytes": 24146
+  },
+  "exact_delta": {
+    "before": "    root: []u8,",
+    "after": "    root: [:0]u8,",
+    "reverse_recovers_complete_before": true
+  },
+  "declarations": {
+    "before": 12,
+    "after": 12,
+    "names_and_bodies_unchanged": true
+  },
+  "cause": "The actual realPathFileAlloc producer returns allocator-owned sentinel bytes. The fixture erased the sentinel in its stored field, causing its unchanged error and normal cleanup to free one byte fewer than allocated.",
+  "pinned_api": {
+    "path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/std/Io/Dir.zig",
+    "lines": "944-947",
+    "text": "944:pub fn realPathFileAlloc(dir: Dir, io: Io, sub_path: []const u8, allocator: Allocator) RealPathFileAllocError![:0]u8 {\n945-    var buffer: [max_path_bytes]u8 = undefined;\n946-    const n = try realPathFile(dir, io, sub_path, &buffer);\n947-    return allocator.dupeZ(u8, buffer[0..n]);\n948-}\n949-\n950-/// Same as `realPathFile` except `absolute_path` is asserted to be an absolute\n951-/// path.\n952-///\n953-/// This function has limited platform support, and using it can lead to\n954-/// unnecessary failures and race conditions. It is generally advisable to\n955-/// avoid this function entirely.\n956-///\n"
+  },
+  "negative_evidence": {
+    "path": "C:/Users/adyba/pi-zig/evidence/root-vm-io-oauth-options-v17-diagnostic-runtime-20261019-215552/groups/native-node-fs-write-uv/runtime.stderr.log",
+    "sha256": "D8A175A9365F730C12B6FF33A911E12D3B17830367FB9E00224DBA961A780CEE",
+    "unchanged": true
+  },
+  "review": {
+    "reviewer": "/root",
+    "status": "finite source peer closed",
+    "scope": "Exact one-field reversal, actual pinned producer ABI, unchanged existing free sites."
+  },
+  "validation": {
+    "source_readback": true,
+    "exact_reversal": true,
+    "execution": false
+  },
+  "remaining": "The separate completion-throw control captured_exception failure remains under diagnosis. This source correction does not qualify a build or runtime result."
+}
