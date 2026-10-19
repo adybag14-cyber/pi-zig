@@ -426,26 +426,5 @@ fn finishRequest(engine: *em.Engine, owner: c.JSValue, routed: bool) !void {
     try finish(engine, owner, result);
 }
 pub fn combineUsage(engine: *em.Engine, first: c.JSValue, second: c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const result = try scope.object();
-    inline for (.{ "input", "output", "cacheRead", "cacheWrite" }) |name| try sumField(&scope, result, first, second, name, false);
-    inline for (.{ "cacheWrite1h", "reasoning" }) |name| try sumField(&scope, result, first, second, name, true);
-    try sumField(&scope, result, first, second, "totalTokens", false);
-    const cost = try scope.object();
-    const left = try scope.get(first, "cost");
-    const right = try scope.get(second, "cost");
-    inline for (.{ "input", "output", "cacheRead", "cacheWrite", "total" }) |name| try sumField(&scope, cost, left, right, name, false);
-    try scope.put(result, "cost", cost);
-    return c.JS_DupValue(engine.context, result);
-}
-fn sumField(scope: *Scope, result: c.JSValue, first: c.JSValue, second: c.JSValue, name: [*:0]const u8, optional: bool) !void {
-    var left = try scope.get(first, name);
-    var right = try scope.get(second, name);
-    if (optional) {
-        if (c.JS_IsUndefined(left) and c.JS_IsUndefined(right)) return;
-        if (temp.nullish(left)) left = c.JS_NewInt32(scope.engine.context, 0);
-        if (temp.nullish(right)) right = c.JS_NewInt32(scope.engine.context, 0);
-    }
-    try scope.put(result, name, try scope.concat(left, right));
+    return @import("native_sdk_usage_combine.zig").combine(engine, first, second);
 }

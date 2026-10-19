@@ -1,0 +1,233 @@
+{
+  "status": "reviewable-source-commit-with-Root-slice-pending-controls-unexecuted",
+  "target": "build-native-sdk-summary-genuine-af",
+  "executable": "native-sdk-summary-genuine-af.exe",
+  "root": "src/native_sdk_summary_genuine_af_test.zig",
+  "filter": "SDK summary genuine AF",
+  "declared_count": 24,
+  "declared_names": [
+    "SDK summary genuine AF export shapes and completed actual owners",
+    "SDK summary genuine AF option spread repeated routing and retry arguments",
+    "SDK summary genuine AF zero Await outer body and intrinsic return adoption",
+    "SDK summary genuine AF stream producer performs its actual Await before result",
+    "SDK summary genuine AF retained produce closes only its actual captured inputs",
+    "SDK summary genuine AF actual result callee retires before return adoption",
+    "SDK summary genuine AF ordinary private DATA keeps exact identity before and after Await",
+    "SDK summary genuine AF c268 options omit obsolete reserveTokens and maxTokens",
+    "SDK summary genuine AF intrinsic templates convert before later expressions",
+    "SDK summary genuine AF response predicates methods and final usage remain live",
+    "SDK summary genuine AF actual failure and tool stop paths",
+    "SDK summary genuine AF Date receiver and callee retire before complete request",
+    "SDK summary genuine AF local response and borrowed input survive real Await",
+    "SDK summary genuine AF compact whole split and combined usage use actual owners",
+    "SDK summary genuine AF compact destructures one boxed receiver and ignores settings",
+    "SDK summary genuine AF split text coerces history before turn text",
+    "SDK summary genuine AF actual message transforms preserve identity and coercion hints",
+    "SDK summary genuine AF actual map filter callbacks and temporary retirement",
+    "SDK summary genuine AF normalization keeps identity and actual array spread",
+    "SDK summary genuine AF usage optional rereads and cost receiver retirement",
+    "SDK summary genuine AF ordinary response and Error constructor DATA stay ordinary",
+    "SDK summary genuine AF current native B preempts rejection and later getters",
+    "SDK summary genuine AF reasoning predicate retirement preserves current B before Date",
+    "SDK summary genuine AF reasoning predicate cancellation preempts Date and request"
+  ],
+  "source_head_before_unit": "fe6c249864916c4e03a98b0a08591cf510325f9f",
+  "source_files": [
+    {
+      "path": "src/extensions/native_sdk_complete_summarization.zig",
+      "sha256": "8090b689d71a0b1e3acedc34ce3b268bcbe351b2e4539c4d56b42b3551bd781b",
+      "bytes": 5550
+    },
+    {
+      "path": "src/extensions/native_sdk_summary_generation.zig",
+      "sha256": "6eee5077c50d118064b9515e370b233f459f53dbcc59facde2f6a56112ee4339",
+      "bytes": 24102
+    },
+    {
+      "path": "src/extensions/native_sdk_messages.zig",
+      "sha256": "bf172af1a1347a00241d2c7a0e1cecadc12790c41631e6008f34695f4e4bb724",
+      "bytes": 10015
+    },
+    {
+      "path": "src/extensions/native_ai_transcript_context.zig",
+      "sha256": "fef8fb522ba95efbaedcba026f12985d6c8fc41191079f3a53c50ee59a2d770f",
+      "bytes": 5331
+    },
+    {
+      "path": "src/extensions/native_sdk_usage_combine.zig",
+      "sha256": "59433f9ecfb91da20919954912da4fc717054124f4a3c95e3bc1a17a129ea42e",
+      "bytes": 3775
+    },
+    {
+      "path": "src/extensions/native_sdk_session_hooks.zig",
+      "sha256": "990ecf70fd2c6ca06ef6eff2894e92c521e0fdfd6582a006ce204c9820f4d58b",
+      "bytes": 28436
+    },
+    {
+      "path": "src/native_sdk_summary_genuine_af_test.zig",
+      "sha256": "83fecfdcb840475526b5f335230b8befda3232a21ba711bb28f7f1649d0d03f9",
+      "bytes": 11483
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-summary-observer.mjs",
+      "sha256": "face0a50851a2c261f2f15cfe141f501c4515555d08330a1e1296e96e1258c27",
+      "bytes": 27233
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-summary-c268-source.mjs",
+      "sha256": "07ea1127bd1b0c0d9e9c51c8687b14130a806146a4c31d07cca349eda413b874",
+      "bytes": 10119
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-summary-messages-c268-source.mjs",
+      "sha256": "559e3317ca608fc9acc29a0deff51257bdac0b74488635f3359b301104c475d6",
+      "bytes": 4222
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-summary-transcript-c268-source.mjs",
+      "sha256": "891c52d953a776708aaa5cfbb76221a024e2fd4400efbd4c03416c95dae7b2b6",
+      "bytes": 1058
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-summary-usage-c268-source.mjs",
+      "sha256": "d1d8b25343b20cce72074a40b603ad055f7ea1ca182eacb54183286ff426e66c",
+      "bytes": 1150
+    },
+    {
+      "path": "src/native_sdk_initial_model_retirement_controls.zig",
+      "sha256": "d0784bf759fd6b8a6e37765124f9f5026dec5843075156bdfc42ea22d14ee615",
+      "bytes": 15190
+    }
+  ],
+  "authority": {
+    "selected_compaction": {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/sdk-owners-resume-20261018/compaction-authority/compaction.ts.txt",
+      "sha256": "f5bbc427e337be708bd15297806c0acaf7cb0ee65cc4af77e6e48c3e3937894f",
+      "bytes": 35245,
+      "commit": "c268154c"
+    },
+    "reference_derivation": [
+      {
+        "name": "function createSummarizationOptions",
+        "source_start": 18502,
+        "source_end": 19019,
+        "erased": [
+          "const options: SimpleStreamOptions"
+        ]
+      },
+      {
+        "name": "async function completeSummarization",
+        "source_start": 19416,
+        "source_end": 20224,
+        "erased": [
+          "const requestOptions: SimpleStreamOptions",
+          "async (): Promise<AssistantMessage> =>"
+        ]
+      },
+      {
+        "name": "async function generateSummary",
+        "source_start": 20359,
+        "source_end": 21159,
+        "erased": []
+      },
+      {
+        "name": "function buildSummarizationContext",
+        "source_start": 21229,
+        "source_end": 21509,
+        "erased": []
+      },
+      {
+        "name": "async function generateSummaryWithUsage",
+        "source_start": 21591,
+        "source_end": 23615,
+        "erased": []
+      },
+      {
+        "name": "async function compact",
+        "source_start": 31562,
+        "source_end": 33988,
+        "erased": [
+          "let summary: string;",
+          "let summaryUsage: Usage;",
+          "let historyUsage: Usage | undefined;",
+          " as CompactionDetails"
+        ]
+      },
+      {
+        "name": "async function generateTurnPrefixSummary",
+        "source_start": 34063,
+        "source_end": 35244,
+        "erased": []
+      }
+    ],
+    "compaction_prebuild_mismatch": {
+      "javascript": "C:/Users/adyba/pi-zig/upstream/runtime/19cb534-full-prebuild-root-full28293-v3-20261017-203626/packages/coding-agent/dist/core/compaction/compaction.js",
+      "javascript_sha256": "573f0321e9a93a4e8dca8c327f6459082ac438d1bc8b6c3c171d90894dd1543c",
+      "map": "C:/Users/adyba/pi-zig/upstream/runtime/19cb534-full-prebuild-root-full28293-v3-20261017-203626/packages/coding-agent/dist/core/compaction/compaction.js.map",
+      "map_sha256": "436ceffc89354cea553d4bc1d7696612145db64c5013fee63d2e38ed97d2cfe6",
+      "map_sources_content_equals_selected_c268": false,
+      "excluded_behaviors": [
+        "obsolete maxTokens option and reserveTokens budget calculation",
+        "obsolete preparation.settings read and settings.reserveTokens forwarding"
+      ],
+      "use_as_selected_summary_oracle": false
+    },
+    "exact_other_prebuild_sources": [
+      {
+        "javascript": "C:/Users/adyba/pi-zig/upstream/runtime/19cb534-full-prebuild-root-full28293-v3-20261017-203626/packages/coding-agent/dist/core/messages.js",
+        "javascript_sha256": "8688b3f6eb28865f779cac998bd4754d1a4f08703200dfe0dd5a799aa0d42ef6",
+        "map": "C:/Users/adyba/pi-zig/upstream/runtime/19cb534-full-prebuild-root-full28293-v3-20261017-203626/packages/coding-agent/dist/core/messages.js.map",
+        "map_sha256": "796705f694d0c168ae31758d7ed4047ca3c9f9937f32baa5ed1dd871b9199ea1",
+        "sources_content_verified_equal_to_retained_c268": true
+      },
+      {
+        "javascript": "C:/Users/adyba/pi-zig/upstream/runtime/19cb534-full-prebuild-root-full28293-v3-20261017-203626/packages/coding-agent/dist/core/usage-totals.js",
+        "javascript_sha256": "aa324545a6bdc16293380b8b0d09dd960356b99c2f5d4870f1bc2046e590c465",
+        "map": "C:/Users/adyba/pi-zig/upstream/runtime/19cb534-full-prebuild-root-full28293-v3-20261017-203626/packages/coding-agent/dist/core/usage-totals.js.map",
+        "map_sha256": "b65bc7d2df30e7764b0a171cbeea4dc124c2c5ae0288fd0e2011b55adf6c4f09",
+        "sources_content_verified_equal_to_retained_c268": true
+      },
+      {
+        "javascript": "C:/Users/adyba/pi-zig/upstream/runtime/19cb534-full-prebuild-root-full28293-v3-20261017-203626/packages/ai/dist/utils/transcript.js",
+        "javascript_sha256": "4c772c6691be0c5b4c308a09e3eeaa4d965b59e39652442b3aef0600ffb5fccb",
+        "map": "C:/Users/adyba/pi-zig/upstream/runtime/19cb534-full-prebuild-root-full28293-v3-20261017-203626/packages/ai/dist/utils/transcript.js.map",
+        "map_sha256": "7d96006db7386f01bb3156d741fa8cabfde5f11a17fd4c674effb70592374516",
+        "sources_content_verified_equal_to_retained_c268": true
+      }
+    ],
+    "semantics": "Original Node/V8 and ECMA-262 eager per-substitution ToString and intrinsic concatenation. Linked QuickJS live-concat drafts were rejected and preserved separately.",
+    "diagnostic_drafts": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/sdk-owners-resume-20261018/diagnostics/template-concat-rejected-20261019/manifest.json"
+  },
+  "scope": {
+    "production": "Actual completeSummarization and generateSummary/WithUsage/compact with real converter, transcript normalization, serializer, FileOps and combineUsage owners. Existing session AI assembly provides genuine uuid/completeSimple/retry inputs.",
+    "controlled_test_inputs": "Only module-bound AI completion/retry/UUID values are controlled in the isolated unit. No actual algorithm, async capability, Await, converter, serializer, normalization, file operation or usage implementation is replaced in these controls.",
+    "open": [
+      "Original uuid/retry provider dependency qualification",
+      "Full prepareCompaction projected algorithm; separately peer-closed Branch AF20 unit follows",
+      "Full public SDK namespace/application composition",
+      "Runtime and complete imported-metadata qualification"
+    ],
+    "shared_requirements": [
+      "AF33 guest operations and C435 owned completion",
+      "VM terminal argument/state/receiver retirement correction",
+      "JS_PiArrayAppend exact operation bridge",
+      "Intrinsic/eager template compiler 353970d4204b5961058e86d3b435778a4a1e96f8 for Source comparisons"
+    ],
+    "no_execution": true
+  },
+  "peers": {
+    "root": {
+      "complete_summarization_8090": "closed for actual imports/options/producer/zero-or-one Await and live result/adoption; no execution",
+      "summary_6EEE_and_controls_1_to_7": "pending final Root source review at commit preparation"
+    },
+    "vm_foundation": {
+      "controls_8_to_16": "closed on original ACF65757 root, unchanged FACE0A50 observer and 07EA1127 fixture; selected lines unchanged by later support assertions",
+      "execution": false
+    },
+    "modules_io": {
+      "production": "BF172AF1 messages, FEF8FB52 transcript and 59433F9E usage finite peer closed",
+      "controls_17_to_24": "closed including actual final 83FECFDC root/D0784BF7 support correction; FACE0A50 observer unchanged",
+      "execution": false
+    }
+  }
+}

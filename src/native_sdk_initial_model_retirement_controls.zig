@@ -125,6 +125,11 @@ pub fn startPreparedRetirementCaller(engine: *x.em.Engine, prepared_runner: c.JS
     return x.owned.finishValue(&s, xDuplicate(&o, prepared_runner));
 }
 fn xDuplicate(o: *x.Ops, runner: c.JSValue) !c.JSValue { return c.JS_DupValue(o.s.engine.context, try o.call(runner, c.pi_js_undefined(), &.{})); }
+/// Inspect only the retained native record; no guest lookup or evaluation.
+pub fn verifyNoVisits(original_record: c.JSValue, comptime slots: anytype) !void {
+    const record = recordOf(original_record);
+    inline for (slots) |slot| try std.testing.expectEqual(@as(u32, 0), record.visits[slot]);
+}
 pub fn verifyActualRetirementFatal(engine: *x.em.Engine, original_record: c.JSValue, slot: usize) !void {
     const record = recordOf(original_record);
     try std.testing.expectEqual(@as(u32, 1), record.counts[slot]);
