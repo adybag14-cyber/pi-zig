@@ -110,7 +110,7 @@ const Clone = struct {
         var length: usize = 0;
         var table: c.JSSABTab = std.mem.zeroes(c.JSSABTab);
         const raw = c.JS_WriteObject2(f.context.?, &length, value, c.JS_WRITE_OBJ_SAB, &table);
-        defer c.js_free(f.context.?, table.tab);
+        defer c.js_free(f.context.?, @ptrCast(table.tab));
         if (raw == null) return error.ActualBackingControlSerializationFailure;
         defer c.js_free(f.context.?, raw);
         try std.testing.expectEqual(@as(usize, 1), table.len);
@@ -316,7 +316,7 @@ test "VM backing external shared C storage keeps its callback and never enters t
     var length: usize = 0;
     var table: c.JSSABTab = std.mem.zeroes(c.JSSABTab);
     const serialized = c.JS_WriteObject2(f.context.?, &length, buffer, c.JS_WRITE_OBJ_SAB, &table);
-    defer c.js_free(f.context.?, table.tab);
+    defer c.js_free(f.context.?, @ptrCast(table.tab));
     if (serialized != null) { c.js_free(f.context.?, serialized); return error.ExternalSharedEnteredTrustedSerialization; }
     try std.testing.expect(c.JS_HasException(f.context.?));
     const reason = c.JS_GetException(f.context.?); defer c.JS_FreeValue(f.context.?, reason);
@@ -356,7 +356,7 @@ test "VM backing failed mixed shared serialization retires its partial table and
         var length: usize = 0;
         var table: c.JSSABTab = std.mem.zeroes(c.JSSABTab);
         const bytes = c.JS_WriteObject2(f.context.?, &length, pair, c.JS_WRITE_OBJ_SAB, &table);
-        defer c.js_free(f.context.?, table.tab);
+        defer c.js_free(f.context.?, @ptrCast(table.tab));
         if (bytes != null) { c.js_free(f.context.?, bytes); return error.MixedSharedSerializationUnexpectedlySucceeded; }
         try std.testing.expectEqual(@as(usize, 0), length);
         try std.testing.expectEqual(@as(usize, 0), table.len);
