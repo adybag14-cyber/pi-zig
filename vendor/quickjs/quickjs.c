@@ -353,6 +353,7 @@ struct JSRuntime {
     int atom_free_index; /* 0 = none */
 
     JSClassID js_class_id_alloc; /* counter for user defined classes */
+    JSClassID pi_native_async_activation_class; /* private coroutine lease */
     int class_count;    /* size of class_array */
     JSClass *class_array;
 
@@ -22629,6 +22630,77 @@ static int js_async_function_resolve_create(JSContext *ctx,
         p->u.async_function_data = s;
     }
     return 0;
+}
+
+/* Like an open coroutine JSVarRef, this private GC object holds one actual
+   counted reference to the suspended invocation. It exposes no callable body. */
+static void js_native_async_activation_finalizer(JSRuntime *rt, JSValueConst value)
+{
+    JSAsyncFunctionData *s = JS_GetOpaque(value, rt->pi_native_async_activation_class);
+    if (s) {
+        JS_SetOpaque(value, NULL);
+        js_async_function_free(rt, s);
+    }
+}
+
+static void js_native_async_activation_mark(JSRuntime *rt, JSValueConst value,
+                                             JS_MarkFunc *mark_func)
+{
+    JSAsyncFunctionData *s = JS_GetOpaque(value, rt->pi_native_async_activation_class);
+    if (s)
+        mark_func(rt, &s->header);
+}
+
+JSValue JS_PiRetainNativeAsyncActivation(JSContext *ctx, JSValueConst state)
+{
+    JSRuntime *rt = ctx->rt;
+    JSStackFrame *sf = rt->current_stack_frame;
+    JSAsyncFunctionData *s;
+    JSFunctionBytecode *b;
+    JSClassID class_id;
+    JSValue owner;
+    const JSClassDef definition = {
+        .class_name = "Private native async activation lease",
+        .finalizer = js_native_async_activation_finalizer,
+        .gc_mark = js_native_async_activation_mark,
+    };
+
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
+    /* Inspect the function brand before cur_gc_obj: ordinary C frames do not
+       initialize coroutine-only fields. Never borrow an unrelated outer AF. */
+    if (!sf || JS_GetClassID(sf->cur_func) != JS_CLASS_ASYNC_FUNCTION)
+        goto invalid;
+    b = JS_VALUE_GET_OBJ(sf->cur_func)->u.func.function_bytecode;
+    if (!b->native_async_body || !sf->cur_gc_obj ||
+        JS_GC_TYPE(sf->cur_gc_obj) != JS_GC_OBJ_TYPE_ASYNC_FUNCTION)
+        goto invalid;
+    s = (JSAsyncFunctionData *)sf->cur_gc_obj;
+    if (!s->is_active || !s->native_close || s->native_ctx != ctx ||
+        !JS_IsObject(state) || !JS_IsObject(s->native_state) ||
+        JS_VALUE_GET_OBJ(state) != JS_VALUE_GET_OBJ(s->native_state))
+        goto invalid;
+    class_id = rt->pi_native_async_activation_class;
+    if (!class_id) {
+        JS_NewClassID(rt, &class_id);
+        if (JS_NewClass(rt, class_id, &definition) < 0) {
+            if (JS_HasException(ctx))
+                return JS_EXCEPTION;
+            return JS_ThrowOutOfMemory(ctx);
+        }
+        rt->pi_native_async_activation_class = class_id;
+    }
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
+    owner = JS_NewObjectProtoClass(ctx, JS_NULL, class_id);
+    if (JS_IsException(owner))
+        return owner;
+    JS_REF_COUNT(s)++;
+    JS_SetOpaque(owner, s);
+    return owner;
+ invalid:
+    return JS_ThrowInternalError(ctx,
+        "Native async activation lease requires its current opted-in state");
 }
 
 static JSValue js_native_async_function_step(JSAsyncFunctionData *s,

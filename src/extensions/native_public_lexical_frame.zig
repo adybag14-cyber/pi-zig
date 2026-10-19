@@ -13,10 +13,12 @@ pub fn Frame(comptime Names: type) type {
         ready: [@typeInfo(Names).@"enum".fields.len]bool,
         captures: [@typeInfo(Names).@"enum".fields.len]c.JSValue,
         closed: bool = false,
+        async_owner: bool = false,
         const Self = @This();
         const Cell = struct {
             engine: *Engine,
             activation: c.JSValue,
+            lease: c.JSValue,
             value: c.JSValue,
             ready: bool,
             position: usize,
@@ -35,13 +37,23 @@ pub fn Frame(comptime Names: type) type {
             _ = c.JS_SetOpaque(owner, self);
             return self;
         }
+        /// Install owner as the genuine AF state before capturing a binding.
+        /// Async capture slots are borrowed, like JSStackFrame.var_refs: an
+        /// unescaped callback must not be kept alive by this lookup table.
+        pub fn createAsync(s: *Scope) !*Self {
+            const self = try create(s);
+            self.async_owner = true;
+            return self;
+        }
         pub fn from(value: c.JSValue) *Self {
             return @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
         }
         fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
             const self: *Self = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
             for (self.values) |root| c.JS_FreeValueRT(runtime, root);
-            for (self.captures) |root| c.JS_FreeValueRT(runtime, root);
+            if (!self.async_owner) {
+                for (self.captures) |root| c.JS_FreeValueRT(runtime, root);
+            }
             const engine = self.engine;
             engine.gpa.destroy(self);
             c.pi_js_native_memory_release(engine.native_memory_owner, @sizeOf(Self));
@@ -49,7 +61,9 @@ pub fn Frame(comptime Names: type) type {
         fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) callconv(.c) void {
             const self: *Self = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
             for (self.values) |root| c.JS_MarkValue(runtime, root, visit);
-            for (self.captures) |root| c.JS_MarkValue(runtime, root, visit);
+            if (!self.async_owner) {
+                for (self.captures) |root| c.JS_MarkValue(runtime, root, visit);
+            }
         }
         pub fn get(self: *const Self, comptime name: Names) c.JSValue { return self.values[@intFromEnum(name)]; }
         pub fn take(self: *Self, comptime name: Names, incoming: anyerror!c.JSValue) !void {
@@ -81,22 +95,54 @@ pub fn Frame(comptime Names: type) type {
             const definition: c.JSClassDef = .{ .class_name = "Private public lexical binding", .finalizer = cellFinalizer, .gc_mark = cellMark };
             if (c.JS_NewClass(self.engine.runtime, class_id, &definition) < 0) return error.OutOfMemory;
             const owner = try v.objectClass(s, class_id);
+            const lease = if (self.async_owner) try retainAsyncActivation(s, self.owner) else c.pi_js_undefined();
             if (c.pi_js_native_memory_reserve(self.engine.native_memory_owner, @sizeOf(Cell)) == 0) return error.OutOfMemory;
             errdefer c.pi_js_native_memory_release(self.engine.native_memory_owner, @sizeOf(Cell));
             const cell = try self.engine.gpa.create(Cell);
-            cell.* = .{ .engine = self.engine, .activation = c.JS_DupValue(self.engine.context, self.owner), .value = c.pi_js_undefined(), .ready = false, .position = position, .name = source_name };
+            cell.* = .{ .engine = self.engine, .activation = c.JS_DupValue(self.engine.context, self.owner), .lease = c.JS_DupValue(self.engine.context, lease), .value = c.pi_js_undefined(), .ready = false, .position = position, .name = source_name };
             _ = c.JS_SetOpaque(owner, cell);
-            self.captures[position] = c.JS_DupValue(self.engine.context, owner);
+            self.captures[position] = if (self.async_owner) owner else c.JS_DupValue(self.engine.context, owner);
             return owner;
+        }
+        fn retainAsyncActivation(s: *Scope, state: c.JSValue) !c.JSValue {
+            var boundary: v.guest.Boundary = .{ .engine = s.engine }; try boundary.begin();
+            // Exact non-guest allocation operation, using the same pending/
+            // fresh-producer check as native_public_values allocation helpers.
+            const generation = s.engine.native_allocation_generation;
+            const value = c.JS_PiRetainNativeAsyncActivation(s.engine.context, state);
+            _ = s.engine.nativeCallbackResult(c.pi_js_undefined());
+            if (c.JS_HasException(s.engine.context)) {
+                const reason = c.JS_GetException(s.engine.context);
+                const tag = c.pi_js_native_allocation_error_generation(reason);
+                const distance = tag -% generation;
+                if (tag != 0 and distance != 0 and distance <= s.engine.native_allocation_generation -% generation)
+                    c.JS_SetUncatchableError(s.engine.context, reason);
+                _ = c.JS_Throw(s.engine.context, reason);
+                var completion = v.owned.Completion.initValue(s.engine, @as(anyerror!c.JSValue, error.JavaScriptException));
+                if (!c.JS_IsException(value)) completion.release(value);
+                return boundary.finishValue(s, completion.finishValue());
+            }
+            return boundary.finishValue(s, value);
         }
         fn cellFrom(value: c.JSValue) *Cell {
             return @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
         }
         fn cellFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
             const cell: *Cell = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
-            c.JS_FreeValueRT(runtime, cell.value);
-            c.JS_FreeValueRT(runtime, cell.activation);
             const engine = cell.engine;
+            const activation = cell.activation;
+            const lease = cell.lease;
+            cell.activation = c.pi_js_undefined(); cell.lease = c.pi_js_undefined();
+            if (c.JS_IsLiveObject(runtime, activation)) {
+                const parent = from(activation);
+                if (parent.async_owner and c.JS_IsStrictEqual(engine.context, parent.captures[cell.position], value))
+                    parent.captures[cell.position] = c.pi_js_undefined();
+            }
+            c.JS_FreeValueRT(runtime, cell.value);
+            c.JS_FreeValueRT(runtime, activation);
+            // This can drop the invocation's final actual reference. The
+            // borrowed lookup entry and both cell links are already detached.
+            c.JS_FreeValueRT(runtime, lease);
             engine.gpa.destroy(cell);
             c.pi_js_native_memory_release(engine.native_memory_owner, @sizeOf(Cell));
         }
@@ -104,6 +150,7 @@ pub fn Frame(comptime Names: type) type {
             const cell: *Cell = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
             c.JS_MarkValue(runtime, cell.value, visit);
             c.JS_MarkValue(runtime, cell.activation, visit);
+            c.JS_MarkValue(runtime, cell.lease, visit);
         }
         pub fn read(s: *Scope, binding: c.JSValue) !c.JSValue {
             const cell = cellFrom(binding);
@@ -146,10 +193,16 @@ pub fn Frame(comptime Names: type) type {
                 cell.value = c.JS_DupValue(self.engine.context, self.values[position]);
                 cell.ready = self.ready[position];
                 const activation = cell.activation;
-                cell.activation = c.pi_js_undefined();
+                const lease = cell.lease;
+                cell.activation = c.pi_js_undefined(); cell.lease = c.pi_js_undefined();
+                if (self.async_owner) self.captures[position] = c.pi_js_undefined();
                 completion.release(activation);
+                completion.release(lease);
             }
-            for (&self.captures) |*root| { const value = root.*; root.* = c.pi_js_undefined(); completion.release(value); }
+            for (&self.captures) |*root| {
+                const value = root.*; root.* = c.pi_js_undefined();
+                if (!self.async_owner) completion.release(value);
+            }
             // BCDF frees uncaptured function locals in declaration order.
             for (&self.values) |*root| { const value = root.*; root.* = c.pi_js_undefined(); completion.release(value); }
         }

@@ -143,3 +143,36 @@ This unit does not claim that an open native binding cell already retains the
 actual suspended coroutine. That distinct owner edge, including real cyclic-GC
 controls, is the authorized dependent implementation. No compiler, metadata or
 runtime acceptance is asserted by this source note.
+
+## Actual open-cell coroutine lease
+
+This separate dependent unit starts at close-hook commit
+9ca2acdf6115579a418fde52d3a523824df3e8a3. The new
+`JS_PiRetainNativeAsyncActivation(ctx, borrowed_state)` returns an owned,
+private GC object holding one counted reference to the actual active native
+async invocation. It accepts only the immediate real native-async stack frame
+with the same installed state and an opted-in close hook. It does not borrow an
+unrelated outer invocation, consume the supplied state, or clear a pending
+exception.
+
+`Frame.createAsync` makes its capture lookup slots borrowed, matching the
+original suspended frame's variable-reference table. An open cell owns its
+Frame link and real coroutine lease. A finalized cell clears its matching
+borrowed slot before releasing those links, so a dropped callback creates no
+extra table-owned cycle. Terminal close first detaches both links, leaves only
+the closed captured value, and then releases the Frame and lease. Existing
+`Frame.create` retains its prior owned-table behavior.
+
+Seven additional declarations bring the same install-only retirement group
+to 21 authored controls. Fresh literal Source/native cases test escaped cells
+after the awaited gate disappears, immediate retirement after a callback is
+dropped, active GC and final adoption, actual unreachable callback/coroutine
+cycles, and terminal completion of a still-reachable callback cycle. Native
+controls also test first actual fatal cleanup with an escaped cell and rejected
+lease acquisition outside the exact current opted-in frame. Cyclic collection
+asserts one retirement per holder without imposing GC visitation order.
+
+Production use requires both the genuine state identity and the terminal-close
+factory opt-in. This unit does not silently migrate existing native bodies or
+qualify callers still using an early local close. No compilation, metadata, or
+runtime acceptance is asserted here.

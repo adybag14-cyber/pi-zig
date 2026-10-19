@@ -354,6 +354,9 @@ const CloseProbe = struct {
     mode: CloseMode = .returned,
     escape: bool = false,
     arrow: bool = false,
+    async_frame: bool = false,
+    drop_callback: bool = false,
+    cycle_callback: bool = false,
     holder_class: c.JSClassID = 0,
     tokens: [4]CloseToken = undefined,
     made: [4]bool = @splat(false),
@@ -433,15 +436,18 @@ fn closeNative(engine: *Engine, _: c.JSValue, _: []const c.JSValue, _: []const c
 fn closeAdvance(scope: *Scope, owner: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
     const p = close_active.?;
     if (completion == .start) {
-        const frame = try CloseFrame.create(scope);
+        const frame = if (p.async_frame) try CloseFrame.createAsync(scope) else try CloseFrame.create(scope);
         // Install the genuine VM state before any subsequent producer can fail.
         af.replaceState(scope.engine, owner, v.duplicate(scope, frame.owner));
         try frame.take(.local, p.token(1));
         try frame.take(.captured, p.token(2));
-        if (p.escape) {
-            const binding = try frame.capture(scope, .captured, "captured");
-            const callback = try v.arrow(scope, "", 0, closeCaptured, &.{binding});
-            try v.put(scope, try v.global(scope, "globalThis"), "closeEscaped", callback);
+        if (p.escape or p.cycle_callback) {
+            var expression: Scope = .{ .engine = scope.engine };
+            try v.owned.finishVoid(&expression, leaseCaptureBody(&expression, frame));
+            if (p.drop_callback) {
+                var deletion: Scope = .{ .engine = scope.engine };
+                try v.owned.finishVoid(&deletion, leaseDropBody(&deletion));
+            }
         }
         return .{ .awaited = if (p.mode == .abandoned)
             v.duplicate(scope, try v.global(scope, "closeGate")) else c.pi_js_undefined() };
@@ -596,4 +602,201 @@ test "VM async retirement failed terminal hook cannot bypass state and receiver 
     const pending = try closeStart(&p); defer p.engine.freeValue(pending);
     try closeJobFailure(&p, p.prior, false);
     try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, p.hook_promise_state);
+}
+
+
+// An opted-in asynchronous Frame borrows its capture lookup slots. Escaping
+// cells, not that table, retain the real coroutine through a C GC lease.
+fn leaseCaptureBody(scope: *Scope, frame: *CloseFrame) !void {
+    const target = if (close_active.?.cycle_callback) frame.get(.local) else try v.global(scope, "globalThis");
+    const binding = try frame.capture(scope, .captured, "captured");
+    const callback = try v.arrow(scope, "", 0, closeCaptured, &.{binding});
+    try v.put(scope, target, if (close_active.?.cycle_callback) "cycle" else "closeEscaped", callback);
+}
+fn leaseDropBody(scope: *Scope) !void {
+    const target = try v.global(scope, "globalThis");
+    const atom = c.JS_NewAtom(scope.engine.context, "closeEscaped");
+    if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+    defer c.JS_FreeAtom(scope.engine.context, atom);
+    var boundary: v.guest.Boundary = .{ .engine = scope.engine }; try boundary.begin();
+    try boundary.finishStatus(c.JS_DeleteProperty(scope.engine.context, target, atom, 0));
+}
+const LeaseShape = enum { escaped, dropped, cycle };
+fn leaseSetup(p: *CloseProbe, native: bool, shape: LeaseShape, mode: CloseMode) !void {
+    p.async_frame = true;
+    p.escape = shape != .cycle;
+    p.drop_callback = shape == .dropped;
+    p.cycle_callback = shape == .cycle;
+    p.mode = mode;
+    try closeSetup(p, native);
+    // These are literal original-language async functions. Both engines use
+    // the same actual C holder objects; no trace snapshot substitutes for them.
+    const source = switch (shape) {
+        .escaped => if (mode == .abandoned)
+            "globalThis.closeSource=async function(arg){const local=closeMake(1);const captured=closeMake(2);globalThis.closeEscaped=()=>captured;await closeGate;return closeReturn};"
+            else if (p.arrow)
+            "globalThis.closeSource=async arg=>{const local=closeMake(1);const captured=closeMake(2);globalThis.closeEscaped=()=>captured;await undefined;return closeReturn};"
+            else
+            "globalThis.closeSource=async function(arg){const local=closeMake(1);const captured=closeMake(2);globalThis.closeEscaped=()=>captured;await undefined;return closeReturn};",
+        .dropped => if (mode == .abandoned)
+            "globalThis.closeSource=async function(arg){const local=closeMake(1);const captured=closeMake(2);globalThis.closeEscaped=()=>captured;delete globalThis.closeEscaped;await closeGate;return closeReturn};"
+            else
+            "globalThis.closeSource=async function(arg){const local=closeMake(1);const captured=closeMake(2);globalThis.closeEscaped=()=>captured;delete globalThis.closeEscaped;await undefined;return closeReturn};",
+        .cycle => if (mode == .abandoned)
+            "globalThis.closeSource=async function(arg){const local=closeMake(1);const captured=closeMake(2);local.cycle=()=>captured;await closeGate;return closeReturn};"
+            else
+            "globalThis.closeSource=async function(arg){const local=closeMake(1);const captured=closeMake(2);local.cycle=()=>captured;await undefined;return closeReturn};",
+    };
+    try run(p.engine, source);
+    if (!native) try run(p.engine, "globalThis.closeSelected=closeSource;");
+}
+fn leaseReadCapture(p: *CloseProbe) !void {
+    const value = try evaluate(p.engine, "closeEscaped()");
+    defer p.engine.freeValue(value);
+    const token: *CloseToken = @ptrCast(@alignCast(c.JS_GetOpaque(value, p.holder_class) orelse return error.MissingLeaseCapture));
+    try std.testing.expectEqual(@as(usize, 2), token.slot);
+    try std.testing.expect(token.probe == p);
+}
+fn leaseCounts(p: *CloseProbe, expected: [4]u32) !void {
+    try std.testing.expectEqualSlices(u32, &expected, &p.counts);
+}
+fn leaseCollect(p: *CloseProbe) !void {
+    try std.testing.expect(!c.JS_IsJobPending(p.engine.runtime));
+    c.JS_RunGC(p.engine.runtime);
+    try std.testing.expect(!c.JS_HasException(p.engine.context));
+    p.engine.finishJob();
+}
+
+test "VM async retirement escaped open cell retains actual coroutine after the awaited gate is removed" {
+    inline for (.{ false, true }) |native| {
+        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+        defer p.deinit(); try leaseSetup(&p, native, .escaped, .abandoned);
+        const pending = try closeStart(&p); defer p.engine.freeValue(pending);
+        try run(p.engine, "delete globalThis.closeGate;");
+        try leaseCounts(&p, .{ 0, 0, 0, 0 });
+        try leaseCollect(&p);
+        try leaseCounts(&p, .{ 0, 0, 0, 0 });
+        try std.testing.expectEqual(@as(usize, 0), p.hook_calls);
+        try leaseReadCapture(&p);
+        try run(p.engine, "delete globalThis.closeEscaped;");
+        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+        try leaseCollect(&p);
+        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+    }
+}
+test "VM async retirement dropped callback leaves no artificial owning capture-table cycle" {
+    inline for (.{ false, true }) |native| {
+        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+        defer p.deinit(); try leaseSetup(&p, native, .dropped, .abandoned);
+        const pending = try closeStart(&p); defer p.engine.freeValue(pending);
+        try leaseCollect(&p); try leaseCounts(&p, .{ 0, 0, 0, 0 });
+        try run(p.engine, "delete globalThis.closeGate;");
+        // Retirement must be immediate when the actual awaited owner is gone;
+        // requiring GC here would conceal an extra Frame -> Cell owner.
+        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+    }
+}
+test "VM async retirement actual lease survives live GC and disconnects after final return adoption" {
+    inline for (.{ false, true }) |native| {
+      inline for (.{ false, true }) |arrow| {
+        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .arrow = arrow };
+        defer p.deinit(); try leaseSetup(&p, native, .escaped, .returned);
+        try run(p.engine, "globalThis.closeReturn={get then(){closeAdoption();return undefined}};");
+        const pending = try closeStart(&p); defer p.engine.freeValue(pending);
+        // The real queued reaction is still active; this GC checks all edges.
+        c.JS_RunGC(p.engine.runtime);
+        try leaseCounts(&p, .{ 0, 0, 0, 0 });
+        try closeOne(&p);
+        try std.testing.expectEqual(@as(usize, 1), p.adoption_calls);
+        try std.testing.expectEqualSlices(u32, &.{ 0, 0, 0, 0 }, &p.adoption_counts);
+        try leaseCounts(&p, .{ 1, 1, 0, 1 });
+        try leaseCollect(&p); try leaseReadCapture(&p);
+        try leaseCounts(&p, .{ 1, 1, 0, 1 });
+        try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
+        if (native) try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, p.hook_promise_state);
+        try run(p.engine, "delete globalThis.closeEscaped;");
+        try closeOrder(&p, &.{ 0, 1, 3, 2 });
+      }
+    }
+}
+test "VM async retirement real unreachable local callback coroutine cycle collects exactly once" {
+    inline for (.{ false, true }) |native| {
+        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+        defer p.deinit(); try leaseSetup(&p, native, .cycle, .abandoned);
+        const pending = try closeStart(&p); defer p.engine.freeValue(pending);
+        try run(p.engine, "delete globalThis.closeGate;");
+        try leaseCounts(&p, .{ 0, 0, 0, 0 });
+        try std.testing.expectEqual(@as(usize, 0), p.hook_calls);
+        // Actual graph: coroutine -> local holder -> callback -> open capture
+        // -> coroutine. No global callback root or invented retirement call.
+        try leaseCollect(&p);
+        try leaseCounts(&p, .{ 1, 1, 1, 1 });
+        try std.testing.expectEqual(@as(usize, 4), p.length);
+        try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+        // GC order is deliberately not an oracle; each actual root must retire
+        // once, including when the state or cell was already finalized.
+        try leaseCollect(&p);
+        try leaseCounts(&p, .{ 1, 1, 1, 1 });
+        try std.testing.expectEqual(@as(usize, 4), p.length);
+    }
+}
+test "VM async retirement reachable callback cycle closes at real completion without waiting for GC" {
+    inline for (.{ false, true }) |native| {
+        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+        defer p.deinit(); try leaseSetup(&p, native, .cycle, .returned);
+        const pending = try closeStart(&p); defer p.engine.freeValue(pending);
+        c.JS_RunGC(p.engine.runtime);
+        try leaseCounts(&p, .{ 0, 0, 0, 0 });
+        try closeOne(&p);
+        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
+        try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, c.JS_PromiseState(p.engine.context, pending));
+        try leaseCollect(&p);
+        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+    }
+}
+test "VM async retirement actual fatal closes the lease while escaped cells keep only their captured value" {
+    var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+    defer p.deinit(); try leaseSetup(&p, true, .escaped, .returned);
+    const pending = try closeStart(&p); defer p.engine.freeValue(pending);
+    try closeFatalValues(&p);
+    _ = c.JS_Throw(p.engine.context, c.JS_DupValue(p.engine.context, p.prior));
+    var context: ?*c.JSContext = null;
+    try std.testing.expect(c.JS_ExecutePendingJob(p.engine.runtime, &context) < 0);
+    const reason = c.JS_GetException(p.engine.context); defer p.engine.freeValue(reason);
+    try std.testing.expect(c.JS_IsStrictEqual(p.engine.context, reason, p.prior));
+    try std.testing.expect(c.JS_IsUncatchableError(reason));
+    try std.testing.expectEqual(@as(usize, 0), p.resumed);
+    try std.testing.expectEqual(@as(usize, 1), p.hook_calls);
+    try leaseCounts(&p, .{ 1, 1, 0, 1 });
+    p.cleanup_events = false;
+    try std.testing.expect(p.engine.native_fatal_invocation == null);
+    try leaseCollect(&p); try leaseReadCapture(&p);
+    try run(p.engine, "delete globalThis.closeEscaped;");
+    try closeOrder(&p, &.{ 0, 1, 3, 2 });
+    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+}
+test "VM async retirement activation lease rejects unrelated frames without consuming borrowed state or pending" {
+    var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+    defer p.deinit(); try closeSetup(&p, true);
+    const state = try p.token(1);
+    const denied = c.JS_PiRetainNativeAsyncActivation(p.engine.context, state);
+    try std.testing.expect(c.JS_IsException(denied));
+    const reason = c.JS_GetException(p.engine.context); defer p.engine.freeValue(reason);
+    try std.testing.expect(c.JS_IsError(reason));
+    try std.testing.expect(!c.JS_IsUncatchableError(reason));
+    try std.testing.expectEqual(@as(u32, 0), p.counts[1]);
+    _ = c.JS_Throw(p.engine.context, c.JS_DupValue(p.engine.context, reason));
+    const still_denied = c.JS_PiRetainNativeAsyncActivation(p.engine.context, state);
+    try std.testing.expect(c.JS_IsException(still_denied));
+    const retained = c.JS_GetException(p.engine.context); defer p.engine.freeValue(retained);
+    try std.testing.expect(c.JS_IsStrictEqual(p.engine.context, reason, retained));
+    p.engine.freeValue(state);
+    try std.testing.expectEqual(@as(u32, 1), p.counts[1]);
+    try std.testing.expectEqual(@as(usize, 0), p.hook_calls);
 }

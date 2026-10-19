@@ -578,6 +578,11 @@ typedef void JSPiAsyncFunctionStateClose(JSContext *ctx, JSValueConst state);
 JS_EXTERN JSValue JS_PiNewNativeAsyncFunction(JSContext *ctx,
     JSPiAsyncFunctionBody *body, JSValueConst captures,
     JSValueConst lexical_this, int flags, const char *name, int length);
+/* Borrowed exact current state, owned private coroutine lease. Native body
+   code may retain this GC edge only in its current opted-in invocation. An
+   escaped open binding owns the lease until it closes or is finalized. */
+JS_EXTERN JSValue JS_PiRetainNativeAsyncActivation(JSContext *ctx,
+    JSValueConst state);
 JS_EXTERN JSValue JS_PiNewNativeAsyncFunctionWithClose(JSContext *ctx,
     JSPiAsyncFunctionBody *body, JSPiAsyncFunctionStateClose *close,
     JSValueConst captures, JSValueConst lexical_this, int flags,
