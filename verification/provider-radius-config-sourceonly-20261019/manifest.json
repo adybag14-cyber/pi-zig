@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "status": "peer_reviewed_source_and_controls_unexecuted",
+  "source_commit": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "authority": {
+    "radius-config.ts": {
+      "bytes": 3339,
+      "sha256": "1F82A7DB25753BE09374792AE0A3CD63417739018FB69B3212AD8B3B9EB11C21",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi-c268154c-source-candidate-20261017\\packages\\ai\\src\\providers\\radius-config.ts"
+    },
+    "radius-config.js": {
+      "bytes": 2541,
+      "sha256": "D9D863BDA4B33F3D98C2717C912CC7F394B93301F9C87D73ADC7C8C7E8F8CB5E",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\packages\\ai\\dist\\providers\\radius-config.js"
+    },
+    "radius-config.js.map": {
+      "bytes": 6303,
+      "sha256": "EACDDAE0EE8A16C49A10CFF74BE41CDDD58B44DB96E086FEAAA6B6F79956AFFA",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\packages\\ai\\dist\\providers\\radius-config.js.map"
+    }
+  },
+  "source_map_complete_sources_content_exact": true,
+  "fixture": {
+    "path": "src/extensions/fixtures/radius-config-c268-source.mjs",
+    "bytes": 2806,
+    "sha256": "E94B1CDB6EBBA1BB8A65FF75E56374A753AAD1CEFFCB684466D3B03F62B777E4",
+    "transform": [
+      "remove only six export modifiers",
+      "remove terminal source-map comment",
+      "wrap original body in one strict ordinary test factory",
+      "append exact private and public binding projection"
+    ],
+    "production_javascript_execution": false
+  },
+  "production": {
+    "path": "src/extensions/native_ai_radius_config.zig",
+    "bytes": 23777,
+    "sha256": "EFB8FF26532C3B9F0BA0BC0E46378928335437CF9C6F1EC9EA0C30FB4AE26253"
+  },
+  "runtime_accepted": false,
+  "test_root": {
+    "path": "src/native_ai_radius_config_test.zig",
+    "bytes": 14941,
+    "sha256": "55256AB063597D7B4A9D74371A5B6065860B0B0E54CA894BD56A14CF8F275A54"
+  },
+  "observer": {
+    "path": "src/extensions/fixtures/radius-config-observer.mjs",
+    "bytes": 14093,
+    "sha256": "0D936A1543B21737EFFE760B912FC0FD0A928084562CA5D20E7E8C7D9E429AF3"
+  },
+  "build": {
+    "target": "build-native-ai-radius-config",
+    "artifact": "native-ai-radius-config.exe",
+    "root": "src/native_ai_radius_config_test.zig",
+    "filter": "native Radius config",
+    "install_only": true,
+    "declared_count": 25,
+    "declared_tests": [
+      "native Radius config actual ordinary declarations and genuine async shape",
+      "native Radius config normalization keeps intrinsic RegExp and string conversion",
+      "native Radius config normalization preserves live test replace and getter failures",
+      "native Radius config model predicate preserves repeated getters and live Array order",
+      "native Radius config model predicate stops at exact Source failed operand",
+      "native Radius config sanitizer preserves destructuring and filter map order",
+      "native Radius config sanitizer retains genuine shared predicate and shallow copy",
+      "native Radius config mapping keeps spread keys overrides and live config getter",
+      "native Radius config credential optional access and legacy model fallbacks",
+      "native Radius config body truncation follows UTF16 slice boundaries",
+      "native Radius config body truncation preserves live trim length slice and intrinsic coercion",
+      "native Radius config load retains real request construction and Await order",
+      "native Radius config load forwards exact request failures",
+      "native Radius config load forwards exact response and JSON failures",
+      "native Radius config load rejects malformed config after actual sanitization",
+      "native Radius config HTTP error captures constructor and prefix before body Await",
+      "native Radius config HTTP error preserves exact text and truncation failures",
+      "native Radius config explicit throw uses the actual returned Error constructor value",
+      "native Radius config filter callee retires before the following map lookup",
+      "native Radius config slice callee retires before actual string coercion",
+      "native Radius config URL constructor retires before the subsequent fetch call",
+      "native Radius config truncated body retires before the selected Error constructor",
+      "native Radius config same-operation private DATA remains an ordinary rejection",
+      "native Radius config actual native fatal preempts response and guest catch",
+      "native Radius config explicit throws promote retained flagged constructor DATA to an event"
+    ],
+    "imported_test_metadata": "Not queried; only actual raw compiler metadata can establish ordered tests.",
+    "build_delta": "14 additive install-only lines",
+    "patch": {
+      "path": "verification/provider-radius-config-sourceonly-20261019/build-integration.patch",
+      "bytes": 1869,
+      "sha256": "DBD6A4FD99287755AE4C8DC199EA83C873399D5F01E6B847CDCEFFE9C2CAAA10"
+    }
+  },
+  "finite_source_peers": [
+    {
+      "reviewer": "Modules",
+      "scope": "Ordinary helpers through truncateCall",
+      "status": "closed",
+      "reviewed_sha256": "8160A3AFB5792F00C1D6D9CAE3A03137B3595BD6CFB8A8228EB39BABBBD64FA8",
+      "successor": "EFB8 changes only the separately reviewed AF slice",
+      "findings_closed": [
+        "filter callable before next map lookup",
+        "slice callable before ToString and operand before ellipsis add"
+      ]
+    },
+    {
+      "reviewer": "SDK",
+      "scope": "initialHeaders through loadAdvance",
+      "status": "closed",
+      "reviewed_sha256": "EFB8FF26532C3B9F0BA0BC0E46378928335437CF9C6F1EC9EA0C30FB4AE26253",
+      "findings_closed": [
+        "URL constructor before init/fetch",
+        "truncated return after ToString before Error construction"
+      ]
+    },
+    {
+      "reviewer": "Modules",
+      "scope": "Source fixture and controls1-11,19-20",
+      "status": "closed",
+      "test_sha256": "55256AB063597D7B4A9D74371A5B6065860B0B0E54CA894BD56A14CF8F275A54",
+      "observer_sha256": "0D936A1543B21737EFFE760B912FC0FD0A928084562CA5D20E7E8C7D9E429AF3"
+    },
+    {
+      "reviewer": "SDK",
+      "scope": "AF/load controls12-18,21-25",
+      "status": "closed",
+      "test_sha256": "55256AB063597D7B4A9D74371A5B6065860B0B0E54CA894BD56A14CF8F275A54",
+      "observer_sha256": "0D936A1543B21737EFFE760B912FC0FD0A928084562CA5D20E7E8C7D9E429AF3"
+    }
+  ],
+  "production_javascript_execution": false,
+  "no_execution": [
+    "No Node, compiler, metadata query, native tests, HTTP request or physical OAuth login has been executed for this unit."
+  ],
+  "qualification_limits": [
+    "Authored module and controls only",
+    "Provider/OAuth consumers must share this actual module and still require genuine composition",
+    "Ambient fetch/URL controls do not qualify physical network or account login",
+    "Full application, other platform/head, default-bridge removal and release remain open"
+  ]
+}

@@ -3938,6 +3938,20 @@ pub fn build(b: *std.Build) void {
         ai_oauth_anthropic_genuine_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-ai-oauth-anthropic-genuine-af", "Install genuine Anthropic function and ownership controls without execution").dependOn(&b.addInstallArtifact(ai_oauth_anthropic_genuine_tests, .{ .dest_sub_path = b.fmt("native-ai-oauth-anthropic-genuine-af{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
+    // Exact Radius config module, including its genuine asynchronous load.
+    const ai_radius_config_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_radius_config_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native Radius config"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, ai_radius_config_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, ai_radius_config_tests.root_module, typescript_parser);
+    linkSqlite(ai_radius_config_tests.root_module, sqlite_lib_dir, sqlite_library);
+    ai_radius_config_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { ai_radius_config_tests.root_module.linkSystemLibrary("advapi32", .{}); ai_radius_config_tests.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-ai-radius-config", "Install actual Radius config controls without execution").dependOn(&b.addInstallArtifact(ai_radius_config_tests, .{ .dest_sub_path = b.fmt("native-ai-radius-config{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {
