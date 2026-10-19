@@ -1,0 +1,5 @@
+const colorRegExp = /\u001b\[\d\d?m/g; // eslint-disable-line no-control-regex
+
+function removeColors(str) {
+  return StringPrototypeReplace(str, colorRegExp, '');
+}

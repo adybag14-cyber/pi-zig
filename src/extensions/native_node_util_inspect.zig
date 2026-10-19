@@ -10,6 +10,7 @@ const utf16 = @import("native_utf16.zig");
 const ops = @import("native_node_inspect_operations.zig");
 const Scope = ops.Scope;
 const owned = @import("native_sdk_owned_completion.zig");
+const typed = @import("native_node_inspect_typed_array.zig");
 const option_names = .{ "showHidden", "depth", "colors", "customInspect", "showProxy", "maxArrayLength", "maxStringLength", "breakLength", "compact", "sorted", "getters", "numericSeparator" };
 pub const Inputs = struct {
     string: c.JSValue, object: c.JSValue, object_prototype: c.JSValue,
@@ -24,6 +25,8 @@ pub const Inputs = struct {
     built_in_names: c.JSValue,
     /// Captured original ObjectAssign used by the actual default-options setter.
     object_assign: c.JSValue,
+    /// Original typed-array getters, constructors and numeric/layout imports.
+    typed_arrays: c.JSValue,
     pub fn deinit(self: Inputs, engine: *v.em.Engine) void {
         var completion = owned.Completion.initVoid(engine, {});
         inline for (std.meta.fields(Inputs)) |field| completion.release(@field(self, field.name));
@@ -75,9 +78,10 @@ fn captureBody(s: *v.Scope) !Inputs {
         const entry = try ops.object(s); try h.put(engine, entry, "prototype", try h.get(s, constructor, "prototype")); try h.put(engine, entry, "constructor", constructor); try h.put(engine, entry, "name", try ops.bytes(s, name));
         try ops.index(s, known, @intCast(i), entry);
     }
+    const typed_arrays = try ops.own(s, try typed.capture(engine, global));
     return .{ .string = c.JS_DupValue(engine.context, string), .object = c.JS_DupValue(engine.context, object), .object_prototype = c.JS_DupValue(engine.context, object_prototype), .function_to_string = c.JS_DupValue(engine.context, function_to_string),
         .custom_symbol = c.JS_DupValue(engine.context, custom), .to_primitive = c.JS_DupValue(engine.context, to_primitive), .to_string_tag = c.JS_DupValue(engine.context, to_string_tag), .has_instance = c.JS_DupValue(engine.context, has_instance),
-        .well_known = c.JS_DupValue(engine.context, known), .built_in_names = c.JS_DupValue(engine.context, names), .object_assign = c.JS_DupValue(engine.context, object_assign) };
+        .well_known = c.JS_DupValue(engine.context, known), .built_in_names = c.JS_DupValue(engine.context, names), .object_assign = c.JS_DupValue(engine.context, object_assign), .typed_arrays = c.JS_DupValue(engine.context, typed_arrays) };
 }
 pub const Exports = struct {
     inspect: c.JSValue, format: c.JSValue,
@@ -143,8 +147,9 @@ fn createBody(s: *v.Scope, inputs: Inputs) !Exports {
     const engine = s.engine;
     engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
     try h.pending(engine);
-    if (!c.JS_IsFunction(engine.context, inputs.object_assign) or !c.JS_IsFunction(engine.context, inputs.string) or !c.JS_IsFunction(engine.context, inputs.object) or !c.JS_IsFunction(engine.context, inputs.function_to_string) or !c.JS_IsFunction(engine.context, inputs.has_instance) or !c.JS_IsSymbol(inputs.custom_symbol) or !c.JS_IsSymbol(inputs.to_primitive) or !c.JS_IsSymbol(inputs.to_string_tag) or !c.JS_IsArray(inputs.well_known) or !c.JS_IsObject(inputs.built_in_names)) return error.RequiredActualInspectPrimordials;
+    if (!c.JS_IsFunction(engine.context, inputs.object_assign) or !c.JS_IsFunction(engine.context, inputs.string) or !c.JS_IsFunction(engine.context, inputs.object) or !c.JS_IsFunction(engine.context, inputs.function_to_string) or !c.JS_IsFunction(engine.context, inputs.has_instance) or !c.JS_IsSymbol(inputs.custom_symbol) or !c.JS_IsSymbol(inputs.to_primitive) or !c.JS_IsSymbol(inputs.to_string_tag) or !c.JS_IsArray(inputs.well_known) or !c.JS_IsObject(inputs.built_in_names) or !c.JS_IsObject(inputs.typed_arrays)) return error.RequiredActualInspectPrimordials;
     const lexical = try ops.nullObject(s);
+    try h.put(engine, lexical, "typedArrays", try ops.own(s, try typed.create(engine, inputs.typed_arrays)));
     const defaults = try defaultOptions(s);
     const no_color = try ops.own(s, try f.create(engine, "stylizeNoColor", 1, true, noColor, &.{}));
     const roots = [_]c.JSValue{ lexical, defaults, inputs.string, inputs.object, inputs.object_prototype, inputs.custom_symbol, inputs.to_primitive, inputs.to_string_tag, inputs.has_instance, inputs.well_known, inputs.built_in_names, inputs.function_to_string, no_color };
@@ -352,6 +357,7 @@ const Context = struct {
             if (!iterable or !try ops.same(s, constructor, "Array") or !try ops.same(s, tag, "")) return error.RequiredActualInspectArrayPrefix;
             return self.formatArray(value, recurse);
         }
+        if ((iterable or c.JS_IsNull(constructor)) and c.JS_GetTypedArrayType(value) >= 0) return self.formatTypedArray(value, constructor, tag, recurse);
         if (c.JS_IsFunction(s.engine.context, value)) return self.formatFunction(value, constructor, tag);
         if (c.JS_GetClassID(value) != c.JS_GetClassID(self.roots[4])) return error.RequiredActualInspectExoticLayout;
         if (iterable) return error.RequiredActualInspectIterableTypeDiscrimination;
@@ -373,6 +379,43 @@ const Context = struct {
         }
         prefix = try h.binary(s, .add, prefix, try ops.bytes(s, "{"));
         return self.layout(entries.items, prefix, try ops.bytes(s, "}"), recurse + 1, false);
+    }
+    fn formatTypedArray(self: *Context, value: c.JSValue, constructor: c.JSValue, tag: c.JSValue, recurse: usize) !c.JSValue {
+        const s = self.scope;
+        const engine = s.engine;
+        const owner = try h.get(s, self.roots[0], "typedArrays");
+        const all_keys = try propKeys(s, value, true, false);
+        defer c.JS_FreePropertyEnum(engine.context, all_keys.ptr, @intCast(all_keys.len));
+        errdefer |err| ops.recordFailure(engine, err);
+        var keys: std.ArrayList(c.JSAtom) = .empty;
+        defer keys.deinit(engine.gpa);
+        for (all_keys) |entry| if (!try typed.isIndex(engine, entry.atom)) try keys.append(engine.gpa, entry.atom);
+        var bound = value;
+        var fallback = try ops.bytes(s, "");
+        if (c.JS_IsNull(constructor)) {
+            fallback = try ops.own(s, try typed.intrinsic(engine, owner, "tag", value));
+            bound = try ops.own(s, try typed.reconstruct(engine, owner, fallback, value));
+        }
+        const size = try ops.own(s, try typed.intrinsic(engine, owner, "length", value));
+        const size_text = try ops.own(s, try typed.sizeText(engine, size));
+        const prefix = try ops.own(s, try typed.prefix(engine, constructor, tag, fallback, size_text));
+        const open = try h.binary(s, .add, try templateText(s, prefix), try ops.bytes(s, "["));
+        const close = try ops.bytes(s, "]");
+        if (try typed.lengthIsZero(engine, value) and keys.items.len == 0 and !s.truthy(try self.option("showHidden"))) return h.binary(s, .add, try templateText(s, open), close);
+        if (try typed.beyondDepth(engine, self.options, recurse)) {
+            const name = if (c.JS_IsNull(constructor)) try ops.own(s, try typed.intrinsic(engine, owner, "tag", value)) else try ops.bytes(s, "");
+            return self.stylize(try ops.own(s, try typed.depthStyle(engine, owner, constructor, tag, name)), "special");
+        }
+        try self.seen.append(engine.gpa, value);
+        defer _ = self.seen.pop();
+        self.current_depth = recurse + 1;
+        const output = try ops.own(s, try typed.elements(engine, owner, self.options, bound, size));
+        for (keys.items) |atom| {
+            const key = try ops.atomValue(s, atom);
+            const formatted = try self.formatProperty(value, key, recurse + 1);
+            try typed.append(engine, owner, output, formatted);
+        }
+        return ops.own(s, try typed.layout(engine, owner, self.options, output, open, close, self.indentation, self.current_depth, recurse + 1));
     }
     fn formatFunction(self: *Context, value: c.JSValue, constructor: c.JSValue, tag: c.JSValue) !c.JSValue {
         const s = self.scope;
