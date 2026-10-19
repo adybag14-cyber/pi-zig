@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "source_only_actual_vm_allocator_limit_correction",
+  "created_utc": "2026-10-19T19:05:23.453792+00:00",
+  "previous_control_sha256": "FA9CD74302D54C8A0C368F134B2894AC31E16E17ED2EF0971E69E6C8223F0197",
+  "successor_control_sha256": "11F4789A14B72F5632DFB919157EA07BB7488BBBD1460D9D3C4E6C8C567979D1",
+  "bytes": 15661,
+  "source_delta": {
+    "path": "src/native_vm_private_property_test.zig",
+    "before": "c.JS_SetMemoryLimit(f.runtime, 0);",
+    "after": "c.JS_SetMemoryLimit(f.runtime, 1);",
+    "replacements": 1
+  },
+  "named_controls": 9,
+  "reason": "Actual linked QuickJS treats limit0 as unlimited by unsigned malloc_limit-1. Set limit1 so every positive VM allocation fails against a zero effective ceiling. The existing JS_NULL fallback assertion is retained; actual retirement count, pending-reason extraction and absent own slot remain asserted.",
+  "prior_reason_correction": {
+    "path": "allocation-control-successor.json",
+    "sha256": "8656558B0559FE4F099BC3CAD29509925E26D8F88283E6F6FAB3DFDB43D702B6"
+  },
+  "authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+    "sha256": "CE53F10B2E64949B3B5BC4D15AB5604C6D09CB4B0E8CE29BA84D0EE313F61D6F",
+    "complete_selected_bodies": [
+      "void *js_calloc_rt(JSRuntime *rt, size_t count, size_t size)\n{\n    void *ptr;\n    JSMallocState *s;\n\n    /* Do not allocate zero bytes: behavior is platform dependent */\n    assert(count != 0 && size != 0);\n\n    if (size > 0)\n        if (unlikely(count != (count * size) / size))\n            return NULL;\n\n    s = &rt->malloc_state;\n    /* When malloc_limit is 0 (unlimited), malloc_limit - 1 will be SIZE_MAX. */\n    if (unlikely(s->malloc_size + (count * size) > s->malloc_limit - 1))\n        return NULL;\n\n    ptr = js_arena_calloc(rt, count, size);\n    if (!ptr)\n        return NULL;\n\n    s->malloc_count++;\n    s->malloc_size += js_arena_usable_size(rt, ptr) + MALLOC_OVERHEAD;\n    return ptr;\n}\n",
+      "void *js_malloc_rt(JSRuntime *rt, size_t size)\n{\n    void *ptr;\n    JSMallocState *s;\n\n    /* Do not allocate zero bytes: behavior is platform dependent */\n    if (unlikely(size == 0))\n        return NULL;\n\n    s = &rt->malloc_state;\n    /* When malloc_limit is 0 (unlimited), malloc_limit - 1 will be SIZE_MAX. */\n    if (unlikely(s->malloc_size + size > s->malloc_limit - 1))\n        return NULL;\n\n    ptr = js_arena_malloc(rt, size);\n    if (!ptr)\n        return NULL;\n\n    s->malloc_count++;\n    s->malloc_size += js_arena_usable_size(rt, ptr) + MALLOC_OVERHEAD;\n    return ptr;\n}\n",
+      "void *js_realloc_rt(JSRuntime *rt, void *ptr, size_t size)\n{\n    size_t old_size;\n    JSMallocState *s;\n\n    if (!ptr) {\n        if (size == 0)\n            return NULL;\n        return js_malloc_rt(rt, size);\n    }\n    if (unlikely(size == 0)) {\n        js_free_rt(rt, ptr);\n        return NULL;\n    }\n    old_size = js_arena_usable_size(rt, ptr);\n    s = &rt->malloc_state;\n    /* When malloc_limit is 0 (unlimited), malloc_limit - 1 will be SIZE_MAX. */\n    if (s->malloc_size + size - old_size > s->malloc_limit - 1)\n        return NULL;\n\n    ptr = js_arena_realloc(rt, ptr, size);\n    if (!ptr)\n        return NULL;\n\n    s->malloc_size += js_arena_usable_size(rt, ptr) - old_size;\n    return ptr;\n}\n",
+      "void JS_SetMemoryLimit(JSRuntime *rt, size_t limit)\n{\n    rt->malloc_state.malloc_limit = limit;\n}\n"
+    ]
+  },
+  "review": "VM independently identified and Root independently read the actual allocator guard. No original observation or production VM code is rewritten. This correction repairs the control input only.",
+  "execution": false,
+  "qualification": false
+}
