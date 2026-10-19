@@ -98,6 +98,11 @@ pub fn build(b: *std.Build) void {
         .file = b.path("src/extensions/engine_abi.c"),
         .flags = &.{"-std=gnu11"},
     });
+    // One unchanged libuv/llhttp graph is shared by native TCP and file I/O owners.
+    const native_node_network = switch (target.result.os.tag) {
+        .windows, .linux => @import("tools/build_native_node_network.zig").add(b, target, optimize),
+        else => null,
+    };
     const typescript_parser = b.addLibrary(.{
         .name = "pi-typescript-parser",
         .linkage = .static,
@@ -1964,6 +1969,17 @@ pub fn build(b: *std.Build) void {
         vm_mutable_async_arguments_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-vm-async-arguments", "Install actual mutable async formal ownership controls without execution").dependOn(&b.addInstallArtifact(vm_mutable_async_arguments_tests, .{}).step);
+    if (native_node_network) |network| {
+        const native_node_tcp_transport_tests = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_tcp_transport_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native actual TCP"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, native_node_tcp_transport_tests.root_module, quickjs, sqlite_lib_dir);
+        native_node_tcp_transport_tests.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        native_node_tcp_transport_tests.root_module.addIncludePath(b.path("vendor/node-v24.13.0/llhttp/include"));
+        native_node_tcp_transport_tests.root_module.linkLibrary(network);
+        b.step("build-native-node-tcp-transport", "Install actual libuv TCP ownership controls without execution").dependOn(&b.addInstallArtifact(native_node_tcp_transport_tests, .{}).step);
+    }
     const public_rpc_mode_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_public_rpc_mode_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"Public RPC actual"}, .use_llvm = use_llvm,

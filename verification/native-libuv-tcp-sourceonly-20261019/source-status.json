@@ -1,0 +1,122 @@
+{
+  "unit": "genuine libuv TCP storage, events and canonical Socket adapter",
+  "status": "SOURCE_ONLY_UNEXECUTED",
+  "parent_commit": "bc01d201ca31d409ba5f2a934c10d51a9fa613e8",
+  "authority": {
+    "node": "v24.13.0",
+    "node_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+    "manifest": "vendor/node-v24.13.0/SOURCE-MANIFEST.json",
+    "manifest_sha256": "68528E74686A7BAAF80F4DBE7DBDF57AC0462E1064C1AA13E92A2570352CF206",
+    "unchanged_vendor_file_count": 134,
+    "unchanged_vendor_bytes": 2221411,
+    "actual_build": "deps/uv/uv.gyp plus selected unchanged llhttp C sources",
+    "platforms": [
+      "windows",
+      "linux"
+    ],
+    "staged_blob_readback": "verification/native-libuv-tcp-sourceonly-20261019/vendor-source-readback.json",
+    "staged_blob_readback_sha256": "229622B407C3EE974F7BE87D7F69D82197410A35FED4144AB3CD66C27650B3E2"
+  },
+  "production": {
+    "src/extensions/native_uv_tcp.c": "E1204E4B4B30F46534940D5F9089B8D00B0E2DD845FDA0A798BB0D2F252B71F7",
+    "src/extensions/native_uv_tcp.h": "F0FA0E66F2823BF458A7B7FAFF7482A0AEC00053E0AB3CFDD60F61BC1B18A17E",
+    "src/extensions/native_node_net_tcp_transport.zig": "1DF60228E9CBEDE8FB0CDE3BDCED9E3F196291D5E6AD5035B38CC224DB47B4AA",
+    "tools/build_native_node_network.zig": "8B2FAD905DC0D32D6E67180874E8E433E1AEFD740AE1861289C3FB891B371B02"
+  },
+  "tests": {
+    "root": "src/native_node_tcp_transport_test.zig",
+    "sha256": "3C475C5FA0C43BBEE875E58E54E705282E2319C75EE1E0216D775E84E56C58D5",
+    "declared_count": 12,
+    "names": [
+      "native actual TCP empty service owns native loop and closes its independent budget",
+      "native actual TCP binds ephemeral IPv4 and reports actual local and peer addresses",
+      "native actual TCP copies caller write bytes and preserves tokens across real segmented reads",
+      "native actual TCP read packet owns bytes until release and resumes only with new demand",
+      "native actual TCP half close yields real EOF while the opposite direction remains writable",
+      "native actual TCP releasing an unclaimed accept closes the real accepted connection",
+      "native actual TCP numeric argument errors remain ordinary libuv statuses without callbacks",
+      "native actual TCP exhausted shared budget is a distinct wrapper allocation producer",
+      "native actual TCP read allocation failure is delivered by its real embedded owner event",
+      "native actual TCP close tokens use observed native closure and never a second close",
+      "native actual TCP listener reference tracks actual active handle and queued closure separately",
+      "native actual TCP native endpoint and event owners can outlive their original VM runtime"
+    ],
+    "actual_metadata_count": null
+  },
+  "build": {
+    "target": "build-native-node-tcp-transport",
+    "filter": "native actual TCP",
+    "artifact": "test.exe on Windows; install-only",
+    "build_sha256": "91ABA44A15793722B3B08350034EAFC98DB4308F6D6ACC0661A73AB967D98EC7",
+    "added_lines": 16,
+    "library": "native_node_network / pi-node-network",
+    "note": "One library object. Unsupported platforms omit this install-only target; existing unrelated targets remain available."
+  },
+  "peers": [
+    {
+      "reviewer": "sdk_owners",
+      "scope": "C service/admission/command synchronization and independent native memory ownership",
+      "status": "CLOSED"
+    },
+    {
+      "reviewer": "modules_io",
+      "scope": "C callback/request/read-buffer/ACK/native close ownership",
+      "status": "CLOSED"
+    },
+    {
+      "reviewer": "sdk_owners",
+      "scope": "Zig Controller/NativeEndpoint/accept-connect ownership against actual Hub/Socket/provider/wake",
+      "status": "CLOSED"
+    },
+    {
+      "reviewer": "modules_io",
+      "scope": "Zig NativeEndpoint hooks/dispatch/event and finalizer retirement",
+      "status": "CLOSED"
+    },
+    {
+      "reviewer": "modules_io",
+      "scope": "raw controls 1 through 6 and Fixture payload/accept/event ownership",
+      "status": "CLOSED"
+    },
+    {
+      "reviewer": "sdk_owners",
+      "scope": "raw controls 7 through 12 and Fixture init/stop/budget; build helper source membership",
+      "status": "CLOSED"
+    },
+    {
+      "reviewer": "sdk_owners",
+      "scope": "exact 16-line build registration delta BDA12EF8: one actual library instance and install-only raw control target",
+      "status": "CLOSED"
+    }
+  ],
+  "actual_dependencies": {
+    "Hub": "native_env_io.zig 4BC66694",
+    "Socket": "native_node_net_socket.zig 8CF6A775",
+    "Provider": "native_node_net_socket.zig :: Provider, same actual 8CF6A775 owner",
+    "completion_wake": "native_owner_completion.zig 0D60683028A50C99494493E78E394DB29FA6BE0A67AE9A1D1FA41B386C864C82",
+    "memory": "actual engine_abi independent PiMemoryOwner",
+    "note": "The older owned tree does not contain all current Main Socket prerequisites. They were read and compared in the peers; this unit does not recreate them.",
+    "wake": "native_owner_wake.zig 19C5506377D88ED1EB5B6238DAB779F82076580BBCB803966C9B76EDE7D0E778"
+  },
+  "ownership": [
+    "Only owning host-thread API calls submit stack commands; actual uv handles and callbacks run on the private native loop thread.",
+    "No Engine or JSValue crosses the worker ABI. Wrappers and payloads retain the actual independently charged native memory owner.",
+    "An accepted endpoint is claimed once; discarding an unclaimed accept closes the actual accepted uv handle.",
+    "Read payload survives until event release; release frees payload before publishing ACK, and new demand is separate.",
+    "Actual uv close callback establishes closure. Stop prevents admission, drains native request/close callbacks and joins before final retirement.",
+    "libuv negative statuses including UV_ENOMEM remain ordinary status. Wrapper reservation/malloc failure has its own explicit allocation_failed producer.",
+    "The canonical Socket adapter retains actual provider/Entry/lease roots and completes C435 before publication; native packets are delivered on the owning host only."
+  ],
+  "execution": {
+    "compile": false,
+    "metadata": false,
+    "runtime": false,
+    "grant": null
+  },
+  "remaining": [
+    "Exact source intake then Root-granted compilation, actual metadata admission and raw physical runtime controls.",
+    "Canonical Socket adapter controls and public net.Server composition remain separate; the raw target does not compile or qualify that entire namespace.",
+    "HTTP Server/ServerResponse/IncomingMessage parser composition and full OAuth callback physical route remain separate.",
+    "DNS is not supplied by this numeric-address transport; no hostname fallback or detached success worker is used."
+  ]
+}

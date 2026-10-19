@@ -1,0 +1,681 @@
+{
+  "status": "SOURCE_ONLY_GIT_INDEX_READBACK",
+  "source_manifest": "vendor/node-v24.13.0/SOURCE-MANIFEST.json",
+  "node_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "checked_count": 134,
+  "matched_count": 134,
+  "mismatch_count": 0,
+  "note": "Every staged upstream file Git blob equals its admitted Source manifest blob. The additional authored SOURCE-MANIFEST.json is not counted as an upstream file. This is source identity evidence, not compile/runtime evidence.",
+  "files": [
+    {
+      "path": "vendor/node-v24.13.0/llhttp/CMakeLists.txt",
+      "git_blob": "56f0098c2c5c49831eb5fb651738aa3de603cafc",
+      "size": 3348
+    },
+    {
+      "path": "vendor/node-v24.13.0/llhttp/common.gypi",
+      "git_blob": "ef7549f809df265560b2f5c57f8df9d76a63078c",
+      "size": 1157
+    },
+    {
+      "path": "vendor/node-v24.13.0/llhttp/include/llhttp.h",
+      "git_blob": "60544596a9942ce58c10146d140a2fe020af73e2",
+      "size": 30650
+    },
+    {
+      "path": "vendor/node-v24.13.0/llhttp/LICENSE",
+      "git_blob": "6c1512dd6bcd6de314673f8c2c7ff3fd6139f28e",
+      "size": 1105
+    },
+    {
+      "path": "vendor/node-v24.13.0/llhttp/LICENSE-MIT",
+      "git_blob": "6c1512dd6bcd6de314673f8c2c7ff3fd6139f28e",
+      "size": 1105
+    },
+    {
+      "path": "vendor/node-v24.13.0/llhttp/llhttp.gyp",
+      "git_blob": "c7b8800a4f18c4ef5b09117e8c2c9bd84f31a15c",
+      "size": 397
+    },
+    {
+      "path": "vendor/node-v24.13.0/llhttp/src/api.c",
+      "git_blob": "0245254177ac8cde92b7d4d3662df9faf29e9cae",
+      "size": 13152
+    },
+    {
+      "path": "vendor/node-v24.13.0/llhttp/src/http.c",
+      "git_blob": "1ab91a55796e01bc7bda2b96cdcda6419857c386",
+      "size": 5209
+    },
+    {
+      "path": "vendor/node-v24.13.0/llhttp/src/llhttp.c",
+      "git_blob": "aa4c468209700c09323d054f0794cbc184dbcd84",
+      "size": 315697
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/AUTHORS",
+      "git_blob": "89a3d9db05c87737a1ffa6b4371c89a93c3363ee",
+      "size": 22977
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/CMakeLists.txt",
+      "git_blob": "73d5aff8926ed586e3489aba77ea1414e63b072b",
+      "size": 28127
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/common.gypi",
+      "git_blob": "cc9c98e762c284fee8f7da477130de07af808848",
+      "size": 7143
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/include/uv.h",
+      "git_blob": "938e998fdc54d17c8d0d4b1949087b968044829f",
+      "size": 72810
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/include/uv/aix.h",
+      "git_blob": "7dc992fa6d74b5db275847ace8ef9acfd8108c2f",
+      "size": 1615
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/include/uv/bsd.h",
+      "git_blob": "2d72b3d7711311144aae0fdfe73479b89f2aba2d",
+      "size": 1641
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/include/uv/darwin.h",
+      "git_blob": "06962bfda80105d7d6756a3398db346bee04b88a",
+      "size": 3213
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/include/uv/errno.h",
+      "git_blob": "ac00778cfc59fb55e361b24fc81a965a5e8f97e7",
+      "size": 11216
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/include/uv/linux.h",
+      "git_blob": "9f22f8cf726c1ccb62427594679279972a2ad4ef",
+      "size": 1781
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/include/uv/os390.h",
+      "git_blob": "0267d74cbd02c93d34c02bbc2750932a7e842898",
+      "size": 1553
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/include/uv/posix.h",
+      "git_blob": "9a96634db0e3a585c75905bbbfc49ebe5c63e2df",
+      "size": 1606
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/include/uv/sunos.h",
+      "git_blob": "042166424e50b7de043fe869bec40cc27ce7d136",
+      "size": 1985
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/include/uv/threadpool.h",
+      "git_blob": "24ce916fda456c2bc4993a53d87aaeb4b5883f7e",
+      "size": 1505
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/include/uv/tree.h",
+      "git_blob": "06bba084f3866934cd9a4f8b1a7cfcffca519960",
+      "size": 36117
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/include/uv/unix.h",
+      "git_blob": "7c972026f688e82c62b895f392bc46b3fef184b8",
+      "size": 20057
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/include/uv/version.h",
+      "git_blob": "77432f259588ebd56469cc15a90885854cb9df06",
+      "size": 1831
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/include/uv/win.h",
+      "git_blob": "a88bf29e9ff504e97f15a30085c26c71d38527f3",
+      "size": 33836
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/LICENSE",
+      "git_blob": "6566365d4f238005a3358710e20b2acde266b594",
+      "size": 1079
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/LICENSE-extra",
+      "git_blob": "7d8ee65fce626e203cc355ae25eb22595f7ffc32",
+      "size": 1603
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/fs-poll.c",
+      "git_blob": "1fadafdea1746a1d8cb737dd48f921787201ca8c",
+      "size": 7681
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/heap-inl.h",
+      "git_blob": "1e2ed60e09417c481f07a51c59d9866baa7ebe81",
+      "size": 7053
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/idna.c",
+      "git_blob": "5fcaf64c974a8ab765f40f8b2ec7ab7f89b1eca3",
+      "size": 12836
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/idna.h",
+      "git_blob": "ea6b4df9671fcc9ec8efa22302d9765df67a7c66",
+      "size": 1449
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/inet.c",
+      "git_blob": "cd77496846e90e8b8e61c63c10f498f153344fe5",
+      "size": 8068
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/queue.h",
+      "git_blob": "5f8489e9bc558b67dd505048684b7027af36d92c",
+      "size": 2671
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/random.c",
+      "git_blob": "57fc0d911da3167e0ce8bdb0b567018ac85e76e0",
+      "size": 3418
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/strscpy.c",
+      "git_blob": "20df6fcbed29e9d944c866ddbcd5c09345a426b3",
+      "size": 1449
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/strscpy.h",
+      "git_blob": "e8d47247f0db16d672490b3732b211eaab4be87d",
+      "size": 1748
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/strtok.c",
+      "git_blob": "45ddea50b1a49b648d7d586080ee8aae5a574bdc",
+      "size": 1656
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/strtok.h",
+      "git_blob": "3799ff554361208fc2670c3269df0ccc83fb34ba",
+      "size": 1271
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/thread-common.c",
+      "git_blob": "c67c0a7dd7279af6c67b7d5d4a623c47bdf3fff2",
+      "size": 3941
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/threadpool.c",
+      "git_blob": "98d81cc7b6a4eda182dd82faea4a76e34ae2be26",
+      "size": 11121
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/timer.c",
+      "git_blob": "4525199ddc18c40a43b6e93dc3eaca69d0bfcfe4",
+      "size": 5214
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/aix-common.c",
+      "git_blob": "abc4c901a574dcfcbc9aec8cfeed8ed207201fb3",
+      "size": 3012
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/aix.c",
+      "git_blob": "48da0c9c40c842a3994f3909510cb5e8f7d644a6",
+      "size": 33863
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/async.c",
+      "git_blob": "538ae7876f2b2463716459b179d74843383295be",
+      "size": 11551
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/bsd-ifaddrs.c",
+      "git_blob": "8d9ebd25d4306bb12141daaeb434e6008378e5d9",
+      "size": 5067
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/bsd-proctitle.c",
+      "git_blob": "b0c01e2cb855fc15f2526ba654184f6a9076e98a",
+      "size": 2691
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/core.c",
+      "git_blob": "bd51b69b8120e878f3342c2812fb1f4c0fd35071",
+      "size": 48102
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/cygwin.c",
+      "git_blob": "4913108223f4da8d04e06dc2ac6f48fdf2c5177e",
+      "size": 2382
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/darwin-proctitle.c",
+      "git_blob": "5e5642972a4df63aabfa2468d84a9107f0789394",
+      "size": 6760
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/darwin-stub.h",
+      "git_blob": "b93cf67c59628577774cae5238c0349d59b5081a",
+      "size": 3810
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/darwin-syscalls.h",
+      "git_blob": "dc2d1bd234b1f12e39b7e76d6e290c15b19a3735",
+      "size": 437
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/darwin.c",
+      "git_blob": "009efbefaa70ee1e552cf6177893bd412201e276",
+      "size": 6557
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/dl.c",
+      "git_blob": "80b3333ae28ad565066124a4b15343897a66d235",
+      "size": 2272
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/freebsd.c",
+      "git_blob": "a6de29c558cde45dacc5bba7d75950fe6e57e857",
+      "size": 7172
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/fs.c",
+      "git_blob": "717f3fab36939e017f09e0ac5f2a2f658140ae38",
+      "size": 59847
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/fsevents.c",
+      "git_blob": "7fb6bb2ec36ae0b1584a43a2fc0101db54c42f97",
+      "size": 28183
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/getaddrinfo.c",
+      "git_blob": "b70753436665901c5fc8a4126b9537d01a47ffa0",
+      "size": 6576
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/getnameinfo.c",
+      "git_blob": "959b4c6a82198095924480675bf195d651ea63c3",
+      "size": 3651
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/haiku.c",
+      "git_blob": "0d3645f014b4ebe74edc2d1bd7600ad4487fd0a0",
+      "size": 4417
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/hurd.c",
+      "git_blob": "63c878123f13ac81a3824660db9cd7585a3b21d4",
+      "size": 4335
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/ibmi.c",
+      "git_blob": "9d94d2af54468a00618d596eb41b9bb16e37dd76",
+      "size": 16507
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/internal.h",
+      "git_blob": "a1d7d4366308acb6ba8d2b84b7a2be4b89abe2ce",
+      "size": 16658
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/kqueue.c",
+      "git_blob": "39b72012c26955e7bc21a324788feaf7b1b563b6",
+      "size": 18628
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/linux.c",
+      "git_blob": "ea3e2de0384b2c42afdecc5d51af46af25eff203",
+      "size": 73847
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/loop-watcher.c",
+      "git_blob": "2db8b515df79a1fc875dd93c07cf274b71ed4097",
+      "size": 4433
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/loop.c",
+      "git_blob": "5d3f0c7a348b334e5651bf8682fe29b355ec0cb9",
+      "size": 6050
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/netbsd.c",
+      "git_blob": "fa21e98e41aec8b7d8bc46c299c4c20a7a0c3f0c",
+      "size": 6697
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/no-fsevents.c",
+      "git_blob": "158643af1ef52849e418940cfb78e1adf1eec416",
+      "size": 1577
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/no-proctitle.c",
+      "git_blob": "32aa0af1f92f0752fc628315f24e2df26a71843b",
+      "size": 1534
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/openbsd.c",
+      "git_blob": "cf20fa6658209d94accc8bd9376cc16faff73f06",
+      "size": 6347
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/os390-proctitle.c",
+      "git_blob": "ccda97c9ac58222a4b233da9fde832792b46d55b",
+      "size": 3570
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/os390-syscalls.c",
+      "git_blob": "7f90c270906823f471d2faf64cc3eb92fcf8223d",
+      "size": 12268
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/os390-syscalls.h",
+      "git_blob": "d5f3bcf8b1c7d33b6f144c049fff9c778c414068",
+      "size": 2666
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/os390.c",
+      "git_blob": "1b277292aebffb3fe5021af2494579629ff99051",
+      "size": 27948
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/pipe.c",
+      "git_blob": "68e225e2e17fbb8b8527c071cc1c044352f86da7",
+      "size": 13749
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/poll.c",
+      "git_blob": "535ac6baafc6e090f9a5ff831beb78879b704b72",
+      "size": 4353
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/posix-hrtime.c",
+      "git_blob": "7b45c01a4d06ee4cec97e7d6e83e6b5306c018ef",
+      "size": 1411
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/posix-poll.c",
+      "git_blob": "2e016c2fbaed2eeccd78080969a86aff821a4251",
+      "size": 10590
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/process.c",
+      "git_blob": "43e6b798458fc13bd8d215de88b2a640185fdede",
+      "size": 31333
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/procfs-exepath.c",
+      "git_blob": "00dc021f21e71fb343ab7a1a4e144e067bf987a6",
+      "size": 1525
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/proctitle.c",
+      "git_blob": "9d1f00ddf66e291abd40d0c0052a7f9bd5c03017",
+      "size": 4060
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/qnx.c",
+      "git_blob": "57ea9dfd9ccc9cfe00a63cc45a5e6dacc01bbb63",
+      "size": 3695
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/random-devurandom.c",
+      "git_blob": "d6336f2c98c2c95734a0593030781cf111f868c3",
+      "size": 2551
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/random-getentropy.c",
+      "git_blob": "c45d9fd4a2b7c01fa1e140b23dfd0ab3a5f51fdb",
+      "size": 1968
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/random-getrandom.c",
+      "git_blob": "054eccf1664666b3d2308693420662f6d0be61d6",
+      "size": 2508
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/random-sysctl-linux.c",
+      "git_blob": "66ba8d74ec22b72d318b91d82365f5b9693feb3c",
+      "size": 2847
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/signal.c",
+      "git_blob": "ccaa72db457c594cfe2733004a4ad54d29c3a06a",
+      "size": 15410
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/stream.c",
+      "git_blob": "18763b4744c30a93f067a911b8059984bf36eb86",
+      "size": 41252
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/sunos.c",
+      "git_blob": "6c38c31aa00efafeb9b7a61d4433afc321ccad71",
+      "size": 22634
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/sysinfo-loadavg.c",
+      "git_blob": "ebad0e89db597f5f3f77d309c6d52c9340a84851",
+      "size": 1456
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/sysinfo-memory.c",
+      "git_blob": "23b4fc6e914ae99f9be3bb52ac19bbbeb3f4454a",
+      "size": 1536
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/tcp.c",
+      "git_blob": "98970d75278e312578facdfd06e349fdf51c0ba3",
+      "size": 17999
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/thread.c",
+      "git_blob": "34fea364aebe6d6c5ff2effd58329bf96c4d8e13",
+      "size": 21718
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/tty.c",
+      "git_blob": "b861072026796240c77fb56e0d133544ebd6f6db",
+      "size": 14299
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/unix/udp.c",
+      "git_blob": "c4a3559d61e350d492b38089042407e836fa71ca",
+      "size": 40586
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/uv-common.c",
+      "git_blob": "60ff56b9dd7391b850f41acc3ad020b9a9aa4a16",
+      "size": 23928
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/uv-common.h",
+      "git_blob": "b9a8e976eefdd62cfad31f6d3ed9b6179776eaa4",
+      "size": 18411
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/uv-data-getter-setters.c",
+      "git_blob": "0bd04486117b725e91f3a271f2bdddbac0d2f3a3",
+      "size": 3126
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/version.c",
+      "git_blob": "686dedd98d685459fe0f75e61b96ab753791e40a",
+      "size": 1751
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/async.c",
+      "git_blob": "b904676e3a72ddbf8370e2f2111385513c9698f3",
+      "size": 2869
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/atomicops-inl.h",
+      "git_blob": "2f984c6db0b42842b74be739478f7bea9e335ebf",
+      "size": 2293
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/core.c",
+      "git_blob": "5f41c87ad5ed137c51b43e4941414c89ddff5216",
+      "size": 18494
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/detect-wakeup.c",
+      "git_blob": "ab193615783ea717f75af004d1b98887e7638c7b",
+      "size": 2264
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/dl.c",
+      "git_blob": "7880c9595be1f66ea0dcbdbcc4a91ce40577587f",
+      "size": 4396
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/error.c",
+      "git_blob": "7abf906bb5c82312aeb9f3f30f39ab2cadc07eae",
+      "size": 8817
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/fs-event.c",
+      "git_blob": "1bbb8c52be2d82c9d32b63fb08d30b14903956e1",
+      "size": 18447
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/fs-fd-hash-inl.h",
+      "git_blob": "0b532af12d4371c2311bd50a66913287a0716f43",
+      "size": 6886
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/fs.c",
+      "git_blob": "27248f644f381bbdeeef7c65401c74ab9474d0ad",
+      "size": 105366
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/getaddrinfo.c",
+      "git_blob": "4b8ee75a0622f6b138ea366c7f42306960b61b3d",
+      "size": 12223
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/getnameinfo.c",
+      "git_blob": "695549580d2d8113bcc2d6000050be672e7b2ce9",
+      "size": 4069
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/handle-inl.h",
+      "git_blob": "4722e85790ad3c7db7adffc0021a3c62d4137338",
+      "size": 6723
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/handle.c",
+      "git_blob": "53a81fdbc213fd7c37c2866a8ebfc34ef68adb9e",
+      "size": 3987
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/internal.h",
+      "git_blob": "be408af66610262034db4eb00f4708aa1fde69a4",
+      "size": 10455
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/loop-watcher.c",
+      "git_blob": "fad9e8a8e4cf1e586968f6ebb8cebbd1a7128759",
+      "size": 7998
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/pipe.c",
+      "git_blob": "d05bfd28aec8b9e6abdbcd32fe1005e005e0b5a9",
+      "size": 80675
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/poll.c",
+      "git_blob": "7fec2b99650646163f97d5b90b26c29d5c41e511",
+      "size": 17211
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/process-stdio.c",
+      "git_blob": "181db92ea30d45090c3d0b9def6b4001903afd2d",
+      "size": 12646
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/process.c",
+      "git_blob": "27605ca36f44348a6c2f24adce93d9d9b3e8b6da",
+      "size": 42052
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/req-inl.h",
+      "git_blob": "cf16e8ba41fa730107176bc30539f082a2ecf892",
+      "size": 8161
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/signal.c",
+      "git_blob": "85730b27b2b212b5c2ac87b5cba21209ba28874f",
+      "size": 8203
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/snprintf.c",
+      "git_blob": "776c0e392175850d742b61a0fd653187e83842a2",
+      "size": 1546
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/stream-inl.h",
+      "git_blob": "91b1e785daf59f2521059850950de621eb76551a",
+      "size": 2005
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/stream.c",
+      "git_blob": "a53a10b03823e1d21029b79861fe3a151a4194b1",
+      "size": 6579
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/tcp.c",
+      "git_blob": "c452c12e8f06f13e519a198f786eec63faebe2bf",
+      "size": 50168
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/thread.c",
+      "git_blob": "753cb6a34a5b9a6d332511596fb139fe071c2de3",
+      "size": 13356
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/tty.c",
+      "git_blob": "66ca99cda83ab1bb3b017171d69f100ebc1ce4e5",
+      "size": 79053
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/udp.c",
+      "git_blob": "e0873c2a899c244b7bc3a8334b4dc2501ea1cc4f",
+      "size": 35208
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/util.c",
+      "git_blob": "57061bf8d703fe9bfe08a108423a881b0bce4286",
+      "size": 44633
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/winapi.c",
+      "git_blob": "315a0d49aff50bcf9c30c470afb4f542c09133f8",
+      "size": 5212
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/winapi.h",
+      "git_blob": "b9c9f1abc8899ee4c665df6cc9a91fc03d2f636d",
+      "size": 130048
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/winsock.c",
+      "git_blob": "a68b095366a78e78675b49a078749f45dbad6015",
+      "size": 15726
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/src/win/winsock.h",
+      "git_blob": "bb3808a35c27e6b60c1110c0c58e58a29414a970",
+      "size": 5497
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv/uv.gyp",
+      "git_blob": "540445f1f3249b86c6ea15e3111644da206d2e33",
+      "size": 10943
+    }
+  ]
+}

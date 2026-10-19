@@ -1,0 +1,7 @@
+{
+  "status": "SOURCE_ONLY",
+  "base_commit": "bc01d201ca31d409ba5f2a934c10d51a9fa613e8",
+  "libraryDelta": "    // One unchanged libuv/llhttp graph is shared by native TCP and file I/O owners.\n    const native_node_network = switch (target.result.os.tag) {\n        .windows, .linux => @import(\"tools/build_native_node_network.zig\").add(b, target, optimize),\n        else => null,\n    };\n",
+  "targetDelta": "    if (native_node_network) |network| {\n        const native_node_tcp_transport_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_tcp_transport_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native actual TCP\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_node_tcp_transport_tests.root_module, quickjs, sqlite_lib_dir);\n        native_node_tcp_transport_tests.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        native_node_tcp_transport_tests.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/llhttp/include\"));\n        native_node_tcp_transport_tests.root_module.linkLibrary(network);\n        b.step(\"build-native-node-tcp-transport\", \"Install actual libuv TCP ownership controls without execution\").dependOn(&b.addInstallArtifact(native_node_tcp_transport_tests, .{}).step);\n    }\n",
+  "sha256": "91ABA44A15793722B3B08350034EAFC98DB4308F6D6ACC0661A73AB967D98EC7"
+}
