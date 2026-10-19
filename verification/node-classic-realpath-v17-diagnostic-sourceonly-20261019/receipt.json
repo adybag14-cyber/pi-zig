@@ -1,0 +1,39 @@
+{
+  "kind": "source-only-failure-diagnostic",
+  "unit": "classic-realpath-expected-success-capture",
+  "date": "2026-10-19",
+  "source_path": "src/native_node_fs_realpath_classic_test.zig",
+  "before": {
+    "sha256": "F151F54A2F55EC4307E4F49218DF40325623F283F6E359D8F61503B1CB162063",
+    "bytes": 19442
+  },
+  "after": {
+    "sha256": "9B78EE0B5E6FB666181B1BD2C6D8357F9C70456CC66BB3417118842A32E42F6E",
+    "bytes": 19952
+  },
+  "change": "Add runExpected, a failure-only native diagnostic wrapper, at five expected-success call sites. It prints the native label, host error name and existing Engine.last_error bytes, then returns the identical error.",
+  "preserved": {
+    "declarations": 23,
+    "names_and_assertions": true,
+    "actual_fatal_run_routes": true,
+    "guest_execution_and_coercion": true,
+    "successful_stderr": true,
+    "production_sources": true
+  },
+  "negative": {
+    "path": "C:/Users/adyba/pi-zig/evidence/root-vm-io-oauth-options-v17-diagnostic-runtime-20261019-215552/groups/native-node-fs-realpath-classic/runtime.stderr.log",
+    "sha256": "8C07682FE45A86CFDD76291F8DB2ECFA464968CF3F00D14589C6C2C3D67D2543",
+    "unchanged": true
+  },
+  "review": {
+    "reviewer": "/root",
+    "status": "finite source peer closed",
+    "scope": "Complete exact diff, five expected-success sites, original actual-fatal routes, existing native-owned Engine.last_error semantics."
+  },
+  "validation": {
+    "exact_source_readback": true,
+    "declared_name_identity": true,
+    "execution": false
+  },
+  "remaining": "The seventeen original failures remain unqualified. No guessed production correction or reference execution is claimed."
+}
