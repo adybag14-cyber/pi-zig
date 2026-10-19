@@ -1,0 +1,46 @@
+{
+  "status": "source-only draft; no execution",
+  "path": "src/extensions/engine.zig",
+  "current_sha256": "0CCB766CF55EDE0B30574DB0FEA9FE80C1F759417E9D20091909A344932093AD",
+  "baseline_length": 94601,
+  "current_length": 95233,
+  "contexts": [
+    {
+      "line": 24,
+      "byte_offset": 935,
+      "text": "    node_json_diagnostics: bool = true,\n    // Optional native execution-option input. Config.create copies every\n    // supplied string/list before Engine.init returns.\n    node_options: ?@import(\"native_node_options_config.zig\").Input = null,\n    memory_limit: usize = 64 * 1024 * 1024,\n    stack_limit: usize = 1024 * 1024,\n    interrupt_budget: u64 = 10_000,"
+    },
+    {
+      "line": 61,
+      "byte_offset": 2549,
+      "text": "    native_memory_owner: *anyopaque,\n    context: *c.JSContext,\n    options: Options,\n    node_options: ?*@import(\"native_node_options_config.zig\").Config = null,\n    progress_probe: ?*ProgressProbe = null,\n    interrupts: u64 = 0,\n    cancelled: std.atomic.Value(bool) = .init(false),"
+    },
+    {
+      "line": 300,
+      "byte_offset": 16426,
+      "text": "            if (self.captured_exception) |value| self.freeValue(value);\n            if (self.native_allocation_exception) |value| self.freeValue(value);\n            if (self.last_error) |value| gpa.free(value);\n            if (self.node_options) |config| config.destroy();\n        }\n        // Capture genuine symbols and error constructors before guest code can\n        // replace globals or String.prototype. ICU bootstrap requires no Io."
+    },
+    {
+      "line": 306,
+      "byte_offset": 16789,
+      "text": "        // replace globals or String.prototype. ICU bootstrap requires no Io.\n        if (options.node_locale_compare) try @import(\"native_localecompare_binding.zig\").install(self);\n        if (options.node_json_diagnostics) try @import(\"native_json_host.zig\").install(self);\n        if (options.node_options) |input| {\n            self.node_options = try @import(\"native_node_options_config.zig\").Config.create(self, input);\n            self.options.node_options = self.node_options.?.original;\n        }"
+    },
+    {
+      "line": 307,
+      "byte_offset": 16867,
+      "text": "        if (options.node_locale_compare) try @import(\"native_localecompare_binding.zig\").install(self);\n        if (options.node_json_diagnostics) try @import(\"native_json_host.zig\").install(self);\n        if (options.node_options) |input| {\n            self.node_options = try @import(\"native_node_options_config.zig\").Config.create(self, input);\n            self.options.node_options = self.node_options.?.original;\n        }\n        // Capture pristine intrinsics before any extension input executes."
+    },
+    {
+      "line": 308,
+      "byte_offset": 16971,
+      "text": "        if (options.node_json_diagnostics) try @import(\"native_json_host.zig\").install(self);\n        if (options.node_options) |input| {\n            self.node_options = try @import(\"native_node_options_config.zig\").Config.create(self, input);\n            self.options.node_options = self.node_options.?.original;\n        }\n        // Capture pristine intrinsics before any extension input executes.\n        // Lease affinity must not depend on mutable globals/prototypes."
+    },
+    {
+      "line": 408,
+      "byte_offset": 23743,
+      "text": "        c.JS_FreeRuntime(self.runtime);\n        @import(\"native_typebox_continuation.zig\").deinitAfterRuntime(self);\n        @import(\"native_durable_storage.zig\").deinit(self);\n        if (self.node_options) |config| config.destroy();\n        c.pi_js_release_memory_owner(self.native_memory_owner);\n        if (self.last_error) |message| self.gpa.free(message);\n        var modules = self.modules.iterator();"
+    }
+  ],
+  "process_baseline_sha256": "B87BD5F50F534F8F2413AC92C648A980EDD49A002CE6425E620105D179FE5AC3",
+  "process_current_sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+}

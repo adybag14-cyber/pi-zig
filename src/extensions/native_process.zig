@@ -18,6 +18,11 @@ fn currentDirectory(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSV
     return c.JS_NewStringLen(context, &buffer, count);
 }
 pub fn install(engine: *engine_mod.Engine, io: std.Io, environment: *const std.process.Environ.Map, arguments: []const []const u8) !void {
+    if (engine.node_options == null) {
+        engine.node_options = try @import("native_node_options_config.zig").Config.create(engine, .{});
+        engine.options.node_options = engine.node_options.?.original;
+    }
+    try engine.node_options.?.captureEnvironment(environment);
     engine.native_io = io;
     try @import("native_process_clock.zig").install(engine, io);
     try @import("native_process_clock.zig").installDefaultGlobal(engine);
@@ -76,6 +81,7 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io, environment: *const std.p
     try @import("native_process_streams.zig").install(engine, process);
     try engine.registerDefaultModule("node:process", process);
     try engine.registerDefaultModule("process", process);
+    engine.node_options.?.finishBootstrap();
 }
 
 test "native process retains host environment and module identity" {

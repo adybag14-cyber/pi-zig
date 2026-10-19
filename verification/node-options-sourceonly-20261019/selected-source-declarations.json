@@ -1,0 +1,35 @@
+{
+  "status": "source-only; no Source or native execution",
+  "authority": "../node-commonjs-loader-chain-sourceonly-20261019/authority/lib__internal__options.js.txt",
+  "authority_sha256": "EE76071588DE93D417A7026479EDA141E0921C4D1FC4881C6E8C665B4F350439",
+  "ranges": [
+    {
+      "name": "getCLIOptionsFromBinding",
+      "start_byte": 722,
+      "end_byte": 810
+    },
+    {
+      "name": "getEmbedderOptions",
+      "start_byte": 990,
+      "end_byte": 1086
+    },
+    {
+      "name": "refreshOptions",
+      "start_byte": 4095,
+      "end_byte": 4152
+    },
+    {
+      "name": "getOptionValue",
+      "start_byte": 4153,
+      "end_byte": 4242
+    },
+    {
+      "name": "getAllowUnauthorized",
+      "start_byte": 4243,
+      "end_byte": 4709
+    }
+  ],
+  "fixture": "src/extensions/fixtures/native-node-options-source.mjs",
+  "imports": "actual native_node_options_binding.create owned callables; no fabricated completed namespace",
+  "excluded": "unselected CLI metadata/schema functions; complete V8/Node reference qualification"
+}
