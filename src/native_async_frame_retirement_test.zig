@@ -24,10 +24,15 @@ const Probe = struct {
     adoption_calls: usize = 0,
     adoption_counts: [6]u32 = @splat(99),
     cleanup_events: bool = false,
-    first: c.JSValue = c.pi_js_undefined(),
-    second: c.JSValue = c.pi_js_undefined(),
-    prior: c.JSValue = c.pi_js_undefined(),
-    body_reason: c.JSValue = c.pi_js_undefined(),
+    first: c.JSValue,
+    second: c.JSValue,
+    prior: c.JSValue,
+    body_reason: c.JSValue,
+    fn init(engine: *Engine, mode: Mode) Probe {
+        const empty = c.pi_js_undefined();
+        return .{ .engine = engine, .mode = mode, .first = empty,
+            .second = empty, .prior = empty, .body_reason = empty };
+    }
     fn deinit(self: *Probe) void {
         self.cleanup_events = false;
         self.engine.freeValue(self.first); self.engine.freeValue(self.second);
@@ -119,7 +124,7 @@ fn evaluate(engine: *Engine, source: []const u8) !c.JSValue {
 }
 fn run(engine: *Engine, source: []const u8) !void { engine.freeValue(try evaluate(engine, source)); }
 fn setup(p: *Probe, native: bool, mode: Mode) !void {
-    p.* = .{ .engine = p.engine, .mode = mode };
+    p.* = Probe.init(p.engine, mode);
     active = p;
     for (&p.tokens, 0..) |*item, i| item.* = .{ .probe = p, .slot = i };
     _ = c.JS_NewClassID(p.engine.runtime, &p.holder_class);
@@ -190,7 +195,7 @@ fn fatalJob(p: *Probe, expected: c.JSValue) !void {
 
 test "VM async retirement arguments locals captures and receiver follow actual Source order after Await" {
     inline for (.{ false, true }) |native| {
-        var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .mode = .returned };
+        var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .returned);
         defer p.deinit(); try setup(&p, native, .returned);
         const pending = try start(&p); defer p.engine.freeValue(pending);
         try executeOne(&p); try sequence(&p);
@@ -200,7 +205,7 @@ test "VM async retirement arguments locals captures and receiver follow actual S
 }
 test "VM async retirement genuine return adoption observes argument local capture and receiver still alive" {
     inline for (.{ false, true }) |native| {
-        var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .mode = .returned };
+        var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .returned);
         defer p.deinit(); try setup(&p, native, .returned);
         try run(p.engine, "globalThis.vmReturn={get then(){vmAdoption();return undefined}};");
         const pending = try start(&p); defer p.engine.freeValue(pending);
@@ -211,7 +216,7 @@ test "VM async retirement genuine return adoption observes argument local captur
 }
 test "VM async retirement ordinary thrown identity survives argument before local cleanup" {
     inline for (.{ false, true }) |native| {
-        var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .mode = .thrown };
+        var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .thrown);
         defer p.deinit(); try setup(&p, native, .thrown);
         try run(p.engine, "globalThis.vmReturn={ordinary:'actual throw reason'};");
         const expected = try evaluate(p.engine, "vmReturn"); defer p.engine.freeValue(expected);
@@ -225,7 +230,7 @@ test "VM async retirement ordinary thrown identity survives argument before loca
 }
 test "VM async retirement abandoned real suspension terminates arguments locals captures then receiver" {
     inline for (.{ false, true }) |native| {
-        var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .mode = .abandoned };
+        var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .abandoned);
         defer p.deinit(); try setup(&p, native, .abandoned);
         const pending = try start(&p); defer p.engine.freeValue(pending);
         try std.testing.expect(!c.JS_IsJobPending(p.engine.runtime));
@@ -240,7 +245,7 @@ test "VM async retirement abandoned real suspension terminates arguments locals 
 }
 test "VM async retirement first actual argument cleanup fatal wins later local event after settlement" {
     inline for (.{ Mode.returned, Mode.thrown }) |mode| {
-        var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .mode = mode };
+        var p = Probe.init(try Engine.init(std.testing.allocator, .{}), mode);
         defer p.deinit(); try setup(&p, true, mode);
         const pending = try start(&p); defer p.engine.freeValue(pending);
         try fatalValues(&p); try fatalJob(&p, p.first);
@@ -250,7 +255,7 @@ test "VM async retirement first actual argument cleanup fatal wins later local e
     }
 }
 test "VM async retirement preexisting current fatal prevents resumed body and precedes all cleanup events" {
-    var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .mode = .returned };
+    var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .returned);
     defer p.deinit(); try setup(&p, true, .returned);
     const pending = try start(&p); defer p.engine.freeValue(pending);
     try fatalValues(&p);
@@ -260,7 +265,7 @@ test "VM async retirement preexisting current fatal prevents resumed body and pr
     try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
 }
 test "VM async retirement actual native body allocation fatal survives argument and local cleanup" {
-    var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .mode = .body_fatal };
+    var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .body_fatal);
     defer p.deinit(); try setup(&p, true, .body_fatal);
     const pending = try start(&p); defer p.engine.freeValue(pending);
     try fatalValues(&p);
@@ -317,7 +322,7 @@ fn startArrow(p: *Probe) !c.JSValue {
 }
 test "VM async retirement arrow keeps distinct call receiver and lexical this through Await and adoption" {
     inline for (.{ false, true }) |native| {
-        var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .mode = .returned };
+        var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .returned);
         defer p.deinit(); try setupArrow(&p, native, .returned);
         try run(p.engine, "globalThis.vmReturn={get then(){vmAdoption();return undefined}};");
         const pending = try startArrow(&p); defer p.engine.freeValue(pending);
@@ -334,7 +339,7 @@ test "VM async retirement arrow keeps distinct call receiver and lexical this th
 }
 test "VM async retirement abandoned arrow releases captures lexical this then ignored call receiver" {
     inline for (.{ false, true }) |native| {
-        var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .mode = .abandoned };
+        var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .abandoned);
         defer p.deinit(); try setupArrow(&p, native, .abandoned);
         const pending = try startArrow(&p); defer p.engine.freeValue(pending);
         try std.testing.expect(!c.JS_IsJobPending(p.engine.runtime));
@@ -369,11 +374,21 @@ const CloseProbe = struct {
     hook_promise_state: c_int = -1,
     adoption_calls: usize = 0,
     adoption_counts: [4]u32 = @splat(99),
-    pending: c.JSValue = c.pi_js_undefined(), // Borrowed from the test's real Promise root.
-    first: c.JSValue = c.pi_js_undefined(),
-    second: c.JSValue = c.pi_js_undefined(),
-    prior: c.JSValue = c.pi_js_undefined(),
+    pending: c.JSValue, // Borrowed from the test's real Promise root.
+    first: c.JSValue,
+    second: c.JSValue,
+    prior: c.JSValue,
     cleanup_events: bool = false,
+    fn init(engine: *Engine, options: struct {
+        mode: CloseMode = .returned,
+        escape: bool = false,
+        arrow: bool = false,
+    }) CloseProbe {
+        const empty = c.pi_js_undefined();
+        return .{ .engine = engine, .mode = options.mode, .escape = options.escape,
+            .arrow = options.arrow, .pending = empty, .first = empty,
+            .second = empty, .prior = empty };
+    }
     fn token(self: *CloseProbe, slot: usize) !c.JSValue {
         if (slot >= self.tokens.len or self.made[slot]) return error.InvalidCloseToken;
         const result = try self.engine.checked(c.JS_NewObjectClass(self.engine.context, self.holder_class));
@@ -536,7 +551,7 @@ fn closeJobFailure(p: *CloseProbe, expected: c.JSValue, fatal: bool) !void {
 test "VM async retirement terminal Frame close follows adoption and leaves escaped cells holding only captures" {
     inline for (.{ false, true }) |native| {
       inline for (.{ false, true }) |arrow| {
-        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .escape = true, .arrow = arrow };
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{ .escape = true, .arrow = arrow });
         defer p.deinit(); try closeSetup(&p, native);
         try run(p.engine, "globalThis.closeReturn={get then(){closeAdoption();return undefined}};");
         const pending = try closeStart(&p); defer p.engine.freeValue(pending);
@@ -562,7 +577,7 @@ test "VM async retirement terminal Frame close follows adoption and leaves escap
 }
 test "VM async retirement terminal Frame close runs once for abandoned actual Await without escaped cells" {
     inline for (.{ false, true }) |native| {
-        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .mode = .abandoned };
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{ .mode = .abandoned });
         defer p.deinit(); try closeSetup(&p, native);
         const pending = try closeStart(&p); defer p.engine.freeValue(pending);
         try std.testing.expect(!c.JS_IsJobPending(p.engine.runtime));
@@ -578,7 +593,7 @@ test "VM async retirement terminal Frame close runs once for abandoned actual Aw
     }
 }
 test "VM async retirement terminal close preserves first argument fatal and still retires every local" {
-    var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+    var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
     defer p.deinit(); try closeSetup(&p, true);
     const pending = try closeStart(&p); defer p.engine.freeValue(pending);
     try closeFatalValues(&p); try closeJobFailure(&p, p.first, true);
@@ -586,7 +601,7 @@ test "VM async retirement terminal close preserves first argument fatal and stil
     try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, p.hook_promise_state);
 }
 test "VM async retirement terminal close runs under preexisting fatal without resuming a body" {
-    var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+    var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
     defer p.deinit(); try closeSetup(&p, true);
     const pending = try closeStart(&p); defer p.engine.freeValue(pending);
     try closeFatalValues(&p);
@@ -596,7 +611,7 @@ test "VM async retirement terminal close runs under preexisting fatal without re
     try std.testing.expectEqual(c.JS_PROMISE_PENDING, p.hook_promise_state);
 }
 test "VM async retirement failed terminal hook cannot bypass state and receiver root retirement" {
-    var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .mode = .failed_close };
+    var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{ .mode = .failed_close });
     defer p.deinit(); try closeSetup(&p, true);
     p.prior = try p.engine.checked(c.JS_NewError(p.engine.context));
     const pending = try closeStart(&p); defer p.engine.freeValue(pending);
@@ -669,7 +684,7 @@ fn leaseCollect(p: *CloseProbe) !void {
 
 test "VM async retirement escaped open cell retains actual coroutine after the awaited gate is removed" {
     inline for (.{ false, true }) |native| {
-        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
         defer p.deinit(); try leaseSetup(&p, native, .escaped, .abandoned);
         const pending = try closeStart(&p); defer p.engine.freeValue(pending);
         try run(p.engine, "delete globalThis.closeGate;");
@@ -688,7 +703,7 @@ test "VM async retirement escaped open cell retains actual coroutine after the a
 }
 test "VM async retirement dropped callback leaves no artificial owning capture-table cycle" {
     inline for (.{ false, true }) |native| {
-        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
         defer p.deinit(); try leaseSetup(&p, native, .dropped, .abandoned);
         const pending = try closeStart(&p); defer p.engine.freeValue(pending);
         try leaseCollect(&p); try leaseCounts(&p, .{ 0, 0, 0, 0 });
@@ -703,7 +718,7 @@ test "VM async retirement dropped callback leaves no artificial owning capture-t
 test "VM async retirement actual lease survives live GC and disconnects after final return adoption" {
     inline for (.{ false, true }) |native| {
       inline for (.{ false, true }) |arrow| {
-        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .arrow = arrow };
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{ .arrow = arrow });
         defer p.deinit(); try leaseSetup(&p, native, .escaped, .returned);
         try run(p.engine, "globalThis.closeReturn={get then(){closeAdoption();return undefined}};");
         const pending = try closeStart(&p); defer p.engine.freeValue(pending);
@@ -725,7 +740,7 @@ test "VM async retirement actual lease survives live GC and disconnects after fi
 }
 test "VM async retirement real unreachable local callback coroutine cycle collects exactly once" {
     inline for (.{ false, true }) |native| {
-        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
         defer p.deinit(); try leaseSetup(&p, native, .cycle, .abandoned);
         const pending = try closeStart(&p); defer p.engine.freeValue(pending);
         try run(p.engine, "delete globalThis.closeGate;");
@@ -747,7 +762,7 @@ test "VM async retirement real unreachable local callback coroutine cycle collec
 }
 test "VM async retirement reachable callback cycle closes at real completion without waiting for GC" {
     inline for (.{ false, true }) |native| {
-        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
         defer p.deinit(); try leaseSetup(&p, native, .cycle, .returned);
         const pending = try closeStart(&p); defer p.engine.freeValue(pending);
         c.JS_RunGC(p.engine.runtime);
@@ -761,7 +776,7 @@ test "VM async retirement reachable callback cycle closes at real completion wit
     }
 }
 test "VM async retirement actual fatal closes the lease while escaped cells keep only their captured value" {
-    var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+    var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
     defer p.deinit(); try leaseSetup(&p, true, .escaped, .returned);
     const pending = try closeStart(&p); defer p.engine.freeValue(pending);
     try closeFatalValues(&p);
@@ -782,7 +797,7 @@ test "VM async retirement actual fatal closes the lease while escaped cells keep
     try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
 }
 test "VM async retirement activation lease rejects unrelated frames without consuming borrowed state or pending" {
-    var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+    var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
     defer p.deinit(); try closeSetup(&p, true);
     const state = try p.token(1);
     const denied = c.JS_PiRetainNativeAsyncActivation(p.engine.context, state);
@@ -885,7 +900,7 @@ fn argumentReadCapture(p: *CloseProbe) !void {
 }
 test "VM async retirement captured immutable argument preserves uncaptured argv order through adoption" {
     inline for (.{ false, true }) |native| {
-        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
         defer p.deinit(); try argumentSetup(&p, native, false, false);
         try run(p.engine, "globalThis.closeReturn={get then(){closeAdoption();return undefined}};");
         const pending = try argumentStart(&p); defer p.engine.freeValue(pending);
@@ -908,7 +923,7 @@ test "VM async retirement captured immutable argument preserves uncaptured argv 
 }
 test "VM async retirement escaped immutable argument retains real abandoned invocation until callback removal" {
     inline for (.{ false, true }) |native| {
-        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
         defer p.deinit(); try argumentSetup(&p, native, true, false);
         const pending = try argumentStart(&p); defer p.engine.freeValue(pending);
         try run(p.engine, "delete globalThis.closeGate;");
@@ -926,7 +941,7 @@ test "VM async retirement escaped immutable argument retains real abandoned invo
 }
 test "VM async retirement dropped immutable argument cell adds no retained original argument slot" {
     inline for (.{ false, true }) |native| {
-        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
         defer p.deinit(); try argumentSetup(&p, native, true, true);
         const pending = try argumentStart(&p); defer p.engine.freeValue(pending);
         try run(p.engine, "delete globalThis.closeGate;");

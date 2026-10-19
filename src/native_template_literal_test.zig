@@ -151,9 +151,14 @@ const Probe = struct {
     later: u32 = 0,
     caught: u32 = 0,
     cleanup: Cleanup = .none,
-    cleanup_reason: c.JSValue = c.pi_js_undefined(),
-    original: c.JSValue = c.pi_js_undefined(),
-    body_reason: c.JSValue = c.pi_js_undefined(),
+    cleanup_reason: c.JSValue,
+    original: c.JSValue,
+    body_reason: c.JSValue,
+    fn init(engine: *Engine, cleanup: Cleanup) Probe {
+        const empty = c.pi_js_undefined();
+        return .{ .engine = engine, .cleanup = cleanup, .cleanup_reason = empty,
+            .original = empty, .body_reason = empty };
+    }
     fn deinit(self: *Probe) void {
         self.cleanup = .none;
         self.engine.freeValue(self.cleanup_reason); self.engine.freeValue(self.original); self.engine.freeValue(self.body_reason);
@@ -238,7 +243,7 @@ fn expectedFatal(p: *Probe, expected: c.JSValue) !void {
 }
 
 test "VM template literal retires the sole converted operand before the next expression" {
-    var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}) }; defer p.deinit(); try setup(&p);
+    var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .none); defer p.deinit(); try setup(&p);
     try run(p.engine, successful_operand);
     const value = try evaluate(p.engine, interpolate); defer p.engine.freeValue(value);
     const expected = try p.engine.checked(c.JS_NewString(p.engine.context, "X1")); defer p.engine.freeValue(expected);
@@ -247,7 +252,7 @@ test "VM template literal retires the sole converted operand before the next exp
     try std.testing.expectEqual(@as(u32, 1), p.later);
 }
 test "VM template literal operand retirement native fatal preempts an ordinary conversion throw" {
-    var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .cleanup = .native_oom }; defer p.deinit(); try setup(&p);
+    var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .native_oom); defer p.deinit(); try setup(&p);
     try run(p.engine, ordinary_operand);
     const generation = p.engine.native_allocation_generation;
     const value = try raw(p.engine, interpolate, c.JS_EVAL_TYPE_GLOBAL);
@@ -257,7 +262,7 @@ test "VM template literal operand retirement native fatal preempts an ordinary c
     try std.testing.expect(c.pi_js_native_allocation_error_generation(p.cleanup_reason) != 0);
 }
 test "VM template literal conversion native fatal survives a later flagged cleanup event" {
-    var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .cleanup = .flagged }; defer p.deinit(); try setup(&p);
+    var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .flagged); defer p.deinit(); try setup(&p);
     try run(p.engine, fatal_operand);
     const generation = p.engine.native_allocation_generation;
     const value = try raw(p.engine, interpolate, c.JS_EVAL_TYPE_GLOBAL);
@@ -268,7 +273,7 @@ test "VM template literal conversion native fatal survives a later flagged clean
     try std.testing.expect(c.pi_js_native_allocation_error_generation(p.body_reason) != 0);
 }
 test "VM template literal successful conversion retirement fatal blocks later expression and guest catch" {
-    var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .cleanup = .native_oom }; defer p.deinit(); try setup(&p);
+    var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .native_oom); defer p.deinit(); try setup(&p);
     try run(p.engine, successful_operand);
     const generation = p.engine.native_allocation_generation;
     const value = try raw(p.engine, interpolate, c.JS_EVAL_TYPE_GLOBAL);
@@ -277,7 +282,7 @@ test "VM template literal successful conversion retirement fatal blocks later ex
     try std.testing.expectEqual(generation +% 1, p.engine.native_allocation_generation);
 }
 test "VM template literal preserves the original ordinary conversion throw through ordinary operand cleanup" {
-    var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .cleanup = .ordinary }; defer p.deinit(); try setup(&p);
+    var p = Probe.init(try Engine.init(std.testing.allocator, .{}), .ordinary); defer p.deinit(); try setup(&p);
     try run(p.engine, ordinary_operand);
     try check(p.engine, interpolate);
     try std.testing.expectEqual(@as(u32, 1), p.retired);

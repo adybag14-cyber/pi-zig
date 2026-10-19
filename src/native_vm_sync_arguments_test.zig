@@ -345,7 +345,7 @@ fn clean(engine: *Engine) !void {
     try std.testing.expect(engine.captured_exception == null);
     try std.testing.expect(engine.native_fatal_invocation == null);
     try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
-    try std.testing.expectEqual(@as(c_int, 0), c.JS_IsJobPending(engine.runtime));
+    try std.testing.expect(!c.JS_IsJobPending(engine.runtime));
 }
 fn expectOrder(probe: *Probe, expected: []const u32) !void {
     try std.testing.expectEqualSlices(u32, expected, probe.order[0..probe.order_len]);

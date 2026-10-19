@@ -70,10 +70,10 @@ fn detailsPresent(s: *Scope, options: c.JSValue) !c.JSValue {
 }
 const Locals = struct {
     engine: *Engine,
-    title: c.JSValue = c.pi_js_undefined(),
-    heading: c.JSValue = c.pi_js_undefined(),
-    message: c.JSValue = c.pi_js_undefined(),
-    details: c.JSValue = c.pi_js_undefined(),
+    title: c.JSValue,
+    heading: c.JSValue,
+    message: c.JSValue,
+    details: c.JSValue,
     fn finish(self: *Locals, result: anyerror!c.JSValue) !c.JSValue {
         var completion = v.owned.Completion.initValue(self.engine, result);
         completion.release(self.title); completion.release(self.heading);
@@ -82,7 +82,9 @@ const Locals = struct {
     }
 };
 fn render(engine: *Engine, options: c.JSValue) !c.JSValue {
-    var locals: Locals = .{ .engine = engine };
+    const empty = c.pi_js_undefined();
+    var locals: Locals = .{ .engine = engine, .title = empty, .heading = empty,
+        .message = empty, .details = empty };
     return locals.finish(renderBody(&locals, options));
 }
 fn renderBody(locals: *Locals, options: c.JSValue) !c.JSValue {
@@ -102,8 +104,8 @@ fn interpolation(s: *Scope, current: c.JSValue, input: c.JSValue) !c.JSValue {
 }
 fn detailsPart(s: *Scope, details: c.JSValue) !c.JSValue {
     if (!v.truthy(s, details)) return v.duplicate(s, try v.text(s, ""));
-    const prefix = try interpolation(s, try v.text(s, "<div class=\"details\">"), details);
-    return v.duplicate(s, try append(s, prefix, try v.text(s, "</div>")));
+    const details_prefix = try interpolation(s, try v.text(s, "<div class=\"details\">"), details);
+    return v.duplicate(s, try append(s, details_prefix, try v.text(s, "</div>")));
 }
 fn templateBody(s: *Scope, locals: *Locals) !c.JSValue {
     var result = try interpolation(s, try v.text(s, prefix), locals.title);
