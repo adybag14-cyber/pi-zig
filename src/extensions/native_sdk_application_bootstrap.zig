@@ -93,7 +93,9 @@ pub fn installPlatform(engine: *em.Engine, io: std.Io, environment: *const std.p
     try @import("native_process.zig").install(engine, io, environment, arguments);
     try @import("node_path.zig").install(engine, io);
     try @import("node_url.zig").install(engine);
-    try @import("node_fs.zig").install(engine, io);
+    const actual_process = (try engine.requireBuiltin("node:process")) orelse return error.RequiredActualProcessBeforeFilesystem;
+    defer engine.freeValue(actual_process);
+    try @import("node_fs.zig").installWithStreams(engine, io, actual_process);
     try @import("commonjs.zig").install(engine);
     try @import("console.zig").install(engine, io);
     try @import("text_encoding.zig").install(engine);
