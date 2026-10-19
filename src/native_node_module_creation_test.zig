@@ -13,7 +13,7 @@ const Probe = struct {
     holder_class: c.JSClassID = 0,
     freed: [2]u32 = .{ 0, 0 },
     fatal_slot: ?usize = null,
-    first: c.JSValue = c.pi_js_undefined(),
+    first: c.JSValue,
     holders: [2]Holder = undefined,
 };
 var active_probe: ?*Probe = null;
@@ -71,7 +71,7 @@ const Fixture = struct {
         self.engine = try a.v.em.Engine.init(std.testing.allocator, .{});
         errdefer self.engine.deinit();
         self.owner = null;
-        self.probe = .{ .engine = self.engine };
+        self.probe = .{ .engine = self.engine, .first = c.pi_js_undefined() };
         for (&self.probe.holders, 0..) |*holder, position| holder.* = .{ .probe = &self.probe, .position = position };
         active_probe = &self.probe;
         errdefer active_probe = null;

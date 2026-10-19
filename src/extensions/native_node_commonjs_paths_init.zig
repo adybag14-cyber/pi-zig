@@ -37,10 +37,10 @@ fn callback(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, values: []
         .windows = c.JS_ToBool(engine.context, values[11]) == 1 });
     return c.pi_js_undefined();
 }
-fn statement(engine: *v.em.Engine, comptime body: anytype, args: anytype) !void {
+fn statement(engine: *v.em.Engine, comptime action: anytype, args: anytype) !void {
     var s = Scope.init(engine);
     var failure: ?anyerror = null;
-    @call(.auto, body, .{&s} ++ args) catch |err| { failure = err; };
+    @call(.auto, action, .{&s} ++ args) catch |err| { failure = err; };
     _ = try s.finish(if (failure) |err| @as(anyerror!c.JSValue, err) else c.pi_js_undefined());
 }
 fn environment(s: *Scope, inputs: Inputs, home: bool) !c.JSValue {

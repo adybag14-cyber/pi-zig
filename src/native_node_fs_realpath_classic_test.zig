@@ -18,7 +18,7 @@ const Probe = struct {
     freed: u32 = 0,
     visits: [3]u32 = .{0} ** 3,
     fatal_on_release: bool = false,
-    first: c.JSValue = c.pi_js_undefined(),
+    first: c.JSValue,
 };
 var active_probe: ?*Probe = null;
 fn releaseHolder(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
@@ -91,7 +91,7 @@ const Fixture = struct {
         errdefer self.environment.deinit();
         self.engine = try a.v.em.Engine.init(gpa, .{ .interrupt_budget = 4_000_000 });
         errdefer self.engine.deinit();
-        self.probe = .{ .engine = self.engine };
+        self.probe = .{ .engine = self.engine, .first = c.pi_js_undefined() };
         active_probe = &self.probe;
         errdefer active_probe = null;
         try @import("extensions/timers.zig").install(self.engine, io);
