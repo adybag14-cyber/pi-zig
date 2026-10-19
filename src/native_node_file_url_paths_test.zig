@@ -11,7 +11,7 @@ const Probe = struct {
     holder_class: c.JSClassID = 0,
     freed: u32 = 0,
     fatal_on_release: bool = false,
-    first: c.JSValue = c.pi_js_undefined(),
+    first: c.JSValue,
 };
 var active_probe: ?*Probe = null;
 fn releaseHolder(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
@@ -56,7 +56,7 @@ const Fixture = struct {
         self.engine = try a.v.em.Engine.init(std.testing.allocator, .{});
         errdefer self.engine.deinit();
         self.owner = null;
-        self.probe = .{ .engine = self.engine };
+        self.probe = .{ .engine = self.engine, .first = c.pi_js_undefined() };
         active_probe = &self.probe;
         errdefer active_probe = null;
         try @import("extensions/timers.zig").install(self.engine, std.testing.io);
