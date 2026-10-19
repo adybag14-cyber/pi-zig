@@ -1,0 +1,90 @@
+{
+  "status": "source-only; native fatal/assert/corrupt and symbols finite peers closed; logging/link execution not yet qualified",
+  "created_utc": "2026-10-19T22:59:47.210164+00:00",
+  "author": "Root",
+  "parent_source_commit": "80629f4992c3f1280742020fb9d96d77fdab46a2",
+  "sources": [
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "bytes": 13611,
+      "sha256": "7F9BBF35B6DA22A8A8803F7776F2BE0B46B8E1E8FAF49B06407C7FC72EB6D967"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.h",
+      "bytes": 1696,
+      "sha256": "72C3677CE0868972B2ACF78463A62A9910047C132C8862193FF267254D25C2F2"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "bytes": 1788,
+      "sha256": "E4C368A322B65340D70C7F48153CA898ECF0290A47696823AA557876775E114E"
+    }
+  ],
+  "authority": [
+    {
+      "path": "verification/native-node-check-failure-sourceonly-20261019/authority/assert-and-stack-format.json",
+      "bytes": 7639,
+      "sha256": "7512C38B836BE3FD7ACF484FC3BE7E79D4C2F0E6195E31FD5FA7652A259E04BE",
+      "acquisition_donor": "6bfa8da2b7acc7a87f0a01aa46e823863e4c959f"
+    },
+    {
+      "path": "verification/native-node-check-failure-sourceonly-20261019/authority/corrupted-async-stack-exit.json",
+      "bytes": 19790,
+      "sha256": "574283B20DBBAFC6DFA426DAF87C8ADD529B2E51BBC212FEC46B0601BD1995D5",
+      "acquisition_donor": "6bfa8da2b7acc7a87f0a01aa46e823863e4c959f"
+    },
+    {
+      "path": "verification/native-node-check-failure-sourceonly-20261019/authority/default-fatal-check-chain.json",
+      "bytes": 52189,
+      "sha256": "9D71987A8445F007A1B51E076B59E76BECAF7EBB2B42A247683CD92972C73DB3",
+      "acquisition_donor": "6bfa8da2b7acc7a87f0a01aa46e823863e4c959f"
+    },
+    {
+      "path": "verification/native-node-check-failure-sourceonly-20261019/authority/process-name-and-stack-limit.json",
+      "bytes": 8920,
+      "sha256": "3E35D3FCB763D62ED14DA849184AA00D1C43C68A7B7E0CE2718696A9282107AD",
+      "acquisition_donor": "6bfa8da2b7acc7a87f0a01aa46e823863e4c959f"
+    }
+  ],
+  "additional_authority": [
+    {
+      "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/src_node_errors.cc.txt",
+      "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9"
+    },
+    {
+      "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/native-check-symbol-context-source.json",
+      "sha256": "F03A61D3BC3EA70651EEEF7C83F93DC8348EAA1C87FB1D22CC67FE8547DFAF0D"
+    }
+  ],
+  "build": {
+    "path": "verification/native-node-check-failure-sourceonly-20261019/build-intake.json",
+    "sha256": "20C956FCBDACA18C56D2CD98A081447FA4C92EBA2F0E3CF41F5201504FDD7615"
+  },
+  "source_scope": [
+    "Actual default native fatal-error and Maybe::Check chain, optional genuine native report callback with default report disabled.",
+    "Original native process title growth/default, assertion layout and native abort policy.",
+    "Original Windows symbol context lifecycle and lookup order; POSIX real backtrace/dladdr and optional native demangler.",
+    "Actual private captured frames with dedicated VM origin metadata; no guest Error.stack formatting or name inference.",
+    "Original corrupted async stack actual/expected IDs and native exit1 versus abort134 branch."
+  ],
+  "peers": [
+    {
+      "reviewer": "/root/modules_io",
+      "scope": "C/H/Zig default fatal, Maybe::Check, assertion, corrupt exit and exact Windows/POSIX symbol-context successor7F9; closed finite source",
+      "runtime": false
+    },
+    {
+      "reviewer": "/root/modules_io",
+      "scope": "Sole helper C source registration, final E10-to-CAEC composition source-only",
+      "closed": true,
+      "runtime": false
+    }
+  ],
+  "required_vm_api": "JS_ReadCapturedStackFrameLoggingInfo",
+  "limits": [
+    "No compile, metadata, native fatal process observation, platform acceptance or whole application qualification is claimed.",
+    "Fresh full Main build must include genuine VM captured-frame origin API and actual platform links.",
+    "Dedicated expected-exit native subprocess probes remain required for terminal paths.",
+    "The separate actual TryCatchScope FatalRethrowStackOverflow, ReportFatalException/Environment::Exit, global OOM/report and callback Operations policies are not supplied by this native CHECK unit."
+  ]
+}
