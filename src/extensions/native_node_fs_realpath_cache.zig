@@ -19,7 +19,39 @@ pub const Names = enum {
     pos, current, base, previous, initial_out, result, last, resolved_link,
     maybe_cached_resolved, stats, link_target, id, dev, ino, restart_out,
 };
-pub const Activation = frames.Frame(Names);
+const sync = @import("native_sync_arguments.zig");
+const LocalNames = enum {
+    cache, maybe_cached_result, seen_links, known_hard, original,
+    pos, current, base, previous, initial_out, result, last, resolved_link,
+    maybe_cached_resolved, stats, link_target, id, dev, ino, restart_out,
+};
+pub const Locals = frames.Frame(LocalNames);
+/// The two Source parameters belong to the actual linked-VM argument frame.
+/// This borrowed view adds no duplicate parameter root and does not own locals.
+pub const Activation = struct {
+    arguments: *sync.Arguments,
+    locals: *Locals,
+    pub fn get(self: *const Activation, comptime name: Names) c.JSValue {
+        return switch (name) {
+            .p => self.arguments.get(0),
+            .options => self.arguments.get(1),
+            else => self.locals.get(@field(LocalNames, @tagName(name))),
+        };
+    }
+    pub fn take(self: *Activation, comptime name: Names, incoming: anyerror!c.JSValue) !void {
+        return switch (name) {
+            .p => self.arguments.take(0, incoming),
+            .options => self.arguments.take(1, incoming),
+            else => self.locals.take(@field(LocalNames, @tagName(name)), incoming),
+        };
+    }
+    pub fn copy(self: *Activation, comptime name: Names, value: c.JSValue) !void {
+        return self.take(name, c.JS_DupValue(self.arguments.engine.context, value));
+    }
+    pub fn clear(self: *Activation, comptime name: Names) !void {
+        return self.take(name, c.pi_js_undefined());
+    }
+};
 pub const Imports = struct {
     paths: c.JSValue,
     safe_map: c.JSValue,

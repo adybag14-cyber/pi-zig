@@ -4,8 +4,10 @@ const std = @import("std");
 const v = @import("native_ai_provider_values.zig");
 const c = v.c;
 const Scope = @import("native_node_operation_scope.zig").Scope;
+const sync = @import("native_sync_arguments.zig");
+pub const ArgumentDefinition = sync.Definition;
 pub const Callback = *const fn (*v.em.Engine, c.JSValue, []const c.JSValue, []const c.JSValue) anyerror!c.JSValue;
-const State = struct { engine: *v.em.Engine, callback: Callback, roots: []c.JSValue, constructible: bool, reserved: usize };
+const State = struct { engine: *v.em.Engine, callback: Callback, roots: []c.JSValue, constructible: bool, reserved: usize, arguments: ?sync.Definition = null };
 fn finalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
     const engine = state.engine;
@@ -41,7 +43,11 @@ fn call(_: ?*c.JSContext, function: c.JSValue, receiver_or_target: c.JSValue, ar
     // A nested callback/finalizer can publish first fatal independently of the
     // diagnostic slot; all receiver roots retire before this frame is popped.
     var scope = Scope.init(engine);
-    return scope.finish(invoke(&scope, state, receiver_or_target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0)) catch |err| failure(engine, err, 0);
+    const result: anyerror!c.JSValue = if (state.arguments) |definition|
+        invokeArguments(&scope, function, state, receiver_or_target, argc, argv, flags, definition)
+    else
+        invoke(&scope, state, receiver_or_target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0);
+    return scope.finish(result) catch |err| failure(engine, err, 0);
 }
 fn invoke(scope: *Scope, state: *State, receiver_or_target: c.JSValue, args: []const c.JSValue, constructing: bool) !c.JSValue {
     try scope.pending(); try state.engine.checkNativeEntry();
@@ -61,13 +67,26 @@ fn createReceiver(engine: *v.em.Engine, target: c.JSValue) !c.JSValue {
     var stage = Scope.init(engine); return stage.finish(receiverBody(&stage, target));
 }
 fn receiverBody(stage: *Scope, target: c.JSValue) !c.JSValue {
-    // Same existing native_class.object algorithm, with separate guest-get and
-    // proven non-guest object-allocation boundaries. Never classify getter DATA.
-    const prototype = try stage.get(target, "prototype");
+    // Actual GetPrototypeFromConstructor uses Object.prototype from newTarget's
+    // own realm when its live prototype property is not an object.
+    try stage.pending();
+    const prototype = try stage.checked(c.JS_PiGetObjectPrototypeFromConstructor(stage.engine.context, target));
     const generation = try stage.beforeAllocation();
-    const receiver = try stage.checkedAllocation(if (c.JS_IsObject(prototype)) c.JS_NewObjectProto(stage.engine.context, prototype) else c.JS_NewObject(stage.engine.context), generation);
+    const receiver = try stage.checkedAllocation(c.JS_NewObjectProto(stage.engine.context, prototype), generation);
     return c.JS_DupValue(stage.engine.context, receiver);
 }
+fn invokeArguments(scope: *Scope, function: c.JSValue, state: *State, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int, definition: ArgumentDefinition) !c.JSValue {
+    try scope.pending(); try state.engine.checkNativeEntry();
+    const constructing = flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0;
+    if (constructing and !state.constructible) return v.js.typeError(state.engine, "Module method is not a constructor");
+    const receiver = if (constructing) try scope.own(try createReceiver(state.engine, target)) else target;
+    // Pass the actual class-call flags and argc/argv. The VM owns formal-slot
+    // selection and terminal retirement; no copied Zig parameter roots exist.
+    const result = try scope.checked(sync.invoke(state.engine, function, receiver, argc, argv,
+        flags, definition, state.roots, false));
+    return c.JS_DupValue(state.engine.context, if (constructing and !c.JS_IsObject(result)) receiver else result);
+}
+
 fn invokeCallback(scope: *Scope, state: *State, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
     var output = try state.callback(state.engine, receiver, args, state.roots);
     // Successful native return + actual pending/B1 is still failure. There is
@@ -119,4 +138,48 @@ pub fn capturedRoots(engine: *v.em.Engine, known_function: c.JSValue) ![]const c
 }
 fn define(engine: *v.em.Engine, target: c.JSValue, name: [*:0]const u8, owned: c.JSValue, flags: c_int) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, target, name, owned, flags | c.JS_PROP_THROW) < 0) return v.js.capture(engine);
+}
+
+/// Explicit opt-in for Source declarations with actual mutable formal slots.
+/// Definition.formal_count is independent of observable Function.length.
+pub fn createWithArguments(engine: *v.em.Engine, name: [*:0]const u8, length: c_int, constructible: bool, definition: ArgumentDefinition, roots: []const c.JSValue) !c.JSValue {
+    var scope = Scope.init(engine);
+    return scope.finish(createArgumentsBody(&scope, name, length, constructible, definition, roots));
+}
+fn missingArguments(_: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) anyerror!c.JSValue {
+    return error.ActualModuleArgumentFrameRequired;
+}
+fn createArgumentsBody(scope: *Scope, name: [*:0]const u8, length: c_int, constructible: bool, argument_definition: ArgumentDefinition, roots: []const c.JSValue) !c.JSValue {
+    const engine = scope.engine;
+    try scope.pending(); try engine.checkNativeEntry();
+    const root_bytes = std.math.mul(usize, roots.len, @sizeOf(c.JSValue)) catch return error.OutOfMemory;
+    const reserved = std.math.add(usize, @sizeOf(State), root_bytes) catch return error.OutOfMemory;
+    if (c.pi_js_native_memory_reserve(engine.native_memory_owner, reserved) == 0) return error.OutOfMemory;
+    var attached = false;
+    errdefer if (!attached) c.pi_js_native_memory_release(engine.native_memory_owner, reserved);
+    const state = try engine.gpa.create(State);
+    errdefer if (!attached) engine.gpa.destroy(state);
+    const retained = try engine.gpa.alloc(c.JSValue, roots.len);
+    errdefer if (!attached) engine.gpa.free(retained);
+    var id: c.JSClassID = 0;
+    if (c.JS_NewClassID(engine.runtime, &id) == 0) return error.OutOfMemory;
+    const definition: c.JSClassDef = .{ .class_name = "Native Module Function", .call = call, .finalizer = finalizer, .gc_mark = mark };
+    if (c.JS_NewClass(engine.runtime, id, &definition) < 0) return error.OutOfMemory;
+    const prototype = try scope.checked(c.JS_GetFunctionProto(engine.context));
+    const generation = try scope.beforeAllocation();
+    const function = try scope.checkedAllocation(c.JS_NewObjectProtoClass(engine.context, prototype, id), generation);
+    for (roots, retained) |root, *slot| slot.* = c.JS_DupValue(engine.context, root);
+    state.* = .{ .engine = engine, .callback = missingArguments, .roots = retained,
+        .constructible = constructible, .reserved = reserved, .arguments = argument_definition };
+    _ = c.JS_SetOpaque(function, state);
+    attached = true;
+    _ = c.JS_SetConstructorBit(engine.context, function, constructible);
+    try scope.define(function, "name", try scope.text(std.mem.span(name)), c.JS_PROP_CONFIGURABLE);
+    try scope.define(function, "length", c.JS_NewInt32(engine.context, length), c.JS_PROP_CONFIGURABLE);
+    if (constructible) {
+        const instance_prototype = try scope.object();
+        try scope.define(instance_prototype, "constructor", function, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE);
+        try scope.define(function, "prototype", instance_prototype, c.JS_PROP_WRITABLE);
+    }
+    return c.JS_DupValue(engine.context, function);
 }

@@ -5,7 +5,9 @@ const a = @import("native_node_argument_values.zig");
 const v = a.v;
 const c = a.c;
 const Scope = a.Scope;
-const Frame = a.frames.Frame(enum { from, paths, index, last, code });
+const sync = @import("native_sync_arguments.zig");
+const Frame = a.frames.Frame(enum { paths, index, last, code });
+pub const definition: sync.Definition = .{ .formal_count = 1, .callback = invoke, .hooks = sync.frameHooks(Frame) };
 const nm_len: i32 = 12;
 fn number(s: *Scope, value: i32) c.JSValue { return c.JS_NewInt32(s.engine.context, value); }
 fn equalNumber(s: *Scope, value: c.JSValue, expected: i32) bool { return s.equal(value, number(s, expected)); }
@@ -46,11 +48,11 @@ fn suffixBody(s: *Scope, owner: c.JSValue, from: c.JSValue, last: c.JSValue, win
     return a.duplicate(s.engine, try s.binary(0, prefix,
         try s.get(owner, if (windows) "windowsNodeModules" else "posixNodeModules")));
 }
-fn pushPath(s: *Scope, owner: c.JSValue, frame: *Frame, windows: bool) !c.JSValue {
+fn pushPath(s: *Scope, owner: c.JSValue, frame: *Frame, from: c.JSValue, windows: bool) !c.JSValue {
     // The captured push callee is selected before the sliced suffix argument.
     const function = try s.get(owner, "arrayPush");
     const value = try s.own(try a.expression(s.engine, suffixBody,
-        .{ owner, frame.get(.from), frame.get(.last), windows }));
+        .{ owner, from, frame.get(.last), windows }));
     _ = try s.call(function, frame.get(.paths), &.{value});
     return c.pi_js_undefined();
 }
@@ -68,25 +70,27 @@ fn matches(s: *Scope, owner: c.JSValue, matched: i32, current: c.JSValue) !c.JSV
     return a.boolean(s, s.equal(expected, current));
 }
 fn newPaths(s: *Scope) !c.JSValue { return a.duplicate(s.engine, try a.array(s)); }
-pub fn invoke(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+pub fn invoke(engine: *v.em.Engine, _: c.JSValue, args: *sync.Arguments, roots: []const c.JSValue) !c.JSValue {
     var s = Scope.init(engine);
-    const frame = Frame.create(&s.values) catch |err| return s.finish(err);
-    return a.finishFrame(&s, frame, body(&s, frame, roots[0], a.arg(args, 0)));
+    const frame = args.createFrame(&s.values, Frame) catch |err| return s.finish(err);
+    // The real argument owner closes copied formals before these original
+    // locals; direct calls keep their actual aliased slot in the caller.
+    return s.finish(body(&s, frame, args, roots[0]));
 }
-fn body(s: *Scope, frame: *Frame, owner: c.JSValue, original: c.JSValue) !c.JSValue {
-    try frame.take(.from, a.expression(s.engine, resolve, .{ owner, original }));
+fn body(s: *Scope, frame: *Frame, args: *sync.Arguments, owner: c.JSValue) !c.JSValue {
+    try args.take(0, a.expression(s.engine, resolve, .{ owner, args.get(0) }));
     const windows = s.truthy(try s.get(owner, "windows"));
     if (windows) {
-        if (try a.condition(s.engine, drivePart, .{ owner, frame.get(.from), @as(i32, 1), @as(i32, 92) }) and
-            try a.condition(s.engine, drivePart, .{ owner, frame.get(.from), @as(i32, 2), @as(i32, 58) }))
-            return a.expression(s.engine, rootWindows, .{ owner, frame.get(.from) });
-    } else if (s.equal(frame.get(.from), try s.get(owner, "rootSlash"))) {
+        if (try a.condition(s.engine, drivePart, .{ owner, args.get(0), @as(i32, 1), @as(i32, 92) }) and
+            try a.condition(s.engine, drivePart, .{ owner, args.get(0), @as(i32, 2), @as(i32, 58) }))
+            return a.expression(s.engine, rootWindows, .{ owner, args.get(0) });
+    } else if (s.equal(args.get(0), try s.get(owner, "rootSlash"))) {
         return a.expression(s.engine, rootPosix, .{owner});
     }
     try frame.take(.paths, a.expression(s.engine, newPaths, .{}));
-    try frame.take(.index, a.expression(s.engine, indexFromLength, .{ frame.get(.from), @as(i32, 1) }));
+    try frame.take(.index, a.expression(s.engine, indexFromLength, .{ args.get(0), @as(i32, 1) }));
     var matched: i32 = 0;
-    try frame.take(.last, a.field(s.engine, frame.get(.from), "length"));
+    try frame.take(.last, a.field(s.engine, args.get(0), "length"));
     var steps: usize = 0;
     while (try a.condition(s.engine, within, .{frame.get(.index)})) {
         try @import("native_node_commonjs_interrupt.zig").step(s.engine, &steps);
@@ -94,14 +98,14 @@ fn body(s: *Scope, frame: *Frame, owner: c.JSValue, original: c.JSValue) !c.JSVa
         // survives the update/condition; true body entry resets it first.
         try frame.clear(.code);
         try frame.take(.code, a.expression(s.engine, code,
-            .{ owner, frame.get(.from), frame.get(.index) }));
+            .{ owner, args.get(0), frame.get(.index) }));
         const current = frame.get(.code);
         const separator = if (windows)
             equalNumber(s, current, 92) or equalNumber(s, current, 47) or equalNumber(s, current, 58)
         else
             equalNumber(s, current, 47);
         if (separator) {
-            if (matched != nm_len) _ = try a.expression(s.engine, pushPath, .{ owner, frame, windows });
+            if (matched != nm_len) _ = try a.expression(s.engine, pushPath, .{ owner, frame, args.get(0), windows });
             // Source last = i stores the new value before retiring the old.
             try frame.copy(.last, frame.get(.index));
             matched = 0;
