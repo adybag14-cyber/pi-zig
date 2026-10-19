@@ -23,6 +23,7 @@ pub fn Frame(comptime Names: type) type {
             ready: bool,
             position: usize,
             name: [*:0]const u8,
+            immutable_argument: bool,
         };
         pub fn create(s: *Scope) !*Self {
             var class_id: c.JSClassID = 0;
@@ -88,6 +89,18 @@ pub fn Frame(comptime Names: type) type {
             completion.release(value);
         }
         pub fn capture(self: *Self, s: *Scope, comptime name: Names, source_name: [*:0]const u8) !c.JSValue {
+            return self.captureBinding(s, name, source_name, false, c.pi_js_undefined());
+        }
+        /// A read-only Source parameter already lives in the genuine C argv.
+        /// Its escaped cell owns the captured value; no original local slot is
+        /// added, so unrelated arguments still retire in their original order.
+        /// Use a dedicated Names slot, never take/copy/assign that binding, and
+        /// install this async owner before calling the capture operation.
+        pub fn captureImmutableArgument(self: *Self, s: *Scope, comptime name: Names, source_name: [*:0]const u8, value: c.JSValue) !c.JSValue {
+            if (!self.async_owner) return error.ImmutableArgumentRequiresActualAsyncFrame;
+            return self.captureBinding(s, name, source_name, true, value);
+        }
+        fn captureBinding(self: *Self, s: *Scope, comptime name: Names, source_name: [*:0]const u8, immutable_argument: bool, value: c.JSValue) !c.JSValue {
             const position = @intFromEnum(name);
             if (!c.JS_IsUndefined(self.captures[position])) return v.own(s, c.JS_DupValue(self.engine.context, self.captures[position]));
             var class_id: c.JSClassID = 0;
@@ -99,7 +112,7 @@ pub fn Frame(comptime Names: type) type {
             if (c.pi_js_native_memory_reserve(self.engine.native_memory_owner, @sizeOf(Cell)) == 0) return error.OutOfMemory;
             errdefer c.pi_js_native_memory_release(self.engine.native_memory_owner, @sizeOf(Cell));
             const cell = try self.engine.gpa.create(Cell);
-            cell.* = .{ .engine = self.engine, .activation = c.JS_DupValue(self.engine.context, self.owner), .lease = c.JS_DupValue(self.engine.context, lease), .value = c.pi_js_undefined(), .ready = false, .position = position, .name = source_name };
+            cell.* = .{ .engine = self.engine, .activation = c.JS_DupValue(self.engine.context, self.owner), .lease = c.JS_DupValue(self.engine.context, lease), .value = if (immutable_argument) c.JS_DupValue(self.engine.context, value) else c.pi_js_undefined(), .ready = immutable_argument, .position = position, .name = source_name, .immutable_argument = immutable_argument };
             _ = c.JS_SetOpaque(owner, cell);
             self.captures[position] = if (self.async_owner) owner else c.JS_DupValue(self.engine.context, owner);
             return owner;
@@ -154,7 +167,7 @@ pub fn Frame(comptime Names: type) type {
         }
         pub fn read(s: *Scope, binding: c.JSValue) !c.JSValue {
             const cell = cellFrom(binding);
-            const activation = if (c.JS_IsUndefined(cell.activation)) null else from(cell.activation);
+            const activation = if (cell.immutable_argument or c.JS_IsUndefined(cell.activation)) null else from(cell.activation);
             const initialized = if (activation) |a| a.ready[cell.position] else cell.ready;
             if (!initialized) return uninitialized(s, cell.name);
             const value = if (activation) |a| a.values[cell.position] else cell.value;
@@ -190,8 +203,10 @@ pub fn Frame(comptime Names: type) type {
             for (self.captures, 0..) |root, position| {
                 if (c.JS_IsUndefined(root) or !c.JS_IsLiveObject(self.engine.runtime, root)) continue;
                 const cell = cellFrom(root);
-                cell.value = c.JS_DupValue(self.engine.context, self.values[position]);
-                cell.ready = self.ready[position];
+                if (!cell.immutable_argument) {
+                    cell.value = c.JS_DupValue(self.engine.context, self.values[position]);
+                    cell.ready = self.ready[position];
+                }
                 const activation = cell.activation;
                 const lease = cell.lease;
                 cell.activation = c.pi_js_undefined(); cell.lease = c.pi_js_undefined();

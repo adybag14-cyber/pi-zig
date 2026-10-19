@@ -176,3 +176,21 @@ Production use requires both the genuine state identity and the terminal-close
 factory opt-in. This unit does not silently migrate existing native bodies or
 qualify callers still using an early local close. No compilation, metadata, or
 runtime acceptance is asserted here.
+
+## Immutable parameter capture successor
+
+A callback may capture a read-only parameter that already belongs to the real
+native argv. Frame.captureImmutableArgument uses a dedicated borrowed capture
+slot and the same genuine activation lease. Only the escaped cell owns another
+reference to that parameter; it creates no additional original Frame local.
+The cell's immutable value is kept while terminal close detaches the activation
+and lease. Existing mutable local captures are unchanged. Callers must not
+assign, take or copy the dedicated immutable binding slot.
+
+Three additional literal Source/native controls distinguish captured argv0,
+uncaptured argv1, a local and the call receiver. They exercise adoption with all
+roots live, uncaptured argument retirement before local/receiver, abandoned
+Await retention through the escaped cell, and immediate retirement after the
+last callback is dropped. The retirement target now declares 24 named controls.
+Both independent finite source reviews are closed; compilation and actual
+metadata/runtime qualification remain Root-owned and are not claimed here.

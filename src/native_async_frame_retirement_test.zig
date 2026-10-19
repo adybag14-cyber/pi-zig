@@ -800,3 +800,139 @@ test "VM async retirement activation lease rejects unrelated frames without cons
     try std.testing.expectEqual(@as(u32, 1), p.counts[1]);
     try std.testing.expectEqual(@as(usize, 0), p.hook_calls);
 }
+
+
+// Read-only captured parameters use their existing actual argv owner. Only an
+// escaping cell duplicates the captured value; no extra original local exists.
+const ArgumentFrame = @import("extensions/native_public_lexical_frame.zig").Frame(enum { parameter, local });
+fn argumentRead(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&scope, argumentReadBody(&scope, roots[0]));
+}
+fn argumentReadBody(scope: *Scope, binding: c.JSValue) !c.JSValue {
+    return v.duplicate(scope, try ArgumentFrame.read(scope, binding));
+}
+fn argumentCapture(scope: *Scope, frame: *ArgumentFrame, value: c.JSValue) !void {
+    const binding = try frame.captureImmutableArgument(scope, .parameter, "captured", value);
+    const callback = try v.arrow(scope, "", 0, argumentRead, &.{binding});
+    try v.put(scope, try v.global(scope, "globalThis"), "closeEscaped", callback);
+}
+fn argumentClose(engine: *Engine, owner: c.JSValue) !void {
+    const p = close_active.?;
+    p.hook_calls += 1; p.hook_counts = p.counts;
+    if (!c.JS_IsUndefined(p.pending)) p.hook_promise_state = c.JS_PromiseState(engine.context, p.pending);
+    return ArgumentFrame.closeAtAsyncTerminal(engine, owner);
+}
+fn argumentNative(engine: *Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue, owner: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishAction(&scope, argumentAdvance(&scope, args, owner, completion, input));
+}
+fn argumentAdvance(scope: *Scope, args: []const c.JSValue, owner: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    const p = close_active.?;
+    if (completion == .start) {
+        const frame = try ArgumentFrame.createAsync(scope);
+        af.replaceState(scope.engine, owner, v.duplicate(scope, frame.owner));
+        try frame.take(.local, p.token(2));
+        var capture_scope: Scope = .{ .engine = scope.engine };
+        try v.owned.finishVoid(&capture_scope, argumentCapture(&capture_scope, frame, v.arg(args, 0)));
+        if (p.drop_callback) {
+            var deletion: Scope = .{ .engine = scope.engine };
+            try v.owned.finishVoid(&deletion, leaseDropBody(&deletion));
+        }
+        return .{ .awaited = if (p.mode == .abandoned)
+            v.duplicate(scope, try v.global(scope, "closeGate")) else c.pi_js_undefined() };
+    }
+    p.resumed += 1;
+    if (completion == .rejected) return .{ .thrown = v.duplicate(scope, input) };
+    return .{ .returned = v.duplicate(scope, try v.global(scope, "closeReturn")) };
+}
+fn argumentInstall(scope: *Scope) !void {
+    var boundary: v.guest.Boundary = .{ .engine = scope.engine }; try boundary.begin();
+    const function = try boundary.finishValue(scope, af.createResumableWithClose(
+        scope.engine, "", 2, argumentNative, &.{}, argumentClose));
+    try v.put(scope, try v.global(scope, "globalThis"), "argumentNative", function);
+}
+fn argumentSetup(p: *CloseProbe, native: bool, abandoned: bool, dropped: bool) !void {
+    p.mode = if (abandoned) .abandoned else .returned; p.drop_callback = dropped;
+    try closeSetup(p, native);
+    var scope: Scope = .{ .engine = p.engine };
+    try v.owned.finishVoid(&scope, argumentInstall(&scope));
+    try run(p.engine, if (dropped)
+        "globalThis.argumentSource=async function(captured,unused){const local=closeMake(2);globalThis.closeEscaped=()=>captured;delete globalThis.closeEscaped;await closeGate;return closeReturn};"
+        else if (abandoned)
+        "globalThis.argumentSource=async function(captured,unused){const local=closeMake(2);globalThis.closeEscaped=()=>captured;await closeGate;return closeReturn};"
+        else
+        "globalThis.argumentSource=async function(captured,unused){const local=closeMake(2);globalThis.closeEscaped=()=>captured;await undefined;return closeReturn};");
+    try run(p.engine, if (native) "globalThis.closeSelected=argumentNative;"
+        else "globalThis.closeSelected=argumentSource;");
+}
+fn argumentStart(p: *CloseProbe) !c.JSValue {
+    try run(p.engine, "globalThis.closePending=Reflect.apply(closeSelected,closeMake(3),[closeMake(0),closeMake(1)]);void 0;");
+    const pending = try evaluate(p.engine, "closePending");
+    errdefer p.engine.freeValue(pending);
+    p.pending = pending;
+    c.JS_PromiseMarkAsHandled(p.engine.context, pending);
+    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+    try leaseCounts(p, .{ 0, 0, 0, 0 });
+    for (p.made) |made| try std.testing.expect(made);
+    return pending;
+}
+fn argumentReadCapture(p: *CloseProbe) !void {
+    const value = try evaluate(p.engine, "closeEscaped()");
+    defer p.engine.freeValue(value);
+    const token: *CloseToken = @ptrCast(@alignCast(c.JS_GetOpaque(value, p.holder_class) orelse return error.MissingArgumentCapture));
+    try std.testing.expect(token.probe == p and token.slot == 0);
+}
+test "VM async retirement captured immutable argument preserves uncaptured argv order through adoption" {
+    inline for (.{ false, true }) |native| {
+        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+        defer p.deinit(); try argumentSetup(&p, native, false, false);
+        try run(p.engine, "globalThis.closeReturn={get then(){closeAdoption();return undefined}};");
+        const pending = try argumentStart(&p); defer p.engine.freeValue(pending);
+        c.JS_RunGC(p.engine.runtime);
+        try leaseCounts(&p, .{ 0, 0, 0, 0 });
+        try closeOne(&p);
+        try std.testing.expectEqual(@as(usize, 1), p.adoption_calls);
+        try std.testing.expectEqualSlices(u32, &.{ 0, 0, 0, 0 }, &p.adoption_counts);
+        try leaseCounts(&p, .{ 0, 1, 1, 1 });
+        try std.testing.expectEqualSlices(u8, &.{ 1, 2, 3 }, p.order[0..p.length]);
+        try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, c.JS_PromiseState(p.engine.context, pending));
+        try argumentReadCapture(&p);
+        if (native) {
+            try std.testing.expectEqual(@as(usize, 1), p.hook_calls);
+            try std.testing.expectEqualSlices(u32, &.{ 0, 1, 0, 0 }, &p.hook_counts);
+        }
+        try run(p.engine, "delete globalThis.closeEscaped;");
+        try closeOrder(&p, &.{ 1, 2, 3, 0 });
+    }
+}
+test "VM async retirement escaped immutable argument retains real abandoned invocation until callback removal" {
+    inline for (.{ false, true }) |native| {
+        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+        defer p.deinit(); try argumentSetup(&p, native, true, false);
+        const pending = try argumentStart(&p); defer p.engine.freeValue(pending);
+        try run(p.engine, "delete globalThis.closeGate;");
+        try leaseCollect(&p);
+        try leaseCounts(&p, .{ 0, 0, 0, 0 });
+        try argumentReadCapture(&p);
+        try std.testing.expectEqual(@as(usize, 0), p.hook_calls);
+        try run(p.engine, "delete globalThis.closeEscaped;");
+        // No GC call is needed to dispose a dropped, acyclic argument cell.
+        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
+        try std.testing.expectEqual(@as(usize, 0), p.resumed);
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+    }
+}
+test "VM async retirement dropped immutable argument cell adds no retained original argument slot" {
+    inline for (.{ false, true }) |native| {
+        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+        defer p.deinit(); try argumentSetup(&p, native, true, true);
+        const pending = try argumentStart(&p); defer p.engine.freeValue(pending);
+        try run(p.engine, "delete globalThis.closeGate;");
+        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
+        try std.testing.expectEqual(@as(usize, 0), p.resumed);
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+    }
+}
