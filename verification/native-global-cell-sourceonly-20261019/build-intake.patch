@@ -1,0 +1,11 @@
+diff --git a/build.zig b/build.zig
+--- a/build.zig
++++ b/build.zig
+@@ -2003,1 +2003,7 @@
+     b.step("build-native-vm-pending-promise", "Install actual intrinsic pending Promise controls without execution").dependOn(&b.addInstallArtifact(pending_promise_tests, .{}).step);
++    const native_global_tests = b.addTest(.{
++        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_native_global_test.zig"), .target = target, .optimize = optimize }),
++        .filters = &.{"VM native Global"}, .use_llvm = use_llvm,
++    });
++    linkQuickJs(b, native_global_tests.root_module, quickjs, sqlite_lib_dir);
++    b.step("build-native-vm-native-global", "Install actual native Global ownership controls without execution").dependOn(&b.addInstallArtifact(native_global_tests, .{}).step);

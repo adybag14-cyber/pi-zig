@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "status": "source_only_peer_closed",
+  "scope": "Selected no-callback native object Global cells for genuine Node AliasedBuffer ownership",
+  "parent_source_commit": "8ad5d097cd9bedee41f68e158843f07760a1abb9",
+  "current_parent_commit": "d2b65a31fbfd8c37a4937fb6420019b60fb9413c",
+  "current_parent_note": "The intervening V17 private correction commit adds only isolated verification artifacts and leaves C/H/build source equal to 8ad5d097.",
+  "production": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "6DC7D6C54636F996F66925F14C681F87A34F0A763C6775A368DB72AB0406C78F",
+      "bytes": 2339916
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "E1AF68AEFA8A8D8DD565F1ABCAA23C7F82C04DD78E693074533D272CE4C95299",
+      "bytes": 98289
+    },
+    {
+      "path": "build.zig",
+      "sha256": "2149B2BAD4A8E3CCE9EADCF0001E919EEAFE1F7CA31E3378BC13B31A3E497610",
+      "bytes": 414613
+    }
+  ],
+  "test_root": {
+    "path": "src/native_vm_native_global_test.zig",
+    "sha256": "80C25511CFF515A7A8A3D51B2E4B0B639754BF7C3DCA81F3098EBC45DA7F9726",
+    "bytes": 31662,
+    "declared_count": 18,
+    "names": [
+      "VM native Global strong root retains actual typed array identity through collection",
+      "VM native Global weak transition allocates nothing and clears before target finalizer",
+      "VM native Global Get holds only its explicit Local without kept objects",
+      "VM native Global cells keep independent strong and weak entitlements",
+      "VM native Global retained real property keeps a weak target live until replacement",
+      "VM native Global strong root survives a real cycle that weak transition then collects",
+      "VM native Global queued zero reference target cannot be resurrected by another finalizer",
+      "VM native Global doomed cyclic target is absent before its own finalizer",
+      "VM native Global reset coexists with actual WeakMap WeakRef and FinalizationRegistry",
+      "VM native Global releasing a weak cell removes only its own embedded link",
+      "VM native Global strong release publishes an empty cell before reentrant native cleanup",
+      "VM native Global weak transition permits actual finalizer disposal of the cell",
+      "VM native Global allocation failure borrows input and publishes no cell",
+      "VM native Global rejects primitives and holds revoked proxies without lookup",
+      "VM native Global creation preserves ordinary or fatal prior pending before validation",
+      "VM native Global weak and strong releases preserve the first actual pending reason",
+      "VM native Global flagged retained DATA and actual cleanup throw remain distinct",
+      "VM native Global cells retire before runtime while their native probes outlive cleanup"
+    ]
+  },
+  "build": {
+    "target": "build-native-vm-native-global",
+    "filter": "VM native Global",
+    "patch": "build-intake.patch",
+    "patch_sha256": "F1B2BB370E25D386CE31A328DF722F9AAFD4F1450B738E5C0ED39561FC447D6A",
+    "added_lines": 6,
+    "execution_edge": false,
+    "existing_library_only": true
+  },
+  "packets": [
+    {
+      "path": "production-delta.json",
+      "sha256": "AB61F2504F371891D4A340B00F0CDA58EE471D60BEE7E08F7B04EC54CFD4A479"
+    },
+    {
+      "path": "source-plan.json",
+      "sha256": "F33BF40C719D4C46B53CAFB864D158257C0D091AF21372579E540910C7ECB6B9"
+    },
+    {
+      "path": "authority/source-acquisition.json",
+      "sha256": "1D7F593945769956A4B939E63C109A75B360AC9AFD5DE2E4248C52060425AC64"
+    }
+  ],
+  "ownership": [
+    "New allocates one stable native cell, then duplicates one actual external strong object root. The embedded weak record is reserved in that allocation.",
+    "SetWeak links the real object weak chain before dropping the strong root; it accesses no cell storage after retirement can call a native finalizer.",
+    "Object disposal removes and clears native records before property or class finalizers. Original WeakMap/WeakRef/FinalizationRegistry two-pass cleanup remains unchanged.",
+    "Get returns one owned temporary Local or undefined. It neither allocates nor appends to kept_objects and rejects targets already queued with zero refs or marked for cycle removal.",
+    "Free unlinks the weak record or releases the strong owner after publishing disposing/undefined; the cell remains allocated through reentrant native cleanup.",
+    "Only actual pending reasons participate in release reduction. Retained flagged DATA is never promoted by New/Get/Free in the absence of an actual throw.",
+    "The selected API is object-only, VM-thread-only, with unique caller cell ownership, and every cell must be freed before its runtime."
+  ],
+  "authority": {
+    "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+    "v8_persistent_header": "92DC3B3241A2E42F08E4E959B0BEA9814ED2863303E5FEA23C175AD019B7A0F6",
+    "v8_global_handles": "086DBBC0ECC1E0AF27E26016C56525A9D905DB57CBC04A6B0ED0F3833D09E5DE",
+    "local_get_proof": "4CC038CC2C8EC0ABF47D05352D7792D0CA8EF197B98DDD44941C0D8D52D2ED28",
+    "node_aliased_buffer_inline": "7F503C60AB4AE93C492E1926C888C4E1FE89AE5BAB80510ECED151108556BD4C",
+    "node_aliased_buffer_header": "F5AEC5E5B138E4EF31F0CE223EB10A0FBD0A39EA57615C8CA6BD137BF4A9157E",
+    "node_binding_lifecycle": "7479736B86FD4E994B38EA7F75721CE4E0813D6CA93ED646461C558344D2F028",
+    "licenses": [
+      {
+        "path": "authority/V8-LICENSE",
+        "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509"
+      },
+      {
+        "path": "authority/NODE-MIT-LICENSE.txt",
+        "sha256": "86D2D599E5ACA4CE609F66171863A5EB405C3A520B27EF869C5740EA12CC9887"
+      }
+    ]
+  },
+  "peer_reviews": {
+    "sdk_production": "C6DC7/H E1AF and AB61: New/external root, allocation, SetWeak link-before-drop/no later cell access, Free empty publication/reentry, first-actual-pending reducer and ABI closed.",
+    "modules_production": "C6DC7 and AB61: embedded kind, early free_object removal, object-only atom exclusion, original two-pass coexistence and zero-ref/marked-cycle Get rejection closed.",
+    "modules_authority": "Actual original Global creation, no-callback weak slot reset and Get temporary Local proof closed.",
+    "controls": "All 18 declarations and helpers are finite-peer closed at80C25511: SDK1-6/11-17 with creation/release/pending, Modules7-10/18 with collection/teardown. No execution.",
+    "build": "Exact six-line install-only patchF1B2BB37 closed by Modules; existing shared linkQuickJs, no execution edge.",
+    "sdk_controls": "Exact root80C25511 declarations1-6/11-17 and Fixture/Probe creation/release/pending helpers closed; no execution.",
+    "modules_controls": "Exact root80C25511 declarations7-10/18 and Fixture/Probe GC/read cutpoints closed against actual DECREF/cycle/weak-record ownership."
+  },
+  "validation": {
+    "source_reversal": "Five C edits and one H addition reverse exactly to the committed pending-Promise C/H.",
+    "source_write_readback": true,
+    "execution": false,
+    "compiled": false,
+    "runtime": false,
+    "actual_metadata": null,
+    "source_hashes_reconfirmed": true,
+    "tracked_source_diff_check": true,
+    "raw_authority_formatting": "The exact Node MIT license prefix retains its original trailing blank separator; raw authority bytes are preserved."
+  },
+  "limits": [
+    "No weak callback, ClearWeak, cell move, primitive Global, cross-runtime access or post-runtime operation is added.",
+    "V8 moving-GC node layout is not reproduced; the selected lifetime and no-callback behavior are implemented with this VM's actual counted roots and weak target records.",
+    "Controls exercise the linked VM's actual DECREF and cycle-list cutpoints; their explicit finalizer schedule is not claimed as V8 object-finalizer scheduling.",
+    "SDK thin adapter and BindingData composition are separate units; this source receipt does not qualify their full graph.",
+    "Native API runtime qualification requires Root's later exact compiled-artifact grant."
+  ]
+}

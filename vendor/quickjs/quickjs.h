@@ -536,6 +536,20 @@ JS_EXTERN void JS_MarkValue(JSRuntime *rt, JSValueConst val,
 JS_EXTERN void JS_RunGC(JSRuntime *rt);
 JS_EXTERN bool JS_IsLiveObject(JSRuntime *rt, JSValueConst obj);
 
+/* Selected native object Global: one unique caller-owned cell, used only on
+   its VM thread and freed before JS_FreeRuntime. No cross-runtime access.
+   New borrows a live object, preserves actual pending, and returns NULL with
+   actual pending on failure. Its value is an external strong root.
+   SetWeak reserves nothing: it installs the real weak link before dropping
+   that root. Get returns an owned value or undefined, without kept objects,
+   allocation, guest calls, or pending changes. SetWeak/Free preserve the first
+   actual pending/fatal through retirement. No weak callback or ClearWeak. */
+typedef struct JSNativeGlobal JSNativeGlobal;
+JS_EXTERN JSNativeGlobal *JS_PiNewNativeGlobal(JSContext *ctx, JSValueConst object);
+JS_EXTERN void JS_PiNativeGlobalSetWeak(JSNativeGlobal *global);
+JS_EXTERN JSValue JS_PiNativeGlobalGet(JSNativeGlobal *global);
+JS_EXTERN void JS_PiFreeNativeGlobal(JSNativeGlobal *global);
+
 JS_EXTERN JSContext *JS_NewContext(JSRuntime *rt);
 JS_EXTERN void JS_FreeContext(JSContext *s);
 JS_EXTERN JSContext *JS_DupContext(JSContext *ctx);

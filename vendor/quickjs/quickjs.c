@@ -685,6 +685,7 @@ typedef enum {
     JS_WEAK_REF_KIND_MAP,
     JS_WEAK_REF_KIND_WEAK_REF,
     JS_WEAK_REF_KIND_FINALIZATION_REGISTRY_ENTRY,
+    JS_WEAK_REF_KIND_NATIVE_GLOBAL,
 } JSWeakRefKindEnum;
 
 typedef struct JSWeakRefRecord {
@@ -694,6 +695,7 @@ typedef struct JSWeakRefRecord {
         struct JSMapRecord *map_record;
         struct JSWeakRefData *weak_ref_data;
         struct JSFinRecEntry *fin_rec_entry;
+        struct JSNativeGlobal *native_global;
     } u;
 } JSWeakRefRecord;
 
@@ -1537,6 +1539,7 @@ static int JS_CreateProperty(JSContext *ctx, JSObject *p,
                              int flags);
 static int js_string_memcmp(JSString *p1, JSString *p2, int len);
 static void reset_weak_ref(JSRuntime *rt, JSWeakRefRecord **first_weak_ref);
+static void js_pi_reset_native_globals(JSWeakRefRecord **first_weak_ref);
 static bool is_valid_weakref_target(JSValueConst val);
 static void insert_weakref_record(JSValueConst target,
                                   struct JSWeakRefRecord *wr);
@@ -7539,6 +7542,11 @@ static void free_object(JSRuntime *rt, JSObject *p)
 
     p->free_mark = 1; /* used to tell the object is invalid when
                          freeing cycles */
+    /* Native phantom handles must already be empty when a property or
+       class finalizer observes this target. Other weak records keep their
+       original later two-pass reset order. */
+    if (unlikely(p->first_weak_ref))
+        js_pi_reset_native_globals(&p->first_weak_ref);
     /* free all the fields */
     sh = p->shape;
     pr = get_shape_prop(sh);
@@ -67384,6 +67392,136 @@ bool JS_IsSameValue(JSContext *ctx, JSValueConst op1, JSValueConst op2)
 bool JS_IsSameValueZero(JSContext *ctx, JSValueConst op1, JSValueConst op2)
 {
     return js_same_value_zero(ctx, op1, op2);
+}
+
+/* Native object Global cells. The strong value is an external root, not a
+   wrapper-internal mark edge. The caller frees the cell before its runtime. */
+struct JSNativeGlobal {
+    JSRuntime *rt;
+    JSValue value; /* owned while strong, borrowed while weak */
+    JSWeakRefRecord weak_ref; /* reserved at creation; never separately freed */
+    bool weak;
+    bool linked;
+    bool disposing;
+};
+
+static bool js_pi_native_global_is_live(JSRuntime *rt, JSValueConst value)
+{
+    JSObject *p;
+
+    if (!JS_IsObject(value))
+        return false;
+    p = JS_VALUE_GET_OBJ(value);
+    /* A different native finalizer can observe a target already queued for
+       decref or selected for cycle removal, before its free_object visit. */
+    return !p->free_mark && JS_REF_COUNT(p) > 0 &&
+        !(rt->gc_phase == JS_GC_PHASE_REMOVE_CYCLES && JS_GC_MARK(p));
+}
+
+static void js_pi_reset_native_globals(JSWeakRefRecord **first_weak_ref)
+{
+    JSWeakRefRecord **link = first_weak_ref;
+    JSWeakRefRecord *wr;
+
+    while ((wr = *link) != NULL) {
+        if (wr->kind != JS_WEAK_REF_KIND_NATIVE_GLOBAL) {
+            link = &wr->next_weak_ref;
+            continue;
+        }
+        JSNativeGlobal *global = wr->u.native_global;
+        *link = wr->next_weak_ref;
+        wr->next_weak_ref = NULL;
+        global->linked = false;
+        global->value = JS_UNDEFINED;
+    }
+}
+
+static void js_pi_native_global_unlink(JSNativeGlobal *global)
+{
+    JSWeakRefRecord **link;
+
+    if (!global->linked)
+        return;
+    link = get_first_weak_ref(global->value);
+    while (*link != &global->weak_ref) {
+        assert(*link != NULL);
+        link = &(*link)->next_weak_ref;
+    }
+    *link = global->weak_ref.next_weak_ref;
+    global->weak_ref.next_weak_ref = NULL;
+    global->linked = false;
+}
+
+JSNativeGlobal *JS_PiNewNativeGlobal(JSContext *ctx, JSValueConst object)
+{
+    JSNativeGlobal *global;
+
+    if (JS_HasException(ctx))
+        return NULL;
+    if (!js_pi_native_global_is_live(ctx->rt, object)) {
+        JS_ThrowTypeError(ctx, "native Global requires a live object");
+        return NULL;
+    }
+    global = js_mallocz(ctx, sizeof(*global));
+    if (!global)
+        return NULL;
+    global->rt = ctx->rt;
+    global->value = js_dup(object);
+    global->weak_ref.kind = JS_WEAK_REF_KIND_NATIVE_GLOBAL;
+    global->weak_ref.u.native_global = global;
+    return global;
+}
+
+void JS_PiNativeGlobalSetWeak(JSNativeGlobal *global)
+{
+    JSRuntime *rt;
+    JSValue previous;
+    JSNativeAsyncPending pending = { false, JS_UNDEFINED };
+
+    if (!global || global->disposing || global->weak)
+        return;
+    rt = global->rt;
+    previous = global->value;
+    global->weak = true;
+    global->linked = true;
+    insert_weakref_record(previous, &global->weak_ref);
+    /* No cell access follows retirement: a native finalizer may release
+       the caller's cell after the real target has cleared its weak link. */
+    js_pi_continuation_take_pending_rt(rt, &pending);
+    JS_FreeValueRT(rt, previous);
+    js_pi_continuation_take_pending_rt(rt, &pending);
+    if (pending.present)
+        rt->current_exception = pending.reason;
+}
+
+JSValue JS_PiNativeGlobalGet(JSNativeGlobal *global)
+{
+    if (!global || global->disposing ||
+        !js_pi_native_global_is_live(global->rt, global->value))
+        return JS_UNDEFINED;
+    return js_dup(global->value);
+}
+
+void JS_PiFreeNativeGlobal(JSNativeGlobal *global)
+{
+    JSRuntime *rt;
+    JSValue previous;
+    JSNativeAsyncPending pending = { false, JS_UNDEFINED };
+
+    if (!global || global->disposing)
+        return;
+    rt = global->rt;
+    global->disposing = true;
+    previous = global->weak ? JS_UNDEFINED : global->value;
+    js_pi_native_global_unlink(global);
+    global->value = JS_UNDEFINED;
+    /* Keep this empty cell valid during reentrant native cleanup. */
+    js_pi_continuation_take_pending_rt(rt, &pending);
+    JS_FreeValueRT(rt, previous);
+    js_pi_continuation_take_pending_rt(rt, &pending);
+    if (pending.present)
+        rt->current_exception = pending.reason;
+    js_free_rt(rt, global);
 }
 
 /* WeakRef */

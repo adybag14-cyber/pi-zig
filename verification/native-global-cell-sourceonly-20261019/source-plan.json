@@ -1,0 +1,93 @@
+{
+  "status": "source-only proposal before C/H mutation",
+  "parent_commit": "8ad5d097cd9bedee41f68e158843f07760a1abb9",
+  "selected_consumer": "Node24.13 AliasedBuffer Global<TypedArray>, initially strong and made weak only after four original BindingData property Sets; no ClearWeak or callback needed",
+  "abi": [
+    "typedef struct JSNativeGlobal JSNativeGlobal;",
+    "JSNativeGlobal *JS_PiNewNativeGlobal(JSContext *ctx, JSValueConst object);",
+    "void JS_PiNativeGlobalSetWeak(JSNativeGlobal *global);",
+    "JSValue JS_PiNativeGlobalGet(JSNativeGlobal *global);",
+    "void JS_PiFreeNativeGlobal(JSNativeGlobal *global);"
+  ],
+  "contract": {
+    "new": "Borrowed object from the context's runtime, returned uniquely owned stable native cell. Preserve actual pending before brand/allocation. Reject nonobjects; no guest property or constructor operations. Allocate the cell and embedded weak record together at original Global creation, then take one external counted value root.",
+    "set_weak": "No allocation and no native-entry rejection. Link the actual embedded weak record to the target before releasing the external strong root. A repeated or empty transition is harmless. Preserve the first actual pending/fatal reason around retirement; do not classify DATA or poll another policy.",
+    "get": "Owned duplicate of a still-live target, or undefined for empty/dead/null. No public WeakRef, kept-object table, guest call, or new allocation. Use the cell's actual runtime. A finalizer must not resurrect a zero-refcount queued target, free_mark object, or target already selected for cycle removal.",
+    "free": "Unique caller destroys its cell while the runtime remains alive. Unlink a live weak record without releasing a borrowed value, or clear the strong value before its actual release. Retain cell storage during reentrant finalization, expose empty to Get, and suppress recursive disposal until the outer retirement finishes. Preserve first actual pending/fatal. Null is harmless.",
+    "lifetime": "VM-owning thread only; all cells are freed before JS_FreeRuntime. No cross-runtime or post-runtime access. SDK explicitly confirmed this selected consumer lifetime.",
+    "gc": "Strong value is an external native root, so it is not duplicated as a wrapper-internal JS_MarkValue edge. A weak link owns no target reference. Native cell itself has no JS wrapper."
+  },
+  "c_mapping": {
+    "new_kind": "One JSWeakRefKindEnum member and native-global union member; embedded record belongs to the caller-owned cell.",
+    "reset": "Before free_object retires any properties, detach only native-global records from its weak chain and clear each cell. Existing WeakMap/WeakRef/FinalizationRegistry records retain their original two-pass reset body and order. Clearing/detaching performs no release/callback.",
+    "guard": "Get additionally checks actual zero reference count, free_mark, and REMOVE_CYCLES+mark, covering other finalizers reading a target whose actual free_object has not yet run.",
+    "cleanup": "Use the existing runtime actual-pending reducer from the continuation unit, with no reducer algorithm change.",
+    "no_changes": [
+      "public WeakRef behavior or kept-object policy",
+      "existing weak-record reset algorithms",
+      "application execution_context/capability owner",
+      "runtime/GC scheduling or native weak callbacks"
+    ]
+  },
+  "authority": {
+    "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+    "v8_header": {
+      "path": "authority/v8-persistent-handle.h",
+      "sha256": "92DC3B3241A2E42F08E4E959B0BEA9814ED2863303E5FEA23C175AD019B7A0F6",
+      "bytes": 17659,
+      "new_offset": 13570,
+      "set_weak_offset": 16103,
+      "get_offset": 4004,
+      "reset_offset": 14389
+    },
+    "v8_global_handles": {
+      "path": "authority/global-handles.cc",
+      "sha256": "086DBBC0ECC1E0AF27E26016C56525A9D905DB57CBC04A6B0ED0F3833D09E5DE",
+      "bytes": 33056,
+      "create_offset": 18804,
+      "make_weak_offset": 15295,
+      "reset_phantom_offset": 16822,
+      "destroy_offset": 19883
+    },
+    "v8_api": {
+      "path": "../native-existing-promise-settlement-sourceonly-20261019/authority/v8-api.v24.13.cc",
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "globalize_offset": 22196,
+      "make_weak_offset": 23094
+    },
+    "node_alias_inl": {
+      "original_path": "authority/aliased_buffer-inl.h.v24.13.txt",
+      "sha256": "7F503C60AB4AE93C492E1926C888C4E1FE89AE5BAB80510ECED151108556BD4C",
+      "bytes": 7954
+    },
+    "node_alias_h": {
+      "sha256": "F5AEC5E5B138E4EF31F0CE223EB10A0FBD0A39EA57615C8CA6BD137BF4A9157E",
+      "bytes": 6393,
+      "path": "authority/aliased_buffer.h.v24.13.txt"
+    },
+    "node_binding_packet": {
+      "sha256": "7479736B86FD4E994B38EA7F75721CE4E0813D6CA93ED646461C558344D2F028",
+      "bytes": 35593,
+      "path": "authority/binding-data-lifecycle-source.json"
+    }
+  },
+  "control_plan": [
+    "Strong native cell retains a real typed-array/marker through GC after all caller values are dropped; Get returns the original identity.",
+    "MakeWeak under actual JS heap limit 1 performs no allocation; actual last-root loss clears cell without a kept-object delay.",
+    "Owned Get duplicate keeps target alive only until that owned value is released; no kept-object insertion.",
+    "Two independent cells and external JS property roots retain exactly their intended values; weak cell empties only after the last genuine root.",
+    "Strong cell keeps a real self-cycle reachable; MakeWeak plus actual GC clears it once.",
+    "Zero-refcount and cycle-removal finalizers see undefined for other doomed targets rather than resurrecting them.",
+    "Native weak record removal coexists with actual WeakMap/WeakRef/FinalizationRegistry records without freeing embedded cell storage.",
+    "Weak Free before target collection removes only that record; subsequent target retirement is exact once.",
+    "Strong Free clears value before reentrant native Get/SetWeak/Free and retires one target.",
+    "Allocation failure and prior ordinary/fatal pending produce no new cell or target root.",
+    "SetWeak and Free preserve exact existing fatal through an actual target-finalizer fatal; ordinary reason yields to a real cleanup fatal.",
+    "All unique cells and observed roots retire before runtime teardown; native probe storage survives the runtime."
+  ],
+  "limits": [
+    "This selected object-only native cell is not a complete V8 Persistent API.",
+    "No weak callbacks, ClearWeak, moving cells, symbols, or post-runtime lifetime is claimed.",
+    "No native build, metadata, or execution is authorized or performed."
+  ]
+}
