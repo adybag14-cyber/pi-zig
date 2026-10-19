@@ -8,18 +8,16 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue {
     return if (index < args.len) args[index] else c.pi_js_undefined();
 }
 pub fn create(engine: *em.Engine) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const namespace = try scope.object();
-    try scope.put(namespace, "stripBom", try scope.own(try functions.create(engine, "stripBom", 1, stripBom, &.{})));
-    try scope.put(namespace, "stripJsonComments", try scope.own(try functions.create(engine, "stripJsonComments", 1, stripComments, &.{})));
-    return c.JS_DupValue(engine.context, namespace);
+    try engine.checkNativeEntry();
+    return @import("native_sdk_session_locals.zig").expression(engine, createBody, .{});
 }
-fn stripBom(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const content = arg(args, 0);
-    return c.JS_DupValue(engine.context, if (scope.truthy(try scope.invoke(content, "startsWith", &.{try scope.text("\xef\xbb\xbf")}))) try scope.invoke(content, "slice", &.{c.JS_NewInt32(engine.context, 1)}) else content);
+fn createBody(s: *@import("native_public_values.zig").Scope) !c.JSValue {
+    const v = @import("native_public_values.zig");
+    const text = try v.own(s, try @import("native_sdk_text_helpers.zig").create(s.engine));
+    const namespace = try v.object(s);
+    try v.put(s, namespace, "stripBom", try v.get(s, text, "stripBom"));
+    try v.put(s, namespace, "stripJsonComments", try v.ordinary(s, "stripJsonComments", 1, stripComments, &.{}));
+    return v.duplicate(s, namespace);
 }
 fn stripComments(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };

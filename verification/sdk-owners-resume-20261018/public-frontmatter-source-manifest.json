@@ -1,0 +1,191 @@
+{
+  "unit": "Actual public frontmatter and shared text owner",
+  "status": "Source-authored with all bounded production and control peers closed; no build, reference execution or runtime qualification.",
+  "owned_base": "2fba6b34085c904b4d7a496dc87c4bbea03475ce",
+  "public_entry": "src/extensions/native_sdk_frontmatter_values.zig exports(engine) returns the cached actual {parseFrontmatter, stripFrontmatter} record; create(engine) returns that record's exact parseFrontmatter arrow.",
+  "public_bindings": [
+    "parseFrontmatter",
+    "stripFrontmatter"
+  ],
+  "shared_text_owner": "src/extensions/native_sdk_text_helpers.zig create(engine) returns one completed {splitBom,stripBom} owner. Frontmatter and native_sdk_model_text_production retain its same stripBom function.",
+  "source_pins": [
+    {
+      "path": "src/extensions/native_sdk_frontmatter_values.zig",
+      "bytes": 11120,
+      "sha256": "9FB0351E6EEE785D73311B399FB688F9710C93FAC2E334E862B5620F87984E08"
+    },
+    {
+      "path": "src/extensions/native_sdk_yaml_values.zig",
+      "bytes": 6377,
+      "sha256": "3740DE4C4BE15A5882506F31A034624B383BA03C36558EF56F1B227ED2D61DD6"
+    },
+    {
+      "path": "src/extensions/native_sdk_text_helpers.zig",
+      "bytes": 3216,
+      "sha256": "0917764AF64C98F32EB543028DFF1C75D806F44686DC3F4135CB416622A76087"
+    },
+    {
+      "path": "src/extensions/native_sdk_model_text_production.zig",
+      "bytes": 3027,
+      "sha256": "A2EECD557A7DF9963D873911DCE4FA962A1114954CAB17E63A91E951C9799FB5"
+    },
+    {
+      "path": "src/native_sdk_frontmatter_public_test.zig",
+      "bytes": 9272,
+      "sha256": "57214F7007FB91E0EBDD03C6924ED5AF5D0E2CB4BD71E4C5FCE25158B09C1339"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-frontmatter-public-observer.mjs",
+      "bytes": 16693,
+      "sha256": "5C1DA2772E25EAA64C20CE44300D0955BB44093B63D638843DB8CB3916556863"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-frontmatter-public-c268-source.mjs",
+      "bytes": 1385,
+      "sha256": "6C8B841286491187C6092F87D0AFC301A0CC9206CBAFBF2F58187A3859E39FAF"
+    }
+  ],
+  "authority": {
+    "upstream_commit": "c268154c",
+    "frontmatter_blob": "544810737639169c71555a04c3d1c645468296ad",
+    "text_blob": "737466e851bac7de1deeda16a71c7d0e8cd2e8ab",
+    "files": [
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-frontmatter-authority/frontmatter.c268.ts",
+        "bytes": 1203,
+        "sha256": "99142D78B94E658E0BE65CF05046BE8069B3700168A683E0AF64219AD903BCD6"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-frontmatter-authority/frontmatter.accepted.js",
+        "bytes": 1016,
+        "sha256": "3E1A0E99ECC419748D87202A342DD315160764CF8588551CEFCF780208165DA5"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-frontmatter-authority/frontmatter.accepted.js.map",
+        "bytes": 2655,
+        "sha256": "072C3E9CE15137CB69F9B76CD516C4B433E624B6297E89874D4E7DFAED8C5B0F"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-frontmatter-authority/text.c268.ts",
+        "bytes": 404,
+        "sha256": "BB323F9607C499115B532021F4F0163C6DF04D834AEE9C32C3C77B273BD2D7C6"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-frontmatter-authority/text.accepted.js",
+        "bytes": 386,
+        "sha256": "E5520BE5740DDB7D67EBD09EF33EA2AEE2E360925593AD3A7842B6534304A0F3"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-frontmatter-authority/text.accepted.js.map",
+        "bytes": 898,
+        "sha256": "18CE66672973D93F177932C9E91C6D2B4D98AA4B1FF995C8DB6EF6BB4B6D96EA"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-frontmatter-authority/native-frontmatter-values-before.zig.txt",
+        "bytes": 7739,
+        "sha256": "A856DE80111E4E4A7614F85000DDBBDB2E84C7B247EA56A41FC2CBE2169D615E"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-frontmatter-authority/yaml-public-api.accepted.js.txt",
+        "bytes": 4187,
+        "sha256": "9B318AC7B3A3751127C74F59DD1DD209230A70CA116000348B82FAAE189F72F0"
+      }
+    ],
+    "accepted_source_maps": "Both accepted map.sourcesContent values equal the full saved c268 TS exactly. These are complete selected utility modules.",
+    "strict_fixture": "The reference factory preserves the complete accepted frontmatter/text function bodies. Only import binding, export declarations and source-map comments are adapted; the actual native YAML parser is injected as the real retained dependency in both fresh realms.",
+    "yaml_boundary": "The extracted parser is the existing one-argument native C YAML grammar/schema/value graph, not a full public yaml namespace. Its preexisting non-string rejection, graph construction, memoized aliases/cycles, timestamps, sets, maps, binary values and diagnostic route are retained. Existing YAML grammar/schema reference captures and the original package's options/reviver/guest observability remain separate qualification. Shared-import frontend comparisons do not claim independent original YAML package equivalence."
+  },
+  "implementation": [
+    "Retains the actual normalization, fence extraction, single ToObject binding pattern, YAML call, nullish fallback and strip(parse()).body call chain with Source arrow shapes.",
+    "Uses fresh intrinsic regular expressions and canonical AF33 guest boundaries; nested C435 expressions retire actual receivers, callees, predicates and coercion temporaries before later guest operations.",
+    "Keeps extraction and parse locals in actual fixed owners through their Source lifetime, with ordered own-data record fields.",
+    "Preserves parseValue/parse adapters for existing prompt and skill Scopes; both consume the same real public parse body and transfer its actual result roots into the original caller Scope.",
+    "Moves the existing YAML graph into native_sdk_yaml_values and puts its raw UTF16/Error creation on the existing catalog allocation producer check. It does not replace the grammar with a JavaScript evaluator.",
+    "Changes native_sdk_model_text_production only to consume the same genuine text owner and use canonical factory retirement; its unrelated stripJsonComments body is unchanged.",
+    "Publishes private caches only after complete C435 retirement and selects any actual completed reentrant winner."
+  ],
+  "build": {
+    "target": "build-native-sdk-frontmatter-public",
+    "artifact": "native-sdk-frontmatter-public.exe",
+    "root": "src/native_sdk_frontmatter_public_test.zig",
+    "filter": "SDK public frontmatter",
+    "declared_count": 19,
+    "declared_tests": [
+      "SDK public frontmatter actual arrow text declaration and shared module identities",
+      "SDK public frontmatter preserves normalized fences BOM and body branches",
+      "SDK public frontmatter consumes the real native YAML value and alias graph",
+      "SDK public frontmatter evaluates fresh intrinsic regex literals after selected methods",
+      "SDK public frontmatter replace receiver callee and normalized owners retire in Source order",
+      "SDK public frontmatter BOM predicate retires before the slice getter",
+      "SDK public frontmatter fence predicate retires before the indexOf getter",
+      "SDK public frontmatter fields preserve live slice selection raw body and end coercion",
+      "SDK public frontmatter strict end comparison avoids an extra coercion",
+      "SDK public frontmatter extract locals and trim temporaries retire before the genuine YAML constructor",
+      "SDK public frontmatter and BOM literals define ordered own data fields",
+      "SDK public frontmatter strip executes the actual YAML validation path",
+      "SDK public frontmatter ordinary frontend and dependency private DATA retain exact identity",
+      "SDK public frontmatter existing prompt and skill scopes use the same real parser",
+      "SDK public frontmatter actual indexOf fatal prevents later slice and guest catch",
+      "SDK public frontmatter actual fence predicate retirement fatal precedes indexOf",
+      "SDK public frontmatter actual trim receiver retirement fatal precedes YAML construction",
+      "SDK public frontmatter actual first replace callee fatal precedes the second getter",
+      "SDK public frontmatter actual predicate cancellation prevents later guest work"
+    ],
+    "imported_test_metadata": "Not queried. Root must audit actual imported executable metadata during qualification.",
+    "build_delta": "13 additive install-only build lines; no automatic test execution."
+  },
+  "finite_source_peers": {
+    "frontend_text_production": {
+      "reviewer": "vm_foundation",
+      "status": "closed",
+      "pins": [
+        "9FB0351E",
+        "0917764A"
+      ],
+      "scope": "Actual normalization/extraction/parse/strip and shared BOM algorithm/ownership; YAML backend excluded."
+    },
+    "frontend_controls": {
+      "reviewer": "vm_foundation",
+      "status": "closed",
+      "pins": [
+        "57214F70",
+        "5C1DA277",
+        "6C8B8412"
+      ],
+      "scope": "Declarations 1–10 and matching actual Source/native observers: BOM/newline/fence branches, fresh intrinsic RegExp and live replace order, single ToObject extraction, strict end comparison, generic-plus coercion and actual temporary/local retirement before later operations. Both realms bind the same real C YAML dependency; broader YAML package observability is excluded."
+    },
+    "yaml_legacy_production": {
+      "reviewer": "modules_io",
+      "status": "closed",
+      "scope": "Existing graph extraction, raw UTF16/Error producer qualification, two legacy caller-root adapters and narrow canonical shared model-text factory; unchanged stripJsonComments is excluded.",
+      "pins": [
+        "3740DE4C",
+        "9FB0351E",
+        "A2EECD55"
+      ]
+    },
+    "dependency_controls": {
+      "reviewer": "modules_io",
+      "status": "closed",
+      "scope": "Fixture real YAML binding and declarations11–19.",
+      "pins": [
+        "57214F70",
+        "5C1DA277",
+        "6C8B8412"
+      ]
+    }
+  },
+  "dependencies": {
+    "guest_operation": "AF33D462 native_sdk_guest_operation and canonical C435 completion ownership.",
+    "actual_text_frames": "native_sdk_session_locals Frame2E530FC8 for ordinary fixed locals; no new VM frame ABI.",
+    "allocation": "native_sdk_catalog_values Ops E817 established beforeAllocation/allocation raw producer check.",
+    "retirement_controls": "D0784BF7 verifyNoVisits from Summary814ac9bb767763b39dd9e47891c26af7256146ac.",
+    "template_compiler": "353970d4204b5961058e86d3b435778a4a1e96f8 original Node/c268 eager substitution semantics; no live concat helper is used."
+  },
+  "no_execution": "No native/Zig/Node/reference capture/source generator or runtime was run for this unit. Source review does not imply executable qualification.",
+  "integration_correction": {
+    "owner": "Root",
+    "source_commit": "32eb37c6",
+    "change": "Mirrors the exact new public compaction namespace block local rename to sdk_public_compaction_namespace (8 identifier occurrences on 7 lines); existing core target and all target/filter/artifact names are preserved."
+  }
+}

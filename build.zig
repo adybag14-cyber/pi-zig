@@ -4478,6 +4478,19 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-node-module-creation", "Install twenty-four declared genuine Module creation controls without running").dependOn(&b.addInstallArtifact(node_module_creation, .{ .dest_sub_path = b.fmt("native-node-module-creation{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Actual frontmatter and BOM call chain with the existing native YAML import.
+    const sdk_frontmatter_public = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_frontmatter_public_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK public frontmatter"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_frontmatter_public.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_frontmatter_public.root_module, typescript_parser);
+    linkSqlite(sdk_frontmatter_public.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_frontmatter_public.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { sdk_frontmatter_public.root_module.linkSystemLibrary("advapi32", .{}); sdk_frontmatter_public.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-sdk-frontmatter-public", "Install actual public frontmatter controls without execution").dependOn(&b.addInstallArtifact(sdk_frontmatter_public, .{ .dest_sub_path = b.fmt("native-sdk-frontmatter-public{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {
