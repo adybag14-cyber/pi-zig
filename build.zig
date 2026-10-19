@@ -4615,6 +4615,18 @@ pub fn build(b: *std.Build) void {
     if (target.result.os.tag == .windows) { ai_radius_provider_tests.root_module.linkSystemLibrary("advapi32", .{}); ai_radius_provider_tests.root_module.linkSystemLibrary("userenv", .{}); }
     b.step("build-native-ai-radius-provider-genuine-af", "Install genuine Radius provider and closure controls without execution").dependOn(&b.addInstallArtifact(ai_radius_provider_tests, .{ .dest_sub_path = b.fmt("native-ai-radius-provider-genuine-af{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    const ai_radius_oauth_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_oauth_radius_genuine_af_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native OAuth Radius"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, ai_radius_oauth_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, ai_radius_oauth_tests.root_module, typescript_parser);
+    linkSqlite(ai_radius_oauth_tests.root_module, sqlite_lib_dir, sqlite_library);
+    ai_radius_oauth_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { ai_radius_oauth_tests.root_module.linkSystemLibrary("advapi32", .{}); ai_radius_oauth_tests.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-ai-oauth-radius-genuine-af", "Install genuine Radius OAuth declaration and ownership controls without execution").dependOn(&b.addInstallArtifact(ai_radius_oauth_tests, .{ .dest_sub_path = b.fmt("native-ai-oauth-radius-genuine-af{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

@@ -1,0 +1,247 @@
+{
+  "schema": 1,
+  "updated_utc": "2026-10-19T18:02:16.339685+00:00",
+  "status": "source-reviewed genuine implementation; build and runtime pending",
+  "source_parent": "41319d292945890fbe9d5388e8ee8bebf71f4c86",
+  "actual_main_dependencies_at_record": "eeb5245800ffe9236763f0a85199100883d0054f",
+  "authority": [
+    {
+      "path": "verification/oauth-radius-genuine-sourceonly-20261019/authority/radius.c268.js",
+      "bytes": 9711,
+      "sha256": "60FC2BBFF997B56F312BB3707EA20345E5DE83A2D75D1A6C6D5D9AF173021638",
+      "original_container_path": "upstream/runtime/19cb534-full-prebuild-root-full28293-v3-20261017-203626/packages/ai/dist/auth/oauth/radius.js"
+    },
+    {
+      "path": "verification/oauth-radius-genuine-sourceonly-20261019/authority/radius.c268.js.map",
+      "bytes": 18373,
+      "sha256": "7AB288C9714F4E2B1F6D10833EFAA7F8259E296C3F60EDFD7797F52660BF62CC",
+      "original_container_path": "upstream/runtime/19cb534-full-prebuild-root-full28293-v3-20261017-203626/packages/ai/dist/auth/oauth/radius.js.map"
+    },
+    {
+      "path": "verification/oauth-radius-genuine-sourceonly-20261019/authority/radius.c268.ts",
+      "bytes": 9493,
+      "sha256": "77C17C798747182B78304EFC7A2B633FEEB2DC8E0FE1176231F9F82C40A2CC2C",
+      "original_container_path": "upstream/pi-c268154c-source-candidate-20261017/packages/ai/src/auth/oauth/radius.ts"
+    }
+  ],
+  "source_map_content_exact": true,
+  "source_pins": [
+    {
+      "path": "src/extensions/native_ai_oauth_radius_genuine.zig",
+      "bytes": 34107,
+      "sha256": "F4CF2BD8992DFE81ABCE17523BC16507531494E8D761D7047D57E4A0707907C8"
+    },
+    {
+      "path": "src/extensions/native_ai_oauth_radius_http_genuine.zig",
+      "bytes": 25859,
+      "sha256": "19854310C81280A800DE96C175086DA53A2CF3ACDE5FE163DDA3D91DAC08E6C9"
+    },
+    {
+      "path": "src/extensions/native_ai_oauth_radius.zig",
+      "bytes": 223,
+      "sha256": "37232B0AFBDF322AEE46EA9F2F692830B39D01EE0722413D4305ED80F62FFFF9"
+    },
+    {
+      "path": "src/native_ai_oauth_radius_genuine_af_test.zig",
+      "bytes": 21567,
+      "sha256": "7ACCA794CBCBE597F1DAD0AE798277B2038C6748041CB5239A592347D5D9A8D9"
+    },
+    {
+      "path": "src/extensions/fixtures/radius-oauth-observer.mjs",
+      "bytes": 18536,
+      "sha256": "0CC1C68676BC26623790920B6D932FE57232BC6B685802670FFF82402307BCD9"
+    },
+    {
+      "path": "src/extensions/fixtures/radius-oauth-c268-source.mjs",
+      "bytes": 9768,
+      "sha256": "370EA4BA6C9878ADAD18EEDCE815767C62777656EABFDF28ABB6D52615A6F139"
+    }
+  ],
+  "required_current_main_dependencies": [
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "bytes": 10463,
+      "sha256": "359C5C4AE2EC89AE5B446D728D902FAE6774CCBDEC8EDA91D54FE2431E2763FA"
+    },
+    {
+      "path": "src/extensions/native_sync_arguments.zig",
+      "bytes": 9162,
+      "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+    },
+    {
+      "path": "src/extensions/native_public_lexical_frame.zig",
+      "bytes": 17136,
+      "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E"
+    },
+    {
+      "path": "src/extensions/native_ai_auth_helper_values.zig",
+      "bytes": 4692,
+      "sha256": "98B907427C3E15ED2BA5A3FAE155F087AA83CE7A043593F66FBCC0CE75BCDDCB"
+    },
+    {
+      "path": "src/extensions/native_node_error_class.zig",
+      "bytes": 7317,
+      "sha256": "0192489A134A0D6B287EB1494654FC25391E1989D80A239C9AC37201392E0EE5"
+    },
+    {
+      "path": "src/extensions/native_ai_radius_config.zig",
+      "bytes": 23777,
+      "sha256": "EFB8FF26532C3B9F0BA0BC0E46378928335437CF9C6F1EC9EA0C30FB4AE26253"
+    },
+    {
+      "path": "src/extensions/native_ai_oauth_callback_server.zig",
+      "bytes": 49382,
+      "sha256": "2AD5C924B6D0430A3437579A15986B6C25EA255848C4CE5E6F52F8773246D393"
+    },
+    {
+      "path": "src/extensions/native_ai_oauth_device_code.zig",
+      "bytes": 17427,
+      "sha256": "9AA3EAFB659042ACDEB498E469311FE5CEACD7EDF4EF993A4BA6D9762DF7EE2A"
+    },
+    {
+      "path": "src/extensions/native_ai_oauth_pkce.zig",
+      "bytes": 13744,
+      "sha256": "F5F1D9F72B23AC71F4D411A045BCE6F62E6FE8A4663CC3B07CA3A268163DF7F9"
+    },
+    {
+      "path": "src/native_sdk_initial_model_retirement_controls.zig",
+      "bytes": 16159,
+      "sha256": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+    }
+  ],
+  "source_projection": {
+    "path": "src/extensions/fixtures/radius-oauth-c268-source.mjs",
+    "method": "Exact retained emitted JS wrapped in one strict test factory; only four imports are injected, the factory export keyword and sourceMappingURL comment are removed, and private lexical values are returned. Production never evaluates this Source fixture.",
+    "sha256": "370EA4BA6C9878ADAD18EEDCE815767C62777656EABFDF28ABB6D52615A6F139"
+  },
+  "public_wiring": {
+    "path": "src/extensions/native_ai_oauth_radius.zig",
+    "before_sha256": "566A21CE819EE81C1C267629B33F906A56E2BAD60958A19A9D66180F2DC29E34",
+    "behavior": "Original create/factory entry points forward to the actual cached genuine module; the old native_agent_async implementation is removed from this entry."
+  },
+  "build": {
+    "target": "build-native-ai-oauth-radius-genuine-af",
+    "root": "src/native_ai_oauth_radius_genuine_af_test.zig",
+    "filter": "native OAuth Radius",
+    "artifact": "native-ai-oauth-radius-genuine-af.exe",
+    "addition_lines": 12,
+    "addition_sha256": "C6CFF6E6BEC93209E2340E46EF6F9D155F0C511A57B36D5D4E15A06B84CC11C4",
+    "declared_count": 34,
+    "declared_tests": [
+      "native OAuth Radius actual ordinary class and AsyncFunction shapes",
+      "native OAuth Radius factory option and normalization operations preserve Source order",
+      "native OAuth Radius factory keeps its actual required formal and raw name value",
+      "native OAuth Radius discovery keeps request and genuine Await ordering",
+      "native OAuth Radius discovery HTTP error keeps suspended constructor and text operands",
+      "native OAuth Radius discovery JSON validation and repeated endpoint getter remain exact",
+      "native OAuth Radius Error subclass chooses exact detail branches and template coercion",
+      "native OAuth Radius Error class heritage rejects nonconstructors before prototype lookup",
+      "native OAuth Radius error reader parses actual repeated fields and catches parse-body failures",
+      "native OAuth Radius error reader preserves text catch lookup call and Await failures",
+      "native OAuth Radius token request preserves field order expiry arithmetic and raw data",
+      "native OAuth Radius token catch reads cancellation only for actual fetch failure",
+      "native OAuth Radius token HTTP failure throws the genuine awaited Error value",
+      "native OAuth Radius token JSON and property failures stop at the actual expression",
+      "native OAuth Radius device request validates truthy fields in Source short circuit order",
+      "native OAuth Radius device request preserves construction cancellation and HTTP error paths",
+      "native OAuth Radius browser preserves callback options notices and wait return ordering",
+      "native OAuth Radius browser notifications remain outside callback finally",
+      "native OAuth Radius browser finally overrides ordinary pending returns and throws",
+      "native OAuth Radius browser preserves abrupt PKCE URL and listener operations",
+      "native OAuth Radius escaped complete arrow constructs exact token form and signal",
+      "native OAuth Radius device poll uses actual Error class and selected OAuth status cases",
+      "native OAuth Radius device notice and token failures retain their actual boundary",
+      "native OAuth Radius public login has real prompt Await and selected branch adoption",
+      "native OAuth Radius refresh and zero Await toAuth preserve genuine outer Promises",
+      "native OAuth Radius completed callback options release a removed complete arrow immediately",
+      "native OAuth Radius completed polling options release a removed poll arrow immediately",
+      "native OAuth Radius terminal complete closure retains verifier and releases unrelated challenge",
+      "native OAuth Radius sole refresh closure retains gateway but releases options",
+      "native OAuth Radius sole toAuth closure releases all unrelated factory captures",
+      "native OAuth Radius same operation private DATA remains an ordinary catch rethrow",
+      "native OAuth Radius actual native fatal preempts cancellation getter and guest catch",
+      "native OAuth Radius explicit throws promote returned flagged Error DATA only at throw",
+      "native OAuth Radius error reader returns flagged Error DATA without an invented throw"
+    ],
+    "install_only": true,
+    "owned_before_sha256": "44F2F8C92302BDBDEDA597CDE3616C496D54F909A571C2C0066CF38737559CE5",
+    "owned_after_sha256": "91B7DD3DE4E3F42D8760F3C8A26E90379ED348E8C1574F8FFAD98AD668B3CE30"
+  },
+  "peer_reviews": [
+    {
+      "reviewer": "/root/modules_io",
+      "pin": "19854310",
+      "scope": "HTTP Error class heritage, constructor/prototype order and actual class construction",
+      "status": "closed"
+    },
+    {
+      "reviewer": "/root/sdk_owners",
+      "pin": "19854310",
+      "scope": "HTTP token/device request, catch/throw seams, completed init and expiry expressions",
+      "status": "closed"
+    },
+    {
+      "reviewer": "/root/vm_foundation",
+      "pin": "19854310",
+      "scope": "Discovery suspended operands, actual throw and rejected Await forwarding; prior ReadError body review retained",
+      "status": "closed"
+    },
+    {
+      "reviewer": "/root/modules_io",
+      "pin": "F4CF2BD8",
+      "scope": "Browser and complete arrow through browserBody",
+      "status": "closed"
+    },
+    {
+      "reviewer": "/root/sdk_owners",
+      "pin": "F4CF2BD8",
+      "scope": "Device request/notice/poll arrow and return adoption",
+      "status": "closed"
+    },
+    {
+      "reviewer": "/root/vm_foundation",
+      "pin": "F4CF2BD8",
+      "scope": "Factory/formals/login/refresh/toAuth/imports/cache",
+      "status": "closed"
+    },
+    {
+      "reviewer": "/root/sdk_owners",
+      "pin": "7ACCA794/B434D04D/370EA4BA",
+      "scope": "Controls 11-16 and 22-25 with actual observer dependencies",
+      "status": "closed"
+    },
+    {
+      "reviewer": "/root/modules_io",
+      "pin": "7ACCA794/B434D04D/370EA4BA",
+      "scope": "Controls 17-21 and 26-28 with actual browser observer dependencies",
+      "status": "closed"
+    },
+    {
+      "reviewer": "/root/vm_foundation",
+      "pin": "7ACCA794/0CC1C686/370EA4BA",
+      "scope": "Controls 1-10 and 29-34, harness, flagged DATA/throw/native fatal and wiring/build",
+      "status": "closed"
+    }
+  ],
+  "verification": {
+    "source_diff_check": true,
+    "native_build": false,
+    "node_capture": false,
+    "runtime": false,
+    "qualification": false,
+    "finite_source_peers_closed": true
+  },
+  "remaining": [
+    "Fresh frozen-head BuildQuery and complete metadata/artifact/current-process closure.",
+    "Separately granted runtime through unchanged strict driver.",
+    "Actual HTTP/socket callback listener and PKCE/device import composition in the complete application; controlled imports are a narrow semantic comparison gate.",
+    "Full port/application/platform/publication gates."
+  ],
+  "final_observer_correction": {
+    "before": "B434D04D24DA4E02CF5B95B29E47C6081D7AB17F05F75CCFAC1B34C1FAC7F51B",
+    "after": "0CC1C68676BC26623790920B6D932FE57232BC6B685802670FFF82402307BCD9",
+    "exact_change": "Control32 signal.aborted getter sets guestReached before calling guarded h.visit(3).",
+    "peer": "/root/vm_foundation",
+    "other_assigned_slices_unchanged": true
+  }
+}
