@@ -1,0 +1,39 @@
+{
+  "status": "Source-only V15 finite compiler correction; no compilation or native execution performed by SDK owner.",
+  "cause": {
+    "evidence": "C:/Users/adyba/pi-zig/evidence/root-vm-io-oauth-options-fresh-v15-buildquery-20261019-202743/groups/native-node-uv-exception/compile.stderr.log",
+    "reported_site": "src/native_node_uv_exception_test.zig:69:50",
+    "message": "expected '[:0]const u8', found '[]const u8'",
+    "integration_revision": "d78d080b"
+  },
+  "change": {
+    "path": "src/native_node_uv_exception_test.zig",
+    "before_sha256": "e79ea16375284a906b13c2e4cc9dc4f7c788517e3993e043b3eb865e85c51f86",
+    "after_sha256": "3a6afc98f5f7a240960baab984b3fb791fbebf2e10418ebd294f0f606c5b39a7",
+    "before": "fn run(source: []const u8, name: []const u8) !void {",
+    "after": "fn run(source: []const u8, name: [:0]const u8) !void {",
+    "basis": "The helper's name is passed directly to the existing Engine.evalModule sentinel filename API. Every supplied helper filename is an actual Zig string literal.",
+    "behavior": "The supplied bytes, all six declarations and every original control assertion are unchanged."
+  },
+  "control_names": [
+    "native UVException preserves intrinsic Error and ordered own field descriptors",
+    "native UVException nonthrowing Set preserves inherited readonly and getter-only fields",
+    "native UVException invokes each inherited setter with the actual Error in source order",
+    "native UVException normal false assignment still reaches the remaining actual setters",
+    "native UVException retains OneByteString C-string and UTF8 path distinctions",
+    "native UVException successfully constructed flagged Error remains returned DATA"
+  ],
+  "helper_filenames": [
+    "actual-uv-error-fields.mjs",
+    "actual-uv-error-readonly.mjs",
+    "actual-uv-error-setters.mjs",
+    "actual-uv-error-false-continuation.mjs",
+    "actual-uv-error-encodings.mjs",
+    "actual-uv-error-returned-data.mjs"
+  ],
+  "original_evidence": "Original UVException6 manifest and all V15 logs remain unchanged.",
+  "validation": {
+    "exact_single_reversal": true,
+    "source_peer": "Modules finite readback closed on 3A6AFC98: actual current Main Engine.evalModule sentinel API, all six literal calls and exact single reversal checked. Source-only."
+  }
+}

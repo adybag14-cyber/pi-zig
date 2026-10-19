@@ -62,7 +62,7 @@ fn install(engine: *Engine) !void {
     const result = try scope.finish(installBody(&scope));
     engine.freeValue(result);
 }
-fn run(source: []const u8, name: []const u8) !void {
+fn run(source: []const u8, name: [:0]const u8) !void {
     const engine = try Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
     try install(engine);
