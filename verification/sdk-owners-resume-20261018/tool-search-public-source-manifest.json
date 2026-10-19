@@ -1,0 +1,257 @@
+{
+  "unit": "Actual c268 tool-search module and createToolSearchExtension",
+  "status": "Source-authored and all assigned bounded production/control peers closed. No compilation, original Source execution, native execution or runtime qualification.",
+  "owned_base": "6d406711f20ace1bc5209f2ba3ed420d62896664",
+  "public_entry": "src/extensions/native_sdk_tool_search.zig create(engine) returns the same completed ten-export record from one real private module graph. The coding-agent public index consumes its actual createToolSearchExtension.",
+  "public_bindings": [
+    "createToolSearchExtension"
+  ],
+  "module_exports": [
+    "TOOL_SEARCH_TOOL_NAME",
+    "DEFAULT_TOOL_SEARCH_LIMIT",
+    "tokenize",
+    "createToolSearchDocument",
+    "Bm25Ranker",
+    "toolSearchSchema",
+    "TOOL_SEARCH_DESCRIPTION",
+    "createToolSearchToolDefinition",
+    "createToolSearchExtension",
+    "default"
+  ],
+  "source_pins": [
+    {
+      "path": "src/extensions/native_sdk_tool_search_values.zig",
+      "bytes": 3342,
+      "sha256": "89E19B1616A41DE266DAD0B5E828A4980EC0655E039C1C22CEDD7E77894CD58E"
+    },
+    {
+      "path": "src/extensions/native_sdk_tool_search_text.zig",
+      "bytes": 16209,
+      "sha256": "7B03B71842567F5F91F870C0212C3A1C6C425201EEE2124D0E52B1D1A6BC476A"
+    },
+    {
+      "path": "src/extensions/native_sdk_tool_search_ranker.zig",
+      "bytes": 21744,
+      "sha256": "C3DE8CB26A36A59CC1749E159EAC0FDECE9C26C34422916868E5071E24C00721"
+    },
+    {
+      "path": "src/extensions/native_sdk_tool_search_load.zig",
+      "bytes": 8787,
+      "sha256": "D096FE5712EBBD3D66B86FBD18E88E358571E922C7837B0CF2DAC5F843508BFE"
+    },
+    {
+      "path": "src/extensions/native_sdk_tool_search_execute.zig",
+      "bytes": 10307,
+      "sha256": "8558E46EAC776CFC02FC437FACBFD25ED9D7E32A39D02391DA61C02096B084D7"
+    },
+    {
+      "path": "src/extensions/native_sdk_tool_search.zig",
+      "bytes": 8866,
+      "sha256": "492B7662A4A49522948572ABE26E1FC2870F17983024D2C22C294C4E65826DAB"
+    },
+    {
+      "path": "src/native_sdk_tool_search_public_test.zig",
+      "bytes": 14773,
+      "sha256": "DEC7E56A37FCF6D715CAE17BE6C019C0C5426AFB205E0EBEBA82B25EF3CDADFD"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-tool-search-observer.mjs",
+      "bytes": 31001,
+      "sha256": "E6F677E753476C8E186F3C8E6B81127CAEBE67DADC0083C3AFC2C2BA49DE0F19"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-tool-search-c268-source.mjs",
+      "bytes": 8886,
+      "sha256": "1DF9DE4350595A3B8AC137552C0F63F798EA402FF20070BEC999B6ACB9040484"
+    }
+  ],
+  "authority": {
+    "upstream_commit": "c268154c",
+    "source_paths": [
+      "packages/coding-agent/src/extensions/tool-search/tool.ts",
+      "packages/coding-agent/src/extensions/tool-search/index.ts"
+    ],
+    "accepted_runtime_root": "C:/Users/adyba/pi-zig/upstream/runtime/19cb534-full-prebuild-root-full28293-v3-20261017-203626",
+    "files": [
+      {
+        "path": "verification/sdk-owners-resume-20261018/tool-search-authority/tool.c268.ts",
+        "bytes": 9194,
+        "sha256": "5F844578E69F5D56C2F1D96F5CF1812E8BC11BE1DA9F40B43A44888C364F684C"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/tool-search-authority/index.c268.ts",
+        "bytes": 658,
+        "sha256": "212528D795F06A7B935670534EFA35371277E31B074A6ECD7FF144BCE09EE7B6"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/tool-search-authority/tool-accepted.js",
+        "bytes": 8204,
+        "sha256": "187336777248B8B5CCE52A904D7C341E10BE9842543CAC4A98992027A8D39AA5"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/tool-search-authority/tool-accepted.js.map",
+        "bytes": 17533,
+        "sha256": "F1E0B8A584FE96D3D893E53F7EA7190880FBD4042812200283E1C82BF8E764E4"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/tool-search-authority/index-accepted.js",
+        "bytes": 610,
+        "sha256": "1B989BCFD70485FC71535C33B3C1D02E12EC7450589E5B9DA3FCCBDF7F8451D7"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/tool-search-authority/index-accepted.js.map",
+        "bytes": 1112,
+        "sha256": "C48C67A0B28BD1F737A22C8F786AAEC5804410B387998758052E5C94189324E9"
+      }
+    ],
+    "accepted_map_sources_content_equals_full_c268_source": true,
+    "fixture_derivation": "The strict reference factory retains the complete accepted tool and index algorithms. Only lexical import injection, export declarations and source-map comments are adapted; the original default factory result is retained as defaultExtension for the final export record. The same genuine native TypeBox Type is passed into the Source factory in a separate fresh Engine.",
+    "typebox_boundary": "The existing actual native_typebox_production_graph owner supplies Type, Optional, Number, String and Object. These frontend comparisons do not independently certify the complete original TypeBox package, its legacy factory publication, or all package guest observability."
+  },
+  "implementation": [
+    "Ports the complete tokenizer, stop-word and stemming algorithm, recursive schema metadata traversal, document construction, BM25 ranker, deferred-tool search/activation, tool definition and extension factory.",
+    "Uses actual Map, Set, Array methods and caller tool APIs with their live repeated getters, real callbacks, actual computed property conversion, genuine iteration and original arithmetic order.",
+    "Uses the opt-in synchronous argument owner for original parameters and real JSVarRef captures. Independent lexical frames preserve matching-branch and plain loop-head lifetimes; escaping callbacks retain only their actual captured cells.",
+    "The public execute body is a genuine zero-Await AsyncFunction with actual intrinsic capability and terminal state closure. Its original arguments and locals remain live through final return adoption.",
+    "Parameter destructuring performs one real ToObject. Query, integer and length predicates retire actual operands before later guest work.",
+    "Local two-binding iterator destructuring retires the iterator receiver on normal done before assignment, keeps cached next until final close, then retires it before the return getter/call. Plain shared Iterator behavior is unchanged.",
+    "Generated response templates use eager per-substitution ToString and intrinsic string concatenation. Explicit constructed Error throws call the actual JS_Throw operation; caught or forwarded DATA is not relabeled as a fresh native failure.",
+    "The genuine extension selects registerTool before evaluating its actual tool-definition spread and appends the own defaultActive field. One completed private graph preserves module, schema, ranker and closure identities.",
+    "Private cache publication occurs after complete C435 retirement and rechecks an actual completed reentrant winner. No arbitrary caller-provided export namespace fills a missing production owner."
+  ],
+  "build": {
+    "target": "build-native-sdk-tool-search-public",
+    "artifact": "native-sdk-tool-search-public.exe",
+    "root": "src/native_sdk_tool_search_public_test.zig",
+    "filter": "SDK public tool search",
+    "install_only": true,
+    "declared_count": 26,
+    "declared_tests": [
+      "SDK public tool search actual declarations async methods and extension shapes",
+      "SDK public tool search genuine TypeBox schema and emitted class field order",
+      "SDK public tool search actual tokenizer stop words camel case and stemming",
+      "SDK public tool search live tokenizer literals receiver and callee retirement",
+      "SDK public tool search retained filter callback retires comparison operand",
+      "SDK public tool search actual recursive schema document and namespace",
+      "SDK public tool search repeated document fields and typeof short circuit",
+      "SDK public tool search real schema destructuring and outer IteratorClose",
+      "SDK public tool search genuine BM25 scores unique query terms and stable ties",
+      "SDK public tool search actual idf parameter and counts captures survive return",
+      "SDK public tool search escaped scorer keeps only its original lexical cells",
+      "SDK public tool search searches inactive tools and updates the real active set",
+      "SDK public tool search repeated tools getter and escaped active predicate",
+      "SDK public tool search actual query integer and destructuring validation",
+      "SDK public tool search one boxed binding and immediate integer predicate",
+      "SDK public tool search zero Await keeps original arguments and locals through adoption",
+      "SDK public tool search options use actual parameter ref without unrelated captures",
+      "SDK public tool search intrinsic response templates and abrupt string conversion",
+      "SDK public tool search description call chain retires before template conversion",
+      "SDK public tool search genuine extension registration spread and default factory",
+      "SDK public tool search ordinary private DATA survives all real public routes",
+      "SDK public tool search current fatal prevents later validation tools and catch",
+      "SDK public tool search trim callee retirement fatal prevents later fields",
+      "SDK public tool search trim callee cancellation prevents later guest work",
+      "SDK public tool search actual rank callback fatal prevents later work and catch",
+      "SDK public tool search explicit Error throw normalizes successful flagged DATA"
+    ],
+    "imported_test_metadata": "Not queried. Root must audit actual compiler metadata during qualification; this manifest does not infer imported anonymous test names.",
+    "build_delta": "Exactly 13 additive install-only build lines; no automatic execution.",
+    "build_patch": "verification/sdk-owners-resume-20261018/tool-search-public-build-integration.patch"
+  },
+  "finite_source_peers": {
+    "ranker_and_load": {
+      "reviewer": "modules_io",
+      "status": "closed",
+      "pins": [
+        "89E19B16",
+        "5E5410DD",
+        "D096FE57"
+      ],
+      "scope": "Actual BM25 arithmetic, callback/capture and loop ownership plus real searchAndLoad activation/spread/result lookup; no full module or control claim.",
+      "hygiene_successor": {
+        "pin": "C3DE8CB2",
+        "change": "Renames only average() local numerator and its one divide operand to total_length, avoiding the existing fn numerator Zig declaration shadow.",
+        "status": "closed",
+        "reviewer": "modules_io"
+      }
+    },
+    "text_document": {
+      "reviewer": "vm_foundation",
+      "status": "closed",
+      "pins": [
+        "89E19B16",
+        "7B03B718"
+      ],
+      "scope": "Actual complete selected text/document/value slice, including the two local destructuring retirements: normal-done iterator receiver retires before the resulting binding assignment, while cached next retires before the final return getter/call. Actual pair controls now use genuine iterable records. No concrete blocker remains in the assigned source-only slice."
+    },
+    "execute_module": {
+      "reviewer": "vm_foundation",
+      "status": "closed",
+      "pins": [
+        "8558E46E",
+        "492B7662"
+      ],
+      "scope": "Actual definition, zero-Await executor, extension declaration and complete module staging/publication."
+    },
+    "controls_1_through_8_and_14_through_20": {
+      "reviewer": "vm_foundation",
+      "status": "closed",
+      "pins": [
+        "DEC7E56A",
+        "E6F677E7",
+        "1DF9DE43"
+      ],
+      "scope": "Actual complete Source/native frontend, destructuring order holders, zero-Await/real captures/templates and extension; includes real OrderRecord/Holder fixture. The E6F677E7 correction adds only one actual Symbol.iterator method to each of the three pair records, allowing both causal retirement paths to execute. No concrete blocker remains in the assigned source-only slice."
+    },
+    "fixture_controls_9_through_13_and_21_through_26": {
+      "reviewer": "modules_io",
+      "status": "closed",
+      "pins": [
+        "DEC7E56A",
+        "C7B54342",
+        "1DF9DE43"
+      ],
+      "scope": "Actual genuine fixture and declarations 9–13/21–26: BM25/capture/activation and private DATA/current-B/cancellation/flagged-explicit-throw controls. The final DEC7E56A correction checks retained own guestReached=false after exact-reason/no-visit verifiers, including paths where a native visit would be blocked. No concrete blocker remains in this bounded source-only slice.",
+      "unchanged_slice_successor": "Final observer E6F677E7 changes only the separate VM-reviewed pair observer used by declaration 8. All Modules-reviewed observer functions are byte-identical."
+    }
+  },
+  "required_shared_dependencies": [
+    {
+      "commit": "5d0781260997f4ab05b9ce01d2db64ab9f4c0f7c",
+      "role": "Actual synchronous argument slots, JSVarRef captures and two-phase local terminal hooks",
+      "pins": {
+        "arguments": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6",
+        "frame": "E478B2D425EA729F4B63D3E6033AAB8AB1C463211E14A7139EE2F072CE2163D1",
+        "node_function": "469B1CFE5B3C589881533EA38EA45163BE4282C29234B11EDAA82DA1F557B73B"
+      }
+    },
+    {
+      "commit": "93c82663d21a9bcb38a5fe03f3e2757e5314d67c",
+      "role": "Actual new-target Object-realm prototype operation used before separate native class allocation"
+    },
+    {
+      "role": "Actual AF terminal argument/state/function/effective-this/receiver order, WithClose factory and genuine async Frame lease/capture owner"
+    },
+    {
+      "commit": "353970d4204b5961058e86d3b435778a4a1e96f8",
+      "role": "Original Node/c268 eager intrinsic untagged template semantics for the actual Source controls"
+    },
+    {
+      "role": "Actual borrowed JS_PiArrayAppend bridge, AF33 guest operations, C435 completion and current public Iterator 0B1BB422"
+    },
+    {
+      "commit": "814ac9bb767763b39dd9e47891c26af7256146ac",
+      "role": "Actual native retirement record and D0784BF7 host-only verifyNoVisits control helper"
+    },
+    {
+      "role": "Existing actual native_typebox_production_graph and catalog allocation/object-copy owners"
+    }
+  ],
+  "qualification_limits": [
+    "All controls are authored and source-reviewed only; no native or original reference execution has been performed for this unit.",
+    "The recursive schemaText body uses real ordinary native callback recursion. Exact Source bytecode stack-overflow budget equivalence remains a separate concrete VM dependency; no fixed synthetic cutoff is introduced.",
+    "The full 157-export coding-agent index and broader application factory are separate remaining composition work.",
+    "TypeBox package observability and the existing legacy TypeBox factory are not independently qualified by binding the same actual TypeBox owner into both frontend realms."
+  ],
+  "no_execution": true
+}
