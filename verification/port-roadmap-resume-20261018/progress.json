@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "8fbe1c201c54735e55c4727ecb10d422de4edbff",
+  "current_source_head_at_record": "326421426481c938c0893084e2654551f205b8a4",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -36,8 +36,8 @@
   "application_qualification": false,
   "production_bridge_removed": false,
   "published_release": false,
-  "updated_utc": "2026-10-19T15:37:34.167504+00:00",
-  "record_note": "Active, incomplete port. Approved storage cleanup is complete. V8 fresh BuildQuery passed all eleven groups with 253 independently accepted actual metadata entries and complete current source/compiler/control and owner closure. Its separate RuntimeOnly stopped after the first synchronous argument group: 23 tests completed, three failed, and the other ten groups did not execute. Original negative and independent closure remain immutable. Peer-reviewed VM runtime correction, the 26-declaration public tool-search module and 25-declaration Radius configuration module are now integrated as unqualified source. The next fresh thirteen-group cohort declares293 names; only actual metadata can authorize its separate runtime. Full application, provider composition, loader/physical IO, transport, default bridge removal, platforms and publication stay open.",
+  "updated_utc": "2026-10-19T16:36:09.312772+00:00",
+  "record_note": "Active port; approved storage cleanup is complete. Fresh V9 BuildQuery accepted all13 groups/306 actual metadata tests. Original strict RuntimeOnly completed48 tests in2 groups, with9 retirement failures, and stopped; the separately reviewed diagnostic then completed the other258 tests with72 failures. Both whole-input/current-owner closures are independently sealed, and none of those diagnostic observations qualify. Source-reviewed fixes for actual async lexical receiver retirement, individual block capture detachment, Node process.execPath, the real Windows physical symlink fixture request, exact argument-error spelling and tool-search cancellation are integrated. Captured host diagnostics were added only on unexpected failing Anthropic/URL controls. The genuine Radius provider now uses actual ordinary formals, exact shared lexical cells and real refresh AsyncFunction/Awaits, with27 declared Source/causal controls. Fresh V10 will compile14 groups/326 declared names, independently discover complete metadata, run the entire cohort as unqualified bounded diagnosis, then require the unchanged strict RuntimeOnly controller for any qualifying runtime. Full application, OAuth/network/loader/physical-IO completion, platforms, bridge removal and publication remain open.",
   "integrated_source_units": [
     "Reviewed VM union, Agent/Node/SDK guest operation guards, CJS compiler and source metadata bodies, Engine ownership, genuine Agent/session/auth owners, real Exec live waiter, Git/Chalk/Ignore/Semver consumers, actual InitialModel guest boundaries, genuine Anthropic auth, genuine PKCE body and ten declared controls, genuine RemoteCatalog bodies and nine declared controls.",
     "Actual public CLI parser10 controls, truncation9, Theme10 and extension helpers8; child dependency and11 real frontend/spawn/waiter controls; shared stdio lease assertion; genuine six-export output guard dependency; genuine DeviceCode12 controls including linked-VM loop-slot lifetime; RemoteCatalog now11 controls; PKCE actual host job checkpoints; optional CommonJS host-error correction and explicit component filters.",
@@ -72,7 +72,13 @@
     "V12 compiler corrections integrated through 7d51e412: SafeName uses the declared sentinel slice ABI; both Windows stat conditional choices have explicit u32 types; pure pi_js_exception C helper constructs the original sentinel for two retirement control sites. No VM algorithm, test names, assertions or runtime classification is changed.",
     "Public tool search actual ten-binding module, BM25 ranker, deferred activation and extension factory; genuine zero-Await execute, actual argument/capture/retirement owners and26 declared source-comparison controls. Main8b62aa42 from donor8e822501; source-only.",
     "Radius configuration actual six public bindings, live normalization/sanitization/mapping, genuine fetch/text/json AsyncFunction and25 declared source/causal controls. Maind2ed2432 from donorc9a943bb; provider and OAuth composition remain open.",
-    "VM actual argument-assignment pending-event stop and ordinary terminal first-fatal preservation, plus exact default-prologue and finalizer controls. Main8fbe1c20 from donor16de7c82; runtime validation pending."
+    "VM actual argument-assignment pending-event stop and ordinary terminal first-fatal preservation, plus exact default-prologue and finalizer controls. Main8fbe1c20 from donor16de7c82; runtime validation pending.",
+    "Individual Source block capture detachment with6 real lexical lifetime controls; Main5c3cf956 donor8961f2cb.",
+    "Actual async arrow duplicate-receiver retirement and Source DECREF/Promise-finalizer observations; Main83b055a7 donord50cdef4.",
+    "Failure-only captured host diagnostics for six Anthropic Source negative controls; Maind0082462 donor86592412.",
+    "Actual process.execPath, exact Node filename-error spelling, captured URL compile diagnostic and genuine contained Windows symlink fixture request; Main03b4bd8d donordd49bab5.",
+    "Actual existing cancellation poll after completed tool-search predicate retirement; Main235a8d05 donor19522001; original26 declarations unchanged.",
+    "Genuine Radius ordinary factory and refresh AsyncFunction with exact imported config/auth/catalog/API/OAuth owners, actual closure lifetime and27 controls; Main32642142 donor1c0435db."
   ],
   "combined_native_execution": {
     "scope": "Exact Windows component artifact and complete actual ordered metadata only; no whole-application or other-head acceptance.",
@@ -557,18 +563,46 @@
       "independent_closure_sha256": "5E0C90A799C402B76BC497A481178A43F533D06D646D18BCC13541451D824A5A",
       "qualification": false,
       "detail": "Source fixture now retains original default-parameter prologue roots and permits the intended finalizer producer after the helper call. Actual VM put/set argument bytecodes stop on pending failure, and ordinary-call terminal cleanup uses the existing pending-completion reducer to preserve the first fatal. All22 named controls and assertions remain."
+    },
+    {
+      "status": "closed_fresh_runtime_negative",
+      "head": "e370d88efe6929d33564f3d71d4960d9e1772257",
+      "evidence": "../../evidence/root-vm-sdk-radius-fresh-v9-runtime-20261019-155101",
+      "result_sha256": "1C7744122CBD509D041DCA2A5789AC2D085B27AF8B390260BA29F26E42A97420",
+      "started": 48,
+      "completed": 48,
+      "failed": 9,
+      "unexecuted_later_groups": 11,
+      "independent_closure": {
+        "path": "../../evidence/root-vm-sdk-radius-fresh-v9-runtime-control-20261019-155101/independent-negative-runtime-closure.json",
+        "sha256": "7BE5EB32DA46E75268986CE48C8AD7D8143DCEEBC8B0E740B2B5800D2C74B22F"
+      },
+      "qualification": false
+    },
+    {
+      "status": "independently_closed_unqualified_runtime_diagnostic",
+      "head": "e370d88efe6929d33564f3d71d4960d9e1772257",
+      "evidence": "../../evidence/root-v9-runtime-diagnostic-v2-20261019-161023",
+      "result_sha256": "05B6788FB4B10096885208C509C6BEBDCF29A2823BA84CFC06C7F7C76377A012",
+      "started": 258,
+      "completed": 258,
+      "failed": 72,
+      "independent_closure": {
+        "path": "../../evidence/root-v9-runtime-diagnostic-v2-control-20261019-161023/independent-diagnostic-runtime-closure.json",
+        "sha256": "0C7EACB6CAA0FA1AF8825C75A7457DA35FB0CE4ED2DE93B91483CEC93C0AC2D1"
+      },
+      "qualification": false
     }
   ],
   "next_native_batch": {
     "status": "preparing_frozen_root_fresh_buildquery_grant",
     "mode": "BuildQuery",
-    "prepared_directory": "../../evidence/combined-native-batch-v9-prepared-20261019",
+    "prepared_directory": "../../evidence/combined-native-batch-v10-prepared-20261019",
     "driver_sha256": "4F816750747F32A4EA6D0E832D90C962955C03217B3BF341A3F104068BBFC2D4",
-    "independent_auditor_sha256": "701422961B0DF6E3C6A93AA83C8F23F8A01E7AE81B7BCA858D4BED052C372B7E",
     "qualification_requested": true,
     "runtime_requested": false,
-    "whole_matrix_source_groups": 64,
-    "whole_matrix_declared_named": 1012,
+    "whole_matrix_source_groups": 65,
+    "whole_matrix_declared_named": 1045,
     "first_cohort": [
       "native-vm-sync-arguments",
       "native-vm-async-retirement",
@@ -582,10 +616,18 @@
       "native-node-fs-path-helpers",
       "native-node-file-url-paths",
       "native-sdk-tool-search-public",
-      "native-ai-radius-config"
+      "native-ai-radius-config",
+      "native-ai-radius-provider-genuine-af"
     ],
-    "first_cohort_declared_named": 293,
-    "scope": "Initially absent fresh cache pair, thirteen ordered groups, whole-input bookends, complete actual raw metadata and independent acceptance, then separate RuntimeOnly. V8 negatives remain immutable; no earlier-head acceptance transfers."
+    "first_cohort_declared_named": 326,
+    "runtime_diagnostic": {
+      "driver_sha256": "9815352426F75D1523325549FA060F78A561A03937723F3CB177FA8E89323395",
+      "scope": "complete_accepted_build_cohort",
+      "qualification_requested": false,
+      "source_peer": "Modules finite V2-to-V3 selection/scope diff6EED62B5 closed"
+    },
+    "scope": "Fresh private caches,14 serial groups, whole-input bookends, complete raw metadata/owner acceptance, then complete cohort diagnosis with every negative retained. Strict unchanged4F RuntimeOnly remains required separately for any qualifying runtime.",
+    "independent_auditor_sha256": "BD3A50B1B979434EFD8756E5F6CD1CB4F4191032005D9BB4A112C6C8EAA96012"
   },
   "storage_cleanup": {
     "status": "completed_and_independently_verified",
@@ -656,11 +698,21 @@
         "path": "../../evidence/root-vm-anthropic-fresh-v8-runtime-control-20261019-150945/vm-runtime-retirement-integration-journal.jsonl",
         "sha256": "2DB863FACAF59D6F9FDFDD9D27E9095A22938CF40D7B5F2CE808090730A8030D",
         "records": 3
+      },
+      {
+        "path": "../../evidence/root-v9-runtime-diagnostic-v2-control-20261019-161023/vm-v9-source-intake-journal.jsonl",
+        "sha256": "D0427E6441C871D281F66C5D3F0D4D6F0E1E8C2A70A59F2ED9FD8FE810A568F0",
+        "records": 6
+      },
+      {
+        "path": "../../evidence/root-v9-runtime-diagnostic-v2-control-20261019-161023/continued-source-intake-journal.jsonl",
+        "sha256": "17AF2B3D3CE049CDE4C7EFA1BEE9DD64460D7C436A3B5462005FA879BE082692",
+        "records": 12
       }
     ],
     "terminal_hook_source": "9ca2acdf6115579a418fde52d3a523824df3e8a3",
     "terminal_hook_main": "7d33baa187e52e2238601c9a086588830e45a1ee",
-    "current_head": "8fbe1c201c54735e55c4727ecb10d422de4edbff",
+    "current_head": "326421426481c938c0893084e2654551f205b8a4",
     "latest_reviewed_units": [
       "Module constructor24 and optional-builtin fixture correction",
       "Frontmatter19",
@@ -673,7 +725,13 @@
       "V12 shared FS types and portable C exception shim",
       "Public tool search26",
       "Radius configuration25",
-      "Actual sync assignment and ordinary terminal first-fatal VM correction"
+      "Actual sync assignment and ordinary terminal first-fatal VM correction",
+      "Individual Source block capture detachment with6 real lexical lifetime controls; Main5c3cf956 donor8961f2cb.",
+      "Actual async arrow duplicate-receiver retirement and Source DECREF/Promise-finalizer observations; Main83b055a7 donord50cdef4.",
+      "Failure-only captured host diagnostics for six Anthropic Source negative controls; Maind0082462 donor86592412.",
+      "Actual process.execPath, exact Node filename-error spelling, captured URL compile diagnostic and genuine contained Windows symlink fixture request; Main03b4bd8d donordd49bab5.",
+      "Actual existing cancellation poll after completed tool-search predicate retirement; Main235a8d05 donor19522001; original26 declarations unchanged.",
+      "Genuine Radius ordinary factory and refresh AsyncFunction with exact imported config/auth/catalog/API/OAuth owners, actual closure lifetime and27 controls; Main32642142 donor1c0435db."
     ]
   },
   "fresh_v8_validation": {
@@ -755,5 +813,630 @@
       "distinct_current_files_rehashed": 32476,
       "source_mutation_hold_released": true
     }
+  },
+  "fresh_v9_validation": {
+    "source_head": "e370d88efe6929d33564f3d71d4960d9e1772257",
+    "build_status": "passed_build_query_batch",
+    "actual_metadata_count": 306,
+    "groups": [
+      {
+        "group": "native-vm-sync-arguments",
+        "actual_count": 23
+      },
+      {
+        "group": "native-vm-async-retirement",
+        "actual_count": 25
+      },
+      {
+        "group": "native-vm-template-literal",
+        "actual_count": 19
+      },
+      {
+        "group": "native-vm-borrowed-bridges",
+        "actual_count": 18
+      },
+      {
+        "group": "vm-af-throw",
+        "actual_count": 31
+      },
+      {
+        "group": "native-ai-oauth-anthropic-genuine-af",
+        "actual_count": 26
+      },
+      {
+        "group": "native-node-module-creation",
+        "actual_count": 27
+      },
+      {
+        "group": "native-node-module-search-paths",
+        "actual_count": 21
+      },
+      {
+        "group": "native-node-fs-realpath-classic",
+        "actual_count": 24
+      },
+      {
+        "group": "native-node-fs-path-helpers",
+        "actual_count": 19
+      },
+      {
+        "group": "native-node-file-url-paths",
+        "actual_count": 20
+      },
+      {
+        "group": "native-sdk-tool-search-public",
+        "actual_count": 27
+      },
+      {
+        "group": "native-ai-radius-config",
+        "actual_count": 26
+      }
+    ],
+    "independent_metadata": {
+      "path": "../../evidence/root-vm-sdk-radius-fresh-v9-control-20261019-153909/independent-metadata-acceptance.json",
+      "sha256": "D256BB6A736EC63CF6E3D510BB796A9AD9579BBBD1DF2281A0CC04D1D5FDEDC1"
+    },
+    "independent_current_seals": {
+      "path": "../../evidence/root-vm-sdk-radius-fresh-v9-control-20261019-153909/independent-current-seals-and-owners.json",
+      "sha256": "34DD1A6E871F778BCAE0E3D268297B23D9C89F2B58A6E7F9886B5A683A14C9E8"
+    },
+    "build_distinct_current_files_rehashed": 32478,
+    "original_runtime": {
+      "status": "closed_negative_no_qualification",
+      "groups": [
+        {
+          "group": "native-vm-sync-arguments",
+          "expected": 23,
+          "started": 23,
+          "completed": 23,
+          "failed": 0,
+          "failures": [],
+          "qualification": false
+        },
+        {
+          "group": "native-vm-async-retirement",
+          "expected": 25,
+          "started": 25,
+          "completed": 25,
+          "failed": 9,
+          "failures": [
+            {
+              "index": 3,
+              "name": "native_async_frame_retirement_test.test.VM async retirement abandoned real suspension terminates arguments locals captures then receiver",
+              "flags": 1
+            },
+            {
+              "index": 7,
+              "name": "native_async_frame_retirement_test.test.VM async retirement arrow keeps distinct call receiver and lexical this through Await and adoption",
+              "flags": 1
+            },
+            {
+              "index": 8,
+              "name": "native_async_frame_retirement_test.test.VM async retirement abandoned arrow releases captures lexical this then ignored call receiver",
+              "flags": 1
+            },
+            {
+              "index": 10,
+              "name": "native_async_frame_retirement_test.test.VM async retirement terminal Frame close runs once for abandoned actual Await without escaped cells",
+              "flags": 1
+            },
+            {
+              "index": 13,
+              "name": "native_async_frame_retirement_test.test.VM async retirement failed terminal hook cannot bypass state and receiver root retirement",
+              "flags": 1
+            },
+            {
+              "index": 14,
+              "name": "native_async_frame_retirement_test.test.VM async retirement escaped open cell retains actual coroutine after the awaited gate is removed",
+              "flags": 1
+            },
+            {
+              "index": 15,
+              "name": "native_async_frame_retirement_test.test.VM async retirement dropped callback leaves no artificial owning capture-table cycle",
+              "flags": 1
+            },
+            {
+              "index": 22,
+              "name": "native_async_frame_retirement_test.test.VM async retirement escaped immutable argument retains real abandoned invocation until callback removal",
+              "flags": 1
+            },
+            {
+              "index": 23,
+              "name": "native_async_frame_retirement_test.test.VM async retirement dropped immutable argument cell adds no retained original argument slot",
+              "flags": 1
+            }
+          ],
+          "qualification": false
+        }
+      ],
+      "completed": 48,
+      "failed": 9,
+      "independent_closure": {
+        "path": "../../evidence/root-vm-sdk-radius-fresh-v9-runtime-control-20261019-155101/independent-negative-runtime-closure.json",
+        "sha256": "7BE5EB32DA46E75268986CE48C8AD7D8143DCEEBC8B0E740B2B5800D2C74B22F"
+      },
+      "distinct_current_files_rehashed": 32507
+    },
+    "remaining_groups_diagnostic": {
+      "status": "independently_closed_unqualified_runtime_diagnostic",
+      "groups": [
+        {
+          "group": "native-vm-template-literal",
+          "expected": 19,
+          "started": 19,
+          "completed": 19,
+          "failed": 0,
+          "failures": [],
+          "qualification": false
+        },
+        {
+          "group": "native-vm-borrowed-bridges",
+          "expected": 18,
+          "started": 18,
+          "completed": 18,
+          "failed": 0,
+          "failures": [],
+          "qualification": false
+        },
+        {
+          "group": "vm-af-throw",
+          "expected": 31,
+          "started": 31,
+          "completed": 31,
+          "failed": 0,
+          "failures": [],
+          "qualification": false
+        },
+        {
+          "group": "native-ai-oauth-anthropic-genuine-af",
+          "expected": 26,
+          "started": 26,
+          "completed": 26,
+          "failed": 6,
+          "failures": [
+            {
+              "index": 1,
+              "name": "native_ai_oauth_anthropic_genuine_af_test.test.native OAuth Anthropic postJson exact request construction Await and response order",
+              "flags": 1
+            },
+            {
+              "index": 7,
+              "name": "native_ai_oauth_anthropic_genuine_af_test.test.native OAuth Anthropic error details repeated fields and explicit String remain actual",
+              "flags": 1
+            },
+            {
+              "index": 8,
+              "name": "native_ai_oauth_anthropic_genuine_af_test.test.native OAuth Anthropic error templates eagerly coerce before later getters",
+              "flags": 1
+            },
+            {
+              "index": 10,
+              "name": "native_ai_oauth_anthropic_genuine_af_test.test.native OAuth Anthropic browser callback fallback uses preferred then ephemeral ports",
+              "flags": 1
+            },
+            {
+              "index": 12,
+              "name": "native_ai_oauth_anthropic_genuine_af_test.test.native OAuth Anthropic browser finally runs for notify input state and exchange failures",
+              "flags": 1
+            },
+            {
+              "index": 17,
+              "name": "native_ai_oauth_anthropic_genuine_af_test.test.native OAuth Anthropic template raw value retires before next substitution without concat",
+              "flags": 1
+            }
+          ],
+          "qualification": false
+        },
+        {
+          "group": "native-node-module-creation",
+          "expected": 27,
+          "started": 27,
+          "completed": 27,
+          "failed": 1,
+          "failures": [
+            {
+              "index": 11,
+              "name": "native_node_module_creation_test.test.native actual Module creation createRequire genuine errors and outside catch gate",
+              "flags": 1
+            }
+          ],
+          "qualification": false
+        },
+        {
+          "group": "native-node-module-search-paths",
+          "expected": 21,
+          "started": 21,
+          "completed": 21,
+          "failed": 20,
+          "failures": [
+            {
+              "index": 0,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths ordinary shapes and private binding",
+              "flags": 1
+            },
+            {
+              "index": 1,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths original builtin normalizer coercion",
+              "flags": 1
+            },
+            {
+              "index": 2,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths repeated parent paths and array-like prepend",
+              "flags": 1
+            },
+            {
+              "index": 3,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths optional chain raw truthiness",
+              "flags": 1
+            },
+            {
+              "index": 4,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths relative debug operand and dirname order",
+              "flags": 1
+            },
+            {
+              "index": 5,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths relative parent short circuits",
+              "flags": 1
+            },
+            {
+              "index": 6,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths ordinary getter failures retain order",
+              "flags": 1
+            },
+            {
+              "index": 7,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths actual Windows lookup spelling",
+              "flags": 1
+            },
+            {
+              "index": 8,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths public clone and private replacement",
+              "flags": 1
+            },
+            {
+              "index": 9,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths init environment resolve filter and publication order",
+              "flags": 1
+            },
+            {
+              "index": 10,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths init failure before and after private assignment",
+              "flags": 1
+            },
+            {
+              "index": 11,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths retain bootstrap primordials",
+              "flags": 1
+            },
+            {
+              "index": 12,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths completed linkage keeps actual Module cache and inputs",
+              "flags": 1
+            },
+            {
+              "index": 13,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths predicate receiver and result retire before repeated getter",
+              "flags": 1
+            },
+            {
+              "index": 14,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths predicate retirement fatal stops repeated getter and catch",
+              "flags": 1
+            },
+            {
+              "index": 15,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths actual getter fatal stops later guest work",
+              "flags": 1
+            },
+            {
+              "index": 16,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths same-operation private DATA remains ordinary",
+              "flags": 1
+            },
+            {
+              "index": 17,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths successful flagged dirname DATA remains an array element",
+              "flags": 1
+            },
+            {
+              "index": 18,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths init receiver retires while original home local survives publication",
+              "flags": 1
+            },
+            {
+              "index": 19,
+              "name": "native_node_module_search_paths_test.test.native actual Module search paths init receiver retirement fatal stops next environment getter",
+              "flags": 1
+            }
+          ],
+          "qualification": false
+        },
+        {
+          "group": "native-node-fs-realpath-classic",
+          "expected": 24,
+          "started": 24,
+          "completed": 24,
+          "failed": 23,
+          "failures": [
+            {
+              "index": 0,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath published CJS and named owner identities",
+              "flags": 1
+            },
+            {
+              "index": 1,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath walks files directories and resolved input",
+              "flags": 1
+            },
+            {
+              "index": 2,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath resolves relative absolute and chained file links",
+              "flags": 1
+            },
+            {
+              "index": 3,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath restarts through linked directory suffixes",
+              "flags": 1
+            },
+            {
+              "index": 4,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath keeps options URL Buffer and default coercion order",
+              "flags": 1
+            },
+            {
+              "index": 5,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath options failure precedes conversion and resolve",
+              "flags": 1
+            },
+            {
+              "index": 6,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath truthy cached DATA bypasses OS and encoding",
+              "flags": 1
+            },
+            {
+              "index": 7,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath consumes the live actual path resolve owner",
+              "flags": 1
+            },
+            {
+              "index": 8,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath hard cache equality has exact lookup order",
+              "flags": 1
+            },
+            {
+              "index": 9,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath cached link restarts the remaining walk",
+              "flags": 1
+            },
+            {
+              "index": 10,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath encoding rereads and receiver selection stay live",
+              "flags": 1
+            },
+            {
+              "index": 11,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath uses actual Buffer path encodings",
+              "flags": 1
+            },
+            {
+              "index": 12,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath retains raw ENOENT path syscall and intrinsic Error",
+              "flags": 1
+            },
+            {
+              "index": 13,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath followed stat reports actual link loops",
+              "flags": 1
+            },
+            {
+              "index": 14,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath retains original string collection and regex primordials",
+              "flags": 1
+            },
+            {
+              "index": 15,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath final cache failure precedes encoding",
+              "flags": 1
+            },
+            {
+              "index": 16,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath cache equality retires its sole holder before next read",
+              "flags": 1
+            },
+            {
+              "index": 17,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath cache equality retirement B prevents next read and catch",
+              "flags": 1
+            },
+            {
+              "index": 18,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath same-operation private DATA remains ordinary",
+              "flags": 1
+            },
+            {
+              "index": 19,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath successful flagged cache DATA stays a returned value",
+              "flags": 1
+            },
+            {
+              "index": 20,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath and public metadata share the actual stat buffers",
+              "flags": 1
+            },
+            {
+              "index": 21,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath original p argument retires before live resolve getter",
+              "flags": 1
+            },
+            {
+              "index": 22,
+              "name": "native_node_fs_realpath_classic_test.test.native actual classic realpath original p retirement B prevents resolve getter and catch",
+              "flags": 1
+            }
+          ],
+          "qualification": false
+        },
+        {
+          "group": "native-node-fs-path-helpers",
+          "expected": 19,
+          "started": 19,
+          "completed": 19,
+          "failed": 2,
+          "failures": [
+            {
+              "index": 10,
+              "name": "native_node_fs_path_helpers_test.test.native actual fs path hidden validator rejects actual null bytes",
+              "flags": 1
+            },
+            {
+              "index": 11,
+              "name": "native_node_fs_path_helpers_test.test.native actual fs path retained original includes methods survive later poisoning",
+              "flags": 1
+            }
+          ],
+          "qualification": false
+        },
+        {
+          "group": "native-node-file-url-paths",
+          "expected": 20,
+          "started": 20,
+          "completed": 20,
+          "failed": 19,
+          "failures": [
+            {
+              "index": 0,
+              "name": "native_node_file_url_paths_test.test.native actual file URL structural predicate preserves short circuit reads",
+              "flags": 1
+            },
+            {
+              "index": 1,
+              "name": "native_node_file_url_paths_test.test.native actual file URL toPath retains non URL identity and ordinary abrupt values",
+              "flags": 1
+            },
+            {
+              "index": 2,
+              "name": "native_node_file_url_paths_test.test.native actual file URL options precede path and protocol is read again",
+              "flags": 1
+            },
+            {
+              "index": 3,
+              "name": "native_node_file_url_paths_test.test.native actual file URL toPath performs its separate structural gate",
+              "flags": 1
+            },
+            {
+              "index": 4,
+              "name": "native_node_file_url_paths_test.test.native actual file URL nullish platform selection and truthy option do not coerce",
+              "flags": 1
+            },
+            {
+              "index": 5,
+              "name": "native_node_file_url_paths_test.test.native actual file URL retains actual URL constructor and original decoder",
+              "flags": 1
+            },
+            {
+              "index": 6,
+              "name": "native_node_file_url_paths_test.test.native actual file URL throws genuine argument scheme host and input-bearing path errors",
+              "flags": 1
+            },
+            {
+              "index": 7,
+              "name": "native_node_file_url_paths_test.test.native actual file URL encoded separator check precedes actual URI decoding",
+              "flags": 1
+            },
+            {
+              "index": 8,
+              "name": "native_node_file_url_paths_test.test.native actual file URL UNC uses genuine domain Unicode and IPv6 host parsing",
+              "flags": 1
+            },
+            {
+              "index": 9,
+              "name": "native_node_file_url_paths_test.test.native actual file URL Windows replacement uses its genuine private RegExp realm",
+              "flags": 1
+            },
+            {
+              "index": 10,
+              "name": "native_node_file_url_paths_test.test.native actual file URL ordinary functions admit structural primitive Symbols",
+              "flags": 1
+            },
+            {
+              "index": 11,
+              "name": "native_node_file_url_paths_test.test.native actual file URL string error uses live formatter and preselected superclass",
+              "flags": 1
+            },
+            {
+              "index": 12,
+              "name": "native_node_file_url_paths_test.test.native actual file URL function messages retain repeated reads and eager coercion",
+              "flags": 1
+            },
+            {
+              "index": 13,
+              "name": "native_node_file_url_paths_test.test.native actual file URL completed owner shares actual error marker URL and empty object",
+              "flags": 1
+            },
+            {
+              "index": 14,
+              "name": "native_node_file_url_paths_test.test.native actual file URL predicate retires before next read while windows local survives body",
+              "flags": 1
+            },
+            {
+              "index": 15,
+              "name": "native_node_file_url_paths_test.test.native actual file URL predicate finalizer fatal stops later protocol and guest catch",
+              "flags": 1
+            },
+            {
+              "index": 16,
+              "name": "native_node_file_url_paths_test.test.native actual file URL same getter private DATA throw remains ordinary",
+              "flags": 1
+            },
+            {
+              "index": 17,
+              "name": "native_node_file_url_paths_test.test.native actual file URL successful flagged predicate value remains DATA",
+              "flags": 1
+            },
+            {
+              "index": 18,
+              "name": "native_node_file_url_paths_test.test.native actual file URL new error families reuse original argument bootstrap primordials",
+              "flags": 1
+            }
+          ],
+          "qualification": false
+        },
+        {
+          "group": "native-sdk-tool-search-public",
+          "expected": 27,
+          "started": 27,
+          "completed": 27,
+          "failed": 1,
+          "failures": [
+            {
+              "index": 23,
+              "name": "native_sdk_tool_search_public_test.test.SDK public tool search trim callee cancellation prevents later guest work",
+              "flags": 1
+            }
+          ],
+          "qualification": false
+        },
+        {
+          "group": "native-ai-radius-config",
+          "expected": 26,
+          "started": 26,
+          "completed": 26,
+          "failed": 0,
+          "failures": [],
+          "qualification": false
+        }
+      ],
+      "completed": 258,
+      "failed": 72,
+      "independent_closure": {
+        "path": "../../evidence/root-v9-runtime-diagnostic-v2-control-20261019-161023/independent-diagnostic-runtime-closure.json",
+        "sha256": "0C7EACB6CAA0FA1AF8825C75A7457DA35FB0CE4ED2DE93B91483CEC93C0AC2D1"
+      },
+      "distinct_current_files_rehashed": 32509,
+      "qualification": false
+    },
+    "all_original_groups_observed_once": true,
+    "runtime_qualification": false
   }
 }
