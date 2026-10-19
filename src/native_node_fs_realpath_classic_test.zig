@@ -12,6 +12,16 @@ const source = @embedFile("extensions/fixtures/native-node-classic-realpath-obse
 const gpa = std.testing.allocator;
 const io = std.testing.io;
 
+// Use the public Windows API's existing unprivileged-create request. The
+// pinned std.Io implementation writes a reparse tag without that request.
+// This neither grants a privilege nor changes Developer Mode; a denied
+// request remains a failing physical-link prerequisite for these controls.
+extern "kernel32" fn CreateSymbolicLinkW(
+    link: [*:0]const u16,
+    target: [*:0]const u16,
+    flags: u32,
+) callconv(.winapi) std.os.windows.BOOLEAN;
+
 const Probe = struct {
     engine: *a.v.em.Engine,
     class: c.JSClassID = 0,
@@ -65,6 +75,21 @@ const Fixture = struct {
     environment: std.process.Environ.Map,
     engine: *a.v.em.Engine,
     probe: Probe,
+    fn symlink(self: *Fixture, target: []const u8, name: []const u8, directory: bool) !void {
+        if (@import("builtin").os.tag != .windows)
+            return self.temporary.dir.symLink(io, target, name, .{ .is_directory = directory });
+        const link_path = try std.fs.path.join(gpa, &.{ self.root, name });
+        defer gpa.free(link_path);
+        const link_w = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, link_path);
+        defer gpa.free(link_w);
+        const target_w = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, target);
+        defer gpa.free(target_w);
+        const flags: u32 = 0x2 | @as(u32, @intFromBool(directory));
+        if (CreateSymbolicLinkW(link_w.ptr, target_w.ptr, flags) != .FALSE) return;
+        const status = std.os.windows.GetLastError();
+        std.debug.print("Actual classic symlink {s} failed with Win32 {d}\n", .{ name, @intFromEnum(status) });
+        return error.ActualClassicSymbolicLinkCreationFailed;
+    }
     fn init(self: *Fixture) !void {
         self.temporary = std.testing.tmpDir(.{});
         errdefer self.temporary.cleanup();
@@ -79,14 +104,14 @@ const Fixture = struct {
         defer gpa.free(absolute_file);
         // These are the test's own physical links, all within its fresh
         // contained directory. No external file, listener or process is used.
-        try self.temporary.dir.symLink(io, if (@import("builtin").os.tag == .windows) "dir\\file.txt" else "dir/file.txt", "relative-file", .{});
-        try self.temporary.dir.symLink(io, absolute_file, "absolute-file", .{});
-        try self.temporary.dir.symLink(io, "relative-file", "chain-file", .{});
-        try self.temporary.dir.symLink(io, "dir", "directory-link", .{ .is_directory = true });
-        try self.temporary.dir.symLink(io, "directory-link", "second-directory", .{ .is_directory = true });
-        try self.temporary.dir.symLink(io, "missing-target", "broken-link", .{});
-        try self.temporary.dir.symLink(io, "loop-b", "loop-a", .{});
-        try self.temporary.dir.symLink(io, "loop-a", "loop-b", .{});
+        try self.symlink(if (@import("builtin").os.tag == .windows) "dir\\file.txt" else "dir/file.txt", "relative-file", false);
+        try self.symlink(absolute_file, "absolute-file", false);
+        try self.symlink("relative-file", "chain-file", false);
+        try self.symlink("dir", "directory-link", true);
+        try self.symlink("directory-link", "second-directory", true);
+        try self.symlink("missing-target", "broken-link", false);
+        try self.symlink("loop-b", "loop-a", false);
+        try self.symlink("loop-a", "loop-b", false);
         self.environment = .init(gpa);
         errdefer self.environment.deinit();
         self.engine = try a.v.em.Engine.init(gpa, .{ .interrupt_budget = 4_000_000 });

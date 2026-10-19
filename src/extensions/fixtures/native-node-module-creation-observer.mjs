@@ -221,7 +221,7 @@ export function observeCreateRequireFailures(api) {
   for (const input of [undefined,null,1,{},Symbol("filename"),"relative.js","https://example.invalid/module.js"]) {
     const reason = moduleThrown(() => api.Module.createRequire(input));
     moduleAssert(reason instanceof TypeError && reason.code === "ERR_INVALID_ARG_VALUE", "actual invalid filename class");
-    moduleAssert(reason.message.includes('"filename"') && reason.message.includes("must be a file URL object, file URL string, or absolute path string"), "actual filename message");
+    moduleAssert(reason.message.includes("'filename'") && reason.message.includes("must be a file URL object, file URL string, or absolute path string"), "actual filename message");
   }
   const saved = Object.getOwnPropertyDescriptor(api.path,"isAbsolute");
   const marker = {outside:"URL try"};

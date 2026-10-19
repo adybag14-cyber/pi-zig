@@ -124,7 +124,11 @@ const Fixture = struct {
 
 fn observe(comptime name: []const u8) !void {
     var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit();
-    try fixture.run(name ++ "(actualFileUrl);");
+    fixture.run(name ++ "(actualFileUrl);") catch |err| {
+        std.debug.print("Actual file URL observer {s}: {s}; captured={s}\n",
+            .{ name, @errorName(err), fixture.engine.last_error orelse "<no captured diagnostic>" });
+        return err;
+    };
 }
 test "native actual file URL structural predicate preserves short circuit reads" { try observe("observeUrlStructure"); }
 test "native actual file URL toPath retains non URL identity and ordinary abrupt values" { try observe("observeUrlIdentity"); }
