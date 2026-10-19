@@ -1,5 +1,5 @@
 // Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
-//! The actual primordials makeSafe Map, Set and WeakMap subclasses.
+//! The actual primordials makeSafe Map, Set, WeakMap and Promise subclasses.
 //! Iterator probes retain Source call order and one shared captured next method.
 const v = @import("native_ai_provider_values.zig");
 const c = v.c;
@@ -7,19 +7,20 @@ const Scope = @import("native_node_operation_scope.zig").Scope;
 const functions = @import("native_node_module_callable.zig");
 const classes = @import("native_node_fs_class.zig");
 const publication = @import("native_node_fs_private_publication.zig");
-const Collection = enum { map, set, weak_map };
+const Collection = enum { map, set, weak_map, promise };
 fn cacheKey(comptime collection: Collection) []const u8 {
     return switch (collection) {
         .map => "\x00native.fs.SafeMap",
         .set => "\x00native.fs.SafeSet",
         .weak_map => "\x00native.internal.SafeWeakMap",
+        .promise => "\x00native.internal.SafePromise",
     };
 }
 fn unsafeName(comptime collection: Collection) [*:0]const u8 {
-    return switch (collection) { .map => "Map", .set => "Set", .weak_map => "WeakMap" };
+    return switch (collection) { .map => "Map", .set => "Set", .weak_map => "WeakMap", .promise => "Promise" };
 }
 fn safeName(comptime collection: Collection) [:0]const u8 {
-    return switch (collection) { .map => "SafeMap", .set => "SafeSet", .weak_map => "SafeWeakMap" };
+    return switch (collection) { .map => "SafeMap", .set => "SafeSet", .weak_map => "SafeWeakMap", .promise => "SafePromise" };
 }
 fn constructCollection(engine: *v.em.Engine, target: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s = Scope.init(engine);
@@ -49,22 +50,32 @@ fn define(s: *Scope, target: c.JSValue, atom: c.JSAtom, value: c.JSValue, flags:
 }
 fn iteratorConstruct(engine: *v.em.Engine, target: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s = Scope.init(engine);
-    return s.finish(iteratorConstructBody(&s, target, args, roots[0]));
+    return s.finish(iteratorConstructBody(&s, target, args, roots[0], false));
 }
-fn iteratorConstructBody(s: *Scope, target: c.JSValue, args: []const c.JSValue, factory: c.JSValue) !c.JSValue {
+fn iteratorConstructBody(s: *Scope, target: c.JSValue, args: []const c.JSValue, factory: c.JSValue, comptime uncurried: bool) !c.JSValue {
     const prototype_value = try s.get(target, "prototype");
     const receiver = if (c.JS_IsObject(prototype_value)) try s.objectProto(prototype_value) else try s.object();
     const iterable = if (args.len == 0) c.pi_js_undefined() else args[0];
-    const iterator = try s.call(factory, iterable, &.{});
+    const iterator = if (uncurried) try s.call(factory, c.pi_js_undefined(), &.{iterable}) else try s.call(factory, iterable, &.{});
     try s.put(receiver, "_iterator", iterator);
     return c.JS_DupValue(s.engine.context, receiver);
 }
 fn iteratorNext(engine: *v.em.Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s = Scope.init(engine);
-    return s.finish(iteratorNextBody(&s, receiver, roots[0]));
+    return s.finish(iteratorNextBody(&s, receiver, roots[0], false));
 }
-fn iteratorNextBody(s: *Scope, receiver: c.JSValue, next: c.JSValue) !c.JSValue {
-    return c.JS_DupValue(s.engine.context, try s.call(next, try s.get(receiver, "_iterator"), &.{}));
+fn iteratorNextBody(s: *Scope, receiver: c.JSValue, next: c.JSValue, comptime uncurried: bool) !c.JSValue {
+    const iterator = try s.get(receiver, "_iterator");
+    return c.JS_DupValue(s.engine.context, if (uncurried)
+        try s.call(next, c.pi_js_undefined(), &.{iterator}) else try s.call(next, iterator, &.{}));
+}
+fn iteratorUncurriedConstruct(engine: *v.em.Engine, target: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var s = Scope.init(engine);
+    return s.finish(iteratorConstructBody(&s, target, args, roots[0], true));
+}
+fn iteratorUncurriedNext(engine: *v.em.Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var s = Scope.init(engine);
+    return s.finish(iteratorNextBody(&s, receiver, roots[0], true));
 }
 fn iteratorSelf(engine: *v.em.Engine, receiver: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     return c.JS_DupValue(engine.context, receiver);
@@ -76,10 +87,10 @@ fn wrapIterator(engine: *v.em.Engine, receiver: c.JSValue, _: []const c.JSValue,
 fn wrapIteratorBody(s: *Scope, constructor_value: c.JSValue, receiver: c.JSValue) !c.JSValue {
     return c.JS_DupValue(s.engine.context, try s.construct(constructor_value, &.{receiver}));
 }
-fn safeIterator(s: *Scope, factory: c.JSValue, next: c.JSValue, symbol: c.JSAtom) !c.JSValue {
+fn safeIterator(s: *Scope, factory: c.JSValue, next: c.JSValue, symbol: c.JSAtom, comptime uncurried: bool) !c.JSValue {
     const prototype_value = try s.object();
-    const constructor_value = try s.own(try classes.constructor(s.engine, "SafeIterator", 1, prototype_value, iteratorConstruct, &.{factory}));
-    try s.define(prototype_value, "next", try s.own(try functions.create(s.engine, "next", 0, false, iteratorNext, &.{next})), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE);
+    const constructor_value = try s.own(try classes.constructor(s.engine, "SafeIterator", 1, prototype_value, if (uncurried) iteratorUncurriedConstruct else iteratorConstruct, &.{factory}));
+    try s.define(prototype_value, "next", try s.own(try functions.create(s.engine, "next", 0, false, if (uncurried) iteratorUncurriedNext else iteratorNext, &.{next})), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE);
     try define(s, prototype_value, symbol, try s.own(try functions.create(s.engine, "[Symbol.iterator]", 0, false, iteratorSelf, &.{})), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE);
     try setPrototype(s, prototype_value, c.pi_js_null());
     try freeze(s, prototype_value);
@@ -178,7 +189,7 @@ fn copyPropertyBody(s: *Scope, from: c.JSValue, to: c.JSValue, atom: c.JSAtom, p
         {
             if (iterators.next == null)
                 iterators.next = try iterators.parent.own(try nextValue(s.engine, value, iterators.dummy));
-            const constructor_value = try safeIterator(s, value, iterators.next.?, symbol);
+            const constructor_value = try safeIterator(s, value, iterators.next.?, symbol, false);
             value = try s.own(try functions.create(s.engine, "", 0, true, wrapIterator, &.{constructor_value}));
         }
     }
@@ -251,3 +262,20 @@ pub fn acquireSafeSet(engine: *v.em.Engine) !c.JSValue { return acquire(engine, 
 
 /// internal/util's actual crossRealmRegexes uses this same makeSafe owner.
 pub fn acquireSafeWeakMap(engine: *v.em.Engine) !c.JSValue { return acquire(engine, .weak_map); }
+
+/// The same makeSafe algorithm retains the genuine Promise constructor.
+pub fn acquireSafePromise(engine: *v.em.Engine) !c.JSValue { return acquire(engine, .promise); }
+
+/// Early primordial bootstrap supplies the actual retained uncurried imports.
+/// Returns one completed owned class; no independent iterator cache is created.
+pub fn createSafeIterator(engine: *v.em.Engine, factory: c.JSValue, next: c.JSValue, symbol_value: c.JSValue) !c.JSValue {
+    var s = Scope.init(engine);
+    return s.finish(createSafeIteratorBody(&s, factory, next, symbol_value));
+}
+fn createSafeIteratorBody(s: *Scope, factory: c.JSValue, next: c.JSValue, symbol_value: c.JSValue) !c.JSValue {
+    try s.pending();
+    const symbol = try v.js.atom(s.engine, symbol_value);
+    defer c.JS_FreeAtom(s.engine.context, symbol);
+    try s.pending();
+    return c.JS_DupValue(s.engine.context, try safeIterator(s, factory, next, symbol, true));
+}
