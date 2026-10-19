@@ -1,0 +1,193 @@
+{
+  "schema": 1,
+  "status": "source_and_controls_peer_reviewed_pending_native_validation",
+  "updated_utc": "2026-10-19T16:32:44.366723+00:00",
+  "root_source_head_at_review": "8659241298d3cf9bafdb4e101d8801a4d24e99b8",
+  "main_dependency_head_at_review": "03b4bd8d3548321fcb0c23c2cb6e7259b4a1414b",
+  "authority": [
+    {
+      "path": "verification/provider-radius-genuine-sourceonly-20261019/authority/radius.js",
+      "bytes": 3418,
+      "sha256": "9F5516E81B00B8AFF7F986052EACF822D2C1DC9F78C8CBAFBF4E2CF91E2B9D2B"
+    },
+    {
+      "path": "verification/provider-radius-genuine-sourceonly-20261019/authority/radius.js.map",
+      "bytes": 6404,
+      "sha256": "004B0C990C2A31AB000690B2B68160C7AEF668419E84A8A49528B267263B6558"
+    },
+    {
+      "path": "verification/provider-radius-genuine-sourceonly-20261019/authority/radius.ts",
+      "bytes": 3146,
+      "sha256": "40ACCE75F4F5C99CBEB03247CBF0FBDDE9E911B097AF3C25132CDF1F75346C32"
+    }
+  ],
+  "source_map_full_content_matches_typescript": true,
+  "fixture_transform": "Exact accepted emitted JavaScript body; remove the five module import declarations, one export keyword and sourceMappingURL; wrap only in a lexical import factory exposing radiusProvider.",
+  "fixture": {
+    "path": "src/extensions/fixtures/radius-provider-c268-source.mjs",
+    "bytes": 3255,
+    "sha256": "FAD16CD5581B8D9C0649C3AFC7D376A8E6CEE833151993E010F99D803DFB6CD6"
+  },
+  "production": {
+    "path": "src/extensions/native_ai_provider_radius.zig",
+    "bytes": 22249,
+    "sha256": "3BA35501D403A012AA0F96FAB6F829F89AD49849C8F435A8ACCDA908A11AC93F"
+  },
+  "test_root": {
+    "path": "src/native_ai_radius_provider_genuine_af_test.zig",
+    "bytes": 15204,
+    "sha256": "5C69D058EA757D9B415B37750C515F9207E7C6902D916CF5B1ABC38FC3C995D4"
+  },
+  "observer": {
+    "path": "src/extensions/fixtures/radius-provider-observer.mjs",
+    "bytes": 15652,
+    "sha256": "126B5B23F9BF402712C602C3547F8B21205A860DE93F1192F788F9C8A53BA102"
+  },
+  "namespace_wiring": {
+    "path": "src/extensions/native_ai_provider_factories.zig",
+    "bytes": 12676,
+    "sha256": "FEF3BF03E9D1CEA79507AC4B395203E9FABF32107C46EF2705907ED62BAC4BA1"
+  },
+  "source_pins": [
+    {
+      "path": "src/extensions/native_ai_provider_radius.zig",
+      "bytes": 22249,
+      "sha256": "3BA35501D403A012AA0F96FAB6F829F89AD49849C8F435A8ACCDA908A11AC93F"
+    },
+    {
+      "path": "src/native_ai_radius_provider_genuine_af_test.zig",
+      "bytes": 15204,
+      "sha256": "5C69D058EA757D9B415B37750C515F9207E7C6902D916CF5B1ABC38FC3C995D4"
+    },
+    {
+      "path": "src/extensions/fixtures/radius-provider-observer.mjs",
+      "bytes": 15652,
+      "sha256": "126B5B23F9BF402712C602C3547F8B21205A860DE93F1192F788F9C8A53BA102"
+    },
+    {
+      "path": "src/extensions/fixtures/radius-provider-c268-source.mjs",
+      "bytes": 3255,
+      "sha256": "FAD16CD5581B8D9C0649C3AFC7D376A8E6CEE833151993E010F99D803DFB6CD6"
+    },
+    {
+      "path": "src/extensions/native_ai_provider_factories.zig",
+      "bytes": 12676,
+      "sha256": "FEF3BF03E9D1CEA79507AC4B395203E9FABF32107C46EF2705907ED62BAC4BA1"
+    },
+    {
+      "path": "src/extensions/native_ai_radius_config.zig",
+      "bytes": 23777,
+      "sha256": "EFB8FF26532C3B9F0BA0BC0E46378928335437CF9C6F1EC9EA0C30FB4AE26253"
+    },
+    {
+      "path": "src/extensions/native_ai_auth_helpers.zig",
+      "bytes": 7134,
+      "sha256": "90ECBF213F35D0926435EEB097840B99D654DA2DC1298BD0A506A8D618C89E00"
+    },
+    {
+      "path": "src/extensions/native_ai_auth_helper_values.zig",
+      "bytes": 4692,
+      "sha256": "98B907427C3E15ED2BA5A3FAE155F087AA83CE7A043593F66FBCC0CE75BCDDCB"
+    },
+    {
+      "path": "src/extensions/native_ai_catalog_values.zig",
+      "bytes": 12930,
+      "sha256": "3DCF66023A9E70ABEA8A836755645AF8FF4CE37F49783FDC7B3D5FDC640E23DA"
+    },
+    {
+      "path": "src/extensions/native_public_lexical_frame.zig",
+      "bytes": 17136,
+      "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E"
+    },
+    {
+      "path": "src/extensions/native_public_values.zig",
+      "bytes": 13939,
+      "sha256": "0B1BB422A9C89E7CE8146B32413B27E42D8DFB65285C3245B89EED8AF222022E"
+    },
+    {
+      "path": "src/extensions/native_sync_arguments.zig",
+      "bytes": 9162,
+      "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "bytes": 8436,
+      "sha256": "72B6689CB82B1E8FD8F89F941DD16AE3BACB3989EFE4A75C68A719D9CB8C266B"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "bytes": 14346,
+      "sha256": "469B1CFE5B3C589881533EA38EA45163BE4282C29234B11EDAA82DA1F557B73B"
+    },
+    {
+      "path": "src/native_sdk_initial_model_retirement_controls.zig",
+      "bytes": 15190,
+      "sha256": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615"
+    }
+  ],
+  "build": {
+    "root": "src/native_ai_radius_provider_genuine_af_test.zig",
+    "target": "build-native-ai-radius-provider-genuine-af",
+    "artifact": "bin/native-ai-radius-provider-genuine-af.exe",
+    "filter": "native Radius provider",
+    "declared_tests": [
+      "native Radius provider exact declaration defaults raw values and null failure",
+      "native Radius provider ordinary declaration has actual name length and constructability",
+      "native Radius provider option getters and gateway normalization retain Source order",
+      "native Radius provider catalog selection shallow spread and escaped arrow identity",
+      "native Radius provider live Object values and map failures stop at exact operand",
+      "native Radius provider imported streams and auth constructors retain selected call order",
+      "native Radius provider stream arrows forward exact receiver arguments and result",
+      "native Radius provider lazy OAuth load arrow keeps captured name gateway and raw return",
+      "native Radius provider refresh is genuine async including zero Await offline exits",
+      "native Radius provider stored catalog filters without an invented map and shares updates",
+      "native Radius provider stored and filter failures preserve exact callback boundary",
+      "native Radius provider legacy catalog preserves real length coercion and early publication",
+      "native Radius provider legacy call and length failures stop before network access",
+      "native Radius provider credential optional access retains repeated changing getter reads",
+      "native Radius provider network and signal gates preserve truthiness and abrupt completion",
+      "native Radius provider config call and genuine Await retain exact rejection values",
+      "native Radius provider publication lookup call and Await stop at the exact operation",
+      "native Radius provider persisted publication retains Date now expression order",
+      "native Radius provider delayed update arrows retain distinct shared lexical bindings",
+      "native Radius provider Object values callee retires before following map lookup",
+      "native Radius provider getModels closure releases unrelated options names and streams",
+      "native Radius provider actual baseline stays alive through its sole getModels cell",
+      "native Radius provider restored block closure detaches before abandoned config Await",
+      "native Radius provider legacy block closure detaches before abandoned config Await",
+      "native Radius provider open refreshed cell retains real abandoned final publication",
+      "native Radius provider same-operation private DATA remains an ordinary rejection",
+      "native Radius provider actual native fatal preempts continuation and guest catch"
+    ],
+    "declared_count": 27,
+    "installed_artifact_only": true,
+    "stack_override": false
+  },
+  "owners": {
+    "provider": "Actual ordinary default-parameter declaration with mutable VM formals and exact ProviderFrame lexical cells",
+    "refresh": "Actual native C AsyncFunction arrow with original context argument, real Promise adoption and 0 to3 reachable Awaits across4 alternative phases",
+    "closures": "Source-used bindings only; shared dynamic catalog, independent closed restored/legacy block cells and live refreshed AF cell",
+    "imports": "Production factory obtains genuine config/auth/catalog/API/OAuth values; injection factory is test-only"
+  },
+  "reviews": {
+    "production_source": "Root, Modules ordinary/factory and SDK actual refresh AF closed reviewed6386811; canonical LF3BA35501 independently verified line-only equivalent",
+    "controls_1_to_19_and_26_to_27": "SDK closed5C69 test with126B5B23 observer after first-statement catch/fallthrough guestReached fix",
+    "controls_20_to_25": "VM closed5C69/9D44CA67 lifecycle and real GC cutpoints;126B successor changes only unrelated fatal observation",
+    "namespace_and_build": "Modules closed exact FEF3BF03 namespace loop and44F2F8C9 install-only build fragment; genuine Radius factory replaces the old generic trampoline, preserving other constructor callbacks/default stack and cached test.exe name."
+  },
+  "line_ending_canonicalization": {
+    "original_reviewed_sha256": "6386811B7F27E134665182B7F510E88BB17A964EA39690D1E7AE08D4335C7608",
+    "canonical_sha256": "3BA35501D403A012AA0F96FAB6F829F89AD49849C8F435A8ACCDA908A11AC93F",
+    "transformation": "CRLF to LF only; every source splitline unchanged"
+  },
+  "native_execution": false,
+  "actual_metadata_count": null,
+  "runtime_qualification": false,
+  "application_qualification": false,
+  "open_gates": [
+    "Compile and discover actual metadata under exact fresh Root grant",
+    "Complete original Source/native functional and causal runtime controls",
+    "Genuine Radius OAuth implementation and actual HTTP/account composition",
+    "Full application/provider regressions and supported platforms"
+  ]
+}

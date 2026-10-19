@@ -49,13 +49,16 @@ pub fn createWithDependencies(engine: *v.em.Engine, dependencies: Dependencies) 
     try s.put(state, "vertexAuth", try s.own(try auth.create(engine, .vertex)));
     const module_exports = try s.object();
     inline for (specs.providers) |spec| {
-        const Factory = struct {
-            fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-                if (comptime std.mem.eql(u8, spec.id, "radius")) return @import("native_ai_provider_radius.zig").create(host, roots[0], if (args.len > 0) args[0] else c.pi_js_undefined());
-                return construct(host, roots[0], spec);
-            }
-        };
-        try s.put(module_exports, spec.function.ptr, try s.own(try functions.create(engine, spec.function, 0, Factory.call, &.{state})));
+        if (comptime std.mem.eql(u8, spec.id, "radius")) {
+            try s.put(module_exports, spec.function.ptr, try s.own(try @import("native_ai_provider_radius.zig").factory(engine, state)));
+        } else {
+            const Factory = struct {
+                fn call(host: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+                    return construct(host, roots[0], spec);
+                }
+            };
+            try s.put(module_exports, spec.function.ptr, try s.own(try functions.create(engine, spec.function, 0, Factory.call, &.{state})));
+        }
     }
     const Builtins = struct {
         fn providers(host: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
