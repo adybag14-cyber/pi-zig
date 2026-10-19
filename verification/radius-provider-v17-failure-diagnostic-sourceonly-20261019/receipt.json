@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "status": "source_only_failure_diagnostic_peer_closed",
+  "source_path": "src/native_ai_radius_provider_genuine_af_test.zig",
+  "before": {
+    "bytes": 15204,
+    "sha256": "5C69D058EA757D9B415B37750C515F9207E7C6902D916CF5B1ABC38FC3C995D4"
+  },
+  "after": {
+    "bytes": 15532,
+    "sha256": "82DD978A5DBBB3C269D2A121101712F83F676FA84208FD0E7728C6CE1CAD0E43"
+  },
+  "source_delta": {
+    "before": "fn both(comptime tail: []const u8) !void {\n    inline for (.{false, true}) |native| {\n        const engine = try x.em.Engine.init(std.testing.allocator, .{ .interrupt_budget = 3_000_000 });\n        defer engine.deinit();\n        try prepare(engine, native);\n        try run(engine, tail);\n        try clean(engine);\n    }\n}",
+    "after": "fn both(comptime tail: []const u8) !void {\n    inline for (.{false, true}) |native| {\n        const engine = try x.em.Engine.init(std.testing.allocator, .{ .interrupt_budget = 3_000_000 });\n        defer engine.deinit();\n        try prepare(engine, native);\n        run(engine, tail) catch |err| {\n            // Existing native diagnostic bytes only; no guest probe after failure.\n            std.debug.print(\"Actual Radius provider expected-success native={}: {s}; captured={s}\\n\",\n                .{ native, @errorName(err), engine.last_error orelse \"no captured diagnostic\" });\n            return err;\n        };\n        try clean(engine);\n    }\n}",
+    "all_other_bytes_unchanged": true
+  },
+  "declarations": 27,
+  "negative_source_head": "31bcf8182543a4ebde583297660aec89d8423876",
+  "negative": {
+    "group": "native-ai-radius-provider-genuine-af",
+    "index": 21,
+    "flags": 1,
+    "stderr_sha256": "A07F3D046942C6A8628CD09273ABAAB7785B795CDFF004217B7E2BBDEFBE375B",
+    "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-oauth-options-v17-diagnostic-runtime-20261019-215552"
+  },
+  "scope": "Only expected-success both() calls report already-materialized Engine.last_error native bytes plus route/native selection and unchanged host error. Actual native fatal test uses run() directly and remains byte-identical. No extra guest call/property read/coercion after failure. Original assertions and both false/true actual Source comparisons unchanged.",
+  "production_changed": false,
+  "build_changed": false,
+  "native_execution": false,
+  "qualification": false,
+  "peer_review": {
+    "reviewer": "/root/modules_io",
+    "status": "finite source peer closed",
+    "reviewed_source_sha256": "82DD978A5DBBB3C269D2A121101712F83F676FA84208FD0E7728C6CE1CAD0E43",
+    "reviewed_receipt_sha256": "D729FAD3FFE534B9644B3EF3D4146F87DFCF6118008DC9918AF88AA300BD405D",
+    "scope": "Complete current/Main roots; exact one-helper reversal reproduces all15204 Main bytes, all27 names/assertions and direct fatal/bothGc routes unchanged. Reads native last_error only and returns identical error."
+  }
+}
