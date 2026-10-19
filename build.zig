@@ -1997,6 +1997,12 @@ pub fn build(b: *std.Build) void {
     });
     linkQuickJs(b, continuation_data_tests.root_module, quickjs, sqlite_lib_dir);
     b.step("build-native-vm-continuation-data", "Install actual continuation data ownership controls without execution").dependOn(&b.addInstallArtifact(continuation_data_tests, .{}).step);
+    const pending_promise_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_pending_promise_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"VM pending Promise"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, pending_promise_tests.root_module, quickjs, sqlite_lib_dir);
+    b.step("build-native-vm-pending-promise", "Install actual intrinsic pending Promise controls without execution").dependOn(&b.addInstallArtifact(pending_promise_tests, .{}).step);
     if (native_node_network) |network| {
         const native_node_tcp_transport_tests = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_tcp_transport_test.zig"), .target = target, .optimize = optimize }),

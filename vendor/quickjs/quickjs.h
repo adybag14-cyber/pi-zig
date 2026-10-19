@@ -1427,6 +1427,11 @@ typedef enum JSPromiseStateEnum {
 } JSPromiseStateEnum;
 
 JS_EXTERN JSValue JS_NewPromiseCapability(JSContext *ctx, JSValue *resolving_funcs);
+/* Owned intrinsic pending Promise, with no resolving-function pair.
+   Preserves actual pending at native entry. Runs the real INIT hook with an
+   undefined parent; hook failure retires the owned result and returns exception.
+   The hook may execute guest code, so this is not an intrinsic-only span. */
+JS_EXTERN JSValue JS_PiNewPendingPromise(JSContext *ctx);
 /* Borrowed input, owned intrinsic PromiseResolve result as used by await. */
 JS_EXTERN JSValue JS_PiPromiseResolve(JSContext *ctx, JSValueConst value);
 /* Borrowed genuine Promise and value; owned undefined/exception result.

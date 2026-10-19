@@ -1,0 +1,57 @@
+{
+  "status": "source-only direct intrinsic pending-Promise allocation; controls and peer pending; no execution",
+  "basis": {
+    "commit": "cb6303dc229d9c601be128e9cf746f19c5bd0f6b",
+    "c_sha256": "4088C36D2F2536751989858ED245669A7BC7DA47EC9584D7FD11EB7B6863C8F8",
+    "h_sha256": "F1E24220AB9FB33A2667B929E39728E6A96A6268185BF33593DD33B193C0827B"
+  },
+  "current": {
+    "c_sha256": "E3CC1F6AFA6C7A67DAD3DCB583DDAFEBFEE15094A8E288461CB812DC6A2F9171",
+    "c_bytes": 2335408,
+    "h_sha256": "71444789D9FCEA38B6C6F73D9204A72B1E81DDDF50EC15DABC9BD95F1F7E5476",
+    "h_bytes": 97357
+  },
+  "exact_c_change": {
+    "from": "/* Create a new promise object with resolving functions. Returns the promise\n   and sets resolving_funcs[0] (resolve) and resolving_funcs[1] (reject). */\nstatic JSValue js_promise_new(JSContext *ctx, JSValueConst new_target,\n                               JSValue *resolving_funcs)\n{\n    JSValue obj;\n    JSPromiseData *s;\n    JSRuntime *rt;\n\n    obj = js_create_from_ctor(ctx, new_target, JS_CLASS_PROMISE);\n    if (JS_IsException(obj))\n        return JS_EXCEPTION;\n    s = js_mallocz(ctx, sizeof(*s));\n    if (!s) {\n        JS_FreeValue(ctx, obj);\n        return JS_EXCEPTION;\n    }\n    s->promise_state = JS_PROMISE_PENDING;\n    s->is_handled = false;\n    init_list_head(&s->promise_reactions[0]);\n    init_list_head(&s->promise_reactions[1]);\n    s->promise_result = JS_UNDEFINED;\n    JS_SetOpaqueInternal(obj, s);\n    if (js_create_resolving_functions(ctx, resolving_funcs, obj)) {\n        JS_FreeValue(ctx, obj);\n        return JS_EXCEPTION;\n    }\n    rt = ctx->rt;\n    if (rt->promise_hook) {\n        JSValueConst parent_promise = JS_UNDEFINED;\n        if (rt->parent_promise)\n            parent_promise = rt->parent_promise->value;\n        rt->promise_hook(ctx, JS_PROMISE_HOOK_INIT, obj, parent_promise,\n                         rt->promise_hook_opaque);\n    }\n    return obj;\n}\n",
+    "to": "static JSValue js_promise_new_object(JSContext *ctx, JSValueConst new_target)\n{\n    JSValue obj;\n    JSPromiseData *s;\n\n    obj = js_create_from_ctor(ctx, new_target, JS_CLASS_PROMISE);\n    if (JS_IsException(obj))\n        return JS_EXCEPTION;\n    s = js_mallocz(ctx, sizeof(*s));\n    if (!s) {\n        JS_FreeValue(ctx, obj);\n        return JS_EXCEPTION;\n    }\n    s->promise_state = JS_PROMISE_PENDING;\n    s->is_handled = false;\n    init_list_head(&s->promise_reactions[0]);\n    init_list_head(&s->promise_reactions[1]);\n    s->promise_result = JS_UNDEFINED;\n    JS_SetOpaqueInternal(obj, s);\n    return obj;\n}\n\n/* Create a new promise object with resolving functions. The resolving pair\n   and existing parent-aware init hook retain their original order. */\nstatic JSValue js_promise_new(JSContext *ctx, JSValueConst new_target,\n                               JSValue *resolving_funcs)\n{\n    JSValue obj;\n    JSRuntime *rt;\n\n    obj = js_promise_new_object(ctx, new_target);\n    if (JS_IsException(obj))\n        return JS_EXCEPTION;\n    if (js_create_resolving_functions(ctx, resolving_funcs, obj)) {\n        JS_FreeValue(ctx, obj);\n        return JS_EXCEPTION;\n    }\n    rt = ctx->rt;\n    if (rt->promise_hook) {\n        JSValueConst parent_promise = JS_UNDEFINED;\n        if (rt->parent_promise)\n            parent_promise = rt->parent_promise->value;\n        rt->promise_hook(ctx, JS_PROMISE_HOOK_INIT, obj, parent_promise,\n                         rt->promise_hook_opaque);\n    }\n    return obj;\n}\n\nJSValue JS_PiNewPendingPromise(JSContext *ctx)\n{\n    JSRuntime *rt = ctx->rt;\n    JSValue obj;\n\n    /* Native borrowed-operation entry policy: an existing actual pending\n       reason wins before allocation or the init hook. */\n    if (JS_HasException(ctx))\n        return JS_EXCEPTION;\n    obj = js_promise_new_object(ctx, JS_UNDEFINED);\n    if (JS_IsException(obj))\n        return obj;\n    /* V8 Resolver::New uses NewJSPromise, whose init parent is undefined.\n       This is a real hook boundary, not an intrinsic-only allocation span. */\n    if (rt->promise_hook)\n        rt->promise_hook(ctx, JS_PROMISE_HOOK_INIT, obj, JS_UNDEFINED,\n                         rt->promise_hook_opaque);\n    if (JS_HasException(ctx)) {\n        JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n        js_native_async_release(ctx, obj, &pending);\n        JS_Throw(ctx, pending.reason);\n        return JS_EXCEPTION;\n    }\n    return obj;\n}\n"
+  },
+  "exact_header_addition": "/* Owned intrinsic pending Promise, with no resolving-function pair.\n   Preserves actual pending at native entry. Runs the real INIT hook with an\n   undefined parent; hook failure retires the owned result and returns exception.\n   The hook may execute guest code, so this is not an intrinsic-only span. */\nJS_EXTERN JSValue JS_PiNewPendingPromise(JSContext *ctx);\n",
+  "preserved_sections": {
+    "initialized_object_prefix": "    obj = js_create_from_ctor(ctx, new_target, JS_CLASS_PROMISE);\n    if (JS_IsException(obj))\n        return JS_EXCEPTION;\n    s = js_mallocz(ctx, sizeof(*s));\n    if (!s) {\n        JS_FreeValue(ctx, obj);\n        return JS_EXCEPTION;\n    }\n    s->promise_state = JS_PROMISE_PENDING;\n    s->is_handled = false;\n    init_list_head(&s->promise_reactions[0]);\n    init_list_head(&s->promise_reactions[1]);\n    s->promise_result = JS_UNDEFINED;\n    JS_SetOpaqueInternal(obj, s);\n",
+    "original_resolver_pair_and_parent_aware_INIT_tail": "    if (js_create_resolving_functions(ctx, resolving_funcs, obj)) {\n        JS_FreeValue(ctx, obj);\n        return JS_EXCEPTION;\n    }\n    rt = ctx->rt;\n    if (rt->promise_hook) {\n        JSValueConst parent_promise = JS_UNDEFINED;\n        if (rt->parent_promise)\n            parent_promise = rt->parent_promise->value;\n        rt->promise_hook(ctx, JS_PROMISE_HOOK_INIT, obj, parent_promise,\n                         rt->promise_hook_opaque);\n    }\n    return obj;\n}\n"
+  },
+  "original_source": {
+    "revision": "Node v24.13.0 def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+    "resolver": {
+      "path": "../native-existing-promise-settlement-sourceonly-20261019/authority/v8-api.v24.13.cc",
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/api/api.cc",
+      "character_offset": 342851,
+      "body": "MaybeLocal<Promise::Resolver> Promise::Resolver::New(Local<Context> context) {\n  PREPARE_FOR_EXECUTION(context, Promise_Resolver, New);\n  Local<Promise::Resolver> result;\n  has_exception = !ToLocal<Promise::Resolver>(\n      i_isolate->factory()->NewJSPromise(), &result);\n  // Also check if promise hooks set an exception.\n  // TODO(clemensb): Should `Factory::NewJSPromise()` return a MaybeHandle\n  // instead?\n  has_exception |= i_isolate->has_exception();\n  RETURN_ON_FAILED_EXECUTION(Promise::Resolver);\n  RETURN_ESCAPED(result);\n}\n\nLocal<Promise> Promise::Resolver::GetPromise() {\n  auto promise = Utils::OpenDirectHandle(this);\n  return Local<Promise>::Cast(Utils::ToLocal(promise));\n}\n\n"
+    },
+    "intrinsic_factory": {
+      "path": "../native-continuation-data-sourceonly-20261019/authority/src__heap__factory.cc",
+      "sha256": "895D8A6E8BEDE5FF80EA97DE37F765EE54F13D20E449968841C288596B851FC6",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/heap/factory.cc",
+      "character_offset": 187676,
+      "body": "Handle<JSPromise> Factory::NewJSPromiseWithoutHook() {\n  Handle<JSPromise> promise =\n      Cast<JSPromise>(NewJSObject(isolate()->promise_function()));\n  DisallowGarbageCollection no_gc;\n  Tagged<JSPromise> raw = *promise;\n  raw->set_reactions_or_result(Smi::zero(), SKIP_WRITE_BARRIER);\n  raw->set_flags(0);\n  // TODO(v8) remove once embedder data slots are always zero-initialized.\n  InitEmbedderFields(*promise, Smi::zero());\n  DCHECK_EQ(raw->GetEmbedderFieldCount(), v8::Promise::kEmbedderFieldCount);\n  return promise;\n}\n\nHandle<JSPromise> Factory::NewJSPromise() {\n  Handle<JSPromise> promise = NewJSPromiseWithoutHook();\n  isolate()->RunAllPromiseHooks(PromiseHookType::kInit, promise,\n                                undefined_value());\n  return promise;\n}\n\n"
+    },
+    "linked_constructor_selection": {
+      "body": "static JSValue js_create_from_ctor(JSContext *ctx, JSValueConst ctor,\n                                   int class_id)\n{\n    JSValue proto, obj;\n    JSContext *realm;\n\n    if (JS_IsUndefined(ctor)) {\n        proto = js_dup(ctx->class_proto[class_id]);\n    } else {\n        proto = JS_GetProperty(ctx, ctor, JS_ATOM_prototype);\n        if (JS_IsException(proto))\n            return proto;\n        if (!JS_IsObject(proto)) {\n            JS_FreeValue(ctx, proto);\n            realm = JS_GetFunctionRealm(ctx, ctor);\n            if (!realm)\n                return JS_EXCEPTION;\n            proto = js_dup(realm->class_proto[class_id]);\n        }\n    }\n    obj = JS_NewObjectProtoClass(ctx, proto, class_id);\n    JS_FreeValue(ctx, proto);\n    return obj;\n}\n",
+      "meaning": "Undefined new_target duplicates the actual context intrinsic Promise prototype, without live global/constructor/species property reads."
+    }
+  },
+  "ownership": {
+    "result": "One owned actual Promise; no resolving-function allocation. Existing resolving functions and their one-shot latch are unchanged.",
+    "pending_entry": "Native current-pending-only policy preserves an existing actual pending reason before allocation or INIT. This explicitly differs from V8 Resolver::New PREPARE_FOR_EXECUTION entry clearing.",
+    "hook": "Real INIT hook runs with the actual Promise and undefined parent, even if an outer reaction allocation has a parent link. It may invoke guest code, retain or settle the Promise, or leave an actual exception.",
+    "hook_failure": "The new direct API reports actual hook pending after retiring its owned result through the already established first-actual-fatal reducer. Hook-retained values keep their independent entitlements.",
+    "no_allocation_span_tag": "Consumers must use the ordinary guest-capable operation boundary across this API; the hook prevents classifying the whole operation as intrinsic-only."
+  },
+  "reversal": "Replacing the one new C block by its recorded original and removing the one H addition reproduces the complete continuation C/H byte-for-byte.",
+  "offsets": {
+    "new_object": 2008317,
+    "new_api": 2009824,
+    "header": 68581
+  }
+}

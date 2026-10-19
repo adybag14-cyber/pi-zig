@@ -59911,14 +59911,10 @@ static void js_promise_mark(JSRuntime *rt, JSValueConst val,
     JS_MarkValue(rt, s->promise_result, mark_func);
 }
 
-/* Create a new promise object with resolving functions. Returns the promise
-   and sets resolving_funcs[0] (resolve) and resolving_funcs[1] (reject). */
-static JSValue js_promise_new(JSContext *ctx, JSValueConst new_target,
-                               JSValue *resolving_funcs)
+static JSValue js_promise_new_object(JSContext *ctx, JSValueConst new_target)
 {
     JSValue obj;
     JSPromiseData *s;
-    JSRuntime *rt;
 
     obj = js_create_from_ctor(ctx, new_target, JS_CLASS_PROMISE);
     if (JS_IsException(obj))
@@ -59934,6 +59930,20 @@ static JSValue js_promise_new(JSContext *ctx, JSValueConst new_target,
     init_list_head(&s->promise_reactions[1]);
     s->promise_result = JS_UNDEFINED;
     JS_SetOpaqueInternal(obj, s);
+    return obj;
+}
+
+/* Create a new promise object with resolving functions. The resolving pair
+   and existing parent-aware init hook retain their original order. */
+static JSValue js_promise_new(JSContext *ctx, JSValueConst new_target,
+                               JSValue *resolving_funcs)
+{
+    JSValue obj;
+    JSRuntime *rt;
+
+    obj = js_promise_new_object(ctx, new_target);
+    if (JS_IsException(obj))
+        return JS_EXCEPTION;
     if (js_create_resolving_functions(ctx, resolving_funcs, obj)) {
         JS_FreeValue(ctx, obj);
         return JS_EXCEPTION;
@@ -59945,6 +59955,32 @@ static JSValue js_promise_new(JSContext *ctx, JSValueConst new_target,
             parent_promise = rt->parent_promise->value;
         rt->promise_hook(ctx, JS_PROMISE_HOOK_INIT, obj, parent_promise,
                          rt->promise_hook_opaque);
+    }
+    return obj;
+}
+
+JSValue JS_PiNewPendingPromise(JSContext *ctx)
+{
+    JSRuntime *rt = ctx->rt;
+    JSValue obj;
+
+    /* Native borrowed-operation entry policy: an existing actual pending
+       reason wins before allocation or the init hook. */
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
+    obj = js_promise_new_object(ctx, JS_UNDEFINED);
+    if (JS_IsException(obj))
+        return obj;
+    /* V8 Resolver::New uses NewJSPromise, whose init parent is undefined.
+       This is a real hook boundary, not an intrinsic-only allocation span. */
+    if (rt->promise_hook)
+        rt->promise_hook(ctx, JS_PROMISE_HOOK_INIT, obj, JS_UNDEFINED,
+                         rt->promise_hook_opaque);
+    if (JS_HasException(ctx)) {
+        JSNativeAsyncPending pending = { false, JS_UNDEFINED };
+        js_native_async_release(ctx, obj, &pending);
+        JS_Throw(ctx, pending.reason);
+        return JS_EXCEPTION;
     }
     return obj;
 }
