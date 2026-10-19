@@ -951,3 +951,255 @@ test "VM async retirement dropped immutable argument cell adds no retained origi
         try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
     }
 }
+
+
+// Explicit block exit uses one actual captured binding, independently of the
+// invocation's eventual terminal close. These literal Source cases exercise
+// the same OP_close_loc edge, including later loop reentry and an open sibling.
+const BlockMode = enum { ordinary, sibling, loop, tdz };
+var block_mode: BlockMode = .ordinary;
+const BlockFrame = @import("extensions/native_public_lexical_frame.zig").Frame(enum { local, captured, stage, iteration });
+fn blockRead(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&scope, blockReadBody(&scope, roots[0]));
+}
+fn blockReadBody(scope: *Scope, binding: c.JSValue) !c.JSValue {
+    return v.duplicate(scope, try BlockFrame.read(scope, binding));
+}
+fn blockWrite(engine: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&scope, blockWriteBody(&scope, roots[0], v.arg(args, 0)));
+}
+fn blockWriteBody(scope: *Scope, binding: c.JSValue, value: c.JSValue) !c.JSValue {
+    try BlockFrame.assign(binding, v.duplicate(scope, value));
+    return v.duplicate(scope, value);
+}
+fn blockCapture(scope: *Scope, frame: *BlockFrame, comptime sibling: bool) !void {
+    const global = try v.global(scope, "globalThis");
+    const binding = if (sibling) try frame.capture(scope, .local, "local")
+        else try frame.capture(scope, .captured, "captured");
+    const callback = try v.arrow(scope, "", 0, blockRead, &.{binding});
+    try v.put(scope, global, if (sibling) "closeOuter" else "closeEscaped", callback);
+}
+fn blockPair(scope: *Scope, frame: *BlockFrame) !void {
+    const pairs = try v.global(scope, "closePairs");
+    const push = try v.get(scope, pairs, "push");
+    const pair = try v.array(scope);
+    const binding = try frame.capture(scope, .captured, "captured");
+    try v.index(scope, pair, 0, try v.arrow(scope, "", 0, blockRead, &.{binding}));
+    try v.index(scope, pair, 1, try v.arrow(scope, "", 1, blockWrite, &.{binding}));
+    _ = try v.call(scope, push, pairs, &.{pair});
+}
+fn blockIteration(scope: *Scope, frame: *BlockFrame, iteration: u32) !void {
+    // Source body scope entry clears the old original slot before evaluating
+    // the next initializer; its previously closed cell remains independent.
+    try frame.clear(.captured);
+    try frame.take(.captured, close_active.?.token(1 + iteration));
+    try frame.take(.iteration, c.JS_NewUint32(scope.engine.context, iteration));
+    var expression: Scope = .{ .engine = scope.engine };
+    try v.owned.finishVoid(&expression, blockPair(&expression, frame));
+}
+fn blockDetach(frame: *BlockFrame) !void {
+    var completion = v.owned.Completion.initVoid(frame.engine, {});
+    frame.detach(.captured, &completion);
+    return completion.finishVoid();
+}
+fn blockClose(engine: *Engine, owner: c.JSValue) !void {
+    const p = close_active.?;
+    p.hook_calls += 1; p.hook_counts = p.counts;
+    if (!c.JS_IsUndefined(p.pending)) p.hook_promise_state = c.JS_PromiseState(engine.context, p.pending);
+    return BlockFrame.closeAtAsyncTerminal(engine, owner);
+}
+fn blockNative(engine: *Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue, owner: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishAction(&scope, blockAdvance(&scope, owner, completion, input));
+}
+fn blockAdvance(scope: *Scope, owner: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    const p = close_active.?;
+    if (completion == .start) {
+        const frame = try BlockFrame.createAsync(scope);
+        af.replaceState(scope.engine, owner, v.duplicate(scope, frame.owner));
+        try frame.take(.stage, c.JS_NewInt32(scope.engine.context, 0));
+        if (block_mode == .loop) {
+            try blockIteration(scope, frame, 0);
+        } else {
+            try frame.take(.local, p.token(1));
+            if (block_mode == .sibling) {
+                var expression: Scope = .{ .engine = scope.engine };
+                try v.owned.finishVoid(&expression, blockCapture(&expression, frame, true));
+            }
+            if (block_mode != .tdz) try frame.take(.captured, p.token(2));
+            var expression: Scope = .{ .engine = scope.engine };
+            try v.owned.finishVoid(&expression, blockCapture(&expression, frame, false));
+        }
+        return .{ .awaited = c.pi_js_undefined() };
+    }
+    p.resumed += 1;
+    const frame = BlockFrame.from(owner.*);
+    if (c.JS_VALUE_GET_INT(frame.get(.stage)) == 0) {
+        if (completion == .rejected) return .{ .thrown = v.duplicate(scope, input) };
+        try blockDetach(frame);
+        if (block_mode == .loop and c.JS_VALUE_GET_INT(frame.get(.iteration)) == 0) {
+            try blockIteration(scope, frame, 1);
+            return .{ .awaited = c.pi_js_undefined() };
+        }
+        try frame.take(.stage, c.JS_NewInt32(scope.engine.context, 1));
+        return .{ .awaited = v.duplicate(scope, try v.global(scope, "closeGate")) };
+    }
+    if (completion == .rejected) return .{ .thrown = v.duplicate(scope, input) };
+    return .{ .returned = v.duplicate(scope, try v.global(scope, "closeReturn")) };
+}
+fn blockInstall(scope: *Scope) !void {
+    var boundary: v.guest.Boundary = .{ .engine = scope.engine }; try boundary.begin();
+    const function = try boundary.finishValue(scope, af.createResumableWithClose(
+        scope.engine, "", 1, blockNative, &.{}, blockClose));
+    try v.put(scope, try v.global(scope, "globalThis"), "blockNative", function);
+}
+fn blockSetup(p: *CloseProbe, native: bool, mode: BlockMode) !void {
+    block_mode = mode;
+    try closeSetup(p, native);
+    var scope: Scope = .{ .engine = p.engine };
+    try v.owned.finishVoid(&scope, blockInstall(&scope));
+    try run(p.engine, "globalThis.closeGate=new Promise(()=>{});globalThis.closePairs=[];");
+    try run(p.engine, switch (mode) {
+        .ordinary =>
+            "globalThis.blockSource=async function(arg){const local=closeMake(1);{const captured=closeMake(2);globalThis.closeEscaped=()=>captured;await undefined;}await closeGate;return closeReturn};",
+        .sibling =>
+            "globalThis.blockSource=async function(arg){const local=closeMake(1);globalThis.closeOuter=()=>local;{const captured=closeMake(2);globalThis.closeEscaped=()=>captured;await undefined;}await closeGate;return closeReturn};",
+        .loop =>
+            "globalThis.blockSource=async function(arg){for(let i=0;i<2;i++){let captured=closeMake(1+i);closePairs.push([()=>captured,value=>captured=value]);await undefined;}await closeGate;return closeReturn};",
+        .tdz =>
+            "globalThis.blockSource=async function(arg){const local=closeMake(1);block:{globalThis.closeEscaped=()=>captured;await undefined;break block;const captured=closeMake(2);}await closeGate;return closeReturn};",
+    });
+    try run(p.engine, if (native) "globalThis.closeSelected=blockNative;" else "globalThis.closeSelected=blockSource;");
+}
+fn blockStart(p: *CloseProbe) !c.JSValue {
+    try run(p.engine, "globalThis.closePending=Reflect.apply(closeSelected,closeMake(3),[closeMake(0)]);void 0;");
+    const pending = try evaluate(p.engine, "closePending");
+    errdefer p.engine.freeValue(pending);
+    p.pending = pending;
+    c.JS_PromiseMarkAsHandled(p.engine.context, pending);
+    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+    try leaseCounts(p, .{ 0, 0, 0, 0 });
+    return pending;
+}
+fn blockStep(p: *CloseProbe, more_jobs: bool) !void {
+    var context: ?*c.JSContext = null;
+    try std.testing.expect(c.JS_ExecutePendingJob(p.engine.runtime, &context) > 0);
+    try std.testing.expect(!c.JS_HasException(p.engine.context));
+    try std.testing.expectEqual(more_jobs, c.JS_IsJobPending(p.engine.runtime));
+    if (!more_jobs) p.engine.finishJob();
+}
+fn blockTdz(p: *CloseProbe) !void {
+    try run(p.engine, "try{closeEscaped();throw new Error('missing TDZ')}catch(e){if(!(e instanceof ReferenceError)||e.message!=='captured is not initialized')throw e}");
+}
+
+test "VM async retirement block exit detaches its escaped binding before the later actual Await" {
+    inline for (.{ false, true }) |native| {
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
+        defer p.deinit(); try blockSetup(&p, native, .ordinary);
+        const pending = try blockStart(&p); defer p.engine.freeValue(pending);
+        try blockStep(&p, false);
+        try leaseCounts(&p, .{ 0, 0, 0, 0 });
+        try leaseReadCapture(&p);
+        try run(p.engine, "delete globalThis.closeGate;");
+        // The closed escaped cell is reachable, but it no longer owns the
+        // invocation; deleting the actual gate terminates it immediately.
+        try leaseCounts(&p, .{ 1, 1, 0, 1 });
+        try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
+        try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.resumed);
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+        try leaseReadCapture(&p);
+        try run(p.engine, "delete globalThis.closeEscaped;");
+        try closeOrder(&p, &.{ 0, 1, 3, 2 });
+    }
+}
+test "VM async retirement block exit leaves the original local alive after the closed callback is dropped" {
+    inline for (.{ false, true }) |native| {
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
+        defer p.deinit(); try blockSetup(&p, native, .ordinary);
+        const pending = try blockStart(&p); defer p.engine.freeValue(pending);
+        try blockStep(&p, false);
+        try run(p.engine, "delete globalThis.closeEscaped;");
+        try leaseCollect(&p);
+        try leaseCounts(&p, .{ 0, 0, 0, 0 });
+        try run(p.engine, "delete globalThis.closeGate;");
+        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+    }
+}
+test "VM async retirement closing one block preserves a sibling capture's actual coroutine lease" {
+    inline for (.{ false, true }) |native| {
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
+        defer p.deinit(); try blockSetup(&p, native, .sibling);
+        const pending = try blockStart(&p); defer p.engine.freeValue(pending);
+        try blockStep(&p, false);
+        try run(p.engine, "delete globalThis.closeGate;");
+        try leaseCollect(&p);
+        try leaseCounts(&p, .{ 0, 0, 0, 0 });
+        try leaseReadCapture(&p);
+        try run(p.engine, "delete globalThis.closeEscaped;");
+        try leaseCounts(&p, .{ 0, 0, 0, 0 });
+        try std.testing.expectEqual(@as(usize, 0), p.hook_calls);
+        try run(p.engine, "delete globalThis.closeOuter;");
+        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+    }
+}
+test "VM async retirement lexical reentry creates fresh mutable cells and preserves the final original slot" {
+    inline for (.{ false, true }) |native| {
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
+        defer p.deinit(); try blockSetup(&p, native, .loop);
+        const pending = try blockStart(&p); defer p.engine.freeValue(pending);
+        try run(p.engine, "globalThis.blockFirst={first:true};closePairs[0][1](blockFirst);if(closePairs[0][0]()!==blockFirst)throw new Error('open assignment')");
+        try leaseCounts(&p, .{ 0, 1, 0, 0 });
+        try blockStep(&p, true);
+        try run(p.engine, "if(closePairs.length!==2||closePairs[0][0]()!==blockFirst||closePairs[1][0]()===blockFirst)throw new Error('reentry cell')");
+        try blockStep(&p, false);
+        try run(p.engine, "globalThis.blockLast={last:true};closePairs[1][1](blockLast);if(closePairs[0][0]()!==blockFirst||closePairs[1][0]()!==blockLast)throw new Error('closed assignment')");
+        // Assigning the closed cell does not replace the actual old local in
+        // the suspended Source frame. It retires only with that invocation.
+        try leaseCounts(&p, .{ 0, 1, 0, 0 });
+        try run(p.engine, "delete globalThis.closeGate;");
+        try closeOrder(&p, &.{ 1, 0, 2, 3 });
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+        try run(p.engine, "if(closePairs[0][0]()!==blockFirst||closePairs[1][0]()!==blockLast)throw new Error('terminal cells')");
+    }
+}
+test "VM async retirement detached block locals remain alive through final return adoption" {
+    inline for (.{ false, true }) |native| {
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
+        defer p.deinit(); try blockSetup(&p, native, .ordinary);
+        try run(p.engine, "globalThis.closeGate=new Promise(resolve=>{globalThis.closeResume=resolve});globalThis.closeReturn={get then(){closeAdoption();return undefined}};");
+        const pending = try blockStart(&p); defer p.engine.freeValue(pending);
+        try blockStep(&p, false);
+        try run(p.engine, "closeResume();");
+        try blockStep(&p, false);
+        try std.testing.expectEqual(@as(usize, 1), p.adoption_calls);
+        try std.testing.expectEqualSlices(u32, &.{ 0, 0, 0, 0 }, &p.adoption_counts);
+        try leaseCounts(&p, .{ 1, 1, 0, 1 });
+        try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, c.JS_PromiseState(p.engine.context, pending));
+        try leaseReadCapture(&p);
+        try run(p.engine, "delete globalThis.closeEscaped;");
+        try closeOrder(&p, &.{ 0, 1, 3, 2 });
+    }
+}
+test "VM async retirement labeled break keeps an escaped uninitialized binding in its TDZ" {
+    inline for (.{ false, true }) |native| {
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{});
+        defer p.deinit(); try blockSetup(&p, native, .tdz);
+        const pending = try blockStart(&p); defer p.engine.freeValue(pending);
+        try blockTdz(&p);
+        try blockStep(&p, false);
+        try blockTdz(&p);
+        try run(p.engine, "delete globalThis.closeGate;");
+        try leaseCounts(&p, .{ 1, 1, 0, 1 });
+        try std.testing.expect(!p.made[2]);
+        try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+        try blockTdz(&p);
+        try run(p.engine, "delete globalThis.closeEscaped;");
+        try leaseCounts(&p, .{ 1, 1, 0, 1 });
+    }
+}

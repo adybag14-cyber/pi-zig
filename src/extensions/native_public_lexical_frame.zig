@@ -206,6 +206,31 @@ pub fn Frame(comptime Names: type) type {
             self.close(&completion);
             return completion.finishVoid();
         }
+        /// Close one Source lexical binding at its scope exit. The original
+        /// local remains in this activation until its next initialization or
+        /// terminal retirement. A later capture creates a fresh cell.
+        /// All lookup and cell links are cleared before releasing either
+        /// activation edge; other open bindings keep their own actual leases.
+        pub fn detach(self: *Self, comptime name: Names, completion: *v.owned.Completion) void {
+            const position = @intFromEnum(name);
+            const root = self.captures[position];
+            const borrowed = self.borrowedCaptures();
+            self.captures[position] = c.pi_js_undefined();
+            if (c.JS_IsUndefined(root)) return;
+            if (c.JS_IsLiveObject(self.engine.runtime, root)) {
+                const cell = cellFrom(root);
+                if (!cell.immutable_argument) {
+                    cell.value = c.JS_DupValue(self.engine.context, self.values[position]);
+                    cell.ready = self.ready[position];
+                }
+                const activation = cell.activation;
+                const lease = cell.lease;
+                cell.activation = c.pi_js_undefined(); cell.lease = c.pi_js_undefined();
+                completion.release(activation);
+                completion.release(lease);
+            }
+            if (!borrowed) completion.release(root);
+        }
         /// No allocation or guest call is permitted while closing an activation.
         /// A cell retains just its binding after return, like a closed JSVarRef.
         pub fn detachCaptures(self: *Self, completion: *v.owned.Completion) void {
