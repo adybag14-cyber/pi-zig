@@ -1,0 +1,22 @@
+void uv__statx_to_stat(const struct uv__statx* statxbuf, uv_stat_t* buf) {
+  buf->st_dev = makedev(statxbuf->stx_dev_major, statxbuf->stx_dev_minor);
+  buf->st_mode = statxbuf->stx_mode;
+  buf->st_nlink = statxbuf->stx_nlink;
+  buf->st_uid = statxbuf->stx_uid;
+  buf->st_gid = statxbuf->stx_gid;
+  buf->st_rdev = makedev(statxbuf->stx_rdev_major, statxbuf->stx_rdev_minor);
+  buf->st_ino = statxbuf->stx_ino;
+  buf->st_size = statxbuf->stx_size;
+  buf->st_blksize = statxbuf->stx_blksize;
+  buf->st_blocks = statxbuf->stx_blocks;
+  buf->st_atim.tv_sec = statxbuf->stx_atime.tv_sec;
+  buf->st_atim.tv_nsec = statxbuf->stx_atime.tv_nsec;
+  buf->st_mtim.tv_sec = statxbuf->stx_mtime.tv_sec;
+  buf->st_mtim.tv_nsec = statxbuf->stx_mtime.tv_nsec;
+  buf->st_ctim.tv_sec = statxbuf->stx_ctime.tv_sec;
+  buf->st_ctim.tv_nsec = statxbuf->stx_ctime.tv_nsec;
+  buf->st_birthtim.tv_sec = statxbuf->stx_btime.tv_sec;
+  buf->st_birthtim.tv_nsec = statxbuf->stx_btime.tv_nsec;
+  buf->st_flags = 0;
+  buf->st_gen = 0;
+}
