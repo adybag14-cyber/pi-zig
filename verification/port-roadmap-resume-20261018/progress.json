@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "efc47915749eb004bfb85dd61b6204b2e31dee80",
+  "current_source_head_at_record": "985d6ebd95732c4134c4a9521aacfc2ef9f3a87b",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -36,8 +36,8 @@
   "application_qualification": false,
   "production_bridge_removed": false,
   "published_release": false,
-  "updated_utc": "2026-10-19T20:25:57.711067+00:00",
-  "record_note": "Port active. Cleanup445 complete and unchanged. V11/V12 first-compile negatives, V13 diagnostic negatives, original V14 pre-native manifest rejection and V14b fresh partial BuildQuery are preserved with independent current-input/process-instance closures. V14b yielded45 raw metadata names (backing24/private9/TCP12), then options parser syntax failed; zero runtime accepted. Reviewed parser brace correction, actual UVException6 and native immediate owner are integrated. Next is unchanged strict4F fresh BuildQuery over24 groups/501 declared names before further vendor intakes. Original B053 seed admission excludes newly added .patch provenance, so no seed is reused or guard changed. Callback Environment, actual AsyncWrap/FileHandle, Module/SDK/HTTP/whole app/platform/bridge-removal/release remain open.",
+  "updated_utc": "2026-10-19T23:03:40.943635+00:00",
+  "record_note": "Cleanup445 complete and unchanged. V17 fresh BuildQuery24/raw521 accepted, strict runtime33 tests negative and separate diagnostic all24/raw521 completed490 flags0/31 nonzero with no panic; independent closure81D29511 rehashed32793 current-at-closure inputs and closed all actual process instances. All new source units below are source-only; no V17 runtime transfers to them. Main now includes genuine VM disallow/continuation/pending-promise/Global/copy, Engine zero-work handling, callback28/AsyncWrap/request-state, actual inspect colors/formatter37, writer failure ownership, native CHECK registration and options26. Genuine VM logging origin is the remaining next-build dependency. Actual callback Operations/FSReq shared-loop/FileHandle/Module/SDK/HTTP/whole app/platform/bridge-removal/release remain open.",
   "integrated_source_units": [
     "Reviewed VM union, Agent/Node/SDK guest operation guards, CJS compiler and source metadata bodies, Engine ownership, genuine Agent/session/auth owners, real Exec live waiter, Git/Chalk/Ignore/Semver consumers, actual InitialModel guest boundaries, genuine Anthropic auth, genuine PKCE body and ten declared controls, genuine RemoteCatalog bodies and nine declared controls.",
     "Actual public CLI parser10 controls, truncation9, Theme10 and extension helpers8; child dependency and11 real frontend/spawn/waiter controls; shared stdio lease assertion; genuine six-export output guard dependency; genuine DeviceCode12 controls including linked-VM loop-slot lifetime; RemoteCatalog now11 controls; PKCE actual host job checkpoints; optional CommonJS host-error correction and explicit component filters.",
@@ -627,591 +627,17 @@
     }
   ],
   "next_native_batch": {
-    "prepared_directory": "../../evidence/combined-native-batch-v11-prepared-20261019",
+    "status": "planned; preparation and specific fresh Root grant not yet issued",
     "mode": "BuildQuery",
     "driver_sha256": "4F816750747F32A4EA6D0E832D90C962955C03217B3BF341A3F104068BBFC2D4",
-    "auditor_sha256": "8B56A52CAA3BD3EA4E73951A00957746A00E23D15C690E2A255870A9D5571956",
-    "whole_matrix_groups": 71,
-    "whole_matrix_declared_named": 1164,
-    "cohort": [
-      "native-vm-array-buffer-backing",
-      "native-vm-private-property",
-      "native-node-tcp-transport",
-      "native-vm-async-arguments",
-      "native-node-fs-write-uv",
-      "native-vm-sync-arguments",
-      "native-vm-async-retirement",
-      "native-vm-template-literal",
-      "native-vm-borrowed-bridges",
-      "vm-af-throw",
-      "native-ai-oauth-anthropic-genuine-af",
-      "native-node-module-creation",
-      "native-node-module-search-paths",
-      "native-node-fs-realpath-classic",
-      "native-node-fs-path-helpers",
-      "native-node-file-url-paths",
-      "native-sdk-tool-search-public",
-      "native-ai-radius-config",
-      "native-ai-radius-provider-genuine-af",
-      "native-node-inspect-entry",
-      "native-ai-oauth-radius-genuine-af"
+    "cache_mode": "fresh absent cache pair",
+    "requirements": [
+      "Integrate peer-closed VM captured-frame logging origin API required by native CHECK C.",
+      "Freeze complete Main head after logging/control/build intake and regenerate exact unchanged-group plus new-group source manifest.",
+      "Preserve original bounded/live/retained owners, serial native lease and fresh16GiB admission.",
+      "Independently close full raw metadata/artifact/source/compiler/control/current-inventory/process-instance evidence before a distinct RuntimeOnly grant."
     ],
-    "cohort_declared_named": 458,
-    "actual_metadata_count": null,
-    "raw_metadata_acceptance_required": true,
-    "separate_strict_runtime_grant_required": true,
-    "fresh_private_cache_pair": true,
-    "minimum_free_kib": 16777216,
-    "source_pins_updated": [
-      {
-        "group": "native-public-print-mode",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-public-rpc-mode",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-vm-array-append",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-node-inspect-entry",
-        "path": "src/extensions/fixtures/native-node-inspect-observer.mjs",
-        "before": "C97E0237D20C7F7075909303D86C80AF2123CD3FE4F0875741F55FBA230A93DF",
-        "after": "011F1E693CA297EE63AEDFE72538E90F29A53C154AFC11A698F18D9B74B687E0"
-      },
-      {
-        "group": "native-node-inspect-entry",
-        "path": "src/extensions/native_node_util_inspect.zig",
-        "before": "7D0C0F96711C3909F53FCC21F694C6D570305E8EB9FDFC8B3D4A463F6C3CBD46",
-        "after": "5300C18A3557706224577BF51F2FBF5ECB0C84D9C44CD9D181F1A5ED99976614"
-      },
-      {
-        "group": "native-node-inspect-entry",
-        "path": "src/native_node_inspect_entry_test.zig",
-        "before": "A99B828790D5005CBA0FC929FA4DB60A313E1808CC98C6A0947414931A5BFED3",
-        "after": "9A78028E3A3F2016ED6C26E7A794D05466F74ED43ED2C70CB3B7607C8642DEE2"
-      },
-      {
-        "group": "native-sdk-public-compaction-file-ops",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-node-package-reader",
-        "path": "src/extensions/native_node_fs_collections.zig",
-        "before": "A534F7D4CB6375EE28CF4C04C4BED64D2FDD07A951394D2CA99029C0586F13E2",
-        "after": "EBC0FE29F1EFE23C34F7EB2A3181597197C07E31A6BB9C5681B3EB53213C007F"
-      },
-      {
-        "group": "native-sdk-remote-catalog-genuine-af",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-public-cli-args",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-sdk-public-truncation",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-ai-oauth-device-code-genuine-af",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-public-theme",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-sdk-public-extension-helpers",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-sdk-output-guard",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-ai-sleep",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-sdk-public-session-helpers",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-public-rpc-jsonl",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-sdk-public-model-resolver",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-node-fs-primitives",
-        "path": "src/extensions/native_node_fs_collections.zig",
-        "before": "A534F7D4CB6375EE28CF4C04C4BED64D2FDD07A951394D2CA99029C0586F13E2",
-        "after": "EBC0FE29F1EFE23C34F7EB2A3181597197C07E31A6BB9C5681B3EB53213C007F"
-      },
-      {
-        "group": "native-sdk-public-compaction-core",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-sdk-public-compaction-text",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-sdk-public-branch-entries",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-ai-oauth-page",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-ai-oauth-callback-server",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-node-http-incoming",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-node-http-header-checks",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-sdk-summary-genuine-af",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-sdk-branch-summary-genuine-af",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-sdk-event-bus-public",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-sdk-public-context-helpers",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-node-file-url-paths",
-        "path": "src/extensions/fixtures/native-node-file-url-observer.mjs",
-        "before": "EFB06CEC7B4B50BBEC4E4D45CCC818D46862855EE0757BF1CC33E392D76F12DE",
-        "after": "CFE13BF8A42378B702CC9DA977AF297653DA007CDE8A867755CB138284775558"
-      },
-      {
-        "group": "native-vm-borrowed-bridges",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-sdk-frontmatter-public",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-sdk-model-registry-public",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-vm-sync-arguments",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-ai-oauth-anthropic-genuine-af",
-        "path": "src/extensions/fixtures/oauth-anthropic-observer.mjs",
-        "before": "B8C4A5C08257F57FC9A0424FD22DB7A55BD7037B3C3EFE5DAE799605FD03E3E8",
-        "after": "A4A361713272C9B3C7497412B774E0D8258349CB779469A4224E809113C3483D"
-      },
-      {
-        "group": "native-ai-oauth-anthropic-genuine-af",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-sdk-tool-search-public",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-ai-radius-config",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      },
-      {
-        "group": "native-ai-radius-provider-genuine-af",
-        "path": "src/extensions/native_async_function.zig",
-        "before": "72B6689CB82B1E8FD8F89F941DD16AE3BACB3989EFE4A75C68A719D9CB8C266B",
-        "after": "359C5C4AE2EC89AE5B446D728D902FAE6774CCBDEC8EDA91D54FE2431E2763FA"
-      },
-      {
-        "group": "native-ai-radius-provider-genuine-af",
-        "path": "src/native_sdk_initial_model_retirement_controls.zig",
-        "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
-        "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-      }
-    ],
-    "new_groups": [
-      {
-        "name": "native-vm-async-arguments",
-        "target": "build-native-vm-async-arguments",
-        "root": "src/native_async_arguments_test.zig",
-        "artifact": "test",
-        "declared": 17,
-        "declared_names": [
-          "VM async arguments supplied count and initialized formals remain independent of observable length",
-          "VM async arguments assignments before and after real Await use the same original formal slots",
-          "VM async arguments missing fourth and fifth formals retain assignments through another actual Await and GC",
-          "VM async arguments unused supplied extras remain owned after overwritten formals and retire before locals",
-          "VM async arguments zero declared formals still retain every supplied argument through suspension",
-          "VM async arguments store publishes the replacement before the sole prior holder finalizer reads its actual slot",
-          "VM async arguments actual caught private Await rejection can initialize a missing formal and return after another Await",
-          "VM async arguments uncaught ordinary Await rejection preserves raw identity while expanded formals retire",
-          "VM async arguments genuine return adoption sees current formals alive before ordered terminal close",
-          "VM async arguments missing assigned formal is marked during live GC and retires on actual gate abandonment",
-          "VM async arguments real arrow keeps lexical this separate from the supplied receiver while formals mutate",
-          "VM async arguments current getter rejects absent and legacy invocations while preserving an entry exception",
-          "VM async arguments pending call entry leaves the original supplied slot and body untouched",
-          "VM async arguments pending store consumes its incoming owner without changing the selected formal",
-          "VM async arguments actual assignment finalizer fatal prevents the next body and guest catch after Await",
-          "VM async arguments actual body fatal wins later parameter and local cleanup events with every root retired",
-          "VM async arguments current fatal before the second resume retires all assigned missing slots without body entry"
-        ],
-        "manifest": "verification/native-mutable-async-arguments-sourceonly-20261019/source-status.json",
-        "manifest_sha256": "765ACA34EB04C176D95630407EBEC42F776F00194997B6EC42C31497B6B90F42",
-        "pure_c": false,
-        "source_pins": [
-          {
-            "path": "src/extensions/native_async_arguments.zig",
-            "sha256": "EF4A4FC32DDF0564ADE5C45B65110ED4D93AE7F9F7558482F8E4238D4F2D482A"
-          },
-          {
-            "path": "src/extensions/native_async_function.zig",
-            "sha256": "359C5C4AE2EC89AE5B446D728D902FAE6774CCBDEC8EDA91D54FE2431E2763FA"
-          },
-          {
-            "path": "src/native_async_arguments_test.zig",
-            "sha256": "94EED011C1FC44428ABAB5129DD295DFA9029201E250AAD75B7151B953285EEF"
-          }
-        ]
-      },
-      {
-        "name": "native-node-tcp-transport",
-        "target": "build-native-node-tcp-transport",
-        "root": "src/native_node_tcp_transport_test.zig",
-        "artifact": "test",
-        "declared": 12,
-        "declared_names": [
-          "native actual TCP empty service owns native loop and closes its independent budget",
-          "native actual TCP binds ephemeral IPv4 and reports actual local and peer addresses",
-          "native actual TCP copies caller write bytes and preserves tokens across real segmented reads",
-          "native actual TCP read packet owns bytes until release and resumes only with new demand",
-          "native actual TCP half close yields real EOF while the opposite direction remains writable",
-          "native actual TCP releasing an unclaimed accept closes the real accepted connection",
-          "native actual TCP numeric argument errors remain ordinary libuv statuses without callbacks",
-          "native actual TCP exhausted shared budget is a distinct wrapper allocation producer",
-          "native actual TCP read allocation failure is delivered by its real embedded owner event",
-          "native actual TCP close tokens use observed native closure and never a second close",
-          "native actual TCP listener reference tracks actual active handle and queued closure separately",
-          "native actual TCP native endpoint and event owners can outlive their original VM runtime"
-        ],
-        "manifest": "verification/native-libuv-tcp-sourceonly-20261019/source-status.json",
-        "manifest_sha256": "4DC1A1140CDEE1DE431D8155918870DC26EA593FC1C7CE217DBE06F8FE7F683E",
-        "pure_c": true,
-        "source_pins": [
-          {
-            "path": "src/extensions/native_node_net_tcp_transport.zig",
-            "sha256": "1DF60228E9CBEDE8FB0CDE3BDCED9E3F196291D5E6AD5035B38CC224DB47B4AA"
-          },
-          {
-            "path": "src/extensions/native_uv_tcp.c",
-            "sha256": "E1204E4B4B30F46534940D5F9089B8D00B0E2DD845FDA0A798BB0D2F252B71F7"
-          },
-          {
-            "path": "src/native_node_tcp_transport_test.zig",
-            "sha256": "3C475C5FA0C43BBEE875E58E54E705282E2319C75EE1E0216D775E84E56C58D5"
-          }
-        ]
-      },
-      {
-        "name": "native-ai-oauth-radius-genuine-af",
-        "target": "build-native-ai-oauth-radius-genuine-af",
-        "root": "src/native_ai_oauth_radius_genuine_af_test.zig",
-        "artifact": "native-ai-oauth-radius-genuine-af",
-        "declared": 34,
-        "declared_names": [
-          "native OAuth Radius actual ordinary class and AsyncFunction shapes",
-          "native OAuth Radius factory option and normalization operations preserve Source order",
-          "native OAuth Radius factory keeps its actual required formal and raw name value",
-          "native OAuth Radius discovery keeps request and genuine Await ordering",
-          "native OAuth Radius discovery HTTP error keeps suspended constructor and text operands",
-          "native OAuth Radius discovery JSON validation and repeated endpoint getter remain exact",
-          "native OAuth Radius Error subclass chooses exact detail branches and template coercion",
-          "native OAuth Radius Error class heritage rejects nonconstructors before prototype lookup",
-          "native OAuth Radius error reader parses actual repeated fields and catches parse-body failures",
-          "native OAuth Radius error reader preserves text catch lookup call and Await failures",
-          "native OAuth Radius token request preserves field order expiry arithmetic and raw data",
-          "native OAuth Radius token catch reads cancellation only for actual fetch failure",
-          "native OAuth Radius token HTTP failure throws the genuine awaited Error value",
-          "native OAuth Radius token JSON and property failures stop at the actual expression",
-          "native OAuth Radius device request validates truthy fields in Source short circuit order",
-          "native OAuth Radius device request preserves construction cancellation and HTTP error paths",
-          "native OAuth Radius browser preserves callback options notices and wait return ordering",
-          "native OAuth Radius browser notifications remain outside callback finally",
-          "native OAuth Radius browser finally overrides ordinary pending returns and throws",
-          "native OAuth Radius browser preserves abrupt PKCE URL and listener operations",
-          "native OAuth Radius escaped complete arrow constructs exact token form and signal",
-          "native OAuth Radius device poll uses actual Error class and selected OAuth status cases",
-          "native OAuth Radius device notice and token failures retain their actual boundary",
-          "native OAuth Radius public login has real prompt Await and selected branch adoption",
-          "native OAuth Radius refresh and zero Await toAuth preserve genuine outer Promises",
-          "native OAuth Radius completed callback options release a removed complete arrow immediately",
-          "native OAuth Radius completed polling options release a removed poll arrow immediately",
-          "native OAuth Radius terminal complete closure retains verifier and releases unrelated challenge",
-          "native OAuth Radius sole refresh closure retains gateway but releases options",
-          "native OAuth Radius sole toAuth closure releases all unrelated factory captures",
-          "native OAuth Radius same operation private DATA remains an ordinary catch rethrow",
-          "native OAuth Radius actual native fatal preempts cancellation getter and guest catch",
-          "native OAuth Radius explicit throws promote returned flagged Error DATA only at throw",
-          "native OAuth Radius error reader returns flagged Error DATA without an invented throw"
-        ],
-        "manifest": "verification/oauth-radius-genuine-sourceonly-20261019/manifest.json",
-        "manifest_sha256": "5F683979DE7CF562D5931FA7C30754900DCF669C7BA4423987EF9DF9C4D5138F",
-        "pure_c": false,
-        "source_pins": [
-          {
-            "path": "src/extensions/fixtures/radius-oauth-c268-source.mjs",
-            "sha256": "370EA4BA6C9878ADAD18EEDCE815767C62777656EABFDF28ABB6D52615A6F139"
-          },
-          {
-            "path": "src/extensions/fixtures/radius-oauth-observer.mjs",
-            "sha256": "0CC1C68676BC26623790920B6D932FE57232BC6B685802670FFF82402307BCD9"
-          },
-          {
-            "path": "src/extensions/native_ai_auth_helper_values.zig",
-            "sha256": "98B907427C3E15ED2BA5A3FAE155F087AA83CE7A043593F66FBCC0CE75BCDDCB"
-          },
-          {
-            "path": "src/extensions/native_ai_oauth_callback_server.zig",
-            "sha256": "2AD5C924B6D0430A3437579A15986B6C25EA255848C4CE5E6F52F8773246D393"
-          },
-          {
-            "path": "src/extensions/native_ai_oauth_device_code.zig",
-            "sha256": "9AA3EAFB659042ACDEB498E469311FE5CEACD7EDF4EF993A4BA6D9762DF7EE2A"
-          },
-          {
-            "path": "src/extensions/native_ai_oauth_pkce.zig",
-            "sha256": "F5F1D9F72B23AC71F4D411A045BCE6F62E6FE8A4663CC3B07CA3A268163DF7F9"
-          },
-          {
-            "path": "src/extensions/native_ai_oauth_radius.zig",
-            "sha256": "37232B0AFBDF322AEE46EA9F2F692830B39D01EE0722413D4305ED80F62FFFF9"
-          },
-          {
-            "path": "src/extensions/native_ai_oauth_radius_genuine.zig",
-            "sha256": "F4CF2BD8992DFE81ABCE17523BC16507531494E8D761D7047D57E4A0707907C8"
-          },
-          {
-            "path": "src/extensions/native_ai_oauth_radius_http_genuine.zig",
-            "sha256": "19854310C81280A800DE96C175086DA53A2CF3ACDE5FE163DDA3D91DAC08E6C9"
-          },
-          {
-            "path": "src/extensions/native_ai_radius_config.zig",
-            "sha256": "EFB8FF26532C3B9F0BA0BC0E46378928335437CF9C6F1EC9EA0C30FB4AE26253"
-          },
-          {
-            "path": "src/extensions/native_async_function.zig",
-            "sha256": "359C5C4AE2EC89AE5B446D728D902FAE6774CCBDEC8EDA91D54FE2431E2763FA"
-          },
-          {
-            "path": "src/extensions/native_node_error_class.zig",
-            "sha256": "0192489A134A0D6B287EB1494654FC25391E1989D80A239C9AC37201392E0EE5"
-          },
-          {
-            "path": "src/extensions/native_public_lexical_frame.zig",
-            "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E"
-          },
-          {
-            "path": "src/extensions/native_sync_arguments.zig",
-            "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
-          },
-          {
-            "path": "src/native_ai_oauth_radius_genuine_af_test.zig",
-            "sha256": "7ACCA794CBCBE597F1DAD0AE798277B2038C6748041CB5239A592347D5D9A8D9"
-          },
-          {
-            "path": "src/native_sdk_initial_model_retirement_controls.zig",
-            "sha256": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
-          }
-        ]
-      },
-      {
-        "name": "native-node-fs-write-uv",
-        "target": "build-native-node-fs-write-uv",
-        "root": "src/native_node_fs_write_uv_test.zig",
-        "artifact": "native-node-fs-write-uv",
-        "declared": 12,
-        "manifest": "verification/node-filesystem-writer-uv-sourceonly-20261019/manifest.json",
-        "manifest_sha256": "50205EF00557F370A62669F16E8738A125A721E1117F48192C601FB9F4907368",
-        "pure_c": false,
-        "source_pins": [
-          {
-            "path": "src/extensions/native_node_fs_write_io.zig",
-            "sha256": "EBC384E2E6D52B183FF0DB11B9D3F35EA807E8DFC8BE872C0B476DC457A594F6"
-          },
-          {
-            "path": "src/extensions/native_node_fs_write_ops.zig",
-            "sha256": "B846C3C4A77EA3013F4036652B9F0C9C318845F9959C56BC7FF5B29E6AA1F6AB"
-          },
-          {
-            "path": "src/extensions/native_uv_fs_write.c",
-            "sha256": "62DB3206CE9CE22A723A339F31885B3651E7A2E3CE800FA1C37710B84E4B911B"
-          },
-          {
-            "path": "src/native_node_fs_write_uv_test.zig",
-            "sha256": "2DB50112F3B60C9D64A639EDB19657CD6C477909A21BE063BE7952F62B536211"
-          }
-        ]
-      },
-      {
-        "name": "native-vm-array-buffer-backing",
-        "target": "build-native-vm-array-buffer-backing",
-        "root": "src/native_vm_array_buffer_backing_test.zig",
-        "artifact": "test",
-        "declared": 24,
-        "declared_names": [
-          "VM backing actual intrinsic TypedArray and DataView spans ignore guest accessors",
-          "VM backing actual empty spans and invalid view brands leave native output empty",
-          "VM backing actual pending entry preserves the exact reason and owner count",
-          "VM backing external C storage stays unmanaged and keeps its actual free callback",
-          "VM backing duplicate leases own the native allocation after detach and collection",
-          "VM backing fixed equal transfer reuses storage and old lease writes reach the target",
-          "VM backing changed fixed transfer copies before detaching and leaves old writes separate",
-          "VM backing resizable equal transfer allocates fresh storage and preserves maximum",
-          "VM backing zero transfer detaches without moving the outstanding native span",
-          "VM backing transfer coercion precedes detach checks and maximum failure keeps source live",
-          "VM backing external shared C storage keeps its callback and never enters trusted serialization",
-          "VM backing failed mixed shared serialization retires its partial table and foreign owner exactly once",
-          "VM backing resizable storage keeps its base and exact shrink zeroing across page growth",
-          "VM backing tracking and fixed view spans follow resize while old leases keep their snapshot",
-          "VM backing Windows shrink decommits actual data pages while retaining the reservation",
-          "VM backing failed native page growth leaves source length bytes and charge unchanged",
-          "VM backing allocation failure preserves exact fixed equal changed and zero transfer detach order",
-          "VM backing a native worker owns fixed storage after the originating runtime and allocator caller retire",
-          "VM backing managed shared roundtrip uses current native length and refreshes the C buffer result",
-          "VM backing first operations in another runtime refresh actual shared view caches",
-          "VM backing zero maximum growable shared buffers retain real empty managed spans",
-          "VM backing shared native entitlements survive both runtimes and the serializer table",
-          "VM backing two actual runtime workers share monotonic atomic growth and race failure",
-          "VM backing native leases retain allocation without retaining the JavaScript buffer wrapper"
-        ],
-        "manifest": "verification/native-array-buffer-backing-sourceonly-20261019/status.json",
-        "manifest_sha256": "FBB5D02950761B604202D94A1250118B6252C2028F65DD942AB681067AD8671C",
-        "pure_c": true,
-        "source_pins": [
-          {
-            "path": "src/extensions/engine_abi.c",
-            "sha256": "940CAAAE81B2A4098BE60DDD42D44B3CC3D1347341ED2D9557E0D34AFA9E928C"
-          },
-          {
-            "path": "src/native_vm_array_buffer_backing_test.zig",
-            "sha256": "0F28202181C720FA9CC0046710B6E1B0CFECD9AE77E4D7EED1233B1429F03499"
-          }
-        ]
-      },
-      {
-        "name": "native-vm-private-property",
-        "target": "build-native-vm-private-property",
-        "root": "src/native_vm_private_property_test.zig",
-        "artifact": "native-vm-private-property",
-        "declared": 9,
-        "declared_names": [
-          "VM private property creates unique hidden writable configurable own slots",
-          "VM private property ignores an inherited setter and read only prototype slot",
-          "VM private property extends frozen ordinary objects without changing public extensibility",
-          "VM private property stores on the real proxy wrapper and survives revocation without traps",
-          "VM private property replacement retires its previous actual value exactly once",
-          "VM private property invalid receivers and keys consume values without coercion",
-          "VM private property respects an existing own read only descriptor and keeps the old value",
-          "VM private property own setter receives the exact receiver value and ordinary throw",
-          "VM private property allocation failure consumes the new value and publishes no slot"
-        ],
-        "manifest": "verification/native-private-symbol-set-sourceonly-20261019/manifest.json",
-        "manifest_sha256": "EC0DE50A97AE59455A4073B0BE24DF38DD2C97B0D94B77CB40821116F1396CC2",
-        "pure_c": true,
-        "source_pins": [
-          {
-            "path": "src/native_vm_private_property_test.zig",
-            "sha256": "FA9CD74302D54C8A0C368F134B2894AC31E16E17ED2EF0971E69E6C8223F0197"
-          }
-        ]
-      }
-    ]
+    "runtime_authority": false
   },
   "storage_cleanup": {
     "status": "completed_and_independently_verified",
@@ -2144,12 +1570,35 @@
     "sha256": "3E25928B76288B1B186E0A502C914DC10FA1AF2C7CCA7FDCB7B282DE4F92BE3B"
   },
   "current_execution_checkpoint": {
-    "status": "ready_for_fresh_strict_buildquery_no_runtime_authority",
-    "next_declared_groups": 24,
-    "next_declared_names": 501,
-    "actual_metadata_count": null,
-    "new_runtime_started": false,
-    "whole_application_qualified": false
+    "status": "no_active_native_lease_or_source_hold",
+    "last_frozen_runtime_head": "31bcf8182543a4ebde583297660aec89d8423876",
+    "build_query": {
+      "groups": 24,
+      "actual_metadata": 521,
+      "metadata_acceptance": "31120BCE20FDF7D5AAEC126639B48B50D2FBA6C544B598300A2F18667EF08A0E",
+      "full_closure": "1ECA6B8D077592A66FA443C5E721E73A649243D08EB5C8A0887962C87F945624"
+    },
+    "strict_runtime": {
+      "completed": 33,
+      "passed": 32,
+      "failed": 1,
+      "not_started": 488,
+      "closure": "91BA5F8167F0202CAEA5D1245ACC7A66D90EAA6B3AB155497F3B2DD752BB1CEC"
+    },
+    "diagnostic_runtime": {
+      "groups": 24,
+      "actual_tests": 521,
+      "flags_zero": 490,
+      "nonzero": 31,
+      "no_panic": true,
+      "qualification": false,
+      "closure": "evidence/root-vm-io-oauth-options-v17-diagnostic-runtime-control-20261019-215552/independent-negative-diagnostic-runtime-closure.json",
+      "closure_sha256": "81D2951174D9DA0EE8DF71CF575CC44AC5CE65205A213E48972AE24EE82C426F",
+      "distinct_current_files_at_closure": 32793,
+      "source_hold_released": true,
+      "all_actual_process_instances_absent_at_closure": true
+    },
+    "current_successor_has_runtime_evidence": false
   },
   "retained_recent_native_negatives": [
     {
@@ -2185,5 +1634,636 @@
       "runtime_started": false,
       "qualification": false
     }
-  ]
+  ],
+  "execution_checkpoint_history": [
+    {
+      "replaced_utc": "2026-10-19T23:03:40.943635+00:00",
+      "checkpoint": {
+        "status": "ready_for_fresh_strict_buildquery_no_runtime_authority",
+        "next_declared_groups": 24,
+        "next_declared_names": 501,
+        "actual_metadata_count": null,
+        "new_runtime_started": false,
+        "whole_application_qualified": false
+      },
+      "next_native_batch": {
+        "prepared_directory": "../../evidence/combined-native-batch-v11-prepared-20261019",
+        "mode": "BuildQuery",
+        "driver_sha256": "4F816750747F32A4EA6D0E832D90C962955C03217B3BF341A3F104068BBFC2D4",
+        "auditor_sha256": "8B56A52CAA3BD3EA4E73951A00957746A00E23D15C690E2A255870A9D5571956",
+        "whole_matrix_groups": 71,
+        "whole_matrix_declared_named": 1164,
+        "cohort": [
+          "native-vm-array-buffer-backing",
+          "native-vm-private-property",
+          "native-node-tcp-transport",
+          "native-vm-async-arguments",
+          "native-node-fs-write-uv",
+          "native-vm-sync-arguments",
+          "native-vm-async-retirement",
+          "native-vm-template-literal",
+          "native-vm-borrowed-bridges",
+          "vm-af-throw",
+          "native-ai-oauth-anthropic-genuine-af",
+          "native-node-module-creation",
+          "native-node-module-search-paths",
+          "native-node-fs-realpath-classic",
+          "native-node-fs-path-helpers",
+          "native-node-file-url-paths",
+          "native-sdk-tool-search-public",
+          "native-ai-radius-config",
+          "native-ai-radius-provider-genuine-af",
+          "native-node-inspect-entry",
+          "native-ai-oauth-radius-genuine-af"
+        ],
+        "cohort_declared_named": 458,
+        "actual_metadata_count": null,
+        "raw_metadata_acceptance_required": true,
+        "separate_strict_runtime_grant_required": true,
+        "fresh_private_cache_pair": true,
+        "minimum_free_kib": 16777216,
+        "source_pins_updated": [
+          {
+            "group": "native-public-print-mode",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-public-rpc-mode",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-vm-array-append",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-node-inspect-entry",
+            "path": "src/extensions/fixtures/native-node-inspect-observer.mjs",
+            "before": "C97E0237D20C7F7075909303D86C80AF2123CD3FE4F0875741F55FBA230A93DF",
+            "after": "011F1E693CA297EE63AEDFE72538E90F29A53C154AFC11A698F18D9B74B687E0"
+          },
+          {
+            "group": "native-node-inspect-entry",
+            "path": "src/extensions/native_node_util_inspect.zig",
+            "before": "7D0C0F96711C3909F53FCC21F694C6D570305E8EB9FDFC8B3D4A463F6C3CBD46",
+            "after": "5300C18A3557706224577BF51F2FBF5ECB0C84D9C44CD9D181F1A5ED99976614"
+          },
+          {
+            "group": "native-node-inspect-entry",
+            "path": "src/native_node_inspect_entry_test.zig",
+            "before": "A99B828790D5005CBA0FC929FA4DB60A313E1808CC98C6A0947414931A5BFED3",
+            "after": "9A78028E3A3F2016ED6C26E7A794D05466F74ED43ED2C70CB3B7607C8642DEE2"
+          },
+          {
+            "group": "native-sdk-public-compaction-file-ops",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-node-package-reader",
+            "path": "src/extensions/native_node_fs_collections.zig",
+            "before": "A534F7D4CB6375EE28CF4C04C4BED64D2FDD07A951394D2CA99029C0586F13E2",
+            "after": "EBC0FE29F1EFE23C34F7EB2A3181597197C07E31A6BB9C5681B3EB53213C007F"
+          },
+          {
+            "group": "native-sdk-remote-catalog-genuine-af",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-public-cli-args",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-sdk-public-truncation",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-ai-oauth-device-code-genuine-af",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-public-theme",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-sdk-public-extension-helpers",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-sdk-output-guard",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-ai-sleep",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-sdk-public-session-helpers",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-public-rpc-jsonl",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-sdk-public-model-resolver",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-node-fs-primitives",
+            "path": "src/extensions/native_node_fs_collections.zig",
+            "before": "A534F7D4CB6375EE28CF4C04C4BED64D2FDD07A951394D2CA99029C0586F13E2",
+            "after": "EBC0FE29F1EFE23C34F7EB2A3181597197C07E31A6BB9C5681B3EB53213C007F"
+          },
+          {
+            "group": "native-sdk-public-compaction-core",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-sdk-public-compaction-text",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-sdk-public-branch-entries",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-ai-oauth-page",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-ai-oauth-callback-server",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-node-http-incoming",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-node-http-header-checks",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-sdk-summary-genuine-af",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-sdk-branch-summary-genuine-af",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-sdk-event-bus-public",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-sdk-public-context-helpers",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-node-file-url-paths",
+            "path": "src/extensions/fixtures/native-node-file-url-observer.mjs",
+            "before": "EFB06CEC7B4B50BBEC4E4D45CCC818D46862855EE0757BF1CC33E392D76F12DE",
+            "after": "CFE13BF8A42378B702CC9DA977AF297653DA007CDE8A867755CB138284775558"
+          },
+          {
+            "group": "native-vm-borrowed-bridges",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-sdk-frontmatter-public",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-sdk-model-registry-public",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-vm-sync-arguments",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-ai-oauth-anthropic-genuine-af",
+            "path": "src/extensions/fixtures/oauth-anthropic-observer.mjs",
+            "before": "B8C4A5C08257F57FC9A0424FD22DB7A55BD7037B3C3EFE5DAE799605FD03E3E8",
+            "after": "A4A361713272C9B3C7497412B774E0D8258349CB779469A4224E809113C3483D"
+          },
+          {
+            "group": "native-ai-oauth-anthropic-genuine-af",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-sdk-tool-search-public",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-ai-radius-config",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          },
+          {
+            "group": "native-ai-radius-provider-genuine-af",
+            "path": "src/extensions/native_async_function.zig",
+            "before": "72B6689CB82B1E8FD8F89F941DD16AE3BACB3989EFE4A75C68A719D9CB8C266B",
+            "after": "359C5C4AE2EC89AE5B446D728D902FAE6774CCBDEC8EDA91D54FE2431E2763FA"
+          },
+          {
+            "group": "native-ai-radius-provider-genuine-af",
+            "path": "src/native_sdk_initial_model_retirement_controls.zig",
+            "before": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+            "after": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+          }
+        ],
+        "new_groups": [
+          {
+            "name": "native-vm-async-arguments",
+            "target": "build-native-vm-async-arguments",
+            "root": "src/native_async_arguments_test.zig",
+            "artifact": "test",
+            "declared": 17,
+            "declared_names": [
+              "VM async arguments supplied count and initialized formals remain independent of observable length",
+              "VM async arguments assignments before and after real Await use the same original formal slots",
+              "VM async arguments missing fourth and fifth formals retain assignments through another actual Await and GC",
+              "VM async arguments unused supplied extras remain owned after overwritten formals and retire before locals",
+              "VM async arguments zero declared formals still retain every supplied argument through suspension",
+              "VM async arguments store publishes the replacement before the sole prior holder finalizer reads its actual slot",
+              "VM async arguments actual caught private Await rejection can initialize a missing formal and return after another Await",
+              "VM async arguments uncaught ordinary Await rejection preserves raw identity while expanded formals retire",
+              "VM async arguments genuine return adoption sees current formals alive before ordered terminal close",
+              "VM async arguments missing assigned formal is marked during live GC and retires on actual gate abandonment",
+              "VM async arguments real arrow keeps lexical this separate from the supplied receiver while formals mutate",
+              "VM async arguments current getter rejects absent and legacy invocations while preserving an entry exception",
+              "VM async arguments pending call entry leaves the original supplied slot and body untouched",
+              "VM async arguments pending store consumes its incoming owner without changing the selected formal",
+              "VM async arguments actual assignment finalizer fatal prevents the next body and guest catch after Await",
+              "VM async arguments actual body fatal wins later parameter and local cleanup events with every root retired",
+              "VM async arguments current fatal before the second resume retires all assigned missing slots without body entry"
+            ],
+            "manifest": "verification/native-mutable-async-arguments-sourceonly-20261019/source-status.json",
+            "manifest_sha256": "765ACA34EB04C176D95630407EBEC42F776F00194997B6EC42C31497B6B90F42",
+            "pure_c": false,
+            "source_pins": [
+              {
+                "path": "src/extensions/native_async_arguments.zig",
+                "sha256": "EF4A4FC32DDF0564ADE5C45B65110ED4D93AE7F9F7558482F8E4238D4F2D482A"
+              },
+              {
+                "path": "src/extensions/native_async_function.zig",
+                "sha256": "359C5C4AE2EC89AE5B446D728D902FAE6774CCBDEC8EDA91D54FE2431E2763FA"
+              },
+              {
+                "path": "src/native_async_arguments_test.zig",
+                "sha256": "94EED011C1FC44428ABAB5129DD295DFA9029201E250AAD75B7151B953285EEF"
+              }
+            ]
+          },
+          {
+            "name": "native-node-tcp-transport",
+            "target": "build-native-node-tcp-transport",
+            "root": "src/native_node_tcp_transport_test.zig",
+            "artifact": "test",
+            "declared": 12,
+            "declared_names": [
+              "native actual TCP empty service owns native loop and closes its independent budget",
+              "native actual TCP binds ephemeral IPv4 and reports actual local and peer addresses",
+              "native actual TCP copies caller write bytes and preserves tokens across real segmented reads",
+              "native actual TCP read packet owns bytes until release and resumes only with new demand",
+              "native actual TCP half close yields real EOF while the opposite direction remains writable",
+              "native actual TCP releasing an unclaimed accept closes the real accepted connection",
+              "native actual TCP numeric argument errors remain ordinary libuv statuses without callbacks",
+              "native actual TCP exhausted shared budget is a distinct wrapper allocation producer",
+              "native actual TCP read allocation failure is delivered by its real embedded owner event",
+              "native actual TCP close tokens use observed native closure and never a second close",
+              "native actual TCP listener reference tracks actual active handle and queued closure separately",
+              "native actual TCP native endpoint and event owners can outlive their original VM runtime"
+            ],
+            "manifest": "verification/native-libuv-tcp-sourceonly-20261019/source-status.json",
+            "manifest_sha256": "4DC1A1140CDEE1DE431D8155918870DC26EA593FC1C7CE217DBE06F8FE7F683E",
+            "pure_c": true,
+            "source_pins": [
+              {
+                "path": "src/extensions/native_node_net_tcp_transport.zig",
+                "sha256": "1DF60228E9CBEDE8FB0CDE3BDCED9E3F196291D5E6AD5035B38CC224DB47B4AA"
+              },
+              {
+                "path": "src/extensions/native_uv_tcp.c",
+                "sha256": "E1204E4B4B30F46534940D5F9089B8D00B0E2DD845FDA0A798BB0D2F252B71F7"
+              },
+              {
+                "path": "src/native_node_tcp_transport_test.zig",
+                "sha256": "3C475C5FA0C43BBEE875E58E54E705282E2319C75EE1E0216D775E84E56C58D5"
+              }
+            ]
+          },
+          {
+            "name": "native-ai-oauth-radius-genuine-af",
+            "target": "build-native-ai-oauth-radius-genuine-af",
+            "root": "src/native_ai_oauth_radius_genuine_af_test.zig",
+            "artifact": "native-ai-oauth-radius-genuine-af",
+            "declared": 34,
+            "declared_names": [
+              "native OAuth Radius actual ordinary class and AsyncFunction shapes",
+              "native OAuth Radius factory option and normalization operations preserve Source order",
+              "native OAuth Radius factory keeps its actual required formal and raw name value",
+              "native OAuth Radius discovery keeps request and genuine Await ordering",
+              "native OAuth Radius discovery HTTP error keeps suspended constructor and text operands",
+              "native OAuth Radius discovery JSON validation and repeated endpoint getter remain exact",
+              "native OAuth Radius Error subclass chooses exact detail branches and template coercion",
+              "native OAuth Radius Error class heritage rejects nonconstructors before prototype lookup",
+              "native OAuth Radius error reader parses actual repeated fields and catches parse-body failures",
+              "native OAuth Radius error reader preserves text catch lookup call and Await failures",
+              "native OAuth Radius token request preserves field order expiry arithmetic and raw data",
+              "native OAuth Radius token catch reads cancellation only for actual fetch failure",
+              "native OAuth Radius token HTTP failure throws the genuine awaited Error value",
+              "native OAuth Radius token JSON and property failures stop at the actual expression",
+              "native OAuth Radius device request validates truthy fields in Source short circuit order",
+              "native OAuth Radius device request preserves construction cancellation and HTTP error paths",
+              "native OAuth Radius browser preserves callback options notices and wait return ordering",
+              "native OAuth Radius browser notifications remain outside callback finally",
+              "native OAuth Radius browser finally overrides ordinary pending returns and throws",
+              "native OAuth Radius browser preserves abrupt PKCE URL and listener operations",
+              "native OAuth Radius escaped complete arrow constructs exact token form and signal",
+              "native OAuth Radius device poll uses actual Error class and selected OAuth status cases",
+              "native OAuth Radius device notice and token failures retain their actual boundary",
+              "native OAuth Radius public login has real prompt Await and selected branch adoption",
+              "native OAuth Radius refresh and zero Await toAuth preserve genuine outer Promises",
+              "native OAuth Radius completed callback options release a removed complete arrow immediately",
+              "native OAuth Radius completed polling options release a removed poll arrow immediately",
+              "native OAuth Radius terminal complete closure retains verifier and releases unrelated challenge",
+              "native OAuth Radius sole refresh closure retains gateway but releases options",
+              "native OAuth Radius sole toAuth closure releases all unrelated factory captures",
+              "native OAuth Radius same operation private DATA remains an ordinary catch rethrow",
+              "native OAuth Radius actual native fatal preempts cancellation getter and guest catch",
+              "native OAuth Radius explicit throws promote returned flagged Error DATA only at throw",
+              "native OAuth Radius error reader returns flagged Error DATA without an invented throw"
+            ],
+            "manifest": "verification/oauth-radius-genuine-sourceonly-20261019/manifest.json",
+            "manifest_sha256": "5F683979DE7CF562D5931FA7C30754900DCF669C7BA4423987EF9DF9C4D5138F",
+            "pure_c": false,
+            "source_pins": [
+              {
+                "path": "src/extensions/fixtures/radius-oauth-c268-source.mjs",
+                "sha256": "370EA4BA6C9878ADAD18EEDCE815767C62777656EABFDF28ABB6D52615A6F139"
+              },
+              {
+                "path": "src/extensions/fixtures/radius-oauth-observer.mjs",
+                "sha256": "0CC1C68676BC26623790920B6D932FE57232BC6B685802670FFF82402307BCD9"
+              },
+              {
+                "path": "src/extensions/native_ai_auth_helper_values.zig",
+                "sha256": "98B907427C3E15ED2BA5A3FAE155F087AA83CE7A043593F66FBCC0CE75BCDDCB"
+              },
+              {
+                "path": "src/extensions/native_ai_oauth_callback_server.zig",
+                "sha256": "2AD5C924B6D0430A3437579A15986B6C25EA255848C4CE5E6F52F8773246D393"
+              },
+              {
+                "path": "src/extensions/native_ai_oauth_device_code.zig",
+                "sha256": "9AA3EAFB659042ACDEB498E469311FE5CEACD7EDF4EF993A4BA6D9762DF7EE2A"
+              },
+              {
+                "path": "src/extensions/native_ai_oauth_pkce.zig",
+                "sha256": "F5F1D9F72B23AC71F4D411A045BCE6F62E6FE8A4663CC3B07CA3A268163DF7F9"
+              },
+              {
+                "path": "src/extensions/native_ai_oauth_radius.zig",
+                "sha256": "37232B0AFBDF322AEE46EA9F2F692830B39D01EE0722413D4305ED80F62FFFF9"
+              },
+              {
+                "path": "src/extensions/native_ai_oauth_radius_genuine.zig",
+                "sha256": "F4CF2BD8992DFE81ABCE17523BC16507531494E8D761D7047D57E4A0707907C8"
+              },
+              {
+                "path": "src/extensions/native_ai_oauth_radius_http_genuine.zig",
+                "sha256": "19854310C81280A800DE96C175086DA53A2CF3ACDE5FE163DDA3D91DAC08E6C9"
+              },
+              {
+                "path": "src/extensions/native_ai_radius_config.zig",
+                "sha256": "EFB8FF26532C3B9F0BA0BC0E46378928335437CF9C6F1EC9EA0C30FB4AE26253"
+              },
+              {
+                "path": "src/extensions/native_async_function.zig",
+                "sha256": "359C5C4AE2EC89AE5B446D728D902FAE6774CCBDEC8EDA91D54FE2431E2763FA"
+              },
+              {
+                "path": "src/extensions/native_node_error_class.zig",
+                "sha256": "0192489A134A0D6B287EB1494654FC25391E1989D80A239C9AC37201392E0EE5"
+              },
+              {
+                "path": "src/extensions/native_public_lexical_frame.zig",
+                "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E"
+              },
+              {
+                "path": "src/extensions/native_sync_arguments.zig",
+                "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6"
+              },
+              {
+                "path": "src/native_ai_oauth_radius_genuine_af_test.zig",
+                "sha256": "7ACCA794CBCBE597F1DAD0AE798277B2038C6748041CB5239A592347D5D9A8D9"
+              },
+              {
+                "path": "src/native_sdk_initial_model_retirement_controls.zig",
+                "sha256": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+              }
+            ]
+          },
+          {
+            "name": "native-node-fs-write-uv",
+            "target": "build-native-node-fs-write-uv",
+            "root": "src/native_node_fs_write_uv_test.zig",
+            "artifact": "native-node-fs-write-uv",
+            "declared": 12,
+            "manifest": "verification/node-filesystem-writer-uv-sourceonly-20261019/manifest.json",
+            "manifest_sha256": "50205EF00557F370A62669F16E8738A125A721E1117F48192C601FB9F4907368",
+            "pure_c": false,
+            "source_pins": [
+              {
+                "path": "src/extensions/native_node_fs_write_io.zig",
+                "sha256": "EBC384E2E6D52B183FF0DB11B9D3F35EA807E8DFC8BE872C0B476DC457A594F6"
+              },
+              {
+                "path": "src/extensions/native_node_fs_write_ops.zig",
+                "sha256": "B846C3C4A77EA3013F4036652B9F0C9C318845F9959C56BC7FF5B29E6AA1F6AB"
+              },
+              {
+                "path": "src/extensions/native_uv_fs_write.c",
+                "sha256": "62DB3206CE9CE22A723A339F31885B3651E7A2E3CE800FA1C37710B84E4B911B"
+              },
+              {
+                "path": "src/native_node_fs_write_uv_test.zig",
+                "sha256": "2DB50112F3B60C9D64A639EDB19657CD6C477909A21BE063BE7952F62B536211"
+              }
+            ]
+          },
+          {
+            "name": "native-vm-array-buffer-backing",
+            "target": "build-native-vm-array-buffer-backing",
+            "root": "src/native_vm_array_buffer_backing_test.zig",
+            "artifact": "test",
+            "declared": 24,
+            "declared_names": [
+              "VM backing actual intrinsic TypedArray and DataView spans ignore guest accessors",
+              "VM backing actual empty spans and invalid view brands leave native output empty",
+              "VM backing actual pending entry preserves the exact reason and owner count",
+              "VM backing external C storage stays unmanaged and keeps its actual free callback",
+              "VM backing duplicate leases own the native allocation after detach and collection",
+              "VM backing fixed equal transfer reuses storage and old lease writes reach the target",
+              "VM backing changed fixed transfer copies before detaching and leaves old writes separate",
+              "VM backing resizable equal transfer allocates fresh storage and preserves maximum",
+              "VM backing zero transfer detaches without moving the outstanding native span",
+              "VM backing transfer coercion precedes detach checks and maximum failure keeps source live",
+              "VM backing external shared C storage keeps its callback and never enters trusted serialization",
+              "VM backing failed mixed shared serialization retires its partial table and foreign owner exactly once",
+              "VM backing resizable storage keeps its base and exact shrink zeroing across page growth",
+              "VM backing tracking and fixed view spans follow resize while old leases keep their snapshot",
+              "VM backing Windows shrink decommits actual data pages while retaining the reservation",
+              "VM backing failed native page growth leaves source length bytes and charge unchanged",
+              "VM backing allocation failure preserves exact fixed equal changed and zero transfer detach order",
+              "VM backing a native worker owns fixed storage after the originating runtime and allocator caller retire",
+              "VM backing managed shared roundtrip uses current native length and refreshes the C buffer result",
+              "VM backing first operations in another runtime refresh actual shared view caches",
+              "VM backing zero maximum growable shared buffers retain real empty managed spans",
+              "VM backing shared native entitlements survive both runtimes and the serializer table",
+              "VM backing two actual runtime workers share monotonic atomic growth and race failure",
+              "VM backing native leases retain allocation without retaining the JavaScript buffer wrapper"
+            ],
+            "manifest": "verification/native-array-buffer-backing-sourceonly-20261019/status.json",
+            "manifest_sha256": "FBB5D02950761B604202D94A1250118B6252C2028F65DD942AB681067AD8671C",
+            "pure_c": true,
+            "source_pins": [
+              {
+                "path": "src/extensions/engine_abi.c",
+                "sha256": "940CAAAE81B2A4098BE60DDD42D44B3CC3D1347341ED2D9557E0D34AFA9E928C"
+              },
+              {
+                "path": "src/native_vm_array_buffer_backing_test.zig",
+                "sha256": "0F28202181C720FA9CC0046710B6E1B0CFECD9AE77E4D7EED1233B1429F03499"
+              }
+            ]
+          },
+          {
+            "name": "native-vm-private-property",
+            "target": "build-native-vm-private-property",
+            "root": "src/native_vm_private_property_test.zig",
+            "artifact": "native-vm-private-property",
+            "declared": 9,
+            "declared_names": [
+              "VM private property creates unique hidden writable configurable own slots",
+              "VM private property ignores an inherited setter and read only prototype slot",
+              "VM private property extends frozen ordinary objects without changing public extensibility",
+              "VM private property stores on the real proxy wrapper and survives revocation without traps",
+              "VM private property replacement retires its previous actual value exactly once",
+              "VM private property invalid receivers and keys consume values without coercion",
+              "VM private property respects an existing own read only descriptor and keeps the old value",
+              "VM private property own setter receives the exact receiver value and ordinary throw",
+              "VM private property allocation failure consumes the new value and publishes no slot"
+            ],
+            "manifest": "verification/native-private-symbol-set-sourceonly-20261019/manifest.json",
+            "manifest_sha256": "EC0DE50A97AE59455A4073B0BE24DF38DD2C97B0D94B77CB40821116F1396CC2",
+            "pure_c": true,
+            "source_pins": [
+              {
+                "path": "src/native_vm_private_property_test.zig",
+                "sha256": "FA9CD74302D54C8A0C368F134B2894AC31E16E17ED2EF0971E69E6C8223F0197"
+              }
+            ]
+          }
+        ]
+      },
+      "record_note": "Port active. Cleanup445 complete and unchanged. V11/V12 first-compile negatives, V13 diagnostic negatives, original V14 pre-native manifest rejection and V14b fresh partial BuildQuery are preserved with independent current-input/process-instance closures. V14b yielded45 raw metadata names (backing24/private9/TCP12), then options parser syntax failed; zero runtime accepted. Reviewed parser brace correction, actual UVException6 and native immediate owner are integrated. Next is unchanged strict4F fresh BuildQuery over24 groups/501 declared names before further vendor intakes. Original B053 seed admission excludes newly added .patch provenance, so no seed is reused or guard changed. Callback Environment, actual AsyncWrap/FileHandle, Module/SDK/HTTP/whole app/platform/bridge-removal/release remain open.",
+      "source_head": "efc47915749eb004bfb85dd61b6204b2e31dee80"
+    }
+  ],
+  "source_intake_v18": {
+    "recorded_utc": "2026-10-19T23:03:40.943635+00:00",
+    "head": "985d6ebd95732c4134c4a9521aacfc2ef9f3a87b",
+    "journal": {
+      "path": "evidence/root-reviewed-source-intakes-v11-20261019/intake-journal.jsonl",
+      "sha256": "5BBEED1B17ADF452DAA07687EF0CB8F66E203959C063E138F89E957870F39886"
+    },
+    "commits": [
+      "ebfe7a0cbf7bad8bb327e11a229845d0f6100e97 test(vm): force the private-slot allocation failure path",
+      "6d8fa4c601874f1edf27fe3646b092f65bbfc111 Preserve writer fixture sentinel allocation extent",
+      "7a2d45d89160df093bbd4d756644c4dc3a7af72b Capture classic realpath failures at expected success boundaries",
+      "8aaa8e3cb1e12e24fff019cc12bfcb9db7f0e800 Capture Radius expected-success failures from existing native diagnostics",
+      "2e695d4c3efeb6859c2d7a682fdd64f74ee9ed46 Guard actual VM JavaScript entry during native cleanup scopes",
+      "bd4430655b37ae8282111338242ae2e0f1b1a3f1 Preserve distinct continuation data through Promise reactions and jobs",
+      "1bb7456376594b39462e7711b2d994d58185b10a Expose intrinsic pending Promise allocation with real init hooks",
+      "a9e3d206555c4a9e04ce85d3ed75c8d25748036d Add native object Global cells with real weak ownership controls",
+      "620b4b12d11f1e287877618690898fcc6d653b0c Add reviewed native AsyncWrap and request registry prerequisite",
+      "7d57f212537efcd6c787e0998a57c15f2aed75ef Add actual Node callback state and MakeCallback ownership controls",
+      "059188a8c98ee9a0e5ab65b2e8cc9aaaf9b5e8c5 fix(vm): observe current descriptors during property copy",
+      "23cfce36e8c81e9421c7dd6fb1050db851a643ae Stop Engine job batches when the VM executes no job",
+      "eec0d3774a5df16519c6792d950df7c386e44500 Implement genuine Node inspect color state and stylizer",
+      "0594a926f14d98c1f6a361a0996b8815572b5548 Compose genuine inspector color owner through retained inputs",
+      "a269d02327955c27e3f0309b0ae63e682954ddcc Preserve actual writer callback failure through task retirement",
+      "9a30300d8c0d67707313c11e8ea270d799a74044 Add actual native Node fatal and CHECK platform owner",
+      "32abf4c187a20d2457cca30066c4ecbbebb0ea46 Complete native options serialization and retain builtin process",
+      "985d6ebd95732c4134c4a9521aacfc2ef9f3a87b Implement genuine Node formatter and Host error formatting"
+    ],
+    "runtime_authority": false
+  }
 }
