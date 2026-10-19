@@ -1,0 +1,16 @@
+diff --git a/build.zig b/build.zig
+--- a/build.zig
++++ b/build.zig
+@@ -1977,6 +1977,12 @@
+         linkQuickJs(b, vm_array_buffer_backing_tests.root_module, quickjs, sqlite_lib_dir);
+         b.step("build-native-vm-array-buffer-backing", "Install actual native ArrayBuffer storage and lease controls without execution").dependOn(&b.addInstallArtifact(vm_array_buffer_backing_tests, .{}).step);
+     }
++    const existing_promise_settlement_tests = b.addTest(.{
++        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_existing_promise_settlement_test.zig"), .target = target, .optimize = optimize }),
++        .filters = &.{"VM Promise settlement"}, .use_llvm = use_llvm,
++    });
++    linkQuickJs(b, existing_promise_settlement_tests.root_module, quickjs, sqlite_lib_dir);
++    b.step("build-native-vm-existing-promise-settlement", "Install existing Promise native settlement controls without execution").dependOn(&b.addInstallArtifact(existing_promise_settlement_tests, .{}).step);
+     if (native_node_network) |network| {
+         const native_node_tcp_transport_tests = b.addTest(.{
+             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_tcp_transport_test.zig"), .target = target, .optimize = optimize }),

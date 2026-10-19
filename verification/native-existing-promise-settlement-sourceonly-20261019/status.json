@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "status": "source_only_reviewed_not_executed",
+  "base_commit": "e23e9032479c7337af40a9b812b77b9117aa0170",
+  "source_date": "2026-10-19",
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "C588EDB673D3963D871F5AF2775AF34C77D30A2BB9E912F9F1A1B4E49BA42331",
+      "bytes": 2325107,
+      "role": "production"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "7E3E5D7CA12EDD4520BC23A783D32855F2AC044B8E8630E7143DD23E6F55C287",
+      "bytes": 94674,
+      "role": "production"
+    },
+    {
+      "path": "src/native_vm_existing_promise_settlement_test.zig",
+      "sha256": "DC8C2CC45D4BEC24C08FF04F5606C704D9B017A0F8F88D5B20AD9997F19AFC08",
+      "bytes": 29699,
+      "role": "authored_control_root"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "118EADBECBEEE32F225EA7ABC07F1152E29955E96B84BA006E77D425DC9BE745",
+      "bytes": 412443,
+      "role": "six_line_install_only_addition"
+    }
+  ],
+  "base_production": {
+    "c_sha256": "1349A4FE1AF9672EF424E9C00AFECACF27BD8618DDBD3EF7DC2D71FDD9D0599D",
+    "h_sha256": "BB7119FDA8DF226F6C1D31AED9A5A4999C6903980DD4EC64E5C44C594D116A32"
+  },
+  "api": "JSValue JS_PiSettlePromise(JSContext*, JSValueConst borrowed_promise, JSValueConst borrowed_value, bool is_reject)",
+  "declarations": 17,
+  "names": [
+    "VM Promise settlement uses the same existing intrinsic Promise and borrowed result",
+    "VM Promise settlement settled guard observes no value under a failing allocation limit",
+    "VM Promise settlement primitive resolution creates no new resolver allocation",
+    "VM Promise settlement gets then synchronously and invokes it through the actual queued job",
+    "VM Promise settlement uses a genuine input Promise live then override",
+    "VM Promise settlement repeated native calls during adoption differ from the settled guard",
+    "VM Promise settlement extraction preserves original resolving function one-shot latch",
+    "VM Promise settlement self resolution rejects the same Promise with actual TypeError",
+    "VM Promise settlement ordinary then getter throw rejects while noncallable then fulfills",
+    "VM Promise settlement returned flagged Error DATA remains a normal value or rejection",
+    "VM Promise settlement accepts a genuine foreign realm Promise and rejects proxy brands intrinsically",
+    "VM Promise settlement prior pending entry wins before brand and then with borrowed inputs intact",
+    "VM Promise settlement actual uncatchable then getter escapes without guest catch or later work",
+    "VM Promise settlement actual thenable job allocation failure leaves pending and permits retry",
+    "VM Promise settlement reaction allocation failure preserves already published state and current error",
+    "VM Promise settlement borrows resolution and selected method through caller-owned retirement",
+    "VM Promise settlement actual queued job retains operands across caller release and live GC"
+  ],
+  "build": {
+    "target": "build-native-vm-existing-promise-settlement",
+    "filter": "VM Promise settlement",
+    "run_action": false,
+    "patch_sha256": "63EEE96531F501722E4A380263C7C0C74A0EA3DC952E8E5E03BA8B2277B43ED1",
+    "added_lines": 6
+  },
+  "proof": {
+    "source_design_sha256": "1E71DB7E10510A2E87174DA42F7B73E0CB3136CDE06FEA8DA3CF27FEF52B050F",
+    "production_delta_sha256": "32B4A850AB9DFBAC44BC51D11ED409FF0A9273D12126BFB0A13C0290A4CE484D",
+    "control_successor_sha256": "7B2427F31D7CA3FA4FE357849459A871890BAB9A7DDC3FBB990FBB23164E296D",
+    "readme_sha256": "85DA6A7E31301CFAB5FBA1CA84A6FC70BE5ECBBD5A9AA3C2BB4C6A40C9B3985B"
+  },
+  "peers": [
+    {
+      "owner": "sdk_owners",
+      "scope": "C/H and actual V8/VM tail extraction",
+      "pin": "C588EDB6/H7E3E5D7C",
+      "status": "closed_source_only"
+    },
+    {
+      "owner": "sdk_owners",
+      "scope": "declarations 1–11 and Capability/functional helpers",
+      "pin": "8FD5B742, unchanged in DC8C2CC4",
+      "status": "closed_source_only"
+    },
+    {
+      "owner": "modules_io",
+      "scope": "Fixture/Probe/callbacks and declarations 12–17, including exact own-data successor",
+      "pin": "DC8C2CC4",
+      "status": "closed_source_only"
+    },
+    {
+      "owner": "sdk_owners",
+      "scope": "six-line install-only build seam",
+      "pin": "build-intake.patch63EEE965",
+      "status": "closed_source_only"
+    }
+  ],
+  "execution": {
+    "compiled": false,
+    "metadata_queried": false,
+    "runtime_executed": false,
+    "source_programs_executed": false,
+    "native_grant": false
+  },
+  "limitations": [
+    "Borrowed operands must belong to the caller's runtime and stay owned through its completion boundary.",
+    "Raw native entry preserves only actual current pending events; returned flagged values remain DATA.",
+    "Full Node FSReqPromise/AsyncWrap assembly is a separate SDK owner.",
+    "No changed promise reaction, hook, resolver latch or job algorithm is claimed."
+  ],
+  "authorities": [
+    {
+      "path": "authority/v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+    },
+    {
+      "path": "authority/v8-objects.v24.13.cc",
+      "bytes": 272859,
+      "sha256": "81E1D4EDFCE90BC1409DDF1B16966F2931E8DC947BF7429DFED6959708211BFC"
+    },
+    {
+      "path": "authority/V8-LICENSE",
+      "bytes": 3093,
+      "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509"
+    }
+  ]
+}

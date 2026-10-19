@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "status": "source_only_exact_causal_observation_successor",
+  "previous_sha256": "8FD5B742EA9226E03723AC00EB8F685C7CEC55B6778BD919318A4DD1321EBE97",
+  "current_sha256": "DC8C2CC45D4BEC24C08FF04F5606C704D9B017A0F8F88D5B20AD9997F19AFC08",
+  "path": "src/native_vm_existing_promise_settlement_test.zig",
+  "added_helper": "    fn ownNumber(self: *Fixture, record: c.JSValue, key: [*:0]const u8, expected: i32) !void {\n        const value = c.JS_GetPropertyStr(self.context.?, record, key);\n        defer c.JS_FreeValue(self.context.?, value);\n        try std.testing.expect(c.JS_IsNumber(value));\n        var number_value: i32 = 0;\n        try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt32(self.context.?, &number_value, value));\n        try std.testing.expectEqual(expected, number_value);\n    }\n",
+  "before": "    try std.testing.expectEqual(@as(i32, 1), try f.number(\"progress.gets\"));",
+  "after": "    try f.ownNumber(progress, \"gets\", 1);",
+  "reason": "Declaration 13 observes the retained original own numeric property after actual uncatchable failure, without evaluating another guest program. All other declarations are unchanged.",
+  "peer": "Modules source-only exact reversal and assigned Fixture/Probe/callbacks/declarations 12–17 closed on DC8C2CC4; no execution."
+}

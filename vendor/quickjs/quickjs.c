@@ -59564,6 +59564,60 @@ static void js_promise_resolve_function_mark(JSRuntime *rt, JSValueConst val,
     }
 }
 
+/* Shared value-resolution tail. Resolving functions keep their own one-shot
+   latch at the call site; direct native settlement guards the Promise state. */
+static JSValue js_promise_resolve_value(JSContext *ctx,
+                                         JSValueConst promise,
+                                         JSValueConst resolution,
+                                         bool is_reject)
+{
+    JSValueConst args[3];
+    JSValue then;
+
+    if (is_reject || !JS_IsObject(resolution)) {
+        goto done;
+    } else if (js_same_value(ctx, resolution, promise)) {
+        JS_ThrowTypeError(ctx, "promise self resolution");
+        goto fail_reject;
+    }
+    then = JS_GetProperty(ctx, resolution, JS_ATOM_then);
+    if (JS_HasException(ctx) &&
+        JS_IsUncatchableError(ctx->rt->current_exception)) {
+        JSValue error = JS_GetException(ctx);
+        JS_FreeValue(ctx, then);
+        return JS_Throw(ctx, error);
+    }
+    if (JS_IsException(then)) {
+        JSValue error;
+    fail_reject:
+        error = JS_GetException(ctx);
+        fulfill_or_reject_promise(ctx, promise, error, true);
+        if (JS_HasException(ctx) &&
+            JS_IsUncatchableError(ctx->rt->current_exception)) {
+            JSValue fatal = JS_GetException(ctx);
+            JS_FreeValue(ctx, error);
+            return JS_Throw(ctx, fatal);
+        }
+        JS_FreeValue(ctx, error);
+    } else if (!JS_IsFunction(ctx, then)) {
+        JS_FreeValue(ctx, then);
+    done:
+        fulfill_or_reject_promise(ctx, promise, resolution, is_reject);
+        if (JS_HasException(ctx) &&
+            JS_IsUncatchableError(ctx->rt->current_exception)) {
+            JSValue fatal = JS_GetException(ctx);
+            return JS_Throw(ctx, fatal);
+        }
+    } else {
+        args[0] = promise;
+        args[1] = resolution;
+        args[2] = then;
+        JS_EnqueueJob(ctx, js_promise_resolve_thenable_job, 3, args);
+        JS_FreeValue(ctx, then);
+    }
+    return JS_UNDEFINED;
+}
+
 static JSValue js_promise_resolve_function_call(JSContext *ctx,
                                                 JSValueConst func_obj,
                                                 JSValueConst this_val,
@@ -59572,9 +59626,7 @@ static JSValue js_promise_resolve_function_call(JSContext *ctx,
 {
     JSObject *p = JS_VALUE_GET_OBJ(func_obj);
     JSPromiseFunctionData *s;
-    JSValueConst args[3];
     JSValueConst resolution;
-    JSValue then;
     bool is_reject;
 
     s = p->u.promise_function_data;
@@ -59593,48 +59645,32 @@ static JSValue js_promise_resolve_function_call(JSContext *ctx,
         printf("\n");
     }
 #endif
-    if (is_reject || !JS_IsObject(resolution)) {
-        goto done;
-    } else if (js_same_value(ctx, resolution, s->promise)) {
-        JS_ThrowTypeError(ctx, "promise self resolution");
-        goto fail_reject;
-    }
-    then = JS_GetProperty(ctx, resolution, JS_ATOM_then);
-    if (JS_HasException(ctx) &&
-        JS_IsUncatchableError(ctx->rt->current_exception)) {
-        JSValue error = JS_GetException(ctx);
-        JS_FreeValue(ctx, then);
-        return JS_Throw(ctx, error);
-    }
-    if (JS_IsException(then)) {
-        JSValue error;
-    fail_reject:
-        error = JS_GetException(ctx);
-        fulfill_or_reject_promise(ctx, s->promise, error, true);
-        if (JS_HasException(ctx) &&
-            JS_IsUncatchableError(ctx->rt->current_exception)) {
-            JSValue fatal = JS_GetException(ctx);
-            JS_FreeValue(ctx, error);
-            return JS_Throw(ctx, fatal);
-        }
-        JS_FreeValue(ctx, error);
-    } else if (!JS_IsFunction(ctx, then)) {
-        JS_FreeValue(ctx, then);
-    done:
-        fulfill_or_reject_promise(ctx, s->promise, resolution, is_reject);
-        if (JS_HasException(ctx) &&
-            JS_IsUncatchableError(ctx->rt->current_exception)) {
-            JSValue fatal = JS_GetException(ctx);
-            return JS_Throw(ctx, fatal);
-        }
-    } else {
-        args[0] = s->promise;
-        args[1] = resolution;
-        args[2] = then;
-        JS_EnqueueJob(ctx, js_promise_resolve_thenable_job, 3, args);
-        JS_FreeValue(ctx, then);
-    }
-    return JS_UNDEFINED;
+    return js_promise_resolve_value(ctx, s->promise, resolution, is_reject);
+}
+
+/* Native Promise::Resolver semantics: an already settled genuine Promise
+   succeeds without observing value; an adopting but still pending Promise is
+   eligible for another direct native call. No resolving-function latch or
+   temporary wrapper is allocated by this entry. */
+JSValue JS_PiSettlePromise(JSContext *ctx, JSValueConst promise,
+                           JSValueConst value, bool is_reject)
+{
+    JSPromiseData *s;
+    JSValue result;
+
+    /* Entry policy for borrowed native operations: preserve an existing
+       pending reason before inspecting the receiver or changing its state. */
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
+    s = JS_GetOpaque(promise, JS_CLASS_PROMISE);
+    if (!s)
+        return JS_ThrowTypeError(ctx, "not a promise");
+    if (s->promise_state != JS_PROMISE_PENDING)
+        return JS_UNDEFINED;
+    result = js_promise_resolve_value(ctx, promise, value, is_reject);
+    /* The existing tail returns only undefined or exception. Report a real
+       pending event (including failed job allocation) without consuming it. */
+    return JS_HasException(ctx) ? JS_EXCEPTION : result;
 }
 
 static void js_promise_finalizer(JSRuntime *rt, JSValueConst val)
