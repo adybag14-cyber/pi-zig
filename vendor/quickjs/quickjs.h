@@ -1602,6 +1602,21 @@ JS_EXTERN void JS_SetExecutionContext(JSRuntime *rt, JSValueConst value);
 JS_EXTERN void JS_SetExecutionContextHook(JSRuntime *rt,
                                          JSExecutionContextHook *hook, void *opaque);
 
+/* Distinct V8/Node continuation-preserved data, never the application
+   execution_context capability token. Get returns one owned value. Set borrows
+   value, duplicates/publishes it before old-root retirement, performs no guest
+   property operation, and preserves the first actual pending/fatal completion.
+   These native operations remain available during pending/disallowed cleanup.
+   A nonempty Node checkpoint saves the outer value, sets undefined once, runs
+   jobs, then restores before completed callbacks. Individual successful jobs
+   clear the slot; failed jobs retain it; an undefined job capture skips setup.
+   Empty/disallowed JS_ExecutePendingJob calls do not touch the slot or queue.
+   Runtime/job references are counted external GC roots; Promise reaction
+   references are marked as part of the actual Promise graph. */
+JS_EXTERN JSValue JS_PiGetContinuationPreservedEmbedderData(JSRuntime *rt);
+JS_EXTERN void JS_PiSetContinuationPreservedEmbedderData(JSRuntime *rt,
+                                                         JSValueConst value);
+
 /* Host-only equivalent of a saved V8 THROW_ON_FAILURE execution scope.
    Exchange returns the prior flag and cannot allocate, call guest code or
    alter pending state; restore it unconditionally, including after failure.

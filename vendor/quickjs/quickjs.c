@@ -390,6 +390,8 @@ struct JSRuntime {
     JSPromiseHook *promise_hook;
     void *promise_hook_opaque;
     JSValue execution_context;
+    /* V8/Node continuation data is independent of application capabilities. */
+    JSValue continuation_preserved_embedder_data;
     /* Distinct from embedder capability/continuation contexts. */
     bool pi_javascript_execution_allowed;
     JSValue pi_javascript_execution_error; /* owned preallocated ordinary string */
@@ -1153,6 +1155,7 @@ typedef struct JSJobEntry {
     JSContext *ctx;
     JSJobFunc *job_func;
     JSValue execution_context;
+    JSValue continuation_preserved_embedder_data;
     int argc;
     JSValue argv[];
 } JSJobEntry;
@@ -2490,6 +2493,7 @@ JSRuntime *JS_NewRuntime2(const JSMallocFunctions *mf, void *opaque)
     if (!rt)
         return NULL;
     rt->execution_context = JS_UNDEFINED;
+    rt->continuation_preserved_embedder_data = JS_UNDEFINED;
     rt->pi_javascript_execution_allowed = true;
     rt->pi_javascript_execution_error = JS_UNDEFINED;
     rt->mf = *mf;
@@ -2703,12 +2707,56 @@ int JS_EnqueueJob(JSContext *ctx, JSJobFunc *job_func,
     e->ctx = ctx;
     e->job_func = job_func;
     e->execution_context = js_dup(rt->execution_context);
+    e->continuation_preserved_embedder_data =
+        js_dup(rt->continuation_preserved_embedder_data);
     e->argc = argc;
     for(i = 0; i < argc; i++) {
         e->argv[i] = js_dup(argv[i]);
     }
     list_add_tail(&e->link, &rt->job_list);
     return 0;
+}
+
+/* Only actual pending reasons participate in native root retirement. This
+   runtime-only counterpart does not inspect a retained DATA value's flags and
+   does not need a live JSContext during scope restoration or runtime teardown. */
+static void js_pi_continuation_take_pending_rt(JSRuntime *rt,
+                                              JSNativeAsyncPending *owned)
+{
+    while (!JS_IsUninitialized(rt->current_exception)) {
+        JSValue next = rt->current_exception;
+        rt->current_exception = JS_UNINITIALIZED;
+        if (!owned->present) {
+            owned->present = true;
+            owned->reason = next;
+        } else if (!JS_IsUncatchableError(owned->reason) &&
+                   JS_IsUncatchableError(next)) {
+            JSValue displaced = owned->reason;
+            owned->reason = next;
+            JS_FreeValueRT(rt, displaced);
+        } else {
+            JS_FreeValueRT(rt, next);
+        }
+    }
+}
+
+JSValue JS_PiGetContinuationPreservedEmbedderData(JSRuntime *rt)
+{
+    return js_dup(rt->continuation_preserved_embedder_data);
+}
+
+void JS_PiSetContinuationPreservedEmbedderData(JSRuntime *rt, JSValueConst value)
+{
+    JSValue previous = rt->continuation_preserved_embedder_data;
+    JSNativeAsyncPending pending = { false, JS_UNDEFINED };
+    /* Publish before retirement; a reentrant native finalizer sees the new
+       value. A repeated assignment of the same object keeps its entitlement. */
+    rt->continuation_preserved_embedder_data = js_dup(value);
+    js_pi_continuation_take_pending_rt(rt, &pending);
+    JS_FreeValueRT(rt, previous);
+    js_pi_continuation_take_pending_rt(rt, &pending);
+    if (pending.present)
+        rt->current_exception = pending.reason;
 }
 
 void JS_SetExecutionContext(JSRuntime *rt, JSValueConst value)
@@ -2732,14 +2780,21 @@ bool JS_PiExchangeJavascriptExecutionAllowed(JSRuntime *rt, bool allowed)
 }
 
 static int js_enqueue_job_context(JSContext *ctx, JSJobFunc *job_func,
-                                  int argc, JSValueConst *argv, JSValueConst execution_context)
+                                  int argc, JSValueConst *argv,
+                                  JSValueConst execution_context,
+                                  JSValueConst continuation_data)
 {
     JSRuntime *rt = ctx->rt;
     JSValue previous = rt->execution_context;
+    JSValue previous_data = rt->continuation_preserved_embedder_data;
     int result;
+    /* Both borrowed selections have a separate existing owner. The previous
+       owned roots stay retained while the actual enqueue allocation runs. */
     rt->execution_context = execution_context;
+    rt->continuation_preserved_embedder_data = continuation_data;
     result = JS_EnqueueJob(ctx, job_func, argc, argv);
     rt->execution_context = previous;
+    rt->continuation_preserved_embedder_data = previous_data;
     return result;
 }
 
@@ -2766,6 +2821,7 @@ int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)
     int i, ret;
     JSExecutionContextHook *context_hook;
     void *context_opaque;
+    JSNativeAsyncPending pending = { false, JS_UNDEFINED };
 
     if (list_empty(&rt->job_list)) {
         *pctx = NULL;
@@ -2789,6 +2845,16 @@ int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)
     e = list_entry(rt->job_list.next, JSJobEntry, link);
     list_del(&e->link);
     ctx = e->ctx;
+    /* V8 SetupContinuationPreservedEmbedderData deliberately skips undefined.
+       A preceding failed task can leave its data for such a following task. */
+    if (!JS_IsUndefined(e->continuation_preserved_embedder_data)) {
+        JS_PiSetContinuationPreservedEmbedderData(
+            rt, e->continuation_preserved_embedder_data);
+        if (JS_HasException(ctx)) {
+            res = JS_EXCEPTION;
+            goto completed;
+        }
+    }
     context_hook = rt->execution_context_hook;
     context_opaque = rt->execution_context_opaque;
     if (context_hook)
@@ -2797,15 +2863,26 @@ int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)
     if (context_hook && context_hook == rt->execution_context_hook &&
         context_opaque == rt->execution_context_opaque)
         context_hook(ctx, false, e->execution_context, context_opaque);
-    JS_FreeValue(ctx, e->execution_context);
+    /* Successful V8 tasks clear the slot; the exception branch deliberately
+       does not. The enclosing Node checkpoint saves/resets/restores its outer
+       value once for the whole nonempty batch, not around each task. */
+    if (!JS_IsException(res) && !JS_HasException(ctx))
+        JS_PiSetContinuationPreservedEmbedderData(rt, JS_UNDEFINED);
+ completed:
+    ret = JS_IsException(res) ? -1 : 1;
+    js_native_async_take_pending(ctx, &pending);
+    js_native_async_release(ctx, e->execution_context, &pending);
+    js_native_async_release(ctx, e->continuation_preserved_embedder_data, &pending);
     for(i = 0; i < e->argc; i++)
-        JS_FreeValue(ctx, e->argv[i]);
-    if (JS_IsException(res))
-        ret = -1;
-    else
-        ret = 1;
-    JS_FreeValue(ctx, res);
+        js_native_async_release(ctx, e->argv[i], &pending);
+    js_native_async_release(ctx, res, &pending);
     js_free(ctx, e);
+    if (pending.present) {
+        /* Restore an already produced exception; do not manufacture a new
+           throw from a retained data root. */
+        rt->current_exception = pending.reason;
+        ret = -1;
+    }
     *pctx = ctx;
     return ret;
 }
@@ -2903,6 +2980,11 @@ void JS_FreeRuntime(JSRuntime *rt)
     rt->in_free = true;
     JS_FreeValueRT(rt, rt->pi_javascript_execution_error);
     rt->pi_javascript_execution_error = JS_UNDEFINED;
+    {
+        JSValue data = rt->continuation_preserved_embedder_data;
+        rt->continuation_preserved_embedder_data = JS_UNDEFINED;
+        JS_FreeValueRT(rt, data);
+    }
     JS_FreeValueRT(rt, rt->execution_context);
     JS_ClearKeptObjects(rt);
     js_free_rt(rt, rt->kept_objects);
@@ -2913,6 +2995,7 @@ void JS_FreeRuntime(JSRuntime *rt)
     list_for_each_safe(el, el1, &rt->job_list) {
         JSJobEntry *e = list_entry(el, JSJobEntry, link);
         JS_FreeValueRT(rt, e->execution_context);
+        JS_FreeValueRT(rt, e->continuation_preserved_embedder_data);
         for(i = 0; i < e->argc; i++)
             JS_FreeValueRT(rt, e->argv[i]);
         js_free_rt(rt, e);
@@ -59321,6 +59404,7 @@ typedef struct JSPromiseReactionData {
     JSValue resolving_funcs[2];
     JSValue handler;
     JSValue execution_context;
+    JSValue continuation_preserved_embedder_data;
 } JSPromiseReactionData;
 
 JSPromiseStateEnum JS_PromiseState(JSContext *ctx, JSValueConst promise)
@@ -59389,6 +59473,16 @@ static void promise_reaction_data_free(JSRuntime *rt,
     JS_FreeValueRT(rt, rd->resolving_funcs[1]);
     JS_FreeValueRT(rt, rd->handler);
     JS_FreeValueRT(rt, rd->execution_context);
+    {
+        JSNativeAsyncPending pending = { false, JS_UNDEFINED };
+        /* The new continuation edge must not displace an actual exception
+           already produced by original reaction-root retirement. */
+        js_pi_continuation_take_pending_rt(rt, &pending);
+        JS_FreeValueRT(rt, rd->continuation_preserved_embedder_data);
+        js_pi_continuation_take_pending_rt(rt, &pending);
+        if (pending.present)
+            rt->current_exception = pending.reason;
+    }
     js_free_rt(rt, rd);
 }
 
@@ -59513,7 +59607,9 @@ static void fulfill_or_reject_promise(JSContext *ctx, JSValueConst promise,
         args[2] = rd->handler;
         args[3] = js_bool(is_reject);
         args[4] = value;
-        js_enqueue_job_context(ctx, promise_reaction_job, 5, args, rd->execution_context);
+        js_enqueue_job_context(ctx, promise_reaction_job, 5, args,
+                               rd->execution_context,
+                               rd->continuation_preserved_embedder_data);
         list_del(&rd->link);
         promise_reaction_data_free(ctx->rt, rd);
     }
@@ -59809,6 +59905,7 @@ static void js_promise_mark(JSRuntime *rt, JSValueConst val,
             JS_MarkValue(rt, rd->resolving_funcs[1], mark_func);
             JS_MarkValue(rt, rd->handler, mark_func);
             JS_MarkValue(rt, rd->execution_context, mark_func);
+            JS_MarkValue(rt, rd->continuation_preserved_embedder_data, mark_func);
         }
     }
     JS_MarkValue(rt, s->promise_result, mark_func);
@@ -60413,6 +60510,8 @@ static __exception int perform_promise_then(JSContext *ctx,
             handler = JS_UNDEFINED;
         rd->handler = js_dup(handler);
         rd->execution_context = js_dup(ctx->rt->execution_context);
+        rd->continuation_preserved_embedder_data =
+            js_dup(ctx->rt->continuation_preserved_embedder_data);
         rd_array[i] = rd;
     }
 
@@ -60429,7 +60528,9 @@ static __exception int perform_promise_then(JSContext *ctx,
         args[2] = rd->handler;
         args[3] = js_bool(i);
         args[4] = s->promise_result;
-        js_enqueue_job_context(ctx, promise_reaction_job, 5, args, rd->execution_context);
+        js_enqueue_job_context(ctx, promise_reaction_job, 5, args,
+                               rd->execution_context,
+                               rd->continuation_preserved_embedder_data);
         for(i = 0; i < 2; i++)
             promise_reaction_data_free(ctx->rt, rd_array[i]);
     }

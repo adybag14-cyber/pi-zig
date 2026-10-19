@@ -1,0 +1,168 @@
+{
+  "status": "source-only actual continuation roots with 23 authored controls; no execution",
+  "basis": {
+    "commit": "fa30a9fc6c63c0d44fbd8b7f513e7e16f2e98c37",
+    "c_sha256": "40F8A35C96D09FFE079285DCB943C3DAC27CD1F8AF3AAF8504EE90E37B675764",
+    "h_sha256": "28C8E5586950D0802A47965B57CF1957E20D24F5BC4B859AEE2F535EF58191C9"
+  },
+  "current": {
+    "c_sha256": "4088C36D2F2536751989858ED245669A7BC7DA47EC9584D7FD11EB7B6863C8F8",
+    "c_bytes": 2334258,
+    "h_sha256": "F1E24220AB9FB33A2667B929E39728E6A96A6268185BF33593DD33B193C0827B",
+    "h_bytes": 96993,
+    "test_sha256": "77CB2D675DB7B82B99795490127409BDB485B27AB0E2A3FE0711D0F2EA0855EC",
+    "test_bytes": 47169,
+    "test_declarations": 23
+  },
+  "c_edits": [
+    {
+      "label": "runtime independent continuation root",
+      "from": "    JSValue execution_context;\n    /* Distinct from embedder capability/continuation contexts. */",
+      "to": "    JSValue execution_context;\n    /* V8/Node continuation data is independent of application capabilities. */\n    JSValue continuation_preserved_embedder_data;\n    /* Distinct from embedder capability/continuation contexts. */",
+      "count": 1
+    },
+    {
+      "label": "job independent captured continuation root",
+      "from": "    JSJobFunc *job_func;\n    JSValue execution_context;\n    int argc;",
+      "to": "    JSJobFunc *job_func;\n    JSValue execution_context;\n    JSValue continuation_preserved_embedder_data;\n    int argc;",
+      "count": 1
+    },
+    {
+      "label": "early runtime continuation initialization",
+      "from": "    rt->execution_context = JS_UNDEFINED;\n    rt->pi_javascript_execution_allowed = true;",
+      "to": "    rt->execution_context = JS_UNDEFINED;\n    rt->continuation_preserved_embedder_data = JS_UNDEFINED;\n    rt->pi_javascript_execution_allowed = true;",
+      "count": 1
+    },
+    {
+      "label": "capture every native job independently",
+      "from": "    e->execution_context = js_dup(rt->execution_context);\n    e->argc = argc;",
+      "to": "    e->execution_context = js_dup(rt->execution_context);\n    e->continuation_preserved_embedder_data =\n        js_dup(rt->continuation_preserved_embedder_data);\n    e->argc = argc;",
+      "count": 1
+    },
+    {
+      "label": "native getter setter and actual pending retirement",
+      "from": "void JS_SetExecutionContext(JSRuntime *rt, JSValueConst value)\n{",
+      "to": "/* Only actual pending reasons participate in native root retirement. This\n   runtime-only counterpart does not inspect a retained DATA value's flags and\n   does not need a live JSContext during scope restoration or runtime teardown. */\nstatic void js_pi_continuation_take_pending_rt(JSRuntime *rt,\n                                              JSNativeAsyncPending *owned)\n{\n    while (!JS_IsUninitialized(rt->current_exception)) {\n        JSValue next = rt->current_exception;\n        rt->current_exception = JS_UNINITIALIZED;\n        if (!owned->present) {\n            owned->present = true;\n            owned->reason = next;\n        } else if (!JS_IsUncatchableError(owned->reason) &&\n                   JS_IsUncatchableError(next)) {\n            JSValue displaced = owned->reason;\n            owned->reason = next;\n            JS_FreeValueRT(rt, displaced);\n        } else {\n            JS_FreeValueRT(rt, next);\n        }\n    }\n}\n\nJSValue JS_PiGetContinuationPreservedEmbedderData(JSRuntime *rt)\n{\n    return js_dup(rt->continuation_preserved_embedder_data);\n}\n\nvoid JS_PiSetContinuationPreservedEmbedderData(JSRuntime *rt, JSValueConst value)\n{\n    JSValue previous = rt->continuation_preserved_embedder_data;\n    JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n    /* Publish before retirement; a reentrant native finalizer sees the new\n       value. A repeated assignment of the same object keeps its entitlement. */\n    rt->continuation_preserved_embedder_data = js_dup(value);\n    js_pi_continuation_take_pending_rt(rt, &pending);\n    JS_FreeValueRT(rt, previous);\n    js_pi_continuation_take_pending_rt(rt, &pending);\n    if (pending.present)\n        rt->current_exception = pending.reason;\n}\n\nvoid JS_SetExecutionContext(JSRuntime *rt, JSValueConst value)\n{",
+      "count": 1
+    },
+    {
+      "label": "reaction enqueue selects both independent contexts",
+      "from": "static int js_enqueue_job_context(JSContext *ctx, JSJobFunc *job_func,\n                                  int argc, JSValueConst *argv, JSValueConst execution_context)\n{\n    JSRuntime *rt = ctx->rt;\n    JSValue previous = rt->execution_context;\n    int result;\n    rt->execution_context = execution_context;\n    result = JS_EnqueueJob(ctx, job_func, argc, argv);\n    rt->execution_context = previous;\n    return result;\n}\n",
+      "to": "static int js_enqueue_job_context(JSContext *ctx, JSJobFunc *job_func,\n                                  int argc, JSValueConst *argv,\n                                  JSValueConst execution_context,\n                                  JSValueConst continuation_data)\n{\n    JSRuntime *rt = ctx->rt;\n    JSValue previous = rt->execution_context;\n    JSValue previous_data = rt->continuation_preserved_embedder_data;\n    int result;\n    /* Both borrowed selections have a separate existing owner. The previous\n       owned roots stay retained while the actual enqueue allocation runs. */\n    rt->execution_context = execution_context;\n    rt->continuation_preserved_embedder_data = continuation_data;\n    result = JS_EnqueueJob(ctx, job_func, argc, argv);\n    rt->execution_context = previous;\n    rt->continuation_preserved_embedder_data = previous_data;\n    return result;\n}\n",
+      "count": 1
+    },
+    {
+      "label": "job pending owner declaration",
+      "from": "    JSExecutionContextHook *context_hook;\n    void *context_opaque;\n\n    if (list_empty(&rt->job_list)) {",
+      "to": "    JSExecutionContextHook *context_hook;\n    void *context_opaque;\n    JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n\n    if (list_empty(&rt->job_list)) {",
+      "count": 1
+    },
+    {
+      "label": "install nonundefined job data before entry",
+      "from": "    ctx = e->ctx;\n    context_hook = rt->execution_context_hook;",
+      "to": "    ctx = e->ctx;\n    /* V8 SetupContinuationPreservedEmbedderData deliberately skips undefined.\n       A preceding failed task can leave its data for such a following task. */\n    if (!JS_IsUndefined(e->continuation_preserved_embedder_data)) {\n        JS_PiSetContinuationPreservedEmbedderData(\n            rt, e->continuation_preserved_embedder_data);\n        if (JS_HasException(ctx)) {\n            res = JS_EXCEPTION;\n            goto completed;\n        }\n    }\n    context_hook = rt->execution_context_hook;",
+      "count": 1
+    },
+    {
+      "label": "per-job normal clear and complete ordered root retirement",
+      "from": "    JS_FreeValue(ctx, e->execution_context);\n    for(i = 0; i < e->argc; i++)\n        JS_FreeValue(ctx, e->argv[i]);\n    if (JS_IsException(res))\n        ret = -1;\n    else\n        ret = 1;\n    JS_FreeValue(ctx, res);\n    js_free(ctx, e);\n    *pctx = ctx;\n    return ret;\n}\n",
+      "to": "    /* Successful V8 tasks clear the slot; the exception branch deliberately\n       does not. The enclosing Node checkpoint saves/resets/restores its outer\n       value once for the whole nonempty batch, not around each task. */\n    if (!JS_IsException(res) && !JS_HasException(ctx))\n        JS_PiSetContinuationPreservedEmbedderData(rt, JS_UNDEFINED);\n completed:\n    ret = JS_IsException(res) ? -1 : 1;\n    js_native_async_take_pending(ctx, &pending);\n    js_native_async_release(ctx, e->execution_context, &pending);\n    js_native_async_release(ctx, e->continuation_preserved_embedder_data, &pending);\n    for(i = 0; i < e->argc; i++)\n        js_native_async_release(ctx, e->argv[i], &pending);\n    js_native_async_release(ctx, res, &pending);\n    js_free(ctx, e);\n    if (pending.present) {\n        /* Restore an already produced exception; do not manufacture a new\n           throw from a retained data root. */\n        rt->current_exception = pending.reason;\n        ret = -1;\n    }\n    *pctx = ctx;\n    return ret;\n}\n",
+      "count": 1
+    },
+    {
+      "label": "runtime clears continuation before retiring it",
+      "from": "    rt->pi_javascript_execution_error = JS_UNDEFINED;\n    JS_FreeValueRT(rt, rt->execution_context);",
+      "to": "    rt->pi_javascript_execution_error = JS_UNDEFINED;\n    {\n        JSValue data = rt->continuation_preserved_embedder_data;\n        rt->continuation_preserved_embedder_data = JS_UNDEFINED;\n        JS_FreeValueRT(rt, data);\n    }\n    JS_FreeValueRT(rt, rt->execution_context);",
+      "count": 1
+    },
+    {
+      "label": "runtime queued capture release",
+      "from": "        JS_FreeValueRT(rt, e->execution_context);\n        for(i = 0; i < e->argc; i++)",
+      "to": "        JS_FreeValueRT(rt, e->execution_context);\n        JS_FreeValueRT(rt, e->continuation_preserved_embedder_data);\n        for(i = 0; i < e->argc; i++)",
+      "count": 1
+    },
+    {
+      "label": "promise reaction independent captured continuation",
+      "from": "    JSValue handler;\n    JSValue execution_context;\n} JSPromiseReactionData;",
+      "to": "    JSValue handler;\n    JSValue execution_context;\n    JSValue continuation_preserved_embedder_data;\n} JSPromiseReactionData;",
+      "count": 1
+    },
+    {
+      "label": "reaction retirement includes its continuation root",
+      "from": "    JS_FreeValueRT(rt, rd->execution_context);\n    js_free_rt(rt, rd);",
+      "to": "    JS_FreeValueRT(rt, rd->execution_context);\n    JS_FreeValueRT(rt, rd->continuation_preserved_embedder_data);\n    js_free_rt(rt, rd);",
+      "count": 1
+    },
+    {
+      "label": "reaction native GC graph edge",
+      "from": "            JS_MarkValue(rt, rd->execution_context, mark_func);\n",
+      "to": "            JS_MarkValue(rt, rd->execution_context, mark_func);\n            JS_MarkValue(rt, rd->continuation_preserved_embedder_data, mark_func);\n",
+      "count": 1
+    },
+    {
+      "label": "reaction captures current data after original roots",
+      "from": "        rd->execution_context = js_dup(ctx->rt->execution_context);\n        rd_array[i] = rd;",
+      "to": "        rd->execution_context = js_dup(ctx->rt->execution_context);\n        rd->continuation_preserved_embedder_data =\n            js_dup(ctx->rt->continuation_preserved_embedder_data);\n        rd_array[i] = rd;",
+      "count": 1
+    },
+    {
+      "label": "pending and settled reactions enqueue their own captured data",
+      "from": "        js_enqueue_job_context(ctx, promise_reaction_job, 5, args, rd->execution_context);",
+      "to": "        js_enqueue_job_context(ctx, promise_reaction_job, 5, args,\n                               rd->execution_context,\n                               rd->continuation_preserved_embedder_data);",
+      "count": 2
+    },
+    {
+      "label": "preserve actual pending through added reaction-root retirement",
+      "from": "    JS_FreeValueRT(rt, rd->execution_context);\n    JS_FreeValueRT(rt, rd->continuation_preserved_embedder_data);\n    js_free_rt(rt, rd);",
+      "to": "    JS_FreeValueRT(rt, rd->execution_context);\n    {\n        JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n        /* The new continuation edge must not displace an actual exception\n           already produced by original reaction-root retirement. */\n        js_pi_continuation_take_pending_rt(rt, &pending);\n        JS_FreeValueRT(rt, rd->continuation_preserved_embedder_data);\n        js_pi_continuation_take_pending_rt(rt, &pending);\n        if (pending.present)\n            rt->current_exception = pending.reason;\n    }\n    js_free_rt(rt, rd);",
+      "count": 1
+    }
+  ],
+  "header_addition": "/* Distinct V8/Node continuation-preserved data, never the application\n   execution_context capability token. Get returns one owned value. Set borrows\n   value, duplicates/publishes it before old-root retirement, performs no guest\n   property operation, and preserves the first actual pending/fatal completion.\n   These native operations remain available during pending/disallowed cleanup.\n   A nonempty Node checkpoint saves the outer value, sets undefined once, runs\n   jobs, then restores before completed callbacks. Individual successful jobs\n   clear the slot; failed jobs retain it; an undefined job capture skips setup.\n   Empty/disallowed JS_ExecutePendingJob calls do not touch the slot or queue.\n   Runtime/job references are counted external GC roots; Promise reaction\n   references are marked as part of the actual Promise graph. */\nJS_EXTERN JSValue JS_PiGetContinuationPreservedEmbedderData(JSRuntime *rt);\nJS_EXTERN void JS_PiSetContinuationPreservedEmbedderData(JSRuntime *rt,\n                                                         JSValueConst value);\n\n",
+  "reversal": "All sixteen original replacements plus the one bounded reaction-retirement successor reverse in reverse order to the complete prior C; removal of the header addition reverses the complete prior H. The two original reaction enqueue sites are one explicitly counted replacement.",
+  "original_authority": {
+    "node_revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+    "promise_abstract": "B4F54F5DBF58044202D53FA4D8C52A79ED6359D1F813BC7A297CCEB5CD0ED580",
+    "microtask_generator": "DB93208AE2A372DA671F315875B6809BD21BE536B5F14FBDBCB327E93E6372A0",
+    "promise_misc": "6108DCD8D11928A8A41EB32BB95C2004E4CC342945FEB4B4F9D7A5701ECB66E0",
+    "factory": "895D8A6E8BEDE5FF80EA97DE37F765EE54F13D20E449968841C288596B851FC6",
+    "checkpoint": "10755841F920DABD0B4174B60F14B17DC30E25EFB216B3B9B7EB0A025DA44209",
+    "exception_proof": "CD1BDFF010CA9E6782F5829D955458BB1ECDF468D92B87939F32C36B7159BBD7"
+  },
+  "ownership_contract": [
+    "Get returns one owned root; Set borrows and publishes its duplicate before prior-root retirement.",
+    "Only actual pending reasons participate in the native root-retirement reducer; a flagged continuation DATA value does not create an event.",
+    "Runtime and native job roots are externally counted references in the existing QuickJS cycle collector; the actual Promise reaction gc_mark includes its new edge.",
+    "Existing capability root captures and context-hook code remain in place; continuation data is a distinct field.",
+    "No outer value is restored per job. Root's actual nonempty checkpoint performs one save/reset and restores before completed callbacks; empty/disallowed C job calls do not touch the slot.",
+    "Successful tasks clear; failed tasks retain; undefined captures skip setup. Ordinary handler rejection contained by the real Promise reaction still completes its task normally.",
+    "Existing job root order remains capability, then new continuation capture, original argv in order, and returned result. Actual pending is retained across those releases.",
+    "This slot unit does not itself implement Node exception reporting, termination queue clearing, checkpoint completion callbacks or the async_context_frame option gate; those remain the actual Environment caller boundary."
+  ],
+  "offsets": [
+    {
+      "symbol": "JS_PiGetContinuationPreservedEmbedderData",
+      "byte_offset": 105978
+    },
+    {
+      "symbol": "JS_PiSetContinuationPreservedEmbedderData",
+      "byte_offset": 106106
+    },
+    {
+      "symbol": "static int js_enqueue_job_context",
+      "byte_offset": 107324
+    },
+    {
+      "symbol": "int JS_ExecutePendingJob",
+      "byte_offset": 108611
+    },
+    {
+      "symbol": "static __exception int perform_promise_then",
+      "byte_offset": 2028967
+    },
+    {
+      "symbol": "static void promise_reaction_data_free",
+      "byte_offset": 1992617
+    }
+  ]
+}

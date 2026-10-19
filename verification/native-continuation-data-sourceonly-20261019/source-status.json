@@ -1,0 +1,100 @@
+{
+  "status": "source-only complete finite source/control review; no compilation, discovered metadata or execution",
+  "basis": {
+    "parent_commit": "e363d8d682935380549055bb472d5fd0365e2514",
+    "c_and_h_source_basis_commit": "fa30a9fc6c63c0d44fbd8b7f513e7e16f2e98c37",
+    "c_sha256": "40F8A35C96D09FFE079285DCB943C3DAC27CD1F8AF3AAF8504EE90E37B675764",
+    "h_sha256": "28C8E5586950D0802A47965B57CF1957E20D24F5BC4B859AEE2F535EF58191C9"
+  },
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2334258,
+      "sha256": "4088C36D2F2536751989858ED245669A7BC7DA47EC9584D7FD11EB7B6863C8F8"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 96993,
+      "sha256": "F1E24220AB9FB33A2667B929E39728E6A96A6268185BF33593DD33B193C0827B"
+    },
+    {
+      "path": "src/native_vm_continuation_data_test.zig",
+      "bytes": 47169,
+      "sha256": "77CB2D675DB7B82B99795490127409BDB485B27AB0E2A3FE0711D0F2EA0855EC"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 413549,
+      "sha256": "D27771F011176817F263CC41BA5E28AC5B4D7C61A5FC43F42689AF6B160B7DC3"
+    }
+  ],
+  "build": {
+    "target": "build-native-vm-continuation-data",
+    "filter": "VM continuation",
+    "install_only": true,
+    "added_lines": 6,
+    "patch_sha256": "68E7CD5F8C6A0AB2576417A14388A6601B63A72F341506434A5B9149B9BB110E"
+  },
+  "declarations": [
+    "VM continuation native get and set preserve arbitrary identity across real contexts without observation",
+    "VM continuation publication precedes old finalization and the owned getter is an independent root",
+    "VM continuation runtime root keeps a real cyclic graph live until clearing and collection",
+    "VM continuation native restoration preserves ordinary or fatal pending and flagged stored DATA",
+    "VM continuation old-root cleanup reduces actual pending while preserving the published replacement",
+    "VM continuation native jobs capture enqueue data and a nonempty batch restores its outer root",
+    "VM continuation failed task data reaches an undefined-capture successor until a successful task clears it",
+    "VM continuation a later explicit capture replaces failed data and reporting may select a new value",
+    "VM continuation pending Promise reactions capture registration rather than resolution context",
+    "VM continuation already settled Promise reactions also retain registration context",
+    "VM continuation thenable job captures after the live then getter while reactions keep their own registration",
+    "VM continuation actual Source Await captures again after a resumed body changes current data",
+    "VM continuation genuine native AsyncFunction Await uses the same independent registration root",
+    "VM continuation job and Promise captures leave application capability tokens and hooks independent",
+    "VM continuation disallowed checkpoints retain independent job roots through GC and make no progress",
+    "VM continuation empty checkpoints neither replace current data nor acquire an extra root",
+    "VM continuation failed real enqueue allocation leaves borrowed data capability and arguments unretained",
+    "VM continuation Promise reaction data is a real GC edge in both reachable and unreachable cycles",
+    "VM continuation runtime teardown releases current and unexecuted queued native roots exactly once",
+    "VM continuation job and batch cleanup retain the first actual fatal and release every independent owner",
+    "VM continuation returned flagged DATA and contained ordinary Promise rejection complete tasks normally",
+    "VM continuation setup retirement fatal stops the real job and hooks while consuming queued owners",
+    "VM continuation reaction retirement preserves earlier fatal when actual enqueue allocation fails"
+  ],
+  "proof": {
+    "source_design": "C457D393BD295C1DD7599FF605B7DD92A34434C428B7143CAA9500B4586772D5",
+    "exact_production_delta": "906CDB340D4044A7F2E65FB830D54B567AE9E27995DFDE1CB0100FAF927FBFB6",
+    "reaction_retirement_successor": "0135B56E87403B4FB75855ABE00203B0DD8F0A3A417AA31AEBF396ACD24F55C8",
+    "source_acquisition": "A4B0593EF0DC6B9F910C6D89B96BD092B395D37A8D9B057FA472ED9576287BC8",
+    "readme_sha256": "D2AE2DD56BB21FBFC8B2371F01D09B6A723EBA3E78C7168D323804D2D37A1AF5",
+    "reversal": "Seventeen exact C replacements reverse in reverse order to the complete prior C; header removal reproduces the complete prior H."
+  },
+  "peers": {
+    "sdk": {
+      "production": "Closed on 4088C36D/F1E24220: Get/Set actual-pending owner, Promise registration and thenable capture/mark, and reaction-retirement correction.",
+      "controls": "Closed on 77CB2D67: declarations 1-14 and 23 with assigned nativeAsync/contextHook/functional helpers. Real enqueue failure after settlement preserves capability B1 through continuation B2."
+    },
+    "modules": {
+      "production": "Closed on D5881518 predecessor/59B0 packet: independent enqueue captures, setup/success-clear/failure-retain, actual job cleanup and runtime queued roots. The later reaction correction does not alter this slice.",
+      "controls": "Closed on 77CB2D67: Fixture/Probe/Batch and declarations 15-22.",
+      "build": "Closed on 68E7CD5F: exactly six install-only lines using the shared QuickJS dependency."
+    }
+  },
+  "preserved_dependency": {
+    "path": "src/extensions/native_async_scope.zig",
+    "sha256": "5D8231C7F011954165F463B73300FDD252296B4AB8DABC1F2154052F7F845AF9",
+    "scope": "Existing application capability execution_context/hook owner unchanged."
+  },
+  "scope_limits": [
+    "No actual Node Environment/callback-scope publication in this unit.",
+    "No Node async_context_frame option gate, exception reporter, completed-callback list, or termination queue clearing added by the per-job core.",
+    "No per-job outer restore; it would erase the original failed-task/undefined-successor behavior.",
+    "No JavaScript source is evaluated on worker threads or used to emulate the native root.",
+    "Raw-runtime controls distinguish stored marked DATA from actual JS_Throw events; they do not claim an Engine allocation-generation producer where none is used."
+  ],
+  "source_checks": {
+    "complete_C_H_reversal": "passed against DisallowJS C40F8A35C/H28C8E558",
+    "staged_path_review": "exact four production/control/build paths plus this unit's authority/receipts; unrelated drafts excluded",
+    "generic_diff_check": "only the original separator blank line at the end of the exact Node MIT-license prefix is reported; preserved unchanged as original authority",
+    "executable_source_and_other_receipts_diff_check": "passed; git diff --cached --check with only the unchanged original Node MIT-prefix file excluded"
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "status": "Source-only implementation and authored controls; no compilation, discovered metadata, runtime or public Node Environment qualification.",
+  "authority_revision": "Node v24.13 def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "operation_proof": [
+    {
+      "source": "../native-existing-promise-settlement-sourceonly-20261019/authority/v8-api.v24.13.cc",
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "character_offset": 406458,
+      "body": "Local<Value> Isolate::GetContinuationPreservedEmbedderData() {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n  return ToApiHandle<Object>(i::direct_handle(\n      i_isolate->isolate_data()->continuation_preserved_embedder_data(),\n      i_isolate));\n#else   // V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n  return v8::Undefined(reinterpret_cast<v8::Isolate*>(i_isolate));\n#endif  // V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n}\n\nvoid Isolate::SetContinuationPreservedEmbedderData(Local<Value> data) {\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  if (data.IsEmpty())\n    data = v8::Undefined(reinterpret_cast<v8::Isolate*>(this));\n  i_isolate->isolate_data()->set_continuation_preserved_embedder_data(\n      *Utils::OpenDirectHandle(*data));\n#endif  // V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n}\n",
+      "finding": "The isolate has a distinct continuation slot; get exposes the actual value and set directly selects it, normalizing an empty V8 local to undefined."
+    },
+    {
+      "source": "authority/src__builtins__promise-misc.tq",
+      "symbols": [
+        "NewPromiseReaction",
+        "NewPromiseFulfillReactionJobTask",
+        "NewPromiseRejectReactionJobTask",
+        "NewPromiseResolveThenableJobTask"
+      ],
+      "finding": "Reaction construction stores the current continuation data. The thenable job reads it when that job is constructed, after the live then getter in the resolving operation."
+    },
+    {
+      "source": "authority/src__builtins__promise-abstract-operations.tq",
+      "symbols": [
+        "PerformPromiseThenImpl",
+        "MorphAndEnqueuePromiseReaction"
+      ],
+      "finding": "Pending and already-settled registration both capture registration data; a later settlement morphs/enqueues the saved reaction rather than taking settlement-time data."
+    },
+    {
+      "source": "authority/src__heap__factory.cc",
+      "symbols": [
+        "NewCallableTask",
+        "NewCallbackTask"
+      ],
+      "finding": "Both actual JavaScript callable microtasks and native callback microtasks capture the current continuation value."
+    },
+    {
+      "source": "authority/src__builtins__builtins-microtask-queue-gen.cc",
+      "symbols": [
+        "SetupContinuationPreservedEmbedderData",
+        "ClearContinuationPreservedEmbedderData",
+        "RunSingleMicrotask"
+      ],
+      "finding": "Setup skips undefined capture. Normal task paths clear the current slot; the exception path reports without the normal clear."
+    },
+    {
+      "source": "authority/microtask-exception-continuation-proof.json",
+      "sha256": "CD1BDFF010CA9E6782F5829D955458BB1ECDF468D92B87939F32C36B7159BBD7",
+      "finding": "The actual report runtime, message handlers and builtin outer loop contain no implicit continuation reset. A failed task's value persists into a following undefined-capture task unless the native listener explicitly changes it."
+    },
+    {
+      "source": "../native-disallow-javascript-sourceonly-20261019/authority/src__execution__microtask-queue.cc",
+      "sha256": "10755841F920DABD0B4174B60F14B17DC30E25EFB216B3B9B7EB0A025DA44209",
+      "finding": "The whole nonempty checkpoint saves current data, installs undefined, runs tasks, and restores the saved value before completed callbacks. Empty checkpoints skip the data exchange. Actual termination restores before clearing the queue."
+    },
+    {
+      "source": "authority/src_async_context_frame.cc.txt",
+      "sha256": "962A30DE672FC9C644D6A3EC6DD0E8FE1E2F49AB370FFBA862768691294C07A9",
+      "finding": "Node current/set/exchange and Scope use this distinct V8 slot; the Node option gate belongs to Node set, not the VM getter/setter."
+    }
+  ],
+  "native_mapping": {
+    "runtime": "One independent external counted root, initialized before any possible runtime failure cleanup, cleared before retirement.",
+    "get": "JS_PiGetContinuationPreservedEmbedderData(JSRuntime*) returns one owned JSValue; no guest observation or allocation.",
+    "set": "JS_PiSetContinuationPreservedEmbedderData(JSRuntime*, borrowed JSValue) duplicates and publishes before retiring the original root. Actual pending reasons are escrowed; an earlier actual fatal wins later cleanup. Flags on ordinary stored DATA never manufacture a pending event.",
+    "native_jobs": "JS_EnqueueJob stores an independent owned continuation root. The existing application execution_context capture and hook remain separate.",
+    "promise_reactions": "The actual reaction data has a distinct marked GC edge, captured at registration and transferred to the queued job by the existing private enqueue helper.",
+    "execution": "Only a nonundefined capture installs data before hook/body. Success clears; escaped failure retains. Ordered job cleanup owns actual pending through independent roots. Zero-progress disabled/empty entries do not select or retire data.",
+    "reaction_retirement": "Only the newly added continuation release is bracketed by the runtime pending reducer, protecting an actual reason already produced by older reaction-root cleanup. Old root order and GC queue policy are unchanged.",
+    "batch": "No speculative public batch API was added. A real Node caller composes owned get/set around the whole nonempty checkpoint and restores before completed callbacks. The test Batch adapter demonstrates only this reserved API contract."
+  },
+  "preserved_dependency": {
+    "path": "src/extensions/native_async_scope.zig",
+    "sha256": "5D8231C7F011954165F463B73300FDD252296B4AB8DABC1F2154052F7F845AF9",
+    "claim": "No edits to application capability tokens or their existing JS_SetExecutionContext/Hook propagation."
+  },
+  "limits": [
+    "No actual Node Environment/callback-scope publication in this unit.",
+    "No Node async_context_frame option gate, exception reporter, completed-callback list, or termination queue clearing added by the per-job core.",
+    "No per-job outer restore; it would erase the original failed-task/undefined-successor behavior.",
+    "No JavaScript source is evaluated on worker threads or used to emulate the native root.",
+    "Raw-runtime controls distinguish stored marked DATA from actual JS_Throw events; they do not claim an Engine allocation-generation producer where none is used."
+  ]
+}
