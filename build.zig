@@ -1834,6 +1834,19 @@ pub fn build(b: *std.Build) void {
         public_rpc_jsonl_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-public-rpc-jsonl", "Install actual c268 RPC JSONL framing controls without execution").dependOn(&b.addInstallArtifact(public_rpc_jsonl_tests, .{}).step);
+    const ai_oauth_page_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_oauth_page_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"AI OAuth page"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, ai_oauth_page_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, ai_oauth_page_tests.root_module, typescript_parser);
+    linkSqlite(ai_oauth_page_tests.root_module, sqlite_lib_dir, sqlite_library);
+    ai_oauth_page_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        ai_oauth_page_tests.root_module.linkSystemLibrary("advapi32", .{});
+        ai_oauth_page_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-ai-oauth-page", "Install genuine OAuth page controls without execution").dependOn(&b.addInstallArtifact(ai_oauth_page_tests, .{}).step);
     const vm_template_literal_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_template_literal_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"VM template literal"}, .use_llvm = use_llvm,
