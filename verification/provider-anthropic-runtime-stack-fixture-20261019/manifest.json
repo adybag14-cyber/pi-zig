@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "status": "source_only_reviewed_fixture_correction",
+  "observed_utc": "2026-10-19T16:57:37.009943+00:00",
+  "parent": "1c0435db3042760f1511a28c8658e3619487fc36",
+  "failure_evidence": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v10-runtime-diagnostic-v3-20261019-165135\\groups\\native-ai-oauth-anthropic-genuine-af\\runtime.stderr.log",
+    "bytes": 9803,
+    "sha256": "C54CED00C77640DAF09EC0357644E5F0CC185F2F0B86F37B78C44C2F4E575EF0",
+    "completed": 26,
+    "failed_indices": [
+      1,
+      7,
+      8,
+      10,
+      12,
+      17
+    ],
+    "failure": "Source observer setup invokes inherited Error.prototype.stack setter with undefined, before reaching intended body"
+  },
+  "change": "Create the intended own configurable/writable stack data property via Object.defineProperty. Do not invoke the inherited setter. The undefined value and all existing source/native cases/assertions/custom stack getters remain identical.",
+  "peer": {
+    "reviewer": "modules_io",
+    "status": "closed_actual_two_version_single_hunk",
+    "sha256": "A4A361713272C9B3C7497412B774E0D8258349CB779469A4224E809113C3483D"
+  },
+  "source": {
+    "path": "src/extensions/fixtures/oauth-anthropic-observer.mjs",
+    "bytes": 20634,
+    "sha256": "A4A361713272C9B3C7497412B774E0D8258349CB779469A4224E809113C3483D",
+    "before_sha256": "B8C4A5C08257F57FC9A0424FD22DB7A55BD7037B3C3EFE5DAE799605FD03E3E8"
+  },
+  "production_code_changed": false,
+  "tests_removed": 0,
+  "tests_renamed": 0,
+  "native_executed": false,
+  "runtime_qualified": false
+}
