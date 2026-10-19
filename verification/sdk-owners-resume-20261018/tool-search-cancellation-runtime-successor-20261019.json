@@ -1,0 +1,81 @@
+{
+  "unit": "SDK tool-search cancellation checkpoint after query predicate retirement",
+  "status": "Source successor independently reviewed after a preserved actual runtime negative. No successor build or runtime execution.",
+  "parent_commit": "8e8225010c4677abdcc5053eab7da476f81e7a63",
+  "preserved_negative": {
+    "source_head": "e370d88efe6929d33564f3d71d4960d9e1772257",
+    "path": "C:/Users/adyba/pi-zig/evidence/root-v9-runtime-diagnostic-v2-20261019-161023/groups/native-sdk-tool-search-public/runtime.stderr.log",
+    "bytes": 2778,
+    "sha256": "BAC146101380A9C00CA1D26719EE6625A9C59CB085F53A543095AC6B8C513134",
+    "test_index": 23,
+    "test_name": "SDK public tool search trim callee cancellation prevents later guest work",
+    "observation": "verifyActualCancellationNoGuestClose expected record.visits[1] == 0, found 1. The retained observer's live Number getter records this slot.",
+    "cohort": "Root reported all 27 actual tool-search tests completed, with this one failure. The original negative and original source manifest are retained unchanged."
+  },
+  "cause": "The completed emptyQuery expression retires the sole trim callee. Its actual control finalizer sets Engine.cancelled. AF33/checkNativeEntry preserves pending and current fatal events, but deliberately does not poll the atomic cancellation flag. The next live Number getter could therefore execute before a later interrupt.",
+  "correction": "Keep the predicate's immediate Boolean, then call the existing public-values native poll before selecting either the empty-query Error branch or Number validation. The existing poll preserves current pending/fatal events and publishes the canonical uncatchable interrupted event for actual cancellation. No new VM, Scope, ordinary-error, or interrupt-budget policy is introduced.",
+  "production_delta": {
+    "path": "src/extensions/native_sdk_tool_search_execute.zig",
+    "before_sha256": "8558E46EAC776CFC02FC437FACBFD25ED9D7E32A39D02391DA61C02096B084D7",
+    "after_sha256": "784E186B139B754AB75D70D0142880E3E0C968A1305B32B2A2157A501429FC40",
+    "after_bytes": 10549
+  },
+  "unchanged_controls": {
+    "root": "src/native_sdk_tool_search_public_test.zig",
+    "root_sha256": "DEC7E56A37FCF6D715CAE17BE6C019C0C5426AFB205E0EBEBA82B25EF3CDADFD",
+    "observer": "src/extensions/fixtures/sdk-tool-search-observer.mjs",
+    "observer_sha256": "E6F677E753476C8E186F3C8E6B81127CAEBE67DADC0083C3AFC2C2BA49DE0F19",
+    "fixture": "src/extensions/fixtures/sdk-tool-search-c268-source.mjs",
+    "fixture_sha256": "1DF9DE4350595A3B8AC137552C0F63F798EA402FF20070BEC999B6ACB9040484",
+    "declared_count": 26,
+    "declared_tests": [
+      "SDK public tool search actual declarations async methods and extension shapes",
+      "SDK public tool search genuine TypeBox schema and emitted class field order",
+      "SDK public tool search actual tokenizer stop words camel case and stemming",
+      "SDK public tool search live tokenizer literals receiver and callee retirement",
+      "SDK public tool search retained filter callback retires comparison operand",
+      "SDK public tool search actual recursive schema document and namespace",
+      "SDK public tool search repeated document fields and typeof short circuit",
+      "SDK public tool search real schema destructuring and outer IteratorClose",
+      "SDK public tool search genuine BM25 scores unique query terms and stable ties",
+      "SDK public tool search actual idf parameter and counts captures survive return",
+      "SDK public tool search escaped scorer keeps only its original lexical cells",
+      "SDK public tool search searches inactive tools and updates the real active set",
+      "SDK public tool search repeated tools getter and escaped active predicate",
+      "SDK public tool search actual query integer and destructuring validation",
+      "SDK public tool search one boxed binding and immediate integer predicate",
+      "SDK public tool search zero Await keeps original arguments and locals through adoption",
+      "SDK public tool search options use actual parameter ref without unrelated captures",
+      "SDK public tool search intrinsic response templates and abrupt string conversion",
+      "SDK public tool search description call chain retires before template conversion",
+      "SDK public tool search genuine extension registration spread and default factory",
+      "SDK public tool search ordinary private DATA survives all real public routes",
+      "SDK public tool search current fatal prevents later validation tools and catch",
+      "SDK public tool search trim callee retirement fatal prevents later fields",
+      "SDK public tool search trim callee cancellation prevents later guest work",
+      "SDK public tool search actual rank callback fatal prevents later work and catch",
+      "SDK public tool search explicit Error throw normalizes successful flagged DATA"
+    ]
+  },
+  "dependencies": {
+    "guest_boundary": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C",
+    "owned_completion": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+    "native_interrupt": "7501E2EDA766BD831320F2878547C39083DEF09D21124D85E55545C342532B6C"
+  },
+  "build": {
+    "target": "build-native-sdk-tool-search-public",
+    "artifact": "native-sdk-tool-search-public.exe",
+    "root": "src/native_sdk_tool_search_public_test.zig",
+    "filter": "SDK public tool search",
+    "build_delta": "None; all 26 original declarations and target remain unchanged."
+  },
+  "qualification": "Source-only until Root builds and runs the unchanged causal control against this exact successor.",
+  "source_peer": {
+    "reviewer": "/root/vm_foundation",
+    "scope": "Six-line executeAdvance checkpoint after completed emptyQuery retirement",
+    "production_sha256": "784E186B139B754AB75D70D0142880E3E0C968A1305B32B2A2157A501429FC40",
+    "comparison": "Actual completed predicate and branch compared with 8558E46E; v.poll in public values 0B1BB422 and full native interrupt 7501E2ED read.",
+    "result": "No concrete source blocker. Immediate Boolean survives checkpoint; existing pending/current fatal precedence is preserved; actual cancellation is polled before Error or Number work.",
+    "limit": "Source-only; unchanged causal control still requires exact-artifact runtime."
+  }
+}

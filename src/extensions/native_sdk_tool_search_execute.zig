@@ -160,7 +160,12 @@ fn executeAdvance(s: *Scope, args: []const c.JSValue, roots: []const c.JSValue, 
     const frame = try ExecuteFrame.createAsync(s);
     af.replaceState(s.engine, state, v.duplicate(s, frame.owner));
     try h.statement(s.engine, bindInput, .{frame, v.arg(args, 1)});
-    if (h.truthy(s.engine, try h.expression(s.engine, emptyQuery, .{frame.get(.query)})))
+    const empty = h.truthy(s.engine, try h.expression(s.engine, emptyQuery, .{frame.get(.query)}));
+    // The completed predicate can retire a callee that requests cancellation.
+    // Poll that request before either branch enters another guest operation.
+    var steps: usize = 0;
+    try v.poll(s.engine, &steps);
+    if (empty)
         return .{ .thrown = try raise(s, try h.expression(s.engine, newError, .{@as([]const u8, "query must not be empty")})) };
     try frame.copy(.max, if (v.nullish(frame.get(.limit))) v.number(s, 8) else frame.get(.limit));
     if (!h.truthy(s.engine, try h.expression(s.engine, integer, .{frame.get(.max)})) or
