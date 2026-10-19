@@ -4517,6 +4517,21 @@ pub fn build(b: *std.Build) void {
     if (target.result.os.tag == .windows) { sdk_model_registry_public.root_module.linkSystemLibrary("advapi32", .{}); sdk_model_registry_public.root_module.linkSystemLibrary("userenv", .{}); }
     b.step("build-native-sdk-model-registry-public", "Install actual public ModelRegistry controls without execution").dependOn(&b.addInstallArtifact(sdk_model_registry_public, .{ .dest_sub_path = b.fmt("native-sdk-model-registry-public{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    const node_module_search_paths = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_module_search_paths_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native actual Module search paths"},
+    });
+    linkQuickJs(b, node_module_search_paths.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_module_search_paths.root_module, typescript_parser);
+    linkSqlite(node_module_search_paths.root_module, sqlite_lib_dir, sqlite_library);
+    node_module_search_paths.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_module_search_paths.root_module.linkSystemLibrary("advapi32", .{});
+        node_module_search_paths.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-module-search-paths", "Install twenty declared genuine Module search-path controls without running").dependOn(&b.addInstallArtifact(node_module_search_paths, .{ .dest_sub_path = b.fmt("native-node-module-search-paths{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

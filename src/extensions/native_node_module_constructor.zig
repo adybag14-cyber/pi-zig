@@ -138,6 +138,8 @@ fn createBody(s: *Scope, inputs: Inputs) !c.JSValue {
     try define(s, owner, "arrayIndexOf", try method(s, array_prototype, "indexOf"));
     try define(s, owner, "arraySplice", try method(s, array_prototype, "splice"));
     try define(s, owner, "arrayIsArray", try method(s, array, "isArray"));
+    inline for (.{ .{"arraySlice", "slice"}, .{"arrayUnshift", "unshift"}, .{"arrayFilter", "filter"} }) |entry|
+        try define(s, owner, entry[0], try method(s, array_prototype, entry[1]));
     // loader.js keeps this actual Array, including inherited reads after a
     // complete suffix match advances p beyond the twelve own elements.
     const nm_chars = try a.array(s);
@@ -147,6 +149,12 @@ fn createBody(s: *Scope, inputs: Inputs) !c.JSValue {
     const string_prototype = try s.get(try global(s, "String"), "prototype");
     try define(s, owner, "charCodeAt", try method(s, string_prototype, "charCodeAt"));
     try define(s, owner, "stringSlice", try method(s, string_prototype, "slice"));
+    inline for (.{ .{"stringCharAt", "charAt"}, .{"stringStartsWith", "startsWith"}, .{"stringSplit", "split"} }) |entry|
+        try define(s, owner, entry[0], try method(s, string_prototype, entry[1]));
+    try define(s, owner, "boolean", try global(s, "Boolean"));
+    // This is loader.js's own lexical modulePaths, distinct from the public
+    // Module.globalPaths clone produced by _initPaths.
+    try define(s, owner, "modulePaths", try a.array(s));
     const set_constructor = try global(s, "Set");
     const set_prototype = try s.get(set_constructor, "prototype");
     try define(s, owner, "warningCodes", try s.construct(set_constructor, &.{}));
@@ -330,6 +338,16 @@ pub fn setLastParent(engine: *v.em.Engine, constructor: c.JSValue, module: c.JSV
 }
 fn ownerField(s: *Scope, constructor: c.JSValue, name: [*:0]const u8) !c.JSValue {
     return a.duplicate(s.engine, try s.get(try cachedOwner(s.engine, constructor), name));
+}
+/// Owned private lexical record for the genuine loader assembler. Validation
+/// requires the exact already-completed Module; no public property is used to
+/// reconstruct its retained primordials or the modulePaths cell.
+pub fn loaderEnvironment(engine: *v.em.Engine, constructor: c.JSValue) !c.JSValue {
+    return a.expression(engine, loaderEnvironmentBody, .{constructor});
+}
+fn loaderEnvironmentBody(s: *Scope, constructor: c.JSValue) !c.JSValue {
+    try s.pending();
+    return a.duplicate(s.engine, try cachedOwner(s.engine, constructor));
 }
 pub fn commonJSState(engine: *v.em.Engine, constructor: c.JSValue) !c.JSValue {
     return a.expression(engine, ownerField, .{ constructor, @as([*:0]const u8, "commonJSState") });
