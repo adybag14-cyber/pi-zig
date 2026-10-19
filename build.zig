@@ -4364,6 +4364,19 @@ pub fn build(b: *std.Build) void {
     if (target.result.os.tag == .windows) { sdk_event_bus_public.root_module.linkSystemLibrary("advapi32", .{}); sdk_event_bus_public.root_module.linkSystemLibrary("userenv", .{}); }
     b.step("build-native-sdk-event-bus-public", "Install actual EventBus factory and async controls without execution").dependOn(&b.addInstallArtifact(sdk_event_bus_public, .{ .dest_sub_path = b.fmt("native-sdk-event-bus-public{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Actual c268 context helpers and the shared renderer/source-info owners.
+    const sdk_public_context_helpers = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_public_context_helpers_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK context helpers"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_public_context_helpers.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_public_context_helpers.root_module, typescript_parser);
+    linkSqlite(sdk_public_context_helpers.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_public_context_helpers.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { sdk_public_context_helpers.root_module.linkSystemLibrary("advapi32", .{}); sdk_public_context_helpers.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-sdk-public-context-helpers", "Install actual c268 context helper controls without execution").dependOn(&b.addInstallArtifact(sdk_public_context_helpers, .{ .dest_sub_path = b.fmt("native-sdk-public-context-helpers{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

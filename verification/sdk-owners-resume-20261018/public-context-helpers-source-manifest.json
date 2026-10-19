@@ -1,0 +1,167 @@
+{
+  "unit": "actual public context helpers and shared range/source-info owners",
+  "status": "source and twenty authored controls complete; no execution",
+  "owned_base": "0c233221906d9fa671fb5a28bb641d87f284f2ff",
+  "public_entry": "native_sdk_public_context_helpers.create(engine) returns the completed three-name record.",
+  "public_bindings": [
+    "parseSkillBlock",
+    "formatReadLineRange",
+    "createSyntheticSourceInfo"
+  ],
+  "authority": {
+    "upstream_commit": "c268154c",
+    "retained_directory": "public-context-helpers-authority",
+    "files": [
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-context-helpers-authority/agent-session-parse-skill.c268.ts",
+        "bytes": 337,
+        "sha256": "40b028678db382360f98a142b9ef6f59307c8b373f64e92b6d26255cfe2c34d4"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-context-helpers-authority/agent-session-parse-skill.accepted.js",
+        "bytes": 348,
+        "sha256": "b807d8ec2baf4d91306451957b51541052b9bc900fbb5dbc11027f06a0496f0e"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-context-helpers-authority/render-utils.c268.ts",
+        "bytes": 7173,
+        "sha256": "03233de3db6921e16715778da055821414a57f6161abdf06be13dbf8ea8242cc"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-context-helpers-authority/render-utils.accepted.js",
+        "bytes": 5771,
+        "sha256": "6c038331b515b07407bca78921caadad42b7a5a5fb5058eaf1da0d88df020b6f"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-context-helpers-authority/render-utils.accepted.js.map",
+        "bytes": 12804,
+        "sha256": "9a765c1f5b79c6b034234715c3e561b9f6e52d27652ec825670e68ac818480e5"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-context-helpers-authority/source-info.c268.ts",
+        "bytes": 1571,
+        "sha256": "52648af6e9bb29858ece4eaeccedd960c5de8a0ac4ec25c0ee851ff00de27f5c"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-context-helpers-authority/source-info.accepted.js",
+        "bytes": 1210,
+        "sha256": "67562eea112e99f4a7880913143730bd90e3655381c0f353e3dd18c5e9f1ef07"
+      },
+      {
+        "path": "verification/sdk-owners-resume-20261018/public-context-helpers-authority/source-info.accepted.js.map",
+        "bytes": 2785,
+        "sha256": "7fb22ec2a51da00c5ef74da793d269f8d370be08162886c8fb4cabb5e132fdd6"
+      }
+    ],
+    "parse_skill": {
+      "path": "packages/coding-agent/src/core/agent-session.ts",
+      "git_blob": "8b330d555d0f45469fb291a2206217671d3977d5",
+      "captured_scope": "Complete selected parseSkillBlock function from the pinned Git file and accepted JavaScript prefix. These selected files do not claim a complete agent-session file or source-map capture.",
+      "fixture": "Complete accepted selected function body, removing its export keyword only."
+    },
+    "range": {
+      "path": "packages/coding-agent/src/core/tools/render-utils.ts",
+      "git_blob": "c0fca375d3bdf7a6f8c8d67742dbcc07f9ae77a7",
+      "material_mismatch": "Both parseLineNumber and formatReadLineRange exist in exact c268 TypeScript but are absent from accepted render-utils JavaScript and its sourcesContent. Both snapshots are retained unchanged; no equivalence with the accepted runtime is claimed.",
+      "fixture": "Complete selected c268 parseLineNumber and formatReadLineRange functions with only exact TypeScript annotations and the export keyword removed."
+    },
+    "source_info": {
+      "path": "packages/coding-agent/src/core/source-info.ts",
+      "accepted_map_sources_content_equals_c268": true,
+      "fixture": "The complete accepted source-info bodies are unchanged, with only export keywords and the source-map comment removed."
+    },
+    "accepted_runtime": "C:/Users/adyba/pi-zig/upstream/runtime/19cb534-full-prebuild-root-full28293-v3-20261017-203626",
+    "strict_context": "All selected functions execute in one explicitly strict factory; no host handlers replace their algorithms."
+  },
+  "source_pins": [
+    {
+      "path": "src/extensions/native_sdk_public_context_helpers.zig",
+      "bytes": 4444,
+      "sha256": "5847966ee784727dfbaf9cf659184c8d48c2f3bf2c9822979e6124ca4eb41969"
+    },
+    {
+      "path": "src/extensions/native_sdk_read_line_range.zig",
+      "bytes": 5110,
+      "sha256": "b97e6e33fdb2426f1a1e16bdc43f70cd70a8c236000a376358ff813fb3177341"
+    },
+    {
+      "path": "src/extensions/native_sdk_source_information.zig",
+      "bytes": 5185,
+      "sha256": "730b335aad76259baf91afdba5bcda5b4387166ce1dd55d667b5b9d79e3f8312"
+    },
+    {
+      "path": "src/native_sdk_public_context_helpers_test.zig",
+      "bytes": 8181,
+      "sha256": "31a538bef17595849c1c4adf334e0a60f9500e15da964a82c06b507982553e06"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-context-helpers-observer.mjs",
+      "bytes": 21291,
+      "sha256": "63f70951d2113a9f6d1edf9aa5bdd1a9e9b0a07a1bbf2b19dfa13297cb77eceb"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-context-helpers-c268-source.mjs",
+      "bytes": 2346,
+      "sha256": "f16f1a92321b4f203dea75f2f8dd81d825468d31dd4ea0ffa56e4f84483c8591"
+    }
+  ],
+  "implementation": {
+    "skill": "Live match selection precedes a fresh real RegExp constructed by the retained intrinsic. Actual indexed getters and optional trim remain live; the matched lexical owner outlives the returned record expression.",
+    "range": "The existing renderer entry adopts the same complete body result into its PromptScope. Actual Number/isFinite calls and predicate retirement are separated; templates use intrinsic eager ToString and string addition.",
+    "source_info": "The existing extension initializer and public record reuse one actual completed source-info owner. All four original functions remain, including raw logical-or results and real chained calls. All five literal fields use the AF33 own-data definition primitive.",
+    "publication": "Completed candidate retirement precedes cache winner selection and final publication. This unit publishes no incomplete coding-agent namespace."
+  },
+  "build": {
+    "target": "build-native-sdk-public-context-helpers",
+    "artifact": "native-sdk-public-context-helpers.exe",
+    "root": "src/native_sdk_public_context_helpers_test.zig",
+    "filter": "SDK context helpers",
+    "declared_tests": [
+      "SDK context helpers actual public shapes and shared source-info owner identity",
+      "SDK context helpers parseSkillBlock uses the actual complete regex framing",
+      "SDK context helpers parseSkillBlock selects the live match method and fresh intrinsic regexp",
+      "SDK context helpers parseSkillBlock preserves ordered raw capture getters",
+      "SDK context helpers parseSkillBlock retires actual callees receivers and lexical match",
+      "SDK context helpers parseSkillBlock preserves optional trim and logical-or semantics",
+      "SDK context helpers formatReadLineRange retains c268 numeric and nullish branches",
+      "SDK context helpers formatReadLineRange uses live repeated Number and isFinite calls",
+      "SDK context helpers strict trim predicate retires before the Number getter",
+      "SDK context helpers finite predicate retires before the next argument conversion",
+      "SDK context helpers range templates use intrinsic numeric string conversion",
+      "SDK context helpers source-info records preserve ordered getters and nullish defaults",
+      "SDK context helpers synthetic path helpers preserve actual raw short-circuit values",
+      "SDK context helpers synthetic path chain retires each actual receiver and callee",
+      "SDK context helpers same-getter private DATA remains ordinary in every public body",
+      "SDK context helpers actual skill capture B prevents later fields and guest catch",
+      "SDK context helpers actual optional trim receiver retirement B prevents return",
+      "SDK context helpers actual trim predicate retirement B precedes Number lookup",
+      "SDK context helpers actual trim predicate cancellation prevents Number and guest continuation",
+      "SDK context helpers actual source-info origin B prevents baseDir and guest catch"
+    ],
+    "imported_test_metadata": "Not queried; Root must audit actual imported metadata during qualification."
+  },
+  "finite_source_peers": [
+    {
+      "reviewer": "/root/vm_foundation",
+      "closed": true,
+      "scope": "5847966E/B97E6E33 production and root31A538BE declarations1–11; no concrete blocker in actual match/literal/capture, range predicate and intrinsic template boundaries."
+    },
+    {
+      "reviewer": "/root/modules_io",
+      "closed": true,
+      "scope": "730B335A source-info and root31A538BE fixture/declarations12–20; observer63F70951 adds the closed own-data descriptor/inherited setter contract check. Initial Set-vs-Define finding was withdrawn after reading actual AF33 put."
+    }
+  ],
+  "dependencies": {
+    "guest_operation": "AF33D462 native_sdk_guest_operation preserves actual pending/fatal ownership and defines literal fields with JS_DefinePropertyValueStr.",
+    "retirement_controls": "D0784BF7 verifyNoVisits from Summary814ac9bb767763b39dd9e47891c26af7256146ac.",
+    "template_compiler": "353970d4204b5961058e86d3b435778a4a1e96f8 implements original Node/c268 eager substitution and intrinsic concatenation."
+  },
+  "no_execution": {
+    "native_build": false,
+    "metadata_query": false,
+    "node": false,
+    "runtime": false,
+    "source_generator": false
+  }
+}

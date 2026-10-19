@@ -1,49 +1,95 @@
-//! Actual core/source-info.ts exports. Synthetic here means a Source path such
-//! as builtin:read or <inline:name>, with the original metadata semantics.
-const v = @import("native_ai_provider_values.zig");
+//! Actual core/source-info.ts exports, shared by the extension initializer
+//! and the public SDK. Each predicate and member expression owns its result.
+const h = @import("native_sdk_session_locals.zig");
+const v = h.v;
 const c = v.c;
-const Scope = v.Scope;
-const Method = enum(c_int) { getSyntheticPathSource, isSyntheticPath, createSourceInfo, createSyntheticSourceInfo };
-pub fn create(engine: *v.em.Engine) !c.JSValue {
-    const module_name = "pi-native:source-information";
-    if (engine.native_module_values.get(module_name)) |value| return c.JS_DupValue(engine.context, value);
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const result = try scope.object();
-    try scope.put(result, "BUILTIN_PATH_PREFIX", try scope.text("builtin:"));
-    inline for (@typeInfo(Method).@"enum".fields) |field| try scope.put(result, field.name, try scope.own(try @import("native_node_function.zig").create(engine, field.name, if (field.value <= 1) 1 else 2, callback, &.{c.JS_NewInt32(engine.context, field.value)})));
-    try engine.registerValueModule(module_name, result);
-    return c.JS_DupValue(engine.context, result);
-}
-fn callback(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    var raw: i32 = 0;
-    if (c.JS_ToInt32(engine.context, &raw, roots[0]) < 0) return v.js.capture(engine);
-    const operation: Method = @enumFromInt(raw);
-    const path = if (args.len > 0) args[0] else c.pi_js_undefined();
-    const options = if (args.len > 1) args[1] else c.pi_js_undefined();
-    switch (operation) {
-        .getSyntheticPathSource => {
-            if (scope.truthy(try scope.invoke(path, "startsWith", &.{try scope.text("builtin:")}))) return c.JS_DupValue(engine.context, try scope.text("builtin"));
-            if (scope.truthy(try scope.invoke(path, "startsWith", &.{try scope.text("<")})) and scope.truthy(try scope.invoke(path, "endsWith", &.{try scope.text(">")}))) {
-                const split = try scope.invoke(try scope.invoke(path, "slice", &.{ c.JS_NewInt32(engine.context, 1), c.JS_NewInt32(engine.context, -1) }), "split", &.{try scope.text(":")});
-                const source = try v.at(&scope, split, 0);
-                return c.JS_DupValue(engine.context, if (scope.truthy(source)) source else try scope.text("temporary"));
-            }
-            return c.pi_js_undefined();
-        },
-        .isSyntheticPath => return c.pi_js_bool(engine.context, @intFromBool(scope.truthy(try scope.invoke(path, "startsWith", &.{try scope.text("builtin:")})) or scope.truthy(try scope.invoke(path, "startsWith", &.{try scope.text("<")})))),
-        .createSourceInfo, .createSyntheticSourceInfo => {
-            const result = try scope.object();
-            try scope.put(result, "path", path);
-            try scope.put(result, "source", try scope.get(options, "source"));
-            const selected_scope = try scope.get(options, "scope");
-            try scope.put(result, "scope", if (operation == .createSyntheticSourceInfo and v.nullish(selected_scope)) try scope.text("temporary") else selected_scope);
-            const origin = try scope.get(options, "origin");
-            try scope.put(result, "origin", if (operation == .createSyntheticSourceInfo and v.nullish(origin)) try scope.text("top-level") else origin);
-            try scope.put(result, "baseDir", try scope.get(options, "baseDir"));
-            return c.JS_DupValue(engine.context, result);
-        },
+const cache_key = "\x00sdk-source-information-c268";
+const Method = enum { getSyntheticPathSource, isSyntheticPath, createSourceInfo, createSyntheticSourceInfo };
+
+pub fn create(engine: *h.Engine) !c.JSValue {
+    try engine.checkNativeEntry();
+    if (engine.native_module_values.get(cache_key)) |cached| return h.duplicate(engine, cached);
+    const candidate = try h.expression(engine, createBody, .{});
+    if (engine.native_module_values.get(cache_key)) |cached| {
+        var selected = v.owned.Completion.initValue(engine, h.duplicate(engine, cached));
+        selected.release(candidate);
+        return selected.finishValue();
     }
+    engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1) catch |err| {
+        var failed = v.owned.Completion.initValue(engine, @as(anyerror!c.JSValue, err));
+        failed.release(candidate);
+        return failed.finishValue();
+    };
+    engine.native_module_values.putAssumeCapacity(cache_key, candidate);
+    return h.duplicate(engine, candidate);
+}
+fn createBody(s: *h.Scope) !c.JSValue {
+    const result = try v.object(s);
+    try v.put(s, result, "BUILTIN_PATH_PREFIX", try v.text(s, "builtin:"));
+    inline for (@typeInfo(Method).@"enum".fields) |field| {
+        const operation: Method = @enumFromInt(field.value);
+        const length: c_int = if (operation == .getSyntheticPathSource or operation == .isSyntheticPath) 1 else 2;
+        try v.put(s, result, field.name, try v.ordinary(s, field.name, length, Dispatch(operation).call, &.{}));
+    }
+    return v.duplicate(s, result);
+}
+fn Dispatch(comptime operation: Method) type {
+    return struct {
+        fn call(engine: *h.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+            try engine.checkNativeEntry();
+            return switch (operation) {
+                .getSyntheticPathSource => h.expression(engine, getPathSourceBody, .{v.arg(args, 0)}),
+                .isSyntheticPath => h.expression(engine, isSyntheticBody, .{v.arg(args, 0)}),
+                .createSourceInfo, .createSyntheticSourceInfo => h.expression(engine, informationBody, .{
+                    v.arg(args, 0), v.arg(args, 1), operation == .createSyntheticSourceInfo,
+                }),
+            };
+        }
+    };
+}
+fn getPathSourceBody(s: *h.Scope, path: c.JSValue) !c.JSValue {
+    if (try v.testText(s, path, "startsWith", "builtin:"))
+        return v.duplicate(s, try v.text(s, "builtin"));
+    if (try v.testText(s, path, "startsWith", "<") and try v.testText(s, path, "endsWith", ">")) {
+        const source = try v.own(s, try h.expression(s.engine, firstSourceBody, .{path}));
+        return v.duplicate(s, if (v.truthy(s, source)) source else try v.text(s, "temporary"));
+    }
+    return c.pi_js_undefined();
+}
+fn sliceBody(s: *h.Scope, path: c.JSValue) !c.JSValue {
+    const method = try v.get(s, path, "slice");
+    return v.duplicate(s, try v.call(s, method, path, &.{
+        c.JS_NewInt32(s.engine.context, 1), c.JS_NewInt32(s.engine.context, -1),
+    }));
+}
+fn splitBody(s: *h.Scope, path: c.JSValue) !c.JSValue {
+    const receiver = try v.own(s, try h.expression(s.engine, sliceBody, .{path}));
+    const method = try v.get(s, receiver, "split");
+    const separator = try v.text(s, ":");
+    return v.duplicate(s, try v.call(s, method, receiver, &.{separator}));
+}
+fn firstSourceBody(s: *h.Scope, path: c.JSValue) !c.JSValue {
+    const receiver = try v.own(s, try h.expression(s.engine, splitBody, .{path}));
+    return v.duplicate(s, try v.at(s, receiver, 0));
+}
+fn isSyntheticBody(s: *h.Scope, path: c.JSValue) !c.JSValue {
+    // The Source || expression returns the selected value, including an
+    // arbitrary object returned by a replaced startsWith method.
+    const first = try v.own(s, try v.invokeTextOwned(s.engine, path, "startsWith", "builtin:"));
+    if (v.truthy(s, first)) return v.duplicate(s, first);
+    return v.invokeTextOwned(s.engine, path, "startsWith", "<");
+}
+fn informationBody(s: *h.Scope, path: c.JSValue, options: c.JSValue, comptime synthetic: bool) !c.JSValue {
+    const result = try v.object(s);
+    try v.put(s, result, "path", path);
+    try h.statement(s.engine, fieldBody, .{ result, options, "source", @as(?[]const u8, null) });
+    try h.statement(s.engine, fieldBody, .{ result, options, "scope", if (synthetic) @as(?[]const u8, "temporary") else null });
+    try h.statement(s.engine, fieldBody, .{ result, options, "origin", if (synthetic) @as(?[]const u8, "top-level") else null });
+    try h.statement(s.engine, fieldBody, .{ result, options, "baseDir", @as(?[]const u8, null) });
+    return v.duplicate(s, result);
+}
+fn fieldBody(s: *h.Scope, result: c.JSValue, options: c.JSValue, comptime name: [*:0]const u8, fallback: ?[]const u8) !void {
+    const input = try v.get(s, options, name);
+    const value = if (fallback != null and v.nullish(input)) try v.text(s, fallback.?) else input;
+    return v.put(s, result, name, value);
 }
