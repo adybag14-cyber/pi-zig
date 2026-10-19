@@ -3706,6 +3706,22 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-node-argument-errors", "Install twenty-one declared actual Node argument owner controls without running").dependOn(&b.addInstallArtifact(node_argument_errors, .{ .dest_sub_path = b.fmt("native-node-argument-errors{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Genuine internal/fs/utils helpers; installation has no execution edge.
+    const node_fs_path_helpers = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_fs_path_helpers_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native actual fs path"},
+    });
+    linkQuickJs(b, node_fs_path_helpers.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_fs_path_helpers.root_module, typescript_parser);
+    linkSqlite(node_fs_path_helpers.root_module, sqlite_lib_dir, sqlite_library);
+    node_fs_path_helpers.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_fs_path_helpers.root_module.linkSystemLibrary("advapi32", .{});
+        node_fs_path_helpers.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-fs-path-helpers", "Install eighteen declared genuine Node filesystem helper controls without running").dependOn(&b.addInstallArtifact(node_fs_path_helpers, .{ .dest_sub_path = b.fmt("native-node-fs-path-helpers{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {
