@@ -127,8 +127,8 @@ fn CloseTrampoline(comptime close: StateClose) type {
 fn createKind(engine: *em.Engine, name: [*:0]const u8, length: c_int, implementation: Implementation, roots: []const c.JSValue, lexical_this: c.JSValue, arrow: bool, close: ?*const c.JSPiAsyncFunctionStateClose) !c.JSValue {
     var class: c.JSClassID = 0;
     _ = c.JS_NewClassID(engine.runtime, &class);
-    const definition: c.JSClassDef = .{ .class_name = "Private native AsyncFunction captures", .finalizer = finalizer, .gc_mark = mark };
-    if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
+    const class_definition: c.JSClassDef = .{ .class_name = "Private native AsyncFunction captures", .finalizer = finalizer, .gc_mark = mark };
+    if (c.JS_NewClass(engine.runtime, class, &class_definition) < 0) return error.OutOfMemory;
     const owner = try engine.checked(c.JS_NewObjectClass(engine.context, class));
     defer engine.freeValue(owner);
     const values = try engine.gpa.alloc(c.JSValue, roots.len);
