@@ -272,8 +272,10 @@ fn parse(allocator: std.mem.Allocator, output: *Values, tokens: []const []const 
         }
         const equal = if (std.mem.startsWith(u8, original, "--")) std.mem.indexOfScalar(u8, original, '=') else null;
         const name_bytes = try allocator.dupe(u8, original[0..equal orelse original.len]);
-        if (name_bytes.len > 2) for (name_bytes[2..]) |*byte| {
-            if (byte.* == '_') byte.* = '-';
+        if (name_bytes.len > 2) {
+            for (name_bytes[2..]) |*byte| {
+                if (byte.* == '_') byte.* = '-';
+            }
         }
         var name: []const u8 = name_bytes;
         var negative = false;
