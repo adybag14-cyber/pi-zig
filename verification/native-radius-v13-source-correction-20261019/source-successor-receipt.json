@@ -1,0 +1,37 @@
+{
+  "kind": "source-only diagnostic correction",
+  "evidence": "C:/Users/adyba/pi-zig/evidence/root-vm-io-oauth-diagnostic-v13-buildquery-20261019-192252/groups/native-ai-oauth-radius-genuine-af/compile.stderr.log",
+  "bases": [
+    {
+      "path": "C:/Users/adyba/pi-zig/main/src/extensions/native_ai_oauth_radius_genuine.zig",
+      "sha256": "f4cf2bd8992dfe81abce17523bc16507531494e8d761d7047d57e4a0707907c8"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/main/src/extensions/native_ai_oauth_radius_http_genuine.zig",
+      "sha256": "19854310c81280a800de96c175086da53a2cf3acde5fe163dda3d91dac08e6c9"
+    }
+  ],
+  "successors": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_ai_oauth_radius_genuine.zig",
+      "sha256": "d04fd7eef674c007cff2c9fa991de03bdbcc6f75988f31e94c8ab64e36a70a5a",
+      "bytes": 34117
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_ai_oauth_radius_http_genuine.zig",
+      "sha256": "47b53d0ee39fe33ea7544e38a389cee0492cd91610bf4cece18b9a42c8b532c9",
+      "bytes": 25919
+    }
+  ],
+  "changes": [
+    "Rename the local promptMessage complete binding and its sole use to prompt_prefix; preserve exact expression/call order.",
+    "Replace the two unavailable Ops.typeError calls in class heritage checks with the existing native_public_values.typeError(o.s,message), explicitly ascribed to anyerror!JSValue. Both exact intrinsic TypeError texts, constructor predicate order and scope remain unchanged."
+  ],
+  "boundary": {
+    "module": "native_public_values.zig",
+    "sha256": "0B1BB422A9C89E7CE8146B32413B27E42D8DFB65285C3245B89EED8AF222022E",
+    "operation": "typeError begins AF33 boundary and invokes actual intrinsic JS_ThrowTypeError; no live public Error input"
+  },
+  "execution": "No native, Node, generator, or build execution; original V13 evidence preserved.",
+  "intake": "The two production paths were absent from this older SDK worktree. Compare against listed exact Main bases and intake only the stated four changed lines."
+}

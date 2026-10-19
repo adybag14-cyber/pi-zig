@@ -165,10 +165,10 @@ fn createErrorClass(o: *x.Ops) !c.JSValue {
         // IsConstructor precedes any observable prototype getter, exactly as
         // QuickJS js_define_class. Keep its actual ordinary TypeError messages.
         if (!c.JS_IsConstructor(o.s.engine.context, base))
-            return o.typeError("parent class must be constructor");
+            return @as(anyerror!c.JSValue, p.typeError(o.s, "parent class must be constructor"));
         base_prototype = try o.get(base, "prototype");
         if (!c.JS_IsNull(base_prototype) and !c.JS_IsObject(base_prototype))
-            return o.typeError("parent prototype must be an object or null");
+            return @as(anyerror!c.JSValue, p.typeError(o.s, "parent prototype must be an object or null"));
     }
     const generation = try o.beforeAllocation();
     const proto = try o.allocation(c.JS_NewObjectProto(o.s.engine.context, base_prototype), generation);

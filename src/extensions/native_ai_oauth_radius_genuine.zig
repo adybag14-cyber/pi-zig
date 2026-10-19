@@ -365,8 +365,8 @@ fn stringValue(o: *x.Ops, input: c.JSValue) !c.JSValue {
 fn promptMessage(o: *x.Ops, options: c.JSValue) !c.JSValue {
     const prefix = try o.text("Sign in to ");
     const name = try value(o, optionsNameString, .{options});
-    const complete = try o.binary(0, prefix, name);
-    return dup(o, try o.binary(0, complete, try o.text(":")));
+    const prompt_prefix = try o.binary(0, prefix, name);
+    return dup(o, try o.binary(0, prompt_prefix, try o.text(":")));
 }
 fn promptOptions(o: *x.Ops, options: c.JSValue) !c.JSValue {
     const input = try o.object();
