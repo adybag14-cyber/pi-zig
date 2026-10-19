@@ -171,3 +171,117 @@ function observeInspectTypedOutputSet(inspect) {
     inspectAssert(writes === 1 && Array.isArray(output) && output.length === 1, "formatter writes actual output Array");
     inspectAssert(result === "Uint8Array(1) [ first ]", "output setter result reaches actual reduction");
 }
+
+
+// These additional observers accept the same genuine Node format/inspect pair.
+function observeInspectFormatShape(format) {
+    inspectAssert(format.name === "format" && format.length === 0 && Object.hasOwn(format, "prototype"), "ordinary format rest shape");
+    inspectAssert(format() === "" && format("single %s") === "single %s", "empty and single-string fast path");
+    inspectAssert(format(17) === "17" && format(null) === "null", "single nonstring uses actual inspect");
+}
+function observeInspectFormatPlaceholders(format) {
+    inspectAssert(format("File URL host must be \"localhost\" or empty on %s", "win32") === "File URL host must be \"localhost\" or empty on win32", "genuine Host class message profile");
+    inspectAssert(format("\"fd\" must be a positive integer: %s", -1) === "\"fd\" must be a positive integer: -1", "existing descriptor profile");
+    inspectAssert(format("a%%b %q", 7) === "a%b %q 7", "percent and unknown placeholder scan");
+    inspectAssert(format("%%", undefined) === "% undefined", "percent with trailing undefined");
+    inspectAssert(format("%s %s", "first") === "first %s", "unfilled placeholder suffix");
+    inspectAssert(format("%c%s", "ignored", "body") === "body", "style placeholder consumes one argument");
+    inspectAssert(format("x", "raw string", {answer:42}) === "x raw string { answer: 42 }", "trailing strings stay raw and objects use inspect");
+}
+function observeInspectFormatConversions(format, inspect) {
+    const hints = [];
+    const value = {[Symbol.toPrimitive](hint) { hints.push(hint); return "123.5"; }};
+    inspectAssert(format("%s|%d|%i|%f", value, value, value, value) === "123.5|123.5|123|123.5", "four actual conversion paths");
+    inspectAssert(hints.join() === "string,number,string,string", "String Number parseInt parseFloat hint order");
+    inspectAssert(format("%s|%d|%i|%f", -0, "-0", "12.5x", "12.5x") === "-0|-0|12|12.5", "negative zero and parse prefixes");
+    inspectAssert(format("%s|%d|%i|%f", 12n, 12n, 12n, 12n) === "12n|12n|12n|12", "BigInt placeholder distinctions");
+    const symbol = Symbol("format");
+    inspectAssert(format("%s|%d|%i|%f", symbol, symbol, symbol, symbol) === "Symbol(format)|NaN|NaN|NaN", "Symbol does not enter Number parsers");
+    const previous = inspect.defaultOptions.numericSeparator;
+    try {
+        inspect.defaultOptions = {numericSeparator:true};
+        inspectAssert(format("%s|%d|%i", 12345, 12345, 12345n) === "12_345|12_345|12_345n", "actual shared numeric separator defaults");
+    } finally { inspect.defaultOptions = {numericSeparator:previous}; }
+}
+function observeInspectFormatInspection(format, inspect) {
+    const calls = [];
+    const input = {[inspect.custom](depth, options, actual) {
+        calls.push([depth, options.compact, options.colors, options.showHidden, options.showProxy]);
+        inspectAssert(this === input && actual === inspect, "same actual inspector import");
+        return "custom";
+    }};
+    inspectAssert(format("%s|%O|%o", input, input, input) === "custom|custom|custom", "all actual inspect placeholder calls");
+    inspectAssert(JSON.stringify(calls) === '[[0,3,false,false,false],[2,3,false,false,false],[4,3,false,true,true]]', "ordered own options literals and undefined ordinary options");
+    inspectAssert(format("%s", {}) === "{}", "builtin toString object enters actual inspection");
+}
+function observeInspectFormatRest(format) {
+    const old = Object.getOwnPropertyDescriptor(Array.prototype, "0");
+    const define = Object.defineProperty;
+    let actual, reads = 0, skipped = 0, last = 0, result;
+    try {
+        define(Array.prototype, "0", {configurable:true,get() {
+            reads++; actual = this;
+            define(this, "0", {value:"%c%s",writable:true,enumerable:true,configurable:true});
+            define(this, "1", {configurable:true,get() { skipped++; throw new Error("style argument must not be read"); }});
+            define(this, "2", {configurable:true,get() { last++; return "from inherited rest"; }});
+            return "%c%s";
+        }});
+        result = format();
+    } finally { if (old) define(Array.prototype, "0", old); else delete Array.prototype[0]; }
+    inspectAssert(result === "from inherited rest" && reads === 1 && skipped === 0 && last === 1, "initial index getter and later live rest length/indices");
+    inspectAssert(Array.isArray(actual) && Object.getPrototypeOf(actual) === Array.prototype && actual.length === 3, "genuine empty rest Array exposed by inherited first read");
+}
+function observeInspectFormatCaptured(format) {
+    const oldString = globalThis.String, oldNumber = globalThis.Number, oldArray = globalThis.Array;
+    const oldStringify = JSON.stringify;
+    const stringProto = oldString.prototype;
+    const slice = stringProto.slice, charCodeAt = stringProto.charCodeAt, split = stringProto.split;
+    const parseInt = oldNumber.parseInt, parseFloat = oldNumber.parseFloat;
+    const fail = () => { throw new Error("late formatter primordial"); };
+    const cycle = {}; cycle.self = cycle;
+    let result, circular;
+    try {
+        globalThis.String = fail; globalThis.Number = fail; globalThis.Array = fail;
+        JSON.stringify = fail; stringProto.slice = fail; stringProto.charCodeAt = fail; stringProto.split = fail;
+        oldNumber.parseInt = fail; oldNumber.parseFloat = fail;
+        result = format("%s/%d/%i/%f/%j", Symbol("captured"), 7, "8x", "9.5x", {a:1});
+        circular = format("%j", cycle);
+    } finally {
+        globalThis.String = oldString; globalThis.Number = oldNumber; globalThis.Array = oldArray;
+        JSON.stringify = oldStringify; stringProto.slice = slice; stringProto.charCodeAt = charCodeAt; stringProto.split = split;
+        oldNumber.parseInt = parseInt; oldNumber.parseFloat = parseFloat;
+    }
+    inspectAssert(result === 'Symbol(captured)/7/8/9.5/{"a":1}' && circular === "[Circular]", "original format conversion and error-line callables remain captured");
+}
+function observeInspectFormatJson(format) {
+    inspectAssert(format("%j|%j", {answer:42}, undefined) === '{"answer":42}|undefined', "actual JSON results include undefined");
+    const cycle = {}; cycle.self = cycle;
+    inspectAssert(format("%j", cycle) === "[Circular]" && format("%j", cycle) === "[Circular]", "lazy actual circular message");
+    const reason = {name:"Other"};
+    let messageReads = 0, actual;
+    Object.defineProperty(reason, "message", {get() { messageReads++; throw new Error("short circuit"); }});
+    try { format("%j", {toJSON() { throw reason; }}); } catch (error) { actual = error; }
+    inspectAssert(actual === reason && messageReads === 0, "ordinary JSON reason and name short circuit");
+    const different = new TypeError("different message");
+    try { format("%j", {toJSON() { throw different; }}); } catch (error) { actual = error; }
+    inspectAssert(actual === different, "noncircular TypeError is rethrown by identity");
+    const later = {later:true}, nameFailure = {};
+    Object.defineProperty(nameFailure, "name", {get() { throw later; }});
+    try { format("%j", {toJSON() { throw nameFailure; }}); } catch (error) { actual = error; }
+    inspectAssert(actual === later, "actual catch-body getter failure overrides original");
+}
+function observeInspectFormatCalibration(format) {
+    const previous = Object.getOwnPropertyDescriptor(Object.prototype, "a");
+    const define = Object.defineProperty;
+    const actualReason = {name:"TypeError",message:"selected calibration line"};
+    const calibration = {message:"selected calibration line\nignored second line"};
+    let calls = 0, self = false, result;
+    try {
+        define(Object.prototype, "a", {configurable:true,set(value) {
+            calls++; self = value === this;
+            throw calibration;
+        }});
+        result = format("%j", {toJSON() { throw actualReason; }});
+    } finally { if (previous) define(Object.prototype, "a", previous); else delete Object.prototype.a; }
+    inspectAssert(result === "[Circular]" && calls === 1 && self, "actual cycle Set then caught first error-line calibration");
+}

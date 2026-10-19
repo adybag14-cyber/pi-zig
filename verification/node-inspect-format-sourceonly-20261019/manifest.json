@@ -1,0 +1,128 @@
+{
+  "status": "finite source-peer closed; no compilation, metadata, reference capture or runtime qualification",
+  "task": "Genuine Node format helper consumed by actual Host error class and inspector export",
+  "authority": {
+    "node": "v24.13.0",
+    "path": "verification/node-inspect-entry-sourceonly-20261018/authority/inspect.js",
+    "sha256": "380AA09FAE68E3279D0FB2469A24D75931A8098C84354347BF7130A38852B597",
+    "bytes": 92944
+  },
+  "files": [
+    {
+      "path": "src/extensions/native_node_inspect_format.zig",
+      "sha256": "F40A4D0C75D8474485C33A5C43117D4090E230C1813DD081BCE32802883AB535",
+      "bytes": 21670
+    },
+    {
+      "path": "src/extensions/native_node_util_inspect.zig",
+      "sha256": "8AEB5ED9735E575141B4482BC64EC2D66758E642748956539A4FA2DF94A54B2B",
+      "bytes": 43751
+    },
+    {
+      "path": "src/native_node_inspect_entry_test.zig",
+      "sha256": "A465E66D54F4D74F7B171C951D6F7BA71EC4B8CAE4F80DAF7CD4BFEFDA145EA6",
+      "bytes": 29743
+    },
+    {
+      "path": "src/extensions/fixtures/native-node-inspect-observer.mjs",
+      "sha256": "271E138C70F43B1ADC4A56A052EE7E0330129010B8D2076288A5D9439C976BB8",
+      "bytes": 19071
+    },
+    {
+      "path": "verification/node-inspect-format-sourceonly-20261019/source-projection.json",
+      "sha256": "65b46471045d0739a7a0d4f5761497d4006460973e7f6db0fcb1c91169fd4ab5",
+      "bytes": 8402
+    },
+    {
+      "path": "verification/node-inspect-format-sourceonly-20261019/node-source-observer.mjs",
+      "sha256": "83c1bbd021bf9b02e8719fdf8ac465ec37a372fb1e9e825a45a3f6e1dcff5a08",
+      "bytes": 2047
+    }
+  ],
+  "composition": {
+    "main_inspector_base_sha256": "CDC6CF80EF6176D3E7B81D3168024F20F92B09522DC574B25CE99656A0464BD0",
+    "base_commit": "642f51364f05d40e90c43f3150f8fe421ba5d905",
+    "shared_root_abi": 13,
+    "color_component": "native_node_inspect_colors.zig 0927127D, separate SDK source unit; excluded from this formatter commit",
+    "formatter_primordials": "Retained once by genuine early inspector bootstrap; no late public-global re-capture"
+  },
+  "build": {
+    "target": "build-native-node-inspect-entry",
+    "filter": "native actual inspect",
+    "root": "src/native_node_inspect_entry_test.zig",
+    "declared": 37,
+    "existing_declarations": 24,
+    "new_declarations": 13,
+    "build_delta": "none; existing install-only target/filter applies",
+    "metadata": "not executed"
+  },
+  "controls": {
+    "new_names": [
+      "native actual inspect format ordinary shape and empty or single arguments",
+      "native actual inspect format Host template percent scan and trailing arguments",
+      "native actual inspect format conversion hints numeric defaults Symbol and BigInt",
+      "native actual inspect format shared inspector and actual placeholder option literals",
+      "native actual inspect format real rest Array inherited first index and skipped style value",
+      "native actual inspect format retains genuine string numeric and JSON primordials",
+      "native actual inspect format JSON lazy circular and ordinary catch identity",
+      "native actual inspect format circular calibration uses actual assignment and first error line",
+      "native actual inspect format JSON ordinary private DATA throw retains exact identity",
+      "native actual inspect format JSON successful flagged return remains DATA",
+      "native actual inspect format JSON actual fatal bypasses calibration and guest catch",
+      "native actual inspect format matching case local retires before its next index getter",
+      "native actual inspect format matching case retirement fatal stops next getter and catch"
+    ],
+    "shared_pinned_Node_observers": 8,
+    "node_entrypoint": "verification/node-inspect-format-sourceonly-20261019/node-source-observer.mjs",
+    "node_fresh_process_per_observer": true,
+    "actual_native_DATA_or_lifetime_controls": [
+      33,
+      34,
+      35,
+      36,
+      37
+    ]
+  },
+  "peers": {
+    "sdk": {
+      "status": "finite source closed",
+      "production": "F40A4D0C selected scan/placeholder/string/numeric/inspection slices",
+      "controls": "A465E66D / 271E138C declarations25-31 and actual format publication"
+    },
+    "vm": {
+      "status": "finite source closed",
+      "production": "actual rest/capture/create/canonical caught/lazy calibration/firstErrorLine and shared owner seam",
+      "controls": "Fixture and declarations32-37",
+      "pin": "F40A4D0C / 8AEB5ED9 / A465E66D / 271E138C"
+    },
+    "root": {
+      "status": "finite source closed",
+      "scope": "authored pinned-Node one-observer capture entrypoint only",
+      "pin": "83C1BBD0"
+    }
+  },
+  "negative_evidence": {
+    "cohort": "root-vm-io-oauth-options-v17-diagnostic-runtime-20261019-215552",
+    "group": "native-node-file-url-paths",
+    "indices": [
+      6,
+      18
+    ],
+    "captured_failure": "actual ERR_INVALID_FILE_URL_HOST family",
+    "cause": "Prior formatter only admitted the FD message and raised RequiredAdditionalInspectFormatProfile for the genuine Host format string",
+    "original_assertions_preserved": true
+  },
+  "limits": [
+    "Independent genuine Node reference capture remains unexecuted and requires its own Root grant.",
+    "No native compiler/runtime or whole application acceptance is conferred by source peers.",
+    "Public formatWithOptions export and broader inspector exotic/grouped/sorted/showHidden/layout completion remain separate port work.",
+    "Existing formatter primitive/classifier/inspect dependencies retain their current explicit qualification limits.",
+    "SDK color component and VM CopyDataProperties descriptor-recheck correction are distinct prerequisites; their evidence is not part of this formatter result."
+  ],
+  "validation": {
+    "source_readback": "exact full selected file bytes",
+    "existing_declarations_preserved": 24,
+    "new_declarations": 13,
+    "compiler_or_runtime_run": false
+  }
+}
