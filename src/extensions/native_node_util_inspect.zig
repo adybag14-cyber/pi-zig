@@ -11,6 +11,7 @@ const ops = @import("native_node_inspect_operations.zig");
 const Scope = ops.Scope;
 const owned = @import("native_sdk_owned_completion.zig");
 const typed = @import("native_node_inspect_typed_array.zig");
+const colors = @import("native_node_inspect_colors.zig");
 const option_names = .{ "showHidden", "depth", "colors", "customInspect", "showProxy", "maxArrayLength", "maxStringLength", "breakLength", "compact", "sorted", "getters", "numericSeparator" };
 pub const Inputs = struct {
     string: c.JSValue, object: c.JSValue, object_prototype: c.JSValue,
@@ -25,6 +26,7 @@ pub const Inputs = struct {
     built_in_names: c.JSValue,
     /// Captured original ObjectAssign used by the actual default-options setter.
     object_assign: c.JSValue,
+    object_define_property: c.JSValue,
     /// Original typed-array getters, constructors and numeric/layout imports.
     typed_arrays: c.JSValue,
     pub fn deinit(self: Inputs, engine: *v.em.Engine) void {
@@ -54,6 +56,7 @@ fn captureBody(s: *v.Scope) !Inputs {
     const global = try ops.own(s, try h.success(engine, try engine.checked(c.JS_GetGlobalObject(engine.context))));
     const object = try h.get(s, global, "Object"); const object_prototype = try h.get(s, object, "prototype");
     const object_assign = try h.get(s, object, "assign");
+    const object_define_property = try h.get(s, object, "defineProperty");
     const string = try h.get(s, global, "String");
     const function_to_string = try h.get(s, try ops.own(s, try engine.checked(c.JS_GetFunctionProto(engine.context))), "toString");
     const symbol = try h.get(s, global, "Symbol");
@@ -81,7 +84,7 @@ fn captureBody(s: *v.Scope) !Inputs {
     const typed_arrays = try ops.own(s, try typed.capture(engine, global));
     return .{ .string = c.JS_DupValue(engine.context, string), .object = c.JS_DupValue(engine.context, object), .object_prototype = c.JS_DupValue(engine.context, object_prototype), .function_to_string = c.JS_DupValue(engine.context, function_to_string),
         .custom_symbol = c.JS_DupValue(engine.context, custom), .to_primitive = c.JS_DupValue(engine.context, to_primitive), .to_string_tag = c.JS_DupValue(engine.context, to_string_tag), .has_instance = c.JS_DupValue(engine.context, has_instance),
-        .well_known = c.JS_DupValue(engine.context, known), .built_in_names = c.JS_DupValue(engine.context, names), .object_assign = c.JS_DupValue(engine.context, object_assign), .typed_arrays = c.JS_DupValue(engine.context, typed_arrays) };
+        .well_known = c.JS_DupValue(engine.context, known), .built_in_names = c.JS_DupValue(engine.context, names), .object_assign = c.JS_DupValue(engine.context, object_assign), .object_define_property = c.JS_DupValue(engine.context, object_define_property), .typed_arrays = c.JS_DupValue(engine.context, typed_arrays) };
 }
 pub const Exports = struct {
     inspect: c.JSValue, format: c.JSValue,
@@ -147,7 +150,7 @@ fn createBody(s: *v.Scope, inputs: Inputs) !Exports {
     const engine = s.engine;
     engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
     try h.pending(engine);
-    if (!c.JS_IsFunction(engine.context, inputs.object_assign) or !c.JS_IsFunction(engine.context, inputs.string) or !c.JS_IsFunction(engine.context, inputs.object) or !c.JS_IsFunction(engine.context, inputs.function_to_string) or !c.JS_IsFunction(engine.context, inputs.has_instance) or !c.JS_IsSymbol(inputs.custom_symbol) or !c.JS_IsSymbol(inputs.to_primitive) or !c.JS_IsSymbol(inputs.to_string_tag) or !c.JS_IsArray(inputs.well_known) or !c.JS_IsObject(inputs.built_in_names) or !c.JS_IsObject(inputs.typed_arrays)) return error.RequiredActualInspectPrimordials;
+    if (!c.JS_IsFunction(engine.context, inputs.object_define_property) or !c.JS_IsFunction(engine.context, inputs.object_assign) or !c.JS_IsFunction(engine.context, inputs.string) or !c.JS_IsFunction(engine.context, inputs.object) or !c.JS_IsFunction(engine.context, inputs.function_to_string) or !c.JS_IsFunction(engine.context, inputs.has_instance) or !c.JS_IsSymbol(inputs.custom_symbol) or !c.JS_IsSymbol(inputs.to_primitive) or !c.JS_IsSymbol(inputs.to_string_tag) or !c.JS_IsArray(inputs.well_known) or !c.JS_IsObject(inputs.built_in_names) or !c.JS_IsObject(inputs.typed_arrays)) return error.RequiredActualInspectPrimordials;
     const lexical = try ops.nullObject(s);
     try h.put(engine, lexical, "typedArrays", try ops.own(s, try typed.create(engine, inputs.typed_arrays)));
     const defaults = try defaultOptions(s);
@@ -160,6 +163,11 @@ fn createBody(s: *v.Scope, inputs: Inputs) !Exports {
     const get = try ops.own(s, try f.create(engine, "get", 0, false, defaultsGet, &.{defaults}));
     const set = try ops.own(s, try f.create(engine, "set", 1, false, defaultsSet, &.{defaults, inputs.object_assign}));
     try ops.accessor(s, inspect, "defaultOptions", get, set, 0);
+    const color_stylizer = try ops.own(s, try colors.create(engine, .{
+        .inspect = inspect, .object_assign = inputs.object_assign,
+        .object_define_property = inputs.object_define_property,
+    }));
+    try h.put(engine, lexical, "stylizeWithColor", color_stylizer);
     return .{ .inspect = c.JS_DupValue(engine.context, inspect), .format = c.JS_DupValue(engine.context, format) };
 }
 fn defaultsGet(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue { try h.pending(engine); return c.JS_DupValue(engine.context, roots[0]); }
@@ -202,11 +210,15 @@ const Context = struct {
                 }
             }
         }
-        if (s.truthy(try h.get(s, options, "colors"))) return error.RequiredActualInspectColorStyles;
-        // The Source default stylizer identity is pinned once per module.
-        // A user-supplied stylizer also receives the actual internal ctx as
-        // `this` in several branches; that mutable context is not yet ported.
-        if (!s.equal(try h.get(s, options, "stylize"), roots[12])) return error.RequiredActualInspectCustomStylizeContext;
+        if (s.truthy(try h.get(s, options, "colors"))) {
+            // Source colors overrides a supplied stylizer with the genuine
+            // module function; that function still reads live public tables.
+            try h.put(s.engine, options, "stylize", try h.get(s, roots[0], "stylizeWithColor"));
+        } else if (!s.equal(try h.get(s, options, "stylize"), roots[12])) {
+            // The preexisting arbitrary custom-stylizer context dependency
+            // remains separate from the actual colored Source path.
+            return error.RequiredActualInspectCustomStylizeContext;
+        }
         inline for (.{ "maxArrayLength", "maxStringLength" }) |name| if (c.JS_IsNull(try h.get(s, options, name))) try h.put(s.engine, options, name, c.JS_NewFloat64(s.engine.context, std.math.inf(f64)));
         return self;
     }
