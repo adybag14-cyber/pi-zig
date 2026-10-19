@@ -4378,17 +4378,17 @@ pub fn build(b: *std.Build) void {
     b.step("build-native-sdk-branch-summary-genuine-af", "Install actual branch summary async controls without execution").dependOn(&b.addInstallArtifact(sdk_branch_summary_genuine_af, .{ .dest_sub_path = b.fmt("native-sdk-branch-summary-genuine-af{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
     // Actual public compaction bindings over the genuine shared AI graph.
-    const sdk_public_compaction = b.addTest(.{
+    const sdk_public_compaction_namespace = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_public_compaction_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"SDK public compaction"},
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, sdk_public_compaction.root_module, quickjs, sqlite_lib_dir);
-    linkTypeScriptParser(b, sdk_public_compaction.root_module, typescript_parser);
-    linkSqlite(sdk_public_compaction.root_module, sqlite_lib_dir, sqlite_library);
-    sdk_public_compaction.root_module.addImport("catalog_tool", catalog_tool);
-    if (target.result.os.tag == .windows) { sdk_public_compaction.root_module.linkSystemLibrary("advapi32", .{}); sdk_public_compaction.root_module.linkSystemLibrary("userenv", .{}); }
-    b.step("build-native-sdk-public-compaction", "Install actual shared compaction namespace controls without execution").dependOn(&b.addInstallArtifact(sdk_public_compaction, .{ .dest_sub_path = b.fmt("native-sdk-public-compaction{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    linkQuickJs(b, sdk_public_compaction_namespace.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_public_compaction_namespace.root_module, typescript_parser);
+    linkSqlite(sdk_public_compaction_namespace.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_public_compaction_namespace.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { sdk_public_compaction_namespace.root_module.linkSystemLibrary("advapi32", .{}); sdk_public_compaction_namespace.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-sdk-public-compaction", "Install actual shared compaction namespace controls without execution").dependOn(&b.addInstallArtifact(sdk_public_compaction_namespace, .{ .dest_sub_path = b.fmt("native-sdk-public-compaction{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
     // Actual c268 EventBus over the genuine shared EventEmitter import.
     const sdk_event_bus_public = b.addTest(.{
