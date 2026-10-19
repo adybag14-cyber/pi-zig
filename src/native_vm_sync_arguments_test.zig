@@ -7,9 +7,10 @@ const Engine = v.em.Engine;
 const Scope = v.Scope;
 const sync = @import("extensions/native_sync_arguments.zig");
 const Frame = @import("extensions/native_public_lexical_frame.zig").Frame(enum { local, discarded, getter, setter });
+const DefaultFrame = @import("extensions/native_public_lexical_frame.zig").Frame(enum { p, q });
 const retirement = @import("native_sdk_initial_model_retirement_controls.zig");
 
-const Kind = enum(u8) { clear, order, rewrite, pair, drop, cycle, local_capture, capture_clear, inspect, constructor_primitive, zero, extra, host_oom };
+const Kind = enum(u8) { clear, default_clear, order, rewrite, pair, drop, cycle, local_capture, capture_clear, inspect, constructor_primitive, zero, extra, host_oom };
 const Shape = enum { ordinary, method, arrow };
 const Token = struct { probe: *Probe, index: usize };
 const Probe = struct {
@@ -69,7 +70,7 @@ fn holderFinalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
         probe.cleanup_published[token.index] = true;
         _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason));
     }
-    if (probe.fatal[token.index] and engine.native_fatal_invocation != null) {
+    if (probe.fatal[token.index]) {
         probe.fatal[token.index] = false;
         _ = engine.throwNativeOutOfMemoryFatal();
         if (c.JS_HasException(engine.context)) {
@@ -205,6 +206,18 @@ fn nativeBody(engine: *Engine, receiver: c.JSValue, arguments: *sync.Arguments, 
 fn nativeOperation(s: *Scope, receiver: c.JSValue, arguments: *sync.Arguments, kind: Kind) !c.JSValue {
     switch (kind) {
         .clear => { try arguments.take(0, c.pi_js_undefined()); try observe(s.engine, &.{}); return c.pi_js_undefined(); },
+        .default_clear => {
+            // The actual default-parameter parser first initializes raw p,
+            // then retains separate p/q LET slots through the function body.
+            const frame = try arguments.createFrame(s, DefaultFrame);
+            if (c.JS_IsUndefined(arguments.get(0)))
+                try arguments.take(0, c.JS_DupValue(s.engine.context, try v.text(s, "")));
+            try frame.take(.p, c.JS_DupValue(s.engine.context, arguments.get(0)));
+            try frame.take(.q, c.JS_DupValue(s.engine.context, arguments.get(1)));
+            try arguments.take(0, c.pi_js_undefined());
+            try observe(s.engine, &.{});
+            return c.pi_js_undefined();
+        },
         .order => {
             const frame = try arguments.createFrame(s, Frame);
             try frame.take(.local, make(s.engine, 1));
@@ -278,7 +291,8 @@ fn nativeOperation(s: *Scope, receiver: c.JSValue, arguments: *sync.Arguments, k
 }
 fn source(kind: Kind, formal_count: u16, shape: Shape) []const u8 {
     return switch (kind) {
-        .clear => if (formal_count == 2) "globalThis.subject=function(p='',q){p=undefined;vmObserve()}" else "globalThis.subject=function(p){p=undefined;vmObserve()}",
+        .clear => "globalThis.subject=function(p){p=undefined;vmObserve()}",
+        .default_clear => "globalThis.subject=function(p='',q){p=undefined;vmObserve()}",
         .order => if (formal_count == 2) "globalThis.subject=function(p='',q){const local=vmMake(1);p=vmMake(0);vmObserve()}" else "globalThis.subject=function(p){const local=vmMake(1);p=vmMake(0);vmObserve()}",
         .rewrite => "globalThis.subject=function(p){p+='';vmObserve(p);return p}",
         .pair => "globalThis.subject=function(p){const get=()=>p;const set=value=>p=value;return {get,set}}",
@@ -316,7 +330,11 @@ fn prepareBody(s: *Scope, probe: *Probe, native: bool, kind: Kind, formal_count:
     const hooks = try v.own(s, try retirement.createNativeRetirementHooks(s.engine));
     try v.put(s, global, "syncHooks", hooks);
     if (native) {
-        const definition: sync.Definition = .{ .formal_count = formal_count, .callback = nativeBody, .hooks = sync.frameHooks(Frame) };
+        const definition: sync.Definition = .{
+            .formal_count = formal_count,
+            .callback = nativeBody,
+            .hooks = if (kind == .default_clear) sync.frameHooks(DefaultFrame) else sync.frameHooks(Frame),
+        };
         const roots = [_]c.JSValue{c.JS_NewInt32(s.engine.context, @intFromEnum(kind))};
         const function = try v.own(s, try switch (shape) {
             .ordinary => v.function.createWithArguments(s.engine, "subject", length, definition, &roots),
@@ -405,15 +423,16 @@ test "VM sync arguments public COPY_ARGV keeps borrowed input unchanged through 
 }
 
 test "VM sync arguments formal count remains independent of length for defaults and missing formals" {
-    try both(.{ .kind = .clear, .formals = 2, .length = 0 },
+    try both(.{ .kind = .default_clear, .formals = 2, .length = 0 },
         \\if(subject.length!==0)throw Error("Source default arity");
         \\globalThis.vmObserve=()=>{if(vmCount(0)!==0)throw Error("Missing formal did not copy")};
         \\subject(vmMake(0));
         \\if(vmCount(0)!==1)throw Error("Missing-formal caller retirement");
     , &.{0});
-    try both(.{ .kind = .clear, .formals = 2, .length = 0 },
-        \\globalThis.vmObserve=()=>{if(vmCount(0)!==1)throw Error("Enough actual arguments failed to alias")};
+    try both(.{ .kind = .default_clear, .formals = 2, .length = 0 },
+        \\globalThis.vmObserve=()=>{if(vmCount(0)!==0)throw Error("Default-scope initial parameter retired during body")};
         \\subject(vmMake(0),undefined);
+        \\if(vmCount(0)!==1)throw Error("Default-scope initial parameter survived return");
     , &.{0});
 }
 

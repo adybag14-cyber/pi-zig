@@ -20052,6 +20052,8 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
                 pc += 2;
                 set_value(ctx, &arg_buf[idx], sp[-1]);
                 sp--;
+                if (unlikely(JS_HasException(ctx)))
+                    goto exception;
             }
             BREAK;
         CASE(OP_set_arg):
@@ -20060,6 +20062,8 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
                 idx = get_u16(pc);
                 pc += 2;
                 set_value(ctx, &arg_buf[idx], js_dup(sp[-1]));
+                if (unlikely(JS_HasException(ctx)))
+                    goto exception;
             }
             BREAK;
 
@@ -20091,14 +20095,46 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
         CASE(OP_get_arg1): *sp++ = js_dup(arg_buf[1]); BREAK;
         CASE(OP_get_arg2): *sp++ = js_dup(arg_buf[2]); BREAK;
         CASE(OP_get_arg3): *sp++ = js_dup(arg_buf[3]); BREAK;
-        CASE(OP_put_arg0): set_value(ctx, &arg_buf[0], *--sp); BREAK;
-        CASE(OP_put_arg1): set_value(ctx, &arg_buf[1], *--sp); BREAK;
-        CASE(OP_put_arg2): set_value(ctx, &arg_buf[2], *--sp); BREAK;
-        CASE(OP_put_arg3): set_value(ctx, &arg_buf[3], *--sp); BREAK;
-        CASE(OP_set_arg0): set_value(ctx, &arg_buf[0], js_dup(sp[-1])); BREAK;
-        CASE(OP_set_arg1): set_value(ctx, &arg_buf[1], js_dup(sp[-1])); BREAK;
-        CASE(OP_set_arg2): set_value(ctx, &arg_buf[2], js_dup(sp[-1])); BREAK;
-        CASE(OP_set_arg3): set_value(ctx, &arg_buf[3], js_dup(sp[-1])); BREAK;
+        CASE(OP_put_arg0):
+            set_value(ctx, &arg_buf[0], *--sp);
+            if (unlikely(JS_HasException(ctx)))
+                goto exception;
+            BREAK;
+        CASE(OP_put_arg1):
+            set_value(ctx, &arg_buf[1], *--sp);
+            if (unlikely(JS_HasException(ctx)))
+                goto exception;
+            BREAK;
+        CASE(OP_put_arg2):
+            set_value(ctx, &arg_buf[2], *--sp);
+            if (unlikely(JS_HasException(ctx)))
+                goto exception;
+            BREAK;
+        CASE(OP_put_arg3):
+            set_value(ctx, &arg_buf[3], *--sp);
+            if (unlikely(JS_HasException(ctx)))
+                goto exception;
+            BREAK;
+        CASE(OP_set_arg0):
+            set_value(ctx, &arg_buf[0], js_dup(sp[-1]));
+            if (unlikely(JS_HasException(ctx)))
+                goto exception;
+            BREAK;
+        CASE(OP_set_arg1):
+            set_value(ctx, &arg_buf[1], js_dup(sp[-1]));
+            if (unlikely(JS_HasException(ctx)))
+                goto exception;
+            BREAK;
+        CASE(OP_set_arg2):
+            set_value(ctx, &arg_buf[2], js_dup(sp[-1]));
+            if (unlikely(JS_HasException(ctx)))
+                goto exception;
+            BREAK;
+        CASE(OP_set_arg3):
+            set_value(ctx, &arg_buf[3], js_dup(sp[-1]));
+            if (unlikely(JS_HasException(ctx)))
+                goto exception;
+            BREAK;
         CASE(OP_get_var_ref0): *sp++ = js_dup(*var_refs[0]->pvalue); BREAK;
         CASE(OP_get_var_ref1): *sp++ = js_dup(*var_refs[1]->pvalue); BREAK;
         CASE(OP_get_var_ref2): *sp++ = js_dup(*var_refs[2]->pvalue); BREAK;
@@ -22115,15 +22151,32 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
         sf->cur_sp = sp;
     } else {
     done:
-        if (unlikely(sf->var_ref_count != 0)) {
-            /* variable references reference the stack: must close them */
-            close_var_refs(rt, sf);
+        {
+            JSNativeAsyncPending owned = { false, JS_UNDEFINED };
+            JSValue receiver;
+            /* An actual pending completion must survive argument/local
+               finalizers. A returned value is DATA until a producer throws. */
+            js_native_async_take_pending(ctx, &owned);
+            if (unlikely(sf->var_ref_count != 0)) {
+                /* Close all stack references before retiring original slots. */
+                close_var_refs(rt, sf);
+                js_native_async_take_pending(ctx, &owned);
+            }
+            /* Preserve the existing copied-argument, local and stack order,
+               clearing each original slot before its finalizer can reenter. */
+            for(pval = local_buf; pval < sp; pval++) {
+                JSValue value = *pval;
+                *pval = JS_UNDEFINED;
+                js_native_async_release(ctx, value, &owned);
+            }
+            receiver = sf->receiver;
+            sf->receiver = JS_UNDEFINED;
+            js_native_async_release(ctx, receiver, &owned);
+            if (owned.present) {
+                js_native_async_release(ctx, ret_val, &owned);
+                ret_val = JS_Throw(ctx, owned.reason);
+            }
         }
-        /* free the local variables and stack */
-        for(pval = local_buf; pval < sp; pval++) {
-            JS_FreeValue(ctx, *pval);
-        }
-        js_callsite_release_receiver(ctx, sf);
     }
     rt->current_stack_frame = sf->prev_frame;
     return ret_val;
