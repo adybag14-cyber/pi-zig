@@ -1,0 +1,68 @@
+{
+  "status": "finite source correction; no compiler, metadata, native execution or runtime qualification",
+  "unit": "Writer callback failure outcome before deferred task retirement",
+  "baseline": {
+    "path": "src/extensions/native_node_fs_write_ops.zig",
+    "sha256": "A5D4607B7117F63FC0319D6A623706C0C234540464F1ED573D3DCE6C3D1E2FFC",
+    "bytes": 19890
+  },
+  "successor": {
+    "path": "src/extensions/native_node_fs_write_ops.zig",
+    "sha256": "FEB57615F165D4071A0F661DA3A205578BBF31D887073A01534190262A1F2639",
+    "bytes": 20136
+  },
+  "delta": {
+    "before": "        return completion.finishVoid(&scope, self.completeBody(&scope));",
+    "after": "        return completion.finishVoid(&scope, self.completeBody(&scope)) catch |err| {\n            // Hub destroys the removed task while this failure escapes. Record\n            // that outcome before cleanup so its actual reason stays owned.\n            self.retirement_error = err;\n            return err;\n        };",
+    "exact_reversal_reproduces_baseline": true
+  },
+  "evidence": {
+    "cohort": "evidence/root-vm-io-oauth-options-v17-diagnostic-runtime-20261019-215552",
+    "group": "native-node-fs-write-uv",
+    "runtime_stderr_sha256_prefix": "D8A175A9",
+    "zero_based_test_index": 5,
+    "control": "native actual filesystem writer propagates an actual completion throw once after task removal",
+    "original_failure": "The actual callback exception propagated as JavaScriptException but captured_exception was null at the unchanged identity assertion",
+    "unchanged_root_sha256": "A61923ACB199931C89CCAC0AC8A9C4D8AD0E56A55E44819557092C0320A40847",
+    "declarations": 12
+  },
+  "causal_trace": [
+    "Hub.pump removes the task and installs its existing deferred destroy before calling Task.complete.",
+    "Task.complete's C435 finishVoid selects the actual callback failure and returns that same error with its owned captured reason.",
+    "Before this correction the task's retirement_error remained null. Task.destroy initialized C435 with success, so captured-only state correctly became diagnostic DATA and was released.",
+    "The new catch records the actual escaping error before the Hub defer runs. The existing Task.destroy selects that error before native/root retirement.",
+    "C435 initAction now owns the actual failed-operation reason and preserves it through ordered cleanup. Later real fatal retirement events retain the existing first-fatal precedence.",
+    "No callback is replayed and no shared Engine, Hub, C435, raw worker, descriptor or test assertion is changed."
+  ],
+  "dependencies": [
+    {
+      "path": "src/extensions/native_env_io.zig",
+      "sha256": "4BC66694AB6B22FC9A51A0943192BDCD61F0213C6846B0A69E0B459C26EF120E",
+      "bytes": 8014,
+      "scope": "actual orderedRemove/defer-destroy/propagate-completion-error path"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+      "bytes": 13354,
+      "scope": "actual initAction failure versus success-diagnostic ownership and finishVoid"
+    }
+  ],
+  "review": {
+    "reviewer": "/root/vm_foundation",
+    "status": "finite source peer closed",
+    "pin": "FEB57615",
+    "scope": "single outcome catch and actual unchanged Hub/C435/control6 path",
+    "execution": "none"
+  },
+  "validation": {
+    "exact_readback": true,
+    "exact_reversible_single_hunk": true,
+    "controls_changed": false,
+    "compiler_or_runtime_run": false
+  },
+  "limitations": [
+    "The original V17 negative remains retained. Runtime success requires a separately authorized fresh build and exact-artifact execution.",
+    "This correction does not qualify unrelated filesystem or callback dependencies."
+  ]
+}
