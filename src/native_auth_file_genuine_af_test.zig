@@ -203,8 +203,8 @@ const Probe = struct {
     class: c.JSClassID = 0,
     cleanup: Cleanup,
     ordinary: c.JSValue,
-    fatal: c.JSValue = c.pi_js_undefined(),
-    first_fatal: c.JSValue = c.pi_js_undefined(),
+    fatal: c.JSValue,
+    first_fatal: c.JSValue,
     failing: ?*std.testing.FailingAllocator = null,
     initially_marked: bool = false,
     raw_generation_before: u64 = 0,
@@ -260,7 +260,7 @@ fn retirement(comptime kind: Cleanup) !void {
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 }); defer engine.deinit();
     try prepare(engine, buffer[0..length]);
     const p = try engine.gpa.create(Probe);
-    p.* = .{ .engine = engine, .ordinary = try engine.checked(c.JS_NewError(engine.context)), .cleanup = kind };
+    p.* = .{ .engine = engine, .fatal = c.pi_js_undefined(), .first_fatal = c.pi_js_undefined(), .ordinary = try engine.checked(c.JS_NewError(engine.context)), .cleanup = kind };
     defer releaseProbe(p);
     _ = c.JS_NewClassID(engine.runtime, &p.class);
     const definition: c.JSClassDef = .{ .class_name = "File backend sole result carrier", .finalizer = retireCarrier };
@@ -318,7 +318,7 @@ fn overflow(comptime cleanup: Cleanup) !void {
     const engine = try em.Engine.init(failing.allocator(), .{ .host_await_timeout_ms = 10000 }); defer engine.deinit();
     try prepare(engine, buffer[0..length]);
     const p = try engine.gpa.create(Probe);
-    p.* = .{ .engine = engine, .ordinary = try engine.checked(c.JS_NewError(engine.context)), .cleanup = cleanup, .failing = &failing };
+    p.* = .{ .engine = engine, .fatal = c.pi_js_undefined(), .first_fatal = c.pi_js_undefined(), .ordinary = try engine.checked(c.JS_NewError(engine.context)), .cleanup = cleanup, .failing = &failing };
     defer releaseProbe(p);
     _ = c.JS_NewClassID(engine.runtime, &p.class);
     const definition: c.JSClassDef = .{ .class_name = "Actual Auth spread root overflow carrier", .finalizer = retireCarrier };
@@ -393,7 +393,7 @@ test "Auth file genuine AF adapter push getter precedes real callback allocation
     const engine = try em.Engine.init(failing.allocator(), .{ .host_await_timeout_ms = 10000 }); defer engine.deinit();
     try prepare(engine, buffer[0..length]);
     const p = try engine.gpa.create(Probe);
-    p.* = .{ .engine = engine, .ordinary = c.pi_js_undefined(), .cleanup = .ordinary, .failing = &failing };
+    p.* = .{ .engine = engine, .fatal = c.pi_js_undefined(), .first_fatal = c.pi_js_undefined(), .ordinary = c.pi_js_undefined(), .cleanup = .ordinary, .failing = &failing };
     defer releaseProbe(p);
     var s: v.Scope = .{ .engine = engine }; defer s.deinit();
     const original = try s.get(try s.get(try s.global("Array"), "prototype"), "push");
