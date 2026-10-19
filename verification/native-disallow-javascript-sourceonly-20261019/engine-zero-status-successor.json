@@ -1,0 +1,26 @@
+{
+  "status": "source-only; exact finite Root delta independently closed by vm_foundation; no execution",
+  "base_head": "059188a8c98ee9a0e5ab65b2e8cc9aaaf9b5e8c5",
+  "path": "src/extensions/engine.zig",
+  "before_sha256": "2653AD2C80B48E9596D61269BDB6AC268F65B8661F67B68F8B0011139DE14AF7",
+  "after_sha256": "5B3B91B0053508AAC9D4C9951CEF3F4B74D1A154342CD33FE21BE25E03EE3B0F",
+  "before": "            if (c.JS_ExecutePendingJob(self.runtime, &context) < 0) {\n                self.captureException(context orelse self.context);\n                return error.JavaScriptException;\n            }\n            jobs += 1;",
+  "after": "            const status = c.JS_ExecutePendingJob(self.runtime, &context);\n            if (status < 0) {\n                self.captureException(context orelse self.context);\n                return error.JavaScriptException;\n            }\n            if (status == 0) break;\n            jobs += 1;",
+  "cause": "JS_ExecutePendingJob returns zero without consuming an entry when execution is disallowed. runReadyJobs previously counted such zero work until its budget; now it stops the batch while leaving the job pending.",
+  "peer": {
+    "reviewer": "/root/vm_foundation",
+    "scope": "Complete runReadyJobs body and actual JS_ExecutePendingJob zero path before dequeue/context hook/continuation/argument retirement/job free. Probe remains one actual attempt. Existing negative branch unchanged; no success or kept-root release synthesized.",
+    "closed": true
+  },
+  "c_authority": {
+    "path": "vendor/quickjs/quickjs.c",
+    "sha256": "1E3B718F56643758D113CC269A51C0E03F59AD6457CDB13F4F61EF6BF195E085",
+    "selected_before_dequeue": "int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)\n{\n    JSContext *ctx;\n    JSJobEntry *e;\n    JSValue res;\n    int i, ret;\n    JSExecutionContextHook *context_hook;\n    void *context_opaque;\n    JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n\n    if (list_empty(&rt->job_list)) {\n        *pctx = NULL;\n        return 0;\n    }\n\n    /* V8's nonverbose TryRunMicrotasks catches the ordinary disallow reason\n       before JSEntry: no entry is consumed and the checkpoint reports zero.\n       Preserve an already pending native failure instead of swallowing it. */\n    if (unlikely(!rt->pi_javascript_execution_allowed)) {\n        e = list_entry(rt->job_list.next, JSJobEntry, link);\n        if (JS_HasException(e->ctx)) {\n            *pctx = e->ctx;\n            return -1;\n        }\n        *pctx = NULL;\n        return 0;\n    }\n\n",
+    "selected_sha256": "8551AF61B4CBA4A159CF50A08DCD72F762F717AC915F0E5731825AE38B6B7150"
+  },
+  "limits": [
+    "This is the generic Engine batch caller correction only.",
+    "The actual Node checkpoint continuation save/restore, exception report policy, completed callbacks and lifecycle remain separate owners.",
+    "No runtime result transfers from the historical V17 executable to this successor."
+  ]
+}

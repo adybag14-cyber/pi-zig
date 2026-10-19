@@ -1068,10 +1068,12 @@ pub const Engine = struct {
         while (jobs < limit and c.JS_IsJobPending(self.runtime)) {
             var context: ?*c.JSContext = null;
             if (self.progress_probe) |probe| probe.job_attempts +%= 1;
-            if (c.JS_ExecutePendingJob(self.runtime, &context) < 0) {
+            const status = c.JS_ExecutePendingJob(self.runtime, &context);
+            if (status < 0) {
                 self.captureException(context orelse self.context);
                 return error.JavaScriptException;
             }
+            if (status == 0) break;
             jobs += 1;
         }
         return jobs;
