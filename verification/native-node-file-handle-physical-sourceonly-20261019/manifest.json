@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "date": "2026-10-19",
+  "unit": "native-node-file-handle-physical",
+  "status": "source-only prerequisite",
+  "parent_commit": "19522001f967bd669ccbeba68cccef86bad6783c",
+  "production": [
+    {
+      "path": "src/extensions/native_uv_file_handle.c",
+      "bytes": 5088,
+      "sha256": "56590c33a17fbd7d1a69b8d7e07e6311031b576290858b832b1dfdf7f5ae05b0"
+    },
+    {
+      "path": "src/extensions/native_uv_file_handle.h",
+      "bytes": 2514,
+      "sha256": "10e429d64fe65dcc46dae73b07e5ae2f0672d3b0e40333c99095e32986021d0d"
+    },
+    {
+      "path": "src/extensions/native_node_uv_exception.zig",
+      "bytes": 4439,
+      "sha256": "51d61c9725774d27d4e664216162a26f998378470b4ef648d6ce3229c8806e40"
+    }
+  ],
+  "authority": [
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/node_file.v24.13.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/node_file.cc",
+      "bytes": 139386,
+      "sha256": "19c497bf90fad9e04645fca423bc727f18f0b4b9e3c898c35ae2678d12047c0f",
+      "scope": "Full exact retained source. Physical peer read OpenFileHandle/Read and FileHandle destructor/ClosePromise/AfterClose."
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/uv-exception.v24.13.excerpt.cc.txt",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/api/exceptions.cc",
+      "body_bytes": 7498,
+      "body_sha256": "954e7dccb7150c9ee2f7a00970edf13ff62ca6073858dfc9c370f7684696fda1",
+      "excerpt_bytes": 4000,
+      "excerpt_sha256": "d9ca5473f673ad0b3b3d89e53d5ae998b8d2774798b1928b136ac92700448bf8",
+      "excerpt_start_byte": 1579,
+      "excerpt_end_byte": 5579,
+      "scope": "Selected StringFromPath/UVException bodies; full source is not retained by this excerpt."
+    }
+  ],
+  "peer_reviews": [
+    {
+      "reviewer": "/root/modules_io",
+      "source_pin": "56590c33 / 10e429d6",
+      "status": "closed",
+      "scope": "Exact Node v24.13 physical open/read/close arguments and result cleanup, independently retained/charged owner, physical versus published descriptor, last-reference cleanup and fd-reuse avoidance.",
+      "conditions": [
+        "Actual entry validates Source Int32 read length.",
+        "A real independently retained native backing range is supplied for the complete physical read.",
+        "JS async dispatch, FileHandle class and warning are separate."
+      ]
+    },
+    {
+      "reviewer": "/root/modules_io",
+      "source_pin": "51d61c97",
+      "status": "closed",
+      "scope": "NUL-terminated one-byte message/code/syscall strings; UTF-8 path and Windows namespace stripping; intrinsic Error and ordered errno/code/syscall/path/dest Sets.",
+      "corrected_finding": "The initial generic string producer decoded UTF-8/full slices; the successor performs exact NUL truncation and Latin-1 code-unit mapping."
+    }
+  ],
+  "ownership": {
+    "handles": "Each public native wrapper or in-flight close ticket retains the independently charged PiUvFileHandle. Its memory owner is retained without a JS/Engine pointer.",
+    "descriptors": "The actual libuv CRT/POSIX fd is borrowed by descriptor(). Physical close exchanges its separate descriptor once; owner-thread completion later publishes fd=-1.",
+    "reads": "pi_uv_file_read accepts a borrowed native span and fd. The caller retains the real storage and descriptor entitlements for the entire worker call. No copy-back staging or JS-wrapper-only storage authority.",
+    "errors": "Ordinary libuv status is separate from actual wrapper reservation/allocation failure. The UVException factory returns an ordinary Error value; it does not perform a Source throw."
+  },
+  "build_dependency": {
+    "commit": "2b7b761ecdbe7f3b7cfd23768257fd7f9325bc6e",
+    "helper": "tools/build_native_node_network.zig",
+    "helper_sha256": "8b2fad905dc0d32d6e67180874e8e433e1aefd740ae1861289c3fb891b371b02",
+    "library": "pi-node-network",
+    "contract": "Link the single admitted unchanged Node v24.13 libuv graph; compile this physical C leaf once with src/extensions and UV include paths. No second UV graph."
+  },
+  "verification": {
+    "native_build": false,
+    "node_capture": false,
+    "runtime": false,
+    "control_declarations": [],
+    "target": null,
+    "reason": "This is the bounded source prerequisite requested by the actual Windows writer owner. Genuine FileHandle/physical writer controls are separate forthcoming units. Existing negative evidence and prior receipts are unchanged."
+  },
+  "excluded": [
+    "FileHandle JS class and public fs/promises installation",
+    "Backing-storage acquisition and resizable/shared-buffer semantics",
+    "Hub/Promise scheduling and failure publication",
+    "Source GC warning path",
+    "Other FileHandle methods and transfer/worker graph"
+  ]
+}
