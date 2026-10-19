@@ -1,0 +1,94 @@
+{
+  "status": "source-only; no compilation, Node reference capture, or runtime",
+  "purpose": "Integrate SDK-authored genuine inspect color owner into the shared inspector without formatter changes.",
+  "author": "sdk_owners authored the seven exact deltas; modules_io independently reviewed and applied them",
+  "baseline": {
+    "path": "src/extensions/native_node_util_inspect.zig",
+    "sha256": "5300C18A3557706224577BF51F2FBF5ECB0C84D9C44CD9D181F1A5ED99976614",
+    "bytes": 44416
+  },
+  "successor": {
+    "path": "src/extensions/native_node_util_inspect.zig",
+    "sha256": "CDC6CF80EF6176D3E7B81D3168024F20F92B09522DC574B25CE99656A0464BD0",
+    "bytes": 45167
+  },
+  "authority": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/node-inspect-entry-sourceonly-20261018/authority/inspect.js",
+    "sha256": "380AA09FAE68E3279D0FB2469A24D75931A8098C84354347BF7130A38852B597",
+    "bytes": 92944,
+    "selected": {
+      "colors": "const defaultFG = 39;\nconst defaultBG = 49;\ninspect.colors = {\n  __proto__: null,\n  reset: [0, 0],\n  bold: [1, 22],\n  dim: [2, 22], // Alias: faint\n  italic: [3, 23],\n  underline: [4, 24],\n  blink: [5, 25],\n  // Swap foreground and background colors\n  inverse: [7, 27], // Alias: swapcolors, swapColors\n  hidden: [8, 28], // Alias: conceal\n  strikethrough: [9, 29], // Alias: strikeThrough, crossedout, crossedOut\n  doubleunderline: [21, 24], // Alias: doubleUnderline\n  black: [30, defaultFG],\n  red: [31, defaultFG],\n  green: [32, defaultFG],\n  yellow: [33, defaultFG],\n  blue: [34, defaultFG],\n  magenta: [35, defaultFG],\n  cyan: [36, defaultFG],\n  white: [37, defaultFG],\n  bgBlack: [40, defaultBG],\n  bgRed: [41, defaultBG],\n  bgGreen: [42, defaultBG],\n  bgYellow: [43, defaultBG],\n  bgBlue: [44, defaultBG],\n  bgMagenta: [45, defaultBG],\n  bgCyan: [46, defaultBG],\n  bgWhite: [47, defaultBG],\n  framed: [51, 54],\n  overlined: [53, 55],\n  gray: [90, defaultFG], // Alias: grey, blackBright\n  redBright: [91, defaultFG],\n  greenBright: [92, defaultFG],\n  yellowBright: [93, defaultFG],\n  blueBright: [94, defaultFG],\n  magentaBright: [95, defaultFG],\n  cyanBright: [96, defaultFG],\n  whiteBright: [97, defaultFG],\n  bgGray: [100, defaultBG], // Alias: bgGrey, bgBlackBright\n  bgRedBright: [101, defaultBG],\n  bgGreenBright: [102, defaultBG],\n  bgYellowBright: [103, defaultBG],\n  bgBlueBright: [104, defaultBG],\n  bgMagentaBright: [105, defaultBG],\n  bgCyanBright: [106, defaultBG],\n  bgWhiteBright: [107, defaultBG],\n};\n\nfunction defineColorAlias(target, alias) {\n  ObjectDefineProperty(inspect.colors, alias, {\n    __proto__: null,\n    get() {\n      return this[target];\n    },\n    set(value) {\n      this[target] = value;\n    },\n    configurable: true,\n    enumerable: false,\n  });\n}\n\ndefineColorAlias('gray', 'grey');\ndefineColorAlias('gray', 'blackBright');\ndefineColorAlias('bgGray', 'bgGrey');\ndefineColorAlias('bgGray', 'bgBlackBright');\ndefineColorAlias('dim', 'faint');\ndefineColorAlias('strikethrough', 'crossedout');\ndefineColorAlias('strikethrough', 'strikeThrough');\ndefineColorAlias('strikethrough', 'crossedOut');\ndefineColorAlias('hidden', 'conceal');\ndefineColorAlias('inverse', 'swapColors');\ndefineColorAlias('inverse', 'swapcolors');\ndefineColorAlias('doubleunderline', 'doubleUnderline');\n\n// TODO(BridgeAR): Add function style support for more complex styles.\n// Don't use 'blue' not visible on cmd.exe\ninspect.styles = ObjectAssign({ __proto__: null }, {\n  special: 'cyan',\n  number: 'yellow',\n  bigint: 'yellow',\n  boolean: 'yellow',\n  undefined: 'grey',\n  null: 'bold',\n  string: 'green',\n  symbol: 'green',\n  date: 'magenta',\n  // \"name\": intentionally not styling\n  // TODO(BridgeAR): Highlight regular expressions properly.\n  regexp: 'red',\n  module: 'underline',\n});\n",
+      "stylize": "function stylizeWithColor(str, styleType) {\n  const style = inspect.styles[styleType];\n  if (style !== undefined) {\n    const color = inspect.colors[style];\n    if (color !== undefined)\n      return `\\u001b[${color[0]}m${str}\\u001b[${color[1]}m`;\n  }\n  return str;\n}\n",
+      "context": "      ctx.userOptions = opts;\n        }\n      }\n    }\n  }\n  if (ctx.colors) ctx.stylize = stylizeWithColor;\n  if (ctx.maxArrayLength === null) ctx.maxArrayLength = Infinity;\n  if (ctx.maxStringLength === null) ctx.maxStringLength ",
+      "offsets": {
+        "colors": [
+          12284,
+          15085
+        ],
+        "stylize": [
+          17689,
+          17956
+        ],
+        "context": 11591
+      }
+    }
+  },
+  "edits": [
+    {
+      "before": "const typed = @import(\"native_node_inspect_typed_array.zig\");",
+      "after": "const typed = @import(\"native_node_inspect_typed_array.zig\");\nconst colors = @import(\"native_node_inspect_colors.zig\");"
+    },
+    {
+      "before": "    object_assign: c.JSValue,\n",
+      "after": "    object_assign: c.JSValue,\n    object_define_property: c.JSValue,\n"
+    },
+    {
+      "before": "    const object_assign = try h.get(s, object, \"assign\");",
+      "after": "    const object_assign = try h.get(s, object, \"assign\");\n    const object_define_property = try h.get(s, object, \"defineProperty\");"
+    },
+    {
+      "before": ".object_assign = c.JS_DupValue(engine.context, object_assign), .typed_arrays =",
+      "after": ".object_assign = c.JS_DupValue(engine.context, object_assign), .object_define_property = c.JS_DupValue(engine.context, object_define_property), .typed_arrays ="
+    },
+    {
+      "before": "if (!c.JS_IsFunction(engine.context, inputs.object_assign) or",
+      "after": "if (!c.JS_IsFunction(engine.context, inputs.object_define_property) or !c.JS_IsFunction(engine.context, inputs.object_assign) or"
+    },
+    {
+      "before": "    try ops.accessor(s, inspect, \"defaultOptions\", get, set, 0);\n    return .{",
+      "after": "    try ops.accessor(s, inspect, \"defaultOptions\", get, set, 0);\n    const color_stylizer = try ops.own(s, try colors.create(engine, .{\n        .inspect = inspect, .object_assign = inputs.object_assign,\n        .object_define_property = inputs.object_define_property,\n    }));\n    try h.put(engine, lexical, \"stylizeWithColor\", color_stylizer);\n    return .{"
+    },
+    {
+      "before": "        if (s.truthy(try h.get(s, options, \"colors\"))) return error.RequiredActualInspectColorStyles;\n        // The Source default stylizer identity is pinned once per module.\n        // A user-supplied stylizer also receives the actual internal ctx as\n        // `this` in several branches; that mutable context is not yet ported.\n        if (!s.equal(try h.get(s, options, \"stylize\"), roots[12])) return error.RequiredActualInspectCustomStylizeContext;",
+      "after": "        if (s.truthy(try h.get(s, options, \"colors\"))) {\n            // Source colors overrides a supplied stylizer with the genuine\n            // module function; that function still reads live public tables.\n            try h.put(s.engine, options, \"stylize\", try h.get(s, roots[0], \"stylizeWithColor\"));\n        } else if (!s.equal(try h.get(s, options, \"stylize\"), roots[12])) {\n            // The preexisting arbitrary custom-stylizer context dependency\n            // remains separate from the actual colored Source path.\n            return error.RequiredActualInspectCustomStylizeContext;\n        }"
+    }
+  ],
+  "component": {
+    "path": "src/extensions/native_node_inspect_colors.zig",
+    "sha256": "0927127D486C82318886E5DE147229B3885A7E98DCA97DD011C554A0FBAB2D41",
+    "bytes": 10301,
+    "ownership": "SDK separate source commit; excluded from this two-path shared-inspector donor"
+  },
+  "review": {
+    "modules_scope": "44 real code pair Arrays, null-prototype tables, twelve actual alias target captures/receivers, real ObjectAssign/ObjectDefineProperty, staging/reflection and all seven shared inspector deltas; SDK root9AC177CE Fixture/Probe plus1–3/7–8/12–15 closed source-only",
+    "separate": "VM stylizer bodies and other selected controls; SDK final component/build commit"
+  },
+  "diagnosis": {
+    "root": "9A78028E3A3F2016ED6C26E7A794D05466F74ED43ED2C70CB3B7607C8642DEE2",
+    "observer": "011F1E693CA297EE63AEDFE72538E90F29A53C154AFC11A698F18D9B74B687E0",
+    "zero_index": 14,
+    "reason": "The existing colors:true near-breakLength32 observer necessarily entered Context.init's explicit RequiredActualInspectColorStyles branch. No observer or assertion was changed."
+  },
+  "verification": {
+    "exact_hunk_application_reproduces_sdk_CDC6": true,
+    "formatter_delta_excluded": true,
+    "original_inspector_13_root_abi_preserved": true,
+    "inputs_ownership_reflected": true
+  },
+  "limits": [
+    "No native execution or reference capture was run by this agent.",
+    "Color component must be intaken from SDK before this shared consumer is compiled.",
+    "Other inspector layouts and the separately authored format correction are outside this commit.",
+    "Original V17 diagnostic evidence and failed observations remain unchanged."
+  ]
+}
