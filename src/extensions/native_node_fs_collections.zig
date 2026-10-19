@@ -18,7 +18,7 @@ fn cacheKey(comptime collection: Collection) []const u8 {
 fn unsafeName(comptime collection: Collection) [*:0]const u8 {
     return switch (collection) { .map => "Map", .set => "Set", .weak_map => "WeakMap" };
 }
-fn safeName(comptime collection: Collection) [*:0]const u8 {
+fn safeName(comptime collection: Collection) [:0]const u8 {
     return switch (collection) { .map => "SafeMap", .set => "SafeSet", .weak_map => "SafeWeakMap" };
 }
 fn constructCollection(engine: *v.em.Engine, target: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
