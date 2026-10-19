@@ -240,7 +240,7 @@ function observeBranchSlotStop(api,hooks,cancel) {
     const ceil=Object.getOwnPropertyDescriptor(Math,"ceil"),unshift=Object.getOwnPropertyDescriptor(Array.prototype,"unshift");
     Object.defineProperty(Math,"ceil",{configurable:true,writable:true,value:function(){
         const token={holder:hooks.make(0),valueOf(){return 1;}};
-        if(cancel)hooks.armCancellation(0);else hooks.armFatal(0);
+        if(cancel)hooks.armCancel(0);else hooks.armFatal(0);
         return token;
     }});
     Object.defineProperty(Array.prototype,"unshift",{configurable:true,writable:true,value:function(){return 1;}});
