@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "status": "source-only; complete assigned production/control/build finite peers closed; no execution",
+  "root_parent": "9bef0d251d7194ab5fd5f6dd8e6e038d631c0dc9",
+  "purpose": "Genuine Node24.13 inspect color tables, aliases, stylizeWithColor and actual inspector integration",
+  "files": [
+    {
+      "path": "src/extensions/native_node_inspect_colors.zig",
+      "sha256": "0927127D486C82318886E5DE147229B3885A7E98DCA97DD011C554A0FBAB2D41",
+      "bytes": 10301
+    },
+    {
+      "path": "src/native_node_inspect_colors_test.zig",
+      "sha256": "9AC177CE7A8ACC4A63C1039BCC1F40DF96C74EC89FDB0A582CE3E703E4A01AAD",
+      "bytes": 12200
+    },
+    {
+      "path": "src/extensions/fixtures/native-node-inspect-colors-observer.mjs",
+      "sha256": "1C724B722D687404A4866254150D34FEEA29578A4733A5C1FDDF16C28085FC69",
+      "bytes": 12716
+    },
+    {
+      "path": "src/extensions/fixtures/native-node-inspect-colors-v24-source.mjs",
+      "sha256": "9B34E532034BEE64C917C3330102E23E20ADCAC33D37FE0A566CCDB476F6B18E",
+      "bytes": 3270
+    },
+    {
+      "path": "verification/node-inspect-colors-sourceonly-20261019/build-intake.json",
+      "sha256": "8623A19781104C7FF6BF43DD24C03E088893BD65C20A377F94DB83CAA430D2CC",
+      "bytes": 2260
+    }
+  ],
+  "target": {
+    "name": "build-native-node-inspect-colors",
+    "filter": "native actual inspect color",
+    "artifact": "native-node-inspect-colors",
+    "root": "src/native_node_inspect_colors_test.zig",
+    "declared_count": 15,
+    "declared_names": [
+      "native actual inspect color original tables arrays style order and function shape",
+      "native actual inspect color aliases use real captured targets and call receivers",
+      "native actual inspect color style and code guards are exactly undefined-only",
+      "native actual inspect color reads live styles colors and computed keys in order",
+      "native actual inspect color templates use eager string hints and intrinsic additions",
+      "native actual inspect color template abrupt substitutions stop before later getters",
+      "native actual inspect color ordinary private DATA throw retains exact identity",
+      "native actual inspect color successful flagged key remains ordinary DATA",
+      "native actual inspect color style receiver retires before live color table",
+      "native actual inspect color code temporary retires before later substitutions",
+      "native actual inspect color original local holders survive until actual terminal",
+      "native actual inspect color current native fatal prevents guest catch and later reads",
+      "native actual inspect color receiver retirement fatal prevents guest catch and later reads",
+      "native actual inspect color genuine inspector shares live tables and typed layout",
+      "native actual inspect color option overrides supplied stylizer after actual getter"
+    ],
+    "build_added_lines": 16,
+    "build_action": "addInstallArtifact only; no run step",
+    "shared_links": [
+      "linkQuickJs",
+      "linkTypeScriptParser",
+      "linkSqlite",
+      "catalog_tool",
+      "Windows advapi32/userenv"
+    ],
+    "build_representation": "Structured exact before/after; same reviewed sixteen added source lines."
+  },
+  "source": {
+    "node_version": "v24.13.0",
+    "original_inspect_sha256": "380AA09FAE68E3279D0FB2469A24D75931A8098C84354347BF7130A38852B597",
+    "original_bytes": 92944,
+    "retained_original": "verification/node-inspect-entry-sourceonly-20261018/authority/inspect.js",
+    "exact_selection_packet": {
+      "path": "verification/node-inspect-colors-sourceonly-20261019/production-and-intake.json",
+      "sha256": "CEFA03BE90BE9DBA056F359749E310A4AAB63CC4EC4E962808312EC25783AF67"
+    },
+    "projection": "Original complete colors/alias/styles block and stylizeWithColor body are byte-unchanged. Only the lexical-import factory wrapper and returned original function are added.",
+    "comparisons": "Controls1–13 use fresh native and original selected Source bodies with the same genuine inspector/primordial inputs. Controls14–15 exercise the genuine native inspector integration.",
+    "original_entry_controls": "The existing24 inspector entry declarations and observer assertions are unchanged."
+  },
+  "setter_successor": {
+    "base_sha256": "32E3844C4718C10F4C1713999D7750E32CD449414D7B77B9AEDEEBD51F244635",
+    "existing_primitive_sha256": "D03966DE89E0ACEE266150FAD4337FAB2C0DC49C4F4FBFCD9F13FE73DD4D3C84",
+    "import_added": "const inspect_ops = @import(\"native_node_inspect_operations.zig\");",
+    "before": "    const atom = try s.atom(name);\n    defer c.JS_FreeAtom(s.engine.context, atom);\n    try s.pending();\n    const status = c.JS_SetProperty(s.engine.context, receiver, atom, dup(s, args.get(0)));\n    try s.pending();\n    if (status < 0) return error.MissingActualInspectColorAliasSetReason;",
+    "after": "    try inspect_ops.setKey(&s.values, receiver, name, args.get(0));"
+  },
+  "inspector_integration": {
+    "owner": "/root/modules_io",
+    "commit": "642f51364f05d40e90c43f3150f8fe421ba5d905",
+    "path": "src/extensions/native_node_util_inspect.zig",
+    "source_sha256": "CDC6CF80EF6176D3E7B81D3168024F20F92B09522DC574B25CE99656A0464BD0",
+    "base_sha256": "5300C18A3557706224577BF51F2FBF5ECB0C84D9C44CD9D181F1A5ED99976614",
+    "edits": "Exactly the seven color hunks retained in CEFA03BE. Shared inspector file is deliberately in its own peer-closed donor; this commit does not include that file.",
+    "root_abi": 13
+  },
+  "peers": [
+    {
+      "reviewer": "/root/modules_io",
+      "closed": "0927127D/9AC177CE/1C724B72/9B34E532; tables/aliases/create, seven Context/capture hunks, Fixture/Probe, declarations1–3/7–8/12–15"
+    },
+    {
+      "reviewer": "/root/vm_foundation",
+      "closed": "0927127D/9AC177CE/1C724B72/9B34E532; stylizer expression/local ownership, declarations4–6/9–11, build446A8919"
+    }
+  ],
+  "regression_basis": {
+    "run": "root-vm-io-oauth-options-v17-diagnostic-runtime-20261019-215552",
+    "group": "native-node-inspect-entry",
+    "zero_index": 14,
+    "control": "typed limits depth and exact Array range validation",
+    "source_cause": "Actual Context rejected truthy colors before reaching the existing genuine typed layout. This unit supplies the missing original state and callable; the original colored near-breakLength assertion remains unchanged.",
+    "separate_copy_correction": "V17 index9 is the separately authored shared CopyDataProperties fix766f937b, not a color oracle change."
+  },
+  "limits": [
+    "No compiler, native executable, Node observer, or generator was run for this source unit.",
+    "No broader grouped/hidden/exotic inspector or arbitrary custom-stylizer behavior is qualified.",
+    "Public format scanner implementation remains the separate Modules donor.",
+    "Fresh Root integration/build/runtime evidence is still required."
+  ]
+}

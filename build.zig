@@ -4643,6 +4643,22 @@ pub fn build(b: *std.Build) void {
     if (target.result.os.tag == .windows) { sdk_tool_search_public.root_module.linkSystemLibrary("advapi32", .{}); sdk_tool_search_public.root_module.linkSystemLibrary("userenv", .{}); }
     b.step("build-native-sdk-tool-search-public", "Install actual public tool-search controls without execution").dependOn(&b.addInstallArtifact(sdk_tool_search_public, .{ .dest_sub_path = b.fmt("native-sdk-tool-search-public{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Genuine selected color bodies and actual inspector integration.
+    const node_inspect_colors = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_inspect_colors_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native actual inspect color"},
+    });
+    linkQuickJs(b, node_inspect_colors.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_inspect_colors.root_module, typescript_parser);
+    linkSqlite(node_inspect_colors.root_module, sqlite_lib_dir, sqlite_library);
+    node_inspect_colors.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_inspect_colors.root_module.linkSystemLibrary("advapi32", .{});
+        node_inspect_colors.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-inspect-colors", "Install fifteen genuine inspect color controls without execution").dependOn(&b.addInstallArtifact(node_inspect_colors, .{ .dest_sub_path = b.fmt("native-node-inspect-colors{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 
     // Exact Radius config module, including its genuine asynchronous load.
     const ai_radius_config_tests = b.addTest(.{
