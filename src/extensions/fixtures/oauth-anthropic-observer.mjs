@@ -7,7 +7,7 @@ function anthropicAmbient(trace, route = "success") {
     const RealError = Error;
     function ObservedError(message) {
         const reason = new RealError(message);
-        reason.stack = undefined;
+        Object.defineProperty(reason, "stack", { value: undefined, configurable: true, writable: true });
         return reason;
     }
     ObservedError.prototype = RealError.prototype;
