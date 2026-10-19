@@ -241,6 +241,9 @@ test "VM private property own setter receives the exact receiver value and ordin
 test "VM private property allocation failure consumes the new value and publishes no slot" {
     var f = try Fixture.init(); defer f.deinit();
     const object = try f.checked(c.JS_NewObject(f.context)); defer c.JS_FreeValue(f.context, object);
+    // Keep the same empty shape shared so private insertion must clone it.
+    // A lone object's two preallocated property slots need no allocation.
+    const shape_peer = try f.checked(c.JS_NewObject(f.context)); defer c.JS_FreeValue(f.context, shape_peer);
     var probe: Probe = .{};
     const value = try f.sentinel(&probe);
     c.JS_SetMemoryLimit(f.runtime, 1);
