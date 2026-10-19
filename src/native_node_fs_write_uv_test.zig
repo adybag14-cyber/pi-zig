@@ -38,7 +38,7 @@ fn collect(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) cal
 
 const Fixture = struct {
     temporary: std.testing.TmpDir,
-    root: []u8,
+    root: [:0]u8,
     environment: std.process.Environ.Map,
     engine: *a.v.em.Engine,
     fn init(self: *Fixture) !void {
