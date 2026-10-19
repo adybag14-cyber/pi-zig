@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "7d51e412f7e4192a0d606c3297e0829997866f35",
+  "current_source_head_at_record": "8fbe1c201c54735e55c4727ecb10d422de4edbff",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -36,8 +36,8 @@
   "application_qualification": false,
   "production_bridge_removed": false,
   "published_release": false,
-  "updated_utc": "2026-10-19T14:52:26.371472+00:00",
-  "record_note": "Active, incomplete port. Approved cleanup remains complete. The fresh V7 and V11/V12 diagnostic negatives have complete independent closure; six V12 groups compiled and reported actual metadata, but no runtime acceptance transfers to the corrected head. Actual Module/realpath synchronous argument consumers, runtime value initializers, restored Linux errno source, shared FS type fixes and the portable C exception-sentinel helper are integrated. A fresh bounded eleven-group BuildQuery, complete independent audit and separate exact-artifact RuntimeOnly are next. Remaining complete SDK/application, loader/physical IO, transport, provider bodies, bridge removal, platforms and publication stay open.",
+  "updated_utc": "2026-10-19T15:37:34.167504+00:00",
+  "record_note": "Active, incomplete port. Approved storage cleanup is complete. V8 fresh BuildQuery passed all eleven groups with 253 independently accepted actual metadata entries and complete current source/compiler/control and owner closure. Its separate RuntimeOnly stopped after the first synchronous argument group: 23 tests completed, three failed, and the other ten groups did not execute. Original negative and independent closure remain immutable. Peer-reviewed VM runtime correction, the 26-declaration public tool-search module and 25-declaration Radius configuration module are now integrated as unqualified source. The next fresh thirteen-group cohort declares293 names; only actual metadata can authorize its separate runtime. Full application, provider composition, loader/physical IO, transport, default bridge removal, platforms and publication stay open.",
   "integrated_source_units": [
     "Reviewed VM union, Agent/Node/SDK guest operation guards, CJS compiler and source metadata bodies, Engine ownership, genuine Agent/session/auth owners, real Exec live waiter, Git/Chalk/Ignore/Semver consumers, actual InitialModel guest boundaries, genuine Anthropic auth, genuine PKCE body and ten declared controls, genuine RemoteCatalog bodies and nine declared controls.",
     "Actual public CLI parser10 controls, truncation9, Theme10 and extension helpers8; child dependency and11 real frontend/spawn/waiter controls; shared stdio lease assertion; genuine six-export output guard dependency; genuine DeviceCode12 controls including linked-VM loop-slot lifetime; RemoteCatalog now11 controls; PKCE actual host job checkpoints; optional CommonJS host-error correction and explicit component filters.",
@@ -69,7 +69,10 @@
     "Genuine SDK summary24, branch AF20,14-export public compaction3, EventBus14 and public context helpers20 integrated with actual shared owners. Summary Root peer closed at6EEE5077/83FECFDC/FACE0A50/07EA1127; exact c268 source mismatches versus accepted runtime are retained. Full157-export public namespace/application remains open.",
     "Actual FS path helpers18, URL helpers19, physical stat/readlink provider and classic realpath21 integrated through3316c7cf. Root URL and classic algorithm/public CJS peer closed with explicit actual synchronous-argument reassignment dependency; physical Windows/Unix IO controls have not executed.",
     "Actual Module from and classic realpath p/options now use the VM formal argument slots, preserving overwrite-before-retirement and captured aliasing. Four causal controls add two Module and two classic realpath cases (26/23 declared names). Runtime constructor initializers replace invalid extern struct defaults without weakening tests. Optional native process/path acquisition, restored exact retained Linux errno mapping and compiler identifier fixes are integrated.",
-    "V12 compiler corrections integrated through 7d51e412: SafeName uses the declared sentinel slice ABI; both Windows stat conditional choices have explicit u32 types; pure pi_js_exception C helper constructs the original sentinel for two retirement control sites. No VM algorithm, test names, assertions or runtime classification is changed."
+    "V12 compiler corrections integrated through 7d51e412: SafeName uses the declared sentinel slice ABI; both Windows stat conditional choices have explicit u32 types; pure pi_js_exception C helper constructs the original sentinel for two retirement control sites. No VM algorithm, test names, assertions or runtime classification is changed.",
+    "Public tool search actual ten-binding module, BM25 ranker, deferred activation and extension factory; genuine zero-Await execute, actual argument/capture/retirement owners and26 declared source-comparison controls. Main8b62aa42 from donor8e822501; source-only.",
+    "Radius configuration actual six public bindings, live normalization/sanitization/mapping, genuine fetch/text/json AsyncFunction and25 declared source/causal controls. Maind2ed2432 from donorc9a943bb; provider and OAuth composition remain open.",
+    "VM actual argument-assignment pending-event stop and ordinary terminal first-fatal preservation, plus exact default-prologue and finalizer controls. Main8fbe1c20 from donor16de7c82; runtime validation pending."
   ],
   "combined_native_execution": {
     "scope": "Exact Windows component artifact and complete actual ordered metadata only; no whole-application or other-head acceptance.",
@@ -541,18 +544,31 @@
         "Windows stat conditional literals need explicit u32 context"
       ],
       "audit_note": "One ISO timestamp omitted a trailing fractional zero; independent successor compares exact UTC 100ns ticks. Original audit source and receipts retained."
+    },
+    {
+      "status": "closed_fresh_runtime_negative",
+      "head": "ed9d628526d85021d4408a8140e837349ef53741",
+      "evidence": "../../evidence/root-vm-anthropic-fresh-v8-runtime-20261019-150945",
+      "result_sha256": "6CA9A065FCD7191C2105837830C246F78313393A8E97C98455A07D2DFAD4475F",
+      "started": 23,
+      "completed": 23,
+      "failed": 3,
+      "unexecuted_later_groups": 10,
+      "independent_closure_sha256": "5E0C90A799C402B76BC497A481178A43F533D06D646D18BCC13541451D824A5A",
+      "qualification": false,
+      "detail": "Source fixture now retains original default-parameter prologue roots and permits the intended finalizer producer after the helper call. Actual VM put/set argument bytecodes stop on pending failure, and ordinary-call terminal cleanup uses the existing pending-completion reducer to preserve the first fatal. All22 named controls and assertions remain."
     }
   ],
   "next_native_batch": {
     "status": "preparing_frozen_root_fresh_buildquery_grant",
     "mode": "BuildQuery",
-    "prepared_directory": "../../evidence/combined-native-batch-v8-prepared-20261019",
+    "prepared_directory": "../../evidence/combined-native-batch-v9-prepared-20261019",
     "driver_sha256": "4F816750747F32A4EA6D0E832D90C962955C03217B3BF341A3F104068BBFC2D4",
-    "independent_auditor_sha256": "AAC4975B1DB4C64F844685E47612DC6CEF6E0069614B9501BCB6EC44E280D61A",
+    "independent_auditor_sha256": "701422961B0DF6E3C6A93AA83C8F23F8A01E7AE81B7BCA858D4BED052C372B7E",
     "qualification_requested": true,
     "runtime_requested": false,
-    "whole_matrix_source_groups": 62,
-    "whole_matrix_declared_named": 961,
+    "whole_matrix_source_groups": 64,
+    "whole_matrix_declared_named": 1012,
     "first_cohort": [
       "native-vm-sync-arguments",
       "native-vm-async-retirement",
@@ -564,10 +580,12 @@
       "native-node-module-search-paths",
       "native-node-fs-realpath-classic",
       "native-node-fs-path-helpers",
-      "native-node-file-url-paths"
+      "native-node-file-url-paths",
+      "native-sdk-tool-search-public",
+      "native-ai-radius-config"
     ],
-    "first_cohort_declared_named": 242,
-    "scope": "One fresh cache pair for eleven explicitly ordered groups, complete source/compiler/control seals, independent raw metadata/artifact acceptance and then separate RuntimeOnly. Other matrix groups and whole application remain required."
+    "first_cohort_declared_named": 293,
+    "scope": "Initially absent fresh cache pair, thirteen ordered groups, whole-input bookends, complete actual raw metadata and independent acceptance, then separate RuntimeOnly. V8 negatives remain immutable; no earlier-head acceptance transfers."
   },
   "storage_cleanup": {
     "status": "completed_and_independently_verified",
@@ -623,11 +641,26 @@
         "sha256": "5E6392CA3B50C59F6B8DCF9B2DF111193008BB28F4E1114FDC1FE07ACBD38F43",
         "records": 13,
         "last_main_head": "6df5ddd86d95e56f030c7cf829543f58fb452906"
+      },
+      {
+        "path": "../../evidence/root-vm-anthropic-fresh-v8-runtime-control-20261019-150945/tool-search-integration-journal.jsonl",
+        "sha256": "1E3C082AB1BB4358C6E6D141FCCE25D4999B09E16940C75DDCEFA28F26C6AFDE",
+        "records": 2
+      },
+      {
+        "path": "../../evidence/root-vm-anthropic-fresh-v8-runtime-control-20261019-150945/radius-config-integration-journal.jsonl",
+        "sha256": "F8EDA191C4017BF8AA6E02E56C68D0E5146FB425C272A4E559529E5B790AAF17",
+        "records": 2
+      },
+      {
+        "path": "../../evidence/root-vm-anthropic-fresh-v8-runtime-control-20261019-150945/vm-runtime-retirement-integration-journal.jsonl",
+        "sha256": "2DB863FACAF59D6F9FDFDD9D27E9095A22938CF40D7B5F2CE808090730A8030D",
+        "records": 3
       }
     ],
     "terminal_hook_source": "9ca2acdf6115579a418fde52d3a523824df3e8a3",
     "terminal_hook_main": "7d33baa187e52e2238601c9a086588830e45a1ee",
-    "current_head": "7d51e412f7e4192a0d606c3297e0829997866f35",
+    "current_head": "8fbe1c201c54735e55c4727ecb10d422de4edbff",
     "latest_reviewed_units": [
       "Module constructor24 and optional-builtin fixture correction",
       "Frontmatter19",
@@ -637,7 +670,90 @@
       "Anthropic OAuth25 including actual activation GC and explicit-throw corrections",
       "Actual mutable-argument Module26 and classic realpath23 consumers",
       "Runtime initializer and compiler identifier corrections",
-      "V12 shared FS types and portable C exception shim"
+      "V12 shared FS types and portable C exception shim",
+      "Public tool search26",
+      "Radius configuration25",
+      "Actual sync assignment and ordinary terminal first-fatal VM correction"
     ]
+  },
+  "fresh_v8_validation": {
+    "source_head": "ed9d628526d85021d4408a8140e837349ef53741",
+    "build_status": "passed_build_query_batch",
+    "build_evidence": "../../evidence/root-vm-anthropic-fresh-v8-buildquery-20261019-145328",
+    "actual_metadata_count": 253,
+    "groups": [
+      {
+        "group": "native-vm-sync-arguments",
+        "actual_count": 23
+      },
+      {
+        "group": "native-vm-async-retirement",
+        "actual_count": 25
+      },
+      {
+        "group": "native-vm-template-literal",
+        "actual_count": 19
+      },
+      {
+        "group": "native-vm-borrowed-bridges",
+        "actual_count": 18
+      },
+      {
+        "group": "vm-af-throw",
+        "actual_count": 31
+      },
+      {
+        "group": "native-ai-oauth-anthropic-genuine-af",
+        "actual_count": 26
+      },
+      {
+        "group": "native-node-module-creation",
+        "actual_count": 27
+      },
+      {
+        "group": "native-node-module-search-paths",
+        "actual_count": 21
+      },
+      {
+        "group": "native-node-fs-realpath-classic",
+        "actual_count": 24
+      },
+      {
+        "group": "native-node-fs-path-helpers",
+        "actual_count": 19
+      },
+      {
+        "group": "native-node-file-url-paths",
+        "actual_count": 20
+      }
+    ],
+    "independent_metadata": {
+      "path": "../../evidence/root-vm-anthropic-fresh-v8-control-20261019-145328/independent-metadata-acceptance.json",
+      "sha256": "0FD90731127ABF9DD7DF126D2EE4404904ED0E2129B3E1CFB1C63D0DEC77A734"
+    },
+    "independent_complete_current_seals_and_owners": {
+      "path": "../../evidence/root-vm-anthropic-fresh-v8-control-20261019-145328/independent-current-seals-and-owners.json",
+      "sha256": "22D1EA3E3807D8A477056A54FC29035203D4635CA6F0E24CD9DDC28E5F7F9CB5",
+      "distinct_current_files_rehashed": 32451
+    },
+    "runtime_status": "closed_negative_no_qualification",
+    "runtime_evidence": "../../evidence/root-vm-anthropic-fresh-v8-runtime-20261019-150945",
+    "completed_runtime_groups": 1,
+    "started_tests": 23,
+    "completed_tests": 23,
+    "failed_tests": 3,
+    "failed_indices": [
+      2,
+      19,
+      20
+    ],
+    "later_groups_not_executed": 10,
+    "runtime_qualification": false,
+    "independent_negative_closure": {
+      "path": "../../evidence/root-vm-anthropic-fresh-v8-runtime-control-20261019-150945/independent-negative-runtime-closure.json",
+      "sha256": "5E0C90A799C402B76BC497A481178A43F533D06D646D18BCC13541451D824A5A",
+      "distinct_current_files_rehashed": 32476,
+      "source_mutation_hold_released": true
+    }
   }
 }
