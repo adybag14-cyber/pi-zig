@@ -209,7 +209,7 @@ function observeUrlHostClass(api) {
         const first = Reflect.construct(Host, ["platform"], Sub);
         urlPathAssert(first instanceof Sub && first instanceof TypeError && first.code === "ERR_INVALID_FILE_URL_HOST" &&
             first.message === "chosen formatted message", "actual new.target and preselected lexical superclass");
-        urlPathEqual(trace, ["format getter", ['File URL host must be "localhost" or empty on %s',"platform']], "real rest was unshifted before formatter");
+        urlPathEqual(trace, ["format getter", ['File URL host must be "localhost" or empty on %s',"platform"]], "real rest was unshifted before formatter");
         trace.length = 0;
         const second = new Host("again");
         urlPathAssert(second.code === "ERR_INVALID_FILE_URL_HOST" && second.message === "chosen formatted message", "next call uses live superclass");
