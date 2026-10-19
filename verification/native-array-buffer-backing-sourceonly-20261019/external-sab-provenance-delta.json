@@ -1,0 +1,69 @@
+{
+  "sourceOnly": true,
+  "before": {
+    "c": "1F2809DF3D283E4358503AB93D404C9E6BE424E91F1249CC2EF69ABF10D2DDBD",
+    "h": "DBB33EAC8D540F039909821DE7F08618AEAB29FD4B24153E7C1F0D98D7A4282A"
+  },
+  "after": {
+    "c": "CDCA3E0EBBCE92BACEE8F634A0F3F347A9124268FDA35CF0AA46D9C37998075D",
+    "h": "BB7119FDA8DF226F6C1D31AED9A5A4999C6903980DD4EC64E5C44C594D116A32"
+  },
+  "edits": [
+    {
+      "old": "    uint8_t shared; /* if shared, the array buffer cannot be detached */\n",
+      "new": "    uint8_t shared; /* if shared, the array buffer cannot be detached */\n    uint8_t uses_sab_hooks; /* actual legacy SAB allocation/clone entitlement */\n"
+    },
+    {
+      "old": "static JSValue js_array_buffer_constructor3(JSContext *ctx,\n                                            JSValueConst new_target,\n                                            uint64_t len, uint64_t *max_len,\n                                            JSClassID class_id,\n                                            uint8_t *buf,\n                                            JSReallocArrayBufferDataFunc *realloc_func,\n                                            void *opaque, bool alloc_flag);",
+      "new": "static JSValue js_array_buffer_constructor3(JSContext *ctx,\n                                            JSValueConst new_target,\n                                            uint64_t len, uint64_t *max_len,\n                                            JSClassID class_id,\n                                            uint8_t *buf,\n                                            JSReallocArrayBufferDataFunc *realloc_func,\n                                            void *opaque, bool alloc_flag);\nstatic JSValue js_array_buffer_constructor4(JSContext *ctx,\n                                            JSValueConst new_target,\n                                            uint64_t len, uint64_t *max_len,\n                                            JSClassID class_id,\n                                            uint8_t *buf,\n                                            JSReallocArrayBufferDataFunc *realloc_func,\n                                            void *opaque, bool alloc_flag,\n                                            void *owned_storage,\n                                            bool trusted_shared);"
+    },
+    {
+      "old": "    assert(!abuf->detached); /* SharedArrayBuffer are never detached */\n    bc_put_u8(s, BC_TAG_SHARED_ARRAY_BUFFER);",
+      "new": "    assert(!abuf->detached); /* SharedArrayBuffer are never detached */\n    /* Managed reader tables contain only this allocator\\'s native backing\n       pointers. An external C buffer has its own callback and cannot enter\n       that trusted same-process serialization route. */\n    if (s->ctx->rt->array_buffer_storage_funcs.allocate &&\n        !abuf->native_storage) {\n        JS_ThrowTypeError(s->ctx,\n                          \"external SharedArrayBuffer storage is not serializable\");\n        return -1;\n    }\n    bc_put_u8(s, BC_TAG_SHARED_ARRAY_BUFFER);"
+    },
+    {
+      "old": "    /* the SharedArrayBuffer is cloned */\n    obj = js_array_buffer_constructor3(ctx, JS_UNDEFINED,\n                                       byte_length, pmax_byte_length,\n                                       JS_CLASS_SHARED_ARRAY_BUFFER,\n                                       data_ptr,\n                                       NULL, NULL, false);",
+      "new": "    /* This internal route consumes a trusted same-process serialization\n       pointer. Public JS_NewArrayBuffer never supplies this discriminator. */\n    obj = js_array_buffer_constructor4(ctx, JS_UNDEFINED,\n                                       byte_length, pmax_byte_length,\n                                       JS_CLASS_SHARED_ARRAY_BUFFER,\n                                       data_ptr,\n                                       NULL, NULL, false, NULL, true);"
+    },
+    {
+      "old": "                                            void *owned_storage)\n{",
+      "new": "                                            void *owned_storage,\n                                            bool trusted_shared)\n{"
+    },
+    {
+      "old": "    // SABs commit their maximum size upfront and are therefore never\n    // reallocated; everything else needs a way to resize the backing memory.\n",
+      "new": "    // Foreign SABs supply their maximum storage upfront. Managed SABs keep\n    // a stable reservation; other external buffers need a realloc callback.\n"
+    },
+    {
+      "old": "    abuf->native_storage = NULL;\n    abuf->storage_functions = NULL;\n    abuf->byte_length = len;",
+      "new": "    abuf->native_storage = NULL;\n    abuf->storage_functions = NULL;\n    abuf->uses_sab_hooks = false;\n    abuf->byte_length = len;"
+    },
+    {
+      "old": "    } else if (!alloc_flag && class_id == JS_CLASS_SHARED_ARRAY_BUFFER &&\n               rt->array_buffer_storage_funcs.shared_owner) {",
+      "new": "    } else if (trusted_shared && !alloc_flag &&\n               class_id == JS_CLASS_SHARED_ARRAY_BUFFER &&\n               rt->array_buffer_storage_funcs.shared_owner) {"
+    },
+    {
+      "old": "            memset(abuf->data, 0, sab_alloc_len);",
+      "new": "            abuf->uses_sab_hooks = true;\n            memset(abuf->data, 0, sab_alloc_len);"
+    },
+    {
+      "old": "        if (class_id == JS_CLASS_SHARED_ARRAY_BUFFER &&\n            rt->sab_funcs.sab_dup) {\n            rt->sab_funcs.sab_dup(rt->sab_funcs.sab_opaque, buf);\n        }",
+      "new": "        if (trusted_shared && class_id == JS_CLASS_SHARED_ARRAY_BUFFER &&\n            rt->sab_funcs.sab_dup) {\n            rt->sab_funcs.sab_dup(rt->sab_funcs.sab_opaque, buf);\n            abuf->uses_sab_hooks = true;\n        }"
+    },
+    {
+      "old": "                                        buf, realloc_func, opaque, alloc_flag,\n                                        NULL);",
+      "new": "                                        buf, realloc_func, opaque, alloc_flag,\n                                        NULL, false);"
+    },
+    {
+      "old": "        } else if (abuf->shared && rt->sab_funcs.sab_free) {",
+      "new": "        } else if (abuf->shared && abuf->uses_sab_hooks &&\n                   rt->sab_funcs.sab_free) {"
+    },
+    {
+      "old": "                NULL, NULL, NULL, false, storage);",
+      "new": "                NULL, NULL, NULL, false, storage, false);"
+    }
+  ],
+  "headerBefore": "aredArrayBufferFunctions *sf);\n\n\n/* Pi runtimes own backing allocations independently of JS wrappers. Install\n   before creating any ArrayBuffers. Every callback is native-only; retained\n   storage must remain valid after the originating JSRuntime is destroyed. */\n#define JS_PI_BACKING_SHARED    1u\n#define JS_PI_BACKING_RESIZABLE 2u\ntypedef struct JSPiArrayBufferStorageFunctions {\n    void *(*allocate)(void *opaque, size_t byte_length, size_t max_byte_length,\n                      unsigned flags);\n    /* Trusted same-process SAB serialization table, borrowed native owner. */\n    void *(*shared_owner)(uint8_t *data);\n    uint8_t *(*data)(void *owner);\n    size_t (*byte_length)(void *owner);\n    /* 0 success; -1 native allocation/permission failure; -2 growth race or\n       invalid length. Resize never moves the allocation's base address. */\n    int (*resize)(void *owner, size_t byte_length);\n    void (*retain)(void *owner);\n    void (*release)(void *owner);\n    void *opaque;\n} JSPiArrayBufferStorageFunctions;\nJS_EXTERN void JS_PiSetArrayBufferStorageFunctions(\n    JSRuntime *rt, const JSPiArrayBufferStorageFunctions *functions);\n\n/* An owned native entitlement and the intrinsic view span at acquisition.\n   Neither this record nor its callbacks contain a JS/Engine/runtime pointer.\n   Acquisition: 1 managed success; 0 external C storage with no installed\n   native owner; -1 actual pending exception. Every failure leaves out empty.\n   Shared growth can enlarge the buffer; the cap",
+  "headerAfter": "aredArrayBufferFunctions *sf);\n\n\n/* Pi runtimes own backing allocations independently of JS wrappers. Install\n   before creating any ArrayBuffers. Every callback is native-only; retained\n   storage must remain valid after the originating JSRuntime is destroyed. */\n#define JS_PI_BACKING_SHARED    1u\n#define JS_PI_BACKING_RESIZABLE 2u\ntypedef struct JSPiArrayBufferStorageFunctions {\n    void *(*allocate)(void *opaque, size_t byte_length, size_t max_byte_length,\n                      unsigned flags);\n    /* Trusted same-process SAB serialization table, borrowed native owner.\n       Public external SABs never reach this callback; managed runtimes reject\n       their serialization and preserve the original external free callback. */\n    void *(*shared_owner)(uint8_t *data);\n    uint8_t *(*data)(void *owner);\n    size_t (*byte_length)(void *owner);\n    /* 0 success; -1 native allocation/permission failure; -2 growth race or\n       invalid length. Resize never moves the allocation's base address. */\n    int (*resize)(void *owner, size_t byte_length);\n    void (*retain)(void *owner);\n    void (*release)(void *owner);\n    void *opaque;\n} JSPiArrayBufferStorageFunctions;\nJS_EXTERN void JS_PiSetArrayBufferStorageFunctions(\n    JSRuntime *rt, const JSPiArrayBufferStorageFunctions *functions);\n\n/* An owned native entitlement and the intrinsic view span at acquisition.\n   Neither this record nor its callbacks contain a JS/Engine/runtime pointer.\n   Acquisition: 1 managed success; 0 external C storage with no installed\n   native owner; -1 actual pending exception. Every failure leaves out empty.\n   Shared growth can enlarge the buffer; the captured lease span stays fixed.\n   A RAB shrin",
+  "control": "\ntest \"VM backing external shared C storage keeps its callback and never enters trusted serialization\" {\n    var f: Fixture = .{}; try f.init(); defer f.deinit();\n    var state: External = .{};\n    // A real caller-owned allocation with a deliberately non-Pi prefix. The\n    // public C entry must never interpret the preceding bytes as an owner.\n    var allocation: [@sizeOf(usize) + 8]u8 align(@alignOf(usize)) = @splat(0);\n    const data = allocation[@sizeOf(usize)..];\n    const baseline = c.pi_js_array_buffer_backing_allocations();\n    const shared_baseline = c.pi_js_shared_buffer_allocations();\n    var buffer = try f.checked(c.JS_NewArrayBuffer(f.context.?, data.ptr, data.len, 0, External.retire, &state, true));\n    defer c.JS_FreeValue(f.context.?, buffer);\n    try f.set(\"externalShared\", buffer);\n    try f.run(\"globalThis.externalView=new Uint8Array(externalShared);externalView[0]=47;\");\n    var view = try f.eval(\"externalView\"); defer c.JS_FreeValue(f.context.?, view);\n    var lease = emptyLease();\n    try std.testing.expectEqual(@as(c_int, 0), c.JS_PiAcquireArrayBufferView(f.context.?, view, &lease));\n    try expectEmpty(&lease);\n    try std.testing.expect(!c.JS_HasException(f.context.?));\n    try std.testing.expectEqual(@as(u8, 47), data[0]);\n    try std.testing.expectEqual(baseline, c.pi_js_array_buffer_backing_allocations());\n    try std.testing.expectEqual(shared_baseline, c.pi_js_shared_buffer_allocations());\n    var length: usize = 0;\n    var table: c.JSSABTab = std.mem.zeroes(c.JSSABTab);\n    const serialized = c.JS_WriteObject2(f.context.?, &length, buffer, c.JS_WRITE_OBJ_SAB, &table);\n    defer c.js_free(f.context.?, table.tab);\n    if (serialized != null) { c.js_free(f.context.?, serialized); return error.ExternalSharedEnteredTrustedSerialization; }\n    try std.testing.expect(c.JS_HasException(f.context.?));\n    const reason = c.JS_GetException(f.context.?); defer c.JS_FreeValue(f.context.?, reason);\n    try std.testing.expect(!c.JS_IsUncatchableError(reason));\n    try f.set(\"serializationReason\", reason);\n    try f.run(\"if(!(serializationReason instanceof TypeError)||serializationReason.message!=='external SharedArrayBuffer storage is not serializable')throw Error('foreign SAB serialization reason');\");\n    try std.testing.expectEqual(@as(usize, 0), table.len);\n    try std.testing.expectEqual(@as(usize, 0), state.calls);\n    try f.run(\"if(externalView[0]!==47||externalShared.byteLength!==8)throw Error('foreign SAB changed');delete globalThis.externalView;delete globalThis.externalShared;\");\n    c.JS_FreeValue(f.context.?, view); view = c.pi_js_undefined();\n    c.JS_FreeValue(f.context.?, buffer); buffer = c.pi_js_undefined();\n    try std.testing.expectEqual(@as(usize, 1), state.calls);\n    c.JS_RunGC(f.runtime.?);\n    try std.testing.expectEqual(@as(usize, 1), state.calls);\n    try std.testing.expectEqual(baseline, c.pi_js_array_buffer_backing_allocations());\n    try std.testing.expectEqual(shared_baseline, c.pi_js_shared_buffer_allocations());\n}\n",
+  "limitation": "Managed runtime serialization rejects unmanaged external SABs. Trusted SAB reader bytes/tables must originate from compatible same-process managed writer ownership; arbitrary pointer tables are not validated. External C buffers retain their own callback and acquire returns 0."
+}

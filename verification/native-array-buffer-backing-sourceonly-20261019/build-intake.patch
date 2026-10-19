@@ -1,0 +1,19 @@
+diff --git a/build.zig b/build.zig
+index 75d0fb53..45309967 100644
+--- a/build.zig
++++ b/build.zig
+@@ -1969,6 +1969,14 @@ pub fn build(b: *std.Build) void {
+         vm_mutable_async_arguments_tests.root_module.linkSystemLibrary("userenv", .{});
+     }
+     b.step("build-native-vm-async-arguments", "Install actual mutable async formal ownership controls without execution").dependOn(&b.addInstallArtifact(vm_mutable_async_arguments_tests, .{}).step);
++    if (target.result.os.tag == .windows or target.result.os.tag == .linux) {
++        const vm_array_buffer_backing_tests = b.addTest(.{
++            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_array_buffer_backing_test.zig"), .target = target, .optimize = optimize }),
++            .filters = &.{"VM backing"}, .use_llvm = use_llvm,
++        });
++        linkQuickJs(b, vm_array_buffer_backing_tests.root_module, quickjs, sqlite_lib_dir);
++        b.step("build-native-vm-array-buffer-backing", "Install actual native ArrayBuffer storage and lease controls without execution").dependOn(&b.addInstallArtifact(vm_array_buffer_backing_tests, .{}).step);
++    }
+     if (native_node_network) |network| {
+         const native_node_tcp_transport_tests = b.addTest(.{
+             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_tcp_transport_test.zig"), .target = target, .optimize = optimize }),

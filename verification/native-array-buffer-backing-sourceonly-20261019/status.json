@@ -1,0 +1,271 @@
+{
+  "status": "SOURCE_ONLY_ALL_ASSIGNED_PEERS_CLOSED_NO_EXECUTION",
+  "base_commit": "2b7b761ecdbe7f3b7cfd23768257fd7f9325bc6e",
+  "worktree": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018",
+  "build": {
+    "target": "build-native-vm-array-buffer-backing",
+    "filter": "VM backing",
+    "root": "src/native_vm_array_buffer_backing_test.zig",
+    "declared_names": 24,
+    "actual_metadata": "NOT_QUERIED",
+    "runtime": "NOT_EXECUTED",
+    "platforms": [
+      "Windows",
+      "Linux"
+    ],
+    "registration_added_lines": 8,
+    "install_only": true
+  },
+  "sources": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "1349A4FE1AF9672EF424E9C00AFECACF27BD8618DDBD3EF7DC2D71FDD9D0599D",
+      "bytes": 2323492,
+      "base_sha256": "30E688B9C5FC91928CD3F42B255762676FC9DE8C2BDEF1DD78D5BDF71F318799"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "BB7119FDA8DF226F6C1D31AED9A5A4999C6903980DD4EC64E5C44C594D116A32",
+      "bytes": 94217,
+      "base_sha256": "211FFA072B28A9C13FD8B0B9F195FF5D3921B8A11E13FEC5200CE02E1A08A80A"
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "sha256": "940CAAAE81B2A4098BE60DDD42D44B3CC3D1347341ED2D9557E0D34AFA9E928C",
+      "bytes": 17800,
+      "base_sha256": "A032C37F846EF3A6974C99DBB45F808D40C36DD00E0C13ADE0A6B99E6A171557"
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5",
+      "bytes": 2003,
+      "base_sha256": "D481FE8AE222FAB987D13B4BEA80F657EBE45900B895628CA220F41B3D7CA984"
+    },
+    {
+      "path": "src/native_vm_array_buffer_backing_test.zig",
+      "sha256": "0F28202181C720FA9CC0046710B6E1B0CFECD9AE77E4D7EED1233B1429F03499",
+      "bytes": 44817
+    },
+    {
+      "path": "build.zig",
+      "sha256": "673B2B7EDF8D16674C8C55E57A688A9E8CA9132393A62F975C8CAC41CA6232D7",
+      "bytes": 411839
+    }
+  ],
+  "evidence": [
+    {
+      "path": "authority/v8-selected-sources.json",
+      "sha256": "C0AC53951474263DF0EE79CFA6B8EC22D9F56D08AFFCC237BFCCC3591AC8F495",
+      "bytes": 112784
+    },
+    {
+      "path": "quickjs-backing.diff",
+      "sha256": "7556A034C28C9FD0DFA83334DF9DFF5709B70508FB0D4E1EEBF402493F1F4B4D",
+      "bytes": 72745
+    },
+    {
+      "path": "native-storage.diff",
+      "sha256": "5DDDDB13385341FDE774E6A1DD3700088371AB1EC39142433FD3F644051F0165",
+      "bytes": 15782
+    },
+    {
+      "path": "build-intake.patch",
+      "sha256": "5F2F88EF35CA47EC2046B2B25DED1FC7B091C96040CA4CC6C4E7CA3388FC9C1D",
+      "bytes": 1408
+    },
+    {
+      "path": "selected-production-and-cache-reads.json",
+      "sha256": "7E28EFD538B53B5A3584FDBE7B4AB6425389A81D20CEAEE0978AF8E94336D9CC",
+      "bytes": 93364
+    },
+    {
+      "path": "external-sab-provenance-delta.json",
+      "sha256": "3E4EFFB34A0CCC6A8B5F58BFAD5C3F15227EE6C7992099838BDFA4DBCBD3F293",
+      "bytes": 13162
+    },
+    {
+      "path": "partial-table-cleanup-delta.json",
+      "sha256": "DFD007ABACD052909571DEDD485D7DB60990876394D750EC03589112A3E6F78E",
+      "bytes": 6453
+    },
+    {
+      "path": "control-assertion-successor.json",
+      "sha256": "E587AE0948F0A18F4F7E240C7F534BB0CA422174CCEDCF970DDEC62D2A17F912",
+      "bytes": 9782
+    }
+  ],
+  "peers": [
+    {
+      "owner": "SDK",
+      "scope": "Managed C/H owners, transfer/resize/cache integration, native lease API; controls 1–12 and 19–23; eight-line build registration",
+      "status": "CLOSED_SOURCE_ONLY"
+    },
+    {
+      "owner": "Modules",
+      "scope": "Native Windows/Linux allocator/accounting/permissions and platform guard; controls 13–18, final 14/16 assertion delta and WrapperProbe/24",
+      "status": "CLOSED_SOURCE_ONLY"
+    },
+    {
+      "owner": "Root",
+      "scope": "Complete production and full 24-control predecessor; exact external-SAB, partial-table and final 14/16 assertion deltas.",
+      "status": "CLOSED_SOURCE_ONLY"
+    }
+  ],
+  "limits": [
+    "No build, actual metadata query, runtime or full HTTP/FileHandle claim.",
+    "Managed storage hooks activate only on Windows and Linux; other platforms preserve their prior routes.",
+    "Existing QuickJS 2 GiB maximum is retained; bytecode layout/version is unchanged.",
+    "Lease is a native allocation entitlement and intrinsic snapshot span, not a JS root or a promise that RAB-shrunk pages remain writable.",
+    "Detach/resize remain enabled; no staged copyback or blanket RAB/GSAB restriction.",
+    "Public foreign ArrayBuffer/SAB storage keeps its original callback and returns lease status 0 with empty output.",
+    "Managed runtimes reject foreign SAB serialization with an ordinary TypeError before table admission; same-process SAB reader pointer tables remain trusted input.",
+    "No claim that the original Node FSReq explicitly retained a V8 BackingStore.",
+    "Broader unchanged typed-array/DataView semantics and cross-platform libuv/FileHandle scheduling remain independently qualified."
+  ],
+  "controls": [
+    {
+      "number": 1,
+      "name": "VM backing actual intrinsic TypedArray and DataView spans ignore guest accessors",
+      "scope": "Intrinsic TypedArray/DataView spans without guest accessor calls",
+      "peer": "SDK"
+    },
+    {
+      "number": 2,
+      "name": "VM backing actual empty spans and invalid view brands leave native output empty",
+      "scope": "Empty spans and invalid intrinsic brands with empty output",
+      "peer": "SDK"
+    },
+    {
+      "number": 3,
+      "name": "VM backing actual pending entry preserves the exact reason and owner count",
+      "scope": "Pending entry preserves the exact exception and native owner count",
+      "peer": "SDK"
+    },
+    {
+      "number": 4,
+      "name": "VM backing external C storage stays unmanaged and keeps its actual free callback",
+      "scope": "Foreign ordinary ArrayBuffer keeps its supplied release callback and returns unsupported lease",
+      "peer": "SDK"
+    },
+    {
+      "number": 5,
+      "name": "VM backing duplicate leases own the native allocation after detach and collection",
+      "scope": "Duplicate native leases survive detach and GC with exact native references",
+      "peer": "SDK"
+    },
+    {
+      "number": 6,
+      "name": "VM backing fixed equal transfer reuses storage and old lease writes reach the target",
+      "scope": "Fixed equal transfer reuses native storage after detach",
+      "peer": "SDK"
+    },
+    {
+      "number": 7,
+      "name": "VM backing changed fixed transfer copies before detaching and leaves old writes separate",
+      "scope": "Changed fixed transfer copies before detach and separates later native writes",
+      "peer": "SDK"
+    },
+    {
+      "number": 8,
+      "name": "VM backing resizable equal transfer allocates fresh storage and preserves maximum",
+      "scope": "Resizable transfer preserves maximum and allocates a distinct native store",
+      "peer": "SDK"
+    },
+    {
+      "number": 9,
+      "name": "VM backing zero transfer detaches without moving the outstanding native span",
+      "scope": "Zero transfer detaches without moving the old native entitlement",
+      "peer": "SDK"
+    },
+    {
+      "number": 10,
+      "name": "VM backing transfer coercion precedes detach checks and maximum failure keeps source live",
+      "scope": "Transfer coercion/error ordering and unchanged source on maximum failure",
+      "peer": "SDK"
+    },
+    {
+      "number": 11,
+      "name": "VM backing external shared C storage keeps its callback and never enters trusted serialization",
+      "scope": "Foreign shared storage never enters trusted prefix lookup or serialization",
+      "peer": "SDK"
+    },
+    {
+      "number": 12,
+      "name": "VM backing failed mixed shared serialization retires its partial table and foreign owner exactly once",
+      "scope": "Mixed managed/foreign serialization releases the partial table and all memory after runtime teardown",
+      "peer": "SDK"
+    },
+    {
+      "number": 13,
+      "name": "VM backing resizable storage keeps its base and exact shrink zeroing across page growth",
+      "scope": "Stable RAB reservation, exact shrink zeroing, partial-page writes, and page growth",
+      "peer": "Modules"
+    },
+    {
+      "number": 14,
+      "name": "VM backing tracking and fixed view spans follow resize while old leases keep their snapshot",
+      "scope": "Tracking/fixed TypedArray/DataView resize spans, equality, OOB, restore, and detach",
+      "peer": "Modules"
+    },
+    {
+      "number": 15,
+      "name": "VM backing Windows shrink decommits actual data pages while retaining the reservation",
+      "scope": "Windows VirtualQuery observes real commit/decommit/recommit with stable reservation",
+      "peer": "Modules"
+    },
+    {
+      "number": 16,
+      "name": "VM backing failed native page growth leaves source length bytes and charge unchanged",
+      "scope": "Failed native page growth preserves source, committed pages, allocation count, and total native charge",
+      "peer": "Modules"
+    },
+    {
+      "number": 17,
+      "name": "VM backing allocation failure preserves exact fixed equal changed and zero transfer detach order",
+      "scope": "Actual allocation failures preserve fixed-equal/changed/zero transfer detach order",
+      "peer": "Modules"
+    },
+    {
+      "number": 18,
+      "name": "VM backing a native worker owns fixed storage after the originating runtime and allocator caller retire",
+      "scope": "Native worker entitlement remains usable after originating runtime and caller memory entitlement retire",
+      "peer": "Modules"
+    },
+    {
+      "number": 19,
+      "name": "VM backing managed shared roundtrip uses current native length and refreshes the C buffer result",
+      "scope": "Managed GSAB roundtrip supersedes stale serialized length and updates C buffer length",
+      "peer": "SDK"
+    },
+    {
+      "number": 20,
+      "name": "VM backing first operations in another runtime refresh actual shared view caches",
+      "scope": "Each first-operation cache refresh uses a fresh independent runtime pair",
+      "peer": "SDK"
+    },
+    {
+      "number": 21,
+      "name": "VM backing zero maximum growable shared buffers retain real empty managed spans",
+      "scope": "Zero maximum GSAB retains a real managed empty span and rejects nonzero growth",
+      "peer": "SDK"
+    },
+    {
+      "number": 22,
+      "name": "VM backing shared native entitlements survive both runtimes and the serializer table",
+      "scope": "Native/shared serializer entitlements survive both runtimes and the table",
+      "peer": "SDK"
+    },
+    {
+      "number": 23,
+      "name": "VM backing two actual runtime workers share monotonic atomic growth and race failure",
+      "scope": "Two independent runtime workers exercise monotonic GSAB growth and the allowed racing failure",
+      "peer": "SDK"
+    },
+    {
+      "number": 24,
+      "name": "VM backing native leases retain allocation without retaining the JavaScript buffer wrapper",
+      "scope": "Native allocation lease does not retain the actual JavaScript buffer wrapper",
+      "peer": "Modules"
+    }
+  ]
+}

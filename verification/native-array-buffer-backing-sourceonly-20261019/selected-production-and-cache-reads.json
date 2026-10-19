@@ -1,0 +1,847 @@
+{
+  "base_sha256": "30E688B9C5FC91928CD3F42B255762676FC9DE8C2BDEF1DD78D5BDF71F318799",
+  "successor_sha256": "1349A4FE1AF9672EF424E9C00AFECACF27BD8618DDBD3EF7DC2D71FDD9D0599D",
+  "note": "Exact selected source substrings, not rewritten code; full file available at vendor/quickjs/quickjs.c. Offsets are decoded character offsets; all listed spans are ASCII.",
+  "original_arraybuffer": {
+    "character_offset": 2108262,
+    "source": "static JSValue js_array_buffer_constructor3(JSContext *ctx,\n                                            JSValueConst new_target,\n                                            uint64_t len, uint64_t *max_len,\n                                            JSClassID class_id,\n                                            uint8_t *buf,\n                                            JSReallocArrayBufferDataFunc *realloc_func,\n                                            void *opaque, bool alloc_flag)\n{\n    JSRuntime *rt = ctx->rt;\n    JSValue obj;\n    JSArrayBuffer *abuf = NULL;\n    uint64_t sab_alloc_len;\n\n    // SABs commit their maximum size upfront and are therefore never\n    // reallocated; everything else needs a way to resize the backing memory.\n    // Not observable from JS land, only through C API misuse; JS code cannot\n    // create externally managed buffers directly.\n    if (!alloc_flag && buf && max_len && !realloc_func &&\n        class_id != JS_CLASS_SHARED_ARRAY_BUFFER) {\n        return JS_ThrowInternalError(ctx,\n                                     \"resizable ArrayBuffers require a \"\n                                     \"realloc function\");\n    }\n    obj = js_create_from_ctor(ctx, new_target, class_id);\n    if (JS_IsException(obj))\n        return obj;\n    /* XXX: we are currently limited to 2 GB */\n    if (len > INT32_MAX) {\n        JS_ThrowRangeError(ctx, \"invalid array buffer length\");\n        goto fail;\n    }\n    if (max_len && *max_len > INT32_MAX) {\n        JS_ThrowRangeError(ctx, \"invalid max array buffer length\");\n        goto fail;\n    }\n    if (alloc_flag && class_id == JS_CLASS_SHARED_ARRAY_BUFFER && max_len &&\n        *max_len > len && !rt->sab_funcs.sab_alloc) {\n        JS_ThrowTypeError(ctx,\n                          \"growable SharedArrayBuffer requires \"\n                          \"SAB allocator hooks\");\n        goto fail;\n    }\n    abuf = js_malloc(ctx, sizeof(*abuf));\n    if (!abuf)\n        goto fail;\n    abuf->byte_length = len;\n    abuf->max_byte_length = max_len ? *max_len : -1;\n    if (alloc_flag) {\n        if (class_id == JS_CLASS_SHARED_ARRAY_BUFFER &&\n            rt->sab_funcs.sab_alloc) {\n            // TOOD(bnoordhuis) resizing backing memory for SABs atomically\n            // is hard so we cheat and allocate |maxByteLength| bytes upfront\n            sab_alloc_len = max_len ? *max_len : len;\n            abuf->data = rt->sab_funcs.sab_alloc(rt->sab_funcs.sab_opaque,\n                                                 max_int(sab_alloc_len, 1));\n            if (!abuf->data)\n                goto fail;\n            memset(abuf->data, 0, sab_alloc_len);\n        } else {\n            /* the allocation must be done after the object creation */\n            abuf->data = js_mallocz(ctx, max_int(len, 1));\n            if (!abuf->data)\n                goto fail;\n        }\n    } else {\n        if (class_id == JS_CLASS_SHARED_ARRAY_BUFFER &&\n            rt->sab_funcs.sab_dup) {\n            rt->sab_funcs.sab_dup(rt->sab_funcs.sab_opaque, buf);\n        }\n        if (buf) {\n            abuf->data = buf;\n        } else {\n            abuf->data = js_mallocz(ctx, 1);\n            if (!abuf->data)\n                goto fail;\n            realloc_func = js_array_buffer_realloc;\n        }\n    }\n    init_list_head(&abuf->array_list);\n    abuf->detached = false;\n    abuf->immutable = false;\n    abuf->shared = (class_id == JS_CLASS_SHARED_ARRAY_BUFFER);\n    abuf->opaque = opaque;\n    abuf->realloc_func = realloc_func;\n    if (alloc_flag && buf)\n        memcpy(abuf->data, buf, len);\n    JS_SetOpaqueInternal(obj, abuf);\n    return obj;\n fail:\n    JS_FreeValue(ctx, obj);\n    js_free(ctx, abuf);\n    return JS_EXCEPTION;\n}\n\nstatic void *js_array_buffer_realloc(JSRuntime *rt, void *opaque, void *ptr,\n                                     size_t size)\n{\n    return js_realloc_rt(rt, ptr, size);\n}\n\nstatic JSValue js_array_buffer_constructor2(JSContext *ctx,\n                                            JSValueConst new_target,\n                                            uint64_t len, uint64_t *max_len,\n                                            JSClassID class_id)\n{\n    return js_array_buffer_constructor3(ctx, new_target, len, max_len,\n                                        class_id, NULL,\n                                        js_array_buffer_realloc, NULL, true);\n}\n\nstatic JSValue js_array_buffer_constructor1(JSContext *ctx,\n                                            JSValueConst new_target,\n                                            uint64_t len, uint64_t *max_len)\n{\n    return js_array_buffer_constructor2(ctx, new_target, len, max_len,\n                                        JS_CLASS_ARRAY_BUFFER);\n}\n\nJSValue JS_NewArrayBuffer(JSContext *ctx, uint8_t *buf, size_t len,\n                          size_t max_len,\n                          JSReallocArrayBufferDataFunc *realloc_func,\n                          void *opaque, bool is_shared)\n{\n    JSClassID class_id =\n        is_shared ? JS_CLASS_SHARED_ARRAY_BUFFER : JS_CLASS_ARRAY_BUFFER;\n    uint64_t max_len64 = max_len, *pmax_len = NULL;\n\n    /* a zero 'max_len' means the ArrayBuffer is not resizable */\n    if (max_len > 0) {\n        if (max_len < len)\n            return JS_ThrowRangeError(ctx, \"invalid max array buffer length\");\n        pmax_len = &max_len64;\n    }\n    return js_array_buffer_constructor3(ctx, JS_UNDEFINED, len, pmax_len,\n                                        class_id, buf, realloc_func, opaque,\n                                        false);\n}\n\nbool JS_IsArrayBuffer(JSValueConst obj) {\n    return JS_GetClassID(obj) == JS_CLASS_ARRAY_BUFFER;\n}\n\n/* create a new ArrayBuffer of length 'len' and copy 'buf' to it */\nJSValue JS_NewArrayBufferCopy(JSContext *ctx, const uint8_t *buf, size_t len)\n{\n    return js_array_buffer_constructor3(ctx, JS_UNDEFINED, len, NULL,\n                                        JS_CLASS_ARRAY_BUFFER,\n                                        (uint8_t *)buf,\n                                        js_array_buffer_realloc, NULL,\n                                        true);\n}\n\nstatic JSValue js_array_buffer_constructor0(JSContext *ctx, JSValueConst new_target,\n                                            int argc, JSValueConst *argv,\n                                            JSClassID class_id)\n{\n    uint64_t len, max_len, *pmax_len = NULL;\n    JSValue obj, val;\n    int64_t i;\n\n    if (JS_ToIndex(ctx, &len, argv[0]))\n        return JS_EXCEPTION;\n    if (argc < 2)\n        goto next;\n    if (!JS_IsObject(argv[1]))\n        goto next;\n    obj = JS_ToObject(ctx, argv[1]);\n    if (JS_IsException(obj))\n        return JS_EXCEPTION;\n    val = JS_GetProperty(ctx, obj, JS_ATOM_maxByteLength);\n    JS_FreeValue(ctx, obj);\n    if (JS_IsException(val))\n        return JS_EXCEPTION;\n    if (JS_IsUndefined(val))\n        goto next;\n    if (JS_ToInt64Free(ctx, &i, val))\n        return JS_EXCEPTION;\n    // don't have to check i < 0 because len >= 0\n    if (len > i || i > MAX_SAFE_INTEGER)\n        return JS_ThrowRangeError(ctx, \"invalid array buffer max length\");\n    max_len = i;\n    pmax_len = &max_len;\nnext:\n    return js_array_buffer_constructor2(ctx, new_target, len, pmax_len,\n                                        class_id);\n}\n\nstatic JSValue js_array_buffer_constructor(JSContext *ctx, JSValueConst new_target,\n                                           int argc, JSValueConst *argv)\n{\n    return js_array_buffer_constructor0(ctx, new_target, argc, argv,\n                                        JS_CLASS_ARRAY_BUFFER);\n}\n\nstatic JSValue js_shared_array_buffer_constructor(JSContext *ctx,\n                                                  JSValueConst new_target,\n                                                  int argc, JSValueConst *argv)\n{\n    return js_array_buffer_constructor0(ctx, new_target, argc, argv,\n                                        JS_CLASS_SHARED_ARRAY_BUFFER);\n}\n\n/* also used for SharedArrayBuffer */\nstatic void js_array_buffer_finalizer(JSRuntime *rt, JSValueConst val)\n{\n    JSObject *p = JS_VALUE_GET_OBJ(val);\n    JSArrayBuffer *abuf = p->u.array_buffer;\n    struct list_head *el, *el1;\n\n    if (abuf) {\n        /* The ArrayBuffer finalizer may be called before the typed\n           array finalizers using it, so abuf->array_list is not\n           necessarily empty. */\n        list_for_each_safe(el, el1, &abuf->array_list) {\n            JSTypedArray *ta;\n            JSObject *p1;\n\n            ta = list_entry(el, JSTypedArray, link);\n            ta->link.prev = NULL;\n            ta->link.next = NULL;\n            p1 = ta->obj;\n            /* Note: the typed array length and offset fields are not modified */\n            if (p1->class_id != JS_CLASS_DATAVIEW) {\n                p1->u.array.count = 0;\n                p1->u.array.u.ptr = NULL;\n            }\n        }\n        if (abuf->shared && rt->sab_funcs.sab_free) {\n            rt->sab_funcs.sab_free(rt->sab_funcs.sab_opaque, abuf->data);\n        } else {\n            if (abuf->realloc_func)\n                abuf->realloc_func(rt, abuf->opaque, abuf->data, 0);\n        }\n        js_free_rt(rt, abuf);\n    }\n}\n\nstatic JSValue js_array_buffer_isView(JSContext *ctx,\n                                      JSValueConst this_val,\n                                      int argc, JSValueConst *argv)\n{\n    JSObject *p;\n\n    if (JS_VALUE_GET_TAG(argv[0]) == JS_TAG_OBJECT) {\n        p = JS_VALUE_GET_OBJ(argv[0]);\n        return js_bool(is_typed_array(p->class_id) ||\n                       p->class_id == JS_CLASS_DATAVIEW);\n    }\n    return JS_FALSE;\n}\n\nstatic const JSCFunctionListEntry js_array_buffer_funcs[] = {\n    JS_CFUNC_DEF(\"isView\", 1, js_array_buffer_isView ),\n    JS_CGETSET_DEF(\"[Symbol.species]\", js_get_this, NULL ),\n};\n\nstatic JSValue JS_ThrowTypeErrorDetachedArrayBuffer(JSContext *ctx)\n{\n    return JS_ThrowTypeError(ctx, \"ArrayBuffer is detached\");\n}\n\nstatic JSValue JS_ThrowTypeErrorImmutableArrayBuffer(JSContext *ctx)\n{\n    return JS_ThrowTypeError(ctx, \"ArrayBuffer is immutable\");\n}\n\nstatic JSValue JS_ThrowTypeErrorArrayBufferOOB(JSContext *ctx)\n{\n    return JS_ThrowTypeError(ctx, \"ArrayBuffer is detached or resized\");\n}\n\n// #sec-get-arraybuffer.prototype.detached\nstatic JSValue js_array_buffer_get_detached(JSContext *ctx,\n                                            JSValueConst this_val)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque2(ctx, this_val, JS_CLASS_ARRAY_BUFFER);\n    if (!abuf)\n        return JS_EXCEPTION;\n    if (abuf->shared)\n        return JS_ThrowTypeError(ctx, \"detached called on SharedArrayBuffer\");\n    return js_bool(abuf->detached);\n}\n\nstatic JSValue js_array_buffer_get_immutable(JSContext *ctx,\n                                             JSValueConst this_val)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque2(ctx, this_val, JS_CLASS_ARRAY_BUFFER);\n    if (!abuf)\n        return JS_EXCEPTION;\n    return js_bool(abuf->immutable);\n}\n\nstatic JSValue js_array_buffer_get_byteLength(JSContext *ctx,\n                                              JSValueConst this_val,\n                                              int class_id)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque2(ctx, this_val, class_id);\n    if (!abuf)\n        return JS_EXCEPTION;\n    /* return 0 if detached */\n    return js_uint32(abuf->byte_length);\n}\n\nstatic JSValue js_array_buffer_get_maxByteLength(JSContext *ctx,\n                                                 JSValueConst this_val,\n                                                 int class_id)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque2(ctx, this_val, class_id);\n    if (!abuf)\n        return JS_EXCEPTION;\n    if (array_buffer_is_resizable(abuf))\n        return js_uint32(abuf->max_byte_length);\n    return js_uint32(abuf->byte_length);\n}\n\nstatic JSValue js_array_buffer_get_resizable(JSContext *ctx,\n                                             JSValueConst this_val,\n                                             int class_id)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque2(ctx, this_val, class_id);\n    if (!abuf)\n        return JS_EXCEPTION;\n    return js_bool(array_buffer_is_resizable(abuf));\n}\n\nvoid JS_DetachArrayBuffer(JSContext *ctx, JSValueConst obj)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque(obj, JS_CLASS_ARRAY_BUFFER);\n    struct list_head *el;\n\n    if (!abuf || abuf->detached)\n        return;\n    if (abuf->realloc_func) {\n        abuf->realloc_func(ctx->rt, abuf->opaque, abuf->data, 0);\n        /* The backing data has been released. Do not release it again when\n           the detached ArrayBuffer object is later finalized. */\n        abuf->realloc_func = NULL;\n        abuf->opaque = NULL;\n    }\n    abuf->data = NULL;\n    abuf->byte_length = 0;\n    abuf->detached = true;\n\n    list_for_each(el, &abuf->array_list) {\n        JSTypedArray *ta;\n        JSObject *p;\n\n        ta = list_entry(el, JSTypedArray, link);\n        p = ta->obj;\n        /* Note: the typed array length and offset fields are not modified */\n        if (p->class_id != JS_CLASS_DATAVIEW) {\n            p->u.array.count = 0;\n            p->u.array.u.ptr = NULL;\n        }\n    }\n}\n\nint JS_IsImmutableArrayBuffer(JSValueConst obj)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque(obj, JS_CLASS_ARRAY_BUFFER);\n    if (!abuf)\n        return -1;\n    return abuf->immutable;\n}\n\nint JS_SetImmutableArrayBuffer(JSValueConst obj, bool immutable)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque(obj, JS_CLASS_ARRAY_BUFFER);\n    if (!abuf)\n        return -1;\n    abuf->immutable = immutable;\n    return 0;\n}\n\n/* get an ArrayBuffer or SharedArrayBuffer */\nstatic JSArrayBuffer *js_get_array_buffer(JSContext *ctx, JSValueConst obj)\n{\n    JSObject *p;\n    if (JS_VALUE_GET_TAG(obj) != JS_TAG_OBJECT)\n        goto fail;\n    p = JS_VALUE_GET_OBJ(obj);\n    if (p->class_id != JS_CLASS_ARRAY_BUFFER &&\n        p->class_id != JS_CLASS_SHARED_ARRAY_BUFFER) {\n    fail:\n        JS_ThrowTypeErrorInvalidClass(ctx, JS_CLASS_ARRAY_BUFFER);\n        return NULL;\n    }\n    return p->u.array_buffer;\n}\n\n/* return NULL if exception. WARNING: any JS call can detach the\n   buffer and render the returned pointer invalid */\nuint8_t *JS_GetArrayBuffer(JSContext *ctx, size_t *psize, JSValueConst obj)\n{\n    JSArrayBuffer *abuf = js_get_array_buffer(ctx, obj);\n    if (!abuf)\n        goto fail;\n    if (abuf->detached) {\n        JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n        goto fail;\n    }\n    *psize = abuf->byte_length;\n    return abuf->data;\n fail:\n    *psize = 0;\n    return NULL;\n}\n\nstatic bool array_buffer_is_resizable(const JSArrayBuffer *abuf)\n{\n    return abuf->max_byte_length >= 0;\n}\n\nstatic void js_array_buffer_update_typed_arrays(JSArrayBuffer *abuf)\n{\n    uint32_t size_log2, size_elem;\n    struct list_head *el;\n    JSTypedArray *ta;\n    JSObject *p;\n    uint8_t *data;\n    int64_t len;\n\n    len = abuf->byte_length;\n    data = abuf->data;\n    list_for_each(el, &abuf->array_list) {\n        ta = list_entry(el, JSTypedArray, link);\n        p = ta->obj;\n        if (p->class_id == JS_CLASS_DATAVIEW) {\n            if (ta->track_rab && ta->offset < len)\n                ta->length = len - ta->offset;\n            continue;\n        }\n        p->u.array.count = 0;\n        p->u.array.u.ptr = NULL;\n        size_log2 = typed_array_size_log2(p->class_id);\n        size_elem = 1 << size_log2;\n        if (ta->track_rab) {\n            if (len >= (int64_t)ta->offset + size_elem) {\n                p->u.array.count = (len - ta->offset) >> size_log2;\n                p->u.array.u.ptr = &data[ta->offset];\n            }\n        } else {\n            if (len >= (int64_t)ta->offset + ta->length) {\n                p->u.array.count = ta->length >> size_log2;\n                p->u.array.u.ptr = &data[ta->offset];\n            }\n        }\n    }\n}\n\nenum {\n    JS_ARRAY_BUFFER_TRANSFER,\n    JS_ARRAY_BUFFER_TRANSFER_TO_IMMUTABLE,\n    JS_ARRAY_BUFFER_TRANSFER_TO_FIXED_LENGTH,\n};\n\n// ES #sec-arraybuffer.prototype.transfer\nstatic JSValue js_array_buffer_transfer(JSContext *ctx, JSValueConst this_val,\n                                        int argc, JSValueConst *argv, int magic)\n{\n    JSArrayBuffer *abuf;\n    uint64_t new_len, old_len, max_len, *pmax_len;\n    uint8_t *bs, *new_bs;\n    JSReallocArrayBufferDataFunc *realloc_func;\n    void *opaque;\n    JSValue ret;\n\n    abuf = JS_GetOpaque2(ctx, this_val, JS_CLASS_ARRAY_BUFFER);\n    if (!abuf)\n        return JS_EXCEPTION;\n    if (abuf->shared)\n        return JS_ThrowTypeError(ctx, \"cannot transfer a SharedArrayBuffer\");\n    // Spec (ArrayBufferCopyAndDetach): the newLength argument must be\n    // coerced (its valueOf observed) before the buffer's detachability /\n    // immutability is checked, so side effects of coercion are visible.\n    if (argc < 1 || JS_IsUndefined(argv[0]))\n        new_len = abuf->byte_length;\n    else if (JS_ToIndex(ctx, &new_len, argv[0]))\n        return JS_EXCEPTION;\n    if (abuf->immutable)\n        return JS_ThrowTypeErrorImmutableArrayBuffer(ctx);\n    if (abuf->detached)\n        return JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n    pmax_len = NULL;\n    if (magic == JS_ARRAY_BUFFER_TRANSFER) {\n        if (array_buffer_is_resizable(abuf)) { // carry over maxByteLength\n            max_len = abuf->max_byte_length;\n            if (new_len > max_len)\n                return JS_ThrowTypeError(ctx, \"invalid array buffer length\");\n            pmax_len = &max_len;\n        }\n    }\n    /* create an empty AB */\n    if (new_len == 0) {\n        JS_DetachArrayBuffer(ctx, this_val);\n        ret = js_array_buffer_constructor2(ctx, JS_UNDEFINED, 0, pmax_len,\n                                           JS_CLASS_ARRAY_BUFFER);\n        goto fini;\n    }\n    bs = abuf->data;\n    old_len = abuf->byte_length;\n    realloc_func = abuf->realloc_func;\n    opaque = abuf->opaque;\n    /* if length mismatch, realloc. Otherwise, use the same backing buffer. */\n    if (new_len != old_len) {\n        if (!realloc_func)\n            return JS_ThrowTypeError(ctx, \"array buffer is not resizable\");\n        /* XXX: we are currently limited to 2 GB; check before reallocating,\n           new_len does not necessarily fit in a size_t */\n        if (new_len > INT32_MAX)\n            return JS_ThrowRangeError(ctx, \"invalid array buffer length\");\n        new_bs = realloc_func(ctx->rt, opaque, bs, new_len);\n        if (!new_bs)\n            return JS_ThrowOutOfMemory(ctx);\n        bs = new_bs;\n        if (new_len > old_len)\n            memset(bs + old_len, 0, new_len - old_len);\n    }\n    /* neuter the source */\n    abuf->data = NULL;\n    abuf->byte_length = 0;\n    abuf->detached = true;\n    abuf->realloc_func = NULL;\n    abuf->opaque = NULL;\n    js_array_buffer_update_typed_arrays(abuf);\n    ret = js_array_buffer_constructor3(ctx, JS_UNDEFINED, new_len, pmax_len,\n                                       JS_CLASS_ARRAY_BUFFER, bs,\n                                       realloc_func, opaque,\n                                       /*alloc_flag*/false);\nfini:\n    if (magic == JS_ARRAY_BUFFER_TRANSFER_TO_IMMUTABLE) {\n        if (JS_IsException(ret))\n            return JS_EXCEPTION;\n        abuf = JS_GetOpaque2(ctx, ret, JS_CLASS_ARRAY_BUFFER);\n        if (!abuf)\n            return JS_EXCEPTION;\n        abuf->immutable = true;\n    }\n    return ret;\n}\n\nstatic JSValue js_array_buffer_resize(JSContext *ctx, JSValueConst this_val,\n                                      int argc, JSValueConst *argv, int class_id)\n{\n    JSArrayBuffer *abuf;\n    uint8_t *data;\n    int64_t len;\n\n    abuf = JS_GetOpaque2(ctx, this_val, class_id);\n    if (!abuf)\n        return JS_EXCEPTION;\n    if (abuf->immutable)\n        return JS_ThrowTypeErrorImmutableArrayBuffer(ctx);\n    if (JS_ToInt64(ctx, &len, argv[0]))\n        return JS_EXCEPTION;\n    if (abuf->detached)\n        return JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n    if (!array_buffer_is_resizable(abuf))\n        return JS_ThrowTypeError(ctx, \"array buffer is not resizable\");\n    if (len < 0 || len > abuf->max_byte_length) {\n    bad_length:\n        return JS_ThrowRangeError(ctx, \"invalid array buffer length\");\n    }\n    // SABs can only grow and we don't need to realloc because\n    // js_array_buffer_constructor3 commits all memory upfront;\n    // regular RABs are resizable both ways and realloc\n    if (abuf->shared) {\n        if (len < abuf->byte_length)\n            goto bad_length;\n        // Note this is off-spec; there's supposed to be a single atomic\n        // |byteLength| property that's shared across SABs but we store\n        // it per SAB instead. That means when thread A calls sab.grow(2)\n        // at time t0, and thread B calls sab.grow(1) at time t1, we don't\n        // throw a TypeError in thread B as the spec says we should,\n        // instead both threads get their own view of the backing memory,\n        // 2 bytes big in A, and 1 byte big in B\n        abuf->byte_length = len;\n    } else {\n        // the ArrayBuffer cannot be resizable without a way to resize it,\n        // js_array_buffer_constructor3 rejects that combination\n        assert(abuf->realloc_func);\n        data = abuf->realloc_func(ctx->rt, abuf->opaque, abuf->data,\n                                  max_int(len, 1));\n        if (!data)\n            return JS_ThrowOutOfMemory(ctx);\n        if (len > abuf->byte_length)\n            memset(&data[abuf->byte_length], 0, len - abuf->byte_length);\n        abuf->byte_length = len;\n        abuf->data = data;\n    }\n    js_array_buffer_update_typed_arrays(abuf);\n    return JS_UNDEFINED;\n}\n\nstatic JSValue js_array_buffer_slice(JSContext *ctx,\n                                     JSValueConst this_val,\n                                     int argc, JSValueConst *argv, int magic)\n{\n    JSArrayBuffer *abuf, *new_abuf;\n    int64_t len, start, end, new_len;\n    JSValue ctor, new_obj;\n    bool immutable;\n    int class_id;\n\n    immutable = magic & 1;\n    class_id = magic >> 1;\n    abuf = JS_GetOpaque2(ctx, this_val, class_id);\n    if (!abuf)\n        return JS_EXCEPTION;\n    if (abuf->detached)\n        return JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n    if (abuf->immutable)\n        return JS_ThrowTypeErrorImmutableArrayBuffer(ctx);\n    len = abuf->byte_length;\n\n    if (JS_ToInt64Clamp(ctx, &start, argv[0], 0, len, len))\n        return JS_EXCEPTION;\n\n    end = len;\n    if (!JS_IsUndefined(argv[1])) {\n        if (JS_ToInt64Clamp(ctx, &end, argv[1], 0, len, len))\n            return JS_EXCEPTION;\n    }\n    new_len = max_int64(end - start, 0);\n    // note: difference between slice and sliceToImmutable is that the\n    // latter does not have this step:\n    //        1. Let _ctor_ be ? SpeciesConstructor(_O_, %ArrayBuffer%)\n    ctor = JS_UNDEFINED;\n    if (!immutable) {\n        ctor = JS_SpeciesConstructor(ctx, this_val, JS_UNDEFINED);\n        if (JS_IsException(ctor))\n            return ctor;\n    }\n    if (JS_IsUndefined(ctor)) {\n        new_obj = js_array_buffer_constructor2(ctx, JS_UNDEFINED, new_len,\n                                               NULL, class_id);\n    } else {\n        JSValue args[1];\n        args[0] = js_int64(new_len);\n        new_obj = JS_CallConstructor(ctx, ctor, 1, vc(args));\n        JS_FreeValue(ctx, ctor);\n        JS_FreeValue(ctx, args[0]);\n    }\n    if (JS_IsException(new_obj))\n        return new_obj;\n    new_abuf = JS_GetOpaque2(ctx, new_obj, class_id);\n    if (!new_abuf)\n        goto fail;\n    if (new_abuf->immutable) {\n        JS_ThrowTypeErrorImmutableArrayBuffer(ctx);\n        goto fail;\n    }\n    if (js_same_value(ctx, new_obj, this_val)) {\n        JS_ThrowTypeError(ctx, \"cannot use identical ArrayBuffer\");\n        goto fail;\n    }\n    if (new_abuf->detached) {\n        JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n        goto fail;\n    }\n    if (new_abuf->byte_length < new_len) {\n        JS_ThrowTypeError(ctx, \"new ArrayBuffer is too small\");\n        goto fail;\n    }\n    /* must test again because of side effects */\n    if (abuf->detached) {\n        JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n        goto fail;\n    }\n    if (abuf->byte_length < start + new_len) {\n        if (immutable)\n            JS_ThrowRangeError(ctx, \"invalid array buffer length\");\n        else\n            JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n        goto fail;\n    }\n    memcpy(new_abuf->data, abuf->data + start, new_len);\n    new_abuf->immutable = immutable;\n    return new_obj;\n fail:\n    JS_FreeValue(ctx, new_obj);\n    return JS_EXCEPTION;\n}\n\n"
+  },
+  "successor_arraybuffer": {
+    "character_offset": 2110612,
+    "source": "static JSValue js_array_buffer_constructor4(JSContext *ctx,\n                                            JSValueConst new_target,\n                                            uint64_t len, uint64_t *max_len,\n                                            JSClassID class_id,\n                                            uint8_t *buf,\n                                            JSReallocArrayBufferDataFunc *realloc_func,\n                                            void *opaque, bool alloc_flag,\n                                            void *owned_storage,\n                                            bool trusted_shared)\n{\n    JSRuntime *rt = ctx->rt;\n    JSValue obj;\n    JSArrayBuffer *abuf = NULL;\n    uint64_t sab_alloc_len;\n\n    // Foreign SABs supply their maximum storage upfront. Managed SABs keep\n    // a stable reservation; other external buffers need a realloc callback.\n    // Not observable from JS land, only through C API misuse; JS code cannot\n    // create externally managed buffers directly.\n    if (!owned_storage && !alloc_flag && buf && max_len && !realloc_func &&\n        class_id != JS_CLASS_SHARED_ARRAY_BUFFER) {\n        return JS_ThrowInternalError(ctx,\n                                     \"resizable ArrayBuffers require a \"\n                                     \"realloc function\");\n    }\n    obj = js_create_from_ctor(ctx, new_target, class_id);\n    if (JS_IsException(obj))\n        goto fail;\n    /* XXX: we are currently limited to 2 GB */\n    if (len > INT32_MAX) {\n        JS_ThrowRangeError(ctx, \"invalid array buffer length\");\n        goto fail;\n    }\n    if (max_len && *max_len > INT32_MAX) {\n        JS_ThrowRangeError(ctx, \"invalid max array buffer length\");\n        goto fail;\n    }\n    if (alloc_flag && class_id == JS_CLASS_SHARED_ARRAY_BUFFER && max_len &&\n        *max_len > len && !rt->sab_funcs.sab_alloc &&\n        !rt->array_buffer_storage_funcs.allocate) {\n        JS_ThrowTypeError(ctx,\n                          \"growable SharedArrayBuffer requires \"\n                          \"SAB allocator hooks\");\n        goto fail;\n    }\n    abuf = js_malloc(ctx, sizeof(*abuf));\n    if (!abuf)\n        goto fail;\n    abuf->native_storage = NULL;\n    abuf->storage_functions = NULL;\n    abuf->uses_sab_hooks = false;\n    abuf->byte_length = len;\n    abuf->max_byte_length = max_len ? *max_len : -1;\n    if (owned_storage) {\n        /* Transfer consumes an already retained native backing entitlement. */\n        abuf->native_storage = owned_storage;\n        owned_storage = NULL;\n        abuf->storage_functions = &rt->array_buffer_storage_funcs;\n        abuf->data = abuf->storage_functions->data(abuf->native_storage);\n    } else if (rt->array_buffer_storage_funcs.allocate &&\n               (alloc_flag || !buf)) {\n        unsigned flags = (class_id == JS_CLASS_SHARED_ARRAY_BUFFER ?\n                          JS_PI_BACKING_SHARED : 0) |\n                         (max_len ? JS_PI_BACKING_RESIZABLE : 0);\n        abuf->native_storage = rt->array_buffer_storage_funcs.allocate(\n            rt->array_buffer_storage_funcs.opaque, len,\n            max_len ? *max_len : len, flags);\n        if (!abuf->native_storage) {\n            JS_ThrowOutOfMemory(ctx);\n            goto fail;\n        }\n        abuf->storage_functions = &rt->array_buffer_storage_funcs;\n        abuf->data = abuf->storage_functions->data(abuf->native_storage);\n    } else if (trusted_shared && !alloc_flag &&\n               class_id == JS_CLASS_SHARED_ARRAY_BUFFER &&\n               rt->array_buffer_storage_funcs.shared_owner) {\n        abuf->native_storage =\n            rt->array_buffer_storage_funcs.shared_owner(buf);\n        abuf->storage_functions = &rt->array_buffer_storage_funcs;\n        abuf->storage_functions->retain(abuf->native_storage);\n        abuf->data = abuf->storage_functions->data(abuf->native_storage);\n        /* Serialized length is a snapshot; the actual shared owner may have\n           grown before this wrapper is created. */\n        abuf->byte_length =\n            abuf->storage_functions->byte_length(abuf->native_storage);\n    } else if (alloc_flag) {\n        if (class_id == JS_CLASS_SHARED_ARRAY_BUFFER &&\n            rt->sab_funcs.sab_alloc) {\n            // TOOD(bnoordhuis) resizing backing memory for SABs atomically\n            // is hard so we cheat and allocate |maxByteLength| bytes upfront\n            sab_alloc_len = max_len ? *max_len : len;\n            abuf->data = rt->sab_funcs.sab_alloc(rt->sab_funcs.sab_opaque,\n                                                 max_int(sab_alloc_len, 1));\n            if (!abuf->data)\n                goto fail;\n            abuf->uses_sab_hooks = true;\n            memset(abuf->data, 0, sab_alloc_len);\n        } else {\n            /* the allocation must be done after the object creation */\n            abuf->data = js_mallocz(ctx, max_int(len, 1));\n            if (!abuf->data)\n                goto fail;\n        }\n    } else {\n        if (trusted_shared && class_id == JS_CLASS_SHARED_ARRAY_BUFFER &&\n            rt->sab_funcs.sab_dup) {\n            rt->sab_funcs.sab_dup(rt->sab_funcs.sab_opaque, buf);\n            abuf->uses_sab_hooks = true;\n        }\n        if (buf) {\n            abuf->data = buf;\n        } else {\n            abuf->data = js_mallocz(ctx, 1);\n            if (!abuf->data)\n                goto fail;\n            realloc_func = js_array_buffer_realloc;\n        }\n    }\n    init_list_head(&abuf->array_list);\n    abuf->detached = false;\n    abuf->immutable = false;\n    abuf->shared = (class_id == JS_CLASS_SHARED_ARRAY_BUFFER);\n    abuf->opaque = opaque;\n    abuf->realloc_func = abuf->native_storage ? NULL : realloc_func;\n    if (alloc_flag && buf)\n        memcpy(abuf->data, buf, len);\n    JS_SetOpaqueInternal(obj, abuf);\n    return obj;\n fail:\n    if (owned_storage)\n        rt->array_buffer_storage_funcs.release(owned_storage);\n    if (abuf && abuf->native_storage)\n        abuf->storage_functions->release(abuf->native_storage);\n    JS_FreeValue(ctx, obj);\n    js_free(ctx, abuf);\n    return JS_EXCEPTION;\n}\n\nstatic JSValue js_array_buffer_constructor3(JSContext *ctx,\n                                            JSValueConst new_target,\n                                            uint64_t len, uint64_t *max_len,\n                                            JSClassID class_id,\n                                            uint8_t *buf,\n                                            JSReallocArrayBufferDataFunc *realloc_func,\n                                            void *opaque, bool alloc_flag)\n{\n    return js_array_buffer_constructor4(ctx, new_target, len, max_len, class_id,\n                                        buf, realloc_func, opaque, alloc_flag,\n                                        NULL, false);\n}\n\nstatic void *js_array_buffer_realloc(JSRuntime *rt, void *opaque, void *ptr,\n                                     size_t size)\n{\n    return js_realloc_rt(rt, ptr, size);\n}\n\nstatic JSValue js_array_buffer_constructor2(JSContext *ctx,\n                                            JSValueConst new_target,\n                                            uint64_t len, uint64_t *max_len,\n                                            JSClassID class_id)\n{\n    return js_array_buffer_constructor3(ctx, new_target, len, max_len,\n                                        class_id, NULL,\n                                        js_array_buffer_realloc, NULL, true);\n}\n\nstatic JSValue js_array_buffer_constructor1(JSContext *ctx,\n                                            JSValueConst new_target,\n                                            uint64_t len, uint64_t *max_len)\n{\n    return js_array_buffer_constructor2(ctx, new_target, len, max_len,\n                                        JS_CLASS_ARRAY_BUFFER);\n}\n\nJSValue JS_NewArrayBuffer(JSContext *ctx, uint8_t *buf, size_t len,\n                          size_t max_len,\n                          JSReallocArrayBufferDataFunc *realloc_func,\n                          void *opaque, bool is_shared)\n{\n    JSClassID class_id =\n        is_shared ? JS_CLASS_SHARED_ARRAY_BUFFER : JS_CLASS_ARRAY_BUFFER;\n    uint64_t max_len64 = max_len, *pmax_len = NULL;\n\n    /* a zero 'max_len' means the ArrayBuffer is not resizable */\n    if (max_len > 0) {\n        if (max_len < len)\n            return JS_ThrowRangeError(ctx, \"invalid max array buffer length\");\n        pmax_len = &max_len64;\n    }\n    return js_array_buffer_constructor3(ctx, JS_UNDEFINED, len, pmax_len,\n                                        class_id, buf, realloc_func, opaque,\n                                        false);\n}\n\nbool JS_IsArrayBuffer(JSValueConst obj) {\n    return JS_GetClassID(obj) == JS_CLASS_ARRAY_BUFFER;\n}\n\n/* create a new ArrayBuffer of length 'len' and copy 'buf' to it */\nJSValue JS_NewArrayBufferCopy(JSContext *ctx, const uint8_t *buf, size_t len)\n{\n    return js_array_buffer_constructor3(ctx, JS_UNDEFINED, len, NULL,\n                                        JS_CLASS_ARRAY_BUFFER,\n                                        (uint8_t *)buf,\n                                        js_array_buffer_realloc, NULL,\n                                        true);\n}\n\nstatic JSValue js_array_buffer_constructor0(JSContext *ctx, JSValueConst new_target,\n                                            int argc, JSValueConst *argv,\n                                            JSClassID class_id)\n{\n    uint64_t len, max_len, *pmax_len = NULL;\n    JSValue obj, val;\n    int64_t i;\n\n    if (JS_ToIndex(ctx, &len, argv[0]))\n        return JS_EXCEPTION;\n    if (argc < 2)\n        goto next;\n    if (!JS_IsObject(argv[1]))\n        goto next;\n    obj = JS_ToObject(ctx, argv[1]);\n    if (JS_IsException(obj))\n        return JS_EXCEPTION;\n    val = JS_GetProperty(ctx, obj, JS_ATOM_maxByteLength);\n    JS_FreeValue(ctx, obj);\n    if (JS_IsException(val))\n        return JS_EXCEPTION;\n    if (JS_IsUndefined(val))\n        goto next;\n    if (JS_ToInt64Free(ctx, &i, val))\n        return JS_EXCEPTION;\n    // don't have to check i < 0 because len >= 0\n    if (len > i || i > MAX_SAFE_INTEGER)\n        return JS_ThrowRangeError(ctx, \"invalid array buffer max length\");\n    max_len = i;\n    pmax_len = &max_len;\nnext:\n    return js_array_buffer_constructor2(ctx, new_target, len, pmax_len,\n                                        class_id);\n}\n\nstatic JSValue js_array_buffer_constructor(JSContext *ctx, JSValueConst new_target,\n                                           int argc, JSValueConst *argv)\n{\n    return js_array_buffer_constructor0(ctx, new_target, argc, argv,\n                                        JS_CLASS_ARRAY_BUFFER);\n}\n\nstatic JSValue js_shared_array_buffer_constructor(JSContext *ctx,\n                                                  JSValueConst new_target,\n                                                  int argc, JSValueConst *argv)\n{\n    return js_array_buffer_constructor0(ctx, new_target, argc, argv,\n                                        JS_CLASS_SHARED_ARRAY_BUFFER);\n}\n\n/* also used for SharedArrayBuffer */\nstatic void js_array_buffer_finalizer(JSRuntime *rt, JSValueConst val)\n{\n    JSObject *p = JS_VALUE_GET_OBJ(val);\n    JSArrayBuffer *abuf = p->u.array_buffer;\n    struct list_head *el, *el1;\n\n    if (abuf) {\n        /* The ArrayBuffer finalizer may be called before the typed\n           array finalizers using it, so abuf->array_list is not\n           necessarily empty. */\n        list_for_each_safe(el, el1, &abuf->array_list) {\n            JSTypedArray *ta;\n            JSObject *p1;\n\n            ta = list_entry(el, JSTypedArray, link);\n            ta->link.prev = NULL;\n            ta->link.next = NULL;\n            p1 = ta->obj;\n            /* Note: the typed array length and offset fields are not modified */\n            if (p1->class_id != JS_CLASS_DATAVIEW) {\n                p1->u.array.count = 0;\n                p1->u.array.u.ptr = NULL;\n            }\n        }\n        if (abuf->native_storage) {\n            void *storage = abuf->native_storage;\n            abuf->native_storage = NULL;\n            abuf->storage_functions->release(storage);\n        } else if (abuf->shared && abuf->uses_sab_hooks &&\n                   rt->sab_funcs.sab_free) {\n            rt->sab_funcs.sab_free(rt->sab_funcs.sab_opaque, abuf->data);\n        } else {\n            if (abuf->realloc_func)\n                abuf->realloc_func(rt, abuf->opaque, abuf->data, 0);\n        }\n        js_free_rt(rt, abuf);\n    }\n}\n\nstatic JSValue js_array_buffer_isView(JSContext *ctx,\n                                      JSValueConst this_val,\n                                      int argc, JSValueConst *argv)\n{\n    JSObject *p;\n\n    if (JS_VALUE_GET_TAG(argv[0]) == JS_TAG_OBJECT) {\n        p = JS_VALUE_GET_OBJ(argv[0]);\n        return js_bool(is_typed_array(p->class_id) ||\n                       p->class_id == JS_CLASS_DATAVIEW);\n    }\n    return JS_FALSE;\n}\n\nstatic const JSCFunctionListEntry js_array_buffer_funcs[] = {\n    JS_CFUNC_DEF(\"isView\", 1, js_array_buffer_isView ),\n    JS_CGETSET_DEF(\"[Symbol.species]\", js_get_this, NULL ),\n};\n\nstatic JSValue JS_ThrowTypeErrorDetachedArrayBuffer(JSContext *ctx)\n{\n    return JS_ThrowTypeError(ctx, \"ArrayBuffer is detached\");\n}\n\nstatic JSValue JS_ThrowTypeErrorImmutableArrayBuffer(JSContext *ctx)\n{\n    return JS_ThrowTypeError(ctx, \"ArrayBuffer is immutable\");\n}\n\nstatic JSValue JS_ThrowTypeErrorArrayBufferOOB(JSContext *ctx)\n{\n    return JS_ThrowTypeError(ctx, \"ArrayBuffer is detached or resized\");\n}\n\n// #sec-get-arraybuffer.prototype.detached\nstatic JSValue js_array_buffer_get_detached(JSContext *ctx,\n                                            JSValueConst this_val)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque2(ctx, this_val, JS_CLASS_ARRAY_BUFFER);\n    if (!abuf)\n        return JS_EXCEPTION;\n    if (abuf->shared)\n        return JS_ThrowTypeError(ctx, \"detached called on SharedArrayBuffer\");\n    return js_bool(abuf->detached);\n}\n\nstatic JSValue js_array_buffer_get_immutable(JSContext *ctx,\n                                             JSValueConst this_val)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque2(ctx, this_val, JS_CLASS_ARRAY_BUFFER);\n    if (!abuf)\n        return JS_EXCEPTION;\n    return js_bool(abuf->immutable);\n}\n\nstatic JSValue js_array_buffer_get_byteLength(JSContext *ctx,\n                                              JSValueConst this_val,\n                                              int class_id)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque2(ctx, this_val, class_id);\n    if (!abuf)\n        return JS_EXCEPTION;\n    /* return 0 if detached */\n    return js_uint32(js_array_buffer_current_length(abuf));\n}\n\nstatic JSValue js_array_buffer_get_maxByteLength(JSContext *ctx,\n                                                 JSValueConst this_val,\n                                                 int class_id)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque2(ctx, this_val, class_id);\n    if (!abuf)\n        return JS_EXCEPTION;\n    if (array_buffer_is_resizable(abuf))\n        return js_uint32(abuf->max_byte_length);\n    return js_uint32(js_array_buffer_current_length(abuf));\n}\n\nstatic JSValue js_array_buffer_get_resizable(JSContext *ctx,\n                                             JSValueConst this_val,\n                                             int class_id)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque2(ctx, this_val, class_id);\n    if (!abuf)\n        return JS_EXCEPTION;\n    return js_bool(array_buffer_is_resizable(abuf));\n}\n\nvoid JS_DetachArrayBuffer(JSContext *ctx, JSValueConst obj)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque(obj, JS_CLASS_ARRAY_BUFFER);\n    struct list_head *el;\n\n    if (!abuf || abuf->detached)\n        return;\n    if (abuf->native_storage) {\n        void *storage = abuf->native_storage;\n        abuf->native_storage = NULL;\n        abuf->storage_functions->release(storage);\n    } else if (abuf->realloc_func) {\n        abuf->realloc_func(ctx->rt, abuf->opaque, abuf->data, 0);\n        /* The backing data has been released. Do not release it again when\n           the detached ArrayBuffer object is later finalized. */\n        abuf->realloc_func = NULL;\n        abuf->opaque = NULL;\n    }\n    abuf->data = NULL;\n    abuf->byte_length = 0;\n    abuf->detached = true;\n\n    list_for_each(el, &abuf->array_list) {\n        JSTypedArray *ta;\n        JSObject *p;\n\n        ta = list_entry(el, JSTypedArray, link);\n        p = ta->obj;\n        /* Note: the typed array length and offset fields are not modified */\n        if (p->class_id != JS_CLASS_DATAVIEW) {\n            p->u.array.count = 0;\n            p->u.array.u.ptr = NULL;\n        }\n    }\n}\n\nint JS_IsImmutableArrayBuffer(JSValueConst obj)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque(obj, JS_CLASS_ARRAY_BUFFER);\n    if (!abuf)\n        return -1;\n    return abuf->immutable;\n}\n\nint JS_SetImmutableArrayBuffer(JSValueConst obj, bool immutable)\n{\n    JSArrayBuffer *abuf = JS_GetOpaque(obj, JS_CLASS_ARRAY_BUFFER);\n    if (!abuf)\n        return -1;\n    abuf->immutable = immutable;\n    return 0;\n}\n\n/* get an ArrayBuffer or SharedArrayBuffer */\nstatic JSArrayBuffer *js_get_array_buffer(JSContext *ctx, JSValueConst obj)\n{\n    JSObject *p;\n    if (JS_VALUE_GET_TAG(obj) != JS_TAG_OBJECT)\n        goto fail;\n    p = JS_VALUE_GET_OBJ(obj);\n    if (p->class_id != JS_CLASS_ARRAY_BUFFER &&\n        p->class_id != JS_CLASS_SHARED_ARRAY_BUFFER) {\n    fail:\n        JS_ThrowTypeErrorInvalidClass(ctx, JS_CLASS_ARRAY_BUFFER);\n        return NULL;\n    }\n    return p->u.array_buffer;\n}\n\n/* return NULL if exception. WARNING: any JS call can detach the\n   buffer and render the returned pointer invalid */\nuint8_t *JS_GetArrayBuffer(JSContext *ctx, size_t *psize, JSValueConst obj)\n{\n    JSArrayBuffer *abuf = js_get_array_buffer(ctx, obj);\n    if (!abuf)\n        goto fail;\n    if (abuf->detached) {\n        JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n        goto fail;\n    }\n    *psize = js_array_buffer_current_length(abuf);\n    return abuf->data;\n fail:\n    *psize = 0;\n    return NULL;\n}\n\nstatic bool array_buffer_is_resizable(const JSArrayBuffer *abuf)\n{\n    return abuf->max_byte_length >= 0;\n}\n\nstatic void js_array_buffer_update_typed_arrays(JSArrayBuffer *abuf)\n{\n    uint32_t size_log2, size_elem;\n    struct list_head *el;\n    JSTypedArray *ta;\n    JSObject *p;\n    uint8_t *data;\n    int64_t len;\n\n    len = abuf->byte_length;\n    data = abuf->data;\n    list_for_each(el, &abuf->array_list) {\n        ta = list_entry(el, JSTypedArray, link);\n        p = ta->obj;\n        if (p->class_id == JS_CLASS_DATAVIEW) {\n            if (ta->track_rab && ta->offset <= len)\n                ta->length = len - ta->offset;\n            continue;\n        }\n        p->u.array.count = 0;\n        p->u.array.u.ptr = NULL;\n        size_log2 = typed_array_size_log2(p->class_id);\n        size_elem = 1 << size_log2;\n        if (ta->track_rab) {\n            if (len >= (int64_t)ta->offset + size_elem) {\n                p->u.array.count = (len - ta->offset) >> size_log2;\n                p->u.array.u.ptr = &data[ta->offset];\n            }\n        } else {\n            if (len >= (int64_t)ta->offset + ta->length) {\n                p->u.array.count = ta->length >> size_log2;\n                p->u.array.u.ptr = &data[ta->offset];\n            }\n        }\n    }\n}\n\n/* A shared native owner contains no JS pointers. Each runtime refreshes only\n   its own wrapper/view caches when it actually reads the current shared size.\n   Ordinary Arrays, fixed buffers and non-Pi storage keep their original path. */\nstatic int js_array_buffer_current_length(JSArrayBuffer *abuf)\n{\n    if (abuf->native_storage && abuf->shared && abuf->max_byte_length >= 0) {\n        size_t length =\n            abuf->storage_functions->byte_length(abuf->native_storage);\n        assert(length <= INT32_MAX);\n        if (length != (size_t)abuf->byte_length) {\n            abuf->byte_length = length;\n            js_array_buffer_update_typed_arrays(abuf);\n        }\n    }\n    return abuf->byte_length;\n}\n\nstatic uint32_t js_array_data_count(JSObject *object)\n{\n    if (is_typed_array(object->class_id) && object->u.typed_array) {\n        JSArrayBuffer *abuf = object->u.typed_array->buffer->u.array_buffer;\n        if (abuf)\n            js_array_buffer_current_length(abuf);\n    }\n    return object->u.array.count;\n}\n\nenum {\n    JS_ARRAY_BUFFER_TRANSFER,\n    JS_ARRAY_BUFFER_TRANSFER_TO_IMMUTABLE,\n    JS_ARRAY_BUFFER_TRANSFER_TO_FIXED_LENGTH,\n};\n\n// ES #sec-arraybuffer.prototype.transfer\nstatic JSValue js_array_buffer_transfer(JSContext *ctx, JSValueConst this_val,\n                                        int argc, JSValueConst *argv, int magic)\n{\n    JSArrayBuffer *abuf;\n    uint64_t new_len, old_len, max_len, *pmax_len;\n    uint8_t *bs, *new_bs;\n    JSReallocArrayBufferDataFunc *realloc_func;\n    void *opaque;\n    JSValue ret;\n\n    abuf = JS_GetOpaque2(ctx, this_val, JS_CLASS_ARRAY_BUFFER);\n    if (!abuf)\n        return JS_EXCEPTION;\n    if (abuf->shared)\n        return JS_ThrowTypeError(ctx, \"cannot transfer a SharedArrayBuffer\");\n    // Spec (ArrayBufferCopyAndDetach): the newLength argument must be\n    // coerced (its valueOf observed) before the buffer's detachability /\n    // immutability is checked, so side effects of coercion are visible.\n    if (argc < 1 || JS_IsUndefined(argv[0]))\n        new_len = js_array_buffer_current_length(abuf);\n    else if (JS_ToIndex(ctx, &new_len, argv[0]))\n        return JS_EXCEPTION;\n    if (abuf->immutable)\n        return JS_ThrowTypeErrorImmutableArrayBuffer(ctx);\n    if (abuf->detached)\n        return JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n    pmax_len = NULL;\n    if (magic == JS_ARRAY_BUFFER_TRANSFER) {\n        if (array_buffer_is_resizable(abuf)) { // carry over maxByteLength\n            max_len = abuf->max_byte_length;\n            if (new_len > max_len)\n                return JS_ThrowRangeError(ctx, \"invalid array buffer length\");\n            pmax_len = &max_len;\n        }\n    }\n    /* create an empty AB */\n    if (new_len == 0) {\n        JS_DetachArrayBuffer(ctx, this_val);\n        ret = js_array_buffer_constructor2(ctx, JS_UNDEFINED, 0, pmax_len,\n                                           JS_CLASS_ARRAY_BUFFER);\n        goto fini;\n    }\n    if (abuf->native_storage) {\n        /* Node's fixed-to-fixed equal-length transfer reuses the same storage.\n           A RAB, including an equal-length RAB, transfers by a fresh allocation\n           and copy. Any in-flight native lease stays on its original owner. */\n        if (!array_buffer_is_resizable(abuf) && !pmax_len &&\n            new_len == (uint64_t)abuf->byte_length) {\n            void *storage = abuf->native_storage;\n            abuf->storage_functions->retain(storage);\n            JS_DetachArrayBuffer(ctx, this_val);\n            ret = js_array_buffer_constructor4(\n                ctx, JS_UNDEFINED, new_len, NULL, JS_CLASS_ARRAY_BUFFER,\n                NULL, NULL, NULL, false, storage, false);\n        } else {\n            JSArrayBuffer *target;\n            ret = js_array_buffer_constructor2(ctx, JS_UNDEFINED, new_len,\n                                               pmax_len, JS_CLASS_ARRAY_BUFFER);\n            if (JS_IsException(ret))\n                return ret;\n            target = JS_VALUE_GET_OBJ(ret)->u.array_buffer;\n            memcpy(target->data, abuf->data,\n                   (new_len < (uint64_t)abuf->byte_length ?\n                    new_len : (uint64_t)abuf->byte_length));\n            JS_DetachArrayBuffer(ctx, this_val);\n        }\n        goto fini;\n    }\n    bs = abuf->data;\n    old_len = js_array_buffer_current_length(abuf);\n    realloc_func = abuf->realloc_func;\n    opaque = abuf->opaque;\n    /* if length mismatch, realloc. Otherwise, use the same backing buffer. */\n    if (new_len != old_len) {\n        if (!realloc_func)\n            return JS_ThrowTypeError(ctx, \"array buffer is not resizable\");\n        /* XXX: we are currently limited to 2 GB; check before reallocating,\n           new_len does not necessarily fit in a size_t */\n        if (new_len > INT32_MAX)\n            return JS_ThrowRangeError(ctx, \"invalid array buffer length\");\n        new_bs = realloc_func(ctx->rt, opaque, bs, new_len);\n        if (!new_bs)\n            return JS_ThrowOutOfMemory(ctx);\n        bs = new_bs;\n        if (new_len > old_len)\n            memset(bs + old_len, 0, new_len - old_len);\n    }\n    /* neuter the source */\n    abuf->data = NULL;\n    abuf->byte_length = 0;\n    abuf->detached = true;\n    abuf->realloc_func = NULL;\n    abuf->opaque = NULL;\n    js_array_buffer_update_typed_arrays(abuf);\n    ret = js_array_buffer_constructor3(ctx, JS_UNDEFINED, new_len, pmax_len,\n                                       JS_CLASS_ARRAY_BUFFER, bs,\n                                       realloc_func, opaque,\n                                       /*alloc_flag*/false);\nfini:\n    if (magic == JS_ARRAY_BUFFER_TRANSFER_TO_IMMUTABLE) {\n        if (JS_IsException(ret))\n            return JS_EXCEPTION;\n        abuf = JS_GetOpaque2(ctx, ret, JS_CLASS_ARRAY_BUFFER);\n        if (!abuf)\n            return JS_EXCEPTION;\n        abuf->immutable = true;\n    }\n    return ret;\n}\n\nstatic JSValue js_array_buffer_resize(JSContext *ctx, JSValueConst this_val,\n                                      int argc, JSValueConst *argv, int class_id)\n{\n    JSArrayBuffer *abuf;\n    uint8_t *data;\n    int64_t len;\n\n    abuf = JS_GetOpaque2(ctx, this_val, class_id);\n    if (!abuf)\n        return JS_EXCEPTION;\n    if (abuf->immutable)\n        return JS_ThrowTypeErrorImmutableArrayBuffer(ctx);\n    if (JS_ToInt64(ctx, &len, argv[0]))\n        return JS_EXCEPTION;\n    if (abuf->detached)\n        return JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n    if (!array_buffer_is_resizable(abuf))\n        return JS_ThrowTypeError(ctx, \"array buffer is not resizable\");\n    if (len < 0 || len > abuf->max_byte_length) {\n    bad_length:\n        return JS_ThrowRangeError(ctx, \"invalid array buffer length\");\n    }\n    if (abuf->native_storage) {\n        int status = abuf->storage_functions->resize(abuf->native_storage, len);\n        if (status == -2)\n            goto bad_length;\n        if (status < 0)\n            return JS_ThrowOutOfMemory(ctx);\n        abuf->byte_length =\n            abuf->storage_functions->byte_length(abuf->native_storage);\n        /* The native storage owner never moves this address. */\n        js_array_buffer_update_typed_arrays(abuf);\n        return JS_UNDEFINED;\n    }\n    // SABs can only grow and we don't need to realloc because\n    // js_array_buffer_constructor3 commits all memory upfront;\n    // regular RABs are resizable both ways and realloc\n    if (abuf->shared) {\n        if (len < js_array_buffer_current_length(abuf))\n            goto bad_length;\n        // Note this is off-spec; there's supposed to be a single atomic\n        // |byteLength| property that's shared across SABs but we store\n        // it per SAB instead. That means when thread A calls sab.grow(2)\n        // at time t0, and thread B calls sab.grow(1) at time t1, we don't\n        // throw a TypeError in thread B as the spec says we should,\n        // instead both threads get their own view of the backing memory,\n        // 2 bytes big in A, and 1 byte big in B\n        abuf->byte_length = len;\n    } else {\n        // the ArrayBuffer cannot be resizable without a way to resize it,\n        // js_array_buffer_constructor3 rejects that combination\n        assert(abuf->realloc_func);\n        data = abuf->realloc_func(ctx->rt, abuf->opaque, abuf->data,\n                                  max_int(len, 1));\n        if (!data)\n            return JS_ThrowOutOfMemory(ctx);\n        if (len > js_array_buffer_current_length(abuf))\n            memset(&data[js_array_buffer_current_length(abuf)], 0, len - js_array_buffer_current_length(abuf));\n        abuf->byte_length = len;\n        abuf->data = data;\n    }\n    js_array_buffer_update_typed_arrays(abuf);\n    return JS_UNDEFINED;\n}\n\nstatic JSValue js_array_buffer_slice(JSContext *ctx,\n                                     JSValueConst this_val,\n                                     int argc, JSValueConst *argv, int magic)\n{\n    JSArrayBuffer *abuf, *new_abuf;\n    int64_t len, start, end, new_len;\n    JSValue ctor, new_obj;\n    bool immutable;\n    int class_id;\n\n    immutable = magic & 1;\n    class_id = magic >> 1;\n    abuf = JS_GetOpaque2(ctx, this_val, class_id);\n    if (!abuf)\n        return JS_EXCEPTION;\n    if (abuf->detached)\n        return JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n    if (abuf->immutable)\n        return JS_ThrowTypeErrorImmutableArrayBuffer(ctx);\n    len = js_array_buffer_current_length(abuf);\n\n    if (JS_ToInt64Clamp(ctx, &start, argv[0], 0, len, len))\n        return JS_EXCEPTION;\n\n    end = len;\n    if (!JS_IsUndefined(argv[1])) {\n        if (JS_ToInt64Clamp(ctx, &end, argv[1], 0, len, len))\n            return JS_EXCEPTION;\n    }\n    new_len = max_int64(end - start, 0);\n    // note: difference between slice and sliceToImmutable is that the\n    // latter does not have this step:\n    //        1. Let _ctor_ be ? SpeciesConstructor(_O_, %ArrayBuffer%)\n    ctor = JS_UNDEFINED;\n    if (!immutable) {\n        ctor = JS_SpeciesConstructor(ctx, this_val, JS_UNDEFINED);\n        if (JS_IsException(ctor))\n            return ctor;\n    }\n    if (JS_IsUndefined(ctor)) {\n        new_obj = js_array_buffer_constructor2(ctx, JS_UNDEFINED, new_len,\n                                               NULL, class_id);\n    } else {\n        JSValue args[1];\n        args[0] = js_int64(new_len);\n        new_obj = JS_CallConstructor(ctx, ctor, 1, vc(args));\n        JS_FreeValue(ctx, ctor);\n        JS_FreeValue(ctx, args[0]);\n    }\n    if (JS_IsException(new_obj))\n        return new_obj;\n    new_abuf = JS_GetOpaque2(ctx, new_obj, class_id);\n    if (!new_abuf)\n        goto fail;\n    if (new_abuf->immutable) {\n        JS_ThrowTypeErrorImmutableArrayBuffer(ctx);\n        goto fail;\n    }\n    if (js_same_value(ctx, new_obj, this_val)) {\n        JS_ThrowTypeError(ctx, \"cannot use identical ArrayBuffer\");\n        goto fail;\n    }\n    if (new_abuf->detached) {\n        JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n        goto fail;\n    }\n    if (js_array_buffer_current_length(new_abuf) < new_len) {\n        JS_ThrowTypeError(ctx, \"new ArrayBuffer is too small\");\n        goto fail;\n    }\n    /* must test again because of side effects */\n    if (abuf->detached) {\n        JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n        goto fail;\n    }\n    if (js_array_buffer_current_length(abuf) < start + new_len) {\n        if (immutable)\n            JS_ThrowRangeError(ctx, \"invalid array buffer length\");\n        else\n            JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n        goto fail;\n    }\n    memcpy(new_abuf->data, abuf->data + start, new_len);\n    new_abuf->immutable = immutable;\n    return new_obj;\n fail:\n    JS_FreeValue(ctx, new_obj);\n    return JS_EXCEPTION;\n}\n\n"
+  },
+  "original_view": {
+    "character_offset": 2207089,
+    "source": "JSValue JS_PiGetArrayBufferViewBuffer(JSContext *ctx, JSValueConst obj,\n                                      size_t *pbyte_offset,\n                                      size_t *pbyte_length,\n                                      size_t *pbytes_per_element)\n{\n    JSObject *p;\n    JSTypedArray *ta;\n    JSArrayBuffer *abuf;\n\n    if (!JS_IsDataView(obj)) {\n        JSValue result = JS_GetTypedArrayBuffer(ctx, obj, pbyte_offset,\n                                                pbyte_length,\n                                                pbytes_per_element);\n        if (JS_IsException(result) || !pbyte_length)\n            return result;\n        /* The existing accessor retains its original ABI and implementation.\n           This new span API uses the interpreter's live tracking length. */\n        p = JS_VALUE_GET_OBJ(obj);\n        ta = p->u.typed_array;\n        if (ta->track_rab)\n            *pbyte_length = (size_t)p->u.array.count << typed_array_size_log2(p->class_id);\n        return result;\n    }\n    p = get_dataview(ctx, obj);\n    if (!p)\n        return JS_EXCEPTION;\n    if (dataview_is_oob(p))\n        return JS_ThrowTypeErrorArrayBufferOOB(ctx);\n    ta = p->u.typed_array;\n    abuf = ta->buffer->u.array_buffer;\n    if (pbyte_offset)\n        *pbyte_offset = ta->offset;\n    if (pbyte_length)\n        *pbyte_length = ta->track_rab ? abuf->byte_length - ta->offset : ta->length;\n    if (pbytes_per_element)\n        *pbytes_per_element = 1;\n    return js_dup(JS_MKPTR(JS_TAG_OBJECT, ta->buffer));\n}\n\n"
+  },
+  "successor_view_and_lease": {
+    "character_offset": 2216567,
+    "source": "JSValue JS_PiGetArrayBufferViewBuffer(JSContext *ctx, JSValueConst obj,\n                                      size_t *pbyte_offset,\n                                      size_t *pbyte_length,\n                                      size_t *pbytes_per_element)\n{\n    JSObject *p;\n    JSTypedArray *ta;\n    JSArrayBuffer *abuf;\n\n    if (!JS_IsDataView(obj)) {\n        JSValue result = JS_GetTypedArrayBuffer(ctx, obj, pbyte_offset,\n                                                pbyte_length,\n                                                pbytes_per_element);\n        if (JS_IsException(result) || !pbyte_length)\n            return result;\n        /* The existing accessor retains its original ABI and implementation.\n           This new span API uses the interpreter's live tracking length. */\n        p = JS_VALUE_GET_OBJ(obj);\n        ta = p->u.typed_array;\n        if (ta->track_rab)\n            *pbyte_length = (size_t)p->u.array.count << typed_array_size_log2(p->class_id);\n        return result;\n    }\n    p = get_dataview(ctx, obj);\n    if (!p)\n        return JS_EXCEPTION;\n    if (dataview_is_oob(p))\n        return JS_ThrowTypeErrorArrayBufferOOB(ctx);\n    ta = p->u.typed_array;\n    abuf = ta->buffer->u.array_buffer;\n    if (pbyte_offset)\n        *pbyte_offset = ta->offset;\n    if (pbyte_length)\n        *pbyte_length = ta->track_rab ? abuf->byte_length - ta->offset : ta->length;\n    if (pbytes_per_element)\n        *pbytes_per_element = 1;\n    return js_dup(JS_MKPTR(JS_TAG_OBJECT, ta->buffer));\n}\n\nint JS_PiAcquireArrayBufferView(JSContext *ctx, JSValueConst view,\n                                JSPiArrayBufferLease *out)\n{\n    JSValue buffer;\n    JSArrayBuffer *abuf;\n    size_t offset, length;\n    JSPiArrayBufferLease result = {0};\n\n    assert(out != NULL);\n    memset(out, 0, sizeof(*out));\n    if (JS_HasException(ctx))\n        return -1;\n    buffer = JS_PiGetArrayBufferViewBuffer(ctx, view, &offset, &length, NULL);\n    if (JS_IsException(buffer))\n        return -1;\n    abuf = js_get_array_buffer(ctx, buffer);\n    assert(abuf != NULL);\n    if (abuf->native_storage) {\n        result.owner = abuf->native_storage;\n        result.data = abuf->data + offset;\n        result.byte_length = length;\n        result.retain = abuf->storage_functions->retain;\n        result.release = abuf->storage_functions->release;\n        result.retain(result.owner);\n    }\n    JS_FreeValue(ctx, buffer);\n    if (JS_HasException(ctx)) {\n        if (result.owner)\n            result.release(result.owner);\n        return -1;\n    }\n    *out = result;\n    return result.owner ? 1 : 0;\n}\n\nvoid JS_PiDupArrayBufferLease(JSPiArrayBufferLease *out,\n                             const JSPiArrayBufferLease *source)\n{\n    assert(out != source);\n    assert(out->owner == NULL);\n    *out = *source;\n    if (out->owner)\n        out->retain(out->owner);\n}\n\nvoid JS_PiReleaseArrayBufferLease(JSPiArrayBufferLease *lease)\n{\n    void *owner = lease->owner;\n    void (*release)(void *) = lease->release;\n    memset(lease, 0, sizeof(*lease));\n    if (owner)\n        release(owner);\n}\n\n"
+  },
+  "cache_read_changes": [
+    {
+      "kind": "count",
+      "line": 7248,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 7260,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 8040,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 8042,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 8043,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "length",
+      "line": 8140,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "count",
+      "line": 10056,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10434,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10515,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10640,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10835,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10839,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10843,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10848,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10852,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10856,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10860,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10864,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10868,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10872,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10876,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10880,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 10884,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11079,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11172,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11235,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11345,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11479,
+      "before": "p1->u.array.count",
+      "after": "js_array_data_count(p1)"
+    },
+    {
+      "kind": "count",
+      "line": 11612,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11697,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11699,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11712,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11717,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11728,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11738,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11748,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11758,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11771,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11781,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11790,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11807,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 11907,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 12281,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 12328,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 15661,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 17517,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 17669,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 17686,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 17825,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 21045,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 21079,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 21150,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 21157,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 42337,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "length",
+      "line": 42353,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 42355,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 42365,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "count",
+      "line": 45821,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 46394,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 46880,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 47559,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 48376,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "length",
+      "line": 63112,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 63124,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 63234,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 63288,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 63312,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 63379,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 63397,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 63398,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 63398,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 63425,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 63472,
+      "before": "new_abuf->byte_length",
+      "after": "js_array_buffer_current_length(new_abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 63481,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 63558,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "count",
+      "line": 63566,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 63598,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 63627,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 63758,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 63773,
+      "before": "src_p->u.array.count",
+      "after": "js_array_data_count(src_p)"
+    },
+    {
+      "kind": "count",
+      "line": 63832,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 63841,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 63889,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 63908,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 64176,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 64194,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 64220,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 64272,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 64381,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 64417,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 64433,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 64685,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 64698,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 64824,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 64846,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 64868,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 64893,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 64924,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 65096,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 65096,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 65155,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 65226,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 65290,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 65510,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "length",
+      "line": 65534,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 65582,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 65587,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 65589,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 65595,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "count",
+      "line": 65604,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "length",
+      "line": 65624,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 65631,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 65632,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 65694,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 65696,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 65718,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 65721,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 65722,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 65755,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 65759,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 65801,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 65891,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 66036,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "length",
+      "line": 66112,
+      "before": "abuf->byte_length",
+      "after": "js_array_buffer_current_length(abuf)"
+    },
+    {
+      "kind": "count",
+      "line": 66206,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 66258,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 66386,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 66403,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 66512,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    },
+    {
+      "kind": "count",
+      "line": 66580,
+      "before": "p->u.array.count",
+      "after": "js_array_data_count(p)"
+    }
+  ],
+  "additional_reviewed_seams": [
+    "JS_GetArrayBuffer reads current shared byte length into psize.",
+    "DataView get/set refresh after coercions and before cached span checks.",
+    "Tracking DataView updates length at offset==length to zero.",
+    "Transfer beyond retained RAB max throws RangeError as original V8 TransferArrayBuffer.",
+    "The three JSONParseRecord reads remain unchanged; no JSObject helper is applied.",
+    "Only JS_ReadSharedArrayBuffer supplies trusted_shared. Public external storage never enters shared_owner prefix lookup.",
+    "uses_sab_hooks distinguishes actual legacy SAB allocation/clone entitlement from a foreign realloc callback.",
+    "Managed serialization rejects foreign SAB before emitting tag/table entry; same-process reader pointer tables remain trusted.",
+    "JS_WriteObject2 failure releases the partial SAB table, preserving the original foreign-serialization reason."
+  ],
+  "successor_dataview_get": {
+    "character_offset": 2219638,
+    "source": "static JSValue js_dataview_getValue(JSContext *ctx,\n                                    JSValueConst this_obj,\n                                    int argc, JSValueConst *argv, int class_id)\n{\n    JSTypedArray *ta;\n    JSArrayBuffer *abuf;\n    bool littleEndian, is_swap;\n    int size;\n    uint8_t *ptr;\n    uint32_t v;\n    uint64_t pos;\n\n    ta = JS_GetOpaque2(ctx, this_obj, JS_CLASS_DATAVIEW);\n    if (!ta)\n        return JS_EXCEPTION;\n    size = 1 << typed_array_size_log2(class_id);\n    if (JS_ToIndex(ctx, &pos, argv[0]))\n        return JS_EXCEPTION;\n    littleEndian = argc > 1 && JS_ToBool(ctx, argv[1]);\n    is_swap = littleEndian ^ !is_be();\n    abuf = ta->buffer->u.array_buffer;\n    if (abuf->detached)\n        return JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n    /* Shared growth can occur in another runtime before this operation. */\n    js_array_buffer_current_length(abuf);\n    // order matters: this check should come before the next one\n    if ((pos + size) > ta->length)\n        return JS_ThrowRangeError(ctx, \"out of bound\");\n    // test262 expects a TypeError for this and V8, in its infinite wisdom,\n    // throws a \"detached array buffer\" exception, but IMO that doesn't make\n    // sense because the buffer is not in fact detached, it's still there\n    if ((int64_t)ta->offset + ta->length > js_array_buffer_current_length(abuf))\n        return JS_ThrowTypeError(ctx, \"out of bound\");\n    ptr = abuf->data + ta->offset + pos;\n\n    switch(class_id) {\n    case JS_CLASS_INT8_ARRAY:\n        return js_int32(*(int8_t *)ptr);\n    case JS_CLASS_UINT8_ARRAY:\n        return js_int32(*(uint8_t *)ptr);\n    case JS_CLASS_INT16_ARRAY:\n        v = get_u16(ptr);\n        if (is_swap)\n            v = bswap16(v);\n        return js_int32((int16_t)v);\n    case JS_CLASS_UINT16_ARRAY:\n        v = get_u16(ptr);\n        if (is_swap)\n            v = bswap16(v);\n        return js_int32(v);\n    case JS_CLASS_INT32_ARRAY:\n        v = get_u32(ptr);\n        if (is_swap)\n            v = bswap32(v);\n        return js_int32(v);\n    case JS_CLASS_UINT32_ARRAY:\n        v = get_u32(ptr);\n        if (is_swap)\n            v = bswap32(v);\n        return js_uint32(v);\n    case JS_CLASS_BIG_INT64_ARRAY:\n        {\n            uint64_t v;\n            v = get_u64(ptr);\n            if (is_swap)\n                v = bswap64(v);\n            return JS_NewBigInt64(ctx, v);\n        }\n        break;\n    case JS_CLASS_BIG_UINT64_ARRAY:\n        {\n            uint64_t v;\n            v = get_u64(ptr);\n            if (is_swap)\n                v = bswap64(v);\n            return JS_NewBigUint64(ctx, v);\n        }\n        break;\n    case JS_CLASS_FLOAT16_ARRAY:\n        {\n            uint16_t v;\n            v = get_u16(ptr);\n            if (is_swap)\n                v = bswap16(v);\n            return js_float64(fromfp16(v));\n        }\n    case JS_CLASS_FLOAT32_ARRAY:\n        {\n            union {\n                float f;\n                uint32_t i;\n            } u;\n            v = get_u32(ptr);\n            if (is_swap)\n                v = bswap32(v);\n            u.i = v;\n            return js_float64(u.f);\n        }\n    case JS_CLASS_FLOAT64_ARRAY:\n        {\n            union {\n                double f;\n                uint64_t i;\n            } u;\n            u.i = get_u64(ptr);\n            if (is_swap)\n                u.i = bswap64(u.i);\n            return js_float64(u.f);\n        }\n    default:\n        abort();\n    }\n    return JS_EXCEPTION; // pacify compiler\n}\n\n"
+  },
+  "successor_dataview_set": {
+    "character_offset": 2223106,
+    "source": "static JSValue js_dataview_setValue(JSContext *ctx,\n                                    JSValueConst this_obj,\n                                    int argc, JSValueConst *argv, int class_id)\n{\n    JSTypedArray *ta;\n    JSArrayBuffer *abuf;\n    bool littleEndian, is_swap;\n    int size;\n    uint8_t *ptr;\n    uint64_t v64;\n    uint32_t v;\n    uint64_t pos;\n    JSValueConst val;\n\n    ta = JS_GetOpaque2(ctx, this_obj, JS_CLASS_DATAVIEW);\n    if (!ta)\n        return JS_EXCEPTION;\n    abuf = ta->buffer->u.array_buffer;\n    if (abuf->immutable)\n        return JS_ThrowTypeErrorImmutableArrayBuffer(ctx);\n    size = 1 << typed_array_size_log2(class_id);\n    if (JS_ToIndex(ctx, &pos, argv[0]))\n        return JS_EXCEPTION;\n    val = argv[1];\n    v = 0; /* avoid warning */\n    v64 = 0; /* avoid warning */\n    if (class_id <= JS_CLASS_UINT32_ARRAY) {\n        if (JS_ToUint32(ctx, &v, val))\n            return JS_EXCEPTION;\n    } else if (class_id <= JS_CLASS_BIG_UINT64_ARRAY) {\n        if (JS_ToBigInt64(ctx, (int64_t *)&v64, val))\n            return JS_EXCEPTION;\n    } else {\n        double d;\n        if (JS_ToFloat64(ctx, &d, val))\n            return JS_EXCEPTION;\n        if (class_id == JS_CLASS_FLOAT16_ARRAY) {\n            v = tofp16(d);\n        } else if (class_id == JS_CLASS_FLOAT32_ARRAY) {\n            union {\n                float f;\n                uint32_t i;\n            } u;\n            u.f = d;\n            v = u.i;\n        } else {\n            JSFloat64Union u;\n            u.d = d;\n            v64 = u.u64;\n        }\n    }\n    littleEndian = argc > 2 && JS_ToBool(ctx, argv[2]);\n    is_swap = littleEndian ^ !is_be();\n    if (abuf->detached)\n        return JS_ThrowTypeErrorDetachedArrayBuffer(ctx);\n    /* Shared growth can occur in another runtime before this operation. */\n    js_array_buffer_current_length(abuf);\n    // order matters: this check should come before the next one\n    if ((pos + size) > ta->length)\n        return JS_ThrowRangeError(ctx, \"out of bound\");\n    // test262 expects a TypeError for this and V8, in its infinite wisdom,\n    // throws a \"detached array buffer\" exception, but IMO that doesn't make\n    // sense because the buffer is not in fact detached, it's still there\n    if ((int64_t)ta->offset + ta->length > js_array_buffer_current_length(abuf))\n        return JS_ThrowTypeError(ctx, \"out of bound\");\n    ptr = abuf->data + ta->offset + pos;\n\n    switch(class_id) {\n    case JS_CLASS_INT8_ARRAY:\n    case JS_CLASS_UINT8_ARRAY:\n        *ptr = v;\n        break;\n    case JS_CLASS_INT16_ARRAY:\n    case JS_CLASS_UINT16_ARRAY:\n    case JS_CLASS_FLOAT16_ARRAY:\n        if (is_swap)\n            v = bswap16(v);\n        put_u16(ptr, v);\n        break;\n    case JS_CLASS_INT32_ARRAY:\n    case JS_CLASS_UINT32_ARRAY:\n    case JS_CLASS_FLOAT32_ARRAY:\n        if (is_swap)\n            v = bswap32(v);\n        put_u32(ptr, v);\n        break;\n    case JS_CLASS_BIG_INT64_ARRAY:\n    case JS_CLASS_BIG_UINT64_ARRAY:\n    case JS_CLASS_FLOAT64_ARRAY:\n        if (is_swap)\n            v64 = bswap64(v64);\n        put_u64(ptr, v64);\n        break;\n    default:\n        abort();\n    }\n    return JS_UNDEFINED;\n}\n\n"
+  },
+  "successor_header_sha256": "BB7119FDA8DF226F6C1D31AED9A5A4999C6903980DD4EC64E5C44C594D116A32",
+  "successor_serialization_write_shared": {
+    "character_offset": 1445011,
+    "source": "static int JS_WriteSharedArrayBuffer(BCWriterState *s, JSValueConst obj)\n{\n    JSObject *p = JS_VALUE_GET_OBJ(obj);\n    JSArrayBuffer *abuf = p->u.array_buffer;\n    assert(!abuf->detached); /* SharedArrayBuffer are never detached */\n    /* Managed reader tables contain only this allocator\\'s native backing\n       pointers. An external C buffer has its own callback and cannot enter\n       that trusted same-process serialization route. */\n    if (s->ctx->rt->array_buffer_storage_funcs.allocate &&\n        !abuf->native_storage) {\n        JS_ThrowTypeError(s->ctx,\n                          \"external SharedArrayBuffer storage is not serializable\");\n        return -1;\n    }\n    bc_put_u8(s, BC_TAG_SHARED_ARRAY_BUFFER);\n    bc_put_leb128(s, js_array_buffer_current_length(abuf));\n    bc_put_leb128(s, abuf->max_byte_length);\n    bc_put_u64(s, (uintptr_t)abuf->data);\n    if (js_resize_array(s->ctx, (void **)&s->sab_tab, sizeof(s->sab_tab[0]),\n                        &s->sab_tab_size, s->sab_tab_len + 1))\n        return -1;\n    /* keep the SAB pointer so that the user can clone it or free it */\n    s->sab_tab[s->sab_tab_len++] = abuf->data;\n    return 0;\n}\n"
+  },
+  "successor_serialization_read_shared": {
+    "character_offset": 1482383,
+    "source": "static JSValue JS_ReadSharedArrayBuffer(BCReaderState *s)\n{\n    JSContext *ctx = s->ctx;\n    uint32_t byte_length, max_byte_length;\n    uint64_t max_byte_length_u64, *pmax_byte_length = NULL;\n    uint8_t *data_ptr;\n    JSValue obj;\n    uint64_t u64;\n\n    if (bc_get_leb128(s, &byte_length))\n        return JS_EXCEPTION;\n    if (bc_get_leb128(s, &max_byte_length))\n        return JS_EXCEPTION;\n    if (max_byte_length < byte_length)\n        return JS_ThrowTypeError(ctx, \"invalid array buffer\");\n    if (max_byte_length != UINT32_MAX) {\n        max_byte_length_u64 = max_byte_length;\n        pmax_byte_length = &max_byte_length_u64;\n    }\n    if (bc_get_u64(s, &u64))\n        return JS_EXCEPTION;\n    data_ptr = (uint8_t *)(uintptr_t)u64;\n    if (js_resize_array(s->ctx, (void **)&s->sab_tab, sizeof(s->sab_tab[0]),\n                        &s->sab_tab_size, s->sab_tab_len + 1))\n        return JS_EXCEPTION;\n    /* keep the SAB pointer so that the user can clone it or free it */\n    s->sab_tab[s->sab_tab_len++] = data_ptr;\n    /* This internal route consumes a trusted same-process serialization\n       pointer. Public JS_NewArrayBuffer never supplies this discriminator. */\n    obj = js_array_buffer_constructor4(ctx, JS_UNDEFINED,\n                                       byte_length, pmax_byte_length,\n                                       JS_CLASS_SHARED_ARRAY_BUFFER,\n                                       data_ptr,\n                                       NULL, NULL, false, NULL, true);\n    if (JS_IsException(obj))\n        goto fail;\n    if (BC_add_object_ref(s, obj))\n        goto fail;\n    return obj;\n fail:\n    JS_FreeValue(ctx, obj);\n    return JS_EXCEPTION;\n}\n"
+  },
+  "successor_serialization_write_object": {
+    "character_offset": 1453067,
+    "source": "uint8_t *JS_WriteObject2(JSContext *ctx, size_t *psize, JSValueConst obj,\n                         int flags, JSSABTab *psab_tab)\n{\n    BCWriterState ss, *s = &ss;\n    uint32_t h;\n    DynBuf *d;\n\n    memset(s, 0, sizeof(*s));\n    s->ctx = ctx;\n    s->allow_bytecode = ((flags & JS_WRITE_OBJ_BYTECODE) != 0);\n    s->allow_sab = ((flags & JS_WRITE_OBJ_SAB) != 0);\n    s->allow_reference = ((flags & JS_WRITE_OBJ_REFERENCE) != 0);\n    s->allow_source = ((flags & JS_WRITE_OBJ_STRIP_SOURCE) == 0);\n    s->allow_debug = ((flags & JS_WRITE_OBJ_STRIP_DEBUG) == 0);\n    /* XXX: could use a different version when bytecode is included */\n    if (s->allow_bytecode)\n        s->first_atom = JS_ATOM_END;\n    else\n        s->first_atom = 1;\n    js_dbuf_init(ctx, &s->dbuf);\n    js_object_list_init(&s->object_list);\n\n    if (JS_WriteObjectRec(s, obj))\n        goto fail;\n    if (JS_WriteObjectAtoms(s))\n        goto fail;\n    js_object_list_end(ctx, &s->object_list);\n    js_free(ctx, s->atom_to_idx);\n    js_free(ctx, s->idx_to_atom);\n    *psize = s->dbuf.size;\n    if (psab_tab) {\n        psab_tab->tab = s->sab_tab;\n        psab_tab->len = s->sab_tab_len;\n    } else {\n        js_free(ctx, s->sab_tab);\n    }\n    // don't include version and checksum fields in checksum\n    d = &s->dbuf;\n    h = bc_csum(&d->buf[5], d->size - 5);\n    put_u32(&d->buf[1], h);\n    return d->buf;\n fail:\n    js_object_list_end(ctx, &s->object_list);\n    js_free(ctx, s->atom_to_idx);\n    js_free(ctx, s->idx_to_atom);\n    js_free(ctx, s->sab_tab);\n    dbuf_free(&s->dbuf);\n    *psize = 0;\n    if (psab_tab) {\n        psab_tab->tab = NULL;\n        psab_tab->len = 0;\n    }\n    return NULL;\n}\n"
+  },
+  "followup_packets": [
+    {
+      "file": "external-sab-provenance-delta.json",
+      "sha256": "3E4EFFB34A0CCC6A8B5F58BFAD5C3F15227EE6C7992099838BDFA4DBCBD3F293",
+      "scope": "Exact thirteen-edit constructor/finalizer/serialization provenance correction and control 11"
+    },
+    {
+      "file": "partial-table-cleanup-delta.json",
+      "sha256": "DFD007ABACD052909571DEDD485D7DB60990876394D750EC03589112A3E6F78E",
+      "scope": "One failure-label table release and control 12"
+    }
+  ]
+}

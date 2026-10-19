@@ -1371,6 +1371,53 @@ typedef struct {
 } JSSharedArrayBufferFunctions;
 JS_EXTERN void JS_SetSharedArrayBufferFunctions(JSRuntime *rt, const JSSharedArrayBufferFunctions *sf);
 
+
+/* Pi runtimes own backing allocations independently of JS wrappers. Install
+   before creating any ArrayBuffers. Every callback is native-only; retained
+   storage must remain valid after the originating JSRuntime is destroyed. */
+#define JS_PI_BACKING_SHARED    1u
+#define JS_PI_BACKING_RESIZABLE 2u
+typedef struct JSPiArrayBufferStorageFunctions {
+    void *(*allocate)(void *opaque, size_t byte_length, size_t max_byte_length,
+                      unsigned flags);
+    /* Trusted same-process SAB serialization table, borrowed native owner.
+       Public external SABs never reach this callback; managed runtimes reject
+       their serialization and preserve the original external free callback. */
+    void *(*shared_owner)(uint8_t *data);
+    uint8_t *(*data)(void *owner);
+    size_t (*byte_length)(void *owner);
+    /* 0 success; -1 native allocation/permission failure; -2 growth race or
+       invalid length. Resize never moves the allocation's base address. */
+    int (*resize)(void *owner, size_t byte_length);
+    void (*retain)(void *owner);
+    void (*release)(void *owner);
+    void *opaque;
+} JSPiArrayBufferStorageFunctions;
+JS_EXTERN void JS_PiSetArrayBufferStorageFunctions(
+    JSRuntime *rt, const JSPiArrayBufferStorageFunctions *functions);
+
+/* An owned native entitlement and the intrinsic view span at acquisition.
+   Neither this record nor its callbacks contain a JS/Engine/runtime pointer.
+   Acquisition: 1 managed success; 0 external C storage with no installed
+   native owner; -1 actual pending exception. Every failure leaves out empty.
+   Shared growth can enlarge the buffer; the captured lease span stays fixed.
+   A RAB shrink can decommit/protect pages inside that span, exactly as in the
+   backing allocator. Retention never locks detach/resize or promises access
+   to decommitted pages. The caller's OS operation observes the real pages. */
+typedef struct JSPiArrayBufferLease {
+    void *owner;
+    uint8_t *data;
+    size_t byte_length;
+    void (*retain)(void *owner);
+    void (*release)(void *owner);
+} JSPiArrayBufferLease;
+JS_EXTERN int JS_PiAcquireArrayBufferView(JSContext *ctx, JSValueConst view,
+                                         JSPiArrayBufferLease *out);
+/* Native-only and safe on the owning worker. Destination must be empty. */
+JS_EXTERN void JS_PiDupArrayBufferLease(JSPiArrayBufferLease *out,
+                                      const JSPiArrayBufferLease *source);
+JS_EXTERN void JS_PiReleaseArrayBufferLease(JSPiArrayBufferLease *lease);
+
 typedef enum JSPromiseStateEnum {
     // argument to JS_PromiseState() was not in fact a promise
     JS_PROMISE_NOT_A_PROMISE = -1,
