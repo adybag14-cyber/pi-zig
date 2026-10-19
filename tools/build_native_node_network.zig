@@ -44,6 +44,7 @@ pub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builti
     module.addCSourceFile(.{ .file = b.path("src/extensions/native_uv_file_handle.c"), .flags = flags });
     module.addCSourceFile(.{ .file = b.path("src/extensions/native_uv_fs_write.c"), .flags = flags });
     module.addCSourceFile(.{ .file = b.path("src/extensions/native_node_options_environment.c"), .flags = flags });
+    module.addCSourceFile(.{ .file = b.path("src/extensions/native_node_check_failure.c"), .flags = flags });
     return library;
 }
 

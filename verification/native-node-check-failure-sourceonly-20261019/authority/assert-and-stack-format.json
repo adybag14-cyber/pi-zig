@@ -1,0 +1,52 @@
+{
+  "status": "finite immutable original-source evidence only; no execution",
+  "node_revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "prior_chain": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-check-failure-sourceonly-20261019/authority/default-fatal-check-chain.json",
+    "sha256": "9D71987A8445F007A1B51E076B59E76BECAF7EBB2B42A247683CD92972C73DB3"
+  },
+  "source": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/verification/native-node-callback-scope-sourceonly-20261019/authority/src_node_errors.cc.txt",
+    "raw_sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9",
+    "bytes": 43095,
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_errors.cc",
+    "excerpts": [
+      {
+        "name": "Assert",
+        "start_character": 13828,
+        "end_character": 14249,
+        "text": "void Assert(const AssertionInfo& info) {\n  std::string name = GetHumanReadableProcessName();\n\n  fprintf(stderr,\n          \"\\n\"\n          \"  #  %s: %s at %s\\n\"\n          \"  #  Assertion failed: %s\\n\\n\",\n          name.c_str(),\n          info.function ? info.function : \"(unknown function)\",\n          info.file_line ? info.file_line : \"(unknown source location)\",\n          info.message);\n\n  fflush(stderr);\n  ABORT();\n}\n\n"
+      },
+      {
+        "name": "FormatAndPrintStackTrace",
+        "start_character": 7732,
+        "end_character": 10272,
+        "text": "static std::string FormatStackTrace(\n    Isolate* isolate,\n    Local<StackTrace> stack,\n    StackTracePrefix prefix = StackTracePrefix::kAt) {\n  std::string result;\n  for (int i = 0; i < stack->GetFrameCount(); i++) {\n    Local<StackFrame> stack_frame = stack->GetFrame(isolate, i);\n    node::Utf8Value fn_name_s(isolate, stack_frame->GetFunctionName());\n    node::Utf8Value script_name(isolate, stack_frame->GetScriptName());\n    const int line_number = stack_frame->GetLineNumber();\n    const int column = stack_frame->GetColumn();\n    std::string prefix_str = prefix == StackTracePrefix::kAt\n                                 ? \"    at \"\n                                 : std::to_string(i + 1) + \": \";\n    if (stack_frame->IsEval()) {\n      if (stack_frame->GetScriptId() == Message::kNoScriptIdInfo) {\n        result += SPrintF(\"%s[eval]:%i:%i\\n\", prefix_str, line_number, column);\n      } else {\n        std::vector<char> buf(script_name.length() + 64);\n        snprintf(buf.data(),\n                 buf.size(),\n                 \"%s[eval] (%s:%i:%i)\\n\",\n                 prefix_str.c_str(),\n                 *script_name,\n                 line_number,\n                 column);\n        result += std::string(buf.data());\n      }\n      break;\n    }\n\n    if (fn_name_s.length() == 0) {\n      std::vector<char> buf(script_name.length() + 64);\n      snprintf(buf.data(),\n               buf.size(),\n               \"%s%s:%i:%i\\n\",\n               prefix_str.c_str(),\n               *script_name,\n               line_number,\n               column);\n      result += std::string(buf.data());\n    } else {\n      std::vector<char> buf(fn_name_s.length() + script_name.length() + 64);\n      snprintf(buf.data(),\n               buf.size(),\n               \"%s%s (%s:%i:%i)\\n\",\n               prefix_str.c_str(),\n               *fn_name_s,\n               *script_name,\n               line_number,\n               column);\n      result += std::string(buf.data());\n    }\n  }\n  return result;\n}\n\nstatic void PrintToStderrAndFlush(const std::string& str) {\n  FPrintF(stderr, \"%s\\n\", str);\n  fflush(stderr);\n}\n\nvoid PrintStackTrace(Isolate* isolate,\n                     Local<StackTrace> stack,\n                     StackTracePrefix prefix) {\n  PrintToStderrAndFlush(FormatStackTrace(isolate, stack, prefix));\n}\n\nvoid PrintCurrentStackTrace(Isolate* isolate, StackTracePrefix prefix) {\n  Local<StackTrace> stack;\n  if (GetCurrentStackTrace(isolate).ToLocal(&stack) &&\n      stack->GetFrameCount() > 0) {\n    PrintStackTrace(isolate, stack, prefix);\n  }\n}\n\n"
+      },
+      {
+        "name": "OnFatalError",
+        "start_character": 19676,
+        "end_character": 20257,
+        "text": "void OnFatalError(const char* location, const char* message) {\n  if (location) {\n    FPrintF(stderr, \"FATAL ERROR: %s %s\\n\", location, message);\n  } else {\n    FPrintF(stderr, \"FATAL ERROR: %s\\n\", message);\n  }\n\n  Isolate* isolate = Isolate::TryGetCurrent();\n  bool report_on_fatalerror;\n  {\n    Mutex::ScopedLock lock(node::per_process::cli_options_mutex);\n    report_on_fatalerror = per_process::cli_options->report_on_fatalerror;\n  }\n\n  if (report_on_fatalerror) {\n    TriggerNodeReport(isolate, message, \"FatalError\", \"\", Local<Object>());\n  }\n\n  fflush(stderr);\n  ABORT();\n}\n\n"
+      }
+    ]
+  },
+  "native_backtrace": {
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/debug_utils.cc",
+    "body_sha256": "9f2904508a8443beb454dc789a07d60afb2f2ec7f9b2f56bc651d9c66edb0ea3",
+    "stored_content_sha256": "9f2904508a8443beb454dc789a07d60afb2f2ec7f9b2f56bc651d9c66edb0ea3",
+    "source_decoded_bytes": 16324,
+    "stored_text_bytes": 16324,
+    "retained_excerpt_start_byte": 8041,
+    "retained_excerpt_end_byte": 13043,
+    "selected_text": "std::string NativeSymbolDebuggingContext::SymbolInfo::Display() const {\n  std::ostringstream oss;\n  oss << name;\n  if (dis != 0) {\n    oss << \"+\" << dis;\n  }\n  if (!filename.empty()) {\n    oss << \" [\" << filename << ']';\n  }\n  if (line != 0) {\n    oss << \":L\" << line;\n  }\n  return oss.str();\n}\n\nvoid DumpNativeBacktrace(FILE* fp) {\n  fprintf(fp, \"----- Native stack trace -----\\n\\n\");\n  auto sym_ctx = NativeSymbolDebuggingContext::New();\n  void* frames[256];\n  const int size = sym_ctx->GetStackTrace(frames, arraysize(frames));\n  for (int i = 1; i < size; i += 1) {\n    void* frame = frames[i];\n    NativeSymbolDebuggingContext::SymbolInfo s = sym_ctx->LookupSymbol(frame);\n    fprintf(fp, \"%2d: %p %s\\n\", i, frame, s.Display().c_str());\n  }\n}\n\nvoid DumpJavaScriptBacktrace(FILE* fp) {\n  v8::Isolate* isolate = v8::Isolate::TryGetCurrent();\n  if (isolate == nullptr) {\n    return;\n  }\n\n  Local<StackTrace> stack;\n  if (!GetCurrentStackTrace(isolate).ToLocal(&stack) ||\n      stack->GetFrameCount() == 0) {\n    return;\n  }\n\n  fprintf(fp, \"\\n----- JavaScript stack trace -----\\n\\n\");\n  PrintStackTrace(isolate, stack, StackTracePrefix::kNumber);\n  fprintf(fp, \"\\n\");\n}\n\n"
+  },
+  "findings": [
+    "The actual node::Assert body is in src/node_errors.cc in this pinned revision.",
+    "CHECK assertion formatting is a distinct entry from the V8 Maybe::Check route through OnFatalError.",
+    "Both entries fflush(stderr) then ABORT; the prior complete chain gives native and JavaScript backtrace calls and Windows _exit(134)/POSIX abort.",
+    "The JavaScript backtrace path requests numbered prefixes. FormatStackTrace stops after either eval frame form; the print wrapper adds one newline beyond each frame's own newline.",
+    "These bodies do not route through process._fatalException or any guest uncaughtException handler.",
+    "GetHumanReadableProcessName, actual captured-frame production, symbolization, report_on_fatalerror and the direct native platform termination belong to the genuine consumer implementation; this packet is original-source evidence, not an execution or completed-port claim."
+  ]
+}

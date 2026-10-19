@@ -1,0 +1,18 @@
+{
+  "status": "source-only; sole additive native C translation unit; Modules finite helper peer closed",
+  "path": "tools/build_native_node_network.zig",
+  "before_sha256": "E10D68F43FC53513651DA53FDE0369B9323C6A7F7C821AE7816C9E378FFA489E",
+  "after_sha256": "CAECF005866364925F79959C8BAC3534DA051894FB841A1C2CC594C9C15BA499",
+  "before": "    module.addCSourceFile(.{ .file = b.path(\"src/extensions/native_node_options_environment.c\"), .flags = flags });\n",
+  "after": "    module.addCSourceFile(.{ .file = b.path(\"src/extensions/native_node_options_environment.c\"), .flags = flags });\n    module.addCSourceFile(.{ .file = b.path(\"src/extensions/native_node_check_failure.c\"), .flags = flags });\n",
+  "added_lines": 1,
+  "existing_dependencies": "The actual shared library already supplies QuickJS/uv include roots, gnu11/GNU_SOURCE platform flags, Windows dbghelp and Linux dl. QuickJS links this shared native library in the existing build; no additional target or run step.",
+  "vm_requirement": "JS_ReadCapturedStackFrameLoggingInfo must be intaken from the separately peer-reviewed genuine captured-frame origin owner before a build.",
+  "peer": {
+    "reviewer": "/root/modules_io",
+    "closed": true,
+    "before_sha256": "E10D68F43FC53513651DA53FDE0369B9323C6A7F7C821AE7816C9E378FFA489E",
+    "after_sha256": "CAECF005866364925F79959C8BAC3534DA051894FB841A1C2CC594C9C15BA499",
+    "scope": "Full existing shared-library helper, exact sole C source addition, actual QuickJS/uv includes/Windows dbghelp/Linux dl dependencies and unchanged links/targets/run edges."
+  }
+}
