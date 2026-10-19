@@ -307,14 +307,34 @@ pub fn modelRegistryLease(engine: *engine_mod.Engine, value: c.JSValue) !@import
     return @import("native_sdk_model_bridge.zig").anchorLease(engine, owner.model_lease_anchor orelse return error.NativeSDKModelLeaseUnavailable);
 }
 pub fn newModelRegistry(engine: *engine_mod.Engine, runtime: c.JSValue) !c.JSValue {
-    const data = try object(engine);
-    defer engine.freeValue(data);
-    try put(engine, data, "modelRuntime", c.JS_DupValue(engine.context, runtime));
-    const value = try new(engine, .model_registry, data);
-    errdefer engine.freeValue(value);
-    try put(engine, value, "runtime", c.JS_DupValue(engine.context, runtime));
-    try attachSessionModelLease(try state(engine, value));
-    return value;
+    return newModelRegistryWithPrototype(engine, runtime,
+        engine.native_sdk_prototypes[@intFromEnum(Kind.model_registry)] orelse c.pi_js_null());
+}
+pub fn newModelRegistryWithPrototype(engine: *engine_mod.Engine, runtime: c.JSValue, prototype: c.JSValue) !c.JSValue {
+    const values = @import("native_sdk_catalog_values.zig");
+    var scope: values.Scope = .{ .engine = engine };
+    return values.owned.finishValue(&scope, modelRegistryWithPrototypeBody(&scope, runtime, prototype));
+}
+fn modelRegistryWithPrototypeBody(scope: *@import("native_sdk_catalog_values.zig").Scope, runtime: c.JSValue, prototype: c.JSValue) !c.JSValue {
+    const values = @import("native_sdk_catalog_values.zig");
+    const engine = scope.engine;
+    var ops: values.Ops = .{ .s = scope };
+    const data = try ops.cell();
+    try ops.put(data, "modelRuntime", runtime);
+    const generation = try ops.beforeAllocation();
+    const value = try ops.allocation(c.JS_NewObjectProtoClass(engine.context, prototype, engine.native_sdk_class), generation);
+    const self = try engine.gpa.create(State);
+    self.* = .{ .engine = engine, .kind = .model_registry, .data = c.JS_DupValue(engine.context, data) };
+    _ = c.JS_SetOpaque(value, self);
+    // The accepted class emits its own runtime field before the constructor
+    // assignment. An inherited setter therefore cannot intercept construction.
+    try ops.put(value, "runtime", c.pi_js_undefined());
+    try values.guest.set(scope, value, "runtime", runtime);
+    try attachSessionModelLease(self);
+    // The real anchor owns any branded native runtime lease. An unbranded
+    // input must not gain an unrelated hidden lifetime beyond its public field.
+    try ops.put(data, "modelRuntime", c.pi_js_undefined());
+    return c.JS_DupValue(engine.context, value);
 }
 fn attachSessionModelLease(self: *State) !void {
     const engine = self.engine;
@@ -2600,10 +2620,14 @@ fn installBody(engine: *engine_mod.Engine, exports: c.JSValue) !void {
             try @import("native_sdk_settings.zig").install(engine, proto);
         }
         engine.native_sdk_prototypes[@as(usize, @intCast(@intFromEnum(item[0])))] = c.JS_DupValue(engine.context, proto);
-        const ctor = try engine.checked(c.JS_NewCFunctionData2(engine.context, constructorData, item[1], 1, @intFromEnum(item[0]), 0, null));
+        const ctor = if (item[0] == .model_registry)
+            try @import("native_sdk_model_registry.zig").createConstructor(engine, proto)
+        else try engine.checked(c.JS_NewCFunctionData2(engine.context, constructorData, item[1], 1, @intFromEnum(item[0]), 0, null));
         defer engine.freeValue(ctor);
-        _ = c.JS_SetConstructorBit(engine.context, ctor, true);
-        if (c.JS_SetConstructor(engine.context, ctor, proto) < 0) return error.JavaScriptException;
+        if (item[0] != .model_registry) {
+            _ = c.JS_SetConstructorBit(engine.context, ctor, true);
+            if (c.JS_SetConstructor(engine.context, ctor, proto) < 0) return error.JavaScriptException;
+        }
         if (item[0] == .session_manager) {
             const operations: []const Method = &.{ .getCwd, .getSessionDir, .usesDefaultSessionDir, .getSessionId, .getSessionName, .getSessionFile, .getHeader, .getEntries, .getEntryCount, .getLeafId, .getLeafEntry, .getEntry, .getChildren, .getBranch, .getLabel, .getTree, .appendMessage, .appendCustomEntry, .appendSessionInfo, .appendModelChange, .appendThinkingLevelChange, .appendLabelChange, .branch, .resetLeaf, .buildSessionContext, .buildContextEntries, .buildSessionProjection, .newSession, .setSessionFile, .isPersisted };
             for (operations) |operation| {
@@ -2620,7 +2644,6 @@ fn installBody(engine: *engine_mod.Engine, exports: c.JSValue) !void {
             try @import("native_sdk_session_mutations.zig").install(engine, proto);
             try @import("native_sdk_session_branch.zig").install(engine, proto);
         }
-        if (item[0] == .model_registry) try @import("native_sdk_model_registry.zig").install(engine, proto);
         if (item[0] == .session_manager) inline for (.{ .{ "inMemory", 0 }, .{ "create", 1 }, .{ "open", 2 } }) |operation| try put(engine, ctor, operation[0], try engine.checked(c.pi_js_function_magic(engine.context, staticMethod, operation[0], 1, operation[1])));
         if (item[0] == .session_manager) try @import("native_sdk_session_discovery.zig").install(engine, ctor);
         if (item[0] == .settings_manager) inline for (.{ .{ "inMemory", 100 }, .{ "create", 101 }, .{ "fromStorage", 102 } }) |operation| try put(engine, ctor, operation[0], try engine.checked(c.pi_js_function_magic(engine.context, staticMethod, operation[0], 1, operation[1])));

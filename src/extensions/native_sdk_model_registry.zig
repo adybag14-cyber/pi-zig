@@ -1,123 +1,12 @@
-//! Source ModelRegistry compatibility facade. Synchronous catalog snapshots
-//! retain their exact runtime independently of any AgentSession context guard.
+//! Public ModelRegistry is the actual c268 class. The retained compatibility
+//! continuations below serve only the existing internal registry-compat owner.
 const std = @import("std");
 const sdk = @import("native_sdk.zig");
 const engine_mod = @import("engine.zig");
 const c = engine_mod.c;
-const Method = enum(c_int) { refresh, getError, getAll, getAvailable, find, findOfType, hasConfiguredAuth, getApiKeyAndHeaders, getProviderAuthStatus, getProvider, stream, streamSimple, complete, getModelsOfType, getAvailableOfType, getModelOfType, classify, generateImages, getProviderDisplayName, getProviderAuth, getApiKeyForProvider, isUsingOAuth, registerProvider, unregisterProvider, registerVirtualModel, unregisterVirtualModel, getRegisteredProviderConfig, getRegisteredNativeProvider, getRegisteredProviderIds };
-fn arity(method: Method) c_int {
-    return switch (method) {
-        .getError, .getAll, .getAvailable, .getRegisteredProviderIds => 0,
-        .find, .getModelsOfType, .registerProvider, .unregisterVirtualModel => 2,
-        .findOfType, .stream, .streamSimple, .complete, .getAvailableOfType, .getModelOfType, .classify, .generateImages => 3,
-        else => 1,
-    };
-}
-pub fn install(engine: *engine_mod.Engine, proto: c.JSValue) !void {
-    inline for (std.meta.fields(Method)) |field| {
-        const function = try engine.checked(c.pi_js_function_magic(engine.context, callback, field.name, arity(@enumFromInt(field.value)), @intCast(field.value)));
-        if (c.JS_DefinePropertyValueStr(engine.context, proto, field.name, function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
-    }
-}
-fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
-    const engine = engine_mod.Engine.fromContext(context.?);
-    const method: Method = @enumFromInt(magic);
-    var args = [_]c.JSValue{c.pi_js_undefined()} ** 3;
-    const count: usize = @intCast(arity(method));
-    for (0..@min(count, @as(usize, @intCast(@max(argc, 0))))) |index| args[index] = argv[index];
-    return dispatch(engine, receiver, method, args[0..count]) catch |err| sdk.fail(engine, err);
-}
-fn dispatch(engine: *engine_mod.Engine, receiver: c.JSValue, method: Method, args: []const c.JSValue) !c.JSValue {
-    const runtime = try sdk.get(engine, receiver, "runtime");
-    defer engine.freeValue(runtime);
-    const first = if (args.len > 0) args[0] else c.pi_js_undefined();
-    switch (method) {
-        .getAll, .getAvailable => {
-            const rows = try sdk.invoke(engine, runtime, if (method == .getAll) "getModels" else "getAvailableSnapshot", &.{});
-            defer engine.freeValue(rows);
-            const global = c.JS_GetGlobalObject(engine.context);
-            defer engine.freeValue(global);
-            const array = try sdk.get(engine, global, "Array");
-            defer engine.freeValue(array);
-            return sdk.invoke(engine, array, "from", &.{rows});
-        },
-        .find => return sdk.invoke(engine, runtime, "getModel", args),
-        .findOfType => return sdk.invoke(engine, runtime, "getModelOfType", args),
-        .hasConfiguredAuth, .isUsingOAuth => {
-            const provider = try sdk.get(engine, first, "provider");
-            defer engine.freeValue(provider);
-            return sdk.invoke(engine, runtime, @tagName(method), &.{provider});
-        },
-        .getProviderAuth => return sdk.invoke(engine, runtime, "getAuth", args),
-        .getProviderDisplayName => {
-            const provider = try sdk.invoke(engine, runtime, "getProvider", &.{first});
-            defer engine.freeValue(provider);
-            const name = if (c.JS_IsObject(provider)) try sdk.get(engine, provider, "name") else c.pi_js_undefined();
-            if (!c.JS_IsNull(name) and !c.JS_IsUndefined(name)) return name;
-            engine.freeValue(name);
-            return c.JS_DupValue(engine.context, first);
-        },
-        .registerProvider => {
-            if (!c.JS_IsString(first)) {
-                const result = try sdk.invoke(engine, runtime, "registerNativeProvider", &.{first});
-                engine.freeValue(result);
-                return c.pi_js_undefined();
-            }
-            if (args.len < 2 or c.JS_ToBool(engine.context, args[1]) != 1) {
-                const failure = try engine.checked(c.JS_NewError(engine.context));
-                defer engine.freeValue(failure);
-                try sdk.put(engine, failure, "message", try sdk.text(engine, "Provider config is required when registering by name"));
-                _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, failure));
-                return error.JavaScriptException;
-            }
-            const result = try sdk.invoke(engine, runtime, "registerProvider", args);
-            engine.freeValue(result);
-            return c.pi_js_undefined();
-        },
-        .unregisterProvider, .registerVirtualModel, .unregisterVirtualModel => {
-            const result = try sdk.invoke(engine, runtime, @tagName(method), args);
-            engine.freeValue(result);
-            return c.pi_js_undefined();
-        },
-        .getRegisteredProviderConfig => {
-            return sdk.invoke(engine, runtime, "getRegisteredProviderConfig", &.{first});
-        },
-        .getApiKeyForProvider, .getApiKeyAndHeaders => return auth(engine, runtime, first, method == .getApiKeyAndHeaders),
-        else => return sdk.invoke(engine, runtime, @tagName(method), args),
-    }
-}
-fn auth(engine: *engine_mod.Engine, runtime: c.JSValue, input: c.JSValue, headers: bool) !c.JSValue {
-    const job = try sdk.object(engine);
-    defer engine.freeValue(job);
-    try sdk.put(engine, job, "runtime", c.JS_DupValue(engine.context, runtime));
-    try sdk.put(engine, job, "input", c.JS_DupValue(engine.context, input));
-    var data = [_]c.JSValue{job};
-    const good = try engine.checked(c.JS_NewCFunctionData2(engine.context, authCallback, "registryAuth", 1, if (headers) 0 else 2, 1, &data));
-    defer engine.freeValue(good);
-    const bad = try engine.checked(c.JS_NewCFunctionData2(engine.context, authCallback, "registryAuthFailure", 1, if (headers) 1 else 3, 1, &data));
-    defer engine.freeValue(bad);
-    const pending = sdk.invoke(engine, runtime, "getAuth", &.{input}) catch |err| {
-        if (err != error.JavaScriptException) return err;
-        const caught = c.JS_DupValue(engine.context, engine.captured_exception orelse return err);
-        defer engine.freeValue(caught);
-        const result = try finishAuth(engine, job, caught, if (headers) 1 else 3);
-        defer engine.freeValue(result);
-        return sdk.promise(engine, result);
-    };
-    defer engine.freeValue(pending);
-    return sdk.invoke(engine, pending, "then", &.{ good, bad });
-}
-fn authCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, stage: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = engine_mod.Engine.fromContext(context.?);
-    return finishAuth(engine, data[0], if (argc > 0) argv[0] else c.pi_js_undefined(), stage) catch |err| {
-        if (err == error.JavaScriptException and stage == 0) {
-            const caught = c.JS_DupValue(engine.context, engine.captured_exception orelse return sdk.fail(engine, err));
-            defer engine.freeValue(caught);
-            return finishAuth(engine, data[0], caught, 1) catch |failure| sdk.fail(engine, failure);
-        }
-        return sdk.fail(engine, err);
-    };
-}
+pub const createConstructor = @import("native_sdk_model_registry_public.zig").createConstructor;
+pub const install = @import("native_sdk_model_registry_public.zig").install;
+pub const constructor = @import("native_sdk_model_registry_public.zig").constructor;
 fn isError(engine: *engine_mod.Engine, value: c.JSValue) bool {
     _ = engine;
     return c.JS_IsError(value);

@@ -1,0 +1,168 @@
+{
+  "unit": "Actual c268 ModelRegistry public constructor, 29 method bodies and 27 causal controls",
+  "status": "Source-authored with all bounded production and control peers closed; no compilation, Source execution, native execution or runtime qualification has been performed.",
+  "owned_base": "1bcfb6992804c8b9047a49cd1292cc8f9379166f",
+  "authority": {
+    "commit": "c268154c",
+    "path": "packages/coding-agent/src/core/model-registry.ts",
+    "source_sha256": "F4CED2D92DF9097647ABA7DA3AE0BB273FA8089E966BE15DBA880DB51D5DEE0B",
+    "accepted_js_sha256": "588FA2D8DF563FE0F41C99E54ECAD1473CD325937B208CC1C3E103A8A032D0A1",
+    "accepted_map_sha256": "857E8A9D3059A59EE3095CFE70B7464BFDF2C1A4575522ADD5C849EC459C1AB0",
+    "map_sources_content_equals_source": true,
+    "local_directory": "verification/sdk-owners-resume-20261018/model-registry-authority",
+    "fixture_derivation": {
+      "accepted_hash": "588FA2D8DF563FE0F41C99E54ECAD1473CD325937B208CC1C3E103A8A032D0A1",
+      "source_hash": "F4CED2D92DF9097647ABA7DA3AE0BB273FA8089E966BE15DBA880DB51D5DEE0B",
+      "map_hash": "857E8A9D3059A59EE3095CFE70B7464BFDF2C1A4575522ADD5C849EC459C1AB0",
+      "start": 179,
+      "end": 5459,
+      "changes": [
+        "Select entire actual emitted ModelRegistry class; no method-body edits",
+        "Remove export keyword and terminal sourceMappingURL comment",
+        "Wrap in an ordinary strict fixture factory returning that class",
+        "The external clearApiKeyCache re-export is outside this class-only fixture; full public export composition remains separate"
+      ]
+    }
+  },
+  "source_pins": [
+    {
+      "path": "src/extensions/native_sdk_model_registry_public.zig",
+      "sha256": "6AF3974EFC43A464CFB06FAC2645683D466BEB4409D9F61A7E8FDB4AAC227029",
+      "bytes": 16883
+    },
+    {
+      "path": "src/extensions/native_sdk_model_registry.zig",
+      "sha256": "D77CA183CFB29933D35B2AC786CFC3963EAEFE8C2A165083B820D5BAFA615B30",
+      "bytes": 3870
+    },
+    {
+      "path": "src/native_sdk_model_registry_public_test.zig",
+      "sha256": "39FCF22E6CD970C3AF7ADF4C5F370E7F527F94188A341C96A0EAC4500F43A53B",
+      "bytes": 13436
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-model-registry-observer.mjs",
+      "sha256": "3CC1E5C0AA6E633A87A96A51A9C3E9D9E9D0A830AEA80B8BD1729C8FB88B889D",
+      "bytes": 27924
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-model-registry-c268-source.mjs",
+      "sha256": "36B0D5F79B823BC2460FBF1B71E494F69DBBAFFD907F5877FC4C31312D928DC7",
+      "bytes": 5328
+    }
+  ],
+  "integration": {
+    "constructor_dependency": {
+      "status": "Implemented and source/control peer-closed in VM commit 93c82663d21a9bcb38a5fe03f3e2757e5314d67c; no execution is claimed.",
+      "abi": "JSValue JS_PiGetObjectPrototypeFromConstructor(JSContext *ctx, JSValueConst new_target)",
+      "ownership": "Borrowed new_target; owned selected prototype. Object prototype fallback comes from the actual new target realm.",
+      "allocation": "The SDK instance raw JS_NewObjectProtoClass allocation remains separately qualified after the guest prototype operation.",
+      "commit": "93c82663d21a9bcb38a5fe03f3e2757e5314d67c",
+      "quickjs_c_sha256": "18ECEF9411862478024E45C36BDF9F2D3F697323B62A7BD086AE2DFDA7F852D2",
+      "quickjs_h_git_blob": "3112ecb52a9d612b2daa777514c2433a7c9d6a38",
+      "control_root": "src/native_vm_borrowed_bridges_test.zig",
+      "control_root_sha256": "D03DB78C9EB8743A568892F0098060ED7EC310B9CF68986D9B55B4D2F8A23E25",
+      "named_declarations": 17
+    },
+    "runtime_identity": "Retains the actual SDK instance State.kind and independent model bridge anchor; an unbranded input gains only the actual public runtime field root.",
+    "public_namespace": "This is the genuine ModelRegistry owner. It does not assert completion of the full 157-export coding-agent namespace.",
+    "sdk_delta": "Three narrow native_sdk.zig hunks install the genuine ModelRegistry constructor and preserve actual SDK instance State/model lease ownership. All other original manager constructors and identities are retained.",
+    "build_delta": "13 additive install-only build lines; target, filter and artifact are listed below.",
+    "fixture_containment": "The final actual branded ModelRuntime control creates std.testing.tmpDir, obtains its real path, joins absent-auth.json, publishes the path as a real JS data value, and destroys the Engine before the temporary directory is cleaned. No fixed external auth path is used."
+  },
+  "build": {
+    "target": "build-native-sdk-model-registry-public",
+    "artifact": "native-sdk-model-registry-public.exe",
+    "test_root": "src/native_sdk_model_registry_public_test.zig",
+    "filter": "SDK public ModelRegistry",
+    "install_only": true,
+    "named_declarations": 27,
+    "names": [
+      "SDK public ModelRegistry actual class descriptors and both VM async brands",
+      "SDK public ModelRegistry own field and actual newTarget construction",
+      "SDK public ModelRegistry unbranded runtime replacement retires its sole root",
+      "SDK public ModelRegistry all ordinary delegation argument counts and result identity",
+      "SDK public ModelRegistry runtime callee selection precedes provider argument getter",
+      "SDK public ModelRegistry optional provider name reads primitives and preserves nullish fallback",
+      "SDK public ModelRegistry snapshots use intrinsic literal and real iterator",
+      "SDK public ModelRegistry call receiver and callee retire before snapshot iterator",
+      "SDK public ModelRegistry void methods discard actual returned owners",
+      "SDK public ModelRegistry missing registration config constructs live Error before runtime",
+      "SDK public ModelRegistry two actual async bodies suspend and use intrinsic promises",
+      "SDK public ModelRegistry resolved auth rereads exact fields and retires predicate operands",
+      "SDK public ModelRegistry compatibility path rereads runtime and consumes authHeader predicate",
+      "SDK public ModelRegistry catch uses actual live repeated instanceof and cause selection",
+      "SDK public ModelRegistry global String result and catch abrupt identity remain actual",
+      "SDK public ModelRegistry missing key templates use intrinsic string hint conversion",
+      "SDK public ModelRegistry key method optional access and ordinary empty catch",
+      "SDK public ModelRegistry private DATA stays ordinary before and after Await",
+      "SDK public ModelRegistry arguments and resolution survive actual Await and return adoption",
+      "SDK public ModelRegistry catch locals survive return adoption then retire",
+      "SDK public ModelRegistry actual reaction input outlives key adoption until its job ends",
+      "SDK public ModelRegistry current B bypasses both ordinary async catches",
+      "SDK public ModelRegistry post Await predicate retirement B skips provider and catch",
+      "SDK public ModelRegistry post Await cancellation skips later fields and catch",
+      "SDK public ModelRegistry newTarget primitive prototype falls back to the actual foreign realm",
+      "SDK public ModelRegistry uses the actual SDK state and completed constructor identity",
+      "SDK public ModelRegistry real branded runtime retains its original independent lease"
+    ],
+    "actual_imported_test_metadata": "Not queried. The Root controller must audit actual compiler metadata; no inferred imported-name count."
+  },
+  "finite_source_peers": {
+    "ordinary_production": {
+      "reviewer": "modules_io",
+      "status": "closed",
+      "pin": "6AF3974E",
+      "scope": "29-method ordinary arities/forwarding; runtime/callee/provider order; real spread; optional primitive name; void retirement; registration error. Constructor and two AFs excluded."
+    },
+    "async_and_controls_11_through_21": {
+      "reviewer": "vm_foundation",
+      "status": "closed",
+      "pins": [
+        "6AF3974E",
+        "AD31D9EA",
+        "3CC1E5C0",
+        "36B0D5F7"
+      ],
+      "scope": "Actual initialize/authBody/advance/catchReason, one Await and intrinsic settlement, repeated runtime/auth/cause/instanceof reads, eager missing-key template, fixed locals through adoption; causal controls 11–21. Reaction job retains awaited input through synchronous final-key adoption."
+    },
+    "controls_1_through_10_and_22_through_24": {
+      "reviewer": "modules_io",
+      "status": "closed",
+      "pins": [
+        "AD31D9EA",
+        "3CC1E5C0",
+        "36B0D5F7"
+      ],
+      "scope": "Actual SDK fixture and constructor identity, ordinary argument counts, receiver/callee and void result retirement, live registration Error, host record actual-B and cancellation visit assertions. Constructor/newTarget operation and controls 25–27 excluded."
+    },
+    "constructor_and_controls_25_through_27": {
+      "reviewer": "root",
+      "status": "closed",
+      "pins": [
+        "6AF3974E",
+        "AD31D9EA",
+        "3CC1E5C0",
+        "36B0D5F7",
+        "native_sdk.zig exact three-hunk delta"
+      ],
+      "scope": "Actual own runtime field before Set, foreign Object prototype through the borrowed constructor operation, SDK State.kind and completed constructor identity, unbranded hidden-root removal and independently retained branded model lease.",
+      "hygiene_successor": {
+        "status": "closed",
+        "reviewer": "root",
+        "root_sha256": "39FCF22E6CD970C3AF7ADF4C5F370E7F527F94188A341C96A0EAC4500F43A53B",
+        "change": "Only the final control's auth path setup changes to a contained std.testing.TmpDir and real JS path publication; Engine teardown precedes directory cleanup."
+      }
+    }
+  },
+  "required_shared_dependencies": [
+    "Borrowed constructor prototype operation 93c82663d21a9bcb38a5fe03f3e2757e5314d67c",
+    "Actual AF terminal argument/state/function/effective-this/receiver order",
+    "Actual intrinsic eager template compiler correction 353970d4204b5961058e86d3b435778a4a1e96f8",
+    "Actual JS_PiArrayAppend wrapper",
+    "Canonical AF33 guest operation and C435 owned completion",
+    "Actual SDK State/model lease and real pi-ai/model runtime owner in the branded lease control"
+  ],
+  "no_execution": true,
+  "integration_base": "1e18f51508b4f4ea2418cab7002e569a7448722e"
+}
