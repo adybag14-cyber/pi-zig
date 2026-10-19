@@ -188,8 +188,8 @@ test "VM backing actual pending entry preserves the exact reason and owner count
 }
 const External = struct {
     calls: usize = 0,
-    fn retire(_: ?*c.JSRuntime, opaque: ?*anyopaque, ptr: ?*anyopaque, size: usize) callconv(.c) ?*anyopaque {
-        const self: *External = @ptrCast(@alignCast(opaque.?));
+    fn retire(_: ?*c.JSRuntime, raw_owner: ?*anyopaque, ptr: ?*anyopaque, size: usize) callconv(.c) ?*anyopaque {
+        const self: *External = @ptrCast(@alignCast(raw_owner.?));
         if (size != 0 or ptr == null) @panic("Unexpected external ArrayBuffer resize");
         self.calls += 1;
         return null;
