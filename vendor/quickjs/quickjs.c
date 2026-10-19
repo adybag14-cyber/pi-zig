@@ -22690,9 +22690,9 @@ static void js_async_function_terminate(JSRuntime *rt, JSAsyncFunctionData *s)
                 js_native_async_terminate_with_close(s);
                 return;
             }
-            /* Match async_func_free: arguments, local state, function
-               (including its captures), then lexical this and the call-site
-               receiver retained even by a lexical-this async arrow. */
+            /* Match async_func_free's observable owners. Drop the extra body
+               view of lexical this while the function still owns its capture;
+               function/capture retirement then precedes the call receiver. */
             for (i = 0; i < s->native_argc; i++)
                 JS_FreeValueRT(rt, s->native_argv[i]);
             js_free_rt(rt, s->native_argv);
@@ -22700,10 +22700,10 @@ static void js_async_function_terminate(JSRuntime *rt, JSAsyncFunctionData *s)
             s->native_argc = 0;
             JS_FreeValueRT(rt, s->native_state);
             s->native_state = JS_UNDEFINED;
-            JS_FreeValueRT(rt, s->native_function);
-            s->native_function = JS_UNDEFINED;
             JS_FreeValueRT(rt, s->native_this);
             s->native_this = JS_UNDEFINED;
+            JS_FreeValueRT(rt, s->native_function);
+            s->native_function = JS_UNDEFINED;
             JS_FreeValueRT(rt, s->native_receiver);
             s->native_receiver = JS_UNDEFINED;
         } else {
@@ -23134,8 +23134,10 @@ static void js_native_async_retire(JSContext *ctx, JSAsyncFunctionData *s,
         js_native_async_take_pending(ctx, owned);
     }
     js_native_async_release(ctx, state, owned);
-    js_native_async_release(ctx, function, owned);
+    /* An arrow's function already owns lexical this. Keeping this duplicate
+       through function retirement would delay its capture finalizer. */
     js_native_async_release(ctx, effective_this, owned);
+    js_native_async_release(ctx, function, owned);
     js_native_async_release(ctx, receiver, owned);
     for (i = 0; i < 2; i++)
         js_native_async_release(ctx, resolves[i], owned);

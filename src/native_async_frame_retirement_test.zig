@@ -169,7 +169,13 @@ fn executeOne(p: *Probe) !void {
     p.engine.finishJob();
 }
 fn sequence(p: *Probe) !void {
-    const expected: []const u8 = if (p.arrow) &.{ 0, 1, 2, 3, 5, 4 } else &.{ 0, 1, 2, 3, 4 };
+    // A real Promise/callback finalizer abandons the coroutine while the VM
+    // is already in DECREF. Root releases enqueue at the head, so holder
+    // finalizers run in reverse release order. Normal resume starts outside
+    // that queue, except the function's own capture graph retires within it.
+    const expected: []const u8 = if (p.mode == .abandoned)
+        if (p.arrow) &.{ 4, 5, 3, 2, 1, 0 } else &.{ 4, 3, 2, 1, 0 }
+        else if (p.arrow) &.{ 0, 1, 2, 5, 3, 4 } else &.{ 0, 1, 2, 3, 4 };
     try std.testing.expectEqual(expected.len, p.length);
     try std.testing.expectEqualSlices(u8, expected, p.order[0..p.length]);
     for (p.counts, 0..) |count, i| try std.testing.expectEqual(@as(u32, if (p.made[i]) 1 else 0), count);
@@ -298,8 +304,9 @@ fn setupArrow(p: *Probe, native: bool, mode: Mode) !void {
     p.arrow = true;
     var scope: Scope = .{ .engine = p.engine };
     try v.owned.finishVoid(&scope, installArrowFactory(&scope));
-    // captured is referenced before lexical this in the literal arrow body,
-    // so its actual closed var-ref holder precedes the lexical-this holder.
+    // captured is referenced before lexical this in the literal arrow body.
+    // Their roots are released in that order inside the function finalizer;
+    // the VM's head-inserted DECREF queue observes lexical this first.
     try run(p.engine, if (mode == .abandoned)
         "globalThis.sourceArrowFactory=function(captured){return async(a,b)=>{const local=vmMake(2);await vmGate;vmObserve(captured,this,local);return vmReturn}};"
         else
@@ -379,6 +386,12 @@ const CloseProbe = struct {
     second: c.JSValue,
     prior: c.JSValue,
     cleanup_events: bool = false,
+    consume_close_reason: bool = false,
+    close_reason_releases: usize = 0,
+    close_reason_counts: [4]u32 = @splat(99),
+    close_reason_length: usize = 99,
+    close_reason_has_pending: bool = true,
+    close_reason_promise_state: c_int = -1,
     fn init(engine: *Engine, options: struct {
         mode: CloseMode = .returned,
         escape: bool = false,
@@ -398,8 +411,9 @@ const CloseProbe = struct {
     }
     fn deinit(self: *CloseProbe) void {
         self.cleanup_events = false;
-        self.engine.freeValue(self.first); self.engine.freeValue(self.second); self.engine.freeValue(self.prior);
+        // The caller may already have released its borrowed Promise on failure.
         self.pending = c.pi_js_undefined();
+        self.engine.freeValue(self.first); self.engine.freeValue(self.second); self.engine.freeValue(self.prior);
         self.engine.deinit();
         close_active = null;
     }
@@ -439,7 +453,14 @@ fn closeState(engine: *Engine, owner: c.JSValue) !void {
     if (p.mode == .failed_close) {
         // An actual pending ordinary failure before close must still leave the
         // C owner responsible for every state/function/receiver root.
-        _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, p.prior));
+        const reason = if (p.consume_close_reason) blk: {
+            // Transfer the sole ordinary Error root into the actual pending
+            // event. Its attached marker will observe the reaction's discard.
+            const selected = p.prior;
+            p.prior = c.pi_js_undefined();
+            break :blk selected;
+        } else c.JS_DupValue(engine.context, p.prior);
+        _ = c.JS_Throw(engine.context, reason);
         return error.JavaScriptException;
     }
     return CloseFrame.closeAtAsyncTerminal(engine, owner);
@@ -582,12 +603,13 @@ test "VM async retirement terminal Frame close runs once for abandoned actual Aw
         const pending = try closeStart(&p); defer p.engine.freeValue(pending);
         try std.testing.expect(!c.JS_IsJobPending(p.engine.runtime));
         try run(p.engine, "delete globalThis.closeGate;");
-        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try closeOrder(&p, &.{ 3, 2, 1, 0 });
         try std.testing.expectEqual(@as(usize, 0), p.resumed);
         try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
         if (native) {
             try std.testing.expectEqual(@as(usize, 1), p.hook_calls);
-            try std.testing.expectEqualSlices(u32, &.{ 1, 0, 0, 0 }, &p.hook_counts);
+            // Root releases occurred, but DECREF has not yet run their finalizers.
+            try std.testing.expectEqualSlices(u32, &.{ 0, 0, 0, 0 }, &p.hook_counts);
             try std.testing.expectEqual(c.JS_PROMISE_PENDING, p.hook_promise_state);
         }
     }
@@ -610,13 +632,64 @@ test "VM async retirement terminal close runs under preexisting fatal without re
     try std.testing.expectEqual(@as(usize, 0), p.resumed);
     try std.testing.expectEqual(c.JS_PROMISE_PENDING, p.hook_promise_state);
 }
-test "VM async retirement failed terminal hook cannot bypass state and receiver root retirement" {
-    var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{ .mode = .failed_close });
-    defer p.deinit(); try closeSetup(&p, true);
+fn closeReasonRelease(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
+    const p: *CloseProbe = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
+    p.close_reason_releases += 1;
+    p.close_reason_counts = p.counts;
+    p.close_reason_length = p.length;
+    p.close_reason_has_pending = c.JS_HasException(p.engine.context);
+    p.close_reason_promise_state = if (c.JS_IsUndefined(p.pending))
+        c.JS_PROMISE_NOT_A_PROMISE else c.JS_PromiseState(p.engine.context, p.pending);
+}
+fn closeOrdinaryReason(p: *CloseProbe) !void {
+    var class_id: c.JSClassID = 0;
+    _ = c.JS_NewClassID(p.engine.runtime, &class_id);
+    const definition: c.JSClassDef = .{ .class_name = "Actual discarded ordinary terminal close reason", .finalizer = closeReasonRelease };
+    if (c.JS_NewClass(p.engine.runtime, class_id, &definition) < 0) return error.OutOfMemory;
     p.prior = try p.engine.checked(c.JS_NewError(p.engine.context));
-    const pending = try closeStart(&p); defer p.engine.freeValue(pending);
-    try closeJobFailure(&p, p.prior, false);
-    try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, p.hook_promise_state);
+    const marker = try p.engine.checked(c.JS_NewObjectClass(p.engine.context, class_id));
+    _ = c.JS_SetOpaque(marker, p);
+    if (c.JS_DefinePropertyValueStr(p.engine.context, p.prior, "retirementMarker", marker, c.JS_PROP_C_W_E) < 0)
+        return error.JavaScriptException;
+    p.consume_close_reason = true;
+}
+test "VM async retirement failed terminal hook cannot bypass state and receiver root retirement" {
+    inline for (.{ false, true }) |fatal| {
+        var p = CloseProbe.init(try Engine.init(std.testing.allocator, .{}), .{ .mode = .failed_close });
+        defer p.deinit(); try closeSetup(&p, true);
+        if (fatal) {
+            p.prior = try p.engine.checked(c.JS_NewError(p.engine.context));
+            c.JS_SetUncatchableError(p.engine.context, p.prior);
+        } else try closeOrdinaryReason(&p);
+        const pending = try closeStart(&p); defer p.engine.freeValue(pending);
+        if (fatal) {
+            var context: ?*c.JSContext = null;
+            try std.testing.expect(c.JS_ExecutePendingJob(p.engine.runtime, &context) < 0);
+            try std.testing.expect(c.JS_HasException(p.engine.context));
+            const reason = c.JS_GetException(p.engine.context); defer p.engine.freeValue(reason);
+            try std.testing.expect(c.JS_IsStrictEqual(p.engine.context, reason, p.prior));
+            try std.testing.expect(c.JS_IsUncatchableError(reason));
+        } else {
+            // Await has no result capability. Its actual Promise reaction
+            // consumes an ordinary handler failure after C has retired the
+            // activation; this is not an escaping job failure.
+            try closeOne(&p);
+            try std.testing.expectEqual(@as(usize, 1), p.close_reason_releases);
+            try std.testing.expectEqualSlices(u32, &.{ 1, 1, 1, 1 }, &p.close_reason_counts);
+            try std.testing.expectEqual(@as(usize, 4), p.close_reason_length);
+            try std.testing.expect(!p.close_reason_has_pending);
+            try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, p.close_reason_promise_state);
+            try std.testing.expect(c.JS_IsUndefined(p.prior));
+        }
+        try std.testing.expectEqual(@as(usize, 1), p.hook_calls);
+        try std.testing.expectEqualSlices(u32, &.{ 1, 0, 0, 0 }, &p.hook_counts);
+        // This deliberately failed hook leaves both locals to the Frame's
+        // fallback finalizer. It releases 1 then2 inside DECREF, yielding2,1.
+        try closeOrder(&p, &.{ 0, 2, 1, 3 });
+        try std.testing.expectEqual(@as(usize, 1), p.resumed);
+        try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, p.hook_promise_state);
+        try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, c.JS_PromiseState(p.engine.context, pending));
+    }
 }
 
 
@@ -694,11 +767,11 @@ test "VM async retirement escaped open cell retains actual coroutine after the a
         try std.testing.expectEqual(@as(usize, 0), p.hook_calls);
         try leaseReadCapture(&p);
         try run(p.engine, "delete globalThis.closeEscaped;");
-        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try closeOrder(&p, &.{ 3, 2, 1, 0 });
         try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
         try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
         try leaseCollect(&p);
-        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try closeOrder(&p, &.{ 3, 2, 1, 0 });
     }
 }
 test "VM async retirement dropped callback leaves no artificial owning capture-table cycle" {
@@ -710,7 +783,7 @@ test "VM async retirement dropped callback leaves no artificial owning capture-t
         try run(p.engine, "delete globalThis.closeGate;");
         // Retirement must be immediate when the actual awaited owner is gone;
         // requiring GC here would conceal an extra Frame -> Cell owner.
-        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try closeOrder(&p, &.{ 3, 2, 1, 0 });
         try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
         try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
     }
@@ -933,7 +1006,7 @@ test "VM async retirement escaped immutable argument retains real abandoned invo
         try std.testing.expectEqual(@as(usize, 0), p.hook_calls);
         try run(p.engine, "delete globalThis.closeEscaped;");
         // No GC call is needed to dispose a dropped, acyclic argument cell.
-        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try closeOrder(&p, &.{ 3, 2, 1, 0 });
         try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
         try std.testing.expectEqual(@as(usize, 0), p.resumed);
         try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
@@ -945,7 +1018,7 @@ test "VM async retirement dropped immutable argument cell adds no retained origi
         defer p.deinit(); try argumentSetup(&p, native, true, true);
         const pending = try argumentStart(&p); defer p.engine.freeValue(pending);
         try run(p.engine, "delete globalThis.closeGate;");
-        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try closeOrder(&p, &.{ 3, 2, 1, 0 });
         try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
         try std.testing.expectEqual(@as(usize, 0), p.resumed);
         try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
@@ -1111,7 +1184,7 @@ test "VM async retirement block exit detaches its escaped binding before the lat
         try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
         try leaseReadCapture(&p);
         try run(p.engine, "delete globalThis.closeEscaped;");
-        try closeOrder(&p, &.{ 0, 1, 3, 2 });
+        try closeOrder(&p, &.{ 3, 1, 0, 2 });
     }
 }
 test "VM async retirement block exit leaves the original local alive after the closed callback is dropped" {
@@ -1124,7 +1197,7 @@ test "VM async retirement block exit leaves the original local alive after the c
         try leaseCollect(&p);
         try leaseCounts(&p, .{ 0, 0, 0, 0 });
         try run(p.engine, "delete globalThis.closeGate;");
-        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try closeOrder(&p, &.{ 3, 2, 1, 0 });
         try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
     }
 }
@@ -1142,7 +1215,7 @@ test "VM async retirement closing one block preserves a sibling capture's actual
         try leaseCounts(&p, .{ 0, 0, 0, 0 });
         try std.testing.expectEqual(@as(usize, 0), p.hook_calls);
         try run(p.engine, "delete globalThis.closeOuter;");
-        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try closeOrder(&p, &.{ 3, 2, 1, 0 });
         try std.testing.expectEqual(@as(usize, if (native) 1 else 0), p.hook_calls);
         try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
     }
@@ -1162,7 +1235,7 @@ test "VM async retirement lexical reentry creates fresh mutable cells and preser
         // the suspended Source frame. It retires only with that invocation.
         try leaseCounts(&p, .{ 0, 1, 0, 0 });
         try run(p.engine, "delete globalThis.closeGate;");
-        try closeOrder(&p, &.{ 1, 0, 2, 3 });
+        try closeOrder(&p, &.{ 1, 3, 2, 0 });
         try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
         try run(p.engine, "if(closePairs[0][0]()!==blockFirst||closePairs[1][0]()!==blockLast)throw new Error('terminal cells')");
     }
