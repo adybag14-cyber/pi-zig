@@ -17930,6 +17930,36 @@ static __exception int js_for_in_next(JSContext *ctx, JSValue *sp)
     return 0;
 }
 
+/* Borrowed native exposure of the actual for-in opcodes. The input duplicate
+   belongs to build_for_in_iterator; next borrows its retained iterator. */
+JSValue JS_PiForInStart(JSContext *ctx, JSValueConst input)
+{
+    JSValue stack[1];
+
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
+    stack[0] = js_dup(input);
+    if (js_for_in_start(ctx, stack + 1) < 0)
+        return JS_EXCEPTION;
+    return stack[0];
+}
+
+JSValue JS_PiForInNext(JSContext *ctx, JSValueConst iterator, bool *done)
+{
+    JSValue stack[3];
+
+    *done = true;
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
+    stack[0] = unsafe_unconst(iterator);
+    stack[1] = JS_UNDEFINED;
+    stack[2] = JS_TRUE;
+    if (js_for_in_next(ctx, stack + 1) < 0)
+        return JS_EXCEPTION;
+    *done = JS_VALUE_GET_BOOL(stack[2]);
+    return stack[1];
+}
+
 static JSValue JS_GetIterator2(JSContext *ctx, JSValueConst obj,
                                JSValueConst method)
 {
@@ -22163,6 +22193,31 @@ static JSContext *JS_GetFunctionRealm(JSContext *ctx, JSValueConst func_obj)
         break;
     }
     return realm;
+}
+
+/* Fixed Object fallback from the same GetPrototypeFromConstructor selection
+   used by js_create_from_ctor. The caller allocates its actual native class
+   separately; a custom class's prototype must not replace the Object fallback. */
+JSValue JS_PiGetObjectPrototypeFromConstructor(JSContext *ctx,
+                                             JSValueConst new_target)
+{
+    JSValue proto;
+    JSContext *realm;
+
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
+    if (JS_IsUndefined(new_target))
+        return js_dup(ctx->class_proto[JS_CLASS_OBJECT]);
+    proto = JS_GetProperty(ctx, new_target, JS_ATOM_prototype);
+    if (JS_IsException(proto))
+        return proto;
+    if (JS_IsObject(proto))
+        return proto;
+    JS_FreeValue(ctx, proto);
+    realm = JS_GetFunctionRealm(ctx, new_target);
+    if (!realm)
+        return JS_EXCEPTION;
+    return js_dup(realm->class_proto[JS_CLASS_OBJECT]);
 }
 
 static JSValue js_create_from_ctor(JSContext *ctx, JSValueConst ctor,
@@ -45479,6 +45534,18 @@ JSValue JS_PiCallConstructorArray(JSContext *ctx, JSValueConst constructor,
     if (JS_HasException(ctx))
         return JS_EXCEPTION;
     return js_function_apply(ctx, constructor, 2, argv, 1);
+}
+
+/* Same ordinary Function.apply argument-list path as the adjacent
+   constructor-array bridge, including the callable check before array reads. */
+JSValue JS_PiCallArray(JSContext *ctx, JSValueConst function,
+                      JSValueConst receiver, JSValueConst argument_array)
+{
+    JSValueConst argv[2] = { receiver, argument_array };
+
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
+    return js_function_apply(ctx, function, 2, argv, 0);
 }
 
 static JSValue js_function_call(JSContext *ctx, JSValueConst this_val,

@@ -628,6 +628,36 @@ JS_EXTERN JSValue JS_PiGetAsyncIterator(JSContext *ctx, JSValueConst obj);
 JS_EXTERN int JS_PiArrayAppend(JSContext *ctx, JSValueConst target,
                                uint32_t *position, JSValueConst iterable);
 
+/* Actual for-in opcode operations. Start borrows input and returns an owned
+   private iterator that retains its own input duplicate. Next borrows that
+   iterator, advances its actual cursor, and returns an owned key or undefined
+   when done. done is a non-null host output initialized true; its result is
+   meaningful only after a normal return.
+   Existing pending exceptions prevent work. The VM's snapshot, prototype,
+   proxy, deletion and primitive rules are unchanged. Both calls can run guest
+   operations; the caller must use its ordinary invocation boundary and retire
+   the iterator at the Source loop's actual lifetime boundary. */
+JS_EXTERN JSValue JS_PiForInStart(JSContext *ctx, JSValueConst input);
+JS_EXTERN JSValue JS_PiForInNext(JSContext *ctx, JSValueConst iterator, bool *done);
+
+/* Borrowed new_target, owned result: the actual constructor.prototype read
+   followed, only for a non-object result, by that function's own realm's
+   intrinsic Object prototype. Undefined uses the current realm, as the
+   existing VM constructor helper does. This performs no class allocation.
+   Pending entry prevents the guest-capable property access. */
+JS_EXTERN JSValue JS_PiGetObjectPrototypeFromConstructor(JSContext *ctx,
+                                                        JSValueConst new_target);
+
+/* Actual ordinary Function.apply path over borrowed operands. Callable
+   validation precedes array-like length/index reads; nullish arrays mean no
+   arguments. The real VM argument cap, allocation and call cleanup apply.
+   Returns an owned result or JS_EXCEPTION; pending entry prevents guest work.
+   This does not perform iterable spread: native callers that model spread
+   first use the actual ArrayAppend operation at its own Source boundary. */
+JS_EXTERN JSValue JS_PiCallArray(JSContext *ctx, JSValueConst function,
+                                 JSValueConst receiver,
+                                 JSValueConst argument_array);
+
 /* the following functions are used to select the intrinsic object to
    save memory */
 JS_EXTERN JSContext *JS_NewContextRaw(JSRuntime *rt);
