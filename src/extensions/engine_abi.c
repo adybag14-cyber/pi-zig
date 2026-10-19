@@ -164,6 +164,7 @@ size_t pi_js_native_memory_used(void *opaque) {
     return atomic_load_explicit(&owner->used, memory_order_relaxed);
 }
 JSValue pi_js_undefined(void) { return JS_UNDEFINED; }
+JSValue pi_js_exception(void) { return JS_EXCEPTION; }
 JSValue pi_js_null(void) { return JS_NULL; }
 JSValue pi_js_bool(JSContext *context, int value) { return JS_NewBool(context, value); }
 JSValue pi_js_int32(JSContext *context, int32_t value) { return JS_NewInt32(context, value); }

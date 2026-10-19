@@ -4,6 +4,7 @@
 #define PI_EXTENSION_ENGINE_ABI_H
 #include "quickjs.h"
 JSValue pi_js_undefined(void);
+JSValue pi_js_exception(void);
 JSValue pi_js_null(void);
 JSValue pi_js_bool(JSContext *context, int value);
 JSValue pi_js_int32(JSContext *context, int32_t value);

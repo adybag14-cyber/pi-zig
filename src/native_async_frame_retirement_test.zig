@@ -62,7 +62,7 @@ fn release(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
 }
 fn make(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     var slot: u32 = 0;
-    if (argc == 0 or c.JS_ToUint32(context, &slot, argv[0]) < 0) return c.JS_EXCEPTION;
+    if (argc == 0 or c.JS_ToUint32(context, &slot, argv[0]) < 0) return c.pi_js_exception();
     return active.?.token(slot) catch |err| c.JS_ThrowInternalError(context, "Retirement token: %s", @as([*:0]const u8, @errorName(err)));
 }
 fn observe(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -416,7 +416,7 @@ fn closeRelease(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
 }
 fn closeMake(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     var slot: u32 = 0;
-    if (argc == 0 or c.JS_ToUint32(context, &slot, argv[0]) < 0) return c.JS_EXCEPTION;
+    if (argc == 0 or c.JS_ToUint32(context, &slot, argv[0]) < 0) return c.pi_js_exception();
     return close_active.?.token(slot) catch |err|
         c.JS_ThrowInternalError(context, "Close token: %s", @as([*:0]const u8, @errorName(err)));
 }
