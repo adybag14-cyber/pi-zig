@@ -1,0 +1,43 @@
+{
+  "status": "Source-only native queue proposal. No build, execution, native hook installation, or full Node environment claim.",
+  "base": {
+    "path": "src/extensions/native_immediates.zig",
+    "sha256": "1DCA2839C9FC660F1AF354CA89F9BC28D6A4551DBF7EA36E60DBAA48627795FE",
+    "bytes": 16821
+  },
+  "files": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_native_immediates.zig",
+      "sha256": "57984C27FCE4154EFCE05A60221E0E29233E553A85C2F455A613B17C21FB9BFB",
+      "bytes": 8529
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_immediates.zig",
+      "sha256": "305653F3417FC86560C3A2CE99A512E8C91F3363A424513F2814FF2292FD7680",
+      "bytes": 19235
+    }
+  ],
+  "authority": [
+    "../native-node-file-handle-sourceonly-20261019/authority/native-immediate-source.json",
+    "../native-node-file-handle-sourceonly-20261019/authority/native-immediate-cleanup-source.json"
+  ],
+  "implemented": [
+    "Independent charged native queue owner with retained allocator entitlement; owned native-only intrusive tickets.",
+    "FIFO including reentrant native enqueue; refed callback count remains until complete drain, before callback-scope exit.",
+    "Consumed ticket is destroyed after actual outcome capture and before the required native uncaught-exception operation.",
+    "Required native callback scope encloses the entire queue; cleanup only invokes refed callbacks and requires real JS-disallow semantics.",
+    "Optional integration drains native work before public queue snapshot, adds native pending/ref liveness, and preserves unchanged public callback bodies when no native queue is installed.",
+    "Completed allocation boundary and reentrant winner selection; no guest handler inputs, public setImmediate substitution, or replacement microtask scheduling."
+  ],
+  "required_genuine_owners": [
+    "Hooks.begin/CallbackScope.finish must be the actual InternalCallbackScope and cleanup DisallowJavascriptExecutionScope owner; no implementation is substituted.",
+    "Hooks.caught must be the actual native uncaught-exception operation. Main Policy.reportUncaught7B14/Manager9931 were read; process-level scope/teardown composition remains separate.",
+    "The actual Native FileHandle/AsyncWrap BaseObject shutdown owner must perform its Source cleanup before queue disarm. Late tickets after disarm are destroyed natively, and are not presented as active Node cleanup callbacks."
+  ],
+  "references": {
+    "policy": "C:/Users/adyba/pi-zig/main/src/extensions/native_promise_rejection_policy.zig",
+    "policy_sha256": "7B14E888DD4734F6AD792D12CC29F7E746D54C61C5B35280477808071238C02A",
+    "application_fatal_sha256": "9931F4D33FB00E6832D1E095146BF2D7DE4556D85330016FA61D8385AA3B3683"
+  },
+  "exclusion": "No Engine or Main changes; public Immediate callbacks, timer phase policy, class shape and methods are unchanged outside optional native queue integration. No production caller currently supplies missing Hooks."
+}

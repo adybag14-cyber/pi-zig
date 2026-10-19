@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "status": "source-only; no build, native, Node or generator execution",
+  "root_request": "Publish the already reviewed native immediate queue and optional public integration as a separate dependency for the actual callback environment.",
+  "source_receipt": "source-successor-receipt.json",
+  "source_receipt_sha256": "AB895F67F56C8E0311D47C81BAC12F0597D5DD053BA05ACC85D8D35E8385AB03",
+  "production": [
+    {
+      "path": "src/extensions/native_node_native_immediates.zig",
+      "sha256": "4D08479443076E84E1B16005FEC0078BAD08BD19D31DD6012266752E44CE7578",
+      "bytes": 8688
+    },
+    {
+      "path": "src/extensions/native_immediates.zig",
+      "base_sha256": "1DCA2839C9FC660F1AF354CA89F9BC28D6A4551DBF7EA36E60DBAA48627795FE",
+      "sha256": "3B1844075F5BFD478434F2C6B1698FA0F93E74FBBAF5FD2C8FA19AC20F3261C2",
+      "bytes": 19099
+    }
+  ],
+  "authority": [
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/native-immediate-source.json",
+      "sha256": "b30b6c4b6bf3ca9a860273fa449df762f7c75a175c9bba3a9350c38b7521746e",
+      "bytes": 24494
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/native-immediate-cleanup-source.json",
+      "sha256": "88fb2cd84d8f56c63ea089563fc88302d1170eedf3bbf117a1b4b39de527804e",
+      "bytes": 16390
+    }
+  ],
+  "peer": {
+    "reviewer": "/root",
+    "status": "complete bounded source ownership/order peer closed on exact 4D084794/3B184407"
+  },
+  "build": "Existing native_immediates imports select this additive owner. No new target or source graph is introduced.",
+  "declared_new_controls": 0,
+  "required_before_full_composition": [
+    "Actual InternalCallbackScope and DisallowJS supplied by the shared environment",
+    "Actual uncaught/Check/Exit native policy",
+    "Actual AsyncWrap/BaseObject cleanup ordering and callback admission"
+  ],
+  "historical_proposal": "source-proposal.json is preserved byte-for-byte; its superseded hashes and extra scheduling branch are not current production."
+}

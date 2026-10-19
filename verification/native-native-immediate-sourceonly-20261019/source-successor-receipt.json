@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "status": "source-only successor; no native or Node execution",
+  "predecessor_proposal": "source-proposal.json",
+  "predecessor_files": {
+    "queue": "57984C27",
+    "integration": "305653F3",
+    "public_base": "1DCA2839C9FC660F1AF354CA89F9BC28D6A4551DBF7EA36E60DBAA48627795FE"
+  },
+  "current_files": [
+    {
+      "path": "src/extensions/native_node_native_immediates.zig",
+      "sha256": "4D08479443076E84E1B16005FEC0078BAD08BD19D31DD6012266752E44CE7578",
+      "bytes": 8688
+    },
+    {
+      "path": "src/extensions/native_immediates.zig",
+      "sha256": "3B1844075F5BFD478434F2C6B1698FA0F93E74FBBAF5FD2C8FA19AC20F3261C2",
+      "bytes": 19099
+    }
+  ],
+  "finding": "Post-native JS_IsJobPending must not return before the actual public immediate snapshot. Original CheckImmediate drains native immediates then invokes the public callback; its real InternalCallbackScope owns microtask processing.",
+  "correction": "Removed the entire added post-native job-pending yield branch. Native drain now proceeds directly to the unchanged public snapshot. Added only explicit borrowed-task/no-self-reenqueue ownership documentation to the queue.",
+  "peer": {
+    "reviewer": "/root",
+    "status": "finite successor ownership/order peer closed",
+    "scope": "Native FIFO/live reentrant append; whole-drain ref accounting; destroy-before-caught; retained charged native memory owner; disarmed native retirement; optional native-before-public snapshot.",
+    "execution": false
+  },
+  "open_dependencies": [
+    "Genuine InternalCallbackScope and DisallowJavascriptExecutionScope hooks",
+    "Genuine native uncaught/warning owner",
+    "Actual AsyncWrap/BaseObject shutdown ordering before native queue disarm"
+  ],
+  "exclusions": [
+    "No public FileHandle composition or complete Node environment qualification",
+    "No native runtime, Node reference, generator, or Main mutation"
+  ]
+}

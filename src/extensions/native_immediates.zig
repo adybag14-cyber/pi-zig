@@ -5,9 +5,12 @@ const em = @import("engine.zig");
 const js = @import("native_js_values.zig");
 const Scope = @import("native_models_stream_scope.zig").Scope;
 const async_scope = @import("native_async_scope.zig");
+const native_queue = @import("native_node_native_immediates.zig");
+const native_guest = @import("native_sdk_guest_operation.zig");
+const native_owned = @import("native_sdk_owned_completion.zig");
 const c = em.c;
 const Handle = struct { gpa: std.mem.Allocator, scope: c.JSValue, active: bool = false, refed: bool = false };
-const State = struct { engine: *em.Engine, owner: c.JSValue, class: c.JSClassID, count: usize = 0, refs: usize = 0, pumping: bool = false, timer_phase: bool = false };
+const State = struct { engine: *em.Engine, owner: c.JSValue, class: c.JSClassID, count: usize = 0, refs: usize = 0, pumping: bool = false, timer_phase: bool = false, native: ?*native_queue.Queue = null };
 const Method = enum(c_int) { set, clear, ref, unref, hasRef, dispose };
 fn state(engine: *em.Engine) !*State {
     return @ptrCast(@alignCast(engine.native_immediate_state orelse return error.NativeImmediatesUnavailable));
@@ -26,6 +29,8 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) 
 }
 fn cleanup(engine: *em.Engine) void {
     const s = state(engine) catch return;
+    var native_completion: ?native_owned.Completion = null;
+    if (s.native) |queue| native_completion = native_owned.Completion.initVoid(engine, queue.close(engine));
     engine.native_immediate_state = null;
     engine.native_immediate_pump = null;
     engine.native_immediate_pending = null;
@@ -33,14 +38,16 @@ fn cleanup(engine: *em.Engine) void {
     engine.native_immediate_before_poll = null;
     engine.native_immediate_cleanup = null;
     inline for (.{ "head", "tail", "current", "previous" }) |name| _ = c.JS_SetPropertyStr(engine.context, s.owner, name, c.pi_js_null());
-    engine.freeValue(s.owner);
+    if (native_completion) |*completion| completion.release(s.owner) else engine.freeValue(s.owner);
+    if (s.native) |queue| queue.release();
     engine.gpa.destroy(s);
+    if (native_completion) |*completion| completion.finishVoid() catch {};
 }
 pub fn pending(engine: *em.Engine) bool {
-    return if (state(engine)) |s| s.count != 0 else |_| false;
+    return if (state(engine)) |s| s.count != 0 or (if (s.native) |queue| queue.pending() else false) else |_| false;
 }
 pub fn referenced(engine: *em.Engine) bool {
-    return if (state(engine)) |s| s.refs != 0 else |_| false;
+    return if (state(engine)) |s| s.refs != 0 or (if (s.native) |queue| queue.referenced() else false) else |_| false;
 }
 pub fn beforePoll(engine: *em.Engine) !bool {
     const s = try state(engine);
@@ -204,6 +211,9 @@ pub fn pump(engine: *em.Engine) !bool {
     defer s.pumping = false;
     var worked = false;
     var callbacks: usize = 0;
+    // Node CheckImmediate drains native callbacks (and their real callback
+    // scope) before taking the public Immediate queue for this check phase.
+    if (s.native) |queue| worked = try queue.drain(engine, .check);
     {
         var scope: Scope = .{ .engine = engine };
         defer scope.deinit();
@@ -295,4 +305,38 @@ pub fn install(engine: *em.Engine) !void {
     errdefer cleanup(engine);
     try scope.put(global, "setImmediate", set);
     try scope.put(global, "clearImmediate", clear_function);
+}
+
+/// Retains the actual native check-phase queue for GC-safe producer tickets.
+/// The caller must supply the genuine native callback-scope/uncaught hooks;
+/// this entry never manufactures a guest handler or silently installs a stub.
+pub fn acquireNative(engine: *em.Engine, hooks: native_queue.Hooks) !*native_queue.Queue {
+    const s = try state(engine);
+    if (s.native) |existing| {
+        if (!existing.hooks.same(hooks)) return error.NativeImmediateHooksConflict;
+        return existing.retain();
+    }
+    var boundary: native_guest.Boundary = .{ .engine = engine };
+    try boundary.begin();
+    const candidate = native_queue.Queue.create(engine, hooks) catch |err| {
+        try boundary.finishVoid(err);
+        unreachable;
+    };
+    boundary.finishVoid({}) catch |err| {
+        candidate.discardUnpublished();
+        return err;
+    };
+    // Finish the actual allocation boundary before selecting the completed
+    // owner. Retirement can have reentered this same private native factory.
+    if (s.native) |existing| {
+        const selected = existing.retain();
+        candidate.discardUnpublished();
+        if (!existing.hooks.same(hooks)) {
+            selected.release();
+            return error.NativeImmediateHooksConflict;
+        }
+        return selected;
+    }
+    s.native = candidate;
+    return candidate.retain();
 }
