@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "status": "source_only_uncompiled",
+  "main_modified": false,
+  "baseline": {
+    "path": "C:/Users/adyba/pi-zig/main/build.zig",
+    "exists": true,
+    "bytes": 476918,
+    "sha256": "b6f18b479b12f510d65dd83672e06ac2b0badc395b050cc0c3a16fd399954d2a"
+  },
+  "successor": {
+    "path": "build.successor.zig.txt",
+    "exists": true,
+    "bytes": 477759,
+    "sha256": "e25e6523f4bb5661be7bb31ed9782457168e0fd7741804158e30269fb8af816d"
+  },
+  "helper": {
+    "path": "tools/build_native_package_json.zig",
+    "exists": true,
+    "bytes": 1510,
+    "sha256": "52bc1d9f41324ea6edfa1a594d36f5344163e21c0146f4cfc3f9932432464031"
+  },
+  "source_authority": {
+    "path": "authority/simdjson-build-source.json",
+    "exists": true,
+    "bytes": 13922,
+    "sha256": "5baa98bb9605cb5122ad660d622091722fe080ca4aa9918310303e081c7321e5"
+  },
+  "edits": [
+    {
+      "before": "    if (native_node_network) |network| quickjs.root_module.linkLibrary(network);\n",
+      "after": "    if (native_node_network) |network| quickjs.root_module.linkLibrary(network);\n    const native_package_json = @import(\"tools/build_native_package_json.zig\").add(b, target, optimize);\n    if (native_package_json) |parser| quickjs.root_module.linkLibrary(parser);\n",
+      "count": 1,
+      "label": "one transitive native parser library"
+    },
+    {
+      "before": "\n}\n\nfn addCompileOnlyGroup",
+      "after": "\n    if (native_package_json != null) {\n        const native_package_json_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_package_json_parser_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native package JSON parser\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_package_json_tests.root_module, quickjs, sqlite_lib_dir);\n        b.step(\"build-native-node-package-json-parser\", \"Install actual package JSON parser and native allocation controls without execution\").dependOn(&b.addInstallArtifact(native_package_json_tests, .{}).step);\n    }\n\n}\n\nfn addCompileOnlyGroup",
+      "count": 1,
+      "label": "guarded install-only actual parser20 target"
+    }
+  ],
+  "control": {
+    "root": "src/native_node_package_json_parser_test.zig",
+    "sha256": "565c532e7cf2e3c633d24f067eb069a0cc6f94e5be384a645bc0ba5c3c6ddd8d",
+    "declarations": 20,
+    "filter": "native package JSON parser",
+    "target": "build-native-node-package-json-parser"
+  },
+  "checks": {
+    "exact_baseline_copy": true,
+    "exact_two_edit_reversal": true,
+    "added_lines": 11,
+    "one_static_library": true,
+    "transitive_quickjs_link": true,
+    "install_only": true,
+    "run_edges": 0
+  },
+  "limits": [
+    "No native build, AST check, runtime or original Node reference execution has occurred.",
+    "Only 64-bit Windows/Linux targets are admitted by the retained allocator/standard-library proof.",
+    "Raw parser controls do not qualify physical file/cache/JS binding or complete Module loading."
+  ]
+}

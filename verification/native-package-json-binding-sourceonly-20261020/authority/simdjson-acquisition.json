@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "status": "complete exact immutable source acquisition",
+  "node_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "files": [
+    {
+      "name": "simdjson.cpp",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/simdjson/simdjson.cpp",
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/simdjson/simdjson.cpp",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\simdjson\\simdjson.cpp",
+      "bytes": 2406896,
+      "sha256": "a13af3c591eca69708b4462ab0be1ea5d744319872a59b99e4ed36e0be103e49",
+      "retrieved_utc": "2026-10-20T10:48:08.336498+00:00"
+    },
+    {
+      "name": "simdjson.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/simdjson/simdjson.h",
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/simdjson/simdjson.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\simdjson\\simdjson.h",
+      "bytes": 6221940,
+      "sha256": "2fc8120bb21a9fa887eb77da5e1e80fd670fd281e7f183937c46c44105483d77",
+      "retrieved_utc": "2026-10-20T10:48:08.765749+00:00"
+    },
+    {
+      "name": "LICENSE",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/simdjson/LICENSE",
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/simdjson/LICENSE",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\simdjson\\LICENSE",
+      "bytes": 11355,
+      "sha256": "5fa8894e890bd77958f93b165433e0fb0dffa5bc982bfb147e4748e95bad24e5",
+      "retrieved_utc": "2026-10-20T10:48:08.957912+00:00"
+    }
+  ],
+  "total_bytes": 8640191,
+  "bound_bytes": 9000000,
+  "timeout_seconds_each": 30,
+  "native_or_node_execution": false,
+  "compiled": false
+}
