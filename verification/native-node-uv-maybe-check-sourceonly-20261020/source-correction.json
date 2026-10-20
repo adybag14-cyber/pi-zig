@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "status": "source-only pending finite peer and native process probes",
+  "recorded_utc": "2026-10-20T11:17:56.085077+00:00",
+  "original_sha256": "1B54AD31BC151A65DF4798C3D1C1AEC0E4603B634C6467DD64CF7B03CAF90F31",
+  "successor_sha256": "B58AB2B8EBE7A01E28110417446827F74FA54B0D6D1965C44FD8ADAE345FBA64",
+  "original_warning18_sha256": "A56E81282CB4CF966BFCEE61A0492A6258CE7AD04096AB3A6FC4B596C2C50769",
+  "finding": "All five actual UVException Object::Set calls use Maybe::Check. Normal false Set remains present; an actual throwing setter must terminate through native v8::FromJust Maybe value is Nothing before pending capture or root retirement. Prior UV receipt explicitly excluded this policy; proposed warning18 control17 incorrectly treated it as ordinary caught DATA.",
+  "finite_delta": "Add actual native check owner import; immediately status<0 calls existing genuine maybeCheck before s.pending; normal flags0 assignment and all five Source-ordered calls unchanged.",
+  "native_execution": false,
+  "qualified": false
+}

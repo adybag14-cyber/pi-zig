@@ -1,0 +1,47 @@
+{
+  "observed_utc": "2026-10-20T11:03:28.534435+00:00",
+  "retained_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-callback-scope-sourceonly-20261019\\authority\\src_env-inl.h.txt",
+    "bytes": 28109,
+    "sha256": "41949D4DFA01B04174B0E881B1DB3DD12BF51B9428B89946504603700FCF3E5E"
+  },
+  "selected_lines": [
+    {
+      "line": 803,
+      "text": "inline void Environment::ThrowUVException(int errorno,"
+    },
+    {
+      "line": 804,
+      "text": "                                          const char* syscall,"
+    },
+    {
+      "line": 805,
+      "text": "                                          const char* message,"
+    },
+    {
+      "line": 806,
+      "text": "                                          const char* path,"
+    },
+    {
+      "line": 807,
+      "text": "                                          const char* dest) {"
+    },
+    {
+      "line": 808,
+      "text": "  isolate()->ThrowException("
+    },
+    {
+      "line": 809,
+      "text": "      UVException(isolate(), errorno, syscall, message, path, dest));"
+    },
+    {
+      "line": 810,
+      "text": "}"
+    },
+    {
+      "line": 811,
+      "text": ""
+    }
+  ],
+  "no_new_runtime_observation": true
+}

@@ -2055,6 +2055,21 @@ pub fn build(b: *std.Build) void {
         native_node_uv_exception_tests.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
         native_node_uv_exception_tests.root_module.linkLibrary(network);
         b.step("build-native-node-uv-exception", "Install actual native UVException controls without execution").dependOn(&b.addInstallArtifact(native_node_uv_exception_tests, .{}).step);
+        const native_node_process_warning_tests = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_process_warning_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native process warning"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, native_node_process_warning_tests.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, native_node_process_warning_tests.root_module, typescript_parser);
+        linkSqlite(native_node_process_warning_tests.root_module, sqlite_lib_dir, sqlite_library);
+        native_node_process_warning_tests.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            native_node_process_warning_tests.root_module.linkSystemLibrary("advapi32", .{});
+            native_node_process_warning_tests.root_module.linkSystemLibrary("userenv", .{});
+        }
+        native_node_process_warning_tests.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        native_node_process_warning_tests.root_module.linkLibrary(network);
+        b.step("build-native-node-process-warning", "Install actual native process warning and ThrowUVException controls without execution").dependOn(&b.addInstallArtifact(native_node_process_warning_tests, .{}).step);
     }
     const public_rpc_mode_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_public_rpc_mode_test.zig"), .target = target, .optimize = optimize }),
@@ -4808,7 +4823,7 @@ pub fn build(b: *std.Build) void {
 
     if (native_node_network != null) {
         const native_corruption_probe = b.addExecutable(.{
-            .name = "native-node-corruption-probe",
+            .name = "test",
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_corruption_probe.zig"), .target = target, .optimize = optimize }),
             .use_llvm = use_llvm,
         });
@@ -4821,7 +4836,26 @@ pub fn build(b: *std.Build) void {
             native_corruption_probe.root_module.linkSystemLibrary("advapi32", .{});
             native_corruption_probe.root_module.linkSystemLibrary("userenv", .{});
         }
-        b.step("build-native-node-corruption-probe", "Install isolated native corrupted-stack expected-exit probes without execution").dependOn(&b.addInstallArtifact(native_corruption_probe, .{}).step);
+        b.step("build-native-node-corruption-probe", "Install isolated native corrupted-stack expected-exit probes without execution").dependOn(&b.addInstallArtifact(native_corruption_probe, .{ .dest_sub_path = b.fmt("native-node-corruption-probe{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    }
+
+    if (native_node_network != null) {
+        const native_uv_exception_probe = b.addExecutable(.{
+            .name = "test",
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_uv_exception_probe.zig"), .target = target, .optimize = optimize }),
+            .use_llvm = use_llvm,
+        });
+        native_uv_exception_probe.stack_size = 16 * 1024 * 1024;
+        linkQuickJs(b, native_uv_exception_probe.root_module, quickjs, sqlite_lib_dir);
+        native_uv_exception_probe.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        linkTypeScriptParser(b, native_uv_exception_probe.root_module, typescript_parser);
+        linkSqlite(native_uv_exception_probe.root_module, sqlite_lib_dir, sqlite_library);
+        native_uv_exception_probe.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            native_uv_exception_probe.root_module.linkSystemLibrary("advapi32", .{});
+            native_uv_exception_probe.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-uv-exception-probe", "Install isolated actual UVException Maybe.Check expected-exit probes without execution").dependOn(&b.addInstallArtifact(native_uv_exception_probe, .{ .dest_sub_path = b.fmt("native-node-uv-exception-probe{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
     }
 
 

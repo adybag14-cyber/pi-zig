@@ -1,0 +1,85 @@
+{
+  "format": "pi-native-process-warning-finite-peer-v1",
+  "reviewer": "modules_io",
+  "status": "partial_closed_one_source_mismatch",
+  "execution": "Source review only; no native or Node execution.",
+  "root": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/src/native_node_process_warning_test.zig",
+    "sha256": "A56E81282CB4CF966BFCEE61A0492A6258CE7AD04096AB3A6FC4B596C2C50769",
+    "bytes": 16488
+  },
+  "production": [
+    {
+      "file": "native_node_process_warning.zig",
+      "sha256": "38E71A96D2908029731232F927C9DA6171249E002F7480B9C0AF1373BECAC771",
+      "bytes": 3603
+    },
+    {
+      "file": "native_node_throw_uv_exception.zig",
+      "sha256": "DADD28F6DDE2D2B8782597479D5C6F30582758D9819C237CA5390E4ACD26FFCC",
+      "bytes": 1109
+    },
+    {
+      "file": "Main/native_node_uv_exception.zig",
+      "sha256": "1B54AD31BC151A65DF4798C3D1C1AEC0E4603B634C6467DD64CF7B03CAF90F31",
+      "bytes": 5073
+    }
+  ],
+  "closed_declarations": [
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    18
+  ],
+  "closed_findings": [
+    "The fresh fixture installs the actual process and Environment; the retained actualProcess and native process root are genuine. Selected direct warning methods use the retained receiver with live property access, and no replacement callback scope/checkpoint is introduced.",
+    "Controls 11-15 causally cover late global replacement plus live original method changes, actual getter/callback reason identity, successful flagged Error return as DATA, and a getter-produced function retained through replacement of its source property.",
+    "Control 16 poisons only global Error and reaches the genuine UV intrinsic Error creation and actual UV_EINVAL mapping. Control 18's successful inherited setter still runs after canCallIntoJs is disabled because actual Environment::ThrowUVException has no such guard."
+  ],
+  "open_finding": {
+    "declaration": 17,
+    "title": "native process warning ThrowUVException preserves actual inherited setter throw",
+    "reason": "The expected ordinary catch contradicts actual UVException's Set(...).Check() call for code. A thrown setter produces Nothing<bool>; Maybe::Check follows native fatal termination before Environment::ThrowUVException can perform its later ThrowException. Main's current UV owner still captures this pending reason as an ordinary error, and its prior finite receipt explicitly excluded this Check policy.",
+    "required_boundary": "Every negative raw flags0 Set status must enter the genuine native Maybe.Check operation before pending capture or owner retirement. All five original ordered Set sites share this requirement. An actual thrown-setter observation requires a separately owned process; it cannot be an ordinary in-process catch assertion.",
+    "preservation": "The original authored assertion is retained as the concrete Source mismatch; no assertion was weakened or removed by this peer."
+  },
+  "source_proofs": [
+    {
+      "path": "Root authority/src_node_process_events.cc",
+      "sha256": "3538CE9EBE5F803ADAEEADF70FC0C7395B053A5D2E670964D340F5B639A58830",
+      "bytes": 4130
+    },
+    {
+      "path": "Root callback authority/src_env-inl.h.txt",
+      "sha256": "41949D4DFA01B04174B0E881B1DB3DD12BF51B9428B89946504603700FCF3E5E",
+      "bytes": 28109,
+      "selected_lines": [
+        803,
+        810
+      ]
+    },
+    {
+      "path": "SDK authority/uv-exception.v24.13.excerpt.cc.txt",
+      "sha256": "D9CA5473F673AD0B3B3D89E53D5AE998B8D2774798B1928B136AC92700448BF8",
+      "bytes": 4000,
+      "body_offset": 987,
+      "ordered_check_sites": [
+        "errno",
+        "code",
+        "syscall",
+        "optional path",
+        "optional dest"
+      ],
+      "message": "Intrinsic Exception::Error(js_msg), then ToObject(...).ToLocalChecked; no public message Set."
+    },
+    {
+      "path": "SDK UV authority/v8-object-set.v24.13.cc.txt",
+      "sha256": "22AFC1085BCBFAEBF905010A8DC19C187A2D1BE4414C3F781509C18CE13FEBFE",
+      "bytes": 732,
+      "semantics": "kDontThrow; a normal failed assignment returns Just(true), and an actual thrown setter returns Nothing."
+    }
+  ]
+}

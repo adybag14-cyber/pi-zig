@@ -1,0 +1,33 @@
+{
+  "source_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "scope": "Read-only source acquisition; no native compilation, reference runtime capture, or generation",
+  "files": [
+    {
+      "source": "src/node_process_events.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_process_events.cc",
+      "destination": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-process-warning-sourceonly-20261020\\authority\\src_node_process_events.cc",
+      "bytes": 4130,
+      "sha256": "3538CE9EBE5F803ADAEEADF70FC0C7395B053A5D2E670964D340F5B639A58830",
+      "status": "retrieved_now",
+      "observed_utc": "2026-10-20T10:58:18.288670+00:00"
+    },
+    {
+      "source": "src/node_process-inl.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_process-inl.h",
+      "destination": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-process-warning-sourceonly-20261020\\authority\\src_node_process-inl.h",
+      "bytes": 737,
+      "sha256": "22AD1B25A496672FA61429C06CB6848C25D50C5C81618E20EA8B83C35D0E5987",
+      "status": "retrieved_now",
+      "observed_utc": "2026-10-20T10:58:18.526699+00:00"
+    },
+    {
+      "source": "src/node_process.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_process.h",
+      "destination": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-process-warning-sourceonly-20261020\\authority\\src_node_process.h",
+      "bytes": 3909,
+      "sha256": "92D60126064D1F132EC7179D957A7BAEE2AA4CB5D47CF8F4505A2EC29C0308D6",
+      "status": "retrieved_now",
+      "observed_utc": "2026-10-20T10:58:18.804271+00:00"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "status": "source-only reviewed warning18, UV Check and isolated fatal probes integrated; no fresh native execution",
+  "recorded_utc": "2026-10-20T11:24:14.901376+00:00",
+  "parent_main": "83dff70615ef91f26c0f175883993a6a230405ea",
+  "donor": "0b8b483a2e572b07c550df3877d19f66bcea0fd8",
+  "source_pins": [
+    {
+      "path": "src/extensions/native_node_process_warning.zig",
+      "sha256": "38E71A96D2908029731232F927C9DA6171249E002F7480B9C0AF1373BECAC771"
+    },
+    {
+      "path": "src/extensions/native_node_throw_uv_exception.zig",
+      "sha256": "DADD28F6DDE2D2B8782597479D5C6F30582758D9819C237CA5390E4ACD26FFCC"
+    },
+    {
+      "path": "src/extensions/native_node_uv_exception.zig",
+      "sha256": "B58AB2B8EBE7A01E28110417446827F74FA54B0D6D1965C44FD8ADAE345FBA64"
+    },
+    {
+      "path": "src/native_node_process_warning_test.zig",
+      "sha256": "DD8C9CBEAD24AD6A7880B06597038EFDC52E95C1614072253FB0DCCE9B52A00E"
+    },
+    {
+      "path": "src/native_node_uv_exception_probe.zig",
+      "sha256": "79BC1820098411E92A1BF6A1C28314FFF4F2DF946C494F70BC62231EE3B1821A"
+    },
+    {
+      "path": "src/native_node_corruption_probe.zig",
+      "sha256": "679D8B94BAB6DFAA4C2A32C566D248A522CA254EFF2763A8FA628F3668D483B8"
+    }
+  ],
+  "build_before_sha256": "8746560BF637E89180B4CFCCF80191CDF61B51B900E6242FCF6170E20FE52385",
+  "build_after_sha256": "B6F18B479B12F510D65DD83672E06AC2B0BADC395B050CC0C3A16FD399954D2A",
+  "warning_controls": 18,
+  "uv_process_controls": 2,
+  "uv_expected_fatal_cases": 5,
+  "corruption_process_cases": 10,
+  "actual_maybe_check_sites": [
+    "errno",
+    "code",
+    "syscall",
+    "path",
+    "dest"
+  ],
+  "original_warning17_rejected_preserved": true,
+  "original_native_process_owner_unchanged": true,
+  "standalone_probes_not_Zig_protocol_groups": true,
+  "all_finite_source_peers_closed": true,
+  "runtime_started": false,
+  "qualified": false
+}

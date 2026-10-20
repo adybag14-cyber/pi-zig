@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "date_utc": "2026-10-19",
+  "status": "source-only; finite production, six-control and build peers closed; no execution",
+  "base": {
+    "commit": "0f6952d6877af242f3d0eb1e68d4440a56ff4093",
+    "production_sha256": "51D61C9725774D27D4E664216162A26F998378470B4EF648D6CE3229C8806E40"
+  },
+  "changes": [
+    "Replace five V8 Object::Set field writes with the real nonthrowing JS_SetPropertyValue flags=0 operation, using duplicated consumed key/value roots and preserving pending reason selection.",
+    "Add six controls over the actual native Error factory and original libuv mappings. Platform numeric EINVAL comes from actual uv.h, including Windows UV_EINVAL=-4071.",
+    "Register one install-only target inside Main's existing shared native_node_network branch through the exact retained build-intake.patch."
+  ],
+  "production": {
+    "path": "src/extensions/native_node_uv_exception.zig",
+    "sha256": "1B54AD31BC151A65DF4798C3D1C1AEC0E4603B634C6467DD64CF7B03CAF90F31",
+    "bytes": 5073
+  },
+  "controls": {
+    "path": "src/native_node_uv_exception_test.zig",
+    "sha256": "E79EA16375284A906B13C2E4CC9DC4F7C788517E3993E043B3EB865E85C51F86",
+    "bytes": 10820,
+    "declared_named_controls": 6,
+    "names": [
+      "native UVException preserves intrinsic Error and ordered own field descriptors",
+      "native UVException nonthrowing Set preserves inherited readonly and getter-only fields",
+      "native UVException invokes each inherited setter with the actual Error in source order",
+      "native UVException normal false assignment still reaches the remaining actual setters",
+      "native UVException retains OneByteString C-string and UTF8 path distinctions",
+      "native UVException successfully constructed flagged Error remains returned DATA"
+    ]
+  },
+  "build": {
+    "path": "verification/native-node-uv-exception-sourceonly-20261019/build-intake.patch",
+    "sha256": "238F2C23787F022694A3867FED42466923A080D34B89919F0E282944E846AA3D",
+    "bytes": 1452,
+    "added_lines": 8,
+    "target": "build-native-node-uv-exception",
+    "filter": "native UVException",
+    "intake": "Apply patch to current Main build.zig; the older owned checkout does not contain the shared native_node_network graph.",
+    "reference_main": "fc56ad43935f (Root-reported current Main; exact surrounding build lines independently read)",
+    "library": "The single existing pi-node-network instance; unchanged admitted libuv source set. No second graph.",
+    "shared_helper_readback": {
+      "path": "tools/build_native_node_network.zig",
+      "sha256": "E10D68F43FC53513651DA53FDE0369B9323C6A7F7C821AE7816C9E378FFA489E",
+      "bytes": 4532
+    }
+  },
+  "authority": [
+    {
+      "path": "authority/v8-object-set.v24.13.cc.txt",
+      "sha256": "22AFC1085BCBFAEBF905010A8DC19C187A2D1BE4414C3F781509C18CE13FEBFE",
+      "bytes": 732,
+      "origin": "Node v24.13 deps/v8/src/api/api.cc",
+      "offset_bytes": 168801,
+      "full_source_sha256_prefix": "573F6F99",
+      "full_source_bytes": 489340
+    },
+    {
+      "origin": "Node v24.13 src/api/exceptions.cc UVException",
+      "status": "Exact original retained by source prerequisite 0f6952; existing string construction/field order unchanged."
+    },
+    {
+      "origin": "vendor/node-v24.13.0/uv/include/uv/errno.h",
+      "sha256_prefix": "4242EDF7",
+      "status": "Actual selected platform macro, not hardcoded POSIX errno."
+    }
+  ],
+  "peer": {
+    "reviewer": "/root/modules_io",
+    "production": "Closed 1B54AD31 nonthrowing Set delta against prior 51D61C97.",
+    "controls": "Closed E79EA163 all six; exact platform-constant reversal reproduces C0AA6A83.",
+    "build": "Closed exact 238F2C23 eight-line patch against current Main context."
+  },
+  "limits": [
+    "No compiler, Node, native test, source generator, runtime, or qualification was executed for this unit.",
+    "Actual throwing setter or proxy failure followed by original V8 Maybe::Check fatal policy is outside this control set and remains an explicit shared native policy dependency.",
+    "This is the UVException factory and its controls, not completed FileHandle/public fs/promises assembly."
+  ],
+  "historical_evidence": "Earlier source receipts, diagnostic logs and manifests remain unchanged."
+}

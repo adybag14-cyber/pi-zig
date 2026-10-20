@@ -5,6 +5,7 @@ const builtin = @import("builtin");
 const em = @import("engine.zig");
 const c = em.c;
 const Scope = @import("native_node_operation_scope.zig").Scope;
+const check_failure = @import("native_node_check_failure.zig");
 
 // The one admitted libuv graph supplies these actual mappings on each host.
 extern fn uv_err_name(code: c_int) [*:0]const u8;
@@ -53,15 +54,16 @@ fn appendLiteral(s: *Scope, left: c.JSValue, text: []const u8) !c.JSValue {
 }
 
 // V8 Object::Set passes kDontThrow. A normal readonly/missing-setter failure
-// stays nonthrowing; a genuine getter/setter/proxy exception remains pending.
+// returns a present Maybe and Check succeeds. A real setter exception returns
+// Nothing, so the actual native Maybe::Check terminates before pending capture.
 // The public QuickJS value-key API consumes exactly the duplicated key/value.
 fn set(s: *Scope, receiver: c.JSValue, name: []const u8, value: c.JSValue) !void {
     const key = try s.text(name);
     try s.pending();
     const status = c.JS_SetPropertyValue(s.engine.context, receiver,
         c.JS_DupValue(s.engine.context, key), c.JS_DupValue(s.engine.context, value), 0);
+    if (status < 0) check_failure.maybeCheck(s.engine, null);
     try s.pending();
-    if (status < 0) return error.MissingActualUvErrorPropertySetReason;
 }
 
 fn createBody(s: *Scope, input: Input) !c.JSValue {

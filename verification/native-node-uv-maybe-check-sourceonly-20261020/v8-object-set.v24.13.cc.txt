@@ -1,0 +1,15 @@
+Maybe<bool> v8::Object::Set(v8::Local<v8::Context> context,
+                            v8::Local<Value> key, v8::Local<Value> value) {
+  auto i_isolate = reinterpret_cast<i::Isolate*>(context->GetIsolate());
+  ENTER_V8(i_isolate, context, Object, Set, i::HandleScope);
+  auto self = Utils::OpenDirectHandle(this);
+  auto key_obj = Utils::OpenDirectHandle(*key);
+  auto value_obj = Utils::OpenDirectHandle(*value);
+  has_exception =
+      i::Runtime::SetObjectProperty(i_isolate, self, key_obj, value_obj,
+                                    i::StoreOrigin::kMaybeKeyed,
+                                    Just(i::ShouldThrow::kDontThrow))
+          .is_null();
+  RETURN_ON_FAILED_EXECUTION_PRIMITIVE(bool);
+  return Just(true);
+}

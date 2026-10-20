@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "recorded_by": "Root from sdk_owners delivered source-peer message",
+  "recorded_utc": "2026-10-20T11:23:10.440102+00:00",
+  "status": "finite standalone UV probe/source/build peer closed; ownership gate successor peer pending",
+  "reviewer": "sdk_owners",
+  "probe_sha256": "D277BA068B626D064FDE2E1091CB3BE38BFC1C1996C06DD19B2489724A06654C",
+  "build_intake_sha256": "2BDA8CD167551087985740BABF2102E854F38CCDADB108BA8ED09FBC69E08002",
+  "finding": "Environment attaches before fallible callable publication and retires before Engine. Each of five inherited setters validates original value and exact native index before site marker and actual guest throw. Both normal cases reach real ThrowUV, including readonly code nonthrowing false Set and later fields. Correct conditional defer. Install-only build uses actual single network linked through QuickJS plus UV include/Engine dependencies. Does not qualify execution or controller expected-output acceptance.",
+  "execution": false,
+  "qualification": false
+}

@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "recorded_by": "Root from vm_foundation delivered source-peer message",
+  "recorded_utc": "2026-10-20T11:23:10.439813+00:00",
+  "status": "finite source peer closed; no execution",
+  "reviewer": "vm_foundation",
+  "warning_sha256": "38E71A96D2908029731232F927C9DA6171249E002F7480B9C0AF1373BECAC771",
+  "throw_uv_sha256": "DADD28F6DDE2D2B8782597479D5C6F30582758D9819C237CA5390E4ACD26FFCC",
+  "finding": "Read full native ProcessEmitWarningGeneric source3538CE9E and env-inl41949 lines803-809 plus actual Main ArgumentValues8331, ScopeCD811, BoundaryD964, UV1B54 and EnvironmentFBD4. Owned process duplication precedes live emitWarning Get, method/strings/call result remain scoped, disabled entry precedes lookup, and returned Error DATA is only retired. ThrowUV adopts real factory result before explicit a.raise; actual pending reason remains owned through Boundary retirement. Closed requested owner/returned-versus-thrown slice, not UVException prior explicitly excluded Maybe.Check fatal policy.",
+  "controls_reviewed": false,
+  "execution": false,
+  "qualification": false
+}

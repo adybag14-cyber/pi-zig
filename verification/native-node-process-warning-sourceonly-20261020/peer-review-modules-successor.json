@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "status": "finite_source_peer_closed_no_execution",
+  "reviewer": "modules_io",
+  "date_utc": "2026-10-20",
+  "scope": [
+    "UVException immediate Maybe::Check consumer",
+    "warning18 declaration17 correction; prior 11–16/18 closure retained",
+    "15-line warning18 install-only build"
+  ],
+  "original": {
+    "uv_sha256": "1b54ad31bc151a65df4798c3d1c1aec0e4603b634c6467dd64cf7b03caf90f31",
+    "warning_sha256": "A56E81282CB4CF966BFCEE61A0492A6258CE7AD04096AB3A6FC4B596C2C50769",
+    "rejected_warning_control": 17
+  },
+  "successor": {
+    "uv_sha256": "b58ab2b8ebe7a01e28110417446827f74fa54b0d6d1965c44fd8adae345fba64",
+    "uv_bytes": 5208,
+    "warning_sha256": "dd8c9cbead24ad6a7880b06597038efdc52e95c1614072253fb0dcce9b52a00e",
+    "warning_bytes": 16570,
+    "build_sha256": "D5CFF178DCD6874E5B168E0576F62B3579F3C19E38CBBD24E6CDD36E89F0472F",
+    "build_added_lines": 15
+  },
+  "proof": {
+    "uv_original_byte_exact_reversal": true,
+    "warning_only_changed_declaration": [
+      17
+    ],
+    "warning_declared_count": 18,
+    "source_uv_excerpt": "D9CA5473F673AD0B3B3D89E53D5AE998B8D2774798B1928B136AC92700448BF8",
+    "source_v8_set": "22AFC1085BCBFAEBF905010A8DC19C187A2D1BE4414C3F781509C18CE13FEBFE",
+    "actual_check_adapter": "E4C368A322B65340D70C7F48153CA898ECF0290A47696823AA557876775E114E"
+  },
+  "findings": [
+    "All five original ordered Object::Set(...).Check sites now share the same actual native cutpoint: status<0 immediately calls maybeCheck(engine,null) before Scope.pending or scope retirement. The raw flags0 setter still consumes exactly the two duplicated operands.",
+    "A normal readonly assignment remains nonthrowing. Corrected declaration17 requires the actual intrinsic Error thrown by ThrowUVException, inherited code retained without an own shadow, and the later syscall assignment completed.",
+    "The original throwing-setter control is preserved as rejected evidence. This correction does not relabel that native CHECK route as ordinary caught DATA.",
+    "Build addition matches the actual native_process dependencies already present in the callback target: shared QuickJS, TypeScript parser, SQLite, catalog, Windows advapi32/userenv plus the existing single network library/UV include. It creates only an install step, no run edge."
+  ],
+  "limits": [
+    "No compiler or runtime execution",
+    "Separate native fatal process probes and real stack trace assertions remain outside this finite peer",
+    "No new claim for complete Node environment or general native report configuration"
+  ]
+}
