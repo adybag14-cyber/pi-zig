@@ -44,7 +44,7 @@ fn allocateHandles(s: *Scope, memory: *ChargedAllocator, count: usize) ![]c.JSVa
         // This is the actual native vector allocation failure, selected before
         // any prior vector/root retirement. It is not a DATA classification.
         if (err == error.OutOfMemory)
-            _ = s.boundary.rejectOwned(s.engine.throwNativeOutOfMemoryFatal());
+            @as(anyerror!void, s.boundary.rejectOwned(s.engine.throwNativeOutOfMemoryFatal())) catch {};
         return err;
     };
 }

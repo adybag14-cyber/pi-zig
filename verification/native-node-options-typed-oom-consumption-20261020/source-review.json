@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "status": "source-only compiler correction; runtime unqualified",
+  "reviewed_utc": "2026-10-20T10:22:14.968947+00:00",
+  "parent_head": "43ec8973105c785caa8fa7c9a9e5773e6c563653",
+  "source": "src/extensions/native_node_options_binding.zig",
+  "before_sha256": "3E810EEC16228E216A9A40F817C2B1E58D6B4AABFC923597FF9E3FCF16A2FD90",
+  "after_sha256": "D93898AB5177ED9350EEC55C2FEF58A892B591CBEFB64A0EEAF6C615AC0B1AAC",
+  "before_bytes": 11277,
+  "after_bytes": 11302,
+  "before": "_ = s.boundary.rejectOwned(s.engine.throwNativeOutOfMemoryFatal());",
+  "after": "@as(anyerror!void, s.boundary.rejectOwned(s.engine.throwNativeOutOfMemoryFatal())) catch {};",
+  "exact_reverse": true,
+  "reason": "Zig 0.16 rejects discarding bare anyerror. Explicitly lift the already-recorded rejectOwned completion into an error union and consume it, preserving the later return err and original actual-fatal escrow/retirement order.",
+  "boundary": {
+    "path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+    "sha256": "D964A9D90440F5679FDC109C95057DF4AE19E8ECD6B51CCCC84B5A4E91C39862",
+    "signature": "rejectOwned(*Boundary, JSValue) anyerror",
+    "effect": "release the actual value into this caller-stable Boundary, then return JavaScriptException"
+  },
+  "negative": {
+    "proof": "evidence/root-vm-io-oauth-options-fresh-v19-buildquery-20261020-100311",
+    "stderr_sha256": "7FC2196BDF9F7E893E09A30C13E55F813926F126A4F5D0D8BC5BEC5DFABC7C6F",
+    "closure": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-oauth-options-fresh-v19-control-20261020-100311\\independent-negative-buildquery-closure.json",
+    "closure_sha256": "14D867E21B03193A6DD39924976B7BBF627711D8AF8AD1348869292602FE29CE"
+  },
+  "tests_changed": false,
+  "native_execution": false,
+  "qualification": false
+}
