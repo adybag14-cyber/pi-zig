@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "status": "source_only_independently_reviewed_additive_terminal_owner",
+  "created_utc": "2026-10-20T13:47:40.642564+00:00",
+  "main_base": "306445c9174a118bd0f3f54dab51665559a95266",
+  "production_packet_sha256": "9C775EBC3377034E6EE5FDA449BF2F30CAA13B722E5F6D106623B0F43926F50C",
+  "independent_peer_sha256": "D84942987A572ADB8B4597848A487552DB18ECD2092874FADF27A3B4295EE044",
+  "files": [
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "bytes": 15237,
+      "sha256": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.h",
+      "bytes": 2287,
+      "sha256": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "bytes": 2614,
+      "sha256": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC"
+    },
+    {
+      "path": "verification/native-node-backing-oom-sourceonly-20261020/README.md",
+      "bytes": 1148,
+      "sha256": "7EEA52A3109D6AB7F9451262847F9F534BED4987C97D63AA8ECFFF5A2F778D4B"
+    },
+    {
+      "path": "verification/native-node-backing-oom-sourceonly-20261020/native_node_check_failure.c.main-before.txt",
+      "bytes": 14444,
+      "sha256": "1D051F4154AA80DF217E5EB7E06D6173F60EA367EAABCA664E3AB8185143EE37"
+    },
+    {
+      "path": "verification/native-node-backing-oom-sourceonly-20261020/native_node_check_failure.h.main-before.txt",
+      "bytes": 1982,
+      "sha256": "A618BB6C25DA7E3B9C87BA6A15D97B81EDE8E2B103C242C0AADC4C52BE08A446"
+    },
+    {
+      "path": "verification/native-node-backing-oom-sourceonly-20261020/native_node_check_failure.zig.main-before.txt",
+      "bytes": 2183,
+      "sha256": "CC49A9A415C8A1729465FB9AC71690F61FB031E3FAF79D4CACAE442A588E0C7C"
+    },
+    {
+      "path": "verification/native-node-backing-oom-sourceonly-20261020/original-backing-retry-and-fatal-source.json",
+      "bytes": 18065,
+      "sha256": "809EBC40DC749067E0DAD8375577815F4A7CCEDB8D7AE803E639638BF4888C24"
+    },
+    {
+      "path": "verification/native-node-backing-oom-sourceonly-20261020/production-delta.json",
+      "bytes": 5985,
+      "sha256": "9C775EBC3377034E6EE5FDA449BF2F30CAA13B722E5F6D106623B0F43926F50C"
+    },
+    {
+      "path": "verification/native-node-backing-oom-sourceonly-20261020/sdk-terminal-peer.json",
+      "bytes": 2236,
+      "sha256": "D84942987A572ADB8B4597848A487552DB18ECD2092874FADF27A3B4295EE044"
+    }
+  ],
+  "native_execution": false,
+  "runtime_qualified": false,
+  "intake": "Apply exact four additions relative to Main pinned originals; donor includes a copy of Main newer heap owner and is not a whole-file replacement authority."
+}

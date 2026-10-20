@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdatomic.h>
 #ifdef _WIN32
 #include <windows.h>
 #include <dbghelp.h>
@@ -25,6 +26,7 @@ extern int JS_ReadCapturedStackFrameLoggingInfo(JSContext *context,
     JSValueConst frame, int *is_eval, int *has_script_id);
 
 static _Thread_local int pi_node_retrieving_js_stacktrace;
+static _Atomic int pi_node_in_oom;
 
 static void pi_node_abort_no_backtrace(void) {
 #ifdef _WIN32
@@ -300,6 +302,38 @@ void pi_node_default_fatal_error(JSContext *context, const char *location,
     if (diagnostics && diagnostics->report)
         diagnostics->report(diagnostics->report_opaque, context,
                             message, "FatalError", "");
+    fflush(stderr);
+    pi_node_abort(context);
+}
+
+/* Selected V8 kRetryOrFail heap failure: the original fixed location and
+ * kHeapOOM detail reach Node's OOMErrorHandler before any local rollback.
+ * The header and report selection require no VM allocation or guest value. */
+void pi_node_heap_out_of_memory(JSContext *context,
+                                const PiNodeFatalDiagnostics *diagnostics) {
+    static const char message[] =
+        "Allocation failed - JavaScript heap out of memory";
+    atomic_store(&pi_node_in_oom, 1);
+    fprintf(stderr, "FATAL ERROR: CALL_AND_RETRY_LAST %s\n", message);
+    if (diagnostics && diagnostics->report)
+        diagnostics->report(diagnostics->report_opaque, context,
+                            message, "OOMError", "");
+    fflush(stderr);
+    pi_node_abort(context);
+}
+
+/* Selected ArrayBuffer::NewBackingStore process OOM terminal callback.
+ * The caller completes its actual native allocation/retry policy first.
+ * kNoOOMDetails selects process memory and has no optional Reason string. */
+void pi_node_backing_store_out_of_memory(JSContext *context,
+                                         const PiNodeFatalDiagnostics *diagnostics) {
+    static const char message[] =
+        "Allocation failed - process out of memory";
+    atomic_store(&pi_node_in_oom, 1);
+    fprintf(stderr, "FATAL ERROR: v8::ArrayBuffer::NewBackingStore %s\n", message);
+    if (diagnostics && diagnostics->report)
+        diagnostics->report(diagnostics->report_opaque, context,
+                            message, "OOMError", "");
     fflush(stderr);
     pi_node_abort(context);
 }

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "status": "closed_source_only",
+  "reviewer": "sdk_owners",
+  "production_packet_sha256": "9C775EBC3377034E6EE5FDA449BF2F30CAA13B722E5F6D106623B0F43926F50C",
+  "files": {
+    "native_node_check_failure.c": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F",
+    "native_node_check_failure.h": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D",
+    "native_node_check_failure.zig": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC"
+  },
+  "evidence": {
+    "backing_and_handler_source": "809EBC40DC749067E0DAD8375577815F4A7CCEDB8D7AE803E639638BF4888C24",
+    "installed_handler_and_abort_chain": "DB865FBF135E5FBDDBD11FE1AE25D6191A8181772C7E7576FE1F0AEBD5C492D8",
+    "original_node_errors": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9",
+    "complete_production_files_read": true,
+    "four_additions_forward_and_inverse_exact": true
+  },
+  "findings": [
+    "The selected actual API default is kOutOfMemory; empty BackingStore dispatch uses literal v8::ArrayBuffer::NewBackingStore and kNoOOMDetails={false,nullptr}.",
+    "The new entry preserves original Node OOMErrorHandler order: permanent atomic OOM latch, process-memory literal header, genuine optional OOMError report with empty filename, stderr flush, existing native platform abort.",
+    "The null detail produces no Reason line, and the existing heap CALL_AND_RETRY_LAST body is byte-unchanged.",
+    "The C declaration/definition and Zig extern remain ordinary void, without a noreturn attribute, preserving the original OOM callback ABI/source call boundary. The Zig wrapper calls that void entry before unreachable; actual optimized frame content remains a runtime check.",
+    "No JS Error allocation, exception dispatch, flag mutation, retry or GC operation was introduced."
+  ],
+  "limits": [
+    "Source review only; no compiler, probe or native execution.",
+    "Actual allocation/retry/GC policy and invalid-size CHECK admission remain consumer prerequisites.",
+    "The complete fatal process diagnostic prefix and installed native report owner are not qualified by this bounded callback addition.",
+    "No StreamBase or public FileHandle assembly qualification."
+  ]
+}
