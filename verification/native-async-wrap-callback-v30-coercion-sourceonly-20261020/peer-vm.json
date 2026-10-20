@@ -1,0 +1,63 @@
+{
+  "schema": "pi.async-wrap-callback-v30-coercion.source-peer.v1",
+  "reviewer": "vm_foundation",
+  "source_only": true,
+  "execution": false,
+  "status": "CLOSED finite one-token return-coercion correction",
+  "before": {
+    "path": "C:/Users/adyba/pi-zig/main/src/extensions/native_node_async_wrap_make_callback.zig",
+    "sha256": "AE550CB8190EB284B576C3F9210EBAF4D9B5CB65589C35EAF38B7FF3274EA188",
+    "bytes": 3357
+  },
+  "after": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_async_wrap_make_callback.zig",
+    "sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2",
+    "bytes": 3361
+  },
+  "packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-async-wrap-callback-v30-coercion-sourceonly-20261020/source-delta.json",
+    "sha256": "A44EC1A9225818681B2519D4E021DC3DEB4E897B78772DC6EDFBB49A10ED3792",
+    "bytes": 4196
+  },
+  "original_failure": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-async-wrap-callback-v30-coercion-sourceonly-20261020/original/compile.stderr.log",
+    "sha256": "F424D34E9DD9B91BAE150A3AE3B730FC735A1A40605698DCA0A5D3A58126F082",
+    "bytes": 22319
+  },
+  "actual_scope": {
+    "path": "C:/Users/adyba/pi-zig/main/src/extensions/native_node_operation_scope.zig",
+    "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+    "bytes": 7087
+  },
+  "actual_argument_alias": {
+    "path": "C:/Users/adyba/pi-zig/main/src/extensions/native_node_argument_values.zig",
+    "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9",
+    "bytes": 3512
+  },
+  "actual_boundary": {
+    "path": "C:/Users/adyba/pi-zig/main/src/extensions/native_node_commonjs_owned_boundary.zig",
+    "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+    "bytes": 9934
+  },
+  "unchanged_root": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/native_node_stream_read_test.zig",
+    "sha256": "17978D19E46922C6B5A974D57DF0B9131BA7BE149125F923CBA472D09975B55B",
+    "bytes": 33652
+  },
+  "forward_exact": true,
+  "inverse_exact": true,
+  "one_unique_edit": true,
+  "declarations": 18,
+  "findings": [
+    "The original compiler diagnostic identifies exactly !JSValue versus !?JSValue at s.own. The actual Main Scope.own returns !c.JSValue and delegates to the actual Boundary owner; the enclosing call returns !?c.JSValue.",
+    "try performs the existing own operation once, propagates its actual error unchanged, and injects only the successful JSValue into the optional return payload. It does not duplicate or release an additional value.",
+    "Actual Boundary.own adopts the raw value into the caller Scope on success. Its pending/failure paths already consume/retire that same value. The new try therefore adds neither leaked success ownership nor duplicate cleanup on error.",
+    "Static trace.after still runs before the selected own operation. The provider/context snapshots and prohibition on post-call State reads are unchanged. The retained Environment's existing defer runs on both successful and error return paths.",
+    "The earlier failure branch and null MaybeLocal path are byte-identical. Removing this single try reproduces the complete actual Main AE550 source; no other production, tests or build bytes change.",
+    "Actual StreamRead18 root17978 remains byte-pinned with all18 declarations."
+  ],
+  "limits": [
+    "This source peer does not claim a new compile or runtime pass.",
+    "No changes to actual callback semantics, trace implementation, full FileHandle assembly or Engine/C policy."
+  ]
+}

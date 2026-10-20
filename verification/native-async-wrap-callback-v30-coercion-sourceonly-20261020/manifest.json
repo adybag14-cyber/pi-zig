@@ -1,0 +1,80 @@
+{
+  "schema": "pi.sdk-source-unit.v1",
+  "unit": "V30 AsyncWrap MakeCallback error-union to optional return correction",
+  "source_only": true,
+  "execution": false,
+  "source_edit_count": 1,
+  "source_paths": [
+    "src/extensions/native_node_async_wrap_make_callback.zig"
+  ],
+  "reason": "Resolve the existing Scope.own error union with try before optional success injection; identical adoption, error propagation, trace ordering and Environment retirement.",
+  "before": {
+    "sha256": "AE550CB8190EB284B576C3F9210EBAF4D9B5CB65589C35EAF38B7FF3274EA188",
+    "bytes": 3357
+  },
+  "after": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_async_wrap_make_callback.zig",
+    "bytes": 3361,
+    "sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+  },
+  "full_forward_exact": true,
+  "full_inverse_exact": true,
+  "unchanged_root": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_stream_read_test.zig",
+    "bytes": 33652,
+    "sha256": "17978D19E46922C6B5A974D57DF0B9131BA7BE149125F923CBA472D09975B55B"
+  },
+  "unchanged_declaration_count": 18,
+  "finite_peer": {
+    "reviewer": "vm_foundation",
+    "path": "verification/native-async-wrap-callback-v30-coercion-sourceonly-20261020/peer-vm.json",
+    "sha256": "5C663545F678FA707B4ACD3822D55792D6377A5B6AEFE3C512A076D316B20700",
+    "status": "CLOSED"
+  },
+  "files": [
+    {
+      "path": "src/extensions/native_node_async_wrap_make_callback.zig",
+      "bytes": 3361,
+      "sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+    },
+    {
+      "path": "verification/native-async-wrap-callback-v30-coercion-sourceonly-20261020/original/native_node_async_wrap_make_callback.zig",
+      "bytes": 3357,
+      "sha256": "AE550CB8190EB284B576C3F9210EBAF4D9B5CB65589C35EAF38B7FF3274EA188"
+    },
+    {
+      "path": "verification/native-async-wrap-callback-v30-coercion-sourceonly-20261020/original/compile.stderr.log",
+      "bytes": 22319,
+      "sha256": "F424D34E9DD9B91BAE150A3AE3B730FC735A1A40605698DCA0A5D3A58126F082"
+    },
+    {
+      "path": "verification/native-async-wrap-callback-v30-coercion-sourceonly-20261020/source-delta.json",
+      "bytes": 4196,
+      "sha256": "A44EC1A9225818681B2519D4E021DC3DEB4E897B78772DC6EDFBB49A10ED3792"
+    },
+    {
+      "path": "verification/native-async-wrap-callback-v30-coercion-sourceonly-20261020/source-verification.json",
+      "bytes": 987,
+      "sha256": "0F57B3634507AC190434916CD67EE3F1B2139690079745EDD77609D263BB415C"
+    },
+    {
+      "path": "verification/native-async-wrap-callback-v30-coercion-sourceonly-20261020/peer-vm.json",
+      "bytes": 3707,
+      "sha256": "5C663545F678FA707B4ACD3822D55792D6377A5B6AEFE3C512A076D316B20700"
+    }
+  ],
+  "intake_paths": [
+    "src/extensions/native_node_async_wrap_make_callback.zig",
+    "verification/native-async-wrap-callback-v30-coercion-sourceonly-20261020/original/native_node_async_wrap_make_callback.zig",
+    "verification/native-async-wrap-callback-v30-coercion-sourceonly-20261020/original/compile.stderr.log",
+    "verification/native-async-wrap-callback-v30-coercion-sourceonly-20261020/source-delta.json",
+    "verification/native-async-wrap-callback-v30-coercion-sourceonly-20261020/source-verification.json",
+    "verification/native-async-wrap-callback-v30-coercion-sourceonly-20261020/peer-vm.json",
+    "verification/native-async-wrap-callback-v30-coercion-sourceonly-20261020/manifest.json"
+  ],
+  "limits": [
+    "No new compiler, build, test or native execution.",
+    "No control, assertion, build-graph, C/H or unrelated source changes.",
+    "Root alone owns Main intake and the V30 negative closure."
+  ]
+}

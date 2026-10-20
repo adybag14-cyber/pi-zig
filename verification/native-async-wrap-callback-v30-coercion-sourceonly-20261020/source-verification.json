@@ -1,0 +1,23 @@
+{
+  "source_only": true,
+  "execution": false,
+  "current": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_async_wrap_make_callback.zig",
+    "bytes": 3361,
+    "sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+  },
+  "source_packet": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-async-wrap-callback-v30-coercion-sourceonly-20261020\\source-delta.json",
+    "bytes": 4196,
+    "sha256": "A44EC1A9225818681B2519D4E021DC3DEB4E897B78772DC6EDFBB49A10ED3792"
+  },
+  "one_unique_forward": true,
+  "one_unique_inverse": true,
+  "raw_preimage_and_stderr_retained": true,
+  "unchanged_test_root": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_stream_read_test.zig",
+    "bytes": 33652,
+    "sha256": "17978D19E46922C6B5A974D57DF0B9131BA7BE149125F923CBA472D09975B55B"
+  },
+  "declaration_count": 18
+}

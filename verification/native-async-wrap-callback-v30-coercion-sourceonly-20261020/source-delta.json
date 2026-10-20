@@ -1,0 +1,66 @@
+{
+  "status": "source-only single-token compiler correction",
+  "source_only": true,
+  "execution": false,
+  "path": "src/extensions/native_node_async_wrap_make_callback.zig",
+  "before": {
+    "sha256": "AE550CB8190EB284B576C3F9210EBAF4D9B5CB65589C35EAF38B7FF3274EA188",
+    "bytes": 3357
+  },
+  "after": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_async_wrap_make_callback.zig",
+    "bytes": 3361,
+    "sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+  },
+  "edits": [
+    {
+      "before": "    if (returned) |value| return s.own(value);",
+      "after": "    if (returned) |value| return try s.own(value);",
+      "occurrences": 1
+    }
+  ],
+  "main_preimage_equal_owned": true,
+  "original_stderr": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-async-wrap-callback-v30-coercion-sourceonly-20261020\\original\\compile.stderr.log",
+    "bytes": 22319,
+    "sha256": "F424D34E9DD9B91BAE150A3AE3B730FC735A1A40605698DCA0A5D3A58126F082"
+  },
+  "scope_api": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+    "bytes": 7087,
+    "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+  },
+  "unchanged_test_root": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_stream_read_test.zig",
+    "bytes": 33652,
+    "sha256": "17978D19E46922C6B5A974D57DF0B9131BA7BE149125F923CBA472D09975B55B"
+  },
+  "unchanged_declarations": [
+    "Node StreamBase read initializes the real default listener and native wrapper pointer",
+    "Node StreamBase read selects internal onread beneath an ordinary own property and writes aliases first",
+    "Node StreamBase read allocates actual native backing without a JS wrapper under an exhausted JS heap",
+    "Node StreamBase read zero bytes consumes the managed token without a callback or trace",
+    "Node StreamBase read negative status publishes undefined and leaves the positive byte counter unchanged",
+    "Node StreamBase read full extent adopts the same native bytes and advances the counter before callback",
+    "Node StreamBase read short extent performs the real exact native reallocation and copies before adoption",
+    "Node StreamBase read later ArrayBuffer adoption bypasses the live global constructor",
+    "Node StreamBase read a returned flagged Error stays successful DATA",
+    "Node StreamBase read actual ordinary callback failure retains its exact reason through native cleanup",
+    "Node StreamBase read actual fatal callback reason remains owned while static after trace still runs",
+    "Node StreamBase read retains the selected callback across live replacement until caller scope retirement",
+    "Node StreamBase read ignored callback return retires only after the static after operation",
+    "Node StreamBase read can delete its actual native State before static after uses cached identifiers",
+    "Node StreamBase read enters the real captured frame and restores the enclosing native callback scope",
+    "Node StreamBase read disabled JS returns the actual empty callback while native buffer cleanup completes",
+    "Node StreamBase read uses the live listener head and advances bytes before a real forwarding method",
+    "Node StreamBase read null buffer negative status bypasses the managed map without an allocation"
+  ],
+  "reason": "The actual Scope.own returns an error union JSValue, while call returns an error union optional JSValue. try resolves the error union before the successful value is injected into the optional return. The same error is propagated; the same actual value is adopted at the same point.",
+  "preserved": [
+    "Actual trace.before, provider/context snapshots and callBody path unchanged",
+    "Native failure recording and static trace.after run in identical order",
+    "No State access after callBody; Environment retained through the same defer",
+    "Existing failure/null branches and caller HandleScope ownership unchanged",
+    "No tests, names, assertions, build graph, C/H, or unrelated production bytes changed"
+  ]
+}

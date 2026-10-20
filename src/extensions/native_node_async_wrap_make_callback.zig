@@ -48,7 +48,7 @@ pub fn call(s: *a.Scope, state: *wraps.State, trace: Trace,
     trace.after(trace.raw, provider, context.async_id);
 
     if (failure) |err| return err;
-    if (returned) |value| return s.own(value);
+    if (returned) |value| return try s.own(value);
     return null;
 }
 
