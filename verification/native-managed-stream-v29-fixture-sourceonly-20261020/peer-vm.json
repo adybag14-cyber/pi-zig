@@ -1,0 +1,64 @@
+{
+  "schema": "pi.finite-source-peer.v1",
+  "reviewer": "vm_foundation",
+  "source_only": true,
+  "execution": false,
+  "status": "CLOSED",
+  "unit": "V29 Managed12 and StreamRead18 fixture-only compiler corrections",
+  "packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-managed-stream-v29-fixture-sourceonly-20261020/source-delta.json",
+    "sha256": "F3CC2F6D786BE5B0243794BC25BDEA7B4CAC9ED3519E984A4BC33CAA5AB36065"
+  },
+  "roots": [
+    {
+      "path": "src/native_node_managed_buffers_test.zig",
+      "before": {
+        "sha256": "8A51CE5C6B80D318DBB368A735F1BBBEB9CAAD51EE5B825D1D3FFAC18B5374CA",
+        "bytes": 14499
+      },
+      "after": {
+        "sha256": "7904FA5B003BB6AA5D042A80836F0A16F8D3D357429DDCF09504A8AE2BA83929",
+        "bytes": 14499
+      },
+      "declarations": 12
+    },
+    {
+      "path": "src/native_node_stream_read_test.zig",
+      "before": {
+        "sha256": "E82BD953C752DF948C679617F2CA8FA2B5A08C9A00B0F83A02F08A7C1D45FEB3",
+        "bytes": 33640
+      },
+      "after": {
+        "sha256": "17978D19E46922C6B5A974D57DF0B9131BA7BE149125F923CBA472D09975B55B",
+        "bytes": 33652
+      },
+      "declarations": 18
+    }
+  ],
+  "checks": [
+    "Read complete actual SDK successors and frozen Main originals, plus both original compiler negatives C5459B5A and 6C6B13CB.",
+    "Independently replayed both unique before/after blocks; complete forward and inverse exactly reproduce both actual source roots. All 12 and 18 declaration names remain identical.",
+    "The unchanged literal native-map-bytes! contains exactly 17 ASCII payload bytes. Allocation extent, memcpy destination span and observed native buffer length now all use that same extent; the original full contents comparison remains unchanged.",
+    "Actual Fixture.make takes that precise extent into JS_PiTryNewArrayBufferBackingStore; adopt moves the token, take transfers it back, and contents compares both actual native length and complete bytes. All pointer identity, native count, no-wrapper and retirement observations remain.",
+    "The renamed StreamRead deinit capture is the same optional registry_owner, published to null before the same release. Fixture.registry method, scope/Environment disarm ordering and all later releases remain unchanged."
+  ],
+  "negatives": [
+    {
+      "path": "C:/Users/adyba/pi-zig/evidence/root-native-foundation-diagnostic-v29-buildquery-20261020-163817/groups/native-node-managed-buffers/compile.stderr.log",
+      "sha256": "C5459B5A3BE8B1ABAD3ED7C77FBF94B5CE1136EF40BACDB5A2538E970A160B3E",
+      "bytes": 20069
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/evidence/root-native-foundation-diagnostic-v29-buildquery-20261020-163817/groups/native-node-stream-read/compile.stderr.log",
+      "sha256": "6C6B13CB5A5A2E56E155383CA2EFD5482B248D143DC2D3D1B47EEF1E9290952E",
+      "bytes": 21426
+    }
+  ],
+  "excluded": [
+    "production",
+    "build",
+    "native execution",
+    "compiler execution",
+    "broader lexical scan"
+  ]
+}

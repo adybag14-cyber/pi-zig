@@ -1,0 +1,14 @@
+{
+  "source_only": true,
+  "native_execution": false,
+  "before_sha256": "99A495F924700FDCFB64C479C61FEF6D2E5CE8532944615324079CBB17F17F55",
+  "after_sha256": "30A2FEA5671546E4A285E68AD5B6D667A49E698B1C51C699DDF83A84495DA000",
+  "before_bytes": 52063,
+  "after_bytes": 52103,
+  "exact_forward_and_inverse": true,
+  "declarations_unchanged": 32,
+  "actual_header_api": [
+    "JS_EXTERN void JS_SetUncatchableError(JSContext *ctx, JSValueConst val);"
+  ],
+  "negative_sha256": "42CB210C616B49430E8126F5E41DE38A36AC6E34E7DD72189EC7B0855E9943DB"
+}

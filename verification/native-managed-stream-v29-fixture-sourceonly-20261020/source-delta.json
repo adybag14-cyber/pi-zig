@@ -1,0 +1,101 @@
+{
+  "schema": "pi.native-managed-stream-v29-fixture-correction.v1",
+  "source_only": true,
+  "execution": false,
+  "proof_directory": "verification/native-managed-stream-v29-fixture-sourceonly-20261020",
+  "roots": [
+    {
+      "path": "src/native_node_managed_buffers_test.zig",
+      "before": {
+        "sha256": "8A51CE5C6B80D318DBB368A735F1BBBEB9CAAD51EE5B825D1D3FFAC18B5374CA",
+        "bytes": 14499
+      },
+      "after": {
+        "sha256": "7904FA5B003BB6AA5D042A80836F0A16F8D3D357429DDCF09504A8AE2BA83929",
+        "bytes": 14499
+      },
+      "declarations": [
+        "Node managed buffers constructs the actual empty native map without a context",
+        "Node managed buffers consumes the actual token before any JS wrapper exists",
+        "Node managed buffers insertion does not enter the exhausted JS heap",
+        "Node managed buffers release keys on actual base and ignores the copied length",
+        "Node managed buffers null base bypasses lookup while retaining other entries",
+        "Node managed buffers preserves the real zero owner until map destruction",
+        "Node managed buffers duplicate insertion retires only the unselected native owner",
+        "Node managed buffers moves out before erase and survives native table destruction",
+        "Node managed buffers release then adopts the same real backing into a later ArrayBuffer",
+        "Node managed buffers native map operations preserve an actual pending reason",
+        "Node managed buffers real node allocation retries through the actual native new handler",
+        "Node managed buffers all native backing and table charges retire after the originating runtime"
+      ]
+    },
+    {
+      "path": "src/native_node_stream_read_test.zig",
+      "before": {
+        "sha256": "E82BD953C752DF948C679617F2CA8FA2B5A08C9A00B0F83A02F08A7C1D45FEB3",
+        "bytes": 33640
+      },
+      "after": {
+        "sha256": "17978D19E46922C6B5A974D57DF0B9131BA7BE149125F923CBA472D09975B55B",
+        "bytes": 33652
+      },
+      "declarations": [
+        "Node StreamBase read initializes the real default listener and native wrapper pointer",
+        "Node StreamBase read selects internal onread beneath an ordinary own property and writes aliases first",
+        "Node StreamBase read allocates actual native backing without a JS wrapper under an exhausted JS heap",
+        "Node StreamBase read zero bytes consumes the managed token without a callback or trace",
+        "Node StreamBase read negative status publishes undefined and leaves the positive byte counter unchanged",
+        "Node StreamBase read full extent adopts the same native bytes and advances the counter before callback",
+        "Node StreamBase read short extent performs the real exact native reallocation and copies before adoption",
+        "Node StreamBase read later ArrayBuffer adoption bypasses the live global constructor",
+        "Node StreamBase read a returned flagged Error stays successful DATA",
+        "Node StreamBase read actual ordinary callback failure retains its exact reason through native cleanup",
+        "Node StreamBase read actual fatal callback reason remains owned while static after trace still runs",
+        "Node StreamBase read retains the selected callback across live replacement until caller scope retirement",
+        "Node StreamBase read ignored callback return retires only after the static after operation",
+        "Node StreamBase read can delete its actual native State before static after uses cached identifiers",
+        "Node StreamBase read enters the real captured frame and restores the enclosing native callback scope",
+        "Node StreamBase read disabled JS returns the actual empty callback while native buffer cleanup completes",
+        "Node StreamBase read uses the live listener head and advances bytes before a real forwarding method",
+        "Node StreamBase read null buffer negative status bypasses the managed map without an allocation"
+      ]
+    }
+  ],
+  "edits": [
+    {
+      "path": "src/native_node_managed_buffers_test.zig",
+      "label": "allocate and observe the complete unchanged 17-byte payload",
+      "before": "test \"Node managed buffers consumes the actual token before any JS wrapper exists\" {\n    var f: Fixture = .{}; try f.init(true); defer f.deinit();\n    var token = try f.make(16, false);\n    defer c.JS_PiReleaseArrayBufferBackingStore(&token);\n    const data = c.JS_PiArrayBufferBackingStoreData(&token);\n    @memcpy(data[0..16], \"native-map-bytes!\");\n    var before: c.JSMemoryUsage = undefined;\n    c.JS_ComputeMemoryUsage(f.runtime.?, &before);\n    const buffer = f.adopt(&token);\n    try empty(&token);\n    try std.testing.expectEqual(@as(usize, 1), f.count());\n    try std.testing.expectEqual(@intFromPtr(data), @intFromPtr(buffer.base));\n    try std.testing.expectEqual(@as(usize, 16), @as(usize, buffer.len));\n    var after: c.JSMemoryUsage = undefined;\n    c.JS_ComputeMemoryUsage(f.runtime.?, &after);\n    try std.testing.expectEqual(before.obj_count, after.obj_count);\n    var taken = f.take(buffer);\n    defer c.JS_PiReleaseArrayBufferBackingStore(&taken);\n    try std.testing.expectEqual(@as(usize, 0), f.count());\n    try contents(&taken, \"native-map-bytes!\");\n}\n\n",
+      "after": "test \"Node managed buffers consumes the actual token before any JS wrapper exists\" {\n    var f: Fixture = .{}; try f.init(true); defer f.deinit();\n    var token = try f.make(17, false);\n    defer c.JS_PiReleaseArrayBufferBackingStore(&token);\n    const data = c.JS_PiArrayBufferBackingStoreData(&token);\n    @memcpy(data[0..17], \"native-map-bytes!\");\n    var before: c.JSMemoryUsage = undefined;\n    c.JS_ComputeMemoryUsage(f.runtime.?, &before);\n    const buffer = f.adopt(&token);\n    try empty(&token);\n    try std.testing.expectEqual(@as(usize, 1), f.count());\n    try std.testing.expectEqual(@intFromPtr(data), @intFromPtr(buffer.base));\n    try std.testing.expectEqual(@as(usize, 17), @as(usize, buffer.len));\n    var after: c.JSMemoryUsage = undefined;\n    c.JS_ComputeMemoryUsage(f.runtime.?, &after);\n    try std.testing.expectEqual(before.obj_count, after.obj_count);\n    var taken = f.take(buffer);\n    defer c.JS_PiReleaseArrayBufferBackingStore(&taken);\n    try std.testing.expectEqual(@as(usize, 0), f.count());\n    try contents(&taken, \"native-map-bytes!\");\n}\n\n"
+    },
+    {
+      "path": "src/native_node_stream_read_test.zig",
+      "label": "rename only the capture shadowing Fixture.registry and its release use",
+      "before": "        if (self.registry_owner) |registry| {\n            self.registry_owner = null;\n            registry.release();\n        }",
+      "after": "        if (self.registry_owner) |owned_registry| {\n            self.registry_owner = null;\n            owned_registry.release();\n        }"
+    }
+  ],
+  "negatives": [
+    {
+      "path": "C:/Users/adyba/pi-zig/evidence/root-native-foundation-diagnostic-v29-buildquery-20261020-163817/groups/native-node-managed-buffers/compile.stderr.log",
+      "sha256": "C5459B5A3BE8B1ABAD3ED7C77FBF94B5CE1136EF40BACDB5A2538E970A160B3E",
+      "bytes": 20069
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/evidence/root-native-foundation-diagnostic-v29-buildquery-20261020-163817/groups/native-node-stream-read/compile.stderr.log",
+      "sha256": "6C6B13CB5A5A2E56E155383CA2EFD5482B248D143DC2D3D1B47EEF1E9290952E",
+      "bytes": 21426
+    }
+  ],
+  "findings": [
+    "The original literal native-map-bytes! contains 17 payload bytes. The original test allocated/copies/expected buffer length16 but its final contents comparison requires the complete17. This correction changes only those three numeric length operands to17; neither literal nor complete contents assertion is truncated or weakened.",
+    "The StreamRead Fixture method registry is unchanged. Only the deinit capture and its sole release receiver become owned_registry; publication-to-null still precedes the same release.",
+    "Both original whole roots match frozen Main byte-for-byte; all30 declaration names, all ownership/identity/heap/count/cleanup assertions and all unrelated bytes remain. Only the inconsistent expected buffer length is updated to the same complete17-byte extent."
+  ],
+  "excluded": [
+    "production",
+    "build",
+    "native execution",
+    "compiler execution"
+  ]
+}

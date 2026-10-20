@@ -389,9 +389,9 @@ const Fixture = struct {
             environment.cleanupRealmAfterIoJoin() catch @panic("actual StreamBase realm cleanup failed");
             environment.disarm() catch @panic("actual StreamBase Environment disarm failed");
         }
-        if (self.registry_owner) |registry| {
+        if (self.registry_owner) |owned_registry| {
             self.registry_owner = null;
-            registry.release();
+            owned_registry.release();
         }
         if (self.engine_alive) {
             self.drop(&self.received);

@@ -1,0 +1,68 @@
+{
+  "schema": "pi.native-script-v29-compiler-correction.v1",
+  "source_only": true,
+  "execution": false,
+  "root": "src/native_vm_script_location_test.zig",
+  "before": {
+    "sha256": "99a495f924700fdcfb64c479c61fef6d2e5ce8532944615324079cbb17f17f55",
+    "bytes": 52063
+  },
+  "negative": {
+    "path": "C:/Users/adyba/pi-zig/evidence/root-native-foundation-diagnostic-v29-buildquery-20261020-163817/groups/native-vm-script-location/compile.stderr.log",
+    "sha256": "42cb210c616b49430e8126f5e41de38a36ac6e34e7dd72189ec7b0855e9943db",
+    "bytes": 20802
+  },
+  "actual_c_abi": "void JS_SetUncatchableError(JSContext *ctx, JSValueConst val);",
+  "steps": [
+    {
+      "label": "rename only the shadowing frameScript output parameter",
+      "before": "    fn frameScript(self: *Fixture, frames: c.JSValue, index: u32, position: *c_int) !*Script {\n        const frame = try self.item(frames, index); defer c.JS_FreeValue(self.context.?, frame);\n        return c.JS_PiGetCapturedStackFrameScript(frame, position) orelse error.MissingActualFrameScript;\n    }",
+      "after": "    fn frameScript(self: *Fixture, frames: c.JSValue, index: u32, source_position: *c_int) !*Script {\n        const frame = try self.item(frames, index); defer c.JS_FreeValue(self.context.?, frame);\n        return c.JS_PiGetCapturedStackFrameScript(frame, source_position) orelse error.MissingActualFrameScript;\n    }"
+    },
+    {
+      "label": "provide actual context to first intrinsic flag operation",
+      "before": "        if (mode == 1) c.JS_SetUncatchableError(reason);",
+      "after": "        if (mode == 1) c.JS_SetUncatchableError(f.context.?, reason);"
+    },
+    {
+      "label": "provide actual context to second intrinsic flag operation",
+      "before": "        if (fatal) c.JS_SetUncatchableError(reason);",
+      "after": "        if (fatal) c.JS_SetUncatchableError(f.context.?, reason);"
+    }
+  ],
+  "declarations": [
+    "VM Script complete input and UTF16 length are independent of function presentation source",
+    "VM Script root nested and sibling bytecode retain one actual native source identity",
+    "VM Script separate compilations of identical input have distinct owners",
+    "VM Script duplicate native entitlement outlives function and originating context",
+    "VM Script brand projection excludes native bound and proxy functions without guest access",
+    "VM Script source URL and map come from actual lexer comments with last-event semantics",
+    "VM Script empty later metadata clears earlier recognized lexer metadata",
+    "VM Script genuine module frames retain complete host module source",
+    "VM Script direct and indirect eval preserve their actual separate input",
+    "VM Script all four dynamic constructors retain actual generated eval input",
+    "VM Script genuine CJS compiler keeps original body without presentation wrapper",
+    "VM Script UTF16 line table handles CRLF lone CR LS PS negative and EOF positions",
+    "VM Script empty source and actual initial line offset retain canonical EOF behavior",
+    "VM Script captured positions use actual token bytes in both compiler modes",
+    "VM Script source positions survive real backward and long forward branch rewriting",
+    "VM Script cloned captured frame owns source after original frames retire",
+    "VM Script native synthetic and proxy frames have no fabricated source owner",
+    "VM Script raw projections allocate nothing and preserve actual ordinary fatal and private pending",
+    "VM Script position failure leaves outputs unchanged and source line enforces runtime ownership",
+    "VM Script native source owner retains no receiver or function graph after frame retirement",
+    "VM Script serialized siblings keep one source identity without object reference mode under every strip flag",
+    "VM Script serialized actual token positions survive source and debug stripping in both compilers",
+    "VM Script ordinary lexer resource and map metadata survive serialization independently of display stripping",
+    "VM Script serialized module retains complete source module origin and nested identity",
+    "VM Script real reader rejects invalid owner tags references origin and module bits",
+    "VM Script reader validates actual PC and source-byte bounds before publication",
+    "VM Script partial reader failure retires source records position arrays and table entitlements",
+    "VM Script version31 rejects actual version30 bytes at the unchanged version gate",
+    "VM Script real compiler and reader heap failure cleanly retire all native source owners",
+    "VM Script prior actual pending wins before allocating source line while raw getters remain available",
+    "VM Script existing private logical URL serialization restriction is preserved",
+    "VM Script failed parsing releases native source without fabricating synthetic-frame provenance"
+  ],
+  "scope": "Only one parameter and its use, and the two missing context arguments. No control oracle, cleanup, production C/H or build change."
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "pi.source-only-byte-verification.v1",
+  "execution": false,
+  "compiler_execution": false,
+  "payload_bytes": 17,
+  "roots": [
+    {
+      "path": "src/native_node_managed_buffers_test.zig",
+      "before": {
+        "sha256": "8A51CE5C6B80D318DBB368A735F1BBBEB9CAAD51EE5B825D1D3FFAC18B5374CA",
+        "bytes": 14499
+      },
+      "after": {
+        "sha256": "7904FA5B003BB6AA5D042A80836F0A16F8D3D357429DDCF09504A8AE2BA83929",
+        "bytes": 14499
+      },
+      "forward_exact": true,
+      "inverse_exact": true,
+      "declarations": 12
+    },
+    {
+      "path": "src/native_node_stream_read_test.zig",
+      "before": {
+        "sha256": "E82BD953C752DF948C679617F2CA8FA2B5A08C9A00B0F83A02F08A7C1D45FEB3",
+        "bytes": 33640
+      },
+      "after": {
+        "sha256": "17978D19E46922C6B5A974D57DF0B9131BA7BE149125F923CBA472D09975B55B",
+        "bytes": 33652
+      },
+      "forward_exact": true,
+      "inverse_exact": true,
+      "declarations": 18
+    }
+  ],
+  "stderr_retained_exact": true
+}

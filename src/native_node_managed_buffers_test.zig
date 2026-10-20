@@ -130,17 +130,17 @@ test "Node managed buffers constructs the actual empty native map without a cont
 
 test "Node managed buffers consumes the actual token before any JS wrapper exists" {
     var f: Fixture = .{}; try f.init(true); defer f.deinit();
-    var token = try f.make(16, false);
+    var token = try f.make(17, false);
     defer c.JS_PiReleaseArrayBufferBackingStore(&token);
     const data = c.JS_PiArrayBufferBackingStoreData(&token);
-    @memcpy(data[0..16], "native-map-bytes!");
+    @memcpy(data[0..17], "native-map-bytes!");
     var before: c.JSMemoryUsage = undefined;
     c.JS_ComputeMemoryUsage(f.runtime.?, &before);
     const buffer = f.adopt(&token);
     try empty(&token);
     try std.testing.expectEqual(@as(usize, 1), f.count());
     try std.testing.expectEqual(@intFromPtr(data), @intFromPtr(buffer.base));
-    try std.testing.expectEqual(@as(usize, 16), @as(usize, buffer.len));
+    try std.testing.expectEqual(@as(usize, 17), @as(usize, buffer.len));
     var after: c.JSMemoryUsage = undefined;
     c.JS_ComputeMemoryUsage(f.runtime.?, &after);
     try std.testing.expectEqual(before.obj_count, after.obj_count);

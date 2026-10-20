@@ -128,9 +128,9 @@ const Fixture = struct {
         try std.testing.expect(c.JS_IsArray(array));
         return self.checked(c.JS_GetPropertyUint32(self.context.?, array, index));
     }
-    fn frameScript(self: *Fixture, frames: c.JSValue, index: u32, position: *c_int) !*Script {
+    fn frameScript(self: *Fixture, frames: c.JSValue, index: u32, source_position: *c_int) !*Script {
         const frame = try self.item(frames, index); defer c.JS_FreeValue(self.context.?, frame);
-        return c.JS_PiGetCapturedStackFrameScript(frame, position) orelse error.MissingActualFrameScript;
+        return c.JS_PiGetCapturedStackFrameScript(frame, source_position) orelse error.MissingActualFrameScript;
     }
     fn string(self: *Fixture, value: c.JSValue, expected: []const u8) !void {
         try std.testing.expect(c.JS_IsString(value));
@@ -453,7 +453,7 @@ test "VM Script raw projections allocate nothing and preserve actual ordinary fa
         defer c.JS_PiFreeScript(owner);
         const reason = if (mode == 2) c.JS_PiNativeTerminationResult() else try f.checked(c.JS_NewError(f.context.?));
         defer c.JS_FreeValue(f.context.?, reason);
-        if (mode == 1) c.JS_SetUncatchableError(reason);
+        if (mode == 1) c.JS_SetUncatchableError(f.context.?, reason);
         if (mode == 2) {
             c.JS_PiRequestExecutionTermination(f.runtime.?);
             try std.testing.expectEqual(@as(c_int, -1), c.JS_PiCheckExecutionTermination(f.context.?));
@@ -790,7 +790,7 @@ test "VM Script prior actual pending wins before allocating source line while ra
         const compiled = try f.compile("0\n1", 1); defer c.JS_FreeValue(f.context.?, compiled);
         const owner = try script(compiled); defer c.JS_PiFreeScript(owner);
         const reason = try f.checked(c.JS_NewError(f.context.?)); defer c.JS_FreeValue(f.context.?, reason);
-        if (fatal) c.JS_SetUncatchableError(reason);
+        if (fatal) c.JS_SetUncatchableError(f.context.?, reason);
         _ = c.JS_Throw(f.context.?, c.JS_DupValue(f.context.?, reason));
         const occurrence = c.JS_PiOutOfMemoryOccurrence(f.runtime.?);
         c.JS_SetMemoryLimit(f.runtime.?, 1);

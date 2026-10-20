@@ -1,0 +1,61 @@
+{
+  "schema": "pi.source-only-isolated-intake.v1",
+  "source_only": true,
+  "execution": false,
+  "compiler_execution": false,
+  "unit": "V29 Managed12 and StreamRead18 fixture corrections",
+  "production_changes": false,
+  "build_changes": false,
+  "control_declarations": 30,
+  "intake_mode": "exact two source blocks plus preserved evidence",
+  "files": [
+    {
+      "path": "verification/native-managed-stream-v29-fixture-sourceonly-20261020/original/native_node_managed_buffers_test.zig",
+      "bytes": 14499,
+      "sha256": "8A51CE5C6B80D318DBB368A735F1BBBEB9CAAD51EE5B825D1D3FFAC18B5374CA"
+    },
+    {
+      "path": "verification/native-managed-stream-v29-fixture-sourceonly-20261020/original/native_node_stream_read_test.zig",
+      "bytes": 33640,
+      "sha256": "E82BD953C752DF948C679617F2CA8FA2B5A08C9A00B0F83A02F08A7C1D45FEB3"
+    },
+    {
+      "path": "verification/native-managed-stream-v29-fixture-sourceonly-20261020/original/native-node-managed-buffers.stderr.log",
+      "bytes": 20069,
+      "sha256": "C5459B5A3BE8B1ABAD3ED7C77FBF94B5CE1136EF40BACDB5A2538E970A160B3E"
+    },
+    {
+      "path": "verification/native-managed-stream-v29-fixture-sourceonly-20261020/original/native-node-stream-read.stderr.log",
+      "bytes": 21426,
+      "sha256": "6C6B13CB5A5A2E56E155383CA2EFD5482B248D143DC2D3D1B47EEF1E9290952E"
+    },
+    {
+      "path": "verification/native-managed-stream-v29-fixture-sourceonly-20261020/source-delta.json",
+      "bytes": 8380,
+      "sha256": "F3CC2F6D786BE5B0243794BC25BDEA7B4CAC9ED3519E984A4BC33CAA5AB36065"
+    },
+    {
+      "path": "src/native_node_managed_buffers_test.zig",
+      "bytes": 14499,
+      "sha256": "7904FA5B003BB6AA5D042A80836F0A16F8D3D357429DDCF09504A8AE2BA83929"
+    },
+    {
+      "path": "src/native_node_stream_read_test.zig",
+      "bytes": 33652,
+      "sha256": "17978D19E46922C6B5A974D57DF0B9131BA7BE149125F923CBA472D09975B55B"
+    },
+    {
+      "path": "verification/native-managed-stream-v29-fixture-sourceonly-20261020/source-verification.json",
+      "bytes": 1026,
+      "sha256": "3CABE64F625534D363F490C22E5EB7447F782F5D954622B85222E15DC2CDB481"
+    },
+    {
+      "path": "verification/native-managed-stream-v29-fixture-sourceonly-20261020/peer-vm.json",
+      "bytes": 3045,
+      "sha256": "6BA4B6399EA5904DEA3FDFCF7673421D5E8521FD0E5E00F7BF893D45BB322FFF"
+    }
+  ],
+  "peer": "peer-vm.json",
+  "source_delta": "source-delta.json",
+  "scope": "Complete 17-byte payload consistency and capture-only lexical rename; no observation removed."
+}

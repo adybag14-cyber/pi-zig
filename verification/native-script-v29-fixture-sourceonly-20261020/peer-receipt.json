@@ -1,0 +1,34 @@
+{
+  "schema": "pi.finite-source-peer.v1",
+  "reviewer": "sdk_owners",
+  "source_only": true,
+  "execution": false,
+  "status": "CLOSED",
+  "unit": "V29 Script32 compiler-only fixture corrections",
+  "packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-script-v29-fixture-sourceonly-20261020/source-delta.json",
+    "sha256": "05B15BDA855AC074FBAB713A4F3639B209D1B5CC23EFFED537121F1F637AA838"
+  },
+  "root": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/src/native_vm_script_location_test.zig",
+    "before": "99A495F924700FDCFB64C479C61FEF6D2E5CE8532944615324079CBB17F17F55",
+    "after": "30A2FEA5671546E4A285E68AD5B6D667A49E698B1C51C699DDF83A84495DA000",
+    "bytes": 52103
+  },
+  "negative": {
+    "sha256": "42CB210C616B49430E8126F5E41DE38A36AC6E34E7DD72189EC7B0855E9943DB",
+    "bytes": 20802
+  },
+  "checks": [
+    "Read actual complete current root, exact source-delta, frozen Main original and original compiler stderr.",
+    "All three replacements apply uniquely; complete forward and reverse reproduce exact current and Main bytes.",
+    "frameScript's renamed output pointer remains the same borrowed c_int pointer forwarded to JS_PiGetCapturedStackFrameScript. No ownership or control-flow change.",
+    "Actual Main vendor/quickjs/quickjs.h:1116 declares JS_SetUncatchableError(JSContext *ctx, JSValueConst val). Both additions use the actual live f.context that allocated and later throws/queries that same reason.",
+    "All 32 declaration names and all assertions/cleanup operations are unchanged; the two intrinsic calls now conform to their actual existing ABI."
+  ],
+  "excluded": [
+    "production",
+    "build",
+    "execution"
+  ]
+}

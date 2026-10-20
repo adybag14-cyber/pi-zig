@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "status": "source_only_three_root_compiler_correction",
+  "recorded_utc": "2026-10-20T16:51:57.848343+00:00",
+  "prior_main_head": "f1f75b57790cf5f15af52c6fb60f6984c5a7e092",
+  "donor_commits": [
+    "2d18c77ce3b17df47c319d4f19b1f1a3de24c359",
+    "24cb9d0eb8cf0bf01e22ebcd10a41524e334939a"
+  ],
+  "prior_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-diagnostic-v29-control-20261020-163817\\independent-diagnostic-compile-negative-closure.json",
+    "sha256": "2F221509291791E5D157383FD095F884EFD0C11029790349FFE3B8E2B3FB15A6",
+    "bytes": 39898
+  },
+  "source": [
+    {
+      "path": "src/native_vm_script_location_test.zig",
+      "before_sha256": "99A495F924700FDCFB64C479C61FEF6D2E5CE8532944615324079CBB17F17F55",
+      "after_sha256": "30A2FEA5671546E4A285E68AD5B6D667A49E698B1C51C699DDF83A84495DA000",
+      "before_bytes": 52063,
+      "after_bytes": 52103,
+      "exact_edits": 3,
+      "whole_inverse_matches_prior_main": true,
+      "unchanged_declarations": 32
+    },
+    {
+      "path": "src/native_node_managed_buffers_test.zig",
+      "before_sha256": "8A51CE5C6B80D318DBB368A735F1BBBEB9CAAD51EE5B825D1D3FFAC18B5374CA",
+      "after_sha256": "7904FA5B003BB6AA5D042A80836F0A16F8D3D357429DDCF09504A8AE2BA83929",
+      "before_bytes": 14499,
+      "after_bytes": 14499,
+      "exact_edits": 1,
+      "whole_inverse_matches_prior_main": true,
+      "unchanged_declarations": 12
+    },
+    {
+      "path": "src/native_node_stream_read_test.zig",
+      "before_sha256": "E82BD953C752DF948C679617F2CA8FA2B5A08C9A00B0F83A02F08A7C1D45FEB3",
+      "after_sha256": "17978D19E46922C6B5A974D57DF0B9131BA7BE149125F923CBA472D09975B55B",
+      "before_bytes": 33640,
+      "after_bytes": 33652,
+      "exact_edits": 1,
+      "whole_inverse_matches_prior_main": true,
+      "unchanged_declarations": 18
+    }
+  ],
+  "proof": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-script-v29-fixture-sourceonly-20261020\\authority\\root.before.zig.txt",
+      "sha256": "99A495F924700FDCFB64C479C61FEF6D2E5CE8532944615324079CBB17F17F55",
+      "bytes": 52063
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-script-v29-fixture-sourceonly-20261020\\compile.stderr.log",
+      "sha256": "42CB210C616B49430E8126F5E41DE38A36AC6E34E7DD72189EC7B0855E9943DB",
+      "bytes": 20802
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-script-v29-fixture-sourceonly-20261020\\peer-receipt.json",
+      "sha256": "05CAC09AE05DDDC0DB9012C6FD28F0CFB70FB2BFFD6F627A4B57FCC39739C71C",
+      "bytes": 1739
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-script-v29-fixture-sourceonly-20261020\\source-delta.json",
+      "sha256": "05B15BDA855AC074FBAB713A4F3639B209D1B5CC23EFFED537121F1F637AA838",
+      "bytes": 5028
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-script-v29-fixture-sourceonly-20261020\\source-verification.json",
+      "sha256": "0613F84826BBFAD0CAD381348A80EF0B354D8CB601731B2516F3A2A01C994A35",
+      "bytes": 544
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-managed-stream-v29-fixture-sourceonly-20261020\\manifest.json",
+      "sha256": "DB809F421BFA4D2A6B7D637F048EA6480A7C384F15E0FA0D60CBBEFD0A53E3C7",
+      "bytes": 2532
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-managed-stream-v29-fixture-sourceonly-20261020\\original\\native-node-managed-buffers.stderr.log",
+      "sha256": "C5459B5A3BE8B1ABAD3ED7C77FBF94B5CE1136EF40BACDB5A2538E970A160B3E",
+      "bytes": 20069
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-managed-stream-v29-fixture-sourceonly-20261020\\original\\native-node-stream-read.stderr.log",
+      "sha256": "6C6B13CB5A5A2E56E155383CA2EFD5482B248D143DC2D3D1B47EEF1E9290952E",
+      "bytes": 21426
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-managed-stream-v29-fixture-sourceonly-20261020\\original\\native_node_managed_buffers_test.zig",
+      "sha256": "8A51CE5C6B80D318DBB368A735F1BBBEB9CAAD51EE5B825D1D3FFAC18B5374CA",
+      "bytes": 14499
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-managed-stream-v29-fixture-sourceonly-20261020\\original\\native_node_stream_read_test.zig",
+      "sha256": "E82BD953C752DF948C679617F2CA8FA2B5A08C9A00B0F83A02F08A7C1D45FEB3",
+      "bytes": 33640
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-managed-stream-v29-fixture-sourceonly-20261020\\peer-vm.json",
+      "sha256": "6BA4B6399EA5904DEA3FDFCF7673421D5E8521FD0E5E00F7BF893D45BB322FFF",
+      "bytes": 3045
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-managed-stream-v29-fixture-sourceonly-20261020\\source-delta.json",
+      "sha256": "F3CC2F6D786BE5B0243794BC25BDEA7B4CAC9ED3519E984A4BC33CAA5AB36065",
+      "bytes": 8380
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-managed-stream-v29-fixture-sourceonly-20261020\\source-verification.json",
+      "sha256": "3CABE64F625534D363F490C22E5EB7447F782F5D954622B85222E15DC2CDB481",
+      "bytes": 1026
+    }
+  ],
+  "actual_main_header": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+    "sha256": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+    "bytes": 110801
+  },
+  "unchanged_control_declarations": 62,
+  "scope": "Three exact Script32 edits, complete unchanged seventeen-byte Managed12 payload extent, and one StreamRead18 lexical capture rename. Production and build graph unchanged.",
+  "native_execution": false,
+  "runtime_qualification": false,
+  "next_gate": "Fresh strict54-group/1089-declaration BuildQuery with private empty caches and complete independent closure before separately granted RuntimeOnly."
+}
