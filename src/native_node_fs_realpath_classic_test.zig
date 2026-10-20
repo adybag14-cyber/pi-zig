@@ -312,7 +312,7 @@ test "native actual classic realpath original p argument retires before live res
         \\  const result = actualClassic.realpath({
         \\    owned:actualClassicHolder(),
         \\    [Symbol.toPrimitive]: function(hint){ converted++; classicAssert(hint === "default","actual p += empty-string default hint"); return file; }
-        \\  });
+        \\  }, undefined);
         \\  classicAssert(result === file && converted === 1 && resolved === 1,"actual converted path reaches the physical owner");
         \\} finally { Object.defineProperty(paths,"resolve",original); }
     );
@@ -337,7 +337,7 @@ test "native actual classic realpath original p retirement B prevents resolve ge
         \\  actualClassic.realpath({
         \\    owned:actualClassicHolder(),
         \\    [Symbol.toPrimitive]: function(hint){ actualClassicArgumentProgress.convert++; return file; }
-        \\  });
+        \\  }, undefined);
         \\} catch { actualClassicArgumentProgress.caught++; }
     );
     if (attempted) |value| {

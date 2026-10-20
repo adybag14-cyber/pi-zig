@@ -1,0 +1,88 @@
+{
+  "schema": "source-only-correction-v1",
+  "created_utc": "2026-10-20",
+  "unit": "Classic original-argument controls select the actual aliased formal path",
+  "baseline_main": "1129cc97e4e3367fc553e33d3091bc4fb7635d65",
+  "correction": {
+    "path": "src/native_node_fs_realpath_classic_test.zig",
+    "before": {
+      "sha256": "9b78ee0b5e6fb666181b1bd2c6d8357f9c70456cc66bb3417118842a32e42f6e",
+      "bytes": 19952,
+      "preserved_file": "native_node_fs_realpath_classic_test.before.zig.txt"
+    },
+    "after": {
+      "sha256": "9d84b5255e7f33802e27cdc78d79e52232f0a855da18e4fb9e63deb825ddc712",
+      "bytes": 19974
+    },
+    "edits": [
+      {
+        "before": "        \\\\    [Symbol.toPrimitive]: function(hint){ converted++; classicAssert(hint === \"default\",\"actual p += empty-string default hint\"); return file; }\n        \\\\  });",
+        "after": "        \\\\    [Symbol.toPrimitive]: function(hint){ converted++; classicAssert(hint === \"default\",\"actual p += empty-string default hint\"); return file; }\n        \\\\  }, undefined);"
+      },
+      {
+        "before": "        \\\\    [Symbol.toPrimitive]: function(hint){ actualClassicArgumentProgress.convert++; return file; }\n        \\\\  });",
+        "after": "        \\\\    [Symbol.toPrimitive]: function(hint){ actualClassicArgumentProgress.convert++; return file; }\n        \\\\  }, undefined);"
+      }
+    ]
+  },
+  "cause": "Both controls asserted retirement during assignment to original p while calling a two-formal function with one actual argument. The actual Sync owner copies both formals under arity, preserving the caller's original argument. Supplying the explicit undefined options argument selects the intended aliased argv path without changing the called function's effective options.",
+  "actual_implementation": {
+    "formal_count": 2,
+    "owner_path": "src/extensions/native_node_fs_realpath_classic.zig",
+    "owner_sha256": "0f878025ef613b4e5da0e8b0a24a7fbbbb888c35556fe2a244b1d70740c2dba8",
+    "quickjs_path": "C:/Users/adyba/pi-zig/main/vendor/quickjs/quickjs.c",
+    "quickjs_sha256": "007524cb5ae21db10d1eddc4f3a3a687107108aaf8168c22543a6ac6620b46ca",
+    "quickjs_bytes": 2344986,
+    "selected_body": "23343:JSValue JS_PiCallSyncArguments(JSContext *ctx, JSValueConst function,\n23344-                               JSValueConst receiver, int argc,\n23345-                               JSValueConst *argv, int flags,\n23346-                               uint16_t formal_count, bool strict,\n23347-                               JSPiSyncArgumentBody *body,\n23348-                               JSPiSyncArgumentStateHook *detach,\n23349-                               JSPiSyncArgumentStateHook *retire,\n23350-                               void *opaque)\n23351-{\n23352-    JSRuntime *rt = ctx->rt;\n23353-    JSPiSyncArgumentFrame frame;\n23354-    JSStackFrame *sf = &frame.sf;\n23355-    JSNativeAsyncPending owned = { false, JS_UNDEFINED };\n23356-    JSValue *local_buf, result, state, bound_receiver;\n23357-    int copied_count, i, n;\n23358-    size_t alloca_size;\n23359-\n23360-    assert(argc >= 0 && argc <= 65535 && body);\n23361-    if (JS_HasException(ctx))\n23362-        return JS_EXCEPTION;\n23363-    /* Match JS_CallBytecode even when formal_count is zero. */\n23364-    copied_count = (argc < formal_count || (flags & JS_CALL_FLAG_COPY_ARGV))\n23365-        ? formal_count : 0;\n23366-    alloca_size = sizeof(JSValue) * copied_count +\n23367-        sizeof(JSVarRef *) * formal_count;\n23368-    if (js_check_stack_overflow(rt, alloca_size))\n23369-        return JS_ThrowStackOverflow(ctx);\n23370-    bound_receiver = js_callsite_bind_receiver(ctx, receiver, strict);\n23371-    if (JS_IsException(bound_receiver))\n23372-        return JS_EXCEPTION;\n23373-\n23374-    memset(&frame, 0, sizeof(frame));\n23375-    frame.ctx = ctx;\n23376-    frame.state = JS_UNDEFINED;\n23377-    frame.formal_count = formal_count;\n23378-    frame.active = true;\n23379-    sf->receiver = bound_receiver;\n23380-    sf->cur_func = unsafe_unconst(function);\n23381-    sf->is_strict_mode = strict;\n23382-    sf->is_constructor = (flags & JS_CALL_FLAG_CONSTRUCTOR) != 0;\n23383-    sf->arg_buf = (JSValue *)argv;\n23384-    sf->arg_count = argc;\n23385-    local_buf = alloca(alloca_size);\n23386-    if (copied_count) {\n23387-        n = min_int(argc, formal_count);\n23388-        sf->arg_buf = local_buf;\n23389-        for (i = 0; i < n; i++)\n23390-            sf->arg_buf[i] = js_dup(argv[i]);\n23391-        for (; i < formal_count; i++)\n23392-            sf->arg_buf[i] = JS_UNDEFINED;\n23393-        sf->arg_count = formal_count;\n23394-    }\n23395-    sf->var_buf = local_buf + copied_count;\n23396-    sf->var_refs = (JSVarRef **)(local_buf + copied_count);\n23397-    sf->var_ref_count = formal_count;\n23398-    for (i = 0; i < formal_count; i++)\n23399-        sf->var_refs[i] = NULL;\n23400-    sf->prev_frame = rt->current_stack_frame;\n23401-    rt->current_stack_frame = sf;\n23402-\n23403-    result = body(ctx, bound_receiver, argc, argv, &frame, opaque);\n23404-    js_native_async_take_pending(ctx, &owned);\n23405-    /* Detach every terminal owner before cleanup can run native finalizers.\n23406-       The actual var-ref table is borrowed, so dropped closures have already\n23407-       removed their entries and add no hidden final parameter duplicate. */\n23408-    frame.active = false;\n23409-    state = frame.state; frame.state = JS_UNDEFINED;\n23410-    close_var_refs(rt, sf);\n23411-    sf->var_ref_count = 0;\n23412-    if (detach) {\n23413-        detach(ctx, state, opaque);\n23414-        js_native_async_take_pending(ctx, &owned);\n23415-    }\n23416-    for (i = 0; i < copied_count; i++) {\n23417-        JSValue value = sf->arg_buf[i];\n23418-        sf->arg_buf[i] = JS_UNDEFINED;\n23419-        js_native_async_release(ctx, value, &owned);\n23420-    }\n23421-    if (retire) {\n23422-        retire(ctx, state, opaque);\n23423-        js_native_async_take_pending(ctx, &owned);\n23424-    }\n23425-    js_native_async_release(ctx, state, &owned);\n23426-    receiver = sf->receiver; sf->receiver = JS_UNDEFINED;\n23427-    js_native_async_release(ctx, unsafe_unconst(receiver), &owned);\n23428-    rt->current_stack_frame = sf->prev_frame;\n23429-    if (owned.present) {\n23430-        js_native_async_release(ctx, result, &owned);\n23431-        return JS_Throw(ctx, owned.reason);\n23432-    }\n23433-    return result;\n23434-}\n23435-\n23436-static void js_native_async_retire(JSContext *ctx, JSAsyncFunctionData *s,\n23437-                                   JSNativeAsyncPending *owned)\n23438-{\n23439-    JSValue state, effective_this, receiver, function, resolves[2], *args;\n23440-    JSPiAsyncFunctionStateClose *close;\n23441-    int count, i;\n23442-    js_native_async_take_pending(ctx, owned);\n23443-    s->module = NULL;\n"
+  },
+  "static_checks": {
+    "exact_two_edit_inverse": true,
+    "all_other_bytes_identical": true,
+    "declared_control_count": 23,
+    "declared_names": [
+      "native actual classic realpath published CJS and named owner identities",
+      "native actual classic realpath walks files directories and resolved input",
+      "native actual classic realpath resolves relative absolute and chained file links",
+      "native actual classic realpath restarts through linked directory suffixes",
+      "native actual classic realpath keeps options URL Buffer and default coercion order",
+      "native actual classic realpath options failure precedes conversion and resolve",
+      "native actual classic realpath truthy cached DATA bypasses OS and encoding",
+      "native actual classic realpath consumes the live actual path resolve owner",
+      "native actual classic realpath hard cache equality has exact lookup order",
+      "native actual classic realpath cached link restarts the remaining walk",
+      "native actual classic realpath encoding rereads and receiver selection stay live",
+      "native actual classic realpath uses actual Buffer path encodings",
+      "native actual classic realpath retains raw ENOENT path syscall and intrinsic Error",
+      "native actual classic realpath followed stat reports actual link loops",
+      "native actual classic realpath retains original string collection and regex primordials",
+      "native actual classic realpath final cache failure precedes encoding",
+      "native actual classic realpath cache equality retires its sole holder before next read",
+      "native actual classic realpath cache equality retirement B prevents next read and catch",
+      "native actual classic realpath same-operation private DATA remains ordinary",
+      "native actual classic realpath successful flagged cache DATA stays a returned value",
+      "native actual classic realpath and public metadata share the actual stat buffers",
+      "native actual classic realpath original p argument retires before live resolve getter",
+      "native actual classic realpath original p retirement B prevents resolve getter and catch"
+    ],
+    "all_assertions_unchanged": true
+  },
+  "preserved_negative": {
+    "directory": "C:/Users/adyba/pi-zig/evidence/root-vm-io-oauth-options-v24-diagnostic-runtime-20261020-121245/groups/native-node-fs-realpath-classic",
+    "stderr_sha256": "54B685FC05A434BE26E2187C2BC0E5F07210D6B3FDD236E1D02F73E0EB38B8E2",
+    "failed_zero_based_indices": [
+      21,
+      22
+    ]
+  },
+  "native_execution": false,
+  "node_execution": false,
+  "qualification": false,
+  "remaining": "Only source fixture selection is corrected. No fresh execution or broader ownership qualification is claimed.",
+  "finite_peer": {
+    "reviewer": "/root/vm_foundation",
+    "status": "closed",
+    "pin": "9D84B5255E7F33802E27CDC78D79E52232F0A855DA18E4FB9E63DEB825DDC712",
+    "scope": "Actual formal_count2, full real Sync under-arity duplicate versus flags0 argc2 alias ownership; exact two added undefined operands; all 23 names and assertions preserved.",
+    "execution": false
+  }
+}
