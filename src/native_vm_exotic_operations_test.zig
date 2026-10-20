@@ -96,7 +96,7 @@ fn queryFlags(context: ?*c.JSContext, flags: [*c]c_int, value: c.JSValue, atom: 
     _ = context;
     const p = Probe.from(value) orelse return 0;
     p.flags_calls += 1;
-    return p.query(atom, &flags[0]);
+    return p.query(atom, flags);
 }
 fn descriptor(context: ?*c.JSContext, output: [*c]c.JSPropertyDescriptor, value: c.JSValue, atom: c.JSAtom) callconv(.c) c_int {
     _ = context;

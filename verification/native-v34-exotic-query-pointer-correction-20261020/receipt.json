@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "status": "root_applied_reviewed_source_only_correction",
+  "applied_utc": "2026-10-20T19:56:04.353351+00:00",
+  "baseline_head": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+  "source_relative_path": "src/native_vm_exotic_operations_test.zig",
+  "before_sha256": "9FFBDF6B2C033898E7D1738943293DCD13F758EF9893F794293C8AA71A5FAA7B",
+  "after": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_vm_exotic_operations_test.zig",
+    "bytes": 35887,
+    "sha256": "2DF3DD07FA56593700ECAB9D5EA9FBD5C42493B985F28DB98467D8F2BE14D79B"
+  },
+  "finite_edits": 1,
+  "whole_byte_forward_inverse": true,
+  "existing_named_controls": 28,
+  "complete_test_section_unchanged": true,
+  "test_section_sha256": "8D45B1D30AA8D8B35F07440195C09E23AF5B7A491FA7AFF5A0CBE4F8199C542D",
+  "callback_and_helper_signatures_unchanged": true,
+  "production_sources_unchanged": true,
+  "retained_evidence": [
+    {
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\v33-exotic-query-c-pointer-sourceonly-20261020\\proposal.json",
+      "copy": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v34-exotic-query-pointer-correction-20261020\\proposal.json",
+        "bytes": 9920,
+        "sha256": "3B35845AE48573E44603748C3633D1926C3E3D08DCAE092960ABCF94CF39225D"
+      }
+    },
+    {
+      "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v33-exotic-query-c-pointer-independent-source-peer-20261020\\peer.json",
+      "copy": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v34-exotic-query-pointer-correction-20261020\\peer.json",
+        "bytes": 11215,
+        "sha256": "71A58BC78F606049208535CE1E6DAE79B4812BA5393675F0DF372EC682F99D26"
+      }
+    },
+    {
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\v33-exotic-query-c-pointer-sourceonly-20261020\\original-native_vm_exotic_operations_test.zig",
+      "copy": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v34-exotic-query-pointer-correction-20261020\\original-native_vm_exotic_operations_test.zig",
+        "bytes": 35891,
+        "sha256": "9FFBDF6B2C033898E7D1738943293DCD13F758EF9893F794293C8AA71A5FAA7B"
+      }
+    },
+    {
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\independent-partial-compile-negative-closure.json",
+      "copy": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v34-exotic-query-pointer-correction-20261020\\v33-partial-compile-negative-closure.json",
+        "bytes": 42692,
+        "sha256": "5E477904C85A3D1C09D0CBC952350B7D816C2A36B3BA48A61C7474A98C45D0EB"
+      }
+    },
+    {
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\v33-to-v34-root-source-release-20261020.json",
+      "copy": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v34-exotic-query-pointer-correction-20261020\\root-source-release.json",
+        "bytes": 2411,
+        "sha256": "BDF56A8D7A8507E340B6CB7B7130245DFA50FF4FC1CAE3AE109DAFD4359A6AE0"
+      }
+    },
+    {
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\independent-auditor-original-nested-live-identity-rejection.json",
+      "copy": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v34-exotic-query-pointer-correction-20261020\\original-auditor-rejection.json",
+        "bytes": 2306,
+        "sha256": "800FE424815A7344FBB88B22FD1A66B7F688680B5B63785C91AC0738A6C145ED"
+      }
+    },
+    {
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-exotic-operations\\compile.stderr.log",
+      "copy": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v34-exotic-query-pointer-correction-20261020\\v33-compile.stderr.log",
+        "bytes": 19982,
+        "sha256": "3000182486D92CAB5D519AD08E2AABA599E4337CC40BC7E1D5208314C55DD92A"
+      }
+    },
+    {
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\partial-compile-negative-exact-live-utc-adaptation-v2.json",
+      "copy": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v34-exotic-query-pointer-correction-20261020\\exact-live-utc-auditor-adaptation.json",
+        "bytes": 6917,
+        "sha256": "82D70AAE562F8DB71A0392B1D6F3F1F5EAAAFC50CC30BB60743BBB5258E8F4DE"
+      }
+    },
+    {
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\Audit-FreshV33PartialCompileNegative-ExactLiveUtc.py",
+      "copy": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v34-exotic-query-pointer-correction-20261020\\Audit-FreshV33PartialCompileNegative-ExactLiveUtc.py",
+        "bytes": 32209,
+        "sha256": "3E120342A09023807C1021D1FC90BDCB6A71E66D23A4B3C6D8DC5E24CD11FFD3"
+      }
+    }
+  ],
+  "prior_progress": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v33-prior-progress-frozen-20261020.json",
+    "bytes": 203132,
+    "sha256": "2E3318EA85B1F81762E798C5471CC0EFF9F57E110A5D0F894F16F9B9E66D86C9"
+  },
+  "native_executions_on_successor": 0,
+  "metadata_acceptance": false,
+  "runtime_acceptance": false,
+  "qualification": false,
+  "source_mutation_hold_released": true,
+  "next_gate": "Fresh 63-group BuildQuery on a clean committed successor with reviewed specific Root grant; future actual metadata remains unknown."
+}

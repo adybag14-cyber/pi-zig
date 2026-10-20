@@ -1,0 +1,758 @@
+{
+  "schema": 1,
+  "status": "independently_closed_partial_compile_negative",
+  "candidate_head": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+  "reviewed_utc": "2026-10-20T19:54:26.132571+00:00",
+  "reviewer": "Root independent complete inventories/current hashes/original raw metadata and original UTC100ns native process closure",
+  "source_seal_scope": "whole_batch",
+  "whole_bookends_unchanged": true,
+  "current_all_sealed_inputs_rehashed": true,
+  "current_complete_directory_inventories_verified": true,
+  "distinct_current_files_rehashed": 33647,
+  "seal_counts": {
+    "source": 14078,
+    "tree": 14091,
+    "vendor": 1489,
+    "compiler": 19546,
+    "controls": 14
+  },
+  "granted_groups": 63,
+  "attempted_groups": 4,
+  "unstarted_groups": 59,
+  "actual_partial_metadata_count": 61,
+  "actual_full_metadata_count": null,
+  "actual_tests_started": 0,
+  "native_owner_count": 7,
+  "groups": [
+    {
+      "group": "native-node-file-handle-read",
+      "status": "partial_batch_not_admissible",
+      "actual_metadata_count": 15,
+      "compiler_errors": [],
+      "actual_tests": [
+        "native_node_file_handle_read_test.test.native FileHandle read closed and closing return EOF before read admission",
+        "native_node_file_handle_read_test.test.native FileHandle zero length emits actual stream EOF without allocating a request",
+        "native_node_file_handle_read_test.test.native FileHandle first read bypasses FSReqCallback construction and retains the real ReadWrap",
+        "native_node_file_handle_read_test.test.native FileHandle repeated start and ReadStop preserve the accepted completion",
+        "native_node_file_handle_read_test.test.native FileHandle bounded offset advances by emitted bytes before inline EOF",
+        "native_node_file_handle_read_test.test.native FileHandle completion uses the live length and preserves the raw trace result",
+        "native_node_file_handle_read_test.test.native FileHandle unbounded restart recycles the same native request through actual EOF",
+        "native_node_file_handle_read_test.test.native FileHandle reentrant onread restarts before old Wrapper and event retirement",
+        "native_node_file_handle_read_test.test.native FileHandle reuse creates a fresh resource and restores the default trigger",
+        "native_node_file_handle_read_test.test.native FileHandle ignored resource Set exception continues reset and real admission",
+        "native_node_file_handle_read_test.test.native FileHandle ordinary onread reason survives restart and the actual second completion",
+        "native_node_file_handle_read_test.test.native FileHandle full freelist releases the completed local after EmitRead",
+        "native_node_file_handle_read_test.test.native FileHandle joined service drains the accepted buffer after JavaScript is disabled",
+        "native_node_file_handle_read_test.test.native FileHandle AfterClose shares the actual flags and emits EOF through StreamBase",
+        "extensions.native_durable_storage.test_0"
+      ]
+    },
+    {
+      "group": "native-node-fs-callback-template",
+      "status": "partial_batch_not_admissible",
+      "actual_metadata_count": 12,
+      "compiler_errors": [],
+      "actual_tests": [
+        "native_node_fs_callback_template_test.test.native FSReqCallback no argument initializes the actual selected FSReqBase defaults",
+        "native_node_fs_callback_template_test.test.native FSReqCallback IsTrue accepts only literal true and never coerces an argument",
+        "native_node_fs_callback_template_test.test.native FSReqCallback caller local owns a weak actual request and one BindingData pointer",
+        "native_node_fs_callback_template_test.test.native FSReqCallback weak finalization removes its actual Entry and releases BindingData",
+        "native_node_fs_callback_template_test.test.native FSReqCallback stored InstanceTemplate creates a real blank brand without calling its constructor",
+        "native_node_fs_callback_template_test.test.native FSReqCallback stored brand distinguishes the actual FileHandleReadWrap native allocation",
+        "native_node_fs_callback_template_test.test.native FSReqCallback inherits actual AsyncWrap methods and constructor descriptors",
+        "native_node_fs_callback_template_test.test.native FSReqCallback subclass prototype is selected before its genuine native constructor",
+        "native_node_fs_callback_template_test.test.native FSReqCallback throwing new target prototype preserves the reason before native allocation",
+        "native_node_fs_callback_template_test.test.native FSReqCallback configuration retains the actual shared Controller once and rejects retired Hub entry",
+        "native_node_fs_callback_template_test.test.native FSReqCallback generic storage admits the actual read and retires through the real Wrapper",
+        "extensions.native_durable_storage.test_0"
+      ]
+    },
+    {
+      "group": "native-vm-simple-stack-source",
+      "status": "partial_batch_not_admissible",
+      "actual_metadata_count": 34,
+      "compiler_errors": [],
+      "actual_tests": [
+        "native_vm_simple_stack_source_test.test.VM simple stack source WeakMap intrinsic distinguishes absent and stored undefined",
+        "native_vm_simple_stack_source_test.test.VM simple stack source WeakMap invalid brands and Proxy leave output untouched",
+        "native_vm_simple_stack_source_test.test.VM simple stack source WeakMap read bypasses poisoned methods and heap and execution gates",
+        "native_vm_simple_stack_source_test.test.VM simple stack source WeakMap raw read preserves actual ordinary fatal and private pending",
+        "native_vm_simple_stack_source_test.test.VM simple stack source WeakMap returned value owns one root without keeping the key alive",
+        "native_vm_simple_stack_source_test.test.VM simple stack source real Error selects its original complete Script and source position",
+        "native_vm_simple_stack_source_test.test.VM simple stack source inherited holder remains visible through a never-captured native Error",
+        "native_vm_simple_stack_source_test.test.VM simple stack source captured-disabled state blocks an inherited raw stack",
+        "native_vm_simple_stack_source_test.test.VM simple stack source formatted undefined and other DATA block inheritance",
+        "native_vm_simple_stack_source_test.test.VM simple stack source raw lookup stops at Proxy without invoking its traps",
+        "native_vm_simple_stack_source_test.test.VM simple stack source raw lookup ignores guest fields and preserves actual pending at heap limit one",
+        "native_vm_simple_stack_source_test.test.VM simple stack source native Script result retains no captured receiver graph",
+        "native_vm_simple_stack_source_test.test.VM simple stack source raw projection skips native and synthetic records before a real Script",
+        "native_vm_simple_stack_source_test.test.VM simple stack source raw projection rejects Proxy and accessor arrays without guest entry",
+        "native_vm_simple_stack_source_test.test.VM simple stack source fallback presence distinguishes untouched Error and consuming transfer",
+        "native_vm_simple_stack_source_test.test.VM simple stack source raw fallback read neither allocates nor adopts its C owner",
+        "native_vm_simple_stack_source_test.test.VM simple stack source successful map adoption consumes fallback before formatter failure",
+        "native_vm_simple_stack_source_test.test.VM simple stack source failed map adoption leaves the original C fallback intact",
+        "native_vm_simple_stack_source_test.test.VM simple stack source present undefined fallback blocks inherited provenance and transfers once",
+        "native_vm_simple_stack_source_test.test.VM simple stack source consuming fallback transfer preserves actual pending without allocation",
+        "native_vm_simple_stack_source_test.test.VM simple stack source setter publishes formatted state before retiring captured receiver",
+        "native_vm_simple_stack_source_test.test.VM simple stack source successful formatting retires simple frames after actual formatter returns",
+        "native_vm_simple_stack_source_test.test.VM simple stack source formatter-local raw owner survives setter and success overwrites its DATA",
+        "native_vm_simple_stack_source_test.test.VM simple stack source formatter throw preserves a reentrant setter and retires local frames",
+        "native_vm_simple_stack_source_test.test.VM simple stack source FixedArray success replaces a record recaptured during formatting",
+        "native_vm_simple_stack_source_test.test.VM simple stack source formatter failure preserves the new record and its actual recapture Script",
+        "native_vm_simple_stack_source_test.test.VM simple stack source inherited formatting writes the selected holder without creating child state",
+        "native_vm_simple_stack_source_test.test.VM simple stack source flagged formatter DATA remains a successful formatted value",
+        "native_vm_simple_stack_source_test.test.VM simple stack source setter retirement preserves the actual ordinary cleanup reason",
+        "native_vm_simple_stack_source_test.test.VM simple stack source actual fatal receiver retirement stops later guest catch and finally",
+        "native_vm_simple_stack_source_test.test.VM simple stack source actual private receiver retirement keeps its native completion",
+        "native_vm_simple_stack_source_test.test.VM simple stack source cancelled formatter unwind stays native and preserves unformatted state",
+        "native_vm_simple_stack_source_test.test.VM simple stack source formatter failure and final raw retirement reduce actual fatal owners",
+        "extensions.native_durable_storage.test_0"
+      ]
+    },
+    {
+      "group": "native-vm-exotic-operations",
+      "status": "failed",
+      "actual_metadata_count": null,
+      "compiler_errors": [
+        "src\\native_vm_exotic_operations_test.zig:99:26: error: expected type '*c_int', found '*allowzero c_int'",
+        "error: 1 compilation errors",
+        "error: the following build command failed with exit code 1:"
+      ]
+    }
+  ],
+  "actual_process_intervals": [
+    {
+      "pid": 54760,
+      "created": 17925247623566139,
+      "completed": 17925250759386884,
+      "role": "compile"
+    },
+    {
+      "pid": 33068,
+      "created": 17925250774764113,
+      "completed": 17925250777579128,
+      "role": "metadata"
+    },
+    {
+      "pid": 60900,
+      "created": 17925250790774085,
+      "completed": 17925250900213871,
+      "role": "compile"
+    },
+    {
+      "pid": 67932,
+      "created": 17925250914735387,
+      "completed": 17925250917399823,
+      "role": "metadata"
+    },
+    {
+      "pid": 3776,
+      "created": 17925250929088134,
+      "completed": 17925251029485454,
+      "role": "compile"
+    },
+    {
+      "pid": 66236,
+      "created": 17925251044406630,
+      "completed": 17925251046723248,
+      "role": "metadata"
+    },
+    {
+      "pid": 63812,
+      "created": 17925251058726015,
+      "completed": 17925251127614858,
+      "role": "compile"
+    },
+    {
+      "pid": 69304,
+      "created": 17925247414520244,
+      "completed": 17925251352452548,
+      "role": "outer"
+    },
+    {
+      "pid": 55140,
+      "created": 17925247404637034,
+      "completed": 17925251355390000,
+      "role": "runner"
+    },
+    {
+      "pid": 33936,
+      "created": 17925247404440000,
+      "completed": 17925251355390000,
+      "role": "launcher_job_lifetime_envelope"
+    }
+  ],
+  "current_absence": {
+    "owners": [],
+    "direct_children": [],
+    "native": [],
+    "observed_utc": "2026-10-20T19:54:26.0798164+00:00"
+  },
+  "current_actual_process_instances_absent": true,
+  "current_process_instance_reconciliations": [],
+  "original_receipts": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\result.json",
+      "bytes": 60774,
+      "sha256": "0A8612CDFC0642E3AB61A0E809625D75E7B0039AE2951267F198A59CC14BB0AB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\before.json",
+      "bytes": 15329429,
+      "sha256": "889F601D6EF382E6A0327BE4A34A9EA1F1314ADAB8FC752DCC5F7196B560CE2B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\final.json",
+      "bytes": 15329429,
+      "sha256": "889F601D6EF382E6A0327BE4A34A9EA1F1314ADAB8FC752DCC5F7196B560CE2B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\outer.json",
+      "bytes": 1586,
+      "sha256": "5090216DE66536BE3AC8E0FC4FB338E2669C6352A8DB04873CEA1269237CBB84"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\outer-absence.json",
+      "bytes": 183,
+      "sha256": "40F250D883783F0BF8D02EF7354334E8B56E464FBD02513ABDEC84F403E99357"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-file-handle-read\\compile-after-artifacts.json",
+      "bytes": 1493,
+      "sha256": "D190C1F8544FF7DCE62F65B7060F752F22F3652B49EC6AF0FF1A71F6F9962391"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-file-handle-read\\metadata-before-artifacts.json",
+      "bytes": 1493,
+      "sha256": "D190C1F8544FF7DCE62F65B7060F752F22F3652B49EC6AF0FF1A71F6F9962391"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-file-handle-read\\metadata-after-artifacts.json",
+      "bytes": 1493,
+      "sha256": "D190C1F8544FF7DCE62F65B7060F752F22F3652B49EC6AF0FF1A71F6F9962391"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-file-handle-read\\build-artifacts.json",
+      "bytes": 1493,
+      "sha256": "D190C1F8544FF7DCE62F65B7060F752F22F3652B49EC6AF0FF1A71F6F9962391"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-file-handle-read\\selected-tests.json",
+      "bytes": 2413,
+      "sha256": "9749FC9BDE20D1EED3C140FB1E8B805C1CB872D8C68E176475DBA6DDB9F75A51"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-file-handle-read\\compile-admission.json",
+      "bytes": 580,
+      "sha256": "0CDF29B95FCBADD8E0885220B7BD0A830E5071762D4E4946C21B4590F4DBC38F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-file-handle-read\\compile.json",
+      "bytes": 2148,
+      "sha256": "32C12AE93FB5315249E631219E3462A77142F0F23E8609100B273A6A0577F419"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-file-handle-read\\compile-absence.json",
+      "bytes": 3260,
+      "sha256": "14E4329125BFEB7B58BD71C6F3153119A8C89104DCEA60D21F9BA0DBE266CECF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-file-handle-read\\metadata-admission.json",
+      "bytes": 583,
+      "sha256": "E19FCEEE2721B68D74382AB9FC88394713B6FE4B8679E78BF1A5E17E05BC340E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-file-handle-read\\metadata.json",
+      "bytes": 1211,
+      "sha256": "4CC43779A9D0D53CDCDE7D2410D3E33CFBB82DF81060635462B0C591201FC2A8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-file-handle-read\\metadata-absence.json",
+      "bytes": 2265,
+      "sha256": "65A07C16DBFA5DFF79F6902B2FBC019C71A2E05467BCFF8D6C8606C59AE5B683"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-fs-callback-template\\compile-after-artifacts.json",
+      "bytes": 2033,
+      "sha256": "DF77B621B822E88A6EC4036C706B0573B42A6A077A912817E405C48AB9124F02"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-fs-callback-template\\metadata-before-artifacts.json",
+      "bytes": 2033,
+      "sha256": "DF77B621B822E88A6EC4036C706B0573B42A6A077A912817E405C48AB9124F02"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-fs-callback-template\\metadata-after-artifacts.json",
+      "bytes": 2033,
+      "sha256": "DF77B621B822E88A6EC4036C706B0573B42A6A077A912817E405C48AB9124F02"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-fs-callback-template\\build-artifacts.json",
+      "bytes": 2033,
+      "sha256": "DF77B621B822E88A6EC4036C706B0573B42A6A077A912817E405C48AB9124F02"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-fs-callback-template\\selected-tests.json",
+      "bytes": 2166,
+      "sha256": "06CB2E0C64FA4B8C41B8A603CE7C753473F373B1AF69EEE60B2099543FB54AFC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-fs-callback-template\\compile-admission.json",
+      "bytes": 580,
+      "sha256": "08391831861EFB9D459FF83A2DC6C183E287BB3CF27608B44EA942331742CED7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-fs-callback-template\\compile.json",
+      "bytes": 2163,
+      "sha256": "C034DDDBE476DF50EF02E41220D65245EF24F24E85A73820DFBA8AF7D233AE16"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-fs-callback-template\\compile-absence.json",
+      "bytes": 3283,
+      "sha256": "C9C5291DA4C8D191F970B27838D9F81E4681142363895ACB2FD1A66EB9A7EAE6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-fs-callback-template\\metadata-admission.json",
+      "bytes": 583,
+      "sha256": "5BAEFE0847B58978E9AE190C455A1FF7EF2644775E154E4E238DD08B1D947757"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-fs-callback-template\\metadata.json",
+      "bytes": 1212,
+      "sha256": "59DBECBA56AE33CE877DB842B0D6EF99B25450B24C4D3DC17EC94790ABF0D48A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-fs-callback-template\\metadata-absence.json",
+      "bytes": 2274,
+      "sha256": "A41F578B5C7D099B9552F75B37B55811FCE0BA611FA275B23EB7AA7724A6612A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-simple-stack-source\\compile-after-artifacts.json",
+      "bytes": 2527,
+      "sha256": "5C9FDCC47E179E5040A479051FC43601EA5176637019ACAA20AB33F0DAE68842"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-simple-stack-source\\metadata-before-artifacts.json",
+      "bytes": 2527,
+      "sha256": "5C9FDCC47E179E5040A479051FC43601EA5176637019ACAA20AB33F0DAE68842"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-simple-stack-source\\metadata-after-artifacts.json",
+      "bytes": 2527,
+      "sha256": "5C9FDCC47E179E5040A479051FC43601EA5176637019ACAA20AB33F0DAE68842"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-simple-stack-source\\build-artifacts.json",
+      "bytes": 2527,
+      "sha256": "5C9FDCC47E179E5040A479051FC43601EA5176637019ACAA20AB33F0DAE68842"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-simple-stack-source\\selected-tests.json",
+      "bytes": 5121,
+      "sha256": "1D34A1D7B88E15FF04C190E47ABCD06B8110388F6A36FA74F8AEA48C3BFD60CF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-simple-stack-source\\compile-admission.json",
+      "bytes": 580,
+      "sha256": "996622CB638B997C47D3C8219E529A1A2787AA574001CAF24742CE6041247085"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-simple-stack-source\\compile.json",
+      "bytes": 2150,
+      "sha256": "0292C8FBA3B60116D3F1600F584BC6097FB89D946F3B332A61C5D85F2231FC4D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-simple-stack-source\\compile-absence.json",
+      "bytes": 3264,
+      "sha256": "B956D58A985B724A928EE9049DD4E9E821D6D27A40E139D85CEC5F79D29D0C87"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-simple-stack-source\\metadata-admission.json",
+      "bytes": 583,
+      "sha256": "E7A8A30CEF8838F29B1D9AA4A06109AE1E006B7B827B9599833749D610895D2A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-simple-stack-source\\metadata.json",
+      "bytes": 1212,
+      "sha256": "8A483677CA976C21AD975B277D908155B0BA073FBED187215E1FE12A0B6FECA1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-simple-stack-source\\metadata-absence.json",
+      "bytes": 2266,
+      "sha256": "D24F452E42B8155B3BEE67B12A987F4B38967595B9052B0F05FAE38014AD5C6B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-exotic-operations\\compile-admission.json",
+      "bytes": 580,
+      "sha256": "DC4E7A1A919D42B81670C80505EBFA476071F09C90C1E646ACFF67D4F6E7E986"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-exotic-operations\\compile.json",
+      "bytes": 2253,
+      "sha256": "4D99252CFE4E5B217176573A58788F022D9C2A63989113C75484FD85A57A73A3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-exotic-operations\\compile-absence.json",
+      "bytes": 3367,
+      "sha256": "A58DF527CDB61020041FC92E51F30D9A341D4F005CA5C77369E53EAA5380068F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-file-handle-read\\final-artifacts.json",
+      "bytes": 2549,
+      "sha256": "D84A4EA1389DD6C7F4247B6BFBED3361052FB036579F2E4DBD3C10C8BB068E13"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-file-handle-read\\result.json",
+      "bytes": 8844,
+      "sha256": "6AAB56719B2881A166C5278F70785030AA5C03E8011E89E566BBE92D5D728CD8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-fs-callback-template\\final-artifacts.json",
+      "bytes": 2561,
+      "sha256": "51069066B6117171460D52628D88969A0351EDA64CED25B0D7B2576BDD502D78"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-node-fs-callback-template\\result.json",
+      "bytes": 8900,
+      "sha256": "69841D829C196C54A513D3CE7DC788733C782BA267B7C5AF3953103680F11DC4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-simple-stack-source\\final-artifacts.json",
+      "bytes": 2527,
+      "sha256": "5C9FDCC47E179E5040A479051FC43601EA5176637019ACAA20AB33F0DAE68842"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-simple-stack-source\\result.json",
+      "bytes": 8830,
+      "sha256": "99EA80D74BB96FED03D77CD3612DFCE2AFF4FC869CE623F5C0CABA55AAAA9995"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-exotic-operations\\compile-after-artifacts.json",
+      "bytes": 1673,
+      "sha256": "63801C514CCB216D4C214F17894E39A29BCD0DCDA15609D116EE018E88310C95"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-exotic-operations\\result.json",
+      "bytes": 6211,
+      "sha256": "F02A0C165249D751CE3EB2EE589978E3D5B6DBFB3A3CF783D7ED45495FFAEF70"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-exotic-operations\\compile.stderr.log",
+      "bytes": 19982,
+      "sha256": "3000182486D92CAB5D519AD08E2AABA599E4337CC40BC7E1D5208314C55DD92A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-buildquery-20261020-193221\\groups\\native-vm-exotic-operations\\compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\independent-partial-compile-negative-audit-inputs.json",
+      "bytes": 1135,
+      "sha256": "1AA52BA0BC97B7479E239972BB3EA28253C40E1FAF750596B6C90D53BA3C6D83"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\independent-observed-job-status.json",
+      "bytes": 1650,
+      "sha256": "5639D1B026E61CA58D3FE4B4D21668B153B4508375FE0ACAB2F334F8559632BA"
+    }
+  ],
+  "supplemental_current_preparation_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v33-prepared-20261020\\preparation-review.json",
+      "bytes": 23570,
+      "sha256": "B81EEC8055A2086033B43603DAA2A1FE5167442299C15FC946C58C97E9DD9DDB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v33-prepared-20261020\\combined-build-source-peer.json",
+      "bytes": 12133,
+      "sha256": "BEAA36175DB36CE596DB8F01C908935C6B7DBDFBA54EE07A90B7874D0423A5E4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-diagnostic-runtime-control-20261020-181658\\independent-partial-diagnostic-runtime-closure.json",
+      "bytes": 51849,
+      "sha256": "36D4EAB4F1D7A1E9632C847220F8CD6FE03DDF1FEC422C3F431F96B8519B71BD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-foundation-intake-20261020\\receipt.json",
+      "bytes": 72248,
+      "sha256": "75B8888E6AFDDA487D3BEEF9A6AFC100F6A4FF5F08CA090F03E3E43FB6F8E1C4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-control-20261020-165337\\independent-partial-compile-negative-closure.json",
+      "bytes": 32149,
+      "sha256": "CC4A348630D267A9A9F308D662CC366428C0E74A36E159B5DED41493E06DBE9C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-script-v27-constants-sourceonly-20261020\\main-intake.json",
+      "bytes": 2463,
+      "sha256": "818AB72A1CF294D9A761DB38698A3CEE1980B0C0E2EE26A0260D5971BC1EC9F9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-backing-v28-field-sourceonly-20261020\\main-intake.json",
+      "bytes": 3066,
+      "sha256": "99D365A2EFD929BE95501E02FBBA5EBDE006A19A456BC4844AD5DF8BD2B41B1A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v29-fixture-corrections-main-intake-20261020\\main-intake.json",
+      "bytes": 5941,
+      "sha256": "9954E1870B0A9DD99E4639900CD78030F625AB6C973874BE8B862ED64A78C185"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-async-wrap-callback-v30-coercion-sourceonly-20261020\\main-intake.json",
+      "bytes": 3323,
+      "sha256": "B309380148C4A99C20C0B1144D6EF873079483D338E68CFD9454BD5E1DFA2A28"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-uv-namespace-correction-20261020\\receipt.json",
+      "bytes": 2335,
+      "sha256": "E4BD386169320FD193D8F0FDE656CEBF82B9BAA0CAA7D9BE0E44EF96C0F97108"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v31-control-20261020-171134\\independent-current-seals-and-owners.json",
+      "bytes": 253761,
+      "sha256": "A7750EE7463D338AE5CB77E8D13FD7098C52941FE4EC3319252B2A1B8B6D8367"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-runtime-control-20261020-175939\\independent-negative-runtime-closure.json",
+      "bytes": 28759,
+      "sha256": "8F55C557EC227EE9803F7C7D9969B4202C5C539BA482F18790C2694B5C356BEA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v33-prepared-20261020\\prior-v32-progress.json",
+      "bytes": 180536,
+      "sha256": "BCCEBFD7E8A6116F63300FEE6C2500F3A794585C708951E6C292A2591E7D3D27"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\fresh-v33-buildquery-inputs-root-issued-20261020.json",
+      "bytes": 1886,
+      "sha256": "251F009D3DC7778C9CE7D1EDB1927D57B7C1BE2492CD7646483E181AA37B5A58"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v32-control-20261020-190752\\independent-first-compile-negative-closure.json",
+      "bytes": 16158,
+      "sha256": "CD5F425E6604717C68CCF35DACDD86D77584D2B83C998BB71B11B6DE7EE03152"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v33-map-entry-symbol-correction-20261020\\receipt.json",
+      "bytes": 2940,
+      "sha256": "9ABB0B547B74AC7FA090BD82FC9A1834CA67133BF1FF2EB68343637EDD87DE5C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v32-to-v33-root-source-release-20261020.json",
+      "bytes": 1518,
+      "sha256": "F3AB87CE77F0303055FB8B57C86CD7115CD0FD410EDA2A91AB5DC02B8888F532"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+      "bytes": 203132,
+      "sha256": "2E3318EA85B1F81762E798C5471CC0EFF9F57E110A5D0F894F16F9B9E66D86C9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v32-prepared-20261020\\preparation-review.json",
+      "bytes": 45526,
+      "sha256": "6B105F353643B77BE243C4BF7D39D9D4875816B3916447C642DC205CCDE0963C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v32-prepared-20261020\\groups.json",
+      "bytes": 573554,
+      "sha256": "C1C3D9BCE68FCEBF00F97DAF8ED2675F957AED3EACFCCC1A3B201A4222ABAE46"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v32-prepared-20261020\\independent-catalog-source-peer.json",
+      "bytes": 7128,
+      "sha256": "E0FA66CA6990AD853CDA98076552BAF6DB227C444DC1D4DE83633FAFFD47CA07"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v31-prepared-20261020\\preparation-review.json",
+      "bytes": 9457,
+      "sha256": "49BE6E91F58657C403A385DC821B342082695C6A3F547062D00CC022BF5B5978"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v31-prepared-20261020\\groups.json",
+      "bytes": 486999,
+      "sha256": "844E42808F020C6773129CA9FBD4A1A16B28D779CAD55ADD7DE636B6B2D6644A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\reviewed-v32-source-union-20261020\\source-union.json",
+      "bytes": 145791,
+      "sha256": "7131D8A92DF12269437DA1C8610376B0903DBE24193A98919C41F060FE77AC93"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\reviewed-v32-source-union-20261020\\independent-source-union-applier-peer.json",
+      "bytes": 12133,
+      "sha256": "BEAA36175DB36CE596DB8F01C908935C6B7DBDFBA54EE07A90B7874D0423A5E4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-foundation-intake-20261020\\receipt.json",
+      "bytes": 72248,
+      "sha256": "75B8888E6AFDDA487D3BEEF9A6AFC100F6A4FF5F08CA090F03E3E43FB6F8E1C4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-uv-import-sourceonly-20261020\\proposal.json",
+      "bytes": 21484,
+      "sha256": "ADE2B2C28D558A48AE20896E4204360ADADFADD4C30EE72E60C8ED0BB5659407"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-uv-namespace-source-peer-20261020.json",
+      "bytes": 10706,
+      "sha256": "6EDDB24D85B7F876BCBA2802D166DE71702E21AF8CFD3B53E5F3E47B8C4329E5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-next-foundation-build-source-peer-20261020\\receipt.json",
+      "bytes": 7933,
+      "sha256": "7FA32682E6E7FBF02F718157A9CA95630706E3B2EF719E739F8F02A55B474371"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-next-foundation-build-source-peer-20261020\\anonymous-controls-source-peer.json",
+      "bytes": 225975,
+      "sha256": "19B626D2E14982325A6DA7DA9A0427001597D38B7CACB24E72DB4F1926F5F70E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-next-foundation-build-source-peer-20261020\\artifact-default-source-peer.json",
+      "bytes": 14472,
+      "sha256": "6041970EDBC9CC21E33340520ED5DA34A1BF3243235F991B5E3553BAF8759110"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\control-inventory.json",
+      "bytes": 3543,
+      "sha256": "F4DA82AE992A3F22F63B3882174835E7DD75B80306D539287A647BC6329B74FF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\anonymous-source-inventory.json",
+      "bytes": 6433,
+      "sha256": "09DDAB0F3637F608636CAE0AD8EC533C947D99CB0496399A353E31A16AEBE55D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-read-controls-source-peer-20261020\\peer.json",
+      "bytes": 31460,
+      "sha256": "17C2996FB8751E5DA2AD28D2AF1784DBE93CEFBB5A707630A3D386750E5DB505"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\handoff-count-separation.json",
+      "bytes": 6633,
+      "sha256": "310687BC2ACDB06CA017E1BF810149C57FEE85BBDBFB686A7523869E2FFE1499"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v31-control-20261020-171134\\independent-current-seals-and-owners.json",
+      "bytes": 253761,
+      "sha256": "A7750EE7463D338AE5CB77E8D13FD7098C52941FE4EC3319252B2A1B8B6D8367"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v31-control-20261020-171134\\independent-metadata-acceptance.json",
+      "bytes": 209684,
+      "sha256": "5C951AAC2128A2C67A92C6E347CE5B4D1E744816975E725B91C293C650A41392"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-runtime-control-20261020-175939\\independent-negative-runtime-closure.json",
+      "bytes": 28759,
+      "sha256": "8F55C557EC227EE9803F7C7D9969B4202C5C539BA482F18790C2694B5C356BEA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-diagnostic-runtime-control-20261020-181658\\independent-partial-diagnostic-runtime-closure.json",
+      "bytes": 51849,
+      "sha256": "36D4EAB4F1D7A1E9632C847220F8CD6FE03DDF1FEC422C3F431F96B8519B71BD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-uv-namespace-correction-20261020\\receipt.json",
+      "bytes": 2335,
+      "sha256": "E4BD386169320FD193D8F0FDE656CEBF82B9BAA0CAA7D9BE0E44EF96C0F97108"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\fresh-v32-catalog-configuration-root-issued-20261020.json",
+      "bytes": 1709,
+      "sha256": "8316D33B3224318980FBA06A660F3B153F40E80678C00A1826EA837FBA8CE9AC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-foundation-intake-20261020\\receipt.json",
+      "bytes": 72248,
+      "sha256": "75B8888E6AFDDA487D3BEEF9A6AFC100F6A4FF5F08CA090F03E3E43FB6F8E1C4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-uv-namespace-correction-20261020\\receipt.json",
+      "bytes": 2335,
+      "sha256": "E4BD386169320FD193D8F0FDE656CEBF82B9BAA0CAA7D9BE0E44EF96C0F97108"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v31-control-20261020-171134\\independent-current-seals-and-owners.json",
+      "bytes": 253761,
+      "sha256": "A7750EE7463D338AE5CB77E8D13FD7098C52941FE4EC3319252B2A1B8B6D8367"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-runtime-control-20261020-175939\\independent-negative-runtime-closure.json",
+      "bytes": 28759,
+      "sha256": "8F55C557EC227EE9803F7C7D9969B4202C5C539BA482F18790C2694B5C356BEA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-diagnostic-runtime-control-20261020-181658\\independent-partial-diagnostic-runtime-closure.json",
+      "bytes": 51849,
+      "sha256": "36D4EAB4F1D7A1E9632C847220F8CD6FE03DDF1FEC422C3F431F96B8519B71BD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v32-control-20261020-190752\\independent-first-compile-negative-closure.json",
+      "bytes": 16158,
+      "sha256": "CD5F425E6604717C68CCF35DACDD86D77584D2B83C998BB71B11B6DE7EE03152"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v32-to-v33-root-source-release-20261020.json",
+      "bytes": 1518,
+      "sha256": "F3AB87CE77F0303055FB8B57C86CD7115CD0FD410EDA2A91AB5DC02B8888F532"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v33-map-entry-symbol-correction-20261020\\receipt.json",
+      "bytes": 2940,
+      "sha256": "9ABB0B547B74AC7FA090BD82FC9A1834CA67133BF1FF2EB68343637EDD87DE5C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v32-quickjs-map-entry-symbol-sourceonly-20261020\\proposal.json",
+      "bytes": 2478,
+      "sha256": "A8772BE6DF8751092EA186636366513BC62297C8870FFF37A8876F616D7C4272"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v32-quickjs-map-entry-symbol-source-peer-20261020\\peer.json",
+      "bytes": 4813,
+      "sha256": "242485A74552796CE152616D6D157CAE6CEE97435AE8B1EDCBF2AB1FF0C21E3F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+      "bytes": 203132,
+      "sha256": "2E3318EA85B1F81762E798C5471CC0EFF9F57E110A5D0F894F16F9B9E66D86C9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\fresh-v33-catalog-configuration-root-issued-20261020.json",
+      "bytes": 1378,
+      "sha256": "93283DC848C60D85ACD5D862EC1662F85236689D37B172A629A9E737811DC655"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v33-prepared-20261020\\prior-v32-progress.json",
+      "bytes": 180536,
+      "sha256": "BCCEBFD7E8A6116F63300FEE6C2500F3A794585C708951E6C292A2591E7D3D27"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v33-prepared-20261020\\independent-catalog-source-peer.json",
+      "bytes": 11888,
+      "sha256": "ECC1F30A8DC13831883031A281563676A1EEB8351F96BF73CD9D8B3EBB3B4E22"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-FreshV33Grant-20261020.py",
+      "bytes": 12076,
+      "sha256": "42CD8F4425502D70604CE681BC1EF93D33665614984BA6E965FA85F1CC26937D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Queue-FreshV33BuildQuery-20261020.py",
+      "bytes": 3643,
+      "sha256": "6C3BB4DEDE65BC684225BC41577D4375AD7BBE4AC8A4397D051290DA0684DB62"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\fresh-v33-buildquery-inputs-root-issued-20261020.json",
+      "bytes": 1886,
+      "sha256": "251F009D3DC7778C9CE7D1EDB1927D57B7C1BE2492CD7646483E181AA37B5A58"
+    }
+  ],
+  "original_negative_rejections_preserved": true,
+  "controller_environment_restored": true,
+  "runtime_started": false,
+  "metadata_acceptance": false,
+  "qualification": false,
+  "source_mutation_hold_released": false
+}

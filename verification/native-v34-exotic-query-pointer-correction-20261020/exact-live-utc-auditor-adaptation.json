@@ -1,0 +1,164 @@
+{
+  "schema": 1,
+  "status": "prepared_exact_nested_creation_timestamp_adaptation_not_executed",
+  "candidate_head": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\Audit-FreshV33PartialCompileNegative.py",
+    "bytes": 31737,
+    "sha256": "8E6070A675EA374D51FA4800C3961FF889C0C2D7E5E2D4146F5975E06F96E06D"
+  },
+  "baseline_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\partial-compile-negative-auditor-adaptation.json",
+    "bytes": 38350,
+    "sha256": "BECF7E99D3B490913D92D709F67B0F9388AC09E2DB39A8E5DF767D1A6F553B97"
+  },
+  "inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\independent-partial-compile-negative-audit-inputs.json",
+    "bytes": 1135,
+    "sha256": "1AA52BA0BC97B7479E239972BB3EA28253C40E1FAF750596B6C90D53BA3C6D83"
+  },
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\Audit-FreshV33PartialCompileNegative-ExactLiveUtc.py",
+    "bytes": 32209,
+    "sha256": "3E120342A09023807C1021D1FC90BDCB6A71E66D23A4B3C6D8DC5E24CD11FFD3"
+  },
+  "edits": [
+    {
+      "index": 1,
+      "old": "  for key in owner:\n   if key not in (\"created_utc\",\"completed_utc\"):require(e[\"owner\"][key]==owner[key],\"Exact aggregate original owner field \"+key)\n",
+      "new": "  for key in owner:\n   if key not in (\"created_utc\",\"completed_utc\",\"live_identity\"):require(e[\"owner\"][key]==owner[key],\"Exact aggregate original owner field \"+key)\n  aggregate_live=e[\"owner\"][\"live_identity\"];standalone_live=owner[\"live_identity\"]\n  require(set(aggregate_live)==set(standalone_live),\"Exact nested live identity field inventory\")\n  for key in standalone_live:\n   if key==\"created_utc\":require(utc_ticks(aggregate_live[key])==utc_ticks(standalone_live[key]),\"Exact nested live creation UTC100ns identity\")\n   else:require(aggregate_live[key]==standalone_live[key],\"Exact nested live identity field \"+key)\n",
+      "count": 1,
+      "input_sha256": "8E6070A675EA374D51FA4800C3961FF889C0C2D7E5E2D4146F5975E06F96E06D",
+      "output_sha256": "3E120342A09023807C1021D1FC90BDCB6A71E66D23A4B3C6D8DC5E24CD11FFD3"
+    }
+  ],
+  "full_forward_exact": true,
+  "complete_byte_inverse_exact": true,
+  "observed_all_original_owner_differences": [
+    {
+      "group": "native-node-file-handle-read",
+      "phase": "compile",
+      "pid": 54760,
+      "differences": [
+        {
+          "field": ".completed_utc",
+          "aggregate": "2026-10-20T20:37:55.9386884+01:00",
+          "standalone": "2026-10-20T19:37:55.9386884+00:00"
+        }
+      ]
+    },
+    {
+      "group": "native-node-file-handle-read",
+      "phase": "metadata",
+      "pid": 33068,
+      "differences": [
+        {
+          "field": ".completed_utc",
+          "aggregate": "2026-10-20T20:37:57.7579128+01:00",
+          "standalone": "2026-10-20T19:37:57.7579128+00:00"
+        }
+      ]
+    },
+    {
+      "group": "native-node-fs-callback-template",
+      "phase": "compile",
+      "pid": 60900,
+      "differences": [
+        {
+          "field": ".completed_utc",
+          "aggregate": "2026-10-20T20:38:10.0213871+01:00",
+          "standalone": "2026-10-20T19:38:10.0213871+00:00"
+        }
+      ]
+    },
+    {
+      "group": "native-node-fs-callback-template",
+      "phase": "metadata",
+      "pid": 67932,
+      "differences": [
+        {
+          "field": ".completed_utc",
+          "aggregate": "2026-10-20T20:38:11.7399823+01:00",
+          "standalone": "2026-10-20T19:38:11.7399823+00:00"
+        }
+      ]
+    },
+    {
+      "group": "native-vm-simple-stack-source",
+      "phase": "compile",
+      "pid": 3776,
+      "differences": [
+        {
+          "field": ".completed_utc",
+          "aggregate": "2026-10-20T20:38:22.9485454+01:00",
+          "standalone": "2026-10-20T19:38:22.9485454+00:00"
+        }
+      ]
+    },
+    {
+      "group": "native-vm-simple-stack-source",
+      "phase": "metadata",
+      "pid": 66236,
+      "differences": [
+        {
+          "field": ".completed_utc",
+          "aggregate": "2026-10-20T20:38:24.6723248+01:00",
+          "standalone": "2026-10-20T19:38:24.6723248+00:00"
+        },
+        {
+          "field": ".created_utc",
+          "aggregate": "2026-10-20T19:38:24.440663Z",
+          "standalone": "2026-10-20T19:38:24.4406630Z"
+        },
+        {
+          "field": ".live_identity.created_utc",
+          "aggregate": "2026-10-20T19:38:24.440663Z",
+          "standalone": "2026-10-20T19:38:24.4406630Z"
+        }
+      ]
+    },
+    {
+      "group": "native-vm-exotic-operations",
+      "phase": "compile",
+      "pid": 63812,
+      "differences": [
+        {
+          "field": ".completed_utc",
+          "aggregate": "2026-10-20T20:38:32.7614858+01:00",
+          "standalone": "2026-10-20T19:38:32.7614858+00:00"
+        }
+      ]
+    }
+  ],
+  "concrete_reason": "Only nested SimpleStack metadata live_identity.created_utc differed: 2026-10-20T19:38:24.440663Z versus 2026-10-20T19:38:24.4406630Z. The unchanged exact UTC100ns parser maps these to the same instance; all other nested fields are required byte/value exact and both complete field inventories must match.",
+  "retained_original_auditor_negative": {
+    "source_sha256": "8E6070A675EA374D51FA4800C3961FF889C0C2D7E5E2D4146F5975E06F96E06D",
+    "reported_by": "Root",
+    "line": 174,
+    "error": "Exact aggregate original owner field live_identity",
+    "closure_written": false,
+    "original_source_immutable": true
+  },
+  "unchanged_gates": [
+    "all full source/compiler/control inventories and current hashes",
+    "all artifact journals and raw metadata decoders",
+    "all actual negative compile diagnostics and false qualification gates",
+    "all original actual process identifiers, intervals, current global native absence and descendant closure",
+    "all non-timestamp fields, including nested executable/command_line/command_line_method/pid"
+  ],
+  "source_only": true,
+  "auditor_executed": false,
+  "source_mutation_hold_released": false,
+  "metadata_acceptance": false,
+  "qualification": false,
+  "prior_preparation_packet": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\partial-compile-negative-exact-live-utc-adaptation.json",
+    "bytes": 6292,
+    "sha256": "276BCE9D8CE3DABE528B9816B6AF97542E265A63A676DA66501218496CF59F70"
+  },
+  "retained_original_execution_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\independent-auditor-original-nested-live-identity-rejection.json",
+    "bytes": 2306,
+    "sha256": "800FE424815A7344FBB88B22FD1A66B7F688680B5B63785C91AC0738A6C145ED"
+  }
+}

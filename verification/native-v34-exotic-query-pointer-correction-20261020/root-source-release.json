@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "status": "root_released_source_hold_after_accepted_v33_partial_compile_negative",
+  "released_utc": "2026-10-20T19:55:24.615411+00:00",
+  "candidate_head": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+  "closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\independent-partial-compile-negative-closure.json",
+    "bytes": 42692,
+    "sha256": "5E477904C85A3D1C09D0CBC952350B7D816C2A36B3BA48A61C7474A98C45D0EB"
+  },
+  "root_auditor_review": {
+    "auditor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\Audit-FreshV33PartialCompileNegative-ExactLiveUtc.py",
+      "bytes": 32209,
+      "sha256": "3E120342A09023807C1021D1FC90BDCB6A71E66D23A4B3C6D8DC5E24CD11FFD3"
+    },
+    "adaptation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\partial-compile-negative-exact-live-utc-adaptation-v2.json",
+      "bytes": 6917,
+      "sha256": "82D70AAE562F8DB71A0392B1D6F3F1F5EAAAFC50CC30BB60743BBB5258E8F4DE"
+    },
+    "finite_successor_edits": 1,
+    "complete_forward_inverse": true
+  },
+  "retained_auditor_rejection": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\independent-auditor-original-nested-live-identity-rejection.json",
+    "bytes": 2306,
+    "sha256": "800FE424815A7344FBB88B22FD1A66B7F688680B5B63785C91AC0738A6C145ED"
+  },
+  "authorized_source_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v33-exotic-query-c-pointer-sourceonly-20261020\\proposal.json",
+    "bytes": 9920,
+    "sha256": "3B35845AE48573E44603748C3633D1926C3E3D08DCAE092960ABCF94CF39225D"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v33-exotic-query-c-pointer-independent-source-peer-20261020\\peer.json",
+    "bytes": 11215,
+    "sha256": "71A58BC78F606049208535CE1E6DAE79B4812BA5393675F0DF372EC682F99D26"
+  },
+  "current_absence": {
+    "owners": [],
+    "direct_children": [],
+    "native": [],
+    "observed_utc": "2026-10-20T19:55:24.3529729+00:00"
+  },
+  "source_mutation_hold_released": true,
+  "native_launch_authorized": false,
+  "metadata_acceptance": false,
+  "runtime_acceptance": false,
+  "qualification": false,
+  "original_failure_preserved": true
+}
