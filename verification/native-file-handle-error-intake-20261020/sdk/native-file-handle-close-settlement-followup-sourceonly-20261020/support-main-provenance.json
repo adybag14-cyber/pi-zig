@@ -1,0 +1,80 @@
+{
+  "schema": "pi-zig.additive-source-provenance.v1",
+  "corrects": "The parent proposal comparison_main_head is the earlier owner/shared comparison base, not the head assertion for every newly-read support snapshot. All recorded support snapshots bind the concrete current frozen head below, with explicit Git/worktree line-ending distinction. Original proposal remains unchanged.",
+  "parent_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\proposal.json",
+    "sha256": "BA6543E47B33A5D994AD097FBF0CBC58A6E35F262DF42FFE5909D9A736118319"
+  },
+  "support_snapshot_git_head": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+  "rows": [
+    {
+      "relative_path": "src/extensions/native_node_callback_scope.zig",
+      "recorded_worktree_sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "current_git_blob_sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "exact_worktree_snapshot_match": true,
+      "current_git_blob_exact_bytes_match": true,
+      "current_git_blob_lf_normalized_match": true,
+      "parent_owner_base_lf_normalized_match": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_operation_scope.zig",
+      "recorded_worktree_sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+      "current_git_blob_sha256": "0663228C40E2982D7809A7D0B143C3E6E96EE803B6FFAA384054CCCF19878F8C",
+      "exact_worktree_snapshot_match": true,
+      "current_git_blob_exact_bytes_match": false,
+      "current_git_blob_lf_normalized_match": true,
+      "parent_owner_base_lf_normalized_match": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+      "recorded_worktree_sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "current_git_blob_sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "exact_worktree_snapshot_match": true,
+      "current_git_blob_exact_bytes_match": true,
+      "current_git_blob_lf_normalized_match": true,
+      "parent_owner_base_lf_normalized_match": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_weak_global.zig",
+      "recorded_worktree_sha256": "2B776E789CCBB8626B928C0EA44896BE843B11C379C42B30D298E19A49AE6C8A",
+      "current_git_blob_sha256": "2B776E789CCBB8626B928C0EA44896BE843B11C379C42B30D298E19A49AE6C8A",
+      "exact_worktree_snapshot_match": true,
+      "current_git_blob_exact_bytes_match": true,
+      "current_git_blob_lf_normalized_match": true,
+      "parent_owner_base_lf_normalized_match": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_check_failure.zig",
+      "recorded_worktree_sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09",
+      "current_git_blob_sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09",
+      "exact_worktree_snapshot_match": true,
+      "current_git_blob_exact_bytes_match": true,
+      "current_git_blob_lf_normalized_match": true,
+      "parent_owner_base_lf_normalized_match": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_fs_request_promise.zig",
+      "recorded_worktree_sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721",
+      "current_git_blob_sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721",
+      "exact_worktree_snapshot_match": true,
+      "current_git_blob_exact_bytes_match": true,
+      "current_git_blob_lf_normalized_match": true,
+      "parent_owner_base_lf_normalized_match": true
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.c",
+      "recorded_worktree_sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2",
+      "current_git_blob_sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2",
+      "exact_worktree_snapshot_match": true,
+      "current_git_blob_exact_bytes_match": true,
+      "current_git_blob_lf_normalized_match": true,
+      "parent_owner_base_lf_normalized_match": false
+    }
+  ],
+  "retained_checker_negative": {
+    "action": "first additive provenance check",
+    "result": "raw git-show byte equality rejected native_node_operation_scope.zig because its worktree snapshot has CRLF while Git blob has LF",
+    "effect": "No source or proposal changes; this successor compares exact live/snapshot bytes and separately records Git LF-normalized equality."
+  },
+  "execution": "git/source bytes only; no compiler or native execution"
+}

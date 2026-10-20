@@ -1,0 +1,95 @@
+{
+  "schema": "pi-zig.file-handle-owner-controls-peer-wording-clarification.v1",
+  "original_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-owner-controls-source-peer-20261020\\peer.json",
+    "bytes": 16273,
+    "sha256": "1DBE9B36132197B23B7E502CBBB73A89B5D1DC33C706E924172F74EC57CF2DD2",
+    "unchanged": true
+  },
+  "reason": "Root identified a storage-duration wording error in the source peer. No source or control change is required.",
+  "affected_selector": "$.semantic_findings[1].finding",
+  "original_finding": "The Environment parameter map is initialized before constructing the actual Environment, and partial-initialization flags guard teardown. The stable heap Fixture owns the marker used by onRead. Shutdown first joins the actual I/O worker, then performs realm/native-queue cleanup while the engine is alive. Environment disarm, JS-root release, Environment release, engine destruction, and parameter-map destruction follow their actual ownership order. The outer callback scope deliberately selects nested depth with skipped task queues; it does not provide an unimplemented production checkpoint.",
+  "corrected_finding": "The Environment parameter map is initialized before constructing the actual Environment, and partial-initialization flags guard teardown. Each test declares a stack-local var f: Fixture and keeps that address stable until deferred f.deinit(). The VM marker used by onRead stores a borrowed pointer to this live Fixture. Shutdown first joins the actual I/O worker, then performs realm/native-queue cleanup while the engine is alive. Environment disarm, JS-root release, Environment release, engine destruction, and parameter-map destruction follow their actual ownership order. The outer callback scope deliberately selects nested depth with skipped task queues; it does not provide an unimplemented production checkpoint.",
+  "source_references": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\source\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "excerpts": [
+        {
+          "lines": [
+            54,
+            59
+          ],
+          "text": "\ntest \"native FileHandle owner constructor attaches the same native stream and transfers the real descriptor on release\" {\n    var file: File = undefined; try file.init(); defer file.deinit();\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const descriptor = file.take();\n    const handle = try f.create(descriptor, null, null);"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\source\\src\\native_node_fs_before_hook_continuation_test.zig",
+      "bytes": 6578,
+      "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92",
+      "excerpts": [
+        {
+          "lines": [
+            39,
+            43
+          ],
+          "text": "\ntest \"native FS before hook actual read fulfills after the same ordinary hook rethrow\" {\n    var file: File = undefined; try file.init(); defer file.deinit();\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    try f.installFsRead();"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\source\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 32558,
+      "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "excerpts": [
+        {
+          "lines": [
+            217,
+            224
+          ],
+          "text": "fn onRead(context: ?*c.JSContext, _: c.JSValue, argc: c_int,\n    argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue\n{\n    const engine = em.Engine.fromContext(context.?);\n    const f: *Fixture = @ptrCast(@alignCast(c.JS_GetOpaque(\n        roots[0], c.JS_GetClassID(roots[0])) orelse unreachable));\n    return a.expression(engine, onReadBody, .{ f, argc, argv }) catch |err|\n        callable.failure(engine, err, 0);"
+        },
+        {
+          "lines": [
+            245,
+            248
+          ],
+          "text": "pub const Fixture = struct {\n    native_environment: std.process.Environ.Map,\n    native_environment_alive: bool = true,\n    engine: *em.Engine = undefined,"
+        },
+        {
+          "lines": [
+            296,
+            300
+          ],
+          "text": "    pub fn init(self: *Fixture) !void {\n        self.* = .{ .native_environment = .init(std.testing.allocator) };\n        errdefer self.deinit();\n        self.engine = try em.Engine.init(std.testing.allocator, .{});\n        self.engine_alive = true;"
+        },
+        {
+          "lines": [
+            399,
+            411
+          ],
+          "text": "        try Handle.construct(s, self.registry(), wrapper, args, true, self.inputs());\n        const generation = try s.beforeAllocation();\n        const marker = try s.checkedAllocation(c.JS_NewObjectClass(\n            s.engine.context, self.marker_class), generation);\n        _ = c.JS_SetOpaque(marker, self);\n        var roots = [_]c.JSValue{marker};\n        const function_generation = try s.beforeAllocation();\n        const function = try s.checkedAllocation(c.JS_NewCFunctionData2(\n            s.engine.context, onRead, \"concreteFileHandleOnRead\", 1, 0,\n            roots.len, &roots), function_generation);\n        try self.registry().setStreamOnRead(s, wrapper, function);\n        return c.pi_js_undefined();\n    }"
+        },
+        {
+          "lines": [
+            593,
+            601
+          ],
+          "text": "    pub fn deinit(self: *Fixture) void {\n        self.stopIo();\n        if (self.outer_initialized) {\n            self.outer_initialized = false;\n            self.outer.deinit() catch @panic(\"concrete FileHandle outer scope teardown failed\");\n        }\n        if (self.environment) |environment|\n            environment.cleanupRealmAfterIoJoin() catch @panic(\"concrete FileHandle realm cleanup failed\");\n        if (self.queue) |queue| {"
+        },
+        {
+          "lines": [
+            621,
+            630
+          ],
+          "text": "            self.environment = null;\n            environment.release();\n        }\n        if (self.engine_alive) { self.engine_alive = false; self.engine.deinit(); }\n        if (self.native_environment_alive) {\n            self.native_environment_alive = false;\n            self.native_environment.deinit();\n        }\n    }\n};"
+        }
+      ]
+    }
+  ],
+  "conclusion": "Fixture storage is stack-local, not heap-allocated. Its address remains stable through native callbacks and marker teardown. All other selected lifetime/order findings and the source-only qualification in the original peer remain unchanged.",
+  "production_or_controls_modified": false,
+  "native_compiler_test_execution": false
+}

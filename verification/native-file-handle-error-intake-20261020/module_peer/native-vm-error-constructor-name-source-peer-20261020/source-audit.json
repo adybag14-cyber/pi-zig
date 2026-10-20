@@ -1,0 +1,401 @@
+{
+  "schema": "pi-zig.independent-native-error-constructor-source-audit.v1",
+  "subject": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\vm-projection-successor.json",
+  "subject_sha256": "64DB11E161C4AF40DBE7ABC1D981D07F4E6BD74B69B806353EDBA86F5F6A6702",
+  "source_only": true,
+  "native_compiler_test_or_project_execution": false,
+  "basis_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "all_originals_equal_pinned_git_commit": true,
+  "exact_edit_count": 22,
+  "per_step_offsets_and_hashes_match": true,
+  "whole_forward_and_inverse_match": true,
+  "steps": [
+    {
+      "sequence": 1,
+      "label": "context intrinsic constructor and immutable initial name roots",
+      "offset": 24196,
+      "before_sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2",
+      "after_sha256": "31508BD5FC25AA6D4A1FFF919886707563716E9279E78B38BC4D86437B7C2986"
+    },
+    {
+      "sequence": 2,
+      "label": "actual Error private native constructor ownership",
+      "offset": 51679,
+      "before_sha256": "31508BD5FC25AA6D4A1FFF919886707563716E9279E78B38BC4D86437B7C2986",
+      "after_sha256": "3F15DCBD93399150FB6680AE314367057F52DDE707FB2FBBD097142BB455088B"
+    },
+    {
+      "sequence": 3,
+      "label": "private provenance helper declarations",
+      "offset": 66211,
+      "before_sha256": "3F15DCBD93399150FB6680AE314367057F52DDE707FB2FBBD097142BB455088B",
+      "after_sha256": "9E68BC60AF356FA05E834BC1A70E81CA2C550AE6B86672608947D3C9FC5EF8FE"
+    },
+    {
+      "sequence": 4,
+      "label": "partial Context construction initializes new roots before allocation",
+      "offset": 140193,
+      "before_sha256": "9E68BC60AF356FA05E834BC1A70E81CA2C550AE6B86672608947D3C9FC5EF8FE",
+      "after_sha256": "4B07E0671BC4833DDD5CB102B53F617AD734EAF78B04AE10408FF992F63CA436"
+    },
+    {
+      "sequence": 5,
+      "label": "Context GC marks every native constructor and initial name edge",
+      "offset": 145028,
+      "before_sha256": "4B07E0671BC4833DDD5CB102B53F617AD734EAF78B04AE10408FF992F63CA436",
+      "after_sha256": "8FDA14BA65520C55DDF1B0A1BF1E94E6D62F44E1BC19BEFBA1DA578B569E0C4D"
+    },
+    {
+      "sequence": 6,
+      "label": "Context destruction releases every new owned edge",
+      "offset": 148051,
+      "before_sha256": "8FDA14BA65520C55DDF1B0A1BF1E94E6D62F44E1BC19BEFBA1DA578B569E0C4D",
+      "after_sha256": "D536E4F9DC011DC77FCC4DCF4C0BD0F04D0E7DFEFB46E7EB5981E769E337760F"
+    },
+    {
+      "sequence": 7,
+      "label": "all actual Error allocations initialize new fields",
+      "offset": 242373,
+      "before_sha256": "D536E4F9DC011DC77FCC4DCF4C0BD0F04D0E7DFEFB46E7EB5981E769E337760F",
+      "after_sha256": "D25AEBB3BA750689048C8E416213C154C0EEAE1064140DD36E71699B438CF42C"
+    },
+    {
+      "sequence": 8,
+      "label": "Error finalization clears owned fields before releasing data and provenance",
+      "offset": 273052,
+      "before_sha256": "D25AEBB3BA750689048C8E416213C154C0EEAE1064140DD36E71699B438CF42C",
+      "after_sha256": "A882C33FFECE8870ED50CE8402F9C7B3F169AFE716B23E66E54F6F08282E7AA7"
+    },
+    {
+      "sequence": 9,
+      "label": "Error GC marks actual constructor and name edges",
+      "offset": 273788,
+      "before_sha256": "A882C33FFECE8870ED50CE8402F9C7B3F169AFE716B23E66E54F6F08282E7AA7",
+      "after_sha256": "2529C7EDB4353F458B0D8FE9DFEA131B88D777E80D41B19F9664A3C3791A28EF"
+    },
+    {
+      "sequence": 10,
+      "label": "native Context initial-name roots participate in existing memory inventory",
+      "offset": 296093,
+      "before_sha256": "2529C7EDB4353F458B0D8FE9DFEA131B88D777E80D41B19F9664A3C3791A28EF",
+      "after_sha256": "14D6B3F1210A4AD505F6824211003E738F678BA82A247554713B052A3ECD53DD"
+    },
+    {
+      "sequence": 11,
+      "label": "actual Error initial-name edge participates in existing memory inventory",
+      "offset": 300131,
+      "before_sha256": "14D6B3F1210A4AD505F6824211003E738F678BA82A247554713B052A3ECD53DD",
+      "after_sha256": "3AE937E4FA2BCF6ABE8595AA93C6E7B16E8506E5FD448FAE4EB12E92E7ECB762"
+    },
+    {
+      "sequence": 12,
+      "label": "JS_NewError records genuine intrinsic creation before stack hooks",
+      "offset": 338010,
+      "before_sha256": "3AE937E4FA2BCF6ABE8595AA93C6E7B16E8506E5FD448FAE4EB12E92E7ECB762",
+      "after_sha256": "ADBB9300204E2ACD3765247A7D00CEC295F8B92BA001F8329E11F6A9D16ABD72"
+    },
+    {
+      "sequence": 13,
+      "label": "actual runtime Error factories record selected intrinsic before stack hooks",
+      "offset": 340559,
+      "before_sha256": "ADBB9300204E2ACD3765247A7D00CEC295F8B92BA001F8329E11F6A9D16ABD72",
+      "after_sha256": "B3BD659E854135EC23ED6800F81FCF0F32B56F906572842005983BA0C27DC23F"
+    },
+    {
+      "sequence": 14,
+      "label": "actual compiler SyntaxError factory records intrinsic creation",
+      "offset": 345753,
+      "before_sha256": "B3BD659E854135EC23ED6800F81FCF0F32B56F906572842005983BA0C27DC23F",
+      "after_sha256": "D79390067DEAF56E5862D92402129097E4C75DEC45362D2284CE3C9729A66B0E"
+    },
+    {
+      "sequence": 15,
+      "label": "actual Error constructor records real active callee and real new.target",
+      "offset": 1626156,
+      "before_sha256": "D79390067DEAF56E5862D92402129097E4C75DEC45362D2284CE3C9729A66B0E",
+      "after_sha256": "4BA92B016B9D279FFE3620408FBB03A7BD1EDC19560162FA8EB3077F979E2903"
+    },
+    {
+      "sequence": 16,
+      "label": "native AggregateError factory records actual intrinsic construction",
+      "offset": 1634420,
+      "before_sha256": "4BA92B016B9D279FFE3620408FBB03A7BD1EDC19560162FA8EB3077F979E2903",
+      "after_sha256": "7C64953813ADB0810D1E2D9C68A58C2E49547EA2FA1AF655CAC98BE6577BC26E"
+    },
+    {
+      "sequence": 17,
+      "label": "native SuppressedError factory records actual intrinsic construction",
+      "offset": 2020846,
+      "before_sha256": "7C64953813ADB0810D1E2D9C68A58C2E49547EA2FA1AF655CAC98BE6577BC26E",
+      "after_sha256": "8670AE949C672391CEC6E7DF1BD3C74682ACCAE48BB0D81F00A38AD3FAB4E1EB"
+    },
+    {
+      "sequence": 18,
+      "label": "cache actual intrinsic Error and immutable initial name before publication",
+      "offset": 2166159,
+      "before_sha256": "8670AE949C672391CEC6E7DF1BD3C74682ACCAE48BB0D81F00A38AD3FAB4E1EB",
+      "after_sha256": "CF2CE809DAC1E1B2A149A912C4F84ED704EC0EE6E9FBB40D3A533E8FFD792627"
+    },
+    {
+      "sequence": 19,
+      "label": "cache actual native Error constructors before publication",
+      "offset": 2167120,
+      "before_sha256": "CF2CE809DAC1E1B2A149A912C4F84ED704EC0EE6E9FBB40D3A533E8FFD792627",
+      "after_sha256": "CBC64B8471190A7C94CF0D99EFAAFF8061EBCC8E10A7771AFC6B76FADFC8DEE8"
+    },
+    {
+      "sequence": 20,
+      "label": "include finite implementation inside actual QuickJS private ownership scope",
+      "offset": 2402694,
+      "before_sha256": "CBC64B8471190A7C94CF0D99EFAAFF8061EBCC8E10A7771AFC6B76FADFC8DEE8",
+      "after_sha256": "4384A31CAC4667A8038B12BBBDC2B25ABF894E37E09922625D2C8B1EEF289D3D"
+    },
+    {
+      "sequence": 21,
+      "label": "public bounded native status and owned-result contract",
+      "offset": 51565,
+      "before_sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C",
+      "after_sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+    },
+    {
+      "sequence": 22,
+      "label": "actual Error prototype admission in fresh physical shape ownership",
+      "offset": 225139,
+      "before_sha256": "4384A31CAC4667A8038B12BBBDC2B25ABF894E37E09922625D2C8B1EEF289D3D",
+      "after_sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+    }
+  ],
+  "new_private_symbol_names_absent_in_original_c_and_h": [
+    "js_pi_intrinsic_error_constructor",
+    "js_pi_cache_error_constructor",
+    "js_pi_record_error_constructor",
+    "js_pi_record_intrinsic_error",
+    "js_pi_constructor_own_data",
+    "js_pi_constructor_debug_name",
+    "JS_PiGetNativeErrorConstructorName"
+  ],
+  "full_fragment_reviewed_separately": true,
+  "lexical_guest_or_allocating_query_entry_names_absent": "Listed direct high-level Get/Call/Throw/New/ToString entry names are absent from the fragment; this lexical observation is composed with manual reads of actual helper bodies, not a general purity proof.",
+  "controls": {
+    "count": 24,
+    "names": [
+      "VM native Error constructor intrinsic families retain their native initial names",
+      "VM native Error constructor direct native creation and throws record real origins",
+      "VM native Error constructor real VM stack exhaustion retains RangeError provenance",
+      "VM native Error constructor public function and Error names do not replace provenance",
+      "VM native Error constructor public replacement cannot redirect native intrinsic factories",
+      "VM native Error constructor changing an Error prototype preserves base provenance",
+      "VM native Error constructor new inheritors suppress fast provenance with real prototype admission",
+      "VM native Error constructor explicit prototype admission uses the same original fallback",
+      "VM native Error constructor inherited data tag precedes constructor at the same level",
+      "VM native Error constructor receiver constructor and accessor tag are never invoked",
+      "VM native Error constructor prototype accessors and mutable builtin name are skipped",
+      "VM native Error constructor actual intrinsic Object is skipped without its public name",
+      "VM native Error constructor final native class fallback remains Error",
+      "VM native Error constructor bound and Proxy constructors are skipped without traps",
+      "VM native Error constructor missing general DebugName is explicit without function name Get",
+      "VM native Error constructor Proxy prototype storage stays unsupported without traps",
+      "VM native Error constructor native exotic descriptors remain uncalled and unsupported",
+      "VM native Error constructor different new target is an explicit remaining dependency",
+      "VM native Error constructor unrecorded physical Error allocation cannot invent provenance",
+      "VM native Error constructor ordinary lookalikes never acquire the actual native class",
+      "VM native Error constructor query preserves actual ordinary and uncatchable pending owners",
+      "VM native Error constructor active and cancelled native termination state is unchanged",
+      "VM native Error constructor all selected query branches allocate no VM storage",
+      "VM native Error constructor actual native origin survives released foreign realm and retires with Error"
+    ],
+    "filter": "VM native Error constructor",
+    "no_non_std_zig_imports": true,
+    "stack_limit_successor_is_single_exact_change": true,
+    "actual_execution_metadata_count": null
+  },
+  "build_one_insertion_forward_inverse_exact": true,
+  "build_install_only_no_new_run_step": true,
+  "pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\vm-projection-successor.json",
+      "bytes": 24862,
+      "sha256": "64DB11E161C4AF40DBE7ABC1D981D07F4E6BD74B69B806353EDBA86F5F6A6702"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2399340,
+      "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\successor\\projected\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2403205,
+      "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.h",
+      "bytes": 113474,
+      "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\projected\\vendor\\quickjs\\quickjs.h",
+      "bytes": 114656,
+      "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+      "bytes": 8944,
+      "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+      "bytes": 8944,
+      "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\build\\proposal.json",
+      "bytes": 2212,
+      "sha256": "54760A19321B0DC5C2B3C036B7942EF2F8F212565C0A1B691E324E94D6F7CD8A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\build\\original.zig",
+      "bytes": 503440,
+      "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\build\\projected.zig",
+      "bytes": 504106,
+      "sha256": "28C315EFAD669387B315CA24C39FB4942FD7FF26BD6D679DAA59A110ED2E97D5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\successor\\source\\src\\native_vm_error_constructor_name_test.zig",
+      "bytes": 28931,
+      "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\additional-acquisition.json",
+      "bytes": 7429,
+      "sha256": "36EE21F71B774DB2D18009AAD655930E77000C28F406FDAB754D2CF2C59865CE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\bootstrapper-acquisition.json",
+      "bytes": 2942,
+      "sha256": "4E2B5D4B8063D66C9DF33ACFB9FDFCA7C5206D566A2C5B566CFC153F52B0DA3D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\copied-authority-bindings.json",
+      "bytes": 3388,
+      "sha256": "8220E3ED1E37277EEB3FDB0F1D7827BC8C6D9C8F316416768CBFF55B17DB5325"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\factory-acquisition.json",
+      "bytes": 2940,
+      "sha256": "52A85376CF15D41F999318FC515625A5B06C48B82F7087F427DEC3F029E32D8A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\map-acquisition.json",
+      "bytes": 2937,
+      "sha256": "82BBF6A3BD42C73B5E01F9B8A21B03809E640AA26F033C37D17AA29A073CCA1C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\node-errors.v24.13.h",
+      "bytes": 23394,
+      "sha256": "396CC9AE4323EC0E9FB8E4B5E6912C0603E86410D5588802B5B1F2C0F7048CC4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-bootstrapper.v24.13.cc",
+      "bytes": 336314,
+      "sha256": "0991594530BB8FAF3836C747E547F43BB091D0AFA74E16B4B1814F68458D172A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-builtins-error.v24.13.cc",
+      "bytes": 2763,
+      "sha256": "8D1447C8E744A17440C36FAE548F876F44B6F219FCD0E22B0E8EB43C8E7DEFE3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-contexts.v24.13.h",
+      "bytes": 49684,
+      "sha256": "4B94B0DEC61C1A68779C5D56CAA746158DC172F0402B6EFA803AE1F1A1B7C629"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-factory.v24.13.cc",
+      "bytes": 203216,
+      "sha256": "895D8A6E8BEDE5FF80EA97DE37F765EE54F13D20E449968841C288596B851FC6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-function.v24.13.cc",
+      "bytes": 64812,
+      "sha256": "BD7C962A95DFD157FAFC7933D4C1D1571EE44D02FB71F0FF8592723379B88C47"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-objects.v24.13.cc",
+      "bytes": 234488,
+      "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-map.v24.13.cc",
+      "bytes": 99099,
+      "sha256": "F94513B765EE2DD421C1D5DB3E919BF8D5765776E985DECA594F9110F9E592FE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-messages.v24.13.cc",
+      "bytes": 49726,
+      "sha256": "A00739D8A0D7DC796BB10D50B495DF9B417B9125C6B86B8333F37224A2BCE59E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-prototype-inl.v24.13.h",
+      "bytes": 5121,
+      "sha256": "A7E44D86EC7CDB6DC55912629FD7B09FBFEB7FF6E3F15DAA16851AA0EADA500C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-prototype.v24.13.h",
+      "bytes": 3041,
+      "sha256": "0EB94F950E31EC05CA827AECF9A82CF9A76D86EF92E544143A354919C70CCC70"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-shared-function-info.v24.13.cc",
+      "bytes": 34727,
+      "sha256": "97E61FDB8DFD572CE0BF17F2346636F123842815BB28FD118D0AD0773748CCEB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\support-bindings.json",
+      "bytes": 848,
+      "sha256": "D0DF66CE2B2409B3EE19A2A146AA9DC83A419B95B0DBCAA0FA6139D5D5E55002"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\support\\src\\extensions\\engine_abi.h",
+      "bytes": 2003,
+      "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine_abi.h",
+      "bytes": 2003,
+      "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\support\\src\\extensions\\engine_abi.c",
+      "bytes": 18016,
+      "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine_abi.c",
+      "bytes": 18016,
+      "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\vm-projection.json",
+      "bytes": 22593,
+      "sha256": "1FECF1633A87477251D22EB47AD3F8DE1D33451E968B4FE4A5474F41CFD9A933"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\control-stack-limit-source-choice.json",
+      "bytes": 717,
+      "sha256": "D0FA22D7E0898F4071A96F60B545BC1528328F579D3ACCC0E9388ED7E79722FB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\native_vm_error_constructor_name_test.zig",
+      "bytes": 28930,
+      "sha256": "A6BEC5B75AA64E097D7709300389DC1F49395879A1A46CB8911536217DE41E6D"
+    }
+  ]
+}

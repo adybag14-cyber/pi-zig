@@ -51,11 +51,14 @@ pub const WeakBindingSlot = struct {
 /// FileHandle's actual internal fields belong to the JavaScript wrapper.
 /// BaseObject deletion clears only the native State pointer. The onread edge
 /// remains traced until the wrapper itself is collected, even after detach.
+/// FileHandle's closing Promise is another actual internal wrapper edge; it
+/// remains owned by that same wrapper after its native State is deleted.
 const StreamFields = struct {
     registry: *Registry,
     state: ?*State = null,
     stream: ?*anyopaque = null,
     onread: c.JSValue,
+    closing_promise: c.JSValue,
 };
 
 /// Independently retained native owner. One realm cleanup registration covers
@@ -215,6 +218,22 @@ pub const Registry = struct {
         fields.onread = a.duplicate(s.engine, value);
         s.boundary.release(&previous);
     }
+    /// FileHandle::kClosingPromiseSlot is an internal wrapper edge, not a
+    /// guest property, a native Global, or a slot in the derived native object.
+    pub fn fileHandleClosingPromise(self: *Registry, s: *LocalScope,
+        wrapper: c.JSValue) !c.JSValue
+    {
+        const fields = self.streamFields(wrapper) orelse return self.check(.invalid_wrap_brand);
+        return s.own(a.duplicate(s.engine, fields.closing_promise));
+    }
+    pub fn setFileHandleClosingPromise(self: *Registry, s: *LocalScope,
+        wrapper: c.JSValue, value: c.JSValue) !void
+    {
+        const fields = self.streamFields(wrapper) orelse return self.check(.invalid_wrap_brand);
+        var previous = fields.closing_promise;
+        fields.closing_promise = a.duplicate(s.engine, value);
+        s.boundary.release(&previous);
+    }
     /// Caller has already selected the genuine template's instance prototype.
     /// This is the actual object allocation, with no constructor-body callback.
     pub fn newInstance(self: *Registry, s: *LocalScope, kind: Kind, prototype: c.JSValue) !c.JSValue {
@@ -225,7 +244,10 @@ pub const Registry = struct {
         var fields: ?*StreamFields = null;
         if (kind == .filehandle) {
             const created = try self.environment.allocator().create(StreamFields);
-            created.* = .{ .registry = self.retain(), .onread = c.pi_js_undefined() };
+            created.* = .{
+                .registry = self.retain(), .onread = c.pi_js_undefined(),
+                .closing_promise = c.pi_js_undefined(),
+            };
             fields = created;
         }
         errdefer if (fields) |unattached| {
@@ -497,6 +519,7 @@ fn streamWrapperFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c)
         std.debug.assert(fields.state == null);
         _ = c.JS_SetOpaque(value, null);
         scope.boundary.release(&fields.onread);
+        scope.boundary.release(&fields.closing_promise);
         registry.environment.allocator().destroy(fields);
         defer registry.release();
         const ignored = scope.finish(if (failure) |err| @as(anyerror!c.JSValue, err) else c.pi_js_undefined()) catch |err| {
@@ -510,8 +533,11 @@ fn streamWrapperFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c)
         std.debug.assert(fields.state == null);
         _ = c.JS_SetOpaque(value, null);
         const onread = fields.onread;
+        const closing_promise = fields.closing_promise;
         fields.onread = c.pi_js_undefined();
+        fields.closing_promise = c.pi_js_undefined();
         c.JS_FreeValueRT(runtime, onread);
+        c.JS_FreeValueRT(runtime, closing_promise);
         registry.environment.allocator().destroy(fields);
         registry.release();
     }
@@ -519,6 +545,7 @@ fn streamWrapperFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c)
 fn streamWrapperMark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
     const fields: *StreamFields = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
     c.JS_MarkValue(runtime, fields.onread, marker);
+    c.JS_MarkValue(runtime, fields.closing_promise, marker);
     if (fields.state) |state| state.mark(runtime, marker);
 }
 

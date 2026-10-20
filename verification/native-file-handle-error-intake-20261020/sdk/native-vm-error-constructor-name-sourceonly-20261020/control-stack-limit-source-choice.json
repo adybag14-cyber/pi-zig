@@ -1,0 +1,9 @@
+{
+  "schema": "source-control-stack-limit-selection-v1",
+  "reason": "Pinned build.zig 92-95 documents about 60 KiB per interpreter C call before its Debug -Og reduction. Compile the non-tail recursive function first, then use a 256 KiB VM limit to allow the real outer guest try/catch to enter before exhausting recursive calls. No test was executed.",
+  "prior_sha256": "A6BEC5B75AA64E097D7709300389DC1F49395879A1A46CB8911536217DE41E6D",
+  "selected_sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525",
+  "old_text": "    c.JS_SetMaxStackSize(f.runtime.?, 64 * 1024);\n",
+  "new_text": "    c.JS_SetMaxStackSize(f.runtime.?, 256 * 1024);\n",
+  "names_and_other_assertions_unchanged": true
+}

@@ -1,0 +1,287 @@
+{
+  "schema": "pi-zig.file-handle-owner-shared-source-proposal.v1",
+  "source_only": true,
+  "main_predecessor_head": "2a45648545c961f9008a783ae352f233869505b4",
+  "files": [
+    {
+      "relative_path": "src/extensions/native_node_async_wrap_state.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_async_wrap_state.zig",
+        "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994",
+        "bytes": 26761
+      },
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_async_wrap_state.zig",
+        "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994",
+        "bytes": 26761
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_async_wrap_state.zig",
+        "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1",
+        "bytes": 28133
+      },
+      "edits": [
+        {
+          "index": 0,
+          "offset_in_sequential_input": 2239,
+          "before": "/// remains traced until the wrapper itself is collected, even after detach.\n",
+          "after": "/// remains traced until the wrapper itself is collected, even after detach.\n/// FileHandle's closing Promise is another actual internal wrapper edge; it\n/// remains owned by that same wrapper after its native State is deleted.\n",
+          "input_sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994",
+          "output_sha256": "EAA7CB8CAEB761F778D84FE0B1C8B848B9A9E22958069CDEB17B1BE2CA4E9308"
+        },
+        {
+          "index": 1,
+          "offset_in_sequential_input": 2581,
+          "before": "    onread: c.JSValue,\n",
+          "after": "    onread: c.JSValue,\n    closing_promise: c.JSValue,\n",
+          "input_sha256": "EAA7CB8CAEB761F778D84FE0B1C8B848B9A9E22958069CDEB17B1BE2CA4E9308",
+          "output_sha256": "08BA83513999F3BCF3DE2A5B5664B4E546BDB38E3E2905706720CF14284FA375"
+        },
+        {
+          "index": 2,
+          "offset_in_sequential_input": 11161,
+          "before": "            created.* = .{ .registry = self.retain(), .onread = c.pi_js_undefined() };\n",
+          "after": "            created.* = .{\n                .registry = self.retain(), .onread = c.pi_js_undefined(),\n                .closing_promise = c.pi_js_undefined(),\n            };\n",
+          "input_sha256": "08BA83513999F3BCF3DE2A5B5664B4E546BDB38E3E2905706720CF14284FA375",
+          "output_sha256": "BBA13146BC123CC596684A714D2014757F6FDCF81AD741293F101BE39E56C026"
+        },
+        {
+          "index": 3,
+          "offset_in_sequential_input": 10415,
+          "before": "    /// Caller has already selected the genuine template's instance prototype.\n",
+          "after": "    /// FileHandle::kClosingPromiseSlot is an internal wrapper edge, not a\n    /// guest property, a native Global, or a slot in the derived native object.\n    pub fn fileHandleClosingPromise(self: *Registry, s: *LocalScope,\n        wrapper: c.JSValue) !c.JSValue\n    {\n        const fields = self.streamFields(wrapper) orelse return self.check(.invalid_wrap_brand);\n        return s.own(a.duplicate(s.engine, fields.closing_promise));\n    }\n    pub fn setFileHandleClosingPromise(self: *Registry, s: *LocalScope,\n        wrapper: c.JSValue, value: c.JSValue) !void\n    {\n        const fields = self.streamFields(wrapper) orelse return self.check(.invalid_wrap_brand);\n        var previous = fields.closing_promise;\n        fields.closing_promise = a.duplicate(s.engine, value);\n        s.boundary.release(&previous);\n    }\n    /// Caller has already selected the genuine template's instance prototype.\n",
+          "input_sha256": "BBA13146BC123CC596684A714D2014757F6FDCF81AD741293F101BE39E56C026",
+          "output_sha256": "6CA28E011B306531ACDE22C42F1881211ACE9F75D084AA68179201519E2FADFF"
+        },
+        {
+          "index": 4,
+          "offset_in_sequential_input": 25302,
+          "before": "        scope.boundary.release(&fields.onread);\n",
+          "after": "        scope.boundary.release(&fields.onread);\n        scope.boundary.release(&fields.closing_promise);\n",
+          "input_sha256": "6CA28E011B306531ACDE22C42F1881211ACE9F75D084AA68179201519E2FADFF",
+          "output_sha256": "8D901ABF8818676ACD3A787E4DA152E488A69AA0E08A1D633732F6BE079D137A"
+        },
+        {
+          "index": 5,
+          "offset_in_sequential_input": 25998,
+          "before": "        const onread = fields.onread;\n        fields.onread = c.pi_js_undefined();\n        c.JS_FreeValueRT(runtime, onread);\n",
+          "after": "        const onread = fields.onread;\n        const closing_promise = fields.closing_promise;\n        fields.onread = c.pi_js_undefined();\n        fields.closing_promise = c.pi_js_undefined();\n        c.JS_FreeValueRT(runtime, onread);\n        c.JS_FreeValueRT(runtime, closing_promise);\n",
+          "input_sha256": "8D901ABF8818676ACD3A787E4DA152E488A69AA0E08A1D633732F6BE079D137A",
+          "output_sha256": "427788B1A220837ED978744183BF36DEAA2A40562028E0895ED31C24C1225E0D"
+        },
+        {
+          "index": 6,
+          "offset_in_sequential_input": 26611,
+          "before": "    c.JS_MarkValue(runtime, fields.onread, marker);\n",
+          "after": "    c.JS_MarkValue(runtime, fields.onread, marker);\n    c.JS_MarkValue(runtime, fields.closing_promise, marker);\n",
+          "input_sha256": "427788B1A220837ED978744183BF36DEAA2A40562028E0895ED31C24C1225E0D",
+          "output_sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1"
+        }
+      ],
+      "forward_exact": true,
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_callback_scope.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+        "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+        "bytes": 39890
+      },
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_callback_scope.zig",
+        "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+        "bytes": 39890
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_callback_scope.zig",
+        "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E",
+        "bytes": 40069
+      },
+      "edits": [
+        {
+          "index": 0,
+          "offset_in_sequential_input": 6771,
+          "before": "    process_object: ?c.JSValue = null,\n",
+          "after": "    process_object: ?c.JSValue = null,\n    // Original Environment::emit_filehandle_warning_, consumed once by the\n    // real successful FileHandle GC-close native immediate.\n    emit_filehandle_warning: bool = true,\n",
+          "input_sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+          "output_sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+        }
+      ],
+      "forward_exact": true,
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_fs_request_io.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_request_io.zig",
+        "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+        "bytes": 14502
+      },
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_fs_request_io.zig",
+        "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+        "bytes": 14502
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_fs_request_io.zig",
+        "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996",
+        "bytes": 15469
+      },
+      "edits": [
+        {
+          "index": 0,
+          "offset_in_sequential_input": 6019,
+          "before": "    fn ready(raw: *anyopaque) bool {\n",
+          "after": "    /// FileHandle::CloseReq supplies the original CLOSE callback and physical\n    /// request. A negative admission remains the caller's Reject/delete path;\n    /// only real successful admission strengthens and increments the request.\n    pub fn dispatchRawClose(self: *Controller, s: *Scope, entry: *request_state.Entry,\n        actual: *uv.PiUvFsRequest, descriptor: c_int,\n        callback: *const fn (*request_state.Entry, *anyopaque) anyerror!void) !c_int\n    {\n        try self.enter(s.engine);\n        defer self.leave();\n        if (entry.wrap.registry.environment != self.environment or\n            entry.queue != &self.environment.requests)\n            return error.ActualFSRequestEnvironmentMismatch;\n        entry.dispatchStarted();\n        try entry.setCallback(.{ .request = actual, .call = callback });\n        const status = uv.pi_uv_fs_close(actual, descriptor);\n        if (status >= 0) try entry.dispatchAccepted();\n        return status;\n    }\n\n    fn ready(raw: *anyopaque) bool {\n",
+          "input_sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+          "output_sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996"
+        }
+      ],
+      "forward_exact": true,
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_uv_fs.h",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_fs.h",
+        "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+        "bytes": 4931
+      },
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\original\\src\\extensions\\native_uv_fs.h",
+        "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+        "bytes": 4931
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_uv_fs.h",
+        "sha256": "D5BB021DFECD726A7FBB6860616753957C1B25B11C4776BAFD24F2C935589D34",
+        "bytes": 5573
+      },
+      "edits": [
+        {
+          "index": 0,
+          "offset_in_sequential_input": 0,
+          "before": "/* Typed real asynchronous filesystem requests on the one native UV service.\n * uv_loop and uv_fs_t remain private to their actual native thread/owner.\n * No JS value, Engine pointer or guest callback is accepted by this API. */\n",
+          "after": "/* Typed real filesystem operations on the one native UV service.\n * Asynchronous uv_fs_t and the loop remain private to their actual owner.\n * The selected synchronous close borrows its caller's native stack uv_fs_t.\n * No JS value, Engine pointer or guest callback is accepted by this API. */\n",
+          "input_sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+          "output_sha256": "55149B084DBFC348B68E92AE7D9A3FA52589A65D08DA0159F1AF6623924E12CE"
+        },
+        {
+          "index": 1,
+          "offset_in_sequential_input": 3738,
+          "before": "int pi_uv_fs_close(PiUvFsRequest *request, int descriptor);\n",
+          "after": "int pi_uv_fs_close(PiUvFsRequest *request, int descriptor);\n/* Original FileHandle GC close: synchronous calling-thread uv_fs_close with\n * cb == NULL and the retained service's actual loop. The caller owns a full\n * canonical uv_fs_t on its stack and performs uv_fs_req_cleanup after its\n * trace-end operation. This call queues no command/event and allocates no\n * PiUvFsRequest. Pinned libuv's synchronous path does not dereference the loop;\n * retaining the service keeps its address/storage valid even after stop/join.\n */\nstruct uv_fs_s;\nint pi_uv_fs_close_sync(PiUvService *service, struct uv_fs_s *request,\n    int descriptor);\n",
+          "input_sha256": "55149B084DBFC348B68E92AE7D9A3FA52589A65D08DA0159F1AF6623924E12CE",
+          "output_sha256": "D5BB021DFECD726A7FBB6860616753957C1B25B11C4776BAFD24F2C935589D34"
+        }
+      ],
+      "forward_exact": true,
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_uv_tcp.c",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+        "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+        "bytes": 45730
+      },
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\original\\src\\extensions\\native_uv_tcp.c",
+        "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+        "bytes": 45730
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_uv_tcp.c",
+        "sha256": "85E49522C7C05764957ADACF6B80F2745D5C06E0A361D33531A8BAF9FEA49F87",
+        "bytes": 46191
+      },
+      "edits": [
+        {
+          "index": 0,
+          "offset_in_sequential_input": 40521,
+          "before": "int pi_uv_fs_cancel(PiUvFsRequest *request) {\n",
+          "after": "int pi_uv_fs_close_sync(PiUvService *service, struct uv_fs_s *request,\n                        int descriptor) {\n    assert(service != NULL && request != NULL);\n    /* cb == NULL follows the actual synchronous libuv FS implementation.\n     * No service command, queued completion, callback, or waiting count is\n     * involved. The original caller traces and cleans its own stack request. */\n    return uv_fs_close(&service->loop, request, descriptor, NULL);\n}\nint pi_uv_fs_cancel(PiUvFsRequest *request) {\n",
+          "input_sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+          "output_sha256": "85E49522C7C05764957ADACF6B80F2745D5C06E0A361D33531A8BAF9FEA49F87"
+        }
+      ],
+      "forward_exact": true,
+      "whole_inverse_exact": true
+    }
+  ],
+  "file_count": 5,
+  "sequential_edit_count": 12,
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\shared.patch",
+    "sha256": "2B26FA7BC20F20197677CD17B77BE247E6D2E878D007A6A978652FEC8C5C6E46",
+    "bytes": 8341
+  },
+  "libuv_authorities": [
+    {
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs.c",
+        "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693",
+        "bytes": 105366
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\libuv\\src\\win\\fs.c",
+        "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693",
+        "bytes": 105366
+      }
+    },
+    {
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs-fd-hash-inl.h",
+        "sha256": "1365F18D01C4117B0F42CFB2E0065F37AD62E4F5214B150CBF660F986955BB2D",
+        "bytes": 6886
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\libuv\\src\\win\\fs-fd-hash-inl.h",
+        "sha256": "1365F18D01C4117B0F42CFB2E0065F37AD62E4F5214B150CBF660F986955BB2D",
+        "bytes": 6886
+      }
+    },
+    {
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\unix\\fs.c",
+        "sha256": "FFE2CD709C894083D4E470BCE5248EEE71C5E5594418BE3D7A6D80E44D723A61",
+        "bytes": 59847
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\libuv\\src\\unix\\fs.c",
+        "sha256": "FFE2CD709C894083D4E470BCE5248EEE71C5E5594418BE3D7A6D80E44D723A61",
+        "bytes": 59847
+      }
+    },
+    {
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\uv-common.h",
+        "sha256": "7524F791D5648F3E135340AC61BCB242028947A81A5B8B32042F8561848A5397",
+        "bytes": 18411
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\libuv\\src\\uv-common.h",
+        "sha256": "7524F791D5648F3E135340AC61BCB242028947A81A5B8B32042F8561848A5397",
+        "bytes": 18411
+      }
+    },
+    {
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\include\\uv.h",
+        "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C",
+        "bytes": 72810
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\libuv\\include\\uv.h",
+        "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C",
+        "bytes": 72810
+      }
+    }
+  ],
+  "limitations": [
+    "No compiler, native execution, generator, formatter, runtime or Main writes.",
+    "New concrete owner source is a separate finite component; no complete FileHandle/template/bootstrap qualification.",
+    "Existing seven production and three control snapshots and all eighteen prior drafts remain immutable."
+  ]
+}

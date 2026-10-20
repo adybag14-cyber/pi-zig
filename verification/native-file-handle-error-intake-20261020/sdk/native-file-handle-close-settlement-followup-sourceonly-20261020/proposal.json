@@ -1,0 +1,208 @@
+{
+  "schema": "pi-zig.finite-source-followup.v1",
+  "qualification": "source-only; no compiler, native, Node, test, formatter or generator execution",
+  "predecessor_production_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production-proposal.json",
+    "sha256": "061258BF1085004B82EA8D1A9C237402F7D4075A4DE837F9C25B7D39D0D3A804"
+  },
+  "shared_projection_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\proposal.json",
+    "sha256": "C195AE5D402ED457AF651D6BEB37B2BB8DBD3DF36CD74106EB172F00B64618FC"
+  },
+  "comparison_main_head": "2a45648545c961f9008a783ae352f233869505b4",
+  "scope": "One completed ordinary EmitBefore continuation in FileHandle CloseReq.settleBody; no shared files, Main edits or FSReqPromise changes.",
+  "files": [
+    {
+      "relative_path": "src/extensions/native_node_file_handle_close_request.zig",
+      "live_predecessor": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\original\\src\\extensions\\native_node_file_handle_close_request.zig",
+        "bytes": 15294,
+        "sha256": "9EB383CED295E354BD91A5F1FA9E471B70182C3D554D190148AEB4BA93386FEC"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\projected\\src\\extensions\\native_node_file_handle_close_request.zig",
+        "bytes": 15879,
+        "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A"
+      },
+      "edits": [
+        {
+          "before": "            try callback_scope.init(self.wrap.registry.environment, wrapper,\n                self.wrap.context(), .{}, self.wrap.context_frame);\n",
+          "after": "            callback_scope.init(self.wrap.registry.environment, wrapper,\n                self.wrap.context(), .{}, self.wrap.context_frame) catch |err|\n            {\n                record(s, err);\n                // InternalCallbackScope is a void native constructor. Once\n                // IDs are pushed, an ordinary EmitBefore stack-overflow\n                // rethrow does not skip the following Resolver call. Preserve\n                // that real completion in this HandleScope while performing\n                // the original settlement and unchanged Maybe<void>::Check.\n                if (!callback_scope.initialized or !callback_scope.pushed_ids or\n                    !canContinue(s, err)) return err;\n            };\n",
+          "occurrences_before": 1,
+          "occurrences_after": 1
+        }
+      ],
+      "whole_byte_inverse": true
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\close-settlement.patch",
+    "bytes": 1351,
+    "sha256": "8FB28FD3A97FF66ADE8CE69C21D65A253C283A91461A524DA76D4A4FB10B1F28"
+  },
+  "authority_files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node_file.v24.13.cc",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\node_file.v24.13.cc"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\native-callback-and-exception-source.json",
+      "bytes": 20217,
+      "sha256": "008EEC523290C9547E6F4D2BA2AA108E62FCC57BCB8E5ECB730F1548E7F1977C",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\native-callback-and-exception-source.json"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\async_wrap.cc.v24.13.txt",
+      "bytes": 27043,
+      "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\async_wrap.cc.v24.13.txt"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-api.v24.13.cc"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-api-callback.v24.13.cc",
+      "bytes": 13682,
+      "sha256": "0A4C8ECF051F995F9669826DC9D85560ADD6ECD6FB2E28CE6B2F3DD309947DE2",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/api/callback.cc"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-api-macros.v24.13.h",
+      "bytes": 5190,
+      "sha256": "0E027969A031D88B0E139D143ACBACBE2734F648D11BC960D52603AAADC0E6F7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-objects.v24.13.cc",
+      "bytes": 272859,
+      "sha256": "81E1D4EDFCE90BC1409DDF1B16966F2931E8DC947BF7429DFED6959708211BFC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-errors.v24.13.cc",
+      "bytes": 43095,
+      "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-errors.v24.13.h",
+      "bytes": 23394,
+      "sha256": "396CC9AE4323EC0E9FB8E4B5E6912C0603E86410D5588802B5B1F2C0F7048CC4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-api-inl.v24.13.h",
+      "bytes": 14583,
+      "sha256": "F72A89EADA3FF47D5F2D368BF088CD5ECE424BBE3209A9CC5D42B83398E4BA05"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-api.v24.13.h",
+      "bytes": 22131,
+      "sha256": "A16BF05E03F2AE915B0600C10847A053A511D2855640358CC653A2655338A9CA"
+    }
+  ],
+  "support_files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 39890,
+      "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support\\src\\extensions\\native_node_operation_scope.zig",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+      "bytes": 9934,
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support\\src\\extensions\\native_node_weak_global.zig",
+      "bytes": 2477,
+      "sha256": "2B776E789CCBB8626B928C0EA44896BE843B11C379C42B30D298E19A49AE6C8A",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_weak_global.zig"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support\\src\\extensions\\native_node_check_failure.zig",
+      "bytes": 2857,
+      "sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_check_failure.zig"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support\\src\\extensions\\native_node_fs_request_promise.zig",
+      "bytes": 18834,
+      "sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_request_promise.zig"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2399340,
+      "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c"
+    }
+  ],
+  "causal_findings": [
+    {
+      "source": "node_file.v24.13.cc 393-410",
+      "finding": "CloseReq Resolve/Reject construct InternalCallbackScope and unconditionally call the persistent Resolver followed by Maybe.Check; neither tests scope.Failed nor a void constructor return."
+    },
+    {
+      "source": "node-api-callback.v24.13.cc 42-105; async_wrap.cc.v24.13.txt 92-104,141-144",
+      "finding": "InternalCallbackScope pushes IDs, sets pushed_ids_, then invokes void EmitBefore without checking a result. Emit wraps the actual hook Call with kFatalRethrowStackOverflow."
+    },
+    {
+      "source": "node-errors.v24.13.cc 702-725; v8-api.v24.13.cc 2780-2802,2820-2824,2867-2875",
+      "finding": "The selected ordinary stack-overflow catch calls ReThrow then Reset. Reset returns when rethrow_ is true; the V8 TryCatch base destructor reinstalls the actual exception. Other non-terminated caught hook errors retain original fatal policy."
+    },
+    {
+      "source": "v8-api-macros.v24.13.h 42-69,116-120; v8-api-inl.v24.13.h 168-207; v8-api.v24.13.cc 8686-8717",
+      "finding": "Resolver Resolve/Reject use ENTER_V8, not PREPARE_FOR_EXECUTION. No preexisting-ordinary-pending precheck initializes has_exception. The returned Maybe tests the selected internal operation, not a fabricated empty result based solely on the earlier hook error."
+    },
+    {
+      "source": "v8-objects.v24.13.cc 5067-5130",
+      "finding": "For selected CloseReq Resolve(undefined), primitive resolution proceeds to Fulfill; Reject(error) proceeds to Reject, whose return is a nonempty Handle. A prior ordinary before-hook rethrow alone is not evidence of a MaybeCheck failure."
+    },
+    {
+      "source": "support/src/extensions/native_node_callback_scope.zig 668-688; original/src/extensions/native_node_file_handle_close_request.zig settleBody",
+      "finding": "Current Scope.init returns the ordinary EmitBefore error after initialized and pushed_ids; the proposed predecessor try returns early before selecting the promise Global or performing settlement. This is a concrete void-continuation mismatch."
+    },
+    {
+      "source": "support/src/extensions/native_node_commonjs_owned_boundary.zig 22-35,77-89,122-162; support/src/extensions/native_node_weak_global.zig 34-41; support/vendor/quickjs/quickjs.c 61090-61113",
+      "finding": "record(s,err) captures the actual ordinary completion in the existing caller Scope. Same-scope pending checks do not fail merely because that Scope owns a previous reason. Thus Global Get and the actual native Promise setter execute without injecting a stale current exception into its deliberately strict borrowed-operation entry. Scope.finish preserves the real hook reason after native callback-scope destruction."
+    }
+  ],
+  "followup_behavior": {
+    "continued_only_if": [
+      "callback_scope.initialized",
+      "callback_scope.pushed_ids",
+      "error.JavaScriptException",
+      "not s.boundary.isFatal()"
+    ],
+    "retained": [
+      "actual hook policy",
+      "actual Promise Global",
+      "actual JS_PiSettlePromise call",
+      "unchanged MaybeCheck branch",
+      "original InternalCallbackScope destructor before HandleScope retirement",
+      "actual ordinary completion identity"
+    ],
+    "not_claimed": [
+      "full FileHandle public template",
+      "production native immediate/bootstrap policy",
+      "actual stack overflow/fatal runtime control",
+      "build or runtime acceptance"
+    ],
+    "main_fsreqpromise_observation": "Main Request.settleBody has an analogous early try; its property lookup/cast/fromJust chain is a separate source slice. No change or complete conclusion for that owner is included."
+  },
+  "preservation": {
+    "live_close_source_unchanged": true,
+    "parent_production_manifest_unchanged": true,
+    "prior_shared_manifest_unchanged": true
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "kind": "pinned_source_only_no_execution",
+  "files": [
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/api/api-inl.h",
+      "sha": "f72a89eada3ff47d5f2d368bf088cd5ece424bbe3209a9cc5d42b83398e4ba05",
+      "name": "v8-api-inl.v24.13.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-api-inl.v24.13.h",
+      "bytes": 14583
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/api/api.h",
+      "sha": "a16bf05e03f2ae915b0600c10847a053a511d2855640358cc653a2655338a9ca",
+      "name": "v8-api.v24.13.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-api.v24.13.h",
+      "bytes": 22131
+    }
+  ]
+}

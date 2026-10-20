@@ -1,0 +1,68 @@
+{
+  "schema": "pi-zig.root-native-error-constructor-source-review.v1",
+  "basis_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "proposal_sha256": "B1C179FE0FE38E0F6FC1FB1BF351FE62ED4D85E90FBEED1DDDF995C1345E863C",
+  "vm_projection_sha256": "64DB11E161C4AF40DBE7ABC1D981D07F4E6BD74B69B806353EDBA86F5F6A6702",
+  "selected_C_sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464",
+  "selected_H_sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952",
+  "fragment_sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843",
+  "control_sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525",
+  "source_map_sha256": "472E2044C5C441563124CC53A1AAAE2394A5E75A9D53577B453F5F795333BC54",
+  "closure_sha256": "DBF5C664507C2BBB12157CDD6B73A2C0AA125C40B7AF6C752E18C5E97C76727B",
+  "peer_sha256": "2E4164DCA07EE67018D3F0B733408D9CC7E26A80835DCCC6D2D9742624B1A271",
+  "root_reads": [
+    "Full native C fragment",
+    "All22 exact C/H edits and one build insertion",
+    "Complete24-control root",
+    "All16 mappings and selected complete original and actual host ownership excerpts",
+    "Complete independent peer and both audit sources"
+  ],
+  "root_checks": {
+    "all22_intermediate_hashes_and_whole_inverses": true,
+    "build_whole_inverse": true,
+    "original_main_C_H_build_equal_git_and_current": true,
+    "source_map_exact_excerpts": 76,
+    "authorities": 14,
+    "source_declared_controls": 24,
+    "root_direct_pins": 39,
+    "independent_final_proof_reproduced_bytes": 74424,
+    "independent_final_proof_sha256": "86D6EE694E4FE48AFD076E3F287D3CA9FB34143628DFFDA991A8B40CDCEFE2E3",
+    "independent_final_proof_byte_exact": true,
+    "final_current_unique_pins": 164
+  },
+  "earlier_independent_proof_replay": {
+    "sealed_sha256": "B1253548E211E8E7BCE2484A39C70819471D6F6DB4D64D1672F2A2471C1D4817",
+    "initial_raw_equality_rejected": true,
+    "reason": "The source audit enumerates its authority directory; two later additive source-binding files are present in the final sealed packet.",
+    "original_37_pins_unchanged": true,
+    "original_pin_order_and_all_other_fields_exact": true,
+    "added_files": [
+      {
+        "relative_path": "authority/consumer-source-binding.json",
+        "sha256": "4976C1F2E3CE74B182B5B32E9249C13A6E0857B2961584CA2385847E88E64E18"
+      },
+      {
+        "relative_path": "authority/node-errors.v24.13.cc",
+        "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9"
+      }
+    ],
+    "both_in_final_exact_proof": true,
+    "original_proof_modified": false
+  },
+  "findings": [
+    "Actual protected intrinsic constructor and initial name are retained before stack hooks and participate in the actual Context/Error GC and destructor owners.",
+    "Getter-free physical data lookup follows original tag/prototype ordering; explicit unsupported covers missing map, DebugName, derived-target and exotic owners.",
+    "Fresh shape ownership marks genuine Error prototypes, preserving the original predecessor source-review negative.",
+    "Owned output duplicates an existing String; selected query does not allocate or change pending/termination state by source inspection.",
+    "Native intrinsic reachability correspondence is a bounded inference; literal V8 map optimization and full Node fatal-rethrow policy remain open."
+  ],
+  "source_review_accepted": true,
+  "integration_status": "Pending separate Main hold release and finite combined intake; no Main source mutation.",
+  "future_metadata_count": null,
+  "main_source_hold_released": false,
+  "compiler_executed": false,
+  "native_executed": false,
+  "runtime_qualified": false,
+  "application_qualified": false,
+  "created_utc": "2026-10-20T20:43:08.377176+00:00"
+}

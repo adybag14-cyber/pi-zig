@@ -1,0 +1,16 @@
+[
+  {
+    "path": "src/extensions/engine_abi.h",
+    "source": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine_abi.h",
+    "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\support\\src\\extensions\\engine_abi.h",
+    "bytes": 2003,
+    "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5"
+  },
+  {
+    "path": "src/extensions/engine_abi.c",
+    "source": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine_abi.c",
+    "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\support\\src\\extensions\\engine_abi.c",
+    "bytes": 18016,
+    "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+  }
+]

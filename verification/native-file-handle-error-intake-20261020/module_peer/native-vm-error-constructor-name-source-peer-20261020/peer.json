@@ -1,0 +1,121 @@
+{
+  "schema": "pi-zig.independent-native-error-constructor-name-source-peer.v1",
+  "reviewer": "/root/module_io_port",
+  "qualification": "Independent finite source-only review. No compiler, preprocessor, native, reference VM, test, project-generator or build execution. No Main or SDK source edit.",
+  "verdict": "No concrete implementation blocker identified in the selected bounded intrinsic native Error constructor-name ownership and 24 source controls.",
+  "scope": {
+    "production": "Full 8,944-byte native C fragment and every one of the 22 projected QuickJS C/H edits, including their actual GC, realm, creation, prototype, memory and physical lookup callees.",
+    "controls": "Full selected 28,931-byte fixture and all 24 controls; prior 64 KiB fixture is retained, selected fixture chooses 256 KiB before executing genuine non-tail VM recursion.",
+    "composition": "One install-only build insertion; five eventual install paths; exact per-step offsets and SHA-256 plus whole forward/inverse replay against pinned Main c764130c blobs.",
+    "original_source": "Node v24.13.0 classifier/TryCatch bodies and the exact V8 constructor-name, map/prototype, function name, Error construction, strong native context roots and ordinary intrinsic prototype factory selections.",
+    "final_evidence": "Final production, source-map and closure manifests independently bound to selected bytes; 14 authorities, 76 exact excerpts, 16 mappings and prior source preservation."
+  },
+  "manual_review_findings_reference": "source-findings.json, all twelve findings; its final-manifest availability limit is superseded by the final-binding audit and this peer, while its source reasoning remains unchanged.",
+  "material_conclusions": [
+    "Creation stores the actual protected intrinsic constructor and its prepublication initial String name before stack hooks. Error() first normalizes its undefined new.target to the active function. Native factories use their actual realm intrinsic; mutable public globals/properties cannot replace this private provenance.",
+    "Each added context/Error edge is initialized before allocation exposure, marked by the actual native GC owner and released by its matching destructor. Error finalization clears all three owned values before releasing them. Native function-to-realm ownership supplies the real foreign-context edge; the control observes a real finalizer witness rather than a policy stand-in.",
+    "The selected constructor-name fast path is restricted to actual native Errors with recorded matching base/new.target provenance that have not become prototypes. Edit 22 marks a real Error when fresh shape storage acquires it as a prototype; cached/cloned shapes inherit the prior admission. Explicit SetPrototype already supplies sticky admission. The original incomplete projection remains immutable as a source-review negative.",
+    "The supported fallback follows original own-data toStringTag and eligible later-prototype constructor ordering, skipping the receiver's constructor and getter invocation. Native intrinsic Object and Error function identities are recognized through real bodies/realm roots. Unsupported general function metadata or exotic storage is never guessed from mutable function.name.",
+    "The owned output is a duplicate of an existing String. For documented live same-runtime inputs, selected query helpers perform physical lookup and reference duplication without guest execution, VM allocation or pending/termination mutation. This is a source argument, not an executed OOM or concurrency proof.",
+    "Pinned V8 InstallError/CreateFunction/NewFunctionPrototype establishes an actual JS_ERROR_TYPE instance map but an ordinary Object-based intrinsic prototype. The additive correction correctly withdraws the earlier overbroad intrinsic Error.prototype branding gap without deleting earlier evidence.",
+    "Retaining the native intrinsic through Context/Error edges is a bounded source correspondence: V8's promoted prototype may replace the map constructor with Object while the native context retains the original intrinsic strongly. Literal V8 map optimization is not implemented by this owner.",
+    "All 24 selected controls use actual VM construction, properties, pending exceptions, termination, allocator limits and GC/realm ownership. The finite fixture has ordinary stack-local stable-address lifetime; teardown releases VM values and restores allocation before runtime destruction.",
+    "The original Node classifier also performs an ordinary message Get and compares the specific stack-overflow text. The fatal-rethrow TryCatch owner additionally captures Message, classifies CanContinue, reports and calls Environment::Exit(7). This constructor dependency does not install those missing production owners."
+  ],
+  "exact_source_verification": {
+    "unique_final_file_pins": 164,
+    "prior_audit_input_pins_rehashed": 37,
+    "actual_native_transport_raw_body_matches": 6,
+    "contained_authority_copy_pairs": 8,
+    "exact_excerpts": 76,
+    "source_mappings": 16,
+    "control_names": 24,
+    "literal_repository_Zig_modules": 1,
+    "literal_Zig_imports": [
+      "std"
+    ],
+    "literal_C_include_names": [
+      "engine_abi.h"
+    ],
+    "literal_repository_anonymous_declarations": 0,
+    "predicted_runtime_metadata": null,
+    "preserved_prior_source_records": 28,
+    "preserved_prior_owner_controls_and_support": 3,
+    "preserved_prior_packets": 6,
+    "preserved_direct_prior_snapshot_records": 79,
+    "preserved_support_pairs": 2,
+    "all_forward_inverse_checks_from_independent_source_audit": true
+  },
+  "retained_negatives_and_addenda": {
+    "initial_vm_projection": "1FECF1633A87477251D22EB47AD3F8DE1D33451E968B4FE4A5474F41CFD9A933: omitted fresh-shape prototype admission; preserved.",
+    "selected_vm_successor": "64DB11E161C4AF40DBE7ABC1D981D07F4E6BD74B69B806353EDBA86F5F6A6702: adds the real Error-only shape admission.",
+    "prior_control": "A6BEC5B75AA64E097D7709300389DC1F49395879A1A46CB8911536217DE41E6D: prior stack-limit selection preserved.",
+    "selected_control": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525: sole 64-to-256 KiB source choice; no name or assertion changes.",
+    "prototype_branding": "Additive original factory-source correction retained in final source map; no rewriting of earlier records."
+  },
+  "limits": [
+    "UNSUPPORTED must remain an explicit unported case and must never be treated as a negative IsStackOverflowError classification.",
+    "Arbitrary-object GetConstructorName, general JSFunction/FunctionTemplateInfo DebugName and map metadata, different new.target, raw unrecorded Error creation and exotic/proxy/autoinit/variable-reference storage remain outside the supported selection.",
+    "The VM's existing InternalError extension is not presented as an original V8 intrinsic family.",
+    "Actual ordinary message-Get failure policy, captured Message/TryCatch ownership, ReportFatalException, Environment::Exit(7), TriggerUncaughtException and production bootstrap remain independent dependencies.",
+    "The private JSContext/JSObject layouts grow. Compiler/layout, OOM, runtime GC, realm lifetime, platform and native qualification remain unperformed.",
+    "The literal repository control closure excludes std implementation, C/system header translation and unused named build imports. No compiler-selected anonymous-test or future accepted metadata count is predicted.",
+    "The source comparison is against immutable c764130c original Git blobs. No claim is made about any later Main state or integration admission.",
+    "Eight reused authorities were byte-bound to contained sources; their earlier acquisition provenance is inherited. Six newly selected originals were independently matched to successful native-transport raw body hashes.",
+    "Review creates only additive evidence in the assigned modules-io worktree; SDK production, selected snapshots, Main and existing peer records were not edited."
+  ],
+  "subject_documents": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\production-proposal.json",
+      "bytes": 14336,
+      "sha256": "B1C179FE0FE38E0F6FC1FB1BF351FE62ED4D85E90FBEED1DDDF995C1345E863C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source-map.json",
+      "bytes": 168366,
+      "sha256": "472E2044C5C441563124CC53A1AAAE2394A5E75A9D53577B453F5F795333BC54"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\closure-and-preservation.json",
+      "bytes": 45378,
+      "sha256": "DBF5C664507C2BBB12157CDD6B73A2C0AA125C40B7AF6C752E18C5E97C76727B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\vm-projection-successor.json",
+      "bytes": 24862,
+      "sha256": "64DB11E161C4AF40DBE7ABC1D981D07F4E6BD74B69B806353EDBA86F5F6A6702"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\build\\proposal.json",
+      "bytes": 2212,
+      "sha256": "54760A19321B0DC5C2B3C036B7942EF2F8F212565C0A1B691E324E94D6F7CD8A"
+    }
+  ],
+  "independent_evidence": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-vm-error-constructor-name-source-peer-20261020\\source-audit.py",
+      "bytes": 6764,
+      "sha256": "DFFC8934AF4AF2B3FD16A9C2C0F5F072560239C2E4003E87856A29DEDAA6E5EA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-vm-error-constructor-name-source-peer-20261020\\source-audit.json",
+      "bytes": 21985,
+      "sha256": "B1253548E211E8E7BCE2484A39C70819471D6F6DB4D64D1672F2A2471C1D4817"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-vm-error-constructor-name-source-peer-20261020\\source-findings.json",
+      "bytes": 9301,
+      "sha256": "5F6724D4DD338CDE7AF6C54A49C1D41DC6FDC8427C063A6FACE01F2E20A6B2B5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-vm-error-constructor-name-source-peer-20261020\\final-binding-audit.py",
+      "bytes": 9358,
+      "sha256": "0E0CEB0A4A69AD2FF88081428BC4A3E9A85C65AAFD97861DF352984290BBA4A3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-vm-error-constructor-name-source-peer-20261020\\final-binding-audit.json",
+      "bytes": 74424,
+      "sha256": "86D6EE694E4FE48AFD076E3F287D3CA9FB34143628DFFDA991A8B40CDCEFE2E3"
+    }
+  ]
+}

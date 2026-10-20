@@ -2006,6 +2006,13 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, simple_stack_source_tests.root_module, quickjs, sqlite_lib_dir);
     simple_stack_source_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-vm-simple-stack-source", "Install actual simple stack state and raw source controls without execution").dependOn(&b.addInstallArtifact(simple_stack_source_tests, .{}).step);
+    const native_error_constructor_name_tests = b.addTest(.{
+        .name = "native-vm-error-constructor-name",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_error_constructor_name_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"VM native Error constructor"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, native_error_constructor_name_tests.root_module, quickjs, sqlite_lib_dir);
+    b.step("build-native-vm-error-constructor-name", "Install actual native Error constructor provenance controls without execution").dependOn(&b.addInstallArtifact(native_error_constructor_name_tests, .{}).step);
     const exotic_operation_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_exotic_operations_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"VM exotic operations"}, .use_llvm = use_llvm,
@@ -2192,6 +2199,36 @@ pub fn build(b: *std.Build) void {
             node_fs_callback_template.root_module.linkSystemLibrary("userenv", .{});
         }
         b.step("build-native-node-fs-callback-template", "Install eleven actual FSReqCallback template and storage controls without execution").dependOn(&b.addInstallArtifact(node_fs_callback_template, .{ .dest_sub_path = b.fmt("native-node-fs-callback-template{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        const node_file_handle_owner = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_file_handle_owner_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native FileHandle owner"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_file_handle_owner.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_file_handle_owner.root_module, typescript_parser);
+        linkSqlite(node_file_handle_owner.root_module, sqlite_lib_dir, sqlite_library);
+        node_file_handle_owner.root_module.addImport("catalog_tool", catalog_tool);
+        node_file_handle_owner.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        node_file_handle_owner.root_module.linkLibrary(network);
+        if (target.result.os.tag == .windows) {
+            node_file_handle_owner.root_module.linkSystemLibrary("advapi32", .{});
+            node_file_handle_owner.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-file-handle-owner", "Install eighteen concrete FileHandle ownership controls without execution").dependOn(&b.addInstallArtifact(node_file_handle_owner, .{ .dest_sub_path = b.fmt("native-node-file-handle-owner{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        const node_fs_before_hook_continuation = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_fs_before_hook_continuation_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native FS before hook"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_fs_before_hook_continuation.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_fs_before_hook_continuation.root_module, typescript_parser);
+        linkSqlite(node_fs_before_hook_continuation.root_module, sqlite_lib_dir, sqlite_library);
+        node_fs_before_hook_continuation.root_module.addImport("catalog_tool", catalog_tool);
+        node_fs_before_hook_continuation.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        node_fs_before_hook_continuation.root_module.linkLibrary(network);
+        if (target.result.os.tag == .windows) {
+            node_fs_before_hook_continuation.root_module.linkSystemLibrary("advapi32", .{});
+            node_fs_before_hook_continuation.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-fs-before-hook-continuation", "Install three actual FS before-hook continuation controls without execution").dependOn(&b.addInstallArtifact(node_fs_before_hook_continuation, .{ .dest_sub_path = b.fmt("native-node-fs-before-hook-continuation{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
         const native_node_fs_request_owner_tests = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_fs_request_owner_test.zig"), .target = target, .optimize = optimize }),
             .filters = &.{"native FS request owner"}, .use_llvm = use_llvm,

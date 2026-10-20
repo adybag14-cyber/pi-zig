@@ -1,0 +1,23 @@
+--- a/src/extensions/native_node_file_handle_close_request.zig
++++ b/src/extensions/native_node_file_handle_close_request.zig
+@@ -211,8 +211,18 @@
+         {
+             const wrapper = self.wrap.object() orelse
+                 return error.ActualFileHandleCloseWrapperRequired;
+-            try callback_scope.init(self.wrap.registry.environment, wrapper,
+-                self.wrap.context(), .{}, self.wrap.context_frame);
++            callback_scope.init(self.wrap.registry.environment, wrapper,
++                self.wrap.context(), .{}, self.wrap.context_frame) catch |err|
++            {
++                record(s, err);
++                // InternalCallbackScope is a void native constructor. Once
++                // IDs are pushed, an ordinary EmitBefore stack-overflow
++                // rethrow does not skip the following Resolver call. Preserve
++                // that real completion in this HandleScope while performing
++                // the original settlement and unchanged Maybe<void>::Check.
++                if (!callback_scope.initialized or !callback_scope.pushed_ids or
++                    !canContinue(s, err)) return err;
++            };
+             const resolver = if (self.promise) |*promise|
+                 try promise.get(s) else return error.ActualFileHandleClosePromiseRequired;
+             try s.pending();

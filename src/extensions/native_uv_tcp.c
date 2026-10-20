@@ -918,6 +918,14 @@ int pi_uv_fs_close(PiUvFsRequest *request, int descriptor) {
     PiUvCommand command = { .kind = PI_UV_CMD_FS_CLOSE, .fs_request = request };
     return pi_uv_fs_submit(request, &command, PI_UV_FS_CLOSE);
 }
+int pi_uv_fs_close_sync(PiUvService *service, struct uv_fs_s *request,
+                        int descriptor) {
+    assert(service != NULL && request != NULL);
+    /* cb == NULL follows the actual synchronous libuv FS implementation.
+     * No service command, queued completion, callback, or waiting count is
+     * involved. The original caller traces and cleans its own stack request. */
+    return uv_fs_close(&service->loop, request, descriptor, NULL);
+}
 int pi_uv_fs_cancel(PiUvFsRequest *request) {
     PiUvCommand command = { .kind = PI_UV_CMD_FS_CANCEL, .fs_request = request };
     return pi_uv_submit(request->service, &command);

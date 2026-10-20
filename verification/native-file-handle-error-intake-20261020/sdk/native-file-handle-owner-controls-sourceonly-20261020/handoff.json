@@ -1,0 +1,347 @@
+{
+  "schema": "pi-zig.file-handle-owner-controls-source-handoff.v1",
+  "created_utc": "2026-10-20T19:51:35.556697+00:00",
+  "comparison_main_head": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+  "qualification": "Source-only; not compiled, run or accepted as runtime metadata. No existing controls or assertions were changed.",
+  "new_control_and_support_files": [
+    {
+      "relative_path": "src/native_node_file_handle_owner_test_support.zig",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 32558,
+        "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\source\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 32558,
+        "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+      }
+    },
+    {
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\source\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      }
+    },
+    {
+      "relative_path": "src/native_node_fs_before_hook_continuation_test.zig",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_fs_before_hook_continuation_test.zig",
+        "bytes": 6578,
+        "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\source\\src\\native_node_fs_before_hook_continuation_test.zig",
+        "bytes": 6578,
+        "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92"
+      }
+    }
+  ],
+  "source_roots": [
+    {
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "filter": "native FileHandle owner",
+      "install_step": "build-native-node-file-handle-owner",
+      "artifact_basename": "native-node-file-handle-owner",
+      "windows_artifact": "native-node-file-handle-owner.exe",
+      "source_declared_controls": 18,
+      "named_declarations": [
+        {
+          "name": "native FileHandle owner constructor attaches the same native stream and transfers the real descriptor on release",
+          "line": 55
+        },
+        {
+          "name": "native FileHandle owner optional Number IntegerValue follows pinned V8 truncation and saturation",
+          "line": 88
+        },
+        {
+          "name": "native FileHandle owner non Number optional arguments perform no guest coercion",
+          "line": 113
+        },
+        {
+          "name": "native FileHandle owner keeps the full public method template an explicit dependency",
+          "line": 132
+        },
+        {
+          "name": "native FileHandle owner explicit close keeps one Promise and one actual CLOSE request through cleanup",
+          "line": 141
+        },
+        {
+          "name": "native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose",
+          "line": 176
+        },
+        {
+          "name": "native FileHandle owner real stopped service admission rejects without fabricating completion or closing the descriptor",
+          "line": 200
+        },
+        {
+          "name": "native FileHandle owner retained CloseReq wrapper loses native state after both callback references retire",
+          "line": 236
+        },
+        {
+          "name": "native FileHandle owner CloseReq Global keeps the handle and weak BindingData alive until actual completion",
+          "line": 257
+        },
+        {
+          "name": "native FileHandle owner GC closes synchronously and the warning ticket retains no handle or BindingData",
+          "line": 284
+        },
+        {
+          "name": "native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once",
+          "line": 302
+        },
+        {
+          "name": "native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason",
+          "line": 335
+        },
+        {
+          "name": "native FileHandle owner failed GC close queues one refed actual UVException ticket",
+          "line": 359
+        },
+        {
+          "name": "native FileHandle owner cleanup skips unrefed GC warning execution and destroys its native capture",
+          "line": 381
+        },
+        {
+          "name": "native FileHandle owner GC uses the retained real service for synchronous close after worker join",
+          "line": 400
+        },
+        {
+          "name": "native FileHandle owner consumes the real read engine and reuses its physical ReadWrap across concrete handles",
+          "line": 416
+        },
+        {
+          "name": "native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity",
+          "line": 453
+        },
+        {
+          "name": "native FileHandle owner real Hub shutdown drains accepted close without settling its guest Promise",
+          "line": 491
+        }
+      ],
+      "transitive_module_count": 710,
+      "literal_anonymous_source_blocks": [
+        {
+          "relative_path": "src/extensions/native_durable_storage.zig",
+          "line": 861
+        },
+        {
+          "relative_path": "src/extensions/native_bindings.zig",
+          "line": 3451
+        },
+        {
+          "relative_path": "src/durable/session.zig",
+          "line": 8
+        },
+        {
+          "relative_path": "src/extensions/native_durable_task_abort.zig",
+          "line": 13
+        },
+        {
+          "relative_path": "src/durable/scheduler.zig",
+          "line": 12
+        },
+        {
+          "relative_path": "src/extensions/native_durable_context_view.zig",
+          "line": 13
+        },
+        {
+          "relative_path": "src/ai/root.zig",
+          "line": 329
+        },
+        {
+          "relative_path": "src/durable/tool_read.zig",
+          "line": 18
+        }
+      ],
+      "future_actual_metadata": null
+    },
+    {
+      "relative_path": "src/native_node_fs_before_hook_continuation_test.zig",
+      "filter": "native FS before hook",
+      "install_step": "build-native-node-fs-before-hook-continuation",
+      "artifact_basename": "native-node-fs-before-hook-continuation",
+      "windows_artifact": "native-node-fs-before-hook-continuation.exe",
+      "source_declared_controls": 3,
+      "named_declarations": [
+        {
+          "name": "native FS before hook actual read fulfills after the same ordinary hook rethrow",
+          "line": 40
+        },
+        {
+          "name": "native FS before hook actual EBADF read rejects with UVException while the hook reason propagates separately",
+          "line": 65
+        },
+        {
+          "name": "native FS before hook continuation performs the original live Promise Get before settlement",
+          "line": 88
+        }
+      ],
+      "transitive_module_count": 710,
+      "literal_anonymous_source_blocks": [
+        {
+          "relative_path": "src/extensions/native_durable_storage.zig",
+          "line": 861
+        },
+        {
+          "relative_path": "src/extensions/native_bindings.zig",
+          "line": 3451
+        },
+        {
+          "relative_path": "src/durable/session.zig",
+          "line": 8
+        },
+        {
+          "relative_path": "src/extensions/native_durable_task_abort.zig",
+          "line": 13
+        },
+        {
+          "relative_path": "src/durable/scheduler.zig",
+          "line": 12
+        },
+        {
+          "relative_path": "src/extensions/native_durable_context_view.zig",
+          "line": 13
+        },
+        {
+          "relative_path": "src/ai/root.zig",
+          "line": 329
+        },
+        {
+          "relative_path": "src/durable/tool_read.zig",
+          "line": 18
+        }
+      ],
+      "future_actual_metadata": null
+    }
+  ],
+  "source_declared_controls": 21,
+  "source_root_count": 2,
+  "future_actual_metadata_count": null,
+  "whole_cohort_selected": false,
+  "dependencies": {
+    "original_owner_packet": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production-proposal.json",
+      "bytes": 14361,
+      "sha256": "061258BF1085004B82EA8D1A9C237402F7D4075A4DE837F9C25B7D39D0D3A804"
+    },
+    "shared_projection": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\proposal.json",
+      "bytes": 18499,
+      "sha256": "C195AE5D402ED457AF651D6BEB37B2BB8DBD3DF36CD74106EB172F00B64618FC"
+    },
+    "corrected_CloseReq_packet": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\proposal.json",
+      "bytes": 14602,
+      "sha256": "BA6543E47B33A5D994AD097FBF0CBC58A6E35F262DF42FFE5909D9A736118319"
+    },
+    "corrected_FSReqPromise_packet": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\proposal.json",
+      "bytes": 12997,
+      "sha256": "08F45EF3D26E4D2CBB8A5FA3A144E635AB6DA9B64B486871F7B1D102F6488B56"
+    },
+    "selected_CloseReq_sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A",
+    "selected_FSReqPromise_sha256": "8EFC2D58C1B1BD5069777FE1D06618F4572F54EEDAC09265EAD26BE8E675A4DF",
+    "inventory": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\dependency-inventory.json",
+      "bytes": 567445,
+      "sha256": "56BFF251AD680CE3B5B4E7D4D979CFDA2FA41345BC958432273007DAFD2330D1"
+    },
+    "source_map": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\source-map.json",
+      "bytes": 21972,
+      "sha256": "5E36100728A32C4ACC09F1D53BF11BC90102E506B581C8496DA9F1185749EBCA"
+    }
+  },
+  "exact_install_only_build_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\build\\proposal.json",
+    "bytes": 4451,
+    "sha256": "8DFCA25C7674D319464CE7E411BF6834E516F75418B2381AFF8026D4F13A16D3"
+  },
+  "projection_checks": [
+    {
+      "relative_path": "src/extensions/native_node_async_wrap_state.zig",
+      "packet": "shared_C195",
+      "edit_count": 7,
+      "whole_forward_exact": true,
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_callback_scope.zig",
+      "packet": "shared_C195",
+      "edit_count": 1,
+      "whole_forward_exact": true,
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_fs_request_io.zig",
+      "packet": "shared_C195",
+      "edit_count": 1,
+      "whole_forward_exact": true,
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_uv_fs.h",
+      "packet": "shared_C195",
+      "edit_count": 2,
+      "whole_forward_exact": true,
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_uv_tcp.c",
+      "packet": "shared_C195",
+      "edit_count": 1,
+      "whole_forward_exact": true,
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_close_request.zig",
+      "packet": "corrected_CloseReq_BA6543",
+      "edit_count": 1,
+      "whole_forward_exact": true,
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_node_fs_request_promise.zig",
+      "packet": "corrected_FSReqPromise_08F45",
+      "edit_count": 1,
+      "whole_forward_exact": true,
+      "whole_inverse_exact": true
+    }
+  ],
+  "new_and_modified_source_union": {
+    "selected_production_or_control_paths": 12,
+    "plus_build_projection": 1,
+    "new_paths": 6,
+    "existing_Main_paths": 7,
+    "note": "Three new production files and three new control/support files; five shared Main files, one FSReqPromise Main file and build.zig. Corrected CloseReq supersedes only its retained new-file snapshot; the live original remains untouched."
+  },
+  "preservation": {
+    "prior_production": 7,
+    "prior_controls_and_support": 3,
+    "inherited_drafts": 18,
+    "all_28_exact": true,
+    "original_061258_C195_BA6543_08F45_immutable": true,
+    "existing_FS_owner_25_declarations_unchanged": true
+  },
+  "known_open_production_dependencies": [
+    "Complete FileHandle FunctionTemplate/StreamBase::AddMethods and public/internal fs bootstrap; the actual present-object constructor is selected by these fixtures.",
+    "Production kFatalRethrowStackOverflow hook exception owner, native uncaught fatal policy and their complete Environment bootstrap. Fixture policy selects a real pending identity and must not be mistaken for that missing production algorithm.",
+    "Production trace category/controller/clock, backing allocation retry/GC/fatal policy and native immediate queue policy bootstrap. Observation hooks are explicitly scoped.",
+    "Original FileHandle ShutdownWrap/DoShutdown, transfer serialization/deserialization and complete public method assembly.",
+    "Compiler/ABI validation, actual metadata discovery, native runtime ownership acceptance and full cohort selection require a separate Root-owned grant."
+  ],
+  "main_modified": false,
+  "frozen_production_sources_modified": false,
+  "compiler_executed": false,
+  "native_executed": false,
+  "reference_executed": false,
+  "test_executed": false
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\v8-js-objects.v24.13.cc",
+    "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-objects.v24.13.cc",
+    "bytes": 234488,
+    "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480"
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\v8-js-function.v24.13.cc",
+    "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-function.v24.13.cc",
+    "bytes": 64812,
+    "sha256": "BD7C962A95DFD157FAFC7933D4C1D1571EE44D02FB71F0FF8592723379B88C47"
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\v8-shared-function-info.v24.13.cc",
+    "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-shared-function-info.v24.13.cc",
+    "bytes": 34727,
+    "sha256": "97E61FDB8DFD572CE0BF17F2346636F123842815BB28FD118D0AD0773748CCEB"
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\v8-prototype-inl.v24.13.h",
+    "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-prototype-inl.v24.13.h",
+    "bytes": 5121,
+    "sha256": "A7E44D86EC7CDB6DC55912629FD7B09FBFEB7FF6E3F15DAA16851AA0EADA500C"
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\v8-prototype.v24.13.h",
+    "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-prototype.v24.13.h",
+    "bytes": 3041,
+    "sha256": "0EB94F950E31EC05CA827AECF9A82CF9A76D86EF92E544143A354919C70CCC70"
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-errors.v24.13.h",
+    "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\node-errors.v24.13.h",
+    "bytes": 23394,
+    "sha256": "396CC9AE4323EC0E9FB8E4B5E6912C0603E86410D5588802B5B1F2C0F7048CC4"
+  },
+  {
+    "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+    "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+    "bytes": 489340,
+    "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+  }
+]

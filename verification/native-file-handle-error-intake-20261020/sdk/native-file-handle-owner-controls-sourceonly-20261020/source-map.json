@@ -1,0 +1,632 @@
+{
+  "schema": "pi-zig.file-handle-owner-control-source-map.v1",
+  "controls": [
+    {
+      "name": "native FileHandle owner constructor attaches the same native stream and transfers the real descriptor on release",
+      "line": 55,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "actual native provider4, same stream pointer, weak wrapper, BindingData strong pointer, real descriptor Release and closed ReadStart",
+      "node_file_v24_13_cc_ranges": [
+        [
+          224,
+          249
+        ],
+        [
+          521,
+          534
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner optional Number IntegerValue follows pinned V8 truncation and saturation",
+      "line": 88,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "real optional Number conversion: NaN, signed zero, infinities, +/-2^63, truncation",
+      "node_file_v24_13_cc_ranges": [
+        [
+          251,
+          279
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner non Number optional arguments perform no guest coercion",
+      "line": 113,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "actual non-Number optional values avoid guest coercion",
+      "node_file_v24_13_cc_ranges": [
+        [
+          251,
+          279
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner keeps the full public method template an explicit dependency",
+      "line": 132,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "complete FileHandle template remains an explicit real integration dependency",
+      "node_file_v24_13_cc_ranges": [
+        [
+          3959,
+          3968
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner explicit close keeps one Promise and one actual CLOSE request through cleanup",
+      "line": 141,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "one internal close Promise, actual CLOSE storage/provider5/queue/counter/native pointer references, cleanup-before-delete",
+      "node_file_v24_13_cc_ranges": [
+        [
+          393,
+          434
+        ],
+        [
+          448,
+          503
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose",
+      "line": 176,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "accepted bad descriptor gets actual libuv EBADF; AfterClose precedes UVException rejection",
+      "node_file_v24_13_cc_ranges": [
+        [
+          448,
+          503
+        ],
+        [
+          527,
+          534
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner real stopped service admission rejects without fabricating completion or closing the descriptor",
+      "line": 200,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "real stopped worker gives negative command admission; no synthetic completion, fd stays owned, original closing flag remains until Release",
+      "node_file_v24_13_cc_ranges": [
+        [
+          448,
+          503
+        ],
+        [
+          521,
+          534
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner retained CloseReq wrapper loses native state after both callback references retire",
+      "line": 236,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "real retained CloseReq wrapper outlives both native pointer releases and has cleared native state",
+      "node_file_v24_13_cc_ranges": [
+        [
+          421,
+          434
+        ],
+        [
+          448,
+          503
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner CloseReq Global keeps the handle and weak BindingData alive until actual completion",
+      "line": 257,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "actual CloseReq Global is the last FileHandle root, which is the last BindingData strong pointer; observed weak slots after real collection",
+      "node_file_v24_13_cc_ranges": [
+        [
+          413,
+          434
+        ],
+        [
+          448,
+          503
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner GC closes synchronously and the warning ticket retains no handle or BindingData",
+      "line": 284,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "real GC synchronous close leaves a scalar/native-Environment warning ticket, with no Handle or BindingData pointer",
+      "node_file_v24_13_cc_ranges": [
+        [
+          336,
+          390
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once",
+      "line": 302,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "two real GC closes share the actual Environment one-shot flag; callback performs live process.emitWarning lookup",
+      "node_file_v24_13_cc_ranges": [
+        [
+          336,
+          390
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason",
+      "line": 335,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "ordinary first warning throw preserves its exact actual pending reason while later original deprecation call proceeds",
+      "node_file_v24_13_cc_ranges": [
+        [
+          336,
+          390
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner failed GC close queues one refed actual UVException ticket",
+      "line": 359,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "real failed synchronous GC close queues one refed ticket and creates actual UVException",
+      "node_file_v24_13_cc_ranges": [
+        [
+          336,
+          390
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner cleanup skips unrefed GC warning execution and destroys its native capture",
+      "line": 381,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "actual cleanup mode destroys unrefed warning capture without guest execution",
+      "node_file_v24_13_cc_ranges": [
+        [
+          336,
+          390
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner GC uses the retained real service for synchronous close after worker join",
+      "line": 400,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "retained actual service storage supports synchronous GC close after worker join",
+      "node_file_v24_13_cc_ranges": [
+        [
+          336,
+          390
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner consumes the real read engine and reuses its physical ReadWrap across concrete handles",
+      "line": 416,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "concrete Handle consumes existing real Read engine; same physical ReadWrap reused across Handle native lifetimes with a new async ID",
+      "node_file_v24_13_cc_ranges": [
+        [
+          545,
+          665
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity",
+      "line": 453,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "real JS throwing before hook with explicitly selected rethrow policy still permits success/rejection settlement and after hook",
+      "node_file_v24_13_cc_ranges": [
+        [
+          393,
+          410
+        ]
+      ]
+    },
+    {
+      "name": "native FileHandle owner real Hub shutdown drains accepted close without settling its guest Promise",
+      "line": 491,
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "observation": "real accepted native close result is queued before Hub shutdown; disabled delivery still performs AfterClose and cleanup but no JS settlement",
+      "node_file_v24_13_cc_ranges": [
+        [
+          448,
+          503
+        ]
+      ]
+    },
+    {
+      "name": "native FS before hook actual read fulfills after the same ordinary hook rethrow",
+      "line": 40,
+      "relative_path": "src/native_node_fs_before_hook_continuation_test.zig",
+      "observation": "real private FS read fulfillment proceeds after actual ordinary before-hook completion",
+      "node_file_inl_v24_13_h_ranges": [
+        [
+          219,
+          251
+        ]
+      ],
+      "causal_packet": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\proposal.json",
+        "bytes": 12997,
+        "sha256": "08F45EF3D26E4D2CBB8A5FA3A144E635AB6DA9B64B486871F7B1D102F6488B56"
+      }
+    },
+    {
+      "name": "native FS before hook actual EBADF read rejects with UVException while the hook reason propagates separately",
+      "line": 65,
+      "relative_path": "src/native_node_fs_before_hook_continuation_test.zig",
+      "observation": "real bad-fd read rejects UVException independently from the exact before-hook pending identity",
+      "node_file_inl_v24_13_h_ranges": [
+        [
+          219,
+          251
+        ]
+      ],
+      "causal_packet": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\proposal.json",
+        "bytes": 12997,
+        "sha256": "08F45EF3D26E4D2CBB8A5FA3A144E635AB6DA9B64B486871F7B1D102F6488B56"
+      }
+    },
+    {
+      "name": "native FS before hook continuation performs the original live Promise Get before settlement",
+      "line": 88,
+      "relative_path": "src/native_node_fs_before_hook_continuation_test.zig",
+      "observation": "after the same ordinary hook completion, the original live Promise property getter runs and selects the genuine replacement Promise",
+      "node_file_inl_v24_13_h_ranges": [
+        [
+          219,
+          251
+        ]
+      ],
+      "causal_packet": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\proposal.json",
+        "bytes": 12997,
+        "sha256": "08F45EF3D26E4D2CBB8A5FA3A144E635AB6DA9B64B486871F7B1D102F6488B56"
+      }
+    }
+  ],
+  "original_authorities": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\node_file.v24.13.cc",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\node_file.v24.13.h",
+      "bytes": 17193,
+      "sha256": "A63A31D1BCAEB7AF416B19ABEAFAB880DB7D424378DC27050F9FC2EE4921E16F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\base_object.v24.13.h",
+      "bytes": 14711,
+      "sha256": "684149EB458508964CCEBE862E12058BFADFC6C31E7D5F29D6CD8EA0A9423105"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\base_object-inl.v24.13.h",
+      "bytes": 10023,
+      "sha256": "AFC8EFE0A4562F49FD7B543CA82A855511345177466D0B8F0E4CF8188FA4CEC6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-conversions-inl.v24.13.h",
+      "bytes": 12043,
+      "sha256": "9EEE8FDFB6DCC22486A8398DDD9EA1E031208DE0BEF8778F465CCFC22A2B1062"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\env.v24.13.h",
+      "bytes": 45315,
+      "sha256": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\env-inl.v24.13.h",
+      "bytes": 28109,
+      "sha256": "41949D4DFA01B04174B0E881B1DB3DD12BF51B9428B89946504603700FCF3E5E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\req_wrap-inl.v24.13.h",
+      "bytes": 5640,
+      "sha256": "27C770D8756B626C80210F96F9DB1CF31BFBF09AAB1DA53DC35B382314883E67"
+    }
+  ],
+  "original_owner_source_mapping": [
+    {
+      "component": "Handle native constructor and optional-object New",
+      "source": "node_file.v24.13.cc",
+      "lines": [
+        [
+          224,
+          249
+        ]
+      ],
+      "header_lines": [
+        [
+          321,
+          355
+        ],
+        [
+          398,
+          402
+        ],
+        [
+          440,
+          449
+        ]
+      ],
+      "implementation": "native_node_file_handle_owner.zig Handle.initialize/create; same Reader.State and original native member teardown."
+    },
+    {
+      "component": "Actual constructor callback checks and conversion",
+      "source": "node_file.v24.13.cc",
+      "lines": [
+        [
+          251,
+          279
+        ]
+      ],
+      "implementation": "Handle.construct; primitive IsInt32 rejects -0, optional Number arguments use the exact V8 NumberToInt64 path."
+    },
+    {
+      "component": "V8 Number predicates and saturating integer conversion",
+      "sources": [
+        {
+          "name": "v8-api.v24.13.cc",
+          "lines": [
+            [
+              3656,
+              3663
+            ],
+            [
+              4197,
+              4207
+            ]
+          ]
+        },
+        {
+          "name": "v8-conversions-inl.v24.13.h",
+          "lines": [
+            [
+              204,
+              207
+            ],
+            [
+              268,
+              278
+            ]
+          ]
+        }
+      ],
+      "implementation": "int32/numberValue/optionalInteger; NaN zero, saturation at +/-2^63, truncate finite interior; no JS_ToInt64 modulo conversion."
+    },
+    {
+      "component": "FileHandle destructor, flags and release",
+      "source": "node_file.v24.13.cc",
+      "lines": [
+        [
+          281,
+          285
+        ],
+        [
+          521,
+          534
+        ]
+      ],
+      "implementation": "Handle.retire/releaseDescriptor and the unchanged reviewed Reader.afterClose; BindingData release precedes current_read release and StreamBase teardown."
+    },
+    {
+      "component": "GC synchronous close and original error/warning immediates",
+      "source": "node_file.v24.13.cc",
+      "lines": [
+        [
+          336,
+          390
+        ]
+      ],
+      "implementation": "native_node_file_handle_gc_close.zig; stack canonical uv_fs_t, trace BEGIN/END, cleanup, scalar capture, AfterClose, actual refed error or unrefed warning Ticket."
+    },
+    {
+      "component": "Environment warning flag",
+      "sources": [
+        {
+          "name": "env.v24.13.h",
+          "lines": [
+            [
+              1111,
+              1111
+            ]
+          ]
+        },
+        {
+          "name": "env-inl.v24.13.h",
+          "lines": [
+            [
+              688,
+              694
+            ]
+          ]
+        }
+      ],
+      "implementation": "Projected Environment.emit_filehandle_warning defaults true; successful GC ticket clears it before the original DEP0137 call."
+    },
+    {
+      "component": "CloseReq Promise settlement and FileHandle extraction",
+      "source": "node_file.v24.13.cc",
+      "lines": [
+        [
+          393,
+          419
+        ]
+      ],
+      "implementation": "CloseReq.resolve/reject/settle and fileHandle; actual native Globals, InternalCallbackScope and Maybe::Check; no guest Promise property or extra resolver capability."
+    },
+    {
+      "component": "CloseReq native construction and destruction",
+      "source": "node_file.v24.13.cc",
+      "lines": [
+        [
+          421,
+          434
+        ]
+      ],
+      "header_lines": [
+        [
+          404,
+          435
+        ]
+      ],
+      "implementation": "Physical CLOSE storage before AsyncWrap provider5, ReqWrap queue/MakeWeak/Reset, promise and ref Global creation; actual cleanup then promise/ref reset and queue/base teardown."
+    },
+    {
+      "component": "ClosePromise identity, admission, original callback and negative dispatch",
+      "source": "node_file.v24.13.cc",
+      "lines": [
+        [
+          448,
+          503
+        ]
+      ],
+      "implementation": "Handle.closePromise plus CloseReq.completed/rejectImmediateAndDelete and projected Controller.dispatchRawClose. Same internal Promise returned before flag checks. Negative immediate admission Reject/deletes without AfterClose or clearing closing."
+    },
+    {
+      "component": "ReqWrap construction, callback pointer and accepted counter",
+      "source": "req_wrap-inl.v24.13.h",
+      "lines": [
+        [
+          13,
+          40
+        ],
+        [
+          126,
+          138
+        ],
+        [
+          144,
+          169
+        ]
+      ],
+      "implementation": "Existing Entry owner plus new raw CLOSE dispatch: actual native callback selected before admission, clearWeak/counter only after status>=0, callback native pointer/detach/decrement before original body."
+    },
+    {
+      "component": "Internal Promise slot and still-pending complete template",
+      "source": "node_file.v24.13.h",
+      "lines": [
+        [
+          323,
+          327
+        ]
+      ],
+      "additional_source": {
+        "name": "node_file.v24.13.cc",
+        "lines": [
+          [
+            3959,
+            3977
+          ]
+        ]
+      },
+      "implementation": "Projected actual FileHandle StreamFields mark/finalize the closing Promise independently of State. Existing genuine CloseReq template is consumed. Complete FileHandle template/StreamBase::AddMethods remains blocked explicitly."
+    },
+    {
+      "component": "Pinned synchronous libuv path",
+      "implementation": "See shared/proposal.json exact five authority/snapshot pins. uv_fs_close_sync only invokes actual uv_fs_close with NULL callback; owner traces then cleans its own native stack request.",
+      "sources": [
+        {
+          "name": "libuv/src/win/fs.c",
+          "lines": [
+            [
+              74,
+              97
+            ],
+            [
+              397,
+              410
+            ],
+            [
+              668,
+              695
+            ],
+            [
+              3127,
+              3136
+            ],
+            [
+              3192,
+              3221
+            ],
+            [
+              3241,
+              3245
+            ]
+          ]
+        },
+        {
+          "name": "libuv/src/win/fs-fd-hash-inl.h",
+          "lines": [
+            [
+              167,
+              193
+            ]
+          ]
+        },
+        {
+          "name": "libuv/src/uv-common.h",
+          "lines": [
+            [
+              342,
+              357
+            ]
+          ]
+        },
+        {
+          "name": "libuv/src/unix/fs.c",
+          "lines": [
+            [
+              90,
+              104
+            ],
+            [
+              139,
+              166
+            ],
+            [
+              1679,
+              1747
+            ],
+            [
+              1814,
+              1821
+            ],
+            [
+              2239,
+              2269
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "close_continuation_authorities_and_analysis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\proposal.json",
+    "bytes": 14602,
+    "sha256": "BA6543E47B33A5D994AD097FBF0CBC58A6E35F262DF42FFE5909D9A736118319"
+  },
+  "fs_continuation_authorities_and_analysis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\proposal.json",
+    "bytes": 12997,
+    "sha256": "08F45EF3D26E4D2CBB8A5FA3A144E635AB6DA9B64B486871F7B1D102F6488B56"
+  },
+  "selected_test_policy": "The fixture installs a real throwing JavaScript before hook, consumes only the actual current pending reason, requires exact selected identity and ordinary status, and reinstalls that same reason. It does not classify real stack overflow or replace the missing production hook/fatal owner.",
+  "cleanup": "Actual native service stop/join precedes outer Scope retirement, realm cleanup, native queue close/release and Environment disarm. Every fixture physical descriptor has actual uv_fs_open/fstat/close storage; request observation entitlements are explicitly retained/released.",
+  "shutdown_selection": "The accepted-close shutdown control waits for the real native close event before disabling JavaScript delivery. This isolates the original callback cleanup path from service-stop cancellation timing."
+}

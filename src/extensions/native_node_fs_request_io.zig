@@ -122,6 +122,25 @@ pub const Controller = struct {
         return status;
     }
 
+    /// FileHandle::CloseReq supplies the original CLOSE callback and physical
+    /// request. A negative admission remains the caller's Reject/delete path;
+    /// only real successful admission strengthens and increments the request.
+    pub fn dispatchRawClose(self: *Controller, s: *Scope, entry: *request_state.Entry,
+        actual: *uv.PiUvFsRequest, descriptor: c_int,
+        callback: *const fn (*request_state.Entry, *anyopaque) anyerror!void) !c_int
+    {
+        try self.enter(s.engine);
+        defer self.leave();
+        if (entry.wrap.registry.environment != self.environment or
+            entry.queue != &self.environment.requests)
+            return error.ActualFSRequestEnvironmentMismatch;
+        entry.dispatchStarted();
+        try entry.setCallback(.{ .request = actual, .call = callback });
+        const status = uv.pi_uv_fs_close(actual, descriptor);
+        if (status >= 0) try entry.dispatchAccepted();
+        return status;
+    }
+
     fn ready(raw: *anyopaque) bool {
         const self: *Controller = @ptrCast(@alignCast(raw));
         return self.busy == 0;

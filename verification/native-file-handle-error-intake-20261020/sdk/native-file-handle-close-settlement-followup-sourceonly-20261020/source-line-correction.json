@@ -1,0 +1,19 @@
+{
+  "schema": "pi-zig.additive-source-reference-correction.v1",
+  "parent_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\proposal.json",
+    "sha256": "BA6543E47B33A5D994AD097FBF0CBC58A6E35F262DF42FFE5909D9A736118319"
+  },
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-api-macros.v24.13.h",
+    "sha256": "0E027969A031D88B0E139D143ACBACBE2734F648D11BC960D52603AAADC0E6F7"
+  },
+  "correction": {
+    "prior_reference": "v8-api-macros.v24.13.h 42-69,116-120",
+    "correct_reference": "v8-api-macros.v24.13.h 42-69,106-112",
+    "detail": "Pinned source has 112 lines. RETURN_ON_FAILED_EXECUTION_PRIMITIVE is at 109-110, RETURN_ON_FAILED_EXECUTION at 106-107. The ENTER_V8 helper and Resolver findings are unchanged."
+  },
+  "discovered_by": "independent handover_review source peer",
+  "source_changes": false,
+  "execution": "source metadata only"
+}

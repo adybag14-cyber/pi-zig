@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "acquired_utc": "2026-10-20T18:46:28.239439+00:00",
+  "method": "Devbox Hermes Python standard-library HTTPS acquisition of exact public pinned Node v24.13.0 source bytes. Native web evidence body hashes independently matched for API and conversions. Sources saved without execution.",
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/api/api.cc",
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/api/api.cc",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "native_web_fetch_body_hash_confirmed": true
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/numbers/conversions-inl.h",
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/numbers/conversions-inl.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-conversions-inl.v24.13.h",
+      "bytes": 12043,
+      "sha256": "9EEE8FDFB6DCC22486A8398DDD9EA1E031208DE0BEF8778F465CCFC22A2B1062",
+      "native_web_fetch_body_hash_confirmed": true
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/env_properties.h",
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/env_properties.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\env-properties.v24.13.h",
+      "bytes": 40628,
+      "sha256": "EF24E17E3234F2763986225F222370B6F7B7B069309B9FAE9F3C83D6A304AB91",
+      "native_web_fetch_body_hash_confirmed": false
+    }
+  ],
+  "compiler_execution": false,
+  "native_product_execution": false,
+  "reference_execution": false,
+  "source_generator_execution": false
+}

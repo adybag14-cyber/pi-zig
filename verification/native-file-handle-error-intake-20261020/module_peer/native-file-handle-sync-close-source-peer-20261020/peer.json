@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "kind": "independent finite synchronous FileHandle close C helper and retained native lifetime source peer",
+  "created_utc": "2026-10-20T19:54:17.414278+00:00",
+  "reviewer": "/root/module_io_port",
+  "reviewed_shared_proposal_sha256": "C195AE5D402ED457AF651D6BEB37B2BB8DBD3DF36CD74106EB172F00B64618FC",
+  "reviewed_production_proposal_sha256": "061258BF1085004B82EA8D1A9C237402F7D4075A4DE837F9C25B7D39D0D3A804",
+  "immutable_Main_basis": "2a45648545c961f9008a783ae352f233869505b4",
+  "selected_original_Node_revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-sync-close-source-peer-20261020\\source-audit.json",
+    "bytes": 40694,
+    "sha256": "79FB56CF7C7F41512EA059BDB16B0EF21DDFF0C14DE7171C0C94A9DEF01E00AB"
+  },
+  "audit_script": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-sync-close-source-peer-20261020\\source-audit.py",
+    "bytes": 7926,
+    "sha256": "6C977B86D765AC765C3DE8EAD22950994FD73ACC49DD020A81B99EF9FDF930A8"
+  },
+  "source_scope": {
+    "new_helper_files": [
+      "src/extensions/native_uv_fs.h",
+      "src/extensions/native_uv_tcp.c"
+    ],
+    "exact_sequential_edits": 3,
+    "selected_caller": "native_node_file_handle_gc_close.zig 86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4",
+    "additional_files_read_for_lifetime_premise": [
+      "native_node_file_handle_owner.zig",
+      "projected native_node_fs_request_io.zig",
+      "native_node_stream_resource.zig",
+      "native_node_managed_buffers.zig",
+      "native_node_uv_service.zig"
+    ],
+    "libuv_authority_snapshots": 5,
+    "input_pins_rehashed": 18,
+    "source_excerpt_ranges": 28,
+    "unrelated_shared_three_file_edits_not_qualified_by_this_peer": true
+  },
+  "independent_checks": {
+    "both_C_H_originals_match_immutable_Main_git_blobs": true,
+    "three_forward_edits_all_intermediate_hashes_match": true,
+    "both_complete_inverses_recover_original_bytes": true,
+    "five_original_libuv_snapshots_match_immutable_Main_git_blobs": true,
+    "caller_request_trace_cleanup_and_capture_order_checked": true,
+    "retained_Handle_Controller_service_storage_chain_read": true,
+    "no_production_source_changed": true
+  },
+  "findings": [
+    {
+      "subject": "Actual synchronous operation",
+      "result": "The added helper asserts non-null service/request and calls the original uv_fs_close(&service->loop, request, descriptor, NULL). It returns the actual native integer status without allocating PiUvFsRequest, submitting a service command, changing request waiting counters, or adding a callback.",
+      "authority": "Projected native_uv_tcp.c finite 461-byte insertion; projected header finite signature and caller-owned request contract."
+    },
+    {
+      "subject": "Windows null-callback path",
+      "result": "INIT calls the original uv__fs_req_init. That function performs the existing global once initialization and initializes the request; its loop use is the request loop-pointer store. UV_REQ_INIT sets request type and overlapped status. POST selects uv__fs_work directly when cb is NULL, bypassing loop registration and work submission. Selected CLOSE dispatch reaches fs__close and returns request.result.",
+      "authority": "win/fs.c 74-97, 397-410, 3127-3136, 3241-3245; uv-common.h 342-357."
+    },
+    {
+      "subject": "Windows actual descriptor close and cleanup",
+      "result": "fs__close retains the original descriptor validation, synchronized fd-hash removal, file-map CloseHandle handling, and _close/result translation. The fd hash uses its original global uv_mutex. The selected close and uv_fs_req_cleanup operate on descriptor/global/request state and do not dereference the supplied loop.",
+      "authority": "win/fs.c 668-695 and 3192-3221; win/fs-fd-hash-inl.h 167-193."
+    },
+    {
+      "subject": "Unix null-callback path",
+      "result": "INIT stores the loop pointer in the request. The callback-gated io_uring branch is skipped for NULL; POST calls uv__fs_work directly and returns its result. CLOSE calls uv__fs_close, which invokes uv__close_nocancel on the integer descriptor and preserves the original EINTR/EINPROGRESS handling. The selected worker path does not retry CLOSE for EINTR. Cleanup uses request-owned fields, with no loop dereference.",
+      "authority": "unix/fs.c 90-104, 139-166, 1679-1747, 1814-1821, 2239-2269."
+    },
+    {
+      "subject": "Canonical caller-owned native request",
+      "result": "The GC caller declares native_uv.uv_fs_t on its stack. native_uv comes through StreamResource to the actual managed-buffers @cImport of uv.h, whose typedef and struct are the original uv_fs_s layout. The narrow C declaration accepts struct uv_fs_s*. There is no guessed byte-storage extent or hand-written struct layout.",
+      "authority": "native_node_stream_resource.zig 5-16; native_node_managed_buffers.zig 1-10; uv.h 242-249 and 1443-1453."
+    },
+    {
+      "subject": "Original caller sequencing",
+      "result": "The selected GC source checks closed/closing and fd, then performs trace BEGIN, synchronous close, trace END and uv_fs_req_cleanup before capturing the descriptor and running AfterClose. Its result is captured at the call. The queued Ticket later contains result/descriptor scalars and an independently retained Environment; it does not retain the stack request, FileHandle pointer or service loop pointer. Refed selection result < 0 matches the original error versus successful warning branches.",
+      "authority": "node_file.cc 336-391; selected complete gc_close source and explicit ordered anchors in source-audit.json."
+    },
+    {
+      "subject": "Retained service storage across close and stop",
+      "result": "Handle.create retains the Controller before native initialization. Handle.retire invokes GC close before member and StreamBase teardown and before releaseInfrastructure releases the Controller. Controller publication retains PiUvService; its final release drops that entitlement, while Hub stopped drops only the Hub Controller reference. PiUvService embeds uv_loop_t and frees its allocation only on the final service reference. Thus the reviewed caller retains the loop member address/storage through the complete synchronous call, trace END and cleanup, including the selected already-joined service state. The helper does not require ordinary asynchronous Controller admission for this direct operation.",
+      "authority": "owner.zig 96-143 and 178-220; projected fs_request_io.zig 20-41, 199-229, 300-320; projected native_uv_tcp.c 127-152, 169-183, 652-657, 711-723."
+    }
+  ],
+  "source_blockers_in_selected_helper_and_lifetime_premise": [],
+  "scope_limits": [
+    "This peer does not qualify the complete FileHandle owner, CloseReq Promise policy, ordinary JavaScript continuation, warning/exception delivery or the entire shared five-file proposal. Handover is reviewing that broader unit independently.",
+    "The trace callbacks and actual native queue/bootstrap owners remain explicit assembly dependencies. This peer supplies no no-op trace or queue implementation.",
+    "The source mapping demonstrates the selected null-callback branches and retained native storage. No compiler-selected ABI, native execution, concurrent descriptor behavior, platform qualification or whole-application behavior was observed.",
+    "The original frozen 061258BF/C195 proposals remain unchanged. Later additive CloseReq corrections are outside this helper peer."
+  ],
+  "compiler_execution": false,
+  "preprocessor_execution": false,
+  "Node_reference_execution": false,
+  "native_execution": false,
+  "project_source_generator_execution": false,
+  "Main_modified": false,
+  "SDK_modified": false,
+  "qualification": false
+}

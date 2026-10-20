@@ -1,0 +1,33 @@
+{
+  "kind": "pinned_source_only_no_execution",
+  "files": [
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/api/api-macros.h",
+      "sha": "0e027969a031d88b0e139d143acbacbe2734f648d11bc960d52603aaadc0e6f7",
+      "name": "v8-api-macros.v24.13.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-api-macros.v24.13.h",
+      "bytes": 5190
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/objects/objects.cc",
+      "sha": "81e1d4edfce90bc1409ddf1b16966f2931e8dc947bf7429dfed6959708211bfc",
+      "name": "v8-objects.v24.13.cc",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-objects.v24.13.cc",
+      "bytes": 272859
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/node_errors.cc",
+      "sha": "eed18c160145dae84c4ade25afc90cb799d4ad18275d3eae42aa66331371a2c9",
+      "name": "node-errors.v24.13.cc",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-errors.v24.13.cc",
+      "bytes": 43095
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/node_errors.h",
+      "sha": "396cc9ae4323ec0e9fb8e4b5e6912c0603e86410d5588802b5b1f2c0f7048cc4",
+      "name": "node-errors.v24.13.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-errors.v24.13.h",
+      "bytes": 23394
+    }
+  ]
+}

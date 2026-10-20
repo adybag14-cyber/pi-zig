@@ -1,0 +1,1536 @@
+{
+  "schema": "pi-zig.independent-native-error-constructor-final-binding-audit.v1",
+  "source_only": true,
+  "compiler_native_test_reference_execution": false,
+  "subject": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\production-proposal.json",
+    "bytes": 14336,
+    "sha256": "B1C179FE0FE38E0F6FC1FB1BF351FE62ED4D85E90FBEED1DDDF995C1345E863C"
+  },
+  "prior_source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-vm-error-constructor-name-source-peer-20261020\\source-audit.json",
+    "bytes": 21985,
+    "sha256": "B1253548E211E8E7BCE2484A39C70819471D6F6DB4D64D1672F2A2471C1D4817"
+  },
+  "prior_source_audit_inputs_rehashed": 37,
+  "final_subject_documents": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\production-proposal.json",
+      "bytes": 14336,
+      "sha256": "B1C179FE0FE38E0F6FC1FB1BF351FE62ED4D85E90FBEED1DDDF995C1345E863C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source-map.json",
+      "bytes": 168366,
+      "sha256": "472E2044C5C441563124CC53A1AAAE2394A5E75A9D53577B453F5F795333BC54"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\closure-and-preservation.json",
+      "bytes": 45378,
+      "sha256": "DBF5C664507C2BBB12157CDD6B73A2C0AA125C40B7AF6C752E18C5E97C76727B"
+    }
+  ],
+  "basis_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "install_paths": [
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "src/extensions/native_vm_error_constructor_name.c.inc",
+    "src/native_vm_error_constructor_name_test.zig",
+    "build.zig"
+  ],
+  "exact_vm_edits_and_build_insertion_bound_to_prior_replay": true,
+  "original_main_basis": "Pinned c764130c git blobs in prior independent replay; no claim about later Main state.",
+  "authority_bindings": [
+    {
+      "id": "node-errors.v24.13.cc",
+      "kind": "contained-source-copy",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-errors.v24.13.cc",
+      "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9"
+    },
+    {
+      "id": "node-errors.v24.13.h",
+      "kind": "contained-source-copy",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-errors.v24.13.h",
+      "sha256": "396CC9AE4323EC0E9FB8E4B5E6912C0603E86410D5588802B5B1F2C0F7048CC4"
+    },
+    {
+      "id": "v8-api.v24.13.cc",
+      "kind": "contained-source-copy",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+    },
+    {
+      "id": "v8-js-objects.v24.13.cc",
+      "kind": "contained-source-copy",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\v8-js-objects.v24.13.cc",
+      "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480"
+    },
+    {
+      "id": "v8-js-function.v24.13.cc",
+      "kind": "contained-source-copy",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\v8-js-function.v24.13.cc",
+      "sha256": "BD7C962A95DFD157FAFC7933D4C1D1571EE44D02FB71F0FF8592723379B88C47"
+    },
+    {
+      "id": "v8-shared-function-info.v24.13.cc",
+      "kind": "contained-source-copy",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\v8-shared-function-info.v24.13.cc",
+      "sha256": "97E61FDB8DFD572CE0BF17F2346636F123842815BB28FD118D0AD0773748CCEB"
+    },
+    {
+      "id": "v8-prototype-inl.v24.13.h",
+      "kind": "contained-source-copy",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\v8-prototype-inl.v24.13.h",
+      "sha256": "A7E44D86EC7CDB6DC55912629FD7B09FBFEB7FF6E3F15DAA16851AA0EADA500C"
+    },
+    {
+      "id": "v8-prototype.v24.13.h",
+      "kind": "contained-source-copy",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\v8-prototype.v24.13.h",
+      "sha256": "0EB94F950E31EC05CA827AECF9A82CF9A76D86EF92E544143A354919C70CCC70"
+    },
+    {
+      "id": "v8-map.v24.13.cc",
+      "kind": "native-http-200-raw-body",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/objects/map.cc",
+      "sha256": "F94513B765EE2DD421C1D5DB3E919BF8D5765776E985DECA594F9110F9E592FE"
+    },
+    {
+      "id": "v8-messages.v24.13.cc",
+      "kind": "native-http-200-raw-body",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/execution/messages.cc",
+      "sha256": "A00739D8A0D7DC796BB10D50B495DF9B417B9125C6B86B8333F37224A2BCE59E"
+    },
+    {
+      "id": "v8-contexts.v24.13.h",
+      "kind": "native-http-200-raw-body",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/objects/contexts.h",
+      "sha256": "4B94B0DEC61C1A68779C5D56CAA746158DC172F0402B6EFA803AE1F1A1B7C629"
+    },
+    {
+      "id": "v8-builtins-error.v24.13.cc",
+      "kind": "native-http-200-raw-body",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/builtins/builtins-error.cc",
+      "sha256": "8D1447C8E744A17440C36FAE548F876F44B6F219FCD0E22B0E8EB43C8E7DEFE3"
+    },
+    {
+      "id": "v8-bootstrapper.v24.13.cc",
+      "kind": "native-http-200-raw-body",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/init/bootstrapper.cc",
+      "sha256": "0991594530BB8FAF3836C747E547F43BB091D0AFA74E16B4B1814F68458D172A"
+    },
+    {
+      "id": "v8-factory.v24.13.cc",
+      "kind": "native-http-200-raw-body",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/heap/factory.cc",
+      "sha256": "895D8A6E8BEDE5FF80EA97DE37F765EE54F13D20E449968841C288596B851FC6"
+    }
+  ],
+  "exact_source_excerpts": [
+    {
+      "id": "r001",
+      "file_id": "node-errors.v24.13.cc",
+      "start_line": 676,
+      "end_line": 725,
+      "excerpt_sha256": "D0E1E64D62ACFBB6BD6158C37A104FA6203B534E575C3D689176B3DEDA8269FA"
+    },
+    {
+      "id": "r002",
+      "file_id": "node-errors.v24.13.h",
+      "start_line": 329,
+      "end_line": 359,
+      "excerpt_sha256": "C42FD52D96CEFB807898E1EBC949C6BF59530DA31386503DAAD0413C01EF8F83"
+    },
+    {
+      "id": "r003",
+      "file_id": "fragment",
+      "start_line": 1,
+      "end_line": 15,
+      "excerpt_sha256": "A53EF8DBFC44BF7F5A8B3FEEA3E584F5692B20CF68454E867A60D6DC6B54C90B"
+    },
+    {
+      "id": "r004",
+      "file_id": "quickjs-original.c",
+      "start_line": 10261,
+      "end_line": 10268,
+      "excerpt_sha256": "1A4E63164CB09F51A861E251076684672B4289B567611057BBD82429A27CCCDC"
+    },
+    {
+      "id": "r005",
+      "file_id": "v8-api.v24.13.cc",
+      "start_line": 3676,
+      "end_line": 3678,
+      "excerpt_sha256": "805CB9900F4235C4533FE8C60AE50646881B14232E7E8D567395030B569DDB42"
+    },
+    {
+      "id": "r006",
+      "file_id": "quickjs-original.c",
+      "start_line": 13923,
+      "end_line": 13926,
+      "excerpt_sha256": "8908144EBA912527BAF5E8FFB167C5D39236D8E2110ADAB66B46303BB71D4572"
+    },
+    {
+      "id": "r007",
+      "file_id": "fragment",
+      "start_line": 160,
+      "end_line": 172,
+      "excerpt_sha256": "68D0D69EF73FA4A653BB513D526422C420BFCDB59DBB3BC07ACAC45D2ECAEE3E"
+    },
+    {
+      "id": "r008",
+      "file_id": "v8-builtins-error.v24.13.cc",
+      "start_line": 18,
+      "end_line": 25,
+      "excerpt_sha256": "2A174F542E483E98F92870FA65EEF48C5D1E6CD18A141A2CA894D4B6790AEC9D"
+    },
+    {
+      "id": "r009",
+      "file_id": "v8-messages.v24.13.cc",
+      "start_line": 528,
+      "end_line": 575,
+      "excerpt_sha256": "093794C40D4D25369E372013EBEC4308E4F7D30EF1F6DFA439E6DEBD40DB5E1D"
+    },
+    {
+      "id": "r010",
+      "file_id": "v8-js-function.v24.13.cc",
+      "start_line": 916,
+      "end_line": 925,
+      "excerpt_sha256": "19C5FDDDEA9304FA6D13E3F4D1E0ED29DFFD15CFE440E5C1FDB48D4F5BE9416B"
+    },
+    {
+      "id": "r011",
+      "file_id": "v8-js-function.v24.13.cc",
+      "start_line": 1175,
+      "end_line": 1185,
+      "excerpt_sha256": "108CFBD309625E8A7B220C170CE9F0F5BDEA54FFAEB927CB95F82894FC8AA86C"
+    },
+    {
+      "id": "r012",
+      "file_id": "fragment",
+      "start_line": 17,
+      "end_line": 88,
+      "excerpt_sha256": "2636C3A40EB7DC7B855F3D304915EDE2FFC32F799482AC047C13F2634326F698"
+    },
+    {
+      "id": "r013",
+      "file_id": "quickjs-original.c",
+      "start_line": 19552,
+      "end_line": 19555,
+      "excerpt_sha256": "A8B66C9784BDE72DCADA3472B63B38F19C5F349AEAC75772E4081C3536CD7B49"
+    },
+    {
+      "id": "r014",
+      "file_id": "quickjs-original.c",
+      "start_line": 19998,
+      "end_line": 20019,
+      "excerpt_sha256": "83C2CA8D2C90632C9E0B22099653825FBDB7986047CDC9E4A7842B9413F2A82D"
+    },
+    {
+      "id": "r015",
+      "file_id": "quickjs-original.c",
+      "start_line": 47598,
+      "end_line": 47645,
+      "excerpt_sha256": "19717E76343E2CDCC07497DE1F072C20EE6F4F3589472E56B5BAD722B0CC469B"
+    },
+    {
+      "id": "r016",
+      "file_id": "v8-messages.v24.13.cc",
+      "start_line": 729,
+      "end_line": 752,
+      "excerpt_sha256": "7F0867FE5CBD2D861B82AD0A8B1E50AD55D36CA46B61E46D5348D56258FCB725"
+    },
+    {
+      "id": "r017",
+      "file_id": "quickjs-original.c",
+      "start_line": 9882,
+      "end_line": 9949,
+      "excerpt_sha256": "4FAC78FD20FB6F06E17111205F86972F6593F1A5154B775555FFC81F3878080B"
+    },
+    {
+      "id": "r018",
+      "file_id": "quickjs-original.c",
+      "start_line": 10056,
+      "end_line": 10060,
+      "excerpt_sha256": "891EC47F76F9E04DA31C41C1D12EBE3FD1415307BDAFF73F2F66B4FCF62792DD"
+    },
+    {
+      "id": "r019",
+      "file_id": "quickjs-original.c",
+      "start_line": 47846,
+      "end_line": 47859,
+      "excerpt_sha256": "D32A65E68CFAEACE4783206E586CB49E4A5AFED20C2858AE80F975CEE626207D"
+    },
+    {
+      "id": "r020",
+      "file_id": "quickjs-original.c",
+      "start_line": 59979,
+      "end_line": 59999,
+      "excerpt_sha256": "65722066A915FB90384F13DCF51DB9308E4B93A1D38BA5C622CC466F4F25F2EE"
+    },
+    {
+      "id": "r021",
+      "file_id": "v8-shared-function-info.v24.13.cc",
+      "start_line": 333,
+      "end_line": 351,
+      "excerpt_sha256": "0866DE08AD60F6B473830FD0D1E986AA508CF8CEC876BE8AB7F7856066CD5BCA"
+    },
+    {
+      "id": "r022",
+      "file_id": "v8-bootstrapper.v24.13.cc",
+      "start_line": 430,
+      "end_line": 494,
+      "excerpt_sha256": "2D01F922765C41B3411C2AEBA8BB662092D0F9E5063D7959ACE9699E98CFC356"
+    },
+    {
+      "id": "r023",
+      "file_id": "quickjs-original.c",
+      "start_line": 7334,
+      "end_line": 7372,
+      "excerpt_sha256": "7E85848E5B54DB0CDF6E5379D6E4BD1434C090F188C595F3E3ED3740A4CE47B6"
+    },
+    {
+      "id": "r024",
+      "file_id": "quickjs-original.c",
+      "start_line": 64162,
+      "end_line": 64194,
+      "excerpt_sha256": "98DEFA93931C5A4C17028EF847CBC2D588C5531358DB9F688CF66B134B92309D"
+    },
+    {
+      "id": "r025",
+      "file_id": "fragment",
+      "start_line": 30,
+      "end_line": 51,
+      "excerpt_sha256": "632D85F86087F7B91C863267F1274FCA0920B4FFB0E2454D08574296FAB6DCDD"
+    },
+    {
+      "id": "r026",
+      "file_id": "v8-contexts.v24.13.h",
+      "start_line": 374,
+      "end_line": 404,
+      "excerpt_sha256": "FF8ACBBFA1D6C7474EF75DE2D29B85D2889FF523E235DE7D1475F3BA4F3ADCFD"
+    },
+    {
+      "id": "r027",
+      "file_id": "v8-contexts.v24.13.h",
+      "start_line": 530,
+      "end_line": 548,
+      "excerpt_sha256": "00D6CE5A28EB074BED5608C4879C54D2A4B1F5CF087A04F22F3FD0314F8B2B23"
+    },
+    {
+      "id": "r028",
+      "file_id": "v8-contexts.v24.13.h",
+      "start_line": 768,
+      "end_line": 775,
+      "excerpt_sha256": "C927A6DD5D3509E1CD1AE7E98333F7A7CB87DEC54D9E87C12ABB7E62431F7BD9"
+    },
+    {
+      "id": "r029",
+      "file_id": "quickjs-original.c",
+      "start_line": 3679,
+      "end_line": 3694,
+      "excerpt_sha256": "EA3D8C4B1757A845BDB1BEBEA7D5451CF4DD4E656F74743AD5E1119E082AA350"
+    },
+    {
+      "id": "r030",
+      "file_id": "quickjs-original.c",
+      "start_line": 3855,
+      "end_line": 3864,
+      "excerpt_sha256": "E262C6994A37576E6E326A2C97E50D40ABC0D93A247CA5BF4A1CB3749933D670"
+    },
+    {
+      "id": "r031",
+      "file_id": "quickjs-original.c",
+      "start_line": 3940,
+      "end_line": 3949,
+      "excerpt_sha256": "27302C6069130606399FFB94CDB2101A36A475D7D64D821198288A86459C0188"
+    },
+    {
+      "id": "r032",
+      "file_id": "quickjs-original.c",
+      "start_line": 7135,
+      "end_line": 7139,
+      "excerpt_sha256": "673A93F91AFCED3ACED27E4A4BDDCB70DB1E905B9282F7BDD18FBF6592BA6EED"
+    },
+    {
+      "id": "r033",
+      "file_id": "quickjs-original.c",
+      "start_line": 8097,
+      "end_line": 8126,
+      "excerpt_sha256": "CBCE4F9510C6B3B90CA28AEF27459E042352833A16DB8DC9E5BA38A142615001"
+    },
+    {
+      "id": "r034",
+      "file_id": "quickjs-original.c",
+      "start_line": 7683,
+      "end_line": 7719,
+      "excerpt_sha256": "47B3CEBA32BC9BFA3CCE41236582359AC5A321AB000BB30DC17FF4D51B1F8180"
+    },
+    {
+      "id": "r035",
+      "file_id": "quickjs-original.c",
+      "start_line": 8802,
+      "end_line": 8810,
+      "excerpt_sha256": "A552C8C7D6AF2DFDF8500FCD226A11E3198D1B2F44FEB8346D870D817AF4F66A"
+    },
+    {
+      "id": "r036",
+      "file_id": "quickjs-original.c",
+      "start_line": 8903,
+      "end_line": 8911,
+      "excerpt_sha256": "6D5E31E7B3E5989E804DBCF2222E5B9182EDA9AEF53C233E318D3E787F1C9DD8"
+    },
+    {
+      "id": "r037",
+      "file_id": "v8-js-objects.v24.13.cc",
+      "start_line": 554,
+      "end_line": 583,
+      "excerpt_sha256": "C0E40C0C7D6ACFD5FE630C3BD27F24BC2AB6730D6CED7FAD2318054BC181AE94"
+    },
+    {
+      "id": "r038",
+      "file_id": "fragment",
+      "start_line": 160,
+      "end_line": 177,
+      "excerpt_sha256": "B5D73035ED4B7AB96512C60FA8AF121A8F2CC3C8C86AEBD5829108083D9D36D9"
+    },
+    {
+      "id": "r039",
+      "file_id": "v8-map.v24.13.cc",
+      "start_line": 2467,
+      "end_line": 2484,
+      "excerpt_sha256": "B7AC90448BC11B455556E1B2AF40920584DDCDC90ED33A857975E17B031A834A"
+    },
+    {
+      "id": "r040",
+      "file_id": "v8-js-objects.v24.13.cc",
+      "start_line": 4929,
+      "end_line": 4994,
+      "excerpt_sha256": "3769B12301BE1446E57CE8094DF29C42CB652DA70C95E49409722E03B303F6E3"
+    },
+    {
+      "id": "r041",
+      "file_id": "quickjs-original.c",
+      "start_line": 6592,
+      "end_line": 6640,
+      "excerpt_sha256": "E335E46449E2CEF088EE6FE2BD4D9E6CC6A774B534D44038DC8E67B60902019D"
+    },
+    {
+      "id": "r042",
+      "file_id": "quickjs-original.c",
+      "start_line": 6685,
+      "end_line": 6717,
+      "excerpt_sha256": "1D13B24E16E195F83ACC05C6C51A2A8088E9B91590C831DC5BBAB55A406D99E3"
+    },
+    {
+      "id": "r043",
+      "file_id": "quickjs-original.c",
+      "start_line": 7168,
+      "end_line": 7208,
+      "excerpt_sha256": "DE51AD3EFFDEB94B34897AE8054AF63FEE292E3161EE7A139B2D9B4AF71D8EBD"
+    },
+    {
+      "id": "r044",
+      "file_id": "quickjs-original.c",
+      "start_line": 10488,
+      "end_line": 10515,
+      "excerpt_sha256": "2C2C1B627447A9708CA917A45747D950FDC6B41190DD431D0042307D529DD296"
+    },
+    {
+      "id": "r045",
+      "file_id": "quickjs-original.c",
+      "start_line": 11939,
+      "end_line": 11946,
+      "excerpt_sha256": "B6DC1DE09F0B7312945E4E409190BA97CA9F5861C7F6F4A5A67F6F9F0A7102D9"
+    },
+    {
+      "id": "r046",
+      "file_id": "v8-js-objects.v24.13.cc",
+      "start_line": 156,
+      "end_line": 185,
+      "excerpt_sha256": "C71630C070081500B575885EC3D1781375AC93376BB230EB688831FCA9B91A31"
+    },
+    {
+      "id": "r047",
+      "file_id": "quickjs-original.c",
+      "start_line": 8010,
+      "end_line": 8032,
+      "excerpt_sha256": "A7F0EE4A87E191BEBB8BFB1B6C01F9582891B8CF494DB7D1C065980636FF9ADD"
+    },
+    {
+      "id": "r048",
+      "file_id": "fragment",
+      "start_line": 90,
+      "end_line": 116,
+      "excerpt_sha256": "B32EB71CB2403FBB1FD28DED3BC408590208F1588C43765167CAB592EA96483D"
+    },
+    {
+      "id": "r049",
+      "file_id": "v8-js-objects.v24.13.cc",
+      "start_line": 585,
+      "end_line": 642,
+      "excerpt_sha256": "5C21B3A288E78D3672669239C2D8A2863904751231EF1C76C18471CA51D6EE1F"
+    },
+    {
+      "id": "r050",
+      "file_id": "v8-js-objects.v24.13.cc",
+      "start_line": 495,
+      "end_line": 515,
+      "excerpt_sha256": "CDCCC46E6278661D227D69F5A54D1CEC396BCAA3C298A05A133D73AE16CD93D8"
+    },
+    {
+      "id": "r051",
+      "file_id": "v8-prototype-inl.v24.13.h",
+      "start_line": 97,
+      "end_line": 110,
+      "excerpt_sha256": "E66B5019BD39595A23E3D6834BD91CC3DF3361AF4766F3C40337635F670240E5"
+    },
+    {
+      "id": "r052",
+      "file_id": "fragment",
+      "start_line": 179,
+      "end_line": 209,
+      "excerpt_sha256": "4821F4E4C82502729A18E7A310C3F5E7106CD8690DE443E7ABC99C41F7842BE0"
+    },
+    {
+      "id": "r053",
+      "file_id": "v8-js-objects.v24.13.cc",
+      "start_line": 609,
+      "end_line": 624,
+      "excerpt_sha256": "FC6DBA2B7EC9366CEE235A69654E8630FA7F63D943D4BC8E4F188D303158E04D"
+    },
+    {
+      "id": "r054",
+      "file_id": "fragment",
+      "start_line": 118,
+      "end_line": 158,
+      "excerpt_sha256": "06925F0C6B3295DB751CCB1A78BDD141AF0443FB3DDE4052FE23399C57251A9E"
+    },
+    {
+      "id": "r055",
+      "file_id": "quickjs-original.c",
+      "start_line": 13809,
+      "end_line": 13822,
+      "excerpt_sha256": "91A7B674054BF37188A82647899C3C3789A58A86AF4E07C55184A4F81DE45C2C"
+    },
+    {
+      "id": "r056",
+      "file_id": "v8-js-objects.v24.13.cc",
+      "start_line": 589,
+      "end_line": 624,
+      "excerpt_sha256": "1DC2077A679DD5A6A11FA9D709FDB625CF013049C3C058D58EE8C77E5F5E78BD"
+    },
+    {
+      "id": "r057",
+      "file_id": "fragment",
+      "start_line": 94,
+      "end_line": 209,
+      "excerpt_sha256": "DEB6191EC1B65EA05EECB982C1DC9EF28DB5CE57BFED4A308EF539742421287B"
+    },
+    {
+      "id": "r058",
+      "file_id": "quickjs-original.c",
+      "start_line": 2848,
+      "end_line": 2910,
+      "excerpt_sha256": "6A907FF2033167DC2AC923D8B742018CF0534CF79B196835817DBBC210B533F9"
+    },
+    {
+      "id": "r059",
+      "file_id": "v8-contexts.v24.13.h",
+      "start_line": 374,
+      "end_line": 404,
+      "excerpt_sha256": "FF8ACBBFA1D6C7474EF75DE2D29B85D2889FF523E235DE7D1475F3BA4F3ADCFD"
+    },
+    {
+      "id": "r060",
+      "file_id": "control",
+      "start_line": 493,
+      "end_line": 528,
+      "excerpt_sha256": "BDC7EAA568017F399FE65855F65E127F2DD0873C26ECB6A8D841907265C4BA66"
+    },
+    {
+      "id": "r061",
+      "file_id": "quickjs-original.c",
+      "start_line": 9419,
+      "end_line": 9429,
+      "excerpt_sha256": "5F66D64B4F44F23E2E808B02C64CB58EEB6A79A5857FD2C03F6F25BE2A7D767B"
+    },
+    {
+      "id": "r062",
+      "file_id": "quickjs-original.c",
+      "start_line": 9778,
+      "end_line": 9797,
+      "excerpt_sha256": "78A40ED392C31D0113E67439B73B5E15C987CE0594C1D5BD222F208CDD1BD587"
+    },
+    {
+      "id": "r063",
+      "file_id": "quickjs-original.c",
+      "start_line": 47728,
+      "end_line": 47738,
+      "excerpt_sha256": "BDFC8614437E2475D2FC8682BF1B84149A1A7E0FC074FBABE838AC5D88912F61"
+    },
+    {
+      "id": "r064",
+      "file_id": "v8-bootstrapper.v24.13.cc",
+      "start_line": 512,
+      "end_line": 530,
+      "excerpt_sha256": "CD1E4935FB8AA091A2C035DB28C07A7F04F8415B2613F18AEA3CB374D544CD73"
+    },
+    {
+      "id": "r065",
+      "file_id": "v8-bootstrapper.v24.13.cc",
+      "start_line": 1521,
+      "end_line": 1599,
+      "excerpt_sha256": "81058B5E3F5B9435C6CA1F64E31DE5E1E8DD6869CF3E8830D25DE05EF6E2D154"
+    },
+    {
+      "id": "r066",
+      "file_id": "v8-bootstrapper.v24.13.cc",
+      "start_line": 3533,
+      "end_line": 3564,
+      "excerpt_sha256": "97A5D7B2971A6E1B905ABE68D2AEF1650D8E8FB9ABE41BB2B8C950CE9D3EF149"
+    },
+    {
+      "id": "r067",
+      "file_id": "v8-factory.v24.13.cc",
+      "start_line": 2851,
+      "end_line": 2884,
+      "excerpt_sha256": "0666A03F974E6043364A8F27B55B4FCC3DD631FAF91B6DE6EE18182A1FA57251"
+    },
+    {
+      "id": "r068",
+      "file_id": "quickjs-original.c",
+      "start_line": 64064,
+      "end_line": 64077,
+      "excerpt_sha256": "63270FE301AC96E041EACB4173CD43AE3281D07B55BFC19CF39931C3B4EE731E"
+    },
+    {
+      "id": "r069",
+      "file_id": "v8-map.v24.13.cc",
+      "start_line": 934,
+      "end_line": 964,
+      "excerpt_sha256": "8B7CD47E70BEEEE01E84CFD532131FBE1A504F723E11F0E322D0FAFF528CA9FD"
+    },
+    {
+      "id": "r070",
+      "file_id": "v8-js-function.v24.13.cc",
+      "start_line": 1191,
+      "end_line": 1260,
+      "excerpt_sha256": "D7AAE02A0F07180114EB0112BB1A2ABF2BBD8DC9B580E42A680E3D3627513885"
+    },
+    {
+      "id": "r071",
+      "file_id": "fragment",
+      "start_line": 57,
+      "end_line": 80,
+      "excerpt_sha256": "73B5D34C56D53C23E8E64BE94993DF977C3F023464E9E280AF3AAAA2D563D2E3"
+    },
+    {
+      "id": "r072",
+      "file_id": "fragment",
+      "start_line": 164,
+      "end_line": 172,
+      "excerpt_sha256": "5993D6E64172F334B04FABF78D4A2030E78319B22C5A0D220EA961831777DF2D"
+    },
+    {
+      "id": "r073",
+      "file_id": "control",
+      "start_line": 1,
+      "end_line": 10,
+      "excerpt_sha256": "016F38088CC3F181F557B6EDF4A2B7AFD725D78CC0CA3791CB21B9659D869C5C"
+    },
+    {
+      "id": "r074",
+      "file_id": "engine-abi-h",
+      "start_line": 1,
+      "end_line": 37,
+      "excerpt_sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5"
+    },
+    {
+      "id": "r075",
+      "file_id": "build-original",
+      "start_line": 69,
+      "end_line": 105,
+      "excerpt_sha256": "10163AD2535C23ADC68A09E24BEC311247CF22EFFFB23E34B36059460C43EE51"
+    },
+    {
+      "id": "r076",
+      "file_id": "build-original",
+      "start_line": 5174,
+      "end_line": 5188,
+      "excerpt_sha256": "D06479AC5E1474B804A3B90E39818ADFA324068D11DC145F149E062BFB2B2414"
+    }
+  ],
+  "excerpt_recipe": "UTF-8 full file splitlines; select inclusive one-based bounds; LF join plus one LF; exact text and SHA comparison, no semantic normalization.",
+  "all_16_mapping_reference_ids_and_control_numbers_valid": true,
+  "controls": {
+    "names": [
+      "VM native Error constructor intrinsic families retain their native initial names",
+      "VM native Error constructor direct native creation and throws record real origins",
+      "VM native Error constructor real VM stack exhaustion retains RangeError provenance",
+      "VM native Error constructor public function and Error names do not replace provenance",
+      "VM native Error constructor public replacement cannot redirect native intrinsic factories",
+      "VM native Error constructor changing an Error prototype preserves base provenance",
+      "VM native Error constructor new inheritors suppress fast provenance with real prototype admission",
+      "VM native Error constructor explicit prototype admission uses the same original fallback",
+      "VM native Error constructor inherited data tag precedes constructor at the same level",
+      "VM native Error constructor receiver constructor and accessor tag are never invoked",
+      "VM native Error constructor prototype accessors and mutable builtin name are skipped",
+      "VM native Error constructor actual intrinsic Object is skipped without its public name",
+      "VM native Error constructor final native class fallback remains Error",
+      "VM native Error constructor bound and Proxy constructors are skipped without traps",
+      "VM native Error constructor missing general DebugName is explicit without function name Get",
+      "VM native Error constructor Proxy prototype storage stays unsupported without traps",
+      "VM native Error constructor native exotic descriptors remain uncalled and unsupported",
+      "VM native Error constructor different new target is an explicit remaining dependency",
+      "VM native Error constructor unrecorded physical Error allocation cannot invent provenance",
+      "VM native Error constructor ordinary lookalikes never acquire the actual native class",
+      "VM native Error constructor query preserves actual ordinary and uncatchable pending owners",
+      "VM native Error constructor active and cancelled native termination state is unchanged",
+      "VM native Error constructor all selected query branches allocate no VM storage",
+      "VM native Error constructor actual native origin survives released foreign realm and retires with Error"
+    ],
+    "declared_count": 24,
+    "literal_repository_modules": 1,
+    "literal_imports": [
+      "std"
+    ],
+    "literal_c_include_names": [
+      "engine_abi.h"
+    ],
+    "literal_anonymous_blocks": 0,
+    "future_actual_metadata_count": null
+  },
+  "preservation": {
+    "prior_sources": 28,
+    "prior_owner_controls_and_support": 3,
+    "prior_packets": 6,
+    "direct_prior_snapshot_records": 79,
+    "support_pairs": 2,
+    "all_declared_pairs_rehashed_equal": true
+  },
+  "native_acquisition_limit": "Eight reused authority pairs were independently byte-bound to contained originals. Their earlier HTTP provenance is inherited, not reacquired here. Six newly selected authorities match successful native transport raw body SHA.",
+  "unique_file_pins": 164,
+  "pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\production-proposal.json",
+      "bytes": 14336,
+      "sha256": "B1C179FE0FE38E0F6FC1FB1BF351FE62ED4D85E90FBEED1DDDF995C1345E863C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source-map.json",
+      "bytes": 168366,
+      "sha256": "472E2044C5C441563124CC53A1AAAE2394A5E75A9D53577B453F5F795333BC54"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\closure-and-preservation.json",
+      "bytes": 45378,
+      "sha256": "DBF5C664507C2BBB12157CDD6B73A2C0AA125C40B7AF6C752E18C5E97C76727B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2399340,
+      "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\successor\\projected\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2403205,
+      "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.h",
+      "bytes": 113474,
+      "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\projected\\vendor\\quickjs\\quickjs.h",
+      "bytes": 114656,
+      "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+      "bytes": 8944,
+      "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+      "bytes": 8944,
+      "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_vm_error_constructor_name_test.zig",
+      "bytes": 28931,
+      "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\successor\\source\\src\\native_vm_error_constructor_name_test.zig",
+      "bytes": 28931,
+      "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\build\\original.zig",
+      "bytes": 503440,
+      "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\build\\projected.zig",
+      "bytes": 504106,
+      "sha256": "28C315EFAD669387B315CA24C39FB4942FD7FF26BD6D679DAA59A110ED2E97D5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\vm-projection-successor.json",
+      "bytes": 24862,
+      "sha256": "64DB11E161C4AF40DBE7ABC1D981D07F4E6BD74B69B806353EDBA86F5F6A6702"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\build\\proposal.json",
+      "bytes": 2212,
+      "sha256": "54760A19321B0DC5C2B3C036B7942EF2F8F212565C0A1B691E324E94D6F7CD8A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\copied-authority-bindings.json",
+      "bytes": 3388,
+      "sha256": "8220E3ED1E37277EEB3FDB0F1D7827BC8C6D9C8F316416768CBFF55B17DB5325"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\consumer-source-binding.json",
+      "bytes": 786,
+      "sha256": "4976C1F2E3CE74B182B5B32E9249C13A6E0857B2961584CA2385847E88E64E18"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\map-acquisition.json",
+      "bytes": 2937,
+      "sha256": "82BBF6A3BD42C73B5E01F9B8A21B03809E640AA26F033C37D17AA29A073CCA1C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\additional-acquisition.json",
+      "bytes": 7429,
+      "sha256": "36EE21F71B774DB2D18009AAD655930E77000C28F406FDAB754D2CF2C59865CE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\bootstrapper-acquisition.json",
+      "bytes": 2942,
+      "sha256": "4E2B5D4B8063D66C9DF33ACFB9FDFCA7C5206D566A2C5B566CFC153F52B0DA3D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\factory-acquisition.json",
+      "bytes": 2940,
+      "sha256": "52A85376CF15D41F999318FC515625A5B06C48B82F7087F427DEC3F029E32D8A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\vm-projection.json",
+      "bytes": 22593,
+      "sha256": "1FECF1633A87477251D22EB47AD3F8DE1D33451E968B4FE4A5474F41CFD9A933"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\native_vm_error_constructor_name_test.zig",
+      "bytes": 28930,
+      "sha256": "A6BEC5B75AA64E097D7709300389DC1F49395879A1A46CB8911536217DE41E6D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\control-stack-limit-source-choice.json",
+      "bytes": 717,
+      "sha256": "D0FA22D7E0898F4071A96F60B545BC1528328F579D3ACCC0E9388ED7E79722FB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\node-errors.v24.13.cc",
+      "bytes": 43095,
+      "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\node-errors.v24.13.h",
+      "bytes": 23394,
+      "sha256": "396CC9AE4323EC0E9FB8E4B5E6912C0603E86410D5588802B5B1F2C0F7048CC4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-objects.v24.13.cc",
+      "bytes": 234488,
+      "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-function.v24.13.cc",
+      "bytes": 64812,
+      "sha256": "BD7C962A95DFD157FAFC7933D4C1D1571EE44D02FB71F0FF8592723379B88C47"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-shared-function-info.v24.13.cc",
+      "bytes": 34727,
+      "sha256": "97E61FDB8DFD572CE0BF17F2346636F123842815BB28FD118D0AD0773748CCEB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-prototype-inl.v24.13.h",
+      "bytes": 5121,
+      "sha256": "A7E44D86EC7CDB6DC55912629FD7B09FBFEB7FF6E3F15DAA16851AA0EADA500C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-prototype.v24.13.h",
+      "bytes": 3041,
+      "sha256": "0EB94F950E31EC05CA827AECF9A82CF9A76D86EF92E544143A354919C70CCC70"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-map.v24.13.cc",
+      "bytes": 99099,
+      "sha256": "F94513B765EE2DD421C1D5DB3E919BF8D5765776E985DECA594F9110F9E592FE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-messages.v24.13.cc",
+      "bytes": 49726,
+      "sha256": "A00739D8A0D7DC796BB10D50B495DF9B417B9125C6B86B8333F37224A2BCE59E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-contexts.v24.13.h",
+      "bytes": 49684,
+      "sha256": "4B94B0DEC61C1A68779C5D56CAA746158DC172F0402B6EFA803AE1F1A1B7C629"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-builtins-error.v24.13.cc",
+      "bytes": 2763,
+      "sha256": "8D1447C8E744A17440C36FAE548F876F44B6F219FCD0E22B0E8EB43C8E7DEFE3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-bootstrapper.v24.13.cc",
+      "bytes": 336314,
+      "sha256": "0991594530BB8FAF3836C747E547F43BB091D0AFA74E16B4B1814F68458D172A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-factory.v24.13.cc",
+      "bytes": 203216,
+      "sha256": "895D8A6E8BEDE5FF80EA97DE37F765EE54F13D20E449968841C288596B851FC6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\support\\src\\extensions\\engine_abi.h",
+      "bytes": 2003,
+      "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\support\\src\\extensions\\engine_abi.c",
+      "bytes": 18016,
+      "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_async_wrap_state.zig",
+      "bytes": 26761,
+      "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_async_wrap.zig",
+      "bytes": 19741,
+      "sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_uv_fs.h",
+      "bytes": 4931,
+      "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_uv_tcp.c",
+      "bytes": 45730,
+      "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_fs_request_callback.zig",
+      "bytes": 7570,
+      "sha256": "85EA8C7E5B7020F6BCB6AB88AD2B20A85EE0DFC0383861239185D898C5FC82E2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_read.zig",
+      "bytes": 14225,
+      "sha256": "DEEEDCB2CFA51512571574F676091D71E49448FFDF23F1B60DF881B73B9307FD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_read_wrap.zig",
+      "bytes": 9466,
+      "sha256": "1E98E0231C43EF57A35010CD2B531BB2FE23A84D8A6AA9DD0A885286799E6A49"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_flags.c",
+      "bytes": 924,
+      "sha256": "994EFA17D65F768B8366134B2ED44DE3315183F3E7F345C18032EF4666C151EF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_flags.h",
+      "bytes": 703,
+      "sha256": "BE2CF8003DE668BD5639DFD8CEE98ECFF8A64E6E0275F899EFAE001BCC17298C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_flags.zig",
+      "bytes": 1184,
+      "sha256": "86BA55D2D5E8E1F674113A469C92057B21CCF346D8250E0835335EE1F4A5CAE5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_bootstrap.zig",
+      "bytes": 12107,
+      "sha256": "C0DBDF70E15ED66A6B8D5384FD22F022DA0C391E37DA733CB63DC410E389C204"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_call.zig",
+      "bytes": 10435,
+      "sha256": "A6188B64B4727119A9DF21A7DCEA9B69D06A0C0681D8035CD3DE2E456E171823"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_class.zig",
+      "bytes": 17292,
+      "sha256": "AA40C08D475D3833EE8B722736188AF01CFDB12529E42D468704677EE3CFB0D0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_io.zig",
+      "bytes": 10904,
+      "sha256": "5A8986233FBFE41600F01726EE112A367C360EC730351CD7ABB9D39F28169C54"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_operations.zig",
+      "bytes": 16085,
+      "sha256": "E9A70B58A83C331AA768B6D847A90BD2B4F7F4965B84D5B76D843CFE0915E8BC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_promises.zig",
+      "bytes": 6318,
+      "sha256": "3B737D35A2899FE64CCC5E7F5FB89E4115BFF438D1BD0B37774238018D905C9F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_validation.zig",
+      "bytes": 14837,
+      "sha256": "ECE623CAABDB1B3CB0CFC5BA0AB3B208591F25FE4445231392AD839F27A6678F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_fs_range_error.zig",
+      "bytes": 13059,
+      "sha256": "30DEEA69CCD6A19DA9838DFC2DDE6ADC3F889D34FE44679118C2964CF3D005E9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_fs_validators.zig",
+      "bytes": 15664,
+      "sha256": "727760318E0F87A4D26E587BD5EFB4B8B01190091451EEE8D265A1E3EA1E66FD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_mark_transfer_mode.zig",
+      "bytes": 4577,
+      "sha256": "BD6A7E1DE8E042A626D9F50DE0F3C0F6B659B1BED4917E7FD867A2332BA92FA3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_util_inspect.zig",
+      "bytes": 45167,
+      "sha256": "CDC6CF80EF6176D3E7B81D3168024F20F92B09522DC574B25CE99656A0464BD0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_public_cli_args.zig",
+      "bytes": 30893,
+      "sha256": "4C30ACAD411FE7DDBD5F36D6B06C197AED6C30470B795E67BA9A0788530A6ACF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_public_lexical_frame.zig",
+      "bytes": 9672,
+      "sha256": "7A6CF1E2F00CBD59DBCDF31AC1E1ADA38DCF9575982B8EE05DD62FE921D6CD90"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_public_template_literal.zig",
+      "bytes": 1246,
+      "sha256": "0A3366E1F76152C9D771F81E074EB08948C7C188AED1109FE1EAACFC6AC74EE3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_public_values.zig",
+      "bytes": 13939,
+      "sha256": "0B1BB422A9C89E7CE8146B32413B27E42D8DFB65285C3245B89EED8AF222022E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_file_handle_read_test.zig",
+      "bytes": 16427,
+      "sha256": "FFAEE39E71868A92884A855B886D296686558C955EA700C0D735F68DB8D2777D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_fs_callback_template_test.zig",
+      "bytes": 14838,
+      "sha256": "1DC90343E1BB318344F4C9652C73610B8098AA50D6A3F8B3E9EC0C17BECA8BCC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_file_handle_read_test_support.zig",
+      "bytes": 23302,
+      "sha256": "F72A583ED548F7BE10477B0AEFD0F77E3D035FB48F2708324AF2E92EB6CA90EC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 32558,
+      "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\source\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 32558,
+      "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\source\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_fs_before_hook_continuation_test.zig",
+      "bytes": 6578,
+      "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\source\\src\\native_node_fs_before_hook_continuation_test.zig",
+      "bytes": 6578,
+      "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production-proposal.json",
+      "bytes": 14361,
+      "sha256": "061258BF1085004B82EA8D1A9C237402F7D4075A4DE837F9C25B7D39D0D3A804"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\proposal.json",
+      "bytes": 18499,
+      "sha256": "C195AE5D402ED457AF651D6BEB37B2BB8DBD3DF36CD74106EB172F00B64618FC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\proposal.json",
+      "bytes": 14602,
+      "sha256": "BA6543E47B33A5D994AD097FBF0CBC58A6E35F262DF42FFE5909D9A736118319"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\proposal.json",
+      "bytes": 12997,
+      "sha256": "08F45EF3D26E4D2CBB8A5FA3A144E635AB6DA9B64B486871F7B1D102F6488B56"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\handoff.json",
+      "bytes": 14557,
+      "sha256": "A9D4A4D0BAC91764B52A9EE87BE7C555C2C8C61FCEB9FC87E7282A169700AD73"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\dependency-findings.json",
+      "bytes": 52214,
+      "sha256": "7AFDDC50A54D12E0300BF7BD8A1EA1DBA5E6E21BF90CECC0DA0CD19C06B5791A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_owner.zig",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_owner.zig",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "bytes": 15294,
+      "sha256": "9EB383CED295E354BD91A5F1FA9E471B70182C3D554D190148AEB4BA93386FEC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "bytes": 15294,
+      "sha256": "9EB383CED295E354BD91A5F1FA9E471B70182C3D554D190148AEB4BA93386FEC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_gc_close.zig",
+      "bytes": 6402,
+      "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_gc_close.zig",
+      "bytes": 6402,
+      "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\dependency-inventory.json",
+      "bytes": 476088,
+      "sha256": "25D66DA29B724A3BA4D4FB68D6C8952D06C6FAFC83A73E39CE3581860FFF6B3D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\node_file.v24.13.cc",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\node_file.v24.13.h",
+      "bytes": 17193,
+      "sha256": "A63A31D1BCAEB7AF416B19ABEAFAB880DB7D424378DC27050F9FC2EE4921E16F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\base_object.v24.13.h",
+      "bytes": 14711,
+      "sha256": "684149EB458508964CCEBE862E12058BFADFC6C31E7D5F29D6CD8EA0A9423105"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\base_object-inl.v24.13.h",
+      "bytes": 10023,
+      "sha256": "AFC8EFE0A4562F49FD7B543CA82A855511345177466D0B8F0E4CF8188FA4CEC6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-conversions-inl.v24.13.h",
+      "bytes": 12043,
+      "sha256": "9EEE8FDFB6DCC22486A8398DDD9EA1E031208DE0BEF8778F465CCFC22A2B1062"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\env.v24.13.h",
+      "bytes": 45315,
+      "sha256": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\env-inl.v24.13.h",
+      "bytes": 28109,
+      "sha256": "41949D4DFA01B04174B0E881B1DB3DD12BF51B9428B89946504603700FCF3E5E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\req_wrap-inl.v24.13.h",
+      "bytes": 5640,
+      "sha256": "27C770D8756B626C80210F96F9DB1CF31BFBF09AAB1DA53DC35B382314883E67"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_async_wrap_state.zig",
+      "bytes": 26761,
+      "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_async_wrap_state.zig",
+      "bytes": 28133,
+      "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 39890,
+      "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_fs_request_io.zig",
+      "bytes": 14502,
+      "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_fs_request_io.zig",
+      "bytes": 15469,
+      "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\original\\src\\extensions\\native_uv_fs.h",
+      "bytes": 4931,
+      "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_uv_fs.h",
+      "bytes": 5573,
+      "sha256": "D5BB021DFECD726A7FBB6860616753957C1B25B11C4776BAFD24F2C935589D34"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\original\\src\\extensions\\native_uv_tcp.c",
+      "bytes": 45730,
+      "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_uv_tcp.c",
+      "bytes": 46191,
+      "sha256": "85E49522C7C05764957ADACF6B80F2745D5C06E0A361D33531A8BAF9FEA49F87"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\shared.patch",
+      "bytes": 8341,
+      "sha256": "2B26FA7BC20F20197677CD17B77BE247E6D2E878D007A6A978652FEC8C5C6E46"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\libuv\\src\\win\\fs.c",
+      "bytes": 105366,
+      "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\libuv\\src\\win\\fs-fd-hash-inl.h",
+      "bytes": 6886,
+      "sha256": "1365F18D01C4117B0F42CFB2E0065F37AD62E4F5214B150CBF660F986955BB2D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\libuv\\src\\unix\\fs.c",
+      "bytes": 59847,
+      "sha256": "FFE2CD709C894083D4E470BCE5248EEE71C5E5594418BE3D7A6D80E44D723A61"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\libuv\\src\\uv-common.h",
+      "bytes": 18411,
+      "sha256": "7524F791D5648F3E135340AC61BCB242028947A81A5B8B32042F8561848A5397"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\libuv\\include\\uv.h",
+      "bytes": 72810,
+      "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\original\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "bytes": 15294,
+      "sha256": "9EB383CED295E354BD91A5F1FA9E471B70182C3D554D190148AEB4BA93386FEC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\projected\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\close-settlement.patch",
+      "bytes": 1351,
+      "sha256": "8FB28FD3A97FF66ADE8CE69C21D65A253C283A91461A524DA76D4A4FB10B1F28"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node_file.v24.13.cc",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\native-callback-and-exception-source.json",
+      "bytes": 20217,
+      "sha256": "008EEC523290C9547E6F4D2BA2AA108E62FCC57BCB8E5ECB730F1548E7F1977C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\async_wrap.cc.v24.13.txt",
+      "bytes": 27043,
+      "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-api-callback.v24.13.cc",
+      "bytes": 13682,
+      "sha256": "0A4C8ECF051F995F9669826DC9D85560ADD6ECD6FB2E28CE6B2F3DD309947DE2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-api-macros.v24.13.h",
+      "bytes": 5190,
+      "sha256": "0E027969A031D88B0E139D143ACBACBE2734F648D11BC960D52603AAADC0E6F7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-objects.v24.13.cc",
+      "bytes": 272859,
+      "sha256": "81E1D4EDFCE90BC1409DDF1B16966F2931E8DC947BF7429DFED6959708211BFC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-errors.v24.13.cc",
+      "bytes": 43095,
+      "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-errors.v24.13.h",
+      "bytes": 23394,
+      "sha256": "396CC9AE4323EC0E9FB8E4B5E6912C0603E86410D5588802B5B1F2C0F7048CC4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-api-inl.v24.13.h",
+      "bytes": 14583,
+      "sha256": "F72A89EADA3FF47D5F2D368BF088CD5ECE424BBE3209A9CC5D42B83398E4BA05"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-api.v24.13.h",
+      "bytes": 22131,
+      "sha256": "A16BF05E03F2AE915B0600C10847A053A511D2855640358CC653A2655338A9CA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 39890,
+      "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support\\src\\extensions\\native_node_operation_scope.zig",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+      "bytes": 9934,
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support\\src\\extensions\\native_node_weak_global.zig",
+      "bytes": 2477,
+      "sha256": "2B776E789CCBB8626B928C0EA44896BE843B11C379C42B30D298E19A49AE6C8A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support\\src\\extensions\\native_node_check_failure.zig",
+      "bytes": 2857,
+      "sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support\\src\\extensions\\native_node_fs_request_promise.zig",
+      "bytes": 18834,
+      "sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2399340,
+      "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\original\\src\\extensions\\native_node_fs_request_promise.zig",
+      "bytes": 18834,
+      "sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\projected\\src\\extensions\\native_node_fs_request_promise.zig",
+      "bytes": 19385,
+      "sha256": "8EFC2D58C1B1BD5069777FE1D06618F4572F54EEDAC09265EAD26BE8E675A4DF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\before-hook.patch",
+      "bytes": 1306,
+      "sha256": "BAA07F1FD5DB32B408F4CDDF111DB37E94C4D42E29120C7EE102265603616A16"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\node_file-inl.v24.13.h",
+      "bytes": 14756,
+      "sha256": "2E96C28CB0BBB4520D8E0C0997188922C3DDE28853D14A3E19D7D559BC9493D5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\node_file.v24.13.h",
+      "bytes": 17193,
+      "sha256": "A63A31D1BCAEB7AF416B19ABEAFAB880DB7D424378DC27050F9FC2EE4921E16F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\node-api-callback.v24.13.cc",
+      "bytes": 13682,
+      "sha256": "0A4C8ECF051F995F9669826DC9D85560ADD6ECD6FB2E28CE6B2F3DD309947DE2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\async_wrap.cc.v24.13.txt",
+      "bytes": 27043,
+      "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\node-errors.v24.13.cc",
+      "bytes": 43095,
+      "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\v8-api-macros.v24.13.h",
+      "bytes": 5190,
+      "sha256": "0E027969A031D88B0E139D143ACBACBE2734F648D11BC960D52603AAADC0E6F7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\v8-api-inl.v24.13.h",
+      "bytes": 14583,
+      "sha256": "F72A89EADA3FF47D5F2D368BF088CD5ECE424BBE3209A9CC5D42B83398E4BA05"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\v8-objects.v24.13.cc",
+      "bytes": 272859,
+      "sha256": "81E1D4EDFCE90BC1409DDF1B16966F2931E8DC947BF7429DFED6959708211BFC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\existing-control\\native_node_fs_request_owner_test.zig",
+      "bytes": 57142,
+      "sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\dependency-inventory.json",
+      "bytes": 567445,
+      "sha256": "56BFF251AD680CE3B5B4E7D4D979CFDA2FA41345BC958432273007DAFD2330D1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\source-map.json",
+      "bytes": 21972,
+      "sha256": "5E36100728A32C4ACC09F1D53BF11BC90102E506B581C8496DA9F1185749EBCA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\build\\proposal.json",
+      "bytes": 4451,
+      "sha256": "8DFCA25C7674D319464CE7E411BF6834E516F75418B2381AFF8026D4F13A16D3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\support-bindings.json",
+      "bytes": 848,
+      "sha256": "D0DF66CE2B2409B3EE19A2A146AA9DC83A419B95B0DBCAA0FA6139D5D5E55002"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine_abi.h",
+      "bytes": 2003,
+      "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine_abi.c",
+      "bytes": 18016,
+      "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\proposal\\native_node_async_wrap_state.zig",
+      "bytes": 26761,
+      "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\proposal\\native_node_async_wrap.zig",
+      "bytes": 19741,
+      "sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\proposal\\native_uv_fs.h",
+      "bytes": 4931,
+      "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\proposal\\native_uv_tcp.c",
+      "bytes": 45730,
+      "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\proposal\\native_node_fs_request_callback.zig",
+      "bytes": 7570,
+      "sha256": "85EA8C7E5B7020F6BCB6AB88AD2B20A85EE0DFC0383861239185D898C5FC82E2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\proposal\\native_node_file_handle_read.zig",
+      "bytes": 14225,
+      "sha256": "DEEEDCB2CFA51512571574F676091D71E49448FFDF23F1B60DF881B73B9307FD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\proposal\\native_node_file_handle_read_wrap.zig",
+      "bytes": 9466,
+      "sha256": "1E98E0231C43EF57A35010CD2B531BB2FE23A84D8A6AA9DD0A885286799E6A49"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\v8-js-objects.v24.13.cc",
+      "bytes": 234488,
+      "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\v8-js-function.v24.13.cc",
+      "bytes": 64812,
+      "sha256": "BD7C962A95DFD157FAFC7933D4C1D1571EE44D02FB71F0FF8592723379B88C47"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\v8-shared-function-info.v24.13.cc",
+      "bytes": 34727,
+      "sha256": "97E61FDB8DFD572CE0BF17F2346636F123842815BB28FD118D0AD0773748CCEB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\v8-prototype-inl.v24.13.h",
+      "bytes": 5121,
+      "sha256": "A7E44D86EC7CDB6DC55912629FD7B09FBFEB7FF6E3F15DAA16851AA0EADA500C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\v8-prototype.v24.13.h",
+      "bytes": 3041,
+      "sha256": "0EB94F950E31EC05CA827AECF9A82CF9A76D86EF92E544143A354919C70CCC70"
+    }
+  ],
+  "no_production_or_main_edit": true
+}

@@ -211,7 +211,17 @@ pub const Request = struct {
         const environment_value = self.environment();
         const data = self.binding_data orelse return self.wrap.registry.check(.invalid_wrap_brand);
         const wrapper = try self.object();
-        try callback_scope.init(environment_value, wrapper, self.wrap.context(), .{}, self.wrap.context_frame);
+        callback_scope.init(environment_value, wrapper, self.wrap.context(), .{},
+            self.wrap.context_frame) catch |err|
+        {
+            s.boundary.escaping();
+            // The completed void InternalCallbackScope constructor does not
+            // skip the original live promise-property Get after an ordinary
+            // before-hook rethrow. Keep that real completion in this existing
+            // HandleScope while executing Get and the unchanged FromJust path.
+            if (!callback_scope.initialized or !callback_scope.pushed_ids or
+                err != error.JavaScriptException or s.boundary.isFatal()) return err;
+        };
         const resolver = try s.getKey(wrapper, data.promise_string);
         try s.pending();
         var result = c.JS_PiSettlePromise(s.engine.context, resolver, value, is_reject);

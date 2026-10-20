@@ -1,0 +1,302 @@
+{
+  "schema": "native-error-constructor-name-vm-projection-v1",
+  "basis_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "source_only": true,
+  "compiler_native_test_execution": false,
+  "live_existing_source_mutations": false,
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "context intrinsic constructor and immutable initial name roots",
+      "old_text": "    JSValue native_error_proto[JS_NATIVE_ERROR_COUNT];\n",
+      "new_text": "    JSValue native_error_proto[JS_NATIVE_ERROR_COUNT];\n    JSValue pi_native_error_constructor[JS_NATIVE_ERROR_COUNT];\n    JSValue pi_error_constructor_name[JS_NATIVE_ERROR_COUNT + 1];\n",
+      "sequence": 1,
+      "offset_in_predecessor": 24196,
+      "before_file_sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2",
+      "after_file_sha256": "31508BD5FC25AA6D4A1FFF919886707563716E9279E78B38BC4D86437B7C2986",
+      "old_bytes": 55,
+      "new_bytes": 185
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "actual Error private native constructor ownership",
+      "old_text": "            bool stack_fallback_present;\n        } native_error;\n",
+      "new_text": "            bool stack_fallback_present;\n            /* Actual native intrinsic constructor and its initial DebugName.\n             * These are owned GC edges, never mutable public properties. */\n            JSValue constructor;\n            JSValue constructor_name;\n            /* 0: unrecorded; 1: base == new.target; 2: different new.target. */\n            uint8_t constructor_provenance;\n        } native_error;\n",
+      "sequence": 2,
+      "offset_in_predecessor": 51679,
+      "before_file_sha256": "31508BD5FC25AA6D4A1FFF919886707563716E9279E78B38BC4D86437B7C2986",
+      "after_file_sha256": "3F15DCBD93399150FB6680AE314367057F52DDE707FB2FBBD097142BB455088B",
+      "old_bytes": 65,
+      "new_bytes": 416
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "private provenance helper declarations",
+      "old_text": "static JSValue js_error_constructor(JSContext *ctx, JSValueConst new_target,\n                                    int argc, JSValueConst *argv, int magic);\n",
+      "new_text": "static JSValue js_error_constructor(JSContext *ctx, JSValueConst new_target,\n                                    int argc, JSValueConst *argv, int magic);\nstatic void js_pi_cache_error_constructor(JSContext *ctx, int kind,\n                                          JSValueConst constructor);\nstatic void js_pi_record_error_constructor(JSContext *ctx, JSValueConst error,\n                                           int kind, JSValueConst constructor,\n                                           JSValueConst new_target);\nstatic void js_pi_record_intrinsic_error(JSContext *ctx, JSValueConst error,\n                                          int kind);\n",
+      "sequence": 3,
+      "offset_in_predecessor": 66211,
+      "before_file_sha256": "3F15DCBD93399150FB6680AE314367057F52DDE707FB2FBBD097142BB455088B",
+      "after_file_sha256": "9E68BC60AF356FA05E834BC1A70E81CA2C550AE6B86672608947D3C9FC5EF8FE",
+      "old_bytes": 155,
+      "new_bytes": 649
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "partial Context construction initializes new roots before allocation",
+      "old_text": "    ctx->error_ctor = JS_NULL;\n",
+      "new_text": "    ctx->error_ctor = JS_NULL;\n    for (i = 0; i < JS_NATIVE_ERROR_COUNT; i++) {\n        ctx->pi_native_error_constructor[i] = JS_UNDEFINED;\n        ctx->pi_error_constructor_name[i] = JS_UNDEFINED;\n    }\n    ctx->pi_error_constructor_name[JS_PLAIN_ERROR] = JS_UNDEFINED;\n",
+      "sequence": 4,
+      "offset_in_predecessor": 140193,
+      "before_file_sha256": "9E68BC60AF356FA05E834BC1A70E81CA2C550AE6B86672608947D3C9FC5EF8FE",
+      "after_file_sha256": "4B07E0671BC4833DDD5CB102B53F617AD734EAF78B04AE10408FF992F63CA436",
+      "old_bytes": 31,
+      "new_bytes": 272
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Context GC marks every native constructor and initial name edge",
+      "old_text": "    for(i = 0; i < JS_NATIVE_ERROR_COUNT; i++) {\n        JS_MarkValue(rt, ctx->native_error_proto[i], mark_func);\n    }\n",
+      "new_text": "    for(i = 0; i < JS_NATIVE_ERROR_COUNT; i++) {\n        JS_MarkValue(rt, ctx->native_error_proto[i], mark_func);\n        JS_MarkValue(rt, ctx->pi_native_error_constructor[i], mark_func);\n        JS_MarkValue(rt, ctx->pi_error_constructor_name[i], mark_func);\n    }\n    JS_MarkValue(rt, ctx->pi_error_constructor_name[JS_PLAIN_ERROR], mark_func);\n",
+      "sequence": 5,
+      "offset_in_predecessor": 145028,
+      "before_file_sha256": "4B07E0671BC4833DDD5CB102B53F617AD734EAF78B04AE10408FF992F63CA436",
+      "after_file_sha256": "8FDA14BA65520C55DDF1B0A1BF1E94E6D62F44E1BC19BEFBA1DA578B569E0C4D",
+      "old_bytes": 120,
+      "new_bytes": 347
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Context destruction releases every new owned edge",
+      "old_text": "    for(i = 0; i < JS_NATIVE_ERROR_COUNT; i++) {\n        JS_FreeValue(ctx, ctx->native_error_proto[i]);\n    }\n",
+      "new_text": "    for(i = 0; i < JS_NATIVE_ERROR_COUNT; i++) {\n        JS_FreeValue(ctx, ctx->native_error_proto[i]);\n        JS_FreeValue(ctx, ctx->pi_native_error_constructor[i]);\n        JS_FreeValue(ctx, ctx->pi_error_constructor_name[i]);\n    }\n    JS_FreeValue(ctx, ctx->pi_error_constructor_name[JS_PLAIN_ERROR]);\n",
+      "sequence": 6,
+      "offset_in_predecessor": 148051,
+      "before_file_sha256": "8FDA14BA65520C55DDF1B0A1BF1E94E6D62F44E1BC19BEFBA1DA578B569E0C4D",
+      "after_file_sha256": "D536E4F9DC011DC77FCC4DCF4C0BD0F04D0E7DFEFB46E7EB5981E769E337760F",
+      "old_bytes": 110,
+      "new_bytes": 307
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "all actual Error allocations initialize new fields",
+      "old_text": "    case JS_CLASS_ERROR:\n        p->u.native_error.native_allocation_generation = 0;\n        p->u.native_error.stack_fallback_present = false;\n        p->u.object_data = JS_UNDEFINED;\n        break;\n",
+      "new_text": "    case JS_CLASS_ERROR:\n        p->u.native_error.native_allocation_generation = 0;\n        p->u.native_error.stack_fallback_present = false;\n        p->u.native_error.constructor = JS_UNDEFINED;\n        p->u.native_error.constructor_name = JS_UNDEFINED;\n        p->u.native_error.constructor_provenance = 0;\n        p->u.object_data = JS_UNDEFINED;\n        break;\n",
+      "sequence": 7,
+      "offset_in_predecessor": 242373,
+      "before_file_sha256": "D536E4F9DC011DC77FCC4DCF4C0BD0F04D0E7DFEFB46E7EB5981E769E337760F",
+      "after_file_sha256": "D25AEBB3BA750689048C8E416213C154C0EEAE1064140DD36E71699B438CF42C",
+      "old_bytes": 199,
+      "new_bytes": 366
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Error finalization clears owned fields before releasing data and provenance",
+      "old_text": "static void js_object_data_finalizer(JSRuntime *rt, JSValueConst val)\n{\n    JSObject *p = JS_VALUE_GET_OBJ(val);\n    JS_FreeValueRT(rt, p->u.object_data);\n    p->u.object_data = JS_UNDEFINED;\n}\n",
+      "new_text": "static void js_object_data_finalizer(JSRuntime *rt, JSValueConst val)\n{\n    JSObject *p = JS_VALUE_GET_OBJ(val);\n    if (p->class_id == JS_CLASS_ERROR) {\n        JSValue data = p->u.object_data;\n        JSValue constructor = p->u.native_error.constructor;\n        JSValue name = p->u.native_error.constructor_name;\n        p->u.object_data = JS_UNDEFINED;\n        p->u.native_error.constructor = JS_UNDEFINED;\n        p->u.native_error.constructor_name = JS_UNDEFINED;\n        p->u.native_error.constructor_provenance = 0;\n        JS_FreeValueRT(rt, data);\n        JS_FreeValueRT(rt, constructor);\n        JS_FreeValueRT(rt, name);\n        return;\n    }\n    JS_FreeValueRT(rt, p->u.object_data);\n    p->u.object_data = JS_UNDEFINED;\n}\n",
+      "sequence": 8,
+      "offset_in_predecessor": 273052,
+      "before_file_sha256": "D25AEBB3BA750689048C8E416213C154C0EEAE1064140DD36E71699B438CF42C",
+      "after_file_sha256": "A882C33FFECE8870ED50CE8402F9C7B3F169AFE716B23E66E54F6F08282E7AA7",
+      "old_bytes": 194,
+      "new_bytes": 735
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Error GC marks actual constructor and name edges",
+      "old_text": "static void js_object_data_mark(JSRuntime *rt, JSValueConst val,\n                                JS_MarkFunc *mark_func)\n{\n    JSObject *p = JS_VALUE_GET_OBJ(val);\n    JS_MarkValue(rt, p->u.object_data, mark_func);\n}\n",
+      "new_text": "static void js_object_data_mark(JSRuntime *rt, JSValueConst val,\n                                JS_MarkFunc *mark_func)\n{\n    JSObject *p = JS_VALUE_GET_OBJ(val);\n    JS_MarkValue(rt, p->u.object_data, mark_func);\n    if (p->class_id == JS_CLASS_ERROR) {\n        JS_MarkValue(rt, p->u.native_error.constructor, mark_func);\n        JS_MarkValue(rt, p->u.native_error.constructor_name, mark_func);\n    }\n}\n",
+      "sequence": 9,
+      "offset_in_predecessor": 273788,
+      "before_file_sha256": "A882C33FFECE8870ED50CE8402F9C7B3F169AFE716B23E66E54F6F08282E7AA7",
+      "after_file_sha256": "2529C7EDB4353F458B0D8FE9DFEA131B88D777E80D41B19F9664A3C3791A28EF",
+      "old_bytes": 217,
+      "new_bytes": 405
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "native Context initial-name roots participate in existing memory inventory",
+      "old_text": "        s->binary_object_size += ctx->binary_object_size;\n",
+      "new_text": "        s->binary_object_size += ctx->binary_object_size;\n        for (i = 0; i <= JS_PLAIN_ERROR; i++)\n            compute_value_size(ctx->pi_error_constructor_name[i], hp);\n",
+      "sequence": 10,
+      "offset_in_predecessor": 296093,
+      "before_file_sha256": "2529C7EDB4353F458B0D8FE9DFEA131B88D777E80D41B19F9664A3C3791A28EF",
+      "after_file_sha256": "14D6B3F1210A4AD505F6824211003E738F678BA82A247554713B052A3ECD53DD",
+      "old_bytes": 58,
+      "new_bytes": 175
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "actual Error initial-name edge participates in existing memory inventory",
+      "old_text": "        case JS_CLASS_ERROR:             /* u.object_data */\n        case JS_CLASS_NUMBER:            /* u.object_data */\n",
+      "new_text": "        case JS_CLASS_ERROR:\n            compute_value_size(p->u.object_data, hp);\n            compute_value_size(p->u.native_error.constructor_name, hp);\n            break;\n        case JS_CLASS_NUMBER:            /* u.object_data */\n",
+      "sequence": 11,
+      "offset_in_predecessor": 300131,
+      "before_file_sha256": "14D6B3F1210A4AD505F6824211003E738F678BA82A247554713B052A3ECD53DD",
+      "after_file_sha256": "3AE937E4FA2BCF6ABE8595AA93C6E7B16E8506E5FD448FAE4EB12E92E7ECB762",
+      "old_bytes": 122,
+      "new_bytes": 235
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "JS_NewError records genuine intrinsic creation before stack hooks",
+      "old_text": "    JSValue obj = JS_NewObjectClass(ctx, JS_CLASS_ERROR);\n",
+      "new_text": "    JSValue obj = JS_NewObjectClass(ctx, JS_CLASS_ERROR);\n    js_pi_record_intrinsic_error(ctx, obj, JS_PLAIN_ERROR);\n",
+      "sequence": 12,
+      "offset_in_predecessor": 338010,
+      "before_file_sha256": "3AE937E4FA2BCF6ABE8595AA93C6E7B16E8506E5FD448FAE4EB12E92E7ECB762",
+      "after_file_sha256": "ADBB9300204E2ACD3765247A7D00CEC295F8B92BA001F8329E11F6A9D16ABD72",
+      "old_bytes": 58,
+      "new_bytes": 118
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "actual runtime Error factories record selected intrinsic before stack hooks",
+      "old_text": "        obj = JS_NewObjectProtoClass(ctx, ctx->native_error_proto[error_num],\n                                     JS_CLASS_ERROR);\n    }\n    if (ctx->pi_link_preparing",
+      "new_text": "        obj = JS_NewObjectProtoClass(ctx, ctx->native_error_proto[error_num],\n                                     JS_CLASS_ERROR);\n    }\n    js_pi_record_intrinsic_error(ctx, obj, error_num);\n    if (ctx->pi_link_preparing",
+      "sequence": 13,
+      "offset_in_predecessor": 340559,
+      "before_file_sha256": "ADBB9300204E2ACD3765247A7D00CEC295F8B92BA001F8329E11F6A9D16ABD72",
+      "after_file_sha256": "B3BD659E854135EC23ED6800F81FCF0F32B56F906572842005983BA0C27DC23F",
+      "old_bytes": 168,
+      "new_bytes": 223
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "actual compiler SyntaxError factory records intrinsic creation",
+      "old_text": "    object = JS_NewObjectProtoClass(ctx, ctx->native_error_proto[JS_SYNTAX_ERROR],\n                                    JS_CLASS_ERROR);\n",
+      "new_text": "    object = JS_NewObjectProtoClass(ctx, ctx->native_error_proto[JS_SYNTAX_ERROR],\n                                    JS_CLASS_ERROR);\n    js_pi_record_intrinsic_error(ctx, object, JS_SYNTAX_ERROR);\n",
+      "sequence": 14,
+      "offset_in_predecessor": 345753,
+      "before_file_sha256": "B3BD659E854135EC23ED6800F81FCF0F32B56F906572842005983BA0C27DC23F",
+      "after_file_sha256": "D79390067DEAF56E5862D92402129097E4C75DEC45362D2284CE3C9729A66B0E",
+      "old_bytes": 136,
+      "new_bytes": 200
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "actual Error constructor records real active callee and real new.target",
+      "old_text": "    obj = JS_NewObjectProtoClass(ctx, proto, JS_CLASS_ERROR);\n    JS_FreeValue(ctx, proto);\n    if (JS_IsException(obj))\n        return obj;\n    if (prepare_native_error_stack",
+      "new_text": "    obj = JS_NewObjectProtoClass(ctx, proto, JS_CLASS_ERROR);\n    JS_FreeValue(ctx, proto);\n    if (JS_IsException(obj))\n        return obj;\n    js_pi_record_error_constructor(ctx, obj,\n                                   magic < 0 ? JS_PLAIN_ERROR : magic,\n                                   JS_GetActiveFunction(ctx), new_target);\n    if (prepare_native_error_stack",
+      "sequence": 15,
+      "offset_in_predecessor": 1626156,
+      "before_file_sha256": "D79390067DEAF56E5862D92402129097E4C75DEC45362D2284CE3C9729A66B0E",
+      "after_file_sha256": "4BA92B016B9D279FFE3620408FBB03A7BD1EDC19560162FA8EB3077F979E2903",
+      "old_bytes": 175,
+      "new_bytes": 366
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "native AggregateError factory records actual intrinsic construction",
+      "old_text": "    obj = JS_NewObjectProtoClass(ctx,\n                                 ctx->native_error_proto[JS_AGGREGATE_ERROR],\n                                 JS_CLASS_ERROR);\n",
+      "new_text": "    obj = JS_NewObjectProtoClass(ctx,\n                                 ctx->native_error_proto[JS_AGGREGATE_ERROR],\n                                 JS_CLASS_ERROR);\n    js_pi_record_intrinsic_error(ctx, obj, JS_AGGREGATE_ERROR);\n",
+      "sequence": 16,
+      "offset_in_predecessor": 1634420,
+      "before_file_sha256": "4BA92B016B9D279FFE3620408FBB03A7BD1EDC19560162FA8EB3077F979E2903",
+      "after_file_sha256": "7C64953813ADB0810D1E2D9C68A58C2E49547EA2FA1AF655CAC98BE6577BC26E",
+      "old_bytes": 166,
+      "new_bytes": 230
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "native SuppressedError factory records actual intrinsic construction",
+      "old_text": "    obj = JS_NewObjectProtoClass(ctx,\n                                 ctx->native_error_proto[JS_SUPPRESSED_ERROR],\n                                 JS_CLASS_ERROR);\n",
+      "new_text": "    obj = JS_NewObjectProtoClass(ctx,\n                                 ctx->native_error_proto[JS_SUPPRESSED_ERROR],\n                                 JS_CLASS_ERROR);\n    js_pi_record_intrinsic_error(ctx, obj, JS_SUPPRESSED_ERROR);\n",
+      "sequence": 17,
+      "offset_in_predecessor": 2020846,
+      "before_file_sha256": "7C64953813ADB0810D1E2D9C68A58C2E49547EA2FA1AF655CAC98BE6577BC26E",
+      "after_file_sha256": "8670AE949C672391CEC6E7DF1BD3C74682ACCAE48BB0D81F00A38AD3FAB4E1EB",
+      "old_bytes": 167,
+      "new_bytes": 232
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "cache actual intrinsic Error and immutable initial name before publication",
+      "old_text": "    if (JS_IsException(ctx->error_ctor))\n        return -1;\n    JS_NewGlobalCConstructor2(ctx, js_dup(ctx->error_ctor),\n",
+      "new_text": "    if (JS_IsException(ctx->error_ctor))\n        return -1;\n    js_pi_cache_error_constructor(ctx, JS_PLAIN_ERROR, ctx->error_ctor);\n    JS_NewGlobalCConstructor2(ctx, js_dup(ctx->error_ctor),\n",
+      "sequence": 18,
+      "offset_in_predecessor": 2166159,
+      "before_file_sha256": "8670AE949C672391CEC6E7DF1BD3C74682ACCAE48BB0D81F00A38AD3FAB4E1EB",
+      "after_file_sha256": "CF2CE809DAC1E1B2A149A912C4F84ED704EC0EE6E9FBB40D3A533E8FFD792627",
+      "old_bytes": 120,
+      "new_bytes": 193
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "cache actual native Error constructors before publication",
+      "old_text": "        if (JS_IsException(func_obj))\n            return -1;\n        JS_NewGlobalCConstructor2(ctx, func_obj, native_error_name[i],\n",
+      "new_text": "        if (JS_IsException(func_obj))\n            return -1;\n        js_pi_cache_error_constructor(ctx, i, func_obj);\n        JS_NewGlobalCConstructor2(ctx, func_obj, native_error_name[i],\n",
+      "sequence": 19,
+      "offset_in_predecessor": 2167120,
+      "before_file_sha256": "CF2CE809DAC1E1B2A149A912C4F84ED704EC0EE6E9FBB40D3A533E8FFD792627",
+      "after_file_sha256": "CBC64B8471190A7C94CF0D99EFAAFF8061EBCC8E10A7771AFC6B76FADFC8DEE8",
+      "old_bytes": 132,
+      "new_bytes": 189
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "include finite implementation inside actual QuickJS private ownership scope",
+      "old_text": "#undef malloc\n#undef free\n#undef realloc\n",
+      "new_text": "/* Actual native Error provenance and bounded getter-free constructor naming. */\n#include \"../../src/extensions/native_vm_error_constructor_name.c.inc\"\n\n#undef malloc\n#undef free\n#undef realloc\n",
+      "sequence": 20,
+      "offset_in_predecessor": 2402694,
+      "before_file_sha256": "CBC64B8471190A7C94CF0D99EFAAFF8061EBCC8E10A7771AFC6B76FADFC8DEE8",
+      "after_file_sha256": "4384A31CAC4667A8038B12BBBDC2B25ABF894E37E09922625D2C8B1EEF289D3D",
+      "old_bytes": 41,
+      "new_bytes": 194
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "public bounded native status and owned-result contract",
+      "old_text": "JS_EXTERN bool JS_IsError(JSValueConst val);\n",
+      "new_text": "JS_EXTERN bool JS_IsError(JSValueConst val);\n/* Bounded original GetConstructorName slice for this VM's actual Error class.\n   The query performs no allocation or guest call and never changes pending\n   exception/termination state. ctx and error must belong to the same runtime.\n   owned_name is an output slot: FOUND supplies one owned String; every other\n   status supplies undefined. Free that owned String with JS_FreeValue.\n   UNSUPPORTED covers absent native provenance/general map or DebugName\n   metadata. It MUST NOT be treated as a negative original IsStackOverflowError\n   classification. NOT_NATIVE_ERROR describes JS_IsError's actual VM class,\n   not an assertion that every original V8 NativeError prototype is represented.\n   No production hook-exception policy is installed by this primitive. */\ntypedef enum JSPiNativeErrorConstructorNameStatus {\n    JS_PI_ERROR_CONSTRUCTOR_NAME_UNSUPPORTED = 0,\n    JS_PI_ERROR_CONSTRUCTOR_NAME_FOUND = 1,\n    JS_PI_ERROR_CONSTRUCTOR_NAME_NOT_NATIVE_ERROR = 2,\n} JSPiNativeErrorConstructorNameStatus;\nJS_EXTERN JSPiNativeErrorConstructorNameStatus\nJS_PiGetNativeErrorConstructorName(JSContext *ctx, JSValueConst error,\n                                  JSValue *owned_name);\n",
+      "sequence": 21,
+      "offset_in_predecessor": 51565,
+      "before_file_sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C",
+      "after_file_sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952",
+      "old_bytes": 45,
+      "new_bytes": 1227
+    }
+  ],
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2402888,
+        "sha256": "4384A31CAC4667A8038B12BBBDC2B25ABF894E37E09922625D2C8B1EEF289D3D"
+      }
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.h",
+        "bytes": 113474,
+        "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114656,
+        "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+      }
+    }
+  ],
+  "new_fragment": {
+    "live_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+    "snapshot_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+    "bytes": 8944,
+    "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+  },
+  "whole_file_inverse_exact": true,
+  "edit_count": 21,
+  "notes": [
+    "Private JSObject and JSContext storage size changes are real and require later compilation/runtime qualification.",
+    "Initial name roots participate in existing JS_ComputeMemoryUsage string accounting.",
+    "Existing test declarations and assertions are unchanged."
+  ]
+}

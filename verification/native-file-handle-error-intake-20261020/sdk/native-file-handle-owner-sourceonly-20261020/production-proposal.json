@@ -1,0 +1,405 @@
+{
+  "schema": "pi-zig.file-handle-owner-production-source-proposal.v1",
+  "main_predecessor_head": "2a45648545c961f9008a783ae352f233869505b4",
+  "compiled": false,
+  "executed": false,
+  "native_admission": false,
+  "new_production_files": [
+    {
+      "relative_path": "src/extensions/native_node_file_handle_owner.zig",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_close_request.zig",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_close_request.zig",
+        "bytes": 15294,
+        "sha256": "9EB383CED295E354BD91A5F1FA9E471B70182C3D554D190148AEB4BA93386FEC"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_close_request.zig",
+        "bytes": 15294,
+        "sha256": "9EB383CED295E354BD91A5F1FA9E471B70182C3D554D190148AEB4BA93386FEC"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_gc_close.zig",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_gc_close.zig",
+        "bytes": 6402,
+        "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_gc_close.zig",
+        "bytes": 6402,
+        "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4"
+      }
+    }
+  ],
+  "new_file_count": 3,
+  "shared_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\proposal.json",
+    "bytes": 18499,
+    "sha256": "C195AE5D402ED457AF651D6BEB37B2BB8DBD3DF36CD74106EB172F00B64618FC"
+  },
+  "shared_file_count": 5,
+  "shared_sequential_edit_count": 12,
+  "dependency_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\dependency-inventory.json",
+    "bytes": 476088,
+    "sha256": "25D66DA29B724A3BA4D4FB68D6C8952D06C6FAFC83A73E39CE3581860FFF6B3D"
+  },
+  "authorities": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\node_file.v24.13.cc",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\node_file.v24.13.h",
+      "bytes": 17193,
+      "sha256": "A63A31D1BCAEB7AF416B19ABEAFAB880DB7D424378DC27050F9FC2EE4921E16F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\base_object.v24.13.h",
+      "bytes": 14711,
+      "sha256": "684149EB458508964CCEBE862E12058BFADFC6C31E7D5F29D6CD8EA0A9423105"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\base_object-inl.v24.13.h",
+      "bytes": 10023,
+      "sha256": "AFC8EFE0A4562F49FD7B543CA82A855511345177466D0B8F0E4CF8188FA4CEC6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-conversions-inl.v24.13.h",
+      "bytes": 12043,
+      "sha256": "9EEE8FDFB6DCC22486A8398DDD9EA1E031208DE0BEF8778F465CCFC22A2B1062"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\env.v24.13.h",
+      "bytes": 45315,
+      "sha256": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\env-inl.v24.13.h",
+      "bytes": 28109,
+      "sha256": "41949D4DFA01B04174B0E881B1DB3DD12BF51B9428B89946504603700FCF3E5E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\req_wrap-inl.v24.13.h",
+      "bytes": 5640,
+      "sha256": "27C770D8756B626C80210F96F9DB1CF31BFBF09AAB1DA53DC35B382314883E67"
+    }
+  ],
+  "mapping": [
+    {
+      "component": "Handle native constructor and optional-object New",
+      "source": "node_file.v24.13.cc",
+      "lines": [
+        [
+          224,
+          249
+        ]
+      ],
+      "header_lines": [
+        [
+          321,
+          355
+        ],
+        [
+          398,
+          402
+        ],
+        [
+          440,
+          449
+        ]
+      ],
+      "implementation": "native_node_file_handle_owner.zig Handle.initialize/create; same Reader.State and original native member teardown."
+    },
+    {
+      "component": "Actual constructor callback checks and conversion",
+      "source": "node_file.v24.13.cc",
+      "lines": [
+        [
+          251,
+          279
+        ]
+      ],
+      "implementation": "Handle.construct; primitive IsInt32 rejects -0, optional Number arguments use the exact V8 NumberToInt64 path."
+    },
+    {
+      "component": "V8 Number predicates and saturating integer conversion",
+      "sources": [
+        {
+          "name": "v8-api.v24.13.cc",
+          "lines": [
+            [
+              3656,
+              3663
+            ],
+            [
+              4197,
+              4207
+            ]
+          ]
+        },
+        {
+          "name": "v8-conversions-inl.v24.13.h",
+          "lines": [
+            [
+              204,
+              207
+            ],
+            [
+              268,
+              278
+            ]
+          ]
+        }
+      ],
+      "implementation": "int32/numberValue/optionalInteger; NaN zero, saturation at +/-2^63, truncate finite interior; no JS_ToInt64 modulo conversion."
+    },
+    {
+      "component": "FileHandle destructor, flags and release",
+      "source": "node_file.v24.13.cc",
+      "lines": [
+        [
+          281,
+          285
+        ],
+        [
+          521,
+          534
+        ]
+      ],
+      "implementation": "Handle.retire/releaseDescriptor and the unchanged reviewed Reader.afterClose; BindingData release precedes current_read release and StreamBase teardown."
+    },
+    {
+      "component": "GC synchronous close and original error/warning immediates",
+      "source": "node_file.v24.13.cc",
+      "lines": [
+        [
+          336,
+          390
+        ]
+      ],
+      "implementation": "native_node_file_handle_gc_close.zig; stack canonical uv_fs_t, trace BEGIN/END, cleanup, scalar capture, AfterClose, actual refed error or unrefed warning Ticket."
+    },
+    {
+      "component": "Environment warning flag",
+      "sources": [
+        {
+          "name": "env.v24.13.h",
+          "lines": [
+            [
+              1111,
+              1111
+            ]
+          ]
+        },
+        {
+          "name": "env-inl.v24.13.h",
+          "lines": [
+            [
+              688,
+              694
+            ]
+          ]
+        }
+      ],
+      "implementation": "Projected Environment.emit_filehandle_warning defaults true; successful GC ticket clears it before the original DEP0137 call."
+    },
+    {
+      "component": "CloseReq Promise settlement and FileHandle extraction",
+      "source": "node_file.v24.13.cc",
+      "lines": [
+        [
+          393,
+          419
+        ]
+      ],
+      "implementation": "CloseReq.resolve/reject/settle and fileHandle; actual native Globals, InternalCallbackScope and Maybe::Check; no guest Promise property or extra resolver capability."
+    },
+    {
+      "component": "CloseReq native construction and destruction",
+      "source": "node_file.v24.13.cc",
+      "lines": [
+        [
+          421,
+          434
+        ]
+      ],
+      "header_lines": [
+        [
+          404,
+          435
+        ]
+      ],
+      "implementation": "Physical CLOSE storage before AsyncWrap provider5, ReqWrap queue/MakeWeak/Reset, promise and ref Global creation; actual cleanup then promise/ref reset and queue/base teardown."
+    },
+    {
+      "component": "ClosePromise identity, admission, original callback and negative dispatch",
+      "source": "node_file.v24.13.cc",
+      "lines": [
+        [
+          448,
+          503
+        ]
+      ],
+      "implementation": "Handle.closePromise plus CloseReq.completed/rejectImmediateAndDelete and projected Controller.dispatchRawClose. Same internal Promise returned before flag checks. Negative immediate admission Reject/deletes without AfterClose or clearing closing."
+    },
+    {
+      "component": "ReqWrap construction, callback pointer and accepted counter",
+      "source": "req_wrap-inl.v24.13.h",
+      "lines": [
+        [
+          13,
+          40
+        ],
+        [
+          126,
+          138
+        ],
+        [
+          144,
+          169
+        ]
+      ],
+      "implementation": "Existing Entry owner plus new raw CLOSE dispatch: actual native callback selected before admission, clearWeak/counter only after status>=0, callback native pointer/detach/decrement before original body."
+    },
+    {
+      "component": "Internal Promise slot and still-pending complete template",
+      "source": "node_file.v24.13.h",
+      "lines": [
+        [
+          323,
+          327
+        ]
+      ],
+      "additional_source": {
+        "name": "node_file.v24.13.cc",
+        "lines": [
+          [
+            3959,
+            3977
+          ]
+        ]
+      },
+      "implementation": "Projected actual FileHandle StreamFields mark/finalize the closing Promise independently of State. Existing genuine CloseReq template is consumed. Complete FileHandle template/StreamBase::AddMethods remains blocked explicitly."
+    },
+    {
+      "component": "Pinned synchronous libuv path",
+      "implementation": "See shared/proposal.json exact five authority/snapshot pins. uv_fs_close_sync only invokes actual uv_fs_close with NULL callback; owner traces then cleans its own native stack request.",
+      "sources": [
+        {
+          "name": "libuv/src/win/fs.c",
+          "lines": [
+            [
+              74,
+              97
+            ],
+            [
+              397,
+              410
+            ],
+            [
+              668,
+              695
+            ],
+            [
+              3127,
+              3136
+            ],
+            [
+              3192,
+              3221
+            ],
+            [
+              3241,
+              3245
+            ]
+          ]
+        },
+        {
+          "name": "libuv/src/win/fs-fd-hash-inl.h",
+          "lines": [
+            [
+              167,
+              193
+            ]
+          ]
+        },
+        {
+          "name": "libuv/src/uv-common.h",
+          "lines": [
+            [
+              342,
+              357
+            ]
+          ]
+        },
+        {
+          "name": "libuv/src/unix/fs.c",
+          "lines": [
+            [
+              90,
+              104
+            ],
+            [
+              139,
+              166
+            ],
+            [
+              1679,
+              1747
+            ],
+            [
+              1814,
+              1821
+            ],
+            [
+              2239,
+              2269
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Source-only, not compiled or executed. No runtime, ABI or full FileHandle qualification is claimed.",
+    "Complete FileHandle callback-template publication and original StreamBase::AddMethods are still required; the existing requireTemplate(.filehandle) blocker remains intact. The present-object native constructor is implemented.",
+    "Production native trace category/controller/clock, backing-allocation retry/GC/fatal policy and native-immediate queue bootstrap hooks remain required real owners. Inputs do not install substitutes.",
+    "Original FileHandle ShutdownWrap/DoShutdown, transfer serialization/deserialization, full StreamBase method surface and public/internal fs assembly remain separate source work.",
+    "Focused concrete-owner controls and an install-only build proposal are not part of this production packet or V32.",
+    "The lexical dependency inventory does not claim native C preprocessor or compiler-selected test reachability."
+  ],
+  "preservation": {
+    "prior_production_files": 7,
+    "prior_control_and_support_files": 3,
+    "inherited_drafts": 18,
+    "all_exact": true,
+    "details_in_dependency_inventory": true
+  },
+  "review_requested": [
+    "Concrete native lifetimes, ordinary void continuation and constructor member order.",
+    "Same-Promise internal slot/native Global roots and original immediate-negative dispatch flags.",
+    "Real synchronous-close request/service lifetime and refed/unrefed immediate tickets.",
+    "Exact original-source mapping and explicit unsupported integration boundary."
+  ]
+}

@@ -142,6 +142,9 @@ pub const Environment = struct {
     provider_strings: []c.JSValue = &.{},
     resource_symbol: ?c.JSValue = null,
     process_object: ?c.JSValue = null,
+    // Original Environment::emit_filehandle_warning_, consumed once by the
+    // real successful FileHandle GC-close native immediate.
+    emit_filehandle_warning: bool = true,
     hooks: ?HookFunctions = null,
     tick_callback: ?c.JSValue = null,
     trampoline: ?c.JSValue = null,

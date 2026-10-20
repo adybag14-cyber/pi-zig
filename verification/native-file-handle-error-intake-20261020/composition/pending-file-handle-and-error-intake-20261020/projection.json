@@ -1,0 +1,480 @@
+{
+  "schema": "pi-zig.root-pending-file-handle-error-composition.v1",
+  "created_utc": "2026-10-20T20:46:11.711105+00:00",
+  "comparison_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "paths": [
+    {
+      "relative_path": "src/extensions/native_node_file_handle_owner.zig",
+      "kind": "new",
+      "before": null,
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-owner-intake-20261020\\projected\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_gc_close.zig",
+      "kind": "new",
+      "before": null,
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-owner-intake-20261020\\projected\\src\\extensions\\native_node_file_handle_gc_close.zig",
+        "bytes": 6402,
+        "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\extensions\\native_node_file_handle_gc_close.zig",
+        "bytes": 6402,
+        "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_async_wrap_state.zig",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_async_wrap_state.zig",
+        "bytes": 26761,
+        "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+      },
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-owner-intake-20261020\\projected\\src\\extensions\\native_node_async_wrap_state.zig",
+        "bytes": 28133,
+        "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\extensions\\native_node_async_wrap_state.zig",
+        "bytes": 28133,
+        "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1"
+      },
+      "original_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\original\\src\\extensions\\native_node_async_wrap_state.zig",
+        "bytes": 26761,
+        "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_callback_scope.zig",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 39890,
+        "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C"
+      },
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-owner-intake-20261020\\projected\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 40069,
+        "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 40069,
+        "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+      },
+      "original_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\original\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 39890,
+        "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_fs_request_io.zig",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_request_io.zig",
+        "bytes": 14502,
+        "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393"
+      },
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-owner-intake-20261020\\projected\\src\\extensions\\native_node_fs_request_io.zig",
+        "bytes": 15469,
+        "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\extensions\\native_node_fs_request_io.zig",
+        "bytes": 15469,
+        "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996"
+      },
+      "original_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\original\\src\\extensions\\native_node_fs_request_io.zig",
+        "bytes": 14502,
+        "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_uv_fs.h",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_fs.h",
+        "bytes": 4931,
+        "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE"
+      },
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-owner-intake-20261020\\projected\\src\\extensions\\native_uv_fs.h",
+        "bytes": 5573,
+        "sha256": "D5BB021DFECD726A7FBB6860616753957C1B25B11C4776BAFD24F2C935589D34"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\extensions\\native_uv_fs.h",
+        "bytes": 5573,
+        "sha256": "D5BB021DFECD726A7FBB6860616753957C1B25B11C4776BAFD24F2C935589D34"
+      },
+      "original_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\original\\src\\extensions\\native_uv_fs.h",
+        "bytes": 4931,
+        "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_uv_tcp.c",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 45730,
+        "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71"
+      },
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-owner-intake-20261020\\projected\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 46191,
+        "sha256": "85E49522C7C05764957ADACF6B80F2745D5C06E0A361D33531A8BAF9FEA49F87"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 46191,
+        "sha256": "85E49522C7C05764957ADACF6B80F2745D5C06E0A361D33531A8BAF9FEA49F87"
+      },
+      "original_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\original\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 45730,
+        "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_close_request.zig",
+      "kind": "new",
+      "before": null,
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-owner-intake-20261020\\projected\\src\\extensions\\native_node_file_handle_close_request.zig",
+        "bytes": 15879,
+        "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\extensions\\native_node_file_handle_close_request.zig",
+        "bytes": 15879,
+        "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_fs_request_promise.zig",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_request_promise.zig",
+        "bytes": 18834,
+        "sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721"
+      },
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-owner-intake-20261020\\projected\\src\\extensions\\native_node_fs_request_promise.zig",
+        "bytes": 19385,
+        "sha256": "8EFC2D58C1B1BD5069777FE1D06618F4572F54EEDAC09265EAD26BE8E675A4DF"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\extensions\\native_node_fs_request_promise.zig",
+        "bytes": 19385,
+        "sha256": "8EFC2D58C1B1BD5069777FE1D06618F4572F54EEDAC09265EAD26BE8E675A4DF"
+      },
+      "original_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\original\\src\\extensions\\native_node_fs_request_promise.zig",
+        "bytes": 18834,
+        "sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721"
+      }
+    },
+    {
+      "relative_path": "src/native_node_file_handle_owner_test_support.zig",
+      "kind": "new",
+      "before": null,
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-owner-intake-20261020\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 32558,
+        "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 32558,
+        "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+      }
+    },
+    {
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "kind": "new",
+      "before": null,
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-owner-intake-20261020\\projected\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      }
+    },
+    {
+      "relative_path": "src/native_node_fs_before_hook_continuation_test.zig",
+      "kind": "new",
+      "before": null,
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-owner-intake-20261020\\projected\\src\\native_node_fs_before_hook_continuation_test.zig",
+        "bytes": 6578,
+        "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\native_node_fs_before_hook_continuation_test.zig",
+        "bytes": 6578,
+        "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92"
+      }
+    },
+    {
+      "relative_path": "build.zig",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 503440,
+        "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+      },
+      "donor": null,
+      "composition": "Exact two independent install-only insertions; both application orders and inverse orders reproduce whole bytes.",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\build.zig",
+        "bytes": 506940,
+        "sha256": "399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52"
+      },
+      "original_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\original\\build.zig",
+        "bytes": 503440,
+        "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.c",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\successor\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2403205,
+        "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+      },
+      "original_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      }
+    },
+    {
+      "relative_path": "vendor/quickjs/quickjs.h",
+      "kind": "replace",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+        "bytes": 113474,
+        "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+      },
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114656,
+        "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\vendor\\quickjs\\quickjs.h",
+        "bytes": 114656,
+        "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+      },
+      "original_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\original\\vendor\\quickjs\\quickjs.h",
+        "bytes": 113474,
+        "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_vm_error_constructor_name.c.inc",
+      "kind": "new",
+      "before": null,
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+        "bytes": 8944,
+        "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+        "bytes": 8944,
+        "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+      }
+    },
+    {
+      "relative_path": "src/native_vm_error_constructor_name_test.zig",
+      "kind": "new",
+      "before": null,
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\successor\\source\\src\\native_vm_error_constructor_name_test.zig",
+        "bytes": 28931,
+        "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\native_vm_error_constructor_name_test.zig",
+        "bytes": 28931,
+        "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+      }
+    }
+  ],
+  "source_or_build_paths": 17,
+  "new_paths": 8,
+  "existing_paths": 9,
+  "build_composition": {
+    "base_sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E",
+    "owner_only_sha256": "81E6F358E576639D76554F9F46766B350EA950A496C4DCE65F3A048A8E0D409C",
+    "error_only_sha256": "28C315EFAD669387B315CA24C39FB4942FD7FF26BD6D679DAA59A110ED2E97D5",
+    "combined_sha256": "399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52",
+    "combined_bytes": 506940,
+    "both_application_orders_exact": true,
+    "both_whole_inverse_orders_exact": true,
+    "install_only_insertions": 2,
+    "added_run_steps": 0
+  },
+  "new_roots": [
+    {
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "declared_count": 18,
+      "names": [
+        "native FileHandle owner constructor attaches the same native stream and transfers the real descriptor on release",
+        "native FileHandle owner optional Number IntegerValue follows pinned V8 truncation and saturation",
+        "native FileHandle owner non Number optional arguments perform no guest coercion",
+        "native FileHandle owner keeps the full public method template an explicit dependency",
+        "native FileHandle owner explicit close keeps one Promise and one actual CLOSE request through cleanup",
+        "native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose",
+        "native FileHandle owner real stopped service admission rejects without fabricating completion or closing the descriptor",
+        "native FileHandle owner retained CloseReq wrapper loses native state after both callback references retire",
+        "native FileHandle owner CloseReq Global keeps the handle and weak BindingData alive until actual completion",
+        "native FileHandle owner GC closes synchronously and the warning ticket retains no handle or BindingData",
+        "native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once",
+        "native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason",
+        "native FileHandle owner failed GC close queues one refed actual UVException ticket",
+        "native FileHandle owner cleanup skips unrefed GC warning execution and destroys its native capture",
+        "native FileHandle owner GC uses the retained real service for synchronous close after worker join",
+        "native FileHandle owner consumes the real read engine and reuses its physical ReadWrap across concrete handles",
+        "native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity",
+        "native FileHandle owner real Hub shutdown drains accepted close without settling its guest Promise"
+      ],
+      "actual_metadata_count": null
+    },
+    {
+      "relative_path": "src/native_node_fs_before_hook_continuation_test.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\native_node_fs_before_hook_continuation_test.zig",
+        "bytes": 6578,
+        "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92"
+      },
+      "declared_count": 3,
+      "names": [
+        "native FS before hook actual read fulfills after the same ordinary hook rethrow",
+        "native FS before hook actual EBADF read rejects with UVException while the hook reason propagates separately",
+        "native FS before hook continuation performs the original live Promise Get before settlement"
+      ],
+      "actual_metadata_count": null
+    },
+    {
+      "relative_path": "src/native_vm_error_constructor_name_test.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-and-error-intake-20261020\\projected\\src\\native_vm_error_constructor_name_test.zig",
+        "bytes": 28931,
+        "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+      },
+      "declared_count": 24,
+      "names": [
+        "VM native Error constructor intrinsic families retain their native initial names",
+        "VM native Error constructor direct native creation and throws record real origins",
+        "VM native Error constructor real VM stack exhaustion retains RangeError provenance",
+        "VM native Error constructor public function and Error names do not replace provenance",
+        "VM native Error constructor public replacement cannot redirect native intrinsic factories",
+        "VM native Error constructor changing an Error prototype preserves base provenance",
+        "VM native Error constructor new inheritors suppress fast provenance with real prototype admission",
+        "VM native Error constructor explicit prototype admission uses the same original fallback",
+        "VM native Error constructor inherited data tag precedes constructor at the same level",
+        "VM native Error constructor receiver constructor and accessor tag are never invoked",
+        "VM native Error constructor prototype accessors and mutable builtin name are skipped",
+        "VM native Error constructor actual intrinsic Object is skipped without its public name",
+        "VM native Error constructor final native class fallback remains Error",
+        "VM native Error constructor bound and Proxy constructors are skipped without traps",
+        "VM native Error constructor missing general DebugName is explicit without function name Get",
+        "VM native Error constructor Proxy prototype storage stays unsupported without traps",
+        "VM native Error constructor native exotic descriptors remain uncalled and unsupported",
+        "VM native Error constructor different new target is an explicit remaining dependency",
+        "VM native Error constructor unrecorded physical Error allocation cannot invent provenance",
+        "VM native Error constructor ordinary lookalikes never acquire the actual native class",
+        "VM native Error constructor query preserves actual ordinary and uncatchable pending owners",
+        "VM native Error constructor active and cancelled native termination state is unchanged",
+        "VM native Error constructor all selected query branches allocate no VM storage",
+        "VM native Error constructor actual native origin survives released foreign realm and retires with Error"
+      ],
+      "actual_metadata_count": null
+    }
+  ],
+  "declared_new_controls": 45,
+  "composition_evidence": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-owner-intake-20261020\\projection.json",
+      "bytes": 16894,
+      "sha256": "7DB6E93CF2DD7B74EA9BC98610DFF2DDBDA09424C4215CB7522AD4AA1B7BF690"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\production-proposal.json",
+      "bytes": 14336,
+      "sha256": "B1C179FE0FE38E0F6FC1FB1BF351FE62ED4D85E90FBEED1DDDF995C1345E863C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\build\\proposal.json",
+      "bytes": 4451,
+      "sha256": "8DFCA25C7674D319464CE7E411BF6834E516F75418B2381AFF8026D4F13A16D3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\build\\proposal.json",
+      "bytes": 2212,
+      "sha256": "54760A19321B0DC5C2B3C036B7942EF2F8F212565C0A1B691E324E94D6F7CD8A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-owner-controls-review-20261020.json",
+      "bytes": 2726,
+      "sha256": "626F84EFE41C3E7D2D35C61C4DEB1953FDCC1BD16A18B90BAFF2BF632717BCF1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-error-constructor-source-review-20261020.json",
+      "bytes": 3789,
+      "sha256": "E7002286BC0ACCBDF13BC6D404503B2442D83FB8407D97383452FB49F03D82FC"
+    }
+  ],
+  "current_frozen_selected_groups": 63,
+  "successor_group_total_preserving_all_current_groups": 66,
+  "unchanged_per_batch_group_cap": 64,
+  "future_complete_batch_partition_required": true,
+  "batch_selection_or_execution_granted": false,
+  "future_actual_metadata_count": null,
+  "integration_gate": "Independently close V34 and separately release Main source hold before any intake. Positive BuildQuery requires separate strict RuntimeOnly before source mutation.",
+  "Main_modified": false,
+  "compiler_native_reference_execution": false,
+  "qualification": false
+}

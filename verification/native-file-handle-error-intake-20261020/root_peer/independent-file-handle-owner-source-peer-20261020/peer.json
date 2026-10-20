@@ -1,0 +1,205 @@
+{
+  "schema": 1,
+  "status": "independently_reviewed_exact_composed_filehandle_owner_source_slice",
+  "reviewer": "handover_review",
+  "reviewed_utc": "2026-10-20T19:51:05.642906+00:00",
+  "comparison_main_head": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+  "source_only": true,
+  "inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production-proposal.json",
+      "bytes": 14361,
+      "sha256": "061258BF1085004B82EA8D1A9C237402F7D4075A4DE837F9C25B7D39D0D3A804"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\proposal.json",
+      "bytes": 18499,
+      "sha256": "C195AE5D402ED457AF651D6BEB37B2BB8DBD3DF36CD74106EB172F00B64618FC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\proposal.json",
+      "bytes": 14602,
+      "sha256": "BA6543E47B33A5D994AD097FBF0CBC58A6E35F262DF42FFE5909D9A736118319"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support-main-provenance.json",
+      "bytes": 4613,
+      "sha256": "EC644E04F8B897473874DF78B77F3F28D6AD882AA7ABF7A8C130C38448D1C455"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\source-line-correction.json",
+      "bytes": 1114,
+      "sha256": "47A67114D92040748D9DA95DF434A02E72B91AD301282CADADD88C24A886E647"
+    }
+  ],
+  "selected_production_files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_owner.zig",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\projected\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_gc_close.zig",
+      "bytes": 6402,
+      "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4"
+    }
+  ],
+  "mechanical_source_evidence": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-owner-source-peer-20261020\\byte-replay-and-provenance.json",
+    "bytes": 25469,
+    "sha256": "DC0FA32242A91C08C051791F99F917653A766733DE2B7C198AB01DC8FAC84E1A"
+  },
+  "distinct_rehashed_input_files": 72,
+  "shared_files": 5,
+  "shared_sequential_edits": 12,
+  "close_continuation_edits": 1,
+  "findings": [
+    {
+      "area": "Concrete Handle composition and native member lifetime",
+      "finding": "The selected Handle owns the same native State/StreamBase/Reader.State used by the reviewed read engine. Construction retains BindingData, establishes the actual weak wrapper/native attachment and records completed init-hook ownership before ordinary continuation. Descriptor and optional-number selection follow the original primitive checks. Destruction checks closing/closed state, performs synchronous GC close when needed, then retires BindingData before current_read, StreamBase and the AsyncWrap base.",
+      "source_authority": [
+        "node_file.v24.13.cc 224-285,521-534",
+        "node_file.v24.13.h 321-355,398-449",
+        "v8-api.v24.13.cc 3656-3663,4197-4207",
+        "v8-conversions-inl.v24.13.h 204-207,268-278"
+      ],
+      "implementation": [
+        "Handle.initialize/create/construct/retire",
+        "int32/optionalInteger"
+      ]
+    },
+    {
+      "area": "Same closing Promise and actual wrapper edge",
+      "finding": "The existing internal closing Promise is returned before closed/closing/reading admission checks. First close creates one genuine pending native Promise and actual CloseReq template instance; the wrapper's internal StreamFields closing_promise edge is marked and finalized independently of native State retirement. CloseReq uses genuine native Promise and Handle Globals, not guest properties or a replacement Promise capability. Negative dispatch rejects and deletes the request without AfterClose or clearing the already-set closing flag, preserving the original path.",
+      "source_authority": [
+        "node_file.v24.13.cc 393-434,448-503",
+        "node_file.v24.13.h 323-327,404-435"
+      ],
+      "implementation": [
+        "Handle.closePromise",
+        "CloseReq.resolve/reject/fileHandle/rejectImmediateAndDelete",
+        "shared State internal closing_promise field and both finalizers"
+      ]
+    },
+    {
+      "area": "Actual ReqWrap and callback ownership",
+      "finding": "Raw CLOSE dispatch enters the existing Controller, verifies the real Environment/request queue, selects the actual callback before native admission and clears weak/increments waiting only after nonnegative admission. Completion retains the real native wrapper, detaches and decrements before the original CloseReq body, which retains its own second native pointer. The callback's AfterClose and can-call-JS ordering, UVException lifetime and Resolve(undefined) selection match the bounded original path. Physical PiUv request storage remains alive through the dequeued event even after derived owner destruction.",
+      "source_authority": [
+        "req_wrap-inl.v24.13.h 13-40,126-169",
+        "node_file.v24.13.cc 448-503"
+      ],
+      "implementation": [
+        "shared Controller.dispatchRawClose",
+        "native_node_request_state.Entry.beginCallback/endCallback",
+        "CloseReq.completed",
+        "native State.retainNative/releaseNative"
+      ]
+    },
+    {
+      "area": "CloseReq Global and destructor order",
+      "finding": "Promise Global is created before the Handle reference Global. Normal destruction cleans the actual FS request, resets the Promise, resets the Handle reference, removes the actual Entry from its queue and then retires the AsyncWrap/base ownership. Failed construction unwinds created members in reverse order. Global-to-local extraction keeps the true Global entitlement alive while the derived pointer is used; there is no unrooted callback-owned substitute.",
+      "source_authority": [
+        "node_file.v24.13.cc 413-434",
+        "node_file.v24.13.h 404-435",
+        "req_wrap-inl.v24.13.h 13-40"
+      ],
+      "implementation": [
+        "CloseReq.create/fileHandle/retire",
+        "native_node_weak_global.Global"
+      ]
+    },
+    {
+      "area": "BA6543 completed-before-hook continuation",
+      "finding": "The original 9EB383CE CloseReq early try is a concrete source mismatch and remains preserved. In C2016812 the already-initialized, IDs-pushed InternalCallbackScope may continue only for an ordinary JavaScriptException that the enclosing owned Scope has captured and that is not fatal. The actual Promise Global/Get and JS_PiSettlePromise then run; the unchanged MaybeCheck evaluates the real operation result. CallbackScope destruction precedes outer HandleScope finish, which restores the actual earlier hook reason. Fatal/termination or incomplete scope construction does not take this continuation. This conclusion covers this direct primitive CloseReq settlement, not the separate FSReqPromise property/cast chain.",
+      "source_authority": [
+        "node_file.v24.13.cc 393-410",
+        "node-api-callback.v24.13.cc 42-105",
+        "async_wrap.cc.v24.13.txt 92-104,141-144",
+        "node-errors.v24.13.cc 702-725",
+        "v8-api.v24.13.cc 8686-8717",
+        "v8-api-macros.v24.13.h 42-69,106-112",
+        "v8-objects.v24.13.cc 5067-5130"
+      ],
+      "implementation": [
+        "corrected CloseReq.settleBody",
+        "Scope.escaping/checkCurrent/finish",
+        "OwnedBoundary actual captured completion",
+        "native_node_weak_global.Global.get",
+        "QuickJS JS_PiSettlePromise 61094 onward"
+      ]
+    },
+    {
+      "area": "GC close and real native-immediate ownership",
+      "finding": "GC close uses a canonical stack uv_fs_t and the retained service's actual loop for synchronous cb-null uv_fs_close. It captures scalar result/descriptor around trace-end and cleanup, performs AfterClose, and queues an actual native Ticket containing no JSValue, Engine or Handle pointer. Errors are refed; success warnings are unrefed. The Queue owns ticket destruction and retained Environment lifetime, including late/disarmed enqueue. The warning buffer retires before the one-time Environment flag; the flag is cleared before DEP0137 reentry.",
+      "source_authority": [
+        "node_file.v24.13.cc 336-390",
+        "env.v24.13.h 1111",
+        "env-inl.v24.13.h 688-694"
+      ],
+      "implementation": [
+        "native_node_file_handle_gc_close.close/Ticket",
+        "native_node_native_immediates.Queue",
+        "Environment.emit_filehandle_warning"
+      ]
+    },
+    {
+      "area": "Finite synchronous libuv helper",
+      "finding": "The new helper invokes uv_fs_close with the caller's actual stack request and NULL callback. In the pinned Windows and Unix branches, initialization stores the loop pointer into the request, but cb-null POST invokes filesystem work synchronously and avoids loop request registration/work submission; Unix also bypasses io_uring close when cb is null. The request is cleaned only by the caller after trace end. This finite source review does not qualify every platform or runtime ABI.",
+      "source_authority": [
+        "libuv/src/win/fs.c 74-97,397-410,668-695,3127-3136,3192-3221,3241-3245",
+        "libuv/src/unix/fs.c 90-104,139-166,1679-1747,1814-1821,2239-2269"
+      ],
+      "implementation": [
+        "shared native_uv_fs.h",
+        "shared native_uv_tcp.c pi_uv_fs_close_sync"
+      ]
+    },
+    {
+      "area": "Immutable provenance and source-reference correction",
+      "finding": "All twelve shared edits across five files and the single CloseReq follow-up hunk replayed and inverted to the complete original bytes. Current Main shared-before files and original donor bodies remain exact. All seven support snapshots match frozen f4c6abbc worktree bytes and Git contents under the explicitly recorded Scope CRLF/LF distinction. The caught macro citation typo is corrected only by additive 47A67114: the pinned file has 112 lines, and the primitive failed-execution return is at 109-110. BA6543 bytes remain unchanged.",
+      "source_authority": [
+        "support-main-provenance.json EC644E04",
+        "source-line-correction.json 47A67114"
+      ],
+      "implementation": [
+        "byte-replay-and-provenance.json"
+      ]
+    }
+  ],
+  "concrete_blockers_in_selected_composed_slice": [],
+  "retained_negative": {
+    "original_close_request": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "bytes": 15294,
+      "sha256": "9EB383CED295E354BD91A5F1FA9E471B70182C3D554D190148AEB4BA93386FEC"
+    },
+    "issue": "Completed ordinary before-hook early return skipped the unconditional native Resolver call",
+    "required_successor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\projected\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A"
+    },
+    "historical_source_and_manifests_unchanged": true
+  },
+  "required_remaining_work": [
+    "Complete public FileHandle callback-template publication and original StreamBase AddMethods remain missing; the genuine requireTemplate(.filehandle) dependency stays explicit.",
+    "Production native trace controller/clock, backing allocation retry/GC/fatal policy and native-immediate Engine/bootstrap hooks remain separately required actual owners.",
+    "Production kFatalRethrowStackOverflow hook policy is not qualified by this source slice or an eventual selected-policy fixture.",
+    "Original ShutdownWrap/DoShutdown, transfer serialization/deserialization and complete public/internal fs assembly remain separate source work.",
+    "Concrete owner and real before-hook control roots, their install-only build recipe and all native/compiler/runtime evidence require separate review and admission.",
+    "Separate FSReqPromise successor 08F45EF3 is not covered by this direct CloseReq settlement peer.",
+    "The hashed lexical dependency inventory is not a native C preprocessor or compiler-selected test inventory."
+  ],
+  "source_mutation_hold_released": false,
+  "main_mutated": false,
+  "compiled": false,
+  "native_execution": false,
+  "metadata_acceptance": false,
+  "runtime_acceptance": false,
+  "qualification": false
+}

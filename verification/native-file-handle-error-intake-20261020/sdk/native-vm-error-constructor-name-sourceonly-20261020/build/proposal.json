@@ -1,0 +1,32 @@
+{
+  "schema": "native-error-constructor-name-install-only-build-v1",
+  "basis_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "path": "build.zig",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\build\\original.zig",
+    "bytes": 503440,
+    "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\build\\projected.zig",
+    "bytes": 504106,
+    "sha256": "28C315EFAD669387B315CA24C39FB4942FD7FF26BD6D679DAA59A110ED2E97D5"
+  },
+  "edit": {
+    "old_text": "    const exotic_operation_tests = b.addTest(.{\n",
+    "new_text": "    const native_error_constructor_name_tests = b.addTest(.{\n        .name = \"native-vm-error-constructor-name\",\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_error_constructor_name_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM native Error constructor\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, native_error_constructor_name_tests.root_module, quickjs, sqlite_lib_dir);\n    b.step(\"build-native-vm-error-constructor-name\", \"Install actual native Error constructor provenance controls without execution\").dependOn(&b.addInstallArtifact(native_error_constructor_name_tests, .{}).step);\n    const exotic_operation_tests = b.addTest(.{\n",
+    "offset_in_predecessor": 196382
+  },
+  "whole_file_inverse_exact": true,
+  "added_steps": 1,
+  "run_steps_added": 0,
+  "target": {
+    "build_step": "build-native-vm-error-constructor-name",
+    "installed_artifact_basename": "native-vm-error-constructor-name",
+    "root_source": "src/native_vm_error_constructor_name_test.zig",
+    "filter": "VM native Error constructor",
+    "declared_named_controls": 24,
+    "future_accepted_metadata_count": null
+  },
+  "common_build_owner": "Existing linkQuickJs and actual pi-quickjs library are reused. No new library, compiler option, assertion option, emulator or runner is introduced."
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "pi-zig.file-handle-owner-controls-build-source-proposal.v1",
+  "comparison_main_head": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+  "source_only": true,
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\build\\original-build.zig",
+    "bytes": 503440,
+    "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\build\\projected-build.zig",
+    "bytes": 506274,
+    "sha256": "81E6F358E576639D76554F9F46766B350EA950A496C4DCE65F3A048A8E0D409C"
+  },
+  "block": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\build\\install-only-block.zig.txt",
+    "bytes": 2834,
+    "sha256": "02270985F1EBF3D3800389BE94F91576EA4E969A55235D6A4F5CDEDB46DB2B0F"
+  },
+  "edits": [
+    {
+      "before": "        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "after": "        const node_file_handle_owner = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_file_handle_owner_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native FileHandle owner\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_file_handle_owner.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_file_handle_owner.root_module, typescript_parser);\n        linkSqlite(node_file_handle_owner.root_module, sqlite_lib_dir, sqlite_library);\n        node_file_handle_owner.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_file_handle_owner.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_file_handle_owner.root_module.linkLibrary(network);\n        if (target.result.os.tag == .windows) {\n            node_file_handle_owner.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_file_handle_owner.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-file-handle-owner\", \"Install eighteen concrete FileHandle ownership controls without execution\").dependOn(&b.addInstallArtifact(node_file_handle_owner, .{ .dest_sub_path = b.fmt(\"native-node-file-handle-owner{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const node_fs_before_hook_continuation = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_fs_before_hook_continuation_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native FS before hook\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_fs_before_hook_continuation.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_fs_before_hook_continuation.root_module, typescript_parser);\n        linkSqlite(node_fs_before_hook_continuation.root_module, sqlite_lib_dir, sqlite_library);\n        node_fs_before_hook_continuation.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_fs_before_hook_continuation.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_fs_before_hook_continuation.root_module.linkLibrary(network);\n        if (target.result.os.tag == .windows) {\n            node_fs_before_hook_continuation.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_fs_before_hook_continuation.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-fs-before-hook-continuation\", \"Install three actual FS before-hook continuation controls without execution\").dependOn(&b.addInstallArtifact(node_fs_before_hook_continuation, .{ .dest_sub_path = b.fmt(\"native-node-fs-before-hook-continuation{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "occurrences_before": 1,
+      "occurrences_after": 1
+    }
+  ],
+  "whole_forward_exact": true,
+  "whole_inverse_exact": true,
+  "install_only": true,
+  "run_steps_added": 0,
+  "new_roots": 2,
+  "unchanged_existing_build_bytes_outside_insert": true,
+  "compiler_executed": false
+}

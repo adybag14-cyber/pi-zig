@@ -1,0 +1,1748 @@
+{
+  "schema": "native-error-constructor-name-source-map-v1",
+  "qualification": "Bounded source correspondence and dependency findings only; not complete GetConstructorName, Node hook policy or runtime acceptance.",
+  "basis_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "authorities": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\node-errors.v24.13.cc",
+      "bytes": 43095,
+      "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9",
+      "id": "node-errors.v24.13.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/node_errors.cc",
+      "tag": "v24.13.0",
+      "line_count": 1417
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\node-errors.v24.13.h",
+      "bytes": 23394,
+      "sha256": "396CC9AE4323EC0E9FB8E4B5E6912C0603E86410D5588802B5B1F2C0F7048CC4",
+      "id": "node-errors.v24.13.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/node_errors.h",
+      "tag": "v24.13.0",
+      "line_count": 396
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "id": "v8-api.v24.13.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/api/api.cc",
+      "tag": "v24.13.0",
+      "line_count": 12501
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-objects.v24.13.cc",
+      "bytes": 234488,
+      "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480",
+      "id": "v8-js-objects.v24.13.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/objects/js-objects.cc",
+      "tag": "v24.13.0",
+      "line_count": 5943
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-function.v24.13.cc",
+      "bytes": 64812,
+      "sha256": "BD7C962A95DFD157FAFC7933D4C1D1571EE44D02FB71F0FF8592723379B88C47",
+      "id": "v8-js-function.v24.13.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/objects/js-function.cc",
+      "tag": "v24.13.0",
+      "line_count": 1591
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-shared-function-info.v24.13.cc",
+      "bytes": 34727,
+      "sha256": "97E61FDB8DFD572CE0BF17F2346636F123842815BB28FD118D0AD0773748CCEB",
+      "id": "v8-shared-function-info.v24.13.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/objects/shared-function-info.cc",
+      "tag": "v24.13.0",
+      "line_count": 895
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-prototype-inl.v24.13.h",
+      "bytes": 5121,
+      "sha256": "A7E44D86EC7CDB6DC55912629FD7B09FBFEB7FF6E3F15DAA16851AA0EADA500C",
+      "id": "v8-prototype-inl.v24.13.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/objects/prototype-inl.h",
+      "tag": "v24.13.0",
+      "line_count": 154
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-prototype.v24.13.h",
+      "bytes": 3041,
+      "sha256": "0EB94F950E31EC05CA827AECF9A82CF9A76D86EF92E544143A354919C70CCC70",
+      "id": "v8-prototype.v24.13.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/objects/prototype.h",
+      "tag": "v24.13.0",
+      "line_count": 93
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-map.v24.13.cc",
+      "bytes": 99099,
+      "sha256": "F94513B765EE2DD421C1D5DB3E919BF8D5765776E985DECA594F9110F9E592FE",
+      "id": "v8-map.v24.13.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/objects/map.cc",
+      "tag": "v24.13.0",
+      "line_count": 2565
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-messages.v24.13.cc",
+      "bytes": 49726,
+      "sha256": "A00739D8A0D7DC796BB10D50B495DF9B417B9125C6B86B8333F37224A2BCE59E",
+      "id": "v8-messages.v24.13.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/execution/messages.cc",
+      "tag": "v24.13.0",
+      "line_count": 1250
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-contexts.v24.13.h",
+      "bytes": 49684,
+      "sha256": "4B94B0DEC61C1A68779C5D56CAA746158DC172F0402B6EFA803AE1F1A1B7C629",
+      "id": "v8-contexts.v24.13.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/objects/contexts.h",
+      "tag": "v24.13.0",
+      "line_count": 868
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-builtins-error.v24.13.cc",
+      "bytes": 2763,
+      "sha256": "8D1447C8E744A17440C36FAE548F876F44B6F219FCD0E22B0E8EB43C8E7DEFE3",
+      "id": "v8-builtins-error.v24.13.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/builtins/builtins-error.cc",
+      "tag": "v24.13.0",
+      "line_count": 81
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-bootstrapper.v24.13.cc",
+      "bytes": 336314,
+      "sha256": "0991594530BB8FAF3836C747E547F43BB091D0AFA74E16B4B1814F68458D172A",
+      "id": "v8-bootstrapper.v24.13.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/init/bootstrapper.cc",
+      "tag": "v24.13.0",
+      "line_count": 7247
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-factory.v24.13.cc",
+      "bytes": 203216,
+      "sha256": "895D8A6E8BEDE5FF80EA97DE37F765EE54F13D20E449968841C288596B851FC6",
+      "id": "v8-factory.v24.13.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/heap/factory.cc",
+      "tag": "v24.13.0",
+      "line_count": 4875
+    }
+  ],
+  "host_files": {
+    "quickjs-original.c": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2399340,
+      "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    "quickjs-original.h": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.h",
+      "bytes": 113474,
+      "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    "quickjs-selected.c": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\successor\\projected\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2403205,
+      "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+    },
+    "quickjs-selected.h": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\projected\\vendor\\quickjs\\quickjs.h",
+      "bytes": 114656,
+      "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+    },
+    "fragment": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+      "bytes": 8944,
+      "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+    },
+    "control": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\successor\\source\\src\\native_vm_error_constructor_name_test.zig",
+      "bytes": 28931,
+      "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+    },
+    "build-original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\build\\original.zig",
+      "bytes": 503440,
+      "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+    },
+    "engine-abi-h": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\support\\src\\extensions\\engine_abi.h",
+      "bytes": 2003,
+      "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5"
+    },
+    "engine-abi-c": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\support\\src\\extensions\\engine_abi.c",
+      "bytes": 18016,
+      "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+    }
+  },
+  "selected_vm_projection": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\vm-projection-successor.json",
+    "bytes": 24862,
+    "sha256": "64DB11E161C4AF40DBE7ABC1D981D07F4E6BD74B69B806353EDBA86F5F6A6702"
+  },
+  "selected_fragment": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+    "bytes": 8944,
+    "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+  },
+  "selected_control": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\successor\\source\\src\\native_vm_error_constructor_name_test.zig",
+    "bytes": 28931,
+    "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+  },
+  "mapping": [
+    {
+      "subject": "Actual Node consumer boundary",
+      "selected_behavior": "Provide only the native constructor-name dependency. The original classifier also performs an ordinary message Get, and fatal policy owns captured Message/report/Exit.",
+      "original_source": [
+        "r001",
+        "r002"
+      ],
+      "host_source": [
+        "r003",
+        "r004"
+      ],
+      "control_numbers": [
+        3,
+        18,
+        19,
+        20
+      ],
+      "limits": [
+        "No production hook policy or captured Message/report/Exit owner is installed."
+      ]
+    },
+    {
+      "subject": "Actual native Error brand",
+      "selected_behavior": "Read the real VM Error class; ordinary objects, proxy wrappers and inherited prototypes cannot acquire it through public names.",
+      "original_source": [
+        "r005"
+      ],
+      "host_source": [
+        "r006",
+        "r007"
+      ],
+      "control_numbers": [
+        19,
+        20
+      ],
+      "limits": []
+    },
+    {
+      "subject": "Intrinsic constructor provenance",
+      "selected_behavior": "Record and retain the real active intrinsic constructor and base/new-target relationship before stack hooks; public name/constructor changes cannot replace this origin.",
+      "original_source": [
+        "r008",
+        "r009",
+        "r010",
+        "r011"
+      ],
+      "host_source": [
+        "r012",
+        "r013",
+        "r014",
+        "r015"
+      ],
+      "control_numbers": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        18,
+        24
+      ],
+      "limits": [
+        "Every different-new-target case is conservatively unsupported, even when some original special transitions preserve a base flag."
+      ]
+    },
+    {
+      "subject": "Native creation sites",
+      "selected_behavior": "Native factories retain the actual selected canonical constructor before later stack/error hooks.",
+      "original_source": [
+        "r016"
+      ],
+      "host_source": [
+        "r017",
+        "r018",
+        "r019",
+        "r020"
+      ],
+      "control_numbers": [
+        1,
+        2,
+        3
+      ],
+      "limits": [
+        "The existing VM InternalError intrinsic is retained by the same storage machinery as an existing VM extension, without claiming an original V8 InternalError family. Unrecorded raw Error/DOMException-prototype allocation remains unsupported."
+      ]
+    },
+    {
+      "subject": "Immutable initial builtin DebugName",
+      "selected_behavior": "Cache the initial physical own name String before intrinsic publication; consult no mutable public function.name.",
+      "original_source": [
+        "r021",
+        "r022"
+      ],
+      "host_source": [
+        "r023",
+        "r024",
+        "r025"
+      ],
+      "control_numbers": [
+        1,
+        4,
+        5,
+        11,
+        12,
+        15
+      ],
+      "limits": [
+        "General JSFunction SharedFunctionInfo/inferred DebugName storage is not ported."
+      ]
+    },
+    {
+      "subject": "Native context and object lifetime",
+      "selected_behavior": "New Context roots and real Error-owned constructor/name references participate in initialization, GC marking, release and existing memory inventory. Actual C functions already own and mark their realm.",
+      "original_source": [
+        "r026",
+        "r027",
+        "r028"
+      ],
+      "host_source": [
+        "r029",
+        "r030",
+        "r031",
+        "r032",
+        "r033",
+        "r034",
+        "r035",
+        "r036"
+      ],
+      "control_numbers": [
+        5,
+        24
+      ],
+      "limits": [
+        "Private JSObject/JSContext sizes really change. Compilation, GC stress and runtime memory qualification remain future work."
+      ]
+    },
+    {
+      "subject": "Native fast path",
+      "selected_behavior": "Known base intrinsic provenance is used only when the receiver has never been admitted as a real prototype.",
+      "original_source": [
+        "r037"
+      ],
+      "host_source": [
+        "r038"
+      ],
+      "control_numbers": [
+        4,
+        6,
+        7,
+        8
+      ],
+      "limits": []
+    },
+    {
+      "subject": "Actual prototype admission",
+      "selected_behavior": "Mark actual Error receivers when a real fresh shape takes the prototype reference; existing explicit SetPrototype admission remains. The sticky flag suppresses constructor fast path for Object.create and native NewObjectProto too.",
+      "original_source": [
+        "r039",
+        "r040"
+      ],
+      "host_source": [
+        "r041",
+        "r042",
+        "r043",
+        "r044",
+        "r045"
+      ],
+      "control_numbers": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "limits": [
+        "Selected projection edit 22 corrects the retained predecessor negative. Literal V8 map replacement/optimization is not implemented. For selected intrinsic constructors only, retaining the actual intrinsic preserves reachability also present through the original replacement Object function and its NativeContext intrinsic roots; this is an explicit bounded ownership inference."
+      ]
+    },
+    {
+      "subject": "Physical data-only lookup",
+      "selected_behavior": "Read actual own normal data without invoking accessors; return unsupported for unported exotic, variable-reference and autoinit storage.",
+      "original_source": [
+        "r046"
+      ],
+      "host_source": [
+        "r047",
+        "r048"
+      ],
+      "control_numbers": [
+        9,
+        10,
+        11,
+        16,
+        17,
+        23
+      ],
+      "limits": [
+        "Unsupported storage is not converted into a negative classifier result or materialized through a public Get."
+      ]
+    },
+    {
+      "subject": "Prototype order and fallback",
+      "selected_behavior": "At each physical prototype level inspect data @@toStringTag first; skip the receiver own constructor, inspect later actual intrinsic constructor DebugNames, and finally return the original Error class name.",
+      "original_source": [
+        "r049",
+        "r050",
+        "r051"
+      ],
+      "host_source": [
+        "r052"
+      ],
+      "control_numbers": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        23
+      ],
+      "limits": [
+        "The selected implementation returns unsupported for Proxy/exotic prototypes instead of claiming the full original iterator/lookup slice."
+      ]
+    },
+    {
+      "subject": "Eligible native constructor function names",
+      "selected_behavior": "Bound-function and Proxy constructor values are skipped as non-JSFunction; intrinsic Error names use real C-function realm roots. Actual Object body is skipped independent of public name.",
+      "original_source": [
+        "r053"
+      ],
+      "host_source": [
+        "r054",
+        "r055"
+      ],
+      "control_numbers": [
+        11,
+        12,
+        14,
+        15
+      ],
+      "limits": [
+        "Unknown eligible functions return unsupported; no fake DebugName is synthesized."
+      ]
+    },
+    {
+      "subject": "Failure and current completion ownership",
+      "selected_behavior": "The selected query only reads storage and duplicates already-owned Strings. It performs no allocation, guest calls, pending exception replacement, termination mutation, or OOM reporting.",
+      "original_source": [
+        "r056"
+      ],
+      "host_source": [
+        "r057",
+        "r058"
+      ],
+      "control_numbers": [
+        21,
+        22,
+        23
+      ],
+      "limits": [
+        "These are source findings and authored controls, not executed runtime acceptance."
+      ]
+    },
+    {
+      "subject": "Isolated native lifetime control",
+      "selected_behavior": "The control uses a genuine foreign context and actual Error constructor. It verifies the retained ErrorData is a String, removes public own properties/prototype, releases public context/constructor roots and observes native marker finalization before/after releasing the Error.",
+      "original_source": [
+        "r059"
+      ],
+      "host_source": [
+        "r060",
+        "r061",
+        "r062",
+        "r063"
+      ],
+      "control_numbers": [
+        24
+      ],
+      "limits": [
+        "The returned String has independent ownership; the control does not use a fake constructor or host registry to sustain the realm."
+      ]
+    },
+    {
+      "subject": "Intrinsic Error prototype branding correction",
+      "selected_behavior": "Pinned InstallError creates JS_ERROR_TYPE instances but its ordinary function prototype comes from the Object initial map. Ordinary Error.prototype objects are therefore not an established V8-versus-QuickJS branding mismatch.",
+      "original_source": [
+        "r064",
+        "r065",
+        "r066",
+        "r067"
+      ],
+      "host_source": [
+        "r068"
+      ],
+      "control_numbers": [
+        20
+      ],
+      "limits": [
+        "Additive correction to an earlier informal overbroad gap statement; all prior evidence and frozen source comments remain unchanged. It does not assert full arbitrary-object/native Error map equivalence."
+      ]
+    },
+    {
+      "subject": "Conservative derived-target scope",
+      "selected_behavior": "Original map creation has normal and special prototype transition paths; this primitive leaves all differing new.target cases explicit unsupported.",
+      "original_source": [
+        "r069",
+        "r070"
+      ],
+      "host_source": [
+        "r071",
+        "r072"
+      ],
+      "control_numbers": [
+        18
+      ],
+      "limits": [
+        "No assertion is made that every original differing target clears its base flag."
+      ]
+    },
+    {
+      "subject": "Install-only exact integration",
+      "selected_behavior": "The new raw VM root uses only std and engine_abi.h. The existing linkQuickJs and actual QuickJS C library supply ABI visibility and the single new private C include.",
+      "original_source": [],
+      "host_source": [
+        "r073",
+        "r074",
+        "r075",
+        "r076"
+      ],
+      "control_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "limits": [
+        "No runner, compiler flag, assertion option, product source generator or execution grant is added. Future accepted metadata count remains unknown."
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "r001",
+      "file_id": "node-errors.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\node-errors.v24.13.cc",
+        "bytes": 43095,
+        "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9"
+      },
+      "start_line": 676,
+      "end_line": 725,
+      "label": "Actual classifier and fatal-rethrow destructor",
+      "excerpt_sha256": "D0E1E64D62ACFBB6BD6158C37A104FA6203B534E575C3D689176B3DEDA8269FA",
+      "excerpt": "static bool IsStackOverflowError(Isolate* isolate, Local<Value> exception) {\n  if (!exception->IsNativeError()) return false;\n\n  Local<Object> err_obj = exception.As<Object>();\n  Local<String> constructor_name = err_obj->GetConstructorName();\n\n  // Must be a RangeError\n  Utf8Value name(isolate, constructor_name);\n  if (name.ToStringView() != \"RangeError\") return false;\n\n  // Check for the specific stack overflow message\n  Local<Context> context = isolate->GetCurrentContext();\n  Local<Value> message_val;\n  if (!err_obj->Get(context, String::NewFromUtf8Literal(isolate, \"message\"))\n           .ToLocal(&message_val)) {\n    return false;\n  }\n\n  if (!message_val->IsString()) return false;\n\n  Utf8Value message(isolate, message_val.As<String>());\n  return message.ToStringView() == \"Maximum call stack size exceeded\";\n}\n\nnamespace errors {\n\nTryCatchScope::~TryCatchScope() {\n  if (HasCaught() && !HasTerminated() && mode_ != CatchMode::kNormal) {\n    HandleScope scope(env_->isolate());\n    Local<v8::Value> exception = Exception();\n    Local<v8::Message> message = Message();\n\n    // Special handling for stack overflow errors in async_hooks: instead of\n    // immediately exiting, re-throw the exception. This allows the exception\n    // to propagate to user code's try-catch blocks.\n    if (mode_ == CatchMode::kFatalRethrowStackOverflow &&\n        IsStackOverflowError(env_->isolate(), exception)) {\n      ReThrow();\n      Reset();\n      return;\n    }\n\n    EnhanceFatalException enhance = CanContinue() ?\n        EnhanceFatalException::kEnhance : EnhanceFatalException::kDontEnhance;\n    if (message.IsEmpty())\n      message = Exception::CreateMessage(env_->isolate(), exception);\n    ReportFatalException(env_, exception, message, enhance);\n    env_->Exit(ExitCode::kExceptionInFatalExceptionHandler);\n  }\n}\n"
+    },
+    {
+      "id": "r002",
+      "file_id": "node-errors.v24.13.h",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\node-errors.v24.13.h",
+        "bytes": 23394,
+        "sha256": "396CC9AE4323EC0E9FB8E4B5E6912C0603E86410D5588802B5B1F2C0F7048CC4"
+      },
+      "start_line": 329,
+      "end_line": 359,
+      "label": "TryCatch mode and separate TriggerUncaughtException declarations",
+      "excerpt_sha256": "C42FD52D96CEFB807898E1EBC949C6BF59530DA31386503DAAD0413C01EF8F83",
+      "excerpt": "class TryCatchScope : public v8::TryCatch {\n public:\n  enum class CatchMode { kNormal, kFatal, kFatalRethrowStackOverflow };\n\n  explicit TryCatchScope(Environment* env, CatchMode mode = CatchMode::kNormal)\n      : v8::TryCatch(env->isolate()), env_(env), mode_(mode) {}\n  ~TryCatchScope();\n\n  // Since the dtor is not virtual we need to make sure no one creates\n  // object of it in the free store that might be held by polymorphic pointers.\n  void* operator new(std::size_t count) = delete;\n  void* operator new[](std::size_t count) = delete;\n  TryCatchScope(TryCatchScope&) = delete;\n  TryCatchScope(TryCatchScope&&) = delete;\n  TryCatchScope operator=(TryCatchScope&) = delete;\n  TryCatchScope operator=(TryCatchScope&&) = delete;\n\n private:\n  Environment* env_;\n  CatchMode mode_;\n};\n\n// Trigger the global uncaught exception handler `process._fatalException`\n// in JS land (which emits the 'uncaughtException' event). If that returns\n// true, continue program execution, otherwise exit the process.\nvoid TriggerUncaughtException(v8::Isolate* isolate,\n                              const v8::TryCatch& try_catch);\nvoid TriggerUncaughtException(v8::Isolate* isolate,\n                              v8::Local<v8::Value> error,\n                              v8::Local<v8::Message> message,\n                              bool from_promise = false);\n"
+    },
+    {
+      "id": "r003",
+      "file_id": "fragment",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+        "bytes": 8944,
+        "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+      },
+      "start_line": 1,
+      "end_line": 15,
+      "label": "Bounded contract",
+      "excerpt_sha256": "A53EF8DBFC44BF7F5A8B3FEEA3E584F5692B20CF68454E867A60D6DC6B54C90B",
+      "excerpt": "/* Selected native Error constructor provenance and GetConstructorName slice.\n * Included once at the end of quickjs.c, after its real private types/helpers.\n *\n * Pinned V8 GetConstructorHelper first prefers actual native map constructor\n * provenance when new.target is the base and the receiver is not a prototype.\n * Its fallback reads data properties only; the receiver's own constructor is\n * deliberately skipped. No guest getter, Proxy trap or mutable function.name\n * is consulted by this implementation.\n *\n * The original general map/new-target and SharedFunctionInfo::DebugName owners\n * do not yet exist in this VM. Different-new-target construction, unrecorded\n * Error creation, Proxy/exotic prototype storage and nonintrinsic function\n * constructor names return UNSUPPORTED. This result is not a negative stack\n * overflow classification, and this primitive does not install hook policy.\n */\n"
+    },
+    {
+      "id": "r004",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 10261,
+      "end_line": 10268,
+      "label": "Existing genuine RangeError stack overflow producer",
+      "excerpt_sha256": "1A4E63164CB09F51A861E251076684672B4289B567611057BBD82429A27CCCDC",
+      "excerpt": "static JSValue JS_ThrowStackOverflow(JSContext *ctx)\n{\n    if (ctx->pi_compiler_diagnostic && JS_HasException(ctx))\n        return JS_EXCEPTION;\n    if (ctx->pi_compiler_diagnostic)\n        ctx->pi_compiler_diagnostic->stack_failed = true;\n    return JS_ThrowRangeError(ctx, \"Maximum call stack size exceeded\");\n}\n"
+    },
+    {
+      "id": "r005",
+      "file_id": "v8-api.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+        "bytes": 489340,
+        "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+      },
+      "start_line": 3676,
+      "end_line": 3678,
+      "label": "Native Error brand",
+      "excerpt_sha256": "805CB9900F4235C4533FE8C60AE50646881B14232E7E8D567395030B569DDB42",
+      "excerpt": "bool Value::IsNativeError() const {\n  return IsJSError(*Utils::OpenDirectHandle(this));\n}\n"
+    },
+    {
+      "id": "r006",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 13923,
+      "end_line": 13926,
+      "label": "Actual JS_CLASS_ERROR brand",
+      "excerpt_sha256": "8908144EBA912527BAF5E8FFB167C5D39236D8E2110ADAB66B46303BB71D4572",
+      "excerpt": "bool JS_IsError(JSValueConst val)\n{\n    return JS_CLASS_ERROR == JS_GetClassID(val);\n}\n"
+    },
+    {
+      "id": "r007",
+      "file_id": "fragment",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+        "bytes": 8944,
+        "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+      },
+      "start_line": 160,
+      "end_line": 172,
+      "label": "Public query brand/provenance admission",
+      "excerpt_sha256": "68D0D69EF73FA4A653BB513D526422C420BFCDB59DBB3BC07ACAC45D2ECAEE3E",
+      "excerpt": "JSPiNativeErrorConstructorNameStatus JS_PiGetNativeErrorConstructorName(\n    JSContext *ctx, JSValueConst error, JSValue *owned_name)\n{\n    JSObject *receiver, *current;\n    JSValue value, name;\n    int found;\n    assert(ctx != NULL && owned_name != NULL);\n    *owned_name = JS_UNDEFINED;\n    if (!JS_IsError(error))\n        return JS_PI_ERROR_CONSTRUCTOR_NAME_NOT_NATIVE_ERROR;\n    receiver = JS_VALUE_GET_OBJ(error);\n    if (receiver->u.native_error.constructor_provenance != 1)\n        return JS_PI_ERROR_CONSTRUCTOR_NAME_UNSUPPORTED;\n"
+    },
+    {
+      "id": "r008",
+      "file_id": "v8-builtins-error.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-builtins-error.v24.13.cc",
+        "bytes": 2763,
+        "sha256": "8D1447C8E744A17440C36FAE548F876F44B6F219FCD0E22B0E8EB43C8E7DEFE3"
+      },
+      "start_line": 18,
+      "end_line": 25,
+      "label": "Builtin actual target/new target",
+      "excerpt_sha256": "2A174F542E483E98F92870FA65EEF48C5D1E6CD18A141A2CA894D4B6790AEC9D",
+      "excerpt": "// ES6 section 19.5.1.1 Error ( message )\nBUILTIN(ErrorConstructor) {\n  HandleScope scope(isolate);\n  DirectHandle<Object> options = args.atOrUndefined(isolate, 2);\n  RETURN_RESULT_OR_FAILURE(\n      isolate, ErrorUtils::Construct(isolate, args.target(), args.new_target(),\n                                     args.atOrUndefined(isolate, 1), options));\n}\n"
+    },
+    {
+      "id": "r009",
+      "file_id": "v8-messages.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-messages.v24.13.cc",
+        "bytes": 49726,
+        "sha256": "A00739D8A0D7DC796BB10D50B495DF9B417B9125C6B86B8333F37224A2BCE59E"
+      },
+      "start_line": 528,
+      "end_line": 575,
+      "label": "ErrorUtils construction",
+      "excerpt_sha256": "093794C40D4D25369E372013EBEC4308E4F7D30EF1F6DFA439E6DEBD40DB5E1D",
+      "excerpt": "MaybeDirectHandle<JSObject> ErrorUtils::Construct(\n    Isolate* isolate, DirectHandle<JSFunction> target,\n    DirectHandle<Object> new_target, DirectHandle<Object> message,\n    DirectHandle<Object> options) {\n  FrameSkipMode mode = SKIP_FIRST;\n  DirectHandle<Object> caller;\n\n  // When we're passed a JSFunction as new target, we can skip frames until that\n  // specific function is seen instead of unconditionally skipping the first\n  // frame.\n  if (IsJSFunction(*new_target)) {\n    mode = SKIP_UNTIL_SEEN;\n    caller = new_target;\n  }\n\n  return ErrorUtils::Construct(isolate, target, new_target, message, options,\n                               mode, caller,\n                               ErrorUtils::StackTraceCollection::kEnabled);\n}\n\nMaybeHandle<JSObject> ErrorUtils::Construct(\n    Isolate* isolate, DirectHandle<JSFunction> target,\n    DirectHandle<Object> new_target, DirectHandle<Object> message,\n    DirectHandle<Object> options, FrameSkipMode mode,\n    DirectHandle<Object> caller, StackTraceCollection stack_trace_collection) {\n  if (v8_flags.correctness_fuzzer_suppressions) {\n    // Abort range errors in correctness fuzzing, as their causes differ\n    // across correctness-fuzzing scenarios.\n    if (target.is_identical_to(isolate->range_error_function())) {\n      FATAL(\"Aborting on range error\");\n    }\n    // Ignore error messages in correctness fuzzing, because the spec leaves\n    // room for undefined behavior.\n    message = isolate->factory()->InternalizeUtf8String(\n        \"Message suppressed for fuzzers (--correctness-fuzzer-suppressions)\");\n  }\n\n  // 1. If NewTarget is undefined, let newTarget be the active function object,\n  // else let newTarget be NewTarget.\n  DirectHandle<JSReceiver> new_target_recv = IsJSReceiver(*new_target)\n                                                 ? Cast<JSReceiver>(new_target)\n                                                 : Cast<JSReceiver>(target);\n\n  // 2. Let O be ? OrdinaryCreateFromConstructor(newTarget, \"%ErrorPrototype%\",\n  //    « [[ErrorData]] »).\n  Handle<JSObject> err;\n  ASSIGN_RETURN_ON_EXCEPTION(isolate, err,\n                             JSObject::New(target, new_target_recv, {}));\n"
+    },
+    {
+      "id": "r010",
+      "file_id": "v8-js-function.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-function.v24.13.cc",
+        "bytes": 64812,
+        "sha256": "BD7C962A95DFD157FAFC7933D4C1D1571EE44D02FB71F0FF8592723379B88C47"
+      },
+      "start_line": 916,
+      "end_line": 925,
+      "label": "Initial-map constructor",
+      "excerpt_sha256": "19C5FDDDEA9304FA6D13E3F4D1E0ED29DFFD15CFE440E5C1FDB48D4F5BE9416B",
+      "excerpt": "void JSFunction::SetInitialMap(Isolate* isolate,\n                               DirectHandle<JSFunction> function,\n                               DirectHandle<Map> map,\n                               DirectHandle<JSPrototype> prototype,\n                               DirectHandle<JSFunction> constructor) {\n  if (map->prototype() != *prototype) {\n    Map::SetPrototype(isolate, map, prototype);\n  }\n  map->SetConstructor(*constructor);\n  function->set_prototype_or_initial_map(*map, kReleaseStore);\n"
+    },
+    {
+      "id": "r011",
+      "file_id": "v8-js-function.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-function.v24.13.cc",
+        "bytes": 64812,
+        "sha256": "BD7C962A95DFD157FAFC7933D4C1D1571EE44D02FB71F0FF8592723379B88C47"
+      },
+      "start_line": 1175,
+      "end_line": 1185,
+      "label": "Derived-map base relationship",
+      "excerpt_sha256": "108CFBD309625E8A7B220C170CE9F0F5BDEA54FFAEB927CB95F82894FC8AA86C",
+      "excerpt": "  DirectHandle<Map> map =\n      Map::CopyInitialMap(isolate, constructor_initial_map, instance_size,\n                          in_object_properties, unused_property_fields);\n  map->set_new_target_is_base(false);\n  DirectHandle<JSPrototype> prototype(new_target->instance_prototype(),\n                                      isolate);\n  JSFunction::SetInitialMap(isolate, new_target, map, prototype, constructor);\n  DCHECK(IsJSReceiver(new_target->instance_prototype()));\n  map->set_construction_counter(Map::kNoSlackTracking);\n  map->StartInobjectSlackTracking();\n  return true;\n"
+    },
+    {
+      "id": "r012",
+      "file_id": "fragment",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+        "bytes": 8944,
+        "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+      },
+      "start_line": 17,
+      "end_line": 88,
+      "label": "Actual intrinsic cache and owned provenance",
+      "excerpt_sha256": "2636C3A40EB7DC7B855F3D304915EDE2FFC32F799482AC047C13F2634326F698",
+      "excerpt": "static JSValue js_pi_intrinsic_error_constructor(JSContext *ctx, int kind)\n{\n    assert(kind >= 0 && kind <= JS_PLAIN_ERROR);\n    return kind == JS_PLAIN_ERROR ? ctx->error_ctor\n                                : ctx->pi_native_error_constructor[kind];\n}\n\n/* Called only before a just-created intrinsic constructor is published.\n * The real initial data property already contains its native builtin name.\n * Retain that value separately from the mutable public property.\n * A partial intrinsic-allocation failure leaves this name unsupported; this\n * helper performs no allocation, guest call or exception replacement.\n */\nstatic void js_pi_cache_error_constructor(JSContext *ctx, int kind,\n                                          JSValueConst constructor)\n{\n    JSObject *function;\n    JSProperty *property;\n    JSShapeProperty *shape_property;\n    assert(kind >= 0 && kind <= JS_PLAIN_ERROR);\n    assert(JS_IsUndefined(ctx->pi_error_constructor_name[kind]));\n    if (kind != JS_PLAIN_ERROR) {\n        assert(JS_IsUndefined(ctx->pi_native_error_constructor[kind]));\n        ctx->pi_native_error_constructor[kind] = js_dup(constructor);\n    }\n    if (!JS_IsObject(constructor))\n        return;\n    function = JS_VALUE_GET_OBJ(constructor);\n    shape_property = find_own_property(&property, function, JS_ATOM_name);\n    if (!shape_property ||\n        (shape_property->flags & JS_PROP_TMASK) != JS_PROP_NORMAL ||\n        !JS_IsString(property->u.value))\n        return;\n    ctx->pi_error_constructor_name[kind] = js_dup(property->u.value);\n}\n\n/* Source's derived maps still retain the actual base constructor. Keep that\n * real native edge for known intrinsic construction, even when the selected\n * name algorithm must report the different-new-target slice unsupported.\n */\nstatic void js_pi_record_error_constructor(JSContext *ctx, JSValueConst error,\n                                           int kind, JSValueConst constructor,\n                                           JSValueConst new_target)\n{\n    JSObject *object;\n    JSValue base, name;\n    if (!JS_IsError(error))\n        return;\n    assert(kind >= 0 && kind <= JS_PLAIN_ERROR);\n    object = JS_VALUE_GET_OBJ(error);\n    assert(JS_IsUndefined(object->u.native_error.constructor));\n    assert(JS_IsUndefined(object->u.native_error.constructor_name));\n    base = js_pi_intrinsic_error_constructor(ctx, kind);\n    name = ctx->pi_error_constructor_name[kind];\n    if (!JS_IsObject(base) || !JS_IsObject(constructor) ||\n        JS_VALUE_GET_OBJ(base) != JS_VALUE_GET_OBJ(constructor) ||\n        !JS_IsString(name))\n        return;\n    object->u.native_error.constructor = js_dup(base);\n    object->u.native_error.constructor_name = js_dup(name);\n    object->u.native_error.constructor_provenance =\n        JS_IsObject(new_target) &&\n        JS_VALUE_GET_OBJ(new_target) == JS_VALUE_GET_OBJ(base)\n            ? 1 : 2;\n}\n\nstatic void js_pi_record_intrinsic_error(JSContext *ctx, JSValueConst error,\n                                          int kind)\n{\n    JSValue constructor = js_pi_intrinsic_error_constructor(ctx, kind);\n    js_pi_record_error_constructor(ctx, error, kind, constructor, constructor);\n}\n"
+    },
+    {
+      "id": "r013",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 19552,
+      "end_line": 19555,
+      "label": "Current frame actual function",
+      "excerpt_sha256": "A8B66C9784BDE72DCADA3472B63B38F19C5F349AEAC75772E4081C3536CD7B49",
+      "excerpt": "static JSValueConst JS_GetActiveFunction(JSContext *ctx)\n{\n    return ctx->rt->current_stack_frame->cur_func;\n}\n"
+    },
+    {
+      "id": "r014",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 19998,
+      "end_line": 20019,
+      "label": "Native call frame and actual function realm",
+      "excerpt_sha256": "83C2CA8D2C90632C9E0B22099653825FBDB7986047CDC9E4A7842B9413F2A82D",
+      "excerpt": "    JSCFunctionEnum cproto;\n\n    p = JS_VALUE_GET_OBJ(func_obj);\n    cproto = p->u.cfunc.cproto;\n    arg_count = p->u.cfunc.length;\n\n    /* better to always check stack overflow */\n    if (js_check_stack_overflow(rt, sizeof(arg_buf[0]) * arg_count))\n        return JS_ThrowStackOverflow(ctx);\n\n    prev_sf = rt->current_stack_frame;\n    sf->prev_frame = prev_sf;\n    rt->current_stack_frame = sf;\n    ctx = p->u.cfunc.realm; /* change the current realm */\n\n    sf->is_strict_mode = false;\n    sf->is_constructor = (flags & JS_CALL_FLAG_CONSTRUCTOR) != 0;\n    sf->cur_func = unsafe_unconst(func_obj);\n    sf->arg_count = argc;\n    /* Native constructors receive new_target through this_obj, not a JS\n       receiver. V8's builtin construct stub uses a hole, exposed as undefined. */\n    sf->receiver = (flags & JS_CALL_FLAG_CONSTRUCTOR) ? JS_UNDEFINED : js_dup(this_obj);\n"
+    },
+    {
+      "id": "r015",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 47598,
+      "end_line": 47645,
+      "label": "Error constructor normalization/allocation",
+      "excerpt_sha256": "19717E76343E2CDCC07497DE1F072C20EE6F4F3589472E56B5BAD722B0CC469B",
+      "excerpt": "static JSValue js_error_constructor(JSContext *ctx, JSValueConst new_target,\n                                    int argc, JSValueConst *argv, int magic)\n{\n    JSValue obj, msg, proto, cause;\n    JSValueConst message;\n    int present, opts;\n\n    if (JS_IsUndefined(new_target))\n        new_target = JS_GetActiveFunction(ctx);\n    proto = JS_GetProperty(ctx, new_target, JS_ATOM_prototype);\n    if (JS_IsException(proto))\n        return proto;\n    if (!JS_IsObject(proto)) {\n        JSContext *realm;\n        JSValue proto1;\n\n        JS_FreeValue(ctx, proto);\n        realm = JS_GetFunctionRealm(ctx, new_target);\n        if (!realm)\n            return JS_EXCEPTION;\n        if (magic < 0) {\n            proto1 = realm->class_proto[JS_CLASS_ERROR];\n        } else {\n            proto1 = realm->native_error_proto[magic];\n        }\n        proto = js_dup(proto1);\n    }\n    obj = JS_NewObjectProtoClass(ctx, proto, JS_CLASS_ERROR);\n    JS_FreeValue(ctx, proto);\n    if (JS_IsException(obj))\n        return obj;\n    if (prepare_native_error_stack(ctx, obj) < 0 ||\n        native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,\n                                NULL, 0, 0, 0) < 0)\n        goto exception;\n    switch (magic) {\n    case JS_AGGREGATE_ERROR:\n        message = argv[1];\n        opts = 2;\n        break;\n    case JS_SUPPRESSED_ERROR:\n        message = argv[2];\n        opts = 3;\n        break;\n    default:\n        message = argv[0];\n        opts = 1;\n    }\n"
+    },
+    {
+      "id": "r016",
+      "file_id": "v8-messages.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-messages.v24.13.cc",
+        "bytes": 49726,
+        "sha256": "A00739D8A0D7DC796BB10D50B495DF9B417B9125C6B86B8333F37224A2BCE59E"
+      },
+      "start_line": 729,
+      "end_line": 752,
+      "label": "Generic native Error uses selected builtin constructor",
+      "excerpt_sha256": "7F0867FE5CBD2D861B82AD0A8B1E50AD55D36CA46B61E46D5348D56258FCB725",
+      "excerpt": "// static\nHandle<JSObject> ErrorUtils::MakeGenericError(\n    Isolate* isolate, DirectHandle<JSFunction> constructor,\n    MessageTemplate index, base::Vector<const DirectHandle<Object>> args,\n    FrameSkipMode mode) {\n  if (v8_flags.clear_exceptions_on_js_entry) {\n    // This function used to be implemented in JavaScript, and JSEntry\n    // clears any exceptions - so whenever we'd call this from C++,\n    // exceptions would be cleared. Preserve this behavior.\n    isolate->clear_exception();\n    isolate->clear_pending_message();\n  }\n  DirectHandle<String> msg = MessageFormatter::Format(isolate, index, args);\n  DirectHandle<Object> options = isolate->factory()->undefined_value();\n\n  DCHECK(mode != SKIP_UNTIL_SEEN);\n\n  DirectHandle<Object> no_caller;\n  // The call below can't fail because constructor is a builtin.\n  DCHECK(constructor->shared()->HasBuiltinId());\n  return ErrorUtils::Construct(isolate, constructor, constructor, msg, options,\n                               mode, no_caller, StackTraceCollection::kEnabled)\n      .ToHandleChecked();\n}\n"
+    },
+    {
+      "id": "r017",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 9882,
+      "end_line": 9949,
+      "label": "JS_NewError and selected native Error factory",
+      "excerpt_sha256": "4FAC78FD20FB6F06E17111205F86972F6593F1A5154B775555FFC81F3878080B",
+      "excerpt": "JSValue JS_NewError(JSContext *ctx)\n{\n    if (ctx->pi_compiler_diagnostic && JS_HasException(ctx))\n        return JS_EXCEPTION;\n    JSValue obj = JS_NewObjectClass(ctx, JS_CLASS_ERROR);\n    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx)))\n        return js_pi_link_failure_free(ctx, obj);\n    if (ctx->pi_compiler_diagnostic) {\n        if (JS_IsException(obj) || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n        if (prepare_native_error_stack(ctx, obj) < 0 || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n        if (native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,\n                                    NULL, 0, 0, 0) < 0 || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n        if (capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0) < 0 || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n        return obj;\n    }\n    if (JS_IsException(obj))\n        return JS_EXCEPTION;\n    if (ctx->pi_link_preparing) {\n        if (prepare_native_error_stack(ctx, obj) < 0 || JS_HasException(ctx))\n            return js_pi_link_failure_free(ctx, obj);\n        if (native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,\n                                    NULL, 0, 0, 0) < 0 || JS_HasException(ctx))\n            return js_pi_link_failure_free(ctx, obj);\n        if (capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0) < 0 ||\n            JS_HasException(ctx))\n            return js_pi_link_failure_free(ctx, obj);\n        return obj;\n    }\n    if (prepare_native_error_stack(ctx, obj) < 0 ||\n        native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,\n                                NULL, 0, 0, 0) < 0) {\n        JS_FreeValue(ctx, obj);\n        return JS_EXCEPTION;\n    }\n    {\n        int captured = capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0);\n        if (captured == -2)\n            return js_pi_metadata_fail_owned(ctx, obj);\n        if (captured < 0) {\n            JS_FreeValue(ctx, obj);\n            return JS_EXCEPTION;\n        }\n    }\n    return obj;\n}\n\nstatic JSValue js_make_error2_tracked(JSContext *ctx, JSErrorEnum error_num,\n                             bool add_backtrace, const char *message,\n                             bool *metadata_failed)\n{\n    JSValue obj, msg;\n\n    if (ctx->pi_compiler_diagnostic && JS_HasException(ctx))\n        return JS_EXCEPTION;\n    if (error_num == JS_PLAIN_ERROR) {\n        obj = JS_NewObjectClass(ctx, JS_CLASS_ERROR);\n    } else {\n        obj = JS_NewObjectProtoClass(ctx, ctx->native_error_proto[error_num],\n                                     JS_CLASS_ERROR);\n    }\n    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx)))\n        return js_pi_link_failure_free(ctx, obj);\n    if (ctx->pi_compiler_diagnostic && (JS_IsException(obj) || JS_HasException(ctx)))\n        return js_pi_compiler_fail_owned(ctx, obj);\n"
+    },
+    {
+      "id": "r018",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 10056,
+      "end_line": 10060,
+      "label": "Compiler SyntaxError allocation",
+      "excerpt_sha256": "891EC47F76F9E04DA31C41C1D12EBE3FD1415307BDAFF73F2F66B4FCF62792DD",
+      "excerpt": "    object = JS_NewObjectProtoClass(ctx, ctx->native_error_proto[JS_SYNTAX_ERROR],\n                                    JS_CLASS_ERROR);\n    if (JS_IsException(object) || JS_HasException(ctx))\n        return js_pi_compiler_fail_owned(ctx, object);\n    if (prepare_native_error_stack(ctx, object) < 0 || JS_HasException(ctx))\n"
+    },
+    {
+      "id": "r019",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 47846,
+      "end_line": 47859,
+      "label": "Native AggregateError allocation",
+      "excerpt_sha256": "D32A65E68CFAEACE4783206E586CB49E4A5AFED20C2858AE80F975CEE626207D",
+      "excerpt": "static JSValue js_aggregate_error_constructor(JSContext *ctx,\n                                              JSValueConst errors)\n{\n    JSValue obj;\n\n    obj = JS_NewObjectProtoClass(ctx,\n                                 ctx->native_error_proto[JS_AGGREGATE_ERROR],\n                                 JS_CLASS_ERROR);\n    if (JS_IsException(obj))\n        return obj;\n    JS_DefinePropertyValueConst(ctx, obj, JS_ATOM_errors, errors,\n                               JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);\n    return obj;\n}\n"
+    },
+    {
+      "id": "r020",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 59979,
+      "end_line": 59999,
+      "label": "Native SuppressedError allocation",
+      "excerpt_sha256": "65722066A915FB90384F13DCF51DB9308E4B93A1D38BA5C622CC466F4F25F2EE",
+      "excerpt": "static JSValue js_new_suppressed_error(JSContext *ctx, JSValueConst error,\n                                       JSValueConst suppressed)\n{\n    JSValue obj;\n\n    /* Construct via the intrinsic prototype rather than going through\n       SuppressedError.prototype.constructor, which is user-writable. */\n    obj = JS_NewObjectProtoClass(ctx,\n                                 ctx->native_error_proto[JS_SUPPRESSED_ERROR],\n                                 JS_CLASS_ERROR);\n    if (JS_IsException(obj))\n        return JS_EXCEPTION;\n    JS_DefinePropertyValue(ctx, obj, JS_ATOM_error, js_dup(error),\n                           JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);\n    JS_DefinePropertyValue(ctx, obj, JS_ATOM_suppressed, js_dup(suppressed),\n                           JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);\n    if (build_backtrace(ctx, obj, JS_UNDEFINED, NULL, 0, 0,\n                    JS_BACKTRACE_FLAG_SKIP_FIRST_LEVEL) == -2)\n        return js_pi_metadata_fail_owned(ctx, obj);\n    return obj;\n}\n"
+    },
+    {
+      "id": "r021",
+      "file_id": "v8-shared-function-info.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-shared-function-info.v24.13.cc",
+        "bytes": 34727,
+        "sha256": "97E61FDB8DFD572CE0BF17F2346636F123842815BB28FD118D0AD0773748CCEB"
+      },
+      "start_line": 333,
+      "end_line": 351,
+      "label": "Original native shared/inferred DebugName",
+      "excerpt_sha256": "0866DE08AD60F6B473830FD0D1E986AA508CF8CEC876BE8AB7F7856066CD5BCA",
+      "excerpt": "Handle<String> SharedFunctionInfo::DebugName(\n    Isolate* isolate, DirectHandle<SharedFunctionInfo> shared) {\n#if V8_ENABLE_WEBASSEMBLY\n  if (shared->HasWasmExportedFunctionData()) {\n    return isolate->factory()\n        ->NewStringFromUtf8(base::CStrVector(shared->DebugNameCStr().get()))\n        .ToHandleChecked();\n  }\n#endif  // V8_ENABLE_WEBASSEMBLY\n  FunctionKind function_kind = shared->kind();\n  if (IsClassMembersInitializerFunction(function_kind)) {\n    return function_kind == FunctionKind::kClassMembersInitializerFunction\n               ? isolate->factory()->instance_members_initializer_string()\n               : isolate->factory()->static_initializer_string();\n  }\n  DisallowHeapAllocation no_gc;\n  Tagged<String> function_name = shared->Name();\n  if (function_name->length() == 0) function_name = shared->inferred_name();\n  return handle(function_name, isolate);\n"
+    },
+    {
+      "id": "r022",
+      "file_id": "v8-bootstrapper.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-bootstrapper.v24.13.cc",
+        "bytes": 336314,
+        "sha256": "0991594530BB8FAF3836C747E547F43BB091D0AFA74E16B4B1814F68458D172A"
+      },
+      "start_line": 430,
+      "end_line": 494,
+      "label": "Builtin initial function/shared name and instance map",
+      "excerpt_sha256": "2D01F922765C41B3411C2AEBA8BB662092D0F9E5063D7959ACE9699E98CFC356",
+      "excerpt": "V8_NOINLINE DirectHandle<JSFunction> CreateFunctionForBuiltin(\n    Isolate* isolate, DirectHandle<String> name, DirectHandle<Map> map,\n    Builtin builtin, int len, AdaptArguments adapt) {\n  DirectHandle<NativeContext> context(isolate->native_context());\n  DCHECK(IsFunctionMapOrSpecialBuiltin(map, builtin, context));\n\n  DirectHandle<SharedFunctionInfo> info =\n      CreateSharedFunctionInfoForBuiltin(isolate, name, builtin, len, adapt);\n\n  return Factory::JSFunctionBuilder{isolate, info, context}\n      .set_map(map)\n      .Build();\n}\n\nV8_NOINLINE DirectHandle<JSFunction> CreateFunctionForBuiltinWithPrototype(\n    Isolate* isolate, DirectHandle<String> name, Builtin builtin,\n    DirectHandle<UnionOf<JSPrototype, Hole>> prototype, InstanceType type,\n    int instance_size, int inobject_properties,\n    MutableMode prototype_mutability, int len, AdaptArguments adapt) {\n  Factory* factory = isolate->factory();\n  DirectHandle<NativeContext> context(isolate->native_context());\n  DirectHandle<Map> map =\n      prototype_mutability == MUTABLE\n          ? isolate->strict_function_map()\n          : isolate->strict_function_with_readonly_prototype_map();\n  DCHECK(IsFunctionMapOrSpecialBuiltin(map, builtin, context));\n\n  DirectHandle<SharedFunctionInfo> info =\n      CreateSharedFunctionInfoForBuiltin(isolate, name, builtin, len, adapt);\n  info->set_expected_nof_properties(inobject_properties);\n\n  DirectHandle<JSFunction> result =\n      Factory::JSFunctionBuilder{isolate, info, context}.set_map(map).Build();\n\n  ElementsKind elements_kind;\n  switch (type) {\n    case JS_ARRAY_TYPE:\n      elements_kind = PACKED_SMI_ELEMENTS;\n      break;\n    case JS_ARGUMENTS_OBJECT_TYPE:\n      elements_kind = PACKED_ELEMENTS;\n      break;\n    default:\n      elements_kind = TERMINAL_FAST_ELEMENTS_KIND;\n      break;\n  }\n  DirectHandle<Map> initial_map = factory->NewContextfulMapForCurrentContext(\n      type, instance_size, elements_kind, inobject_properties);\n  initial_map->SetConstructor(*result);\n  if (type == JS_FUNCTION_TYPE) {\n    DCHECK_EQ(instance_size, JSFunction::kSizeWithPrototype);\n    // Since we are creating an initial map for JSFunction objects with\n    // prototype slot, set the respective bit.\n    initial_map->set_has_prototype_slot(true);\n  }\n  // TODO(littledan): Why do we have this is_generator test when\n  // NewFunctionPrototype already handles finding an appropriately\n  // shared prototype?\n  if (!IsResumableFunction(info->kind()) && IsTheHole(*prototype, isolate)) {\n    prototype = factory->NewFunctionPrototype(result);\n  }\n  JSFunction::SetInitialMap(isolate, result, initial_map,\n                            Cast<JSPrototype>(prototype));\n\n  return result;\n"
+    },
+    {
+      "id": "r023",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 7334,
+      "end_line": 7372,
+      "label": "Actual function initial name String",
+      "excerpt_sha256": "7E85848E5B54DB0CDF6E5379D6E4BD1434C090F188C595F3E3ED3740A4CE47B6",
+      "excerpt": "static void js_function_set_properties(JSContext *ctx, JSValue func_obj,\n                                       JSAtom name, int len)\n{\n    if (ctx->pi_link_preparing) {\n        JSValue text;\n        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_length, js_int32(len),\n                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))\n            return;\n        text = JS_AtomToString(ctx, name);\n        if (JS_IsException(text) || JS_HasException(ctx)) {\n            js_pi_link_failure_free(ctx, text);\n            return;\n        }\n        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_name, text,\n                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))\n            return;\n        return;\n    }\n    if (ctx->pi_compiler_diagnostic) {\n        JSValue text;\n        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_length, js_int32(len),\n                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))\n            return;\n        text = JS_AtomToString(ctx, name);\n        if (JS_IsException(text) || JS_HasException(ctx)) {\n            js_pi_compiler_fail_owned(ctx, text);\n            return;\n        }\n        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_name, text,\n                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))\n            return;\n        return;\n    }\n    /* ES6 feature non compatible with ES5.1: length is configurable */\n    JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_length, js_int32(len),\n                           JS_PROP_CONFIGURABLE);\n    JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_name,\n                           JS_AtomToString(ctx, name), JS_PROP_CONFIGURABLE);\n}\n"
+    },
+    {
+      "id": "r024",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 64162,
+      "end_line": 64194,
+      "label": "Intrinsic Error construction/publication",
+      "excerpt_sha256": "98DEFA93931C5A4C17028EF847CBC2D588C5531358DB9F688CF66B134B92309D",
+      "excerpt": "    /* Error */\n    ft.generic_magic = js_error_constructor;\n    ctx->error_ctor = JS_NewCFunctionMagic(ctx, js_error_constructor,\n                                           \"Error\", 1, JS_CFUNC_constructor_or_func_magic, -1);\n    if (JS_IsException(ctx->error_ctor))\n        return -1;\n    JS_NewGlobalCConstructor2(ctx, js_dup(ctx->error_ctor),\n                              \"Error\", ctx->class_proto[JS_CLASS_ERROR]);\n    if (JS_SetPropertyFunctionList(ctx, ctx->error_ctor, js_error_funcs, countof(js_error_funcs)))\n        return -1;\n\n    for(int i = 0; i < JS_NATIVE_ERROR_COUNT; i++) {\n        JSValue func_obj;\n        int n_args;\n        switch (i) {\n        case JS_AGGREGATE_ERROR:\n            n_args = 2;\n            break;\n        case JS_SUPPRESSED_ERROR:\n            n_args = 3;\n            break;\n        default:\n            n_args = 1;\n        }\n        func_obj = JS_NewCFunction3(ctx, ft.generic,\n                                    native_error_name[i], n_args,\n                                    JS_CFUNC_constructor_or_func_magic, i,\n                                    ctx->error_ctor, 0);\n        if (JS_IsException(func_obj))\n            return -1;\n        JS_NewGlobalCConstructor2(ctx, func_obj, native_error_name[i],\n                                  ctx->native_error_proto[i]);\n    }\n"
+    },
+    {
+      "id": "r025",
+      "file_id": "fragment",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+        "bytes": 8944,
+        "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+      },
+      "start_line": 30,
+      "end_line": 51,
+      "label": "Getter-free initial name cache",
+      "excerpt_sha256": "632D85F86087F7B91C863267F1274FCA0920B4FFB0E2454D08574296FAB6DCDD",
+      "excerpt": "static void js_pi_cache_error_constructor(JSContext *ctx, int kind,\n                                          JSValueConst constructor)\n{\n    JSObject *function;\n    JSProperty *property;\n    JSShapeProperty *shape_property;\n    assert(kind >= 0 && kind <= JS_PLAIN_ERROR);\n    assert(JS_IsUndefined(ctx->pi_error_constructor_name[kind]));\n    if (kind != JS_PLAIN_ERROR) {\n        assert(JS_IsUndefined(ctx->pi_native_error_constructor[kind]));\n        ctx->pi_native_error_constructor[kind] = js_dup(constructor);\n    }\n    if (!JS_IsObject(constructor))\n        return;\n    function = JS_VALUE_GET_OBJ(constructor);\n    shape_property = find_own_property(&property, function, JS_ATOM_name);\n    if (!shape_property ||\n        (shape_property->flags & JS_PROP_TMASK) != JS_PROP_NORMAL ||\n        !JS_IsString(property->u.value))\n        return;\n    ctx->pi_error_constructor_name[kind] = js_dup(property->u.value);\n}\n"
+    },
+    {
+      "id": "r026",
+      "file_id": "v8-contexts.v24.13.h",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-contexts.v24.13.h",
+        "bytes": 49684,
+        "sha256": "4B94B0DEC61C1A68779C5D56CAA746158DC172F0402B6EFA803AE1F1A1B7C629"
+      },
+      "start_line": 374,
+      "end_line": 404,
+      "label": "Intrinsic native context fields",
+      "excerpt_sha256": "FF8ACBBFA1D6C7474EF75DE2D29B85D2889FF523E235DE7D1475F3BA4F3ADCFD",
+      "excerpt": "  V(ERROR_FUNCTION_INDEX, JSFunction, error_function)                          \\\n  V(ERROR_TO_STRING, JSFunction, error_to_string)                              \\\n  V(EVAL_ERROR_FUNCTION_INDEX, JSFunction, eval_error_function)                \\\n  V(AGGREGATE_ERROR_FUNCTION_INDEX, JSFunction, aggregate_error_function)      \\\n  V(GLOBAL_EVAL_FUN_INDEX, JSFunction, global_eval_fun)                        \\\n  V(GLOBAL_PARSE_FLOAT_FUN_INDEX, JSFunction, global_parse_float_fun)          \\\n  V(GLOBAL_PARSE_INT_FUN_INDEX, JSFunction, global_parse_int_fun)              \\\n  V(GLOBAL_PROXY_FUNCTION_INDEX, JSFunction, global_proxy_function)            \\\n  V(MAP_DELETE_INDEX, JSFunction, map_delete)                                  \\\n  V(MAP_GET_INDEX, JSFunction, map_get)                                        \\\n  V(MAP_HAS_INDEX, JSFunction, map_has)                                        \\\n  V(MAP_SET_INDEX, JSFunction, map_set)                                        \\\n  V(FUNCTION_HAS_INSTANCE_INDEX, JSFunction, function_has_instance)            \\\n  V(FUNCTION_TO_STRING_INDEX, JSFunction, function_to_string)                  \\\n  V(OBJECT_TO_STRING, JSFunction, object_to_string)                            \\\n  V(OBJECT_VALUE_OF_FUNCTION_INDEX, JSFunction, object_value_of_function)      \\\n  V(PROMISE_ALL_INDEX, JSFunction, promise_all)                                \\\n  V(PROMISE_ALL_SETTLED_INDEX, JSFunction, promise_all_settled)                \\\n  V(PROMISE_ANY_INDEX, JSFunction, promise_any)                                \\\n  V(PROMISE_FUNCTION_INDEX, JSFunction, promise_function)                      \\\n  V(RANGE_ERROR_FUNCTION_INDEX, JSFunction, range_error_function)              \\\n  V(REFERENCE_ERROR_FUNCTION_INDEX, JSFunction, reference_error_function)      \\\n  V(SET_ADD_INDEX, JSFunction, set_add)                                        \\\n  V(SET_DELETE_INDEX, JSFunction, set_delete)                                  \\\n  V(SET_HAS_INDEX, JSFunction, set_has)                                        \\\n  V(SHADOW_REALM_IMPORT_VALUE_REJECTED_INDEX, JSFunction,                      \\\n    shadow_realm_import_value_rejected)                                        \\\n  V(SUPPRESSED_ERROR_FUNCTION_INDEX, JSFunction, suppressed_error_function)    \\\n  V(SYNTAX_ERROR_FUNCTION_INDEX, JSFunction, syntax_error_function)            \\\n  V(TYPE_ERROR_FUNCTION_INDEX, JSFunction, type_error_function)                \\\n  V(URI_ERROR_FUNCTION_INDEX, JSFunction, uri_error_function)                  \\\n"
+    },
+    {
+      "id": "r027",
+      "file_id": "v8-contexts.v24.13.h",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-contexts.v24.13.h",
+        "bytes": 49684,
+        "sha256": "4B94B0DEC61C1A68779C5D56CAA746158DC172F0402B6EFA803AE1F1A1B7C629"
+      },
+      "start_line": 530,
+      "end_line": 548,
+      "label": "Native context field ordering before weak slots",
+      "excerpt_sha256": "00D6CE5A28EB074BED5608C4879C54D2A4B1F5CF087A04F22F3FD0314F8B2B23",
+      "excerpt": "    SCOPE_INFO_INDEX,\n    PREVIOUS_INDEX,\n\n    // This slot only exists if ScopeInfo::HasContextExtensionSlot returns true.\n    EXTENSION_INDEX,\n\n// These slots are only in native contexts.\n#define NATIVE_CONTEXT_SLOT(index, type, name) index,\n    NATIVE_CONTEXT_FIELDS(NATIVE_CONTEXT_SLOT)\n#undef NATIVE_CONTEXT_SLOT\n\n    // Properties from here are treated as weak references by the full GC.\n    // Scavenge treats them as strong references.\n    NEXT_CONTEXT_LINK,  // Weak.\n\n    // Total number of slots.\n    NATIVE_CONTEXT_SLOTS,\n    FIRST_WEAK_SLOT = NEXT_CONTEXT_LINK,\n    FIRST_JS_ARRAY_MAP_SLOT = JS_ARRAY_PACKED_SMI_ELEMENTS_MAP_INDEX,\n"
+    },
+    {
+      "id": "r028",
+      "file_id": "v8-contexts.v24.13.h",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-contexts.v24.13.h",
+        "bytes": 49684,
+        "sha256": "4B94B0DEC61C1A68779C5D56CAA746158DC172F0402B6EFA803AE1F1A1B7C629"
+      },
+      "start_line": 768,
+      "end_line": 775,
+      "label": "Native context strong field region",
+      "excerpt_sha256": "C927A6DD5D3509E1CD1AE7E98333F7A7CB87DEC54D9E87C12ABB7E62431F7BD9",
+      "excerpt": "#define NATIVE_CONTEXT_FIELDS_DEF(V)                                        \\\n  /* TODO(ishell): move definition of common context offsets to Context. */ \\\n  V(kStartOfNativeContextFieldsOffset,                                      \\\n    (FIRST_WEAK_SLOT - MIN_CONTEXT_EXTENDED_SLOTS) * kTaggedSize)           \\\n  V(kEndOfStrongFieldsOffset, 0)                                            \\\n  V(kStartOfWeakFieldsOffset,                                               \\\n    (NATIVE_CONTEXT_SLOTS - FIRST_WEAK_SLOT) * kTaggedSize)                 \\\n  V(kEndOfWeakFieldsOffset, 0)                                              \\\n"
+    },
+    {
+      "id": "r029",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 3679,
+      "end_line": 3694,
+      "label": "Partial Context initialization",
+      "excerpt_sha256": "EA3D8C4B1757A845BDB1BEBEA7D5451CF4DD4E656F74743AD5E1119E082AA350",
+      "excerpt": "    ctx->rt = rt;\n    list_add_tail(&ctx->link, &rt->context_list);\n    for(i = 0; i < rt->class_count; i++)\n        ctx->class_proto[i] = JS_NULL;\n    ctx->array_ctor = JS_NULL;\n    ctx->iterator_ctor = JS_NULL;\n    ctx->iterator_ctor_getset = JS_NULL;\n    ctx->regexp_ctor = JS_NULL;\n    ctx->promise_ctor = JS_NULL;\n    ctx->native_error_stack_getter = JS_UNDEFINED;\n    ctx->native_error_stack_setter = JS_UNDEFINED;\n    ctx->error_ctor = JS_NULL;\n    ctx->error_back_trace = JS_UNDEFINED;\n    ctx->error_prepare_stack = JS_UNDEFINED;\n    ctx->error_stack_trace_limit = js_int32(10);\n    ctx->pi_legacy_arguments_poison = JS_UNDEFINED;\n"
+    },
+    {
+      "id": "r030",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 3855,
+      "end_line": 3864,
+      "label": "Context root mark anchor",
+      "excerpt_sha256": "E262C6994A37576E6E326A2C97E50D40ABC0D93A247CA5BF4A1CB3749933D670",
+      "excerpt": "    JS_MarkValue(rt, ctx->array_proto_values, mark_func);\n    for(i = 0; i < JS_NATIVE_ERROR_COUNT; i++) {\n        JS_MarkValue(rt, ctx->native_error_proto[i], mark_func);\n    }\n    JS_MarkValue(rt, ctx->native_error_stack_getter, mark_func);\n    JS_MarkValue(rt, ctx->native_error_stack_setter, mark_func);\n    JS_MarkValue(rt, ctx->error_ctor, mark_func);\n    JS_MarkValue(rt, ctx->error_back_trace, mark_func);\n    JS_MarkValue(rt, ctx->error_prepare_stack, mark_func);\n    JS_MarkValue(rt, ctx->error_stack_trace_limit, mark_func);\n"
+    },
+    {
+      "id": "r031",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 3940,
+      "end_line": 3949,
+      "label": "Context root free anchor",
+      "excerpt_sha256": "27302C6069130606399FFB94CDB2101A36A475D7D64D821198288A86459C0188",
+      "excerpt": "    JS_FreeValue(ctx, ctx->array_proto_values);\n    for(i = 0; i < JS_NATIVE_ERROR_COUNT; i++) {\n        JS_FreeValue(ctx, ctx->native_error_proto[i]);\n    }\n    JS_FreeValue(ctx, ctx->native_error_stack_getter);\n    JS_FreeValue(ctx, ctx->native_error_stack_setter);\n    JS_FreeValue(ctx, ctx->error_ctor);\n    JS_FreeValue(ctx, ctx->error_back_trace);\n    JS_FreeValue(ctx, ctx->error_prepare_stack);\n    JS_FreeValue(ctx, ctx->error_stack_trace_limit);\n"
+    },
+    {
+      "id": "r032",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 7135,
+      "end_line": 7139,
+      "label": "Every Error object initialization anchor",
+      "excerpt_sha256": "673A93F91AFCED3ACED27E4A4BDDCB70DB1E905B9282F7BDD18FBF6592BA6EED",
+      "excerpt": "    case JS_CLASS_ERROR:\n        p->u.native_error.native_allocation_generation = 0;\n        p->u.native_error.stack_fallback_present = false;\n        p->u.object_data = JS_UNDEFINED;\n        break;\n"
+    },
+    {
+      "id": "r033",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 8097,
+      "end_line": 8126,
+      "label": "Actual Error data and native function finalizer/mark owners",
+      "excerpt_sha256": "CBCE4F9510C6B3B90CA28AEF27459E042352833A16DB8DC9E5BA38A142615001",
+      "excerpt": "static void js_object_data_finalizer(JSRuntime *rt, JSValueConst val)\n{\n    JSObject *p = JS_VALUE_GET_OBJ(val);\n    JS_FreeValueRT(rt, p->u.object_data);\n    p->u.object_data = JS_UNDEFINED;\n}\n\nstatic void js_object_data_mark(JSRuntime *rt, JSValueConst val,\n                                JS_MarkFunc *mark_func)\n{\n    JSObject *p = JS_VALUE_GET_OBJ(val);\n    JS_MarkValue(rt, p->u.object_data, mark_func);\n}\n\nstatic void js_c_function_finalizer(JSRuntime *rt, JSValueConst val)\n{\n    JSObject *p = JS_VALUE_GET_OBJ(val);\n\n    if (p->u.cfunc.realm)\n        JS_FreeContext(p->u.cfunc.realm);\n}\n\nstatic void js_c_function_mark(JSRuntime *rt, JSValueConst val,\n                               JS_MarkFunc *mark_func)\n{\n    JSObject *p = JS_VALUE_GET_OBJ(val);\n\n    if (p->u.cfunc.realm)\n        mark_func(rt, &p->u.cfunc.realm->header);\n}\n"
+    },
+    {
+      "id": "r034",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 7683,
+      "end_line": 7719,
+      "label": "Native function realm ownership",
+      "excerpt_sha256": "47B3CEBA32BC9BFA3CCE41236582359AC5A321AB000BB30DC17FF4D51B1F8180",
+      "excerpt": "JSValue JS_NewCFunction3(JSContext *ctx, JSCFunction *func,\n                         const char *name,\n                         int length, JSCFunctionEnum cproto, int magic,\n                         JSValueConst proto_val, int n_fields)\n{\n    JSValue func_obj;\n    JSObject *p;\n    JSAtom name_atom;\n\n    if (n_fields > 0) {\n        func_obj = JS_NewObjectProtoClassAlloc(ctx, proto_val, JS_CLASS_C_FUNCTION, n_fields);\n    } else {\n        func_obj = JS_NewObjectProtoClass(ctx, proto_val, JS_CLASS_C_FUNCTION);\n    }\n    if (JS_IsException(func_obj))\n        return func_obj;\n    p = JS_VALUE_GET_OBJ(func_obj);\n    p->u.cfunc.realm = JS_DupContext(ctx);\n    p->u.cfunc.c_function.generic = func;\n    p->u.cfunc.length = length;\n    p->u.cfunc.cproto = cproto;\n    p->u.cfunc.magic = magic;\n    p->is_constructor = (cproto == JS_CFUNC_constructor ||\n                         cproto == JS_CFUNC_constructor_magic ||\n                         cproto == JS_CFUNC_constructor_or_func ||\n                         cproto == JS_CFUNC_constructor_or_func_magic);\n    name_atom = JS_ATOM_empty_string;\n    if (name && *name) {\n        name_atom = JS_NewAtom(ctx, name);\n        if (name_atom == JS_ATOM_NULL) {\n            JS_FreeValue(ctx, func_obj);\n            return JS_EXCEPTION;\n        }\n    }\n    js_function_set_properties(ctx, func_obj, name_atom, length);\n    JS_FreeAtom(ctx, name_atom);\n    return func_obj;\n"
+    },
+    {
+      "id": "r035",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 8802,
+      "end_line": 8810,
+      "label": "Context memory inventory",
+      "excerpt_sha256": "A552C8C7D6AF2DFDF8500FCD226A11E3198D1B2F44FEB8346D870D817AF4F66A",
+      "excerpt": "    list_for_each(el, &rt->context_list) {\n        JSContext *ctx = list_entry(el, JSContext, link);\n        JSShape *sh = ctx->array_shape;\n        s->memory_used_count += 2; /* ctx + ctx->class_proto */\n        s->memory_used_size += sizeof(JSContext) +\n            sizeof(JSValue) * rt->class_count;\n        s->binary_object_count += ctx->binary_object_count;\n        s->binary_object_size += ctx->binary_object_size;\n\n"
+    },
+    {
+      "id": "r036",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 8903,
+      "end_line": 8911,
+      "label": "Error memory inventory",
+      "excerpt_sha256": "6D5E31E7B3E5989E804DBCF2222E5B9182EDA9AEF53C233E318D3E787F1C9DD8",
+      "excerpt": "        case JS_CLASS_ERROR:             /* u.object_data */\n        case JS_CLASS_NUMBER:            /* u.object_data */\n        case JS_CLASS_STRING:            /* u.object_data */\n        case JS_CLASS_BOOLEAN:           /* u.object_data */\n        case JS_CLASS_SYMBOL:            /* u.object_data */\n        case JS_CLASS_DATE:              /* u.object_data */\n        case JS_CLASS_BIG_INT:           /* u.object_data */\n            compute_value_size(p->u.object_data, hp);\n            break;\n"
+    },
+    {
+      "id": "r037",
+      "file_id": "v8-js-objects.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-objects.v24.13.cc",
+        "bytes": 234488,
+        "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480"
+      },
+      "start_line": 554,
+      "end_line": 583,
+      "label": "Map fast constructor path",
+      "excerpt_sha256": "C0E40C0C7D6ACFD5FE630C3BD27F24BC2AB6730D6CED7FAD2318054BC181AE94",
+      "excerpt": "namespace {\nstd::pair<MaybeDirectHandle<JSFunction>, DirectHandle<String>>\nGetConstructorHelper(Isolate* isolate, DirectHandle<JSReceiver> receiver) {\n  // If the object was instantiated simply with base == new.target, the\n  // constructor on the map provides the most accurate name.\n  // Don't provide the info for prototypes, since their constructors are\n  // reclaimed and replaced by Object in OptimizeAsPrototype.\n  if (!IsJSProxy(*receiver) && receiver->map()->new_target_is_base() &&\n      !receiver->map()->is_prototype_map()) {\n    DirectHandle<Object> maybe_constructor(receiver->map()->GetConstructor(),\n                                           isolate);\n    if (IsJSFunction(*maybe_constructor)) {\n      DirectHandle<JSFunction> constructor =\n          Cast<JSFunction>(maybe_constructor);\n      Handle<String> name = SharedFunctionInfo::DebugName(\n          isolate, direct_handle(constructor->shared(), isolate));\n      if (name->length() != 0 &&\n          !name->Equals(ReadOnlyRoots(isolate).Object_string())) {\n        return std::make_pair(indirect_handle(constructor, isolate), name);\n      }\n    } else if (IsFunctionTemplateInfo(*maybe_constructor)) {\n      DirectHandle<FunctionTemplateInfo> function_template =\n          Cast<FunctionTemplateInfo>(maybe_constructor);\n      if (!IsUndefined(function_template->class_name(), isolate)) {\n        return std::make_pair(\n            MaybeHandle<JSFunction>(),\n            handle(Cast<String>(function_template->class_name()), isolate));\n      }\n    }\n  }\n"
+    },
+    {
+      "id": "r038",
+      "file_id": "fragment",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+        "bytes": 8944,
+        "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+      },
+      "start_line": 160,
+      "end_line": 177,
+      "label": "Native brand/provenance/prototype fast path",
+      "excerpt_sha256": "B5D73035ED4B7AB96512C60FA8AF121A8F2CC3C8C86AEBD5829108083D9D36D9",
+      "excerpt": "JSPiNativeErrorConstructorNameStatus JS_PiGetNativeErrorConstructorName(\n    JSContext *ctx, JSValueConst error, JSValue *owned_name)\n{\n    JSObject *receiver, *current;\n    JSValue value, name;\n    int found;\n    assert(ctx != NULL && owned_name != NULL);\n    *owned_name = JS_UNDEFINED;\n    if (!JS_IsError(error))\n        return JS_PI_ERROR_CONSTRUCTOR_NAME_NOT_NATIVE_ERROR;\n    receiver = JS_VALUE_GET_OBJ(error);\n    if (receiver->u.native_error.constructor_provenance != 1)\n        return JS_PI_ERROR_CONSTRUCTOR_NAME_UNSUPPORTED;\n\n    if (!receiver->is_prototype) {\n        assert(JS_IsString(receiver->u.native_error.constructor_name));\n        *owned_name = js_dup(receiver->u.native_error.constructor_name);\n        return JS_PI_ERROR_CONSTRUCTOR_NAME_FOUND;\n"
+    },
+    {
+      "id": "r039",
+      "file_id": "v8-map.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-map.v24.13.cc",
+        "bytes": 99099,
+        "sha256": "F94513B765EE2DD421C1D5DB3E919BF8D5765776E985DECA594F9110F9E592FE"
+      },
+      "start_line": 2467,
+      "end_line": 2484,
+      "label": "Actual Map SetPrototype admission",
+      "excerpt_sha256": "B7AC90448BC11B455556E1B2AF40920584DDCDC90ED33A857975E17B031A834A",
+      "excerpt": "void Map::SetPrototype(Isolate* isolate, DirectHandle<Map> map,\n                       DirectHandle<JSPrototype> prototype,\n                       bool enable_prototype_setup_mode) {\n  RCS_SCOPE(isolate, RuntimeCallCounterId::kMap_SetPrototype);\n\n  if (IsJSObjectThatCanBeTrackedAsPrototype(*prototype)) {\n    DirectHandle<JSObject> prototype_jsobj = Cast<JSObject>(prototype);\n    JSObject::OptimizeAsPrototype(prototype_jsobj, enable_prototype_setup_mode);\n  } else {\n    DCHECK(IsNull(*prototype, isolate) || IsJSProxy(*prototype) ||\n           IsWasmObject(*prototype) ||\n           HeapLayout::InWritableSharedSpace(*prototype));\n  }\n\n  WriteBarrierMode wb_mode =\n      IsNull(*prototype, isolate) ? SKIP_WRITE_BARRIER : UPDATE_WRITE_BARRIER;\n  map->set_prototype(*prototype, wb_mode);\n}\n"
+    },
+    {
+      "id": "r040",
+      "file_id": "v8-js-objects.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-objects.v24.13.cc",
+        "bytes": 234488,
+        "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480"
+      },
+      "start_line": 4929,
+      "end_line": 4994,
+      "label": "OptimizeAsPrototype sticky map and exact-constructor replacement",
+      "excerpt_sha256": "3769B12301BE1446E57CE8094DF29C42CB652DA70C95E49409722E03B303F6E3",
+      "excerpt": "void JSObject::OptimizeAsPrototype(DirectHandle<JSObject> object,\n                                   bool enable_setup_mode) {\n  DCHECK(IsJSObjectThatCanBeTrackedAsPrototype(*object));\n  if (IsJSGlobalObject(*object)) return;\n  Isolate* isolate = object->GetIsolate();\n  if (object->map()->is_prototype_map()) {\n    if (enable_setup_mode && PrototypeBenefitsFromNormalization(*object)) {\n      // This is the only way PrototypeBenefitsFromNormalization can be true:\n      DCHECK(!object->map()->should_be_fast_prototype_map());\n      // First normalize to ensure all JSFunctions are DATA_CONSTANT.\n      constexpr bool kUseCache = true;\n      JSObject::NormalizeProperties(isolate, object, KEEP_INOBJECT_PROPERTIES,\n                                    0, kUseCache, \"NormalizeAsPrototype\");\n    }\n    if (!V8_DICT_PROPERTY_CONST_TRACKING_BOOL &&\n        object->map()->should_be_fast_prototype_map() &&\n        !object->HasFastProperties()) {\n      JSObject::MigrateSlowToFast(object, 0, \"OptimizeAsPrototype\");\n    }\n  } else {\n    DirectHandle<Map> new_map;\n    if (enable_setup_mode && PrototypeBenefitsFromNormalization(*object)) {\n#if DEBUG\n      DirectHandle<Map> old_map(object->map(isolate), isolate);\n#endif  // DEBUG\n      // First normalize to ensure all JSFunctions are DATA_CONSTANT. Don't use\n      // the cache, since we're going to use the normalized version directly,\n      // without making a copy.\n      constexpr bool kUseCache = false;\n      JSObject::NormalizeProperties(isolate, object, KEEP_INOBJECT_PROPERTIES,\n                                    0, kUseCache,\n                                    \"NormalizeAndCopyAsPrototype\");\n      // A new map was created.\n      DCHECK_NE(*old_map, object->map(isolate));\n\n      new_map = direct_handle(object->map(isolate), isolate);\n    } else {\n      new_map = Map::Copy(isolate, direct_handle(object->map(), isolate),\n                          \"CopyAsPrototype\");\n    }\n    new_map->set_is_prototype_map(true);\n\n    // Replace the pointer to the exact constructor with the Object function\n    // from the same context if undetectable from JS. This is to avoid keeping\n    // memory alive unnecessarily.\n    Tagged<Object> maybe_constructor = new_map->GetConstructorRaw();\n    Tagged<Tuple2> tuple;\n    if (IsTuple2(maybe_constructor)) {\n      // Handle the {constructor, non-instance_prototype} tuple case if the map\n      // has non-instance prototype.\n      tuple = Cast<Tuple2>(maybe_constructor);\n      maybe_constructor = tuple->value1();\n    }\n    if (IsJSFunction(maybe_constructor)) {\n      Tagged<JSFunction> constructor = Cast<JSFunction>(maybe_constructor);\n      if (!constructor->shared()->IsApiFunction()) {\n        Tagged<NativeContext> context = constructor->native_context();\n        Tagged<JSFunction> object_function = context->object_function();\n        if (!tuple.is_null()) {\n          tuple->set_value1(object_function);\n        } else {\n          new_map->SetConstructor(object_function);\n        }\n      }\n    }\n    JSObject::MigrateToMap(isolate, object, new_map);\n"
+    },
+    {
+      "id": "r041",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 6592,
+      "end_line": 6640,
+      "label": "Fresh/hashed shape ownership",
+      "excerpt_sha256": "E335E46449E2CEF088EE6FE2BD4D9E6CC6A774B534D44038DC8E67B60902019D",
+      "excerpt": "static inline JSShape *js_new_shape_nohash(JSContext *ctx, JSObject *proto,\n                                           int hash_size, int prop_size)\n{\n    JSRuntime *rt = ctx->rt;\n    void *sh_alloc;\n    JSShape *sh;\n\n    sh_alloc = js_malloc(ctx, get_shape_size(hash_size, prop_size));\n    if (!sh_alloc)\n        return NULL;\n    sh = get_shape_from_alloc(sh_alloc, hash_size);\n    JS_REF_COUNT(sh) = 1;\n    add_gc_object(rt, &sh->header, JS_GC_OBJ_TYPE_SHAPE);\n    if (proto)\n        js_dup(JS_MKPTR(JS_TAG_OBJECT, proto));\n    sh->proto = proto;\n    /* prop_hash_mask must be set before prop_hash_end(sh) is used, as the hash\n       location depends on it in the merged-header layout. */\n    sh->prop_hash_mask = hash_size - 1;\n    memset(prop_hash_end(sh) - hash_size, 0, sizeof(prop_hash_end(sh)[0]) *\n           hash_size);\n    sh->prop_size = prop_size;\n    sh->prop_count = 0;\n    sh->deleted_prop_count = 0;\n    sh->is_hashed = false;\n    return sh;\n}\n\n/* create a new empty shape with prototype 'proto' */\nstatic no_inline JSShape *js_new_shape2(JSContext *ctx, JSObject *proto,\n                                        int hash_size, int prop_size)\n{\n    JSRuntime *rt = ctx->rt;\n    JSShape *sh;\n\n    /* resize the shape hash table if necessary */\n    if (2 * (rt->shape_hash_count + 1) > rt->shape_hash_size) {\n        resize_shape_hash(rt, rt->shape_hash_bits + 1);\n    }\n\n    sh = js_new_shape_nohash(ctx, proto, hash_size, prop_size);\n    if (!sh)\n        return NULL;\n\n    /* insert in the hash table */\n    sh->hash = shape_initial_hash(proto);\n    sh->is_hashed = true;\n    js_shape_hash_link(ctx->rt, sh);\n    return sh;\n"
+    },
+    {
+      "id": "r042",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 6685,
+      "end_line": 6717,
+      "label": "Cloned/shared shape ownership",
+      "excerpt_sha256": "1D13B24E16E195F83ACC05C6C51A2A8088E9B91590C831DC5BBAB55A406D99E3",
+      "excerpt": "static JSShape *js_clone_shape(JSContext *ctx, JSShape *sh1)\n{\n    JSShape *sh;\n    void *sh_alloc, *sh_alloc1;\n    size_t size;\n    JSShapeProperty *pr;\n    uint32_t i, hash_size;\n\n    hash_size = sh1->prop_hash_mask + 1;\n    size = get_shape_size(hash_size, sh1->prop_size);\n    sh_alloc = js_malloc(ctx, size);\n    if (!sh_alloc)\n        return NULL;\n    sh_alloc1 = get_alloc_from_shape(sh1);\n    memcpy(sh_alloc, sh_alloc1, size);\n    sh = get_shape_from_alloc(sh_alloc, hash_size);\n    JS_REF_COUNT(sh) = 1;\n    add_gc_object(ctx->rt, &sh->header, JS_GC_OBJ_TYPE_SHAPE);\n    sh->is_hashed = false;\n    if (sh->proto) {\n        js_dup(JS_MKPTR(JS_TAG_OBJECT, sh->proto));\n    }\n    for(i = 0, pr = get_shape_prop(sh); i < sh->prop_count; i++, pr++) {\n        JS_DupAtom(ctx, pr->atom);\n    }\n    return sh;\n}\n\nstatic JSShape *js_dup_shape(JSShape *sh)\n{\n    JS_REF_COUNT(sh)++;\n    return sh;\n}\n"
+    },
+    {
+      "id": "r043",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 7168,
+      "end_line": 7208,
+      "label": "Real native object/shape construction",
+      "excerpt_sha256": "DE51AD3EFFDEB94B34897AE8054AF63FEE292E3161EE7A139B2D9B4AF71D8EBD",
+      "excerpt": "/* WARNING: proto must be an object or JS_NULL */\nJSValue JS_NewObjectProtoClass(JSContext *ctx, JSValueConst proto_val,\n                               JSClassID class_id)\n{\n    JSShape *sh;\n    JSObject *proto;\n\n    proto = object_or_null(proto_val);\n    sh = find_hashed_shape_proto(ctx->rt, proto);\n    if (likely(sh)) {\n        sh = js_dup_shape(sh);\n    } else {\n        sh = js_new_shape(ctx, proto);\n        if (!sh)\n            return JS_EXCEPTION;\n    }\n    return JS_NewObjectFromShape(ctx, sh, class_id, NULL);\n}\n\n/* WARNING: the shape is not hashed. It is used for objects where\n   factorizing the shape is not relevant (prototypes, constructors) */\nstatic JSValue JS_NewObjectProtoClassAlloc(JSContext *ctx, JSValueConst proto_val,\n                                           JSClassID class_id, int n_alloc_props)\n{\n    JSShape *sh;\n    JSObject *proto;\n    int hash_size, hash_bits;\n\n    if (n_alloc_props <= JS_PROP_INITIAL_SIZE) {\n        n_alloc_props = JS_PROP_INITIAL_SIZE;\n        hash_size = JS_PROP_INITIAL_HASH_SIZE;\n    } else {\n        hash_bits = 32 - clz32(n_alloc_props - 1); /* ceil(log2(radix)) */\n        hash_size = 1 << hash_bits;\n    }\n    proto = object_or_null(proto_val);\n    sh = js_new_shape_nohash(ctx, proto, hash_size, n_alloc_props);\n    if (!sh)\n        return JS_EXCEPTION;\n    return JS_NewObjectFromShape(ctx, sh, class_id, NULL);\n}\n"
+    },
+    {
+      "id": "r044",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 10488,
+      "end_line": 10515,
+      "label": "Existing explicit prototype admission",
+      "excerpt_sha256": "2C2C1B627447A9708CA917A45747D950FDC6B41190DD431D0042307D529DD296",
+      "excerpt": "            }\n            /* Note: for Proxy objects, proto is NULL */\n            p1 = p1->shape->proto;\n        } while (p1 != NULL);\n        js_dup(proto_val);\n    }\n\n    if (js_shape_prepare_update(ctx, p, NULL))\n        return -1;\n    sh = p->shape;\n    if (sh->proto)\n        JS_FreeValue(ctx, JS_MKPTR(JS_TAG_OBJECT, sh->proto));\n    sh->proto = proto;\n    if (proto)\n        proto->is_prototype = true;\n    if (p->is_prototype) {\n        /* track modification of Array.prototype */\n        if (unlikely(p == JS_VALUE_GET_OBJ(ctx->class_proto[JS_CLASS_ARRAY]))) {\n            ctx->std_array_prototype = false;\n        }\n    }\n    return true;\n}\n\n/* return -1 (exception) or true/false */\nint JS_SetPrototype(JSContext *ctx, JSValueConst obj, JSValueConst proto_val)\n{\n    return JS_SetPrototypeInternal(ctx, obj, proto_val, true);\n"
+    },
+    {
+      "id": "r045",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 11939,
+      "end_line": 11946,
+      "label": "Other flag consumer restricted to Array/Object prototypes",
+      "excerpt_sha256": "B6DC1DE09F0B7312945E4E409190BA97CA9F5861C7F6F4A5A67F6F9F0A7102D9",
+      "excerpt": "    if (unlikely(p->is_prototype)) {\n        /* track addition of small integer properties to\n           Array.prototype and Object.prototype */\n        if (unlikely((p == JS_VALUE_GET_OBJ(ctx->class_proto[JS_CLASS_ARRAY]) ||\n                      p == JS_VALUE_GET_OBJ(ctx->class_proto[JS_CLASS_OBJECT])) &&\n                     __JS_AtomIsTaggedInt(prop))) {\n            ctx->std_array_prototype = false;\n        }\n"
+    },
+    {
+      "id": "r046",
+      "file_id": "v8-js-objects.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-objects.v24.13.cc",
+        "bytes": 234488,
+        "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480"
+      },
+      "start_line": 156,
+      "end_line": 185,
+      "label": "GetDataProperty with allocation disallowed",
+      "excerpt_sha256": "C71630C070081500B575885EC3D1781375AC93376BB230EB688831FCA9B91A31",
+      "excerpt": "Handle<Object> JSReceiver::GetDataProperty(LookupIterator* it,\n                                           AllocationPolicy allocation_policy) {\n  for (;; it->Next()) {\n    switch (it->state()) {\n      case LookupIterator::INTERCEPTOR:\n      case LookupIterator::TRANSITION:\n        UNREACHABLE();\n      case LookupIterator::ACCESS_CHECK:\n        // Support calling this method without an active context, but refuse\n        // access to access-checked objects in that case.\n        if (!it->isolate()->context().is_null() && it->HasAccess()) continue;\n        [[fallthrough]];\n      case LookupIterator::JSPROXY:\n      case LookupIterator::WASM_OBJECT:\n        it->NotFound();\n        return it->isolate()->factory()->undefined_value();\n      case LookupIterator::ACCESSOR:\n        // TODO(verwaest): For now this doesn't call into AccessorInfo, since\n        // clients don't need it. Update once relevant.\n        it->NotFound();\n        return it->isolate()->factory()->undefined_value();\n      case LookupIterator::TYPED_ARRAY_INDEX_NOT_FOUND:\n        return it->isolate()->factory()->undefined_value();\n      case LookupIterator::DATA:\n        return it->GetDataValue(allocation_policy);\n      case LookupIterator::NOT_FOUND:\n        return it->isolate()->factory()->undefined_value();\n    }\n    UNREACHABLE();\n  }\n"
+    },
+    {
+      "id": "r047",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 8010,
+      "end_line": 8032,
+      "label": "Physical own-property shape lookup",
+      "excerpt_sha256": "A7F0EE4A87E191BEBB8BFB1B6C01F9582891B8CF494DB7D1C065980636FF9ADD",
+      "excerpt": "static inline JSShapeProperty *find_own_property(JSProperty **ppr,\n                                                 JSObject *p,\n                                                 JSAtom atom)\n{\n    JSShape *sh;\n    JSShapeProperty *pr, *prop;\n    intptr_t h;\n    sh = p->shape;\n    h = hash_atom(atom, sh->prop_hash_mask);\n    h = prop_hash_end(sh)[-h - 1];\n    prop = get_shape_prop(sh);\n    while (h) {\n        pr = &prop[h - 1];\n        if (likely(pr->atom == atom)) {\n            *ppr = &p->prop[h - 1];\n            /* the compiler should be able to assume that pr != NULL here */\n            return pr;\n        }\n        h = pr->hash_next;\n    }\n    *ppr = NULL;\n    return NULL;\n}\n"
+    },
+    {
+      "id": "r048",
+      "file_id": "fragment",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+        "bytes": 8944,
+        "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+      },
+      "start_line": 90,
+      "end_line": 116,
+      "label": "Supported physical own-data storage",
+      "excerpt_sha256": "B32EB71CB2403FBB1FD28DED3BC408590208F1588C43765167CAB592EA96483D",
+      "excerpt": "/* 1 = supported physical own-data lookup (possibly undefined);\n * 0 = native storage whose precise original lookup owner remains unported.\n * Neither path executes guest code, allocates or touches current_exception.\n */\nstatic int js_pi_constructor_own_data(JSObject *object, JSAtom key,\n                                      JSValue *value)\n{\n    JSProperty *property;\n    JSShapeProperty *shape_property;\n    *value = JS_UNDEFINED;\n    if (object->is_exotic)\n        return 0;\n    shape_property = find_own_property(&property, object, key);\n    if (!shape_property)\n        return 1;\n    switch (shape_property->flags & JS_PROP_TMASK) {\n    case JS_PROP_NORMAL:\n        *value = property->u.value;\n        return 1;\n    case JS_PROP_GETSET:\n        /* Original GetDataProperty does not call an accessor. */\n        return 1;\n    default:\n        /* Variable-reference and autoinit/native storage are not materialized\n         * or silently treated as missing by this bounded primitive. */\n        return 0;\n    }\n"
+    },
+    {
+      "id": "r049",
+      "file_id": "v8-js-objects.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-objects.v24.13.cc",
+        "bytes": 234488,
+        "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480"
+      },
+      "start_line": 585,
+      "end_line": 642,
+      "label": "Original fallback order",
+      "excerpt_sha256": "5C21B3A288E78D3672669239C2D8A2863904751231EF1C76C18471CA51D6EE1F",
+      "excerpt": "  for (PrototypeIterator it(isolate, receiver, kStartAtReceiver); !it.IsAtEnd();\n       it.AdvanceIgnoringProxies()) {\n    auto current = PrototypeIterator::GetCurrent<JSReceiver>(it);\n\n    LookupIterator it_to_string_tag(\n        isolate, receiver, isolate->factory()->to_string_tag_symbol(), current,\n        LookupIterator::OWN_SKIP_INTERCEPTOR);\n    auto maybe_to_string_tag = JSReceiver::GetDataProperty(\n        &it_to_string_tag, AllocationPolicy::kAllocationDisallowed);\n    if (IsString(*maybe_to_string_tag)) {\n      return std::make_pair(MaybeHandle<JSFunction>(),\n                            Cast<String>(maybe_to_string_tag));\n    }\n\n    // Consider the following example:\n    //\n    //   function A() {}\n    //   function B() {}\n    //   B.prototype = new A();\n    //   B.prototype.constructor = B;\n    //\n    // The constructor name for `B.prototype` must yield \"A\", so we don't take\n    // \"constructor\" into account for the receiver itself, but only starting\n    // on the prototype chain.\n    if (!receiver.is_identical_to(current)) {\n      LookupIterator it_constructor(\n          isolate, receiver, isolate->factory()->constructor_string(), current,\n          LookupIterator::OWN_SKIP_INTERCEPTOR);\n      auto maybe_constructor = JSReceiver::GetDataProperty(\n          &it_constructor, AllocationPolicy::kAllocationDisallowed);\n      if (IsJSFunction(*maybe_constructor)) {\n        auto constructor = Cast<JSFunction>(maybe_constructor);\n        auto name = SharedFunctionInfo::DebugName(\n            isolate, direct_handle(constructor->shared(), isolate));\n\n        if (name->length() != 0 &&\n            !name->Equals(ReadOnlyRoots(isolate).Object_string())) {\n          return std::make_pair(constructor, name);\n        }\n      }\n    }\n  }\n\n  return std::make_pair(MaybeHandle<JSFunction>(),\n                        handle(receiver->class_name(), isolate));\n}\n}  // anonymous namespace\n\n// static\nMaybeDirectHandle<JSFunction> JSReceiver::GetConstructor(\n    Isolate* isolate, DirectHandle<JSReceiver> receiver) {\n  return GetConstructorHelper(isolate, receiver).first;\n}\n\n// static\nDirectHandle<String> JSReceiver::GetConstructorName(\n    Isolate* isolate, DirectHandle<JSReceiver> receiver) {\n  return GetConstructorHelper(isolate, receiver).second;\n"
+    },
+    {
+      "id": "r050",
+      "file_id": "v8-js-objects.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-objects.v24.13.cc",
+        "bytes": 234488,
+        "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480"
+      },
+      "start_line": 495,
+      "end_line": 515,
+      "label": "Actual JSError class fallback",
+      "excerpt_sha256": "CDCCC46E6278661D227D69F5A54D1CEC396BCAA3C298A05A133D73AE16CD93D8",
+      "excerpt": "Tagged<String> JSReceiver::class_name() {\n  ReadOnlyRoots roots = GetReadOnlyRoots();\n  if (IsJSFunctionOrBoundFunctionOrWrappedFunction(*this)) {\n    return roots.Function_string();\n  }\n  if (IsJSArgumentsObject(*this)) return roots.Arguments_string();\n  if (IsJSArray(*this)) return roots.Array_string();\n  if (IsJSArrayBuffer(*this)) {\n    if (Cast<JSArrayBuffer>(*this)->is_shared()) {\n      return roots.SharedArrayBuffer_string();\n    }\n    return roots.ArrayBuffer_string();\n  }\n  if (IsJSArrayIterator(*this)) return roots.ArrayIterator_string();\n  if (IsJSDate(*this)) return roots.Date_string();\n  if (IsJSError(*this)) return roots.Error_string();\n  if (IsJSGeneratorObject(*this)) return roots.Generator_string();\n  if (IsJSMap(*this)) return roots.Map_string();\n  if (IsJSMapIterator(*this)) return roots.MapIterator_string();\n  if (IsJSProxy(*this)) {\n    return map()->is_callable() ? roots.Function_string()\n"
+    },
+    {
+      "id": "r051",
+      "file_id": "v8-prototype-inl.v24.13.h",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-prototype-inl.v24.13.h",
+        "bytes": 5121,
+        "sha256": "A7E44D86EC7CDB6DC55912629FD7B09FBFEB7FF6E3F15DAA16851AA0EADA500C"
+      },
+      "start_line": 97,
+      "end_line": 110,
+      "label": "Physical advance ignoring proxies",
+      "excerpt_sha256": "E66B5019BD39595A23E3D6834BD91CC3DF3361AF4766F3C40337635F670240E5",
+      "excerpt": "void PrototypeIterator::AdvanceIgnoringProxies() {\n  Tagged<JSPrototype> object = handle_.is_null() ? object_ : *handle_;\n  Tagged<Map> map = object->map();\n\n  Tagged<JSPrototype> prototype = map->prototype();\n  is_at_end_ = IsNull(prototype, isolate_) ||\n               (where_to_end_ == END_AT_NON_HIDDEN && !IsJSGlobalProxyMap(map));\n\n  if (handle_.is_null()) {\n    object_ = prototype;\n  } else {\n    handle_ = handle(prototype, isolate_);\n  }\n}\n"
+    },
+    {
+      "id": "r052",
+      "file_id": "fragment",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+        "bytes": 8944,
+        "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+      },
+      "start_line": 179,
+      "end_line": 209,
+      "label": "Physical prototype walk and native class fallback",
+      "excerpt_sha256": "4821F4E4C82502729A18E7A310C3F5E7106CD8690DE443E7ABC99C41F7842BE0",
+      "excerpt": "\n    /* The original prototype-map restriction suppresses the retained base\n     * constructor fast path. Walk physical prototype links only. */\n    for (current = receiver; current != NULL; current = current->shape->proto) {\n        if (!js_pi_constructor_own_data(current, JS_ATOM_Symbol_toStringTag,\n                                         &value))\n            return JS_PI_ERROR_CONSTRUCTOR_NAME_UNSUPPORTED;\n        if (JS_IsString(value)) {\n            *owned_name = js_dup(value);\n            return JS_PI_ERROR_CONSTRUCTOR_NAME_FOUND;\n        }\n        if (current == receiver)\n            continue;\n        if (!js_pi_constructor_own_data(current, JS_ATOM_constructor, &value))\n            return JS_PI_ERROR_CONSTRUCTOR_NAME_UNSUPPORTED;\n        found = js_pi_constructor_debug_name(ctx, value, &name);\n        if (found < 0)\n            return JS_PI_ERROR_CONSTRUCTOR_NAME_UNSUPPORTED;\n        if (found > 0) {\n            *owned_name = js_dup(name);\n            return JS_PI_ERROR_CONSTRUCTOR_NAME_FOUND;\n        }\n    }\n    /* Exact native JSError class_name fallback. The protected intrinsic Error\n     * name is already a real string, so this remains allocation-free. */\n    name = ctx->pi_error_constructor_name[JS_PLAIN_ERROR];\n    if (!JS_IsString(name))\n        return JS_PI_ERROR_CONSTRUCTOR_NAME_UNSUPPORTED;\n    *owned_name = js_dup(name);\n    return JS_PI_ERROR_CONSTRUCTOR_NAME_FOUND;\n}\n"
+    },
+    {
+      "id": "r053",
+      "file_id": "v8-js-objects.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-objects.v24.13.cc",
+        "bytes": 234488,
+        "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480"
+      },
+      "start_line": 609,
+      "end_line": 624,
+      "label": "Original JSFunction-only constructor selection",
+      "excerpt_sha256": "FC6DBA2B7EC9366CEE235A69654E8630FA7F63D943D4BC8E4F188D303158E04D",
+      "excerpt": "    if (!receiver.is_identical_to(current)) {\n      LookupIterator it_constructor(\n          isolate, receiver, isolate->factory()->constructor_string(), current,\n          LookupIterator::OWN_SKIP_INTERCEPTOR);\n      auto maybe_constructor = JSReceiver::GetDataProperty(\n          &it_constructor, AllocationPolicy::kAllocationDisallowed);\n      if (IsJSFunction(*maybe_constructor)) {\n        auto constructor = Cast<JSFunction>(maybe_constructor);\n        auto name = SharedFunctionInfo::DebugName(\n            isolate, direct_handle(constructor->shared(), isolate));\n\n        if (name->length() != 0 &&\n            !name->Equals(ReadOnlyRoots(isolate).Object_string())) {\n          return std::make_pair(constructor, name);\n        }\n      }\n"
+    },
+    {
+      "id": "r054",
+      "file_id": "fragment",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+        "bytes": 8944,
+        "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+      },
+      "start_line": 118,
+      "end_line": 158,
+      "label": "Native function brand and immutable intrinsic selection",
+      "excerpt_sha256": "06925F0C6B3295DB751CCB1A78BDD141AF0443FB3DDE4052FE23399C57251A9E",
+      "excerpt": "\n/* 1 = an exact nonempty, non-Object native function DebugName was found;\n * 0 = value is not an eligible JSFunction or is the intrinsic Object;\n * -1 = an eligible function's native DebugName owner is still missing.\n * Bound functions and proxies are not V8 JSFunction and are skipped.\n */\nstatic int js_pi_constructor_debug_name(JSContext *ctx, JSValueConst value,\n                                        JSValue *name)\n{\n    JSObject *function;\n    JSContext *realm;\n    int kind;\n    *name = JS_UNDEFINED;\n    if (!JS_IsObject(value))\n        return 0;\n    function = JS_VALUE_GET_OBJ(value);\n    if (function->class_id == JS_CLASS_BOUND_FUNCTION ||\n        function->class_id == JS_CLASS_PROXY)\n        return 0;\n    if (function->class_id == JS_CLASS_C_FUNCTION) {\n        realm = function->u.cfunc.realm;\n        if (realm) {\n            for (kind = 0; kind <= JS_PLAIN_ERROR; kind++) {\n                JSValue candidate = js_pi_intrinsic_error_constructor(realm, kind);\n                if (JS_IsObject(candidate) &&\n                    JS_VALUE_GET_OBJ(candidate) == function) {\n                    JSValue stored = realm->pi_error_constructor_name[kind];\n                    if (!JS_IsString(stored))\n                        return -1;\n                    *name = stored;\n                    return 1;\n                }\n            }\n        }\n        /* This is the VM's actual immutable intrinsic native function body.\n         * Its original DebugName is Object, regardless of public name edits. */\n        if (function->u.cfunc.c_function.generic == js_object_constructor)\n            return 0;\n    }\n    return JS_IsFunction(ctx, value) ? -1 : 0;\n}\n"
+    },
+    {
+      "id": "r055",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 13809,
+      "end_line": 13822,
+      "label": "Actual function brand",
+      "excerpt_sha256": "91A7B674054BF37188A82647899C3C3789A58A86AF4E07C55184A4F81DE45C2C",
+      "excerpt": "bool JS_IsFunction(JSContext *ctx, JSValueConst val)\n{\n    JSObject *p;\n    if (JS_VALUE_GET_TAG(val) != JS_TAG_OBJECT)\n        return false;\n    p = JS_VALUE_GET_OBJ(val);\n    switch(p->class_id) {\n    case JS_CLASS_BYTECODE_FUNCTION:\n        return true;\n    case JS_CLASS_PROXY:\n        return p->u.proxy_data->is_func;\n    default:\n        return (ctx->rt->class_array[p->class_id].call != NULL);\n    }\n"
+    },
+    {
+      "id": "r056",
+      "file_id": "v8-js-objects.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-objects.v24.13.cc",
+        "bytes": 234488,
+        "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480"
+      },
+      "start_line": 589,
+      "end_line": 624,
+      "label": "Original data lookup allocation restriction",
+      "excerpt_sha256": "1DC2077A679DD5A6A11FA9D709FDB625CF013049C3C058D58EE8C77E5F5E78BD",
+      "excerpt": "    LookupIterator it_to_string_tag(\n        isolate, receiver, isolate->factory()->to_string_tag_symbol(), current,\n        LookupIterator::OWN_SKIP_INTERCEPTOR);\n    auto maybe_to_string_tag = JSReceiver::GetDataProperty(\n        &it_to_string_tag, AllocationPolicy::kAllocationDisallowed);\n    if (IsString(*maybe_to_string_tag)) {\n      return std::make_pair(MaybeHandle<JSFunction>(),\n                            Cast<String>(maybe_to_string_tag));\n    }\n\n    // Consider the following example:\n    //\n    //   function A() {}\n    //   function B() {}\n    //   B.prototype = new A();\n    //   B.prototype.constructor = B;\n    //\n    // The constructor name for `B.prototype` must yield \"A\", so we don't take\n    // \"constructor\" into account for the receiver itself, but only starting\n    // on the prototype chain.\n    if (!receiver.is_identical_to(current)) {\n      LookupIterator it_constructor(\n          isolate, receiver, isolate->factory()->constructor_string(), current,\n          LookupIterator::OWN_SKIP_INTERCEPTOR);\n      auto maybe_constructor = JSReceiver::GetDataProperty(\n          &it_constructor, AllocationPolicy::kAllocationDisallowed);\n      if (IsJSFunction(*maybe_constructor)) {\n        auto constructor = Cast<JSFunction>(maybe_constructor);\n        auto name = SharedFunctionInfo::DebugName(\n            isolate, direct_handle(constructor->shared(), isolate));\n\n        if (name->length() != 0 &&\n            !name->Equals(ReadOnlyRoots(isolate).Object_string())) {\n          return std::make_pair(constructor, name);\n        }\n      }\n"
+    },
+    {
+      "id": "r057",
+      "file_id": "fragment",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+        "bytes": 8944,
+        "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+      },
+      "start_line": 94,
+      "end_line": 209,
+      "label": "Complete selected query/helper body",
+      "excerpt_sha256": "DEB6191EC1B65EA05EECB982C1DC9EF28DB5CE57BFED4A308EF539742421287B",
+      "excerpt": "static int js_pi_constructor_own_data(JSObject *object, JSAtom key,\n                                      JSValue *value)\n{\n    JSProperty *property;\n    JSShapeProperty *shape_property;\n    *value = JS_UNDEFINED;\n    if (object->is_exotic)\n        return 0;\n    shape_property = find_own_property(&property, object, key);\n    if (!shape_property)\n        return 1;\n    switch (shape_property->flags & JS_PROP_TMASK) {\n    case JS_PROP_NORMAL:\n        *value = property->u.value;\n        return 1;\n    case JS_PROP_GETSET:\n        /* Original GetDataProperty does not call an accessor. */\n        return 1;\n    default:\n        /* Variable-reference and autoinit/native storage are not materialized\n         * or silently treated as missing by this bounded primitive. */\n        return 0;\n    }\n}\n\n/* 1 = an exact nonempty, non-Object native function DebugName was found;\n * 0 = value is not an eligible JSFunction or is the intrinsic Object;\n * -1 = an eligible function's native DebugName owner is still missing.\n * Bound functions and proxies are not V8 JSFunction and are skipped.\n */\nstatic int js_pi_constructor_debug_name(JSContext *ctx, JSValueConst value,\n                                        JSValue *name)\n{\n    JSObject *function;\n    JSContext *realm;\n    int kind;\n    *name = JS_UNDEFINED;\n    if (!JS_IsObject(value))\n        return 0;\n    function = JS_VALUE_GET_OBJ(value);\n    if (function->class_id == JS_CLASS_BOUND_FUNCTION ||\n        function->class_id == JS_CLASS_PROXY)\n        return 0;\n    if (function->class_id == JS_CLASS_C_FUNCTION) {\n        realm = function->u.cfunc.realm;\n        if (realm) {\n            for (kind = 0; kind <= JS_PLAIN_ERROR; kind++) {\n                JSValue candidate = js_pi_intrinsic_error_constructor(realm, kind);\n                if (JS_IsObject(candidate) &&\n                    JS_VALUE_GET_OBJ(candidate) == function) {\n                    JSValue stored = realm->pi_error_constructor_name[kind];\n                    if (!JS_IsString(stored))\n                        return -1;\n                    *name = stored;\n                    return 1;\n                }\n            }\n        }\n        /* This is the VM's actual immutable intrinsic native function body.\n         * Its original DebugName is Object, regardless of public name edits. */\n        if (function->u.cfunc.c_function.generic == js_object_constructor)\n            return 0;\n    }\n    return JS_IsFunction(ctx, value) ? -1 : 0;\n}\n\nJSPiNativeErrorConstructorNameStatus JS_PiGetNativeErrorConstructorName(\n    JSContext *ctx, JSValueConst error, JSValue *owned_name)\n{\n    JSObject *receiver, *current;\n    JSValue value, name;\n    int found;\n    assert(ctx != NULL && owned_name != NULL);\n    *owned_name = JS_UNDEFINED;\n    if (!JS_IsError(error))\n        return JS_PI_ERROR_CONSTRUCTOR_NAME_NOT_NATIVE_ERROR;\n    receiver = JS_VALUE_GET_OBJ(error);\n    if (receiver->u.native_error.constructor_provenance != 1)\n        return JS_PI_ERROR_CONSTRUCTOR_NAME_UNSUPPORTED;\n\n    if (!receiver->is_prototype) {\n        assert(JS_IsString(receiver->u.native_error.constructor_name));\n        *owned_name = js_dup(receiver->u.native_error.constructor_name);\n        return JS_PI_ERROR_CONSTRUCTOR_NAME_FOUND;\n    }\n\n    /* The original prototype-map restriction suppresses the retained base\n     * constructor fast path. Walk physical prototype links only. */\n    for (current = receiver; current != NULL; current = current->shape->proto) {\n        if (!js_pi_constructor_own_data(current, JS_ATOM_Symbol_toStringTag,\n                                         &value))\n            return JS_PI_ERROR_CONSTRUCTOR_NAME_UNSUPPORTED;\n        if (JS_IsString(value)) {\n            *owned_name = js_dup(value);\n            return JS_PI_ERROR_CONSTRUCTOR_NAME_FOUND;\n        }\n        if (current == receiver)\n            continue;\n        if (!js_pi_constructor_own_data(current, JS_ATOM_constructor, &value))\n            return JS_PI_ERROR_CONSTRUCTOR_NAME_UNSUPPORTED;\n        found = js_pi_constructor_debug_name(ctx, value, &name);\n        if (found < 0)\n            return JS_PI_ERROR_CONSTRUCTOR_NAME_UNSUPPORTED;\n        if (found > 0) {\n            *owned_name = js_dup(name);\n            return JS_PI_ERROR_CONSTRUCTOR_NAME_FOUND;\n        }\n    }\n    /* Exact native JSError class_name fallback. The protected intrinsic Error\n     * name is already a real string, so this remains allocation-free. */\n    name = ctx->pi_error_constructor_name[JS_PLAIN_ERROR];\n    if (!JS_IsString(name))\n        return JS_PI_ERROR_CONSTRUCTOR_NAME_UNSUPPORTED;\n    *owned_name = js_dup(name);\n    return JS_PI_ERROR_CONSTRUCTOR_NAME_FOUND;\n}\n"
+    },
+    {
+      "id": "r058",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 2848,
+      "end_line": 2910,
+      "label": "Existing private native termination protocol",
+      "excerpt_sha256": "6A907FF2033167DC2AC923D8B742018CF0534CF79B196835817DBBC210B533F9",
+      "excerpt": "void JS_PiRequestExecutionTermination(JSRuntime *rt)\n{\n#ifdef CONFIG_ATOMICS\n    atomic_store(&rt->pi_termination_requested, true);\n#else\n    rt->pi_termination_requested = true;\n#endif\n}\n\nbool JS_PiIsExecutionTerminating(JSRuntime *rt)\n{\n    return rt->pi_termination_in_flight &&\n           JS_PiIsExecutionTermination(rt->current_exception);\n}\n\nuint64_t JS_PiExecutionTerminationGeneration(JSRuntime *rt)\n{\n    return rt->pi_termination_generation;\n}\n\nvoid JS_PiCancelExecutionTermination(JSRuntime *rt)\n{\n#ifdef CONFIG_ATOMICS\n    atomic_store(&rt->pi_termination_requested, false);\n#else\n    rt->pi_termination_requested = false;\n#endif\n    /* V8 clears the request even when no actual termination is pending.\n       Its event cancellation is conditional on the private pending event;\n       an event held only by a native cleanup owner is not that condition. */\n    if (!JS_PiIsExecutionTerminating(rt))\n        return;\n    rt->current_exception = JS_UNINITIALIZED;\n    rt->pi_termination_in_flight = false;\n}\n\nint JS_PiCheckExecutionTermination(JSContext *ctx)\n{\n    JSRuntime *rt = ctx->rt;\n    bool requested;\n\n    if (rt->pi_termination_in_flight) {\n        /* Reentry while the token is detached republishes the same event.\n           It does not create another generation or a replacement Error. */\n        JS_Throw(ctx, js_pi_termination_token());\n        return -1;\n    }\n    if (JS_PiIsExecutionTermination(rt->current_exception))\n        return -1; /* cancelled native abrupt completion, not a new event */\n    if (!js_pi_termination_requested(rt))\n        return 0;\n    /* Existing ordinary/fatal pending-entry policy is retained. A request\n       waits until the earlier real event has been handled by its owner. */\n    if (JS_HasException(ctx))\n        return -1;\n#ifdef CONFIG_ATOMICS\n    requested = atomic_exchange(&rt->pi_termination_requested, false);\n#else\n    requested = rt->pi_termination_requested;\n    rt->pi_termination_requested = false;\n#endif\n    if (!requested)\n        return 0;\n"
+    },
+    {
+      "id": "r059",
+      "file_id": "v8-contexts.v24.13.h",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-contexts.v24.13.h",
+        "bytes": 49684,
+        "sha256": "4B94B0DEC61C1A68779C5D56CAA746158DC172F0402B6EFA803AE1F1A1B7C629"
+      },
+      "start_line": 374,
+      "end_line": 404,
+      "label": "Actual intrinsic realm roots",
+      "excerpt_sha256": "FF8ACBBFA1D6C7474EF75DE2D29B85D2889FF523E235DE7D1475F3BA4F3ADCFD",
+      "excerpt": "  V(ERROR_FUNCTION_INDEX, JSFunction, error_function)                          \\\n  V(ERROR_TO_STRING, JSFunction, error_to_string)                              \\\n  V(EVAL_ERROR_FUNCTION_INDEX, JSFunction, eval_error_function)                \\\n  V(AGGREGATE_ERROR_FUNCTION_INDEX, JSFunction, aggregate_error_function)      \\\n  V(GLOBAL_EVAL_FUN_INDEX, JSFunction, global_eval_fun)                        \\\n  V(GLOBAL_PARSE_FLOAT_FUN_INDEX, JSFunction, global_parse_float_fun)          \\\n  V(GLOBAL_PARSE_INT_FUN_INDEX, JSFunction, global_parse_int_fun)              \\\n  V(GLOBAL_PROXY_FUNCTION_INDEX, JSFunction, global_proxy_function)            \\\n  V(MAP_DELETE_INDEX, JSFunction, map_delete)                                  \\\n  V(MAP_GET_INDEX, JSFunction, map_get)                                        \\\n  V(MAP_HAS_INDEX, JSFunction, map_has)                                        \\\n  V(MAP_SET_INDEX, JSFunction, map_set)                                        \\\n  V(FUNCTION_HAS_INSTANCE_INDEX, JSFunction, function_has_instance)            \\\n  V(FUNCTION_TO_STRING_INDEX, JSFunction, function_to_string)                  \\\n  V(OBJECT_TO_STRING, JSFunction, object_to_string)                            \\\n  V(OBJECT_VALUE_OF_FUNCTION_INDEX, JSFunction, object_value_of_function)      \\\n  V(PROMISE_ALL_INDEX, JSFunction, promise_all)                                \\\n  V(PROMISE_ALL_SETTLED_INDEX, JSFunction, promise_all_settled)                \\\n  V(PROMISE_ANY_INDEX, JSFunction, promise_any)                                \\\n  V(PROMISE_FUNCTION_INDEX, JSFunction, promise_function)                      \\\n  V(RANGE_ERROR_FUNCTION_INDEX, JSFunction, range_error_function)              \\\n  V(REFERENCE_ERROR_FUNCTION_INDEX, JSFunction, reference_error_function)      \\\n  V(SET_ADD_INDEX, JSFunction, set_add)                                        \\\n  V(SET_DELETE_INDEX, JSFunction, set_delete)                                  \\\n  V(SET_HAS_INDEX, JSFunction, set_has)                                        \\\n  V(SHADOW_REALM_IMPORT_VALUE_REJECTED_INDEX, JSFunction,                      \\\n    shadow_realm_import_value_rejected)                                        \\\n  V(SUPPRESSED_ERROR_FUNCTION_INDEX, JSFunction, suppressed_error_function)    \\\n  V(SYNTAX_ERROR_FUNCTION_INDEX, JSFunction, syntax_error_function)            \\\n  V(TYPE_ERROR_FUNCTION_INDEX, JSFunction, type_error_function)                \\\n  V(URI_ERROR_FUNCTION_INDEX, JSFunction, uri_error_function)                  \\\n"
+    },
+    {
+      "id": "r060",
+      "file_id": "control",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\successor\\source\\src\\native_vm_error_constructor_name_test.zig",
+        "bytes": 28931,
+        "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+      },
+      "start_line": 493,
+      "end_line": 528,
+      "label": "Physical realm/root lifetime control",
+      "excerpt_sha256": "BDC7EAA568017F399FE65855F65E127F2DD0873C26ECB6A8D841907265C4BA66",
+      "excerpt": "test \"VM native Error constructor actual native origin survives released foreign realm and retires with Error\" {\n    var f: Fixture = .{}; try f.init(); defer f.deinit();\n    var foreign: ?*c.JSContext = c.JS_NewContext(f.runtime.?) orelse return error.OutOfMemory;\n    defer if (foreign) |context| c.JS_FreeContext(context);\n    var value = c.pi_js_undefined(); defer c.JS_FreeValue(f.context.?, value);\n    var constructor = c.pi_js_undefined(); defer c.JS_FreeValue(f.context.?, constructor);\n    const global_object = try f.checked(c.JS_GetGlobalObject(foreign.?));\n    const selected_constructor = c.JS_GetPropertyStr(foreign.?, global_object, \"Error\");\n    c.JS_FreeValue(foreign.?, global_object);\n    constructor = try f.checked(selected_constructor);\n    const marker = try f.newMarker();\n    // DefinePropertyValueStr consumes the marker, including on failure.\n    try std.testing.expectEqual(@as(c_int, 1),\n        c.JS_DefinePropertyValueStr(foreign.?, constructor, \"nativeLifetimeWitness\", marker, c.JS_PROP_C_W_E));\n    value = try f.checked(c.JS_NewError(foreign.?));\n    {\n        // The raw context has no native stack hooks or prepareStackTrace.\n        // Its real ErrorData is a String, so it cannot retain the foreign realm.\n        const stack_data = try f.checked(c.JS_GetPropertyStr(foreign.?, value, \"stack\"));\n        defer c.JS_FreeValue(f.context.?, stack_data);\n        try std.testing.expect(c.JS_IsString(stack_data));\n    }\n    try std.testing.expectEqual(@as(c_int, 1), c.JS_SetPrototype(foreign.?, value, c.pi_js_null()));\n    try f.deleteOwn(value, \"stack\");\n    try f.expectNoOwnProperties(value);\n    c.JS_FreeValue(foreign.?, constructor); constructor = c.pi_js_undefined();\n    c.JS_FreeContext(foreign.?); foreign = null;\n    c.JS_RunGC(f.runtime.?);\n    try std.testing.expectEqual(@as(usize, 0), f.probe.retired);\n    const owned_name = try f.name(value); defer c.JS_FreeValue(f.context.?, owned_name);\n    c.JS_FreeValue(f.context.?, value); value = c.pi_js_undefined();\n    c.JS_RunGC(f.runtime.?);\n    try std.testing.expectEqual(@as(usize, 1), f.probe.retired);\n    // The returned String is an independent owned result, not a realm handle.\n    try f.expectText(owned_name, \"Error\");\n}\n"
+    },
+    {
+      "id": "r061",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 9419,
+      "end_line": 9429,
+      "label": "No default native stack hook",
+      "excerpt_sha256": "5F66D64B4F44F23E2E808B02C64CB58EEB6A79A5857FD2C03F6F25BE2A7D767B",
+      "excerpt": "static int prepare_native_error_stack(JSContext *ctx, JSValueConst error)\n{\n    if (!JS_IsFunction(ctx, ctx->native_error_stack_getter) ||\n        !JS_IsFunction(ctx, ctx->native_error_stack_setter))\n        return 0;\n    /* Creation shape must remain genuine even for errors created by a hook's\n       semantic validation or allocator failure. No host allocation is needed. */\n    return JS_DefinePropertyGetSet(ctx, error, JS_ATOM_stack,\n                                   js_dup(ctx->native_error_stack_getter),\n                                   js_dup(ctx->native_error_stack_setter),\n                                   JS_PROP_CONFIGURABLE);\n"
+    },
+    {
+      "id": "r062",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 9778,
+      "end_line": 9797,
+      "label": "Default stack String and ErrorData storage",
+      "excerpt_sha256": "78A40ED392C31D0113E67439B73B5E15C987CE0594C1D5BD222F208CDD1BD587",
+      "excerpt": "    } else {\n        if (dbuf_error(&dbuf))\n            stack = JS_NULL;\n        else\n            stack = JS_NewStringLen(ctx, (char *)dbuf.buf, dbuf.size);\n        dbuf_free(&dbuf);\n    }\n\n    if (JS_IsUndefined(ctx->error_back_trace))\n        ctx->error_back_trace = js_dup(stack);\n    if (has_filter_func) {\n        /* Error.captureStackTrace(target, ...): install an own data property\n           on the (possibly non-Error) target, shadowing the accessor */\n        JS_DefinePropertyValue(ctx, error_obj, JS_ATOM_stack, stack,\n                               JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);\n    } else if (can_store_error_stack(error_obj)) {\n        /* genuine Error instance: store as the [[ErrorData]] stack value */\n        p = JS_VALUE_GET_OBJ(error_obj);\n        JS_FreeValue(ctx, p->u.object_data);\n        p->u.object_data = stack;\n"
+    },
+    {
+      "id": "r063",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 47728,
+      "end_line": 47738,
+      "label": "Default stack accessor returns actual stored data",
+      "excerpt_sha256": "BDFC8614437E2475D2FC8682BF1B84149A1A7E0FC074FBABE838AC5D88912F61",
+      "excerpt": "static JSValue js_error_get_stack(JSContext *ctx, JSValueConst this_val)\n{\n    JSObject *p;\n\n    if (JS_VALUE_GET_TAG(this_val) != JS_TAG_OBJECT)\n        return JS_ThrowTypeErrorNotAnObject(ctx);\n    p = JS_VALUE_GET_OBJ(this_val);\n    if (p->class_id != JS_CLASS_ERROR)\n        return JS_UNDEFINED;\n    return js_dup(p->u.object_data);\n}\n"
+    },
+    {
+      "id": "r064",
+      "file_id": "v8-bootstrapper.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-bootstrapper.v24.13.cc",
+        "bytes": 336314,
+        "sha256": "0991594530BB8FAF3836C747E547F43BB091D0AFA74E16B4B1814F68458D172A"
+      },
+      "start_line": 512,
+      "end_line": 530,
+      "label": "Builtin function/prototype creation",
+      "excerpt_sha256": "CD1E4935FB8AA091A2C035DB28C07A7F04F8415B2613F18AEA3CB374D544CD73",
+      "excerpt": "V8_NOINLINE DirectHandle<JSFunction> CreateFunction(\n    Isolate* isolate, DirectHandle<String> name, InstanceType type,\n    int instance_size, int inobject_properties,\n    DirectHandle<UnionOf<JSPrototype, Hole>> prototype, Builtin builtin,\n    int len, AdaptArguments adapt) {\n  DCHECK(Builtins::HasJSLinkage(builtin));\n\n  DirectHandle<JSFunction> result = CreateFunctionForBuiltinWithPrototype(\n      isolate, name, builtin, prototype, type, instance_size,\n      inobject_properties, IMMUTABLE, len, adapt);\n\n  // Make the JSFunction's prototype object fast.\n  JSObject::MakePrototypesFast(direct_handle(result->prototype(), isolate),\n                               kStartAtReceiver, isolate);\n\n  // Make the resulting JSFunction object fast.\n  JSObject::MakePrototypesFast(result, kStartAtReceiver, isolate);\n  result->shared()->set_native(true);\n  return result;\n"
+    },
+    {
+      "id": "r065",
+      "file_id": "v8-bootstrapper.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-bootstrapper.v24.13.cc",
+        "bytes": 336314,
+        "sha256": "0991594530BB8FAF3836C747E547F43BB091D0AFA74E16B4B1814F68458D172A"
+      },
+      "start_line": 1521,
+      "end_line": 1599,
+      "label": "InstallError instance and prototype construction",
+      "excerpt_sha256": "81058B5E3F5B9435C6CA1F64E31DE5E1E8DD6869CF3E8830D25DE05EF6E2D154",
+      "excerpt": "void InstallError(Isolate* isolate, DirectHandle<JSObject> global,\n                  DirectHandle<String> name, int context_index,\n                  Builtin error_constructor, int error_function_length) {\n  Factory* factory = isolate->factory();\n\n  // Most Error objects consist of a message, a stack trace, and possibly a\n  // cause. Reserve three in-object properties for these.\n  const int in_object_properties = 3;\n  const int kErrorObjectSize =\n      JSObject::kHeaderSize + in_object_properties * kTaggedSize;\n  DirectHandle<JSFunction> error_fun =\n      InstallFunction(isolate, global, name, JS_ERROR_TYPE, kErrorObjectSize,\n                      in_object_properties, factory->the_hole_value(),\n                      error_constructor, error_function_length, kDontAdapt);\n\n  if (context_index == Context::ERROR_FUNCTION_INDEX) {\n    SimpleInstallFunction(isolate, error_fun, \"captureStackTrace\",\n                          Builtin::kErrorCaptureStackTrace, 2, kDontAdapt);\n  }\n\n  InstallWithIntrinsicDefaultProto(isolate, error_fun, context_index);\n\n  {\n    // Setup %XXXErrorPrototype%.\n    DirectHandle<JSObject> prototype(\n        Cast<JSObject>(error_fun->instance_prototype()), isolate);\n\n    JSObject::AddProperty(isolate, prototype, factory->name_string(), name,\n                          DONT_ENUM);\n    JSObject::AddProperty(isolate, prototype, factory->message_string(),\n                          factory->empty_string(), DONT_ENUM);\n\n    if (context_index == Context::ERROR_FUNCTION_INDEX) {\n      DirectHandle<JSFunction> to_string_fun =\n          SimpleInstallFunction(isolate, prototype, \"toString\",\n                                Builtin::kErrorPrototypeToString, 0, kAdapt);\n      isolate->native_context()->set_error_to_string(*to_string_fun);\n      isolate->native_context()->set_initial_error_prototype(*prototype);\n    } else {\n      DirectHandle<JSFunction> global_error = isolate->error_function();\n      CHECK(JSReceiver::SetPrototype(isolate, error_fun, global_error, false,\n                                     kThrowOnError)\n                .FromMaybe(false));\n      CHECK(JSReceiver::SetPrototype(\n                isolate, prototype,\n                direct_handle(global_error->prototype(), isolate), false,\n                kThrowOnError)\n                .FromMaybe(false));\n    }\n  }\n\n  DirectHandle<Map> initial_map(error_fun->initial_map(), isolate);\n  Map::EnsureDescriptorSlack(isolate, initial_map, 3);\n  const int kJSErrorErrorStackSymbolIndex = 0;\n  const int kJSErrorErrorMessageSymbolIndex = 1;\n\n  {  // error_stack_symbol\n    Descriptor d = Descriptor::DataField(isolate, factory->error_stack_symbol(),\n                                         kJSErrorErrorStackSymbolIndex,\n                                         DONT_ENUM, Representation::Tagged());\n    initial_map->AppendDescriptor(isolate, &d);\n  }\n  {\n    // error_message_symbol\n    Descriptor d = Descriptor::DataField(\n        isolate, factory->error_message_symbol(),\n        kJSErrorErrorMessageSymbolIndex, DONT_ENUM, Representation::Tagged());\n    initial_map->AppendDescriptor(isolate, &d);\n  }\n  {  // stack\n    DirectHandle<AccessorPair> new_pair = factory->NewAccessorPair();\n    new_pair->set_getter(*factory->error_stack_getter_fun_template());\n    new_pair->set_setter(*factory->error_stack_setter_fun_template());\n\n    Descriptor d = Descriptor::AccessorConstant(factory->stack_string(),\n                                                new_pair, DONT_ENUM);\n    initial_map->AppendDescriptor(isolate, &d);\n  }\n}\n"
+    },
+    {
+      "id": "r066",
+      "file_id": "v8-bootstrapper.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-bootstrapper.v24.13.cc",
+        "bytes": 336314,
+        "sha256": "0991594530BB8FAF3836C747E547F43BB091D0AFA74E16B4B1814F68458D172A"
+      },
+      "start_line": 3533,
+      "end_line": 3564,
+      "label": "Original intrinsic family installation",
+      "excerpt_sha256": "97A5D7B2971A6E1B905ABE68D2AEF1650D8E8FB9ABE41BB2B8C950CE9D3EF149",
+      "excerpt": "  // -- E r r o r\n  InstallError(isolate_, global, factory->Error_string(),\n               Context::ERROR_FUNCTION_INDEX);\n\n  // -- A g g r e g a t e E r r o r\n  InstallError(isolate_, global, factory->AggregateError_string(),\n               Context::AGGREGATE_ERROR_FUNCTION_INDEX,\n               Builtin::kAggregateErrorConstructor, 2);\n\n  // -- E v a l E r r o r\n  InstallError(isolate_, global, factory->EvalError_string(),\n               Context::EVAL_ERROR_FUNCTION_INDEX);\n\n  // -- R a n g e E r r o r\n  InstallError(isolate_, global, factory->RangeError_string(),\n               Context::RANGE_ERROR_FUNCTION_INDEX);\n\n  // -- R e f e r e n c e E r r o r\n  InstallError(isolate_, global, factory->ReferenceError_string(),\n               Context::REFERENCE_ERROR_FUNCTION_INDEX);\n\n  // -- S y n t a x E r r o r\n  InstallError(isolate_, global, factory->SyntaxError_string(),\n               Context::SYNTAX_ERROR_FUNCTION_INDEX);\n\n  // -- T y p e E r r o r\n  InstallError(isolate_, global, factory->TypeError_string(),\n               Context::TYPE_ERROR_FUNCTION_INDEX);\n\n  // -- U R I E r r o r\n  InstallError(isolate_, global, factory->URIError_string(),\n               Context::URI_ERROR_FUNCTION_INDEX);\n"
+    },
+    {
+      "id": "r067",
+      "file_id": "v8-factory.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-factory.v24.13.cc",
+        "bytes": 203216,
+        "sha256": "895D8A6E8BEDE5FF80EA97DE37F765EE54F13D20E449968841C288596B851FC6"
+      },
+      "start_line": 2851,
+      "end_line": 2884,
+      "label": "NewFunctionPrototype ordinary Object map",
+      "excerpt_sha256": "0666A03F974E6043364A8F27B55B4FCC3DD631FAF91B6DE6EE18182A1FA57251",
+      "excerpt": "DirectHandle<JSObject> Factory::NewFunctionPrototype(\n    DirectHandle<JSFunction> function) {\n  // Make sure to use globals from the function's context, since the function\n  // can be from a different context.\n  DirectHandle<NativeContext> native_context(function->native_context(),\n                                             isolate());\n  DirectHandle<Map> new_map;\n  if (V8_UNLIKELY(IsAsyncGeneratorFunction(function->shared()->kind()))) {\n    new_map = direct_handle(\n        native_context->async_generator_object_prototype_map(), isolate());\n  } else if (IsResumableFunction(function->shared()->kind())) {\n    // Generator and async function prototypes can share maps since they\n    // don't have \"constructor\" properties.\n    new_map = direct_handle(native_context->generator_object_prototype_map(),\n                            isolate());\n  } else {\n    // Each function prototype gets a fresh map to avoid unwanted sharing of\n    // maps between prototypes of different constructors.\n    DirectHandle<JSFunction> object_function(native_context->object_function(),\n                                             isolate());\n    DCHECK(object_function->has_initial_map());\n    new_map = direct_handle(object_function->initial_map(), isolate());\n  }\n\n  DCHECK(!new_map->is_prototype_map());\n  DirectHandle<JSObject> prototype = NewJSObjectFromMap(new_map);\n\n  if (!IsResumableFunction(function->shared()->kind())) {\n    JSObject::AddProperty(isolate(), prototype, constructor_string(), function,\n                          DONT_ENUM);\n  }\n\n  return prototype;\n}\n"
+    },
+    {
+      "id": "r068",
+      "file_id": "quickjs-original.c",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "start_line": 64064,
+      "end_line": 64077,
+      "label": "Ordinary VM intrinsic Error prototypes",
+      "excerpt_sha256": "63270FE301AC96E041EACB4173CD43AE3281D07B55BFC19CF39931C3B4EE731E",
+      "excerpt": "    ctx->class_proto[JS_CLASS_ERROR] = JS_NewObject(ctx);\n    JS_SetPropertyFunctionList(ctx, ctx->class_proto[JS_CLASS_ERROR],\n                               js_error_proto_funcs,\n                               countof(js_error_proto_funcs));\n\n    for(i = 0; i < JS_NATIVE_ERROR_COUNT; i++) {\n        proto = JS_NewObjectProto(ctx, ctx->class_proto[JS_CLASS_ERROR]);\n        JS_DefinePropertyValue(ctx, proto, JS_ATOM_name,\n                               JS_NewAtomString(ctx, native_error_name[i]),\n                               JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);\n        JS_DefinePropertyValue(ctx, proto, JS_ATOM_message,\n                               js_empty_string(ctx->rt),\n                               JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);\n        ctx->native_error_proto[i] = proto;\n"
+    },
+    {
+      "id": "r069",
+      "file_id": "v8-map.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-map.v24.13.cc",
+        "bytes": 99099,
+        "sha256": "F94513B765EE2DD421C1D5DB3E919BF8D5765776E985DECA594F9110F9E592FE"
+      },
+      "start_line": 934,
+      "end_line": 964,
+      "label": "Original derived-map paths",
+      "excerpt_sha256": "8B7CD47E70BEEEE01E84CFD532131FBE1A504F723E11F0E322D0FAFF528CA9FD",
+      "excerpt": "Handle<Map> Map::GetDerivedMap(Isolate* isolate, DirectHandle<Map> from,\n                               DirectHandle<JSReceiver> prototype) {\n  DCHECK(IsUndefined(from->GetBackPointer()));\n\n  if (IsJSObjectThatCanBeTrackedAsPrototype(*prototype)) {\n    DirectHandle<JSObject> js_prototype = Cast<JSObject>(prototype);\n    if (!js_prototype->map()->is_prototype_map()) {\n      JSObject::OptimizeAsPrototype(js_prototype);\n    }\n    DirectHandle<PrototypeInfo> info =\n        Map::GetOrCreatePrototypeInfo(js_prototype, isolate);\n    Tagged<HeapObject> map_obj;\n    Handle<Map> map;\n    if (info->GetDerivedMap(from).GetHeapObjectIfWeak(&map_obj)) {\n      map = handle(Cast<Map>(map_obj), isolate);\n    } else {\n      map = Map::CopyInitialMap(isolate, from);\n      map->set_new_target_is_base(false);\n      if (map->prototype() != *prototype) {\n        Map::SetPrototype(isolate, map, prototype);\n      }\n      PrototypeInfo::AddDerivedMap(info, map, isolate);\n    }\n    return map;\n  }\n\n  // The TransitionToPrototype map will not have new_target_is_base reset. But\n  // we don't need it to for proxies.\n  return Map::TransitionRootMapToPrototypeForNewObject(isolate, from,\n                                                       prototype);\n}\n"
+    },
+    {
+      "id": "r070",
+      "file_id": "v8-js-function.v24.13.cc",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\v8-js-function.v24.13.cc",
+        "bytes": 64812,
+        "sha256": "BD7C962A95DFD157FAFC7933D4C1D1571EE44D02FB71F0FF8592723379B88C47"
+      },
+      "start_line": 1191,
+      "end_line": 1260,
+      "label": "Original GetDerivedMap target/prototype ownership",
+      "excerpt_sha256": "D7AAE02A0F07180114EB0112BB1A2ABF2BBD8DC9B580E42A680E3D3627513885",
+      "excerpt": "MaybeHandle<Map> JSFunction::GetDerivedMap(\n    Isolate* isolate, DirectHandle<JSFunction> constructor,\n    DirectHandle<JSReceiver> new_target) {\n  EnsureHasInitialMap(constructor);\n\n  DirectHandle<Map> constructor_initial_map(constructor->initial_map(),\n                                            isolate);\n  if (*new_target == *constructor) {\n    return indirect_handle(constructor_initial_map, isolate);\n  }\n\n  DirectHandle<Map> result_map;\n  // Fast case, new.target is a subclass of constructor. The map is cacheable\n  // (and may already have been cached). new.target.prototype is guaranteed to\n  // be a JSReceiver.\n  InstanceType new_target_instance_type = new_target->map()->instance_type();\n  if (InstanceTypeChecker::IsJSFunction(new_target_instance_type)) {\n    DirectHandle<JSFunction> function = Cast<JSFunction>(new_target);\n    if (FastInitializeDerivedMap(isolate, function, constructor,\n                                 constructor_initial_map)) {\n      return handle(function->initial_map(), isolate);\n    }\n  }\n\n  // Slow path, new.target is either a proxy object or can't cache the map.\n  // new.target.prototype is not guaranteed to be a JSReceiver, and may need to\n  // fall back to the intrinsicDefaultProto.\n  DirectHandle<Object> prototype;\n  if (InstanceTypeChecker::IsJSFunction(new_target_instance_type) &&\n      Cast<JSFunction>(new_target)->has_prototype_slot()) {\n    DirectHandle<JSFunction> function = Cast<JSFunction>(new_target);\n    // Make sure the new.target.prototype is cached.\n    EnsureHasInitialMap(function);\n    prototype = direct_handle(function->prototype(), isolate);\n  } else {\n    // The new.target is a constructor but it's not a JSFunction with\n    // a prototype slot, so get the prototype property.\n    DirectHandle<String> prototype_string =\n        isolate->factory()->prototype_string();\n    ASSIGN_RETURN_ON_EXCEPTION(\n        isolate, prototype,\n        JSReceiver::GetProperty(isolate, new_target, prototype_string));\n    // The above prototype lookup might change the constructor and its\n    // prototype, hence we have to reload the initial map.\n    EnsureHasInitialMap(constructor);\n    constructor_initial_map =\n        direct_handle(constructor->initial_map(), isolate);\n  }\n\n  // If prototype is not a JSReceiver, fetch the intrinsicDefaultProto from the\n  // correct realm. Rather than directly fetching the .prototype, we fetch the\n  // constructor that points to the .prototype. This relies on\n  // constructor.prototype being FROZEN for those constructors.\n  if (!IsJSReceiver(*prototype)) {\n    DirectHandle<NativeContext> native_context;\n    ASSIGN_RETURN_ON_EXCEPTION(isolate, native_context,\n                               JSReceiver::GetFunctionRealm(new_target));\n    DirectHandle<Object> maybe_index = JSReceiver::GetDataProperty(\n        isolate, constructor,\n        isolate->factory()->native_context_index_symbol());\n    int index = IsSmi(*maybe_index) ? Smi::ToInt(*maybe_index)\n                                    : Context::OBJECT_FUNCTION_INDEX;\n    DirectHandle<JSFunction> realm_constructor(\n        Cast<JSFunction>(native_context->get(index)), isolate);\n    prototype = direct_handle(realm_constructor->prototype(), isolate);\n  }\n  DCHECK_EQ(constructor_initial_map->constructor_or_back_pointer(),\n            *constructor);\n  return Map::GetDerivedMap(isolate, constructor_initial_map,\n                            Cast<JSReceiver>(prototype));\n"
+    },
+    {
+      "id": "r071",
+      "file_id": "fragment",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+        "bytes": 8944,
+        "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+      },
+      "start_line": 57,
+      "end_line": 80,
+      "label": "Actual base edge retained but different target marked",
+      "excerpt_sha256": "73B5D34C56D53C23E8E64BE94993DF977C3F023464E9E280AF3AAAA2D563D2E3",
+      "excerpt": "static void js_pi_record_error_constructor(JSContext *ctx, JSValueConst error,\n                                           int kind, JSValueConst constructor,\n                                           JSValueConst new_target)\n{\n    JSObject *object;\n    JSValue base, name;\n    if (!JS_IsError(error))\n        return;\n    assert(kind >= 0 && kind <= JS_PLAIN_ERROR);\n    object = JS_VALUE_GET_OBJ(error);\n    assert(JS_IsUndefined(object->u.native_error.constructor));\n    assert(JS_IsUndefined(object->u.native_error.constructor_name));\n    base = js_pi_intrinsic_error_constructor(ctx, kind);\n    name = ctx->pi_error_constructor_name[kind];\n    if (!JS_IsObject(base) || !JS_IsObject(constructor) ||\n        JS_VALUE_GET_OBJ(base) != JS_VALUE_GET_OBJ(constructor) ||\n        !JS_IsString(name))\n        return;\n    object->u.native_error.constructor = js_dup(base);\n    object->u.native_error.constructor_name = js_dup(name);\n    object->u.native_error.constructor_provenance =\n        JS_IsObject(new_target) &&\n        JS_VALUE_GET_OBJ(new_target) == JS_VALUE_GET_OBJ(base)\n            ? 1 : 2;\n"
+    },
+    {
+      "id": "r072",
+      "file_id": "fragment",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\source\\src\\extensions\\native_vm_error_constructor_name.c.inc",
+        "bytes": 8944,
+        "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843"
+      },
+      "start_line": 164,
+      "end_line": 172,
+      "label": "Unsupported status admission",
+      "excerpt_sha256": "5993D6E64172F334B04FABF78D4A2030E78319B22C5A0D220EA961831777DF2D",
+      "excerpt": "    JSValue value, name;\n    int found;\n    assert(ctx != NULL && owned_name != NULL);\n    *owned_name = JS_UNDEFINED;\n    if (!JS_IsError(error))\n        return JS_PI_ERROR_CONSTRUCTOR_NAME_NOT_NATIVE_ERROR;\n    receiver = JS_VALUE_GET_OBJ(error);\n    if (receiver->u.native_error.constructor_provenance != 1)\n        return JS_PI_ERROR_CONSTRUCTOR_NAME_UNSUPPORTED;\n"
+    },
+    {
+      "id": "r073",
+      "file_id": "control",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\successor\\source\\src\\native_vm_error_constructor_name_test.zig",
+        "bytes": 28931,
+        "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+      },
+      "start_line": 1,
+      "end_line": 10,
+      "label": "Literal root imports",
+      "excerpt_sha256": "016F38088CC3F181F557B6EDF4A2B7AFD725D78CC0CA3791CB21B9659D869C5C",
+      "excerpt": "//! Source-only controls for the bounded native Error constructor-name owner.\n//! These exercise actual VM storage and JS effects. Unsupported results remain\n//! dependencies of the production Node hook-exception policy, which is absent.\nconst std = @import(\"std\");\nconst c = @cImport({\n    @cUndef(\"_FORTIFY_SOURCE\");\n    @cDefine(\"_FORTIFY_SOURCE\", \"0\");\n    @cInclude(\"engine_abi.h\");\n});\nconst Status = c.JSPiNativeErrorConstructorNameStatus;\n"
+    },
+    {
+      "id": "r074",
+      "file_id": "engine-abi-h",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\support\\src\\extensions\\engine_abi.h",
+        "bytes": 2003,
+        "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5"
+      },
+      "start_line": 1,
+      "end_line": 37,
+      "label": "Existing ABI include boundary",
+      "excerpt_sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5",
+      "excerpt": "/* Portable ABI for QuickJS value-construction macros that translate-c cannot\n * represent for both the 32-bit NaN box and 64-bit tagged-union layouts. */\n#ifndef PI_EXTENSION_ENGINE_ABI_H\n#define PI_EXTENSION_ENGINE_ABI_H\n#include \"quickjs.h\"\nJSValue pi_js_undefined(void);\nJSValue pi_js_exception(void);\nJSValue pi_js_null(void);\nJSValue pi_js_bool(JSContext *context, int value);\nJSValue pi_js_int32(JSContext *context, int32_t value);\nJSModuleDef *pi_js_module(JSValue value);\nvoid *pi_js_object_identity(JSValue value);\n/* Allocation-free, host-private tags on genuine native allocator errors. */\nvoid pi_js_mark_native_allocation_error(JSValueConst value, uint64_t generation);\nuint64_t pi_js_native_allocation_error_generation(JSValueConst value);\nJSValue pi_js_module_value(JSContext *context, JSModuleDef *module);\nJSValue pi_js_function_magic(JSContext *context, JSCFunctionMagic *function, const char *name, int length, int magic);\nJSRuntime *pi_js_new_runtime(size_t memory_limit, void **memory_owner);\nvoid pi_js_release_memory_owner(void *memory_owner);\nsize_t pi_js_shared_buffer_allocations(void);\n/* Only for trusted same-process serializer tables from pi_js_new_runtime. */\nvoid pi_js_retain_shared_buffer(void *buffer);\nvoid pi_js_release_shared_buffer(void *buffer);\nsize_t pi_js_native_memory_owners(void);\nsize_t pi_js_native_memory_used(void *memory_owner);\nvoid pi_js_retain_memory_owner(void *memory_owner);\nint pi_js_native_memory_reserve(void *memory_owner, size_t bytes);\nvoid pi_js_native_memory_release(void *memory_owner, size_t bytes);\n\n/* Live native backing-owner diagnostics. owner must come from an owned lease. */\nsize_t pi_js_array_buffer_backing_allocations(void);\nsize_t pi_js_array_buffer_backing_references(void *owner);\nsize_t pi_js_array_buffer_backing_byte_length(void *owner);\nsize_t pi_js_array_buffer_backing_committed(void *owner);\nsize_t pi_js_array_buffer_backing_reserved(void *owner);\nsize_t pi_js_array_buffer_backing_page_size(void *owner);\n#endif\n"
+    },
+    {
+      "id": "r075",
+      "file_id": "build-original",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\build\\original.zig",
+        "bytes": 503440,
+        "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+      },
+      "start_line": 69,
+      "end_line": 105,
+      "label": "Existing QuickJS compilation owner and flags",
+      "excerpt_sha256": "10163AD2535C23ADC68A09E24BEC311247CF22EFFFB23E34B36059460C43EE51",
+      "excerpt": "    // The extension language is evaluated by a pinned C engine through Zig's\n    // C ABI. Host behavior and bindings remain native Zig.\n    const quickjs = b.addLibrary(.{\n        .name = \"pi-quickjs\",\n        .linkage = .static,\n        .root_module = b.createModule(.{\n            .target = target,\n            .optimize = optimize,\n            .link_libc = true,\n        }),\n    });\n    const native_icu = @import(\"tools/build_native_icu.zig\").add(b, target, optimize);\n    quickjs.root_module.linkLibrary(native_icu.library);\n    quickjs.root_module.link_libcpp = true;\n    quickjs.root_module.linkLibrary(native_yaml);\n    quickjs.root_module.addIncludePath(b.path(\"vendor/quickjs\"));\n    // Native public storage is installed for every extension VM. Carry SQLite\n    // through this common dependency so CLI, SDK and bindings all receive it.\n    linkSqlite(quickjs.root_module, sqlite_lib_dir, sqlite_library);\n    const quickjs_c_flags = [_][]const u8{ \"-std=gnu11\", \"-D_GNU_SOURCE\", \"-DQUICKJS_NG_BUILD\", \"-funsigned-char\", \"-fno-strict-aliasing\" };\n    quickjs.root_module.addCSourceFiles(.{\n        .root = b.path(\"vendor/quickjs\"),\n        .files = &.{ \"dtoa.c\", \"libregexp.c\", \"libunicode.c\", \"quickjs.c\" },\n        // QuickJS's unoptimized interpreter reserves about 60 KiB per call on\n        // Windows. Keep Zig Debug and C assertions while reducing C frame size\n        // enough for ordinary nested terminal callbacks within the VM limit.\n        .flags = if (optimize == .Debug) &(quickjs_c_flags ++ [_][]const u8{\"-Og\"}) else &quickjs_c_flags,\n    });\n    quickjs.root_module.addCSourceFile(.{\n        .file = b.path(\"src/extensions/engine_abi.c\"),\n        .flags = &.{\"-std=gnu11\"},\n    });\n    // One allocator/TLS domain is shared by native C++ parser and containers.\n    const native_node_memory = @import(\"tools/build_native_node_memory.zig\").add(b, target, optimize);\n    // One unchanged libuv/llhttp graph is shared by native TCP and file I/O owners.\n    const native_node_network = switch (target.result.os.tag) {\n        .windows, .linux => @import(\"tools/build_native_node_network.zig\").add(b, target, optimize, native_node_memory),\n"
+    },
+    {
+      "id": "r076",
+      "file_id": "build-original",
+      "file": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\build\\original.zig",
+        "bytes": 503440,
+        "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+      },
+      "start_line": 5174,
+      "end_line": 5188,
+      "label": "Existing linkQuickJs include/import/link owner",
+      "excerpt_sha256": "D06479AC5E1474B804A3B90E39818ADFA324068D11DC145F149E062BFB2B2414",
+      "excerpt": "fn linkQuickJs(b: *std.Build, module: *std.Build.Module, library: *std.Build.Step.Compile, sqlite_lib_dir: ?[]const u8) void {\n    // Every VM can reach the native process owner through SDK and TUI imports.\n    linkDurable(b, module);\n    if (sqlite_lib_dir) |directory| module.addLibraryPath(.{ .cwd_relative = directory });\n    module.addIncludePath(b.path(\"vendor/quickjs\"));\n    module.addIncludePath(b.path(\"vendor/libfyaml\"));\n    module.addIncludePath(b.path(\"src/extensions\"));\n    module.addImport(\"native_icu_api\", b.modules.get(\"native_icu_api\").?);\n    module.addIncludePath(b.path(\"vendor/photon-native\"));\n    module.addImport(\"native_photon_link\", b.modules.get(\"native_photon_link\").?);\n    module.addImport(\"native_vm_identity\", b.modules.get(\"native_vm_identity\").?);\n    module.link_libcpp = true;\n    module.linkLibrary(library);\n    module.link_libc = true;\n}\n"
+    }
+  ],
+  "control_numbering": [
+    {
+      "number": 1,
+      "name": "VM native Error constructor intrinsic families retain their native initial names"
+    },
+    {
+      "number": 2,
+      "name": "VM native Error constructor direct native creation and throws record real origins"
+    },
+    {
+      "number": 3,
+      "name": "VM native Error constructor real VM stack exhaustion retains RangeError provenance"
+    },
+    {
+      "number": 4,
+      "name": "VM native Error constructor public function and Error names do not replace provenance"
+    },
+    {
+      "number": 5,
+      "name": "VM native Error constructor public replacement cannot redirect native intrinsic factories"
+    },
+    {
+      "number": 6,
+      "name": "VM native Error constructor changing an Error prototype preserves base provenance"
+    },
+    {
+      "number": 7,
+      "name": "VM native Error constructor new inheritors suppress fast provenance with real prototype admission"
+    },
+    {
+      "number": 8,
+      "name": "VM native Error constructor explicit prototype admission uses the same original fallback"
+    },
+    {
+      "number": 9,
+      "name": "VM native Error constructor inherited data tag precedes constructor at the same level"
+    },
+    {
+      "number": 10,
+      "name": "VM native Error constructor receiver constructor and accessor tag are never invoked"
+    },
+    {
+      "number": 11,
+      "name": "VM native Error constructor prototype accessors and mutable builtin name are skipped"
+    },
+    {
+      "number": 12,
+      "name": "VM native Error constructor actual intrinsic Object is skipped without its public name"
+    },
+    {
+      "number": 13,
+      "name": "VM native Error constructor final native class fallback remains Error"
+    },
+    {
+      "number": 14,
+      "name": "VM native Error constructor bound and Proxy constructors are skipped without traps"
+    },
+    {
+      "number": 15,
+      "name": "VM native Error constructor missing general DebugName is explicit without function name Get"
+    },
+    {
+      "number": 16,
+      "name": "VM native Error constructor Proxy prototype storage stays unsupported without traps"
+    },
+    {
+      "number": 17,
+      "name": "VM native Error constructor native exotic descriptors remain uncalled and unsupported"
+    },
+    {
+      "number": 18,
+      "name": "VM native Error constructor different new target is an explicit remaining dependency"
+    },
+    {
+      "number": 19,
+      "name": "VM native Error constructor unrecorded physical Error allocation cannot invent provenance"
+    },
+    {
+      "number": 20,
+      "name": "VM native Error constructor ordinary lookalikes never acquire the actual native class"
+    },
+    {
+      "number": 21,
+      "name": "VM native Error constructor query preserves actual ordinary and uncatchable pending owners"
+    },
+    {
+      "number": 22,
+      "name": "VM native Error constructor active and cancelled native termination state is unchanged"
+    },
+    {
+      "number": 23,
+      "name": "VM native Error constructor all selected query branches allocate no VM storage"
+    },
+    {
+      "number": 24,
+      "name": "VM native Error constructor actual native origin survives released foreign realm and retires with Error"
+    }
+  ],
+  "additive_prototype_branding_correction": {
+    "subject": "Intrinsic Error prototype branding correction",
+    "selected_behavior": "Pinned InstallError creates JS_ERROR_TYPE instances but its ordinary function prototype comes from the Object initial map. Ordinary Error.prototype objects are therefore not an established V8-versus-QuickJS branding mismatch.",
+    "original_source": [
+      "r064",
+      "r065",
+      "r066",
+      "r067"
+    ],
+    "host_source": [
+      "r068"
+    ],
+    "control_numbers": [
+      20
+    ],
+    "limits": [
+      "Additive correction to an earlier informal overbroad gap statement; all prior evidence and frozen source comments remain unchanged. It does not assert full arbitrary-object/native Error map equivalence."
+    ]
+  },
+  "executed_compiler_native_reference_tests": false
+}

@@ -1,0 +1,29 @@
+{
+  "purpose": "Pinned public source bytes only; no source execution or reference run.",
+  "files": [
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/env.h",
+      "sha256": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0",
+      "name": "env.v24.13.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\env.v24.13.h",
+      "bytes": 45315,
+      "native_fetch_body_hash_matches": true
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/env-inl.h",
+      "sha256": "41949D4DFA01B04174B0E881B1DB3DD12BF51B9428B89946504603700FCF3E5E",
+      "name": "env-inl.v24.13.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\env-inl.v24.13.h",
+      "bytes": 28109,
+      "native_fetch_body_hash_matches": true
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/req_wrap-inl.h",
+      "sha256": "27C770D8756B626C80210F96F9DB1CF31BFBF09AAB1DA53DC35B382314883E67",
+      "name": "req_wrap-inl.v24.13.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\req_wrap-inl.v24.13.h",
+      "bytes": 5640,
+      "native_fetch_body_hash_matches": true
+    }
+  ]
+}

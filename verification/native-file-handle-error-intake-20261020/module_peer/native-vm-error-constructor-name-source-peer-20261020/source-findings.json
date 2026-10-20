@@ -1,0 +1,81 @@
+{
+  "schema": "pi-zig.native-error-constructor-independent-source-findings.v1",
+  "subject_manifest_sha256": "64DB11E161C4AF40DBE7ABC1D981D07F4E6BD74B69B806353EDBA86F5F6A6702",
+  "selected_fragment_sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843",
+  "selected_control_sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525",
+  "audit_sha256": "B1253548E211E8E7BCE2484A39C70819471D6F6DB4D64D1672F2A2471C1D4817",
+  "scope": "Bounded native Error provenance/name owner, its 22 exact QuickJS edits, selected 24 controls and install-only build insertion. Final SDK packet inventory/source map will be bound separately.",
+  "findings": [
+    {
+      "topic": "Actual creation provenance",
+      "source": "Selected quickjs.c 47658–47694, 9940–9958, 9992–10016, 10115–10123, 47913–47919, 60049–60055; full new fragment",
+      "finding": "Ordinary Error calls normalize an undefined new.target to the actual active function before provenance recording. Construction records only the matching protected intrinsic constructor for the selected kind; direct native factories record that actual intrinsic. Recording precedes stack hooks. Different-new-target creation retains real base ownership but returns UNSUPPORTED from the bounded name query."
+    },
+    {
+      "topic": "Context and Error initialization/retirement",
+      "source": "Selected quickjs.c 3677–3731, 3855–3884, 3916–3972, 7167–7174, 8132–8161",
+      "finding": "All nine native constructor slots and ten initial-name slots are initialized before intrinsic construction. Their new owned edges have matching context mark/free paths. Every physical Error initializes constructor, name and provenance; its class mark visits constructor and name. Its finalizer clears data/constructor/name/provenance before releasing the three owned values, preserving the existing object_data alias."
+    },
+    {
+      "topic": "Real native realm edges",
+      "source": "Selected quickjs.c 7718–7754, 8163–8178, 3855–3889; selected control final test",
+      "finding": "A native C function owns its actual realm through JS_DupContext and existing function mark/free callbacks. The new context and Error references use those genuine JSValue/GC edges. The foreign-realm control uses a real finalizer witness, removes observable Error roots, releases the foreign context, and retains the returned String independently. This is source validation of the intended lifetime, not an executed GC result."
+    },
+    {
+      "topic": "Immutable selected names",
+      "source": "Full fragment cache/record/debug-name helpers; selected quickjs.c 64227–64260 and 7718–7754",
+      "finding": "Initial names are retained from the just-created intrinsic function's physical own normal String property before publication. Later public function.name/name/constructor mutations do not replace that retained native metadata. A partial missing initial-name property yields unsupported provenance without an allocating or exception-replacing cache helper."
+    },
+    {
+      "topic": "Sticky prototype restriction",
+      "source": "Selected quickjs.c 6617–6677, 6717–6742, 7203–7219, 10498–10569; V8 map.cc 2467–2484 and js-objects.cc 4929–4994",
+      "finding": "The successor marks actual Error objects when a fresh shape acquires them as prototypes; explicit SetPrototype already marks its actual prototype. Cached shapes reuse the first admission and cloned shapes retain that established condition. A source search finds only fresh-shape and SetPrototype assignments to sh->proto. Existing is_prototype effects elsewhere concern actual Array/Object prototypes, so the added Error-specific marking supplies the new query restriction without broadening ordinary-object behavior. The initial 1FEC projection remains a genuine self-review negative."
+    },
+    {
+      "topic": "Original constructor-name branch order",
+      "source": "V8 js-objects.cc 556–630; full fragment query",
+      "finding": "The supported fast path uses recorded base-equals-new.target provenance only while the receiver is not a prototype. The prototype fallback reads own data toStringTag first at each level, deliberately skips the receiver's constructor, then considers eligible constructors at later levels. It ignores accessors and eventually returns the actual JSError class name Error when the selected chain provides no name."
+    },
+    {
+      "topic": "Getter-free physical storage",
+      "source": "Selected quickjs.c 1992–2008, 5102–5108, 8026–8064, 13869–13882; V8 js-objects.cc 156–185 and prototype-inl.h 97–109; full fragment",
+      "finding": "find_own_property only traverses the existing shape/property table; js_dup only increments an existing reference count. The query does not materialize autoinit or variable-reference storage, perform property Gets, execute a getter, invoke a Proxy/exotic trap, or read mutable function.name. It returns UNSUPPORTED before unported exotic or general function-name behavior. Bound and Proxy function values are skipped as constructors; the existing intrinsic Object body is recognized without reading its name."
+    },
+    {
+      "topic": "Name ownership and pending state",
+      "source": "Full fragment JS_PiGetNativeErrorConstructorName; selected header contract",
+      "finding": "FOUND supplies one duplicated existing String in the output slot. Other statuses supply undefined. With the documented live same-runtime inputs, the selected query helpers allocate no VM storage and do not access current_exception or termination state. The source controls exercise pending ordinary/uncatchable reasons, active/cancelled termination and a real allocation limit; no runtime outcome is claimed."
+    },
+    {
+      "topic": "Intrinsic Error.prototype source correction",
+      "source": "V8 bootstrapper.cc 455–492, 542–552, 1521–1573; factory.cc 2851–2884; selected quickjs.c 64129–64142",
+      "finding": "InstallError requests a JS_ERROR_TYPE instance map but supplies the hole for its prototype. CreateFunction then calls NewFunctionPrototype, which uses Object's initial map for these ordinary intrinsic prototypes. Therefore the selected QuickJS ordinary intrinsic Error prototypes do not establish the previously suggested branding mismatch. General map/DebugName/exotic gaps still remain."
+    },
+    {
+      "topic": "Memory inventory",
+      "source": "Selected quickjs.c 8767–8774, 8815–8824, 8854–8863, 8957–8967",
+      "finding": "The new context and Error String references participate in the existing reference-count-weighted string accounting. Constructors are objects visited through the native GC/object inventory. Private JSContext/JSObject storage grows through real fields and their sizeof-dependent allocation/accounting; target layout and compiler qualification remain open."
+    },
+    {
+      "topic": "Full selected control review",
+      "source": "Selected 28,931-byte control file, all 24 named tests",
+      "finding": "Read the complete stack-local Fixture and every selected control. They use genuine VM Error construction, native throws, non-tail recursive stack exhaustion, property/getter/prototype changes, explicit unsupported outcomes, native exotic callback counters, pending/termination state, allocation limits and a real foreign-realm finalizer witness. Teardown frees owned names/values before runtime destruction and restores unlimited allocation (actual malloc_limit zero semantics are confirmed by the native allocator's limit-minus-one checks). No fake production exception policy is installed."
+    },
+    {
+      "topic": "Install-only composition and preserved source",
+      "source": "Independent source audit B1253548, build proposal 54760A19",
+      "finding": "All 22 per-step offsets/pre/post hashes replay, every original equals the pinned Main c764 Git blob, and both complete file inverses recover the originals. New private helper names do not collide with identifiers in original quickjs.c/h. The build proposal is one additive install-only root using existing linkQuickJs; all 24 names match the filter. The control successor is the single 64-to-256 KiB stack-limit selection, with the prior source preserved."
+    }
+  ],
+  "bounded_verdict": "No concrete implementation blocker identified in the reviewed selected scope.",
+  "limits": [
+    "No compiler, preprocessor, VM/reference, native, test or project-generator execution.",
+    "No Main/SDK production or control edits performed by this review.",
+    "UNSUPPORTED is not an original negative IsStackOverflowError classification.",
+    "General map/new-target, nonintrinsic SharedFunctionInfo::DebugName, FunctionTemplateInfo and exotic/proxy storage ownership remain unimplemented.",
+    "The VM has its own additional InternalError intrinsic; this bounded storage owner does not claim that every current VM intrinsic exists in original Node/V8.",
+    "Production Node hook reporting, Environment::Exit(7), TriggerUncaughtException and fatal bootstrap policy are not installed.",
+    "Future compilation, private-layout, OOM, GC/runtime and target qualification remain separate.",
+    "Final SDK closure manifest/source map was not yet available when these findings were written."
+  ]
+}

@@ -1133,6 +1133,24 @@ JS_EXTERN bool JS_PiNativePendingReplaceClassified(JSRuntime *rt,
                                          JSValueConst incoming_pending,
                                          bool incoming_generic_fatal);
 JS_EXTERN bool JS_IsError(JSValueConst val);
+/* Bounded original GetConstructorName slice for this VM's actual Error class.
+   The query performs no allocation or guest call and never changes pending
+   exception/termination state. ctx and error must belong to the same runtime.
+   owned_name is an output slot: FOUND supplies one owned String; every other
+   status supplies undefined. Free that owned String with JS_FreeValue.
+   UNSUPPORTED covers absent native provenance/general map or DebugName
+   metadata. It MUST NOT be treated as a negative original IsStackOverflowError
+   classification. NOT_NATIVE_ERROR describes JS_IsError's actual VM class,
+   not an assertion that every original V8 NativeError prototype is represented.
+   No production hook-exception policy is installed by this primitive. */
+typedef enum JSPiNativeErrorConstructorNameStatus {
+    JS_PI_ERROR_CONSTRUCTOR_NAME_UNSUPPORTED = 0,
+    JS_PI_ERROR_CONSTRUCTOR_NAME_FOUND = 1,
+    JS_PI_ERROR_CONSTRUCTOR_NAME_NOT_NATIVE_ERROR = 2,
+} JSPiNativeErrorConstructorNameStatus;
+JS_EXTERN JSPiNativeErrorConstructorNameStatus
+JS_PiGetNativeErrorConstructorName(JSContext *ctx, JSValueConst error,
+                                  JSValue *owned_name);
 JS_EXTERN bool JS_IsUncatchableError(JSValueConst val);
 JS_EXTERN void JS_SetUncatchableError(JSContext *ctx, JSValueConst val);
 JS_EXTERN void JS_ClearUncatchableError(JSContext *ctx, JSValueConst val);

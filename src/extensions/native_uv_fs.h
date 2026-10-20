@@ -1,5 +1,6 @@
-/* Typed real asynchronous filesystem requests on the one native UV service.
- * uv_loop and uv_fs_t remain private to their actual native thread/owner.
+/* Typed real filesystem operations on the one native UV service.
+ * Asynchronous uv_fs_t and the loop remain private to their actual owner.
+ * The selected synchronous close borrows its caller's native stack uv_fs_t.
  * No JS value, Engine pointer or guest callback is accepted by this API. */
 #ifndef PI_NATIVE_UV_FS_H
 #define PI_NATIVE_UV_FS_H
@@ -66,6 +67,16 @@ int pi_uv_fs_read(PiUvFsRequest *request, int descriptor,
     int64_t position);
 int pi_uv_fs_open(PiUvFsRequest *request, const char *path, int flags, int mode);
 int pi_uv_fs_close(PiUvFsRequest *request, int descriptor);
+/* Original FileHandle GC close: synchronous calling-thread uv_fs_close with
+ * cb == NULL and the retained service's actual loop. The caller owns a full
+ * canonical uv_fs_t on its stack and performs uv_fs_req_cleanup after its
+ * trace-end operation. This call queues no command/event and allocates no
+ * PiUvFsRequest. Pinned libuv's synchronous path does not dereference the loop;
+ * retaining the service keeps its address/storage valid even after stop/join.
+ */
+struct uv_fs_s;
+int pi_uv_fs_close_sync(PiUvService *service, struct uv_fs_s *request,
+    int descriptor);
 /* Actual uv_cancel runs on the service thread only for an accepted request
  * whose callback is still pending. A no-in-flight command returns UV_EINVAL.
  * It never clears the request or suppresses an accepted operation's callback. */

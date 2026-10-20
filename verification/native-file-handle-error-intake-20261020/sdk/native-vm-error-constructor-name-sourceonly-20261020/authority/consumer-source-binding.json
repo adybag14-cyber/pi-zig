@@ -1,0 +1,13 @@
+{
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-errors.v24.13.cc",
+    "bytes": 43095,
+    "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9"
+  },
+  "snapshot": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\authority\\node-errors.v24.13.cc",
+    "bytes": 43095,
+    "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9"
+  },
+  "reason": "Exact classifier and TryCatchScope bodies live in node_errors.cc; node_errors.h provides the declarations. Existing authority packets remain unchanged."
+}

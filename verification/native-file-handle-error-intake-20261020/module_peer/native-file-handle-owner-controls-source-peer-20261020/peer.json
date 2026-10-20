@@ -1,0 +1,255 @@
+{
+  "schema": "pi-zig.independent-file-handle-owner-controls-source-peer.v1",
+  "reviewer": "/root/module_io_port",
+  "reviewed_on": "2026-10-20",
+  "conclusion": "No concrete blocker found within the selected 18 FileHandle ownership controls, 3 FS before-hook controls, shared fixture, FSReqPromise continuation successor, and their finite source/build composition.",
+  "qualification": "Independent source review only. No compiler, preprocessor, native executable, test, Node/reference, project source generator, formatter, or new native lease was used. This receipt does not assert runtime acceptance, ABI qualification, full production bootstrap, or future compiler-selected metadata.",
+  "subject": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\handoff.json",
+    "bytes": 14557,
+    "sha256": "A9D4A4D0BAC91764B52A9EE87BE7C555C2C8C61FCEB9FC87E7282A169700AD73"
+  },
+  "basis": {
+    "comparison_main_head": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+    "observed_main_head_during_review": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+    "reviewer_worktree_head": "5e4646ad8268fdfc8007691ccbda28b6d6985807",
+    "main_writes": false,
+    "sdk_writes": false,
+    "reviewer_index_empty": true
+  },
+  "audit_script": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-owner-controls-source-peer-20261020\\source-audit.py",
+    "bytes": 12282,
+    "sha256": "A94B4400FC70D98AF6CBEAC05C518C179F0960D2C7CA95D148F01DD0210C3B04"
+  },
+  "audit_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-owner-controls-source-peer-20261020\\source-audit.json",
+    "bytes": 252361,
+    "sha256": "556446A9B0E1ED3C630DCE686996D00BA10419360C9EF34B670FF5AEED1BC217"
+  },
+  "selected_sources": [
+    {
+      "relative_path": "src/native_node_file_handle_owner_test_support.zig",
+      "bytes": 32558,
+      "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "review": "Complete source body read."
+    },
+    {
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "review": "All 18 declaration bodies read."
+    },
+    {
+      "relative_path": "src/native_node_fs_before_hook_continuation_test.zig",
+      "bytes": 6578,
+      "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92",
+      "review": "All 3 declaration bodies read."
+    },
+    {
+      "relative_path": "src/extensions/native_node_fs_request_promise.zig",
+      "bytes": 19385,
+      "sha256": "8EFC2D58C1B1BD5069777FE1D06618F4572F54EEDAC09265EAD26BE8E675A4DF",
+      "review": "Complete selected successor body read, plus exact one-hunk forward and inverse."
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_close_request.zig",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A",
+      "review": "Complete selected corrected body read; its preserved predecessor is the new file from the original owner packet."
+    }
+  ],
+  "composition": {
+    "pinned_input_paths_rehashed": 1068,
+    "selected_source_paths": 12,
+    "new_source_paths": 6,
+    "existing_source_paths": 6,
+    "additional_existing_build_path": 1,
+    "shared_original_packet": "061258BF1085004B82EA8D1A9C237402F7D4075A4DE837F9C25B7D39D0D3A804",
+    "shared_projection_packet": "C195AE5D402ED457AF651D6BEB37B2BB8DBD3DF36CD74106EB172F00B64618FC",
+    "close_successor_packet": "BA6543E47B33A5D994AD097FBF0CBC58A6E35F262DF42FFE5909D9A736118319",
+    "fs_successor_packet": "08F45EF3D26E4D2CBB8A5FA3A144E635AB6DA9B64B486871F7B1D102F6488B56",
+    "source_edits_replayed": 14,
+    "source_projection_files": 7,
+    "raw_whole_forward_and_inverse_exact": true,
+    "original_shared_files_equal_original_git_basis": true,
+    "original_shared_files_equal_comparison_git_basis": true,
+    "original_fs_and_build_equal_comparison_git_basis": true,
+    "close_successor_original_equal_original_owner_snapshot": true,
+    "selected_successor_pins_agree_with_inventory": true,
+    "old_sdk_preserved_paths_rehashed": 28,
+    "original_fs_owner_named_declarations_unchanged": 25,
+    "note": "Five shared projections contain 12 sequential edits. Corrected new CloseReq and existing FSReqPromise each contain one further edit. No old production, control, or negative evidence was rewritten."
+  },
+  "build": {
+    "proposal": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\build\\proposal.json",
+      "sha256": "8DFCA25C7674D319464CE7E411BF6834E516F75418B2381AFF8026D4F13A16D3"
+    },
+    "edits": 1,
+    "insert_bytes": 2834,
+    "original_sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E",
+    "projected_sha256": "81E6F358E576639D76554F9F46766B350EA950A496C4DCE65F3A048A8E0D409C",
+    "whole_forward_and_inverse_exact": true,
+    "source_read": "The block creates two test artifacts with the existing target/optimize/LLVM selection, actual QuickJS/TypeScript parser/SQLite and native network dependencies, catalog_tool and libuv includes, and Windows advapi32/userenv. Each named build step depends only on its explicit install artifact. There is no new run step or default/install-all wiring.",
+    "roots": [
+      {
+        "path": "src/native_node_file_handle_owner_test.zig",
+        "filter": "native FileHandle owner",
+        "target": "build-native-node-file-handle-owner",
+        "artifact": "native-node-file-handle-owner",
+        "windows_artifact": "native-node-file-handle-owner.exe",
+        "source_declared_controls": 18
+      },
+      {
+        "path": "src/native_node_fs_before_hook_continuation_test.zig",
+        "filter": "native FS before hook",
+        "target": "build-native-node-fs-before-hook-continuation",
+        "artifact": "native-node-fs-before-hook-continuation",
+        "windows_artifact": "native-node-fs-before-hook-continuation.exe",
+        "source_declared_controls": 3
+      }
+    ]
+  },
+  "dependency_review": {
+    "method": "Independently rehashed every inventory module/embed path and regenerated the conservative literal import/embed relationships. Recomputed each root closure and named/anonymous declaration locations from selected raw source. This is not a manual semantic review of all transitive modules and not compiler or C preprocessor reachability.",
+    "module_union": 711,
+    "modules_per_root": 710,
+    "literal_import_edges": 3335,
+    "embedded_paths": 243,
+    "literal_anonymous_blocks_per_root": 8,
+    "source_declared_new_controls": 21,
+    "future_actual_metadata": null,
+    "inventory_sha256": "56BFF251AD680CE3B5B4E7D4D979CFDA2FA41345BC958432273007DAFD2330D1",
+    "source_map_sha256": "5E36100728A32C4ACC09F1D53BF11BC90102E506B581C8496DA9F1185749EBCA"
+  },
+  "semantic_findings": [
+    {
+      "topic": "Actual descriptors and native storage",
+      "finding": "The fixture creates a real temporary file, opens it through canonical uv_fs_t storage, transfers the descriptor once into the actual owner, and uses actual close/fstat operations. The controls observe real retained physical UV request records and the native controller queue; they do not substitute a host filesystem continuation. Retained request observations are released before fixture teardown. Bad-fd and retired-service controls take real rejection/admission paths."
+    },
+    {
+      "topic": "Shared fixture lifetime",
+      "finding": "The Environment parameter map is initialized before constructing the actual Environment, and partial-initialization flags guard teardown. The stable heap Fixture owns the marker used by onRead. Shutdown first joins the actual I/O worker, then performs realm/native-queue cleanup while the engine is alive. Environment disarm, JS-root release, Environment release, engine destruction, and parameter-map destruction follow their actual ownership order. The outer callback scope deliberately selects nested depth with skipped task queues; it does not provide an unimplemented production checkpoint."
+    },
+    {
+      "topic": "FileHandle and BindingData",
+      "finding": "Controls inspect the actual provider, stream identity, wrapper brand and weak BindingData slot. The CloseReq Global test drops JS roots while completion retains the handle; after completion it observes weak-slot clearing without dereferencing the collected handle. GC tickets are checked as scalar captures after actual synchronous close, including the retained service after worker join. Broader owner semantics compose with the prior independent owner and synchronous-helper peers below."
+    },
+    {
+      "topic": "Close and cleanup cases",
+      "finding": "The controls cover same-Promise reuse, accepted CLOSE storage through cleanup, real EBADF UVException, actual stopped-service admission, retained wrapper detachment, GC warning/deprecation ordering, an ordinary warning throw, refed error versus unrefed warning tickets, cleanup skipping unrefed execution, actual read-engine reuse, and accepted close drained during Hub shutdown with JS delivery disabled. These are statements about source-selected paths, not observed runtime results."
+    },
+    {
+      "topic": "Genuine thrown completions in the fixture",
+      "finding": "selectedHookException requires an actual current JS exception, extracts it through JS_GetException, compares identity against the selected expected reason, excludes uncatchable completion, and rethrows that same value. The installed guest hook actually throws. Unexpected reasons remain actual throws and cause a fixture error. This is explicitly selected test policy; it does not implement or qualify Node IsStackOverflowError, ReportFatalException, Environment::Exit(7), or uncaught fatal bootstrap."
+    },
+    {
+      "topic": "FSReqPromise continuation",
+      "finding": "Pinned Node FSReqPromise Reject/Resolve set finished, construct HandleScope and the void InternalCallbackScope, then perform the live promise property Get. The successor captures the real ordinary before-hook completion in the existing operation scope and continues only after initialization and async-ID push, for JavaScriptException and a nonfatal boundary. The subsequent live Get, actual JS_PiSettlePromise, native FromJust check, finished flag, callback-scope destruction, and cleanup retain their original order."
+    },
+    {
+      "topic": "Same-scope exception ownership",
+      "finding": "The actual Scope/Boundary owners distinguish retained earlier ordinary completion from a new current JS exception. Escaping captures the earlier reason before the live Get; later pending checks only stop for actual newly surfaced completion, while fatal/termination remains higher priority. The callback scope closes before the operation scope rethrows the retained reason. JS_PiSettlePromise still rejects an actually current pending exception and requires a genuine Promise, so no resolver stub or cached replacement was introduced."
+    },
+    {
+      "topic": "Three FS controls",
+      "finding": "The success and EBADF tests call the actual private FS read binding and retain real UV storage through completion. They distinguish the hook reason from a fulfilled or rejected Promise. The replacement-Promise test installs a real live property getter after request creation, requires the before hook to have run, and checks settlement of that returned Promise while the original stays pending. The getter and thrown reasons are actual guest operations."
+    },
+    {
+      "topic": "Native immediate queue",
+      "finding": "The fixture acquires the actual native queue through acquireNative with explicit hook identity; the owner refuses a conflicting hook set. Real queue dispatch captures completion before ticket destruction and delegates caught completion only after that destruction. The fixture policy is bounded observation of this path and does not masquerade as the production uncaught-exception policy."
+    },
+    {
+      "topic": "Full constructor/template boundary",
+      "finding": "The fixture supplies an actual present-object FileHandle internal class/prototype and invokes the concrete constructor owner. A dedicated control requires the complete public FileHandle callback template to remain explicitly unavailable. The packet does not silently substitute a complete StreamBase method table or public fs bootstrap."
+    }
+  ],
+  "original_causal_source_reads": [
+    {
+      "source": "node_file-inl.v24.13.h",
+      "ranges": [
+        [
+          205,
+          260
+        ]
+      ],
+      "reason": "FSReqPromise finished/HandleScope/InternalCallbackScope/live Get/Resolver.FromJust order."
+    },
+    {
+      "source": "node-api-callback.v24.13.cc",
+      "ranges": [
+        [
+          42,
+          110
+        ]
+      ],
+      "reason": "Void callback scope construction, async-ID push and EmitBefore, destructor order."
+    },
+    {
+      "source": "async_wrap.cc.v24.13.txt",
+      "ranges": [
+        [
+          82,
+          108
+        ]
+      ],
+      "reason": "Actual TryCatchScope kFatalRethrowStackOverflow hook call."
+    },
+    {
+      "source": "node-errors.v24.13.cc",
+      "ranges": [
+        [
+          688,
+          730
+        ]
+      ],
+      "reason": "Real stack-overflow rethrow branch versus ReportFatalException and Environment exit; the latter owners remain outside this packet."
+    },
+    {
+      "source": "v8-api.v24.13.cc",
+      "ranges": [
+        [
+          4607,
+          4634
+        ]
+      ],
+      "reason": "Object::Get execution entry."
+    },
+    {
+      "source": "v8-api-macros.v24.13.h",
+      "ranges": [
+        [
+          48,
+          78
+        ]
+      ],
+      "reason": "PREPARE_FOR_EXECUTION clears the internal exception for the selected operation."
+    }
+  ],
+  "additional_owner_reads": [
+    "Complete native_node_operation_scope.zig and native_node_commonjs_owned_boundary.zig bodies.",
+    "Selected native_node_callback_scope.zig init/close/deinit order, lines 655-792.",
+    "Complete native_node_native_immediates.zig; actual native_immediates.zig acquireNative and publication, lines 298-342.",
+    "Actual QuickJS JS_PiSettlePromise, lines 61090-61113 at the pinned map-symbol-corrected source."
+  ],
+  "prior_bounded_peers": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-owner-source-peer-20261020\\peer.json",
+      "sha256": "27B01670A2F361328619A1F487093FEA183BFC12CA4A99471F9504CC7A2E6747",
+      "scope": "Broader Handle/CloseReq/GC/native-queue ownership source review; relied on additively rather than claiming a repeated whole-owner review."
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-sync-close-source-peer-20261020\\peer.json",
+      "sha256": "090FA7C8485CA0DB4763BBFBA91BC2E2D481E76936BF26B9F9CBF2EE1237504C",
+      "scope": "Exact C/H helper projections, original Windows/Unix null-callback synchronous libuv path and canonical retained stack-request lifetime."
+    }
+  ],
+  "remaining_production_dependencies": [
+    "Actual production kFatalRethrowStackOverflow classifier/report/Environment-exit and uncaught fatal bootstrap.",
+    "Complete FileHandle FunctionTemplate, StreamBase method publication, public/internal fs bootstrap, ShutdownWrap/DoShutdown and transfer behavior.",
+    "Production tracing category/controller/clock and backing allocation retry/GC/fatal policy; fixture observers do not qualify those owners.",
+    "Full native immediate queue policy bootstrap, compiler/ABI validation, native lifetime acceptance and compiler-discovered metadata."
+  ],
+  "preservation": "This peer wrote only its new audit script, audit result and peer receipt under the reviewer worktree. The seven existing tracked dirty paths remain and the index is empty. All 28 recorded SDK preserved source paths rehashed exactly. Main, SDK production and all predecessor/negative records remain untouched by this review."
+}

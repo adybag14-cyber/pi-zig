@@ -1,0 +1,165 @@
+--- a/src/extensions/native_node_async_wrap_state.zig
++++ b/src/extensions/native_node_async_wrap_state.zig
+@@ -51,11 +51,14 @@
+ /// FileHandle's actual internal fields belong to the JavaScript wrapper.
+ /// BaseObject deletion clears only the native State pointer. The onread edge
+ /// remains traced until the wrapper itself is collected, even after detach.
++/// FileHandle's closing Promise is another actual internal wrapper edge; it
++/// remains owned by that same wrapper after its native State is deleted.
+ const StreamFields = struct {
+     registry: *Registry,
+     state: ?*State = null,
+     stream: ?*anyopaque = null,
+     onread: c.JSValue,
++    closing_promise: c.JSValue,
+ };
+ 
+ /// Independently retained native owner. One realm cleanup registration covers
+@@ -215,6 +218,22 @@
+         fields.onread = a.duplicate(s.engine, value);
+         s.boundary.release(&previous);
+     }
++    /// FileHandle::kClosingPromiseSlot is an internal wrapper edge, not a
++    /// guest property, a native Global, or a slot in the derived native object.
++    pub fn fileHandleClosingPromise(self: *Registry, s: *LocalScope,
++        wrapper: c.JSValue) !c.JSValue
++    {
++        const fields = self.streamFields(wrapper) orelse return self.check(.invalid_wrap_brand);
++        return s.own(a.duplicate(s.engine, fields.closing_promise));
++    }
++    pub fn setFileHandleClosingPromise(self: *Registry, s: *LocalScope,
++        wrapper: c.JSValue, value: c.JSValue) !void
++    {
++        const fields = self.streamFields(wrapper) orelse return self.check(.invalid_wrap_brand);
++        var previous = fields.closing_promise;
++        fields.closing_promise = a.duplicate(s.engine, value);
++        s.boundary.release(&previous);
++    }
+     /// Caller has already selected the genuine template's instance prototype.
+     /// This is the actual object allocation, with no constructor-body callback.
+     pub fn newInstance(self: *Registry, s: *LocalScope, kind: Kind, prototype: c.JSValue) !c.JSValue {
+@@ -225,7 +244,10 @@
+         var fields: ?*StreamFields = null;
+         if (kind == .filehandle) {
+             const created = try self.environment.allocator().create(StreamFields);
+-            created.* = .{ .registry = self.retain(), .onread = c.pi_js_undefined() };
++            created.* = .{
++                .registry = self.retain(), .onread = c.pi_js_undefined(),
++                .closing_promise = c.pi_js_undefined(),
++            };
+             fields = created;
+         }
+         errdefer if (fields) |unattached| {
+@@ -497,6 +519,7 @@
+         std.debug.assert(fields.state == null);
+         _ = c.JS_SetOpaque(value, null);
+         scope.boundary.release(&fields.onread);
++        scope.boundary.release(&fields.closing_promise);
+         registry.environment.allocator().destroy(fields);
+         defer registry.release();
+         const ignored = scope.finish(if (failure) |err| @as(anyerror!c.JSValue, err) else c.pi_js_undefined()) catch |err| {
+@@ -510,8 +533,11 @@
+         std.debug.assert(fields.state == null);
+         _ = c.JS_SetOpaque(value, null);
+         const onread = fields.onread;
++        const closing_promise = fields.closing_promise;
+         fields.onread = c.pi_js_undefined();
++        fields.closing_promise = c.pi_js_undefined();
+         c.JS_FreeValueRT(runtime, onread);
++        c.JS_FreeValueRT(runtime, closing_promise);
+         registry.environment.allocator().destroy(fields);
+         registry.release();
+     }
+@@ -519,6 +545,7 @@
+ fn streamWrapperMark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
+     const fields: *StreamFields = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
+     c.JS_MarkValue(runtime, fields.onread, marker);
++    c.JS_MarkValue(runtime, fields.closing_promise, marker);
+     if (fields.state) |state| state.mark(runtime, marker);
+ }
+ 
+--- a/src/extensions/native_node_callback_scope.zig
++++ b/src/extensions/native_node_callback_scope.zig
+@@ -142,6 +142,9 @@
+     provider_strings: []c.JSValue = &.{},
+     resource_symbol: ?c.JSValue = null,
+     process_object: ?c.JSValue = null,
++    // Original Environment::emit_filehandle_warning_, consumed once by the
++    // real successful FileHandle GC-close native immediate.
++    emit_filehandle_warning: bool = true,
+     hooks: ?HookFunctions = null,
+     tick_callback: ?c.JSValue = null,
+     trampoline: ?c.JSValue = null,
+--- a/src/extensions/native_node_fs_request_io.zig
++++ b/src/extensions/native_node_fs_request_io.zig
+@@ -118,6 +118,25 @@
+         try entry.setCallback(.{ .request = actual, .call = callback });
+         const status = uv.pi_uv_fs_read_buffer(actual, descriptor,
+             @ptrCast(base), length, position);
++        if (status >= 0) try entry.dispatchAccepted();
++        return status;
++    }
++
++    /// FileHandle::CloseReq supplies the original CLOSE callback and physical
++    /// request. A negative admission remains the caller's Reject/delete path;
++    /// only real successful admission strengthens and increments the request.
++    pub fn dispatchRawClose(self: *Controller, s: *Scope, entry: *request_state.Entry,
++        actual: *uv.PiUvFsRequest, descriptor: c_int,
++        callback: *const fn (*request_state.Entry, *anyopaque) anyerror!void) !c_int
++    {
++        try self.enter(s.engine);
++        defer self.leave();
++        if (entry.wrap.registry.environment != self.environment or
++            entry.queue != &self.environment.requests)
++            return error.ActualFSRequestEnvironmentMismatch;
++        entry.dispatchStarted();
++        try entry.setCallback(.{ .request = actual, .call = callback });
++        const status = uv.pi_uv_fs_close(actual, descriptor);
+         if (status >= 0) try entry.dispatchAccepted();
+         return status;
+     }
+--- a/src/extensions/native_uv_fs.h
++++ b/src/extensions/native_uv_fs.h
+@@ -1,5 +1,6 @@
+-/* Typed real asynchronous filesystem requests on the one native UV service.
+- * uv_loop and uv_fs_t remain private to their actual native thread/owner.
++/* Typed real filesystem operations on the one native UV service.
++ * Asynchronous uv_fs_t and the loop remain private to their actual owner.
++ * The selected synchronous close borrows its caller's native stack uv_fs_t.
+  * No JS value, Engine pointer or guest callback is accepted by this API. */
+ #ifndef PI_NATIVE_UV_FS_H
+ #define PI_NATIVE_UV_FS_H
+@@ -66,6 +67,16 @@
+     int64_t position);
+ int pi_uv_fs_open(PiUvFsRequest *request, const char *path, int flags, int mode);
+ int pi_uv_fs_close(PiUvFsRequest *request, int descriptor);
++/* Original FileHandle GC close: synchronous calling-thread uv_fs_close with
++ * cb == NULL and the retained service's actual loop. The caller owns a full
++ * canonical uv_fs_t on its stack and performs uv_fs_req_cleanup after its
++ * trace-end operation. This call queues no command/event and allocates no
++ * PiUvFsRequest. Pinned libuv's synchronous path does not dereference the loop;
++ * retaining the service keeps its address/storage valid even after stop/join.
++ */
++struct uv_fs_s;
++int pi_uv_fs_close_sync(PiUvService *service, struct uv_fs_s *request,
++    int descriptor);
+ /* Actual uv_cancel runs on the service thread only for an accepted request
+  * whose callback is still pending. A no-in-flight command returns UV_EINVAL.
+  * It never clears the request or suppresses an accepted operation's callback. */
+--- a/src/extensions/native_uv_tcp.c
++++ b/src/extensions/native_uv_tcp.c
+@@ -918,6 +918,14 @@
+     PiUvCommand command = { .kind = PI_UV_CMD_FS_CLOSE, .fs_request = request };
+     return pi_uv_fs_submit(request, &command, PI_UV_FS_CLOSE);
+ }
++int pi_uv_fs_close_sync(PiUvService *service, struct uv_fs_s *request,
++                        int descriptor) {
++    assert(service != NULL && request != NULL);
++    /* cb == NULL follows the actual synchronous libuv FS implementation.
++     * No service command, queued completion, callback, or waiting count is
++     * involved. The original caller traces and cleans its own stack request. */
++    return uv_fs_close(&service->loop, request, descriptor, NULL);
++}
+ int pi_uv_fs_cancel(PiUvFsRequest *request) {
+     PiUvCommand command = { .kind = PI_UV_CMD_FS_CANCEL, .fs_request = request };
+     return pi_uv_submit(request->service, &command);

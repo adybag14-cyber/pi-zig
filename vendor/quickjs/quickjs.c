@@ -649,6 +649,8 @@ struct JSContext {
     JSValue regexp_ctor;
     JSValue promise_ctor;
     JSValue native_error_proto[JS_NATIVE_ERROR_COUNT];
+    JSValue pi_native_error_constructor[JS_NATIVE_ERROR_COUNT];
+    JSValue pi_error_constructor_name[JS_NATIVE_ERROR_COUNT + 1];
     JSValue native_error_stack_getter;
     JSValue native_error_stack_setter;
     JSValue error_ctor;
@@ -1355,6 +1357,12 @@ struct JSObject {
             uint64_t native_allocation_generation;
             /* Set only by the actual hook-recursion fallback publication. */
             bool stack_fallback_present;
+            /* Actual native intrinsic constructor and its initial DebugName.
+             * These are owned GC edges, never mutable public properties. */
+            JSValue constructor;
+            JSValue constructor_name;
+            /* 0: unrecorded; 1: base == new.target; 2: different new.target. */
+            uint8_t constructor_provenance;
         } native_error;
     } u;
     /* byte sizes: 40/48/72 */
@@ -1647,6 +1655,13 @@ static JSValue js_array_constructor(JSContext *ctx, JSValueConst new_target,
                                     int argc, JSValueConst *argv);
 static JSValue js_error_constructor(JSContext *ctx, JSValueConst new_target,
                                     int argc, JSValueConst *argv, int magic);
+static void js_pi_cache_error_constructor(JSContext *ctx, int kind,
+                                          JSValueConst constructor);
+static void js_pi_record_error_constructor(JSContext *ctx, JSValueConst error,
+                                           int kind, JSValueConst constructor,
+                                           JSValueConst new_target);
+static void js_pi_record_intrinsic_error(JSContext *ctx, JSValueConst error,
+                                          int kind);
 static JSValue js_object_defineProperty(JSContext *ctx, JSValueConst this_val,
                                         int argc, JSValueConst *argv, int magic);
 static uint64_t xorshift64star(uint64_t *pstate);
@@ -3688,6 +3703,11 @@ JSContext *JS_NewContextRaw(JSRuntime *rt)
     ctx->native_error_stack_getter = JS_UNDEFINED;
     ctx->native_error_stack_setter = JS_UNDEFINED;
     ctx->error_ctor = JS_NULL;
+    for (i = 0; i < JS_NATIVE_ERROR_COUNT; i++) {
+        ctx->pi_native_error_constructor[i] = JS_UNDEFINED;
+        ctx->pi_error_constructor_name[i] = JS_UNDEFINED;
+    }
+    ctx->pi_error_constructor_name[JS_PLAIN_ERROR] = JS_UNDEFINED;
     ctx->error_back_trace = JS_UNDEFINED;
     ctx->error_prepare_stack = JS_UNDEFINED;
     ctx->error_stack_trace_limit = js_int32(10);
@@ -3855,7 +3875,10 @@ static void JS_MarkContext(JSRuntime *rt, JSContext *ctx,
     JS_MarkValue(rt, ctx->array_proto_values, mark_func);
     for(i = 0; i < JS_NATIVE_ERROR_COUNT; i++) {
         JS_MarkValue(rt, ctx->native_error_proto[i], mark_func);
+        JS_MarkValue(rt, ctx->pi_native_error_constructor[i], mark_func);
+        JS_MarkValue(rt, ctx->pi_error_constructor_name[i], mark_func);
     }
+    JS_MarkValue(rt, ctx->pi_error_constructor_name[JS_PLAIN_ERROR], mark_func);
     JS_MarkValue(rt, ctx->native_error_stack_getter, mark_func);
     JS_MarkValue(rt, ctx->native_error_stack_setter, mark_func);
     JS_MarkValue(rt, ctx->error_ctor, mark_func);
@@ -3940,7 +3963,10 @@ void JS_FreeContext(JSContext *ctx)
     JS_FreeValue(ctx, ctx->array_proto_values);
     for(i = 0; i < JS_NATIVE_ERROR_COUNT; i++) {
         JS_FreeValue(ctx, ctx->native_error_proto[i]);
+        JS_FreeValue(ctx, ctx->pi_native_error_constructor[i]);
+        JS_FreeValue(ctx, ctx->pi_error_constructor_name[i]);
     }
+    JS_FreeValue(ctx, ctx->pi_error_constructor_name[JS_PLAIN_ERROR]);
     JS_FreeValue(ctx, ctx->native_error_stack_getter);
     JS_FreeValue(ctx, ctx->native_error_stack_setter);
     JS_FreeValue(ctx, ctx->error_ctor);
@@ -6602,8 +6628,14 @@ static inline JSShape *js_new_shape_nohash(JSContext *ctx, JSObject *proto,
     sh = get_shape_from_alloc(sh_alloc, hash_size);
     JS_REF_COUNT(sh) = 1;
     add_gc_object(rt, &sh->header, JS_GC_OBJ_TYPE_SHAPE);
-    if (proto)
+    if (proto) {
         js_dup(JS_MKPTR(JS_TAG_OBJECT, proto));
+        /* Original Map::SetPrototype promotes an actual Error before it is
+         * used by a shape. Keep that sticky restriction for Object.create
+         * and native NewObjectProto paths as well as SetPrototype. */
+        if (proto->class_id == JS_CLASS_ERROR)
+            proto->is_prototype = true;
+    }
     sh->proto = proto;
     /* prop_hash_mask must be set before prop_hash_end(sh) is used, as the hash
        location depends on it in the merged-header layout. */
@@ -7135,6 +7167,9 @@ static JSValue JS_NewObjectFromShape(JSContext *ctx, JSShape *sh, JSClassID clas
     case JS_CLASS_ERROR:
         p->u.native_error.native_allocation_generation = 0;
         p->u.native_error.stack_fallback_present = false;
+        p->u.native_error.constructor = JS_UNDEFINED;
+        p->u.native_error.constructor_name = JS_UNDEFINED;
+        p->u.native_error.constructor_provenance = 0;
         p->u.object_data = JS_UNDEFINED;
         break;
     case JS_CLASS_NUMBER:
@@ -8097,6 +8132,19 @@ static void js_array_mark(JSRuntime *rt, JSValueConst val,
 static void js_object_data_finalizer(JSRuntime *rt, JSValueConst val)
 {
     JSObject *p = JS_VALUE_GET_OBJ(val);
+    if (p->class_id == JS_CLASS_ERROR) {
+        JSValue data = p->u.object_data;
+        JSValue constructor = p->u.native_error.constructor;
+        JSValue name = p->u.native_error.constructor_name;
+        p->u.object_data = JS_UNDEFINED;
+        p->u.native_error.constructor = JS_UNDEFINED;
+        p->u.native_error.constructor_name = JS_UNDEFINED;
+        p->u.native_error.constructor_provenance = 0;
+        JS_FreeValueRT(rt, data);
+        JS_FreeValueRT(rt, constructor);
+        JS_FreeValueRT(rt, name);
+        return;
+    }
     JS_FreeValueRT(rt, p->u.object_data);
     p->u.object_data = JS_UNDEFINED;
 }
@@ -8106,6 +8154,10 @@ static void js_object_data_mark(JSRuntime *rt, JSValueConst val,
 {
     JSObject *p = JS_VALUE_GET_OBJ(val);
     JS_MarkValue(rt, p->u.object_data, mark_func);
+    if (p->class_id == JS_CLASS_ERROR) {
+        JS_MarkValue(rt, p->u.native_error.constructor, mark_func);
+        JS_MarkValue(rt, p->u.native_error.constructor_name, mark_func);
+    }
 }
 
 static void js_c_function_finalizer(JSRuntime *rt, JSValueConst val)
@@ -8807,6 +8859,8 @@ void JS_ComputeMemoryUsage(JSRuntime *rt, JSMemoryUsage *s)
             sizeof(JSValue) * rt->class_count;
         s->binary_object_count += ctx->binary_object_count;
         s->binary_object_size += ctx->binary_object_size;
+        for (i = 0; i <= JS_PLAIN_ERROR; i++)
+            compute_value_size(ctx->pi_error_constructor_name[i], hp);
 
         /* the hashed shapes are counted separately */
         if (sh && !sh->is_hashed) {
@@ -8900,7 +8954,10 @@ void JS_ComputeMemoryUsage(JSRuntime *rt, JSMemoryUsage *s)
                 }
             }
             break;
-        case JS_CLASS_ERROR:             /* u.object_data */
+        case JS_CLASS_ERROR:
+            compute_value_size(p->u.object_data, hp);
+            compute_value_size(p->u.native_error.constructor_name, hp);
+            break;
         case JS_CLASS_NUMBER:            /* u.object_data */
         case JS_CLASS_STRING:            /* u.object_data */
         case JS_CLASS_BOOLEAN:           /* u.object_data */
@@ -9884,6 +9941,7 @@ JSValue JS_NewError(JSContext *ctx)
     if (ctx->pi_compiler_diagnostic && JS_HasException(ctx))
         return JS_EXCEPTION;
     JSValue obj = JS_NewObjectClass(ctx, JS_CLASS_ERROR);
+    js_pi_record_intrinsic_error(ctx, obj, JS_PLAIN_ERROR);
     if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx)))
         return js_pi_link_failure_free(ctx, obj);
     if (ctx->pi_compiler_diagnostic) {
@@ -9943,6 +10001,7 @@ static JSValue js_make_error2_tracked(JSContext *ctx, JSErrorEnum error_num,
         obj = JS_NewObjectProtoClass(ctx, ctx->native_error_proto[error_num],
                                      JS_CLASS_ERROR);
     }
+    js_pi_record_intrinsic_error(ctx, obj, error_num);
     if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx)))
         return js_pi_link_failure_free(ctx, obj);
     if (ctx->pi_compiler_diagnostic && (JS_IsException(obj) || JS_HasException(ctx)))
@@ -10055,6 +10114,7 @@ static JSValue js_pi_compiler_syntax_error(JSContext *ctx, const char *format,
     }
     object = JS_NewObjectProtoClass(ctx, ctx->native_error_proto[JS_SYNTAX_ERROR],
                                     JS_CLASS_ERROR);
+    js_pi_record_intrinsic_error(ctx, object, JS_SYNTAX_ERROR);
     if (JS_IsException(object) || JS_HasException(ctx))
         return js_pi_compiler_fail_owned(ctx, object);
     if (prepare_native_error_stack(ctx, object) < 0 || JS_HasException(ctx))
@@ -47626,6 +47686,9 @@ static JSValue js_error_constructor(JSContext *ctx, JSValueConst new_target,
     JS_FreeValue(ctx, proto);
     if (JS_IsException(obj))
         return obj;
+    js_pi_record_error_constructor(ctx, obj,
+                                   magic < 0 ? JS_PLAIN_ERROR : magic,
+                                   JS_GetActiveFunction(ctx), new_target);
     if (prepare_native_error_stack(ctx, obj) < 0 ||
         native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
                                 NULL, 0, 0, 0) < 0)
@@ -47851,6 +47914,7 @@ static JSValue js_aggregate_error_constructor(JSContext *ctx,
     obj = JS_NewObjectProtoClass(ctx,
                                  ctx->native_error_proto[JS_AGGREGATE_ERROR],
                                  JS_CLASS_ERROR);
+    js_pi_record_intrinsic_error(ctx, obj, JS_AGGREGATE_ERROR);
     if (JS_IsException(obj))
         return obj;
     JS_DefinePropertyValueConst(ctx, obj, JS_ATOM_errors, errors,
@@ -59986,6 +60050,7 @@ static JSValue js_new_suppressed_error(JSContext *ctx, JSValueConst error,
     obj = JS_NewObjectProtoClass(ctx,
                                  ctx->native_error_proto[JS_SUPPRESSED_ERROR],
                                  JS_CLASS_ERROR);
+    js_pi_record_intrinsic_error(ctx, obj, JS_SUPPRESSED_ERROR);
     if (JS_IsException(obj))
         return JS_EXCEPTION;
     JS_DefinePropertyValue(ctx, obj, JS_ATOM_error, js_dup(error),
@@ -64165,6 +64230,7 @@ int JS_AddIntrinsicBaseObjects(JSContext *ctx)
                                            "Error", 1, JS_CFUNC_constructor_or_func_magic, -1);
     if (JS_IsException(ctx->error_ctor))
         return -1;
+    js_pi_cache_error_constructor(ctx, JS_PLAIN_ERROR, ctx->error_ctor);
     JS_NewGlobalCConstructor2(ctx, js_dup(ctx->error_ctor),
                               "Error", ctx->class_proto[JS_CLASS_ERROR]);
     if (JS_SetPropertyFunctionList(ctx, ctx->error_ctor, js_error_funcs, countof(js_error_funcs)))
@@ -64189,6 +64255,7 @@ int JS_AddIntrinsicBaseObjects(JSContext *ctx)
                                     ctx->error_ctor, 0);
         if (JS_IsException(func_obj))
             return -1;
+        js_pi_cache_error_constructor(ctx, i, func_obj);
         JS_NewGlobalCConstructor2(ctx, func_obj, native_error_name[i],
                                   ctx->native_error_proto[i]);
     }
@@ -71138,6 +71205,9 @@ uintptr_t js_std_cmd(int cmd, ...) {
 
     return rv;
 }
+
+/* Actual native Error provenance and bounded getter-free constructor naming. */
+#include "../../src/extensions/native_vm_error_constructor_name.c.inc"
 
 #undef malloc
 #undef free

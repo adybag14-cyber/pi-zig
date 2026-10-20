@@ -1,0 +1,162 @@
+{
+  "schema": "pi-zig.finite-source-followup.v1",
+  "qualification": "source-only; no compiler/native/test/Node/generator/formatter execution",
+  "comparison_main_head": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+  "integration": "Future source intake only; current frozen V33 is unchanged.",
+  "scope": "One completed ordinary before-hook continuation in FSReqPromise Request.settleBody. Existing property lookup, cast/native resolver behavior, FromJust check, finished flag and destructor order stay unchanged.",
+  "files": [
+    {
+      "relative_path": "src/extensions/native_node_fs_request_promise.zig",
+      "live_original": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_request_promise.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\original\\src\\extensions\\native_node_fs_request_promise.zig",
+        "bytes": 18834,
+        "sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\projected\\src\\extensions\\native_node_fs_request_promise.zig",
+        "bytes": 19385,
+        "sha256": "8EFC2D58C1B1BD5069777FE1D06618F4572F54EEDAC09265EAD26BE8E675A4DF"
+      },
+      "edits": [
+        {
+          "before": "        try callback_scope.init(environment_value, wrapper, self.wrap.context(), .{}, self.wrap.context_frame);\n",
+          "after": "        callback_scope.init(environment_value, wrapper, self.wrap.context(), .{},\n            self.wrap.context_frame) catch |err|\n        {\n            s.boundary.escaping();\n            // The completed void InternalCallbackScope constructor does not\n            // skip the original live promise-property Get after an ordinary\n            // before-hook rethrow. Keep that real completion in this existing\n            // HandleScope while executing Get and the unchanged FromJust path.\n            if (!callback_scope.initialized or !callback_scope.pushed_ids or\n                err != error.JavaScriptException or s.boundary.isFatal()) return err;\n        };\n",
+          "occurrences_before": 1,
+          "occurrences_after": 1
+        }
+      ],
+      "whole_byte_inverse": true
+    }
+  ],
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\before-hook.patch",
+    "bytes": 1306,
+    "sha256": "BAA07F1FD5DB32B408F4CDDF111DB37E94C4D42E29120C7EE102265603616A16"
+  },
+  "authority_files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\node_file-inl.v24.13.h",
+      "bytes": 14756,
+      "sha256": "2E96C28CB0BBB4520D8E0C0997188922C3DDE28853D14A3E19D7D559BC9493D5",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\node_file-inl.v24.13.h"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\node_file.v24.13.h",
+      "bytes": 17193,
+      "sha256": "A63A31D1BCAEB7AF416B19ABEAFAB880DB7D424378DC27050F9FC2EE4921E16F",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\node_file.v24.13.h"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\node-api-callback.v24.13.cc",
+      "bytes": 13682,
+      "sha256": "0A4C8ECF051F995F9669826DC9D85560ADD6ECD6FB2E28CE6B2F3DD309947DE2",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-api-callback.v24.13.cc"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\async_wrap.cc.v24.13.txt",
+      "bytes": 27043,
+      "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\async_wrap.cc.v24.13.txt"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\node-errors.v24.13.cc",
+      "bytes": 43095,
+      "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-errors.v24.13.cc"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-api.v24.13.cc"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\v8-api-macros.v24.13.h",
+      "bytes": 5190,
+      "sha256": "0E027969A031D88B0E139D143ACBACBE2734F648D11BC960D52603AAADC0E6F7",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-api-macros.v24.13.h"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\v8-api-inl.v24.13.h",
+      "bytes": 14583,
+      "sha256": "F72A89EADA3FF47D5F2D368BF088CD5ECE424BBE3209A9CC5D42B83398E4BA05",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-api-inl.v24.13.h"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\authority\\v8-objects.v24.13.cc",
+      "bytes": 272859,
+      "sha256": "81E1D4EDFCE90BC1409DDF1B16966F2931E8DC947BF7429DFED6959708211BFC",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\v8-objects.v24.13.cc"
+    }
+  ],
+  "shared_causal_analysis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\proposal.json",
+    "sha256": "BA6543E47B33A5D994AD097FBF0CBC58A6E35F262DF42FFE5909D9A736118319",
+    "support_provenance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support-main-provenance.json",
+      "sha256": "EC644E04F8B897473874DF78B77F3F28D6AD882AA7ABF7A8C130C38448D1C455"
+    }
+  },
+  "causal_findings": [
+    {
+      "source": "node_file-inl.v24.13.h 219-251",
+      "finding": "Reject/Resolve set finished_, construct HandleScope then InternalCallbackScope, and perform a live object()->Get(...promise_string).ToLocal check. Only failure of that actual Get takes the documented early return; otherwise the actual Resolver call and FromJust execute."
+    },
+    {
+      "source": "node-api-callback.v24.13.cc 42-105; async_wrap.cc.v24.13.txt 92-104; node-errors.v24.13.cc 702-725",
+      "finding": "The completed void constructor has an ordinary stack-overflow rethrow path after IDs are pushed. The predecessor try incorrectly skips the later live property Get entirely."
+    },
+    {
+      "source": "v8-api.v24.13.cc 4607-4634; v8-api-macros.v24.13.h 60-69",
+      "finding": "Object::Get uses PREPARE_FOR_EXECUTION, which clears internal exception before the selected property lookup. It does not insert the predecessor Zig early return. The external caller completion remains separately owned."
+    },
+    {
+      "source": "projected/src/extensions/native_node_fs_request_promise.zig settleBody; shared actual Boundary/Scope snapshots",
+      "finding": "The successor captures the actual ordinary completion in the existing Scope before executing the live Get and actual setter. Same-scope pending checks preserve previously escrowed completion; newly failing operations still return their real error."
+    }
+  ],
+  "unchanged_existing_control_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\existing-control\\native_node_fs_request_owner_test.zig",
+    "bytes": 57142,
+    "sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4"
+  },
+  "existing_named_controls": [
+    "native FS request owner exposes real no-handler templates and converted receiver returns",
+    "native FS request owner preserves actual template cache and subclass prototype selection",
+    "native FS request owner enforces the genuine signature and preserves a cleared template brand",
+    "native FS request owner initializes the real provider IDs frame queue and derived aliases",
+    "native FS request owner keeps general reset resource and explicit ID ordering",
+    "native FS request owner publishes all four original BindingData views without AsyncWrap init",
+    "native FS request owner accepts normal false native alias Set and weakens the unreferenced view",
+    "native FS request owner retains native BindingData through each real derived request",
+    "native FS request owner returns the original one pending Promise and reads its live property",
+    "native FS request owner settles the live replacement Promise without replacing the earlier return",
+    "native FS request owner uses the captured request frame through before Get after and restores the parent",
+    "native FS request owner preserves ordinary Error data in both fulfill and reject settlement",
+    "native FS request owner completes its callback destructor after an ordinary live Promise Get throw",
+    "native FS request owner settled Promise bypasses incoming then lookup through the actual native resolver",
+    "native FS request owner realm cleanup follows the actual BindingData then request FIFO and clears native slots",
+    "native FS request owner retained factory observes the real empty Realm weak slot after cleanup",
+    "native FS request owner physical Read constructs native storage before init and dispatches the actual view span",
+    "native FS request owner physical Read uses DataView and wider typed-array byte spans",
+    "native FS request owner physical Read preserves BigInt wrapping safe minus zero and zero length",
+    "native FS request owner physical Read retains backing storage before the real init hook transfers its buffer",
+    "native FS request owner physical Read still dispatches after the ordinary void return-Promise Get fails",
+    "native FS request owner physical Read rejects accepted bad descriptors through actual UVException",
+    "native FS request owner physical completion preserves live Promise getter failure and still retires the request",
+    "native FS request owner disabled Hub shutdown drains genuine queued reads without Promise or guest callbacks",
+    "native FS request owner retained Read controller refuses admission after the real Hub is retired"
+  ],
+  "existing_named_count": 25,
+  "new_control_root": "Separate focused continuation controls are prepared after this finite source snapshot; no existing test names or assertions are changed.",
+  "preserved": {
+    "main_live_production": true,
+    "main_existing_controls": true,
+    "close_predecessor_packet_unchanged": true
+  },
+  "remaining_dependencies": [
+    "Actual kFatalRethrowStackOverflow production owner and fatal/uncaught bootstrap remain open. The focused test policy is explicitly selected and does not qualify those owners.",
+    "Full source/runtime/ABI qualification and exact installed metadata are unknown."
+  ]
+}

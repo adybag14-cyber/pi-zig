@@ -1,0 +1,339 @@
+{
+  "schema": 1,
+  "kind": "independent source-only synchronous-close replay and pinned excerpts",
+  "created_utc": "2026-10-20T19:53:35.990215+00:00",
+  "reviewer": "/root/module_io_port",
+  "review_scope": "two helper C/H projected files, their three edits, canonical request and retained-service premise",
+  "main_basis": "2a45648545c961f9008a783ae352f233869505b4",
+  "inputs": {
+    "shared_proposal": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\proposal.json",
+      "bytes": 18499,
+      "sha256": "C195AE5D402ED457AF651D6BEB37B2BB8DBD3DF36CD74106EB172F00B64618FC"
+    },
+    "production_proposal": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production-proposal.json",
+      "bytes": 14361,
+      "sha256": "061258BF1085004B82EA8D1A9C237402F7D4075A4DE837F9C25B7D39D0D3A804"
+    },
+    "src/extensions/native_uv_fs.h:original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\original\\src\\extensions\\native_uv_fs.h",
+      "bytes": 4931,
+      "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE"
+    },
+    "src/extensions/native_uv_fs.h:projected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_uv_fs.h",
+      "bytes": 5573,
+      "sha256": "D5BB021DFECD726A7FBB6860616753957C1B25B11C4776BAFD24F2C935589D34"
+    },
+    "src/extensions/native_uv_tcp.c:original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\original\\src\\extensions\\native_uv_tcp.c",
+      "bytes": 45730,
+      "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71"
+    },
+    "src/extensions/native_uv_tcp.c:projected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_uv_tcp.c",
+      "bytes": 46191,
+      "sha256": "85E49522C7C05764957ADACF6B80F2745D5C06E0A361D33531A8BAF9FEA49F87"
+    },
+    "libuv/src/win/fs.c": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\libuv\\src\\win\\fs.c",
+      "bytes": 105366,
+      "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693"
+    },
+    "libuv/src/win/fs-fd-hash-inl.h": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\libuv\\src\\win\\fs-fd-hash-inl.h",
+      "bytes": 6886,
+      "sha256": "1365F18D01C4117B0F42CFB2E0065F37AD62E4F5214B150CBF660F986955BB2D"
+    },
+    "libuv/src/unix/fs.c": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\libuv\\src\\unix\\fs.c",
+      "bytes": 59847,
+      "sha256": "FFE2CD709C894083D4E470BCE5248EEE71C5E5594418BE3D7A6D80E44D723A61"
+    },
+    "libuv/src/uv-common.h": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\libuv\\src\\uv-common.h",
+      "bytes": 18411,
+      "sha256": "7524F791D5648F3E135340AC61BCB242028947A81A5B8B32042F8561848A5397"
+    },
+    "libuv/include/uv.h": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\libuv\\include\\uv.h",
+      "bytes": 72810,
+      "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+    },
+    "handle_owner": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_owner.zig",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+    },
+    "gc_close": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_gc_close.zig",
+      "bytes": 6402,
+      "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4"
+    },
+    "retained_controller": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_fs_request_io.zig",
+      "bytes": 15469,
+      "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996"
+    },
+    "canonical_stream_resource": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_stream_resource.zig",
+      "bytes": 5762,
+      "sha256": "6CA4CF5CD5E71EAD8C9E6F4FCF0D0075190C853E26978B497389F7D29EBE0AC6"
+    },
+    "canonical_uv_import": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_managed_buffers.zig",
+      "bytes": 2875,
+      "sha256": "BE567B795D5129373EEFCF2A7C95E9017C481E020F17472E2C35838689F22B88"
+    },
+    "service_c_import": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_uv_service.zig",
+      "bytes": 8937,
+      "sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5"
+    },
+    "node_file_authority": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\node_file.v24.13.cc",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+    }
+  },
+  "exact_delta_replay": [
+    {
+      "relative_path": "src/extensions/native_uv_fs.h",
+      "edits": 2,
+      "original_matches_immutable_main_commit": true,
+      "all_intermediate_hashes_exact": true,
+      "forward_exact": true,
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_uv_tcp.c",
+      "edits": 1,
+      "original_matches_immutable_main_commit": true,
+      "all_intermediate_hashes_exact": true,
+      "forward_exact": true,
+      "whole_inverse_exact": true
+    }
+  ],
+  "five_libuv_snapshots_match_immutable_main_blobs": true,
+  "selected_gc_sequence": [
+    "var request: native_uv.uv_fs_t = undefined;",
+    "trace.begin_sync(trace.raw);",
+    "const result = uv.pi_uv_fs_close_sync(inputs.controller.service,",
+    "trace.end_sync(trace.raw);",
+    "native_uv.uv_fs_req_cleanup(&request);",
+    "const descriptor = state.fd;",
+    "handle.afterClose()",
+    "const ticket = try environment.allocator().create(Ticket);"
+  ],
+  "selected_gc_sequence_offsets": [
+    5016,
+    5064,
+    5097,
+    5205,
+    5236,
+    5358,
+    5391,
+    5724
+  ],
+  "source_excerpts": [
+    {
+      "input": "libuv/src/win/fs.c",
+      "first_line": 74,
+      "last_line": 97,
+      "logical_LF_excerpt_sha256": "98230F70A513B1700FA3E2927FADBB8B2F742D005CAA2AAA9A2A9A61E5F551EE",
+      "text": "#define INIT(subtype)                                                         \\\n  do {                                                                        \\\n    if (req == NULL)                                                          \\\n      return UV_EINVAL;                                                       \\\n    uv__fs_req_init(loop, req, subtype, cb);                                  \\\n  }                                                                           \\\n  while (0)\n\n#define POST                                                                  \\\n  do {                                                                        \\\n    if (cb != NULL) {                                                         \\\n      uv__req_register(loop);                                                 \\\n      uv__work_submit(loop,                                                   \\\n                      &req->work_req,                                         \\\n                      UV__WORK_FAST_IO,                                       \\\n                      uv__fs_work,                                            \\\n                      uv__fs_done);                                           \\\n      return 0;                                                               \\\n    } else {                                                                  \\\n      uv__fs_work(&req->work_req);                                            \\\n      return req->result;                                                     \\\n    }                                                                         \\\n  }                                                                           \\\n  while (0)\n"
+    },
+    {
+      "input": "libuv/src/win/fs.c",
+      "first_line": 397,
+      "last_line": 410,
+      "logical_LF_excerpt_sha256": "8DCF1A52FE9D25FCD6364D601BB3C5CF0F8AE2B220B5C4EEA5C9735CE0988FA6",
+      "text": "INLINE static void uv__fs_req_init(uv_loop_t* loop, uv_fs_t* req,\n    uv_fs_type fs_type, const uv_fs_cb cb) {\n  uv__once_init();\n  UV_REQ_INIT(req, UV_FS);\n  req->loop = loop;\n  req->flags = 0;\n  req->fs_type = fs_type;\n  req->sys_errno_ = 0;\n  req->result = 0;\n  req->ptr = NULL;\n  req->path = NULL;\n  req->cb = cb;\n  memset(&req->fs, 0, sizeof(req->fs));\n}\n"
+    },
+    {
+      "input": "libuv/src/win/fs.c",
+      "first_line": 668,
+      "last_line": 695,
+      "logical_LF_excerpt_sha256": "36324C09E28C987C9414AFCE5558D245D34B607B7CD10F2F7A35541A4C358D08",
+      "text": "void fs__close(uv_fs_t* req) {\n  int fd = req->file.fd;\n  int result;\n  struct uv__fd_info_s fd_info;\n\n  VERIFY_FD(fd, req);\n\n  if (uv__fd_hash_remove(fd, &fd_info)) {\n    if (fd_info.mapping != INVALID_HANDLE_VALUE) {\n      CloseHandle(fd_info.mapping);\n    }\n  }\n\n  if (fd > 2)\n    result = _close(fd);\n  else\n    result = 0;\n\n  /* _close doesn't set _doserrno on failure, but it does always set errno\n   * to EBADF on failure.\n   */\n  if (result == -1) {\n    assert(errno == EBADF);\n    SET_REQ_UV_ERROR(req, UV_EBADF, ERROR_INVALID_HANDLE);\n  } else {\n    SET_REQ_RESULT(req, 0);\n  }\n}\n"
+    },
+    {
+      "input": "libuv/src/win/fs.c",
+      "first_line": 3127,
+      "last_line": 3136,
+      "logical_LF_excerpt_sha256": "364D1DD4703AF05808D95FF3AAFA2A542BEA79A2DC1BCD727A12F6922F8A0D13",
+      "text": "static void uv__fs_work(struct uv__work* w) {\n  uv_fs_t* req;\n\n  req = container_of(w, uv_fs_t, work_req);\n  assert(req->type == UV_FS);\n\n#define XX(uc, lc)  case UV_FS_##uc: fs__##lc(req); break;\n  switch (req->fs_type) {\n    XX(OPEN, open)\n    XX(CLOSE, close)\n"
+    },
+    {
+      "input": "libuv/src/win/fs.c",
+      "first_line": 3192,
+      "last_line": 3221,
+      "logical_LF_excerpt_sha256": "F86B25AC41D9ACB614267830F506784141124CA12541084AEE67E45BF3106239",
+      "text": "void uv_fs_req_cleanup(uv_fs_t* req) {\n  if (req == NULL)\n    return;\n\n  if (req->flags & UV_FS_CLEANEDUP)\n    return;\n\n  if (req->flags & UV_FS_FREE_PATHS)\n    uv__free(req->file.pathw);\n\n  if (req->flags & UV_FS_FREE_PTR) {\n    if (req->fs_type == UV_FS_SCANDIR && req->ptr != NULL)\n      uv__fs_scandir_cleanup(req);\n    else if (req->fs_type == UV_FS_READDIR)\n      uv__fs_readdir_cleanup(req);\n    else\n      uv__free(req->ptr);\n  }\n\n  if (req->fs.info.bufs != req->fs.info.bufsml)\n    uv__free(req->fs.info.bufs);\n\n  req->path = NULL;\n  req->file.pathw = NULL;\n  req->fs.info.new_pathw = NULL;\n  req->fs.info.bufs = NULL;\n  req->ptr = NULL;\n\n  req->flags |= UV_FS_CLEANEDUP;\n}\n"
+    },
+    {
+      "input": "libuv/src/win/fs.c",
+      "first_line": 3241,
+      "last_line": 3245,
+      "logical_LF_excerpt_sha256": "689115A4D2A2CEF51FA528EFDBB2CC8807D6269B1907585D9242FE26B4437C67",
+      "text": "int uv_fs_close(uv_loop_t* loop, uv_fs_t* req, uv_file fd, uv_fs_cb cb) {\n  INIT(UV_FS_CLOSE);\n  req->file.fd = fd;\n  POST;\n}\n"
+    },
+    {
+      "input": "libuv/src/win/fs-fd-hash-inl.h",
+      "first_line": 167,
+      "last_line": 193,
+      "logical_LF_excerpt_sha256": "16EE826933A411C646D82867CB8C0326F1955C8F77011C4692100E361CC6ACFD",
+      "text": "INLINE static int uv__fd_hash_remove(int fd, struct uv__fd_info_s* info) {\n  FIND_COMMON_VARIABLES\n\n  uv_mutex_lock(&uv__fd_hash_mutex);\n\n  FIND_IN_BUCKET_PTR();\n\n  if (entry_ptr != NULL) {\n    *info = entry_ptr->info;\n\n    bucket_ptr->size -= 1;\n\n    i = bucket_ptr->size % UV__FD_HASH_GROUP_SIZE;\n    if (entry_ptr != &bucket_ptr->data->entries[i]) {\n      *entry_ptr = bucket_ptr->data->entries[i];\n    }\n\n    if (bucket_ptr->size != 0 &&\n        bucket_ptr->size % UV__FD_HASH_GROUP_SIZE == 0) {\n      struct uv__fd_hash_entry_group_s* old_group_ptr = bucket_ptr->data;\n      bucket_ptr->data = old_group_ptr->next;\n      uv__free(old_group_ptr);\n    }\n  }\n\n  uv_mutex_unlock(&uv__fd_hash_mutex);\n  return entry_ptr != NULL;\n"
+    },
+    {
+      "input": "libuv/src/unix/fs.c",
+      "first_line": 90,
+      "last_line": 104,
+      "logical_LF_excerpt_sha256": "6FC2F22438746FB6128033832E3D9DB25E8C62CF767ECC106DC62997054814F4",
+      "text": "#define INIT(subtype)                                                         \\\n  do {                                                                        \\\n    if (req == NULL)                                                          \\\n      return UV_EINVAL;                                                       \\\n    UV_REQ_INIT(req, UV_FS);                                                  \\\n    req->fs_type = UV_FS_ ## subtype;                                         \\\n    req->result = 0;                                                          \\\n    req->ptr = NULL;                                                          \\\n    req->loop = loop;                                                         \\\n    req->path = NULL;                                                         \\\n    req->new_path = NULL;                                                     \\\n    req->bufs = NULL;                                                         \\\n    req->cb = cb;                                                             \\\n  }                                                                           \\\n  while (0)\n"
+    },
+    {
+      "input": "libuv/src/unix/fs.c",
+      "first_line": 139,
+      "last_line": 166,
+      "logical_LF_excerpt_sha256": "4BF97B822FEF980549F5086B2D388FD20532398CA49526236B291F208B5A10B7",
+      "text": "#define POST                                                                  \\\n  do {                                                                        \\\n    if (cb != NULL) {                                                         \\\n      uv__req_register(loop);                                                 \\\n      uv__work_submit(loop,                                                   \\\n                      &req->work_req,                                         \\\n                      UV__WORK_FAST_IO,                                       \\\n                      uv__fs_work,                                            \\\n                      uv__fs_done);                                           \\\n      return 0;                                                               \\\n    }                                                                         \\\n    else {                                                                    \\\n      uv__fs_work(&req->work_req);                                            \\\n      return req->result;                                                     \\\n    }                                                                         \\\n  }                                                                           \\\n  while (0)\n\n\nstatic int uv__fs_close(int fd) {\n  int rc;\n\n  rc = uv__close_nocancel(fd);\n  if (rc == -1)\n    if (errno == EINTR || errno == EINPROGRESS)\n      rc = 0;  /* The close is in progress, not an error. */\n\n  return rc;\n"
+    },
+    {
+      "input": "libuv/src/unix/fs.c",
+      "first_line": 1679,
+      "last_line": 1747,
+      "logical_LF_excerpt_sha256": "AA05C804BFE39A90E389889A368A8056B30C7E950CEC1C4237AD4D6C2F288402",
+      "text": "static void uv__fs_work(struct uv__work* w) {\n  int retry_on_eintr;\n  uv_fs_t* req;\n  ssize_t r;\n\n  req = container_of(w, uv_fs_t, work_req);\n  retry_on_eintr = !(req->fs_type == UV_FS_CLOSE ||\n                     req->fs_type == UV_FS_READ);\n\n  do {\n    errno = 0;\n\n#define X(type, action)                                                       \\\n  case UV_FS_ ## type:                                                        \\\n    r = action;                                                               \\\n    break;\n\n    switch (req->fs_type) {\n    X(ACCESS, access(req->path, req->flags));\n    X(CHMOD, chmod(req->path, req->mode));\n    X(CHOWN, chown(req->path, req->uid, req->gid));\n    X(CLOSE, uv__fs_close(req->file));\n    X(COPYFILE, uv__fs_copyfile(req));\n    X(FCHMOD, fchmod(req->file, req->mode));\n    X(FCHOWN, fchown(req->file, req->uid, req->gid));\n    X(LCHOWN, lchown(req->path, req->uid, req->gid));\n    X(FDATASYNC, uv__fs_fdatasync(req));\n    X(FSTAT, uv__fs_fstat(req->file, &req->statbuf));\n    X(FSYNC, uv__fs_fsync(req));\n    X(FTRUNCATE, ftruncate(req->file, req->off));\n    X(FUTIME, uv__fs_futime(req));\n    X(LUTIME, uv__fs_lutime(req));\n    X(LSTAT, uv__fs_lstat(req->path, &req->statbuf));\n    X(LINK, link(req->path, req->new_path));\n    X(MKDIR, mkdir(req->path, req->mode));\n    X(MKDTEMP, uv__fs_mkdtemp(req));\n    X(MKSTEMP, uv__fs_mkstemp(req));\n    X(OPEN, uv__fs_open(req));\n    X(READ, uv__fs_read(req));\n    X(SCANDIR, uv__fs_scandir(req));\n    X(OPENDIR, uv__fs_opendir(req));\n    X(READDIR, uv__fs_readdir(req));\n    X(CLOSEDIR, uv__fs_closedir(req));\n    X(READLINK, uv__fs_readlink(req));\n    X(REALPATH, uv__fs_realpath(req));\n    X(RENAME, rename(req->path, req->new_path));\n    X(RMDIR, rmdir(req->path));\n    X(SENDFILE, uv__fs_sendfile(req));\n    X(STAT, uv__fs_stat(req->path, &req->statbuf));\n    X(STATFS, uv__fs_statfs(req));\n    X(SYMLINK, symlink(req->path, req->new_path));\n    X(UNLINK, unlink(req->path));\n    X(UTIME, uv__fs_utime(req));\n    X(WRITE, uv__fs_write_all(req));\n    default: abort();\n    }\n#undef X\n  } while (r == -1 && errno == EINTR && retry_on_eintr);\n\n  if (r == -1)\n    req->result = UV__ERR(errno);\n  else\n    req->result = r;\n\n  if (r == 0 && (req->fs_type == UV_FS_STAT ||\n                 req->fs_type == UV_FS_FSTAT ||\n                 req->fs_type == UV_FS_LSTAT)) {\n    req->ptr = &req->statbuf;\n  }\n"
+    },
+    {
+      "input": "libuv/src/unix/fs.c",
+      "first_line": 1814,
+      "last_line": 1821,
+      "logical_LF_excerpt_sha256": "1BE91C7812844C74070935AFC1EF4A540FF7ADE791B346AAFC45CE3632219090",
+      "text": "int uv_fs_close(uv_loop_t* loop, uv_fs_t* req, uv_file file, uv_fs_cb cb) {\n  INIT(CLOSE);\n  req->file = file;\n  if (cb != NULL)\n    if (uv__iou_fs_close(loop, req))\n      return 0;\n  POST;\n}\n"
+    },
+    {
+      "input": "libuv/src/unix/fs.c",
+      "first_line": 2239,
+      "last_line": 2269,
+      "logical_LF_excerpt_sha256": "EB33861FC07D71540931CB347E5A433B16FCF45D5335095653DFF05F272B13E8",
+      "text": "void uv_fs_req_cleanup(uv_fs_t* req) {\n  if (req == NULL)\n    return;\n\n  /* Only necessary for asynchronous requests, i.e., requests with a callback.\n   * Synchronous ones don't copy their arguments and have req->path and\n   * req->new_path pointing to user-owned memory.  UV_FS_MKDTEMP and\n   * UV_FS_MKSTEMP are the exception to the rule, they always allocate memory.\n   */\n  if (req->path != NULL &&\n      (req->cb != NULL ||\n        req->fs_type == UV_FS_MKDTEMP || req->fs_type == UV_FS_MKSTEMP))\n    uv__free((void*) req->path);  /* Memory is shared with req->new_path. */\n\n  req->path = NULL;\n  req->new_path = NULL;\n\n  if (req->fs_type == UV_FS_READDIR && req->ptr != NULL)\n    uv__fs_readdir_cleanup(req);\n\n  if (req->fs_type == UV_FS_SCANDIR && req->ptr != NULL)\n    uv__fs_scandir_cleanup(req);\n\n  if (req->bufs != req->bufsml)\n    uv__free(req->bufs);\n  req->bufs = NULL;\n\n  if (req->fs_type != UV_FS_OPENDIR && req->ptr != &req->statbuf)\n    uv__free(req->ptr);\n  req->ptr = NULL;\n}\n"
+    },
+    {
+      "input": "libuv/src/uv-common.h",
+      "first_line": 342,
+      "last_line": 357,
+      "logical_LF_excerpt_sha256": "4A3EEB0317A1A5C5B4EFFB618B148BE24A14D64FD6A83857871E3AFCAA825EFC",
+      "text": "/* Note: uses an open-coded version of SET_REQ_SUCCESS() because of\n * a circular dependency between src/uv-common.h and src/win/internal.h.\n */\n#if defined(_WIN32)\n# define UV_REQ_INIT(req, typ)                                                \\\n  do {                                                                        \\\n    (req)->type = (typ);                                                      \\\n    (req)->u.io.overlapped.Internal = 0;  /* SET_REQ_SUCCESS() */             \\\n  }                                                                           \\\n  while (0)\n#else\n# define UV_REQ_INIT(req, typ)                                                \\\n  do {                                                                        \\\n    (req)->type = (typ);                                                      \\\n  }                                                                           \\\n  while (0)\n"
+    },
+    {
+      "input": "libuv/include/uv.h",
+      "first_line": 242,
+      "last_line": 249,
+      "logical_LF_excerpt_sha256": "F249AF32EC81242A6EDC3C12074457DD8AB0AE1508D9D671CA38494EB33DEFC1",
+      "text": "typedef struct uv_getnameinfo_s uv_getnameinfo_t;\ntypedef struct uv_shutdown_s uv_shutdown_t;\ntypedef struct uv_write_s uv_write_t;\ntypedef struct uv_connect_s uv_connect_t;\ntypedef struct uv_udp_send_s uv_udp_send_t;\ntypedef struct uv_fs_s uv_fs_t;\ntypedef struct uv_work_s uv_work_t;\ntypedef struct uv_random_s uv_random_t;\n"
+    },
+    {
+      "input": "libuv/include/uv.h",
+      "first_line": 1443,
+      "last_line": 1453,
+      "logical_LF_excerpt_sha256": "EB18B5A519CE24063D47BF036FF780FA2C34D2804022B2C4D2D077B96725ABAE",
+      "text": "struct uv_fs_s {\n  UV_REQ_FIELDS\n  uv_fs_type fs_type;\n  uv_loop_t* loop;\n  uv_fs_cb cb;\n  ssize_t result;\n  void* ptr;\n  const char* path;\n  uv_stat_t statbuf;  /* Stores the result of uv_fs_stat() and uv_fs_fstat(). */\n  UV_FS_PRIVATE_FIELDS\n};\n"
+    },
+    {
+      "input": "node_file_authority",
+      "first_line": 336,
+      "last_line": 391,
+      "logical_LF_excerpt_sha256": "2F1983908A750B70D9BE4910F097B8EE1CAE7E79A2718B15D0068601C7CD0C17",
+      "text": "// Close the file descriptor if it hasn't already been closed. A process\n// warning will be emitted using a SetImmediate to avoid calling back to\n// JS during GC. If closing the fd fails at this point, a fatal exception\n// will crash the process immediately.\ninline void FileHandle::Close() {\n  if (closed_ || closing_) return;\n  uv_fs_t req;\n  CHECK_NE(fd_, -1);\n  FS_SYNC_TRACE_BEGIN(close);\n  int ret = uv_fs_close(env()->event_loop(), &req, fd_, nullptr);\n  FS_SYNC_TRACE_END(close);\n  uv_fs_req_cleanup(&req);\n\n  struct err_detail { int ret; int fd; };\n\n  err_detail detail { ret, fd_ };\n\n  AfterClose();\n\n  if (ret < 0) {\n    // Do not unref this\n    env()->SetImmediate([detail](Environment* env) {\n      char msg[70];\n      snprintf(msg, arraysize(msg),\n              \"Closing file descriptor %d on garbage collection failed\",\n              detail.fd);\n      // This exception will end up being fatal for the process because\n      // it is being thrown from within the SetImmediate handler and\n      // there is no JS stack to bubble it to. In other words, tearing\n      // down the process is the only reasonable thing we can do here.\n      HandleScope handle_scope(env->isolate());\n      env->ThrowUVException(detail.ret, \"close\", msg);\n    });\n    return;\n  }\n\n  // If the close was successful, we still want to emit a process warning\n  // to notify that the file descriptor was gc'd. We want to be noisy about\n  // this because not explicitly closing the FileHandle is a bug.\n\n  env()->SetImmediate([detail](Environment* env) {\n    ProcessEmitWarning(env,\n                       \"Closing file descriptor %d on garbage collection\",\n                       detail.fd);\n    if (env->filehandle_close_warning()) {\n      env->set_filehandle_close_warning(false);\n      USE(ProcessEmitDeprecationWarning(\n          env,\n          \"Closing a FileHandle object on garbage collection is deprecated. \"\n          \"Please close FileHandle objects explicitly using \"\n          \"FileHandle.prototype.close(). In the future, an error will be \"\n          \"thrown if a file descriptor is closed during garbage collection.\",\n          \"DEP0137\"));\n    }\n  }, CallbackFlags::kUnrefed);\n}\n"
+    },
+    {
+      "input": "handle_owner",
+      "first_line": 96,
+      "last_line": 143,
+      "logical_LF_excerpt_sha256": "F3FDF361C464DF55CFF4B6E4CA8DD0471F6FCE791D48B994B0F4C5B125C1F74C",
+      "text": "    fn retire(wrap: *native.State, s: *Scope) !void {\n        const self = fromWrap(wrap);\n        var failure: ?anyerror = null;\n        if (self.constructed) {\n            if (self.read_state.closing) check.assertion(s.engine, .{\n                .file_line = \"src/node_file.cc:282\", .message = \"!closing_\",\n                .function = \"node::fs::FileHandle::~FileHandle\",\n            });\n            gc_close.close(s, self) catch |err| {\n                record(s, err);\n                failure = err;\n            };\n            if (!self.read_state.closed) check.assertion(s.engine, .{\n                .file_line = \"src/node_file.cc:284\", .message = \"closed_\",\n                .function = \"node::fs::FileHandle::~FileHandle\",\n            });\n        }\n        // Original member destruction reverses their declaration order:\n        // binding_data_ is last, then current_read_, then StreamBase.\n        if (self.binding_data) |data| {\n            self.binding_data = null;\n            data.releaseNative() catch |err| {\n                record(s, err);\n                if (failure == null) failure = err;\n            };\n        }\n        if (self.read_state.current_read) |request| {\n            self.read_state.current_read = null;\n            request.release() catch |err| {\n                record(s, err);\n                if (failure == null) failure = err;\n            };\n        }\n        if (self.stream_initialized) {\n            self.stream_initialized = false;\n            self.stream.deinit();\n        }\n        self.releaseInfrastructure(s);\n        // State.retire now destroys AsyncWrap and its context/registry edges.\n        if (failure) |err| return err;\n    }\n    fn releaseInfrastructure(self: *Handle, s: *Scope) void {\n        s.boundary.release(&self.handle_string);\n        self.immediate_queue.release();\n        self.controller.release();\n    }\n    fn destroy(wrap: *native.State) void {\n        wrap.registry.environment.allocator().destroy(fromWrap(wrap));\n"
+    },
+    {
+      "input": "handle_owner",
+      "first_line": 178,
+      "last_line": 220,
+      "logical_LF_excerpt_sha256": "68BE845B089E241FB3E94BB4DC05028E9B3DAD984F8E8936B451B2C683B1043F",
+      "text": "    pub fn create(s: *Scope, data: *binding.BindingData, descriptor: c_int,\n        object: ?c.JSValue, offset: ?i64, length: ?i64, input: Inputs) !*Handle\n    {\n        if ((try data.environment.requireEngine()) != s.engine or\n            input.controller.environment != data.environment or\n            input.immediate_queue.engine != s.engine or\n            binding.get(data.registry) != data)\n            return error.ActualFileHandleEnvironmentMismatch;\n        if (!c.JS_IsString(input.handle_string))\n            return error.ActualFileHandleCachedHandleStringRequired;\n        try input.controller.beginCall(s.engine);\n        defer input.controller.endCall();\n        const wrapper = if (object) |provided| provided else\n            try s.own(try templates.newInstance(s.engine, data.template_owner, .filehandle));\n        if (c.JS_GetClassID(wrapper) != data.registry.classId(.filehandle))\n            return data.registry.check(.invalid_wrap_brand);\n        try s.pending();\n        const self = try data.environment.allocator().create(Handle);\n        self.* = .{\n            .controller = input.controller.retain(),\n            .immediate_queue = input.immediate_queue.retain(),\n            .handle_string = a.duplicate(s.engine, input.handle_string),\n            .read_trace = input.read_trace, .close_trace = input.close_trace,\n            .stream_operations = input.stream,\n        };\n        self.initialize(s, data, wrapper, descriptor) catch |err| {\n            var completion = a.owned.Completion.initVoid(s.engine, err);\n            if (self.attached) {\n                self.wrap.retire(false) catch {};\n            } else {\n                var cleanup = Scope.init(s.engine);\n                self.releaseInfrastructure(&cleanup);\n                const ignored = cleanup.finish(c.pi_js_undefined()) catch c.pi_js_undefined();\n                completion.release(ignored);\n                data.environment.allocator().destroy(self);\n            }\n            try completion.finishVoid();\n            unreachable;\n        };\n        // These writes follow the complete native constructor in Source.\n        if (offset) |value| self.read_state.read_offset = value;\n        if (length) |value| self.read_state.read_length = value;\n        return self;\n"
+    },
+    {
+      "input": "retained_controller",
+      "first_line": 20,
+      "last_line": 41,
+      "logical_LF_excerpt_sha256": "8FA1CBBFF87050C7E289E6972AC5A7D0466330F859AEB32FAF538790D274CCAE",
+      "text": "pub const Controller = struct {\n    hub: *env_io.Hub,\n    environment: *callbacks.Environment,\n    service: *uv.PiUvService,\n    busy: usize = 0,\n    stopping: bool = false,\n    references: usize = 1, // Hub plus actual retained native binding owners.\n\n    pub fn retain(self: *Controller) *Controller {\n        std.debug.assert(self.references != 0);\n        self.references += 1;\n        return self;\n    }\n    pub fn release(self: *Controller) void {\n        std.debug.assert(self.references != 0);\n        self.references -= 1;\n        if (self.references != 0) return;\n        std.debug.assert(self.stopping);\n        const environment = self.environment;\n        uv.pi_uv_service_release(self.service);\n        environment.allocator().destroy(self);\n        environment.release();\n"
+    },
+    {
+      "input": "retained_controller",
+      "first_line": 199,
+      "last_line": 229,
+      "logical_LF_excerpt_sha256": "C1DCE964BBE9C41A8321EAD4895AE92CD4650C60F14ED98B4859D20BB4AA968D",
+      "text": "    fn stop(raw: *anyopaque) void {\n        const self: *Controller = @ptrCast(@alignCast(raw));\n        if (self.stopping) return;\n        std.debug.assert(self.busy == 0);\n        if (self.environment.canCallIntoJs())\n            @panic(\"actual Node environment must disable JS before FS shutdown\");\n        self.stopping = true;\n        // The sole shared service resource was registered first. It has joined\n        // all native callbacks, while its event FIFO still owns their results.\n        const state = uv.pi_uv_service_snapshot(self.service);\n        if (state.thread_joined == 0 or state.pending_requests != 0)\n            @panic(\"FS controller stopped before the shared libuv service\");\n    }\n    fn stopped(raw: *anyopaque) void {\n        const self: *Controller = @ptrCast(@alignCast(raw));\n        std.debug.assert(self.stopping and self.busy == 0);\n        const environment = self.environment;\n        const engine = self.hub.engine;\n        // The earlier shared stopped() has executed each genuine Wrapper and\n        // native AfterScope with JS disabled. Do not reset the actual counter.\n        var handles = Scope.init(engine);\n        var failure: ?anyerror = null;\n        environment.requests.requireNoWaiting(environment) catch |err| {\n            record(&handles, err);\n            failure = err;\n        };\n        self.release(); // Drop only the Hub's native entitlement.\n        const ignored = handles.finish(if (failure) |err|\n            @as(anyerror!c.JSValue, err) else c.pi_js_undefined()) catch return;\n        engine.freeValue(ignored);\n    }\n"
+    },
+    {
+      "input": "retained_controller",
+      "first_line": 300,
+      "last_line": 320,
+      "logical_LF_excerpt_sha256": "5E088BB312335B6FE214C211C94D6369EBB4E68FD1A111FD472AF1BEDD6367BA",
+      "text": "    };\n    self.* = .{ .hub = hub, .environment = environment.retain(), .service = shared.service };\n    shared.attach(.fs, .{\n        .raw = self, .ready = Controller.ready,\n        .complete = Controller.deliver, .abandon = Controller.abandon,\n    }) catch |err| {\n        var completion = Completion.initVoid(engine, err);\n        environment.allocator().destroy(self);\n        environment.release();\n        try completion.finishVoid();\n        unreachable;\n    };\n    // Publication has no remaining fallible/guest operation. This independent\n    // native entitlement survives the earlier shared stopped() FIFO drain.\n    uv.pi_uv_service_retain(shared.service);\n    hub.resources.appendAssumeCapacity(.{\n        .raw = self, .tag = &controller_tag,\n        .stop = Controller.stop, .stopped = Controller.stopped,\n    });\n    return .{ .ready = self };\n}\n"
+    },
+    {
+      "input": "src/extensions/native_uv_tcp.c:projected",
+      "first_line": 127,
+      "last_line": 152,
+      "logical_LF_excerpt_sha256": "64B9F23CAF530F4F0BAA0F6B71AB5F8086E72996594C84961494E56F936DBB4D",
+      "text": "struct PiUvService {\n    void *memory_owner;\n    _Atomic size_t references;\n    PiUvWake wake;\n    uint32_t wake_slot;\n    uint64_t wake_generation;\n    uv_loop_t loop;\n    uv_async_t command_async;\n    uv_thread_t thread;\n    uv_mutex_t command_mutex;\n    uv_cond_t command_condition;\n    uv_mutex_t event_mutex;\n    PiUvCommand *command;\n    PiUvEndpoint *endpoints;\n    PiUvFsRequest *fs_requests;\n    PiUvEvent *event_head;\n    PiUvEvent *event_tail;\n    PiUvEvent allocation_event;\n    _Atomic size_t live_handles;\n    _Atomic size_t pending_requests;\n    _Atomic size_t queued_events;\n    _Atomic size_t referenced_handles;\n    _Atomic int close_requested;\n    _Atomic int thread_joined;\n    int loop_close_status;\n};\n"
+    },
+    {
+      "input": "src/extensions/native_uv_tcp.c:projected",
+      "first_line": 169,
+      "last_line": 183,
+      "logical_LF_excerpt_sha256": "FBBFE98C9993706FEFCEF64F5CC6574CE09E4E41A32D3EDFBDEB5332F51B8622",
+      "text": "void pi_uv_service_retain(PiUvService *service) {\n    atomic_fetch_add_explicit(&service->references, 1, memory_order_relaxed);\n}\nvoid pi_uv_service_release(PiUvService *service) {\n    if (atomic_fetch_sub_explicit(&service->references, 1, memory_order_acq_rel) != 1) return;\n    assert(atomic_load_explicit(&service->thread_joined, memory_order_acquire));\n    assert(service->endpoints == NULL && service->fs_requests == NULL &&\n           service->event_head == NULL);\n    uv_mutex_destroy(&service->event_mutex);\n    uv_cond_destroy(&service->command_condition);\n    uv_mutex_destroy(&service->command_mutex);\n    void *owner = service->memory_owner;\n    pi_uv_free(owner, service);\n    pi_js_release_memory_owner(owner);\n}\n"
+    },
+    {
+      "input": "src/extensions/native_uv_tcp.c:projected",
+      "first_line": 652,
+      "last_line": 657,
+      "logical_LF_excerpt_sha256": "01325C51034DFDDB060B2BFAD353E338AD2A75F0533035A07ACDCFB3BBCCB9B9",
+      "text": "static void pi_uv_thread_main(void *opaque) {\n    PiUvService *service = opaque;\n    (void)uv_run(&service->loop, UV_RUN_DEFAULT);\n    service->loop_close_status = uv_loop_close(&service->loop);\n    pi_uv_service_release(service); /* owner is retained until stop joins */\n}\n"
+    },
+    {
+      "input": "src/extensions/native_uv_tcp.c:projected",
+      "first_line": 711,
+      "last_line": 723,
+      "logical_LF_excerpt_sha256": "CD9D20D5DA87DB01BD3C929AC7EA20B8DB2D8C2A9643C8D387F7C16DDC12DF0E",
+      "text": "int pi_uv_service_stop(PiUvService *service) {\n    if (atomic_load_explicit(&service->thread_joined, memory_order_acquire))\n        return service->loop_close_status;\n    int status = 0;\n    if (!atomic_load_explicit(&service->close_requested, memory_order_acquire)) {\n        PiUvCommand command = { .kind = PI_UV_CMD_STOP };\n        status = pi_uv_submit(service, &command);\n        if (status < 0) return status;\n    }\n    status = uv_thread_join(&service->thread);\n    if (status < 0) return status;\n    atomic_store_explicit(&service->thread_joined, 1, memory_order_release);\n    return service->loop_close_status;\n"
+    },
+    {
+      "input": "canonical_stream_resource",
+      "first_line": 5,
+      "last_line": 16,
+      "logical_LF_excerpt_sha256": "0019A0F3F4AD96806ECE2F9CBFB766750745E3F87E0591AD6BADF54E9ED7619D",
+      "text": "//!\n//! StreamBase's default_listener_ is a member: its StreamListener destructor\n//! unlinks it BEFORE the StreamResource base destructor processes the remaining\n//! listeners. The selected read vtable is native and borrowed; write operations\n//! and the JS prototype remain separate.\nconst em = @import(\"engine.zig\");\nconst check = @import(\"native_node_check_failure.zig\");\nconst std = @import(\"std\");\npub const uv = @import(\"native_node_managed_buffers.zig\").uv;\n\n/// Original pure virtual read operations. A listener used by EmitAlloc/EmitRead\n/// must supply its actual compiled implementation; lifecycle-only listeners do\n"
+    },
+    {
+      "input": "canonical_uv_import",
+      "first_line": 1,
+      "last_line": 10,
+      "logical_LF_excerpt_sha256": "47780EE209206ACCE3BE7A1522CC2C0DF4D7F004DB24FE0813D0B319813436A2",
+      "text": "//! The actual native managed-buffer table embedded in one Environment block.\n//! Backing allocation/retry and intrinsic ArrayBuffer adoption are separate.\n//! This owner holds no JS roots and never reconstructs a token from its data.\nconst std = @import(\"std\");\nconst em = @import(\"engine.zig\");\nconst c = em.c;\npub const uv = @cImport({ @cInclude(\"uv.h\"); });\npub const Token = c.JSPiArrayBufferBackingStore;\nconst Native = opaque {};\nextern fn pi_node_managed_buffers_storage_size() usize;\n"
+    },
+    {
+      "input": "service_c_import",
+      "first_line": 1,
+      "last_line": 20,
+      "logical_LF_excerpt_sha256": "D01C2BA0EF55F31D7191E8B358F477C5AEA34279D973044BC1437FE156E00F14",
+      "text": "//! One native libuv service and completion FIFO per actual Env I/O Hub.\n//! TCP and FS retain their own genuine actors. This owner contains only native\n//! client dispatch and the shared wake/loop lifetime; no Socket or Errno input.\nconst std = @import(\"std\");\nconst em = @import(\"engine.zig\");\nconst a = @import(\"native_node_argument_values.zig\");\nconst env = @import(\"native_env_io.zig\");\nconst wake = @import(\"native_owner_wake.zig\");\nconst completion_wake = @import(\"native_owner_completion.zig\");\nconst Completion = @import(\"native_sdk_owned_completion.zig\").Completion;\nconst c = em.c;\npub const uv = @cImport({ @cInclude(\"native_uv_tcp.h\"); @cInclude(\"native_uv_fs.h\"); });\nconst service_tag: u8 = 0;\n\npub const Kind = enum(u1) { tcp, fs };\n/// Private compiled owners only. Each client stays in the Hub through this\n/// resource's stopped() drain. No client pointer is sent to the native loop.\npub const Client = struct {\n    raw: *anyopaque,\n    ready: *const fn (*anyopaque) bool,\n"
+    }
+  ],
+  "compiler_preprocessor_native_or_Node_execution": false,
+  "Main_or_SDK_source_modified": false
+}
