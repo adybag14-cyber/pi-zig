@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "status": "source_written_not_executed",
+  "root": "src/native_node_options_oom_probe.zig",
+  "cached_executable_basename": "test",
+  "installed_basename": "native-node-options-oom-probe",
+  "owner_gate": "stdin EOF before fixture setup; no input accepted",
+  "migrated_declaration": "native actual Node options intrinsic serialization failure supersedes the ordinary bootstrap reason",
+  "original_root_sha256": "5D1414243D98B3850538DEF6D72BF44B029509480F739B1783EF994D199DA50B",
+  "remaining_original_declarations": 29,
+  "unchanged_native_vector_declaration": "native actual Node options native vector allocation failure is recorded before rollback",
+  "cases": [
+    {
+      "name": "heap-values",
+      "expected_windows_exit_code": 134,
+      "expected_posix_signal": "SIGABRT",
+      "required_stderr": [
+        "OPTIONS_HEAP_SITE:values",
+        "FATAL ERROR: CALL_AND_RETRY_LAST Allocation failed - JavaScript heap out of memory",
+        "----- Native stack trace -----"
+      ],
+      "forbidden_stderr": [
+        "OPTIONS_HEAP_CONTROL:",
+        "UnexpectedOptionsHeapOomContinuation"
+      ]
+    },
+    {
+      "name": "heap-embedder",
+      "expected_windows_exit_code": 134,
+      "expected_posix_signal": "SIGABRT",
+      "required_stderr": [
+        "OPTIONS_HEAP_SITE:embedder",
+        "FATAL ERROR: CALL_AND_RETRY_LAST Allocation failed - JavaScript heap out of memory",
+        "----- Native stack trace -----"
+      ],
+      "forbidden_stderr": [
+        "OPTIONS_HEAP_CONTROL:",
+        "UnexpectedOptionsHeapOomContinuation"
+      ]
+    },
+    {
+      "name": "control-values",
+      "expected_exit_code": 0,
+      "required_stderr": [
+        "OPTIONS_HEAP_CONTROL:values:original-bootstrap"
+      ],
+      "forbidden_stderr": [
+        "FATAL ERROR:",
+        "OPTIONS_HEAP_SITE:"
+      ]
+    },
+    {
+      "name": "control-embedder",
+      "expected_exit_code": 0,
+      "required_stderr": [
+        "OPTIONS_HEAP_CONTROL:embedder:original-bootstrap"
+      ],
+      "forbidden_stderr": [
+        "FATAL ERROR:",
+        "OPTIONS_HEAP_SITE:"
+      ]
+    }
+  ],
+  "limits": [
+    "These are proposed expected-exit cases, not observed results.",
+    "The native terminal header is independent of VM heap allocation; the existing native abort attempts its ordinary JavaScript stack capture, which may be unavailable under genuine VM heap exhaustion.",
+    "A process controller must retain real process ownership before EOF and independently close every actual native instance; this source does not start a process.",
+    "Nondefault native diagnostic-report installation remains its separate owner."
+  ]
+}

@@ -4827,6 +4827,21 @@ pub fn build(b: *std.Build) void {
             node_options.root_module.linkSystemLibrary("userenv", .{});
         }
         b.step("build-native-node-options", "Install twenty actual Node options ownership and Source controls without execution").dependOn(&b.addInstallArtifact(node_options, .{ .dest_sub_path = b.fmt("native-node-options{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        const node_options_oom_probe = b.addExecutable(.{
+            .name = "test",
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_options_oom_probe.zig"), .target = target, .optimize = optimize }),
+            .use_llvm = use_llvm,
+        });
+        node_options_oom_probe.stack_size = 16 * 1024 * 1024;
+        linkQuickJs(b, node_options_oom_probe.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_options_oom_probe.root_module, typescript_parser);
+        linkSqlite(node_options_oom_probe.root_module, sqlite_lib_dir, sqlite_library);
+        node_options_oom_probe.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            node_options_oom_probe.root_module.linkSystemLibrary("advapi32", .{});
+            node_options_oom_probe.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-options-oom-probe", "Install isolated actual options intrinsic heap-OOM probes without execution").dependOn(&b.addInstallArtifact(node_options_oom_probe, .{ .dest_sub_path = b.fmt("native-node-options-oom-probe{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
     }
 
     if (native_node_network != null) {

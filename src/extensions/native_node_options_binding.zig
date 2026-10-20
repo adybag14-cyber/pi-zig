@@ -14,27 +14,54 @@ pub const Exports = struct { values: c.JSValue, embedder: c.JSValue };
 fn known(engine: *a.v.em.Engine) !*config.Config {
     return engine.node_options orelse return error.ActualNodeOptionsConfigurationRequired;
 }
+// An actual OOM occurrence belongs only to the immediately enclosed raw
+// intrinsic. A failed result with no new occurrence keeps its ordinary reason
+// (including string length RangeError). No Error DATA or historical tag is read.
+const IntrinsicAllocation = struct {
+    generation: u64,
+    occurrence: u64,
+    fn begin(s: *Scope) !IntrinsicAllocation {
+        const generation = try s.beforeAllocation();
+        return .{ .generation = generation,
+            .occurrence = c.JS_PiOutOfMemoryOccurrence(s.engine.runtime) };
+    }
+    fn check(self: IntrinsicAllocation, s: *Scope, failed: bool) void {
+        if (failed and c.JS_PiOutOfMemoryOccurrence(s.engine.runtime) != self.occurrence)
+            check_failure.heapOutOfMemory(s.engine, null);
+    }
+    fn value(self: IntrinsicAllocation, s: *Scope, result: c.JSValue) !c.JSValue {
+        self.check(s, c.JS_IsException(result));
+        return s.checkedAllocation(result, self.generation);
+    }
+};
+fn nativeText(s: *Scope, bytes: []const u8) !c.JSValue {
+    const allocation = try IntrinsicAllocation.begin(s);
+    return allocation.value(s, c.JS_NewStringLen(s.engine.context, bytes.ptr, bytes.len));
+}
 // These builders only receive freshly created intrinsic records/arrays and
 // primitive names produced here. No guest property lookup, setter or coercion
 // can enter this native serializer tail.
 fn nativeDefine(s: *Scope, target: c.JSValue, name: c.JSValue, value: c.JSValue) !void {
-    const atom_generation = try s.beforeAllocation();
+    const atom_allocation = try IntrinsicAllocation.begin(s);
     const property = c.JS_ValueToAtom(s.engine.context, name);
-    s.boundary.checkPendingSince(atom_generation) catch |err| {
+    atom_allocation.check(s, property == c.JS_ATOM_NULL);
+    s.boundary.checkPendingSince(atom_allocation.generation) catch |err| {
         c.JS_FreeAtom(s.engine.context, property);
         return err;
     };
     defer c.JS_FreeAtom(s.engine.context, property);
     if (property == c.JS_ATOM_NULL) return error.MissingActualNodeOptionsNameReason;
-    const generation = try s.beforeAllocation();
+    const allocation = try IntrinsicAllocation.begin(s);
     const status = c.JS_DefinePropertyValue(s.engine.context, target, property,
         a.duplicate(s.engine, value), c.JS_PROP_C_W_E | c.JS_PROP_THROW);
-    try s.boundary.checkPendingSince(generation);
+    allocation.check(s, status < 0);
+    try s.boundary.checkPendingSince(allocation.generation);
     if (status < 0) return error.MissingActualNodeOptionsDefinitionReason;
 }
 fn nativeObject(s: *Scope, names: []const c.JSValue, values: []const c.JSValue) !c.JSValue {
     std.debug.assert(names.len == values.len);
-    const result = try s.objectProto(c.pi_js_null());
+    const allocation = try IntrinsicAllocation.begin(s);
+    const result = try allocation.value(s, c.JS_NewObjectProto(s.engine.context, c.pi_js_null()));
     for (names, values) |name, value| try nativeDefine(s, result, name, value);
     return result;
 }
@@ -68,7 +95,7 @@ const NativeFields = struct {
     }
     fn append(self: *NativeFields, s: *Scope, name: []const u8, value: c.JSValue) !void {
         std.debug.assert(self.length < self.names.len);
-        self.names[self.length] = try s.text(name);
+        self.names[self.length] = try nativeText(s, name);
         self.values[self.length] = value;
         self.length += 1;
     }
@@ -82,20 +109,20 @@ fn strings(s: *Scope, input: []const []const u8) !c.JSValue {
     const elements = try allocateHandles(s, &memory, input.len);
     defer memory.allocator().free(elements);
     // ToV8Value(StringVector) creates each string before the intrinsic Array.
-    for (input, elements) |value, *element| element.* = try s.text(value);
-    const generation = try s.beforeAllocation();
+    for (input, elements) |value, *element| element.* = try nativeText(s, value);
+    const allocation = try IntrinsicAllocation.begin(s);
     // JS_NewArrayFrom consumes every supplied value on success and failure;
     // duplicate the rooted native elements only immediately before that call.
     for (elements) |*element| element.* = a.duplicate(s.engine, element.*);
-    return s.checkedAllocation(c.JS_NewArrayFrom(s.engine.context,
-        @intCast(elements.len), elements.ptr), generation);
+    return allocation.value(s, c.JS_NewArrayFrom(s.engine.context,
+        @intCast(elements.len), elements.ptr));
 }
 fn fieldValue(s: *Scope, values: *const config.Values, comptime entry: config.Entry) !c.JSValue {
     const input = @field(values, @tagName(entry.field));
     return switch (comptime entry.kind) {
         .boolean => a.boolean(s, input),
         .optional_boolean => a.boolean(s, input orelse return error.ActualNodeStripTypesBuildDefaultRequired),
-        .string => s.text(input),
+        .string => nativeText(s, input),
         .string_list => strings(s, input),
     };
 }
@@ -157,7 +184,7 @@ fn valuesBody(s: *Scope, cached_names: []const c.JSValue) !c.JSValue {
     try boolean(s, &fields, "--inspect-brk", owner.values.inspect_brk);
     try boolean(s, &fields, "--inspect-brk-node", owner.values.inspect_brk_node);
     try boolean(s, &fields, "--inspect-wait", owner.values.inspect_wait);
-    const host = try s.text(owner.values.inspect_host);
+    const host = try nativeText(s, owner.values.inspect_host);
     const host_names = [_]c.JSValue{ cached_names[0], cached_names[1] };
     const host_values = [_]c.JSValue{ host, c.JS_NewInt32(s.engine.context, owner.values.inspect_port) };
     const host_port = try nativeObject(s, &host_names, &host_values);
@@ -174,10 +201,10 @@ fn embedderBody(s: *Scope) !c.JSValue {
     // Original fixed names and primitive values are all produced before the
     // final intrinsic null-prototype Object. This binding has no serialized flag.
     const names = [_]c.JSValue{
-        try s.text("shouldNotRegisterESMLoader"),
-        try s.text("noGlobalSearchPaths"),
-        try s.text("noBrowserGlobals"),
-        try s.text("hasEmbedderPreload"),
+        try nativeText(s, "shouldNotRegisterESMLoader"),
+        try nativeText(s, "noGlobalSearchPaths"),
+        try nativeText(s, "noBrowserGlobals"),
+        try nativeText(s, "hasEmbedderPreload"),
     };
     const source = owner.original.embedder;
     const values = [_]c.JSValue{

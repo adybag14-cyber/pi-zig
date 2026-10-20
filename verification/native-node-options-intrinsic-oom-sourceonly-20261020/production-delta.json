@@ -1,0 +1,182 @@
+{
+  "schema": 1,
+  "status": "source_written_dependency_and_peers_pending",
+  "source_only": true,
+  "main_base_commit": "19b6c032",
+  "required_vm_api": "uint64_t JS_PiOutOfMemoryOccurrence(JSRuntime *rt)",
+  "required_vm_api_status": "separate VM-owned source unit pending",
+  "authority": "../native-node-options-v24-heap-diagnosis-sourceonly-20261020/authority/native-oom-chain.json",
+  "authority_sha256": "DB865FBF135E5FBDDBD11FE1AE25D6191A8181772C7E7576FE1F0AEBD5C492D8",
+  "edits": [
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "before": "#include <stdint.h>\n",
+      "after": "#include <stdint.h>\n#include <stdatomic.h>\n",
+      "count": 1,
+      "label": "Native terminal OOM latch uses the original atomic store"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "before": "static _Thread_local int pi_node_retrieving_js_stacktrace;\n",
+      "after": "static _Thread_local int pi_node_retrieving_js_stacktrace;\nstatic _Atomic int pi_node_in_oom;\n",
+      "count": 1,
+      "label": "One native process OOM latch, never reset"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "before": "void pi_node_maybe_check_failure(JSContext *context,\n",
+      "after": "/* Selected V8 kRetryOrFail heap failure: the original fixed location and\n * kHeapOOM detail reach Node's OOMErrorHandler before any local rollback.\n * The header and report selection require no VM allocation or guest value. */\nvoid pi_node_heap_out_of_memory(JSContext *context,\n                                const PiNodeFatalDiagnostics *diagnostics) {\n    static const char message[] =\n        \"Allocation failed - JavaScript heap out of memory\";\n    atomic_store(&pi_node_in_oom, 1);\n    fprintf(stderr, \"FATAL ERROR: CALL_AND_RETRY_LAST %s\\n\", message);\n    if (diagnostics && diagnostics->report)\n        diagnostics->report(diagnostics->report_opaque, context,\n                            message, \"OOMError\", \"\");\n    fflush(stderr);\n    pi_node_abort(context);\n}\n\nvoid pi_node_maybe_check_failure(JSContext *context,\n",
+      "count": 1,
+      "label": "Actual fixed heap OOM handler, report trigger and native abort"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.h",
+      "before": "void pi_node_maybe_check_failure(JSContext *context,\n",
+      "after": "/* Only for an actual failed intrinsic allocation whose current occurrence is\n * established by the caller. No Error value or historical flag is accepted. */\nvoid pi_node_heap_out_of_memory(JSContext *context,\n                                const PiNodeFatalDiagnostics *diagnostics);\nvoid pi_node_maybe_check_failure(JSContext *context,\n",
+      "count": 1,
+      "label": "Narrow native heap OOM ABI"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before": "extern fn pi_node_maybe_check_failure(?*c.JSContext, ?*const Diagnostics) void;\n",
+      "after": "extern fn pi_node_heap_out_of_memory(?*c.JSContext, ?*const Diagnostics) void;\nextern fn pi_node_maybe_check_failure(?*c.JSContext, ?*const Diagnostics) void;\n",
+      "count": 1,
+      "label": "Declare actual C OOM terminal owner"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before": "pub fn maybeCheck(engine: *em.Engine, diagnostics: ?*const Diagnostics) noreturn {\n",
+      "after": "/// The caller proves a new actual failed intrinsic allocation. This is the\n/// selected original native heap OOM handler, before operand rollback.\npub fn heapOutOfMemory(engine: *em.Engine, diagnostics: ?*const Diagnostics) noreturn {\n    pi_node_heap_out_of_memory(engine.context, diagnostics);\n    unreachable;\n}\npub fn maybeCheck(engine: *em.Engine, diagnostics: ?*const Diagnostics) noreturn {\n",
+      "count": 1,
+      "label": "Expose only the selected terminal allocation entry"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "before": "// These builders only receive freshly created intrinsic records/arrays and\n",
+      "after": "// An actual OOM occurrence belongs only to the immediately enclosed raw\n// intrinsic. A failed result with no new occurrence keeps its ordinary reason\n// (including string length RangeError). No Error DATA or historical tag is read.\nconst IntrinsicAllocation = struct {\n    generation: u64,\n    occurrence: u64,\n    fn begin(s: *Scope) !IntrinsicAllocation {\n        const generation = try s.beforeAllocation();\n        return .{ .generation = generation,\n            .occurrence = c.JS_PiOutOfMemoryOccurrence(s.engine.runtime) };\n    }\n    fn check(self: IntrinsicAllocation, s: *Scope, failed: bool) void {\n        if (failed and c.JS_PiOutOfMemoryOccurrence(s.engine.runtime) != self.occurrence)\n            check_failure.heapOutOfMemory(s.engine, null);\n    }\n    fn value(self: IntrinsicAllocation, s: *Scope, result: c.JSValue) !c.JSValue {\n        self.check(s, c.JS_IsException(result));\n        return s.checkedAllocation(result, self.generation);\n    }\n};\nfn nativeText(s: *Scope, bytes: []const u8) !c.JSValue {\n    const allocation = try IntrinsicAllocation.begin(s);\n    return allocation.value(s, c.JS_NewStringLen(s.engine.context, bytes.ptr, bytes.len));\n}\n// These builders only receive freshly created intrinsic records/arrays and\n",
+      "count": 1,
+      "label": "Bracket only admitted non-guest intrinsic allocation"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "before": "    const atom_generation = try s.beforeAllocation();\n    const property = c.JS_ValueToAtom(s.engine.context, name);\n    s.boundary.checkPendingSince(atom_generation) catch |err| {",
+      "after": "    const atom_allocation = try IntrinsicAllocation.begin(s);\n    const property = c.JS_ValueToAtom(s.engine.context, name);\n    atom_allocation.check(s, property == c.JS_ATOM_NULL);\n    s.boundary.checkPendingSince(atom_allocation.generation) catch |err| {",
+      "count": 1,
+      "label": "Check actual atom allocation before atom rollback"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "before": "    const generation = try s.beforeAllocation();\n    const status = c.JS_DefinePropertyValue(s.engine.context, target, property,\n        a.duplicate(s.engine, value), c.JS_PROP_C_W_E | c.JS_PROP_THROW);\n    try s.boundary.checkPendingSince(generation);",
+      "after": "    const allocation = try IntrinsicAllocation.begin(s);\n    const status = c.JS_DefinePropertyValue(s.engine.context, target, property,\n        a.duplicate(s.engine, value), c.JS_PROP_C_W_E | c.JS_PROP_THROW);\n    allocation.check(s, status < 0);\n    try s.boundary.checkPendingSince(allocation.generation);",
+      "count": 1,
+      "label": "Check fresh native property definition before pending capture"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "before": "    const result = try s.objectProto(c.pi_js_null());",
+      "after": "    const allocation = try IntrinsicAllocation.begin(s);\n    const result = try allocation.value(s, c.JS_NewObjectProto(s.engine.context, c.pi_js_null()));",
+      "count": 1,
+      "label": "Actual null-prototype native object allocation"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "before": "        self.names[self.length] = try s.text(name);",
+      "after": "        self.names[self.length] = try nativeText(s, name);",
+      "count": 1,
+      "label": "Actual name string allocation in native field order"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "before": "    for (input, elements) |value, *element| element.* = try s.text(value);\n    const generation = try s.beforeAllocation();",
+      "after": "    for (input, elements) |value, *element| element.* = try nativeText(s, value);\n    const allocation = try IntrinsicAllocation.begin(s);",
+      "count": 1,
+      "label": "Native string vector retains original per-string order"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "before": "    return s.checkedAllocation(c.JS_NewArrayFrom(s.engine.context,\n        @intCast(elements.len), elements.ptr), generation);",
+      "after": "    return allocation.value(s, c.JS_NewArrayFrom(s.engine.context,\n        @intCast(elements.len), elements.ptr));",
+      "count": 1,
+      "label": "Consuming native array failure is terminal before caller rollback"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "before": "        .string => s.text(input),",
+      "after": "        .string => nativeText(s, input),",
+      "count": 1,
+      "label": "Actual native string-valued option"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "before": "    const host = try s.text(owner.values.inspect_host);",
+      "after": "    const host = try nativeText(s, owner.values.inspect_host);",
+      "count": 1,
+      "label": "Actual native host string before cached names"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "before": "        try s.text(\"shouldNotRegisterESMLoader\"),\n        try s.text(\"noGlobalSearchPaths\"),\n        try s.text(\"noBrowserGlobals\"),\n        try s.text(\"hasEmbedderPreload\"),",
+      "after": "        try nativeText(s, \"shouldNotRegisterESMLoader\"),\n        try nativeText(s, \"noGlobalSearchPaths\"),\n        try nativeText(s, \"noBrowserGlobals\"),\n        try nativeText(s, \"hasEmbedderPreload\"),",
+      "count": 1,
+      "label": "Actual embedder names before final object"
+    },
+    {
+      "path": "src/native_node_options_test.zig",
+      "before": "test \"native actual Node options intrinsic serialization failure supersedes the ordinary bootstrap reason\" {\n    inline for (.{ false, true }) |values| {\n        var fixture: TailFixture = undefined; try fixture.init(.heap); defer fixture.deinit();\n        const result = fixture.call(values);\n        fixture.restoreLimits();\n        try std.testing.expect(c.JS_IsException(result));\n        try std.testing.expect(c.JS_HasException(fixture.engine.context));\n        const reason = c.JS_GetException(fixture.engine.context);\n        defer fixture.engine.freeValue(reason);\n        try fixture.expectSetter(values);\n        try fixture.expectNewFatal(reason);\n    }\n}\ntest \"native actual Node options native vector allocation failure is recorded before rollback\" {",
+      "after": "test \"native actual Node options native vector allocation failure is recorded before rollback\" {",
+      "count": 1,
+      "label": "Migrate only impossible in-process heap oracle to real fatal subprocess cases"
+    }
+  ],
+  "files": [
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "before_sha256": "7F9BBF35B6DA22A8A8803F7776F2BE0B46B8E1E8FAF49B06407C7FC72EB6D967",
+      "before_bytes": 13611,
+      "after_bytes": 14444,
+      "after_sha256": "1D051F4154AA80DF217E5EB7E06D6173F60EA367EAABCA664E3AB8185143EE37"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.h",
+      "before_sha256": "72C3677CE0868972B2ACF78463A62A9910047C132C8862193FF267254D25C2F2",
+      "before_bytes": 1696,
+      "after_bytes": 1982,
+      "after_sha256": "A618BB6C25DA7E3B9C87BA6A15D97B81EDE8E2B103C242C0AADC4C52BE08A446"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before_sha256": "E4C368A322B65340D70C7F48153CA898ECF0290A47696823AA557876775E114E",
+      "before_bytes": 1788,
+      "after_bytes": 2183,
+      "after_sha256": "CC49A9A415C8A1729465FB9AC71690F61FB031E3FAF79D4CACAE442A588E0C7C"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "before_sha256": "E1E6B701FBE6690AA25A78B1FDD9330DEE937CCAC0A3D05E19564B6B80C6BAD0",
+      "before_bytes": 11565,
+      "after_bytes": 13027,
+      "after_sha256": "E0944E5D5EB078D27E548572F4B436345DF093756771C3D9B0561B9C4BAB9B85"
+    },
+    {
+      "path": "src/native_node_options_test.zig",
+      "before_sha256": "5D1414243D98B3850538DEF6D72BF44B029509480F739B1783EF994D199DA50B",
+      "before_bytes": 43397,
+      "after_bytes": 42729,
+      "after_sha256": "925DB6BBF503831F5F69B353F743F37A71F8D587FBB76327B2D92B40323150D1"
+    }
+  ],
+  "preserved": {
+    "root_config_init_sha256": "5D1414243D98B3850538DEF6D72BF44B029509480F739B1783EF994D199DA50B",
+    "native_vector_control22": "byte-identical",
+    "successful_tail_original_reason": "byte-identical algorithm",
+    "guest_code_set_check": "byte-identical",
+    "shared_scope_boundary_engine": "unchanged"
+  },
+  "limits": [
+    "No compilation, runtime, probe or expected-exit acceptance.",
+    "Only failed admitted intrinsic allocations with a new exact operation occurrence enter native heap OOM.",
+    "Original full heap-negative and impossible tagged-object oracle retained; fatal process probes are a separate artifact.",
+    "Actual nondefault native report owner must supply Diagnostics; null keeps the existing default report-disabled branch."
+  ],
+  "exact_forward_reverse": true
+}

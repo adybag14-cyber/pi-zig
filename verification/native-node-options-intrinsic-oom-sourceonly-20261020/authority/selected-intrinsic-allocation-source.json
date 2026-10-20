@@ -1,0 +1,149 @@
+{
+  "source_only": true,
+  "node_24_14_version": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "version_proof": [
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/v8/src/heap/heap-allocator.cc",
+      "body_sha256": "7879c6e13a7bf6baa23ecdd054412a2dc29c17277ee5c26d8bbe13f7db319ab1",
+      "decoded_bytes": 14470,
+      "retrieved_at": "2026-10-20T12:30:12.667Z"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/v8/src/heap/factory-base.cc",
+      "body_sha256": "0c2ddda59de61a98c249bc00b60ecb3b11ecdd8b2559d83a4c5e22cb17145e83",
+      "decoded_bytes": 57199,
+      "retrieved_at": "2026-10-20T12:30:13.086Z"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/node_errors.cc",
+      "body_sha256": "eed18c160145dae84c4ade25afc90cb799d4ad18275d3eae42aa66331371a2c9",
+      "decoded_bytes": 43095,
+      "retrieved_at": "2026-10-20T12:30:13.429Z"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/v8/src/heap/heap-allocator-inl.h",
+      "body_sha256": "cea9efd74185da44c810e1d11a0c43b58f5d2d3656260fefb71e74eee74f44be",
+      "decoded_bytes": 10192,
+      "retrieved_at": "2026-10-20T12:31:15.982Z"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/v8/src/heap/factory.cc",
+      "body_sha256": "895d8a6e8bede5ff80ea97de37f765ee54f13d20e449968841c288596b851fc6",
+      "decoded_bytes": 203216,
+      "retrieved_at": "2026-10-20T12:31:16.351Z"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/api/environment.cc",
+      "body_sha256": "608e7248797c418236eb0ced36a651f8da21d99697eae53835406cd551d8e700",
+      "decoded_bytes": 40167,
+      "retrieved_at": "2026-10-20T12:32:04.117Z"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/deps/v8/src/api/api.cc",
+      "body_sha256": "573f6f992a93eb59751953a372f9071e32aeb36d9b6f5328bd50967d3008f201",
+      "decoded_bytes": 489340,
+      "retrieved_at": "2026-10-19T19:21:18.913Z"
+    }
+  ],
+  "selected": [
+    {
+      "label": "Actual API string length gate and intrinsic factory call",
+      "source_path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-existing-promise-settlement-sourceonly-20261019/authority/v8-api.v24.13.cc",
+      "source_sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "source_bytes": 489340,
+      "offset_bytes": 298953,
+      "length_bytes": 1445,
+      "excerpt_sha256": "4DF041F1EDBBEF563E92B724279E4482E7D85B6250872E25DFB9E18F8D84011E",
+      "text": "#define NEW_STRING(v8_isolate, class_name, function_name, Char, data, type,   \\\n                   length)                                                    \\\n  MaybeLocal<String> result;                                                  \\\n  if (length == 0) {                                                          \\\n    result = String::Empty(v8_isolate);                                       \\\n  } else if (length > 0 &&                                                    \\\n             static_cast<uint32_t>(length) > i::String::kMaxLength) {         \\\n    result = MaybeLocal<String>();                                            \\\n  } else {                                                                    \\\n    i::Isolate* i_isolate = reinterpret_cast<internal::Isolate*>(v8_isolate); \\\n    ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);                               \\\n    API_RCS_SCOPE(i_isolate, class_name, function_name);                      \\\n    if (length < 0) length = StringLength(data);                              \\\n    i::DirectHandle<i::String> handle_result =                                \\\n        NewString(i_isolate->factory(), type,                                 \\\n                  base::Vector<const Char>(data, length))                     \\\n            .ToHandleChecked();                                               \\\n    result = Utils::ToLocal(handle_result);                                   \\\n  }\n\n"
+    },
+    {
+      "label": "Actual UTF8 string API",
+      "source_path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-existing-promise-settlement-sourceonly-20261019/authority/v8-api.v24.13.cc",
+      "source_sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "source_bytes": 489340,
+      "offset_bytes": 301040,
+      "length_bytes": 243,
+      "excerpt_sha256": "0A1734B85105F8793481C20BB6E98743E70D367B6BE5879998F5CF6CAD4F1A4A",
+      "text": "MaybeLocal<String> String::NewFromUtf8(Isolate* v8_isolate, const char* data,\n                                       NewStringType type, int length) {\n  NEW_STRING(v8_isolate, String, NewFromUtf8, char, data, type, length);\n  return result;\n}\n"
+    },
+    {
+      "label": "Actual intrinsic object with native names and values",
+      "source_path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-existing-promise-settlement-sourceonly-20261019/authority/v8-api.v24.13.cc",
+      "source_sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "source_bytes": 489340,
+      "offset_bytes": 309419,
+      "length_bytes": 1989,
+      "excerpt_sha256": "5B5B07E3A0A6A96C8ADEFAB07421600D97429E9BDBEA1BA6C63E549FFA86338C",
+      "text": "Local<v8::Object> v8::Object::New(Isolate* v8_isolate,\n                                  Local<Value> prototype_or_null,\n                                  Local<Name>* names, Local<Value>* values,\n                                  size_t length) {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(v8_isolate);\n  i::DirectHandle<i::JSPrototype> proto;\n  if (!Utils::ApiCheck(\n          i::TryCast(Utils::OpenDirectHandle(*prototype_or_null), &proto),\n          \"v8::Object::New\", \"prototype must be null or object\")) {\n    return Local<v8::Object>();\n  }\n  API_RCS_SCOPE(i_isolate, Object, New);\n  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);\n\n  i::DirectHandle<i::FixedArrayBase> elements =\n      i_isolate->factory()->empty_fixed_array();\n\n  // We assume that this API is mostly used to create objects with named\n  // properties, and so we default to creating a properties backing store\n  // large enough to hold all of them, while we start with no elements\n  // (see http://bit.ly/v8-fast-object-create-cpp for the motivation).\n  if (V8_ENABLE_SWISS_NAME_DICTIONARY_BOOL) {\n    i::DirectHandle<i::SwissNameDictionary> properties =\n        i_isolate->factory()->NewSwissNameDictionary(static_cast<int>(length));\n    AddPropertiesAndElementsToObject(i_isolate, properties, elements, names,\n                                     values, length);\n    i::DirectHandle<i::JSObject> obj =\n        i_isolate->factory()->NewSlowJSObjectWithPropertiesAndElements(\n            proto, properties, elements);\n    return Utils::ToLocal(obj);\n  } else {\n    i::DirectHandle<i::NameDictionary> properties =\n        i::NameDictionary::New(i_isolate, static_cast<int>(length));\n    AddPropertiesAndElementsToObject(i_isolate, properties, elements, names,\n                                     values, length);\n    i::DirectHandle<i::JSObject> obj =\n        i_isolate->factory()->NewSlowJSObjectWithPropertiesAndElements(\n            proto, properties, elements);\n    return Utils::ToLocal(obj);\n  }\n}\n"
+    },
+    {
+      "label": "Actual intrinsic array with native element handles",
+      "source_path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-existing-promise-settlement-sourceonly-20261019/authority/v8-api.v24.13.cc",
+      "source_sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "source_bytes": 489340,
+      "offset_bytes": 321926,
+      "length_bytes": 664,
+      "excerpt_sha256": "2C7351A2DF1CA2B06E764261BFA4402615FD00755D684377F148F10C7868DB5A",
+      "text": "Local<v8::Array> v8::Array::New(Isolate* v8_isolate, Local<Value>* elements,\n                                size_t length) {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(v8_isolate);\n  i::Factory* factory = i_isolate->factory();\n  API_RCS_SCOPE(i_isolate, Array, New);\n  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);\n  int len = static_cast<int>(length);\n\n  i::DirectHandle<i::FixedArray> result = factory->NewFixedArray(len);\n  for (int i = 0; i < len; i++) {\n    auto element = Utils::OpenDirectHandle(*elements[i]);\n    result->set(i, *element);\n  }\n\n  return Utils::ToLocal(\n      factory->NewJSArrayWithElements(result, i::PACKED_ELEMENTS, len));\n}\n"
+    },
+    {
+      "label": "Actual one-byte raw string factory",
+      "source_path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-captured-frame-logging-sourceonly-20261019/authority/factory-base.v24.13.cc",
+      "source_sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83",
+      "source_bytes": 57199,
+      "offset_bytes": 33601,
+      "length_bytes": 325,
+      "excerpt_sha256": "4E4020BEE17FDED530589907338D243EC0CF24BA40DC922618D4FDD69A24650E",
+      "text": "MaybeHandle<SeqOneByteString> FactoryBase<Impl>::NewRawOneByteString(\n    int length, AllocationType allocation) {\n  Tagged<Map> map = read_only_roots().seq_one_byte_string_map();\n  return NewRawStringWithMap<SeqOneByteString>(\n      length, map,\n      RefineAllocationTypeForInPlaceInternalizableString(allocation, map));\n}\n"
+    },
+    {
+      "label": "Ordinary invalid length before raw string allocation",
+      "source_path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-captured-frame-logging-sourceonly-20261019/authority/factory-base.v24.13.cc",
+      "source_sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83",
+      "source_bytes": 57199,
+      "offset_bytes": 32567,
+      "length_bytes": 1008,
+      "excerpt_sha256": "ECB556473A1E5267E9740C6C7C69FD68C9F392680658A3C67133AC412F365781",
+      "text": "MaybeHandle<SeqStringT> FactoryBase<Impl>::NewRawStringWithMap(\n    int length, Tagged<Map> map, AllocationType allocation) {\n  DCHECK(SeqStringT::IsCompatibleMap(map, read_only_roots()));\n  DCHECK_IMPLIES(!StringShape(map).IsShared(),\n                 RefineAllocationTypeForInPlaceInternalizableString(\n                     allocation, map) == allocation);\n  if (length < 0 || static_cast<uint32_t>(length) > String::kMaxLength) {\n    THROW_NEW_ERROR(isolate(), NewInvalidStringLengthError());\n  }\n  DCHECK_GT(length, 0);  // Use Factory::empty_string() instead.\n  int size = SeqStringT::SizeFor(length);\n  DCHECK_GE(ObjectTraits<SeqStringT>::kMaxSize, size);\n\n  Tagged<SeqStringT> string =\n      Cast<SeqStringT>(AllocateRawWithImmortalMap(size, allocation, map));\n  DisallowGarbageCollection no_gc;\n  string->clear_padding_destructively(length);\n  string->set_length(length);\n  string->set_raw_hash_field(String::kEmptyHashField);\n  DCHECK_EQ(size, string->Size());\n  return handle(string, isolate());\n}\n"
+    },
+    {
+      "label": "Immortal-map allocation delegates to the actual raw allocator",
+      "source_path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-captured-frame-logging-sourceonly-20261019/authority/factory-base.v24.13.cc",
+      "source_sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83",
+      "source_bytes": 57199,
+      "offset_bytes": 50977,
+      "length_bytes": 604,
+      "excerpt_sha256": "05C08FC23C1547D303782F71C711AE8F6E59E4FC8C171A10146DC8E5D6C56AF7",
+      "text": "Tagged<HeapObject> FactoryBase<Impl>::AllocateRawWithImmortalMap(\n    int size, AllocationType allocation, Tagged<Map> map,\n    AllocationAlignment alignment) {\n  // TODO(delphick): Potentially you could also pass an immortal immovable Map\n  // from OLD_SPACE here, like external_map or message_object_map, but currently\n  // no one does so this check is sufficient.\n  DCHECK(ReadOnlyHeap::Contains(map));\n  Tagged<HeapObject> result = AllocateRaw(size, allocation, alignment);\n  DisallowGarbageCollection no_gc;\n  result->set_map_after_allocation(isolate(), map, SKIP_WRITE_BARRIER);\n  return result;\n}\n"
+    },
+    {
+      "label": "Factory-base raw allocation delegates to its actual implementation",
+      "source_path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-captured-frame-logging-sourceonly-20261019/authority/factory-base.v24.13.cc",
+      "source_sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83",
+      "source_bytes": 57199,
+      "offset_bytes": 51607,
+      "length_bytes": 186,
+      "excerpt_sha256": "F05A501968FF6DAB28757DEFB03A4171507E1EDCF535820B61994E73E07B11BE",
+      "text": "Tagged<HeapObject> FactoryBase<Impl>::AllocateRaw(\n    int size, AllocationType allocation, AllocationAlignment alignment) {\n  return impl()->AllocateRaw(size, allocation, alignment);\n}\n"
+    },
+    {
+      "label": "Actual Factory raw allocator selects kRetryOrFail",
+      "source_path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-continuation-data-sourceonly-20261019/authority/src__heap__factory.cc",
+      "source_sha256": "895D8A6E8BEDE5FF80EA97DE37F765EE54F13D20E449968841C288596B851FC6",
+      "source_bytes": 203216,
+      "offset_bytes": 10925,
+      "length_bytes": 284,
+      "excerpt_sha256": "88E88C0E938AB1E16F546AFFEE34D1E0B9A1BF694CC1B97204D482F5ACCDC68C",
+      "text": "Tagged<HeapObject> Factory::AllocateRaw(int size, AllocationType allocation,\n                                        AllocationAlignment alignment) {\n  return allocator()->AllocateRawWith<HeapAllocator::kRetryOrFail>(\n      size, allocation, AllocationOrigin::kRuntime, alignment);\n}\n"
+    }
+  ],
+  "normal_continuation_packet": {
+    "path": "authority/options-native-continuation-proof.json",
+    "sha256": "EE76DEEBD36A85B080BDC571FB254F5E1A0195038DF7A676CCE75FB1769FCA00"
+  },
+  "terminal_chain_packet": {
+    "path": "../native-node-options-v24-heap-diagnosis-sourceonly-20261020/authority/native-oom-chain.json",
+    "sha256": "DB865FBF135E5FBDDBD11FE1AE25D6191A8181772C7E7576FE1F0AEBD5C492D8"
+  },
+  "scope": "Supplemental exact native API, shared allocation, and ordinary length distinction. No execution or allocation-layout equivalence claim."
+}

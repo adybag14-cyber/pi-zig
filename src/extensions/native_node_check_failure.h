@@ -22,6 +22,10 @@ typedef struct PiNodeAssertionInfo {
     const char *message;
     const char *function;
 } PiNodeAssertionInfo;
+/* Only for an actual failed intrinsic allocation whose current occurrence is
+ * established by the caller. No Error value or historical flag is accepted. */
+void pi_node_heap_out_of_memory(JSContext *context,
+                                const PiNodeFatalDiagnostics *diagnostics);
 void pi_node_maybe_check_failure(JSContext *context,
                                  const PiNodeFatalDiagnostics *diagnostics);
 void pi_node_assert_failure(JSContext *context,

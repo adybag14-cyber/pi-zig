@@ -1,0 +1,139 @@
+//! Isolated native heap-OOM controls for the genuine selected options serializers.
+//! Each negative case exhausts the actual VM heap in the original code setter;
+//! the next native intrinsic must reach Node's terminal heap-OOM owner.
+//! Positive cases retain the original bootstrap reason, flags and generation.
+const std = @import("std");
+extern fn getchar() c_int;
+const a = @import("extensions/native_node_argument_values.zig");
+const em = a.v.em;
+const c = em.c;
+const bindings = @import("extensions/native_node_options_binding.zig");
+
+const Selection = struct {
+    values: bool,
+    fail_heap: bool,
+    fn name(self: Selection) []const u8 {
+        return if (self.values) "values" else "embedder";
+    }
+};
+fn select(name: []const u8) !Selection {
+    if (std.mem.eql(u8, name, "heap-values")) return .{ .values = true, .fail_heap = true };
+    if (std.mem.eql(u8, name, "heap-embedder")) return .{ .values = false, .fail_heap = true };
+    if (std.mem.eql(u8, name, "control-values")) return .{ .values = true, .fail_heap = false };
+    if (std.mem.eql(u8, name, "control-embedder")) return .{ .values = false, .fail_heap = false };
+    return error.UnknownActualOptionsOomProbe;
+}
+const Fixture = struct {
+    engine: ?*em.Engine = null,
+    selection: Selection,
+    pair: bindings.Exports = undefined,
+    pair_ready: bool = false,
+    expected_code: c.JSValue,
+    original_reason: c.JSValue,
+    calls: u32 = 0,
+    generation_at_setter: u64 = 0,
+    occurrence_at_setter: u64 = 0,
+    fn init(self: *Fixture, allocator: std.mem.Allocator, selection: Selection) !void {
+        self.* = .{ .selection = selection,
+            .expected_code = c.pi_js_undefined(), .original_reason = c.pi_js_undefined() };
+        self.engine = try em.Engine.init(allocator, .{ .node_options = .{
+            .features = .{ .strip_types = true },
+            .values = .{ .conditions = &.{ "native-tail-first", "native-tail-last" } },
+        } });
+        errdefer self.deinit();
+        const engine = self.engine.?;
+        self.pair = try bindings.create(engine);
+        self.pair_ready = true;
+        self.expected_code = try engine.checked(c.JS_NewString(
+            engine.context, "ERR_OPTIONS_BEFORE_BOOTSTRAPPING"));
+        active = self;
+        try engine.bindFunction("actualOptionsHeapCode", recordCode, 1);
+        const setup = try engine.evalModule(
+            \\Object.defineProperty(Error.prototype,"code",{
+            \\  configurable:true,set:actualOptionsHeapCode
+            \\});
+        , "actual-node-options-heap-probe-setup.mjs");
+        engine.freeValue(setup);
+    }
+    fn deinit(self: *Fixture) void {
+        const engine = self.engine orelse return;
+        c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
+        if (c.JS_HasException(engine.context))
+            engine.freeValue(c.JS_GetException(engine.context));
+        if (self.pair_ready) {
+            self.pair_ready = false;
+            engine.freeValue(self.pair.values);
+            engine.freeValue(self.pair.embedder);
+        }
+        engine.freeValue(self.expected_code);
+        engine.freeValue(self.original_reason);
+        self.expected_code = c.pi_js_undefined();
+        self.original_reason = c.pi_js_undefined();
+        engine.deinit();
+        self.engine = null;
+        if (active == self) active = null;
+    }
+    fn call(self: *Fixture) c.JSValue {
+        const engine = self.engine.?;
+        return c.JS_Call(engine.context,
+            if (self.selection.values) self.pair.values else self.pair.embedder,
+            c.pi_js_undefined(), 0, null);
+    }
+};
+var active: ?*Fixture = null;
+fn recordCode(context: ?*c.JSContext, receiver: c.JSValue,
+    argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue
+{
+    const fixture = active orelse
+        return c.JS_ThrowInternalError(context, "actual options OOM fixture required");
+    const engine = fixture.engine.?;
+    fixture.calls += 1;
+    if (fixture.calls != 1 or argc != 1 or !c.JS_IsString(argv[0]) or
+        !c.JS_IsStrictEqual(context, argv[0], fixture.expected_code) or
+        !c.JS_IsObject(receiver) or engine.node_options.?.serialized)
+        return c.JS_ThrowInternalError(context, "unexpected options bootstrap setter state");
+    fixture.original_reason = c.JS_DupValue(context, receiver);
+    fixture.generation_at_setter = engine.native_allocation_generation;
+    fixture.occurrence_at_setter = c.JS_PiOutOfMemoryOccurrence(engine.runtime);
+    if (fixture.selection.fail_heap) {
+        // The retained process owner is already live. The VM heap alone is
+        // exhausted after the original Error/code operands exist.
+        std.debug.print("OPTIONS_HEAP_SITE:{s}\n", .{fixture.selection.name()});
+        c.JS_SetMemoryLimit(engine.runtime, 1);
+    }
+    return c.pi_js_undefined();
+}
+pub fn main(init: std.process.Init) !void {
+    // CI607 captures the live retained handle before closing redirected stdin.
+    if (getchar() != -1) return error.UnexpectedNativeProbeInput;
+    const args = try init.minimal.args.toSlice(init.arena.allocator());
+    if (args.len != 2) return error.ExpectedOneActualOptionsOomProbe;
+    const selection = try select(args[1]);
+    var fixture: Fixture = undefined;
+    try fixture.init(init.gpa, selection);
+    defer fixture.deinit();
+    const engine = fixture.engine.?;
+    const result = fixture.call();
+    defer engine.freeValue(result);
+    // A negative probe reaching this line failed the native terminal contract.
+    // Restore the heap for honest failure cleanup; never manufacture a fatal.
+    c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
+    if (selection.fail_heap) return error.UnexpectedOptionsHeapOomContinuation;
+    if (!c.JS_IsException(result) or !c.JS_HasException(engine.context))
+        return error.ExpectedActualOptionsBootstrapThrow;
+    const reason = c.JS_GetException(engine.context);
+    defer engine.freeValue(reason);
+    if (fixture.calls != 1 or
+        !c.JS_IsStrictEqual(engine.context, reason, fixture.original_reason) or
+        c.JS_IsUncatchableError(reason))
+        return error.UnexpectedOptionsBootstrapIdentity;
+    if (engine.node_options.?.serialized != selection.values)
+        return error.UnexpectedOptionsSerializationFlag;
+    if (engine.native_allocation_generation != fixture.generation_at_setter or
+        c.JS_PiOutOfMemoryOccurrence(engine.runtime) != fixture.occurrence_at_setter)
+        return error.UnexpectedOptionsSuccessfulTailAllocationFailure;
+    if (engine.native_fatal_invocation != null or c.JS_HasException(engine.context) or
+        c.JS_IsJobPending(engine.runtime))
+        return error.UnretiredOptionsProbeOwner;
+    std.debug.print("OPTIONS_HEAP_CONTROL:{s}:original-bootstrap\n", .{selection.name()});
+}

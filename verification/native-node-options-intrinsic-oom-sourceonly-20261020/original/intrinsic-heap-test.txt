@@ -1,0 +1,13 @@
+test "native actual Node options intrinsic serialization failure supersedes the ordinary bootstrap reason" {
+    inline for (.{ false, true }) |values| {
+        var fixture: TailFixture = undefined; try fixture.init(.heap); defer fixture.deinit();
+        const result = fixture.call(values);
+        fixture.restoreLimits();
+        try std.testing.expect(c.JS_IsException(result));
+        try std.testing.expect(c.JS_HasException(fixture.engine.context));
+        const reason = c.JS_GetException(fixture.engine.context);
+        defer fixture.engine.freeValue(reason);
+        try fixture.expectSetter(values);
+        try fixture.expectNewFatal(reason);
+    }
+}

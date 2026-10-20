@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "status": "source_and_finite_peers_closed_not_executed",
+  "source_only": true,
+  "current_main_at_final_verification": "901206a782dc1b324b38297b40925a0bd9af2b1e",
+  "production_delta_sha256": "2A947F5877C23CAA43D04CBD067C0913FE7D1087E5B1055C92E84A1C5826C31B",
+  "checks": [
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "current_main_preimage": "7F9BBF35B6DA22A8A8803F7776F2BE0B46B8E1E8FAF49B06407C7FC72EB6D967",
+      "after": "1D051F4154AA80DF217E5EB7E06D6173F60EA367EAABCA664E3AB8185143EE37",
+      "exact_forward_inverse": true
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.h",
+      "current_main_preimage": "72C3677CE0868972B2ACF78463A62A9910047C132C8862193FF267254D25C2F2",
+      "after": "A618BB6C25DA7E3B9C87BA6A15D97B81EDE8E2B103C242C0AADC4C52BE08A446",
+      "exact_forward_inverse": true
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "current_main_preimage": "E4C368A322B65340D70C7F48153CA898ECF0290A47696823AA557876775E114E",
+      "after": "CC49A9A415C8A1729465FB9AC71690F61FB031E3FAF79D4CACAE442A588E0C7C",
+      "exact_forward_inverse": true
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "current_main_preimage": "E1E6B701FBE6690AA25A78B1FDD9330DEE937CCAC0A3D05E19564B6B80C6BAD0",
+      "after": "E0944E5D5EB078D27E548572F4B436345DF093756771C3D9B0561B9C4BAB9B85",
+      "exact_forward_inverse": true
+    },
+    {
+      "path": "src/native_node_options_test.zig",
+      "current_main_preimage": "5D1414243D98B3850538DEF6D72BF44B029509480F739B1783EF994D199DA50B",
+      "after": "925DB6BBF503831F5F69B353F743F37A71F8D587FBB76327B2D92B40323150D1",
+      "exact_forward_inverse": true
+    }
+  ],
+  "vm_dependency": {
+    "commit": "c2eec1e2875eb0ed6954b154fd22c749e8cf8c6e",
+    "main_intake": "901206a782dc1b324b38297b40925a0bd9af2b1e",
+    "api": "uint64_t JS_PiOutOfMemoryOccurrence(JSRuntime *rt)",
+    "production_packet": "443DF72983C200CB15DFB1DE1322ED264E1A085E203478CED9BC292EFB054199",
+    "c_sha256": "6758D2A5E4F3BBBFBB784D049581C621A246ED08F20C039E93D1F3FF87438731",
+    "h_sha256": "E408EBB5D24313F29EE05BAB8A93B7AF379D1166A94E0E9A0093193A6143CA82",
+    "control_root_sha256": "938FE472EDDD5D53FC5E19BEF9558F4BE831526A30F9A5AF3B447920BAD0AA5E"
+  },
+  "peers": [
+    {
+      "owner": "modules_io",
+      "slice": "Ten exact intrinsic-tail consumer/order edits",
+      "pins": [
+        "E0944E5D",
+        "2A947F58"
+      ],
+      "closed": true
+    },
+    {
+      "owner": "vm_foundation",
+      "slice": "Native terminal C/H/Zig ABI, actual OOMErrorHandler report and abort owner",
+      "pins": [
+        "1D051F41",
+        "A618BB6C",
+        "CC49A9A4"
+      ],
+      "closed": true
+    },
+    {
+      "owner": "modules_io",
+      "slice": "Complete actual probe fixture/cases and install-only build; one-print silent successor",
+      "pins": [
+        "00898AAA",
+        "343990D2",
+        "4CDF877F",
+        "6F162D17"
+      ],
+      "closed": true
+    }
+  ],
+  "control_migration": {
+    "removed_declaration": "native actual Node options intrinsic serialization failure supersedes the ordinary bootstrap reason",
+    "original_count": 30,
+    "remaining_count": 29,
+    "remaining_names": [
+      "native actual Node options environment tokenizer preserves exact quoting and escapes",
+      "native actual Node options Engine copies native input strings and execution token lists",
+      "native actual Node options environment and exec parser preserve implication and Boolean semantics",
+      "native actual Node options failed environment capture rolls back before a real retry",
+      "native actual Node options separate empty argument differs from equals empty argument",
+      "native actual Node options binding throws the actual bootstrap Error before serialization",
+      "native actual Node options selected serializer defines fresh null prototype data records",
+      "native actual Node options ordinary declaration shapes retain original construction behavior",
+      "native actual Node options native selected values and embedder flags feed both declarations",
+      "native actual Node options lazy caches and refresh preserve the actual startup snapshot",
+      "native actual Node options computed key reentry retains its selected dictionary",
+      "native actual Node options live unauthorized predicate is strict and warning occurs once",
+      "native actual Node options warning flag precedes a failed live warning getter",
+      "native actual Node options chained receivers and selected warning callee retire at Source boundaries",
+      "native actual Node options private DATA remains ordinary through four fresh callback routes",
+      "native actual Node options successful flagged warning return remains discarded DATA",
+      "native actual Node options real warning getter fatal prevents guest continuation and catch",
+      "native actual Node options environment receiver retirement fatal prevents the warning getter",
+      "native actual Node options already current fatal prevents entry to the selected callable",
+      "native actual Node options completed private owner preserves function and configuration identity",
+      "native actual Node options successful native tails retain the explicitly thrown bootstrap identity",
+      "native actual Node options native vector allocation failure is recorded before rollback",
+      "native actual Node options admitted serializer arrays bypass inherited index setters and poisoned constructors",
+      "native actual Node options retains the real builtin process across late global replacement",
+      "native actual Node options captured process survives an actual global lexical TDZ",
+      "native actual Node options abort native field serializes without a negated V8 option entry",
+      "native actual Node options exact positive abort tokens latch the native field across later negation",
+      "native actual Node options raw V8 spelling and final VM flag remain distinct from native environment latch",
+      "native actual Node options abort V8 Boolean values and disallowed environment aliases reject before publication"
+    ],
+    "all_remaining_bodies_exact": true,
+    "preserved_config_init_preimage": "5D1414243D98B3850538DEF6D72BF44B029509480F739B1783EF994D199DA50B",
+    "native_vector_control_unchanged": true,
+    "probe_cases": [
+      "heap-values",
+      "heap-embedder",
+      "control-values",
+      "control-embedder"
+    ]
+  },
+  "build": {
+    "proposal_sha256": "6F162D179FD7DEE421B04CA7FDB0CC34C47F42D220258377CFE4DCDBB6018CE5",
+    "current_main_anchor_unique": true,
+    "exact_forward_inverse": true,
+    "install_only": true,
+    "executed": false
+  },
+  "limits": [
+    "No compilation, runtime or expected-exit result.",
+    "Only the selected serializer intrinsic tails are covered; bootstrap Error/factory allocation policy is unchanged.",
+    "Actual failed raw intrinsic and a new report occurrence are both required; no historical DATA or primitive promotion.",
+    "Default native report-disabled policy remains; nondefault report installation is separate.",
+    "Root retains process-controller execution and independent native closure ownership."
+  ],
+  "draft_metadata": "The initial production-delta status is preserved verbatim; this closure records its now-satisfied source dependencies and peers."
+}

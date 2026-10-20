@@ -1,0 +1,16 @@
+{
+  "source_only": true,
+  "reason": "Root expected-exit controller requires empty successful control output; preserve all assertions and negative markers",
+  "path": "src/native_node_options_oom_probe.zig",
+  "before_sha256": "A6C5B28EB1299948F0ED3969D4A9F8617A13E22EA0E43A7EFF5713B7248D1FA8",
+  "after_sha256": "00898AAA3E41A85AF3112487F96C92D95E9D69DFA278AB69D4853ED5D84AE955",
+  "after_bytes": 6679,
+  "edit": {
+    "before": "    std.debug.print(\"OPTIONS_HEAP_CONTROL:{s}:original-bootstrap\\n\", .{selection.name()});\n}\n",
+    "after": "}\n",
+    "count": 1
+  },
+  "cases_after_sha256": "8C1C0183857276AC08572C8D4ACC9CED87ADA3527B33D3740ADCB2B4777FDEA5",
+  "all_causal_assertions_unchanged": true,
+  "execution": false
+}

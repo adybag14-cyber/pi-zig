@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "status": "proposal_not_applied_or_executed",
+  "path": "build.zig",
+  "before_sha256": "A4C6F3CA8C98F4318C2C2CB4A571BF6856FA1925F9E97A3766F28EC0B678944B",
+  "before_bytes": 484644,
+  "anchor": "        b.step(\"build-native-node-options\", \"Install twenty actual Node options ownership and Source controls without execution\").dependOn(&b.addInstallArtifact(node_options, .{ .dest_sub_path = b.fmt(\"native-node-options{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);",
+  "replacement": "        b.step(\"build-native-node-options\", \"Install twenty actual Node options ownership and Source controls without execution\").dependOn(&b.addInstallArtifact(node_options, .{ .dest_sub_path = b.fmt(\"native-node-options{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const node_options_oom_probe = b.addExecutable(.{\n            .name = \"test\",\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_options_oom_probe.zig\"), .target = target, .optimize = optimize }),\n            .use_llvm = use_llvm,\n        });\n        node_options_oom_probe.stack_size = 16 * 1024 * 1024;\n        linkQuickJs(b, node_options_oom_probe.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_options_oom_probe.root_module, typescript_parser);\n        linkSqlite(node_options_oom_probe.root_module, sqlite_lib_dir, sqlite_library);\n        node_options_oom_probe.root_module.addImport(\"catalog_tool\", catalog_tool);\n        if (target.result.os.tag == .windows) {\n            node_options_oom_probe.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_options_oom_probe.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-options-oom-probe\", \"Install isolated actual options intrinsic heap-OOM probes without execution\").dependOn(&b.addInstallArtifact(node_options_oom_probe, .{ .dest_sub_path = b.fmt(\"native-node-options-oom-probe{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);",
+  "count": 1,
+  "added_lines": 15,
+  "reused": "same native_node_network guard; existing QuickJS, TypeScript, SQLite, catalog and Windows system libraries",
+  "cached_basename": "test",
+  "installed_basename": "native-node-options-oom-probe",
+  "run_edge": false,
+  "exact_forward_reverse": true
+}

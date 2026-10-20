@@ -1,0 +1,20 @@
+{
+  "source_only": true,
+  "reason": "Root expected-exit controller requires empty successful control output; preserve all assertions and negative markers",
+  "path": "src/native_node_options_oom_probe.zig",
+  "before_sha256": "A6C5B28EB1299948F0ED3969D4A9F8617A13E22EA0E43A7EFF5713B7248D1FA8",
+  "after_sha256": "00898AAA3E41A85AF3112487F96C92D95E9D69DFA278AB69D4853ED5D84AE955",
+  "after_bytes": 6679,
+  "edit": {
+    "before": "        return error.UnretiredOptionsProbeOwner;\n    std.debug.print(\"OPTIONS_HEAP_CONTROL:{s}:original-bootstrap\\n\", .{selection.name()});\n}\n",
+    "after": "        return error.UnretiredOptionsProbeOwner;\n}\n",
+    "count": 1
+  },
+  "cases_after_sha256": "343990D2CF9C90B0E1B9DA91FC0C9C5B41ECCB0CCAF6D1B963CF97A06C3C267B",
+  "all_causal_assertions_unchanged": true,
+  "execution": false,
+  "cases_before_path": "original/probe-cases-before-silent-controls.json",
+  "cases_before_sha256": "5BAC2A1CD891BEEB15886C10705B229472836EE3006B8768DDB3EDB3A3D3D08D",
+  "exact_forward_and_inverse": true,
+  "negative_native_frame_requirement": "Require actual native-frame content; genuine heap exhaustion may prevent JavaScript stack materialization."
+}

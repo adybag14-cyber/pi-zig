@@ -1,0 +1,158 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "status": "source_and_peers_closed_not_executed",
+  "intake": "Apply the exact production-delta blocks to the five existing Main files; add the complete standalone probe and evidence; apply build-intake once. Do not overwrite unrelated Main successors. The source occurrence dependency is already intaken.",
+  "production_files": [
+    "src/extensions/native_node_check_failure.c",
+    "src/extensions/native_node_check_failure.h",
+    "src/extensions/native_node_check_failure.zig",
+    "src/extensions/native_node_options_binding.zig",
+    "src/native_node_options_test.zig",
+    "src/native_node_options_oom_probe.zig"
+  ],
+  "files": [
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "bytes": 14444,
+      "sha256": "1D051F4154AA80DF217E5EB7E06D6173F60EA367EAABCA664E3AB8185143EE37"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.h",
+      "bytes": 1982,
+      "sha256": "A618BB6C25DA7E3B9C87BA6A15D97B81EDE8E2B103C242C0AADC4C52BE08A446"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "bytes": 2183,
+      "sha256": "CC49A9A415C8A1729465FB9AC71690F61FB031E3FAF79D4CACAE442A588E0C7C"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "bytes": 13027,
+      "sha256": "E0944E5D5EB078D27E548572F4B436345DF093756771C3D9B0561B9C4BAB9B85"
+    },
+    {
+      "path": "src/native_node_options_test.zig",
+      "bytes": 42729,
+      "sha256": "925DB6BBF503831F5F69B353F743F37A71F8D587FBB76327B2D92B40323150D1"
+    },
+    {
+      "path": "src/native_node_options_oom_probe.zig",
+      "bytes": 6679,
+      "sha256": "00898AAA3E41A85AF3112487F96C92D95E9D69DFA278AB69D4853ED5D84AE955"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/authority/options-native-continuation-proof.json",
+      "bytes": 29891,
+      "sha256": "EE76DEEBD36A85B080BDC571FB254F5E1A0195038DF7A676CCE75FB1769FCA00"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/authority/selected-intrinsic-allocation-source.json",
+      "bytes": 14683,
+      "sha256": "36B511992D4BCF9146518B3121E2127326C41A38AB2581CA4A360AE599BB6DF7"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/build-intake.json",
+      "bytes": 2436,
+      "sha256": "6F162D179FD7DEE421B04CA7FDB0CC34C47F42D220258377CFE4DCDBB6018CE5"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/closure.json",
+      "bytes": 7418,
+      "sha256": "F2B4A859FC5D7DF95B0609D980DBF538BD4968211CB48B9695E13AF7469181D5"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/dependencies/vm-oom-occurrence-production-delta.json",
+      "bytes": 3222,
+      "sha256": "443DF72983C200CB15DFB1DE1322ED264E1A085E203478CED9BC292EFB054199"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/dependencies/vm-oom-occurrence-selected-source.json",
+      "bytes": 2620,
+      "sha256": "DD1E86FFEA8A510C12FFD4F78983F2DC0471718001754C8C4E1D76355986DB29"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/intrinsic-heap-test.txt",
+      "bytes": 668,
+      "sha256": "8FC2E1EC7C5E84E8F5348E6128894C1AD3E487C8176F41021B4A7ACB2EDEEA20"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/native_node_check_failure.c.txt",
+      "bytes": 13611,
+      "sha256": "7F9BBF35B6DA22A8A8803F7776F2BE0B46B8E1E8FAF49B06407C7FC72EB6D967"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/native_node_check_failure.h.txt",
+      "bytes": 1696,
+      "sha256": "72C3677CE0868972B2ACF78463A62A9910047C132C8862193FF267254D25C2F2"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/native_node_check_failure.zig.txt",
+      "bytes": 1788,
+      "sha256": "E4C368A322B65340D70C7F48153CA898ECF0290A47696823AA557876775E114E"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/native_node_options_binding.zig.txt",
+      "bytes": 11565,
+      "sha256": "E1E6B701FBE6690AA25A78B1FDD9330DEE937CCAC0A3D05E19564B6B80C6BAD0"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/native_node_options_test.zig.txt",
+      "bytes": 43397,
+      "sha256": "5D1414243D98B3850538DEF6D72BF44B029509480F739B1783EF994D199DA50B"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/options-oom-probe-before-silent-controls.zig.txt",
+      "bytes": 6770,
+      "sha256": "A6C5B28EB1299948F0ED3969D4A9F8617A13E22EA0E43A7EFF5713B7248D1FA8"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/probe-cases-before-silent-controls.json",
+      "bytes": 2653,
+      "sha256": "5BAC2A1CD891BEEB15886C10705B229472836EE3006B8768DDB3EDB3A3D3D08D"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/silent-controls-initial-packet.json",
+      "bytes": 730,
+      "sha256": "CBD135CBAAE3D88FD2844292C140CF6EBA80A9CBB3EFBB2BB6004E3A4D5070DA"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/v24-native_node_options_test.zig.txt",
+      "bytes": 43376,
+      "sha256": "CCD1447AEF00A62D7127F6F361E49070982E34BB5F92132798EA2727BC3B6536"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/v24-options-runtime.stderr.log",
+      "bytes": 10193,
+      "sha256": "0E0F8DA92CF5776FE543AC83D2931D528678E097E41EBD65EDCA6500522432E4"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/probe-cases.json",
+      "bytes": 2791,
+      "sha256": "343990D2CF9C90B0E1B9DA91FC0C9C5B41ECCB0CCAF6D1B963CF97A06C3C267B"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/production-delta.json",
+      "bytes": 13176,
+      "sha256": "2A947F5877C23CAA43D04CBD067C0913FE7D1087E5B1055C92E84A1C5826C31B"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/README.md",
+      "bytes": 6343,
+      "sha256": "AC2D5BA5E8FDFD5C4FACC09BD16B8559B674A1922A04CBB36D0503CFD080C996"
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/silent-controls-successor.json",
+      "bytes": 1184,
+      "sha256": "4CDF877F5ADD66F469C5C3EEE180F5E34692301A6C6646204269DF4F3BAB5D7C"
+    },
+    {
+      "path": "verification/native-node-options-v24-heap-diagnosis-sourceonly-20261020/authority/native-oom-chain.json",
+      "bytes": 39373,
+      "sha256": "DB865FBF135E5FBDDBD11FE1AE25D6191A8181772C7E7576FE1F0AEBD5C492D8"
+    }
+  ],
+  "include_manifest_itself": true,
+  "runtime": false
+}

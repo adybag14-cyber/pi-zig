@@ -570,19 +570,6 @@ test "native actual Node options successful native tails retain the explicitly t
         try std.testing.expectEqual(fixture.probe.generation_at_setter, fixture.engine.native_allocation_generation);
     }
 }
-test "native actual Node options intrinsic serialization failure supersedes the ordinary bootstrap reason" {
-    inline for (.{ false, true }) |values| {
-        var fixture: TailFixture = undefined; try fixture.init(.heap); defer fixture.deinit();
-        const result = fixture.call(values);
-        fixture.restoreLimits();
-        try std.testing.expect(c.JS_IsException(result));
-        try std.testing.expect(c.JS_HasException(fixture.engine.context));
-        const reason = c.JS_GetException(fixture.engine.context);
-        defer fixture.engine.freeValue(reason);
-        try fixture.expectSetter(values);
-        try fixture.expectNewFatal(reason);
-    }
-}
 test "native actual Node options native vector allocation failure is recorded before rollback" {
     var fixture: TailFixture = undefined; try fixture.init(.native_vector); defer fixture.deinit();
     const result = fixture.call(true);

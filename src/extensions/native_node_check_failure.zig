@@ -13,12 +13,19 @@ pub const AssertionInfo = extern struct {
     message: [*:0]const u8,
     function: ?[*:0]const u8,
 };
+extern fn pi_node_heap_out_of_memory(?*c.JSContext, ?*const Diagnostics) void;
 extern fn pi_node_maybe_check_failure(?*c.JSContext, ?*const Diagnostics) void;
 extern fn pi_node_default_fatal_error(?*c.JSContext, ?[*:0]const u8,
     [*:0]const u8, ?*const Diagnostics) void;
 extern fn pi_node_assert_failure(?*c.JSContext, *const AssertionInfo) void;
 extern fn pi_node_corrupted_async_stack(?*c.JSContext, f64, f64, c_int) void;
 
+/// The caller proves a new actual failed intrinsic allocation. This is the
+/// selected original native heap OOM handler, before operand rollback.
+pub fn heapOutOfMemory(engine: *em.Engine, diagnostics: ?*const Diagnostics) noreturn {
+    pi_node_heap_out_of_memory(engine.context, diagnostics);
+    unreachable;
+}
 pub fn maybeCheck(engine: *em.Engine, diagnostics: ?*const Diagnostics) noreturn {
     pi_node_maybe_check_failure(engine.context, diagnostics);
     unreachable;

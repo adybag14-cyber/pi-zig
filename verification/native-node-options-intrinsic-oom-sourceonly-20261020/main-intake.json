@@ -1,0 +1,407 @@
+{
+  "schema": 1,
+  "status": "reviewed_source_only_intake",
+  "utc": "2026-10-20T13:12:20.951643+00:00",
+  "main_parent": "901206a782dc1b324b38297b40925a0bd9af2b1e",
+  "donor_commit": "ea805bb217893b0df1ab722fd536c0bc2c894c71",
+  "source_only": true,
+  "native_execution": false,
+  "qualification": false,
+  "manifest_sha256": "54465520BF79A4555049F8B3A357C975A51A8F72016F975152836879DFF871DF",
+  "closure_sha256": "F2B4A859FC5D7DF95B0609D980DBF538BD4968211CB48B9695E13AF7469181D5",
+  "production_packet_sha256": "2A947F5877C23CAA43D04CBD067C0913FE7D1087E5B1055C92E84A1C5826C31B",
+  "production_files": [
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "edits": [
+        {
+          "label": "Native terminal OOM latch uses the original atomic store",
+          "offset": 431,
+          "before_sha256": "DD1E65241020275E480C9F023566AD3D27CAD42DFAC5D4D1B9C176732D1EEDE5",
+          "after_sha256": "3FFC52B63A00C0B1117C24277ECD65C8D5AF2FDFC8A023C16FE5EAD3D6034629"
+        },
+        {
+          "label": "One native process OOM latch, never reset",
+          "offset": 962,
+          "before_sha256": "D133891009D36B33B621DD78D2017C719B1EFB8E8F249FB46181A6943F0612F9",
+          "after_sha256": "917BEA8B84680563F4C15EA5C8F0943E11AEF5AAE926A465726752B7DD37C759"
+        },
+        {
+          "label": "Actual fixed heap OOM handler, report trigger and native abort",
+          "offset": 12192,
+          "before_sha256": "E94C156BD73588FED7307FA136B2A62AEF8DA59EC3FDFE14EA10C05F15ED6346",
+          "after_sha256": "0AB693F4E0DF8BE96B5A9AF63B6CB604D50D692451ABF13E8E2006CA433EE15B"
+        }
+      ],
+      "before_sha256": "7F9BBF35B6DA22A8A8803F7776F2BE0B46B8E1E8FAF49B06407C7FC72EB6D967",
+      "after_sha256": "1D051F4154AA80DF217E5EB7E06D6173F60EA367EAABCA664E3AB8185143EE37"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.h",
+      "edits": [
+        {
+          "label": "Narrow native heap OOM ABI",
+          "offset": 1069,
+          "before_sha256": "E94C156BD73588FED7307FA136B2A62AEF8DA59EC3FDFE14EA10C05F15ED6346",
+          "after_sha256": "ED7C76F55F9C76B658E58F019525E646647F613BFF0F55974CD49611AB35DAAE"
+        }
+      ],
+      "before_sha256": "72C3677CE0868972B2ACF78463A62A9910047C132C8862193FF267254D25C2F2",
+      "after_sha256": "A618BB6C25DA7E3B9C87BA6A15D97B81EDE8E2B103C242C0AADC4C52BE08A446"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "edits": [
+        {
+          "label": "Declare actual C OOM terminal owner",
+          "offset": 591,
+          "before_sha256": "1BA7F2948992AA373E66ABFC87B45505EFB7E06865527DC89571A0884F83CEE0",
+          "after_sha256": "A18487C35164AA7220CEC3B3FD5F240CC10DC874487FA04DBC0362D235862949"
+        },
+        {
+          "label": "Expose only the selected terminal allocation entry",
+          "offset": 1020,
+          "before_sha256": "4F40638A363BA2506AF129B3419B57007BE16146F510296A01C180705BD4D499",
+          "after_sha256": "3E68F7C1AF556B96E4513287E5E31F8518EF5C275F82D81062FDC934A8BEAADA"
+        }
+      ],
+      "before_sha256": "E4C368A322B65340D70C7F48153CA898ECF0290A47696823AA557876775E114E",
+      "after_sha256": "CC49A9A415C8A1729465FB9AC71690F61FB031E3FAF79D4CACAE442A588E0C7C"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "edits": [
+        {
+          "label": "Bracket only admitted non-guest intrinsic allocation",
+          "offset": 918,
+          "before_sha256": "ED6FD5C71C500395172D48110175745005B2A5994726D9FCB6445C824E3420EC",
+          "after_sha256": "37AA7515B9D68905A05394C9DFF8D03CFC283DF25E7540FF204A6DA483EA0764"
+        },
+        {
+          "label": "Check actual atom allocation before atom rollback",
+          "offset": 2379,
+          "before_sha256": "4D60ACB53685B1D248EA48C4A604F0EC8279B109755C62EF8DD5A082C9D6272E",
+          "after_sha256": "1DC7FAB0C8060D6DB36E37941E7653B958BCDADA2E3D82F039C12641B76A50FE"
+        },
+        {
+          "label": "Check fresh native property definition before pending capture",
+          "offset": 2853,
+          "before_sha256": "5D28510A15963777674B3BA2B65206916B57EC082F675C23665C01129EF41300",
+          "after_sha256": "9219C702324D0BA690F23A73DA88F62319E12A144C33BCC2DA63E51CA32C6C99"
+        },
+        {
+          "label": "Actual null-prototype native object allocation",
+          "offset": 3379,
+          "before_sha256": "341038EB695185B71432381A64C725F6175FD10FC09F7686DC83D7AA9B7A5D0F",
+          "after_sha256": "4D6F1AB22CD0597166B21E1409797951C2300D6FA9A6F9A2420FDC85C61B4AE2"
+        },
+        {
+          "label": "Actual name string allocation in native field order",
+          "offset": 5079,
+          "before_sha256": "2C4EBC8AFB903CA11247978B10C61081B645E06B1DCAB08737F39B52C469CEA5",
+          "after_sha256": "1548809D449F37EF8F16898A9DC9916ABE733D9402D259CAD98A46BEEF7BC73E"
+        },
+        {
+          "label": "Native string vector retains original per-string order",
+          "offset": 5697,
+          "before_sha256": "AF2FFA0CD08B90618908665D0DD4EEA9C5DAC689726C54F06808A8C4A353B840",
+          "after_sha256": "C383300E679A45B3F0D91B06106ED1787FAD3F9868DB572DF9C72DD19E0D1663"
+        },
+        {
+          "label": "Consuming native array failure is terminal before caller rollback",
+          "offset": 6068,
+          "before_sha256": "2C36EB03BEA6DB3553B11779CEE1991032FC8086EAE2AE3EF7CCA69A6A66CA01",
+          "after_sha256": "B27A29C2F814AD4E0B13FA838C9EF59B76AA348962DE24E87B6F970697C5C4FC"
+        },
+        {
+          "label": "Actual native string-valued option",
+          "offset": 6534,
+          "before_sha256": "C90BDCDDE0F15FA52B9591186379DB254255BD28D4500C3A96889A96C2EFE308",
+          "after_sha256": "80708697376CBB03B595F3AADF1B8DC3C64896AEFC586AD7491776DBBFECAA8C"
+        },
+        {
+          "label": "Actual native host string before cached names",
+          "offset": 10042,
+          "before_sha256": "05BEA3E66B1812579D429437A64075FDF9332EA5F9DAD6BB3F1753D9C38E1A2B",
+          "after_sha256": "2BBAC0ECB6CC4E74DE039F5BBF3459B621401DA00B417F957B8047DEB04F355C"
+        },
+        {
+          "label": "Actual embedder names before final object",
+          "offset": 11063,
+          "before_sha256": "B42C3D150589BCBD3CC31097D6AA4363D6FDDCE2D8C2141AEC0ACC4BC30FF1D5",
+          "after_sha256": "05AEB8AC683E500D2163EE0BBCAE07381EE57C4D47BA56E61968E3E9FD02E71A"
+        }
+      ],
+      "before_sha256": "E1E6B701FBE6690AA25A78B1FDD9330DEE937CCAC0A3D05E19564B6B80C6BAD0",
+      "after_sha256": "E0944E5D5EB078D27E548572F4B436345DF093756771C3D9B0561B9C4BAB9B85"
+    },
+    {
+      "path": "src/native_node_options_test.zig",
+      "edits": [
+        {
+          "label": "Migrate only impossible in-process heap oracle to real fatal subprocess cases",
+          "offset": 34053,
+          "before_sha256": "F4CF6AB153D0F2E525F4BDBB12B6672BE43BBE7FD5F78072B29C10BCDC8790CB",
+          "after_sha256": "0B133498A461CDA55C9CD1FC4C70169536958CE871CE7A40972910C57E987295"
+        }
+      ],
+      "before_sha256": "5D1414243D98B3850538DEF6D72BF44B029509480F739B1783EF994D199DA50B",
+      "after_sha256": "925DB6BBF503831F5F69B353F743F37A71F8D587FBB76327B2D92B40323150D1"
+    }
+  ],
+  "build_edits": [
+    {
+      "label": null,
+      "offset": 473268,
+      "before_sha256": "BF71873C9D8C75F7CA0EF0E89535C4BD60E81A555FD02ADB2455C5B5CC8A04DF",
+      "after_sha256": "7640C96518E4EC3DF86327EDD249A3D2FE1B790D53406B046090F1069C827B31"
+    }
+  ],
+  "build_added_lines": 15,
+  "declared_tests_before": 30,
+  "declared_tests_after": 29,
+  "migrated_declaration": "native actual Node options intrinsic serialization failure supersedes the ordinary bootstrap reason",
+  "isolated_probe_cases": [
+    {
+      "name": "heap-values",
+      "expected_windows_exit_code": 134,
+      "expected_posix_signal": "SIGABRT",
+      "required_stderr": [
+        "OPTIONS_HEAP_SITE:values",
+        "FATAL ERROR: CALL_AND_RETRY_LAST Allocation failed - JavaScript heap out of memory",
+        "----- Native stack trace -----"
+      ],
+      "forbidden_stderr": [
+        "OPTIONS_HEAP_CONTROL:",
+        "UnexpectedOptionsHeapOomContinuation"
+      ],
+      "require_native_stack_frames": true,
+      "require_javascript_stack_frames": false
+    },
+    {
+      "name": "heap-embedder",
+      "expected_windows_exit_code": 134,
+      "expected_posix_signal": "SIGABRT",
+      "required_stderr": [
+        "OPTIONS_HEAP_SITE:embedder",
+        "FATAL ERROR: CALL_AND_RETRY_LAST Allocation failed - JavaScript heap out of memory",
+        "----- Native stack trace -----"
+      ],
+      "forbidden_stderr": [
+        "OPTIONS_HEAP_CONTROL:",
+        "UnexpectedOptionsHeapOomContinuation"
+      ],
+      "require_native_stack_frames": true,
+      "require_javascript_stack_frames": false
+    },
+    {
+      "name": "control-values",
+      "expected_exit_code": 0,
+      "required_stderr": [],
+      "forbidden_stderr": [
+        "FATAL ERROR:",
+        "OPTIONS_HEAP_SITE:"
+      ],
+      "require_empty_stdout_stderr": true
+    },
+    {
+      "name": "control-embedder",
+      "expected_exit_code": 0,
+      "required_stderr": [],
+      "forbidden_stderr": [
+        "FATAL ERROR:",
+        "OPTIONS_HEAP_SITE:"
+      ],
+      "require_empty_stdout_stderr": true
+    }
+  ],
+  "vm_occurrence_intake": "verification/native-oom-occurrence-sourceonly-20261020/main-intake.json",
+  "preserved_dependencies": {
+    "vendor/quickjs/quickjs.c": "86EE97602BAD77F3CD094F0EF326919E2E7A5E8FEBE4247486A2B86851C670C2",
+    "vendor/quickjs/quickjs.h": "7DD0189F0143D448CD3678FB1B415D200BFA36610371EF87A16B84BBA4871DC3",
+    "src/extensions/engine.zig": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+  },
+  "limits": "Actual current failed non-guest intrinsic plus new OOM occurrence selects native handler. Remaining29 in-process assertions preserved; original full root and negative retained. Four expected-exit probes require separate artifact/process acceptance. No runtime or application qualification.",
+  "files": [
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "bytes": 14444,
+      "sha256": "1D051F4154AA80DF217E5EB7E06D6173F60EA367EAABCA664E3AB8185143EE37",
+      "before_sha256": "7F9BBF35B6DA22A8A8803F7776F2BE0B46B8E1E8FAF49B06407C7FC72EB6D967"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.h",
+      "bytes": 1982,
+      "sha256": "A618BB6C25DA7E3B9C87BA6A15D97B81EDE8E2B103C242C0AADC4C52BE08A446",
+      "before_sha256": "72C3677CE0868972B2ACF78463A62A9910047C132C8862193FF267254D25C2F2"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "bytes": 2183,
+      "sha256": "CC49A9A415C8A1729465FB9AC71690F61FB031E3FAF79D4CACAE442A588E0C7C",
+      "before_sha256": "E4C368A322B65340D70C7F48153CA898ECF0290A47696823AA557876775E114E"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "bytes": 13027,
+      "sha256": "E0944E5D5EB078D27E548572F4B436345DF093756771C3D9B0561B9C4BAB9B85",
+      "before_sha256": "E1E6B701FBE6690AA25A78B1FDD9330DEE937CCAC0A3D05E19564B6B80C6BAD0"
+    },
+    {
+      "path": "src/native_node_options_test.zig",
+      "bytes": 42729,
+      "sha256": "925DB6BBF503831F5F69B353F743F37A71F8D587FBB76327B2D92B40323150D1",
+      "before_sha256": "5D1414243D98B3850538DEF6D72BF44B029509480F739B1783EF994D199DA50B"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 486960,
+      "sha256": "30348C988F824617E52EE47ECF64099D537582F8255E1B47C994820AA7814A62",
+      "before_sha256": "7C14FCEC4B022922E4AFF4D8724C549344E641A33D906F789B06D16B3970CA0D"
+    },
+    {
+      "path": "src/native_node_options_oom_probe.zig",
+      "bytes": 6679,
+      "sha256": "00898AAA3E41A85AF3112487F96C92D95E9D69DFA278AB69D4853ED5D84AE955",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/README.md",
+      "bytes": 6343,
+      "sha256": "AC2D5BA5E8FDFD5C4FACC09BD16B8559B674A1922A04CBB36D0503CFD080C996",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/authority/options-native-continuation-proof.json",
+      "bytes": 29891,
+      "sha256": "EE76DEEBD36A85B080BDC571FB254F5E1A0195038DF7A676CCE75FB1769FCA00",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/authority/selected-intrinsic-allocation-source.json",
+      "bytes": 14683,
+      "sha256": "36B511992D4BCF9146518B3121E2127326C41A38AB2581CA4A360AE599BB6DF7",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/build-intake.json",
+      "bytes": 2436,
+      "sha256": "6F162D179FD7DEE421B04CA7FDB0CC34C47F42D220258377CFE4DCDBB6018CE5",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/closure.json",
+      "bytes": 7418,
+      "sha256": "F2B4A859FC5D7DF95B0609D980DBF538BD4968211CB48B9695E13AF7469181D5",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/dependencies/vm-oom-occurrence-production-delta.json",
+      "bytes": 3222,
+      "sha256": "443DF72983C200CB15DFB1DE1322ED264E1A085E203478CED9BC292EFB054199",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/dependencies/vm-oom-occurrence-selected-source.json",
+      "bytes": 2620,
+      "sha256": "DD1E86FFEA8A510C12FFD4F78983F2DC0471718001754C8C4E1D76355986DB29",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/intake-manifest.json",
+      "bytes": 7064,
+      "sha256": "54465520BF79A4555049F8B3A357C975A51A8F72016F975152836879DFF871DF",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/intrinsic-heap-test.txt",
+      "bytes": 668,
+      "sha256": "8FC2E1EC7C5E84E8F5348E6128894C1AD3E487C8176F41021B4A7ACB2EDEEA20",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/native_node_check_failure.c.txt",
+      "bytes": 13611,
+      "sha256": "7F9BBF35B6DA22A8A8803F7776F2BE0B46B8E1E8FAF49B06407C7FC72EB6D967",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/native_node_check_failure.h.txt",
+      "bytes": 1696,
+      "sha256": "72C3677CE0868972B2ACF78463A62A9910047C132C8862193FF267254D25C2F2",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/native_node_check_failure.zig.txt",
+      "bytes": 1788,
+      "sha256": "E4C368A322B65340D70C7F48153CA898ECF0290A47696823AA557876775E114E",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/native_node_options_binding.zig.txt",
+      "bytes": 11565,
+      "sha256": "E1E6B701FBE6690AA25A78B1FDD9330DEE937CCAC0A3D05E19564B6B80C6BAD0",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/native_node_options_test.zig.txt",
+      "bytes": 43397,
+      "sha256": "5D1414243D98B3850538DEF6D72BF44B029509480F739B1783EF994D199DA50B",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/options-oom-probe-before-silent-controls.zig.txt",
+      "bytes": 6770,
+      "sha256": "A6C5B28EB1299948F0ED3969D4A9F8617A13E22EA0E43A7EFF5713B7248D1FA8",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/probe-cases-before-silent-controls.json",
+      "bytes": 2653,
+      "sha256": "5BAC2A1CD891BEEB15886C10705B229472836EE3006B8768DDB3EDB3A3D3D08D",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/silent-controls-initial-packet.json",
+      "bytes": 730,
+      "sha256": "CBD135CBAAE3D88FD2844292C140CF6EBA80A9CBB3EFBB2BB6004E3A4D5070DA",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/v24-native_node_options_test.zig.txt",
+      "bytes": 43376,
+      "sha256": "CCD1447AEF00A62D7127F6F361E49070982E34BB5F92132798EA2727BC3B6536",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/original/v24-options-runtime.stderr.log",
+      "bytes": 10193,
+      "sha256": "0E0F8DA92CF5776FE543AC83D2931D528678E097E41EBD65EDCA6500522432E4",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/probe-cases.json",
+      "bytes": 2791,
+      "sha256": "343990D2CF9C90B0E1B9DA91FC0C9C5B41ECCB0CCAF6D1B963CF97A06C3C267B",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/production-delta.json",
+      "bytes": 13176,
+      "sha256": "2A947F5877C23CAA43D04CBD067C0913FE7D1087E5B1055C92E84A1C5826C31B",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-intrinsic-oom-sourceonly-20261020/silent-controls-successor.json",
+      "bytes": 1184,
+      "sha256": "4CDF877F5ADD66F469C5C3EEE180F5E34692301A6C6646204269DF4F3BAB5D7C",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-node-options-v24-heap-diagnosis-sourceonly-20261020/authority/native-oom-chain.json",
+      "bytes": 39373,
+      "sha256": "DB865FBF135E5FBDDBD11FE1AE25D6191A8181772C7E7576FE1F0AEBD5C492D8",
+      "before_sha256": null
+    }
+  ]
+}
