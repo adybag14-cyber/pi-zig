@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "status": "finite source-only compiler correction; SDK peer closed",
+  "baseline_sha256": "58ba66b19117a442dfe16569eb73410b33580ca8eaa3b0db51956e3f011e4bb4",
+  "successor_sha256": "3e810eec16228e216a9a40f817c2b1e58d6b4aabfc923597ff9e3fcf16a2fd90",
+  "path": "src/extensions/native_node_options_binding.zig",
+  "before_bytes": 11227,
+  "after_bytes": 11277,
+  "changes": [
+    {
+      "count": 2,
+      "before": "_ = a.raise(s, try bootstrapReason(s));",
+      "after": "@as(anyerror!void, a.raise(s, try bootstrapReason(s))) catch {};"
+    }
+  ],
+  "exact_reversal_verified": true,
+  "authority": {
+    "raise": "native_node_argument_values.zig 8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9: raise returns bare anyerror from JS_Throw/rejectOwned",
+    "scope": "native_node_operation_scope.zig 28808680485687FCFE1481EA40E9F459C13F6966452FC3C63BC602CEC5F50CE3"
+  },
+  "reason": "Consume the error-set value through an explicit void error union. The original boundary continues owning the explicit throw while the intrinsic native tail retains all existing pending/fatal checks.",
+  "tests_and_fixtures_changed": false,
+  "native_execution": false,
+  "peer": {
+    "reviewer": "sdk_owners",
+    "scope": "exact two-site error-result consumption, original bare-error contract and complete reversal",
+    "native_execution": false
+  }
+}
