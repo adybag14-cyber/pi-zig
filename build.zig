@@ -4774,6 +4774,22 @@ pub fn build(b: *std.Build) void {
         }
         b.step("build-native-node-experimental-warning", "Install seventeen actual Node experimental warning controls without execution").dependOn(&b.addInstallArtifact(experimental_warning, .{ .dest_sub_path = b.fmt("native-node-experimental-warning{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
     }
+    if (native_node_network != null) {
+        const commonjs_helpers = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_commonjs_helpers_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native actual CommonJS helpers"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, commonjs_helpers.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, commonjs_helpers.root_module, typescript_parser);
+        linkSqlite(commonjs_helpers.root_module, sqlite_lib_dir, sqlite_library);
+        commonjs_helpers.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            commonjs_helpers.root_module.linkSystemLibrary("advapi32", .{});
+            commonjs_helpers.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-commonjs-helpers", "Install twenty-four actual CommonJS helper controls without execution").dependOn(&b.addInstallArtifact(commonjs_helpers, .{ .dest_sub_path = b.fmt("native-node-commonjs-helpers{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    }
+
 
 }
 

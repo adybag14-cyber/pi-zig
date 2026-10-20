@@ -1,0 +1,271 @@
+{
+  "schema": 1,
+  "status": "finite source peers closed; authored controls and install-only target; no execution",
+  "owned_parent": "03a9a488c689297ea3fecb31766ec16f10829466",
+  "selected_owner": "Actual CommonJS helpers toRealPath/initializeCjsConditions/getCjsConditions/getCjsConditionsArray",
+  "files": [
+    {
+      "path": "src/extensions/native_node_commonjs_helpers.zig",
+      "bytes": 12755,
+      "sha256": "06311AB5D0860DFE2E782B0A76F35594D6981D140C5EC23C537558D9B3D228A3"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_helpers_bootstrap.zig",
+      "bytes": 3544,
+      "sha256": "7AC01C6655AB8F20E66A277D50F5A6F90E6F26184D7F5B7F287D561D3604F8A5"
+    },
+    {
+      "path": "src/extensions/native_node_module_constructor.zig",
+      "bytes": 29849,
+      "sha256": "7D61665F890E56E73F921D4A4B6B9F8A70D75AD21BF75AE665EFC9C98C73BB07"
+    },
+    {
+      "path": "src/native_node_commonjs_helpers_test.zig",
+      "bytes": 21476,
+      "sha256": "37DD7ED5B6F80D0BB740DA0D6976CB8EC91360F722244C8D492872F9EE916EE9"
+    },
+    {
+      "path": "src/extensions/fixtures/native-node-commonjs-helpers-source.mjs",
+      "bytes": 1751,
+      "sha256": "0CE617F01E14DD83809D1709094444A44D3B43FBB7403749626EBF24F3A1636A"
+    },
+    {
+      "path": "src/extensions/fixtures/native-node-commonjs-helpers-observer.mjs",
+      "bytes": 21288,
+      "sha256": "2A7EAFFD5AD1153B479DA201CCA70952DFDA336219DE6FA7EF0F9BA9146F34C7"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_module_core.zig",
+      "bytes": 4518,
+      "sha256": "3430093711662E683544D718DB8D44DD636F556A6156B9C761D47D56A4B4E258"
+    },
+    {
+      "path": "src/extensions/native_node_operation_scope.zig",
+      "bytes": 6967,
+      "sha256": "28808680485687FCFE1481EA40E9F459C13F6966452FC3C63BC602CEC5F50CE3"
+    },
+    {
+      "path": "src/extensions/native_node_argument_values.zig",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+    },
+    {
+      "path": "verification/node-commonjs-helpers-sourceonly-20261020/build-intake.json",
+      "bytes": 1870,
+      "sha256": "9C89AF5E719C3687891210C66ED5BDC452E43CF8161F08608B913B9FA3868D94"
+    }
+  ],
+  "build": {
+    "path": "build.zig",
+    "bytes": 393193,
+    "sha256": "5C5B9C167CED779EDD1E812CA7EAF3B21DF601C37AF10EF195CC923051AFC760",
+    "baseline_sha256": "895B96E35110A223A76288401A6AC2F18D00D2156E3250B855B2E4620A0E0DBB",
+    "added_lines": 16,
+    "target": "build-native-node-commonjs-helpers",
+    "filter": "native actual CommonJS helpers",
+    "run_step": false
+  },
+  "authority": {
+    "path": "verification/node-module-constructor-sourceonly-20261016/authority/lib__internal__modules__helpers.js.txt",
+    "bytes": 15131,
+    "sha256": "A6DC622FC53AC9D7D99EE95B54E7EC146384F3B35A6DFFFE22D828FA98C1565D"
+  },
+  "constructor_delta": {
+    "baseline_sha256": "92B12A8FA4542B0D091BD08BFECA8F8B1F0DF846440CDA82228D32356F882488",
+    "successor_sha256": "7D61665F890E56E73F921D4A4B6B9F8A70D75AD21BF75AE665EFC9C98C73BB07",
+    "exact_reversible_edit": {
+      "start_character": 6796,
+      "before": "",
+      "after": "    const safe_map = try s.own(try @import(\"native_node_fs_collections.zig\").acquireSafeMap(s.engine));\n    const safe_set = try s.own(try @import(\"native_node_fs_collections.zig\").acquireSafeSet(s.engine));\n    try define(s, owner, \"safeMap\", safe_map);\n    try define(s, owner, \"safeSet\", safe_set);\n    try define(s, owner, \"objectFreeze\", try method(s, try global(s, \"Object\"), \"freeze\"));\n"
+    }
+  },
+  "dependencies": {
+    "publication": {
+      "path": "src/extensions/native_node_fs_private_publication.zig",
+      "bytes": 1033,
+      "sha256": "F118D857DB722708344B87083608FEFEB769183BC0DB0F09C05D1CDCF87AB307"
+    },
+    "owned_node_scope": {
+      "path": "src/extensions/native_node_operation_scope.zig",
+      "bytes": 6967,
+      "sha256": "28808680485687FCFE1481EA40E9F459C13F6966452FC3C63BC602CEC5F50CE3"
+    },
+    "main_node_scope": {
+      "path": "C:/Users/adyba/pi-zig/main/src/extensions/native_node_operation_scope.zig",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+      "reconciliation": "Root independently reviewed normalized parameter-only object-to-receiver rename and raw newline differences; distinct raw pins preserved."
+    },
+    "argument_values": {
+      "path": "src/extensions/native_node_argument_values.zig",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+    },
+    "module_core": {
+      "path": "src/extensions/native_node_commonjs_module_core.zig",
+      "bytes": 4518,
+      "sha256": "3430093711662E683544D718DB8D44DD636F556A6156B9C761D47D56A4B4E258"
+    }
+  },
+  "controls": {
+    "authored_declarations": 24,
+    "names": [
+      {
+        "declaration": 1,
+        "name": "native actual CommonJS helpers ordinary function descriptors and actual construction"
+      },
+      {
+        "declaration": 2,
+        "name": "native actual CommonJS helpers raw condition order freeze and real SafeSet identities"
+      },
+      {
+        "declaration": 3,
+        "name": "native actual CommonJS helpers lazy cells and explicit reinitialization retain separate snapshots"
+      },
+      {
+        "declaration": 4,
+        "name": "native actual CommonJS helpers option spread flag freeze and Set iterable order"
+      },
+      {
+        "declaration": 5,
+        "name": "native actual CommonJS helpers spread failure precedes assignment and lazy retry"
+      },
+      {
+        "declaration": 6,
+        "name": "native actual CommonJS helpers flag failure preserves assigned unfrozen array"
+      },
+      {
+        "declaration": 7,
+        "name": "native actual CommonJS helpers live push failure occurs before freeze and Set"
+      },
+      {
+        "declaration": 8,
+        "name": "native actual CommonJS helpers real SafeSet failure follows freezing and permits retry"
+      },
+      {
+        "declaration": 9,
+        "name": "native actual CommonJS helpers realpath selects live fs before raw computed cache key"
+      },
+      {
+        "declaration": 10,
+        "name": "native actual CommonJS helpers computed key getter and conversion failures prevent selected call"
+      },
+      {
+        "declaration": 11,
+        "name": "native actual CommonJS helpers first late acquisition uses original captured primordials"
+      },
+      {
+        "declaration": 12,
+        "name": "native actual CommonJS helpers ordinary private DATA preserves six fresh failure identities"
+      },
+      {
+        "declaration": 13,
+        "name": "native actual CommonJS helpers successful flagged fs result remains returned DATA"
+      },
+      {
+        "declaration": 14,
+        "name": "native actual CommonJS helpers original user and addon locals survive final Set call"
+      },
+      {
+        "declaration": 15,
+        "name": "native actual CommonJS helpers flag predicate holder retires before live push getter"
+      },
+      {
+        "declaration": 16,
+        "name": "native actual CommonJS helpers raw computed key holder retires before real fs call"
+      },
+      {
+        "declaration": 17,
+        "name": "native actual CommonJS helpers selected fs callee retires before caller continuation"
+      },
+      {
+        "declaration": 18,
+        "name": "native actual CommonJS helpers failed reinitialization retains previous Set and new partial array"
+      },
+      {
+        "declaration": 19,
+        "name": "native actual CommonJS helpers completed owner delegates to the actual physical classic realpath"
+      },
+      {
+        "declaration": 20,
+        "name": "native actual CommonJS helpers retained options declaration observes genuine refresh"
+      },
+      {
+        "declaration": 21,
+        "name": "native actual CommonJS helpers actual option fatal prevents later body and guest catch"
+      },
+      {
+        "declaration": 22,
+        "name": "native actual CommonJS helpers actual flag retirement fatal prevents push and guest catch"
+      },
+      {
+        "declaration": 23,
+        "name": "native actual CommonJS helpers actual key retirement fatal prevents fs call and guest catch"
+      },
+      {
+        "declaration": 24,
+        "name": "native actual CommonJS helpers current fatal prevents original callable entry"
+      }
+    ],
+    "source_native": "Fresh linked-engine Source/native fixture per ordinary branch; exact original selected Source and same genuine imports.",
+    "physical": "Declaration19 creates a contained real temporary file and calls actual classic realpath twice.",
+    "fatal": "Actual native first-fatal producer and retained own-data host progress; no guest evaluation after failure."
+  },
+  "finite_peers": {
+    "sdk": {
+      "helper_conditions": "closed on06311AB5 earlier",
+      "bootstrap_and_constructor": "closed on7AC01C66/7D61665F",
+      "controls": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        18,
+        20
+      ],
+      "control_status": "closed",
+      "control_receipt": "SDK reviewed declarations 1–8/18/20 against exact helpers A6DC622F and strict fixture 0CE617F0; source-only closure."
+    },
+    "vm": {
+      "helper_owner_and_toRealPath": "closed on06311AB5 earlier",
+      "controls": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        21,
+        22,
+        23,
+        24
+      ],
+      "fixture_probe_status": "closed",
+      "control_status": "closed",
+      "control_receipt": "VM reviewed Fixture/Probe and declarations 12–17/21–24 against the genuine shared imports and exact fatal owner; source-only closure."
+    },
+    "root": {
+      "controls": [
+        9,
+        10,
+        11,
+        19
+      ],
+      "build_added_lines": 16,
+      "status": "closed",
+      "receipt_path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/verification/node-commonjs-helpers-root-peer-20261020/receipt.json",
+      "receipt_sha256": "66429DD4B318B195684DFA159DAECE2F97429BFC42F4A03DB28C0DED5336D0E7"
+    }
+  },
+  "limits": [
+    "No native compile, metadata query, Node reference execution, generated-source execution, or runtime qualification occurred for this unit.",
+    "The selected Node24.14 CJS helper basis is separate from retained Node24.13 filesystem and V8 dependencies; this does not assert whole-version equivalence.",
+    "This private composition is a real dependency of the actual loader; it does not publish or qualify the complete public CommonJS loader/Jiti graph.",
+    "Original V17/V18b negative evidence remains unchanged.",
+    "V19 ended in a separately retained options-binding compiler failure before this new Helpers unit was intaken. No execution claim derives from that cohort."
+  ]
+}

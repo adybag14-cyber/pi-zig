@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "status": "exact selected original Source projection; no execution",
+  "basis": "Node v24.14 retained internal/modules/helpers.js; FS/Stream providers retain their independently pinned Node24.13 basis",
+  "authority": {
+    "path": "verification/node-module-constructor-sourceonly-20261016/authority/lib__internal__modules__helpers.js.txt",
+    "bytes": 15131,
+    "sha256": "A6DC622FC53AC9D7D99EE95B54E7EC146384F3B35A6DFFFE22D828FA98C1565D"
+  },
+  "source_fixture": {
+    "path": "src/extensions/fixtures/native-node-commonjs-helpers-source.mjs",
+    "bytes": 1751,
+    "sha256": "0CE617F01E14DD83809D1709094444A44D3B43FBB7403749626EBF24F3A1636A"
+  },
+  "decoded_character_range": {
+    "start": 1665,
+    "end_exclusive": 3117
+  },
+  "fixture_selected_start": 208,
+  "selected_verbatim_text": "const realpathCache = new SafeMap();\n/**\n * Resolves the path of a given `require` specifier, following symlinks.\n * @param {string} requestPath The `require` specifier\n * @returns {string}\n */\nfunction toRealPath(requestPath) {\n  return fs.realpathSync(requestPath, {\n    [internalFS.realpathCacheKey]: realpathCache,\n  });\n}\n\n/** @type {Set<string>} */\nlet cjsConditions;\n/** @type {string[]} */\nlet cjsConditionsArray;\n\n/**\n * Define the conditions that apply to the CommonJS loader.\n * @returns {void}\n */\nfunction initializeCjsConditions() {\n  const userConditions = getOptionValue('--conditions');\n  const noAddons = getOptionValue('--no-addons');\n  const addonConditions = noAddons ? [] : ['node-addons'];\n  // TODO: Use this set when resolving pkg#exports conditions in loader.js.\n  cjsConditionsArray = [\n    'require',\n    'node',\n    ...addonConditions,\n    ...userConditions,\n  ];\n  if (getOptionValue('--experimental-require-module')) {\n    cjsConditionsArray.push('module-sync');\n  }\n  ObjectFreeze(cjsConditionsArray);\n  cjsConditions = new SafeSet(cjsConditionsArray);\n}\n\n/**\n * Get the conditions that apply to the CommonJS loader.\n * @returns {Set<string>}\n */\nfunction getCjsConditions() {\n  if (cjsConditions === undefined) {\n    initializeCjsConditions();\n  }\n  return cjsConditions;\n}\n\nfunction getCjsConditionsArray() {\n  if (cjsConditionsArray === undefined) {\n    initializeCjsConditions();\n  }\n  return cjsConditionsArray;\n}\n\n",
+  "added_prefix": "// Selected verbatim Node v24.14 helpers.js declarations; real imports supplied by the fixture.\nexport function createCommonJSHelpersSource({fs, internalFS, SafeMap, SafeSet, ObjectFreeze, getOptionValue}) {\n",
+  "added_suffix": "return { toRealPath, initializeCjsConditions, getCjsConditions, getCjsConditionsArray };\n}\n",
+  "transformations": [
+    "Wrap the unchanged contiguous selected declarations in an exported test factory.",
+    "Supply actual lexical fs/internalFS/SafeMap/SafeSet/ObjectFreeze/getOptionValue imports from the same real owner graph used by native.",
+    "Return the four actual declarations for observation."
+  ],
+  "algorithm_rewrites": false,
+  "execution": false
+}
