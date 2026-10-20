@@ -118,6 +118,18 @@ test "native Radius provider ordinary declaration has actual name length and con
         \\radiusProviderCheck(p.id==="constructed","ordinary constructor returns actual provider object");
     );
 }
+test "native Radius provider ordinary prototype materializes with original descriptors and identity" {
+    try both(
+        \\const f=radiusProviderMake(radiusProviderMinimalImports());
+        \\const descriptor=Object.getOwnPropertyDescriptor(f,"prototype");
+        \\radiusProviderCheck(descriptor.writable&&!descriptor.enumerable&&!descriptor.configurable,"ordinary prototype descriptor");
+        \\const prototype=descriptor.value,constructor=Object.getOwnPropertyDescriptor(prototype,"constructor");
+        \\radiusProviderCheck(f.prototype===prototype&&Object.getPrototypeOf(prototype)===Object.prototype,"original prototype identity and inheritance");
+        \\radiusProviderCheck(constructor.value===f&&constructor.writable&&!constructor.enumerable&&constructor.configurable,"original constructor backedge descriptor");
+        \\const replacement={replacement:true};f.prototype=replacement;
+        \\radiusProviderCheck(f.prototype===replacement,"original writable prototype replacement");
+    );
+}
 test "native Radius provider option getters and gateway normalization retain Source order" {
     try compare("observeRadiusProviderOrdinary", .{"option-ordered","option-id-throw","option-name-throw","option-gateway-throw","normalize-first-throw","normalize-second-throw"});
 }

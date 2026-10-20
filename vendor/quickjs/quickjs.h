@@ -1217,6 +1217,8 @@ JS_EXTERN bool JS_IsFunction(JSContext* ctx, JSValueConst val);
 JS_EXTERN bool JS_IsAsyncFunction(JSValueConst val);
 JS_EXTERN bool JS_IsConstructor(JSContext* ctx, JSValueConst val);
 JS_EXTERN bool JS_SetConstructorBit(JSContext *ctx, JSValueConst func_obj, bool val);
+/* Borrow a fresh actual native constructor; lazily define its own prototype. */
+JS_EXTERN int JS_PiDefineOrdinaryFunctionPrototype(JSContext *ctx, JSValueConst function);
 
 JS_EXTERN bool JS_IsRegExp(JSValueConst val);
 JS_EXTERN bool JS_IsMap(JSValueConst val);

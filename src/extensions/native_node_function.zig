@@ -110,10 +110,8 @@ fn createKind(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: 
     if (c.JS_DefinePropertyValueStr(engine.context, function, "length", c.JS_NewInt32(engine.context, length), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, function, "name", try engine.checked(c.JS_NewString(engine.context, name)), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     if (constructible) {
-        const instance_prototype = try js.object(engine);
-        defer engine.freeValue(instance_prototype);
-        if (c.JS_DefinePropertyValueStr(engine.context, instance_prototype, "constructor", c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
-        if (c.JS_DefinePropertyValueStr(engine.context, function, "prototype", c.JS_DupValue(engine.context, instance_prototype), c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+        if (c.JS_PiDefineOrdinaryFunctionPrototype(engine.context, function) < 0) return js.capture(engine);
+        try engine.checkNativeEntry();
     }
     return function;
 }
@@ -190,9 +188,10 @@ fn createArgumentBody(scope: *NodeScope, name: [*:0]const u8, length: c_int, arg
     try scope.define(function, "length", c.JS_NewInt32(engine.context, length), c.JS_PROP_CONFIGURABLE);
     try scope.define(function, "name", try scope.text(std.mem.span(name)), c.JS_PROP_CONFIGURABLE);
     if (constructible) {
-        const instance_prototype = try scope.object();
-        try scope.define(instance_prototype, "constructor", function, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE);
-        try scope.define(function, "prototype", instance_prototype, c.JS_PROP_WRITABLE);
+        const prototype_generation = try scope.beforeAllocation();
+        const status = c.JS_PiDefineOrdinaryFunctionPrototype(engine.context, function);
+        try scope.boundary.checkPendingSince(prototype_generation);
+        if (status < 0) return error.MissingActualNodeFunctionPrototypeReason;
     }
     return c.JS_DupValue(engine.context, function);
 }

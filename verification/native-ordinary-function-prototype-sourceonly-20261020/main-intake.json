@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "status": "source_only_pending_native_validation",
+  "candidate_base_head": "463910ddbcc290cb99d843d727ba2fd9e02a95ab",
+  "donor_commit": "28844feb38b6aad2760d72837071c8b998391884",
+  "packet_sha256": "0B1E329F9F567C6AF0EBAEAFC24E778E9C2067DBBCF0AD9C427CC96F1A09A121",
+  "peer_closure_sha256": "D7913F9C981A0A38842DA16F265C0C054B997CE1185285897F045E5956F22648",
+  "integrated_utc": "2026-10-20T12:40:06.306671+00:00",
+  "steps": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before_sha256": "469AB4C517E29A6FD88DAE2EF45BBBF96D309C2DAA35179BF92DD53C04C71CC0",
+      "after_sha256": "D051392A2FC5557D29ECC7CF4C54950EDA163821DF302C7CC53DC70296764B65",
+      "offset": 641350,
+      "before": "static const uint16_t func_kind_to_class_id[] = {",
+      "after": "/* Native ordinary functions use the same lazy own prototype as bytecode\n   declarations. An unused factory must not acquire a constructor backedge. */\nint JS_PiDefineOrdinaryFunctionPrototype(JSContext *ctx, JSValueConst function)\n{\n    JSObject *p;\n    JSProperty *pr;\n\n    if (JS_HasException(ctx))\n        return -1;\n    if (!JS_IsConstructor(ctx, function)) {\n        JS_ThrowTypeError(ctx, \"ordinary native constructor required\");\n        return -1;\n    }\n    p = JS_VALUE_GET_OBJ(function);\n    if (find_own_property(&pr, p, JS_ATOM_prototype)) {\n        JS_ThrowTypeError(ctx, \"ordinary function prototype already defined\");\n        return -1;\n    }\n    return JS_DefineAutoInitProperty(ctx, function, JS_ATOM_prototype,\n                                    JS_AUTOINIT_ID_PROTOTYPE, NULL,\n                                    JS_PROP_WRITABLE);\n}\n\nstatic const uint16_t func_kind_to_class_id[] = {"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before_sha256": "64BC8FB4BE41391606B1AC72976585D5B75C21A7F916B3B475C7A98AE00BCC54",
+      "after_sha256": "8CEC97C3D562550425747E8AA7848F3A4DFE45AFC5FF4D9E89283A4120289591",
+      "offset": 56929,
+      "before": "JS_EXTERN bool JS_SetConstructorBit(JSContext *ctx, JSValueConst func_obj, bool val);\n",
+      "after": "JS_EXTERN bool JS_SetConstructorBit(JSContext *ctx, JSValueConst func_obj, bool val);\n/* Borrow a fresh actual native constructor; lazily define its own prototype. */\nJS_EXTERN int JS_PiDefineOrdinaryFunctionPrototype(JSContext *ctx, JSValueConst function);\n"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "before_sha256": "6683D5D3934E56DDA41200DD9AAF86474FDA901B5F5CD7033218EC0AC82CFE52",
+      "after_sha256": "BBF2AF3AC7E701B8366C84E9316F49F6897F9FF8E7B49A746317E884AF7177E6",
+      "offset": 7872,
+      "before": "    if (constructible) {\n        const instance_prototype = try js.object(engine);\n        defer engine.freeValue(instance_prototype);\n        if (c.JS_DefinePropertyValueStr(engine.context, instance_prototype, \"constructor\", c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);\n        if (c.JS_DefinePropertyValueStr(engine.context, function, \"prototype\", c.JS_DupValue(engine.context, instance_prototype), c.JS_PROP_WRITABLE) < 0) return js.capture(engine);\n    }",
+      "after": "    if (constructible) {\n        if (c.JS_PiDefineOrdinaryFunctionPrototype(engine.context, function) < 0) return js.capture(engine);\n        try engine.checkNativeEntry();\n    }"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "before_sha256": "BBF2AF3AC7E701B8366C84E9316F49F6897F9FF8E7B49A746317E884AF7177E6",
+      "after_sha256": "232E0F858F21DD002C2FEB6B65C62486EB6DA113F7463B2DD60CC799B3369007",
+      "offset": 13732,
+      "before": "    if (constructible) {\n        const instance_prototype = try scope.object();\n        try scope.define(instance_prototype, \"constructor\", function, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE);\n        try scope.define(function, \"prototype\", instance_prototype, c.JS_PROP_WRITABLE);\n    }",
+      "after": "    if (constructible) {\n        const prototype_generation = try scope.beforeAllocation();\n        const status = c.JS_PiDefineOrdinaryFunctionPrototype(engine.context, function);\n        try scope.boundary.checkPendingSince(prototype_generation);\n        if (status < 0) return error.MissingActualNodeFunctionPrototypeReason;\n    }"
+    },
+    {
+      "path": "src/native_ai_radius_provider_genuine_af_test.zig",
+      "before_sha256": "82DD978A5DBBB3C269D2A121101712F83F676FA84208FD0E7728C6CE1CAD0E43",
+      "after_sha256": "9A76786FFE9530CBCFFD517E05B78AB548FCDA49AA219577DDE5DBDCF0950476",
+      "offset": 6228,
+      "before": "test \"native Radius provider option getters and gateway normalization retain Source order\" {",
+      "after": "test \"native Radius provider ordinary prototype materializes with original descriptors and identity\" {\n    try both(\n        \\\\const f=radiusProviderMake(radiusProviderMinimalImports());\n        \\\\const descriptor=Object.getOwnPropertyDescriptor(f,\"prototype\");\n        \\\\radiusProviderCheck(descriptor.writable&&!descriptor.enumerable&&!descriptor.configurable,\"ordinary prototype descriptor\");\n        \\\\const prototype=descriptor.value,constructor=Object.getOwnPropertyDescriptor(prototype,\"constructor\");\n        \\\\radiusProviderCheck(f.prototype===prototype&&Object.getPrototypeOf(prototype)===Object.prototype,\"original prototype identity and inheritance\");\n        \\\\radiusProviderCheck(constructor.value===f&&constructor.writable&&!constructor.enumerable&&constructor.configurable,\"original constructor backedge descriptor\");\n        \\\\const replacement={replacement:true};f.prototype=replacement;\n        \\\\radiusProviderCheck(f.prototype===replacement,\"original writable prototype replacement\");\n    );\n}\ntest \"native Radius provider option getters and gateway normalization retain Source order\" {"
+    }
+  ],
+  "changes": {
+    "src/extensions/native_node_function.zig": {
+      "before_sha256": "6683D5D3934E56DDA41200DD9AAF86474FDA901B5F5CD7033218EC0AC82CFE52",
+      "after_sha256": "232E0F858F21DD002C2FEB6B65C62486EB6DA113F7463B2DD60CC799B3369007",
+      "bytes": 14120
+    },
+    "src/native_ai_radius_provider_genuine_af_test.zig": {
+      "before_sha256": "82DD978A5DBBB3C269D2A121101712F83F676FA84208FD0E7728C6CE1CAD0E43",
+      "after_sha256": "9A76786FFE9530CBCFFD517E05B78AB548FCDA49AA219577DDE5DBDCF0950476",
+      "bytes": 16547
+    },
+    "vendor/quickjs/quickjs.c": {
+      "before_sha256": "469AB4C517E29A6FD88DAE2EF45BBBF96D309C2DAA35179BF92DD53C04C71CC0",
+      "after_sha256": "D051392A2FC5557D29ECC7CF4C54950EDA163821DF302C7CC53DC70296764B65",
+      "bytes": 2364600
+    },
+    "vendor/quickjs/quickjs.h": {
+      "before_sha256": "64BC8FB4BE41391606B1AC72976585D5B75C21A7F916B3B475C7A98AE00BCC54",
+      "after_sha256": "8CEC97C3D562550425747E8AA7848F3A4DFE45AFC5FF4D9E89283A4120289591",
+      "bytes": 104943
+    }
+  },
+  "exact_full_inverse": true,
+  "original_controls_preserved": 27,
+  "successor_controls": 28,
+  "preserved_main_private_property_and_termination": true,
+  "native_execution": false,
+  "qualification": false
+}

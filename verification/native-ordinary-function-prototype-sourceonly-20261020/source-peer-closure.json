@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "status": "closed_source_only",
+  "packet_sha256": "0B1E329F9F567C6AF0EBAEAFC24E778E9C2067DBBCF0AD9C427CC96F1A09A121",
+  "reviewed_files": {
+    "src/extensions/native_node_function.zig": {
+      "before_bytes": 14346,
+      "before_sha256": "469B1CFE5B3C589881533EA38EA45163BE4282C29234B11EDAA82DA1F557B73B",
+      "after_bytes": 14036,
+      "after_sha256": "059B7A18548071D365765F8179C7F5C1455FF3F64132B2FCA11FA251EB732CFD"
+    },
+    "src/native_ai_radius_provider_genuine_af_test.zig": {
+      "before_bytes": 15532,
+      "before_sha256": "82DD978A5DBBB3C269D2A121101712F83F676FA84208FD0E7728C6CE1CAD0E43",
+      "after_bytes": 16547,
+      "after_sha256": "9A76786FFE9530CBCFFD517E05B78AB548FCDA49AA219577DDE5DBDCF0950476"
+    },
+    "vendor/quickjs/quickjs.c": {
+      "before_bytes": 2344986,
+      "before_sha256": "007524CB5AE21DB10D1EDDC4F3A3A687107108AAF8168C22543A6AC6620B46CA",
+      "after_bytes": 2345841,
+      "after_sha256": "0B00C43F7BC4DB367BBA3D8ECF725A9AD605C240073BC3173B469321D4FC4B25"
+    },
+    "vendor/quickjs/quickjs.h": {
+      "before_bytes": 99798,
+      "before_sha256": "31135048FB0EC404549BF3F95A52A629B9836BDBE85DB5C4DE50D9186A27AA79",
+      "after_bytes": 99970,
+      "after_sha256": "60D799BEEB66C9A452F8C5ECB112E3690DF2C004BBE20AFE358C4ED95381B7EF"
+    }
+  },
+  "peers": [
+    {
+      "owner": "/root/vm_foundation",
+      "status": "CLOSED",
+      "scope": "Exact C/H insertion; actual JS_DefineAutoInitProperty, js_instantiate_prototype and js_closure read. Borrowed real constructor receives original lazy intrinsic property. Actual forward/inverse on Main0075/3113 closed; disjoint termination, private setter and receiver retirement. No stale Root C/H replacement."
+    },
+    {
+      "owner": "/root/sdk_owners",
+      "status": "CLOSED",
+      "scope": "Exact two Zig creation replacements and descriptor control. Actual constructor-bit publication precedes bridge. Legacy failure retires attached function; argument path checks exact allocation span before status. Source/native descriptor identity, original Object.prototype, constructor flags and writable replacement. All27 original declarations/bodies exact. Forward/inverse and both anchors unique on Main6683; ExecutionTerminated gateway preserved."
+    }
+  ],
+  "native_execution": false,
+  "qualification": false,
+  "limits": [
+    "Existing V24 baseline lifetime failure must pass on a freshly built successor.",
+    "Original packet and base snapshots remain unchanged; integration uses exact edits over current Main."
+  ]
+}

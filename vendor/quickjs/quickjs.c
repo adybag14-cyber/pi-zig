@@ -19397,6 +19397,29 @@ static JSValue js_instantiate_prototype(JSContext *ctx, JSObject *p, JSAtom atom
     return obj;
 }
 
+/* Native ordinary functions use the same lazy own prototype as bytecode
+   declarations. An unused factory must not acquire a constructor backedge. */
+int JS_PiDefineOrdinaryFunctionPrototype(JSContext *ctx, JSValueConst function)
+{
+    JSObject *p;
+    JSProperty *pr;
+
+    if (JS_HasException(ctx))
+        return -1;
+    if (!JS_IsConstructor(ctx, function)) {
+        JS_ThrowTypeError(ctx, "ordinary native constructor required");
+        return -1;
+    }
+    p = JS_VALUE_GET_OBJ(function);
+    if (find_own_property(&pr, p, JS_ATOM_prototype)) {
+        JS_ThrowTypeError(ctx, "ordinary function prototype already defined");
+        return -1;
+    }
+    return JS_DefineAutoInitProperty(ctx, function, JS_ATOM_prototype,
+                                    JS_AUTOINIT_ID_PROTOTYPE, NULL,
+                                    JS_PROP_WRITABLE);
+}
+
 static const uint16_t func_kind_to_class_id[] = {
     [JS_FUNC_NORMAL] = JS_CLASS_BYTECODE_FUNCTION,
     [JS_FUNC_GENERATOR] = JS_CLASS_GENERATOR_FUNCTION,
