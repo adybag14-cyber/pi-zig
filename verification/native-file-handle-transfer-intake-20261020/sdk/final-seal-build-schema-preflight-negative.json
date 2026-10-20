@@ -1,0 +1,8 @@
+{
+  "source_only": true,
+  "result": "Static seal rejected an unsupported metadata schema before writing its final checks or proposal.",
+  "error": "KeyError edits: accepted constructor build packet uses singular edit.old_text/new_text.",
+  "correction": "Explicit schema-bound in-memory normalization of that exact one-hunk packet; original byte offset, exact original/projected source, full inverse and all supplied source bytes remain checked. No original packet is rewritten.",
+  "production_modified": false,
+  "native_executed": false
+}

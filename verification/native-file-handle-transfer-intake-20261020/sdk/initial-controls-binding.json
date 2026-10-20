@@ -1,0 +1,18 @@
+{
+  "source_only": true,
+  "files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_file_handle_transfer_test.zig",
+      "bytes": 23716,
+      "sha256": "E7078422445393AAA062AB3FBF092A3921FCF514D28796C33F45E169F21EB02C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\controls\\src\\native_node_file_handle_transfer_test.zig",
+      "bytes": 23716,
+      "sha256": "E7078422445393AAA062AB3FBF092A3921FCF514D28796C33F45E169F21EB02C"
+    }
+  ],
+  "source_declared_controls": 13,
+  "compiler_executed": false,
+  "native_executed": false
+}

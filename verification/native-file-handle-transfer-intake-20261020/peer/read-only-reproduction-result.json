@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "status": "independent_read_only_exact_transfer_proofs_reproduced",
+  "candidate_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "main_clean_at_read_lease_close": true,
+  "read_lease_closed_utc": "2026-10-20T21:41:55.162865+00:00",
+  "bookend_provenance": "Exact head and clean Main assertions both passed immediately before the separately retained evidence-serialization KeyError; no subsequent Main reads were made. Parent notified read lease closed.",
+  "source_only": true,
+  "read_only_adaptations": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-transfer-source-peer-20261020\\Reproduce-TransferInventory-ReadOnly.py",
+      "bytes": 10116,
+      "sha256": "7C31267863BE4DC12A3900E5B3387CBC69BD7626D7F8A0431F92EB1A4BBF4C38"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-transfer-source-peer-20261020\\Reproduce-TransferFinalProof-ReadOnly.py",
+      "bytes": 8917,
+      "sha256": "426C35DE9FE26B5ED3C30C81C8AA3DA67F58C71B7045E97700C95DB490C4EBC1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-transfer-source-peer-20261020\\read-only-reproduction-adaptation.json",
+      "bytes": 7725,
+      "sha256": "A3180457EA545F88A260192CF3DFD58DAE2C1CA29B8E4BC8B80BD790A4DA0CA3"
+    }
+  ],
+  "tool_results": {
+    "inventory": {
+      "ok": true,
+      "summary": "Ran python directly in the Windows host devbox.",
+      "data": {
+        "execution": {
+          "queue_wait_ms": 1,
+          "slot": 9
+        },
+        "output": {
+          "mode": "tail",
+          "max_chars": 5000,
+          "max_lines": 0,
+          "stdout_original_chars": 721,
+          "stderr_original_chars": 0,
+          "stdout_capture_truncated": false,
+          "stderr_capture_truncated": false
+        }
+      },
+      "stdout": "{\r\n  \"build\": {\r\n    \"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\sdk-owners-resume-20261018\\\\verification\\\\native-file-handle-transfer-sourceonly-20261020\\\\build\\\\proposal.json\",\r\n    \"bytes\": 4151,\r\n    \"sha256\": \"D662D5DF7D2C21CD8376666E120CAEEA8BB46E0518C5B3560E6A97522D6BB212\"\r\n  },\r\n  \"inventory\": {\r\n    \"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\sdk-owners-resume-20261018\\\\verification\\\\native-file-handle-transfer-sourceonly-20261020\\\\dependency-inventory.json\",\r\n    \"bytes\": 1071301,\r\n    \"sha256\": \"E5CDD1A8EA432B0DB68766619E6B5704C290608D3B42F8F696DEB8718A3DF823\"\r\n  },\r\n  \"module_count\": 711,\r\n  \"embed_count\": 243,\r\n  \"edge_count\": 4354,\r\n  \"anonymous_count\": 8,\r\n  \"source_declared_controls\": 13\r\n}\r\n",
+      "exitCode": 0,
+      "truncated": false
+    },
+    "final_proof": {
+      "ok": true,
+      "summary": "Ran python directly in the Windows host devbox.",
+      "data": {
+        "execution": {
+          "queue_wait_ms": 1,
+          "slot": 9
+        },
+        "output": {
+          "mode": "tail",
+          "max_chars": 5000,
+          "max_lines": 0,
+          "stdout_original_chars": 450,
+          "stderr_original_chars": 0,
+          "stdout_capture_truncated": false,
+          "stderr_capture_truncated": false
+        }
+      },
+      "stdout": "{\r\n  \"checks\": {\r\n    \"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\sdk-owners-resume-20261018\\\\verification\\\\native-file-handle-transfer-sourceonly-20261020\\\\source-only-checks.json\",\r\n    \"bytes\": 248196,\r\n    \"sha256\": \"8DE3BD5881A5480E619B3898D5888127146E0CF8A0C03753C46E681B617586A1\"\r\n  },\r\n  \"verified_unique_files\": 1078,\r\n  \"source_declared_controls\": 13,\r\n  \"all_46_excerpts_exact\": true,\r\n  \"combined_inverse\": true,\r\n  \"writes\": false\r\n}\r\n",
+      "exitCode": 0,
+      "truncated": false
+    }
+  },
+  "whole_inventory_bytes": 1071301,
+  "whole_inventory_sha256": "E5CDD1A8EA432B0DB68766619E6B5704C290608D3B42F8F696DEB8718A3DF823",
+  "whole_final_proof_bytes": 248196,
+  "whole_final_proof_sha256": "8DE3BD5881A5480E619B3898D5888127146E0CF8A0C03753C46E681B617586A1",
+  "verified_unique_files": 1078,
+  "modules": 711,
+  "embeds": 243,
+  "literal_import_occurrences": 4354,
+  "distinct_import_edges": 3340,
+  "anonymous_source_declarations": 8,
+  "named_source_declarations": 13,
+  "all46_excerpts_exact": true,
+  "build_and_fixture_finite_forward_inverses": true,
+  "three_layer_build_full_inverse": true,
+  "retained_receipt_serialization_negative": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"<string>\", line 6, in <module>\r\n    results=json.loads(sys.argv[1]);assert all(z['exitCode']==0 and z['stderr']=='' and z['truncated'] is False for z in results.values())\r\n                                           ^^^\r\n  File \"<string>\", line 6, in <genexpr>\r\n    results=json.loads(sys.argv[1]);assert all(z['exitCode']==0 and z['stderr']=='' and z['truncated'] is False for z in results.values())\r\n                                                                    ~^^^^^^^^^^\r\nKeyError: 'stderr'",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"<string>\", line 6, in <module>\r\n    results=json.loads(sys.argv[1]);assert all(z['exitCode']==0 and z['stderr']=='' and z['truncated'] is False for z in results.values())\r\n                                           ^^^\r\n  File \"<string>\", line 6, in <genexpr>\r\n    results=json.loads(sys.argv[1]);assert all(z['exitCode']==0 and z['stderr']=='' and z['truncated'] is False for z in results.values())\r\n                                                                    ~^^^^^^^^^^\r\nKeyError: 'stderr'\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "receipt_only_correction": "Successful tool results omit optional stderr; use get(stderr, empty) and independently require recorded stderr_original_chars==0. Neither proof was changed or rerun.",
+  "donor_outputs_changed": false,
+  "main_mutated": false,
+  "compiler_executed": false,
+  "runtime_executed": false,
+  "source_release": false,
+  "qualification": false
+}

@@ -1,0 +1,9 @@
+{
+  "source_only": true,
+  "rejected_range": "native_node_diagnostic_context.hpp lines 1-25",
+  "actual_file_lines": 23,
+  "correction": "Use the exact full 1-23 line file range. Original source and all assertions remain unchanged.",
+  "source_map_written_before_rejection": false,
+  "production_modified": false,
+  "native_executed": false
+}

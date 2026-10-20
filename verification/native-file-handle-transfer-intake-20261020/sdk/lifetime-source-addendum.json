@@ -1,0 +1,32 @@
+{
+  "schema": "pi-zig.file-handle-transfer-post-engine-lifetime-source-addendum.v1",
+  "source_only": true,
+  "source_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\source-map.json",
+    "bytes": 99336,
+    "sha256": "654378AFE03EE9DD2B649EDBF38622726DB44D296AE0ED413DB695A338C4F2FB"
+  },
+  "exact_engine_retirement_excerpt": {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\support\\src\\extensions\\engine.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    "first_line": 403,
+    "last_line": 409,
+    "bytes": 384,
+    "sha256": "644B3483CC9EC4DF5F952645575A0AD3926C52B37E35F14E42BC56E753C69891",
+    "text": "        self.freeValue(self.commonjs_cache);\n        c.JS_FreeContext(self.context);\n        c.JS_FreeRuntime(self.runtime);\n        @import(\"native_typebox_continuation.zig\").deinitAfterRuntime(self);\n        @import(\"native_durable_storage.zig\").deinit(self);\n        if (self.node_options) |config| config.destroy();\n        c.pi_js_release_memory_owner(self.native_memory_owner);\n"
+  },
+  "causal_chain": [
+    "Engine tears down the actual Context and Runtime before releasing its native-memory-owner entitlement.",
+    "Native TransferData allocation owns an additional prefix entitlement from pi_simd::allocate; it does not retain Engine or JS objects.",
+    "pi_simd::release reads only its prefix memory_owner and charge, frees the allocation, decrements actual atomic memory accounting, and releases its own domain entitlement.",
+    "The final atomic domain release destroys the domain only when the actual reference count reaches zero. The packet can therefore retire after Engine on a different thread with context=NULL.",
+    "StrongHandle is a distinct receiver-thread BaseObjectPtr edge over the existing State; it does not share the native descriptor packet cross-thread freedom."
+  ],
+  "qualification": "Source derivation and unexecuted focused controls only. Actual native execution remains separately gated.",
+  "production_modified": false,
+  "compiler_executed": false,
+  "native_executed": false
+}

@@ -1,0 +1,301 @@
+{
+  "schema": "pi-zig.file-handle-transfer-production-source-proposal.v1",
+  "created_utc": "2026-10-20T21:08:50.024189+00:00",
+  "comparison_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "qualification": "Finite new native FileHandle descriptor transfer source and thirteen unexecuted controls, ready for independent source review. No full FileHandle, worker broker, compiler or runtime acceptance.",
+  "selected_new_sources": [
+    {
+      "relative_path": "src/extensions/native_node_file_handle_transfer.h",
+      "kind": "new_production",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_transfer.h",
+        "bytes": 2307,
+        "sha256": "1A90649959DECCDE24ECFDD15AEC6EEDB03DA88333C48D4D0F2BDB1C020CF91C"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_transfer.h",
+        "bytes": 2307,
+        "sha256": "1A90649959DECCDE24ECFDD15AEC6EEDB03DA88333C48D4D0F2BDB1C020CF91C"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_transfer.cpp",
+      "kind": "new_production",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_transfer.cpp",
+        "bytes": 3857,
+        "sha256": "543B895047E5DCA9B9C8B9761180B80D7A7C59A4B4EE544E97F9A2E41BA43E1A"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_transfer.cpp",
+        "bytes": 3857,
+        "sha256": "543B895047E5DCA9B9C8B9761180B80D7A7C59A4B4EE544E97F9A2E41BA43E1A"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_transfer.zig",
+      "kind": "new_production",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_transfer.zig",
+        "bytes": 6335,
+        "sha256": "A69A902FBA95862F2922C71F0069BED4DD9B2596B780F618D74FB608CBEFC9F6"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_transfer.zig",
+        "bytes": 6335,
+        "sha256": "A69A902FBA95862F2922C71F0069BED4DD9B2596B780F618D74FB608CBEFC9F6"
+      }
+    },
+    {
+      "relative_path": "src/native_node_file_handle_transfer_test.zig",
+      "kind": "new_control",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_file_handle_transfer_test.zig",
+        "bytes": 23797,
+        "sha256": "E5656DE3AEC771F144939E5852CC7161B1B0499D4764A3F2E0BF42460570C5B1"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\controls-selected\\src\\native_node_file_handle_transfer_test.zig",
+        "bytes": 23797,
+        "sha256": "E5656DE3AEC771F144939E5852CC7161B1B0499D4764A3F2E0BF42460570C5B1"
+      }
+    }
+  ],
+  "new_production_paths": 3,
+  "new_control_paths": 1,
+  "existing_source_paths_modified": 0,
+  "shared_State_Handle_Registry_template_edits": 0,
+  "source_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\source-map.json",
+    "bytes": 99336,
+    "sha256": "654378AFE03EE9DD2B649EDBF38622726DB44D296AE0ED413DB695A338C4F2FB"
+  },
+  "additive_post_engine_lifetime_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\lifetime-source-addendum.json",
+    "bytes": 2331,
+    "sha256": "F84E05DE64B3C8B39FDB63268C902317ED2DE528D2FB1FE541CFE60AC10439D2"
+  },
+  "dependency_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\dependency-inventory.json",
+    "bytes": 1071301,
+    "sha256": "E5CDD1A8EA432B0DB68766619E6B5704C290608D3B42F8F696DEB8718A3DF823"
+  },
+  "source_only_checks": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\source-only-checks.json",
+    "bytes": 248196,
+    "sha256": "8DE3BD5881A5480E619B3898D5888127146E0CF8A0C03753C46E681B617586A1"
+  },
+  "exact_install_only_build_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\build\\proposal.json",
+    "bytes": 4151,
+    "sha256": "D662D5DF7D2C21CD8376666E120CAEEA8BB46E0518C5B3560E6A97522D6BB212"
+  },
+  "build_integration": "One new install-only block in build.zig. The artifact directly compiles this production C++ owner and the existing diagnostic C TLS owner, then links the existing genuine QuickJS/network/native-memory graph. No production tracing or worker bootstrap is installed.",
+  "required_accepted_owner_source_cohort": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\handoff.json",
+    "bytes": 14557,
+    "sha256": "A9D4A4D0BAC91764B52A9EE87BE7C555C2C8C61FCEB9FC87E7282A169700AD73"
+  },
+  "owner_dependency_packets": {
+    "original_owner_packet": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production-proposal.json",
+      "bytes": 14361,
+      "sha256": "061258BF1085004B82EA8D1A9C237402F7D4075A4DE837F9C25B7D39D0D3A804"
+    },
+    "shared_projection": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\proposal.json",
+      "bytes": 18499,
+      "sha256": "C195AE5D402ED457AF651D6BEB37B2BB8DBD3DF36CD74106EB172F00B64618FC"
+    },
+    "corrected_CloseReq_packet": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\proposal.json",
+      "bytes": 14602,
+      "sha256": "BA6543E47B33A5D994AD097FBF0CBC58A6E35F262DF42FFE5909D9A736118319"
+    },
+    "corrected_FSReqPromise_packet": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\proposal.json",
+      "bytes": 12997,
+      "sha256": "08F45EF3D26E4D2CBB8A5FA3A144E635AB6DA9B64B486871F7B1D102F6488B56"
+    },
+    "selected_CloseReq_sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A",
+    "selected_FSReqPromise_sha256": "8EFC2D58C1B1BD5069777FE1D06618F4572F54EEDAC09265EAD26BE8E675A4DF",
+    "inventory": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\dependency-inventory.json",
+      "bytes": 567445,
+      "sha256": "56BFF251AD680CE3B5B4E7D4D979CFDA2FA41345BC958432273007DAFD2330D1"
+    },
+    "source_map": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\source-map.json",
+      "bytes": 21972,
+      "sha256": "5E36100728A32C4ACC09F1D53BF11BC90102E506B581C8496DA9F1185749EBCA"
+    }
+  },
+  "not_required_but_composition_checked_constructor_packet": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-vm-error-constructor-name-sourceonly-20261020\\production-proposal.json",
+    "bytes": 14336,
+    "sha256": "B1C179FE0FE38E0F6FC1FB1BF351FE62ED4D85E90FBEED1DDDF995C1345E863C"
+  },
+  "controls": {
+    "root": "src/native_node_file_handle_transfer_test.zig",
+    "filter": "native FileHandle transfer",
+    "install_step": "build-native-node-file-handle-transfer",
+    "artifact_basename": "native-node-file-handle-transfer",
+    "source_declared_names": [
+      {
+        "name": "native FileHandle transfer changes only the live closed member and retains the real descriptor",
+        "line": 116
+      },
+      {
+        "name": "native FileHandle transfer admission follows real ReadStart and ReadStop with the original pending request",
+        "line": 160
+      },
+      {
+        "name": "native FileHandle transfer rejects real closing and closed state without weakening the close request",
+        "line": 194
+      },
+      {
+        "name": "native FileHandle transfer admission excludes the real released descriptor state",
+        "line": 218
+      },
+      {
+        "name": "native FileHandle transfer packet move preserves one native allocation and closes once",
+        "line": 233
+      },
+      {
+        "name": "native FileHandle transfer packet survives actual sender GC and weak BindingData retirement",
+        "line": 256
+      },
+      {
+        "name": "native FileHandle transfer allocation alone retains its native memory domain after Engine teardown",
+        "line": 273
+      },
+      {
+        "name": "native FileHandle transfer abandoned on a real different thread closes after sender Engine retirement",
+        "line": 303
+      },
+      {
+        "name": "native FileHandle transfer destructor null admission masks and restores an outer real context",
+        "line": 323
+      },
+      {
+        "name": "native FileHandle transfer native member and destructor calls preserve an actual current exception",
+        "line": 338
+      },
+      {
+        "name": "native FileHandle transfer missing real BindingData consumes the packet and closes its descriptor",
+        "line": 364
+      },
+      {
+        "name": "native FileHandle transfer disowns before the explicit missing full template boundary without inventing a receiver",
+        "line": 385
+      },
+      {
+        "name": "native FileHandle transfer strong result edges clone and move over the same actual weak wrapper",
+        "line": 417
+      }
+    ],
+    "source_declared_count": 13,
+    "repository_literal_anonymous_blocks": [
+      {
+        "relative_path": "src/ai/root.zig",
+        "line": 329
+      },
+      {
+        "relative_path": "src/durable/scheduler.zig",
+        "line": 12
+      },
+      {
+        "relative_path": "src/durable/session.zig",
+        "line": 8
+      },
+      {
+        "relative_path": "src/durable/tool_read.zig",
+        "line": 18
+      },
+      {
+        "relative_path": "src/extensions/native_bindings.zig",
+        "line": 3451
+      },
+      {
+        "relative_path": "src/extensions/native_durable_context_view.zig",
+        "line": 13
+      },
+      {
+        "relative_path": "src/extensions/native_durable_storage.zig",
+        "line": 861
+      },
+      {
+        "relative_path": "src/extensions/native_durable_task_abort.zig",
+        "line": 13
+      }
+    ],
+    "future_actual_metadata_count": null,
+    "whole_future_cohort_selected": false
+  },
+  "production_admission_and_ownership": [
+    "getTransferMode reads the same actual reading/closing/closed members; successful transfer only sets closed after native allocation.",
+    "The packet owns a native fd and independently charged prefix. No Engine, JSValue, Environment, Controller, loop or lease is retained.",
+    "Native destructor preserves fd>0, actual canonical stack uv_fs_t, NULL loop/callback, both original CHECKs, global trace boundaries and cleanup.",
+    "Receiver consumes the unique packet, checks actual BindingData, writes fd=-1 before real absent-object Handle.create and strengthens the actual receiver State only after construction.",
+    "StrongHandle retains/releases the existing same-thread State and real persistent. Only the native descriptor packet may cross threads."
+  ],
+  "host_preconditions_and_supported_boundaries": [
+    "Caller Scope and sender/receiver registry must refer to the same live Engine for their synchronous operation. Environment-mismatch checks are host API preconditions, not additions to original transfer eligibility policy.",
+    "Supplied context is borrowed and must remain live for that call; NULL is required after Engine retirement.",
+    "Owned is move-only by caller discipline. StrongHandle is receiver-thread-only, matching original non-thread-safe BaseObjectPtr.",
+    "Missing complete template is an explicit host dependency error. The preserved take-before-New order does not assert that original Node always fails receiver construction."
+  ],
+  "known_open_production_dependencies": [
+    "Complete original StreamBase::AddMethods and FileHandle stored constructor template",
+    "Actual worker message transfer broker and receiving realm dispatch, including original worker::TransferData/MemoryRetainer integration",
+    "Real global FS synchronous tracing entrypoints and process Agent bootstrap",
+    "Receiver inputs supplied by real Environment/service/immediate/allocation/hook-policy bootstrap",
+    "Separately authorized compiler/build/runtime validation"
+  ],
+  "important_control_limits": [
+    "Trace callbacks are named TEST observations of real fd and diagnostic state; they do not substitute for actual global production tracing.",
+    "The fixture uses the reviewed present-object constructor; successful deserialization is not claimed while full template is absent.",
+    "Physical close controls select fd>2. Original fd0 strict-gate and Windows stdio behavior remain source-mapped, unaltered and not dynamically exercised.",
+    "The original disallow-transfer and failed-native-close fatal CHECKs remain unchanged; this packet does not execute their terminal paths.",
+    "No serialization format, worker transfer-list admission, MemoryRetainer virtual assembly or complete production bootstrap is supplied."
+  ],
+  "retained_control_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\controls\\src\\native_node_file_handle_transfer_test.zig",
+    "bytes": 23716,
+    "sha256": "E7078422445393AAA062AB3FBF092A3921FCF514D28796C33F45E169F21EB02C"
+  },
+  "finite_fixture_scope_successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\fixture-descriptor-scope-successor.json",
+    "bytes": 2028,
+    "sha256": "1B0251DC9380C2CEE9942D25B2B76D66CD69937482EE7EAA291649326A39F615"
+  },
+  "preservation": {
+    "all_28_prior_sources_plus_3_owner_controls": true,
+    "three_existing_live_owner_files": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_close_request.zig",
+        "bytes": 15294,
+        "sha256": "9EB383CED295E354BD91A5F1FA9E471B70182C3D554D190148AEB4BA93386FEC"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_gc_close.zig",
+        "bytes": 6402,
+        "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4"
+      }
+    ],
+    "accepted_constructor_live_and_selected_sources": true,
+    "initial_transfer_production_snapshots_unchanged": true,
+    "initial_control_E707_preserved": true,
+    "main_modified": false
+  },
+  "compiler_executed": false,
+  "native_executed": false,
+  "reference_executed": false,
+  "test_executed": false,
+  "runtime_accepted": false
+}

@@ -1,0 +1,10 @@
+{
+  "source_only": true,
+  "stage": "static repository import closure metadata inspection",
+  "result": "inspector rejected its own default Windows text codec while reading UTF-8 source",
+  "error": "UnicodeDecodeError cp1252 byte 0x8d at offset 92782 in metadata read_text call",
+  "source_modified": false,
+  "prior_build_proposal_created_and_preserved": true,
+  "correction": "Explicit UTF-8 reads for source text; immutable exact-replay handling for already created build evidence.",
+  "native_executed": false
+}

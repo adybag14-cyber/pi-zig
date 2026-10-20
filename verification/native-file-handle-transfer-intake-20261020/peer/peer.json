@@ -1,0 +1,332 @@
+{
+  "schema": 1,
+  "status": "independently_reviewed_finite_file_handle_transfer_source_and_controls",
+  "comparison_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\production-proposal.json",
+    "bytes": 16078,
+    "sha256": "680FEEC1D3E23723BABF022076C5B80053BA52AB267DA1E1152297B177D878EB"
+  },
+  "selected_sources": [
+    {
+      "relative_path": "src/extensions/native_node_file_handle_transfer.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_transfer.h",
+      "bytes": 2307,
+      "sha256": "1A90649959DECCDE24ECFDD15AEC6EEDB03DA88333C48D4D0F2BDB1C020CF91C"
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_transfer.cpp",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_transfer.cpp",
+      "bytes": 3857,
+      "sha256": "543B895047E5DCA9B9C8B9761180B80D7A7C59A4B4EE544E97F9A2E41BA43E1A"
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_transfer.zig",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_transfer.zig",
+      "bytes": 6335,
+      "sha256": "A69A902FBA95862F2922C71F0069BED4DD9B2596B780F618D74FB608CBEFC9F6"
+    },
+    {
+      "relative_path": "src/native_node_file_handle_transfer_test.zig",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\controls-selected\\src\\native_node_file_handle_transfer_test.zig",
+      "bytes": 23797,
+      "sha256": "E5656DE3AEC771F144939E5852CC7161B1B0499D4764A3F2E0BF42460570C5B1"
+    }
+  ],
+  "authority_and_support": {
+    "source_map": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\source-map.json",
+      "bytes": 99336,
+      "sha256": "654378AFE03EE9DD2B649EDBF38622726DB44D296AE0ED413DB695A338C4F2FB"
+    },
+    "engine_retirement": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\lifetime-source-addendum.json",
+      "bytes": 2331,
+      "sha256": "F84E05DE64B3C8B39FDB63268C902317ED2DE528D2FB1FE541CFE60AC10439D2"
+    },
+    "required_owner_cohort": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\handoff.json",
+      "bytes": 14557,
+      "sha256": "A9D4A4D0BAC91764B52A9EE87BE7C555C2C8C61FCEB9FC87E7282A169700AD73"
+    },
+    "owner_dependency_packets": {
+      "original_owner_packet": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production-proposal.json",
+        "bytes": 14361,
+        "sha256": "061258BF1085004B82EA8D1A9C237402F7D4075A4DE837F9C25B7D39D0D3A804"
+      },
+      "shared_projection": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\proposal.json",
+        "bytes": 18499,
+        "sha256": "C195AE5D402ED457AF651D6BEB37B2BB8DBD3DF36CD74106EB172F00B64618FC"
+      },
+      "corrected_CloseReq_packet": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\proposal.json",
+        "bytes": 14602,
+        "sha256": "BA6543E47B33A5D994AD097FBF0CBC58A6E35F262DF42FFE5909D9A736118319"
+      },
+      "corrected_FSReqPromise_packet": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqpromise-before-hook-followup-sourceonly-20261020\\proposal.json",
+        "bytes": 12997,
+        "sha256": "08F45EF3D26E4D2CBB8A5FA3A144E635AB6DA9B64B486871F7B1D102F6488B56"
+      },
+      "selected_CloseReq_sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A",
+      "selected_FSReqPromise_sha256": "8EFC2D58C1B1BD5069777FE1D06618F4572F54EEDAC09265EAD26BE8E675A4DF",
+      "inventory": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\dependency-inventory.json",
+        "bytes": 567445,
+        "sha256": "56BFF251AD680CE3B5B4E7D4D979CFDA2FA41345BC958432273007DAFD2330D1"
+      },
+      "source_map": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\source-map.json",
+        "bytes": 21972,
+        "sha256": "5E36100728A32C4ACC09F1D53BF11BC90102E506B581C8496DA9F1185749EBCA"
+      }
+    }
+  },
+  "independent_reproduction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-transfer-source-peer-20261020\\read-only-reproduction-result.json",
+    "bytes": 6226,
+    "sha256": "B44CBC7E833D13A5B23600C23C44326A113A18BC7CDD7E2BEE705B2A34B7D7BC",
+    "inventory": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\dependency-inventory.json",
+      "bytes": 1071301,
+      "sha256": "E5CDD1A8EA432B0DB68766619E6B5704C290608D3B42F8F696DEB8718A3DF823"
+    },
+    "original_final_source_proof": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\source-only-checks.json",
+      "bytes": 248196,
+      "sha256": "8DE3BD5881A5480E619B3898D5888127146E0CF8A0C03753C46E681B617586A1"
+    },
+    "exact_inventory_bytes_reconstructed": 1071301,
+    "exact_final_proof_bytes_reconstructed": 248196,
+    "verified_unique_paths": 1078,
+    "all46_source_excerpts_exact": true,
+    "engine_retirement_excerpt_exact": true,
+    "all_fixture_build_and_three_layer_inverses_exact": true,
+    "source_read_lease_closed_before_main_intake": true
+  },
+  "source_read": {
+    "all_three_production_files": true,
+    "all_thirteen_control_bodies": true,
+    "all_twelve_semantic_mappings": true,
+    "all46_source_excerpts": true,
+    "complete_two_proof_builders_before_read_only_adaptation": true,
+    "fixture_actual_root_and_teardown_supplement": true
+  },
+  "findings": [
+    {
+      "topic": "Original transfer admission and sender state",
+      "result": "No concrete blocker",
+      "evidence": [
+        "node.fs.transfer_mode",
+        "node.fs.transfer_send"
+      ],
+      "detail": "The actual reading/closing/closed members alone determine eligibility. A stopped read's current_read pointer adds no new prohibition. Native packet allocation precedes the sole closed=true mutation. No descriptor reset, read-offset mutation, AfterClose/EOF, stream retirement or async-context transfer is added. Same-live-Engine checks are stated host entry preconditions."
+    },
+    {
+      "topic": "Descriptor ownership and original zero/stdio boundaries",
+      "result": "No concrete blocker",
+      "evidence": [
+        "node.fs.transfer_native_storage",
+        "uv.windows.actual_close",
+        "uv.unix.actual_close",
+        "uv.windows.cleanup",
+        "uv.unix.cleanup"
+      ],
+      "detail": "The opaque C++ owner stores its real int fd and mandatory function addresses. Its original strict fd>0 gate remains exact, including fd0 behavior. Within it the actual canonical caller-stack uv_fs_t, CHECK_NE, begin trace, uv_fs_close(nullptr,...,nullptr), CHECK_EQ zero, end trace and request cleanup retain their order. Both null-callback platform paths are synchronous and do not register a queued request. Windows fs__close's fd<=2 handling is preserved. Controls deliberately use fd>2; they do not claim runtime evidence for stdio or fatal CHECK paths."
+    },
+    {
+      "topic": "After-Engine and cross-thread native lifetime",
+      "result": "No concrete blocker",
+      "evidence": [
+        "host.standard_allocation",
+        "host.native_prefix_allocation",
+        "host.memory_owner_atomics",
+        "host.memory_owner_create_and_observe",
+        "additive exact Engine retirement excerpt"
+      ],
+      "detail": "The allocation prefix atomically charges and independently retains the native memory domain. Engine context/runtime teardown precedes release of its own owner reference, leaving the packet's prefix valid. Delete frees its allocation then releases that exact charge/reference without dereferencing Engine, Environment, service or lease. Process-lifetime trace function addresses carry no captured raw data. They must consult actual global tracing at invocation; the unresolved production owner is not replaced by the labeled test observers."
+    },
+    {
+      "topic": "Diagnostic and allocation scope ordering",
+      "result": "No concrete blocker",
+      "evidence": [
+        "host.diagnostic_scope",
+        "host.diagnostic_tls"
+      ],
+      "detail": "All four actual C ABI functions declare DiagnosticContextScope as the first local. Create nests AllocationScope inside it; native new-handler/bad_alloc policy remains native. Borrowed context is synchronous only. NULL masks any outer admission and restores it on return, including after Engine retirement and on a different thread. Packet stores no JSContext."
+    },
+    {
+      "topic": "Unique packet consumption and actual receiver construction",
+      "result": "No concrete blocker",
+      "evidence": [
+        "node.messaging.transfer_contract",
+        "node.fs.transfer_receive",
+        "node.fs.actual_new",
+        "host.actual_handle_constructor",
+        "host.actual_template_boundary"
+      ],
+      "detail": "Owned.move/deinit clear the original slot before further ownership work. Deserialize consumes the caller slot immediately and defers actual packet deletion. Missing actual weak BindingData returns null and closes fd>0. Otherwise take writes packet fd=-1 before genuine absent-object Handle.create with absent offset/length overrides. A failed later constructor does not restore packet descriptor ownership, matching the original order. The control fixture explicitly adopts that abandoned descriptor for cleanup without changing production. It preserves the missing-full-template error and does not fabricate a receiver."
+    },
+    {
+      "topic": "Actual StrongHandle edge and fixture roots",
+      "result": "No concrete blocker",
+      "evidence": [
+        "node.base.pointer_copy_move",
+        "node.base.refcount_and_cleanup",
+        "host.actual_state_native_refs",
+        "host.actual_handle_retire",
+        "supplemental fixture ranges"
+      ],
+      "detail": "Successful construction strengthens the same native State/persistent before the caller scope retires. clone increments that same native reference; move clears the old edge; deinit clears its slot before the last release can destroy the Handle or return its persistent to weak. StrongHandle is receiver-thread-only. The separate native packet alone crosses a real thread, and test observations are read after join. Fixture-owned Controller, Queue and duplicated handle-key roots remain live after sender collection, so the borrowed receive inputs do not rely on a destroyed Handle; their release occurs in fixture teardown."
+    }
+  ],
+  "controls": {
+    "root": "src/native_node_file_handle_transfer_test.zig",
+    "filter": "native FileHandle transfer",
+    "install_step": "build-native-node-file-handle-transfer",
+    "artifact_basename": "native-node-file-handle-transfer",
+    "source_declared_names": [
+      {
+        "name": "native FileHandle transfer changes only the live closed member and retains the real descriptor",
+        "line": 116
+      },
+      {
+        "name": "native FileHandle transfer admission follows real ReadStart and ReadStop with the original pending request",
+        "line": 160
+      },
+      {
+        "name": "native FileHandle transfer rejects real closing and closed state without weakening the close request",
+        "line": 194
+      },
+      {
+        "name": "native FileHandle transfer admission excludes the real released descriptor state",
+        "line": 218
+      },
+      {
+        "name": "native FileHandle transfer packet move preserves one native allocation and closes once",
+        "line": 233
+      },
+      {
+        "name": "native FileHandle transfer packet survives actual sender GC and weak BindingData retirement",
+        "line": 256
+      },
+      {
+        "name": "native FileHandle transfer allocation alone retains its native memory domain after Engine teardown",
+        "line": 273
+      },
+      {
+        "name": "native FileHandle transfer abandoned on a real different thread closes after sender Engine retirement",
+        "line": 303
+      },
+      {
+        "name": "native FileHandle transfer destructor null admission masks and restores an outer real context",
+        "line": 323
+      },
+      {
+        "name": "native FileHandle transfer native member and destructor calls preserve an actual current exception",
+        "line": 338
+      },
+      {
+        "name": "native FileHandle transfer missing real BindingData consumes the packet and closes its descriptor",
+        "line": 364
+      },
+      {
+        "name": "native FileHandle transfer disowns before the explicit missing full template boundary without inventing a receiver",
+        "line": 385
+      },
+      {
+        "name": "native FileHandle transfer strong result edges clone and move over the same actual weak wrapper",
+        "line": 417
+      }
+    ],
+    "source_declared_count": 13,
+    "repository_literal_anonymous_blocks": [
+      {
+        "relative_path": "src/ai/root.zig",
+        "line": 329
+      },
+      {
+        "relative_path": "src/durable/scheduler.zig",
+        "line": 12
+      },
+      {
+        "relative_path": "src/durable/session.zig",
+        "line": 8
+      },
+      {
+        "relative_path": "src/durable/tool_read.zig",
+        "line": 18
+      },
+      {
+        "relative_path": "src/extensions/native_bindings.zig",
+        "line": 3451
+      },
+      {
+        "relative_path": "src/extensions/native_durable_context_view.zig",
+        "line": 13
+      },
+      {
+        "relative_path": "src/extensions/native_durable_storage.zig",
+        "line": 861
+      },
+      {
+        "relative_path": "src/extensions/native_durable_task_abort.zig",
+        "line": 13
+      }
+    ],
+    "future_actual_metadata_count": null,
+    "whole_future_cohort_selected": false,
+    "review": "All13 source declarations and bodies are read. They observe actual descriptors/fstat, real read/close owners and queues, current pending exception identity, native memory-owner counts, synchronous TLS contexts and same-State strong references. Test-only process trace observers and present-object construction remain explicit. Full successful deserialization, fd0/stdio and terminal fatal CHECK paths are not dynamically exercised.",
+    "actual_metadata_count": null,
+    "executed": 0
+  },
+  "build_review": {
+    "proposal": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\build\\proposal.json",
+      "bytes": 4151,
+      "sha256": "D662D5DF7D2C21CD8376666E120CAEEA8BB46E0518C5B3560E6A97522D6BB212"
+    },
+    "one_install_only_block_bytes": 2015,
+    "original_sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E",
+    "transfer_only_projected_sha256": "289CEC338CEFF595BC64A0F17A0E4C85DC604D57854C4CA8B0DA9956EFAD2BD3",
+    "whole_forward_inverse": true,
+    "three_layer_owner_constructor_transfer_build_forward_inverse": true,
+    "detail": "One new install-only test root/filter native FileHandle transfer, artifact native-node-file-handle-transfer,13 source declarations. Reuses genuine QuickJS, TypeScript parser, Sqlite, catalog_tool and native network/libuv graph; directly compiles the existing diagnostic TLS owner exactly once and new transfer.cpp in this artifact. No addRunArtifact or production bootstrap added.",
+    "modules": 711,
+    "embeds": 243,
+    "literal_import_occurrences": 4354,
+    "distinct_import_edges": 3340,
+    "anonymous_source_declarations": 8,
+    "inventory_qualification": "Conservative literal Zig closure over c764 plus exact reviewed owner overlay and four transfer files. Not compiler-selected reachability, a full C preprocessor closure, or authority for later Main source hashes; a future catalog must bind its actual integrated source/dependencies."
+  },
+  "remaining_explicit_dependencies": [
+    "Complete original StreamBase::AddMethods and FileHandle stored constructor template",
+    "Actual worker message transfer broker and receiving realm dispatch, including original worker::TransferData/MemoryRetainer integration",
+    "Real global FS synchronous tracing entrypoints and process Agent bootstrap",
+    "Receiver inputs supplied by real Environment/service/immediate/allocation/hook-policy bootstrap",
+    "Separately authorized compiler/build/runtime validation"
+  ],
+  "preservation": {
+    "original_control_E707_and_one_hunk_fixture_successor_1B0251_unchanged": true,
+    "all31_prior_sources_and_three_live_owner_drafts_preserved": true,
+    "accepted_constructor_inputs_preserved": true,
+    "source_only": true,
+    "donor_sources_modified": false,
+    "main_mutated": false,
+    "compiler_executed": false,
+    "runtime_executed": false,
+    "source_release": false,
+    "native_execution_authorized": false,
+    "qualification": false
+  },
+  "concrete_blockers": [],
+  "source_only_conclusion": "No concrete source ownership, descriptor-lifetime, fixture-root or finite build-layer blocker found in this bounded proposal. This peer does not accept a complete FileHandle/worker/tracing assembly or any native runtime.",
+  "fixture_lifetime_supplement": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-transfer-source-peer-20261020\\fixture-lifetime-supplement.json",
+    "bytes": 7396,
+    "sha256": "A3083F5B33CE5850C8AF143D9AEE1B233FCE8AB3283C9D7D50E460727C401530"
+  },
+  "reviewed_utc": "2026-10-20T21:44:05.261902+00:00"
+}

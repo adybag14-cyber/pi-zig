@@ -2229,6 +2229,31 @@ pub fn build(b: *std.Build) void {
             node_fs_before_hook_continuation.root_module.linkSystemLibrary("userenv", .{});
         }
         b.step("build-native-node-fs-before-hook-continuation", "Install three actual FS before-hook continuation controls without execution").dependOn(&b.addInstallArtifact(node_fs_before_hook_continuation, .{ .dest_sub_path = b.fmt("native-node-fs-before-hook-continuation{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        const node_file_handle_transfer = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_file_handle_transfer_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native FileHandle transfer"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_file_handle_transfer.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_file_handle_transfer.root_module, typescript_parser);
+        linkSqlite(node_file_handle_transfer.root_module, sqlite_lib_dir, sqlite_library);
+        node_file_handle_transfer.root_module.addImport("catalog_tool", catalog_tool);
+        node_file_handle_transfer.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        node_file_handle_transfer.root_module.linkLibrary(network);
+        // One actual TLS diagnostic owner in this selected native artifact.
+        // This new owner is compiled directly; no production bootstrap is implied.
+        node_file_handle_transfer.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_diagnostic_context.c"),
+            .flags = &.{"-std=gnu11"},
+        });
+        node_file_handle_transfer.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_file_handle_transfer.cpp"),
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+        if (target.result.os.tag == .windows) {
+            node_file_handle_transfer.root_module.linkSystemLibrary("advapi32", .{});
+            node_file_handle_transfer.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-file-handle-transfer", "Install thirteen actual FileHandle descriptor transfer controls without execution").dependOn(&b.addInstallArtifact(node_file_handle_transfer, .{ .dest_sub_path = b.fmt("native-node-file-handle-transfer{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
         const native_node_fs_request_owner_tests = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_fs_request_owner_test.zig"), .target = target, .optimize = optimize }),
             .filters = &.{"native FS request owner"}, .use_llvm = use_llvm,

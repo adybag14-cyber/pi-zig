@@ -1,0 +1,44 @@
+{
+  "schema": "pi-zig.file-handle-transfer-install-only-build.v1",
+  "source_only": true,
+  "comparison_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\build\\original-build.zig",
+    "bytes": 503440,
+    "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\build\\projected-build.zig",
+    "bytes": 505455,
+    "sha256": "289CEC338CEFF595BC64A0F17A0E4C85DC604D57854C4CA8B0DA9956EFAD2BD3"
+  },
+  "block": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\build\\install-only-block.zig.txt",
+    "bytes": 2015,
+    "sha256": "68DC05429AFAA5B68CC744DE9E11778747C8DD5BECF74DECDF48F885DF212DC5"
+  },
+  "edits": [
+    {
+      "before": "        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "after": "        const node_file_handle_transfer = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_file_handle_transfer_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native FileHandle transfer\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_file_handle_transfer.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_file_handle_transfer.root_module, typescript_parser);\n        linkSqlite(node_file_handle_transfer.root_module, sqlite_lib_dir, sqlite_library);\n        node_file_handle_transfer.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_file_handle_transfer.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_file_handle_transfer.root_module.linkLibrary(network);\n        // One actual TLS diagnostic owner in this selected native artifact.\n        // This new owner is compiled directly; no production bootstrap is implied.\n        node_file_handle_transfer.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context.c\"),\n            .flags = &.{\"-std=gnu11\"},\n        });\n        node_file_handle_transfer.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_file_handle_transfer.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        if (target.result.os.tag == .windows) {\n            node_file_handle_transfer.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_file_handle_transfer.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-file-handle-transfer\", \"Install thirteen actual FileHandle descriptor transfer controls without execution\").dependOn(&b.addInstallArtifact(node_file_handle_transfer, .{ .dest_sub_path = b.fmt(\"native-node-file-handle-transfer{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "occurrences_before": 1,
+      "occurrences_after": 1
+    }
+  ],
+  "whole_forward_exact": true,
+  "whole_inverse_exact": true,
+  "install_only": true,
+  "run_steps_added": 0,
+  "source_declared_controls": 13,
+  "new_roots": 1,
+  "artifact_basename": "native-node-file-handle-transfer",
+  "required_dependency_packet": "A9D4A4D0BAC91764B52A9EE87BE7C555C2C8C61FCEB9FC87E7282A169700AD73",
+  "native_sources_directly_compiled": [
+    "src/extensions/native_node_diagnostic_context.c",
+    "src/extensions/native_node_file_handle_transfer.cpp"
+  ],
+  "common_native_dependencies": "Existing QuickJS -> one native network graph -> one native memory/TLS allocation domain; explicit diagnostic C source belongs only to this installed artifact.",
+  "not_global_production_bootstrap": true,
+  "compiler_executed": false,
+  "native_executed": false
+}

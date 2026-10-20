@@ -1,0 +1,34 @@
+{
+  "schema": "pi-zig.file-handle-transfer-fixture-descriptor-scope.v1",
+  "source_only": true,
+  "cause": "Pinned Windows fs__close preserves CRT stdio descriptors <= 2. The control must select ordinary file descriptors above stdio when asserting physical EBADF; production strict > 0 and libuv behavior remain untouched.",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\controls\\src\\native_node_file_handle_transfer_test.zig",
+    "bytes": 23716,
+    "sha256": "E7078422445393AAA062AB3FBF092A3921FCF514D28796C33F45E169F21EB02C"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\controls-selected\\src\\native_node_file_handle_transfer_test.zig",
+    "bytes": 23797,
+    "sha256": "E5656DE3AEC771F144939E5852CC7161B1B0499D4764A3F2E0BF42460570C5B1"
+  },
+  "live": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_file_handle_transfer_test.zig",
+    "bytes": 23797,
+    "sha256": "E5656DE3AEC771F144939E5852CC7161B1B0499D4764A3F2E0BF42460570C5B1"
+  },
+  "edits": [
+    {
+      "before": "    // fd == 0 is deliberately not replaced or closed by this fixture.\n    // The original strict > 0 destructor branch is pinned in the source map.\n    try std.testing.expect(descriptor > 0);\n",
+      "after": "    // Select ordinary descriptors above stdio. The original TransferData\n    // strict > 0 gate and Windows fs__close fd <= 2 behavior stay unchanged;\n    // this fixture never replaces standard descriptors to force those cases.\n    try std.testing.expect(descriptor > 2);\n",
+      "occurrences_before": 1,
+      "occurrences_after": 1
+    }
+  ],
+  "whole_forward_exact": true,
+  "whole_inverse_exact": true,
+  "unchanged_source_declared_names": 13,
+  "production_sources_modified": false,
+  "compiler_executed": false,
+  "native_executed": false
+}

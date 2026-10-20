@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "status": "reviewed_finite_read_only_exact_transfer_proof_reproduction",
+  "adaptations": [
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\inventory-builder-v2.py",
+      "original_hash": "70C402D22630C17888324771D7C2CB57BF2F28ED3E0CBDFC05940DAFDE7F7C15",
+      "name": "Reproduce-TransferInventory-ReadOnly.py",
+      "edits": [
+        {
+          "before": "def emit(q,b):\n q.parent.mkdir(parents=True,exist_ok=True)\n if q.exists():\n  assert q.read_bytes()==b,('immutable replay mismatch',q)\n  return info(q)\n with q.open('xb') as f:f.write(b)\n return info(q)",
+          "after": "def emit(q,b):\n assert q.is_file(),('read-only peer missing immutable artifact',q)\n assert q.read_bytes()==b,('read-only peer exact reconstruction mismatch',q)\n return info(q)"
+        }
+      ],
+      "new": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-transfer-source-peer-20261020\\Reproduce-TransferInventory-ReadOnly.py",
+        "bytes": 10116,
+        "sha256": "7C31267863BE4DC12A3900E5B3387CBC69BD7626D7F8A0431F92EB1A4BBF4C38"
+      }
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\final-seal-builder-v2.py",
+      "original_hash": "CD13234A2BDC11DED7000C94C837F7B345B7EC749DB8AB5EF6AD5C733538A6F1",
+      "name": "Reproduce-TransferFinalProof-ReadOnly.py",
+      "edits": [
+        {
+          "before": "def dump(q,j):\n raw=(json.dumps(j,indent=2)+'\\n').encode();q.parent.mkdir(parents=True,exist_ok=True)\n with q.open('xb') as f:f.write(raw)\n return info(q)",
+          "after": "def dump(q,j):\n raw=(json.dumps(j,indent=2)+'\\n').encode()\n assert q.is_file() and q.read_bytes()==raw,('read-only peer exact final proof mismatch',q)\n return info(q)"
+        },
+        {
+          "before": "with q.open('xb') as f:f.write(combined)",
+          "after": "assert q.is_file() and q.read_bytes()==combined,('read-only peer combined build mismatch',q)"
+        }
+      ],
+      "retained_original_manifest_tail": "\nmanifest={\n 'schema':'pi-zig.file-handle-transfer-production-source-proposal.v1',\n 'created_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),\n 'comparison_main_head':inv['comparison_main_head'],\n 'qualification':'Finite new native FileHandle descriptor transfer source and thirteen unexecuted controls, ready for independent source review. No full FileHandle, worker broker, compiler or runtime acceptance.',\n 'selected_new_sources':new_sources,'new_production_paths':3,'new_control_paths':1,'existing_source_paths_modified':0,'shared_State_Handle_Registry_template_edits':0,\n 'source_map':info(p/'source-map.json'),'additive_post_engine_lifetime_source':info(p/'lifetime-source-addendum.json'),\n 'dependency_inventory':info(p/'dependency-inventory.json'),'source_only_checks':checks,\n 'exact_install_only_build_proposal':info(p/'build/proposal.json'),\n 'build_integration':'One new install-only block in build.zig. The artifact directly compiles this production C++ owner and the existing diagnostic C TLS owner, then links the existing genuine QuickJS/network/native-memory graph. No production tracing or worker bootstrap is installed.',\n 'required_accepted_owner_source_cohort':info(a9_path),\n 'owner_dependency_packets':a9['dependencies'],\n 'not_required_but_composition_checked_constructor_packet':info(constructor_path),\n 'controls':{'root':'src/native_node_file_handle_transfer_test.zig','filter':'native FileHandle transfer','install_step':'build-native-node-file-handle-transfer','artifact_basename':'native-node-file-handle-transfer','source_declared_names':inv['named_declarations'],'source_declared_count':13,'repository_literal_anonymous_blocks':inv['literal_anonymous_source_blocks'],'future_actual_metadata_count':None,'whole_future_cohort_selected':False},\n 'production_admission_and_ownership':[\n  'getTransferMode reads the same actual reading/closing/closed members; successful transfer only sets closed after native allocation.',\n  'The packet owns a native fd and independently charged prefix. No Engine, JSValue, Environment, Controller, loop or lease is retained.',\n  'Native destructor preserves fd>0, actual canonical stack uv_fs_t, NULL loop/callback, both original CHECKs, global trace boundaries and cleanup.',\n  'Receiver consumes the unique packet, checks actual BindingData, writes fd=-1 before real absent-object Handle.create and strengthens the actual receiver State only after construction.',\n  'StrongHandle retains/releases the existing same-thread State and real persistent. Only the native descriptor packet may cross threads.'\n ],\n 'host_preconditions_and_supported_boundaries':[\n  'Caller Scope and sender/receiver registry must refer to the same live Engine for their synchronous operation. Environment-mismatch checks are host API preconditions, not additions to original transfer eligibility policy.',\n  'Supplied context is borrowed and must remain live for that call; NULL is required after Engine retirement.',\n  'Owned is move-only by caller discipline. StrongHandle is receiver-thread-only, matching original non-thread-safe BaseObjectPtr.',\n  'Missing complete template is an explicit host dependency error. The preserved take-before-New order does not assert that original Node always fails receiver construction.'\n ],\n 'known_open_production_dependencies':sm['explicit_open_dependencies'],\n 'important_control_limits':[\n  'Trace callbacks are named TEST observations of real fd and diagnostic state; they do not substitute for actual global production tracing.',\n  'The fixture uses the reviewed present-object constructor; successful deserialization is not claimed while full template is absent.',\n  'Physical close controls select fd>2. Original fd0 strict-gate and Windows stdio behavior remain source-mapped, unaltered and not dynamically exercised.',\n  'The original disallow-transfer and failed-native-close fatal CHECKs remain unchanged; this packet does not execute their terminal paths.',\n  'No serialization format, worker transfer-list admission, MemoryRetainer virtual assembly or complete production bootstrap is supplied.'\n ],\n 'retained_control_predecessor':info(p/'controls/src/native_node_file_handle_transfer_test.zig'),\n 'finite_fixture_scope_successor':info(p/'fixture-descriptor-scope-successor.json'),\n 'preservation':{'all_28_prior_sources_plus_3_owner_controls':True,'three_existing_live_owner_files':owners,'accepted_constructor_live_and_selected_sources':True,'initial_transfer_production_snapshots_unchanged':True,'initial_control_E707_preserved':True,'main_modified':False},\n 'compiler_executed':False,'native_executed':False,'reference_executed':False,'test_executed':False,'runtime_accepted':False}\nproposal=dump(p/'production-proposal.json',manifest)\nprint(json.dumps({'proposal':proposal,'checks':checks,'new_sources':[(x['relative_path'],x['snapshot']['sha256']) for x in new_sources],'verified_unique_files':len(verified),'source_controls':13,'source_roots':1,'modules':inv['module_count'],'embeds':inv['embed_count'],'build':info(p/'build/proposal.json')},indent=2))\n",
+      "new": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-transfer-source-peer-20261020\\Reproduce-TransferFinalProof-ReadOnly.py",
+        "bytes": 8917,
+        "sha256": "426C35DE9FE26B5ED3C30C81C8AA3DA67F58C71B7045E97700C95DB490C4EBC1"
+      }
+    }
+  ],
+  "source_only": true,
+  "main_writes": false,
+  "donor_writes": false,
+  "compiler_or_native_execution": false
+}

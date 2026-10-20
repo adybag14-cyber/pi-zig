@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "status": "root_complete_finite_transfer_source_review",
+  "reviewed_utc": "2026-10-20T21:17:25.270163+00:00",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\production-proposal.json",
+    "bytes": 16078,
+    "sha256": "680FEEC1D3E23723BABF022076C5B80053BA52AB267DA1E1152297B177D878EB"
+  },
+  "source_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\source-map.json",
+    "bytes": 99336,
+    "sha256": "654378AFE03EE9DD2B649EDBF38622726DB44D296AE0ED413DB695A338C4F2FB"
+  },
+  "lifetime_addendum": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\lifetime-source-addendum.json",
+    "bytes": 2331,
+    "sha256": "F84E05DE64B3C8B39FDB63268C902317ED2DE528D2FB1FE541CFE60AC10439D2"
+  },
+  "source_checks": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\source-only-checks.json",
+    "bytes": 248196,
+    "sha256": "8DE3BD5881A5480E619B3898D5888127146E0CF8A0C03753C46E681B617586A1"
+  },
+  "dependency_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\dependency-inventory.json",
+    "bytes": 1071301,
+    "sha256": "E5CDD1A8EA432B0DB68766619E6B5704C290608D3B42F8F696DEB8718A3DF823"
+  },
+  "root_read": "Complete three production files; all13 selected controls and one fixture descriptor-scope successor; install-only build block; all12 semantic mappings/13 control mappings/46 complete original+host excerpts and additive Engine teardown excerpt; complete final seal and literal import inventory builders.",
+  "independent_exact_reproduction": {
+    "entire_dependency_inventory": true,
+    "entire248196_byte_final_source_proof": true,
+    "unique_pins": 1078,
+    "modules": 711,
+    "embeds": 243,
+    "literal_import_occurrences": 4354,
+    "distinct_import_edges": 3340,
+    "source_declarations": 13,
+    "future_actual_metadata": null,
+    "whole_build_and_fixture_inverses": true
+  },
+  "read_only_auditor_adaptations": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\inventory-builder-v2.py",
+      "original_sha256": "70C402D22630C17888324771D7C2CB57BF2F28ED3E0CBDFC05940DAFDE7F7C15",
+      "before": "def emit(q,b):\n q.parent.mkdir(parents=True,exist_ok=True)\n if q.exists():\n  assert q.read_bytes()==b,('immutable replay mismatch',q)\n  return info(q)\n with q.open('xb') as f:f.write(b)\n return info(q)\n",
+      "after": "def emit(q,b):\n assert q.is_file(),('read-only audit missing immutable artifact',q)\n assert q.read_bytes()==b,('read-only exact reconstruction mismatch',q)\n return info(q)\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\final-seal-builder-v2.py",
+      "original_sha256": "CD13234A2BDC11DED7000C94C837F7B345B7EC749DB8AB5EF6AD5C733538A6F1",
+      "scope": "prefix ending before manifest construction",
+      "before": "def dump(q,j):\n raw=(json.dumps(j,indent=2)+'\\n').encode();q.parent.mkdir(parents=True,exist_ok=True)\n with q.open('xb') as f:f.write(raw)\n return info(q)\n",
+      "after": "def dump(q,j):\n raw=(json.dumps(j,indent=2)+'\\n').encode()\n assert q.is_file() and q.read_bytes()==raw,('root byte-exact final proof reconstruction differs',q)\n return info(q)\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\final-seal-builder-v2.py",
+      "before": "with q.open('xb') as f:f.write(combined)",
+      "after": "assert q.is_file() and q.read_bytes()==combined"
+    }
+  ],
+  "source_conclusion": "Native packet retains only fd and process-lifetime trace function addresses plus its independently charged native allocation prefix. Exact original fd>0, take-before-New, only closed sender mutation and actual strong State ownership preserved. Intrinsic memory-owner atomics and explicit borrowed/null diagnostic context permit packet retirement after Engine and across threads. Successful full-template deserialization remains an explicit missing dependency; no fake receiver, trace Agent or worker broker is supplied.",
+  "remaining_dependencies": [
+    "complete StreamBase AddMethods and FileHandle stored callback template",
+    "worker broker/TransferData MemoryRetainer assembly",
+    "actual process global FS tracing and Agent bootstrap",
+    "separate native build/query/runtime validation"
+  ],
+  "independent_module_peer_pending": true,
+  "main_applied": false,
+  "source_mutation_hold_released": false,
+  "native_execution_authorized": false,
+  "qualification": false
+}
