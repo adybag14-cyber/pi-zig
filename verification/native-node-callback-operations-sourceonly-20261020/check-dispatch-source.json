@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "status": "source_peer_closed_awaiting_full_operations_and_native_exit_validation",
+  "owner": "src/extensions/native_node_callback_checks.zig",
+  "bytes": 6098,
+  "sha256": "50E92DE60842E05D9921714C556F335EC2E9F246905642B0DF0524637B39E709",
+  "scope": "Terminating native assertion and failed-Maybe dispatch; raw corruption reporter consumes actual execution ID and explicit original option.",
+  "native_operations_installed": false,
+  "ordinary_error_routed_to_guest": false,
+  "source_labels": "Exact original operation messages are selected where current Check tag preserves one operation. Aggregate identity/provider/resource/count tags remain explicitly labelled port invariants; no claim of exact upstream site text for those aggregates.",
+  "required_remaining": [
+    "Finite native assertion mapping peer",
+    "Actual expected-exit bounded native probes",
+    "Full Environment Operations installation and native option admission"
+  ],
+  "main_changed": false,
+  "native_execution": false,
+  "peer": {
+    "reviewer": "sdk_owners",
+    "scope": "All ten actual Read predicates; FSReq destructor, before-bootstrap, waiting counter and binding-slot Source checks; actual Maybe abort cutpoints; explicit port lifecycle invariants.",
+    "status": "closed_source_only",
+    "source_sha256": "50E92DE60842E05D9921714C556F335EC2E9F246905642B0DF0524637B39E709",
+    "qualification": false,
+    "diagnostic_scope": "File/function labels identify the selected Source operation; no compiler-expanded file:line or full PRETTY_FUNCTION reproduction claim for this routing unit."
+  }
+}

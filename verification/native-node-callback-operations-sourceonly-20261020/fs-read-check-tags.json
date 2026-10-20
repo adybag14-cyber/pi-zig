@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "status": "source_only",
+  "file": "src/extensions/native_node_callback_scope.zig",
+  "before_sha256": "B8F56BF5C61FDB879BB778AD19920C0C43B96449232BC028BF8353AAB4DB0C07",
+  "after_sha256": "FBD43D092911F08D7CCF5E051C62894747AD6BD42D13309EC1B6B7872B9BE00B",
+  "addition": "    fs_read_argument_count, fs_read_fd, fs_read_buffer,\n    fs_read_offset_integer, fs_read_offset_nonnegative, fs_read_offset_bounds,\n    fs_read_length, fs_read_range, fs_read_position, fs_read_request,\n",
+  "actual_authority": "Node v24.13.0 node_file.cc Read19C497BF; SDK exact Read source body at88650",
+  "execution_claim": false,
+  "main_changed": false
+}
