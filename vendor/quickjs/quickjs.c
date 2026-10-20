@@ -58713,7 +58713,7 @@ static JSValue js_map_set(JSContext *ctx, JSValueConst this_val,
     return js_dup(this_val);
 }
 
-static JSValue js_map_read(JSContext *ctx, JSMapState *s,
+static JSValue js_pi_map_read_entry(JSContext *ctx, JSMapState *s,
                            JSValueConst key, int *present)
 {
     JSMapRecord *mr;
@@ -58730,7 +58730,7 @@ static JSValue js_map_get(JSContext *ctx, JSValueConst this_val,
     JSMapState *s = JS_GetOpaque2(ctx, this_val, JS_CLASS_MAP + magic);
     if (!s)
         return JS_EXCEPTION;
-    return js_map_read(ctx, s, argv[0], NULL);
+    return js_pi_map_read_entry(ctx, s, argv[0], NULL);
 }
 
 int JS_PiReadWeakMapEntry(JSContext *ctx, JSValueConst map,
@@ -58740,7 +58740,7 @@ int JS_PiReadWeakMapEntry(JSContext *ctx, JSValueConst map,
     int present;
     if (!s || !value)
         return -1;
-    *value = js_map_read(ctx, s, key, &present);
+    *value = js_pi_map_read_entry(ctx, s, key, &present);
     return present;
 }
 

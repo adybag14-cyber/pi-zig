@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "root_released_source_hold_after_accepted_v32_first_compile_negative",
+  "released_utc": "2026-10-20T19:23:23.516834+00:00",
+  "candidate_head": "2a45648545c961f9008a783ae352f233869505b4",
+  "closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v32-control-20261020-190752\\independent-first-compile-negative-closure.json",
+    "bytes": 16158,
+    "sha256": "CD5F425E6604717C68CCF35DACDD86D77584D2B83C998BB71B11B6DE7EE03152"
+  },
+  "root_auditor_review": {
+    "auditor_sha256": "5957B447DC5F40240C3E9C7891C41133E371A3ED311A1FF5771E96FCE3D2E472",
+    "adaptation_sha256": "7A680D5823FA17141BEA3AF0F9E63E0893F82CFDEDEE53E331B670B5FF46822C",
+    "finite_edits": 36,
+    "complete_forward_inverse": true
+  },
+  "authorized_source_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v32-quickjs-map-entry-symbol-sourceonly-20261020\\proposal.json",
+    "bytes": 2478,
+    "sha256": "A8772BE6DF8751092EA186636366513BC62297C8870FFF37A8876F616D7C4272"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v32-quickjs-map-entry-symbol-source-peer-20261020\\peer.json",
+    "bytes": 4813,
+    "sha256": "242485A74552796CE152616D6D157CAE6CEE97435AE8B1EDCBF2AB1FF0C21E3F"
+  },
+  "source_mutation_hold_released": true,
+  "native_launch_authorized": false,
+  "metadata_acceptance": false,
+  "runtime_acceptance": false,
+  "qualification": false,
+  "original_failure_preserved": true
+}

@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "status": "root_applied_reviewed_private_helper_rename_source_only",
+  "created_utc": "2026-10-20T19:23:23.523753+00:00",
+  "main_predecessor_head": "2a45648545c961f9008a783ae352f233869505b4",
+  "source_release": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v32-to-v33-root-source-release-20261020.json",
+    "bytes": 1518,
+    "sha256": "F3AB87CE77F0303055FB8B57C86CD7115CD0FD410EDA2A91AB5DC02B8888F532"
+  },
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v32-quickjs-map-entry-symbol-sourceonly-20261020\\proposal.json",
+    "bytes": 2478,
+    "sha256": "A8772BE6DF8751092EA186636366513BC62297C8870FFF37A8876F616D7C4272"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v32-quickjs-map-entry-symbol-source-peer-20261020\\peer.json",
+    "bytes": 4813,
+    "sha256": "242485A74552796CE152616D6D157CAE6CEE97435AE8B1EDCBF2AB1FF0C21E3F"
+  },
+  "prior_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v32-control-20261020-190752\\independent-first-compile-negative-closure.json",
+    "bytes": 16158,
+    "sha256": "CD5F425E6604717C68CCF35DACDD86D77584D2B83C998BB71B11B6DE7EE03152"
+  },
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before_sha256": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after_sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2",
+      "bytes_before": 2399313,
+      "bytes_after": 2399340,
+      "finite_identifier_edits": 3
+    }
+  ],
+  "whole_forward_inverse": true,
+  "original_bytecode_reader_unchanged": true,
+  "public_C_API_unchanged": true,
+  "named_controls_unchanged": true,
+  "selected_groups": 63,
+  "selected_source_declarations": 1249,
+  "actual_future_metadata_count": null,
+  "copied_evidence": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v33-map-entry-symbol-correction-20261020\\proposal.json",
+      "bytes": 2478,
+      "sha256": "A8772BE6DF8751092EA186636366513BC62297C8870FFF37A8876F616D7C4272"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v33-map-entry-symbol-correction-20261020\\peer.json",
+      "bytes": 4813,
+      "sha256": "242485A74552796CE152616D6D157CAE6CEE97435AE8B1EDCBF2AB1FF0C21E3F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v33-map-entry-symbol-correction-20261020\\v32-first-compile-negative-closure.json",
+      "bytes": 16158,
+      "sha256": "CD5F425E6604717C68CCF35DACDD86D77584D2B83C998BB71B11B6DE7EE03152"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v33-map-entry-symbol-correction-20261020\\root-source-release.json",
+      "bytes": 1518,
+      "sha256": "F3AB87CE77F0303055FB8B57C86CD7115CD0FD410EDA2A91AB5DC02B8888F532"
+    }
+  ],
+  "native_execution": false,
+  "qualification": false
+}
