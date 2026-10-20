@@ -1,0 +1,50 @@
+{
+  "source_only": true,
+  "native_execution": false,
+  "compiler_executed": false,
+  "main_modified": false,
+  "build_admission": "none",
+  "runtime_qualification": false,
+  "recorded_utc": "2026-10-20T18:00:46.302619+00:00",
+  "parent_head": "8fc2313c9ce5176802a19922b10f30fbd1b53dab",
+  "schema": "reviewed-native-tracing-agent-api-source-unit-v1",
+  "status": "finite_native_api_lifetime_and_operation_mapping_peer_complete",
+  "production": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_api.h",
+      "bytes": 7902,
+      "sha256": "6AA6586C71DAE6E72F1A59860E54F550E076AC9BEFFFA67264C59FD6A3CFFEA3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_api.cpp",
+      "bytes": 10645,
+      "sha256": "C747E51D8813DE4697B91B8EA7B723A7D442AF6B1BEE98EAC35499AB3BFF7993"
+    }
+  ],
+  "component": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\native-api-component.json",
+    "bytes": 18393,
+    "sha256": "ACCB4B155BBB92FEE302F1995272AE468B69D37B9BABBAF32148F383905D10C8"
+  },
+  "peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\independent-native-api-source-peer.json",
+    "bytes": 11378,
+    "sha256": "139BCD6A3B475583BAD937E2EF6FB5CB40FA60FB13636303E247B8A4CBD2D5BF"
+  },
+  "license": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\Node-MIT-LICENSE-excerpt.txt",
+    "bytes": 2337,
+    "sha256": "EC62DC96DA0099B87F4511736C87309335527FB7031639493E06C95728DC8C54"
+  },
+  "entries": 29,
+  "allocation_scopes": 17,
+  "required_diagnostic_context_commit": "2afdf5601ce5e47334bd65157d0c6c9ebfa51beb",
+  "acceptance": "Independent no-blocker source peer covers first-declared borrowed diagnostic context, native placement values/lifetimes and selected original Agent/StartTracingAgent operation mapping.",
+  "required_composition": [
+    "Existing native Agent/core/controller/buffer/writer source units, not yet wholly independently qualified; this small API commit does not absorb or certify them",
+    "Actual Abseil/V8 mutex, native clocks, Root V8 fatal, Node CHECK and CheckedUvLoopClose",
+    "Actual process startup metadata observer/Recorder and native/VM event/category consumers",
+    "Meaningful native controls, compiler/link and Root runtime admission"
+  ],
+  "no_additional_build_roots": true
+}

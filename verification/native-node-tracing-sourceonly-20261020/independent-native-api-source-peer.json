@@ -1,0 +1,216 @@
+{
+  "kind": "independent finite source and lifetime peer of the native tracing C ABI",
+  "reviewer": "sdk_environment_port",
+  "time_utc": "2026-10-20T17:52:38.427808+00:00",
+  "status": "no concrete blocker in selected ABI source/lifetime mappings",
+  "runtime_executed": false,
+  "compiled": false,
+  "qualification": false,
+  "reviewed_component": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\native-api-component.json",
+    "sha256": "ACCB4B155BBB92FEE302F1995272AE468B69D37B9BABBAF32148F383905D10C8"
+  },
+  "production": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_api.h",
+      "bytes": 7902,
+      "sha256": "6AA6586C71DAE6E72F1A59860E54F550E076AC9BEFFFA67264C59FD6A3CFFEA3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_api.cpp",
+      "bytes": 10645,
+      "sha256": "C747E51D8813DE4697B91B8EA7B723A7D442AF6B1BEE98EAC35499AB3BFF7993"
+    }
+  ],
+  "supporting_sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_agent.hpp",
+      "bytes": 7114,
+      "sha256": "D7B4F316372F7897E325108D84C2D5645CD49AB718FADC3B152328E3CE82B016"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_agent.cpp",
+      "bytes": 8689,
+      "sha256": "14BAE7F832AA2DCFA839C652173D9B13D8E4A380F317C1B34160BCF353BB58B0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_standard_allocator.hpp",
+      "bytes": 2562,
+      "sha256": "16D82D2C2143DFAF3861B722BD2E9775FB0BD7D6C9BE400D0ECE37E0674E709B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_simdjson_memory.cpp",
+      "bytes": 2714,
+      "sha256": "44794005D36BB3E1EC6B1A7DF3AA9A6B7DE7C02D6F12BBF38115F83E49C5E103"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\src__node_v8_platform-inl.h.txt",
+      "bytes": 6045,
+      "sha256": "90F09737D3F80E58CC83D27DF48FEB07CE74BE657E750EC69C693876CB1CA55D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\src__tracing__agent.h.txt",
+      "bytes": 5466,
+      "sha256": "EF94C88CD5EA1099D46FDC823785E5E6E19386855BFED0D05EDE0B9784E07773"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\src__tracing__trace_event.cc.txt",
+      "bytes": 917,
+      "sha256": "C4A8E0EB89A2A2DE1A77C3B87BB784940E0BDD944354B354D6095A734D7097F2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\src__node_trace_events.cc.txt",
+      "bytes": 6763,
+      "sha256": "A621D1E86F742AE4605792A7BD516E817D604CE240DEDFA89409EC405921A6A5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_controller.cpp",
+      "bytes": 10371,
+      "sha256": "B80F6BEB5D4B3848214569FF0D871D38C62BC5AEC3D35F9BC8BEEE5B64E8D0BC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_node_diagnostic_context.hpp",
+      "bytes": 914,
+      "sha256": "7EA7700F4EDCC6ED5C27DF98574BE27A572AFF01E151B9F39667E6737ACC30B9"
+    }
+  ],
+  "static_entry_check": {
+    "entries": [
+      {
+        "name": "pi_node_tracing_layout",
+        "first_statement": "DiagnosticContextScope diagnostic(nullptr);"
+      },
+      {
+        "name": "pi_node_tracing_string_construct",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_string_destroy",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_string_view",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_categories_construct",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_categories_insert_c_string",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_categories_destroy",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_categories_size",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_agent_construct",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_agent_destroy",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_agent_controller",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_agent_enabled_categories",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_agent_flush",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_writer_construct",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_writer_assign_default",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_writer_start_file",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_writer_enable",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_writer_disable",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_writer_reset",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_writer_destroy",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_writer_empty",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_writer_is_default",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_writer_agent",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_writer_controller",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_set_agent",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_get_agent",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_get_controller",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_category_enabled",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      },
+      {
+        "name": "pi_node_tracing_category_name",
+        "first_statement": "DiagnosticContextScope diagnostic(context);"
+      }
+    ],
+    "header_definition_names_equal": true,
+    "allocation_scopes": 17
+  },
+  "findings": [
+    "All 29 direct C definitions create their actual DiagnosticContextScope as the first body statement. Layout masks with null; remaining boundaries use the borrowed explicit context. The exact native TLS owner restores the previous context in its destructor after later locals and return-value materialization.",
+    "17 mutating, allocating or destroying boundaries admit the native AllocationScope after the diagnostic scope. Scoped owner retention survives destruction of the Agent first native member; per-allocation prefixes independently retain their domain after String/category placement results escape. Observer/pointer/flag/size getters add no synthetic ownership.",
+    "Placement construction/destruction uses queried sizeof/alignof of the actual native Agent, String, CategorySet and AgentWriterHandle values. Controller values are actual borrowed base pointers. No per-instance opaque wrapper allocation or extra Agent lease is added.",
+    "StartTracingAgent preserves the original IsDefaultHandle guard, std::views::split comma range, native String byte-length construction and set emplace, AddClient argument expression/unique_ptr ownership, kUseDefaultCategories and actual handle move assignment. This keeps native duplicate, empty and trailing-token rules rather than reimplementing splitting.",
+    "Category insert maps only the selected NodeCategorySet::New emplace(*Utf8Value) operation, preserving the NUL-terminated input boundary. Array admission, indexed access, UTF-8 conversion and BaseObject ownership remain caller work exactly as stated.",
+    "Writer Enable/Disable/reset/destroy call the real value methods directly. Borrowed Agent identity, default handle semantics and source Disconnect/reset order are unchanged. The caller contract requires writer/process producers and observers to obey original Agent lifetime before destruction.",
+    "Agent GetEnabledCategories produces the real ordered set flatten/comma String directly into caller placement storage; no additional copy buffer or JS allocation is introduced at the ABI.",
+    "Process global publication directly uses TraceEventHelper. SetAgent(null) clears both original pointers; category enabled/name methods delegate to the actual registry and return its original borrowed byte/name addresses. VM external backing ownership is not claimed by this interface.",
+    "JSContext appears only in immediate synchronous parameters and the stack DiagnosticContextScope. The new convert_to_set lambda is captureless. The native Agent and writer types inspected store no JSContext or Engine pointer; worker AllocationScope retains only its native domain."
+  ],
+  "limits": [
+    "This finite peer does not certify the complete underlying Agent/controller/writer/Recorder algorithms or every platform dependency.",
+    "Original process startup/observer registration, metadata/event producers, publication clearing, worker shutdown/join, native memory-owner identity and VM external backing lifetimes must still be assembled by the real caller.",
+    "Abseil/V8 Mutex, clocks, fatal/CHECK/CheckedUvLoopClose platform bodies and independent broader source review remain separate gates.",
+    "No compiler, native execution, Node/reference capture, generator or runtime gate ran for this peer. Assertions and production sources were left unchanged."
+  ]
+}
