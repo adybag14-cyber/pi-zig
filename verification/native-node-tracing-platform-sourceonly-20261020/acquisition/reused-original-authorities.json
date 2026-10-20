@@ -1,0 +1,49 @@
+{
+  "kind": "Byte-exact reuse of existing pinned source authorities",
+  "compiler": false,
+  "native_execution": false,
+  "records": [
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\deps__v8__src__libplatform__etw__etw-provider-win.h",
+      "destination": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\v8-tracing\\etw-provider-win.h",
+      "bytes": 1094,
+      "sha256": "64D0756E39EDCDA61DCBA4D00DE8447E347A435B82E5DE6478815DE69B8D9E01"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\V8-LICENSE.txt",
+      "destination": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\v8-tracing\\LICENSE",
+      "bytes": 3093,
+      "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\V8-LICENSE.txt",
+      "destination": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\V8-LICENSE.txt",
+      "bytes": 3093,
+      "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\Node-MIT-LICENSE-excerpt.txt",
+      "destination": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\Node-MIT-LICENSE-excerpt.txt",
+      "bytes": 2337,
+      "sha256": "EC62DC96DA0099B87F4511736C87309335527FB7031639493E06C95728DC8C54"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-environment-os-sourceonly-20261020\\authority\\debug_utils.cc.v24.13.txt",
+      "destination": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\src__debug_utils.cc",
+      "bytes": 16324,
+      "sha256": "9F2904508A8443BEB454DC789A07D60AFB2F2EC7F9B2F56BC651D9C66EDB0EA3"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-environment-os-sourceonly-20261020\\authority\\debug_utils.h.v24.13.txt",
+      "destination": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\src__debug_utils.h",
+      "bytes": 7649,
+      "sha256": "807D1A5B4C872B0FB5A14DFEB0BD48BEF126CBDCA920E5908E949218617484B4"
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__logging.h",
+      "destination": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\deps__v8__src__base__logging.h",
+      "bytes": 21624,
+      "sha256": "0FA464788992D2AB04B14F9A9B9B808E29759D111E867BABD69EAED03D931405"
+    }
+  ]
+}

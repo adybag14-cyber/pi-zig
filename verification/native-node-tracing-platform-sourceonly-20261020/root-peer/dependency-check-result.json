@@ -1,0 +1,18 @@
+{
+  "abseil_files_hashed_and_bound_to_successful_original_receipts": 353,
+  "acquisition_receipts_hashed": 16,
+  "exact_closure_prefix_normalizations": [
+    "vendor/node-v24.13.0/abseil-cpp/absl/numeric/int128_have_intrinsic.inc",
+    "vendor/node-v24.13.0/abseil-cpp/absl/numeric/int128_no_intrinsic.inc",
+    "vendor/node-v24.13.0/abseil-cpp/absl/debugging/internal/addresses.h"
+  ],
+  "exact_original_gyp_members": 349,
+  "exact_original_cpp_order": 110,
+  "complete_literal_edges_recomputed": 1420,
+  "unresolved_includes": [],
+  "toolchain_source_pins_hashed": 35,
+  "excerpt_ranges_verified": 64,
+  "build_single_insertion_forward_inverse": true,
+  "main_build_bytes_unchanged": true,
+  "no_compiler_or_preprocessor_or_writes": true
+}

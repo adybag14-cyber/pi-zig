@@ -1,0 +1,697 @@
+{
+  "schema": 1,
+  "kind": "Additive source response to independent instrumentation/DEBUG/ScopedLock review questions",
+  "created_utc": "2026-10-20T19:42:28.362379+00:00",
+  "production_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\production-proposal.json",
+    "bytes": 15330,
+    "sha256": "88552C5060C2132977BF4312BD1E12F22221E1A188D53074F5D33B89EE02BFC9"
+  },
+  "instrumentation": {
+    "all_examined_selected_tracing_files": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_agent.cpp",
+        "bytes": 8689,
+        "sha256": "14BAE7F832AA2DCFA839C652173D9B13D8E4A380F317C1B34160BCF353BB58B0"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_agent.hpp",
+        "bytes": 7114,
+        "sha256": "D7B4F316372F7897E325108D84C2D5645CD49AB718FADC3B152328E3CE82B016"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_api.cpp",
+        "bytes": 10645,
+        "sha256": "C747E51D8813DE4697B91B8EA7B723A7D442AF6B1BEE98EAC35499AB3BFF7993"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_api.h",
+        "bytes": 7902,
+        "sha256": "6AA6586C71DAE6E72F1A59860E54F550E076AC9BEFFFA67264C59FD6A3CFFEA3"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_buffer.cpp",
+        "bytes": 6679,
+        "sha256": "F8AF213F5F5CEB903651CA0B8D91F2437DE48D1A91E96F1C243FF55FDEEBCB2F"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_buffer.hpp",
+        "bytes": 2192,
+        "sha256": "3F3A289C1C695AF7BB7A84E1BFC08B2BA6D823D513AEF26C864CF10F94397B32"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.cpp",
+        "bytes": 13664,
+        "sha256": "E0408BD2D94D728FACD1E2B36C7DD831BEF49E12BF53C52FE60D602D001B0064"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.hpp",
+        "bytes": 1236,
+        "sha256": "F7AE55D36E54D64AC7FA36CF6F64D06A631889213EE0E43998F8701004338E98"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_controller.cpp",
+        "bytes": 10371,
+        "sha256": "B80F6BEB5D4B3848214569FF0D871D38C62BC5AEC3D35F9BC8BEEE5B64E8D0BC"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_controller.hpp",
+        "bytes": 3193,
+        "sha256": "03B722CC934185543B960EDB5CBEE537786C5C920416E80B019A0B5B481CAB83"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_core.cpp",
+        "bytes": 11560,
+        "sha256": "3C4E500BE25DFD39FC93BFFB61A137CDB4AED95862716413367B85B7E68D5332"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_core.hpp",
+        "bytes": 9947,
+        "sha256": "C41AA33C90695AE0CD3887C052E7FD40E950CE917B808313C392848EA66B7F53"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_loop.cpp",
+        "bytes": 8934,
+        "sha256": "F23104647AE8F7FF2B84A403967C07F5D55167519E762FE8E8C51CD1E10D5F53"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_platform.cpp",
+        "bytes": 1717,
+        "sha256": "88CE78ABC841675B35B507347B82463250411477835E1D3B4014E5F83AC78921"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_platform.hpp",
+        "bytes": 3212,
+        "sha256": "29644D48E53B23F1F29372970C2D505F4A24E932D572024537544B3A4CDA23F3"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_recorder.cpp",
+        "bytes": 808,
+        "sha256": "E9C6B8EF7EDF240D79B687A21C8645456BDCC82576059EA78C9861C5AE398E14"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_recorder.hpp",
+        "bytes": 1495,
+        "sha256": "18A854C8E68977696B878F4312B50060E18BA9C01E12461B5A41530A18F20FAC"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_recorder_mac.cpp",
+        "bytes": 1216,
+        "sha256": "825594471DC6BC703D0E68D294C0834464ADD89120EAA9C0B8976838AC4D39AE"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_recorder_win.cpp",
+        "bytes": 1989,
+        "sha256": "FC227B861149E2876C266D58889B20062A1E89FF6D99BAEEAFC3721111045E57"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_support.hpp",
+        "bytes": 9490,
+        "sha256": "236104517D21B0B95550E1DCC098FA9697E87A0ED090D5DC169379A5ED69A544"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_writer.cpp",
+        "bytes": 8571,
+        "sha256": "DB994685F7E370ACF1C3423E76DB36E7C37F74DEA48F4B3EF98CFCD36FF08893"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_writer.hpp",
+        "bytes": 2197,
+        "sha256": "A4B15B27A91E5FDDF986B59C7D3C94D595E1C843F4A732484534A3DF31E53376"
+      }
+    ],
+    "all_instrumentation_macro_occurrences": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_recorder.hpp",
+        "line": 15,
+        "text": "#if !defined(V8_ENABLE_SYSTEM_INSTRUMENTATION)"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_recorder.hpp",
+        "line": 16,
+        "text": "#error \"only include this file if V8_ENABLE_SYSTEM_INSTRUMENTATION\""
+      }
+    ],
+    "all_recorder_header_includes": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_recorder.cpp",
+        "line": 3,
+        "text": "#include \"native_node_tracing_recorder.hpp\""
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_recorder_mac.cpp",
+        "line": 3,
+        "text": "#include \"native_node_tracing_recorder.hpp\""
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_recorder_win.cpp",
+        "line": 5,
+        "text": "#include \"native_node_tracing_recorder.hpp\""
+      }
+    ],
+    "core_factory_declaration": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_core.hpp",
+        "bytes": 9947,
+        "sha256": "C41AA33C90695AE0CD3887C052E7FD40E950CE917B808313C392848EA66B7F53"
+      },
+      "start": 150,
+      "end": 166,
+      "lines": [
+        {
+          "line": 150,
+          "text": "class TraceWriter : public NativeAllocated {"
+        },
+        {
+          "line": 151,
+          "text": " public:"
+        },
+        {
+          "line": 152,
+          "text": "  TraceWriter() = default;"
+        },
+        {
+          "line": 153,
+          "text": "  virtual ~TraceWriter() = default;"
+        },
+        {
+          "line": 154,
+          "text": "  virtual void AppendTraceEvent(TraceObject* trace_event) = 0;"
+        },
+        {
+          "line": 155,
+          "text": "  virtual void Flush() = 0;"
+        },
+        {
+          "line": 156,
+          "text": ""
+        },
+        {
+          "line": 157,
+          "text": "  static TraceWriter* CreateJSONTraceWriter(std::ostream& stream);"
+        },
+        {
+          "line": 158,
+          "text": "  static TraceWriter* CreateJSONTraceWriter(std::ostream& stream,"
+        },
+        {
+          "line": 159,
+          "text": "                                            const String& tag);"
+        },
+        {
+          "line": 160,
+          "text": ""
+        },
+        {
+          "line": 161,
+          "text": "  static TraceWriter* CreateSystemInstrumentationTraceWriter();"
+        },
+        {
+          "line": 162,
+          "text": ""
+        },
+        {
+          "line": 163,
+          "text": " private:"
+        },
+        {
+          "line": 164,
+          "text": "  // Disallow copy and assign"
+        },
+        {
+          "line": 165,
+          "text": "  TraceWriter(const TraceWriter&) = delete;"
+        },
+        {
+          "line": 166,
+          "text": "  void operator=(const TraceWriter&) = delete;"
+        }
+      ]
+    },
+    "conclusion": "The only selected project-header instrumentation guard is the Recorder header requirement. The three Recorder source files include it, and each selected platform compiles the common plus its own Recorder source with V8_ENABLE_SYSTEM_INSTRUMENTATION. Agent/controller/core/buffer/writer/clock/API/loop/platform TUs contain no guard that requires that macro. The private core factory declaration is unconditional. No missing macro propagation was found in this finite selected source graph.",
+    "compiler_selection_observed": false
+  },
+  "debug_mapping": {
+    "original_v8_Debug": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\tools__v8_gypfiles__toolchain.gypi",
+        "bytes": 27997,
+        "sha256": "A1C257B371F3DECA51E9CD4F1189206D99C28CB64A3C4D53B5D920DC02053059"
+      },
+      "start": 602,
+      "end": 606,
+      "lines": [
+        {
+          "line": 602,
+          "text": "    'configurations': {"
+        },
+        {
+          "line": 603,
+          "text": "      'Debug': {"
+        },
+        {
+          "line": 604,
+          "text": "        'defines': ["
+        },
+        {
+          "line": 605,
+          "text": "          'DEBUG',"
+        },
+        {
+          "line": 606,
+          "text": "        ],"
+        }
+      ]
+    },
+    "original_dcheck_always_on": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\tools__v8_gypfiles__features.gypi",
+        "bytes": 19326,
+        "sha256": "4005F461CA2390AF3818D2D568C7502F694043DEF0CCAA4F2288713E8CE7A802"
+      },
+      "start": 453,
+      "end": 457,
+      "lines": [
+        {
+          "line": 453,
+          "text": "      ['dcheck_always_on!=0', {"
+        },
+        {
+          "line": 454,
+          "text": "        'defines': ['DEBUG',],"
+        },
+        {
+          "line": 455,
+          "text": "      }, {"
+        },
+        {
+          "line": 456,
+          "text": "        'defines': ['NDEBUG',],"
+        },
+        {
+          "line": 457,
+          "text": "      }],"
+        }
+      ]
+    },
+    "zig_Build_optimize_emission": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Module.zig",
+        "bytes": 26577,
+        "sha256": "0D5D2A468C99BEA020BD8B8CA13C32E64ABD66686D1821C9737FFC1A9292729F"
+      },
+      "start": 579,
+      "end": 585,
+      "lines": [
+        {
+          "line": 579,
+          "text": "    try zig_args.ensureUnusedCapacity(1);"
+        },
+        {
+          "line": 580,
+          "text": "    if (m.optimize) |optimize| switch (optimize) {"
+        },
+        {
+          "line": 581,
+          "text": "        .Debug => zig_args.appendAssumeCapacity(\"-ODebug\"),"
+        },
+        {
+          "line": 582,
+          "text": "        .ReleaseSmall => zig_args.appendAssumeCapacity(\"-OReleaseSmall\"),"
+        },
+        {
+          "line": 583,
+          "text": "        .ReleaseFast => zig_args.appendAssumeCapacity(\"-OReleaseFast\"),"
+        },
+        {
+          "line": 584,
+          "text": "        .ReleaseSafe => zig_args.appendAssumeCapacity(\"-OReleaseSafe\"),"
+        },
+        {
+          "line": 585,
+          "text": "    };"
+        }
+      ]
+    },
+    "resource_compiler_separate_rule": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Module.zig",
+        "bytes": 26577,
+        "sha256": "0D5D2A468C99BEA020BD8B8CA13C32E64ABD66686D1821C9737FFC1A9292729F"
+      },
+      "start": 131,
+      "end": 143,
+      "lines": [
+        {
+          "line": 131,
+          "text": "pub const RcSourceFile = struct {"
+        },
+        {
+          "line": 132,
+          "text": "    file: LazyPath,"
+        },
+        {
+          "line": 133,
+          "text": "    /// Any option that rc.exe accepts will work here, with the exception of:"
+        },
+        {
+          "line": 134,
+          "text": "    /// - `/fo`: The output filename is set by the build system"
+        },
+        {
+          "line": 135,
+          "text": "    /// - `/p`: Only running the preprocessor is not supported in this context"
+        },
+        {
+          "line": 136,
+          "text": "    /// - `/:no-preprocess` (non-standard option): Not supported in this context"
+        },
+        {
+          "line": 137,
+          "text": "    /// - Any MUI-related option"
+        },
+        {
+          "line": 138,
+          "text": "    /// https://learn.microsoft.com/en-us/windows/win32/menurc/using-rc-the-rc-command-line-"
+        },
+        {
+          "line": 139,
+          "text": "    ///"
+        },
+        {
+          "line": 140,
+          "text": "    /// Implicitly defined options:"
+        },
+        {
+          "line": 141,
+          "text": "    ///  /x (ignore the INCLUDE environment variable)"
+        },
+        {
+          "line": 142,
+          "text": "    ///  /D_DEBUG or /DNDEBUG depending on the optimization mode"
+        },
+        {
+          "line": 143,
+          "text": "    flags: []const []const u8 = &.{},"
+        }
+      ]
+    },
+    "recipes": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\tools\\build_native_node_abseil.zig",
+        "bytes": 7328,
+        "sha256": "8053B6A69B570372A9A895787C66F76FF055A6225D333C5A55F8E307293AF9F1"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\tools\\build_native_node_tracing.zig",
+        "bytes": 6147,
+        "sha256": "A42B1433A277097BE8FDC7E6A670FEDB94DC5CCC58397C6A864F1BC06206D20A"
+      }
+    ],
+    "explicit_new_Cpp_preprocessor_defines": [
+      "_WIN32_WINNT=0x0A00 (Windows)",
+      "_GNU_SOURCE (Linux)",
+      "V8_ENABLE_SYSTEM_INSTRUMENTATION (selected Windows/Darwin Recorder units)"
+    ],
+    "not_explicitly_defined_by_recipes": [
+      "DEBUG",
+      "_DEBUG",
+      "NDEBUG",
+      "OFFICIAL_BUILD",
+      "ABSL_FORCE_WAITER_MODE",
+      "ABSL_FORCE_THREAD_IDENTITY_MODE",
+      "NO_FRAME_POINTER"
+    ],
+    "conclusion": "Passing Zig optimize Debug emits -ODebug in the Build layer, not the original V8 GYP DEBUG definition. The documented automatic /D_DEBUG or /DNDEBUG applies to RcSourceFile, which is not used here. These recipes preserve the existing native C++ flag policy and do not claim original V8 Debug-mode equivalence. Actual compiler predefined macros have not been observed.",
+    "whole_tracing_DEBUG_limit": "The old core/controller drafts explicitly use their bounded non-DEBUG PI_TRACE_DCHECK selection; they are not upgraded by this platform unit. The new V8Mutex and fatal owner preserve explicit DEBUG branches, but no complete DEBUG tracing admission is claimed.",
+    "Abseil_assertion_limit": "Unchanged Abseil sources retain their own NDEBUG/assert predicates. Since no NDEBUG setting is forced, this source work does not claim exact upstream release-build assertion configuration or runtime cost.",
+    "SDK_debug_limit": "The genuine SDK TLG_DEBUG selection also considers DBG/DEBUG/_DEBUG/NDEBUG; actual compiler predefines and SDK behavior remain unobserved."
+  },
+  "inherited_ScopedLock_constructor": {
+    "original": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\src__node_mutex.h",
+        "bytes": 7963,
+        "sha256": "79FC7058F5380DA98638682684E77F72D4B413753C0BECD621B0D0E2F69600E5"
+      },
+      "start": 281,
+      "end": 295,
+      "lines": [
+        {
+          "line": 281,
+          "text": ""
+        },
+        {
+          "line": 282,
+          "text": "template <typename Traits>"
+        },
+        {
+          "line": 283,
+          "text": "MutexBase<Traits>::ScopedLock::ScopedLock(const MutexBase& mutex)"
+        },
+        {
+          "line": 284,
+          "text": "    : mutex_(mutex) {"
+        },
+        {
+          "line": 285,
+          "text": "  Traits::mutex_lock(&mutex_.mutex_);"
+        },
+        {
+          "line": 286,
+          "text": "}"
+        },
+        {
+          "line": 287,
+          "text": ""
+        },
+        {
+          "line": 288,
+          "text": "template <typename Traits>"
+        },
+        {
+          "line": 289,
+          "text": "MutexBase<Traits>::ScopedLock::ScopedLock(const ScopedUnlock& scoped_unlock)"
+        },
+        {
+          "line": 290,
+          "text": "    : MutexBase(scoped_unlock.mutex_) {}"
+        },
+        {
+          "line": 291,
+          "text": ""
+        },
+        {
+          "line": 292,
+          "text": "template <typename Traits>"
+        },
+        {
+          "line": 293,
+          "text": "MutexBase<Traits>::ScopedLock::~ScopedLock() {"
+        },
+        {
+          "line": 294,
+          "text": "  Traits::mutex_unlock(&mutex_.mutex_);"
+        },
+        {
+          "line": 295,
+          "text": "}"
+        }
+      ]
+    },
+    "production": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_support.hpp",
+        "bytes": 9490,
+        "sha256": "236104517D21B0B95550E1DCC098FA9697E87A0ED090D5DC169379A5ED69A544"
+      },
+      "start": 252,
+      "end": 266,
+      "lines": [
+        {
+          "line": 252,
+          "text": ""
+        },
+        {
+          "line": 253,
+          "text": "template <typename Traits>"
+        },
+        {
+          "line": 254,
+          "text": "MutexBase<Traits>::ScopedLock::ScopedLock(const MutexBase& mutex)"
+        },
+        {
+          "line": 255,
+          "text": "    : mutex_(mutex) {"
+        },
+        {
+          "line": 256,
+          "text": "  Traits::mutex_lock(&mutex_.mutex_);"
+        },
+        {
+          "line": 257,
+          "text": "}"
+        },
+        {
+          "line": 258,
+          "text": ""
+        },
+        {
+          "line": 259,
+          "text": "template <typename Traits>"
+        },
+        {
+          "line": 260,
+          "text": "MutexBase<Traits>::ScopedLock::ScopedLock(const ScopedUnlock& scoped_unlock)"
+        },
+        {
+          "line": 261,
+          "text": "    : MutexBase(scoped_unlock.mutex_) {}"
+        },
+        {
+          "line": 262,
+          "text": ""
+        },
+        {
+          "line": 263,
+          "text": "template <typename Traits>"
+        },
+        {
+          "line": 264,
+          "text": "MutexBase<Traits>::ScopedLock::~ScopedLock() {"
+        },
+        {
+          "line": 265,
+          "text": "  Traits::mutex_unlock(&mutex_.mutex_);"
+        },
+        {
+          "line": 266,
+          "text": "}"
+        }
+      ]
+    },
+    "exact_original_initializer_preserved": true,
+    "selected_ordinary_lock_uses": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_agent.cpp",
+        "line": 70,
+        "text": "  Mutex::ScopedLock lock(initialize_writer_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_agent.cpp",
+        "line": 139,
+        "text": "    Mutex::ScopedLock lock(initialize_writer_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_agent.cpp",
+        "line": 169,
+        "text": "    Mutex::ScopedLock lock(initialize_writer_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_agent.cpp",
+        "line": 223,
+        "text": "  Mutex::ScopedLock lock(metadata_events_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_agent.cpp",
+        "line": 229,
+        "text": "    Mutex::ScopedLock lock(metadata_events_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_buffer.cpp",
+        "line": 17,
+        "text": "  Mutex::ScopedLock scoped_lock(mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_buffer.cpp",
+        "line": 35,
+        "text": "  Mutex::ScopedLock scoped_lock(mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_buffer.cpp",
+        "line": 59,
+        "text": "    Mutex::ScopedLock scoped_lock(mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_buffer.cpp",
+        "line": 117,
+        "text": "  Mutex::ScopedLock scoped_lock(exit_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_buffer.cpp",
+        "line": 191,
+        "text": "        Mutex::ScopedLock scoped_lock(buffer->exit_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_writer.cpp",
+        "line": 53,
+        "text": "    Mutex::ScopedLock scoped_lock(stream_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_writer.cpp",
+        "line": 72,
+        "text": "  Mutex::ScopedLock scoped_lock(request_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_writer.cpp",
+        "line": 115,
+        "text": "  Mutex::ScopedLock scoped_lock(stream_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_writer.cpp",
+        "line": 135,
+        "text": "    Mutex::ScopedLock stream_scoped_lock(stream_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_writer.cpp",
+        "line": 148,
+        "text": "    Mutex::ScopedLock request_scoped_lock(request_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_writer.cpp",
+        "line": 155,
+        "text": "  Mutex::ScopedLock scoped_lock(request_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_writer.cpp",
+        "line": 160,
+        "text": "    Mutex::ScopedLock stream_mutex_lock(stream_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_writer.cpp",
+        "line": 182,
+        "text": "    Mutex::ScopedLock lock(request_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_writer.cpp",
+        "line": 216,
+        "text": "    Mutex::ScopedLock scoped_lock(request_mutex_);"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_writer.cpp",
+        "line": 248,
+        "text": "                   Mutex::ScopedLock scoped_lock(trace_writer->request_mutex_);"
+      }
+    ],
+    "selected_ordinary_lock_count": 20,
+    "ScopedUnlock_uses_outside_support": [],
+    "source_status": "The unusual constructor is inherited verbatim from pinned src/node_mutex.h, not a newly introduced initializer. The selected tracing call sites only construct ScopedLock from actual Mutex members; no selected consumer mentions ScopedUnlock. Whether the constructor is rejected or remains uninstantiated under a future compiler invocation is not established by this lexical inspection. No speculative correction or compiler-qualification claim is made."
+  },
+  "reused_authority_receipt": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\acquisition\\reused-trace-writer-and-node-mutex.json",
+    "bytes": 2555,
+    "sha256": "B35231DFE8FA0844F4015E91E87607B392357882FB40FCA16300D9C6C6867759"
+  },
+  "read_only_replay_wrapper": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\replay-source-body-proof.py",
+    "bytes": 1334,
+    "sha256": "4CE00E19D9FE92CBA5B91398DD2A802F6216F3D48412C50165E432F6102A78CE"
+  },
+  "sealed_packets_modified": false,
+  "production_modified": false,
+  "compiler_execution": false,
+  "preprocessor_execution": false,
+  "native_execution": false,
+  "main_modified": false,
+  "qualification": false
+}

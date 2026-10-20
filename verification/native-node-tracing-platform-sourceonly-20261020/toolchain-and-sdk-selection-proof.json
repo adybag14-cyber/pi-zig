@@ -1,0 +1,6118 @@
+{
+  "schema": 1,
+  "kind": "Pinned original Abseil, contained Windows SDK, and Zig dependency selection source proof",
+  "created_utc": "2026-10-20T19:35:23.844956+00:00",
+  "production_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\production-proposal.json",
+    "bytes": 15330,
+    "sha256": "88552C5060C2132977BF4312BD1E12F22221E1A188D53074F5D33B89EE02BFC9"
+  },
+  "sdk": {
+    "version": "10.0.22621.0",
+    "contained_original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\windows-sdk\\10.0.22621.0\\shared\\TraceLoggingProvider.h",
+      "bytes": 294943,
+      "sha256": "C060AF7E8703386736C651A62686908D509B8B9CB627D898D72A4CA6506901A4"
+    },
+    "acquisition": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\acquisition\\windows-sdk-10.0.22621.0-contained.json",
+      "bytes": 1093,
+      "sha256": "99DDA134D547124DA48FC5EC9B3E5C2FB8A8BCE52CD3EA2C39AC22DDB381A2D1"
+    },
+    "installed_path_is_provenance_not_include_path": true,
+    "actual_sdk_includes_after_removing_comments": [
+      {
+        "line": 80,
+        "include": "evntprov.h"
+      }
+    ],
+    "selected_evntprov": {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\evntprov.h",
+      "bytes": 6951,
+      "sha256": "9808C06EF5535EB31344EA05CDD3F05BCE2BC85F9AE8A774011F30537D66833D"
+    },
+    "include_precedence": "The one-file contained SDK directory provides TraceLoggingProvider.h only. Its evntprov.h resolves to the pinned Zig MinGW family. The original V8 provider includes windows.h before the SDK header. No SDK shared/um/ucrt directory is added.",
+    "required_windows_declaration_edges": [
+      [
+        "original V8 etw-provider-win.h",
+        "Zig MinGW windows.h"
+      ],
+      [
+        "original V8 etw-provider-win.h",
+        "contained SDK TraceLoggingProvider.h"
+      ],
+      [
+        "contained SDK TraceLoggingProvider.h",
+        "Zig MinGW evntprov.h"
+      ],
+      [
+        "Zig MinGW evntprov.h",
+        "Zig MinGW winapifamily.h"
+      ],
+      [
+        "Zig MinGW evntprov.h",
+        "Zig MinGW guiddef.h"
+      ],
+      [
+        "Zig MinGW guiddef.h",
+        "Zig MinGW _mingw.h"
+      ],
+      [
+        "Zig MinGW windows.h",
+        "Zig MinGW sdkddkver.h"
+      ],
+      [
+        "Zig MinGW windows.h",
+        "Zig MinGW windef.h"
+      ],
+      [
+        "Zig MinGW windef.h",
+        "Zig MinGW minwindef.h"
+      ],
+      [
+        "Zig MinGW minwindef.h",
+        "Zig MinGW winnt.h"
+      ],
+      [
+        "Zig MinGW winnt.h",
+        "Zig MinGW specstrings.h"
+      ],
+      [
+        "Zig MinGW specstrings.h",
+        "Zig MinGW sal.h"
+      ]
+    ],
+    "selected_API_path": "Recipe sets original _WIN32_WINNT=0x0A00. sdkddkver.h supplies WINVER from that macro; MinGW evntprov.h declares EventRegister/EventUnregister/EventWriteTransfer/EventSetInformation and defines EVENT_FILTER_TYPE_SCHEMATIZED. Original SDK therefore chooses TLG_HAVE_EVENT_SET_INFORMATION=1 under these declarations, with the direct EventSetInformation path.",
+    "original_descriptor_compatibility": "Selected SDK body uses EVENT_DATA_DESCRIPTOR Ptr/Size/Reserved fields and (EVENT_INFO_CLASS)2 rather than requiring a named EventProviderSetTraits enumerator. These fields and EVENT_INFO_CLASS exist in the pinned MinGW header.",
+    "additional_SDK_headers_selected": [],
+    "MS_extensions": "Recorder sources request -fms-extensions for original SDK __pragma/__declspec. The original __annotation, __fastfail and metadata section emission are retained and still require future actual Zig Clang/MinGW compile/link validation."
+  },
+  "waiter_matrix": [
+    {
+      "selection": "Windows GNU / MinGW 64-bit",
+      "required_predicates": [
+        "_WIN32",
+        "__MINGW32__",
+        "not __linux__"
+      ],
+      "waiter": "original StdcppWaiter",
+      "thread_identity": "original POSIX_SETSPECIFIC",
+      "reason": "Win32 waiter excludes MinGW, pthread waiter excludes Windows/MinGW, futex/semaphore availability is absent on this selection; unchanged priority order reaches StdcppWaiter. ThreadIdentity Windows CPP11 branch also excludes MinGW."
+    },
+    {
+      "selection": "Windows native non-MinGW predicate branch (retained original, not qualified here)",
+      "required_predicates": [
+        "_WIN32",
+        "not __MINGW32__",
+        "_WIN32_WINNT>=VISTA"
+      ],
+      "waiter": "original Win32Waiter",
+      "thread_identity": "original CPP11"
+    },
+    {
+      "selection": "Linux non-GRTE selected 64-bit source",
+      "required_predicates": [
+        "__linux__",
+        "not _WIN32",
+        "not __GOOGLE_GRTE_VERSION__ special branch"
+      ],
+      "waiter": "original FutexWaiter",
+      "thread_identity": "original POSIX_SETSPECIFIC"
+    },
+    {
+      "selection": "Darwin 64-bit with detected original thread_local",
+      "required_predicates": [
+        "__APPLE__",
+        "ABSL_HAVE_THREAD_LOCAL",
+        "not _WIN32"
+      ],
+      "waiter": "original PthreadWaiter",
+      "thread_identity": "original CPP11",
+      "assembly_limit": "Main network and native-memory owners still only admit Windows/Linux; this source selection is not whole-Agent Darwin admission."
+    }
+  ],
+  "minGW_pthread_link_owner": {
+    "recipe": "build_native_node_abseil.zig requests pthread only for target.result.isMinGW().",
+    "Zig_resolution": "lib/std/Build/Module.zig calls isLibCLibName; lib/std/zig/target.zig recognizes pthread and winpthread for MinGW, enabling the existing libc owner instead of creating another archive.",
+    "original_implementation_present": {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\mingw\\winpthreads\\thread.c",
+      "bytes": 45372,
+      "sha256": "5A6A30B36C8A6BA0F8918B0B488FB08041A416B02B342A4A4471157F9490A387"
+    },
+    "no_external_pthread_archive_added": true
+  },
+  "stacktrace_macro_selection": {
+    "macro": "ABSL_STACKTRACE_INL_HEADER",
+    "selected_windows": "absl/debugging/internal/stacktrace_win32-inl.inc",
+    "selected_darwin_thread_local": "absl/debugging/internal/stacktrace_generic-inl.inc",
+    "selected_linux_x64": "absl/debugging/internal/stacktrace_x86-inl.inc",
+    "selected_linux_arm64": "absl/debugging/internal/stacktrace_aarch64-inl.inc",
+    "NO_FRAME_POINTER": "Not defined by recipe. Original explicit NO_FRAME_POINTER x86/x64/aarch64 libunwind include is not available to open-source users and is not claimed by this finite closure."
+  },
+  "sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\absl\\synchronization\\internal\\waiter.h",
+      "bytes": 2462,
+      "sha256": "6AD9C13FDD0972908E01FB394C002CD17E1B6AFBF6248C454938F82CF4945394",
+      "excerpts": [
+        {
+          "start": 26,
+          "end": 66,
+          "lines": [
+            {
+              "line": 26,
+              "text": "// May be chosen at compile time via -DABSL_FORCE_WAITER_MODE=<index>"
+            },
+            {
+              "line": 27,
+              "text": "#define ABSL_WAITER_MODE_FUTEX 0"
+            },
+            {
+              "line": 28,
+              "text": "#define ABSL_WAITER_MODE_SEM 1"
+            },
+            {
+              "line": 29,
+              "text": "#define ABSL_WAITER_MODE_CONDVAR 2"
+            },
+            {
+              "line": 30,
+              "text": "#define ABSL_WAITER_MODE_WIN32 3"
+            },
+            {
+              "line": 31,
+              "text": "#define ABSL_WAITER_MODE_STDCPP 4"
+            },
+            {
+              "line": 32,
+              "text": ""
+            },
+            {
+              "line": 33,
+              "text": "#if defined(ABSL_FORCE_WAITER_MODE)"
+            },
+            {
+              "line": 34,
+              "text": "#define ABSL_WAITER_MODE ABSL_FORCE_WAITER_MODE"
+            },
+            {
+              "line": 35,
+              "text": "#elif defined(ABSL_INTERNAL_HAVE_WIN32_WAITER)"
+            },
+            {
+              "line": 36,
+              "text": "#define ABSL_WAITER_MODE ABSL_WAITER_MODE_WIN32"
+            },
+            {
+              "line": 37,
+              "text": "#elif defined(ABSL_INTERNAL_HAVE_FUTEX_WAITER)"
+            },
+            {
+              "line": 38,
+              "text": "#define ABSL_WAITER_MODE ABSL_WAITER_MODE_FUTEX"
+            },
+            {
+              "line": 39,
+              "text": "#elif defined(ABSL_INTERNAL_HAVE_SEM_WAITER)"
+            },
+            {
+              "line": 40,
+              "text": "#define ABSL_WAITER_MODE ABSL_WAITER_MODE_SEM"
+            },
+            {
+              "line": 41,
+              "text": "#elif defined(ABSL_INTERNAL_HAVE_PTHREAD_WAITER)"
+            },
+            {
+              "line": 42,
+              "text": "#define ABSL_WAITER_MODE ABSL_WAITER_MODE_CONDVAR"
+            },
+            {
+              "line": 43,
+              "text": "#elif defined(ABSL_INTERNAL_HAVE_STDCPP_WAITER)"
+            },
+            {
+              "line": 44,
+              "text": "#define ABSL_WAITER_MODE ABSL_WAITER_MODE_STDCPP"
+            },
+            {
+              "line": 45,
+              "text": "#else"
+            },
+            {
+              "line": 46,
+              "text": "#error ABSL_WAITER_MODE is undefined"
+            },
+            {
+              "line": 47,
+              "text": "#endif"
+            },
+            {
+              "line": 48,
+              "text": ""
+            },
+            {
+              "line": 49,
+              "text": "namespace absl {"
+            },
+            {
+              "line": 50,
+              "text": "ABSL_NAMESPACE_BEGIN"
+            },
+            {
+              "line": 51,
+              "text": "namespace synchronization_internal {"
+            },
+            {
+              "line": 52,
+              "text": ""
+            },
+            {
+              "line": 53,
+              "text": "#if ABSL_WAITER_MODE == ABSL_WAITER_MODE_FUTEX"
+            },
+            {
+              "line": 54,
+              "text": "using Waiter = FutexWaiter;"
+            },
+            {
+              "line": 55,
+              "text": "#elif ABSL_WAITER_MODE == ABSL_WAITER_MODE_SEM"
+            },
+            {
+              "line": 56,
+              "text": "using Waiter = SemWaiter;"
+            },
+            {
+              "line": 57,
+              "text": "#elif ABSL_WAITER_MODE == ABSL_WAITER_MODE_CONDVAR"
+            },
+            {
+              "line": 58,
+              "text": "using Waiter = PthreadWaiter;"
+            },
+            {
+              "line": 59,
+              "text": "#elif ABSL_WAITER_MODE == ABSL_WAITER_MODE_WIN32"
+            },
+            {
+              "line": 60,
+              "text": "using Waiter = Win32Waiter;"
+            },
+            {
+              "line": 61,
+              "text": "#elif ABSL_WAITER_MODE == ABSL_WAITER_MODE_STDCPP"
+            },
+            {
+              "line": 62,
+              "text": "using Waiter = StdcppWaiter;"
+            },
+            {
+              "line": 63,
+              "text": "#endif"
+            },
+            {
+              "line": 64,
+              "text": ""
+            },
+            {
+              "line": 65,
+              "text": "}  // namespace synchronization_internal"
+            },
+            {
+              "line": 66,
+              "text": "ABSL_NAMESPACE_END"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\absl\\synchronization\\internal\\win32_waiter.h",
+      "bytes": 2398,
+      "sha256": "744D09A720E6D3360CE70D0419B0DEA725BEFCBED9E86EDC7CBF435FCD7BA204",
+      "excerpts": [
+        {
+          "start": 19,
+          "end": 35,
+          "lines": [
+            {
+              "line": 19,
+              "text": "#ifdef _WIN32"
+            },
+            {
+              "line": 20,
+              "text": "#include <sdkddkver.h>"
+            },
+            {
+              "line": 21,
+              "text": "#endif"
+            },
+            {
+              "line": 22,
+              "text": ""
+            },
+            {
+              "line": 23,
+              "text": "#if defined(_WIN32) && !defined(__MINGW32__) && \\"
+            },
+            {
+              "line": 24,
+              "text": "    _WIN32_WINNT >= _WIN32_WINNT_VISTA"
+            },
+            {
+              "line": 25,
+              "text": ""
+            },
+            {
+              "line": 26,
+              "text": "#include \"absl/base/config.h\""
+            },
+            {
+              "line": 27,
+              "text": "#include \"absl/synchronization/internal/kernel_timeout.h\""
+            },
+            {
+              "line": 28,
+              "text": "#include \"absl/synchronization/internal/waiter_base.h\""
+            },
+            {
+              "line": 29,
+              "text": ""
+            },
+            {
+              "line": 30,
+              "text": "namespace absl {"
+            },
+            {
+              "line": 31,
+              "text": "ABSL_NAMESPACE_BEGIN"
+            },
+            {
+              "line": 32,
+              "text": "namespace synchronization_internal {"
+            },
+            {
+              "line": 33,
+              "text": ""
+            },
+            {
+              "line": 34,
+              "text": "#define ABSL_INTERNAL_HAVE_WIN32_WAITER 1"
+            },
+            {
+              "line": 35,
+              "text": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\absl\\synchronization\\internal\\futex_waiter.h",
+      "bytes": 1972,
+      "sha256": "F8D0390461FF3EF1A98866B75979F826EBE00733D4B42AF598FA5E90E4E1EDC5",
+      "excerpts": [
+        {
+          "start": 19,
+          "end": 35,
+          "lines": [
+            {
+              "line": 19,
+              "text": "#include <atomic>"
+            },
+            {
+              "line": 20,
+              "text": "#include <cstdint>"
+            },
+            {
+              "line": 21,
+              "text": ""
+            },
+            {
+              "line": 22,
+              "text": "#include \"absl/base/config.h\""
+            },
+            {
+              "line": 23,
+              "text": "#include \"absl/synchronization/internal/kernel_timeout.h\""
+            },
+            {
+              "line": 24,
+              "text": "#include \"absl/synchronization/internal/futex.h\""
+            },
+            {
+              "line": 25,
+              "text": "#include \"absl/synchronization/internal/waiter_base.h\""
+            },
+            {
+              "line": 26,
+              "text": ""
+            },
+            {
+              "line": 27,
+              "text": "#ifdef ABSL_INTERNAL_HAVE_FUTEX"
+            },
+            {
+              "line": 28,
+              "text": ""
+            },
+            {
+              "line": 29,
+              "text": "namespace absl {"
+            },
+            {
+              "line": 30,
+              "text": "ABSL_NAMESPACE_BEGIN"
+            },
+            {
+              "line": 31,
+              "text": "namespace synchronization_internal {"
+            },
+            {
+              "line": 32,
+              "text": ""
+            },
+            {
+              "line": 33,
+              "text": "#define ABSL_INTERNAL_HAVE_FUTEX_WAITER 1"
+            },
+            {
+              "line": 34,
+              "text": ""
+            },
+            {
+              "line": 35,
+              "text": "class FutexWaiter : public WaiterCrtp<FutexWaiter> {"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\absl\\synchronization\\internal\\futex.h",
+      "bytes": 5690,
+      "sha256": "A3E524C2C0D05D8AADBAB536CD35867982E168139613D191E8B1C364C3D4840E",
+      "excerpts": [
+        {
+          "start": 21,
+          "end": 27,
+          "lines": [
+            {
+              "line": 21,
+              "text": "#include <unistd.h>"
+            },
+            {
+              "line": 22,
+              "text": "#endif"
+            },
+            {
+              "line": 23,
+              "text": ""
+            },
+            {
+              "line": 24,
+              "text": "#ifdef __linux__"
+            },
+            {
+              "line": 25,
+              "text": "#include <linux/futex.h>"
+            },
+            {
+              "line": 26,
+              "text": "#include <sys/syscall.h>"
+            },
+            {
+              "line": 27,
+              "text": "#endif"
+            }
+          ]
+        },
+        {
+          "start": 37,
+          "end": 54,
+          "lines": [
+            {
+              "line": 37,
+              "text": "#include \"absl/base/optimization.h\""
+            },
+            {
+              "line": 38,
+              "text": "#include \"absl/synchronization/internal/kernel_timeout.h\""
+            },
+            {
+              "line": 39,
+              "text": ""
+            },
+            {
+              "line": 40,
+              "text": "#ifdef ABSL_INTERNAL_HAVE_FUTEX"
+            },
+            {
+              "line": 41,
+              "text": "#error ABSL_INTERNAL_HAVE_FUTEX may not be set on the command line"
+            },
+            {
+              "line": 42,
+              "text": "#elif defined(__BIONIC__)"
+            },
+            {
+              "line": 43,
+              "text": "// Bionic supports all the futex operations we need even when some of the futex"
+            },
+            {
+              "line": 44,
+              "text": "// definitions are missing."
+            },
+            {
+              "line": 45,
+              "text": "#define ABSL_INTERNAL_HAVE_FUTEX"
+            },
+            {
+              "line": 46,
+              "text": "#elif defined(__linux__) && defined(FUTEX_CLOCK_REALTIME)"
+            },
+            {
+              "line": 47,
+              "text": "// FUTEX_CLOCK_REALTIME requires Linux >= 2.6.28."
+            },
+            {
+              "line": 48,
+              "text": "#define ABSL_INTERNAL_HAVE_FUTEX"
+            },
+            {
+              "line": 49,
+              "text": "#endif"
+            },
+            {
+              "line": 50,
+              "text": ""
+            },
+            {
+              "line": 51,
+              "text": "#ifdef ABSL_INTERNAL_HAVE_FUTEX"
+            },
+            {
+              "line": 52,
+              "text": ""
+            },
+            {
+              "line": 53,
+              "text": "namespace absl {"
+            },
+            {
+              "line": 54,
+              "text": "ABSL_NAMESPACE_BEGIN"
+            }
+          ]
+        },
+        {
+          "start": 172,
+          "end": 177,
+          "lines": [
+            {
+              "line": 172,
+              "text": "ABSL_NAMESPACE_END"
+            },
+            {
+              "line": 173,
+              "text": "}  // namespace absl"
+            },
+            {
+              "line": 174,
+              "text": ""
+            },
+            {
+              "line": 175,
+              "text": "#endif  // ABSL_INTERNAL_HAVE_FUTEX"
+            },
+            {
+              "line": 176,
+              "text": ""
+            },
+            {
+              "line": 177,
+              "text": "#endif  // ABSL_SYNCHRONIZATION_INTERNAL_FUTEX_H_"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\absl\\synchronization\\internal\\sem_waiter.h",
+      "bytes": 1761,
+      "sha256": "30C74D0DDF14D2C777677BE0D699505F5ACDEC83C2853B2412034065FEC1FA73",
+      "excerpts": [
+        {
+          "start": 19,
+          "end": 36,
+          "lines": [
+            {
+              "line": 19,
+              "text": "#include \"absl/base/config.h\""
+            },
+            {
+              "line": 20,
+              "text": ""
+            },
+            {
+              "line": 21,
+              "text": "#ifdef ABSL_HAVE_SEMAPHORE_H"
+            },
+            {
+              "line": 22,
+              "text": "#include <semaphore.h>"
+            },
+            {
+              "line": 23,
+              "text": ""
+            },
+            {
+              "line": 24,
+              "text": "#include <atomic>"
+            },
+            {
+              "line": 25,
+              "text": "#include <cstdint>"
+            },
+            {
+              "line": 26,
+              "text": ""
+            },
+            {
+              "line": 27,
+              "text": "#include \"absl/base/internal/thread_identity.h\""
+            },
+            {
+              "line": 28,
+              "text": "#include \"absl/synchronization/internal/futex.h\""
+            },
+            {
+              "line": 29,
+              "text": "#include \"absl/synchronization/internal/kernel_timeout.h\""
+            },
+            {
+              "line": 30,
+              "text": "#include \"absl/synchronization/internal/waiter_base.h\""
+            },
+            {
+              "line": 31,
+              "text": ""
+            },
+            {
+              "line": 32,
+              "text": "namespace absl {"
+            },
+            {
+              "line": 33,
+              "text": "ABSL_NAMESPACE_BEGIN"
+            },
+            {
+              "line": 34,
+              "text": "namespace synchronization_internal {"
+            },
+            {
+              "line": 35,
+              "text": ""
+            },
+            {
+              "line": 36,
+              "text": "#define ABSL_INTERNAL_HAVE_SEM_WAITER 1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\absl\\synchronization\\internal\\pthread_waiter.h",
+      "bytes": 1665,
+      "sha256": "B3EC00074FD91BCEDFE3933F2E0DE81F6E42F63B313BC5AEE914B9CDF2F61A72",
+      "excerpts": [
+        {
+          "start": 19,
+          "end": 31,
+          "lines": [
+            {
+              "line": 19,
+              "text": "#if !defined(_WIN32) && !defined(__MINGW32__)"
+            },
+            {
+              "line": 20,
+              "text": "#include <pthread.h>"
+            },
+            {
+              "line": 21,
+              "text": ""
+            },
+            {
+              "line": 22,
+              "text": "#include \"absl/base/config.h\""
+            },
+            {
+              "line": 23,
+              "text": "#include \"absl/synchronization/internal/kernel_timeout.h\""
+            },
+            {
+              "line": 24,
+              "text": "#include \"absl/synchronization/internal/waiter_base.h\""
+            },
+            {
+              "line": 25,
+              "text": ""
+            },
+            {
+              "line": 26,
+              "text": "namespace absl {"
+            },
+            {
+              "line": 27,
+              "text": "ABSL_NAMESPACE_BEGIN"
+            },
+            {
+              "line": 28,
+              "text": "namespace synchronization_internal {"
+            },
+            {
+              "line": 29,
+              "text": ""
+            },
+            {
+              "line": 30,
+              "text": "#define ABSL_INTERNAL_HAVE_PTHREAD_WAITER 1"
+            },
+            {
+              "line": 31,
+              "text": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\absl\\synchronization\\internal\\stdcpp_waiter.h",
+      "bytes": 1600,
+      "sha256": "E34C5826C09D1F8270C8D9B1909949F49FCB7C97F710702CA90DE6143A02D6D4",
+      "excerpts": [
+        {
+          "start": 19,
+          "end": 49,
+          "lines": [
+            {
+              "line": 19,
+              "text": "#include <condition_variable>  // NOLINT(build/c++11)"
+            },
+            {
+              "line": 20,
+              "text": "#include <mutex>  // NOLINT(build/c++11)"
+            },
+            {
+              "line": 21,
+              "text": ""
+            },
+            {
+              "line": 22,
+              "text": "#include \"absl/base/config.h\""
+            },
+            {
+              "line": 23,
+              "text": "#include \"absl/synchronization/internal/kernel_timeout.h\""
+            },
+            {
+              "line": 24,
+              "text": "#include \"absl/synchronization/internal/waiter_base.h\""
+            },
+            {
+              "line": 25,
+              "text": ""
+            },
+            {
+              "line": 26,
+              "text": "namespace absl {"
+            },
+            {
+              "line": 27,
+              "text": "ABSL_NAMESPACE_BEGIN"
+            },
+            {
+              "line": 28,
+              "text": "namespace synchronization_internal {"
+            },
+            {
+              "line": 29,
+              "text": ""
+            },
+            {
+              "line": 30,
+              "text": "#define ABSL_INTERNAL_HAVE_STDCPP_WAITER 1"
+            },
+            {
+              "line": 31,
+              "text": ""
+            },
+            {
+              "line": 32,
+              "text": "class StdcppWaiter : public WaiterCrtp<StdcppWaiter> {"
+            },
+            {
+              "line": 33,
+              "text": " public:"
+            },
+            {
+              "line": 34,
+              "text": "  StdcppWaiter();"
+            },
+            {
+              "line": 35,
+              "text": ""
+            },
+            {
+              "line": 36,
+              "text": "  bool Wait(KernelTimeout t);"
+            },
+            {
+              "line": 37,
+              "text": "  void Post();"
+            },
+            {
+              "line": 38,
+              "text": "  void Poke();"
+            },
+            {
+              "line": 39,
+              "text": ""
+            },
+            {
+              "line": 40,
+              "text": "  static constexpr char kName[] = \"StdcppWaiter\";"
+            },
+            {
+              "line": 41,
+              "text": ""
+            },
+            {
+              "line": 42,
+              "text": " private:"
+            },
+            {
+              "line": 43,
+              "text": "  // REQUIRES: mu_ must be held."
+            },
+            {
+              "line": 44,
+              "text": "  void InternalCondVarPoke();"
+            },
+            {
+              "line": 45,
+              "text": ""
+            },
+            {
+              "line": 46,
+              "text": "  std::mutex mu_;"
+            },
+            {
+              "line": 47,
+              "text": "  std::condition_variable cv_;"
+            },
+            {
+              "line": 48,
+              "text": "  int waiter_count_;"
+            },
+            {
+              "line": 49,
+              "text": "  int wakeup_count_;  // Unclaimed wakeups."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\absl\\base\\config.h",
+      "bytes": 33714,
+      "sha256": "7BE060B2FB4C16434C48B57E104A781E225795D52DD3D63345C2980E377AFEE8",
+      "excerpts": [
+        {
+          "start": 81,
+          "end": 87,
+          "lines": [
+            {
+              "line": 81,
+              "text": "#include <version>"
+            },
+            {
+              "line": 82,
+              "text": "#endif"
+            },
+            {
+              "line": 83,
+              "text": ""
+            },
+            {
+              "line": 84,
+              "text": "#if defined(__APPLE__)"
+            },
+            {
+              "line": 85,
+              "text": "// Included for TARGET_OS_IPHONE, __IPHONE_OS_VERSION_MIN_REQUIRED,"
+            },
+            {
+              "line": 86,
+              "text": "// __IPHONE_8_0."
+            },
+            {
+              "line": 87,
+              "text": "#include <Availability.h>"
+            }
+          ]
+        },
+        {
+          "start": 280,
+          "end": 286,
+          "lines": [
+            {
+              "line": 280,
+              "text": "#ifdef ABSL_HAVE_THREAD_LOCAL"
+            },
+            {
+              "line": 281,
+              "text": "#error ABSL_HAVE_THREAD_LOCAL cannot be directly set"
+            },
+            {
+              "line": 282,
+              "text": "#elif !defined(__XTENSA__)"
+            },
+            {
+              "line": 283,
+              "text": "#define ABSL_HAVE_THREAD_LOCAL 1"
+            },
+            {
+              "line": 284,
+              "text": "#endif"
+            },
+            {
+              "line": 285,
+              "text": ""
+            },
+            {
+              "line": 286,
+              "text": "// ABSL_HAVE_INTRINSIC_INT128"
+            }
+          ]
+        },
+        {
+          "start": 372,
+          "end": 378,
+          "lines": [
+            {
+              "line": 372,
+              "text": "// POSIX.1-2001."
+            },
+            {
+              "line": 373,
+              "text": "#ifdef ABSL_HAVE_MMAP"
+            },
+            {
+              "line": 374,
+              "text": "#error ABSL_HAVE_MMAP cannot be directly set"
+            },
+            {
+              "line": 375,
+              "text": "#elif defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__) ||    \\"
+            },
+            {
+              "line": 376,
+              "text": "    defined(_AIX) || defined(__ros__) || defined(__native_client__) ||       \\"
+            },
+            {
+              "line": 377,
+              "text": "    defined(__asmjs__) || defined(__EMSCRIPTEN__) || defined(__Fuchsia__) || \\"
+            },
+            {
+              "line": 378,
+              "text": "    defined(__sun) || defined(__myriad2__) || defined(__HAIKU__) ||          \\"
+            }
+          ]
+        },
+        {
+          "start": 387,
+          "end": 393,
+          "lines": [
+            {
+              "line": 387,
+              "text": "// functions as defined in POSIX.1-2001."
+            },
+            {
+              "line": 388,
+              "text": "#ifdef ABSL_HAVE_PTHREAD_GETSCHEDPARAM"
+            },
+            {
+              "line": 389,
+              "text": "#error ABSL_HAVE_PTHREAD_GETSCHEDPARAM cannot be directly set"
+            },
+            {
+              "line": 390,
+              "text": "#elif defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__) || \\"
+            },
+            {
+              "line": 391,
+              "text": "    defined(_AIX) || defined(__ros__) || defined(__OpenBSD__) ||          \\"
+            },
+            {
+              "line": 392,
+              "text": "    defined(__NetBSD__) || defined(__VXWORKS__)"
+            },
+            {
+              "line": 393,
+              "text": "#define ABSL_HAVE_PTHREAD_GETSCHEDPARAM 1"
+            }
+          ]
+        },
+        {
+          "start": 413,
+          "end": 419,
+          "lines": [
+            {
+              "line": 413,
+              "text": "#define ABSL_HAVE_SCHED_YIELD 1"
+            },
+            {
+              "line": 414,
+              "text": "#endif"
+            },
+            {
+              "line": 415,
+              "text": ""
+            },
+            {
+              "line": 416,
+              "text": "// ABSL_HAVE_SEMAPHORE_H"
+            },
+            {
+              "line": 417,
+              "text": "//"
+            },
+            {
+              "line": 418,
+              "text": "// Checks whether the platform supports the <semaphore.h> header and sem_init(3)"
+            },
+            {
+              "line": 419,
+              "text": "// family of functions as standardized in POSIX.1-2001."
+            }
+          ]
+        },
+        {
+          "start": 422,
+          "end": 431,
+          "lines": [
+            {
+              "line": 422,
+              "text": "// explicitly deprecated and will cause build failures if enabled for those"
+            },
+            {
+              "line": 423,
+              "text": "// platforms.  We side-step the issue by not defining it here for Apple"
+            },
+            {
+              "line": 424,
+              "text": "// platforms."
+            },
+            {
+              "line": 425,
+              "text": "#ifdef ABSL_HAVE_SEMAPHORE_H"
+            },
+            {
+              "line": 426,
+              "text": "#error ABSL_HAVE_SEMAPHORE_H cannot be directly set"
+            },
+            {
+              "line": 427,
+              "text": "#elif defined(__linux__) || defined(__ros__) || defined(__VXWORKS__)"
+            },
+            {
+              "line": 428,
+              "text": "#define ABSL_HAVE_SEMAPHORE_H 1"
+            },
+            {
+              "line": 429,
+              "text": "#endif"
+            },
+            {
+              "line": 430,
+              "text": ""
+            },
+            {
+              "line": 431,
+              "text": "// ABSL_HAVE_ALARM"
+            }
+          ]
+        },
+        {
+          "start": 506,
+          "end": 512,
+          "lines": [
+            {
+              "line": 506,
+              "text": "// and"
+            },
+            {
+              "line": 507,
+              "text": "// https://github.com/llvm/llvm-project/commit/0bc451e7e137c4ccadcd3377250874f641ca514a"
+            },
+            {
+              "line": 508,
+              "text": "// The second has the actually correct versions, thus, is what we copy here."
+            },
+            {
+              "line": 509,
+              "text": "#if defined(__APPLE__) &&                                         \\"
+            },
+            {
+              "line": 510,
+              "text": "    ((defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) &&   \\"
+            },
+            {
+              "line": 511,
+              "text": "      __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 101300) ||  \\"
+            },
+            {
+              "line": 512,
+              "text": "     (defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__) &&  \\"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\absl\\base\\internal\\thread_identity.h",
+      "bytes": 11501,
+      "sha256": "4AB0597E24501F9EF77D55AFDEB2B227AD787CEE41773AB2A1E9A34240E3FC20",
+      "excerpts": [
+        {
+          "start": 220,
+          "end": 273,
+          "lines": [
+            {
+              "line": 220,
+              "text": "#elif defined(_WIN32) && !defined(__MINGW32__)"
+            },
+            {
+              "line": 221,
+              "text": "#define ABSL_THREAD_IDENTITY_MODE ABSL_THREAD_IDENTITY_MODE_USE_CPP11"
+            },
+            {
+              "line": 222,
+              "text": "#elif defined(__APPLE__) && defined(ABSL_HAVE_THREAD_LOCAL)"
+            },
+            {
+              "line": 223,
+              "text": "#define ABSL_THREAD_IDENTITY_MODE ABSL_THREAD_IDENTITY_MODE_USE_CPP11"
+            },
+            {
+              "line": 224,
+              "text": "#elif ABSL_PER_THREAD_TLS && defined(__GOOGLE_GRTE_VERSION__) && \\"
+            },
+            {
+              "line": 225,
+              "text": "    (__GOOGLE_GRTE_VERSION__ >= 20140228L)"
+            },
+            {
+              "line": 226,
+              "text": "// Support for async-safe TLS was specifically added in GRTEv4.  It's not"
+            },
+            {
+              "line": 227,
+              "text": "// present in the upstream eglibc."
+            },
+            {
+              "line": 228,
+              "text": "// Note:  Current default for production systems."
+            },
+            {
+              "line": 229,
+              "text": "#define ABSL_THREAD_IDENTITY_MODE ABSL_THREAD_IDENTITY_MODE_USE_TLS"
+            },
+            {
+              "line": 230,
+              "text": "#else"
+            },
+            {
+              "line": 231,
+              "text": "#define ABSL_THREAD_IDENTITY_MODE \\"
+            },
+            {
+              "line": 232,
+              "text": "  ABSL_THREAD_IDENTITY_MODE_USE_POSIX_SETSPECIFIC"
+            },
+            {
+              "line": 233,
+              "text": "#endif"
+            },
+            {
+              "line": 234,
+              "text": ""
+            },
+            {
+              "line": 235,
+              "text": "#if ABSL_THREAD_IDENTITY_MODE == ABSL_THREAD_IDENTITY_MODE_USE_TLS || \\"
+            },
+            {
+              "line": 236,
+              "text": "    ABSL_THREAD_IDENTITY_MODE == ABSL_THREAD_IDENTITY_MODE_USE_CPP11"
+            },
+            {
+              "line": 237,
+              "text": ""
+            },
+            {
+              "line": 238,
+              "text": "#if ABSL_PER_THREAD_TLS"
+            },
+            {
+              "line": 239,
+              "text": "ABSL_CONST_INIT extern ABSL_PER_THREAD_TLS_KEYWORD ThreadIdentity*"
+            },
+            {
+              "line": 240,
+              "text": "    thread_identity_ptr;"
+            },
+            {
+              "line": 241,
+              "text": "#elif defined(ABSL_HAVE_THREAD_LOCAL)"
+            },
+            {
+              "line": 242,
+              "text": "ABSL_CONST_INIT extern thread_local ThreadIdentity* thread_identity_ptr;"
+            },
+            {
+              "line": 243,
+              "text": "#else"
+            },
+            {
+              "line": 244,
+              "text": "#error Thread-local storage not detected on this platform"
+            },
+            {
+              "line": 245,
+              "text": "#endif"
+            },
+            {
+              "line": 246,
+              "text": ""
+            },
+            {
+              "line": 247,
+              "text": "// thread_local variables cannot be in headers exposed by DLLs or in certain"
+            },
+            {
+              "line": 248,
+              "text": "// build configurations on Apple platforms. However, it is important for"
+            },
+            {
+              "line": 249,
+              "text": "// performance reasons in general that `CurrentThreadIdentityIfPresent` be"
+            },
+            {
+              "line": 250,
+              "text": "// inlined. In the other cases we opt to have the function not be inlined. Note"
+            },
+            {
+              "line": 251,
+              "text": "// that `CurrentThreadIdentityIfPresent` is declared above so we can exclude"
+            },
+            {
+              "line": 252,
+              "text": "// this entire inline definition."
+            },
+            {
+              "line": 253,
+              "text": "#if !defined(__APPLE__) && !defined(ABSL_BUILD_DLL) && \\"
+            },
+            {
+              "line": 254,
+              "text": "    !defined(ABSL_CONSUME_DLL)"
+            },
+            {
+              "line": 255,
+              "text": "#define ABSL_INTERNAL_INLINE_CURRENT_THREAD_IDENTITY_IF_PRESENT 1"
+            },
+            {
+              "line": 256,
+              "text": "#endif"
+            },
+            {
+              "line": 257,
+              "text": ""
+            },
+            {
+              "line": 258,
+              "text": "#ifdef ABSL_INTERNAL_INLINE_CURRENT_THREAD_IDENTITY_IF_PRESENT"
+            },
+            {
+              "line": 259,
+              "text": "inline ThreadIdentity* CurrentThreadIdentityIfPresent() {"
+            },
+            {
+              "line": 260,
+              "text": "  return thread_identity_ptr;"
+            },
+            {
+              "line": 261,
+              "text": "}"
+            },
+            {
+              "line": 262,
+              "text": "#endif"
+            },
+            {
+              "line": 263,
+              "text": ""
+            },
+            {
+              "line": 264,
+              "text": "#elif ABSL_THREAD_IDENTITY_MODE != \\"
+            },
+            {
+              "line": 265,
+              "text": "    ABSL_THREAD_IDENTITY_MODE_USE_POSIX_SETSPECIFIC"
+            },
+            {
+              "line": 266,
+              "text": "#error Unknown ABSL_THREAD_IDENTITY_MODE"
+            },
+            {
+              "line": 267,
+              "text": "#endif"
+            },
+            {
+              "line": 268,
+              "text": ""
+            },
+            {
+              "line": 269,
+              "text": "}  // namespace base_internal"
+            },
+            {
+              "line": 270,
+              "text": "ABSL_NAMESPACE_END"
+            },
+            {
+              "line": 271,
+              "text": "}  // namespace absl"
+            },
+            {
+              "line": 272,
+              "text": ""
+            },
+            {
+              "line": 273,
+              "text": "#endif  // ABSL_BASE_INTERNAL_THREAD_IDENTITY_H_"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\absl\\base\\internal\\thread_identity.cc",
+      "bytes": 6586,
+      "sha256": "15ADD2981DD37BD509DDACD063745C339E0D15169A6D16EFFB8DA91DB5BD8B6C",
+      "excerpts": [
+        {
+          "start": 17,
+          "end": 61,
+          "lines": [
+            {
+              "line": 17,
+              "text": "#if !defined(_WIN32) || defined(__MINGW32__)"
+            },
+            {
+              "line": 18,
+              "text": "#include <pthread.h>"
+            },
+            {
+              "line": 19,
+              "text": "#ifndef __wasi__"
+            },
+            {
+              "line": 20,
+              "text": "// WASI does not provide this header, either way we disable use"
+            },
+            {
+              "line": 21,
+              "text": "// of signals with it below."
+            },
+            {
+              "line": 22,
+              "text": "#include <signal.h>"
+            },
+            {
+              "line": 23,
+              "text": "#endif"
+            },
+            {
+              "line": 24,
+              "text": "#endif"
+            },
+            {
+              "line": 25,
+              "text": ""
+            },
+            {
+              "line": 26,
+              "text": "#include <atomic>"
+            },
+            {
+              "line": 27,
+              "text": "#include <cassert>"
+            },
+            {
+              "line": 28,
+              "text": "#include <memory>"
+            },
+            {
+              "line": 29,
+              "text": ""
+            },
+            {
+              "line": 30,
+              "text": "#include \"absl/base/attributes.h\""
+            },
+            {
+              "line": 31,
+              "text": "#include \"absl/base/call_once.h\""
+            },
+            {
+              "line": 32,
+              "text": "#include \"absl/base/internal/raw_logging.h\""
+            },
+            {
+              "line": 33,
+              "text": "#include \"absl/base/internal/spinlock.h\""
+            },
+            {
+              "line": 34,
+              "text": ""
+            },
+            {
+              "line": 35,
+              "text": "namespace absl {"
+            },
+            {
+              "line": 36,
+              "text": "ABSL_NAMESPACE_BEGIN"
+            },
+            {
+              "line": 37,
+              "text": "namespace base_internal {"
+            },
+            {
+              "line": 38,
+              "text": ""
+            },
+            {
+              "line": 39,
+              "text": "#if ABSL_THREAD_IDENTITY_MODE != ABSL_THREAD_IDENTITY_MODE_USE_CPP11"
+            },
+            {
+              "line": 40,
+              "text": "namespace {"
+            },
+            {
+              "line": 41,
+              "text": "// Used to co-ordinate one-time creation of our pthread_key"
+            },
+            {
+              "line": 42,
+              "text": "absl::once_flag init_thread_identity_key_once;"
+            },
+            {
+              "line": 43,
+              "text": "pthread_key_t thread_identity_pthread_key;"
+            },
+            {
+              "line": 44,
+              "text": "std::atomic<bool> pthread_key_initialized(false);"
+            },
+            {
+              "line": 45,
+              "text": ""
+            },
+            {
+              "line": 46,
+              "text": "void AllocateThreadIdentityKey(ThreadIdentityReclaimerFunction reclaimer) {"
+            },
+            {
+              "line": 47,
+              "text": "  pthread_key_create(&thread_identity_pthread_key, reclaimer);"
+            },
+            {
+              "line": 48,
+              "text": "  pthread_key_initialized.store(true, std::memory_order_release);"
+            },
+            {
+              "line": 49,
+              "text": "}"
+            },
+            {
+              "line": 50,
+              "text": "}  // namespace"
+            },
+            {
+              "line": 51,
+              "text": "#endif"
+            },
+            {
+              "line": 52,
+              "text": ""
+            },
+            {
+              "line": 53,
+              "text": "#if ABSL_THREAD_IDENTITY_MODE == ABSL_THREAD_IDENTITY_MODE_USE_TLS || \\"
+            },
+            {
+              "line": 54,
+              "text": "    ABSL_THREAD_IDENTITY_MODE == ABSL_THREAD_IDENTITY_MODE_USE_CPP11"
+            },
+            {
+              "line": 55,
+              "text": "// The actual TLS storage for a thread's currently associated ThreadIdentity."
+            },
+            {
+              "line": 56,
+              "text": "// This is referenced by inline accessors in the header."
+            },
+            {
+              "line": 57,
+              "text": "// \"protected\" visibility ensures that if multiple instances of Abseil code"
+            },
+            {
+              "line": 58,
+              "text": "// exist within a process (via dlopen() or similar), references to"
+            },
+            {
+              "line": 59,
+              "text": "// thread_identity_ptr from each instance of the code will refer to"
+            },
+            {
+              "line": 60,
+              "text": "// *different* instances of this ptr."
+            },
+            {
+              "line": 61,
+              "text": "// Apple platforms have the visibility attribute, but issue a compile warning"
+            }
+          ]
+        },
+        {
+          "start": 76,
+          "end": 122,
+          "lines": [
+            {
+              "line": 76,
+              "text": "void SetCurrentThreadIdentity(ThreadIdentity* identity,"
+            },
+            {
+              "line": 77,
+              "text": "                              ThreadIdentityReclaimerFunction reclaimer) {"
+            },
+            {
+              "line": 78,
+              "text": "  assert(CurrentThreadIdentityIfPresent() == nullptr);"
+            },
+            {
+              "line": 79,
+              "text": "  // Associate our destructor."
+            },
+            {
+              "line": 80,
+              "text": "  // NOTE: This call to pthread_setspecific is currently the only immovable"
+            },
+            {
+              "line": 81,
+              "text": "  // barrier to CurrentThreadIdentity() always being async signal safe."
+            },
+            {
+              "line": 82,
+              "text": "#if ABSL_THREAD_IDENTITY_MODE == ABSL_THREAD_IDENTITY_MODE_USE_POSIX_SETSPECIFIC"
+            },
+            {
+              "line": 83,
+              "text": "  // NOTE: Not async-safe.  But can be open-coded."
+            },
+            {
+              "line": 84,
+              "text": "  absl::call_once(init_thread_identity_key_once, AllocateThreadIdentityKey,"
+            },
+            {
+              "line": 85,
+              "text": "                  reclaimer);"
+            },
+            {
+              "line": 86,
+              "text": ""
+            },
+            {
+              "line": 87,
+              "text": "#if defined(__wasi__) || defined(__EMSCRIPTEN__) || defined(__MINGW32__) || \\"
+            },
+            {
+              "line": 88,
+              "text": "    defined(__hexagon__)"
+            },
+            {
+              "line": 89,
+              "text": "  // Emscripten, WASI and MinGW pthread implementations does not support"
+            },
+            {
+              "line": 90,
+              "text": "  // signals. See"
+            },
+            {
+              "line": 91,
+              "text": "  // https://kripken.github.io/emscripten-site/docs/porting/pthreads.html for"
+            },
+            {
+              "line": 92,
+              "text": "  // more information."
+            },
+            {
+              "line": 93,
+              "text": "  pthread_setspecific(thread_identity_pthread_key,"
+            },
+            {
+              "line": 94,
+              "text": "                      reinterpret_cast<void*>(identity));"
+            },
+            {
+              "line": 95,
+              "text": "#else"
+            },
+            {
+              "line": 96,
+              "text": "  // We must mask signals around the call to setspecific as with current glibc,"
+            },
+            {
+              "line": 97,
+              "text": "  // a concurrent getspecific (needed for GetCurrentThreadIdentityIfPresent())"
+            },
+            {
+              "line": 98,
+              "text": "  // may zero our value."
+            },
+            {
+              "line": 99,
+              "text": "  //"
+            },
+            {
+              "line": 100,
+              "text": "  // While not officially async-signal safe, getspecific within a signal handler"
+            },
+            {
+              "line": 101,
+              "text": "  // is otherwise OK."
+            },
+            {
+              "line": 102,
+              "text": "  sigset_t all_signals;"
+            },
+            {
+              "line": 103,
+              "text": "  sigset_t curr_signals;"
+            },
+            {
+              "line": 104,
+              "text": "  sigfillset(&all_signals);"
+            },
+            {
+              "line": 105,
+              "text": "  pthread_sigmask(SIG_SETMASK, &all_signals, &curr_signals);"
+            },
+            {
+              "line": 106,
+              "text": "  pthread_setspecific(thread_identity_pthread_key,"
+            },
+            {
+              "line": 107,
+              "text": "                      reinterpret_cast<void*>(identity));"
+            },
+            {
+              "line": 108,
+              "text": "  pthread_sigmask(SIG_SETMASK, &curr_signals, nullptr);"
+            },
+            {
+              "line": 109,
+              "text": "#endif  // !__EMSCRIPTEN__ && !__MINGW32__"
+            },
+            {
+              "line": 110,
+              "text": ""
+            },
+            {
+              "line": 111,
+              "text": "#elif ABSL_THREAD_IDENTITY_MODE == ABSL_THREAD_IDENTITY_MODE_USE_TLS"
+            },
+            {
+              "line": 112,
+              "text": "  // NOTE: Not async-safe.  But can be open-coded."
+            },
+            {
+              "line": 113,
+              "text": "  absl::call_once(init_thread_identity_key_once, AllocateThreadIdentityKey,"
+            },
+            {
+              "line": 114,
+              "text": "                  reclaimer);"
+            },
+            {
+              "line": 115,
+              "text": "  pthread_setspecific(thread_identity_pthread_key,"
+            },
+            {
+              "line": 116,
+              "text": "                      reinterpret_cast<void*>(identity));"
+            },
+            {
+              "line": 117,
+              "text": "  thread_identity_ptr = identity;"
+            },
+            {
+              "line": 118,
+              "text": "#elif ABSL_THREAD_IDENTITY_MODE == ABSL_THREAD_IDENTITY_MODE_USE_CPP11"
+            },
+            {
+              "line": 119,
+              "text": "  thread_local std::unique_ptr<ThreadIdentity, ThreadIdentityReclaimerFunction>"
+            },
+            {
+              "line": 120,
+              "text": "      holder(identity, reclaimer);"
+            },
+            {
+              "line": 121,
+              "text": "  thread_identity_ptr = identity;"
+            },
+            {
+              "line": 122,
+              "text": "#else"
+            }
+          ]
+        },
+        {
+          "start": 130,
+          "end": 158,
+          "lines": [
+            {
+              "line": 130,
+              "text": "// Please see the comment on `CurrentThreadIdentityIfPresent` in"
+            },
+            {
+              "line": 131,
+              "text": "// thread_identity.h. When we cannot expose thread_local variables in"
+            },
+            {
+              "line": 132,
+              "text": "// headers, we opt for the correct-but-slower option of not inlining this"
+            },
+            {
+              "line": 133,
+              "text": "// function."
+            },
+            {
+              "line": 134,
+              "text": "#ifndef ABSL_INTERNAL_INLINE_CURRENT_THREAD_IDENTITY_IF_PRESENT"
+            },
+            {
+              "line": 135,
+              "text": "ThreadIdentity* CurrentThreadIdentityIfPresent() { return thread_identity_ptr; }"
+            },
+            {
+              "line": 136,
+              "text": "#endif"
+            },
+            {
+              "line": 137,
+              "text": "#endif"
+            },
+            {
+              "line": 138,
+              "text": ""
+            },
+            {
+              "line": 139,
+              "text": "void ClearCurrentThreadIdentity() {"
+            },
+            {
+              "line": 140,
+              "text": "#if ABSL_THREAD_IDENTITY_MODE == ABSL_THREAD_IDENTITY_MODE_USE_TLS || \\"
+            },
+            {
+              "line": 141,
+              "text": "    ABSL_THREAD_IDENTITY_MODE == ABSL_THREAD_IDENTITY_MODE_USE_CPP11"
+            },
+            {
+              "line": 142,
+              "text": "  thread_identity_ptr = nullptr;"
+            },
+            {
+              "line": 143,
+              "text": "#elif ABSL_THREAD_IDENTITY_MODE == \\"
+            },
+            {
+              "line": 144,
+              "text": "    ABSL_THREAD_IDENTITY_MODE_USE_POSIX_SETSPECIFIC"
+            },
+            {
+              "line": 145,
+              "text": "  // pthread_setspecific expected to clear value on destruction"
+            },
+            {
+              "line": 146,
+              "text": "  assert(CurrentThreadIdentityIfPresent() == nullptr);"
+            },
+            {
+              "line": 147,
+              "text": "#endif"
+            },
+            {
+              "line": 148,
+              "text": "}"
+            },
+            {
+              "line": 149,
+              "text": ""
+            },
+            {
+              "line": 150,
+              "text": "#if ABSL_THREAD_IDENTITY_MODE == ABSL_THREAD_IDENTITY_MODE_USE_POSIX_SETSPECIFIC"
+            },
+            {
+              "line": 151,
+              "text": "ThreadIdentity* CurrentThreadIdentityIfPresent() {"
+            },
+            {
+              "line": 152,
+              "text": "  bool initialized = pthread_key_initialized.load(std::memory_order_acquire);"
+            },
+            {
+              "line": 153,
+              "text": "  if (!initialized) {"
+            },
+            {
+              "line": 154,
+              "text": "    return nullptr;"
+            },
+            {
+              "line": 155,
+              "text": "  }"
+            },
+            {
+              "line": 156,
+              "text": "  return reinterpret_cast<ThreadIdentity*>("
+            },
+            {
+              "line": 157,
+              "text": "      pthread_getspecific(thread_identity_pthread_key));"
+            },
+            {
+              "line": 158,
+              "text": "}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\absl\\debugging\\internal\\stacktrace_config.h",
+      "bytes": 3695,
+      "sha256": "6490BB9B5829D5DCE86569A3C200D1A2E8E399E2C208845CFF71854798837697",
+      "excerpts": [
+        {
+          "start": 24,
+          "end": 93,
+          "lines": [
+            {
+              "line": 24,
+              "text": "#include \"absl/base/config.h\""
+            },
+            {
+              "line": 25,
+              "text": ""
+            },
+            {
+              "line": 26,
+              "text": "#if defined(ABSL_STACKTRACE_INL_HEADER)"
+            },
+            {
+              "line": 27,
+              "text": "#error ABSL_STACKTRACE_INL_HEADER cannot be directly set"
+            },
+            {
+              "line": 28,
+              "text": ""
+            },
+            {
+              "line": 29,
+              "text": "#elif defined(_WIN32)"
+            },
+            {
+              "line": 30,
+              "text": "#define ABSL_STACKTRACE_INL_HEADER \\"
+            },
+            {
+              "line": 31,
+              "text": "    \"absl/debugging/internal/stacktrace_win32-inl.inc\""
+            },
+            {
+              "line": 32,
+              "text": ""
+            },
+            {
+              "line": 33,
+              "text": "#elif defined(__APPLE__)"
+            },
+            {
+              "line": 34,
+              "text": "#ifdef ABSL_HAVE_THREAD_LOCAL"
+            },
+            {
+              "line": 35,
+              "text": "// Thread local support required for UnwindImpl."
+            },
+            {
+              "line": 36,
+              "text": "#define ABSL_STACKTRACE_INL_HEADER \\"
+            },
+            {
+              "line": 37,
+              "text": "  \"absl/debugging/internal/stacktrace_generic-inl.inc\""
+            },
+            {
+              "line": 38,
+              "text": "#endif  // defined(ABSL_HAVE_THREAD_LOCAL)"
+            },
+            {
+              "line": 39,
+              "text": ""
+            },
+            {
+              "line": 40,
+              "text": "// Emscripten stacktraces rely on JS. Do not use them in standalone mode."
+            },
+            {
+              "line": 41,
+              "text": "#elif defined(__EMSCRIPTEN__) && !defined(STANDALONE_WASM)"
+            },
+            {
+              "line": 42,
+              "text": "#define ABSL_STACKTRACE_INL_HEADER \\"
+            },
+            {
+              "line": 43,
+              "text": "  \"absl/debugging/internal/stacktrace_emscripten-inl.inc\""
+            },
+            {
+              "line": 44,
+              "text": ""
+            },
+            {
+              "line": 45,
+              "text": "#elif defined(__ANDROID__) && __ANDROID_API__ >= 33"
+            },
+            {
+              "line": 46,
+              "text": ""
+            },
+            {
+              "line": 47,
+              "text": "// Use the generic implementation for Android 33+ (Android T+). This is the"
+            },
+            {
+              "line": 48,
+              "text": "// first version of Android for which <execinfo.h> implements backtrace()."
+            },
+            {
+              "line": 49,
+              "text": "#define ABSL_STACKTRACE_INL_HEADER \\"
+            },
+            {
+              "line": 50,
+              "text": "  \"absl/debugging/internal/stacktrace_generic-inl.inc\""
+            },
+            {
+              "line": 51,
+              "text": ""
+            },
+            {
+              "line": 52,
+              "text": "#elif defined(__linux__) && !defined(__ANDROID__)"
+            },
+            {
+              "line": 53,
+              "text": ""
+            },
+            {
+              "line": 54,
+              "text": "#if defined(NO_FRAME_POINTER) && \\"
+            },
+            {
+              "line": 55,
+              "text": "    (defined(__i386__) || defined(__x86_64__) || defined(__aarch64__))"
+            },
+            {
+              "line": 56,
+              "text": "// Note: The libunwind-based implementation is not available to open-source"
+            },
+            {
+              "line": 57,
+              "text": "// users."
+            },
+            {
+              "line": 58,
+              "text": "#define ABSL_STACKTRACE_INL_HEADER \\"
+            },
+            {
+              "line": 59,
+              "text": "  \"absl/debugging/internal/stacktrace_libunwind-inl.inc\""
+            },
+            {
+              "line": 60,
+              "text": "#define STACKTRACE_USES_LIBUNWIND 1"
+            },
+            {
+              "line": 61,
+              "text": "#elif defined(NO_FRAME_POINTER) && defined(__has_include)"
+            },
+            {
+              "line": 62,
+              "text": "#if __has_include(<execinfo.h>)"
+            },
+            {
+              "line": 63,
+              "text": "// Note: When using glibc this may require -funwind-tables to function properly."
+            },
+            {
+              "line": 64,
+              "text": "#define ABSL_STACKTRACE_INL_HEADER \\"
+            },
+            {
+              "line": 65,
+              "text": "  \"absl/debugging/internal/stacktrace_generic-inl.inc\""
+            },
+            {
+              "line": 66,
+              "text": "#endif  // __has_include(<execinfo.h>)"
+            },
+            {
+              "line": 67,
+              "text": "#elif defined(__i386__) || defined(__x86_64__)"
+            },
+            {
+              "line": 68,
+              "text": "#define ABSL_STACKTRACE_INL_HEADER \\"
+            },
+            {
+              "line": 69,
+              "text": "  \"absl/debugging/internal/stacktrace_x86-inl.inc\""
+            },
+            {
+              "line": 70,
+              "text": "#elif defined(__ppc__) || defined(__PPC__)"
+            },
+            {
+              "line": 71,
+              "text": "#define ABSL_STACKTRACE_INL_HEADER \\"
+            },
+            {
+              "line": 72,
+              "text": "  \"absl/debugging/internal/stacktrace_powerpc-inl.inc\""
+            },
+            {
+              "line": 73,
+              "text": "#elif defined(__aarch64__)"
+            },
+            {
+              "line": 74,
+              "text": "#define ABSL_STACKTRACE_INL_HEADER \\"
+            },
+            {
+              "line": 75,
+              "text": "  \"absl/debugging/internal/stacktrace_aarch64-inl.inc\""
+            },
+            {
+              "line": 76,
+              "text": "#elif defined(__riscv)"
+            },
+            {
+              "line": 77,
+              "text": "#define ABSL_STACKTRACE_INL_HEADER \\"
+            },
+            {
+              "line": 78,
+              "text": "  \"absl/debugging/internal/stacktrace_riscv-inl.inc\""
+            },
+            {
+              "line": 79,
+              "text": "#elif defined(__has_include)"
+            },
+            {
+              "line": 80,
+              "text": "#if __has_include(<execinfo.h>)"
+            },
+            {
+              "line": 81,
+              "text": "// Note: When using glibc this may require -funwind-tables to function properly."
+            },
+            {
+              "line": 82,
+              "text": "#define ABSL_STACKTRACE_INL_HEADER \\"
+            },
+            {
+              "line": 83,
+              "text": "  \"absl/debugging/internal/stacktrace_generic-inl.inc\""
+            },
+            {
+              "line": 84,
+              "text": "#endif  // __has_include(<execinfo.h>)"
+            },
+            {
+              "line": 85,
+              "text": "#endif  // defined(__has_include)"
+            },
+            {
+              "line": 86,
+              "text": ""
+            },
+            {
+              "line": 87,
+              "text": "#endif  // defined(__linux__) && !defined(__ANDROID__)"
+            },
+            {
+              "line": 88,
+              "text": ""
+            },
+            {
+              "line": 89,
+              "text": "// Fallback to the empty implementation."
+            },
+            {
+              "line": 90,
+              "text": "#if !defined(ABSL_STACKTRACE_INL_HEADER)"
+            },
+            {
+              "line": 91,
+              "text": "#define ABSL_STACKTRACE_INL_HEADER \\"
+            },
+            {
+              "line": 92,
+              "text": "  \"absl/debugging/internal/stacktrace_unimplemented-inl.inc\""
+            },
+            {
+              "line": 93,
+              "text": "#endif"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\zig\\target.zig",
+      "bytes": 26758,
+      "sha256": "2ACA0D267DF23AB3194EA64ACE57097DB3F5A1B371FDE626806D7B7D7402BDE9",
+      "excerpts": [
+        {
+          "start": 291,
+          "end": 299,
+          "lines": [
+            {
+              "line": 291,
+              "text": "pub fn isLibCLibName(target: *const std.Target, name: []const u8) bool {"
+            },
+            {
+              "line": 292,
+              "text": "    const ignore_case = target.os.tag.isDarwin() or target.os.tag == .windows;"
+            },
+            {
+              "line": 293,
+              "text": ""
+            },
+            {
+              "line": 294,
+              "text": "    if (eqlIgnoreCase(ignore_case, name, \"c\"))"
+            },
+            {
+              "line": 295,
+              "text": "        return true;"
+            },
+            {
+              "line": 296,
+              "text": ""
+            },
+            {
+              "line": 297,
+              "text": "    if (target.isMinGW()) {"
+            },
+            {
+              "line": 298,
+              "text": "        if (eqlIgnoreCase(ignore_case, name, \"adsiid\"))"
+            },
+            {
+              "line": 299,
+              "text": "            return true;"
+            }
+          ]
+        },
+        {
+          "start": 334,
+          "end": 347,
+          "lines": [
+            {
+              "line": 334,
+              "text": "        if (eqlIgnoreCase(ignore_case, name, \"portabledeviceguids\"))"
+            },
+            {
+              "line": 335,
+              "text": "            return true;"
+            },
+            {
+              "line": 336,
+              "text": "        if (eqlIgnoreCase(ignore_case, name, \"pthread\"))"
+            },
+            {
+              "line": 337,
+              "text": "            return true;"
+            },
+            {
+              "line": 338,
+              "text": "        if (eqlIgnoreCase(ignore_case, name, \"strmiids\"))"
+            },
+            {
+              "line": 339,
+              "text": "            return true;"
+            },
+            {
+              "line": 340,
+              "text": "        if (eqlIgnoreCase(ignore_case, name, \"uuid\"))"
+            },
+            {
+              "line": 341,
+              "text": "            return true;"
+            },
+            {
+              "line": 342,
+              "text": "        if (eqlIgnoreCase(ignore_case, name, \"wbemuuid\"))"
+            },
+            {
+              "line": 343,
+              "text": "            return true;"
+            },
+            {
+              "line": 344,
+              "text": "        if (eqlIgnoreCase(ignore_case, name, \"wiaguid\"))"
+            },
+            {
+              "line": 345,
+              "text": "            return true;"
+            },
+            {
+              "line": 346,
+              "text": "        if (eqlIgnoreCase(ignore_case, name, \"winpthread\"))"
+            },
+            {
+              "line": 347,
+              "text": "            return true;"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Module.zig",
+      "bytes": 26577,
+      "sha256": "0D5D2A468C99BEA020BD8B8CA13C32E64ABD66686D1821C9737FFC1A9292729F",
+      "excerpts": [
+        {
+          "start": 363,
+          "end": 378,
+          "lines": [
+            {
+              "line": 363,
+              "text": "pub fn linkSystemLibrary("
+            },
+            {
+              "line": 364,
+              "text": "    m: *Module,"
+            },
+            {
+              "line": 365,
+              "text": "    name: []const u8,"
+            },
+            {
+              "line": 366,
+              "text": "    options: LinkSystemLibraryOptions,"
+            },
+            {
+              "line": 367,
+              "text": ") void {"
+            },
+            {
+              "line": 368,
+              "text": "    const b = m.owner;"
+            },
+            {
+              "line": 369,
+              "text": ""
+            },
+            {
+              "line": 370,
+              "text": "    const target = m.requireKnownTarget();"
+            },
+            {
+              "line": 371,
+              "text": "    if (std.zig.target.isLibCLibName(target, name)) {"
+            },
+            {
+              "line": 372,
+              "text": "        m.link_libc = true;"
+            },
+            {
+              "line": 373,
+              "text": "        return;"
+            },
+            {
+              "line": 374,
+              "text": "    }"
+            },
+            {
+              "line": 375,
+              "text": "    if (std.zig.target.isLibCxxLibName(target, name)) {"
+            },
+            {
+              "line": 376,
+              "text": "        m.link_libcpp = true;"
+            },
+            {
+              "line": 377,
+              "text": "        return;"
+            },
+            {
+              "line": 378,
+              "text": "    }"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\pthread.h",
+      "bytes": 36473,
+      "sha256": "D3CCF27EFCFF918405BC81F6A4E05B244EEEA8F5B412C8C91BD18B81DCB51AE4",
+      "excerpts": [
+        {
+          "start": 250,
+          "end": 259,
+          "lines": [
+            {
+              "line": 250,
+              "text": "#define PTHREAD_SPINLOCK_INITIALIZER\t\t\t(pthread_spinlock_t)GENERIC_INITIALIZER"
+            },
+            {
+              "line": 251,
+              "text": ""
+            },
+            {
+              "line": 252,
+              "text": "WINPTHREAD_API extern void (**_pthread_key_dest)(void *);"
+            },
+            {
+              "line": 253,
+              "text": "WINPTHREAD_API int         pthread_key_create(pthread_key_t *key, void (* dest)(void *));"
+            },
+            {
+              "line": 254,
+              "text": "WINPTHREAD_API int         pthread_key_delete(pthread_key_t key);"
+            },
+            {
+              "line": 255,
+              "text": "WINPTHREAD_API void *      pthread_getspecific(pthread_key_t key);"
+            },
+            {
+              "line": 256,
+              "text": "WINPTHREAD_API int         pthread_setspecific(pthread_key_t key, const void *value);"
+            },
+            {
+              "line": 257,
+              "text": ""
+            },
+            {
+              "line": 258,
+              "text": "WINPTHREAD_API pthread_t pthread_self(void);"
+            },
+            {
+              "line": 259,
+              "text": "WINPTHREAD_API int       pthread_once(pthread_once_t *o, void (*func)(void));"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\mingw\\winpthreads\\thread.c",
+      "bytes": 45372,
+      "sha256": "5A6A30B36C8A6BA0F8918B0B488FB08041A416B02B342A4A4471157F9490A387",
+      "excerpts": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\windows-sdk\\10.0.22621.0\\shared\\TraceLoggingProvider.h",
+      "bytes": 294943,
+      "sha256": "C060AF7E8703386736C651A62686908D509B8B9CB627D898D72A4CA6506901A4",
+      "excerpts": [
+        {
+          "start": 1,
+          "end": 17,
+          "lines": [
+            {
+              "line": 1,
+              "text": "/* ++"
+            },
+            {
+              "line": 2,
+              "text": ""
+            },
+            {
+              "line": 3,
+              "text": "Copyright (c) Microsoft Corporation.  All rights reserved."
+            },
+            {
+              "line": 4,
+              "text": ""
+            },
+            {
+              "line": 5,
+              "text": "Module Name:"
+            },
+            {
+              "line": 6,
+              "text": ""
+            },
+            {
+              "line": 7,
+              "text": "    TraceLoggingProvider.h"
+            },
+            {
+              "line": 8,
+              "text": ""
+            },
+            {
+              "line": 9,
+              "text": "Abstract:"
+            },
+            {
+              "line": 10,
+              "text": ""
+            },
+            {
+              "line": 11,
+              "text": "    Event Provider API for C/C++."
+            },
+            {
+              "line": 12,
+              "text": ""
+            },
+            {
+              "line": 13,
+              "text": "Environment:"
+            },
+            {
+              "line": 14,
+              "text": ""
+            },
+            {
+              "line": 15,
+              "text": "    User mode or kernel mode."
+            },
+            {
+              "line": 16,
+              "text": ""
+            },
+            {
+              "line": 17,
+              "text": "--*/"
+            }
+          ]
+        },
+        {
+          "start": 76,
+          "end": 90,
+          "lines": [
+            {
+              "line": 76,
+              "text": "#ifndef _traceloggingprovider_"
+            },
+            {
+              "line": 77,
+              "text": "#define _traceloggingprovider_"
+            },
+            {
+              "line": 78,
+              "text": "#pragma once"
+            },
+            {
+              "line": 79,
+              "text": ""
+            },
+            {
+              "line": 80,
+              "text": "#include <evntprov.h>"
+            },
+            {
+              "line": 81,
+              "text": ""
+            },
+            {
+              "line": 82,
+              "text": "#if !defined(RC_INVOKED)"
+            },
+            {
+              "line": 83,
+              "text": ""
+            },
+            {
+              "line": 84,
+              "text": "#pragma warning(push)"
+            },
+            {
+              "line": 85,
+              "text": "#pragma warning(disable:4055)      // Allow cast from a PVOID to a PFN"
+            },
+            {
+              "line": 86,
+              "text": "#pragma warning(disable:4626)      // assignment operator deleted"
+            },
+            {
+              "line": 87,
+              "text": "#pragma warning(disable:4995 4996) // strlen/wcslen marked as deprecated"
+            },
+            {
+              "line": 88,
+              "text": "#pragma warning(disable:25033)     // Nonconst psz parameter"
+            },
+            {
+              "line": 89,
+              "text": "#if defined(_M_ARM) || defined(_M_ARM64) || defined(_M_ARM64EC)"
+            },
+            {
+              "line": 90,
+              "text": "#pragma warning(disable:4714) // __forceinline not inlined"
+            }
+          ]
+        },
+        {
+          "start": 149,
+          "end": 166,
+          "lines": [
+            {
+              "line": 149,
+              "text": "*/"
+            },
+            {
+              "line": 150,
+              "text": "#ifndef TLG_HAVE_EVENT_SET_INFORMATION"
+            },
+            {
+              "line": 151,
+              "text": "  #if defined(TLG_EVENT_SET_INFORMATION)"
+            },
+            {
+              "line": 152,
+              "text": "    #define TLG_HAVE_EVENT_SET_INFORMATION 1"
+            },
+            {
+              "line": 153,
+              "text": "  #elif defined(_ETW_KM_)"
+            },
+            {
+              "line": 154,
+              "text": "    #if NTDDI_VERSION < 0x06040000"
+            },
+            {
+              "line": 155,
+              "text": "      #define TLG_HAVE_EVENT_SET_INFORMATION 2 // Find \"EtwSetInformation\" via MmGetSystemRoutineAddress"
+            },
+            {
+              "line": 156,
+              "text": "    #else"
+            },
+            {
+              "line": 157,
+              "text": "      #define TLG_HAVE_EVENT_SET_INFORMATION 1 // Directly invoke TLG_EVENT_SET_INFORMATION(...)"
+            },
+            {
+              "line": 158,
+              "text": "    #endif"
+            },
+            {
+              "line": 159,
+              "text": "  #else // User-mode"
+            },
+            {
+              "line": 160,
+              "text": "    #if WINVER < 0x0602 || !defined(EVENT_FILTER_TYPE_SCHEMATIZED)"
+            },
+            {
+              "line": 161,
+              "text": "      #define TLG_HAVE_EVENT_SET_INFORMATION 2 // Find \"EventSetInformation\" via GetModuleHandleExW/GetProcAddress"
+            },
+            {
+              "line": 162,
+              "text": "    #else"
+            },
+            {
+              "line": 163,
+              "text": "      #define TLG_HAVE_EVENT_SET_INFORMATION 1 // Directly invoke TLG_EVENT_SET_INFORMATION(...)"
+            },
+            {
+              "line": 164,
+              "text": "    #endif"
+            },
+            {
+              "line": 165,
+              "text": "  #endif // TLG_EVENT_SET_INFORMATION"
+            },
+            {
+              "line": 166,
+              "text": "#endif // TLG_HAVE_EVENT_SET_INFORMATION"
+            }
+          ]
+        },
+        {
+          "start": 251,
+          "end": 265,
+          "lines": [
+            {
+              "line": 251,
+              "text": "#else // _ETW_KM_"
+            },
+            {
+              "line": 252,
+              "text": "#ifndef   TLG_EVENT_REGISTER"
+            },
+            {
+              "line": 253,
+              "text": "  #define TLG_EVENT_REGISTER        EventRegister"
+            },
+            {
+              "line": 254,
+              "text": "#endif"
+            },
+            {
+              "line": 255,
+              "text": "#ifndef   TLG_EVENT_UNREGISTER"
+            },
+            {
+              "line": 256,
+              "text": "  #define TLG_EVENT_UNREGISTER      EventUnregister"
+            },
+            {
+              "line": 257,
+              "text": "#endif"
+            },
+            {
+              "line": 258,
+              "text": "#ifndef   TLG_EVENT_SET_INFORMATION"
+            },
+            {
+              "line": 259,
+              "text": "  #define TLG_EVENT_SET_INFORMATION EventSetInformation"
+            },
+            {
+              "line": 260,
+              "text": "#endif"
+            },
+            {
+              "line": 261,
+              "text": "#ifndef   TLG_EVENT_WRITE_TRANSFER"
+            },
+            {
+              "line": 262,
+              "text": "  #define TLG_EVENT_WRITE_TRANSFER  EventWriteTransfer"
+            },
+            {
+              "line": 263,
+              "text": "#endif"
+            },
+            {
+              "line": 264,
+              "text": "#ifndef   TLG_EVENT_WRITE_EX"
+            },
+            {
+              "line": 265,
+              "text": "  #define TLG_EVENT_WRITE_EX        EventWriteEx"
+            }
+          ]
+        },
+        {
+          "start": 293,
+          "end": 315,
+          "lines": [
+            {
+              "line": 293,
+              "text": "#ifndef TLG_DEBUG"
+            },
+            {
+              "line": 294,
+              "text": "  #if (DBG || defined(DEBUG) || defined(_DEBUG)) && !defined(NDEBUG)"
+            },
+            {
+              "line": 295,
+              "text": "    #define TLG_DEBUG 1"
+            },
+            {
+              "line": 296,
+              "text": "  #else // DBG"
+            },
+            {
+              "line": 297,
+              "text": "    #define TLG_DEBUG 0"
+            },
+            {
+              "line": 298,
+              "text": "  #endif // DBG"
+            },
+            {
+              "line": 299,
+              "text": "#endif // TLG_DEBUG"
+            },
+            {
+              "line": 300,
+              "text": ""
+            },
+            {
+              "line": 301,
+              "text": "#ifndef TLG_RAISEASSERTIONFAILURE"
+            },
+            {
+              "line": 302,
+              "text": "  #if defined(__clang__) || defined(_M_CEE)"
+            },
+            {
+              "line": 303,
+              "text": "    #define TLG_RAISEASSERTIONFAILURE() __debugbreak()"
+            },
+            {
+              "line": 304,
+              "text": "  #else"
+            },
+            {
+              "line": 305,
+              "text": "    #define TLG_RAISEASSERTIONFAILURE() DbgRaiseAssertionFailure()"
+            },
+            {
+              "line": 306,
+              "text": "  #endif"
+            },
+            {
+              "line": 307,
+              "text": "#endif // TLG_RAISEASSERTIONFAILURE"
+            },
+            {
+              "line": 308,
+              "text": ""
+            },
+            {
+              "line": 309,
+              "text": "#ifndef TLG_PFORCEINLINE"
+            },
+            {
+              "line": 310,
+              "text": "  #if defined(PFORCEINLINE)"
+            },
+            {
+              "line": 311,
+              "text": "    #define TLG_PFORCEINLINE PFORCEINLINE"
+            },
+            {
+              "line": 312,
+              "text": "  #elif defined(FORCEINLINE)"
+            },
+            {
+              "line": 313,
+              "text": "    #define TLG_PFORCEINLINE FORCEINLINE"
+            },
+            {
+              "line": 314,
+              "text": "  #else"
+            },
+            {
+              "line": 315,
+              "text": "    #define TLG_PFORCEINLINE __forceinline"
+            }
+          ]
+        },
+        {
+          "start": 2780,
+          "end": 2822,
+          "lines": [
+            {
+              "line": 2780,
+              "text": "TLG_STATUS _tlg_CALL"
+            },
+            {
+              "line": 2781,
+              "text": "TraceLoggingRegisterEx("
+            },
+            {
+              "line": 2782,
+              "text": "    TraceLoggingHProvider _Inout_ hProvider,"
+            },
+            {
+              "line": 2783,
+              "text": "    _In_opt_ TLG_PENABLECALLBACK pEnableCallback,"
+            },
+            {
+              "line": 2784,
+              "text": "    _In_opt_ PVOID pCallbackContext)"
+            },
+            {
+              "line": 2785,
+              "text": "{"
+            },
+            {
+              "line": 2786,
+              "text": "    TLG_STATUS status;"
+            },
+            {
+              "line": 2787,
+              "text": "    struct _tlgProvider_t* pProvider = (struct _tlgProvider_t*)hProvider;"
+            },
+            {
+              "line": 2788,
+              "text": "    GUID const providerId = TraceLoggingProviderId(pProvider);"
+            },
+            {
+              "line": 2789,
+              "text": "    TLG_PAGED_CODE();"
+            },
+            {
+              "line": 2790,
+              "text": ""
+            },
+            {
+              "line": 2791,
+              "text": "    if (pProvider->RegHandle != 0)"
+            },
+            {
+              "line": 2792,
+              "text": "    {"
+            },
+            {
+              "line": 2793,
+              "text": "        // TraceLoggingRegister[Ex] was called with an hProvider that is"
+            },
+            {
+              "line": 2794,
+              "text": "        // currently registered. This leaks the provider registration and can"
+            },
+            {
+              "line": 2795,
+              "text": "        // cause memory corruption during provider callback. This is a serious"
+            },
+            {
+              "line": 2796,
+              "text": "        // bug in the code that called TraceLoggingRegister[Ex]."
+            },
+            {
+              "line": 2797,
+              "text": "        _tlg_FASTFAIL(5); // 5 = FAST_FAIL_INVALID_ARG"
+            },
+            {
+              "line": 2798,
+              "text": "    }"
+            },
+            {
+              "line": 2799,
+              "text": ""
+            },
+            {
+              "line": 2800,
+              "text": "    pProvider->EnableCallback = pEnableCallback;"
+            },
+            {
+              "line": 2801,
+              "text": "    pProvider->CallbackContext = pCallbackContext;"
+            },
+            {
+              "line": 2802,
+              "text": "    status = TLG_EVENT_REGISTER("
+            },
+            {
+              "line": 2803,
+              "text": "        &providerId,"
+            },
+            {
+              "line": 2804,
+              "text": "        &_tlgEnableCallback,"
+            },
+            {
+              "line": 2805,
+              "text": "        pProvider,"
+            },
+            {
+              "line": 2806,
+              "text": "        &pProvider->RegHandle);"
+            },
+            {
+              "line": 2807,
+              "text": "    if (status != 0)"
+            },
+            {
+              "line": 2808,
+              "text": "    {"
+            },
+            {
+              "line": 2809,
+              "text": "#ifndef _ETW_KM_"
+            },
+            {
+              "line": 2810,
+              "text": "        status = HRESULT_FROM_WIN32(status);"
+            },
+            {
+              "line": 2811,
+              "text": "#endif"
+            },
+            {
+              "line": 2812,
+              "text": "    }"
+            },
+            {
+              "line": 2813,
+              "text": "    else"
+            },
+            {
+              "line": 2814,
+              "text": "    {"
+            },
+            {
+              "line": 2815,
+              "text": "        UINT16 const cbMetadata = *pProvider->ProviderMetadataPtr;"
+            },
+            {
+              "line": 2816,
+              "text": "        (void)TraceLoggingSetInformation("
+            },
+            {
+              "line": 2817,
+              "text": "            pProvider,"
+            },
+            {
+              "line": 2818,
+              "text": "            (EVENT_INFO_CLASS)2, // EventProviderSetTraits"
+            },
+            {
+              "line": 2819,
+              "text": "            (PVOID)pProvider->ProviderMetadataPtr,"
+            },
+            {
+              "line": 2820,
+              "text": "            cbMetadata);"
+            },
+            {
+              "line": 2821,
+              "text": "    }"
+            },
+            {
+              "line": 2822,
+              "text": "    return status;"
+            }
+          ]
+        },
+        {
+          "start": 2834,
+          "end": 2844,
+          "lines": [
+            {
+              "line": 2834,
+              "text": "    TLG_STATUS status;"
+            },
+            {
+              "line": 2835,
+              "text": ""
+            },
+            {
+              "line": 2836,
+              "text": "#if TLG_HAVE_EVENT_SET_INFORMATION == 1"
+            },
+            {
+              "line": 2837,
+              "text": ""
+            },
+            {
+              "line": 2838,
+              "text": "    TLG_PAGED_CODE();"
+            },
+            {
+              "line": 2839,
+              "text": "#pragma warning(suppress: 6387) // It's ok for pvInformation to be null if cbInformation is 0."
+            },
+            {
+              "line": 2840,
+              "text": "    status = TLG_EVENT_SET_INFORMATION("
+            },
+            {
+              "line": 2841,
+              "text": "        hProvider->RegHandle,"
+            },
+            {
+              "line": 2842,
+              "text": "        informationClass,"
+            },
+            {
+              "line": 2843,
+              "text": "        pvInformation,"
+            },
+            {
+              "line": 2844,
+              "text": "        cbInformation);"
+            }
+          ]
+        },
+        {
+          "start": 2964,
+          "end": 2972,
+          "lines": [
+            {
+              "line": 2964,
+              "text": "    ((UINT32*)pDesc)[1] = *(UINT16 UNALIGNED const*)p; p += 2; // Level, Opcode, Task"
+            },
+            {
+              "line": 2965,
+              "text": "    pDesc[1] = *(ULONGLONG UNALIGNED const*)p; p += 8; // Keyword"
+            },
+            {
+              "line": 2966,
+              "text": "    pData[0].Ptr = (ULONGLONG)(ULONG_PTR)hProvider->ProviderMetadataPtr;"
+            },
+            {
+              "line": 2967,
+              "text": "    pData[0].Size = *hProvider->ProviderMetadataPtr;"
+            },
+            {
+              "line": 2968,
+              "text": "    pData[0].Reserved = 2; // = EVENT_DATA_DESCRIPTOR_TYPE_PROVIDER_METADATA"
+            },
+            {
+              "line": 2969,
+              "text": "    pData[1].Ptr = (ULONGLONG)(ULONG_PTR)p;"
+            },
+            {
+              "line": 2970,
+              "text": "    pData[1].Size = *(UINT16 UNALIGNED const*)p;"
+            },
+            {
+              "line": 2971,
+              "text": "    pData[1].Reserved = 1; // = EVENT_DATA_DESCRIPTOR_TYPE_EVENT_METADATA"
+            },
+            {
+              "line": 2972,
+              "text": "    _tlg_ASSERT((void const*)&_TraceLoggingMetadata < (void const*)pEventMetadata, \"Event metadata not in metadata segment.\");"
+            }
+          ]
+        },
+        {
+          "start": 3881,
+          "end": 3887,
+          "lines": [
+            {
+              "line": 3881,
+              "text": "#if defined(_MSC_VER) && !defined(__clang__)"
+            },
+            {
+              "line": 3882,
+              "text": "#define _tlgPragmaUtf8Begin __pragma(execution_character_set(push, \"UTF-8\"))"
+            },
+            {
+              "line": 3883,
+              "text": "#define _tlgPragmaUtf8End   __pragma(execution_character_set(pop))"
+            },
+            {
+              "line": 3884,
+              "text": "#else"
+            },
+            {
+              "line": 3885,
+              "text": "#define _tlgPragmaUtf8Begin"
+            },
+            {
+              "line": 3886,
+              "text": "#define _tlgPragmaUtf8End"
+            },
+            {
+              "line": 3887,
+              "text": "#endif"
+            }
+          ]
+        },
+        {
+          "start": 3941,
+          "end": 3959,
+          "lines": [
+            {
+              "line": 3941,
+              "text": "#define _tlgProviderStorage_impx(storageVariable, providerName, providerId, annotationFunc, optionVars, optionVals) \\"
+            },
+            {
+              "line": 3942,
+              "text": "    _tlgPragmaUtf8Begin \\"
+            },
+            {
+              "line": 3943,
+              "text": "    __pragma(pack(push, 1)) \\"
+            },
+            {
+              "line": 3944,
+              "text": "    _tlgValidateProviderId(providerId) \\"
+            },
+            {
+              "line": 3945,
+              "text": "    static struct { \\"
+            },
+            {
+              "line": 3946,
+              "text": "        struct _tlgProviderMetadata_t _tlgProv; \\"
+            },
+            {
+              "line": 3947,
+              "text": "        char _tlgName[sizeof(providerName)]; \\"
+            },
+            {
+              "line": 3948,
+              "text": "        _tlg_FLATTEN optionVars \\"
+            },
+            {
+              "line": 3949,
+              "text": "    } const __declspec(allocate(_tlgSegMetadataProviders)) __declspec(align(1)) storageVariable##_Meta = { \\"
+            },
+            {
+              "line": 3950,
+              "text": "        { _TlgBlobProvider3, _tlgExpandProviderId providerId, sizeof(storageVariable##_Meta) - 1 - _tlg_PROVIDER_METADATA_PREAMBLE }, \\"
+            },
+            {
+              "line": 3951,
+              "text": "        (providerName) \\"
+            },
+            {
+              "line": 3952,
+              "text": "        _tlg_FLATTEN optionVals \\"
+            },
+            {
+              "line": 3953,
+              "text": "    }; \\"
+            },
+            {
+              "line": 3954,
+              "text": "    __pragma(pack(pop)) \\"
+            },
+            {
+              "line": 3955,
+              "text": "    _tlgPragmaUtf8End \\"
+            },
+            {
+              "line": 3956,
+              "text": "    static struct _tlgProvider_t storageVariable = { \\"
+            },
+            {
+              "line": 3957,
+              "text": "        0, &storageVariable##_Meta._tlgProv.RemainingSize, \\"
+            },
+            {
+              "line": 3958,
+              "text": "        0, 0, 0, 0, 0 \\"
+            },
+            {
+              "line": 3959,
+              "text": "        _tlgAnnotationFunc_imp(annotationFunc, storageVariable) \\"
+            }
+          ]
+        },
+        {
+          "start": 4483,
+          "end": 4519,
+          "lines": [
+            {
+              "line": 4483,
+              "text": "#define _tlgWrite_imp(tlgWriteFunc, hProvider, eventName, tlgWriteArgTypes, tlgWriteArgs, ...) \\"
+            },
+            {
+              "line": 4484,
+              "text": "    do { \\"
+            },
+            {
+              "line": 4485,
+              "text": "        __pragma(warning(push)) \\"
+            },
+            {
+              "line": 4486,
+              "text": "        __pragma(warning(disable:4127 4132 6001)) \\"
+            },
+            {
+              "line": 4487,
+              "text": "        __pragma(warning(error:4047)) \\"
+            },
+            {
+              "line": 4488,
+              "text": "        __pragma(pack(push, 1)) \\"
+            },
+            {
+              "line": 4489,
+              "text": "        _tlgPragmaUtf8Begin \\"
+            },
+            {
+              "line": 4490,
+              "text": "        _tlgEvtTagDecl(0 _tlg_FOREACH(_tlgEvtTagVal, __VA_ARGS__)); \\"
+            },
+            {
+              "line": 4491,
+              "text": "        enum { _tlgLevelConst = 5 _tlg_FOREACH(_tlgLevelVal, __VA_ARGS__) }; \\"
+            },
+            {
+              "line": 4492,
+              "text": "        static struct { \\"
+            },
+            {
+              "line": 4493,
+              "text": "            UCHAR _tlgBlobTyp; UCHAR _tlgChannel; UCHAR _tlgLevel; UCHAR _tlgOpcode; ULONGLONG _tlgKeyword; \\"
+            },
+            {
+              "line": 4494,
+              "text": "            UINT16 _tlgEvtMetaSize; \\"
+            },
+            {
+              "line": 4495,
+              "text": "            _tlgEvtTagType _tlgEvtTag; \\"
+            },
+            {
+              "line": 4496,
+              "text": "            char _tlgName[sizeof(eventName)]; \\"
+            },
+            {
+              "line": 4497,
+              "text": "            _tlg_FOREACH(_tlgInfoVars, __VA_ARGS__) \\"
+            },
+            {
+              "line": 4498,
+              "text": "        } __declspec(allocate(_tlgSegMetadataEvents)) __declspec(align(1)) const _tlgEvent = { \\"
+            },
+            {
+              "line": 4499,
+              "text": "            _TlgBlobEvent4, \\"
+            },
+            {
+              "line": 4500,
+              "text": "            11 _tlg_FOREACH(_tlgChannelVal, __VA_ARGS__), \\"
+            },
+            {
+              "line": 4501,
+              "text": "            _tlgLevelConst, \\"
+            },
+            {
+              "line": 4502,
+              "text": "            0 _tlg_FOREACH(_tlgOpcodeVal, __VA_ARGS__), \\"
+            },
+            {
+              "line": 4503,
+              "text": "            0 _tlg_FOREACH(_tlgKeywordVal, __VA_ARGS__), \\"
+            },
+            {
+              "line": 4504,
+              "text": "            sizeof(_tlgEvent)-_tlg_EVENT_METADATA_PREAMBLE-1, \\"
+            },
+            {
+              "line": 4505,
+              "text": "            _tlgEvtTagInit, \\"
+            },
+            {
+              "line": 4506,
+              "text": "            (eventName) \\"
+            },
+            {
+              "line": 4507,
+              "text": "            _tlg_FOREACH(_tlgInfoVals, __VA_ARGS__) \\"
+            },
+            {
+              "line": 4508,
+              "text": "        }; \\"
+            },
+            {
+              "line": 4509,
+              "text": "        TraceLoggingHProvider const _tlgProv = (hProvider); \\"
+            },
+            {
+              "line": 4510,
+              "text": "        if ((UCHAR)_tlgLevelConst < _tlgProv->LevelPlus1 && _tlgKeywordOn(_tlgProv, _tlgEvent._tlgKeyword)) { \\"
+            },
+            {
+              "line": 4511,
+              "text": "            __annotation( \\"
+            },
+            {
+              "line": 4512,
+              "text": "                L\"_TlgWrite:|\" _tlg_LSTRINGIZE(__LINE__) L\"|\" _tlg_LSTRINGIZE(hProvider) L\"|\" \\"
+            },
+            {
+              "line": 4513,
+              "text": "                _tlg_LSTRINGIZE(eventName) L\"=\" _tlg_FOREACH(_tlgDescVal, __VA_ARGS__) \\"
+            },
+            {
+              "line": 4514,
+              "text": "                _tlg_FOREACH(_tlgAnnotes, __VA_ARGS__) ); \\"
+            },
+            {
+              "line": 4515,
+              "text": "            _tlgPackAndEmitEvent(tlgWriteFunc, tlgWriteArgTypes, tlgWriteArgs, __VA_ARGS__); \\"
+            },
+            {
+              "line": 4516,
+              "text": "        } \\"
+            },
+            {
+              "line": 4517,
+              "text": "        _tlgPragmaUtf8End \\"
+            },
+            {
+              "line": 4518,
+              "text": "        __pragma(pack(pop)) \\"
+            },
+            {
+              "line": 4519,
+              "text": "        __pragma(warning(pop)) \\"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\evntprov.h",
+      "bytes": 6951,
+      "sha256": "9808C06EF5535EB31344EA05CDD3F05BCE2BC85F9AE8A774011F30537D66833D",
+      "excerpts": [
+        {
+          "start": 29,
+          "end": 43,
+          "lines": [
+            {
+              "line": 29,
+              "text": "#include <winapifamily.h>"
+            },
+            {
+              "line": 30,
+              "text": ""
+            },
+            {
+              "line": 31,
+              "text": "#if !defined (EVNTAPI) && !defined (__WIDL__) && !defined (MIDL_PASS)"
+            },
+            {
+              "line": 32,
+              "text": "#ifdef _EVNT_SOURCE_"
+            },
+            {
+              "line": 33,
+              "text": "#ifdef _ARM_"
+            },
+            {
+              "line": 34,
+              "text": "#define EVNTAPI"
+            },
+            {
+              "line": 35,
+              "text": "#else"
+            },
+            {
+              "line": 36,
+              "text": "#define EVNTAPI __stdcall"
+            },
+            {
+              "line": 37,
+              "text": "#endif"
+            },
+            {
+              "line": 38,
+              "text": "#else"
+            },
+            {
+              "line": 39,
+              "text": "#ifdef _ARM_"
+            },
+            {
+              "line": 40,
+              "text": "#define EVNTAPI DECLSPEC_IMPORT"
+            },
+            {
+              "line": 41,
+              "text": "#else"
+            },
+            {
+              "line": 42,
+              "text": "#define EVNTAPI DECLSPEC_IMPORT __stdcall"
+            },
+            {
+              "line": 43,
+              "text": "#endif"
+            }
+          ]
+        },
+        {
+          "start": 56,
+          "end": 87,
+          "lines": [
+            {
+              "line": 56,
+              "text": "#define EVENT_FILTER_TYPE_SCHEMATIZED (0x80000000)"
+            },
+            {
+              "line": 57,
+              "text": "#define EVENT_FILTER_TYPE_SYSTEM_FLAGS (0x80000001)"
+            },
+            {
+              "line": 58,
+              "text": "#define EVENT_FILTER_TYPE_TRACEHANDLE (0x80000002)"
+            },
+            {
+              "line": 59,
+              "text": ""
+            },
+            {
+              "line": 60,
+              "text": "#define MAX_EVENT_DATA_DESCRIPTORS (128)"
+            },
+            {
+              "line": 61,
+              "text": "#define MAX_EVENT_FILTER_DATA_SIZE (1024)"
+            },
+            {
+              "line": 62,
+              "text": ""
+            },
+            {
+              "line": 63,
+              "text": "#ifdef __cplusplus"
+            },
+            {
+              "line": 64,
+              "text": "extern \"C\" {"
+            },
+            {
+              "line": 65,
+              "text": "#endif"
+            },
+            {
+              "line": 66,
+              "text": ""
+            },
+            {
+              "line": 67,
+              "text": "#include <guiddef.h>"
+            },
+            {
+              "line": 68,
+              "text": ""
+            },
+            {
+              "line": 69,
+              "text": "  typedef ULONGLONG REGHANDLE,*PREGHANDLE;"
+            },
+            {
+              "line": 70,
+              "text": ""
+            },
+            {
+              "line": 71,
+              "text": "  typedef struct _EVENT_DATA_DESCRIPTOR {"
+            },
+            {
+              "line": 72,
+              "text": "    ULONGLONG Ptr;"
+            },
+            {
+              "line": 73,
+              "text": "    ULONG Size;"
+            },
+            {
+              "line": 74,
+              "text": "    ULONG Reserved;"
+            },
+            {
+              "line": 75,
+              "text": "  } EVENT_DATA_DESCRIPTOR,*PEVENT_DATA_DESCRIPTOR;"
+            },
+            {
+              "line": 76,
+              "text": ""
+            },
+            {
+              "line": 77,
+              "text": "#ifndef EVENT_DESCRIPTOR_DEF"
+            },
+            {
+              "line": 78,
+              "text": "#define EVENT_DESCRIPTOR_DEF"
+            },
+            {
+              "line": 79,
+              "text": "  typedef struct _EVENT_DESCRIPTOR {"
+            },
+            {
+              "line": 80,
+              "text": "    USHORT Id;"
+            },
+            {
+              "line": 81,
+              "text": "    UCHAR Version;"
+            },
+            {
+              "line": 82,
+              "text": "    UCHAR Channel;"
+            },
+            {
+              "line": 83,
+              "text": "    UCHAR Level;"
+            },
+            {
+              "line": 84,
+              "text": "    UCHAR Opcode;"
+            },
+            {
+              "line": 85,
+              "text": "    USHORT Task;"
+            },
+            {
+              "line": 86,
+              "text": "    ULONGLONG Keyword;"
+            },
+            {
+              "line": 87,
+              "text": "  } EVENT_DESCRIPTOR,*PEVENT_DESCRIPTOR;"
+            }
+          ]
+        },
+        {
+          "start": 111,
+          "end": 139,
+          "lines": [
+            {
+              "line": 111,
+              "text": "#if !defined (_ETW_KM_) && !defined (__WIDL__)  /* for wdm.h & widl */"
+            },
+            {
+              "line": 112,
+              "text": "  typedef enum _EVENT_INFO_CLASS {"
+            },
+            {
+              "line": 113,
+              "text": "    EventProviderBinaryTrackInfo,"
+            },
+            {
+              "line": 114,
+              "text": "    MaxEventInfo"
+            },
+            {
+              "line": 115,
+              "text": "  } EVENT_INFO_CLASS;"
+            },
+            {
+              "line": 116,
+              "text": ""
+            },
+            {
+              "line": 117,
+              "text": "  typedef VOID (NTAPI *PENABLECALLBACK) (LPCGUID SourceId, ULONG IsEnabled, UCHAR Level, ULONGLONG MatchAnyKeyword, ULONGLONG MatchAllKeyword, PEVENT_FILTER_DESCRIPTOR FilterData, PVOID CallbackContext);"
+            },
+            {
+              "line": 118,
+              "text": ""
+            },
+            {
+              "line": 119,
+              "text": "#if WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_DESKTOP)"
+            },
+            {
+              "line": 120,
+              "text": "#if WINVER >= 0x0600"
+            },
+            {
+              "line": 121,
+              "text": "  BOOLEAN EVNTAPI EventEnabled (REGHANDLE RegHandle, PCEVENT_DESCRIPTOR EventDescriptor);"
+            },
+            {
+              "line": 122,
+              "text": "  BOOLEAN EVNTAPI EventProviderEnabled (REGHANDLE RegHandle, UCHAR Level, ULONGLONG Keyword);"
+            },
+            {
+              "line": 123,
+              "text": "  ULONG EVNTAPI EventWriteTransfer (REGHANDLE RegHandle, PCEVENT_DESCRIPTOR EventDescriptor, LPCGUID ActivityId, LPCGUID RelatedActivityId, ULONG UserDataCount, PEVENT_DATA_DESCRIPTOR UserData);"
+            },
+            {
+              "line": 124,
+              "text": "  ULONG EVNTAPI EventWriteString (REGHANDLE RegHandle, UCHAR Level, ULONGLONG Keyword, PCWSTR String);"
+            },
+            {
+              "line": 125,
+              "text": "  ULONG EVNTAPI EventActivityIdControl (ULONG ControlCode, LPGUID ActivityId);"
+            },
+            {
+              "line": 126,
+              "text": "#endif"
+            },
+            {
+              "line": 127,
+              "text": "#if WINVER >= 0x0601"
+            },
+            {
+              "line": 128,
+              "text": "  ULONG EVNTAPI EventWriteEx (REGHANDLE RegHandle, PCEVENT_DESCRIPTOR EventDescriptor, ULONG64 Filter, ULONG Flags, LPCGUID ActivityId, LPCGUID RelatedActivityId, ULONG UserDataCount, PEVENT_DATA_DESCRIPTOR UserData);"
+            },
+            {
+              "line": 129,
+              "text": "#endif"
+            },
+            {
+              "line": 130,
+              "text": "#endif"
+            },
+            {
+              "line": 131,
+              "text": ""
+            },
+            {
+              "line": 132,
+              "text": "#if WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_APP)"
+            },
+            {
+              "line": 133,
+              "text": "#if WINVER >= 0x0600"
+            },
+            {
+              "line": 134,
+              "text": "  ULONG EVNTAPI EventRegister (LPCGUID ProviderId, PENABLECALLBACK EnableCallback, PVOID CallbackContext, PREGHANDLE RegHandle);"
+            },
+            {
+              "line": 135,
+              "text": "  ULONG EVNTAPI EventUnregister (REGHANDLE RegHandle);"
+            },
+            {
+              "line": 136,
+              "text": "  ULONG EVNTAPI EventWrite (REGHANDLE RegHandle, PCEVENT_DESCRIPTOR EventDescriptor, ULONG UserDataCount, PEVENT_DATA_DESCRIPTOR UserData);"
+            },
+            {
+              "line": 137,
+              "text": "#endif"
+            },
+            {
+              "line": 138,
+              "text": "#if WINVER >= 0x0602"
+            },
+            {
+              "line": 139,
+              "text": "  ULONG EVNTAPI EventSetInformation (REGHANDLE RegHandle, EVENT_INFO_CLASS InformationClass, PVOID EventInformation, ULONG InformationLength);"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\winapifamily.h",
+      "bytes": 698,
+      "sha256": "032684BB38042587A5AA9C4748B33475EE7E7FF90B7B95661E7D92EF441C34B2",
+      "excerpts": [
+        {
+          "start": 1,
+          "end": 24,
+          "lines": [
+            {
+              "line": 1,
+              "text": "/**"
+            },
+            {
+              "line": 2,
+              "text": " * This file is part of the mingw-w64 runtime package."
+            },
+            {
+              "line": 3,
+              "text": " * No warranty is given; refer to the file DISCLAIMER within this package."
+            },
+            {
+              "line": 4,
+              "text": " */"
+            },
+            {
+              "line": 5,
+              "text": ""
+            },
+            {
+              "line": 6,
+              "text": "#ifndef _INC_WINAPIFAMILY"
+            },
+            {
+              "line": 7,
+              "text": "#define _INC_WINAPIFAMILY"
+            },
+            {
+              "line": 8,
+              "text": ""
+            },
+            {
+              "line": 9,
+              "text": "#define WINAPI_PARTITION_DESKTOP 0x1"
+            },
+            {
+              "line": 10,
+              "text": "#define WINAPI_PARTITION_APP     0x2    "
+            },
+            {
+              "line": 11,
+              "text": ""
+            },
+            {
+              "line": 12,
+              "text": "#define WINAPI_FAMILY_APP WINAPI_PARTITION_APP"
+            },
+            {
+              "line": 13,
+              "text": "#define WINAPI_FAMILY_DESKTOP_APP (WINAPI_PARTITION_DESKTOP \\"
+            },
+            {
+              "line": 14,
+              "text": "\t\t\t\t   | WINAPI_PARTITION_APP)    "
+            },
+            {
+              "line": 15,
+              "text": ""
+            },
+            {
+              "line": 16,
+              "text": "/* WINAPI_FAMILY can be either desktop + App, or App.  */"
+            },
+            {
+              "line": 17,
+              "text": "#ifndef WINAPI_FAMILY"
+            },
+            {
+              "line": 18,
+              "text": "#define WINAPI_FAMILY WINAPI_FAMILY_DESKTOP_APP"
+            },
+            {
+              "line": 19,
+              "text": "#endif"
+            },
+            {
+              "line": 20,
+              "text": ""
+            },
+            {
+              "line": 21,
+              "text": "#define WINAPI_FAMILY_PARTITION(v) ((WINAPI_FAMILY & v) == v)"
+            },
+            {
+              "line": 22,
+              "text": "#define WINAPI_FAMILY_ONE_PARTITION(vset, v) ((WINAPI_FAMILY & vset) == v)"
+            },
+            {
+              "line": 23,
+              "text": ""
+            },
+            {
+              "line": 24,
+              "text": "#endif "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\guiddef.h",
+      "bytes": 4703,
+      "sha256": "85D05EE04411B9064E9E7F913BDAC14D3E63F70D35108CD9A1956BB9A8E9912E",
+      "excerpts": [
+        {
+          "start": 1,
+          "end": 25,
+          "lines": [
+            {
+              "line": 1,
+              "text": "/**"
+            },
+            {
+              "line": 2,
+              "text": " * This file is part of the mingw-w64 runtime package."
+            },
+            {
+              "line": 3,
+              "text": " * No warranty is given; refer to the file DISCLAIMER within this package."
+            },
+            {
+              "line": 4,
+              "text": " */"
+            },
+            {
+              "line": 5,
+              "text": "#ifndef GUID_DEFINED"
+            },
+            {
+              "line": 6,
+              "text": "#define GUID_DEFINED"
+            },
+            {
+              "line": 7,
+              "text": ""
+            },
+            {
+              "line": 8,
+              "text": "/* Make sure __LONG32 is defined.  */"
+            },
+            {
+              "line": 9,
+              "text": "#include <_mingw.h>"
+            },
+            {
+              "line": 10,
+              "text": ""
+            },
+            {
+              "line": 11,
+              "text": "#ifdef __WIDL__"
+            },
+            {
+              "line": 12,
+              "text": "typedef struct {"
+            },
+            {
+              "line": 13,
+              "text": "  unsigned long Data1;"
+            },
+            {
+              "line": 14,
+              "text": "  unsigned short Data2;"
+            },
+            {
+              "line": 15,
+              "text": "  unsigned short Data3;"
+            },
+            {
+              "line": 16,
+              "text": "  byte Data4[8];"
+            },
+            {
+              "line": 17,
+              "text": "} GUID;"
+            },
+            {
+              "line": 18,
+              "text": "#else"
+            },
+            {
+              "line": 19,
+              "text": "typedef struct _GUID {"
+            },
+            {
+              "line": 20,
+              "text": "  unsigned __LONG32 Data1;"
+            },
+            {
+              "line": 21,
+              "text": "  unsigned short Data2;"
+            },
+            {
+              "line": 22,
+              "text": "  unsigned short Data3;"
+            },
+            {
+              "line": 23,
+              "text": "  unsigned char Data4[8];"
+            },
+            {
+              "line": 24,
+              "text": "} GUID;"
+            },
+            {
+              "line": 25,
+              "text": "#endif"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\windows.h",
+      "bytes": 2529,
+      "sha256": "E931BC163A9980E71982A522879073F41F934C3D94B423D489EE9F387093899F",
+      "excerpts": [
+        {
+          "start": 5,
+          "end": 10,
+          "lines": [
+            {
+              "line": 5,
+              "text": " */"
+            },
+            {
+              "line": 6,
+              "text": "#ifndef _WINDOWS_"
+            },
+            {
+              "line": 7,
+              "text": "#define _WINDOWS_"
+            },
+            {
+              "line": 8,
+              "text": ""
+            },
+            {
+              "line": 9,
+              "text": "#include <_mingw.h>"
+            },
+            {
+              "line": 10,
+              "text": "#include <sdkddkver.h>"
+            }
+          ]
+        },
+        {
+          "start": 63,
+          "end": 77,
+          "lines": [
+            {
+              "line": 63,
+              "text": ""
+            },
+            {
+              "line": 64,
+              "text": "#ifndef RC_INVOKED"
+            },
+            {
+              "line": 65,
+              "text": "#include <excpt.h>"
+            },
+            {
+              "line": 66,
+              "text": "#include <stdarg.h>"
+            },
+            {
+              "line": 67,
+              "text": "#endif"
+            },
+            {
+              "line": 68,
+              "text": ""
+            },
+            {
+              "line": 69,
+              "text": "#include <windef.h>"
+            },
+            {
+              "line": 70,
+              "text": "#include <winbase.h>"
+            },
+            {
+              "line": 71,
+              "text": "#include <wingdi.h>"
+            },
+            {
+              "line": 72,
+              "text": "#include <winuser.h>"
+            },
+            {
+              "line": 73,
+              "text": "#include <winnls.h>"
+            },
+            {
+              "line": 74,
+              "text": "#include <wincon.h>"
+            },
+            {
+              "line": 75,
+              "text": "#include <winver.h>"
+            },
+            {
+              "line": 76,
+              "text": "#include <winreg.h>"
+            },
+            {
+              "line": 77,
+              "text": "#include <winnetwk.h>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\windef.h",
+      "bytes": 3819,
+      "sha256": "1772C5BE23507AFEF7AF3C2D4953CD0DC9A03D41CDFA0D111F912E4D94444ACE",
+      "excerpts": [
+        {
+          "start": 5,
+          "end": 22,
+          "lines": [
+            {
+              "line": 5,
+              "text": "#ifndef _WINDEF_"
+            },
+            {
+              "line": 6,
+              "text": "#define _WINDEF_"
+            },
+            {
+              "line": 7,
+              "text": ""
+            },
+            {
+              "line": 8,
+              "text": "#include <winapifamily.h>"
+            },
+            {
+              "line": 9,
+              "text": "#include <minwindef.h>"
+            },
+            {
+              "line": 10,
+              "text": ""
+            },
+            {
+              "line": 11,
+              "text": "#ifdef __cplusplus"
+            },
+            {
+              "line": 12,
+              "text": "extern \"C\" {"
+            },
+            {
+              "line": 13,
+              "text": "#endif"
+            },
+            {
+              "line": 14,
+              "text": ""
+            },
+            {
+              "line": 15,
+              "text": "#ifndef WINVER"
+            },
+            {
+              "line": 16,
+              "text": "#define WINVER 0x0502"
+            },
+            {
+              "line": 17,
+              "text": "#endif"
+            },
+            {
+              "line": 18,
+              "text": ""
+            },
+            {
+              "line": 19,
+              "text": "/* Make sure winnt.h is included.  */"
+            },
+            {
+              "line": 20,
+              "text": "#ifndef NT_INCLUDED"
+            },
+            {
+              "line": 21,
+              "text": "#include <winnt.h>"
+            },
+            {
+              "line": 22,
+              "text": "#endif"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\minwindef.h",
+      "bytes": 4358,
+      "sha256": "6B9BD01788CD02C2C8FE326FD2C27F8276041C2CF8D20AE5F0C78D0432F8AA52",
+      "excerpts": [
+        {
+          "start": 1,
+          "end": 8,
+          "lines": [
+            {
+              "line": 1,
+              "text": "#ifndef _MINWINDEF_"
+            },
+            {
+              "line": 2,
+              "text": "#define _MINWINDEF_"
+            },
+            {
+              "line": 3,
+              "text": ""
+            },
+            {
+              "line": 4,
+              "text": "#include <_mingw.h>"
+            },
+            {
+              "line": 5,
+              "text": "#include <winapifamily.h>"
+            },
+            {
+              "line": 6,
+              "text": "#include <specstrings.h>"
+            },
+            {
+              "line": 7,
+              "text": ""
+            },
+            {
+              "line": 8,
+              "text": "#if WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_APP)"
+            }
+          ]
+        },
+        {
+          "start": 155,
+          "end": 169,
+          "lines": [
+            {
+              "line": 155,
+              "text": "#define _LPCVOID_DEFINED"
+            },
+            {
+              "line": 156,
+              "text": "  typedef CONST void *LPCVOID;"
+            },
+            {
+              "line": 157,
+              "text": "#endif"
+            },
+            {
+              "line": 158,
+              "text": "  typedef int INT;"
+            },
+            {
+              "line": 159,
+              "text": "  typedef unsigned int UINT;"
+            },
+            {
+              "line": 160,
+              "text": "  typedef unsigned int *PUINT;"
+            },
+            {
+              "line": 161,
+              "text": ""
+            },
+            {
+              "line": 162,
+              "text": "#ifndef NT_INCLUDED"
+            },
+            {
+              "line": 163,
+              "text": "#include <winnt.h>"
+            },
+            {
+              "line": 164,
+              "text": "#endif"
+            },
+            {
+              "line": 165,
+              "text": ""
+            },
+            {
+              "line": 166,
+              "text": "  typedef UINT_PTR WPARAM;"
+            },
+            {
+              "line": 167,
+              "text": "  typedef LONG_PTR LPARAM;"
+            },
+            {
+              "line": 168,
+              "text": "  typedef LONG_PTR LRESULT;"
+            },
+            {
+              "line": 169,
+              "text": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\winnt.h",
+      "bytes": 403819,
+      "sha256": "1BFFC405C3DFF7133FBB03D5902B384D31DB8E76D6A6DFFA89F495A2E2728828",
+      "excerpts": [
+        {
+          "start": 9,
+          "end": 27,
+          "lines": [
+            {
+              "line": 9,
+              "text": "#include <_mingw_unicode.h>"
+            },
+            {
+              "line": 10,
+              "text": ""
+            },
+            {
+              "line": 11,
+              "text": "#ifdef __cplusplus"
+            },
+            {
+              "line": 12,
+              "text": "extern \"C\" {"
+            },
+            {
+              "line": 13,
+              "text": "#endif"
+            },
+            {
+              "line": 14,
+              "text": ""
+            },
+            {
+              "line": 15,
+              "text": "#include <_mingw.h>"
+            },
+            {
+              "line": 16,
+              "text": "#include <ctype.h>"
+            },
+            {
+              "line": 17,
+              "text": "#include <excpt.h>"
+            },
+            {
+              "line": 18,
+              "text": "#include <winapifamily.h>"
+            },
+            {
+              "line": 19,
+              "text": "#include <apiset.h>"
+            },
+            {
+              "line": 20,
+              "text": ""
+            },
+            {
+              "line": 21,
+              "text": "#define ANYSIZE_ARRAY 1"
+            },
+            {
+              "line": 22,
+              "text": ""
+            },
+            {
+              "line": 23,
+              "text": "#include <specstrings.h>"
+            },
+            {
+              "line": 24,
+              "text": ""
+            },
+            {
+              "line": 25,
+              "text": "#ifndef __WIDL__"
+            },
+            {
+              "line": 26,
+              "text": "#define __INTRINSIC_GROUP_WINNT /* only define the intrinsics in this file */"
+            },
+            {
+              "line": 27,
+              "text": "#include <psdk_inc/intrin-impl.h>"
+            }
+          ]
+        },
+        {
+          "start": 150,
+          "end": 163,
+          "lines": [
+            {
+              "line": 150,
+              "text": ""
+            },
+            {
+              "line": 151,
+              "text": "#if defined(_MSC_VER)"
+            },
+            {
+              "line": 152,
+              "text": "# define C_ASSERT(e) typedef char __C_ASSERT__[(e)?1:-1]"
+            },
+            {
+              "line": 153,
+              "text": "#else"
+            },
+            {
+              "line": 154,
+              "text": "# define C_ASSERT(e) extern void __C_ASSERT__(int [(e)?1:-1])"
+            },
+            {
+              "line": 155,
+              "text": "#endif"
+            },
+            {
+              "line": 156,
+              "text": ""
+            },
+            {
+              "line": 157,
+              "text": "#include <basetsd.h>"
+            },
+            {
+              "line": 158,
+              "text": ""
+            },
+            {
+              "line": 159,
+              "text": "#ifndef DECLSPEC_IMPORT"
+            },
+            {
+              "line": 160,
+              "text": "#if (defined (__i386__) || defined (__ia64__) || defined (__x86_64__) || defined (__arm__) || defined(__aarch64__)) && !defined (__WIDL__)"
+            },
+            {
+              "line": 161,
+              "text": "#define DECLSPEC_IMPORT __declspec (dllimport)"
+            },
+            {
+              "line": 162,
+              "text": "#else"
+            },
+            {
+              "line": 163,
+              "text": "#define DECLSPEC_IMPORT"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\specstrings.h",
+      "bytes": 11367,
+      "sha256": "78F21B8FB9D9C01B77FAAC38A2EAD8DA8276D4B993FC6ACDCE20E6CA035876DE",
+      "excerpts": [
+        {
+          "start": 1,
+          "end": 17,
+          "lines": [
+            {
+              "line": 1,
+              "text": "/**"
+            },
+            {
+              "line": 2,
+              "text": " * This file has no copyright assigned and is placed in the Public Domain."
+            },
+            {
+              "line": 3,
+              "text": " * This file is part of the mingw-w64 runtime package."
+            },
+            {
+              "line": 4,
+              "text": " * No warranty is given; refer to the file DISCLAIMER.PD within this package."
+            },
+            {
+              "line": 5,
+              "text": " */"
+            },
+            {
+              "line": 6,
+              "text": ""
+            },
+            {
+              "line": 7,
+              "text": "#ifndef SPECSTRINGS_H"
+            },
+            {
+              "line": 8,
+              "text": "#define SPECSTRINGS_H"
+            },
+            {
+              "line": 9,
+              "text": ""
+            },
+            {
+              "line": 10,
+              "text": "#define __specstrings"
+            },
+            {
+              "line": 11,
+              "text": ""
+            },
+            {
+              "line": 12,
+              "text": "#include <sal.h>"
+            },
+            {
+              "line": 13,
+              "text": ""
+            },
+            {
+              "line": 14,
+              "text": "#ifdef __cplusplus"
+            },
+            {
+              "line": 15,
+              "text": "#ifndef __nothrow"
+            },
+            {
+              "line": 16,
+              "text": "#define __nothrow __declspec(nothrow)"
+            },
+            {
+              "line": 17,
+              "text": "#endif"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\sal.h",
+      "bytes": 16412,
+      "sha256": "3D4069954B6B310A7F85C7868D392747213BAB8D73471FBDB36867A46928A187",
+      "excerpts": [
+        {
+          "start": 21,
+          "end": 33,
+          "lines": [
+            {
+              "line": 21,
+              "text": ""
+            },
+            {
+              "line": 22,
+              "text": "/* Input parameters */"
+            },
+            {
+              "line": 23,
+              "text": "#define _In_"
+            },
+            {
+              "line": 24,
+              "text": "#define _In_opt_"
+            },
+            {
+              "line": 25,
+              "text": "#define _In_z_"
+            },
+            {
+              "line": 26,
+              "text": "#define _In_opt_z_"
+            },
+            {
+              "line": 27,
+              "text": "#define _In_reads_(s)"
+            },
+            {
+              "line": 28,
+              "text": "#define _In_reads_opt_(s)"
+            },
+            {
+              "line": 29,
+              "text": "#define _In_reads_bytes_(s)"
+            },
+            {
+              "line": 30,
+              "text": "#define _In_reads_bytes_opt_(s)"
+            },
+            {
+              "line": 31,
+              "text": "#define _In_reads_z_(s)"
+            },
+            {
+              "line": 32,
+              "text": "#define _In_reads_opt_z_(s)"
+            },
+            {
+              "line": 33,
+              "text": "#define _In_reads_or_z_(s)"
+            }
+          ]
+        },
+        {
+          "start": 38,
+          "end": 64,
+          "lines": [
+            {
+              "line": 38,
+              "text": "#define _In_reads_to_ptr_opt_z_(p)"
+            },
+            {
+              "line": 39,
+              "text": ""
+            },
+            {
+              "line": 40,
+              "text": "#define _In_count_(s)"
+            },
+            {
+              "line": 41,
+              "text": "#define _In_opt_count_(s)"
+            },
+            {
+              "line": 42,
+              "text": "#define _In_bytecount_(s)"
+            },
+            {
+              "line": 43,
+              "text": "#define _In_opt_bytecount_(s)"
+            },
+            {
+              "line": 44,
+              "text": "#define _In_count_c_(s)"
+            },
+            {
+              "line": 45,
+              "text": "#define _In_opt_count_c_(s)"
+            },
+            {
+              "line": 46,
+              "text": "#define _In_bytecount_c_(s)"
+            },
+            {
+              "line": 47,
+              "text": "#define _In_opt_bytecount_c_(s)"
+            },
+            {
+              "line": 48,
+              "text": "#define _In_z_count_(s)"
+            },
+            {
+              "line": 49,
+              "text": "#define _In_opt_z_count_(s)"
+            },
+            {
+              "line": 50,
+              "text": "#define _In_z_bytecount_(s)"
+            },
+            {
+              "line": 51,
+              "text": "#define _In_opt_z_bytecount_(s)"
+            },
+            {
+              "line": 52,
+              "text": "#define _In_z_count_c_(s)"
+            },
+            {
+              "line": 53,
+              "text": "#define _In_opt_z_count_c_(s)"
+            },
+            {
+              "line": 54,
+              "text": "#define _In_z_bytecount_c_(s)"
+            },
+            {
+              "line": 55,
+              "text": "#define _In_opt_z_bytecount_c_(s)"
+            },
+            {
+              "line": 56,
+              "text": "#define _In_ptrdiff_count_(s)"
+            },
+            {
+              "line": 57,
+              "text": "#define _In_opt_ptrdiff_count_(s)"
+            },
+            {
+              "line": 58,
+              "text": "#define _In_count_x_(s)"
+            },
+            {
+              "line": 59,
+              "text": "#define _In_opt_count_x_(s)"
+            },
+            {
+              "line": 60,
+              "text": "#define _In_bytecount_x_(s)"
+            },
+            {
+              "line": 61,
+              "text": "#define _In_opt_bytecount_x_(s)"
+            },
+            {
+              "line": 62,
+              "text": ""
+            },
+            {
+              "line": 63,
+              "text": "/* Output parameters */"
+            },
+            {
+              "line": 64,
+              "text": "#define _Out_"
+            }
+          ]
+        },
+        {
+          "start": 175,
+          "end": 189,
+          "lines": [
+            {
+              "line": 175,
+              "text": "#define _Inout_opt_count_x_(s)"
+            },
+            {
+              "line": 176,
+              "text": "#define _Inout_bytecount_x_(s)"
+            },
+            {
+              "line": 177,
+              "text": "#define _Inout_opt_bytecount_x_(s)"
+            },
+            {
+              "line": 178,
+              "text": "#define _Inout_cap_(s)"
+            },
+            {
+              "line": 179,
+              "text": "#define _Inout_opt_cap_(s)"
+            },
+            {
+              "line": 180,
+              "text": "#define _Inout_bytecap_(s)"
+            },
+            {
+              "line": 181,
+              "text": "#define _Inout_opt_bytecap_(s)"
+            },
+            {
+              "line": 182,
+              "text": "#define _Inout_cap_c_(s)"
+            },
+            {
+              "line": 183,
+              "text": "#define _Inout_opt_cap_c_(s)"
+            },
+            {
+              "line": 184,
+              "text": "#define _Inout_bytecap_c_(s)"
+            },
+            {
+              "line": 185,
+              "text": "#define _Inout_opt_bytecap_c_(s)"
+            },
+            {
+              "line": 186,
+              "text": "#define _Inout_cap_x_(s)"
+            },
+            {
+              "line": 187,
+              "text": "#define _Inout_opt_cap_x_(s)"
+            },
+            {
+              "line": 188,
+              "text": "#define _Inout_bytecap_x_(s)"
+            },
+            {
+              "line": 189,
+              "text": "#define _Inout_opt_bytecap_x_(s)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\sdkddkver.h",
+      "bytes": 7101,
+      "sha256": "721D250BC5F9BE501EB7ABEEDA06B86335A3504404CE149F9AA22F437B196481",
+      "excerpts": [
+        {
+          "start": 170,
+          "end": 198,
+          "lines": [
+            {
+              "line": 170,
+              "text": "/* Select Default WIN32_WINNT Value */"
+            },
+            {
+              "line": 171,
+              "text": "#if !defined(_WIN32_WINNT) && !defined(_CHICAGO_)"
+            },
+            {
+              "line": 172,
+              "text": "#define _WIN32_WINNT _WIN32_WINNT_WS03"
+            },
+            {
+              "line": 173,
+              "text": "#endif"
+            },
+            {
+              "line": 174,
+              "text": ""
+            },
+            {
+              "line": 175,
+              "text": "/* Choose NTDDI Version */"
+            },
+            {
+              "line": 176,
+              "text": "#ifndef NTDDI_VERSION"
+            },
+            {
+              "line": 177,
+              "text": "# ifdef _WIN32_WINNT"
+            },
+            {
+              "line": 178,
+              "text": "#  if _WIN32_WINNT < _WIN32_WINNT_WIN10"
+            },
+            {
+              "line": 179,
+              "text": "/* For versions before Windows 10, set the corresponding NTDDI_VERSION. */"
+            },
+            {
+              "line": 180,
+              "text": "#   define NTDDI_VERSION NTDDI_VERSION_FROM_WIN32_WINNT(_WIN32_WINNT)"
+            },
+            {
+              "line": 181,
+              "text": "#  else"
+            },
+            {
+              "line": 182,
+              "text": "/* As _WIN32_WINNT doesn't distinguish between versions of Windows 10/11,"
+            },
+            {
+              "line": 183,
+              "text": " * set NTDDI_VERSION to the highest version. */"
+            },
+            {
+              "line": 184,
+              "text": "#   define NTDDI_VERSION WDK_NTDDI_VERSION"
+            },
+            {
+              "line": 185,
+              "text": "#  endif"
+            },
+            {
+              "line": 186,
+              "text": "# else"
+            },
+            {
+              "line": 187,
+              "text": "#  define NTDDI_VERSION NTDDI_WS03"
+            },
+            {
+              "line": 188,
+              "text": "# endif"
+            },
+            {
+              "line": 189,
+              "text": "#endif"
+            },
+            {
+              "line": 190,
+              "text": ""
+            },
+            {
+              "line": 191,
+              "text": "/* Choose WINVER Value */"
+            },
+            {
+              "line": 192,
+              "text": "#ifndef WINVER"
+            },
+            {
+              "line": 193,
+              "text": "#ifdef _WIN32_WINNT"
+            },
+            {
+              "line": 194,
+              "text": "#define WINVER _WIN32_WINNT"
+            },
+            {
+              "line": 195,
+              "text": "#else"
+            },
+            {
+              "line": 196,
+              "text": "#define WINVER 0x0502"
+            },
+            {
+              "line": 197,
+              "text": "#endif"
+            },
+            {
+              "line": 198,
+              "text": "#endif"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\_mingw.h",
+      "bytes": 19371,
+      "sha256": "9DAA9C8670CB7E5D73E2290A020D8CBEBF55BC19FD4C5E2F27E661C98827C3B6",
+      "excerpts": [
+        {
+          "start": 5,
+          "end": 17,
+          "lines": [
+            {
+              "line": 5,
+              "text": " */"
+            },
+            {
+              "line": 6,
+              "text": ""
+            },
+            {
+              "line": 7,
+              "text": "#ifndef _INC__MINGW_H"
+            },
+            {
+              "line": 8,
+              "text": "#define _INC__MINGW_H"
+            },
+            {
+              "line": 9,
+              "text": ""
+            },
+            {
+              "line": 10,
+              "text": "#include \"_mingw_mac.h\""
+            },
+            {
+              "line": 11,
+              "text": "#include \"_mingw_secapi.h\""
+            },
+            {
+              "line": 12,
+              "text": ""
+            },
+            {
+              "line": 13,
+              "text": "/* Include _cygwin.h if we're building a Cygwin application. */"
+            },
+            {
+              "line": 14,
+              "text": "#ifdef __CYGWIN__"
+            },
+            {
+              "line": 15,
+              "text": "#include \"_cygwin.h\""
+            },
+            {
+              "line": 16,
+              "text": "#endif"
+            },
+            {
+              "line": 17,
+              "text": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\_mingw_mac.h",
+      "bytes": 12934,
+      "sha256": "125F71CFA3ABA72E86C882B2CC4D0D9F595E9A71370E4A4AD9FBC67352181D6C",
+      "excerpts": [
+        {
+          "start": 7,
+          "end": 22,
+          "lines": [
+            {
+              "line": 7,
+              "text": "#ifndef _INC_CRTDEFS_MACRO"
+            },
+            {
+              "line": 8,
+              "text": "#define _INC_CRTDEFS_MACRO"
+            },
+            {
+              "line": 9,
+              "text": ""
+            },
+            {
+              "line": 10,
+              "text": "#define __MINGW64_PASTE2(x, y) x ## y"
+            },
+            {
+              "line": 11,
+              "text": "#define __MINGW64_PASTE(x, y) __MINGW64_PASTE2(x, y)"
+            },
+            {
+              "line": 12,
+              "text": ""
+            },
+            {
+              "line": 13,
+              "text": "#define __STRINGIFY(x) #x"
+            },
+            {
+              "line": 14,
+              "text": "#define __MINGW64_STRINGIFY(x) \\"
+            },
+            {
+              "line": 15,
+              "text": "  __STRINGIFY(x)"
+            },
+            {
+              "line": 16,
+              "text": ""
+            },
+            {
+              "line": 17,
+              "text": "#define __MINGW64_VERSION_MAJOR 13"
+            },
+            {
+              "line": 18,
+              "text": "#define __MINGW64_VERSION_MINOR 0"
+            },
+            {
+              "line": 19,
+              "text": "#define __MINGW64_VERSION_BUGFIX 0"
+            },
+            {
+              "line": 20,
+              "text": ""
+            },
+            {
+              "line": 21,
+              "text": "/* This macro holds an monotonic increasing value, which indicates"
+            },
+            {
+              "line": 22,
+              "text": "   a specific fix/patch is present on trunk.  This value isn't related to"
+            }
+          ]
+        },
+        {
+          "start": 24,
+          "end": 46,
+          "lines": [
+            {
+              "line": 24,
+              "text": "   fix was applied to trunk.  This macro gets just increased on trunk.  For"
+            },
+            {
+              "line": 25,
+              "text": "   other branches its value won't be modified.  */"
+            },
+            {
+              "line": 26,
+              "text": ""
+            },
+            {
+              "line": 27,
+              "text": "#define __MINGW64_VERSION_RC 0"
+            },
+            {
+              "line": 28,
+              "text": ""
+            },
+            {
+              "line": 29,
+              "text": "#define __MINGW64_VERSION_STR\t\\"
+            },
+            {
+              "line": 30,
+              "text": "  __MINGW64_STRINGIFY(__MINGW64_VERSION_MAJOR) \\"
+            },
+            {
+              "line": 31,
+              "text": "  \".\" \\"
+            },
+            {
+              "line": 32,
+              "text": "  __MINGW64_STRINGIFY(__MINGW64_VERSION_MINOR) \\"
+            },
+            {
+              "line": 33,
+              "text": "  \".\" \\"
+            },
+            {
+              "line": 34,
+              "text": "  __MINGW64_STRINGIFY(__MINGW64_VERSION_BUGFIX)"
+            },
+            {
+              "line": 35,
+              "text": ""
+            },
+            {
+              "line": 36,
+              "text": "#define __MINGW64_VERSION_STATE \"alpha\""
+            },
+            {
+              "line": 37,
+              "text": ""
+            },
+            {
+              "line": 38,
+              "text": "/* mingw.org's version macros: these make gcc to define"
+            },
+            {
+              "line": 39,
+              "text": "   MINGW32_SUPPORTS_MT_EH and to use the _CRT_MT global"
+            },
+            {
+              "line": 40,
+              "text": "   and the __mingwthr_key_dtor() function from the MinGW"
+            },
+            {
+              "line": 41,
+              "text": "   CRT in its private gthr-win32.h header. */"
+            },
+            {
+              "line": 42,
+              "text": "#define __MINGW32_MAJOR_VERSION 3"
+            },
+            {
+              "line": 43,
+              "text": "#define __MINGW32_MINOR_VERSION 11"
+            },
+            {
+              "line": 44,
+              "text": ""
+            },
+            {
+              "line": 45,
+              "text": "/* Set VC specific compiler target macros.  */"
+            },
+            {
+              "line": 46,
+              "text": "#if defined(__x86_64) && defined(_X86_)"
+            }
+          ]
+        },
+        {
+          "start": 126,
+          "end": 143,
+          "lines": [
+            {
+              "line": 126,
+              "text": "#endif /* ifndef _X86_ */"
+            },
+            {
+              "line": 127,
+              "text": ""
+            },
+            {
+              "line": 128,
+              "text": "#if __MINGW_USE_UNDERSCORE_PREFIX == 0"
+            },
+            {
+              "line": 129,
+              "text": "#  define __MINGW_IMP_SYMBOL(sym) __MINGW64_PASTE(__imp_,sym)"
+            },
+            {
+              "line": 130,
+              "text": "#  define __MINGW_IMP_LSYMBOL(sym) __MINGW64_PASTE(__imp_,sym)"
+            },
+            {
+              "line": 131,
+              "text": "#  define __MINGW_USYMBOL(sym) sym"
+            },
+            {
+              "line": 132,
+              "text": "#  define __MINGW_LSYMBOL(sym) __MINGW64_PASTE(_,sym)"
+            },
+            {
+              "line": 133,
+              "text": "#else /* ! if __MINGW_USE_UNDERSCORE_PREFIX == 0 */"
+            },
+            {
+              "line": 134,
+              "text": "#  define __MINGW_IMP_SYMBOL(sym) __MINGW64_PASTE(_imp__,sym)"
+            },
+            {
+              "line": 135,
+              "text": "#  define __MINGW_IMP_LSYMBOL(sym) __MINGW64_PASTE(__imp__,sym)"
+            },
+            {
+              "line": 136,
+              "text": "#  define __MINGW_USYMBOL(sym) __MINGW64_PASTE(_,sym)"
+            },
+            {
+              "line": 137,
+              "text": "#  define __MINGW_LSYMBOL(sym) sym"
+            },
+            {
+              "line": 138,
+              "text": "#endif /* if __MINGW_USE_UNDERSCORE_PREFIX == 0 */"
+            },
+            {
+              "line": 139,
+              "text": ""
+            },
+            {
+              "line": 140,
+              "text": "#define __MINGW_ASM_CALL(func) __asm__(__MINGW64_STRINGIFY(__MINGW_USYMBOL(func)))"
+            },
+            {
+              "line": 141,
+              "text": "#define __MINGW_ASM_CRT_CALL(func) __asm__(__STRINGIFY(func))"
+            },
+            {
+              "line": 142,
+              "text": ""
+            },
+            {
+              "line": 143,
+              "text": "#ifndef __PTRDIFF_TYPE__"
+            }
+          ]
+        },
+        {
+          "start": 328,
+          "end": 334,
+          "lines": [
+            {
+              "line": 328,
+              "text": "#  define __has_builtin(x) 0"
+            },
+            {
+              "line": 329,
+              "text": "#endif"
+            },
+            {
+              "line": 330,
+              "text": ""
+            },
+            {
+              "line": 331,
+              "text": "#if defined(__MINGW32__) && _FORTIFY_SOURCE > 0 && __OPTIMIZE__ > 0 \\"
+            },
+            {
+              "line": 332,
+              "text": "    && __MINGW_GNUC_PREREQ(4, 1)"
+            },
+            {
+              "line": 333,
+              "text": "#  if _FORTIFY_SOURCE > 3"
+            },
+            {
+              "line": 334,
+              "text": "#    warning Using _FORTIFY_SOURCE=3 (levels > 3 are not supported)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\_mingw_secapi.h",
+      "bytes": 3466,
+      "sha256": "F7C73504B479A86E9323056D7785D7EBFDD224F2136A18C5388B100DAA6484E9",
+      "excerpts": [
+        {
+          "start": 1,
+          "end": 45,
+          "lines": [
+            {
+              "line": 1,
+              "text": "/**"
+            },
+            {
+              "line": 2,
+              "text": " * This file has no copyright assigned and is placed in the Public Domain."
+            },
+            {
+              "line": 3,
+              "text": " * This file is part of the mingw-w64 runtime package."
+            },
+            {
+              "line": 4,
+              "text": " * No warranty is given; refer to the file DISCLAIMER.PD within this package."
+            },
+            {
+              "line": 5,
+              "text": " */"
+            },
+            {
+              "line": 6,
+              "text": " "
+            },
+            {
+              "line": 7,
+              "text": "#ifndef _INC_MINGW_SECAPI"
+            },
+            {
+              "line": 8,
+              "text": "#define _INC_MINGW_SECAPI"
+            },
+            {
+              "line": 9,
+              "text": ""
+            },
+            {
+              "line": 10,
+              "text": "/* http://msdn.microsoft.com/en-us/library/ms175759%28v=VS.100%29.aspx */"
+            },
+            {
+              "line": 11,
+              "text": "#if defined(__cplusplus)"
+            },
+            {
+              "line": 12,
+              "text": "#ifndef _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES"
+            },
+            {
+              "line": 13,
+              "text": "#define _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES 1         /* default to 1 */"
+            },
+            {
+              "line": 14,
+              "text": "#endif /*_CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES*/"
+            },
+            {
+              "line": 15,
+              "text": "#ifndef _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES_MEMORY"
+            },
+            {
+              "line": 16,
+              "text": "#define _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES_MEMORY 0  /* default to 0 */"
+            },
+            {
+              "line": 17,
+              "text": "#endif /*_CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES_MEMORY*/"
+            },
+            {
+              "line": 18,
+              "text": "#ifndef _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES"
+            },
+            {
+              "line": 19,
+              "text": "#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES 0       /* default to 0 */"
+            },
+            {
+              "line": 20,
+              "text": "#endif /* _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES */"
+            },
+            {
+              "line": 21,
+              "text": "#ifndef _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_COUNT"
+            },
+            {
+              "line": 22,
+              "text": "#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_COUNT 0 /* default to 0 */"
+            },
+            {
+              "line": 23,
+              "text": "#endif /* _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_COUNT */"
+            },
+            {
+              "line": 24,
+              "text": "#ifndef _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_MEMORY"
+            },
+            {
+              "line": 25,
+              "text": "#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_MEMORY 0 /* default to 0 */"
+            },
+            {
+              "line": 26,
+              "text": "#endif /* _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_MEMORY */"
+            },
+            {
+              "line": 27,
+              "text": "#else"
+            },
+            {
+              "line": 28,
+              "text": "/* Templates won't work in C, will break if secure API is not enabled, disabled */"
+            },
+            {
+              "line": 29,
+              "text": "#undef _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES"
+            },
+            {
+              "line": 30,
+              "text": "#undef _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES_MEMORY"
+            },
+            {
+              "line": 31,
+              "text": "#undef _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES"
+            },
+            {
+              "line": 32,
+              "text": "#undef _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_COUNT"
+            },
+            {
+              "line": 33,
+              "text": "#undef _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_MEMORY"
+            },
+            {
+              "line": 34,
+              "text": "#define _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES 0"
+            },
+            {
+              "line": 35,
+              "text": "#define _CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES_MEMORY 0"
+            },
+            {
+              "line": 36,
+              "text": "#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES 0"
+            },
+            {
+              "line": 37,
+              "text": "#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_COUNT 0"
+            },
+            {
+              "line": 38,
+              "text": "#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_MEMORY 0"
+            },
+            {
+              "line": 39,
+              "text": "#endif /*defined(__cplusplus)*/"
+            },
+            {
+              "line": 40,
+              "text": ""
+            },
+            {
+              "line": 41,
+              "text": "#define __MINGW_CRT_NAME_CONCAT2(sym) ::sym##_s"
+            },
+            {
+              "line": 42,
+              "text": ""
+            },
+            {
+              "line": 43,
+              "text": "#ifdef __cplusplus"
+            },
+            {
+              "line": 44,
+              "text": "extern \"C++\" {"
+            },
+            {
+              "line": 45,
+              "text": "template <bool __test, typename __dsttype>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\vadefs.h",
+      "bytes": 2768,
+      "sha256": "ABBCC279D0A64730CAA533F2DF975F4FA10CE9768783B6D98C420E48D8820458",
+      "excerpts": [
+        {
+          "start": 1,
+          "end": 35,
+          "lines": [
+            {
+              "line": 1,
+              "text": "/**"
+            },
+            {
+              "line": 2,
+              "text": " * This file has no copyright assigned and is placed in the Public Domain."
+            },
+            {
+              "line": 3,
+              "text": " * This file is part of the mingw-w64 runtime package."
+            },
+            {
+              "line": 4,
+              "text": " * No warranty is given; refer to the file DISCLAIMER.PD within this package."
+            },
+            {
+              "line": 5,
+              "text": " */"
+            },
+            {
+              "line": 6,
+              "text": "#ifndef _INC_VADEFS"
+            },
+            {
+              "line": 7,
+              "text": "#define _INC_VADEFS"
+            },
+            {
+              "line": 8,
+              "text": ""
+            },
+            {
+              "line": 9,
+              "text": "#include <_mingw.h>"
+            },
+            {
+              "line": 10,
+              "text": ""
+            },
+            {
+              "line": 11,
+              "text": "#ifndef __WIDL__"
+            },
+            {
+              "line": 12,
+              "text": "#undef _CRT_PACKING"
+            },
+            {
+              "line": 13,
+              "text": "#define _CRT_PACKING 8"
+            },
+            {
+              "line": 14,
+              "text": "#pragma pack(push,_CRT_PACKING)"
+            },
+            {
+              "line": 15,
+              "text": "#endif"
+            },
+            {
+              "line": 16,
+              "text": ""
+            },
+            {
+              "line": 17,
+              "text": "#ifdef __cplusplus"
+            },
+            {
+              "line": 18,
+              "text": "extern \"C\" {"
+            },
+            {
+              "line": 19,
+              "text": "#endif"
+            },
+            {
+              "line": 20,
+              "text": ""
+            },
+            {
+              "line": 21,
+              "text": "#if defined (__GNUC__)"
+            },
+            {
+              "line": 22,
+              "text": "#ifndef __GNUC_VA_LIST"
+            },
+            {
+              "line": 23,
+              "text": "#define __GNUC_VA_LIST"
+            },
+            {
+              "line": 24,
+              "text": "  typedef __builtin_va_list __gnuc_va_list;"
+            },
+            {
+              "line": 25,
+              "text": "#endif"
+            },
+            {
+              "line": 26,
+              "text": "#endif /* __GNUC__ */"
+            },
+            {
+              "line": 27,
+              "text": ""
+            },
+            {
+              "line": 28,
+              "text": "#ifndef _VA_LIST_DEFINED\t/* if stdargs.h didn't define it */"
+            },
+            {
+              "line": 29,
+              "text": "#define _VA_LIST_DEFINED"
+            },
+            {
+              "line": 30,
+              "text": "#if defined(__GNUC__)"
+            },
+            {
+              "line": 31,
+              "text": "  typedef __gnuc_va_list va_list;"
+            },
+            {
+              "line": 32,
+              "text": "#elif defined(_MSC_VER)"
+            },
+            {
+              "line": 33,
+              "text": "  typedef char *  va_list;"
+            },
+            {
+              "line": 34,
+              "text": "#elif !defined(__WIDL__)"
+            },
+            {
+              "line": 35,
+              "text": "#error VARARGS not implemented for this compiler"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\tools__v8_gypfiles__toolchain.gypi",
+      "bytes": 27997,
+      "sha256": "A1C257B371F3DECA51E9CD4F1189206D99C28CB64A3C4D53B5D920DC02053059",
+      "excerpts": [
+        {
+          "start": 505,
+          "end": 521,
+          "lines": [
+            {
+              "line": 505,
+              "text": "          },"
+            },
+            {
+              "line": 506,
+              "text": "        },"
+            },
+            {
+              "line": 507,
+              "text": "        'msvs_configuration_platform': 'x64',"
+            },
+            {
+              "line": 508,
+              "text": "      }],  # v8_target_arch==\"x64\""
+            },
+            {
+              "line": 509,
+              "text": "      ['OS==\"win\"', {"
+            },
+            {
+              "line": 510,
+              "text": "        'defines': ["
+            },
+            {
+              "line": 511,
+              "text": "          'WIN32',"
+            },
+            {
+              "line": 512,
+              "text": "          'NOMINMAX',  # Refs: https://chromium-review.googlesource.com/c/v8/v8/+/1456620"
+            },
+            {
+              "line": 513,
+              "text": "          '_WIN32_WINNT=0x0A00',  # Windows 10"
+            },
+            {
+              "line": 514,
+              "text": "          '_SILENCE_ALL_CXX20_DEPRECATION_WARNINGS',"
+            },
+            {
+              "line": 515,
+              "text": "        ],"
+            },
+            {
+              "line": 516,
+              "text": "        # 4351: VS 2005 and later are warning us that they've fixed a bug"
+            },
+            {
+              "line": 517,
+              "text": "        #       present in VS 2003 and earlier."
+            },
+            {
+              "line": 518,
+              "text": "        'msvs_disabled_warnings': [4351],"
+            },
+            {
+              "line": 519,
+              "text": "        'msvs_configuration_attributes': {"
+            },
+            {
+              "line": 520,
+              "text": "          'CharacterSet': '1',"
+            },
+            {
+              "line": 521,
+              "text": "        },"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\tools__v8_gypfiles__v8.gyp",
+      "bytes": 88077,
+      "sha256": "D26022C2F9501C2C5AF1FB6D4EC517F0DD1CC161DD9B633FDB20D57F4754D4C4",
+      "excerpts": [
+        {
+          "start": 1649,
+          "end": 1696,
+          "lines": [
+            {
+              "line": 1649,
+              "text": "      'target_name': 'v8_libplatform',"
+            },
+            {
+              "line": 1650,
+              "text": "      'type': 'static_library',"
+            },
+            {
+              "line": 1651,
+              "text": "      'toolsets': ['host', 'target'],"
+            },
+            {
+              "line": 1652,
+              "text": "      'dependencies': ["
+            },
+            {
+              "line": 1653,
+              "text": "        'v8_libbase',"
+            },
+            {
+              "line": 1654,
+              "text": "        'abseil.gyp:abseil',"
+            },
+            {
+              "line": 1655,
+              "text": "      ],"
+            },
+            {
+              "line": 1656,
+              "text": "      'sources': ["
+            },
+            {
+              "line": 1657,
+              "text": "        '<!@pymod_do_main(GN-scraper \"<(V8_ROOT)/BUILD.gn\"  \"\\\\\"v8_libplatform.*?sources = \")',"
+            },
+            {
+              "line": 1658,
+              "text": "      ],"
+            },
+            {
+              "line": 1659,
+              "text": "      'conditions': ["
+            },
+            {
+              "line": 1660,
+              "text": "        ['component==\"shared_library\"', {"
+            },
+            {
+              "line": 1661,
+              "text": "          'direct_dependent_settings': {"
+            },
+            {
+              "line": 1662,
+              "text": "            'defines': ['USING_V8_PLATFORM_SHARED'],"
+            },
+            {
+              "line": 1663,
+              "text": "          },"
+            },
+            {
+              "line": 1664,
+              "text": "          'defines': ['BUILDING_V8_PLATFORM_SHARED'],"
+            },
+            {
+              "line": 1665,
+              "text": "        }],"
+            },
+            {
+              "line": 1666,
+              "text": "        ['v8_use_perfetto==1', {"
+            },
+            {
+              "line": 1667,
+              "text": "          'sources!': ["
+            },
+            {
+              "line": 1668,
+              "text": "            '<!@pymod_do_main(GN-scraper \"<(V8_ROOT)/BUILD.gn\"  \"\\\\\"v8_libplatform.*?v8_use_perfetto.*?sources -= \")',"
+            },
+            {
+              "line": 1669,
+              "text": "          ],"
+            },
+            {
+              "line": 1670,
+              "text": "          'sources': ["
+            },
+            {
+              "line": 1671,
+              "text": "            '<!@pymod_do_main(GN-scraper \"<(V8_ROOT)/BUILD.gn\"  \"\\\\\"v8_libplatform.*?v8_use_perfetto.*?sources += \")',"
+            },
+            {
+              "line": 1672,
+              "text": "          ],"
+            },
+            {
+              "line": 1673,
+              "text": "          'dependencies': ["
+            },
+            {
+              "line": 1674,
+              "text": "            '<(V8_ROOT)/third_party/perfetto:libperfetto',"
+            },
+            {
+              "line": 1675,
+              "text": "            '<(V8_ROOT)/third_party/perfetto/protos/perfetto/trace:lite',"
+            },
+            {
+              "line": 1676,
+              "text": "          ],"
+            },
+            {
+              "line": 1677,
+              "text": "        }],"
+            },
+            {
+              "line": 1678,
+              "text": "        ['v8_enable_system_instrumentation==1 and is_win', {"
+            },
+            {
+              "line": 1679,
+              "text": "          'sources': ["
+            },
+            {
+              "line": 1680,
+              "text": "            '<(V8_ROOT)/src/libplatform/tracing/recorder.h',"
+            },
+            {
+              "line": 1681,
+              "text": "            '<(V8_ROOT)/src/libplatform/tracing/recorder-win.cc',"
+            },
+            {
+              "line": 1682,
+              "text": "          ],"
+            },
+            {
+              "line": 1683,
+              "text": "        }],"
+            },
+            {
+              "line": 1684,
+              "text": "        ['v8_enable_system_instrumentation==1 and OS==\"mac\"', {"
+            },
+            {
+              "line": 1685,
+              "text": "          'sources': ["
+            },
+            {
+              "line": 1686,
+              "text": "            '<(V8_ROOT)/src/libplatform/tracing/recorder.h',"
+            },
+            {
+              "line": 1687,
+              "text": "            '<(V8_ROOT)/src/libplatform/tracing/recorder-mac.cc',"
+            },
+            {
+              "line": 1688,
+              "text": "          ],"
+            },
+            {
+              "line": 1689,
+              "text": "        }],"
+            },
+            {
+              "line": 1690,
+              "text": "      ],"
+            },
+            {
+              "line": 1691,
+              "text": "      'direct_dependent_settings': {"
+            },
+            {
+              "line": 1692,
+              "text": "        'include_dirs': ["
+            },
+            {
+              "line": 1693,
+              "text": "          '<(V8_ROOT)/include',"
+            },
+            {
+              "line": 1694,
+              "text": "        ],"
+            },
+            {
+              "line": 1695,
+              "text": "      },"
+            },
+            {
+              "line": 1696,
+              "text": "    },  # v8_libplatform"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\tools__v8_gypfiles__features.gypi",
+      "bytes": 19326,
+      "sha256": "4005F461CA2390AF3818D2D568C7502F694043DEF0CCAA4F2288713E8CE7A802",
+      "excerpts": [
+        {
+          "start": 1,
+          "end": 45,
+          "lines": [
+            {
+              "line": 1,
+              "text": "# Copyright 2013 the V8 project authors. All rights reserved."
+            },
+            {
+              "line": 2,
+              "text": "# Redistribution and use in source and binary forms, with or without"
+            },
+            {
+              "line": 3,
+              "text": "# modification, are permitted provided that the following conditions are"
+            },
+            {
+              "line": 4,
+              "text": "# met:"
+            },
+            {
+              "line": 5,
+              "text": "#"
+            },
+            {
+              "line": 6,
+              "text": "#     * Redistributions of source code must retain the above copyright"
+            },
+            {
+              "line": 7,
+              "text": "#       notice, this list of conditions and the following disclaimer."
+            },
+            {
+              "line": 8,
+              "text": "#     * Redistributions in binary form must reproduce the above"
+            },
+            {
+              "line": 9,
+              "text": "#       copyright notice, this list of conditions and the following"
+            },
+            {
+              "line": 10,
+              "text": "#       disclaimer in the documentation and/or other materials provided"
+            },
+            {
+              "line": 11,
+              "text": "#       with the distribution."
+            },
+            {
+              "line": 12,
+              "text": "#     * Neither the name of Google Inc. nor the names of its"
+            },
+            {
+              "line": 13,
+              "text": "#       contributors may be used to endorse or promote products derived"
+            },
+            {
+              "line": 14,
+              "text": "#       from this software without specific prior written permission."
+            },
+            {
+              "line": 15,
+              "text": "#"
+            },
+            {
+              "line": 16,
+              "text": "# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS"
+            },
+            {
+              "line": 17,
+              "text": "# \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT"
+            },
+            {
+              "line": 18,
+              "text": "# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR"
+            },
+            {
+              "line": 19,
+              "text": "# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT"
+            },
+            {
+              "line": 20,
+              "text": "# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,"
+            },
+            {
+              "line": 21,
+              "text": "# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT"
+            },
+            {
+              "line": 22,
+              "text": "# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,"
+            },
+            {
+              "line": 23,
+              "text": "# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY"
+            },
+            {
+              "line": 24,
+              "text": "# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT"
+            },
+            {
+              "line": 25,
+              "text": "# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE"
+            },
+            {
+              "line": 26,
+              "text": "# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
+            },
+            {
+              "line": 27,
+              "text": ""
+            },
+            {
+              "line": 28,
+              "text": "# Compile time controlled V8 features."
+            },
+            {
+              "line": 29,
+              "text": ""
+            },
+            {
+              "line": 30,
+              "text": "{"
+            },
+            {
+              "line": 31,
+              "text": "  'variables': {"
+            },
+            {
+              "line": 32,
+              "text": "    'v8_target_arch%': '<(target_arch)',"
+            },
+            {
+              "line": 33,
+              "text": ""
+            },
+            {
+              "line": 34,
+              "text": "    'v8_current_cpu%': '<(target_arch)',"
+            },
+            {
+              "line": 35,
+              "text": ""
+            },
+            {
+              "line": 36,
+              "text": "    # Emulate GN variables"
+            },
+            {
+              "line": 37,
+              "text": "    # https://chromium.googlesource.com/chromium/src/build/+/556c524beb09c332698debe1b47b065d5d029cd0/config/BUILDCONFIG.gn#269"
+            },
+            {
+              "line": 38,
+              "text": "    'conditions': ["
+            },
+            {
+              "line": 39,
+              "text": "      ['OS == \"win\" or OS == \"winuwp\"', {"
+            },
+            {
+              "line": 40,
+              "text": "        'is_win': 1,"
+            },
+            {
+              "line": 41,
+              "text": "      }, {"
+            },
+            {
+              "line": 42,
+              "text": "        'is_win': 0,"
+            },
+            {
+              "line": 43,
+              "text": "      }],"
+            },
+            {
+              "line": 44,
+              "text": "      ['OS == \"fuchsia\"', {"
+            },
+            {
+              "line": 45,
+              "text": "        'is_fuchsia': 1,"
+            }
+          ]
+        },
+        {
+          "start": 510,
+          "end": 525,
+          "lines": [
+            {
+              "line": 510,
+              "text": "        'defines': ['V8_ENABLE_MAGLEV',],"
+            },
+            {
+              "line": 511,
+              "text": "      }],"
+            },
+            {
+              "line": 512,
+              "text": "      ['v8_enable_turbofan==1', {"
+            },
+            {
+              "line": 513,
+              "text": "        'defines': ['V8_ENABLE_TURBOFAN',],"
+            },
+            {
+              "line": 514,
+              "text": "      }],"
+            },
+            {
+              "line": 515,
+              "text": "      ['v8_enable_swiss_name_dictionary==1', {"
+            },
+            {
+              "line": 516,
+              "text": "        'defines': ['V8_ENABLE_SWISS_NAME_DICTIONARY',],"
+            },
+            {
+              "line": 517,
+              "text": "      }],"
+            },
+            {
+              "line": 518,
+              "text": "      ['v8_enable_system_instrumentation==1', {"
+            },
+            {
+              "line": 519,
+              "text": "        'defines': ['V8_ENABLE_SYSTEM_INSTRUMENTATION',],"
+            },
+            {
+              "line": 520,
+              "text": "      }],"
+            },
+            {
+              "line": 521,
+              "text": "      ['v8_enable_etw_stack_walking==1', {"
+            },
+            {
+              "line": 522,
+              "text": "        'defines': ['V8_ENABLE_ETW_STACK_WALKING',],"
+            },
+            {
+              "line": 523,
+              "text": "      }],"
+            },
+            {
+              "line": 524,
+              "text": "      ['v8_enable_webassembly==1', {"
+            },
+            {
+              "line": 525,
+              "text": "        'defines': ['V8_ENABLE_WEBASSEMBLY',],"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\tools\\build_native_node_abseil.zig",
+      "bytes": 7328,
+      "sha256": "8053B6A69B570372A9A895787C66F76FF055A6225D333C5A55F8E307293AF9F1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\tools\\build_native_node_tracing.zig",
+      "bytes": 6147,
+      "sha256": "A42B1433A277097BE8FDC7E6A670FEDB94DC5CCC58397C6A864F1BC06206D20A"
+    }
+  ],
+  "method": "Read-only exact hashes and original predicate/declaration inspection. Deductions above are conditional on the recorded target macro family; no preprocessor/compiler was executed.",
+  "limits": [
+    "The transitive selection records the concrete SDK/MinGW declaration boundary, not a compiler-selected complete Windows header graph.",
+    "Compiler built-ins, C++ ABI, Microsoft extension handling, ETW metadata sections, import linkage and runtime provider behavior remain unqualified.",
+    "No forced waiter/thread identity, no replacement std mutex, no patched SDK original, no synthesized provider or no-op event path is added.",
+    "The entire original Abseil mutex/condition implementation remains present; Node tracing conditions separately retain their original uv_cond_* owner."
+  ],
+  "compiler_execution": false,
+  "preprocessor_execution": false,
+  "native_execution": false,
+  "main_modified": false,
+  "qualification": false
+}

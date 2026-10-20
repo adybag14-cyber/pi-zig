@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "kind": "Unchanged original V8 ETW provider declaration and license",
+  "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "files": [
+    {
+      "path": "etw-provider-win.h",
+      "bytes": 1094,
+      "sha256": "64D0756E39EDCDA61DCBA4D00DE8447E347A435B82E5DE6478815DE69B8D9E01",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/libplatform/etw/etw-provider-win.h"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 3093,
+      "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/LICENSE"
+    }
+  ],
+  "original_bytes_unchanged": true,
+  "compiler_execution": false,
+  "native_execution": false
+}

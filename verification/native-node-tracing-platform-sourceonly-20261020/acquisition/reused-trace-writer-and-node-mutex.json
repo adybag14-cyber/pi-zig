@@ -1,0 +1,44 @@
+{
+  "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "records": [
+    {
+      "original_prior_authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\src__node_mutex.h.txt",
+        "bytes": 7963,
+        "sha256": "79FC7058F5380DA98638682684E77F72D4B413753C0BECD621B0D0E2F69600E5"
+      },
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\src__node_mutex.h",
+        "bytes": 7963,
+        "sha256": "79FC7058F5380DA98638682684E77F72D4B413753C0BECD621B0D0E2F69600E5"
+      },
+      "method": "Byte-exact reuse of existing pinned Node def0bdf8 original; no reacquisition or production change."
+    },
+    {
+      "original_prior_authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\deps__v8__src__libplatform__tracing__trace-writer.cc.txt",
+        "bytes": 7052,
+        "sha256": "8E12C3F0978C3E152285F411013A27932A746B13A7A9F0E9FED171EC54002E3E"
+      },
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\deps__v8__src__libplatform__tracing__trace-writer.cc",
+        "bytes": 7052,
+        "sha256": "8E12C3F0978C3E152285F411013A27932A746B13A7A9F0E9FED171EC54002E3E"
+      },
+      "method": "Byte-exact reuse of existing pinned Node def0bdf8 original; no reacquisition or production change."
+    },
+    {
+      "original_prior_authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\deps__v8__src__libplatform__tracing__trace-writer.h.txt",
+        "bytes": 1326,
+        "sha256": "C3B92D03DEE9F57BA2BC21FC05059C250C405044A4462F49B1D4848832F5F714"
+      },
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\deps__v8__src__libplatform__tracing__trace-writer.h",
+        "bytes": 1326,
+        "sha256": "C3B92D03DEE9F57BA2BC21FC05059C250C405044A4462F49B1D4848832F5F714"
+      },
+      "method": "Byte-exact reuse of existing pinned Node def0bdf8 original; no reacquisition or production change."
+    }
+  ]
+}

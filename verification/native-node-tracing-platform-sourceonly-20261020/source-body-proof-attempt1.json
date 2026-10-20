@@ -1,0 +1,1006 @@
+{
+  "kind": "Finite original C++ body and Node CHECK source proof; no preprocessing or execution",
+  "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "input_pins": {
+    "mutex_original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\deps__v8__src__base__platform__mutex.cc",
+      "bytes": 1551,
+      "sha256": "458B73DF88D4B621132E2BFDFE10B0C42716D447B61F9598477B3ABA686F7905"
+    },
+    "mutex_header_original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\deps__v8__src__base__platform__mutex.h",
+      "bytes": 8249,
+      "sha256": "7D317F9FF31AFF09A87E2DF0FBE517E99B536A6A73BADE2E238CB8107E1503AE"
+    },
+    "mutex": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_platform.cpp",
+      "bytes": 1771,
+      "sha256": "08D427B8D6C2EA5D76D2CD1B676AE15D3B98DF39B8B496BAE4DAF6DFBFBBFFCD"
+    },
+    "mutex_header": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_platform.hpp",
+      "bytes": 2782,
+      "sha256": "0629B5FFD7336CC751B2E994DA13DC169178591413186EB044219D178FD73D00"
+    },
+    "win_original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\deps__v8__src__libplatform__tracing__recorder-win.cc",
+      "bytes": 2280,
+      "sha256": "3B9895D673DB90B74C7676132FD6EAD7101523BB7A38DED47FAA0F8B8DB75932"
+    },
+    "win": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_recorder_win.cpp",
+      "bytes": 1989,
+      "sha256": "FC227B861149E2876C266D58889B20062A1E89FF6D99BAEEAFC3721111045E57"
+    },
+    "mac_original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\deps__v8__src__libplatform__tracing__recorder-mac.cc",
+      "bytes": 1374,
+      "sha256": "1CFDC091319FA5DC4D19CF25617C2B455F6B1A0741E95F96D04A278B2B4ED7D6"
+    },
+    "mac": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_recorder_mac.cpp",
+      "bytes": 1216,
+      "sha256": "825594471DC6BC703D0E68D294C0834464ADD89120EAA9C0B8976838AC4D39AE"
+    },
+    "writer_original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\deps__v8__src__libplatform__tracing__trace-writer.cc.txt",
+      "bytes": 7052,
+      "sha256": "8E12C3F0978C3E152285F411013A27932A746B13A7A9F0E9FED171EC54002E3E"
+    },
+    "writer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_recorder.cpp",
+      "bytes": 808,
+      "sha256": "E9C6B8EF7EDF240D79B687A21C8645456BDCC82576059EA78C9861C5AE398E14"
+    },
+    "loop_original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\src__debug_utils.cc",
+      "bytes": 16324,
+      "sha256": "9F2904508A8443BEB454DC789A07D60AFB2F2EC7F9B2F56BC651D9C66EDB0EA3"
+    },
+    "loop": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_loop.cpp",
+      "bytes": 8934,
+      "sha256": "F23104647AE8F7FF2B84A403967C07F5D55167519E762FE8E8C51CD1E10D5F53"
+    },
+    "support_original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\original\\native_node_tracing_support.hpp",
+      "bytes": 8845,
+      "sha256": "C73908B220B3460BE46F8C8C49CACA86BFCD264FF7EB5D3D7627CCB295958F48"
+    },
+    "support": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_support.hpp",
+      "bytes": 9490,
+      "sha256": "236104517D21B0B95550E1DCC098FA9697E87A0ED090D5DC169379A5ED69A544"
+    },
+    "node_util": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\src__util.h",
+      "bytes": 39726,
+      "sha256": "29BD133B9FB9000B2A624ABDDFB42FBD538CFA33D3BB00377AD8F1122C74AF52"
+    },
+    "node_exit": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\src__node_exit_code.h",
+      "bytes": 3028,
+      "sha256": "19EA19CCDE8E0A558410ECA7589E6EACC7C031753AC91687CF6EF855D5490379"
+    },
+    "v8_logging": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\deps__v8__src__base__logging.h",
+      "bytes": 21624,
+      "sha256": "0FA464788992D2AB04B14F9A9B9B808E29759D111E867BABD69EAED03D931405"
+    }
+  },
+  "comparison": "C++ lexical tokens preserve literal contents; comments and whitespace ignored. Only stated original-name/allocator/selected-feature/diagnostic macro mappings are applied.",
+  "checks": [
+    {
+      "name": "V8 Mutex Lock",
+      "original": "mutex_original",
+      "projected": "mutex",
+      "original_lines": {
+        "first_line": 16,
+        "last_line": 26
+      },
+      "projected_lines": {
+        "first_line": 52,
+        "last_line": 55
+      },
+      "original_body_sha256": "8BA79512A95DC6ED82E29F850D8A928DAC5D8CB938B2BD82E6F9EFA1016F76DC",
+      "projected_body_sha256": "96B56F60BA7AAA69C6A98E726BF7BFD0743AEC9EEC03230EAEA02CD5DD9B889C",
+      "compared_token_count": 54,
+      "equal": false,
+      "difference": [
+        "--- original projected tokens\n",
+        "+++ production tokens\n",
+        "@@ -1,54 +1,12 @@\n",
+        " {",
+        "-int",
+        "-own_id",
+        "-=",
+        "-v8",
+        "-:",
+        "-:",
+        "-base",
+        "-:",
+        "-:",
+        "-OS",
+        "-:",
+        "-:",
+        "-GetCurrentThreadId",
+        "-(",
+        "-)",
+        "-;",
+        "-if",
+        "-(",
+        "-thread_id_",
+        "-=",
+        "-=",
+        "-own_id",
+        "-)",
+        "-{",
+        "-level_",
+        "-+",
+        "-+",
+        "-;",
+        "-return",
+        "-;",
+        "-}",
+        "-mutex_",
+        "+native_handle_",
+        " .",
+        " Lock",
+        " (",
+        " )",
+        " ;",
+        "-DCHECK_EQ",
+        "+AssertUnheldAndMark",
+        " (",
+        "-0",
+        "-,",
+        "-level_",
+        " )",
+        " ;",
+        "-thread_id_",
+        "-=",
+        "-own_id",
+        "-;",
+        "-level_",
+        "-=",
+        "-1",
+        "-;",
+        " }"
+      ]
+    },
+    {
+      "name": "V8 Mutex Unlock",
+      "original": "mutex_original",
+      "projected": "mutex",
+      "original_lines": {
+        "first_line": 28,
+        "last_line": 37
+      },
+      "projected_lines": {
+        "first_line": 57,
+        "last_line": 60
+      },
+      "original_body_sha256": "2D23E91367AC21E0584B29D6C7154F66D1ACFED3D1608C03C960BCA888EFF782",
+      "projected_body_sha256": "EA5ACBAC4C9F41A0D09992D0F5B1D12CA2246578BEC614B38723C0736A600673",
+      "compared_token_count": 53,
+      "equal": false,
+      "difference": [
+        "--- original projected tokens\n",
+        "+++ production tokens\n",
+        "@@ -1,53 +1,12 @@\n",
+        " {",
+        "-#",
+        "-ifdef",
+        "-DEBUG",
+        "-int",
+        "-own_id",
+        "-=",
+        "-v8",
+        "-:",
+        "-:",
+        "-base",
+        "-:",
+        "-:",
+        "-OS",
+        "-:",
+        "-:",
+        "-GetCurrentThreadId",
+        "+AssertHeldAndUnmark",
+        " (",
+        " )",
+        " ;",
+        "-CHECK_EQ",
+        "-(",
+        "-thread_id_",
+        "-,",
+        "-own_id",
+        "-)",
+        "-;",
+        "-#",
+        "-endif",
+        "-if",
+        "-(",
+        "-(",
+        "--",
+        "--",
+        "-level_",
+        "-)",
+        "-=",
+        "-=",
+        "-0",
+        "-)",
+        "-{",
+        "-thread_id_",
+        "-=",
+        "-0",
+        "-;",
+        "-mutex_",
+        "+native_handle_",
+        " .",
+        " Unlock",
+        " (",
+        " )",
+        " ;",
+        " }",
+        "-}"
+      ]
+    },
+    {
+      "name": "V8 Mutex TryLock",
+      "original": "mutex_original",
+      "projected": "mutex",
+      "original_lines": {
+        "first_line": 39,
+        "last_line": 52
+      },
+      "projected_lines": {
+        "first_line": 62,
+        "last_line": 66
+      },
+      "original_body_sha256": "437FE728CA1359FC87309E1DB757829168A3AB75B94A5DBB80D295282E9D9BC7",
+      "projected_body_sha256": "A4D0C97886998AE70767ECA4243097D93B70601A03F794FAC4D84A22B9EC8F59",
+      "compared_token_count": 65,
+      "equal": false,
+      "difference": [
+        "--- original projected tokens\n",
+        "+++ production tokens\n",
+        "@@ -1,65 +1,21 @@\n",
+        " {",
+        "-int",
+        "-own_id",
+        "-=",
+        "-v8",
+        "-:",
+        "-:",
+        "-base",
+        "-:",
+        "-:",
+        "-OS",
+        "-:",
+        "-:",
+        "-GetCurrentThreadId",
+        "+if",
+        "+(",
+        "+!",
+        "+native_handle_",
+        "+.",
+        "+TryLock",
+        " (",
+        " )",
+        "+)",
+        "+return",
+        "+false",
+        " ;",
+        "-if",
+        "+AssertUnheldAndMark",
+        " (",
+        "-thread_id_",
+        "-=",
+        "-=",
+        "-own_id",
+        " )",
+        "-{",
+        "-level_",
+        "-+",
+        "-+",
+        " ;",
+        " return",
+        " true",
+        " ;",
+        " }",
+        "-if",
+        "-(",
+        "-mutex_",
+        "-.",
+        "-TryLock",
+        "-(",
+        "-)",
+        "-)",
+        "-{",
+        "-DCHECK_EQ",
+        "-(",
+        "-0",
+        "-,",
+        "-level_",
+        "-)",
+        "-;",
+        "-thread_id_",
+        "-=",
+        "-own_id",
+        "-;",
+        "-level_",
+        "-=",
+        "-1",
+        "-;"
+      ]
+    },
+    {
+      "name": "V8 Mutex constructor",
+      "original": "mutex_original",
+      "projected": "mutex",
+      "original_lines": {
+        "first_line": 54,
+        "last_line": 58
+      },
+      "projected_lines": {
+        "first_line": 40,
+        "last_line": 44
+      },
+      "original_body_sha256": "907B4A16FB66A66FCCB4E1C40A6B45D0EEE4A2D5C2045C05B825C7B386D41358",
+      "projected_body_sha256": "907B4A16FB66A66FCCB4E1C40A6B45D0EEE4A2D5C2045C05B825C7B386D41358",
+      "compared_token_count": 11,
+      "equal": true
+    },
+    {
+      "name": "V8 Mutex header AssertHeld",
+      "original": "mutex_header_original",
+      "projected": "mutex_header",
+      "original_lines": {
+        "first_line": 58,
+        "last_line": 62
+      },
+      "projected_lines": {
+        "first_line": 44,
+        "last_line": 46
+      },
+      "original_body_sha256": "CE77D68440D4A49C7304FB20AF8C9B238C2DE58111930AB33483448C481BE0F9",
+      "projected_body_sha256": "E5C378E4A20DC335AB5961C25470C7E2130D5DEF17EC0C4085A76BF2F080A2D2",
+      "compared_token_count": 9,
+      "equal": true
+    },
+    {
+      "name": "V8 Mutex header AssertHeldAndUnmark",
+      "original": "mutex_header_original",
+      "projected": "mutex_header",
+      "original_lines": {
+        "first_line": 71,
+        "last_line": 78
+      },
+      "projected_lines": {
+        "first_line": 53,
+        "last_line": 58
+      },
+      "original_body_sha256": "0122E42CB5E4201E8EE13E83377C5BC92CE0F9423E2825238E65C79F917C046F",
+      "projected_body_sha256": "867EE701576456D33922A04D0419FF5C8A9C0756E378D6C4CEC9A0D77F4178CD",
+      "compared_token_count": 18,
+      "equal": true
+    },
+    {
+      "name": "V8 Mutex header AssertUnheldAndMark",
+      "original": "mutex_header_original",
+      "projected": "mutex_header",
+      "original_lines": {
+        "first_line": 80,
+        "last_line": 87
+      },
+      "projected_lines": {
+        "first_line": 60,
+        "last_line": 65
+      },
+      "original_body_sha256": "31F8551AFE8E0FC8F7E2C27B6CD6B51EA12A3E606C10BE011077B7C567BDDA95",
+      "projected_body_sha256": "F515C239F9FD672042F4035F261A7F40C4DE7B997F3203A0C135B2864DBCD6CC",
+      "compared_token_count": 18,
+      "equal": true
+    },
+    {
+      "name": "V8 guard explicit LockGuard(Mutex* mutex)",
+      "original": "mutex_header_original",
+      "projected": "mutex_header",
+      "original_lines": {
+        "first_line": 194,
+        "last_line": 197
+      },
+      "projected_lines": {
+        "first_line": 73,
+        "last_line": 76
+      },
+      "original_body_sha256": "24BC19D915537436B754B1BB1083767ABFF214EB67B5500260F52EDBB037F6C7",
+      "projected_body_sha256": "E27F3F43C31DFAA7801281D4538CB58AC82EA2870B75609C046C4ADF0064B00D",
+      "compared_token_count": 14,
+      "equal": true
+    },
+    {
+      "name": "V8 guard explicit LockGuard(Mutex& mutex)",
+      "original": "mutex_header_original",
+      "projected": "mutex_header",
+      "original_lines": {
+        "first_line": 198,
+        "last_line": 201
+      },
+      "projected_lines": {
+        "first_line": 77,
+        "last_line": 79
+      },
+      "original_body_sha256": "76E8A642C015704EB1230C1F172D3F9E25BD3D66403D33D84AA2B30BBEE7B549",
+      "projected_body_sha256": "6FE615FDFBE12980C6A1304FA1A872FFC95A4A2CCCC1D17199B6B8A6DE3B0425",
+      "compared_token_count": 9,
+      "equal": true
+    },
+    {
+      "name": "V8 guard LockGuard(LockGuard&& other)",
+      "original": "mutex_header_original",
+      "projected": "mutex_header",
+      "original_lines": {
+        "first_line": 204,
+        "last_line": 207
+      },
+      "projected_lines": {
+        "first_line": 82,
+        "last_line": 85
+      },
+      "original_body_sha256": "68E44C7FA7D87AEC9C922D73A23941C9E8A6611C668B7AB1070527EEBD7B8664",
+      "projected_body_sha256": "BDA917C5EE3E5A2489BF98335D6A8AF10449BBB759C972BD64B7CDB94793AA85",
+      "compared_token_count": 13,
+      "equal": true
+    },
+    {
+      "name": "V8 guard ~LockGuard()",
+      "original": "mutex_header_original",
+      "projected": "mutex_header",
+      "original_lines": {
+        "first_line": 208,
+        "last_line": 213
+      },
+      "projected_lines": {
+        "first_line": 86,
+        "last_line": 90
+      },
+      "original_body_sha256": "83DF47C22B13E446843B31DAD12102B7DABB3DC5E493E653E706027BE94FFD08",
+      "projected_body_sha256": "752842FDA44A9EAFDC9D4CA5E2A6DEA230FD9750EB84E5B6441DE80308A2F721",
+      "compared_token_count": 15,
+      "equal": true
+    },
+    {
+      "name": "Recorder win Recorder::Recorder()",
+      "original": "win_original",
+      "projected": "win",
+      "original_lines": {
+        "first_line": 18,
+        "last_line": 18
+      },
+      "projected_lines": {
+        "first_line": 17,
+        "last_line": 17
+      },
+      "original_body_sha256": "FC9A7A6DF701FBA525751746DD853D1D11DF355EE12000CCBA2CB78D3EF1246E",
+      "projected_body_sha256": "FC9A7A6DF701FBA525751746DD853D1D11DF355EE12000CCBA2CB78D3EF1246E",
+      "compared_token_count": 7,
+      "equal": true
+    },
+    {
+      "name": "Recorder win Recorder::~Recorder()",
+      "original": "win_original",
+      "projected": "win",
+      "original_lines": {
+        "first_line": 20,
+        "last_line": 24
+      },
+      "projected_lines": {
+        "first_line": 19,
+        "last_line": 23
+      },
+      "original_body_sha256": "9625BC7F8B7B2DFC2CEECFEF6A7207BDFCCC967F655538A53D4C293973985DBC",
+      "projected_body_sha256": "9625BC7F8B7B2DFC2CEECFEF6A7207BDFCCC967F655538A53D4C293973985DBC",
+      "compared_token_count": 13,
+      "equal": true
+    },
+    {
+      "name": "Recorder win bool Recorder::IsEnabled()",
+      "original": "win_original",
+      "projected": "win",
+      "original_lines": {
+        "first_line": 26,
+        "last_line": 28
+      },
+      "projected_lines": {
+        "first_line": 25,
+        "last_line": 27
+      },
+      "original_body_sha256": "77F6E1994D69830A5CA2E28688AB4BFDB4CB205E0A624595D40A1CD917FBA802",
+      "projected_body_sha256": "77F6E1994D69830A5CA2E28688AB4BFDB4CB205E0A624595D40A1CD917FBA802",
+      "compared_token_count": 12,
+      "equal": true
+    },
+    {
+      "name": "Recorder win bool Recorder::IsEnabled(const uint8_t level)",
+      "original": "win_original",
+      "projected": "win",
+      "original_lines": {
+        "first_line": 30,
+        "last_line": 32
+      },
+      "projected_lines": {
+        "first_line": 29,
+        "last_line": 31
+      },
+      "original_body_sha256": "D54174EDB40DDBCEBFB00321C0FF2292B2A15C1BD9918886693D567AEF466F09",
+      "projected_body_sha256": "D54174EDB40DDBCEBFB00321C0FF2292B2A15C1BD9918886693D567AEF466F09",
+      "compared_token_count": 12,
+      "equal": true
+    },
+    {
+      "name": "Recorder win void Recorder::AddEvent(",
+      "original": "win_original",
+      "projected": "win",
+      "original_lines": {
+        "first_line": 34,
+        "last_line": 59
+      },
+      "projected_lines": {
+        "first_line": 33,
+        "last_line": 51
+      },
+      "original_body_sha256": "2BEA1C8FE5C6AF3F87D583A3E42B6C4CB601C8BB4EE51BA5FF26B6BA522207E7",
+      "projected_body_sha256": "62F1E6B95266F7823979E59B69EFD68921EAFD19D296C6330DD803DDCFB584E1",
+      "compared_token_count": 167,
+      "equal": true
+    },
+    {
+      "name": "Recorder mac Recorder::Recorder()",
+      "original": "mac_original",
+      "projected": "mac",
+      "original_lines": {
+        "first_line": 17,
+        "last_line": 17
+      },
+      "projected_lines": {
+        "first_line": 13,
+        "last_line": 13
+      },
+      "original_body_sha256": "7126A5CBD28F10DED92532E05476BEB493AB1E4706D86FFA4B7138EA5C0A934C",
+      "projected_body_sha256": "7126A5CBD28F10DED92532E05476BEB493AB1E4706D86FFA4B7138EA5C0A934C",
+      "compared_token_count": 11,
+      "equal": true
+    },
+    {
+      "name": "Recorder mac Recorder::~Recorder()",
+      "original": "mac_original",
+      "projected": "mac",
+      "original_lines": {
+        "first_line": 18,
+        "last_line": 18
+      },
+      "projected_lines": {
+        "first_line": 14,
+        "last_line": 14
+      },
+      "original_body_sha256": "44136FA355B3678A1146AD16F7E8649E94FB4FC21FE77E8310C060F61CAAFF8A",
+      "projected_body_sha256": "44136FA355B3678A1146AD16F7E8649E94FB4FC21FE77E8310C060F61CAAFF8A",
+      "compared_token_count": 2,
+      "equal": true
+    },
+    {
+      "name": "Recorder mac bool Recorder::IsEnabled()",
+      "original": "mac_original",
+      "projected": "mac",
+      "original_lines": {
+        "first_line": 20,
+        "last_line": 22
+      },
+      "projected_lines": {
+        "first_line": 16,
+        "last_line": 18
+      },
+      "original_body_sha256": "E155FE199B2829E2A2DE3D6FBEE6681B83DBF8883D45DECB3FC8B131C986FA68",
+      "projected_body_sha256": "E155FE199B2829E2A2DE3D6FBEE6681B83DBF8883D45DECB3FC8B131C986FA68",
+      "compared_token_count": 10,
+      "equal": true
+    },
+    {
+      "name": "Recorder mac bool Recorder::IsEnabled(const uint8_t level)",
+      "original": "mac_original",
+      "projected": "mac",
+      "original_lines": {
+        "first_line": 23,
+        "last_line": 30
+      },
+      "projected_lines": {
+        "first_line": 19,
+        "last_line": 26
+      },
+      "original_body_sha256": "FC9E8C5CF27A5E584075F1D7375DFF227D3F46E42CE39F279289C460A2558ABC",
+      "projected_body_sha256": "FC9E8C5CF27A5E584075F1D7375DFF227D3F46E42CE39F279289C460A2558ABC",
+      "compared_token_count": 52,
+      "equal": true
+    },
+    {
+      "name": "Recorder mac void Recorder::AddEvent(",
+      "original": "mac_original",
+      "projected": "mac",
+      "original_lines": {
+        "first_line": 32,
+        "last_line": 36
+      },
+      "projected_lines": {
+        "first_line": 28,
+        "last_line": 32
+      },
+      "original_body_sha256": "240915C9B45D04882B2EC14AF1DD7329D6831F6235F594F6A0A81857859DF93A",
+      "projected_body_sha256": "240915C9B45D04882B2EC14AF1DD7329D6831F6235F594F6A0A81857859DF93A",
+      "compared_token_count": 33,
+      "equal": true
+    },
+    {
+      "name": "System writer SystemInstrumentationTraceWriter::SystemInstrumentationTraceWriter()",
+      "original": "writer_original",
+      "projected": "writer",
+      "original_lines": {
+        "first_line": 198,
+        "last_line": 200
+      },
+      "projected_lines": {
+        "first_line": 7,
+        "last_line": 9
+      },
+      "original_body_sha256": "01067489E135EBFF10D4721308236E0BE5A4D579201C4C83B73B51B614745B08",
+      "projected_body_sha256": "01067489E135EBFF10D4721308236E0BE5A4D579201C4C83B73B51B614745B08",
+      "compared_token_count": 14,
+      "equal": true
+    },
+    {
+      "name": "System writer SystemInstrumentationTraceWriter::~SystemInstrumentationTraceWriter()",
+      "original": "writer_original",
+      "projected": "writer",
+      "original_lines": {
+        "first_line": 202,
+        "last_line": 204
+      },
+      "projected_lines": {
+        "first_line": 11,
+        "last_line": 13
+      },
+      "original_body_sha256": "754590040725BE4E0B8052F7F4D8D8FDD5668843B54EEE073815DBD1F929299F",
+      "projected_body_sha256": "754590040725BE4E0B8052F7F4D8D8FDD5668843B54EEE073815DBD1F929299F",
+      "compared_token_count": 9,
+      "equal": true
+    },
+    {
+      "name": "System writer void SystemInstrumentationTraceWriter::AppendTraceEvent(",
+      "original": "writer_original",
+      "projected": "writer",
+      "original_lines": {
+        "first_line": 206,
+        "last_line": 211
+      },
+      "projected_lines": {
+        "first_line": 15,
+        "last_line": 20
+      },
+      "original_body_sha256": "B5D019D9055E5D21B2DA8B984A3A678628DC72183996AE79AC72F4B1EB794DAD",
+      "projected_body_sha256": "B5D019D9055E5D21B2DA8B984A3A678628DC72183996AE79AC72F4B1EB794DAD",
+      "compared_token_count": 21,
+      "equal": true
+    },
+    {
+      "name": "System writer void SystemInstrumentationTraceWriter::Flush()",
+      "original": "writer_original",
+      "projected": "writer",
+      "original_lines": {
+        "first_line": 213,
+        "last_line": 213
+      },
+      "projected_lines": {
+        "first_line": 22,
+        "last_line": 22
+      },
+      "original_body_sha256": "44136FA355B3678A1146AD16F7E8649E94FB4FC21FE77E8310C060F61CAAFF8A",
+      "projected_body_sha256": "44136FA355B3678A1146AD16F7E8649E94FB4FC21FE77E8310C060F61CAAFF8A",
+      "compared_token_count": 2,
+      "equal": true
+    },
+    {
+      "name": "System writer TraceWriter* TraceWriter::CreateSystemInstrumentationTraceWriter()",
+      "original": "writer_original",
+      "projected": "writer",
+      "original_lines": {
+        "first_line": 215,
+        "last_line": 217
+      },
+      "projected_lines": {
+        "first_line": 24,
+        "last_line": 26
+      },
+      "original_body_sha256": "DDC69207CDF6116BE109DD8E630FB14E21CE58F690330BDD878C413E8C309367",
+      "projected_body_sha256": "DDC69207CDF6116BE109DD8E630FB14E21CE58F690330BDD878C413E8C309367",
+      "compared_token_count": 8,
+      "equal": true
+    },
+    {
+      "name": "Loop symbol class PosixSymbolDebuggingContext PosixSymbolDebuggingContext()",
+      "original": "loop_original",
+      "projected": "loop",
+      "original_lines": {
+        "first_line": 97,
+        "last_line": 97
+      },
+      "projected_lines": {
+        "first_line": 72,
+        "last_line": 72
+      },
+      "original_body_sha256": "257C1BE96AE69F4B01C2C69BDB6D78605F59175819FB007D0BF245BF48444C4A",
+      "projected_body_sha256": "44136FA355B3678A1146AD16F7E8649E94FB4FC21FE77E8310C060F61CAAFF8A",
+      "compared_token_count": 2,
+      "equal": true
+    },
+    {
+      "name": "Loop symbol class PosixSymbolDebuggingContext SymbolInfo LookupSymbol(void* address)",
+      "original": "loop_original",
+      "projected": "loop",
+      "original_lines": {
+        "first_line": 99,
+        "last_line": 121
+      },
+      "projected_lines": {
+        "first_line": 74,
+        "last_line": 93
+      },
+      "original_body_sha256": "B5FFDE371A2C69E27340498213DBD84C0A2F380303DB929648010F5880B2A141",
+      "projected_body_sha256": "5FE818BD4C379176F3C78833496E8D642FBB9F23D09947C336193FD6F0A7D4FA",
+      "compared_token_count": 107,
+      "equal": true
+    },
+    {
+      "name": "Loop symbol class PosixSymbolDebuggingContext bool IsMapped(void* address)",
+      "original": "loop_original",
+      "projected": "loop",
+      "original_lines": {
+        "first_line": 123,
+        "last_line": 127
+      },
+      "projected_lines": {
+        "first_line": 95,
+        "last_line": 99
+      },
+      "original_body_sha256": "15FF71AEE1DB184F77DDDAB1D77239384ECA370BF35E441E7B8127189E470761",
+      "projected_body_sha256": "15FF71AEE1DB184F77DDDAB1D77239384ECA370BF35E441E7B8127189E470761",
+      "compared_token_count": 41,
+      "equal": true
+    },
+    {
+      "name": "Loop symbol class PosixSymbolDebuggingContext int GetStackTrace(void** frames, int count)",
+      "original": "loop_original",
+      "projected": "loop",
+      "original_lines": {
+        "first_line": 129,
+        "last_line": 131
+      },
+      "projected_lines": {
+        "first_line": 101,
+        "last_line": 103
+      },
+      "original_body_sha256": "DDFC840EA80C3E320B9241417515E082F34A0F284915B578183C052773835627",
+      "projected_body_sha256": "DDFC840EA80C3E320B9241417515E082F34A0F284915B578183C052773835627",
+      "compared_token_count": 10,
+      "equal": true
+    },
+    {
+      "name": "Loop symbol class Win32SymbolDebuggingContext Win32SymbolDebuggingContext()",
+      "original": "loop_original",
+      "projected": "loop",
+      "original_lines": {
+        "first_line": 155,
+        "last_line": 158
+      },
+      "projected_lines": {
+        "first_line": 122,
+        "last_line": 125
+      },
+      "original_body_sha256": "D863DF31453BB83962FEAA28694650613203B40AE7176D62C174ED8AE808E5FD",
+      "projected_body_sha256": "4C6D0FC8EA508F4D69CB3D76876B3796AB899F71D4E0991B2CD9A6EBB5658207",
+      "compared_token_count": 23,
+      "equal": true
+    },
+    {
+      "name": "Loop symbol class Win32SymbolDebuggingContext ~Win32SymbolDebuggingContext()",
+      "original": "loop_original",
+      "projected": "loop",
+      "original_lines": {
+        "first_line": 160,
+        "last_line": 162
+      },
+      "projected_lines": {
+        "first_line": 127,
+        "last_line": 129
+      },
+      "original_body_sha256": "2A4017F2159D904621AB2A94060CF97F07E5735F68D44F6EF5404965E8A8A2B6",
+      "projected_body_sha256": "52C304B7F01493C1683D19BF359653B3B3B4BEB25BDB036A1DEBC4E0AE6BEEB3",
+      "compared_token_count": 13,
+      "equal": true
+    },
+    {
+      "name": "Loop symbol class Win32SymbolDebuggingContext NameAndDisplacement WrappedSymFromAddr(",
+      "original": "loop_original",
+      "projected": "loop",
+      "original_lines": {
+        "first_line": 165,
+        "last_line": 196
+      },
+      "projected_lines": {
+        "first_line": 132,
+        "last_line": 150
+      },
+      "original_body_sha256": "48B741E19D4F4EF428FEA69E60B13CADF1BA65E827ABA31D1C82A15D3FA0D63C",
+      "projected_body_sha256": "52389122742F76EBCA59FB34DD68FCB790B6DE92A3B35FBA6885B68BFE43ECA1",
+      "compared_token_count": 121,
+      "equal": true
+    },
+    {
+      "name": "Loop symbol class Win32SymbolDebuggingContext SymbolInfo WrappedGetLine(",
+      "original": "loop_original",
+      "projected": "loop",
+      "original_lines": {
+        "first_line": 198,
+        "last_line": 234
+      },
+      "projected_lines": {
+        "first_line": 152,
+        "last_line": 172
+      },
+      "original_body_sha256": "3F14C44AAF0D99D0FFCB4D9338CCB3EC3CD8E417E1CDC8BB856662F895A46D0A",
+      "projected_body_sha256": "C2F13EFBD164DA6DAF6EBFC9433E9CB62D4277DBE20AD0F921134908955E4722",
+      "compared_token_count": 100,
+      "equal": true
+    },
+    {
+      "name": "Loop symbol class Win32SymbolDebuggingContext std::string WrappedUnDecorateSymbolName(",
+      "original": "loop_original",
+      "projected": "loop",
+      "original_lines": {
+        "first_line": 237,
+        "last_line": 258
+      },
+      "projected_lines": {
+        "first_line": 174,
+        "last_line": 188
+      },
+      "original_body_sha256": "F6A24360C553107E5326AE8AB9A3E622F53F5DBA9AEC19E6659860E78C757AFC",
+      "projected_body_sha256": "56DAE0888FD1916F5AF7C6B2E3E744DF8928C59CBC2C7026D92970432400B899",
+      "compared_token_count": 70,
+      "equal": true
+    },
+    {
+      "name": "Loop symbol class Win32SymbolDebuggingContext SymbolInfo LookupSymbol(void* address)",
+      "original": "loop_original",
+      "projected": "loop",
+      "original_lines": {
+        "first_line": 260,
+        "last_line": 268
+      },
+      "projected_lines": {
+        "first_line": 190,
+        "last_line": 198
+      },
+      "original_body_sha256": "F0F7A0B613E24798296FD064F3293EE543183DB812E02B6E776BA508D3D56172",
+      "projected_body_sha256": "F0F7A0B613E24798296FD064F3293EE543183DB812E02B6E776BA508D3D56172",
+      "compared_token_count": 72,
+      "equal": true
+    },
+    {
+      "name": "Loop symbol class Win32SymbolDebuggingContext bool IsMapped(void* address)",
+      "original": "loop_original",
+      "projected": "loop",
+      "original_lines": {
+        "first_line": 270,
+        "last_line": 277
+      },
+      "projected_lines": {
+        "first_line": 200,
+        "last_line": 204
+      },
+      "original_body_sha256": "8DD32309D1872F23BE45BF9AFA95FAC278818378A492ABEE1019BB8FD0B88EE8",
+      "projected_body_sha256": "81D9319993A6F911E73CAF65CCCB5AD26BCE44EB3DD0DCF53938761709B186FB",
+      "compared_token_count": 45,
+      "equal": true
+    },
+    {
+      "name": "Loop symbol class Win32SymbolDebuggingContext int GetStackTrace(void** frames, int count)",
+      "original": "loop_original",
+      "projected": "loop",
+      "original_lines": {
+        "first_line": 279,
+        "last_line": 281
+      },
+      "projected_lines": {
+        "first_line": 206,
+        "last_line": 208
+      },
+      "original_body_sha256": "E93E1C4581FBA07EDF7EA7E5E9B138897C830CEF15687E0078C770B27E31FBAC",
+      "projected_body_sha256": "E93E1C4581FBA07EDF7EA7E5E9B138897C830CEF15687E0078C770B27E31FBAC",
+      "compared_token_count": 14,
+      "equal": true
+    },
+    {
+      "name": "Loop SymbolInfo Display",
+      "original": "loop_original",
+      "projected": "loop",
+      "original_lines": {
+        "first_line": 302,
+        "last_line": 315
+      },
+      "projected_lines": {
+        "first_line": 226,
+        "last_line": 239
+      },
+      "original_body_sha256": "3DD15576C02CEC0CBF6C81FFD5289EC83D4EF297E07E829434732DCA221F6D35",
+      "projected_body_sha256": "984AFBA11C4F964DAE6223E8B44C8CA895762406F0E3428831A8433BBBBFC9B0",
+      "compared_token_count": 73,
+      "equal": true
+    },
+    {
+      "name": "Complete libuv handle diagnostic walk",
+      "original": "loop_original",
+      "projected": "loop",
+      "original_lines": {
+        "first_line": 356,
+        "last_line": 401
+      },
+      "projected_lines": {
+        "first_line": 241,
+        "last_line": 276
+      },
+      "original_body_sha256": "A652A9F2E32732409B144DBD37FEBB2ECBF1064C1731410441FD680673E72E61",
+      "projected_body_sha256": "EFB98B90E422CFF74A602E36CFE50D2883E4912935149EDC8804C4BE7F966B96",
+      "compared_token_count": 291,
+      "equal": true
+    },
+    {
+      "name": "Checked loop close complete failure sequence",
+      "original": "loop_original",
+      "projected": "loop",
+      "original_lines": {
+        "first_line": 346,
+        "last_line": 354
+      },
+      "projected_lines": {
+        "first_line": 280,
+        "last_line": 286
+      },
+      "original_body_sha256": "857A15C8B9E54B78D34F2AF7CED2A0DCF1281535E1417D264D7A80ED757E9675",
+      "projected_body_sha256": "8A66A0F291546EAE64301C8E5AA5F5974D0598458740C9360505745DB05A5264",
+      "compared_token_count": 33,
+      "equal": true
+    }
+  ],
+  "all_body_checks_equal": false,
+  "additional_checks": {
+    "all_existing_Node_uv_mutex_condvar_and_ContainerOf_bytes_preserved": true,
+    "original_undefined_noreturn_assert_helper_removed": true,
+    "static_assertion_record_and_actual_borrowed_context_call": true,
+    "original_Windows_Node_abort_code_134": true,
+    "actual_V8_dcheck_allocated_message_and_delete_on_hook_return": true
+  },
+  "manual_mapping_notes": [
+    "V8 Mutex adds only the existing empty NativeAllocated base; its actual absl::Mutex field and conditional signed int debug level remain original. The release sizeof/alignof assertions are uncompiled controls, not observed results.",
+    "V8MutexDcheckEq selects original int/int equality, ordinary ostringstream operand text, the 50-character MakeCheckOpString branch, new std::string, shared pi_v8_base_dcheck, and deletion if the callback returns. The diagnostic expression and file/line are supplied at each actual calling site.",
+    "The guard null DCHECK is the original simple boolean DCHECK_NOT_NULL, not an operand-printing comparison. Release macros do not evaluate operands.",
+    "The original native symbol object is private to the loop walk. Its ordinary string/stringstream containers and object new use the already admitted native allocation owner; no guest engine pointer is stored. USE return-value discards map to static_cast<void>.",
+    "The original Node UNREACHABLE expands ERROR_AND_ABORT with three adjacent string literal tokens; these exact tokens are preserved because ERROR_AND_ABORT stringifies its argument.",
+    "The original non-Perfetto Recorder branch is selected. The original empty Darwin destructor and empty SystemInstrumentationTraceWriter::Flush bodies are preserved; they are not invented no-op substitutes.",
+    "Node tracing conditions already use the original LibuvMutexTraits uv_cond_* owner in the byte-preserved support suffix. No tracing consumer calls V8 ConditionVariable; the original Abseil CondVar remains part of the unmodified dependency cohort."
+  ],
+  "compiler_execution": false,
+  "native_execution": false,
+  "preprocessor_execution": false,
+  "main_modified": false,
+  "qualification": false
+}

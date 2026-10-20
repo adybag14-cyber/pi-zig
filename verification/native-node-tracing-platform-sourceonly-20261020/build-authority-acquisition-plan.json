@@ -1,0 +1,30 @@
+{
+  "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "files": [
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/tools/v8_gypfiles/v8.gyp",
+      "sha256": "D26022C2F9501C2C5AF1FB6D4EC517F0DD1CC161DD9B633FDB20D57F4754D4C4",
+      "bytes": 88077,
+      "relative_path": "authority/tools__v8_gypfiles__v8.gyp"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/tools/v8_gypfiles/features.gypi",
+      "sha256": "4005F461CA2390AF3818D2D568C7502F694043DEF0CCAA4F2288713E8CE7A802",
+      "bytes": 19326,
+      "relative_path": "authority/tools__v8_gypfiles__features.gypi"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/tools/v8_gypfiles/toolchain.gypi",
+      "sha256": "A1C257B371F3DECA51E9CD4F1189206D99C28CB64A3C4D53B5D920DC02053059",
+      "bytes": 27997,
+      "relative_path": "authority/tools__v8_gypfiles__toolchain.gypi"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_exit_code.h",
+      "sha256": "19EA19CCDE8E0A558410ECA7589E6EACC7C031753AC91687CF6EF855D5490379",
+      "bytes": 3028,
+      "relative_path": "authority/src__node_exit_code.h"
+    }
+  ],
+  "source_only": true
+}

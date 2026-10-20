@@ -1,0 +1,7149 @@
+{
+  "kind": "Finite literal header and original compilation membership closure",
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\SOURCE-MANIFEST.json",
+    "bytes": 214500,
+    "sha256": "0B91065B9E2B4F79929FF2245DE802AF87C01BEB2F572B274491343DC1C94706"
+  },
+  "recipe": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\tools\\build_native_node_abseil.zig",
+    "bytes": 7328,
+    "sha256": "8053B6A69B570372A9A895787C66F76FF055A6225D333C5A55F8E307293AF9F1"
+  },
+  "original_gyp": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\tools__v8_gypfiles__abseil.gyp",
+    "bytes": 22346,
+    "sha256": "827CCF3AC3DD6E5B5094B4D199EB332EC75ABE478E6B4C7EA150A23221AA3C40"
+  },
+  "compilation_members_exact_in_original_order": true,
+  "cpp_units": 110,
+  "literal_absl_include_edges": 1420,
+  "all_literal_absl_and_local_quoted_includes_resolve": true,
+  "macro_includes": [
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 51,
+      "directive": "#include ABSL_STACKTRACE_INL_HEADER"
+    }
+  ],
+  "macro_selection_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\absl\\debugging\\internal\\stacktrace_config.h",
+    "bytes": 3695,
+    "sha256": "6490BB9B5829D5DCE86569A3C200D1A2E8E399E2C208845CFF71854798837697"
+  },
+  "macro_selection_notes": [
+    "Windows selects original stacktrace_win32-inl.inc.",
+    "Darwin with original detected thread_local selects stacktrace_generic-inl.inc.",
+    "Declared Linux x86/x64/aarch64 with NO_FRAME_POINTER undefined select original architecture includes; other original branches are retained.",
+    "The unavailable open-source stacktrace_libunwind-inl.inc is referenced only by the original explicit NO_FRAME_POINTER branch for selected Linux architectures. The recipe does not define that macro and does not claim that branch.",
+    "This lexical graph includes all conditional literal edges. It does not run a preprocessor or predict selected compiler objects/symbols."
+  ],
+  "edges": [
+    {
+      "source": "absl/algorithm/algorithm.h",
+      "line": 29,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/algorithm/container.h",
+      "line": 54,
+      "include": "absl/algorithm/algorithm.h"
+    },
+    {
+      "source": "absl/algorithm/container.h",
+      "line": 55,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/algorithm/container.h",
+      "line": 56,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/algorithm/container.h",
+      "line": 57,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/algorithm/container.h",
+      "line": 58,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/base/attributes.h",
+      "line": 39,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/call_once.h",
+      "line": 34,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/call_once.h",
+      "line": 35,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/call_once.h",
+      "line": 36,
+      "include": "absl/base/internal/low_level_scheduling.h"
+    },
+    {
+      "source": "absl/base/call_once.h",
+      "line": 37,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/base/call_once.h",
+      "line": 38,
+      "include": "absl/base/internal/scheduling_mode.h"
+    },
+    {
+      "source": "absl/base/call_once.h",
+      "line": 39,
+      "include": "absl/base/internal/spinlock_wait.h"
+    },
+    {
+      "source": "absl/base/call_once.h",
+      "line": 40,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/base/call_once.h",
+      "line": 41,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/base/call_once.h",
+      "line": 42,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/base/call_once.h",
+      "line": 43,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/base/casts.h",
+      "line": 36,
+      "include": "absl/base/internal/identity.h"
+    },
+    {
+      "source": "absl/base/casts.h",
+      "line": 37,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/base/casts.h",
+      "line": 38,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/base/config.h",
+      "line": 91,
+      "include": "absl/base/options.h"
+    },
+    {
+      "source": "absl/base/config.h",
+      "line": 92,
+      "include": "absl/base/policy_checks.h"
+    },
+    {
+      "source": "absl/base/const_init.h",
+      "line": 25,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/dynamic_annotations.h",
+      "line": 51,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/dynamic_annotations.h",
+      "line": 52,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/dynamic_annotations.h",
+      "line": 54,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/base/internal/atomic_hook.h",
+      "line": 23,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/internal/atomic_hook.h",
+      "line": 24,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/cycleclock.cc",
+      "line": 23,
+      "include": "absl/base/internal/cycleclock.h"
+    },
+    {
+      "source": "absl/base/internal/cycleclock.cc",
+      "line": 28,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/internal/cycleclock.cc",
+      "line": 29,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/cycleclock.cc",
+      "line": 30,
+      "include": "absl/base/internal/unscaledcycleclock.h"
+    },
+    {
+      "source": "absl/base/internal/cycleclock.h",
+      "line": 48,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/internal/cycleclock.h",
+      "line": 49,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/cycleclock.h",
+      "line": 50,
+      "include": "absl/base/internal/cycleclock_config.h"
+    },
+    {
+      "source": "absl/base/internal/cycleclock.h",
+      "line": 51,
+      "include": "absl/base/internal/unscaledcycleclock.h"
+    },
+    {
+      "source": "absl/base/internal/cycleclock_config.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/cycleclock_config.h",
+      "line": 21,
+      "include": "absl/base/internal/unscaledcycleclock_config.h"
+    },
+    {
+      "source": "absl/base/internal/direct_mmap.h",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/endian.h",
+      "line": 24,
+      "include": "absl/base/casts.h"
+    },
+    {
+      "source": "absl/base/internal/endian.h",
+      "line": 25,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/endian.h",
+      "line": 26,
+      "include": "absl/base/internal/unaligned_access.h"
+    },
+    {
+      "source": "absl/base/internal/endian.h",
+      "line": 27,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/base/internal/endian.h",
+      "line": 28,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/base/internal/errno_saver.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/fast_type_id.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/hide_ptr.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/identity.h",
+      "line": 19,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/iterator_traits.h",
+      "line": 27,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/iterator_traits.h",
+      "line": 28,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_alloc.cc",
+      "line": 20,
+      "include": "absl/base/internal/low_level_alloc.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_alloc.cc",
+      "line": 24,
+      "include": "absl/base/call_once.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_alloc.cc",
+      "line": 25,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_alloc.cc",
+      "line": 26,
+      "include": "absl/base/internal/direct_mmap.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_alloc.cc",
+      "line": 27,
+      "include": "absl/base/internal/scheduling_mode.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_alloc.cc",
+      "line": 28,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_alloc.cc",
+      "line": 29,
+      "include": "absl/base/thread_annotations.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_alloc.cc",
+      "line": 57,
+      "include": "absl/base/dynamic_annotations.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_alloc.cc",
+      "line": 58,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_alloc.cc",
+      "line": 59,
+      "include": "absl/base/internal/spinlock.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_alloc.h",
+      "line": 31,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_alloc.h",
+      "line": 32,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_alloc.h",
+      "line": 56,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_scheduling.h",
+      "line": 21,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_scheduling.h",
+      "line": 22,
+      "include": "absl/base/internal/scheduling_mode.h"
+    },
+    {
+      "source": "absl/base/internal/low_level_scheduling.h",
+      "line": 23,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/base/internal/nullability_impl.h",
+      "line": 21,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/internal/nullability_impl.h",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/nullability_impl.h",
+      "line": 23,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/base/internal/per_thread_tls.h",
+      "line": 35,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/base/internal/poison.cc",
+      "line": 15,
+      "include": "absl/base/internal/poison.h"
+    },
+    {
+      "source": "absl/base/internal/poison.cc",
+      "line": 19,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/poison.cc",
+      "line": 20,
+      "include": "absl/base/internal/direct_mmap.h"
+    },
+    {
+      "source": "absl/base/internal/poison.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/raw_logging.cc",
+      "line": 15,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/base/internal/raw_logging.cc",
+      "line": 28,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/internal/raw_logging.cc",
+      "line": 29,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/raw_logging.cc",
+      "line": 30,
+      "include": "absl/base/internal/atomic_hook.h"
+    },
+    {
+      "source": "absl/base/internal/raw_logging.cc",
+      "line": 31,
+      "include": "absl/base/internal/errno_saver.h"
+    },
+    {
+      "source": "absl/base/internal/raw_logging.cc",
+      "line": 32,
+      "include": "absl/base/log_severity.h"
+    },
+    {
+      "source": "absl/base/internal/raw_logging.h",
+      "line": 24,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/internal/raw_logging.h",
+      "line": 25,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/raw_logging.h",
+      "line": 26,
+      "include": "absl/base/internal/atomic_hook.h"
+    },
+    {
+      "source": "absl/base/internal/raw_logging.h",
+      "line": 27,
+      "include": "absl/base/log_severity.h"
+    },
+    {
+      "source": "absl/base/internal/raw_logging.h",
+      "line": 28,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/base/internal/raw_logging.h",
+      "line": 29,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/base/internal/raw_logging.h",
+      "line": 30,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/base/internal/scheduling_mode.h",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/scoped_set_env.cc",
+      "line": 15,
+      "include": "absl/base/internal/scoped_set_env.h"
+    },
+    {
+      "source": "absl/base/internal/scoped_set_env.cc",
+      "line": 23,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/base/internal/scoped_set_env.h",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.cc",
+      "line": 15,
+      "include": "absl/base/internal/spinlock.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.cc",
+      "line": 21,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.cc",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.cc",
+      "line": 23,
+      "include": "absl/base/internal/atomic_hook.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.cc",
+      "line": 24,
+      "include": "absl/base/internal/cycleclock.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.cc",
+      "line": 25,
+      "include": "absl/base/internal/spinlock_wait.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.cc",
+      "line": 26,
+      "include": "absl/base/internal/sysinfo.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.cc",
+      "line": 27,
+      "include": "absl/base/call_once.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.h",
+      "line": 35,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.h",
+      "line": 36,
+      "include": "absl/base/const_init.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.h",
+      "line": 37,
+      "include": "absl/base/dynamic_annotations.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.h",
+      "line": 38,
+      "include": "absl/base/internal/low_level_scheduling.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.h",
+      "line": 39,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.h",
+      "line": 40,
+      "include": "absl/base/internal/scheduling_mode.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.h",
+      "line": 41,
+      "include": "absl/base/internal/tsan_mutex_interface.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock.h",
+      "line": 42,
+      "include": "absl/base/thread_annotations.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock_akaros.inc",
+      "line": 19,
+      "include": "absl/base/internal/scheduling_mode.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock_linux.inc",
+      "line": 26,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock_linux.inc",
+      "line": 27,
+      "include": "absl/base/internal/errno_saver.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock_posix.inc",
+      "line": 22,
+      "include": "absl/base/internal/errno_saver.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock_posix.inc",
+      "line": 23,
+      "include": "absl/base/internal/scheduling_mode.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock_posix.inc",
+      "line": 24,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock_wait.cc",
+      "line": 22,
+      "include": "absl/base/internal/spinlock_wait.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock_wait.cc",
+      "line": 25,
+      "include": "absl/base/internal/spinlock_win32.inc"
+    },
+    {
+      "source": "absl/base/internal/spinlock_wait.cc",
+      "line": 27,
+      "include": "absl/base/internal/spinlock_linux.inc"
+    },
+    {
+      "source": "absl/base/internal/spinlock_wait.cc",
+      "line": 29,
+      "include": "absl/base/internal/spinlock_akaros.inc"
+    },
+    {
+      "source": "absl/base/internal/spinlock_wait.cc",
+      "line": 31,
+      "include": "absl/base/internal/spinlock_posix.inc"
+    },
+    {
+      "source": "absl/base/internal/spinlock_wait.h",
+      "line": 24,
+      "include": "absl/base/internal/scheduling_mode.h"
+    },
+    {
+      "source": "absl/base/internal/spinlock_win32.inc",
+      "line": 19,
+      "include": "absl/base/internal/scheduling_mode.h"
+    },
+    {
+      "source": "absl/base/internal/strerror.cc",
+      "line": 15,
+      "include": "absl/base/internal/strerror.h"
+    },
+    {
+      "source": "absl/base/internal/strerror.cc",
+      "line": 25,
+      "include": "absl/base/internal/errno_saver.h"
+    },
+    {
+      "source": "absl/base/internal/strerror.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/sysinfo.cc",
+      "line": 15,
+      "include": "absl/base/internal/sysinfo.h"
+    },
+    {
+      "source": "absl/base/internal/sysinfo.cc",
+      "line": 17,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/internal/sysinfo.cc",
+      "line": 66,
+      "include": "absl/base/call_once.h"
+    },
+    {
+      "source": "absl/base/internal/sysinfo.cc",
+      "line": 67,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/sysinfo.cc",
+      "line": 68,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/base/internal/sysinfo.cc",
+      "line": 69,
+      "include": "absl/base/internal/spinlock.h"
+    },
+    {
+      "source": "absl/base/internal/sysinfo.cc",
+      "line": 70,
+      "include": "absl/base/internal/unscaledcycleclock.h"
+    },
+    {
+      "source": "absl/base/internal/sysinfo.cc",
+      "line": 71,
+      "include": "absl/base/thread_annotations.h"
+    },
+    {
+      "source": "absl/base/internal/sysinfo.h",
+      "line": 33,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/sysinfo.h",
+      "line": 34,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/base/internal/thread_identity.cc",
+      "line": 15,
+      "include": "absl/base/internal/thread_identity.h"
+    },
+    {
+      "source": "absl/base/internal/thread_identity.cc",
+      "line": 30,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/internal/thread_identity.cc",
+      "line": 31,
+      "include": "absl/base/call_once.h"
+    },
+    {
+      "source": "absl/base/internal/thread_identity.cc",
+      "line": 32,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/base/internal/thread_identity.cc",
+      "line": 33,
+      "include": "absl/base/internal/spinlock.h"
+    },
+    {
+      "source": "absl/base/internal/thread_identity.h",
+      "line": 33,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/thread_identity.h",
+      "line": 34,
+      "include": "absl/base/internal/per_thread_tls.h"
+    },
+    {
+      "source": "absl/base/internal/thread_identity.h",
+      "line": 35,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/base/internal/throw_delegate.cc",
+      "line": 15,
+      "include": "absl/base/internal/throw_delegate.h"
+    },
+    {
+      "source": "absl/base/internal/throw_delegate.cc",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/throw_delegate.cc",
+      "line": 23,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/base/internal/throw_delegate.h",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/tracing.cc",
+      "line": 15,
+      "include": "absl/base/internal/tracing.h"
+    },
+    {
+      "source": "absl/base/internal/tracing.cc",
+      "line": 17,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/internal/tracing.cc",
+      "line": 18,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/tracing.h",
+      "line": 18,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/tsan_mutex_interface.h",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/unaligned_access.h",
+      "line": 24,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/internal/unaligned_access.h",
+      "line": 25,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/unaligned_access.h",
+      "line": 26,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/base/internal/unscaledcycleclock.cc",
+      "line": 15,
+      "include": "absl/base/internal/unscaledcycleclock.h"
+    },
+    {
+      "source": "absl/base/internal/unscaledcycleclock.cc",
+      "line": 33,
+      "include": "absl/base/call_once.h"
+    },
+    {
+      "source": "absl/base/internal/unscaledcycleclock.cc",
+      "line": 37,
+      "include": "absl/base/internal/sysinfo.h"
+    },
+    {
+      "source": "absl/base/internal/unscaledcycleclock.h",
+      "line": 45,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/internal/unscaledcycleclock.h",
+      "line": 46,
+      "include": "absl/base/internal/unscaledcycleclock_config.h"
+    },
+    {
+      "source": "absl/base/log_severity.cc",
+      "line": 15,
+      "include": "absl/base/log_severity.h"
+    },
+    {
+      "source": "absl/base/log_severity.cc",
+      "line": 19,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/log_severity.cc",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/log_severity.h",
+      "line": 21,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/log_severity.h",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/macros.h",
+      "line": 34,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/macros.h",
+      "line": 35,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/macros.h",
+      "line": 36,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/base/macros.h",
+      "line": 37,
+      "include": "absl/base/options.h"
+    },
+    {
+      "source": "absl/base/macros.h",
+      "line": 38,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/base/no_destructor.h",
+      "line": 42,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/no_destructor.h",
+      "line": 43,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/base/nullability.h",
+      "line": 183,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/nullability.h",
+      "line": 184,
+      "include": "absl/base/internal/nullability_impl.h"
+    },
+    {
+      "source": "absl/base/optimization.h",
+      "line": 40,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/optimization.h",
+      "line": 41,
+      "include": "absl/base/options.h"
+    },
+    {
+      "source": "absl/base/port.h",
+      "line": 21,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/port.h",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/port.h",
+      "line": 23,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/base/prefetch.h",
+      "line": 27,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/prefetch.h",
+      "line": 28,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/base/thread_annotations.h",
+      "line": 37,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/base/thread_annotations.h",
+      "line": 38,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/cleanup/cleanup.h",
+      "line": 73,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/cleanup/cleanup.h",
+      "line": 74,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/cleanup/cleanup.h",
+      "line": 75,
+      "include": "absl/cleanup/internal/cleanup.h"
+    },
+    {
+      "source": "absl/cleanup/internal/cleanup.h",
+      "line": 22,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/cleanup/internal/cleanup.h",
+      "line": 23,
+      "include": "absl/base/thread_annotations.h"
+    },
+    {
+      "source": "absl/cleanup/internal/cleanup.h",
+      "line": 24,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/container/btree_map.h",
+      "line": 60,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/btree_map.h",
+      "line": 61,
+      "include": "absl/container/internal/btree.h"
+    },
+    {
+      "source": "absl/container/btree_map.h",
+      "line": 62,
+      "include": "absl/container/internal/btree_container.h"
+    },
+    {
+      "source": "absl/container/btree_set.h",
+      "line": 59,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/btree_set.h",
+      "line": 60,
+      "include": "absl/container/internal/btree.h"
+    },
+    {
+      "source": "absl/container/btree_set.h",
+      "line": 61,
+      "include": "absl/container/internal/btree_container.h"
+    },
+    {
+      "source": "absl/container/fixed_array.h",
+      "line": 43,
+      "include": "absl/algorithm/algorithm.h"
+    },
+    {
+      "source": "absl/container/fixed_array.h",
+      "line": 44,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/fixed_array.h",
+      "line": 45,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/fixed_array.h",
+      "line": 46,
+      "include": "absl/base/dynamic_annotations.h"
+    },
+    {
+      "source": "absl/container/fixed_array.h",
+      "line": 47,
+      "include": "absl/base/internal/iterator_traits.h"
+    },
+    {
+      "source": "absl/container/fixed_array.h",
+      "line": 48,
+      "include": "absl/base/internal/throw_delegate.h"
+    },
+    {
+      "source": "absl/container/fixed_array.h",
+      "line": 49,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/container/fixed_array.h",
+      "line": 50,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/container/fixed_array.h",
+      "line": 51,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/container/fixed_array.h",
+      "line": 52,
+      "include": "absl/container/internal/compressed_tuple.h"
+    },
+    {
+      "source": "absl/container/fixed_array.h",
+      "line": 53,
+      "include": "absl/memory/memory.h"
+    },
+    {
+      "source": "absl/container/flat_hash_map.h",
+      "line": 40,
+      "include": "absl/algorithm/container.h"
+    },
+    {
+      "source": "absl/container/flat_hash_map.h",
+      "line": 41,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/flat_hash_map.h",
+      "line": 42,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/container/flat_hash_map.h",
+      "line": 43,
+      "include": "absl/container/hash_container_defaults.h"
+    },
+    {
+      "source": "absl/container/flat_hash_map.h",
+      "line": 44,
+      "include": "absl/container/internal/container_memory.h"
+    },
+    {
+      "source": "absl/container/flat_hash_map.h",
+      "line": 45,
+      "include": "absl/container/internal/raw_hash_map.h"
+    },
+    {
+      "source": "absl/container/flat_hash_map.h",
+      "line": 46,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/container/flat_hash_set.h",
+      "line": 40,
+      "include": "absl/algorithm/container.h"
+    },
+    {
+      "source": "absl/container/flat_hash_set.h",
+      "line": 41,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/flat_hash_set.h",
+      "line": 42,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/container/flat_hash_set.h",
+      "line": 43,
+      "include": "absl/container/hash_container_defaults.h"
+    },
+    {
+      "source": "absl/container/flat_hash_set.h",
+      "line": 44,
+      "include": "absl/container/internal/container_memory.h"
+    },
+    {
+      "source": "absl/container/flat_hash_set.h",
+      "line": 45,
+      "include": "absl/container/internal/raw_hash_set.h"
+    },
+    {
+      "source": "absl/container/flat_hash_set.h",
+      "line": 46,
+      "include": "absl/memory/memory.h"
+    },
+    {
+      "source": "absl/container/flat_hash_set.h",
+      "line": 47,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/container/hash_container_defaults.h",
+      "line": 18,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/hash_container_defaults.h",
+      "line": 19,
+      "include": "absl/container/internal/hash_function_defaults.h"
+    },
+    {
+      "source": "absl/container/inlined_vector.h",
+      "line": 48,
+      "include": "absl/algorithm/algorithm.h"
+    },
+    {
+      "source": "absl/container/inlined_vector.h",
+      "line": 49,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/inlined_vector.h",
+      "line": 50,
+      "include": "absl/base/internal/iterator_traits.h"
+    },
+    {
+      "source": "absl/container/inlined_vector.h",
+      "line": 51,
+      "include": "absl/base/internal/throw_delegate.h"
+    },
+    {
+      "source": "absl/container/inlined_vector.h",
+      "line": 52,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/container/inlined_vector.h",
+      "line": 53,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/container/inlined_vector.h",
+      "line": 54,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/container/inlined_vector.h",
+      "line": 55,
+      "include": "absl/container/internal/inlined_vector.h"
+    },
+    {
+      "source": "absl/container/inlined_vector.h",
+      "line": 56,
+      "include": "absl/memory/memory.h"
+    },
+    {
+      "source": "absl/container/inlined_vector.h",
+      "line": 57,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/container/internal/btree.h",
+      "line": 60,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/internal/btree.h",
+      "line": 61,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/container/internal/btree.h",
+      "line": 62,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/container/internal/btree.h",
+      "line": 63,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/container/internal/btree.h",
+      "line": 64,
+      "include": "absl/container/internal/common.h"
+    },
+    {
+      "source": "absl/container/internal/btree.h",
+      "line": 65,
+      "include": "absl/container/internal/common_policy_traits.h"
+    },
+    {
+      "source": "absl/container/internal/btree.h",
+      "line": 66,
+      "include": "absl/container/internal/compressed_tuple.h"
+    },
+    {
+      "source": "absl/container/internal/btree.h",
+      "line": 67,
+      "include": "absl/container/internal/container_memory.h"
+    },
+    {
+      "source": "absl/container/internal/btree.h",
+      "line": 68,
+      "include": "absl/container/internal/layout.h"
+    },
+    {
+      "source": "absl/container/internal/btree.h",
+      "line": 69,
+      "include": "absl/memory/memory.h"
+    },
+    {
+      "source": "absl/container/internal/btree.h",
+      "line": 70,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/container/internal/btree.h",
+      "line": 71,
+      "include": "absl/strings/cord.h"
+    },
+    {
+      "source": "absl/container/internal/btree.h",
+      "line": 72,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/container/internal/btree.h",
+      "line": 73,
+      "include": "absl/types/compare.h"
+    },
+    {
+      "source": "absl/container/internal/btree_container.h",
+      "line": 24,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/internal/btree_container.h",
+      "line": 25,
+      "include": "absl/base/internal/throw_delegate.h"
+    },
+    {
+      "source": "absl/container/internal/btree_container.h",
+      "line": 26,
+      "include": "absl/container/internal/btree.h"
+    },
+    {
+      "source": "absl/container/internal/btree_container.h",
+      "line": 27,
+      "include": "absl/container/internal/common.h"
+    },
+    {
+      "source": "absl/container/internal/btree_container.h",
+      "line": 28,
+      "include": "absl/memory/memory.h"
+    },
+    {
+      "source": "absl/container/internal/btree_container.h",
+      "line": 29,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/container/internal/common.h",
+      "line": 21,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/container/internal/common.h",
+      "line": 22,
+      "include": "absl/types/optional.h"
+    },
+    {
+      "source": "absl/container/internal/common_policy_traits.h",
+      "line": 25,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/container/internal/compressed_tuple.h",
+      "line": 40,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/container/internal/container_memory.h",
+      "line": 28,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/internal/container_memory.h",
+      "line": 29,
+      "include": "absl/memory/memory.h"
+    },
+    {
+      "source": "absl/container/internal/container_memory.h",
+      "line": 30,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/container/internal/container_memory.h",
+      "line": 31,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/container/internal/hash_function_defaults.h",
+      "line": 54,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/internal/hash_function_defaults.h",
+      "line": 55,
+      "include": "absl/container/internal/common.h"
+    },
+    {
+      "source": "absl/container/internal/hash_function_defaults.h",
+      "line": 56,
+      "include": "absl/hash/hash.h"
+    },
+    {
+      "source": "absl/container/internal/hash_function_defaults.h",
+      "line": 57,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/container/internal/hash_function_defaults.h",
+      "line": 58,
+      "include": "absl/strings/cord.h"
+    },
+    {
+      "source": "absl/container/internal/hash_function_defaults.h",
+      "line": 59,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/container/internal/hash_policy_traits.h",
+      "line": 24,
+      "include": "absl/container/internal/common_policy_traits.h"
+    },
+    {
+      "source": "absl/container/internal/hash_policy_traits.h",
+      "line": 25,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/container/internal/hashtable_control_bytes.h",
+      "line": 26,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/internal/hashtable_control_bytes.h",
+      "line": 44,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/container/internal/hashtable_control_bytes.h",
+      "line": 45,
+      "include": "absl/numeric/bits.h"
+    },
+    {
+      "source": "absl/container/internal/hashtable_control_bytes.h",
+      "line": 46,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/container/internal/hashtable_debug.h",
+      "line": 38,
+      "include": "absl/container/internal/hashtable_debug_hooks.h"
+    },
+    {
+      "source": "absl/container/internal/hashtable_debug_hooks.h",
+      "line": 26,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.cc",
+      "line": 15,
+      "include": "absl/container/internal/hashtablez_sampler.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.cc",
+      "line": 26,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.cc",
+      "line": 27,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.cc",
+      "line": 28,
+      "include": "absl/base/internal/per_thread_tls.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.cc",
+      "line": 29,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.cc",
+      "line": 30,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.cc",
+      "line": 31,
+      "include": "absl/base/no_destructor.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.cc",
+      "line": 32,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.cc",
+      "line": 33,
+      "include": "absl/debugging/stacktrace.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.cc",
+      "line": 34,
+      "include": "absl/memory/memory.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.cc",
+      "line": 35,
+      "include": "absl/profiling/internal/exponential_biased.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.cc",
+      "line": 36,
+      "include": "absl/profiling/internal/sample_recorder.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.cc",
+      "line": 37,
+      "include": "absl/synchronization/mutex.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.cc",
+      "line": 38,
+      "include": "absl/time/clock.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.cc",
+      "line": 39,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.h",
+      "line": 49,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.h",
+      "line": 50,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.h",
+      "line": 51,
+      "include": "absl/base/internal/per_thread_tls.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.h",
+      "line": 52,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.h",
+      "line": 53,
+      "include": "absl/base/thread_annotations.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.h",
+      "line": 54,
+      "include": "absl/profiling/internal/sample_recorder.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.h",
+      "line": 55,
+      "include": "absl/synchronization/mutex.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.h",
+      "line": 56,
+      "include": "absl/time/time.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler.h",
+      "line": 57,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler_force_weak_definition.cc",
+      "line": 15,
+      "include": "absl/container/internal/hashtablez_sampler.h"
+    },
+    {
+      "source": "absl/container/internal/hashtablez_sampler_force_weak_definition.cc",
+      "line": 17,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/internal/inlined_vector.h",
+      "line": 28,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/internal/inlined_vector.h",
+      "line": 29,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/internal/inlined_vector.h",
+      "line": 30,
+      "include": "absl/base/internal/identity.h"
+    },
+    {
+      "source": "absl/container/internal/inlined_vector.h",
+      "line": 31,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/container/internal/inlined_vector.h",
+      "line": 32,
+      "include": "absl/container/internal/compressed_tuple.h"
+    },
+    {
+      "source": "absl/container/internal/inlined_vector.h",
+      "line": 33,
+      "include": "absl/memory/memory.h"
+    },
+    {
+      "source": "absl/container/internal/inlined_vector.h",
+      "line": 34,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/container/internal/inlined_vector.h",
+      "line": 35,
+      "include": "absl/types/span.h"
+    },
+    {
+      "source": "absl/container/internal/layout.h",
+      "line": 195,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/internal/layout.h",
+      "line": 196,
+      "include": "absl/debugging/internal/demangle.h"
+    },
+    {
+      "source": "absl/container/internal/layout.h",
+      "line": 197,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/container/internal/layout.h",
+      "line": 198,
+      "include": "absl/strings/str_cat.h"
+    },
+    {
+      "source": "absl/container/internal/layout.h",
+      "line": 199,
+      "include": "absl/types/span.h"
+    },
+    {
+      "source": "absl/container/internal/layout.h",
+      "line": 200,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/container/internal/node_slot_policy.h",
+      "line": 42,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_map.h",
+      "line": 22,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_map.h",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_map.h",
+      "line": 24,
+      "include": "absl/base/internal/throw_delegate.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_map.h",
+      "line": 25,
+      "include": "absl/container/internal/common_policy_traits.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_map.h",
+      "line": 26,
+      "include": "absl/container/internal/container_memory.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_map.h",
+      "line": 27,
+      "include": "absl/container/internal/raw_hash_set.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_map.h",
+      "line": 28,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.cc",
+      "line": 15,
+      "include": "absl/container/internal/raw_hash_set.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.cc",
+      "line": 23,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.cc",
+      "line": 24,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.cc",
+      "line": 25,
+      "include": "absl/base/dynamic_annotations.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.cc",
+      "line": 26,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.cc",
+      "line": 27,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.cc",
+      "line": 28,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.cc",
+      "line": 29,
+      "include": "absl/container/internal/container_memory.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.cc",
+      "line": 30,
+      "include": "absl/container/internal/hashtable_control_bytes.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.cc",
+      "line": 31,
+      "include": "absl/container/internal/hashtablez_sampler.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.cc",
+      "line": 32,
+      "include": "absl/functional/function_ref.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.cc",
+      "line": 33,
+      "include": "absl/hash/hash.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.cc",
+      "line": 34,
+      "include": "absl/numeric/bits.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 196,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 197,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 198,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 199,
+      "include": "absl/base/internal/iterator_traits.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 200,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 201,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 202,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 203,
+      "include": "absl/base/options.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 204,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 205,
+      "include": "absl/base/prefetch.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 206,
+      "include": "absl/container/internal/common.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 207,
+      "include": "absl/container/internal/common_policy_traits.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 208,
+      "include": "absl/container/internal/compressed_tuple.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 209,
+      "include": "absl/container/internal/container_memory.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 210,
+      "include": "absl/container/internal/hash_function_defaults.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 211,
+      "include": "absl/container/internal/hash_policy_traits.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 212,
+      "include": "absl/container/internal/hashtable_control_bytes.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 213,
+      "include": "absl/container/internal/hashtable_debug_hooks.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 214,
+      "include": "absl/container/internal/hashtablez_sampler.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 215,
+      "include": "absl/functional/function_ref.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 216,
+      "include": "absl/hash/hash.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 217,
+      "include": "absl/memory/memory.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 218,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 219,
+      "include": "absl/numeric/bits.h"
+    },
+    {
+      "source": "absl/container/internal/raw_hash_set.h",
+      "line": 220,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/container/internal/tracked.h",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/container/node_hash_map.h",
+      "line": 46,
+      "include": "absl/algorithm/container.h"
+    },
+    {
+      "source": "absl/container/node_hash_map.h",
+      "line": 47,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/node_hash_map.h",
+      "line": 48,
+      "include": "absl/container/hash_container_defaults.h"
+    },
+    {
+      "source": "absl/container/node_hash_map.h",
+      "line": 49,
+      "include": "absl/container/internal/container_memory.h"
+    },
+    {
+      "source": "absl/container/node_hash_map.h",
+      "line": 50,
+      "include": "absl/container/internal/node_slot_policy.h"
+    },
+    {
+      "source": "absl/container/node_hash_map.h",
+      "line": 51,
+      "include": "absl/container/internal/raw_hash_map.h"
+    },
+    {
+      "source": "absl/container/node_hash_map.h",
+      "line": 52,
+      "include": "absl/memory/memory.h"
+    },
+    {
+      "source": "absl/container/node_hash_map.h",
+      "line": 53,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/container/node_hash_set.h",
+      "line": 44,
+      "include": "absl/algorithm/container.h"
+    },
+    {
+      "source": "absl/container/node_hash_set.h",
+      "line": 45,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/container/node_hash_set.h",
+      "line": 46,
+      "include": "absl/container/hash_container_defaults.h"
+    },
+    {
+      "source": "absl/container/node_hash_set.h",
+      "line": 47,
+      "include": "absl/container/internal/container_memory.h"
+    },
+    {
+      "source": "absl/container/node_hash_set.h",
+      "line": 48,
+      "include": "absl/container/internal/node_slot_policy.h"
+    },
+    {
+      "source": "absl/container/node_hash_set.h",
+      "line": 49,
+      "include": "absl/container/internal/raw_hash_set.h"
+    },
+    {
+      "source": "absl/container/node_hash_set.h",
+      "line": 50,
+      "include": "absl/memory/memory.h"
+    },
+    {
+      "source": "absl/container/node_hash_set.h",
+      "line": 51,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/crc/crc32c.cc",
+      "line": 15,
+      "include": "absl/crc/crc32c.h"
+    },
+    {
+      "source": "absl/crc/crc32c.cc",
+      "line": 19,
+      "include": "absl/crc/internal/crc.h"
+    },
+    {
+      "source": "absl/crc/crc32c.cc",
+      "line": 20,
+      "include": "absl/crc/internal/crc32c.h"
+    },
+    {
+      "source": "absl/crc/crc32c.cc",
+      "line": 21,
+      "include": "absl/crc/internal/crc_memcpy.h"
+    },
+    {
+      "source": "absl/crc/crc32c.cc",
+      "line": 22,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/crc/crc32c.h",
+      "line": 31,
+      "include": "absl/crc/internal/crc32c_inline.h"
+    },
+    {
+      "source": "absl/crc/crc32c.h",
+      "line": 32,
+      "include": "absl/strings/str_format.h"
+    },
+    {
+      "source": "absl/crc/crc32c.h",
+      "line": 33,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/crc/internal/cpu_detect.cc",
+      "line": 15,
+      "include": "absl/crc/internal/cpu_detect.h"
+    },
+    {
+      "source": "absl/crc/internal/cpu_detect.cc",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/crc/internal/cpu_detect.cc",
+      "line": 21,
+      "include": "absl/types/optional.h"
+    },
+    {
+      "source": "absl/crc/internal/cpu_detect.h",
+      "line": 18,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/crc/internal/crc.cc",
+      "line": 42,
+      "include": "absl/crc/internal/crc.h"
+    },
+    {
+      "source": "absl/crc/internal/crc.cc",
+      "line": 46,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/crc/internal/crc.cc",
+      "line": 47,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/crc/internal/crc.cc",
+      "line": 48,
+      "include": "absl/base/prefetch.h"
+    },
+    {
+      "source": "absl/crc/internal/crc.cc",
+      "line": 49,
+      "include": "absl/crc/internal/crc_internal.h"
+    },
+    {
+      "source": "absl/crc/internal/crc.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/crc/internal/crc32_x86_arm_combined_simd.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/crc/internal/crc32c.h",
+      "line": 18,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/crc/internal/crc32c.h",
+      "line": 19,
+      "include": "absl/crc/crc32c.h"
+    },
+    {
+      "source": "absl/crc/internal/crc32c_inline.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/crc/internal/crc32c_inline.h",
+      "line": 21,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/crc/internal/crc32c_inline.h",
+      "line": 22,
+      "include": "absl/crc/internal/crc32_x86_arm_combined_simd.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_cord_state.cc",
+      "line": 15,
+      "include": "absl/crc/internal/crc_cord_state.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_cord_state.cc",
+      "line": 19,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_cord_state.cc",
+      "line": 20,
+      "include": "absl/base/no_destructor.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_cord_state.cc",
+      "line": 21,
+      "include": "absl/numeric/bits.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_cord_state.h",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_cord_state.h",
+      "line": 23,
+      "include": "absl/crc/crc32c.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_internal.h",
+      "line": 22,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_internal.h",
+      "line": 23,
+      "include": "absl/crc/internal/crc.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy.h",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy.h",
+      "line": 22,
+      "include": "absl/crc/crc32c.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy.h",
+      "line": 23,
+      "include": "absl/crc/internal/crc32_x86_arm_combined_simd.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy_fallback.cc",
+      "line": 18,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy_fallback.cc",
+      "line": 19,
+      "include": "absl/crc/crc32c.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy_fallback.cc",
+      "line": 20,
+      "include": "absl/crc/internal/crc_memcpy.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy_fallback.cc",
+      "line": 21,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy_x86_arm_combined.cc",
+      "line": 55,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy_x86_arm_combined.cc",
+      "line": 56,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy_x86_arm_combined.cc",
+      "line": 57,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy_x86_arm_combined.cc",
+      "line": 58,
+      "include": "absl/base/prefetch.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy_x86_arm_combined.cc",
+      "line": 59,
+      "include": "absl/crc/crc32c.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy_x86_arm_combined.cc",
+      "line": 60,
+      "include": "absl/crc/internal/cpu_detect.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy_x86_arm_combined.cc",
+      "line": 61,
+      "include": "absl/crc/internal/crc32_x86_arm_combined_simd.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy_x86_arm_combined.cc",
+      "line": 62,
+      "include": "absl/crc/internal/crc_memcpy.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_memcpy_x86_arm_combined.cc",
+      "line": 63,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_non_temporal_memcpy.cc",
+      "line": 17,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_non_temporal_memcpy.cc",
+      "line": 18,
+      "include": "absl/crc/crc32c.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_non_temporal_memcpy.cc",
+      "line": 19,
+      "include": "absl/crc/internal/crc_memcpy.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_non_temporal_memcpy.cc",
+      "line": 20,
+      "include": "absl/crc/internal/non_temporal_memcpy.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_non_temporal_memcpy.cc",
+      "line": 21,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_x86_arm_combined.cc",
+      "line": 22,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_x86_arm_combined.cc",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_x86_arm_combined.cc",
+      "line": 24,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_x86_arm_combined.cc",
+      "line": 25,
+      "include": "absl/base/prefetch.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_x86_arm_combined.cc",
+      "line": 26,
+      "include": "absl/crc/internal/cpu_detect.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_x86_arm_combined.cc",
+      "line": 27,
+      "include": "absl/crc/internal/crc32_x86_arm_combined_simd.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_x86_arm_combined.cc",
+      "line": 28,
+      "include": "absl/crc/internal/crc_internal.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_x86_arm_combined.cc",
+      "line": 29,
+      "include": "absl/memory/memory.h"
+    },
+    {
+      "source": "absl/crc/internal/crc_x86_arm_combined.cc",
+      "line": 30,
+      "include": "absl/numeric/bits.h"
+    },
+    {
+      "source": "absl/crc/internal/non_temporal_arm_intrinsics.h",
+      "line": 18,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/crc/internal/non_temporal_memcpy.h",
+      "line": 28,
+      "include": "absl/crc/internal/non_temporal_arm_intrinsics.h"
+    },
+    {
+      "source": "absl/crc/internal/non_temporal_memcpy.h",
+      "line": 36,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/crc/internal/non_temporal_memcpy.h",
+      "line": 37,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/crc/internal/non_temporal_memcpy.h",
+      "line": 38,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/debugging/failure_signal_handler.cc",
+      "line": 17,
+      "include": "absl/debugging/failure_signal_handler.h"
+    },
+    {
+      "source": "absl/debugging/failure_signal_handler.cc",
+      "line": 19,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/failure_signal_handler.cc",
+      "line": 52,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/debugging/failure_signal_handler.cc",
+      "line": 53,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/debugging/failure_signal_handler.cc",
+      "line": 54,
+      "include": "absl/base/internal/sysinfo.h"
+    },
+    {
+      "source": "absl/debugging/failure_signal_handler.cc",
+      "line": 55,
+      "include": "absl/debugging/internal/examine_stack.h"
+    },
+    {
+      "source": "absl/debugging/failure_signal_handler.cc",
+      "line": 56,
+      "include": "absl/debugging/stacktrace.h"
+    },
+    {
+      "source": "absl/debugging/failure_signal_handler.h",
+      "line": 47,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/address_is_readable.cc",
+      "line": 18,
+      "include": "absl/debugging/internal/address_is_readable.h"
+    },
+    {
+      "source": "absl/debugging/internal/address_is_readable.cc",
+      "line": 39,
+      "include": "absl/base/internal/errno_saver.h"
+    },
+    {
+      "source": "absl/debugging/internal/address_is_readable.cc",
+      "line": 40,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/debugging/internal/address_is_readable.h",
+      "line": 18,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/addresses.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/bounded_utf8_length_sequence.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/bounded_utf8_length_sequence.h",
+      "line": 21,
+      "include": "absl/numeric/bits.h"
+    },
+    {
+      "source": "absl/debugging/internal/decode_rust_punycode.cc",
+      "line": 15,
+      "include": "absl/debugging/internal/decode_rust_punycode.h"
+    },
+    {
+      "source": "absl/debugging/internal/decode_rust_punycode.cc",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/decode_rust_punycode.cc",
+      "line": 22,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/debugging/internal/decode_rust_punycode.cc",
+      "line": 23,
+      "include": "absl/debugging/internal/bounded_utf8_length_sequence.h"
+    },
+    {
+      "source": "absl/debugging/internal/decode_rust_punycode.cc",
+      "line": 24,
+      "include": "absl/debugging/internal/utf8_for_code_point.h"
+    },
+    {
+      "source": "absl/debugging/internal/decode_rust_punycode.h",
+      "line": 18,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/decode_rust_punycode.h",
+      "line": 19,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/debugging/internal/demangle.cc",
+      "line": 18,
+      "include": "absl/debugging/internal/demangle.h"
+    },
+    {
+      "source": "absl/debugging/internal/demangle.cc",
+      "line": 28,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/demangle.cc",
+      "line": 29,
+      "include": "absl/debugging/internal/demangle_rust.h"
+    },
+    {
+      "source": "absl/debugging/internal/demangle.h",
+      "line": 19,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/demangle_rust.cc",
+      "line": 15,
+      "include": "absl/debugging/internal/demangle_rust.h"
+    },
+    {
+      "source": "absl/debugging/internal/demangle_rust.cc",
+      "line": 22,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/debugging/internal/demangle_rust.cc",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/demangle_rust.cc",
+      "line": 24,
+      "include": "absl/debugging/internal/decode_rust_punycode.h"
+    },
+    {
+      "source": "absl/debugging/internal/demangle_rust.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/elf_mem_image.cc",
+      "line": 18,
+      "include": "absl/debugging/internal/elf_mem_image.h"
+    },
+    {
+      "source": "absl/debugging/internal/elf_mem_image.cc",
+      "line": 28,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/elf_mem_image.cc",
+      "line": 29,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/debugging/internal/elf_mem_image.h",
+      "line": 27,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/examine_stack.cc",
+      "line": 17,
+      "include": "absl/debugging/internal/examine_stack.h"
+    },
+    {
+      "source": "absl/debugging/internal/examine_stack.cc",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/examine_stack.cc",
+      "line": 39,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/debugging/internal/examine_stack.cc",
+      "line": 40,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/debugging/internal/examine_stack.cc",
+      "line": 41,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/debugging/internal/examine_stack.cc",
+      "line": 42,
+      "include": "absl/debugging/stacktrace.h"
+    },
+    {
+      "source": "absl/debugging/internal/examine_stack.cc",
+      "line": 43,
+      "include": "absl/debugging/symbolize.h"
+    },
+    {
+      "source": "absl/debugging/internal/examine_stack.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/stack_consumption.cc",
+      "line": 16,
+      "include": "absl/debugging/internal/stack_consumption.h"
+    },
+    {
+      "source": "absl/debugging/internal/stack_consumption.cc",
+      "line": 25,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/debugging/internal/stack_consumption.cc",
+      "line": 26,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/debugging/internal/stack_consumption.h",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_aarch64-inl.inc",
+      "line": 19,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_aarch64-inl.inc",
+      "line": 20,
+      "include": "absl/debugging/internal/address_is_readable.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_aarch64-inl.inc",
+      "line": 21,
+      "include": "absl/debugging/internal/addresses.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_aarch64-inl.inc",
+      "line": 22,
+      "include": "absl/debugging/internal/vdso_support.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_aarch64-inl.inc",
+      "line": 23,
+      "include": "absl/debugging/stacktrace.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_arm-inl.inc",
+      "line": 22,
+      "include": "absl/debugging/internal/addresses.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_arm-inl.inc",
+      "line": 23,
+      "include": "absl/debugging/stacktrace.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_config.h",
+      "line": 24,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_emscripten-inl.inc",
+      "line": 29,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_emscripten-inl.inc",
+      "line": 30,
+      "include": "absl/debugging/stacktrace.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_generic-inl.inc",
+      "line": 27,
+      "include": "absl/debugging/stacktrace.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_generic-inl.inc",
+      "line": 28,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_powerpc-inl.inc",
+      "line": 24,
+      "include": "absl/debugging/internal/addresses.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_powerpc-inl.inc",
+      "line": 35,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_powerpc-inl.inc",
+      "line": 36,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_powerpc-inl.inc",
+      "line": 37,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_powerpc-inl.inc",
+      "line": 38,
+      "include": "absl/debugging/stacktrace.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_powerpc-inl.inc",
+      "line": 39,
+      "include": "absl/debugging/internal/address_is_readable.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_powerpc-inl.inc",
+      "line": 40,
+      "include": "absl/debugging/internal/vdso_support.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_riscv-inl.inc",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_riscv-inl.inc",
+      "line": 23,
+      "include": "absl/debugging/internal/addresses.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_riscv-inl.inc",
+      "line": 37,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_riscv-inl.inc",
+      "line": 38,
+      "include": "absl/debugging/stacktrace.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_x86-inl.inc",
+      "line": 32,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_x86-inl.inc",
+      "line": 33,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_x86-inl.inc",
+      "line": 34,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_x86-inl.inc",
+      "line": 35,
+      "include": "absl/debugging/internal/address_is_readable.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_x86-inl.inc",
+      "line": 36,
+      "include": "absl/debugging/internal/addresses.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_x86-inl.inc",
+      "line": 37,
+      "include": "absl/debugging/internal/vdso_support.h"
+    },
+    {
+      "source": "absl/debugging/internal/stacktrace_x86-inl.inc",
+      "line": 38,
+      "include": "absl/debugging/stacktrace.h"
+    },
+    {
+      "source": "absl/debugging/internal/symbolize.h",
+      "line": 26,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/symbolize.h",
+      "line": 27,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/debugging/internal/utf8_for_code_point.cc",
+      "line": 15,
+      "include": "absl/debugging/internal/utf8_for_code_point.h"
+    },
+    {
+      "source": "absl/debugging/internal/utf8_for_code_point.cc",
+      "line": 19,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/utf8_for_code_point.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/internal/vdso_support.cc",
+      "line": 19,
+      "include": "absl/debugging/internal/vdso_support.h"
+    },
+    {
+      "source": "absl/debugging/internal/vdso_support.cc",
+      "line": 45,
+      "include": "absl/base/dynamic_annotations.h"
+    },
+    {
+      "source": "absl/debugging/internal/vdso_support.cc",
+      "line": 46,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/debugging/internal/vdso_support.cc",
+      "line": 47,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/debugging/internal/vdso_support.h",
+      "line": 44,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/debugging/internal/vdso_support.h",
+      "line": 45,
+      "include": "absl/debugging/internal/elf_mem_image.h"
+    },
+    {
+      "source": "absl/debugging/leak_check.cc",
+      "line": 21,
+      "include": "absl/debugging/leak_check.h"
+    },
+    {
+      "source": "absl/debugging/leak_check.cc",
+      "line": 23,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/debugging/leak_check.cc",
+      "line": 24,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/leak_check.h",
+      "line": 52,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 37,
+      "include": "absl/debugging/stacktrace.h"
+    },
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 44,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 45,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 46,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 47,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 48,
+      "include": "absl/debugging/internal/stacktrace_config.h"
+    },
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 55,
+      "include": "absl/debugging/internal/stacktrace_aarch64-inl.inc"
+    },
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 56,
+      "include": "absl/debugging/internal/stacktrace_arm-inl.inc"
+    },
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 57,
+      "include": "absl/debugging/internal/stacktrace_emscripten-inl.inc"
+    },
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 58,
+      "include": "absl/debugging/internal/stacktrace_generic-inl.inc"
+    },
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 59,
+      "include": "absl/debugging/internal/stacktrace_powerpc-inl.inc"
+    },
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 60,
+      "include": "absl/debugging/internal/stacktrace_riscv-inl.inc"
+    },
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 61,
+      "include": "absl/debugging/internal/stacktrace_unimplemented-inl.inc"
+    },
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 62,
+      "include": "absl/debugging/internal/stacktrace_win32-inl.inc"
+    },
+    {
+      "source": "absl/debugging/stacktrace.cc",
+      "line": 63,
+      "include": "absl/debugging/internal/stacktrace_x86-inl.inc"
+    },
+    {
+      "source": "absl/debugging/stacktrace.h",
+      "line": 36,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/debugging/stacktrace.h",
+      "line": 37,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/debugging/symbolize.cc",
+      "line": 17,
+      "include": "absl/debugging/symbolize.h"
+    },
+    {
+      "source": "absl/debugging/symbolize.cc",
+      "line": 33,
+      "include": "absl/debugging/symbolize_elf.inc"
+    },
+    {
+      "source": "absl/debugging/symbolize.cc",
+      "line": 37,
+      "include": "absl/debugging/symbolize_win32.inc"
+    },
+    {
+      "source": "absl/debugging/symbolize.cc",
+      "line": 39,
+      "include": "absl/debugging/symbolize_darwin.inc"
+    },
+    {
+      "source": "absl/debugging/symbolize.cc",
+      "line": 41,
+      "include": "absl/debugging/symbolize_emscripten.inc"
+    },
+    {
+      "source": "absl/debugging/symbolize.cc",
+      "line": 43,
+      "include": "absl/debugging/symbolize_unimplemented.inc"
+    },
+    {
+      "source": "absl/debugging/symbolize.h",
+      "line": 55,
+      "include": "absl/debugging/internal/symbolize.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_darwin.inc",
+      "line": 21,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_darwin.inc",
+      "line": 22,
+      "include": "absl/debugging/internal/demangle.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_darwin.inc",
+      "line": 23,
+      "include": "absl/strings/numbers.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_darwin.inc",
+      "line": 24,
+      "include": "absl/strings/str_cat.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_darwin.inc",
+      "line": 25,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_elf.inc",
+      "line": 71,
+      "include": "absl/base/casts.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_elf.inc",
+      "line": 72,
+      "include": "absl/base/dynamic_annotations.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_elf.inc",
+      "line": 73,
+      "include": "absl/base/internal/low_level_alloc.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_elf.inc",
+      "line": 74,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_elf.inc",
+      "line": 75,
+      "include": "absl/base/internal/spinlock.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_elf.inc",
+      "line": 76,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_elf.inc",
+      "line": 77,
+      "include": "absl/debugging/internal/demangle.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_elf.inc",
+      "line": 78,
+      "include": "absl/debugging/internal/vdso_support.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_elf.inc",
+      "line": 79,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_emscripten.inc",
+      "line": 21,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_emscripten.inc",
+      "line": 22,
+      "include": "absl/debugging/internal/demangle.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_emscripten.inc",
+      "line": 23,
+      "include": "absl/strings/numbers.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_emscripten.inc",
+      "line": 24,
+      "include": "absl/strings/str_cat.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_emscripten.inc",
+      "line": 25,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_unimplemented.inc",
+      "line": 17,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/debugging/symbolize_win32.inc",
+      "line": 31,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/functional/any_invocable.h",
+      "line": 42,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/functional/any_invocable.h",
+      "line": 43,
+      "include": "absl/functional/internal/any_invocable.h"
+    },
+    {
+      "source": "absl/functional/any_invocable.h",
+      "line": 44,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/functional/any_invocable.h",
+      "line": 45,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/functional/bind_front.h",
+      "line": 39,
+      "include": "absl/functional/internal/front_binder.h"
+    },
+    {
+      "source": "absl/functional/bind_front.h",
+      "line": 40,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/functional/function_ref.h",
+      "line": 53,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/functional/function_ref.h",
+      "line": 54,
+      "include": "absl/functional/internal/function_ref.h"
+    },
+    {
+      "source": "absl/functional/function_ref.h",
+      "line": 55,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/functional/internal/any_invocable.h",
+      "line": 66,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/functional/internal/any_invocable.h",
+      "line": 67,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/functional/internal/any_invocable.h",
+      "line": 68,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/functional/internal/any_invocable.h",
+      "line": 69,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/functional/internal/any_invocable.h",
+      "line": 70,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/functional/internal/any_invocable.h",
+      "line": 71,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/functional/internal/front_binder.h",
+      "line": 24,
+      "include": "absl/container/internal/compressed_tuple.h"
+    },
+    {
+      "source": "absl/functional/internal/front_binder.h",
+      "line": 25,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/functional/internal/front_binder.h",
+      "line": 26,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/functional/internal/function_ref.h",
+      "line": 22,
+      "include": "absl/functional/any_invocable.h"
+    },
+    {
+      "source": "absl/functional/internal/function_ref.h",
+      "line": 23,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/functional/overload.h",
+      "line": 41,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/functional/overload.h",
+      "line": 42,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/hash/hash.h",
+      "line": 87,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/hash/hash.h",
+      "line": 88,
+      "include": "absl/functional/function_ref.h"
+    },
+    {
+      "source": "absl/hash/hash.h",
+      "line": 89,
+      "include": "absl/hash/internal/hash.h"
+    },
+    {
+      "source": "absl/hash/hash.h",
+      "line": 90,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/hash/internal/city.cc",
+      "line": 22,
+      "include": "absl/hash/internal/city.h"
+    },
+    {
+      "source": "absl/hash/internal/city.cc",
+      "line": 27,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/hash/internal/city.cc",
+      "line": 28,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/hash/internal/city.cc",
+      "line": 29,
+      "include": "absl/base/internal/unaligned_access.h"
+    },
+    {
+      "source": "absl/hash/internal/city.cc",
+      "line": 30,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/hash/internal/city.h",
+      "line": 53,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.cc",
+      "line": 15,
+      "include": "absl/hash/internal/hash.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.cc",
+      "line": 21,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.cc",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.cc",
+      "line": 23,
+      "include": "absl/hash/internal/low_level_hash.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 27,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 61,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 62,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 63,
+      "include": "absl/base/internal/unaligned_access.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 64,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 65,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 66,
+      "include": "absl/container/fixed_array.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 67,
+      "include": "absl/hash/internal/city.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 68,
+      "include": "absl/hash/internal/low_level_hash.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 69,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 70,
+      "include": "absl/numeric/bits.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 71,
+      "include": "absl/numeric/int128.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 72,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 73,
+      "include": "absl/types/optional.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 74,
+      "include": "absl/types/variant.h"
+    },
+    {
+      "source": "absl/hash/internal/hash.h",
+      "line": 75,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/hash/internal/low_level_hash.cc",
+      "line": 15,
+      "include": "absl/hash/internal/low_level_hash.h"
+    },
+    {
+      "source": "absl/hash/internal/low_level_hash.cc",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/hash/internal/low_level_hash.cc",
+      "line": 22,
+      "include": "absl/base/internal/unaligned_access.h"
+    },
+    {
+      "source": "absl/hash/internal/low_level_hash.cc",
+      "line": 23,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/hash/internal/low_level_hash.cc",
+      "line": 24,
+      "include": "absl/base/prefetch.h"
+    },
+    {
+      "source": "absl/hash/internal/low_level_hash.cc",
+      "line": 25,
+      "include": "absl/numeric/int128.h"
+    },
+    {
+      "source": "absl/hash/internal/low_level_hash.h",
+      "line": 31,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/hash/internal/spy_hash_state.h",
+      "line": 24,
+      "include": "absl/hash/hash.h"
+    },
+    {
+      "source": "absl/hash/internal/spy_hash_state.h",
+      "line": 25,
+      "include": "absl/strings/match.h"
+    },
+    {
+      "source": "absl/hash/internal/spy_hash_state.h",
+      "line": 26,
+      "include": "absl/strings/str_format.h"
+    },
+    {
+      "source": "absl/hash/internal/spy_hash_state.h",
+      "line": 27,
+      "include": "absl/strings/str_join.h"
+    },
+    {
+      "source": "absl/memory/memory.h",
+      "line": 33,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/memory/memory.h",
+      "line": 34,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/meta/type_traits.h",
+      "line": 44,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/meta/type_traits.h",
+      "line": 45,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/numeric/bits.h",
+      "line": 45,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/numeric/bits.h",
+      "line": 51,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/numeric/bits.h",
+      "line": 52,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/numeric/bits.h",
+      "line": 53,
+      "include": "absl/numeric/internal/bits.h"
+    },
+    {
+      "source": "absl/numeric/int128.cc",
+      "line": 15,
+      "include": "absl/numeric/int128.h"
+    },
+    {
+      "source": "absl/numeric/int128.cc",
+      "line": 26,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/numeric/int128.cc",
+      "line": 27,
+      "include": "absl/numeric/bits.h"
+    },
+    {
+      "source": "absl/numeric/int128.h",
+      "line": 38,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/numeric/int128.h",
+      "line": 39,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/numeric/int128.h",
+      "line": 40,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/numeric/int128.h",
+      "line": 41,
+      "include": "absl/types/compare.h"
+    },
+    {
+      "source": "absl/numeric/int128.h",
+      "line": 1194,
+      "include": "absl/numeric/int128_have_intrinsic.inc"
+    },
+    {
+      "source": "absl/numeric/int128.h",
+      "line": 1196,
+      "include": "absl/numeric/int128_no_intrinsic.inc"
+    },
+    {
+      "source": "absl/numeric/internal/bits.h",
+      "line": 28,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/numeric/internal/bits.h",
+      "line": 29,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/numeric/internal/representation.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/profiling/internal/exponential_biased.cc",
+      "line": 15,
+      "include": "absl/profiling/internal/exponential_biased.h"
+    },
+    {
+      "source": "absl/profiling/internal/exponential_biased.cc",
+      "line": 24,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/profiling/internal/exponential_biased.cc",
+      "line": 25,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/profiling/internal/exponential_biased.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/profiling/internal/exponential_biased.h",
+      "line": 21,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/profiling/internal/periodic_sampler.cc",
+      "line": 15,
+      "include": "absl/profiling/internal/periodic_sampler.h"
+    },
+    {
+      "source": "absl/profiling/internal/periodic_sampler.cc",
+      "line": 19,
+      "include": "absl/profiling/internal/exponential_biased.h"
+    },
+    {
+      "source": "absl/profiling/internal/periodic_sampler.h",
+      "line": 22,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/profiling/internal/periodic_sampler.h",
+      "line": 23,
+      "include": "absl/profiling/internal/exponential_biased.h"
+    },
+    {
+      "source": "absl/profiling/internal/sample_recorder.h",
+      "line": 31,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/profiling/internal/sample_recorder.h",
+      "line": 32,
+      "include": "absl/base/thread_annotations.h"
+    },
+    {
+      "source": "absl/profiling/internal/sample_recorder.h",
+      "line": 33,
+      "include": "absl/synchronization/mutex.h"
+    },
+    {
+      "source": "absl/profiling/internal/sample_recorder.h",
+      "line": 34,
+      "include": "absl/time/time.h"
+    },
+    {
+      "source": "absl/strings/ascii.cc",
+      "line": 15,
+      "include": "absl/strings/ascii.h"
+    },
+    {
+      "source": "absl/strings/ascii.cc",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/ascii.cc",
+      "line": 23,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/ascii.h",
+      "line": 60,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/ascii.h",
+      "line": 61,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/ascii.h",
+      "line": 62,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/ascii.h",
+      "line": 63,
+      "include": "absl/strings/internal/resize_uninitialized.h"
+    },
+    {
+      "source": "absl/strings/ascii.h",
+      "line": 64,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/charconv.cc",
+      "line": 15,
+      "include": "absl/strings/charconv.h"
+    },
+    {
+      "source": "absl/strings/charconv.cc",
+      "line": 24,
+      "include": "absl/base/casts.h"
+    },
+    {
+      "source": "absl/strings/charconv.cc",
+      "line": 25,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/charconv.cc",
+      "line": 26,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/charconv.cc",
+      "line": 27,
+      "include": "absl/numeric/bits.h"
+    },
+    {
+      "source": "absl/strings/charconv.cc",
+      "line": 28,
+      "include": "absl/numeric/int128.h"
+    },
+    {
+      "source": "absl/strings/charconv.cc",
+      "line": 29,
+      "include": "absl/strings/internal/charconv_bigint.h"
+    },
+    {
+      "source": "absl/strings/charconv.cc",
+      "line": 30,
+      "include": "absl/strings/internal/charconv_parse.h"
+    },
+    {
+      "source": "absl/strings/charconv.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/charconv.h",
+      "line": 21,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/charset.h",
+      "line": 51,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/charset.h",
+      "line": 52,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 15,
+      "include": "absl/strings/cord.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 34,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 35,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 36,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 37,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 38,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 39,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 40,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 41,
+      "include": "absl/container/inlined_vector.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 42,
+      "include": "absl/crc/crc32c.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 43,
+      "include": "absl/crc/internal/crc_cord_state.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 44,
+      "include": "absl/functional/function_ref.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 45,
+      "include": "absl/strings/cord_buffer.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 46,
+      "include": "absl/strings/escaping.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 47,
+      "include": "absl/strings/internal/cord_data_edge.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 48,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 49,
+      "include": "absl/strings/internal/cord_rep_btree.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 50,
+      "include": "absl/strings/internal/cord_rep_crc.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 51,
+      "include": "absl/strings/internal/cord_rep_flat.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 52,
+      "include": "absl/strings/internal/cordz_update_tracker.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 53,
+      "include": "absl/strings/internal/resize_uninitialized.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 54,
+      "include": "absl/strings/match.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 55,
+      "include": "absl/strings/str_cat.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 56,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 57,
+      "include": "absl/strings/strip.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 58,
+      "include": "absl/types/optional.h"
+    },
+    {
+      "source": "absl/strings/cord.cc",
+      "line": 59,
+      "include": "absl/types/span.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 74,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 75,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 76,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 77,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 78,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 79,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 80,
+      "include": "absl/crc/internal/crc_cord_state.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 81,
+      "include": "absl/functional/function_ref.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 82,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 83,
+      "include": "absl/strings/cord_analysis.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 84,
+      "include": "absl/strings/cord_buffer.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 85,
+      "include": "absl/strings/internal/cord_data_edge.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 86,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 87,
+      "include": "absl/strings/internal/cord_rep_btree.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 88,
+      "include": "absl/strings/internal/cord_rep_btree_reader.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 89,
+      "include": "absl/strings/internal/cord_rep_crc.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 90,
+      "include": "absl/strings/internal/cord_rep_flat.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 91,
+      "include": "absl/strings/internal/cordz_info.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 92,
+      "include": "absl/strings/internal/cordz_update_scope.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 93,
+      "include": "absl/strings/internal/cordz_update_tracker.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 94,
+      "include": "absl/strings/internal/string_constant.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 95,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 96,
+      "include": "absl/types/compare.h"
+    },
+    {
+      "source": "absl/strings/cord.h",
+      "line": 97,
+      "include": "absl/types/optional.h"
+    },
+    {
+      "source": "absl/strings/cord_analysis.cc",
+      "line": 15,
+      "include": "absl/strings/cord_analysis.h"
+    },
+    {
+      "source": "absl/strings/cord_analysis.cc",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/cord_analysis.cc",
+      "line": 23,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/cord_analysis.cc",
+      "line": 24,
+      "include": "absl/strings/internal/cord_data_edge.h"
+    },
+    {
+      "source": "absl/strings/cord_analysis.cc",
+      "line": 25,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/cord_analysis.cc",
+      "line": 26,
+      "include": "absl/strings/internal/cord_rep_btree.h"
+    },
+    {
+      "source": "absl/strings/cord_analysis.cc",
+      "line": 27,
+      "include": "absl/strings/internal/cord_rep_crc.h"
+    },
+    {
+      "source": "absl/strings/cord_analysis.h",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/cord_analysis.h",
+      "line": 22,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/cord_analysis.h",
+      "line": 23,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/cord_buffer.h",
+      "line": 34,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/cord_buffer.h",
+      "line": 35,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/strings/cord_buffer.h",
+      "line": 36,
+      "include": "absl/numeric/bits.h"
+    },
+    {
+      "source": "absl/strings/cord_buffer.h",
+      "line": 37,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/cord_buffer.h",
+      "line": 38,
+      "include": "absl/strings/internal/cord_rep_flat.h"
+    },
+    {
+      "source": "absl/strings/cord_buffer.h",
+      "line": 39,
+      "include": "absl/types/span.h"
+    },
+    {
+      "source": "absl/strings/escaping.cc",
+      "line": 15,
+      "include": "absl/strings/escaping.h"
+    },
+    {
+      "source": "absl/strings/escaping.cc",
+      "line": 27,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/escaping.cc",
+      "line": 28,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/strings/escaping.cc",
+      "line": 29,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/escaping.cc",
+      "line": 30,
+      "include": "absl/base/internal/unaligned_access.h"
+    },
+    {
+      "source": "absl/strings/escaping.cc",
+      "line": 31,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/escaping.cc",
+      "line": 32,
+      "include": "absl/strings/ascii.h"
+    },
+    {
+      "source": "absl/strings/escaping.cc",
+      "line": 33,
+      "include": "absl/strings/charset.h"
+    },
+    {
+      "source": "absl/strings/escaping.cc",
+      "line": 34,
+      "include": "absl/strings/internal/escaping.h"
+    },
+    {
+      "source": "absl/strings/escaping.cc",
+      "line": 35,
+      "include": "absl/strings/internal/resize_uninitialized.h"
+    },
+    {
+      "source": "absl/strings/escaping.cc",
+      "line": 36,
+      "include": "absl/strings/internal/utf8.h"
+    },
+    {
+      "source": "absl/strings/escaping.cc",
+      "line": 37,
+      "include": "absl/strings/numbers.h"
+    },
+    {
+      "source": "absl/strings/escaping.cc",
+      "line": 38,
+      "include": "absl/strings/str_cat.h"
+    },
+    {
+      "source": "absl/strings/escaping.cc",
+      "line": 39,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/escaping.h",
+      "line": 30,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/escaping.h",
+      "line": 31,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/strings/escaping.h",
+      "line": 32,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/escaping.h",
+      "line": 33,
+      "include": "absl/strings/ascii.h"
+    },
+    {
+      "source": "absl/strings/escaping.h",
+      "line": 34,
+      "include": "absl/strings/str_join.h"
+    },
+    {
+      "source": "absl/strings/escaping.h",
+      "line": 35,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/has_absl_stringify.h",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/has_absl_stringify.h",
+      "line": 22,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/has_ostream_operator.h",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/charconv_bigint.cc",
+      "line": 15,
+      "include": "absl/strings/internal/charconv_bigint.h"
+    },
+    {
+      "source": "absl/strings/internal/charconv_bigint.h",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/charconv_bigint.h",
+      "line": 24,
+      "include": "absl/strings/ascii.h"
+    },
+    {
+      "source": "absl/strings/internal/charconv_bigint.h",
+      "line": 25,
+      "include": "absl/strings/internal/charconv_parse.h"
+    },
+    {
+      "source": "absl/strings/internal/charconv_bigint.h",
+      "line": 26,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/charconv_parse.cc",
+      "line": 15,
+      "include": "absl/strings/internal/charconv_parse.h"
+    },
+    {
+      "source": "absl/strings/internal/charconv_parse.cc",
+      "line": 16,
+      "include": "absl/strings/charconv.h"
+    },
+    {
+      "source": "absl/strings/internal/charconv_parse.cc",
+      "line": 22,
+      "include": "absl/strings/internal/memutil.h"
+    },
+    {
+      "source": "absl/strings/internal/charconv_parse.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/charconv_parse.h",
+      "line": 21,
+      "include": "absl/strings/charconv.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_data_edge.h",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_data_edge.h",
+      "line": 22,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_data_edge.h",
+      "line": 23,
+      "include": "absl/strings/internal/cord_rep_flat.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_data_edge.h",
+      "line": 24,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.cc",
+      "line": 14,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.cc",
+      "line": 20,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.cc",
+      "line": 21,
+      "include": "absl/container/inlined_vector.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.cc",
+      "line": 22,
+      "include": "absl/strings/internal/cord_rep_btree.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.cc",
+      "line": 23,
+      "include": "absl/strings/internal/cord_rep_crc.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.cc",
+      "line": 24,
+      "include": "absl/strings/internal/cord_rep_flat.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.cc",
+      "line": 25,
+      "include": "absl/strings/str_cat.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.h",
+      "line": 25,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.h",
+      "line": 26,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.h",
+      "line": 27,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.h",
+      "line": 28,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.h",
+      "line": 29,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.h",
+      "line": 30,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.h",
+      "line": 31,
+      "include": "absl/container/internal/compressed_tuple.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.h",
+      "line": 32,
+      "include": "absl/container/internal/container_memory.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_internal.h",
+      "line": 33,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.cc",
+      "line": 15,
+      "include": "absl/strings/internal/cord_rep_btree.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.cc",
+      "line": 24,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.cc",
+      "line": 25,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.cc",
+      "line": 26,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.cc",
+      "line": 27,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.cc",
+      "line": 28,
+      "include": "absl/strings/internal/cord_data_edge.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.cc",
+      "line": 29,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.cc",
+      "line": 30,
+      "include": "absl/strings/internal/cord_rep_consume.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.cc",
+      "line": 31,
+      "include": "absl/strings/internal/cord_rep_flat.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.cc",
+      "line": 32,
+      "include": "absl/strings/str_cat.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.cc",
+      "line": 33,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.h",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.h",
+      "line": 23,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.h",
+      "line": 24,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.h",
+      "line": 25,
+      "include": "absl/strings/internal/cord_data_edge.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.h",
+      "line": 26,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.h",
+      "line": 27,
+      "include": "absl/strings/internal/cord_rep_flat.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.h",
+      "line": 28,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree.h",
+      "line": 29,
+      "include": "absl/types/span.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_navigator.cc",
+      "line": 15,
+      "include": "absl/strings/internal/cord_rep_btree_navigator.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_navigator.cc",
+      "line": 19,
+      "include": "absl/strings/internal/cord_data_edge.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_navigator.cc",
+      "line": 20,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_navigator.cc",
+      "line": 21,
+      "include": "absl/strings/internal/cord_rep_btree.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_navigator.h",
+      "line": 21,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_navigator.h",
+      "line": 22,
+      "include": "absl/strings/internal/cord_rep_btree.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_reader.cc",
+      "line": 15,
+      "include": "absl/strings/internal/cord_rep_btree_reader.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_reader.cc",
+      "line": 19,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_reader.cc",
+      "line": 20,
+      "include": "absl/strings/internal/cord_data_edge.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_reader.cc",
+      "line": 21,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_reader.cc",
+      "line": 22,
+      "include": "absl/strings/internal/cord_rep_btree.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_reader.cc",
+      "line": 23,
+      "include": "absl/strings/internal/cord_rep_btree_navigator.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_reader.cc",
+      "line": 24,
+      "include": "absl/strings/internal/cord_rep_flat.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_reader.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_reader.h",
+      "line": 21,
+      "include": "absl/strings/internal/cord_data_edge.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_reader.h",
+      "line": 22,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_reader.h",
+      "line": 23,
+      "include": "absl/strings/internal/cord_rep_btree.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_reader.h",
+      "line": 24,
+      "include": "absl/strings/internal/cord_rep_btree_navigator.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_btree_reader.h",
+      "line": 25,
+      "include": "absl/strings/internal/cord_rep_flat.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_consume.cc",
+      "line": 15,
+      "include": "absl/strings/internal/cord_rep_consume.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_consume.cc",
+      "line": 20,
+      "include": "absl/container/inlined_vector.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_consume.cc",
+      "line": 21,
+      "include": "absl/functional/function_ref.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_consume.cc",
+      "line": 22,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_consume.h",
+      "line": 20,
+      "include": "absl/functional/function_ref.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_consume.h",
+      "line": 21,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_crc.cc",
+      "line": 15,
+      "include": "absl/strings/internal/cord_rep_crc.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_crc.cc",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_crc.cc",
+      "line": 22,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_crc.h",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_crc.h",
+      "line": 22,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_crc.h",
+      "line": 23,
+      "include": "absl/crc/internal/crc_cord_state.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_crc.h",
+      "line": 24,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_flat.h",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_flat.h",
+      "line": 24,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/strings/internal/cord_rep_flat.h",
+      "line": 25,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_functions.cc",
+      "line": 15,
+      "include": "absl/strings/internal/cordz_functions.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_functions.cc",
+      "line": 22,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_functions.cc",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_functions.cc",
+      "line": 24,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_functions.cc",
+      "line": 25,
+      "include": "absl/profiling/internal/exponential_biased.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_functions.h",
+      "line": 20,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_functions.h",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_functions.h",
+      "line": 22,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_handle.cc",
+      "line": 14,
+      "include": "absl/strings/internal/cordz_handle.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_handle.cc",
+      "line": 18,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_handle.cc",
+      "line": 19,
+      "include": "absl/base/no_destructor.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_handle.cc",
+      "line": 20,
+      "include": "absl/synchronization/mutex.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_handle.h",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_handle.h",
+      "line": 22,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.cc",
+      "line": 15,
+      "include": "absl/strings/internal/cordz_info.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.cc",
+      "line": 19,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.cc",
+      "line": 20,
+      "include": "absl/base/internal/spinlock.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.cc",
+      "line": 21,
+      "include": "absl/container/inlined_vector.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.cc",
+      "line": 22,
+      "include": "absl/debugging/stacktrace.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.cc",
+      "line": 23,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.cc",
+      "line": 24,
+      "include": "absl/strings/internal/cord_rep_btree.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.cc",
+      "line": 25,
+      "include": "absl/strings/internal/cord_rep_crc.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.cc",
+      "line": 26,
+      "include": "absl/strings/internal/cordz_handle.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.cc",
+      "line": 27,
+      "include": "absl/strings/internal/cordz_statistics.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.cc",
+      "line": 28,
+      "include": "absl/strings/internal/cordz_update_tracker.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.cc",
+      "line": 29,
+      "include": "absl/synchronization/mutex.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.cc",
+      "line": 30,
+      "include": "absl/time/clock.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.cc",
+      "line": 31,
+      "include": "absl/types/span.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.h",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.h",
+      "line": 23,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.h",
+      "line": 24,
+      "include": "absl/base/internal/spinlock.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.h",
+      "line": 25,
+      "include": "absl/base/thread_annotations.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.h",
+      "line": 26,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.h",
+      "line": 27,
+      "include": "absl/strings/internal/cordz_functions.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.h",
+      "line": 28,
+      "include": "absl/strings/internal/cordz_handle.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.h",
+      "line": 29,
+      "include": "absl/strings/internal/cordz_statistics.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.h",
+      "line": 30,
+      "include": "absl/strings/internal/cordz_update_tracker.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.h",
+      "line": 31,
+      "include": "absl/synchronization/mutex.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_info.h",
+      "line": 32,
+      "include": "absl/types/span.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_sample_token.cc",
+      "line": 15,
+      "include": "absl/strings/internal/cordz_sample_token.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_sample_token.cc",
+      "line": 17,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_sample_token.cc",
+      "line": 18,
+      "include": "absl/strings/internal/cordz_handle.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_sample_token.cc",
+      "line": 19,
+      "include": "absl/strings/internal/cordz_info.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_sample_token.h",
+      "line": 15,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_sample_token.h",
+      "line": 16,
+      "include": "absl/strings/internal/cordz_handle.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_sample_token.h",
+      "line": 17,
+      "include": "absl/strings/internal/cordz_info.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_statistics.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_statistics.h",
+      "line": 21,
+      "include": "absl/strings/internal/cordz_update_tracker.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_update_scope.h",
+      "line": 18,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_update_scope.h",
+      "line": 19,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_update_scope.h",
+      "line": 20,
+      "include": "absl/base/thread_annotations.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_update_scope.h",
+      "line": 21,
+      "include": "absl/strings/internal/cord_internal.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_update_scope.h",
+      "line": 22,
+      "include": "absl/strings/internal/cordz_info.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_update_scope.h",
+      "line": 23,
+      "include": "absl/strings/internal/cordz_update_tracker.h"
+    },
+    {
+      "source": "absl/strings/internal/cordz_update_tracker.h",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/damerau_levenshtein_distance.cc",
+      "line": 15,
+      "include": "absl/strings/internal/damerau_levenshtein_distance.h"
+    },
+    {
+      "source": "absl/strings/internal/damerau_levenshtein_distance.cc",
+      "line": 21,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/damerau_levenshtein_distance.h",
+      "line": 20,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/escaping.cc",
+      "line": 15,
+      "include": "absl/strings/internal/escaping.h"
+    },
+    {
+      "source": "absl/strings/internal/escaping.cc",
+      "line": 19,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/strings/internal/escaping.cc",
+      "line": 20,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/internal/escaping.h",
+      "line": 20,
+      "include": "absl/strings/internal/resize_uninitialized.h"
+    },
+    {
+      "source": "absl/strings/internal/memutil.cc",
+      "line": 15,
+      "include": "absl/strings/internal/memutil.h"
+    },
+    {
+      "source": "absl/strings/internal/memutil.cc",
+      "line": 19,
+      "include": "absl/strings/ascii.h"
+    },
+    {
+      "source": "absl/strings/internal/memutil.h",
+      "line": 23,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/strings/internal/memutil.h",
+      "line": 24,
+      "include": "absl/strings/ascii.h"
+    },
+    {
+      "source": "absl/strings/internal/ostringstream.cc",
+      "line": 15,
+      "include": "absl/strings/internal/ostringstream.h"
+    },
+    {
+      "source": "absl/strings/internal/ostringstream.h",
+      "line": 25,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/pow10_helper.cc",
+      "line": 15,
+      "include": "absl/strings/internal/pow10_helper.h"
+    },
+    {
+      "source": "absl/strings/internal/pow10_helper.h",
+      "line": 25,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/resize_uninitialized.h",
+      "line": 25,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/strings/internal/resize_uninitialized.h",
+      "line": 26,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/strings/internal/stl_type_traits.h",
+      "line": 40,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.cc",
+      "line": 19,
+      "include": "absl/strings/internal/str_format/arg.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.cc",
+      "line": 31,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.cc",
+      "line": 32,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.cc",
+      "line": 33,
+      "include": "absl/container/fixed_array.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.cc",
+      "line": 34,
+      "include": "absl/numeric/int128.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.cc",
+      "line": 35,
+      "include": "absl/strings/internal/str_format/extension.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.cc",
+      "line": 36,
+      "include": "absl/strings/internal/str_format/float_conversion.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.cc",
+      "line": 37,
+      "include": "absl/strings/numbers.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.cc",
+      "line": 38,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.h",
+      "line": 32,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.h",
+      "line": 33,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.h",
+      "line": 34,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.h",
+      "line": 35,
+      "include": "absl/numeric/int128.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.h",
+      "line": 36,
+      "include": "absl/strings/has_absl_stringify.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.h",
+      "line": 37,
+      "include": "absl/strings/internal/str_format/extension.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/arg.h",
+      "line": 38,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.cc",
+      "line": 15,
+      "include": "absl/strings/internal/str_format/bind.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.cc",
+      "line": 27,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.cc",
+      "line": 28,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.cc",
+      "line": 29,
+      "include": "absl/strings/internal/str_format/arg.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.cc",
+      "line": 30,
+      "include": "absl/strings/internal/str_format/constexpr_parser.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.cc",
+      "line": 31,
+      "include": "absl/strings/internal/str_format/extension.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.cc",
+      "line": 32,
+      "include": "absl/strings/internal/str_format/output.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.cc",
+      "line": 33,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.cc",
+      "line": 34,
+      "include": "absl/types/span.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.h",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.h",
+      "line": 24,
+      "include": "absl/container/inlined_vector.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.h",
+      "line": 25,
+      "include": "absl/strings/internal/str_format/arg.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.h",
+      "line": 26,
+      "include": "absl/strings/internal/str_format/checker.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.h",
+      "line": 27,
+      "include": "absl/strings/internal/str_format/constexpr_parser.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.h",
+      "line": 28,
+      "include": "absl/strings/internal/str_format/extension.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.h",
+      "line": 29,
+      "include": "absl/strings/internal/str_format/parser.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.h",
+      "line": 30,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.h",
+      "line": 31,
+      "include": "absl/types/span.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/bind.h",
+      "line": 32,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/checker.h",
+      "line": 20,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/checker.h",
+      "line": 21,
+      "include": "absl/strings/internal/str_format/arg.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/checker.h",
+      "line": 22,
+      "include": "absl/strings/internal/str_format/constexpr_parser.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/checker.h",
+      "line": 23,
+      "include": "absl/strings/internal/str_format/extension.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/constexpr_parser.h",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/constexpr_parser.h",
+      "line": 24,
+      "include": "absl/base/const_init.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/constexpr_parser.h",
+      "line": 25,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/constexpr_parser.h",
+      "line": 26,
+      "include": "absl/strings/internal/str_format/extension.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/extension.cc",
+      "line": 16,
+      "include": "absl/strings/internal/str_format/extension.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/extension.h",
+      "line": 26,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/extension.h",
+      "line": 27,
+      "include": "absl/strings/internal/str_format/output.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/extension.h",
+      "line": 28,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/float_conversion.cc",
+      "line": 15,
+      "include": "absl/strings/internal/str_format/float_conversion.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/float_conversion.cc",
+      "line": 26,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/float_conversion.cc",
+      "line": 27,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/float_conversion.cc",
+      "line": 28,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/float_conversion.cc",
+      "line": 29,
+      "include": "absl/functional/function_ref.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/float_conversion.cc",
+      "line": 30,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/float_conversion.cc",
+      "line": 31,
+      "include": "absl/numeric/bits.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/float_conversion.cc",
+      "line": 32,
+      "include": "absl/numeric/int128.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/float_conversion.cc",
+      "line": 33,
+      "include": "absl/numeric/internal/representation.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/float_conversion.cc",
+      "line": 34,
+      "include": "absl/strings/numbers.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/float_conversion.cc",
+      "line": 35,
+      "include": "absl/types/optional.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/float_conversion.cc",
+      "line": 36,
+      "include": "absl/types/span.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/float_conversion.h",
+      "line": 18,
+      "include": "absl/strings/internal/str_format/extension.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/output.cc",
+      "line": 15,
+      "include": "absl/strings/internal/str_format/output.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/output.h",
+      "line": 29,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/output.h",
+      "line": 30,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/parser.cc",
+      "line": 15,
+      "include": "absl/strings/internal/str_format/parser.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/parser.h",
+      "line": 29,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/parser.h",
+      "line": 30,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/parser.h",
+      "line": 31,
+      "include": "absl/strings/internal/str_format/checker.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/parser.h",
+      "line": 32,
+      "include": "absl/strings/internal/str_format/constexpr_parser.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/parser.h",
+      "line": 33,
+      "include": "absl/strings/internal/str_format/extension.h"
+    },
+    {
+      "source": "absl/strings/internal/str_format/parser.h",
+      "line": 34,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/str_join_internal.h",
+      "line": 45,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/internal/str_join_internal.h",
+      "line": 46,
+      "include": "absl/base/internal/iterator_traits.h"
+    },
+    {
+      "source": "absl/strings/internal/str_join_internal.h",
+      "line": 47,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/internal/str_join_internal.h",
+      "line": 48,
+      "include": "absl/strings/internal/ostringstream.h"
+    },
+    {
+      "source": "absl/strings/internal/str_join_internal.h",
+      "line": 49,
+      "include": "absl/strings/internal/resize_uninitialized.h"
+    },
+    {
+      "source": "absl/strings/internal/str_join_internal.h",
+      "line": 50,
+      "include": "absl/strings/str_cat.h"
+    },
+    {
+      "source": "absl/strings/internal/str_join_internal.h",
+      "line": 51,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/str_split_internal.h",
+      "line": 41,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/strings/internal/str_split_internal.h",
+      "line": 42,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/strings/internal/str_split_internal.h",
+      "line": 43,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/strings/internal/str_split_internal.h",
+      "line": 44,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/str_split_internal.h",
+      "line": 47,
+      "include": "absl/strings/internal/stl_type_traits.h"
+    },
+    {
+      "source": "absl/strings/internal/string_constant.h",
+      "line": 18,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/strings/internal/string_constant.h",
+      "line": 19,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/stringify_sink.cc",
+      "line": 15,
+      "include": "absl/strings/internal/stringify_sink.h"
+    },
+    {
+      "source": "absl/strings/internal/stringify_sink.h",
+      "line": 22,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/internal/utf8.cc",
+      "line": 17,
+      "include": "absl/strings/internal/utf8.h"
+    },
+    {
+      "source": "absl/strings/internal/utf8.h",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/match.cc",
+      "line": 15,
+      "include": "absl/strings/match.h"
+    },
+    {
+      "source": "absl/strings/match.cc",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/match.cc",
+      "line": 21,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/strings/match.cc",
+      "line": 22,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/match.cc",
+      "line": 23,
+      "include": "absl/numeric/bits.h"
+    },
+    {
+      "source": "absl/strings/match.cc",
+      "line": 24,
+      "include": "absl/strings/ascii.h"
+    },
+    {
+      "source": "absl/strings/match.cc",
+      "line": 25,
+      "include": "absl/strings/internal/memutil.h"
+    },
+    {
+      "source": "absl/strings/match.cc",
+      "line": 26,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/match.h",
+      "line": 38,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/numbers.cc",
+      "line": 18,
+      "include": "absl/strings/numbers.h"
+    },
+    {
+      "source": "absl/strings/numbers.cc",
+      "line": 34,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/numbers.cc",
+      "line": 35,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/numbers.cc",
+      "line": 36,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/strings/numbers.cc",
+      "line": 37,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/numbers.cc",
+      "line": 38,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/numbers.cc",
+      "line": 39,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/numbers.cc",
+      "line": 40,
+      "include": "absl/numeric/bits.h"
+    },
+    {
+      "source": "absl/strings/numbers.cc",
+      "line": 41,
+      "include": "absl/numeric/int128.h"
+    },
+    {
+      "source": "absl/strings/numbers.cc",
+      "line": 42,
+      "include": "absl/strings/ascii.h"
+    },
+    {
+      "source": "absl/strings/numbers.cc",
+      "line": 43,
+      "include": "absl/strings/charconv.h"
+    },
+    {
+      "source": "absl/strings/numbers.cc",
+      "line": 44,
+      "include": "absl/strings/match.h"
+    },
+    {
+      "source": "absl/strings/numbers.cc",
+      "line": 45,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/numbers.h",
+      "line": 43,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/numbers.h",
+      "line": 44,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/numbers.h",
+      "line": 45,
+      "include": "absl/base/internal/endian.h"
+    },
+    {
+      "source": "absl/strings/numbers.h",
+      "line": 46,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/strings/numbers.h",
+      "line": 47,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/numbers.h",
+      "line": 48,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/strings/numbers.h",
+      "line": 49,
+      "include": "absl/numeric/bits.h"
+    },
+    {
+      "source": "absl/strings/numbers.h",
+      "line": 50,
+      "include": "absl/numeric/int128.h"
+    },
+    {
+      "source": "absl/strings/numbers.h",
+      "line": 51,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/str_cat.cc",
+      "line": 15,
+      "include": "absl/strings/str_cat.h"
+    },
+    {
+      "source": "absl/strings/str_cat.cc",
+      "line": 26,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/str_cat.cc",
+      "line": 27,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/str_cat.cc",
+      "line": 28,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/str_cat.cc",
+      "line": 29,
+      "include": "absl/strings/internal/resize_uninitialized.h"
+    },
+    {
+      "source": "absl/strings/str_cat.cc",
+      "line": 30,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/str_cat.h",
+      "line": 103,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/str_cat.h",
+      "line": 104,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/str_cat.h",
+      "line": 105,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/str_cat.h",
+      "line": 106,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/strings/str_cat.h",
+      "line": 107,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/strings/str_cat.h",
+      "line": 108,
+      "include": "absl/strings/has_absl_stringify.h"
+    },
+    {
+      "source": "absl/strings/str_cat.h",
+      "line": 109,
+      "include": "absl/strings/internal/resize_uninitialized.h"
+    },
+    {
+      "source": "absl/strings/str_cat.h",
+      "line": 110,
+      "include": "absl/strings/internal/stringify_sink.h"
+    },
+    {
+      "source": "absl/strings/str_cat.h",
+      "line": 111,
+      "include": "absl/strings/numbers.h"
+    },
+    {
+      "source": "absl/strings/str_cat.h",
+      "line": 112,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/str_format.h",
+      "line": 80,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/str_format.h",
+      "line": 81,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/str_format.h",
+      "line": 82,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/str_format.h",
+      "line": 83,
+      "include": "absl/strings/internal/str_format/arg.h"
+    },
+    {
+      "source": "absl/strings/str_format.h",
+      "line": 84,
+      "include": "absl/strings/internal/str_format/bind.h"
+    },
+    {
+      "source": "absl/strings/str_format.h",
+      "line": 85,
+      "include": "absl/strings/internal/str_format/checker.h"
+    },
+    {
+      "source": "absl/strings/str_format.h",
+      "line": 86,
+      "include": "absl/strings/internal/str_format/extension.h"
+    },
+    {
+      "source": "absl/strings/str_format.h",
+      "line": 87,
+      "include": "absl/strings/internal/str_format/parser.h"
+    },
+    {
+      "source": "absl/strings/str_format.h",
+      "line": 88,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/str_format.h",
+      "line": 89,
+      "include": "absl/types/span.h"
+    },
+    {
+      "source": "absl/strings/str_join.h",
+      "line": 58,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/strings/str_join.h",
+      "line": 59,
+      "include": "absl/strings/internal/str_join_internal.h"
+    },
+    {
+      "source": "absl/strings/str_join.h",
+      "line": 60,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/str_replace.cc",
+      "line": 15,
+      "include": "absl/strings/str_replace.h"
+    },
+    {
+      "source": "absl/strings/str_replace.cc",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/str_replace.cc",
+      "line": 24,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/str_replace.cc",
+      "line": 25,
+      "include": "absl/strings/str_cat.h"
+    },
+    {
+      "source": "absl/strings/str_replace.cc",
+      "line": 26,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/str_replace.h",
+      "line": 45,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/str_replace.h",
+      "line": 46,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/str_replace.h",
+      "line": 47,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/str_split.cc",
+      "line": 15,
+      "include": "absl/strings/str_split.h"
+    },
+    {
+      "source": "absl/strings/str_split.cc",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/str_split.cc",
+      "line": 23,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/str_split.cc",
+      "line": 24,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/str_split.h",
+      "line": 46,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/str_split.h",
+      "line": 47,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/strings/str_split.h",
+      "line": 48,
+      "include": "absl/strings/internal/str_split_internal.h"
+    },
+    {
+      "source": "absl/strings/str_split.h",
+      "line": 49,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/str_split.h",
+      "line": 50,
+      "include": "absl/strings/strip.h"
+    },
+    {
+      "source": "absl/strings/string_view.cc",
+      "line": 15,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/string_view.cc",
+      "line": 24,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/string_view.h",
+      "line": 39,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/string_view.h",
+      "line": 40,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/string_view.h",
+      "line": 41,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/string_view.h",
+      "line": 42,
+      "include": "absl/base/internal/throw_delegate.h"
+    },
+    {
+      "source": "absl/strings/string_view.h",
+      "line": 43,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/strings/string_view.h",
+      "line": 44,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/strings/string_view.h",
+      "line": 45,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/strings/strip.h",
+      "line": 27,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/strings/strip.h",
+      "line": 28,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/strings/strip.h",
+      "line": 29,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/strip.h",
+      "line": 30,
+      "include": "absl/strings/ascii.h"
+    },
+    {
+      "source": "absl/strings/strip.h",
+      "line": 31,
+      "include": "absl/strings/match.h"
+    },
+    {
+      "source": "absl/strings/strip.h",
+      "line": 32,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/substitute.cc",
+      "line": 15,
+      "include": "absl/strings/substitute.h"
+    },
+    {
+      "source": "absl/strings/substitute.cc",
+      "line": 24,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/strings/substitute.cc",
+      "line": 25,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/strings/substitute.cc",
+      "line": 26,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/substitute.cc",
+      "line": 27,
+      "include": "absl/strings/ascii.h"
+    },
+    {
+      "source": "absl/strings/substitute.cc",
+      "line": 28,
+      "include": "absl/strings/escaping.h"
+    },
+    {
+      "source": "absl/strings/substitute.cc",
+      "line": 29,
+      "include": "absl/strings/internal/resize_uninitialized.h"
+    },
+    {
+      "source": "absl/strings/substitute.cc",
+      "line": 30,
+      "include": "absl/strings/numbers.h"
+    },
+    {
+      "source": "absl/strings/substitute.cc",
+      "line": 31,
+      "include": "absl/strings/str_cat.h"
+    },
+    {
+      "source": "absl/strings/substitute.cc",
+      "line": 32,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/substitute.h",
+      "line": 80,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/strings/substitute.h",
+      "line": 81,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/strings/substitute.h",
+      "line": 82,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/strings/substitute.h",
+      "line": 83,
+      "include": "absl/strings/ascii.h"
+    },
+    {
+      "source": "absl/strings/substitute.h",
+      "line": 84,
+      "include": "absl/strings/escaping.h"
+    },
+    {
+      "source": "absl/strings/substitute.h",
+      "line": 85,
+      "include": "absl/strings/internal/stringify_sink.h"
+    },
+    {
+      "source": "absl/strings/substitute.h",
+      "line": 86,
+      "include": "absl/strings/numbers.h"
+    },
+    {
+      "source": "absl/strings/substitute.h",
+      "line": 87,
+      "include": "absl/strings/str_cat.h"
+    },
+    {
+      "source": "absl/strings/substitute.h",
+      "line": 88,
+      "include": "absl/strings/str_split.h"
+    },
+    {
+      "source": "absl/strings/substitute.h",
+      "line": 89,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/strings/substitute.h",
+      "line": 90,
+      "include": "absl/strings/strip.h"
+    },
+    {
+      "source": "absl/synchronization/barrier.cc",
+      "line": 15,
+      "include": "absl/synchronization/barrier.h"
+    },
+    {
+      "source": "absl/synchronization/barrier.cc",
+      "line": 17,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/synchronization/barrier.cc",
+      "line": 18,
+      "include": "absl/synchronization/mutex.h"
+    },
+    {
+      "source": "absl/synchronization/barrier.h",
+      "line": 22,
+      "include": "absl/base/thread_annotations.h"
+    },
+    {
+      "source": "absl/synchronization/barrier.h",
+      "line": 23,
+      "include": "absl/synchronization/mutex.h"
+    },
+    {
+      "source": "absl/synchronization/blocking_counter.cc",
+      "line": 15,
+      "include": "absl/synchronization/blocking_counter.h"
+    },
+    {
+      "source": "absl/synchronization/blocking_counter.cc",
+      "line": 19,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/synchronization/blocking_counter.cc",
+      "line": 20,
+      "include": "absl/base/internal/tracing.h"
+    },
+    {
+      "source": "absl/synchronization/blocking_counter.h",
+      "line": 25,
+      "include": "absl/base/internal/tracing.h"
+    },
+    {
+      "source": "absl/synchronization/blocking_counter.h",
+      "line": 26,
+      "include": "absl/base/thread_annotations.h"
+    },
+    {
+      "source": "absl/synchronization/blocking_counter.h",
+      "line": 27,
+      "include": "absl/synchronization/mutex.h"
+    },
+    {
+      "source": "absl/synchronization/internal/create_thread_identity.cc",
+      "line": 20,
+      "include": "absl/base/internal/low_level_alloc.h"
+    },
+    {
+      "source": "absl/synchronization/internal/create_thread_identity.cc",
+      "line": 21,
+      "include": "absl/synchronization/internal/waiter.h"
+    },
+    {
+      "source": "absl/synchronization/internal/create_thread_identity.cc",
+      "line": 26,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/synchronization/internal/create_thread_identity.cc",
+      "line": 27,
+      "include": "absl/base/internal/spinlock.h"
+    },
+    {
+      "source": "absl/synchronization/internal/create_thread_identity.cc",
+      "line": 28,
+      "include": "absl/base/internal/thread_identity.h"
+    },
+    {
+      "source": "absl/synchronization/internal/create_thread_identity.cc",
+      "line": 29,
+      "include": "absl/synchronization/internal/per_thread_sem.h"
+    },
+    {
+      "source": "absl/synchronization/internal/create_thread_identity.h",
+      "line": 28,
+      "include": "absl/base/internal/thread_identity.h"
+    },
+    {
+      "source": "absl/synchronization/internal/create_thread_identity.h",
+      "line": 29,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/synchronization/internal/futex.h",
+      "line": 17,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/futex.h",
+      "line": 37,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/synchronization/internal/futex.h",
+      "line": 38,
+      "include": "absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "source": "absl/synchronization/internal/futex_waiter.cc",
+      "line": 15,
+      "include": "absl/synchronization/internal/futex_waiter.h"
+    },
+    {
+      "source": "absl/synchronization/internal/futex_waiter.cc",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/futex_waiter.cc",
+      "line": 24,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/synchronization/internal/futex_waiter.cc",
+      "line": 25,
+      "include": "absl/base/internal/thread_identity.h"
+    },
+    {
+      "source": "absl/synchronization/internal/futex_waiter.cc",
+      "line": 26,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/synchronization/internal/futex_waiter.cc",
+      "line": 27,
+      "include": "absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "source": "absl/synchronization/internal/futex_waiter.cc",
+      "line": 28,
+      "include": "absl/synchronization/internal/futex.h"
+    },
+    {
+      "source": "absl/synchronization/internal/futex_waiter.h",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/futex_waiter.h",
+      "line": 23,
+      "include": "absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "source": "absl/synchronization/internal/futex_waiter.h",
+      "line": 24,
+      "include": "absl/synchronization/internal/futex.h"
+    },
+    {
+      "source": "absl/synchronization/internal/futex_waiter.h",
+      "line": 25,
+      "include": "absl/synchronization/internal/waiter_base.h"
+    },
+    {
+      "source": "absl/synchronization/internal/graphcycles.cc",
+      "line": 31,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/synchronization/internal/graphcycles.cc",
+      "line": 33,
+      "include": "absl/base/internal/low_level_alloc.h"
+    },
+    {
+      "source": "absl/synchronization/internal/graphcycles.cc",
+      "line": 36,
+      "include": "absl/synchronization/internal/graphcycles.h"
+    },
+    {
+      "source": "absl/synchronization/internal/graphcycles.cc",
+      "line": 42,
+      "include": "absl/base/internal/hide_ptr.h"
+    },
+    {
+      "source": "absl/synchronization/internal/graphcycles.cc",
+      "line": 43,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/synchronization/internal/graphcycles.cc",
+      "line": 44,
+      "include": "absl/base/internal/spinlock.h"
+    },
+    {
+      "source": "absl/synchronization/internal/graphcycles.h",
+      "line": 43,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/kernel_timeout.cc",
+      "line": 15,
+      "include": "absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "source": "absl/synchronization/internal/kernel_timeout.cc",
+      "line": 29,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/synchronization/internal/kernel_timeout.cc",
+      "line": 30,
+      "include": "absl/base/call_once.h"
+    },
+    {
+      "source": "absl/synchronization/internal/kernel_timeout.cc",
+      "line": 31,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/kernel_timeout.cc",
+      "line": 32,
+      "include": "absl/time/time.h"
+    },
+    {
+      "source": "absl/synchronization/internal/kernel_timeout.h",
+      "line": 28,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/kernel_timeout.h",
+      "line": 29,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/synchronization/internal/kernel_timeout.h",
+      "line": 30,
+      "include": "absl/time/clock.h"
+    },
+    {
+      "source": "absl/synchronization/internal/kernel_timeout.h",
+      "line": 31,
+      "include": "absl/time/time.h"
+    },
+    {
+      "source": "absl/synchronization/internal/per_thread_sem.cc",
+      "line": 16,
+      "include": "absl/base/internal/low_level_alloc.h"
+    },
+    {
+      "source": "absl/synchronization/internal/per_thread_sem.cc",
+      "line": 19,
+      "include": "absl/synchronization/internal/per_thread_sem.h"
+    },
+    {
+      "source": "absl/synchronization/internal/per_thread_sem.cc",
+      "line": 23,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/synchronization/internal/per_thread_sem.cc",
+      "line": 24,
+      "include": "absl/base/internal/thread_identity.h"
+    },
+    {
+      "source": "absl/synchronization/internal/per_thread_sem.cc",
+      "line": 25,
+      "include": "absl/synchronization/internal/waiter.h"
+    },
+    {
+      "source": "absl/synchronization/internal/per_thread_sem.h",
+      "line": 30,
+      "include": "absl/base/internal/thread_identity.h"
+    },
+    {
+      "source": "absl/synchronization/internal/per_thread_sem.h",
+      "line": 31,
+      "include": "absl/synchronization/internal/create_thread_identity.h"
+    },
+    {
+      "source": "absl/synchronization/internal/per_thread_sem.h",
+      "line": 32,
+      "include": "absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "source": "absl/synchronization/internal/pthread_waiter.cc",
+      "line": 15,
+      "include": "absl/synchronization/internal/pthread_waiter.h"
+    },
+    {
+      "source": "absl/synchronization/internal/pthread_waiter.cc",
+      "line": 26,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/pthread_waiter.cc",
+      "line": 27,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/synchronization/internal/pthread_waiter.cc",
+      "line": 28,
+      "include": "absl/base/internal/thread_identity.h"
+    },
+    {
+      "source": "absl/synchronization/internal/pthread_waiter.cc",
+      "line": 29,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/synchronization/internal/pthread_waiter.cc",
+      "line": 30,
+      "include": "absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "source": "absl/synchronization/internal/pthread_waiter.h",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/pthread_waiter.h",
+      "line": 23,
+      "include": "absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "source": "absl/synchronization/internal/pthread_waiter.h",
+      "line": 24,
+      "include": "absl/synchronization/internal/waiter_base.h"
+    },
+    {
+      "source": "absl/synchronization/internal/sem_waiter.cc",
+      "line": 15,
+      "include": "absl/synchronization/internal/sem_waiter.h"
+    },
+    {
+      "source": "absl/synchronization/internal/sem_waiter.cc",
+      "line": 26,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/sem_waiter.cc",
+      "line": 27,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/synchronization/internal/sem_waiter.cc",
+      "line": 28,
+      "include": "absl/base/internal/thread_identity.h"
+    },
+    {
+      "source": "absl/synchronization/internal/sem_waiter.cc",
+      "line": 29,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/synchronization/internal/sem_waiter.cc",
+      "line": 30,
+      "include": "absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "source": "absl/synchronization/internal/sem_waiter.h",
+      "line": 19,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/sem_waiter.h",
+      "line": 27,
+      "include": "absl/base/internal/thread_identity.h"
+    },
+    {
+      "source": "absl/synchronization/internal/sem_waiter.h",
+      "line": 28,
+      "include": "absl/synchronization/internal/futex.h"
+    },
+    {
+      "source": "absl/synchronization/internal/sem_waiter.h",
+      "line": 29,
+      "include": "absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "source": "absl/synchronization/internal/sem_waiter.h",
+      "line": 30,
+      "include": "absl/synchronization/internal/waiter_base.h"
+    },
+    {
+      "source": "absl/synchronization/internal/stdcpp_waiter.cc",
+      "line": 15,
+      "include": "absl/synchronization/internal/stdcpp_waiter.h"
+    },
+    {
+      "source": "absl/synchronization/internal/stdcpp_waiter.cc",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/stdcpp_waiter.cc",
+      "line": 24,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/synchronization/internal/stdcpp_waiter.cc",
+      "line": 25,
+      "include": "absl/base/internal/thread_identity.h"
+    },
+    {
+      "source": "absl/synchronization/internal/stdcpp_waiter.cc",
+      "line": 26,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/synchronization/internal/stdcpp_waiter.cc",
+      "line": 27,
+      "include": "absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "source": "absl/synchronization/internal/stdcpp_waiter.h",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/stdcpp_waiter.h",
+      "line": 23,
+      "include": "absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "source": "absl/synchronization/internal/stdcpp_waiter.h",
+      "line": 24,
+      "include": "absl/synchronization/internal/waiter_base.h"
+    },
+    {
+      "source": "absl/synchronization/internal/thread_pool.h",
+      "line": 26,
+      "include": "absl/base/thread_annotations.h"
+    },
+    {
+      "source": "absl/synchronization/internal/thread_pool.h",
+      "line": 27,
+      "include": "absl/functional/any_invocable.h"
+    },
+    {
+      "source": "absl/synchronization/internal/thread_pool.h",
+      "line": 28,
+      "include": "absl/synchronization/mutex.h"
+    },
+    {
+      "source": "absl/synchronization/internal/waiter.h",
+      "line": 19,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/waiter.h",
+      "line": 20,
+      "include": "absl/synchronization/internal/futex_waiter.h"
+    },
+    {
+      "source": "absl/synchronization/internal/waiter.h",
+      "line": 21,
+      "include": "absl/synchronization/internal/pthread_waiter.h"
+    },
+    {
+      "source": "absl/synchronization/internal/waiter.h",
+      "line": 22,
+      "include": "absl/synchronization/internal/sem_waiter.h"
+    },
+    {
+      "source": "absl/synchronization/internal/waiter.h",
+      "line": 23,
+      "include": "absl/synchronization/internal/stdcpp_waiter.h"
+    },
+    {
+      "source": "absl/synchronization/internal/waiter.h",
+      "line": 24,
+      "include": "absl/synchronization/internal/win32_waiter.h"
+    },
+    {
+      "source": "absl/synchronization/internal/waiter_base.cc",
+      "line": 15,
+      "include": "absl/synchronization/internal/waiter_base.h"
+    },
+    {
+      "source": "absl/synchronization/internal/waiter_base.cc",
+      "line": 17,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/waiter_base.cc",
+      "line": 18,
+      "include": "absl/base/internal/thread_identity.h"
+    },
+    {
+      "source": "absl/synchronization/internal/waiter_base.h",
+      "line": 19,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/waiter_base.h",
+      "line": 20,
+      "include": "absl/base/internal/thread_identity.h"
+    },
+    {
+      "source": "absl/synchronization/internal/waiter_base.h",
+      "line": 21,
+      "include": "absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "source": "absl/synchronization/internal/win32_waiter.cc",
+      "line": 15,
+      "include": "absl/synchronization/internal/win32_waiter.h"
+    },
+    {
+      "source": "absl/synchronization/internal/win32_waiter.cc",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/win32_waiter.cc",
+      "line": 22,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/synchronization/internal/win32_waiter.cc",
+      "line": 23,
+      "include": "absl/base/internal/thread_identity.h"
+    },
+    {
+      "source": "absl/synchronization/internal/win32_waiter.cc",
+      "line": 24,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/synchronization/internal/win32_waiter.cc",
+      "line": 25,
+      "include": "absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "source": "absl/synchronization/internal/win32_waiter.h",
+      "line": 26,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/internal/win32_waiter.h",
+      "line": 27,
+      "include": "absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "source": "absl/synchronization/internal/win32_waiter.h",
+      "line": 28,
+      "include": "absl/synchronization/internal/waiter_base.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 15,
+      "include": "absl/synchronization/mutex.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 43,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 44,
+      "include": "absl/base/call_once.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 45,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 46,
+      "include": "absl/base/dynamic_annotations.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 47,
+      "include": "absl/base/internal/atomic_hook.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 48,
+      "include": "absl/base/internal/cycleclock.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 49,
+      "include": "absl/base/internal/hide_ptr.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 50,
+      "include": "absl/base/internal/low_level_alloc.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 51,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 52,
+      "include": "absl/base/internal/spinlock.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 53,
+      "include": "absl/base/internal/sysinfo.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 54,
+      "include": "absl/base/internal/thread_identity.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 55,
+      "include": "absl/base/internal/tsan_mutex_interface.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 56,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 57,
+      "include": "absl/debugging/stacktrace.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 58,
+      "include": "absl/debugging/symbolize.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 59,
+      "include": "absl/synchronization/internal/graphcycles.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 60,
+      "include": "absl/synchronization/internal/per_thread_sem.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.cc",
+      "line": 61,
+      "include": "absl/time/time.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.h",
+      "line": 67,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.h",
+      "line": 68,
+      "include": "absl/base/const_init.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.h",
+      "line": 69,
+      "include": "absl/base/internal/identity.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.h",
+      "line": 70,
+      "include": "absl/base/internal/low_level_alloc.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.h",
+      "line": 71,
+      "include": "absl/base/internal/thread_identity.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.h",
+      "line": 72,
+      "include": "absl/base/internal/tsan_mutex_interface.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.h",
+      "line": 73,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.h",
+      "line": 74,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.h",
+      "line": 75,
+      "include": "absl/base/thread_annotations.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.h",
+      "line": 76,
+      "include": "absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.h",
+      "line": 77,
+      "include": "absl/synchronization/internal/per_thread_sem.h"
+    },
+    {
+      "source": "absl/synchronization/mutex.h",
+      "line": 78,
+      "include": "absl/time/time.h"
+    },
+    {
+      "source": "absl/synchronization/notification.cc",
+      "line": 15,
+      "include": "absl/synchronization/notification.h"
+    },
+    {
+      "source": "absl/synchronization/notification.cc",
+      "line": 19,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/synchronization/notification.cc",
+      "line": 20,
+      "include": "absl/base/internal/tracing.h"
+    },
+    {
+      "source": "absl/synchronization/notification.cc",
+      "line": 21,
+      "include": "absl/synchronization/mutex.h"
+    },
+    {
+      "source": "absl/synchronization/notification.cc",
+      "line": 22,
+      "include": "absl/time/time.h"
+    },
+    {
+      "source": "absl/synchronization/notification.h",
+      "line": 55,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/synchronization/notification.h",
+      "line": 56,
+      "include": "absl/base/internal/tracing.h"
+    },
+    {
+      "source": "absl/synchronization/notification.h",
+      "line": 57,
+      "include": "absl/synchronization/mutex.h"
+    },
+    {
+      "source": "absl/synchronization/notification.h",
+      "line": 58,
+      "include": "absl/time/time.h"
+    },
+    {
+      "source": "absl/time/civil_time.cc",
+      "line": 15,
+      "include": "absl/time/civil_time.h"
+    },
+    {
+      "source": "absl/time/civil_time.cc",
+      "line": 22,
+      "include": "absl/strings/str_cat.h"
+    },
+    {
+      "source": "absl/time/civil_time.cc",
+      "line": 23,
+      "include": "absl/time/time.h"
+    },
+    {
+      "source": "absl/time/civil_time.h",
+      "line": 76,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/civil_time.h",
+      "line": 77,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/time/civil_time.h",
+      "line": 78,
+      "include": "absl/time/internal/cctz/include/cctz/civil_time.h"
+    },
+    {
+      "source": "absl/time/clock.cc",
+      "line": 15,
+      "include": "absl/time/clock.h"
+    },
+    {
+      "source": "absl/time/clock.cc",
+      "line": 17,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/time/clock.cc",
+      "line": 18,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/time/clock.cc",
+      "line": 31,
+      "include": "absl/base/internal/spinlock.h"
+    },
+    {
+      "source": "absl/time/clock.cc",
+      "line": 32,
+      "include": "absl/base/internal/unscaledcycleclock.h"
+    },
+    {
+      "source": "absl/time/clock.cc",
+      "line": 33,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/time/clock.cc",
+      "line": 34,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/time/clock.cc",
+      "line": 35,
+      "include": "absl/base/thread_annotations.h"
+    },
+    {
+      "source": "absl/time/clock.cc",
+      "line": 63,
+      "include": "absl/time/internal/get_current_time_chrono.inc"
+    },
+    {
+      "source": "absl/time/clock.cc",
+      "line": 65,
+      "include": "absl/time/internal/get_current_time_posix.inc"
+    },
+    {
+      "source": "absl/time/clock.h",
+      "line": 27,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/clock.h",
+      "line": 28,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/time/clock.h",
+      "line": 29,
+      "include": "absl/time/time.h"
+    },
+    {
+      "source": "absl/time/duration.cc",
+      "line": 68,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/time/duration.cc",
+      "line": 69,
+      "include": "absl/base/casts.h"
+    },
+    {
+      "source": "absl/time/duration.cc",
+      "line": 70,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/duration.cc",
+      "line": 71,
+      "include": "absl/numeric/int128.h"
+    },
+    {
+      "source": "absl/time/duration.cc",
+      "line": 72,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/time/duration.cc",
+      "line": 73,
+      "include": "absl/strings/strip.h"
+    },
+    {
+      "source": "absl/time/duration.cc",
+      "line": 74,
+      "include": "absl/time/time.h"
+    },
+    {
+      "source": "absl/time/format.cc",
+      "line": 21,
+      "include": "absl/strings/match.h"
+    },
+    {
+      "source": "absl/time/format.cc",
+      "line": 22,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/time/format.cc",
+      "line": 23,
+      "include": "absl/time/internal/cctz/include/cctz/time_zone.h"
+    },
+    {
+      "source": "absl/time/format.cc",
+      "line": 24,
+      "include": "absl/time/time.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/include/cctz/civil_time.h",
+      "line": 18,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/include/cctz/civil_time.h",
+      "line": 19,
+      "include": "absl/time/internal/cctz/include/cctz/civil_time_detail.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/include/cctz/civil_time_detail.h",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/include/cctz/time_zone.h",
+      "line": 30,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/include/cctz/time_zone.h",
+      "line": 31,
+      "include": "absl/time/internal/cctz/include/cctz/civil_time.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/include/cctz/zone_info_source.h",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/civil_time_detail.cc",
+      "line": 15,
+      "include": "absl/time/internal/cctz/include/cctz/civil_time_detail.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/civil_time_detail.cc",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_fixed.cc",
+      "line": 15,
+      "include": "absl/time/internal/cctz/src/time_zone_fixed.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_fixed.cc",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_fixed.h",
+      "line": 20,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_fixed.h",
+      "line": 21,
+      "include": "absl/time/internal/cctz/include/cctz/time_zone.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_format.cc",
+      "line": 27,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_format.cc",
+      "line": 28,
+      "include": "absl/time/internal/cctz/include/cctz/time_zone.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_format.cc",
+      "line": 48,
+      "include": "absl/time/internal/cctz/include/cctz/civil_time.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_format.cc",
+      "line": 49,
+      "include": "absl/time/internal/cctz/src/time_zone_if.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_if.cc",
+      "line": 15,
+      "include": "absl/time/internal/cctz/src/time_zone_if.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_if.cc",
+      "line": 17,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_if.cc",
+      "line": 18,
+      "include": "absl/time/internal/cctz/src/time_zone_info.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_if.cc",
+      "line": 19,
+      "include": "absl/time/internal/cctz/src/time_zone_libc.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_if.h",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_if.h",
+      "line": 24,
+      "include": "absl/time/internal/cctz/include/cctz/civil_time.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_if.h",
+      "line": 25,
+      "include": "absl/time/internal/cctz/include/cctz/time_zone.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_impl.cc",
+      "line": 15,
+      "include": "absl/time/internal/cctz/src/time_zone_impl.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_impl.cc",
+      "line": 24,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_impl.cc",
+      "line": 25,
+      "include": "absl/time/internal/cctz/src/time_zone_fixed.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_impl.h",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_impl.h",
+      "line": 22,
+      "include": "absl/time/internal/cctz/include/cctz/civil_time.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_impl.h",
+      "line": 23,
+      "include": "absl/time/internal/cctz/include/cctz/time_zone.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_impl.h",
+      "line": 24,
+      "include": "absl/time/internal/cctz/src/time_zone_if.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_impl.h",
+      "line": 25,
+      "include": "absl/time/internal/cctz/src/time_zone_info.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_info.cc",
+      "line": 33,
+      "include": "absl/time/internal/cctz/src/time_zone_info.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_info.cc",
+      "line": 50,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_info.cc",
+      "line": 51,
+      "include": "absl/time/internal/cctz/include/cctz/civil_time.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_info.cc",
+      "line": 52,
+      "include": "absl/time/internal/cctz/src/time_zone_fixed.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_info.cc",
+      "line": 53,
+      "include": "absl/time/internal/cctz/src/time_zone_posix.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_info.h",
+      "line": 25,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_info.h",
+      "line": 26,
+      "include": "absl/time/internal/cctz/include/cctz/civil_time.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_info.h",
+      "line": 27,
+      "include": "absl/time/internal/cctz/include/cctz/time_zone.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_info.h",
+      "line": 28,
+      "include": "absl/time/internal/cctz/include/cctz/zone_info_source.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_info.h",
+      "line": 29,
+      "include": "absl/time/internal/cctz/src/time_zone_if.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_info.h",
+      "line": 30,
+      "include": "absl/time/internal/cctz/src/tzfile.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_libc.cc",
+      "line": 19,
+      "include": "absl/time/internal/cctz/src/time_zone_libc.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_libc.cc",
+      "line": 26,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_libc.cc",
+      "line": 27,
+      "include": "absl/time/internal/cctz/include/cctz/civil_time.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_libc.cc",
+      "line": 28,
+      "include": "absl/time/internal/cctz/include/cctz/time_zone.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_libc.h",
+      "line": 21,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_libc.h",
+      "line": 22,
+      "include": "absl/time/internal/cctz/src/time_zone_if.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_lookup.cc",
+      "line": 15,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_lookup.cc",
+      "line": 16,
+      "include": "absl/time/internal/cctz/include/cctz/time_zone.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_lookup.cc",
+      "line": 58,
+      "include": "absl/time/internal/cctz/src/time_zone_fixed.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_lookup.cc",
+      "line": 59,
+      "include": "absl/time/internal/cctz/src/time_zone_impl.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_posix.cc",
+      "line": 15,
+      "include": "absl/time/internal/cctz/src/time_zone_posix.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_posix.cc",
+      "line": 22,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/time_zone_posix.h",
+      "line": 58,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/zone_info_source.cc",
+      "line": 15,
+      "include": "absl/time/internal/cctz/include/cctz/zone_info_source.h"
+    },
+    {
+      "source": "absl/time/internal/cctz/src/zone_info_source.cc",
+      "line": 17,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/internal/get_current_time_posix.inc",
+      "line": 1,
+      "include": "absl/time/clock.h"
+    },
+    {
+      "source": "absl/time/internal/get_current_time_posix.inc",
+      "line": 7,
+      "include": "absl/base/internal/raw_logging.h"
+    },
+    {
+      "source": "absl/time/time.cc",
+      "line": 34,
+      "include": "absl/time/time.h"
+    },
+    {
+      "source": "absl/time/time.cc",
+      "line": 44,
+      "include": "absl/time/internal/cctz/include/cctz/civil_time.h"
+    },
+    {
+      "source": "absl/time/time.cc",
+      "line": 45,
+      "include": "absl/time/internal/cctz/include/cctz/time_zone.h"
+    },
+    {
+      "source": "absl/time/time.h",
+      "line": 78,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/time/time.h",
+      "line": 99,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/time/time.h",
+      "line": 100,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/time/time.h",
+      "line": 101,
+      "include": "absl/strings/string_view.h"
+    },
+    {
+      "source": "absl/time/time.h",
+      "line": 102,
+      "include": "absl/time/civil_time.h"
+    },
+    {
+      "source": "absl/time/time.h",
+      "line": 103,
+      "include": "absl/time/internal/cctz/include/cctz/time_zone.h"
+    },
+    {
+      "source": "absl/types/any.h",
+      "line": 29,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/types/any.h",
+      "line": 32,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/types/any.h",
+      "line": 33,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/types/compare.h",
+      "line": 33,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/types/compare.h",
+      "line": 40,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/types/compare.h",
+      "line": 49,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/types/compare.h",
+      "line": 50,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/types/compare.h",
+      "line": 51,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/types/internal/span.h",
+      "line": 24,
+      "include": "absl/algorithm/algorithm.h"
+    },
+    {
+      "source": "absl/types/internal/span.h",
+      "line": 25,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/types/internal/span.h",
+      "line": 26,
+      "include": "absl/base/internal/throw_delegate.h"
+    },
+    {
+      "source": "absl/types/internal/span.h",
+      "line": 27,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/types/optional.h",
+      "line": 28,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/types/optional.h",
+      "line": 29,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/types/span.h",
+      "line": 63,
+      "include": "absl/base/attributes.h"
+    },
+    {
+      "source": "absl/types/span.h",
+      "line": 64,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/types/span.h",
+      "line": 65,
+      "include": "absl/base/internal/throw_delegate.h"
+    },
+    {
+      "source": "absl/types/span.h",
+      "line": 66,
+      "include": "absl/base/macros.h"
+    },
+    {
+      "source": "absl/types/span.h",
+      "line": 67,
+      "include": "absl/base/nullability.h"
+    },
+    {
+      "source": "absl/types/span.h",
+      "line": 68,
+      "include": "absl/base/optimization.h"
+    },
+    {
+      "source": "absl/types/span.h",
+      "line": 69,
+      "include": "absl/base/port.h"
+    },
+    {
+      "source": "absl/types/span.h",
+      "line": 70,
+      "include": "absl/meta/type_traits.h"
+    },
+    {
+      "source": "absl/types/span.h",
+      "line": 71,
+      "include": "absl/types/internal/span.h"
+    },
+    {
+      "source": "absl/types/variant.h",
+      "line": 28,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/types/variant.h",
+      "line": 29,
+      "include": "absl/utility/utility.h"
+    },
+    {
+      "source": "absl/utility/utility.h",
+      "line": 23,
+      "include": "absl/base/config.h"
+    },
+    {
+      "source": "absl/utility/utility.h",
+      "line": 26,
+      "include": "absl/meta/type_traits.h"
+    }
+  ],
+  "unresolved_internal_includes": [],
+  "unresolved_local_quoted_includes": [],
+  "compiler_execution": false,
+  "native_execution": false,
+  "preprocessor_execution": false,
+  "qualification": false
+}

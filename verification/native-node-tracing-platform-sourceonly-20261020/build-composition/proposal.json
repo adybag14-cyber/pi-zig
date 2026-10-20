@@ -1,0 +1,373 @@
+{
+  "schema": 1,
+  "kind": "Finite install-only tracing archive composition proposal; not applied",
+  "created_utc": "2026-10-20T19:37:55.821279+00:00",
+  "main_basis": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+  "build_original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\build-composition\\original\\build.zig",
+    "bytes": 503440,
+    "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+  },
+  "build_projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\build-composition\\projected\\build.zig",
+    "bytes": 504628,
+    "sha256": "0D290C6C137C172EFA9CA07025ED7002304DAA41DABA1BB00A50330C347908C7"
+  },
+  "edit": {
+    "kind": "single insertion",
+    "byte_offset": 7776,
+    "anchor": "    if (native_node_network) |network| quickjs.root_module.linkLibrary(network);\n",
+    "insert": "    // Source-only tracing assembly: the dedicated target installs archives.\n    // Final binary linkage and process bootstrap remain separate admission.\n    if (native_node_memory) |memory| {\n        if (native_node_network) |network| {\n            const tracing_build = @import(\"tools/build_native_node_tracing.zig\");\n            const tracing_abseil = @import(\"tools/build_native_node_abseil.zig\").add(b, target, optimize);\n            const tracing_diagnostic = tracing_build.addDiagnosticOwner(b, target, optimize);\n            const tracing_library = tracing_build.add(b, target, optimize, .{\n                .network = network,\n                .native_memory = memory,\n                .diagnostic = tracing_diagnostic,\n                .abseil = tracing_abseil,\n            });\n            const tracing_archives = b.step(\n                \"build-native-node-tracing\",\n                \"Build and install the original tracing, Abseil and diagnostic archives\",\n            );\n            inline for (.{ tracing_abseil, tracing_diagnostic, tracing_library }) |archive| {\n                tracing_archives.dependOn(&b.addInstallArtifact(archive, .{}).step);\n            }\n        }\n    }\n",
+    "insert_bytes": 1188,
+    "insert_lines": 22
+  },
+  "inverse_recovers_complete_original": true,
+  "new_step": "build-native-node-tracing",
+  "step_behavior": "Only addInstallArtifact dependencies for the three new archives; no command, generator, run artifact, test, process startup or global QuickJS link is introduced.",
+  "new_archives": [
+    "pi-node-abseil",
+    "pi-node-tracing-diagnostic",
+    "pi-node-tracing"
+  ],
+  "reused_existing_archives": [
+    "pi-node-native-memory",
+    "pi-node-network"
+  ],
+  "existing_QuickJS_final_binary_owner": "pi-quickjs contains engine_abi.c. A later final binary must link that existing owner when consuming tracing; this install-only target does not attempt final binary linkage.",
+  "source_counts": {
+    "abseil_cpp": 110,
+    "new_diagnostic_c": 1,
+    "new_diagnostic_cpp": 2,
+    "tracing_common_cpp": 9,
+    "windows_recorder_cpp": 2,
+    "linux_recorder_cpp": 0,
+    "darwin_recorder_cpp": 2,
+    "windows_total_new_cpp_units": 123,
+    "linux_total_new_cpp_units": 121,
+    "existing_network_memory_recompiled_as_duplicate_sources": false,
+    "counts_are_source_declarations_not_observed_compiler_objects": true
+  },
+  "actual_source_membership": {
+    "c": {
+      "all_targets": [
+        "src/extensions/native_node_diagnostic_context.c"
+      ]
+    },
+    "cpp": {
+      "all_targets": [
+        "src/extensions/native_node_tracing_core.cpp",
+        "src/extensions/native_node_tracing_controller.cpp",
+        "src/extensions/native_node_tracing_buffer.cpp",
+        "src/extensions/native_node_tracing_writer.cpp",
+        "src/extensions/native_node_tracing_agent.cpp",
+        "src/extensions/native_node_tracing_clock.cpp",
+        "src/extensions/native_node_tracing_api.cpp",
+        "src/extensions/native_node_tracing_platform.cpp",
+        "src/extensions/native_node_tracing_loop.cpp",
+        "src/extensions/native_v8_base_fatal.cpp",
+        "src/extensions/native_node_tracing_clock_diagnostics.cpp"
+      ],
+      "windows": [
+        "src/extensions/native_node_tracing_recorder.cpp",
+        "src/extensions/native_node_tracing_recorder_win.cpp"
+      ],
+      "macos": [
+        "src/extensions/native_node_tracing_recorder.cpp",
+        "src/extensions/native_node_tracing_recorder_mac.cpp"
+      ]
+    },
+    "abseil_manifest": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\SOURCE-MANIFEST.json",
+      "bytes": 214500,
+      "sha256": "0B91065B9E2B4F79929FF2245DE802AF87C01BEB2F572B274491343DC1C94706"
+    }
+  },
+  "single_owner_mapping": [
+    {
+      "owner": "pi-node-abseil",
+      "sources": "110 unchanged original Abseil .cc units",
+      "consumers": "V8Mutex and original Abseil synchronization dependencies",
+      "sharing": "One new archive object passed into tracing; no forced alternate mutex or waiter."
+    },
+    {
+      "owner": "pi-node-native-memory (existing)",
+      "sources": "native_simdjson_memory.cpp",
+      "consumers": "NativeAllocated, rebound STL allocator, Agent native allocation scopes",
+      "sharing": "Pass the existing Main memory compile pointer; no second TLS or allocation owner."
+    },
+    {
+      "owner": "pi-node-network (existing)",
+      "sources": "existing unchanged libuv cohort and native_node_check_failure.c",
+      "consumers": "uv loops/mutex/conditions/worker/fs, Node assertion path",
+      "sharing": "Pass the existing network compile pointer; no libuv copy or Node assertion substitute."
+    },
+    {
+      "owner": "pi-node-tracing-diagnostic (new)",
+      "sources": "one existing native_node_diagnostic_context.c plus reviewed V8 fatal and clock diagnostic bodies",
+      "consumers": "29 immediate C ABI scopes, loop CHECKs, V8 mutex DCHECK, clock fatal checks",
+      "sharing": "Exactly one borrowed diagnostic TLS owner per final tracing binary; context-control rewiring needed only if it later shares this owner."
+    },
+    {
+      "owner": "pi-quickjs (existing final binary dependency)",
+      "sources": "engine_abi.c owns retain/release/reserve/release functions for native memory",
+      "consumers": "Agent::NativeMemoryOwner and native_simdjson_memory.cpp",
+      "sharing": "Link existing owner in any future native consumer; never supply stub memory callbacks."
+    },
+    {
+      "owner": "platform imports/runtime",
+      "sources": "existing Zig libc/libc++, selected Windows system imports or POSIX/Darwin imports",
+      "consumers": "genuine ETW/signpost, clock, native symbol diagnostics and original Abseil",
+      "sharing": "Exact contained SDK declaration selection is separately pinned; actual import/metadata validation is pending."
+    }
+  ],
+  "link_owner_symbols": [
+    {
+      "symbols": [
+        "pi_js_retain_memory_owner",
+        "pi_js_release_memory_owner",
+        "pi_js_native_memory_reserve",
+        "pi_js_native_memory_release"
+      ],
+      "defined_in": "src/extensions/engine_abi.c",
+      "state": "Existing real implementation, required by later final binary; not copied into tracing."
+    },
+    {
+      "symbols": [
+        "pi_simd::allocate",
+        "pi_simd::release",
+        "pi_simd::Scope"
+      ],
+      "defined_in": "src/extensions/native_simdjson_memory.cpp",
+      "state": "Existing shared native memory owner passed once."
+    },
+    {
+      "symbols": [
+        "pi_node_assert_failure"
+      ],
+      "defined_in": "src/extensions/native_node_check_failure.c",
+      "state": "Existing network owner; selected original static AssertionInfo and guard abort path preserved."
+    },
+    {
+      "symbols": [
+        "pi_node_diagnostic_context_current",
+        "pi_node_diagnostic_context_enter",
+        "pi_node_diagnostic_context_leave"
+      ],
+      "defined_in": "src/extensions/native_node_diagnostic_context.c",
+      "state": "Existing borrowed TLS source proposed in the sole tracing diagnostic archive."
+    },
+    {
+      "symbols": [
+        "ClockCheckFailure",
+        "ClockCheckFailureOperands",
+        "Unreachable",
+        "pi_v8_base_dcheck"
+      ],
+      "defined_in": "reviewed provider 5059d6a fatal/clock source unit",
+      "state": "Real source exists, not in Main; exact intake prerequisite before this proposal can build."
+    },
+    {
+      "symbols": [
+        "V8Mutex::{Lock,Unlock,TryLock}",
+        "CheckedUvLoopClose",
+        "Recorder::{Recorder,~Recorder,IsEnabled,AddEvent}",
+        "TraceWriter::CreateSystemInstrumentationTraceWriter"
+      ],
+      "defined_in": "this ten-file platform production packet",
+      "state": "Concrete native implementations and body maps supplied; uncompiled."
+    }
+  ],
+  "remaining_link_and_bootstrap_owners": [
+    {
+      "item": "Complete intake before archive compilation",
+      "detail": "Frozen clock/API commits 88fe6ba/1700aeaa, provider fatal 5059d6a and the ten preexisting Agent/controller/core/buffer/writer drafts must be present with this new platform/dependency cohort. The old drafts are pinned dependencies, not newly algorithm-qualified by this platform peer."
+    },
+    {
+      "item": "Executable link consumer",
+      "detail": "No final binary or ABI test executable is added. The actual existing pi-quickjs engine_abi memory functions and native Node diagnostic dependencies must resolve at the final executable link. Static archive installation alone cannot establish this."
+    },
+    {
+      "item": "Shared diagnostic test composition",
+      "detail": "Current Main diagnostic-context control directly compiles native_node_diagnostic_context.c. Before attaching tracing to that same final binary, replace the direct compilation with a link to this sole diagnostic owner; retain the actual TLS address/lifetime controls. This proposal leaves that standalone test untouched."
+    },
+    {
+      "item": "Process Agent ownership and publication",
+      "detail": "Create the process-owned actual Agent with a retained real memory owner, publish/unpublish with existing pi_node_tracing_set_agent in the original initialization/shutdown order, and preserve global category registry single-controller lifetime. None is installed here."
+    },
+    {
+      "item": "Process/environment observer and writer selection",
+      "detail": "Actual original trace-state observers and environment async notifications, CLI category/file/SystemInstrumentation writer selection and shutdown/flush ordering remain separate source work. Recorder bodies do not install those observers or choose the active writer."
+    },
+    {
+      "item": "Trace event C ABI / environment callbacks",
+      "detail": "The reviewed 29 APIs admit strings/categories/Agent/writer handles and category lookup. They do not yet expose the actual AddTraceEvent/metadata/duration and state-observer lifetime operations required by FS/AsyncWrap/module event owners. No fake callback or generic host bridge is supplied."
+    },
+    {
+      "item": "V8 fatal bootstrap hooks",
+      "detail": "The real fatal owner retains null stack/fatal callbacks and original default dcheck; process-selected genuine hook installation remains explicit and unimplemented by this archive recipe."
+    },
+    {
+      "item": "Nonselected ring-buffer factory",
+      "detail": "TraceBuffer::CreateTraceBufferRingBuffer is declared in the preexisting private header without a definition in this selection. The selected Node Agent instantiates its actual NodeTraceBuffer and does not call that factory. Broader V8 ring-buffer admission would need its original body."
+    },
+    {
+      "item": "Darwin owners",
+      "detail": "Original clock/Recorder/Abseil source is retained, but Main currently supplies network/native-memory owners only for 64-bit Windows/Linux. The proposed build step is created only when both actual owners exist, so it does not claim Darwin Agent assembly."
+    },
+    {
+      "item": "Actual SDK/compiler/link/runtime qualification",
+      "detail": "Zig/Clang acceptance of original Microsoft extensions, ETW sections/import linkage, Abseil/Node concurrency, observer callbacks and real Recorder behavior are future admission gates; none was executed."
+    }
+  ],
+  "source_only_validation": {
+    "single_insertion_forward_inverse": true,
+    "new_run_edges": 0,
+    "new_test_roots": 0,
+    "existing_build_bytes_other_than_insertion_unchanged": true,
+    "all_primary_snapshot_pins_still_match": true,
+    "native_allocator_header_matches_Main_basis": true,
+    "fatal_production_pins_match": true,
+    "main_modified": false,
+    "compiler_execution": false,
+    "preprocessor_execution": false,
+    "native_execution": false
+  },
+  "production_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\production-proposal.json",
+    "bytes": 15330,
+    "sha256": "88552C5060C2132977BF4312BD1E12F22221E1A188D53074F5D33B89EE02BFC9"
+  },
+  "toolchain_selection": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\toolchain-and-sdk-selection-proof.json",
+    "bytes": 175677,
+    "sha256": "D63D4FFDB34668088EF82F9261416ED590D3C90BE7935628E94D5AAAFC06DE33"
+  },
+  "original_Main_owner_sources": [
+    {
+      "repository_path": "tools/build_native_node_memory.zig",
+      "commit": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\build-composition\\original\\tools\\build_native_node_memory.zig",
+        "bytes": 1030,
+        "sha256": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17"
+      }
+    },
+    {
+      "repository_path": "tools/build_native_node_network.zig",
+      "commit": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\build-composition\\original\\tools\\build_native_node_network.zig",
+        "bytes": 5905,
+        "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+      }
+    },
+    {
+      "repository_path": "src/extensions/engine_abi.c",
+      "commit": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\build-composition\\original\\src\\extensions\\engine_abi.c",
+        "bytes": 18016,
+        "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+      }
+    },
+    {
+      "repository_path": "src/extensions/engine_abi.h",
+      "commit": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\build-composition\\original\\src\\extensions\\engine_abi.h",
+        "bytes": 2003,
+        "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5"
+      }
+    },
+    {
+      "repository_path": "src/extensions/native_simdjson_memory.cpp",
+      "commit": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\build-composition\\original\\src\\extensions\\native_simdjson_memory.cpp",
+        "bytes": 2714,
+        "sha256": "44794005D36BB3E1EC6B1A7DF3AA9A6B7DE7C02D6F12BBF38115F83E49C5E103"
+      }
+    },
+    {
+      "repository_path": "src/extensions/native_simdjson_memory.hpp",
+      "commit": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\build-composition\\original\\src\\extensions\\native_simdjson_memory.hpp",
+        "bytes": 2449,
+        "sha256": "7554ED1DDCA28FAE7B11E025BD9D7EEF560DB657086A40029E5D95DBEFAE5291"
+      }
+    },
+    {
+      "repository_path": "src/extensions/native_node_standard_allocator.hpp",
+      "commit": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\build-composition\\original\\src\\extensions\\native_node_standard_allocator.hpp",
+        "bytes": 2562,
+        "sha256": "16D82D2C2143DFAF3861B722BD2E9775FB0BD7D6C9BE400D0ECE37E0674E709B"
+      }
+    },
+    {
+      "repository_path": "src/extensions/native_node_check_failure.c",
+      "commit": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\build-composition\\original\\src\\extensions\\native_node_check_failure.c",
+        "bytes": 15538,
+        "sha256": "33D2F0524B59E477707937D6589BF4A30C5D959B1EFE4779BE4BF02D39B39593"
+      }
+    },
+    {
+      "repository_path": "src/extensions/native_node_check_failure.h",
+      "commit": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\build-composition\\original\\src\\extensions\\native_node_check_failure.h",
+        "bytes": 2478,
+        "sha256": "5A4B14849140F79C5A3555EC2721914D6C4382FEEB94DA0DACAE07E78EAF1CBD"
+      }
+    },
+    {
+      "repository_path": "src/extensions/native_node_diagnostic_context.c",
+      "commit": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\build-composition\\original\\src\\extensions\\native_node_diagnostic_context.c",
+        "bytes": 789,
+        "sha256": "AC01853D724253740008E26D2663545D2F564A6E59DE91AA8CE2C8777C7B832C"
+      }
+    },
+    {
+      "repository_path": "src/extensions/native_node_diagnostic_context.h",
+      "commit": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\build-composition\\original\\src\\extensions\\native_node_diagnostic_context.h",
+        "bytes": 775,
+        "sha256": "4D8E43A6527FED6AA19F86A2A51CD490E5DDEAC6CCC323635B700ED4E8B798C0"
+      }
+    },
+    {
+      "repository_path": "src/extensions/native_node_diagnostic_context.hpp",
+      "commit": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\build-composition\\original\\src\\extensions\\native_node_diagnostic_context.hpp",
+        "bytes": 914,
+        "sha256": "7EA7700F4EDCC6ED5C27DF98574BE27A572AFF01E151B9F39667E6737ACC30B9"
+      }
+    }
+  ],
+  "reviewed_external_fatal_sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_v8_base_fatal.h",
+      "bytes": 7727,
+      "sha256": "C5B2D6E6F7B8DA0E8C9D70E8934392B10BB638DA5C209870385FCE1AC71D3CBF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_v8_base_fatal.cpp",
+      "bytes": 7723,
+      "sha256": "1C83C0523655ACD3FF64CA067AE2CB5131C98B36A2E60910AEF4C64699BD3BBC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_node_tracing_clock_diagnostics.cpp",
+      "bytes": 2559,
+      "sha256": "05E4B163D86C32C17A5E9DE57332FD08EA102878654272FA399FF168AE38EC61"
+    }
+  ],
+  "qualification": false
+}

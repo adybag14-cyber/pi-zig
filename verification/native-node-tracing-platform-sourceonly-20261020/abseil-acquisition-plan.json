@@ -1,0 +1,1458 @@
+{
+  "kind": "Exact Node Abseil source cohort transfer; no generated source",
+  "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "source_only": true,
+  "source_membership_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\abseil-initial\\tools__v8_gypfiles__abseil.gyp",
+    "sha256": "827CCF3AC3DD6E5B5094B4D199EB332EC75ABE478E6B4C7EA150A23221AA3C40"
+  },
+  "gyp_members": 349,
+  "cpp_units": 110,
+  "license_files": 1,
+  "vendor_root": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp",
+  "max_file_bytes": 1048576,
+  "max_batch_files": 24,
+  "network_concurrency": 8,
+  "network_timeout_seconds": 15,
+  "files": [
+    {
+      "relative_path": "absl/algorithm/algorithm.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/algorithm/algorithm.h"
+    },
+    {
+      "relative_path": "absl/algorithm/container.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/algorithm/container.h"
+    },
+    {
+      "relative_path": "absl/base/attributes.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/attributes.h"
+    },
+    {
+      "relative_path": "absl/base/call_once.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/call_once.h"
+    },
+    {
+      "relative_path": "absl/base/casts.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/casts.h"
+    },
+    {
+      "relative_path": "absl/base/config.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/config.h"
+    },
+    {
+      "relative_path": "absl/base/const_init.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/const_init.h"
+    },
+    {
+      "relative_path": "absl/base/dynamic_annotations.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/dynamic_annotations.h"
+    },
+    {
+      "relative_path": "absl/base/internal/atomic_hook.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/atomic_hook.h"
+    },
+    {
+      "relative_path": "absl/base/internal/cycleclock.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/cycleclock.h"
+    },
+    {
+      "relative_path": "absl/base/internal/cycleclock.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/cycleclock.cc"
+    },
+    {
+      "relative_path": "absl/base/internal/cycleclock_config.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/cycleclock_config.h"
+    },
+    {
+      "relative_path": "absl/base/internal/direct_mmap.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/direct_mmap.h"
+    },
+    {
+      "relative_path": "absl/base/internal/endian.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/endian.h"
+    },
+    {
+      "relative_path": "absl/base/internal/errno_saver.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/errno_saver.h"
+    },
+    {
+      "relative_path": "absl/base/internal/fast_type_id.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/fast_type_id.h"
+    },
+    {
+      "relative_path": "absl/base/internal/hide_ptr.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/hide_ptr.h"
+    },
+    {
+      "relative_path": "absl/base/internal/identity.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/identity.h"
+    },
+    {
+      "relative_path": "absl/base/internal/iterator_traits.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/iterator_traits.h"
+    },
+    {
+      "relative_path": "absl/base/internal/low_level_alloc.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/low_level_alloc.h",
+      "original_source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\abseil-initial\\deps__v8__third_party__abseil-cpp__absl__base__internal__low_level_alloc.h",
+      "sha256": "01852293051647A19798FA0EF3DA90E82E4EC8F899297A8D96072DC4BB7DF2AB",
+      "bytes": 4718
+    },
+    {
+      "relative_path": "absl/base/internal/low_level_alloc.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/low_level_alloc.cc",
+      "original_source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\abseil-initial\\deps__v8__third_party__abseil-cpp__absl__base__internal__low_level_alloc.cc",
+      "sha256": "15335878E3A42C52BEF27E86BECC3DEF962B0DE7365D7B9A153F5B8E0601C76D",
+      "bytes": 23038
+    },
+    {
+      "relative_path": "absl/base/internal/low_level_scheduling.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/low_level_scheduling.h"
+    },
+    {
+      "relative_path": "absl/base/internal/nullability_impl.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/nullability_impl.h"
+    },
+    {
+      "relative_path": "absl/base/internal/per_thread_tls.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/per_thread_tls.h"
+    },
+    {
+      "relative_path": "absl/base/internal/poison.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/poison.h"
+    },
+    {
+      "relative_path": "absl/base/internal/poison.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/poison.cc"
+    },
+    {
+      "relative_path": "absl/base/internal/pretty_function.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/pretty_function.h"
+    },
+    {
+      "relative_path": "absl/base/internal/raw_logging.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/raw_logging.h"
+    },
+    {
+      "relative_path": "absl/base/internal/raw_logging.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/raw_logging.cc"
+    },
+    {
+      "relative_path": "absl/base/internal/scheduling_mode.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/scheduling_mode.h"
+    },
+    {
+      "relative_path": "absl/base/internal/scoped_set_env.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/scoped_set_env.h"
+    },
+    {
+      "relative_path": "absl/base/internal/scoped_set_env.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/scoped_set_env.cc"
+    },
+    {
+      "relative_path": "absl/base/internal/spinlock.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/spinlock.h"
+    },
+    {
+      "relative_path": "absl/base/internal/spinlock.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/spinlock.cc"
+    },
+    {
+      "relative_path": "absl/base/internal/spinlock_akaros.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/spinlock_akaros.inc"
+    },
+    {
+      "relative_path": "absl/base/internal/spinlock_linux.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/spinlock_linux.inc"
+    },
+    {
+      "relative_path": "absl/base/internal/spinlock_posix.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/spinlock_posix.inc"
+    },
+    {
+      "relative_path": "absl/base/internal/spinlock_wait.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/spinlock_wait.h"
+    },
+    {
+      "relative_path": "absl/base/internal/spinlock_wait.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/spinlock_wait.cc"
+    },
+    {
+      "relative_path": "absl/base/internal/spinlock_win32.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/spinlock_win32.inc"
+    },
+    {
+      "relative_path": "absl/base/internal/strerror.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/strerror.h"
+    },
+    {
+      "relative_path": "absl/base/internal/strerror.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/strerror.cc"
+    },
+    {
+      "relative_path": "absl/base/internal/sysinfo.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/sysinfo.h"
+    },
+    {
+      "relative_path": "absl/base/internal/sysinfo.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/sysinfo.cc"
+    },
+    {
+      "relative_path": "absl/base/internal/thread_identity.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/thread_identity.h",
+      "original_source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\abseil-thread-identity\\absl__base__internal__thread_identity.h",
+      "sha256": "4AB0597E24501F9EF77D55AFDEB2B227AD787CEE41773AB2A1E9A34240E3FC20",
+      "bytes": 11501
+    },
+    {
+      "relative_path": "absl/base/internal/thread_identity.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/thread_identity.cc",
+      "original_source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\abseil-thread-identity\\absl__base__internal__thread_identity.cc",
+      "sha256": "15ADD2981DD37BD509DDACD063745C339E0D15169A6D16EFFB8DA91DB5BD8B6C",
+      "bytes": 6586
+    },
+    {
+      "relative_path": "absl/base/internal/throw_delegate.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/throw_delegate.h"
+    },
+    {
+      "relative_path": "absl/base/internal/throw_delegate.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/throw_delegate.cc"
+    },
+    {
+      "relative_path": "absl/base/internal/tracing.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/tracing.h"
+    },
+    {
+      "relative_path": "absl/base/internal/tracing.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/tracing.cc"
+    },
+    {
+      "relative_path": "absl/base/internal/tsan_mutex_interface.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/tsan_mutex_interface.h"
+    },
+    {
+      "relative_path": "absl/base/internal/unaligned_access.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/unaligned_access.h"
+    },
+    {
+      "relative_path": "absl/base/internal/unscaledcycleclock.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/unscaledcycleclock.h"
+    },
+    {
+      "relative_path": "absl/base/internal/unscaledcycleclock.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/unscaledcycleclock.cc"
+    },
+    {
+      "relative_path": "absl/base/internal/unscaledcycleclock_config.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/internal/unscaledcycleclock_config.h"
+    },
+    {
+      "relative_path": "absl/base/log_severity.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/log_severity.h"
+    },
+    {
+      "relative_path": "absl/base/log_severity.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/log_severity.cc"
+    },
+    {
+      "relative_path": "absl/base/macros.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/macros.h"
+    },
+    {
+      "relative_path": "absl/base/no_destructor.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/no_destructor.h"
+    },
+    {
+      "relative_path": "absl/base/nullability.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/nullability.h"
+    },
+    {
+      "relative_path": "absl/base/optimization.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/optimization.h"
+    },
+    {
+      "relative_path": "absl/base/options.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/options.h"
+    },
+    {
+      "relative_path": "absl/base/policy_checks.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/policy_checks.h"
+    },
+    {
+      "relative_path": "absl/base/port.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/port.h"
+    },
+    {
+      "relative_path": "absl/base/prefetch.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/prefetch.h"
+    },
+    {
+      "relative_path": "absl/base/thread_annotations.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/base/thread_annotations.h"
+    },
+    {
+      "relative_path": "absl/cleanup/cleanup.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/cleanup/cleanup.h"
+    },
+    {
+      "relative_path": "absl/cleanup/internal/cleanup.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/cleanup/internal/cleanup.h"
+    },
+    {
+      "relative_path": "absl/container/btree_map.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/btree_map.h"
+    },
+    {
+      "relative_path": "absl/container/btree_set.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/btree_set.h"
+    },
+    {
+      "relative_path": "absl/container/fixed_array.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/fixed_array.h"
+    },
+    {
+      "relative_path": "absl/container/flat_hash_map.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/flat_hash_map.h"
+    },
+    {
+      "relative_path": "absl/container/flat_hash_set.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/flat_hash_set.h"
+    },
+    {
+      "relative_path": "absl/container/hash_container_defaults.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/hash_container_defaults.h"
+    },
+    {
+      "relative_path": "absl/container/inlined_vector.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/inlined_vector.h"
+    },
+    {
+      "relative_path": "absl/container/internal/btree.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/btree.h"
+    },
+    {
+      "relative_path": "absl/container/internal/btree_container.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/btree_container.h"
+    },
+    {
+      "relative_path": "absl/container/internal/common.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/common.h"
+    },
+    {
+      "relative_path": "absl/container/internal/common_policy_traits.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/common_policy_traits.h"
+    },
+    {
+      "relative_path": "absl/container/internal/compressed_tuple.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/compressed_tuple.h"
+    },
+    {
+      "relative_path": "absl/container/internal/container_memory.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/container_memory.h"
+    },
+    {
+      "relative_path": "absl/container/internal/hash_function_defaults.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/hash_function_defaults.h"
+    },
+    {
+      "relative_path": "absl/container/internal/hash_policy_traits.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/hash_policy_traits.h"
+    },
+    {
+      "relative_path": "absl/container/internal/hashtable_control_bytes.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/hashtable_control_bytes.h"
+    },
+    {
+      "relative_path": "absl/container/internal/hashtable_debug.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/hashtable_debug.h"
+    },
+    {
+      "relative_path": "absl/container/internal/hashtable_debug_hooks.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/hashtable_debug_hooks.h"
+    },
+    {
+      "relative_path": "absl/container/internal/hashtablez_sampler.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/hashtablez_sampler.h"
+    },
+    {
+      "relative_path": "absl/container/internal/hashtablez_sampler.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/hashtablez_sampler.cc"
+    },
+    {
+      "relative_path": "absl/container/internal/hashtablez_sampler_force_weak_definition.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/hashtablez_sampler_force_weak_definition.cc"
+    },
+    {
+      "relative_path": "absl/container/internal/inlined_vector.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/inlined_vector.h"
+    },
+    {
+      "relative_path": "absl/container/internal/layout.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/layout.h"
+    },
+    {
+      "relative_path": "absl/container/internal/node_slot_policy.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/node_slot_policy.h"
+    },
+    {
+      "relative_path": "absl/container/internal/raw_hash_map.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/raw_hash_map.h"
+    },
+    {
+      "relative_path": "absl/container/internal/raw_hash_set.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/raw_hash_set.h"
+    },
+    {
+      "relative_path": "absl/container/internal/raw_hash_set.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/raw_hash_set.cc"
+    },
+    {
+      "relative_path": "absl/container/internal/tracked.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/internal/tracked.h"
+    },
+    {
+      "relative_path": "absl/container/node_hash_map.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/node_hash_map.h"
+    },
+    {
+      "relative_path": "absl/container/node_hash_set.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/container/node_hash_set.h"
+    },
+    {
+      "relative_path": "absl/crc/crc32c.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/crc32c.h"
+    },
+    {
+      "relative_path": "absl/crc/crc32c.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/crc32c.cc"
+    },
+    {
+      "relative_path": "absl/crc/internal/cpu_detect.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/cpu_detect.h"
+    },
+    {
+      "relative_path": "absl/crc/internal/cpu_detect.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/cpu_detect.cc"
+    },
+    {
+      "relative_path": "absl/crc/internal/crc.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/crc.h"
+    },
+    {
+      "relative_path": "absl/crc/internal/crc.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/crc.cc"
+    },
+    {
+      "relative_path": "absl/crc/internal/crc32c.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/crc32c.h"
+    },
+    {
+      "relative_path": "absl/crc/internal/crc32c_inline.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/crc32c_inline.h"
+    },
+    {
+      "relative_path": "absl/crc/internal/crc32_x86_arm_combined_simd.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/crc32_x86_arm_combined_simd.h"
+    },
+    {
+      "relative_path": "absl/crc/internal/crc_cord_state.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/crc_cord_state.h"
+    },
+    {
+      "relative_path": "absl/crc/internal/crc_cord_state.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/crc_cord_state.cc"
+    },
+    {
+      "relative_path": "absl/crc/internal/crc_internal.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/crc_internal.h"
+    },
+    {
+      "relative_path": "absl/crc/internal/crc_memcpy.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/crc_memcpy.h"
+    },
+    {
+      "relative_path": "absl/crc/internal/crc_memcpy_fallback.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/crc_memcpy_fallback.cc"
+    },
+    {
+      "relative_path": "absl/crc/internal/crc_memcpy_x86_arm_combined.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/crc_memcpy_x86_arm_combined.cc"
+    },
+    {
+      "relative_path": "absl/crc/internal/crc_non_temporal_memcpy.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/crc_non_temporal_memcpy.cc"
+    },
+    {
+      "relative_path": "absl/crc/internal/crc_x86_arm_combined.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/crc_x86_arm_combined.cc"
+    },
+    {
+      "relative_path": "absl/crc/internal/non_temporal_arm_intrinsics.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/non_temporal_arm_intrinsics.h"
+    },
+    {
+      "relative_path": "absl/crc/internal/non_temporal_memcpy.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/crc/internal/non_temporal_memcpy.h"
+    },
+    {
+      "relative_path": "absl/debugging/failure_signal_handler.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/failure_signal_handler.h"
+    },
+    {
+      "relative_path": "absl/debugging/failure_signal_handler.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/failure_signal_handler.cc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/address_is_readable.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/address_is_readable.h"
+    },
+    {
+      "relative_path": "absl/debugging/internal/address_is_readable.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/address_is_readable.cc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/bounded_utf8_length_sequence.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/bounded_utf8_length_sequence.h"
+    },
+    {
+      "relative_path": "absl/debugging/internal/decode_rust_punycode.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/decode_rust_punycode.h"
+    },
+    {
+      "relative_path": "absl/debugging/internal/decode_rust_punycode.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/decode_rust_punycode.cc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/demangle.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/demangle.h"
+    },
+    {
+      "relative_path": "absl/debugging/internal/demangle.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/demangle.cc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/demangle_rust.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/demangle_rust.h"
+    },
+    {
+      "relative_path": "absl/debugging/internal/demangle_rust.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/demangle_rust.cc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/elf_mem_image.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/elf_mem_image.h"
+    },
+    {
+      "relative_path": "absl/debugging/internal/elf_mem_image.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/elf_mem_image.cc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/examine_stack.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/examine_stack.h"
+    },
+    {
+      "relative_path": "absl/debugging/internal/examine_stack.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/examine_stack.cc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/stack_consumption.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/stack_consumption.h"
+    },
+    {
+      "relative_path": "absl/debugging/internal/stack_consumption.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/stack_consumption.cc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/stacktrace_aarch64-inl.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/stacktrace_aarch64-inl.inc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/stacktrace_arm-inl.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/stacktrace_arm-inl.inc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/stacktrace_config.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/stacktrace_config.h"
+    },
+    {
+      "relative_path": "absl/debugging/internal/stacktrace_emscripten-inl.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/stacktrace_emscripten-inl.inc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/stacktrace_generic-inl.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/stacktrace_generic-inl.inc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/stacktrace_powerpc-inl.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/stacktrace_powerpc-inl.inc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/stacktrace_riscv-inl.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/stacktrace_riscv-inl.inc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/stacktrace_unimplemented-inl.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/stacktrace_unimplemented-inl.inc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/stacktrace_win32-inl.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/stacktrace_win32-inl.inc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/stacktrace_x86-inl.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/stacktrace_x86-inl.inc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/symbolize.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/symbolize.h"
+    },
+    {
+      "relative_path": "absl/debugging/internal/utf8_for_code_point.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/utf8_for_code_point.h"
+    },
+    {
+      "relative_path": "absl/debugging/internal/utf8_for_code_point.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/utf8_for_code_point.cc"
+    },
+    {
+      "relative_path": "absl/debugging/internal/vdso_support.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/vdso_support.h"
+    },
+    {
+      "relative_path": "absl/debugging/internal/vdso_support.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/vdso_support.cc"
+    },
+    {
+      "relative_path": "absl/debugging/leak_check.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/leak_check.h"
+    },
+    {
+      "relative_path": "absl/debugging/leak_check.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/leak_check.cc"
+    },
+    {
+      "relative_path": "absl/debugging/stacktrace.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/stacktrace.h"
+    },
+    {
+      "relative_path": "absl/debugging/stacktrace.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/stacktrace.cc"
+    },
+    {
+      "relative_path": "absl/debugging/symbolize.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/symbolize.h"
+    },
+    {
+      "relative_path": "absl/debugging/symbolize.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/symbolize.cc"
+    },
+    {
+      "relative_path": "absl/debugging/symbolize_darwin.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/symbolize_darwin.inc"
+    },
+    {
+      "relative_path": "absl/debugging/symbolize_elf.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/symbolize_elf.inc"
+    },
+    {
+      "relative_path": "absl/debugging/symbolize_emscripten.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/symbolize_emscripten.inc"
+    },
+    {
+      "relative_path": "absl/debugging/symbolize_unimplemented.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/symbolize_unimplemented.inc"
+    },
+    {
+      "relative_path": "absl/debugging/symbolize_win32.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/symbolize_win32.inc"
+    },
+    {
+      "relative_path": "absl/functional/any_invocable.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/functional/any_invocable.h"
+    },
+    {
+      "relative_path": "absl/functional/bind_front.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/functional/bind_front.h"
+    },
+    {
+      "relative_path": "absl/functional/function_ref.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/functional/function_ref.h"
+    },
+    {
+      "relative_path": "absl/functional/internal/any_invocable.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/functional/internal/any_invocable.h"
+    },
+    {
+      "relative_path": "absl/functional/internal/front_binder.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/functional/internal/front_binder.h"
+    },
+    {
+      "relative_path": "absl/functional/internal/function_ref.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/functional/internal/function_ref.h"
+    },
+    {
+      "relative_path": "absl/functional/overload.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/functional/overload.h"
+    },
+    {
+      "relative_path": "absl/hash/hash.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/hash/hash.h"
+    },
+    {
+      "relative_path": "absl/hash/internal/city.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/hash/internal/city.h"
+    },
+    {
+      "relative_path": "absl/hash/internal/city.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/hash/internal/city.cc"
+    },
+    {
+      "relative_path": "absl/hash/internal/hash.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/hash/internal/hash.h"
+    },
+    {
+      "relative_path": "absl/hash/internal/hash.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/hash/internal/hash.cc"
+    },
+    {
+      "relative_path": "absl/hash/internal/spy_hash_state.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/hash/internal/spy_hash_state.h"
+    },
+    {
+      "relative_path": "absl/hash/internal/low_level_hash.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/hash/internal/low_level_hash.h"
+    },
+    {
+      "relative_path": "absl/hash/internal/low_level_hash.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/hash/internal/low_level_hash.cc"
+    },
+    {
+      "relative_path": "absl/memory/memory.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/memory/memory.h"
+    },
+    {
+      "relative_path": "absl/meta/type_traits.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/meta/type_traits.h"
+    },
+    {
+      "relative_path": "absl/numeric/bits.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/numeric/bits.h"
+    },
+    {
+      "relative_path": "absl/numeric/int128.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/numeric/int128.h"
+    },
+    {
+      "relative_path": "absl/numeric/int128.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/numeric/int128.cc"
+    },
+    {
+      "relative_path": "absl/numeric/internal/bits.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/numeric/internal/bits.h"
+    },
+    {
+      "relative_path": "absl/numeric/internal/representation.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/numeric/internal/representation.h"
+    },
+    {
+      "relative_path": "absl/profiling/internal/exponential_biased.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/profiling/internal/exponential_biased.h"
+    },
+    {
+      "relative_path": "absl/profiling/internal/exponential_biased.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/profiling/internal/exponential_biased.cc"
+    },
+    {
+      "relative_path": "absl/profiling/internal/periodic_sampler.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/profiling/internal/periodic_sampler.h"
+    },
+    {
+      "relative_path": "absl/profiling/internal/periodic_sampler.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/profiling/internal/periodic_sampler.cc"
+    },
+    {
+      "relative_path": "absl/profiling/internal/sample_recorder.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/profiling/internal/sample_recorder.h"
+    },
+    {
+      "relative_path": "absl/strings/ascii.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/ascii.h"
+    },
+    {
+      "relative_path": "absl/strings/ascii.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/ascii.cc"
+    },
+    {
+      "relative_path": "absl/strings/charconv.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/charconv.h"
+    },
+    {
+      "relative_path": "absl/strings/charconv.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/charconv.cc"
+    },
+    {
+      "relative_path": "absl/strings/charset.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/charset.h"
+    },
+    {
+      "relative_path": "absl/strings/cord.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/cord.h"
+    },
+    {
+      "relative_path": "absl/strings/cord.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/cord.cc"
+    },
+    {
+      "relative_path": "absl/strings/cord_analysis.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/cord_analysis.h"
+    },
+    {
+      "relative_path": "absl/strings/cord_analysis.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/cord_analysis.cc"
+    },
+    {
+      "relative_path": "absl/strings/cord_buffer.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/cord_buffer.h"
+    },
+    {
+      "relative_path": "absl/strings/escaping.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/escaping.h"
+    },
+    {
+      "relative_path": "absl/strings/escaping.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/escaping.cc"
+    },
+    {
+      "relative_path": "absl/strings/has_absl_stringify.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/has_absl_stringify.h"
+    },
+    {
+      "relative_path": "absl/strings/has_ostream_operator.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/has_ostream_operator.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/charconv_bigint.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/charconv_bigint.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/charconv_bigint.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/charconv_bigint.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/charconv_parse.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/charconv_parse.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/charconv_parse.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/charconv_parse.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/cord_data_edge.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cord_data_edge.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/cord_internal.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cord_internal.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/cord_internal.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cord_internal.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/cord_rep_btree.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cord_rep_btree.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/cord_rep_btree.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cord_rep_btree.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/cord_rep_btree_navigator.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cord_rep_btree_navigator.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/cord_rep_btree_navigator.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cord_rep_btree_navigator.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/cord_rep_btree_reader.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cord_rep_btree_reader.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/cord_rep_btree_reader.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cord_rep_btree_reader.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/cord_rep_consume.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cord_rep_consume.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/cord_rep_consume.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cord_rep_consume.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/cord_rep_crc.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cord_rep_crc.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/cord_rep_crc.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cord_rep_crc.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/cord_rep_flat.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cord_rep_flat.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/cordz_functions.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cordz_functions.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/cordz_functions.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cordz_functions.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/cordz_handle.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cordz_handle.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/cordz_handle.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cordz_handle.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/cordz_info.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cordz_info.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/cordz_info.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cordz_info.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/cordz_sample_token.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cordz_sample_token.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/cordz_sample_token.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cordz_sample_token.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/cordz_statistics.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cordz_statistics.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/cordz_update_scope.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cordz_update_scope.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/cordz_update_tracker.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/cordz_update_tracker.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/damerau_levenshtein_distance.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/damerau_levenshtein_distance.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/damerau_levenshtein_distance.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/damerau_levenshtein_distance.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/escaping.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/escaping.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/escaping.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/escaping.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/memutil.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/memutil.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/memutil.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/memutil.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/ostringstream.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/ostringstream.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/ostringstream.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/ostringstream.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/pow10_helper.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/pow10_helper.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/pow10_helper.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/pow10_helper.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/resize_uninitialized.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/resize_uninitialized.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/stl_type_traits.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/stl_type_traits.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_format/arg.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_format/arg.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_format/arg.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_format/arg.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_format/bind.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_format/bind.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_format/bind.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_format/bind.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_format/checker.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_format/checker.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_format/constexpr_parser.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_format/constexpr_parser.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_format/extension.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_format/extension.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_format/extension.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_format/extension.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_format/float_conversion.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_format/float_conversion.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_format/float_conversion.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_format/float_conversion.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_format/output.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_format/output.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_format/output.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_format/output.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_format/parser.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_format/parser.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_format/parser.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_format/parser.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/string_constant.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/string_constant.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/stringify_sink.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/stringify_sink.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/stringify_sink.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/stringify_sink.cc"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_join_internal.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_join_internal.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/str_split_internal.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/str_split_internal.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/utf8.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/utf8.h"
+    },
+    {
+      "relative_path": "absl/strings/internal/utf8.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/internal/utf8.cc"
+    },
+    {
+      "relative_path": "absl/strings/match.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/match.h"
+    },
+    {
+      "relative_path": "absl/strings/match.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/match.cc"
+    },
+    {
+      "relative_path": "absl/strings/numbers.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/numbers.h"
+    },
+    {
+      "relative_path": "absl/strings/numbers.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/numbers.cc"
+    },
+    {
+      "relative_path": "absl/strings/str_cat.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/str_cat.h"
+    },
+    {
+      "relative_path": "absl/strings/str_cat.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/str_cat.cc"
+    },
+    {
+      "relative_path": "absl/strings/str_format.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/str_format.h"
+    },
+    {
+      "relative_path": "absl/strings/str_join.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/str_join.h"
+    },
+    {
+      "relative_path": "absl/strings/str_replace.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/str_replace.h"
+    },
+    {
+      "relative_path": "absl/strings/str_replace.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/str_replace.cc"
+    },
+    {
+      "relative_path": "absl/strings/str_split.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/str_split.h"
+    },
+    {
+      "relative_path": "absl/strings/str_split.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/str_split.cc"
+    },
+    {
+      "relative_path": "absl/strings/string_view.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/string_view.h"
+    },
+    {
+      "relative_path": "absl/strings/string_view.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/string_view.cc"
+    },
+    {
+      "relative_path": "absl/strings/strip.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/strip.h"
+    },
+    {
+      "relative_path": "absl/strings/substitute.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/substitute.h"
+    },
+    {
+      "relative_path": "absl/strings/substitute.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/strings/substitute.cc"
+    },
+    {
+      "relative_path": "absl/synchronization/barrier.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/barrier.h"
+    },
+    {
+      "relative_path": "absl/synchronization/barrier.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/barrier.cc"
+    },
+    {
+      "relative_path": "absl/synchronization/blocking_counter.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/blocking_counter.h"
+    },
+    {
+      "relative_path": "absl/synchronization/blocking_counter.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/blocking_counter.cc"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/create_thread_identity.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/create_thread_identity.h"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/create_thread_identity.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/create_thread_identity.cc",
+      "original_source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\abseil-thread-identity\\absl__synchronization__internal__create_thread_identity.cc",
+      "sha256": "B79720EE203F80AB447BC93C5A21A39BE902B0EC5899B177C41D6272728BF0C2",
+      "bytes": 5895
+    },
+    {
+      "relative_path": "absl/synchronization/internal/futex.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/futex.h"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/futex_waiter.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/futex_waiter.h"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/futex_waiter.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/futex_waiter.cc",
+      "original_source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\abseil-thread-identity\\absl__synchronization__internal__futex_waiter.cc",
+      "sha256": "C082F4E0D690B214AA53177E2BDDCD6FA290046A84B4068BE40E6403498E3684",
+      "bytes": 3545
+    },
+    {
+      "relative_path": "absl/synchronization/internal/graphcycles.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/graphcycles.h"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/graphcycles.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/graphcycles.cc"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/kernel_timeout.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/kernel_timeout.h"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/kernel_timeout.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/kernel_timeout.cc"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/per_thread_sem.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/per_thread_sem.h"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/per_thread_sem.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/per_thread_sem.cc",
+      "original_source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\abseil-thread-identity\\absl__synchronization__internal__per_thread_sem.cc",
+      "sha256": "157058C93C415FEFFB562002D51F9946E3A18F347D23E3C7423FBA8DFCB32B43",
+      "bytes": 3877
+    },
+    {
+      "relative_path": "absl/synchronization/internal/pthread_waiter.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/pthread_waiter.h"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/pthread_waiter.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/pthread_waiter.cc"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/sem_waiter.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/sem_waiter.h"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/sem_waiter.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/sem_waiter.cc"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/stdcpp_waiter.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/stdcpp_waiter.h"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/stdcpp_waiter.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/stdcpp_waiter.cc"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/thread_pool.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/thread_pool.h"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/waiter.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/waiter.h",
+      "original_source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\abseil-thread-identity\\absl__synchronization__internal__waiter.h",
+      "sha256": "6AD9C13FDD0972908E01FB394C002CD17E1B6AFBF6248C454938F82CF4945394",
+      "bytes": 2462
+    },
+    {
+      "relative_path": "absl/synchronization/internal/waiter_base.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/waiter_base.h"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/waiter_base.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/waiter_base.cc"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/win32_waiter.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/win32_waiter.h"
+    },
+    {
+      "relative_path": "absl/synchronization/internal/win32_waiter.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/internal/win32_waiter.cc",
+      "original_source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\abseil-thread-identity\\absl__synchronization__internal__win32_waiter.cc",
+      "sha256": "8AB262FEC4937BA44E46994A1CEA87B4EA9DD7E58AFC85B1465F80B9DFC3C796",
+      "bytes": 4847
+    },
+    {
+      "relative_path": "absl/synchronization/mutex.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/mutex.h",
+      "original_source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\abseil-initial\\deps__v8__third_party__abseil-cpp__absl__synchronization__mutex.h",
+      "sha256": "BF211821EE59511EEC29137EEC3B81323BA633A7A79B45E02699474F63933DFC",
+      "bytes": 49247
+    },
+    {
+      "relative_path": "absl/synchronization/mutex.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/mutex.cc",
+      "original_source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\abseil-initial\\deps__v8__third_party__abseil-cpp__absl__synchronization__mutex.cc",
+      "sha256": "F885F93AE398B0C511BBD79497F2019603BF4880E267D01DB4922C23BCAD6740",
+      "bytes": 117966
+    },
+    {
+      "relative_path": "absl/synchronization/notification.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/notification.h"
+    },
+    {
+      "relative_path": "absl/synchronization/notification.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/synchronization/notification.cc"
+    },
+    {
+      "relative_path": "absl/time/civil_time.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/civil_time.h"
+    },
+    {
+      "relative_path": "absl/time/civil_time.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/civil_time.cc"
+    },
+    {
+      "relative_path": "absl/time/clock.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/clock.h"
+    },
+    {
+      "relative_path": "absl/time/clock.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/clock.cc"
+    },
+    {
+      "relative_path": "absl/time/duration.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/duration.cc"
+    },
+    {
+      "relative_path": "absl/time/format.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/format.cc"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/include/cctz/civil_time.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/include/cctz/civil_time.h"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/include/cctz/civil_time_detail.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/include/cctz/civil_time_detail.h"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/include/cctz/time_zone.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/include/cctz/time_zone.h"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/include/cctz/zone_info_source.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/include/cctz/zone_info_source.h"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/civil_time_detail.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/civil_time_detail.cc"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/time_zone_fixed.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_fixed.h"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/time_zone_fixed.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_fixed.cc"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/time_zone_format.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_format.cc"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/time_zone_if.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_if.h"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/time_zone_if.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_if.cc"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/time_zone_impl.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_impl.h"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/time_zone_impl.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_impl.cc"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/time_zone_info.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_info.h"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/time_zone_info.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_info.cc"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/time_zone_libc.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_libc.h"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/time_zone_libc.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_libc.cc"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/time_zone_lookup.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_lookup.cc"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/time_zone_posix.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_posix.h"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/time_zone_posix.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_posix.cc"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/tzfile.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/tzfile.h"
+    },
+    {
+      "relative_path": "absl/time/internal/cctz/src/zone_info_source.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/cctz/src/zone_info_source.cc"
+    },
+    {
+      "relative_path": "absl/time/internal/get_current_time_chrono.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/get_current_time_chrono.inc"
+    },
+    {
+      "relative_path": "absl/time/internal/get_current_time_posix.inc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/internal/get_current_time_posix.inc"
+    },
+    {
+      "relative_path": "absl/time/time.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/time.h"
+    },
+    {
+      "relative_path": "absl/time/time.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/time/time.cc"
+    },
+    {
+      "relative_path": "absl/types/any.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/types/any.h"
+    },
+    {
+      "relative_path": "absl/types/compare.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/types/compare.h"
+    },
+    {
+      "relative_path": "absl/types/internal/span.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/types/internal/span.h"
+    },
+    {
+      "relative_path": "absl/types/optional.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/types/optional.h"
+    },
+    {
+      "relative_path": "absl/types/span.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/types/span.h"
+    },
+    {
+      "relative_path": "absl/types/variant.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/types/variant.h"
+    },
+    {
+      "relative_path": "absl/utility/utility.h",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/utility/utility.h"
+    },
+    {
+      "relative_path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/LICENSE",
+      "original_source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\abseil-initial\\deps__v8__third_party__abseil-cpp__LICENSE",
+      "sha256": "C79A7FEA0E3CAC04CD43F20E7B648E5A0FF8FA5344E644B0EE09CA1162B62747",
+      "bytes": 11361
+    }
+  ],
+  "reusable_originals": 12,
+  "compiler": false,
+  "native_execution": false
+}

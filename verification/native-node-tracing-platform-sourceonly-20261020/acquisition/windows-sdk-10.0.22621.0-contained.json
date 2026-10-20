@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "kind": "Exact contained installed Windows SDK original",
+  "created_utc": "2026-10-20T19:31:55.081262+00:00",
+  "version": "10.0.22621.0",
+  "installed_original_path": "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\shared\\TraceLoggingProvider.h",
+  "contained_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\windows-sdk\\10.0.22621.0\\shared\\TraceLoggingProvider.h",
+  "bytes": 294943,
+  "sha256": "C060AF7E8703386736C651A62686908D509B8B9CB627D898D72A4CA6506901A4",
+  "byte_exact": true,
+  "copyright_notice_preserved": true,
+  "acquisition": "Read-only local installed SDK original; exact byte copy into owned authority packet.",
+  "direct_actual_include": "evntprov.h",
+  "dependency_selection": "Pinned Zig 0.16.0 MinGW evntprov.h and its Windows declaration family. No SDK include directory or second SDK header is introduced. Full selected compiler compatibility remains unverified.",
+  "compiler_execution": false,
+  "native_execution": false
+}

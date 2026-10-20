@@ -1,0 +1,64 @@
+{
+  "kind": "Raw original source byte acquisition only",
+  "plan_sha256": "41E264CB4351D2CD242F41450E569E3FF8C63BE1691F186D3A8C7BC0BC3C7FF0",
+  "records": [
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/numeric/int128_have_intrinsic.inc",
+      "sha256": "C21B660263888C8C14C15C25CBBA12CF9E8838A690A6CCFAF2926FC32A076BC2",
+      "bytes": 9753,
+      "relative_path": "vendor/node-v24.13.0/abseil-cpp/absl/numeric/int128_have_intrinsic.inc",
+      "http_status": 200,
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/numeric/int128_have_intrinsic.inc",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\absl\\numeric\\int128_have_intrinsic.inc",
+      "ok": true,
+      "recorded_utc": "2026-10-20T19:06:21.117799+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/numeric/int128_no_intrinsic.inc",
+      "sha256": "53EC9F08B012E1F60B84F0E79775E5A1A34A42066F08BFC624EAA7DD7F23C664",
+      "bytes": 12084,
+      "relative_path": "vendor/node-v24.13.0/abseil-cpp/absl/numeric/int128_no_intrinsic.inc",
+      "http_status": 200,
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/numeric/int128_no_intrinsic.inc",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\absl\\numeric\\int128_no_intrinsic.inc",
+      "ok": true,
+      "recorded_utc": "2026-10-20T19:06:21.113648+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/addresses.h",
+      "sha256": "B142E706F86D35654A438FDF00C8C8B9731E167A26F9E398E386193E23FA6439",
+      "bytes": 2064,
+      "relative_path": "vendor/node-v24.13.0/abseil-cpp/absl/debugging/internal/addresses.h",
+      "http_status": 200,
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/third_party/abseil-cpp/absl/debugging/internal/addresses.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\vendor\\node-v24.13.0\\abseil-cpp\\absl\\debugging\\internal\\addresses.h",
+      "ok": true,
+      "recorded_utc": "2026-10-20T19:06:21.102638+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/util.cc",
+      "sha256": "5CCCE50BA4570EE147C259F45C30E16A81E33EC896332BE25E8BE9B0FD20563B",
+      "bytes": 32300,
+      "relative_path": "verification/native-node-tracing-platform-sourceonly-20261020/authority/src__util.cc",
+      "http_status": 200,
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/util.cc",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\src__util.cc",
+      "ok": true,
+      "recorded_utc": "2026-10-20T19:06:21.115626+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/util.h",
+      "sha256": "29BD133B9FB9000B2A624ABDDFB42FBD538CFA33D3BB00377AD8F1122C74AF52",
+      "bytes": 39726,
+      "relative_path": "verification/native-node-tracing-platform-sourceonly-20261020/authority/src__util.h",
+      "http_status": 200,
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/util.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\src__util.h",
+      "ok": true,
+      "recorded_utc": "2026-10-20T19:06:21.171605+00:00"
+    }
+  ],
+  "compiler": false,
+  "native_execution": false,
+  "source_generator": false
+}

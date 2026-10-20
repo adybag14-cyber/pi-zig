@@ -1,0 +1,9 @@
+{
+  "kind": "Own source metadata auditor parse failure retained",
+  "source_sha256": "140633D121EA50ABA87BFDCFB8027801E05569EE7B1772620948B53AE56A24AF",
+  "exit_code": 1,
+  "stderr": "SyntaxError at line 45: nonlocal is a reserved Python keyword; parser rejected the metadata auditor before any body ran.",
+  "production_edited": false,
+  "compiler_execution": false,
+  "native_execution": false
+}
