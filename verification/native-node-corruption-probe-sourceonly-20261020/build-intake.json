@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "status": "source-only additive standalone expected-exit fixture; no execution",
+  "base_main_head": "098b0f565e38b1af6b970196424b3e4e4bdbd19e",
+  "anchor_before": "\n}\n\nfn addCompileOnlyGroup",
+  "exact_added_text": "    if (native_node_network != null) {\n        const native_corruption_probe = b.addExecutable(.{\n            .name = \"native-node-corruption-probe\",\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_corruption_probe.zig\"), .target = target, .optimize = optimize }),\n            .use_llvm = use_llvm,\n        });\n        native_corruption_probe.stack_size = 16 * 1024 * 1024;\n        linkQuickJs(b, native_corruption_probe.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, native_corruption_probe.root_module, typescript_parser);\n        linkSqlite(native_corruption_probe.root_module, sqlite_lib_dir, sqlite_library);\n        native_corruption_probe.root_module.addImport(\"catalog_tool\", catalog_tool);\n        if (target.result.os.tag == .windows) {\n            native_corruption_probe.root_module.linkSystemLibrary(\"advapi32\", .{});\n            native_corruption_probe.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-corruption-probe\", \"Install isolated native corrupted-stack expected-exit probes without execution\").dependOn(&b.addInstallArtifact(native_corruption_probe, .{}).step);\n    }\n\n",
+  "target": "build-native-node-corruption-probe",
+  "artifact": "native-node-corruption-probe.exe",
+  "declared_probes": 10,
+  "run_step": false,
+  "pe_stack_reserve_bytes": 16777216
+}
