@@ -68,7 +68,10 @@ const Fixture = struct {
         if (@import("builtin").os.tag != .windows) return error.SkipZigTest;
         self.environment = .init(std.testing.allocator);
         errdefer self.environment.deinit();
-        self.engine = try a.v.em.Engine.init(std.testing.allocator, .{});
+        // Same explicitly admitted original feature branch as Module creation.
+        self.engine = try a.v.em.Engine.init(std.testing.allocator, .{ .node_options = .{
+            .features = .{ .strip_types = true, .quic = false },
+        } });
         errdefer self.engine.deinit();
         self.probe = .{ .engine = self.engine, .first = c.pi_js_undefined() };
         for (&self.probe.holders, 0..) |*holder, position| holder.* = .{ .probe = &self.probe, .position = position };

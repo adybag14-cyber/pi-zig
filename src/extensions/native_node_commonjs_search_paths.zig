@@ -15,7 +15,6 @@ const publication = @import("native_node_fs_private_publication.zig");
 const errors = @import("native_node_argument_errors.zig");
 const key = "pi-native:private/commonjs-search-paths";
 pub const Inputs = struct {
-    options: core.Options = .{},
     /// Real internal credentials binding on POSIX. The actual Windows Source
     /// branch uses process.env and has no safeGetenv call.
     safe_getenv: ?c.JSValue = null,
@@ -52,7 +51,7 @@ fn assign(s: *Scope, module: c.JSValue, name: [*:0]const u8, value: c.JSValue) !
 fn createBody(s: *Scope, inputs: Inputs) !c.JSValue {
     const windows = builtin.os.tag == .windows;
     if (!windows and inputs.safe_getenv == null) return error.ActualCredentialSafeGetenvRequired;
-    const module = try s.own(try core.create(s.engine, inputs.options));
+    const module = try s.own(try core.create(s.engine));
     const owner = try s.own(try constructor.loaderEnvironment(s.engine, module));
     const argument = (try errors.acquire(s.engine)) orelse return error.ActualModuleArgumentOwnerRequired;
     try adoptErrors(s, argument);

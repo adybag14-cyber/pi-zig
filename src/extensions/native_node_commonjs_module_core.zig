@@ -6,14 +6,13 @@ const c = a.c;
 const Scope = a.Scope;
 const constructors = @import("native_node_module_constructor.zig");
 const creation = @import("native_node_commonjs_create_require.zig");
+const options = @import("native_node_options.zig");
 const publication = @import("native_node_fs_private_publication.zig");
 const key = "pi-native:private/commonjs-module-core";
-pub const Options = struct { pending_deprecation: bool = false, no_deprecation: bool = false };
-
-pub fn create(engine: *a.v.em.Engine, options: Options) !c.JSValue {
+pub fn create(engine: *a.v.em.Engine) !c.JSValue {
     try engine.checkNativeEntry();
     if (engine.native_module_values.get(key)) |known| return a.duplicate(engine, known);
-    const candidate = try a.expression(engine, createBody, .{options});
+    const candidate = try a.expression(engine, createBody, .{});
     if (engine.native_module_values.get(key)) |known| {
         var completion = a.owned.Completion.initValue(engine, a.duplicate(engine, known));
         completion.release(candidate);
@@ -33,7 +32,7 @@ fn adopt(s: *Scope, values: []c.JSValue) !void {
         };
     }
 }
-fn createBody(s: *Scope, options: Options) !c.JSValue {
+fn createBody(s: *Scope) !c.JSValue {
     try s.pending();
     if (s.engine.native_module_values.get(key)) |known| return a.duplicate(s.engine, known);
     // Both default values come from the actual built-in registry, never its
@@ -59,9 +58,14 @@ fn createBody(s: *Scope, options: Options) !c.JSValue {
         .validate_string = prepared.arguments.validate_string,
         .string_ends_with = ends_with,
     }));
+    // internal/util captures this real declaration from internal/options.
+    // Its lazy dictionary stays in that completed owner; warning predicates
+    // call it at their actual Source occurrence rather than freezing flags.
+    const option_owner = try s.own(try options.acquire(s.engine));
+    const get_option_value = try s.get(option_owner, "getOptionValue");
     const graph = try constructors.create(s.engine, .{
         .paths = paths, .create_require = create_require, .process = process,
-        .pending_deprecation = options.pending_deprecation, .no_deprecation = options.no_deprecation,
+        .get_option_value = get_option_value,
     });
     var graph_values = [_]c.JSValue{ graph.module_constructor, graph.namespace_exports };
     try adopt(s, &graph_values);

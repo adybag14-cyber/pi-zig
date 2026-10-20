@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "status": "source-only finite reviewed; no compile, metadata or runtime qualification",
+  "source_parent": "58cc7a4be99775007c898a4cfd83a8448ef8c5c4",
+  "scope": "Actual Node v24.14 pendingDeprecate/isPendingDeprecation declaration bound to the real internal/options owner in the same Module graph.",
+  "files": [
+    {
+      "path": "src/extensions/native_node_commonjs_module_core.zig",
+      "sha256": "3430093711662E683544D718DB8D44DD636F556A6156B9C761D47D56A4B4E258",
+      "bytes": 4518
+    },
+    {
+      "path": "src/extensions/native_node_module_constructor.zig",
+      "sha256": "92B12A8FA4542B0D091BD08BFECA8F8B1F0DF846440CDA82228D32356F882488",
+      "bytes": 29455
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_search_paths.zig",
+      "sha256": "88FC8BD7EB3822F685AB7729F79EDC069202D56BB0787D36484056D59D8145CE",
+      "bytes": 6818
+    },
+    {
+      "path": "src/native_node_module_creation_test.zig",
+      "sha256": "9D3172E58BB2F697032640E778DD7B12561A6943D49E991759C1232FBFD4CB6F",
+      "bytes": 33660
+    },
+    {
+      "path": "src/native_node_module_search_paths_test.zig",
+      "sha256": "F220B4BD407891DF0E3EB65977FB2E4A664EF11D8F8B52E2DC308027FF3728FB",
+      "bytes": 19401
+    }
+  ],
+  "authority": {
+    "path": "verification/node-module-constructor-sourceonly-20261016/authority/lib__internal__util.js.txt",
+    "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429",
+    "bytes": 28980,
+    "selected_functions": [
+      "getDeprecationWarningEmitter",
+      "isPendingDeprecation",
+      "pendingDeprecate"
+    ],
+    "basis": "Node v24.14; distinct from the Node v24.13 FS/URL physical and message owners"
+  },
+  "controls": {
+    "module_declarations": 30,
+    "previous_module_declarations": 26,
+    "appended_names": [
+      "native actual Module creation pending warning follows genuine options refresh",
+      "native actual Module creation pending option calls short circuit and retain original declaration",
+      "native actual Module creation pending option holder retires before second option",
+      "native actual Module creation pending option retirement B prevents next option warning and catch"
+    ],
+    "all_module_names": [
+      "native actual Module creation constructor fields cache and ordinary call shape",
+      "native actual Module creation public assignments and own exports preserve order",
+      "native actual Module creation actual parent children and parent setter",
+      "native actual Module creation accessor flags and ordinary versus shorthand shapes",
+      "native actual Module creation reverse path scan roots and UTF16",
+      "native actual Module creation nmChars observes inherited index beyond twelve",
+      "native actual Module creation nmChars indexed getter ordinary throw",
+      "native actual Module creation retains actual path scan primordials",
+      "native actual Module creation createRequire captures the real Module and directory",
+      "native actual Module creation createRequire preserves Node24 URL context",
+      "native actual Module creation createRequire live path callee precedes arguments",
+      "native actual Module creation createRequire genuine errors and outside catch gate",
+      "native actual Module creation createRequire uses original URL and suffix callable",
+      "native actual Module creation require main own definition and following assignments",
+      "native actual Module creation require dispatches actual live Module methods",
+      "native actual Module creation pending parent warning uses original code owner",
+      "native actual Module creation warned flag precedes failed warning call",
+      "native actual Module creation completed core shares immutable constructor and cache",
+      "native actual Module creation callee and child lexical retire before next statement",
+      "native actual Module creation callee cleanup fatal stops before next setter and catch",
+      "native actual Module creation actual getter fatal stops before next setter and catch",
+      "native actual Module creation ordinary private dirname DATA keeps exact identity",
+      "native actual Module creation successful flagged dirname DATA is assigned unchanged",
+      "native actual Module creation suffix primordial reuses completed argument owner",
+      "native actual Module creation original from argument retires before returned length getter",
+      "native actual Module creation original from retirement B prevents length getter and catch",
+      "native actual Module creation pending warning follows genuine options refresh",
+      "native actual Module creation pending option calls short circuit and retain original declaration",
+      "native actual Module creation pending option holder retires before second option",
+      "native actual Module creation pending option retirement B prevents next option warning and catch"
+    ],
+    "search_path_declarations": 20,
+    "existing_names_preserved": true,
+    "executed": false
+  },
+  "build": {
+    "changed": false,
+    "module_target": "build-native-node-module-creation",
+    "module_filter": "native actual Module creation",
+    "search_target": "build-native-node-module-search-paths",
+    "search_filter": "native actual Module search paths"
+  },
+  "peers": [
+    {
+      "owner": "sdk_owners",
+      "status": "closed source-only",
+      "scope": "core34300937, constructor92B12A8F and search88FC8BD7 actual import/call/short-circuit/publication delta against utilA6A3FED1"
+    },
+    {
+      "owner": "vm_foundation",
+      "status": "closed source-only",
+      "scope": "Fixture real native configuration and exposeOptions, appended declarations 27–30, actual serializer refresh/original callable retention and pre-retained own-data fatal evidence at root 9D3172E5"
+    }
+  ],
+  "boundaries": [
+    "The actual completed getOptionValue declaration is retained once; its current lazy dictionary is queried at each original Source predicate.",
+    "Only !warned reaches the predicate; a false first value prevents the no-deprecation call. First result and callee retire before the second call.",
+    "The warned flag is still published before selecting/calling the live process.emitWarning; code deduplication and captured original ReflectApply are unchanged.",
+    "The test-only view reaches the actual options getter closure and its real binding dictionary. It does not substitute the getter or invent a parallel options cache.",
+    "Fixture native feature values strip_types=true and quic=false are explicit selected build admission; general application feature configuration remains separate."
+  ],
+  "remaining": [
+    "Root-authorized fresh build, raw metadata/artifact reconciliation, exact execution and independent closure",
+    "Actual process warning implementation and full CommonJS/ESM/Jiti public composition"
+  ]
+}
