@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "status": "source_only_draft",
+  "parent_commit": "766f937bf8baa4c5f10000d01254665023d4ace4",
+  "original": {
+    "c_sha256": "FD8FFA2B5A52147E1A2AD04F5AD5830C6CBA09B9EFD2F336CCDB4FBED405CBD3",
+    "h_sha256": "E1AF68AEFA8A8D8DD565F1ABCAA23C7F82C04DD78E693074533D272CE4C95299"
+  },
+  "current": {
+    "c_sha256": "61BBC702EB0871CBF219658F9B8C86C5C22553725A3D74ACBF4C3BFC01B6D749",
+    "h_sha256": "990B4A99FEE0EFA03540925F6F6968C0400B3D7BB35A92AEF4B80CEC1AF43CD9"
+  },
+  "exact_reversal": true,
+  "abi": "int JS_ReadCapturedStackFrameLoggingInfo(JSContext*, JSValueConst borrowed_frame, int *is_eval, int *has_script_id)",
+  "contract": [
+    "Raw projection writes both primitive outputs only on success; invalid brand/missing output returns -1 without changing outputs.",
+    "No allocation, guest lookup, pending guard, exception manufacture or pending-state mutation.",
+    "All real parser roots, including the admitted CJS compiler, start HOST; direct/indirect eval overrides EVAL at its actual entry. Nested definitions inherit that origin. NONE is reserved for native and filename-only synthetic frames without a compiled Script owner.",
+    "All actual captured-frame construction paths and the existing complete struct clone retain the origin.",
+    "Bytecode v30 stores the origin independent of debug/source stripping; previous v29 payloads fail the original version gate."
+  ],
+  "source_authority": "authority/source-operation-proof.json",
+  "edits": [
+    {
+      "file": "c",
+      "why": "private compiler origin values",
+      "old": "typedef struct JSFunctionBytecode {",
+      "replacement": "/* Actual compilation origin, independent of debug/display metadata. */\ntypedef enum {\n    JS_PI_SCRIPT_ORIGIN_NONE = 0,\n    JS_PI_SCRIPT_ORIGIN_HOST = 1,\n    JS_PI_SCRIPT_ORIGIN_EVAL = 2,\n} JSPiScriptOrigin;\n\ntypedef struct JSFunctionBytecode {"
+    },
+    {
+      "file": "c",
+      "why": "bytecode origin storage",
+      "old": "    uint8_t backtrace_barrier : 1; /* stop backtrace on this function */\n    /* XXX: 5 bits available */",
+      "replacement": "    uint8_t backtrace_barrier : 1; /* stop backtrace on this function */\n    uint8_t pi_script_origin : 2; /* JSPiScriptOrigin, retained without debug info */\n    /* XXX: 2 bits available */"
+    },
+    {
+      "file": "c",
+      "why": "captured frame origin storage",
+      "old": "    bool native;\n    bool constructor;\n    int line_num;",
+      "replacement": "    bool native;\n    bool constructor;\n    uint8_t pi_script_origin; /* captured from the actual compiled owner */\n    int line_num;"
+    },
+    {
+      "file": "c",
+      "why": "parser origin storage",
+      "old": "    int eval_type; /* only valid if is_eval = true */\n\n    /* Pack all boolean flags",
+      "replacement": "    int eval_type; /* only valid if is_eval = true */\n    uint8_t pi_script_origin; /* inherited from this compilation's root */\n\n    /* Pack all boolean flags"
+    },
+    {
+      "file": "c",
+      "why": "inherit child origin; all parser root definitions are host-owned before explicit eval selection",
+      "old": "    fd->pi_source_url = JS_ATOM_NULL;\n    fd->pi_diagnostic = parent ? parent->pi_diagnostic : ctx->pi_compiler_diagnostic;",
+      "replacement": "    fd->pi_source_url = JS_ATOM_NULL;\n    fd->pi_script_origin = parent ? parent->pi_script_origin : JS_PI_SCRIPT_ORIGIN_HOST;\n    fd->pi_diagnostic = parent ? parent->pi_diagnostic : ctx->pi_compiler_diagnostic;"
+    },
+    {
+      "file": "c",
+      "why": "retain origin in compiled bytecode",
+      "old": "    b->backtrace_barrier = fd->backtrace_barrier;\n    b->realm = JS_DupContext(ctx);",
+      "replacement": "    b->backtrace_barrier = fd->backtrace_barrier;\n    b->pi_script_origin = fd->pi_script_origin;\n    b->realm = JS_DupContext(ctx);"
+    },
+    {
+      "file": "c",
+      "why": "select origin at the true compilation entry",
+      "old": "    fd->eval_type = eval_type;\n    fd->has_this_binding",
+      "replacement": "    fd->eval_type = eval_type;\n    fd->pi_script_origin = (eval_type == JS_EVAL_TYPE_DIRECT ||\n                            eval_type == JS_EVAL_TYPE_INDIRECT)\n        ? JS_PI_SCRIPT_ORIGIN_EVAL : JS_PI_SCRIPT_ORIGIN_HOST;\n    fd->has_this_binding"
+    },
+    {
+      "file": "c",
+      "why": "serialized origin requires a new bytecode version",
+      "old": "#define BC_VERSION 29",
+      "replacement": "#define BC_VERSION 30"
+    },
+    {
+      "file": "c",
+      "why": "write origin independent of debug stripping",
+      "old": "    bc_set_flags(&flags, &idx, s->allow_debug, 1);\n    assert(idx <= 16);",
+      "replacement": "    bc_set_flags(&flags, &idx, s->allow_debug, 1);\n    bc_set_flags(&flags, &idx, b->pi_script_origin, 2);\n    assert(idx <= 16);"
+    },
+    {
+      "file": "c",
+      "why": "read and validate the serialized origin",
+      "old": "    has_debug_info = bc_get_flags(v16, &idx, 1);\n    if (bc_get_u8(s, &v8))",
+      "replacement": "    has_debug_info = bc_get_flags(v16, &idx, 1);\n    bc.pi_script_origin = bc_get_flags(v16, &idx, 2);\n    if (bc.pi_script_origin > JS_PI_SCRIPT_ORIGIN_EVAL) {\n        JS_ThrowSyntaxError(ctx, \"invalid bytecode script origin\");\n        goto fail;\n    }\n    if (bc_get_u8(s, &v8))"
+    },
+    {
+      "file": "c",
+      "why": "initialize native captured-frame origin",
+      "old": "    csd->source_name = JS_NULL;\n    csd->native = false;",
+      "replacement": "    csd->source_name = JS_NULL;\n    csd->pi_script_origin = JS_PI_SCRIPT_ORIGIN_NONE;\n    csd->native = false;"
+    },
+    {
+      "file": "c",
+      "why": "capture origin before metadata producer calls",
+      "old": "        bytecode = p->u.func.function_bytecode;\n        pi_metadata |= bytecode->pi_source_url != JS_ATOM_NULL;",
+      "replacement": "        bytecode = p->u.func.function_bytecode;\n        csd->pi_script_origin = bytecode->pi_script_origin;\n        pi_metadata |= bytecode->pi_source_url != JS_ATOM_NULL;"
+    },
+    {
+      "file": "c",
+      "why": "synthetic filename is not origin evidence",
+      "old": "    csd->func_name = JS_NULL;\n    csd->native = false;\n    csd->constructor = false;",
+      "replacement": "    csd->func_name = JS_NULL;\n    csd->native = false;\n    csd->constructor = false;\n    /* A caller-supplied filename has no compiled Script owner. */\n    csd->pi_script_origin = JS_PI_SCRIPT_ORIGIN_NONE;"
+    },
+    {
+      "file": "c",
+      "why": "retain origin for an actual no-PC bytecode frame",
+      "old": "            data.constructor = current->is_constructor;\n            data.native = false;",
+      "replacement": "            data.constructor = current->is_constructor;\n            data.native = false;\n            data.pi_script_origin = bytecode->pi_script_origin;"
+    },
+    {
+      "file": "c",
+      "why": "allocation-free actual logging projection",
+      "old": "int JS_ReadCapturedStackFrameSourceName(JSContext *ctx, JSValueConst frame,",
+      "replacement": "int JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx, JSValueConst frame,\n                                       int *is_eval, int *has_script_id)\n{\n    JSCallSiteData *data = JS_GetOpaque(frame, JS_CLASS_CALL_SITE);\n    (void)ctx;\n    if (!data || !is_eval || !has_script_id)\n        return -1;\n    *is_eval = data->pi_script_origin == JS_PI_SCRIPT_ORIGIN_EVAL;\n    *has_script_id = data->pi_script_origin != JS_PI_SCRIPT_ORIGIN_NONE;\n    return 0;\n}\nint JS_ReadCapturedStackFrameSourceName(JSContext *ctx, JSValueConst frame,"
+    },
+    {
+      "file": "h",
+      "why": "declare the native logging projection contract",
+      "old": "/* Actual logical ScriptNameOrSourceURL, without guest property lookup. Success",
+      "replacement": "/* Actual compiled-script origin for native logging. Borrowed frame; zero\n   succeeds and writes both primitive outputs, -1 leaves them unchanged for an\n   invalid frame or missing output. No allocation, guest lookup, exception or\n   pending-state operation. Native and filename-only synthetic frames have no\n   compiled-script origin. Clones and bytecode serialization retain the origin\n   independently of function names, filenames, source URLs and debug data. */\nJS_EXTERN int JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx,\n    JSValueConst frame, int *is_eval, int *has_script_id);\n/* Actual logical ScriptNameOrSourceURL, without guest property lookup. Success"
+    }
+  ],
+  "source_only": true,
+  "execution_claim": false
+}

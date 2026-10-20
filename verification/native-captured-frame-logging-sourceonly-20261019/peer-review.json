@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "status": "source_peer_closed",
+  "execution_claim": false,
+  "production": {
+    "c_sha256": "61BBC702EB0871CBF219658F9B8C86C5C22553725A3D74ACBF4C3BFC01B6D749",
+    "h_sha256": "990B4A99FEE0EFA03540925F6F6968C0400B3D7BB35A92AEF4B80CEC1AF43CD9",
+    "packet_sha256": "C13AB0563B959539B977FD399687645AB0819B340CF554782F0493878A135D6F"
+  },
+  "controls": {
+    "root": "src/native_vm_captured_frame_logging_test.zig",
+    "sha256": "AABCD7BCDAC97DEC4934F10BBD1E866AFC6849DA62393D103A0FEF8E6AD647CC",
+    "declared": 19
+  },
+  "reviews": [
+    {
+      "reviewer": "sdk_owners",
+      "status": "closed",
+      "scope": "Actual compiler/root inheritance, direct/indirect eval and all four dynamic constructors, included genuine CJS root, bytecode publication/version/reader/writer; declarations 1–8 and 15–19 with actual foreign contexts, serializer/envelope and CJS CaptureOwner helpers.",
+      "finding": "No remaining concrete blocker in the inspected source. The actual CJS null-parent root is HOST before children inherit; native AF separately remains zero-initialized NONE."
+    },
+    {
+      "reviewer": "modules_io",
+      "status": "closed",
+      "scope": "Every captured-frame initialization path, native/synthetic cases, existing complete-struct clone and raw API; Fixture/capture/ReceiverProbe and declarations 9–14.",
+      "finding": "No remaining concrete blocker. Projection borrows the actual frame, leaves invalid outputs and existing pending state intact, and adds no receiver/root lifetime."
+    },
+    {
+      "reviewer": "modules_io",
+      "status": "closed",
+      "scope": "Exact six-line build-intake.json 383D4A7CF599093486385AD4B031D108E58333A36773E57F45EF2E3E42CC7731.",
+      "finding": "Actual nineteen-name filter/root, shared linkQuickJs once, install-only, no execution action."
+    },
+    {
+      "reviewer": "root",
+      "status": "source_read_completed",
+      "scope": "Complete production C/H diff and native CHECK consumer ABI.",
+      "finding": "No additional consumer blocker; API primitive outputs match the genuine native CHECK formatter input."
+    }
+  ],
+  "limitations": [
+    "These receipts qualify only the inspected source slices.",
+    "No compilation, runtime, metadata query, Node execution or formatter/generator execution is claimed.",
+    "Node fatal formatter integration and process-terminal behavior remain a separate source unit and validation gate."
+  ]
+}

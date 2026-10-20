@@ -1,0 +1,191 @@
+{
+  "schema": 1,
+  "status": "source_only",
+  "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "node": "v24.13.0",
+  "operations": [
+    {
+      "operation": "StackFrame reads the actual Script ID",
+      "file": "../../native-existing-promise-settlement-sourceonly-20261019/authority/v8-api.v24.13.cc",
+      "full_sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "offset_bytes": 125899,
+      "bytes": 96,
+      "sha256": "11242F218834E32B02E452EE7F9CB32C1943800FE403784E9C570624EF5CF163",
+      "text": "int StackFrame::GetScriptId() const {\n  return Utils::OpenDirectHandle(this)->script()->id();\n}\n"
+    },
+    {
+      "operation": "StackFrame reads the actual compilation type",
+      "file": "../../native-existing-promise-settlement-sourceonly-20261019/authority/v8-api.v24.13.cc",
+      "full_sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "offset_bytes": 127753,
+      "bytes": 172,
+      "sha256": "AD16F957796DC3A19BECE04556D7FFB5B3F9DCF9775E717366215A3462EBC353",
+      "text": "bool StackFrame::IsEval() const {\n  auto self = Utils::OpenDirectHandle(this);\n  return self->script()->compilation_type() ==\n         i::Script::CompilationType::kEval;\n}\n"
+    },
+    {
+      "operation": "Physical script name is a distinct read",
+      "file": "../../native-existing-promise-settlement-sourceonly-20261019/authority/v8-api.v24.13.cc",
+      "full_sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "offset_bytes": 125996,
+      "bytes": 299,
+      "sha256": "6D720517A00E7BC01B161126827D1288143A4BDCABD206CA566FE6C04BB875E1",
+      "text": "Local<String> StackFrame::GetScriptName() const {\n  auto self = Utils::OpenDirectHandle(this);\n  i::Isolate* i_isolate = self->GetIsolate();\n  i::DirectHandle<i::Object> name(self->script()->name(), i_isolate);\n  if (!IsString(*name)) return {};\n  return Utils::ToLocal(i::Cast<i::String>(name));\n}\n"
+    },
+    {
+      "operation": "Default Script creation obtains the real next ID",
+      "file": "factory-base.v24.13.cc",
+      "full_sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83",
+      "offset_bytes": 15388,
+      "bytes": 249,
+      "sha256": "DF8A25A1EF5888185B31AEA054618864B53F9A0445B9E9097B43200207CB9A49",
+      "text": "Handle<Script> FactoryBase<Impl>::NewScript(\n    DirectHandle<UnionOf<String, Undefined>> source,\n    ScriptEventType script_event_type) {\n  return NewScriptWithId(source, isolate()->GetNextScriptId(),\n                         script_event_type);\n}\n"
+    },
+    {
+      "operation": "Script creation initializes ID and host compilation flags",
+      "file": "factory-base.v24.13.cc",
+      "full_sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83",
+      "offset_bytes": 15663,
+      "bytes": 1608,
+      "sha256": "32AB20A5B00A0B0D70CA69164B900A20A940AFE49B79E31B02F7938B6B5D0C91",
+      "text": "Handle<Script> FactoryBase<Impl>::NewScriptWithId(\n    DirectHandle<UnionOf<String, Undefined>> source, int script_id,\n    ScriptEventType script_event_type) {\n  DCHECK(IsString(*source) || IsUndefined(*source));\n  // Create and initialize script object.\n  ReadOnlyRoots roots = read_only_roots();\n  Handle<Script> script = handle(\n      NewStructInternal<Script>(SCRIPT_TYPE, AllocationType::kOld), isolate());\n  {\n    DisallowGarbageCollection no_gc;\n    Tagged<Script> raw = *script;\n    raw->set_source(*source);\n    raw->set_name(roots.undefined_value(), SKIP_WRITE_BARRIER);\n    raw->set_id(script_id);\n    raw->set_line_offset(0);\n    raw->set_column_offset(0);\n    raw->set_context_data(roots.undefined_value(), SKIP_WRITE_BARRIER);\n    raw->set_type(Script::Type::kNormal);\n    raw->set_line_ends(Smi::zero());\n    raw->set_eval_from_shared_or_wrapped_arguments(roots.undefined_value(),\n                                                   SKIP_WRITE_BARRIER);\n    raw->set_eval_from_position(0);\n    raw->set_infos(roots.empty_weak_fixed_array(), SKIP_WRITE_BARRIER);\n    raw->set_flags(0);\n    raw->set_host_defined_options(roots.empty_fixed_array(),\n                                  SKIP_WRITE_BARRIER);\n    raw->set_source_hash(roots.undefined_value(), SKIP_WRITE_BARRIER);\n    raw->set_compiled_lazy_function_positions(roots.undefined_value(),\n                                              SKIP_WRITE_BARRIER);\n#ifdef V8_SCRIPTORMODULE_LEGACY_LIFETIME\n    raw->set_script_or_modules(roots.empty_array_list());\n#endif\n  }\n  impl()->ProcessNewScript(script, script_event_type);\n  return script;\n}\n"
+    },
+    {
+      "operation": "Nested function literal retains its actual Script",
+      "file": "factory-base.v24.13.cc",
+      "full_sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83",
+      "offset_bytes": 18371,
+      "bytes": 699,
+      "sha256": "A538673C2311993D2B42745AA8FF294661E84D61170ED284FE270BBEABE27962",
+      "text": "Handle<SharedFunctionInfo> FactoryBase<Impl>::NewSharedFunctionInfoForLiteral(\n    FunctionLiteral* literal, DirectHandle<Script> script, bool is_toplevel) {\n  FunctionKind kind = literal->kind();\n  Handle<SharedFunctionInfo> shared =\n      NewSharedFunctionInfo(literal->GetName(isolate()), {},\n                            Builtin::kCompileLazy, 0, kDontAdapt, kind);\n  shared->set_function_literal_id(literal->function_literal_id());\n  literal->set_shared_function_info(shared);\n  SharedFunctionInfo::InitFromFunctionLiteral(isolate(), literal, is_toplevel);\n  shared->SetScript(isolate(), read_only_roots(), *script,\n                    literal->function_literal_id(), false);\n  return shared;\n}\n"
+    },
+    {
+      "operation": "Top-level compilation reserves the actual Script ID",
+      "file": "parse-info.v24.13.cc",
+      "full_sha256": "4F34465A3804ECC28C27C07665744F76BCD58446173EE88B557239A474F6C00D",
+      "offset_bytes": 3156,
+      "bytes": 492,
+      "sha256": "ABC19699DFC811935D7C3ED40E28887138958ED47AD91BB2C476240C42AA2289",
+      "text": "UnoptimizedCompileFlags UnoptimizedCompileFlags::ForToplevelCompile(\n    Isolate* isolate, bool is_user_javascript, LanguageMode language_mode,\n    REPLMode repl_mode, ScriptType type, bool lazy) {\n  UnoptimizedCompileFlags flags(isolate, isolate->GetNextScriptId());\n  flags.SetFlagsForToplevelCompile(is_user_javascript, language_mode, repl_mode,\n                                   type, lazy);\n  LOG(isolate, ScriptEvent(ScriptEventType::kReserveId, flags.script_id()));\n  return flags;\n}\n"
+    },
+    {
+      "operation": "Nested compilation retains top-level flags",
+      "file": "parse-info.v24.13.cc",
+      "full_sha256": "4F34465A3804ECC28C27C07665744F76BCD58446173EE88B557239A474F6C00D",
+      "offset_bytes": 3659,
+      "bytes": 417,
+      "sha256": "C22F4CA97CD482352A45BC72BEE0959E8009E7D4C1EFD0F14908B05D86234754",
+      "text": "UnoptimizedCompileFlags UnoptimizedCompileFlags::ForToplevelFunction(\n    const UnoptimizedCompileFlags toplevel_flags,\n    const FunctionLiteral* literal) {\n  DCHECK(toplevel_flags.is_toplevel());\n  DCHECK(!literal->is_toplevel());\n\n  // Replicate the toplevel flags, then setup the function-specific flags.\n  UnoptimizedCompileFlags flags = toplevel_flags;\n  flags.SetFlagsFromFunction(literal);\n\n  return flags;\n}\n"
+    },
+    {
+      "operation": "Eval selects kEval; a wrapped host script remains kHost",
+      "file": "parse-info.v24.13.cc",
+      "full_sha256": "4F34465A3804ECC28C27C07665744F76BCD58446173EE88B557239A474F6C00D",
+      "offset_bytes": 9370,
+      "bytes": 1637,
+      "sha256": "9A41D912B300C1A573D4E3341F71E53C24C7FE4FC43BEB9E0BEFB09935E1A584",
+      "text": "Handle<Script> ParseInfo::CreateScript(\n    IsolateT* isolate, DirectHandle<String> source,\n    MaybeDirectHandle<FixedArray> maybe_wrapped_arguments,\n    ScriptOriginOptions origin_options, NativesFlag natives) {\n  // Create a script object describing the script to be compiled.\n  DCHECK(flags().script_id() >= 0 ||\n         flags().script_id() == Script::kTemporaryScriptId);\n  auto event = ScriptEventType::kCreate;\n  if (is_streaming_compilation()) {\n    event = is_background_compilation()\n                ? ScriptEventType::kStreamingCompileBackground\n                : ScriptEventType::kStreamingCompileForeground;\n  } else if (is_background_compilation()) {\n    event = ScriptEventType::kBackgroundCompile;\n  }\n  Handle<Script> script =\n      isolate->factory()->NewScriptWithId(source, flags().script_id(), event);\n  DisallowGarbageCollection no_gc;\n  Tagged<Script> raw_script = *script;\n  switch (natives) {\n    case EXTENSION_CODE:\n      raw_script->set_type(Script::Type::kExtension);\n      break;\n    case INSPECTOR_CODE:\n      raw_script->set_type(Script::Type::kInspector);\n      break;\n    case NOT_NATIVES_CODE:\n      break;\n  }\n  raw_script->set_origin_options(origin_options);\n  raw_script->set_is_repl_mode(flags().is_repl_mode());\n\n  DCHECK_EQ(is_wrapped_as_function(), !maybe_wrapped_arguments.is_null());\n  if (is_wrapped_as_function()) {\n    raw_script->set_wrapped_arguments(\n        *maybe_wrapped_arguments.ToHandleChecked());\n  } else if (flags().is_eval()) {\n    raw_script->set_compilation_type(Script::CompilationType::kEval);\n  }\n  CheckFlagsForToplevelCompileFromScript(raw_script);\n\n  return script;\n}\n"
+    },
+    {
+      "operation": "Eval creates or reuses the actual eval Script",
+      "file": "compiler.v24.13.cc",
+      "full_sha256": "0E09AD7088E3B369857E1C2532D76FFE635BDC3DBABF3A4BDAFC9EAAC482D94E",
+      "offset_bytes": 132712,
+      "bytes": 6260,
+      "sha256": "7BE25429EE8524C58FB8D4A2EF12104E9211D1359641B16BD98EC65F1CBE4AC0",
+      "text": "MaybeDirectHandle<JSFunction> Compiler::GetFunctionFromEval(\n    DirectHandle<String> source, DirectHandle<SharedFunctionInfo> outer_info,\n    DirectHandle<Context> context, LanguageMode language_mode,\n    ParseRestriction restriction, int parameters_end_pos, int eval_position,\n    ParsingWhileDebugging parsing_while_debugging) {\n  Isolate* isolate = context->GetIsolate();\n\n  // The cache lookup key needs to be aware of the separation between the\n  // parameters and the body to prevent this valid invocation:\n  //   Function(\"\", \"function anonymous(\\n/**/) {\\n}\");\n  // from adding an entry that falsely approves this invalid invocation:\n  //   Function(\"\\n/**/) {\\nfunction anonymous(\", \"}\");\n  // The actual eval_position for indirect eval and CreateDynamicFunction\n  // is unused (just 0), which means it's an available field to use to indicate\n  // this separation. But to make sure we're not causing other false hits, we\n  // negate the scope position.\n  int eval_cache_position = eval_position;\n  if (restriction == ONLY_SINGLE_FUNCTION_LITERAL &&\n      parameters_end_pos != kNoSourcePosition) {\n    // use the parameters_end_pos as the eval_position in the eval cache.\n    DCHECK_EQ(eval_position, kNoSourcePosition);\n    eval_cache_position = -parameters_end_pos;\n  }\n  CompilationCache* compilation_cache = isolate->compilation_cache();\n  InfoCellPair eval_result = compilation_cache->LookupEval(\n      source, outer_info, context, language_mode, eval_cache_position);\n  DirectHandle<FeedbackCell> feedback_cell;\n  if (eval_result.has_feedback_cell()) {\n    feedback_cell = direct_handle(eval_result.feedback_cell(), isolate);\n  }\n\n  DirectHandle<SharedFunctionInfo> shared_info;\n  Handle<Script> script;\n  IsCompiledScope is_compiled_scope;\n  bool allow_eval_cache;\n  if (eval_result.has_shared()) {\n    shared_info =\n        DirectHandle<SharedFunctionInfo>(eval_result.shared(), isolate);\n    script = Handle<Script>(Cast<Script>(shared_info->script()), isolate);\n    is_compiled_scope = shared_info->is_compiled_scope(isolate);\n    allow_eval_cache = true;\n  } else {\n    UnoptimizedCompileFlags flags = UnoptimizedCompileFlags::ForToplevelCompile(\n        isolate, true, language_mode, REPLMode::kNo, ScriptType::kClassic,\n        v8_flags.lazy_eval);\n    flags.set_is_eval(true);\n    flags.set_parsing_while_debugging(parsing_while_debugging);\n    DCHECK(!flags.is_module());\n    flags.set_parse_restriction(restriction);\n\n    UnoptimizedCompileState compile_state;\n    ReusableUnoptimizedCompileState reusable_state(isolate);\n    ParseInfo parse_info(isolate, flags, &compile_state, &reusable_state);\n    parse_info.set_parameters_end_pos(parameters_end_pos);\n\n    MaybeDirectHandle<ScopeInfo> maybe_outer_scope_info;\n    if (!IsNativeContext(*context)) {\n      maybe_outer_scope_info = direct_handle(context->scope_info(), isolate);\n    }\n    script = parse_info.CreateScript(\n        isolate, source, kNullMaybeHandle,\n        OriginOptionsForEval(outer_info->script(), parsing_while_debugging));\n    script->set_eval_from_shared(*outer_info);\n    if (eval_position == kNoSourcePosition) {\n      // If the position is missing, attempt to get the code offset by\n      // walking the stack. Do not translate the code offset into source\n      // position, but store it as negative value for lazy translation.\n      DebuggableStackFrameIterator it(isolate);\n      if (!it.done() && it.is_javascript()) {\n        FrameSummary summary = it.GetTopValidFrame();\n        script->set_eval_from_shared(\n            summary.AsJavaScript().function()->shared());\n        script->set_origin_options(\n            OriginOptionsForEval(*summary.script(), parsing_while_debugging));\n        eval_position = -summary.code_offset();\n      } else {\n        eval_position = 0;\n      }\n    }\n    script->set_eval_from_position(eval_position);\n\n    if (!v8::internal::CompileToplevel(&parse_info, script,\n                                       maybe_outer_scope_info, isolate,\n                                       &is_compiled_scope)\n             .ToHandle(&shared_info)) {\n      return MaybeDirectHandle<JSFunction>();\n    }\n    allow_eval_cache = parse_info.allow_eval_cache();\n  }\n\n  // If caller is strict mode, the result must be in strict mode as well.\n  DCHECK(is_sloppy(language_mode) || is_strict(shared_info->language_mode()));\n\n  DirectHandle<JSFunction> result;\n  if (eval_result.has_shared()) {\n    if (eval_result.has_feedback_cell()) {\n      result = Factory::JSFunctionBuilder{isolate, shared_info, context}\n                   .set_feedback_cell(feedback_cell)\n                   .set_allocation_type(AllocationType::kYoung)\n                   .Build();\n    } else {\n      result = Factory::JSFunctionBuilder{isolate, shared_info, context}\n                   .set_allocation_type(AllocationType::kYoung)\n                   .Build();\n      // TODO(mythria): I don't think we need this here. PostInstantiation\n      // already initializes feedback cell.\n      JSFunction::InitializeFeedbackCell(result, &is_compiled_scope, true);\n      if (allow_eval_cache) {\n        // Make sure to cache this result.\n        DirectHandle<FeedbackCell> new_feedback_cell(\n            result->raw_feedback_cell(), isolate);\n        compilation_cache->PutEval(source, outer_info, context, shared_info,\n                                   new_feedback_cell, eval_cache_position);\n      }\n    }\n  } else {\n    result = Factory::JSFunctionBuilder{isolate, shared_info, context}\n                 .set_allocation_type(AllocationType::kYoung)\n                 .Build();\n    // TODO(mythria): I don't think we need this here. PostInstantiation\n    // already initializes feedback cell.\n    JSFunction::InitializeFeedbackCell(result, &is_compiled_scope, true);\n    if (allow_eval_cache) {\n      // Add the SharedFunctionInfo and the LiteralsArray to the eval cache if\n      // we didn't retrieve from there.\n      DirectHandle<FeedbackCell> new_feedback_cell(result->raw_feedback_cell(),\n                                                   isolate);\n      compilation_cache->PutEval(source, outer_info, context, shared_info,\n                                 new_feedback_cell, eval_cache_position);\n    }\n  }\n  CHECK(is_compiled_scope.is_compiled());\n\n  return result;\n}\n"
+    },
+    {
+      "operation": "Validated dynamic compilation enters the real eval compiler",
+      "file": "compiler.v24.13.cc",
+      "full_sha256": "0E09AD7088E3B369857E1C2532D76FFE635BDC3DBABF3A4BDAFC9EAAC482D94E",
+      "offset_bytes": 142766,
+      "bytes": 983,
+      "sha256": "2D12F1710D1249B5561AEF0B2B9DEECB8A5F86B67B93F0104E420205064D378D",
+      "text": "MaybeDirectHandle<JSFunction> Compiler::GetFunctionFromValidatedString(\n    DirectHandle<NativeContext> native_context,\n    MaybeDirectHandle<String> source, ParseRestriction restriction,\n    int parameters_end_pos) {\n  Isolate* const isolate = native_context->GetIsolate();\n\n  // Raise an EvalError if we did not receive a string.\n  if (source.is_null()) {\n    Handle<Object> error_message =\n        native_context->ErrorMessageForCodeGenerationFromStrings();\n    THROW_NEW_ERROR(isolate, NewEvalError(MessageTemplate::kCodeGenFromStrings,\n                                          error_message));\n  }\n\n  // Compile source string in the native context.\n  int eval_position = kNoSourcePosition;\n  DirectHandle<SharedFunctionInfo> outer_info(\n      native_context->empty_function()->shared(), isolate);\n  return Compiler::GetFunctionFromEval(\n      source.ToHandleChecked(), outer_info, native_context,\n      LanguageMode::kSloppy, restriction, parameters_end_pos, eval_position);\n}\n"
+    },
+    {
+      "operation": "Dynamic Function compilation enters the validated route",
+      "file": "compiler.v24.13.cc",
+      "full_sha256": "0E09AD7088E3B369857E1C2532D76FFE635BDC3DBABF3A4BDAFC9EAAC482D94E",
+      "offset_bytes": 143760,
+      "bytes": 570,
+      "sha256": "D430F849B12A8A0672DD6CC79A5B9AEE9299A17CABB31607399F4ADFA97455D5",
+      "text": "MaybeDirectHandle<JSFunction> Compiler::GetFunctionFromString(\n    DirectHandle<NativeContext> context, Handle<Object> source,\n    int parameters_end_pos, bool is_code_like) {\n  Isolate* const isolate = context->GetIsolate();\n  MaybeDirectHandle<String> validated_source =\n      ValidateDynamicCompilationSource(isolate, context, source, is_code_like)\n          .first;\n  return GetFunctionFromValidatedString(context, validated_source,\n                                        ONLY_SINGLE_FUNCTION_LITERAL,\n                                        parameters_end_pos);\n}\n"
+    },
+    {
+      "operation": "All four dynamic Function kinds use the actual compilation route",
+      "file": "builtins-function.v24.13.cc",
+      "full_sha256": "2D79258F5E71BAC13EABD645B663501C0C5EBB631776D32B0EF75DC2CBFC1FF9",
+      "offset_bytes": 671,
+      "bytes": 4232,
+      "sha256": "D3E65BC5E5885BEB9ADCBEC8927BA52669662F4390C8DB6FAB1094572D0459E6",
+      "text": "MaybeDirectHandle<Object> CreateDynamicFunction(Isolate* isolate,\n                                                BuiltinArguments args,\n                                                const char* token) {\n  // Compute number of arguments, ignoring the receiver.\n  DCHECK_LE(1, args.length());\n  int const argc = args.length() - 1;\n\n  DirectHandle<JSFunction> target = args.target();\n  DirectHandle<JSObject> target_global_proxy(target->global_proxy(), isolate);\n\n  if (!Builtins::AllowDynamicFunction(isolate, target, target_global_proxy)) {\n    isolate->CountUsage(v8::Isolate::kFunctionConstructorReturnedUndefined);\n    // TODO(verwaest): We would like to throw using the calling context instead\n    // of the entered context but we don't currently have access to that.\n    HandleScopeImplementer* impl = isolate->handle_scope_implementer();\n    SaveAndSwitchContext save(isolate,\n                              impl->LastEnteredContext()->native_context());\n    THROW_NEW_ERROR(isolate, NewTypeError(MessageTemplate::kNoAccess));\n  }\n\n  // Build the source string.\n  DirectHandle<String> source;\n  int parameters_end_pos = kNoSourcePosition;\n  {\n    IncrementalStringBuilder builder(isolate);\n    builder.AppendCharacter('(');\n    builder.AppendCString(token);\n    builder.AppendCStringLiteral(\" anonymous(\");\n    if (argc > 1) {\n      for (int i = 1; i < argc; ++i) {\n        if (i > 1) builder.AppendCharacter(',');\n        DirectHandle<String> param;\n        ASSIGN_RETURN_ON_EXCEPTION(isolate, param,\n                                   Object::ToString(isolate, args.at(i)));\n        param = String::Flatten(isolate, param);\n        builder.AppendString(param);\n      }\n    }\n    builder.AppendCharacter('\\n');\n    parameters_end_pos = builder.Length();\n    builder.AppendCStringLiteral(\") {\\n\");\n    if (argc > 0) {\n      DirectHandle<String> body;\n      ASSIGN_RETURN_ON_EXCEPTION(isolate, body,\n                                 Object::ToString(isolate, args.at(argc)));\n      builder.AppendString(body);\n    }\n    builder.AppendCStringLiteral(\"\\n})\");\n    ASSIGN_RETURN_ON_EXCEPTION(isolate, source, builder.Finish());\n  }\n\n  bool is_code_like = true;\n  for (int i = 0; i < argc; ++i) {\n    if (!Object::IsCodeLike(*args.at(i + 1), isolate)) {\n      is_code_like = false;\n      break;\n    }\n  }\n\n  // Compile the string in the constructor and not a helper so that errors to\n  // come from here.\n  DirectHandle<JSFunction> function;\n  {\n    ASSIGN_RETURN_ON_EXCEPTION(\n        isolate, function,\n        Compiler::GetFunctionFromString(\n            direct_handle(target->native_context(), isolate),\n            indirect_handle(source, isolate), parameters_end_pos,\n            is_code_like));\n    DirectHandle<Object> result;\n    ASSIGN_RETURN_ON_EXCEPTION(\n        isolate, result,\n        Execution::Call(isolate, function, target_global_proxy, {}));\n    function = Cast<JSFunction>(result);\n    function->shared()->set_name_should_print_as_anonymous(true);\n  }\n\n  // If new.target is equal to target then the function created\n  // is already correctly setup and nothing else should be done\n  // here. But if new.target is not equal to target then we are\n  // have a Function builtin subclassing case and therefore the\n  // function has wrong initial map. To fix that we create a new\n  // function object with correct initial map.\n  DirectHandle<Object> unchecked_new_target = args.new_target();\n  if (!IsUndefined(*unchecked_new_target, isolate) &&\n      !unchecked_new_target.is_identical_to(target)) {\n    DirectHandle<JSReceiver> new_target =\n        Cast<JSReceiver>(unchecked_new_target);\n    DirectHandle<Map> initial_map;\n    ASSIGN_RETURN_ON_EXCEPTION(\n        isolate, initial_map,\n        JSFunction::GetDerivedMap(isolate, target, new_target));\n\n    DirectHandle<SharedFunctionInfo> shared_info(function->shared(), isolate);\n    DirectHandle<Map> map =\n        Map::AsLanguageMode(isolate, initial_map, shared_info);\n\n    DirectHandle<Context> context(function->context(), isolate);\n    function = Factory::JSFunctionBuilder{isolate, shared_info, context}\n                   .set_map(map)\n                   .set_allocation_type(AllocationType::kYoung)\n                   .Build();\n  }\n  return function;\n}\n"
+    },
+    {
+      "operation": "Normal script IDs never equal the zero no-script sentinel",
+      "file": "heap.v24.13.cc",
+      "full_sha256": "F33FAAC1BE676AB4A381E9B3DF34C42BD15F4C9D0B3A57EB321E7C538B8EC3C2",
+      "offset_bytes": 272780,
+      "bytes": 887,
+      "sha256": "E6FC143E6B95328091F66E8746D92B6823CE6AC0B17FB8020BF0746FBA764961",
+      "text": "int Heap::NextScriptId() {\n  FullObjectSlot last_script_id_slot(&roots_table()[RootIndex::kLastScriptId]);\n  Tagged<Smi> last_id = Cast<Smi>(last_script_id_slot.Relaxed_Load());\n  Tagged<Smi> new_id, last_id_before_cas;\n  do {\n    if (last_id.value() == Smi::kMaxValue) {\n      static_assert(v8::UnboundScript::kNoScriptId == 0);\n      new_id = Smi::FromInt(1);\n    } else {\n      new_id = Smi::FromInt(last_id.value() + 1);\n    }\n\n    // CAS returns the old value on success, and the current value in the slot\n    // on failure. Therefore, we want to break if the returned value matches the\n    // old value (last_id), and keep looping (with the new last_id value) if it\n    // doesn't.\n    last_id_before_cas = last_id;\n    last_id =\n        Cast<Smi>(last_script_id_slot.Relaxed_CompareAndSwap(last_id, new_id));\n  } while (last_id != last_id_before_cas);\n\n  return new_id.value();\n}\n"
+    },
+    {
+      "operation": "Isolate delegates ID allocation to its heap",
+      "file": "isolate.v24.13.cc",
+      "full_sha256": "EEA4CAC8477AE94429B28D2369BECC2DF00E0002A2664AC559435A802A40B2D0",
+      "offset_bytes": 273759,
+      "bytes": 65,
+      "sha256": "A244BE716BF92113D64D867B26874F257A669F384DB2397035F68D61F25C2040",
+      "text": "int Isolate::GetNextScriptId() { return heap()->NextScriptId(); }"
+    },
+    {
+      "operation": "Node's default native stack formatter branches on IsEval and no-script ID",
+      "file": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_errors.cc",
+      "full_sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9",
+      "offset_bytes": 7732,
+      "bytes": 1980,
+      "sha256": "AE9A2862FBE7D02CE9A2B5908F0EF0AFC7DB87085916FA0D11CE4F5FD722B6D0",
+      "text": "static std::string FormatStackTrace(\n    Isolate* isolate,\n    Local<StackTrace> stack,\n    StackTracePrefix prefix = StackTracePrefix::kAt) {\n  std::string result;\n  for (int i = 0; i < stack->GetFrameCount(); i++) {\n    Local<StackFrame> stack_frame = stack->GetFrame(isolate, i);\n    node::Utf8Value fn_name_s(isolate, stack_frame->GetFunctionName());\n    node::Utf8Value script_name(isolate, stack_frame->GetScriptName());\n    const int line_number = stack_frame->GetLineNumber();\n    const int column = stack_frame->GetColumn();\n    std::string prefix_str = prefix == StackTracePrefix::kAt\n                                 ? \"    at \"\n                                 : std::to_string(i + 1) + \": \";\n    if (stack_frame->IsEval()) {\n      if (stack_frame->GetScriptId() == Message::kNoScriptIdInfo) {\n        result += SPrintF(\"%s[eval]:%i:%i\\n\", prefix_str, line_number, column);\n      } else {\n        std::vector<char> buf(script_name.length() + 64);\n        snprintf(buf.data(),\n                 buf.size(),\n                 \"%s[eval] (%s:%i:%i)\\n\",\n                 prefix_str.c_str(),\n                 *script_name,\n                 line_number,\n                 column);\n        result += std::string(buf.data());\n      }\n      break;\n    }\n\n    if (fn_name_s.length() == 0) {\n      std::vector<char> buf(script_name.length() + 64);\n      snprintf(buf.data(),\n               buf.size(),\n               \"%s%s:%i:%i\\n\",\n               prefix_str.c_str(),\n               *script_name,\n               line_number,\n               column);\n      result += std::string(buf.data());\n    } else {\n      std::vector<char> buf(fn_name_s.length() + script_name.length() + 64);\n      snprintf(buf.data(),\n               buf.size(),\n               \"%s%s (%s:%i:%i)\\n\",\n               prefix_str.c_str(),\n               *fn_name_s,\n               *script_name,\n               line_number,\n               column);\n      result += std::string(buf.data());\n    }\n  }\n  return result;\n}\n"
+    }
+  ],
+  "constants": [
+    {
+      "file": "script.v24.13.h",
+      "full_sha256": "9AF5D7FE3398A4ED3CA3B280734EA1E7DF5D02F73BEB638240023008695846A2",
+      "text": "enum class CompilationType { kHost = 0, kEval = 1 };"
+    },
+    {
+      "file": "v8-message.v24.13.h",
+      "full_sha256": "CE6FCFEEAFA8D6528E7BE5C5B9D58F09927B88A110A0BFACB5FBB0DC9AD0AA96",
+      "text": "static const int kNoScriptIdInfo = 0;"
+    }
+  ],
+  "mapping": [
+    "Retain the real compile origin as one private NONE/HOST/EVAL value, independent of display/debug metadata. This projection needs only no-script versus actual-script identity, not a numeric V8 ID.",
+    "All actual parser roots start HOST, including the separately included CJS compiler's bookkeeping/function roots and its module syntax probe. The linked __JS_EvalInternal entry selects EVAL for actual direct/indirect eval, including all dynamic Function constructors. Child definitions inherit the real compilation origin.",
+    "Actual bytecode call sites copy that origin, including the no-PC metadata branch; native and caller-filename-only synthetic call sites have no compiled Script owner. Existing complete-struct clone preserves the field.",
+    "Bytecode version 30 carries origin even when debug/source data is stripped; version 29 is rejected by the unchanged version gate, and invalid origin 3 is rejected before bytecode ownership allocation.",
+    "JS_ReadCapturedStackFrameLoggingInfo borrows an actual captured frame and writes primitive outputs without allocation, properties, pending-state inspection or exception replacement."
+  ],
+  "limits": [
+    "This is a source-based mapping of selected real compiled/native/synthetic frames. It does not add V8 debugger, Wasm or numeric Script IDs.",
+    "Node native fatal formatting and its process-terminal execution remain separate consumers.",
+    "No native compile, metadata query, runtime, Node or generated output has been executed for this unit."
+  ],
+  "actual_included_compiler": {
+    "file": "../../../vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+    "sha256": "87A771EB6291F195C7DEB63DA8B29F20805AEA0F07B6320985E10C090348B639",
+    "root_sites": [
+      {
+        "line": 97,
+        "operation": "Real CJS bookkeeping root, explicitly GLOBAL; real function child inherits."
+      },
+      {
+        "line": 344,
+        "operation": "Parse-only module probe root; no published executable result."
+      }
+    ],
+    "reason": "Default NONE on a null parent would incorrectly erase the real CJS compiled Script origin. The root default is HOST; native AF bytecode remains separately zero-initialized NONE."
+  }
+}

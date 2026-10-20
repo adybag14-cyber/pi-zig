@@ -1536,6 +1536,14 @@ JS_EXTERN int JS_ReadCapturedStackFrame(JSContext *ctx, JSValueConst frame,
                                         JSValue *filename, JSValue *function_name,
                                         int *line, int *column, int *is_native,
                                         int *is_constructor);
+/* Actual compiled-script origin for native logging. Borrowed frame; zero
+   succeeds and writes both primitive outputs, -1 leaves them unchanged for an
+   invalid frame or missing output. No allocation, guest lookup, exception or
+   pending-state operation. Native and filename-only synthetic frames have no
+   compiled-script origin. Clones and bytecode serialization retain the origin
+   independently of function names, filenames, source URLs and debug data. */
+JS_EXTERN int JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx,
+    JSValueConst frame, int *is_eval, int *has_script_id);
 /* Actual logical ScriptNameOrSourceURL, without guest property lookup. Success
    transfers one owned value; failure leaves the output untouched. */
 JS_EXTERN int JS_ReadCapturedStackFrameSourceName(JSContext *ctx,

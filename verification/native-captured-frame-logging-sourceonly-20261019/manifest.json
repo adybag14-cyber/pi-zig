@@ -1,0 +1,175 @@
+{
+  "schema": 1,
+  "status": "source_peer_closed_awaiting_native_validation",
+  "parent_commit": "766f937bf8baa4c5f10000d01254665023d4ace4",
+  "purpose": "Preserve actual compiler-origin metadata for the native Node CHECK stack formatter without reading guest names, filenames or fields.",
+  "api": "int JS_ReadCapturedStackFrameLoggingInfo(JSContext*, JSValueConst frame, int *is_eval, int *has_script_id)",
+  "production": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "61BBC702EB0871CBF219658F9B8C86C5C22553725A3D74ACBF4C3BFC01B6D749"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "990B4A99FEE0EFA03540925F6F6968C0400B3D7BB35A92AEF4B80CEC1AF43CD9"
+    }
+  ],
+  "controls": {
+    "root": "src/native_vm_captured_frame_logging_test.zig",
+    "sha256": "AABCD7BCDAC97DEC4934F10BBD1E866AFC6849DA62393D103A0FEF8E6AD647CC",
+    "bytes": 27966,
+    "declared": 19,
+    "actual_metadata_count": null,
+    "names": [
+      "VM logging origin host script and nested functions ignore eval display names",
+      "VM logging origin module and its function retain actual host script origin",
+      "VM logging origin direct eval keeps its host caller distinct",
+      "VM logging origin indirect eval uses actual eval origin without filename inference",
+      "VM logging origin escaped eval functions arrows and methods retain their compiled owner",
+      "VM logging origin all four dynamic Function constructors compile actual eval scripts",
+      "VM logging origin class constructor and field initializer inherit the actual eval compilation",
+      "VM logging origin real foreign context compilation does not use the reading context",
+      "VM logging origin native and filename-only synthetic frames have no compiled Script owner",
+      "VM logging origin cloned frames retain private origin after original frame removal",
+      "VM logging origin projection ignores poisoned public fields and proxy traps",
+      "VM logging origin invalid brand and missing outputs leave caller storage unchanged",
+      "VM logging origin projection allocates nothing and preserves ordinary and actual fatal pending",
+      "VM logging origin projection borrows the frame without extending receiver lifetime",
+      "VM logging origin serialized host bytecode retains origin with source and debug stripped",
+      "VM logging origin serialized module bytecode retains origin in a fresh runtime",
+      "VM logging origin prior bytecode version is rejected by the actual version gate",
+      "VM logging origin malformed serialized origin reaches its exact validation error",
+      "VM logging origin genuine CommonJS compiler root and its nested function are host scripts"
+    ]
+  },
+  "build": {
+    "path": "build.zig",
+    "sha256": "D9AE7907D466288C7834ED1BCD940C90142C6ED199E4C4E0761B6C98B3D600F0",
+    "added_lines": 6,
+    "target": "build-native-vm-captured-frame-logging",
+    "filter": "VM logging origin",
+    "install_only": true,
+    "packet": "build-intake.json",
+    "packet_sha256": "383D4A7CF599093486385AD4B031D108E58333A36773E57F45EF2E3E42CC7731"
+  },
+  "bytecode": {
+    "previous_version": 29,
+    "current_version": 30,
+    "origin_bits": 2,
+    "valid_values": {
+      "NONE": 0,
+      "HOST": 1,
+      "EVAL": 2
+    },
+    "old_payloads": "Rejected by the existing version gate; rebuild serialized artifacts from the current compiler.",
+    "independent_of_source_and_debug_stripping": true
+  },
+  "proof": {
+    "production_delta": "production-delta.json",
+    "production_delta_sha256": "C13AB0563B959539B977FD399687645AB0819B340CF554782F0493878A135D6F",
+    "source_operations": "authority/source-operation-proof.json",
+    "source_operations_sha256": "5E80D8EC9CF1424277DB9E87712E462FB331F957BAA836828CBCD32AF79C824F",
+    "source_verification": "source-verification.json",
+    "source_verification_sha256": "6DC3538A74DAA759C05DD3FD2D216834EB33DEAC31EC74CD36D6E734272CBF40",
+    "reversible_edits": 16,
+    "verified_authority_slices": 16,
+    "exact_build_reversal": true
+  },
+  "authority": {
+    "node": "v24.13.0",
+    "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+    "acquisition": "authority/source-acquisition.json",
+    "acquisition_sha256": "D7D8EBA43CFE9E230C878D61D987BCB93DF74BD266C35D5A9B68108F7D90602E",
+    "files": [
+      {
+        "file": "factory-base.v24.13.cc",
+        "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/heap/factory-base.cc",
+        "bytes": 57199,
+        "sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83"
+      },
+      {
+        "file": "compiler.v24.13.cc",
+        "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/codegen/compiler.cc",
+        "bytes": 193190,
+        "sha256": "0E09AD7088E3B369857E1C2532D76FFE635BDC3DBABF3A4BDAFC9EAAC482D94E"
+      },
+      {
+        "file": "script.v24.13.h",
+        "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/objects/script.h",
+        "bytes": 11413,
+        "sha256": "9AF5D7FE3398A4ED3CA3B280734EA1E7DF5D02F73BEB638240023008695846A2"
+      },
+      {
+        "file": "v8-message.v24.13.h",
+        "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/include/v8-message.h",
+        "bytes": 6685,
+        "sha256": "CE6FCFEEAFA8D6528E7BE5C5B9D58F09927B88A110A0BFACB5FBB0DC9AD0AA96"
+      },
+      {
+        "file": "parse-info.v24.13.cc",
+        "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/parsing/parse-info.cc",
+        "bytes": 12993,
+        "sha256": "4F34465A3804ECC28C27C07665744F76BCD58446173EE88B557239A474F6C00D"
+      },
+      {
+        "file": "builtins-function.v24.13.cc",
+        "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/builtins/builtins-function.cc",
+        "bytes": 10093,
+        "sha256": "2D79258F5E71BAC13EABD645B663501C0C5EBB631776D32B0EF75DC2CBFC1FF9"
+      },
+      {
+        "file": "isolate.v24.13.cc",
+        "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/execution/isolate.cc",
+        "bytes": 296824,
+        "sha256": "EEA4CAC8477AE94429B28D2369BECC2DF00E0002A2664AC559435A802A40B2D0"
+      },
+      {
+        "file": "heap.v24.13.cc",
+        "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/heap/heap.cc",
+        "bytes": 277029,
+        "sha256": "F33FAAC1BE676AB4A381E9B3DF34C42BD15F4C9D0B3A57EB321E7C538B8EC3C2"
+      }
+    ],
+    "existing_api": {
+      "file": "../../native-existing-promise-settlement-sourceonly-20261019/authority/v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+    },
+    "included_cjs_compiler": {
+      "file": "../../../vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+      "sha256": "87A771EB6291F195C7DEB63DA8B29F20805AEA0F07B6320985E10C090348B639",
+      "root_sites": [
+        {
+          "line": 97,
+          "operation": "Real CJS bookkeeping root, explicitly GLOBAL; real function child inherits."
+        },
+        {
+          "line": 344,
+          "operation": "Parse-only module probe root; no published executable result."
+        }
+      ],
+      "reason": "Default NONE on a null parent would incorrectly erase the real CJS compiled Script origin. The root default is HOST; native AF bytecode remains separately zero-initialized NONE."
+    }
+  },
+  "peer_review": "peer-review.json",
+  "scope_limits": [
+    "Mapping supplies the selected IsEval and nonzero Script-ID predicates, not V8 numeric Script IDs, debugger state or Wasm metadata.",
+    "Tests invoke the actual linked QuickJS compiler/capture/clone/serializer. They have not been run.",
+    "Actual serialized host/global and module roundtrips are authored for every strip mode. EVAL bit encoding/decoding is source-reviewed; no direct EVAL bytecode serializer exposure was added solely for testing.",
+    "Node default native CHECK formatting and process-terminal assertions remain separate.",
+    "No earlier successful validation result transfers to this new C/header/bytecode revision."
+  ],
+  "validation": {
+    "source_peer_closed": true,
+    "source_reversal_verified": true,
+    "compiled": false,
+    "metadata_queried": false,
+    "runtime_executed": false,
+    "node_executed": false,
+    "generic_diff_check": {
+      "exit_code": 2,
+      "only_finding": "authority/NODE-MIT-LICENSE.txt:51: new blank line at EOF",
+      "disposition": "Preserve the original license section byte-for-byte; no source whitespace finding."
+    }
+  }
+}

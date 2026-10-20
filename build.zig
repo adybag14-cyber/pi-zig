@@ -2015,6 +2015,12 @@ pub fn build(b: *std.Build) void {
     });
     linkQuickJs(b, copy_data_properties_tests.root_module, quickjs, sqlite_lib_dir);
     b.step("build-native-vm-copy-data-properties", "Install actual copy property descriptor controls without execution").dependOn(&b.addInstallArtifact(copy_data_properties_tests, .{}).step);
+    const captured_frame_logging_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_captured_frame_logging_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"VM logging origin"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, captured_frame_logging_tests.root_module, quickjs, sqlite_lib_dir);
+    b.step("build-native-vm-captured-frame-logging", "Install actual captured-frame logging origin controls without execution").dependOn(&b.addInstallArtifact(captured_frame_logging_tests, .{}).step);
     if (native_node_network) |network| {
         const native_node_tcp_transport_tests = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_tcp_transport_test.zig"), .target = target, .optimize = optimize }),

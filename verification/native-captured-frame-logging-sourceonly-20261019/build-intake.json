@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "status": "source_only",
+  "file": "build.zig",
+  "parent_sha256": "FAD53E6796A9CB1B4031BF6B64EE4E50D4C88D0A0E2C3E2309CA7CAF13069084",
+  "current_sha256": "D9AE7907D466288C7834ED1BCD940C90142C6ED199E4C4E0761B6C98B3D600F0",
+  "anchor": "    b.step(\"build-native-vm-copy-data-properties\", \"Install actual copy property descriptor controls without execution\").dependOn(&b.addInstallArtifact(copy_data_properties_tests, .{}).step);\n",
+  "addition": "    const captured_frame_logging_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_captured_frame_logging_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM logging origin\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, captured_frame_logging_tests.root_module, quickjs, sqlite_lib_dir);\n    b.step(\"build-native-vm-captured-frame-logging\", \"Install actual captured-frame logging origin controls without execution\").dependOn(&b.addInstallArtifact(captured_frame_logging_tests, .{}).step);\n",
+  "added_lines": 6,
+  "target": "build-native-vm-captured-frame-logging",
+  "root": "src/native_vm_captured_frame_logging_test.zig",
+  "filter": "VM logging origin",
+  "reuses": "existing shared linkQuickJs, target, optimize and use_llvm",
+  "execution_step": false
+}

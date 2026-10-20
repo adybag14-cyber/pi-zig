@@ -910,6 +910,13 @@ typedef enum JSFunctionKindEnum {
     JS_FUNC_ASYNC_GENERATOR = (JS_FUNC_GENERATOR | JS_FUNC_ASYNC),
 } JSFunctionKindEnum;
 
+/* Actual compilation origin, independent of debug/display metadata. */
+typedef enum {
+    JS_PI_SCRIPT_ORIGIN_NONE = 0,
+    JS_PI_SCRIPT_ORIGIN_HOST = 1,
+    JS_PI_SCRIPT_ORIGIN_EVAL = 2,
+} JSPiScriptOrigin;
+
 typedef struct JSFunctionBytecode {
     JSGCObjectHeader header; /* must come first */
     uint8_t is_strict_mode : 1;
@@ -924,7 +931,8 @@ typedef struct JSFunctionBytecode {
     uint8_t super_allowed : 1;
     uint8_t arguments_allowed : 1;
     uint8_t backtrace_barrier : 1; /* stop backtrace on this function */
-    /* XXX: 5 bits available */
+    uint8_t pi_script_origin : 2; /* JSPiScriptOrigin, retained without debug info */
+    /* XXX: 2 bits available */
     uint8_t *byte_code_buf; /* (self pointer) */
     int byte_code_len;
     JSAtom func_name;
@@ -1308,6 +1316,7 @@ typedef struct JSCallSiteData {
     bool top_level;
     bool native;
     bool constructor;
+    uint8_t pi_script_origin; /* captured from the actual compiled owner */
     int line_num;
     int col_num;
 } JSCallSiteData;
@@ -24835,6 +24844,7 @@ typedef struct JSFunctionDef {
     struct list_head link;
 
     int eval_type; /* only valid if is_eval = true */
+    uint8_t pi_script_origin; /* inherited from this compilation's root */
 
     /* Pack all boolean flags together as 1-bit fields to reduce struct size
     while avoiding padding and compiler deoptimization. */
@@ -36095,6 +36105,7 @@ static JSFunctionDef *js_new_function_def(JSContext *ctx,
 
     fd->ctx = ctx;
     fd->pi_source_url = JS_ATOM_NULL;
+    fd->pi_script_origin = parent ? parent->pi_script_origin : JS_PI_SCRIPT_ORIGIN_HOST;
     fd->pi_diagnostic = parent ? parent->pi_diagnostic : ctx->pi_compiler_diagnostic;
     init_list_head(&fd->child_list);
 
@@ -40509,6 +40520,7 @@ static JSValue js_create_function(JSContext *ctx, JSFunctionDef *fd)
     b->super_allowed = fd->super_allowed;
     b->arguments_allowed = fd->arguments_allowed;
     b->backtrace_barrier = fd->backtrace_barrier;
+    b->pi_script_origin = fd->pi_script_origin;
     b->realm = JS_DupContext(ctx);
 
     add_gc_object(ctx->rt, &b->header, JS_GC_OBJ_TYPE_FUNCTION_BYTECODE);
@@ -41611,6 +41623,9 @@ static JSValue __JS_EvalInternal(JSContext *ctx, JSValueConst this_obj,
         goto fail1;
     s->cur_func = fd;
     fd->eval_type = eval_type;
+    fd->pi_script_origin = (eval_type == JS_EVAL_TYPE_DIRECT ||
+                            eval_type == JS_EVAL_TYPE_INDIRECT)
+        ? JS_PI_SCRIPT_ORIGIN_EVAL : JS_PI_SCRIPT_ORIGIN_HOST;
     fd->has_this_binding = (eval_type != JS_EVAL_TYPE_DIRECT);
     fd->backtrace_barrier = ((flags & JS_EVAL_FLAG_BACKTRACE_BARRIER) != 0);
     if (eval_type == JS_EVAL_TYPE_DIRECT) {
@@ -42079,7 +42094,7 @@ typedef enum BCTagEnum {
     BC_TAG_SYMBOL,
 } BCTagEnum;
 
-#define BC_VERSION 29
+#define BC_VERSION 30
 
 typedef struct BCWriterState {
     JSContext *ctx;
@@ -42386,6 +42401,7 @@ static int JS_WriteFunctionTag(BCWriterState *s, JSValueConst obj)
     bc_set_flags(&flags, &idx, b->arguments_allowed, 1);
     bc_set_flags(&flags, &idx, b->backtrace_barrier, 1);
     bc_set_flags(&flags, &idx, s->allow_debug, 1);
+    bc_set_flags(&flags, &idx, b->pi_script_origin, 2);
     assert(idx <= 16);
     bc_put_u16(s, flags);
     bc_put_u8(s, b->is_strict_mode);
@@ -43331,6 +43347,11 @@ static JSValue JS_ReadFunctionTag(BCReaderState *s)
     bc.arguments_allowed = bc_get_flags(v16, &idx, 1);
     bc.backtrace_barrier = bc_get_flags(v16, &idx, 1);
     has_debug_info = bc_get_flags(v16, &idx, 1);
+    bc.pi_script_origin = bc_get_flags(v16, &idx, 2);
+    if (bc.pi_script_origin > JS_PI_SCRIPT_ORIGIN_EVAL) {
+        JS_ThrowSyntaxError(ctx, "invalid bytecode script origin");
+        goto fail;
+    }
     if (bc_get_u8(s, &v8))
         goto fail;
     bc.is_strict_mode = (v8 > 0);
@@ -68032,6 +68053,7 @@ static void js_new_callsite_data(JSContext *ctx, JSCallSiteData *csd, JSStackFra
 
     csd->filename = JS_NULL;
     csd->source_name = JS_NULL;
+    csd->pi_script_origin = JS_PI_SCRIPT_ORIGIN_NONE;
     csd->native = false;
     csd->line_num = -1;
     csd->col_num = -1;
@@ -68043,6 +68065,7 @@ static void js_new_callsite_data(JSContext *ctx, JSCallSiteData *csd, JSStackFra
     p = JS_VALUE_GET_OBJ(sf->cur_func);
     if (js_class_has_bytecode(p->class_id) && !p->u.func.function_bytecode->native_async_body) {
         bytecode = p->u.func.function_bytecode;
+        csd->pi_script_origin = bytecode->pi_script_origin;
         pi_metadata |= bytecode->pi_source_url != JS_ATOM_NULL;
     }
     /* func_name_str is UTF-8 encoded if needed */
@@ -68100,6 +68123,8 @@ static void js_new_callsite_data2(JSContext *ctx, JSCallSiteData *csd, const cha
     csd->func_name = JS_NULL;
     csd->native = false;
     csd->constructor = false;
+    /* A caller-supplied filename has no compiled Script owner. */
+    csd->pi_script_origin = JS_PI_SCRIPT_ORIGIN_NONE;
     csd->line_num = line_num;
     csd->col_num = col_num;
     /* filename is UTF-8 encoded if needed (original argument to __JS_EvalInternal()) */
@@ -68196,6 +68221,7 @@ JSValue JS_CaptureCurrentStackFrames(JSContext *ctx, uint32_t limit,
             data.col_num = -1;
             data.constructor = current->is_constructor;
             data.native = false;
+            data.pi_script_origin = bytecode->pi_script_origin;
         } else {
             js_new_callsite_data(ctx, &data, current);
         }
@@ -68265,6 +68291,17 @@ int JS_ReadCapturedStackFrame(JSContext *ctx, JSValueConst frame,
     *column = data->col_num;
     *is_native = data->native;
     *is_constructor = data->constructor;
+    return 0;
+}
+int JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx, JSValueConst frame,
+                                       int *is_eval, int *has_script_id)
+{
+    JSCallSiteData *data = JS_GetOpaque(frame, JS_CLASS_CALL_SITE);
+    (void)ctx;
+    if (!data || !is_eval || !has_script_id)
+        return -1;
+    *is_eval = data->pi_script_origin == JS_PI_SCRIPT_ORIGIN_EVAL;
+    *has_script_id = data->pi_script_origin != JS_PI_SCRIPT_ORIGIN_NONE;
     return 0;
 }
 int JS_ReadCapturedStackFrameSourceName(JSContext *ctx, JSValueConst frame,

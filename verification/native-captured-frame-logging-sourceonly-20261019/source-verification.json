@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "status": "source_only",
+  "native_execution": false,
+  "node_execution": false,
+  "generator_or_formatter_execution": false,
+  "production_exact_reversal": true,
+  "production_edits": 16,
+  "c_sha256": "61BBC702EB0871CBF219658F9B8C86C5C22553725A3D74ACBF4C3BFC01B6D749",
+  "h_sha256": "990B4A99FEE0EFA03540925F6F6968C0400B3D7BB35A92AEF4B80CEC1AF43CD9",
+  "verified_source_operations": [
+    {
+      "operation": "StackFrame reads the actual Script ID",
+      "source_sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "slice_sha256": "11242F218834E32B02E452EE7F9CB32C1943800FE403784E9C570624EF5CF163"
+    },
+    {
+      "operation": "StackFrame reads the actual compilation type",
+      "source_sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "slice_sha256": "AD16F957796DC3A19BECE04556D7FFB5B3F9DCF9775E717366215A3462EBC353"
+    },
+    {
+      "operation": "Physical script name is a distinct read",
+      "source_sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "slice_sha256": "6D720517A00E7BC01B161126827D1288143A4BDCABD206CA566FE6C04BB875E1"
+    },
+    {
+      "operation": "Default Script creation obtains the real next ID",
+      "source_sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83",
+      "slice_sha256": "DF8A25A1EF5888185B31AEA054618864B53F9A0445B9E9097B43200207CB9A49"
+    },
+    {
+      "operation": "Script creation initializes ID and host compilation flags",
+      "source_sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83",
+      "slice_sha256": "32AB20A5B00A0B0D70CA69164B900A20A940AFE49B79E31B02F7938B6B5D0C91"
+    },
+    {
+      "operation": "Nested function literal retains its actual Script",
+      "source_sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83",
+      "slice_sha256": "A538673C2311993D2B42745AA8FF294661E84D61170ED284FE270BBEABE27962"
+    },
+    {
+      "operation": "Top-level compilation reserves the actual Script ID",
+      "source_sha256": "4F34465A3804ECC28C27C07665744F76BCD58446173EE88B557239A474F6C00D",
+      "slice_sha256": "ABC19699DFC811935D7C3ED40E28887138958ED47AD91BB2C476240C42AA2289"
+    },
+    {
+      "operation": "Nested compilation retains top-level flags",
+      "source_sha256": "4F34465A3804ECC28C27C07665744F76BCD58446173EE88B557239A474F6C00D",
+      "slice_sha256": "C22F4CA97CD482352A45BC72BEE0959E8009E7D4C1EFD0F14908B05D86234754"
+    },
+    {
+      "operation": "Eval selects kEval; a wrapped host script remains kHost",
+      "source_sha256": "4F34465A3804ECC28C27C07665744F76BCD58446173EE88B557239A474F6C00D",
+      "slice_sha256": "9A41D912B300C1A573D4E3341F71E53C24C7FE4FC43BEB9E0BEFB09935E1A584"
+    },
+    {
+      "operation": "Eval creates or reuses the actual eval Script",
+      "source_sha256": "0E09AD7088E3B369857E1C2532D76FFE635BDC3DBABF3A4BDAFC9EAAC482D94E",
+      "slice_sha256": "7BE25429EE8524C58FB8D4A2EF12104E9211D1359641B16BD98EC65F1CBE4AC0"
+    },
+    {
+      "operation": "Validated dynamic compilation enters the real eval compiler",
+      "source_sha256": "0E09AD7088E3B369857E1C2532D76FFE635BDC3DBABF3A4BDAFC9EAAC482D94E",
+      "slice_sha256": "2D12F1710D1249B5561AEF0B2B9DEECB8A5F86B67B93F0104E420205064D378D"
+    },
+    {
+      "operation": "Dynamic Function compilation enters the validated route",
+      "source_sha256": "0E09AD7088E3B369857E1C2532D76FFE635BDC3DBABF3A4BDAFC9EAAC482D94E",
+      "slice_sha256": "D430F849B12A8A0672DD6CC79A5B9AEE9299A17CABB31607399F4ADFA97455D5"
+    },
+    {
+      "operation": "All four dynamic Function kinds use the actual compilation route",
+      "source_sha256": "2D79258F5E71BAC13EABD645B663501C0C5EBB631776D32B0EF75DC2CBFC1FF9",
+      "slice_sha256": "D3E65BC5E5885BEB9ADCBEC8927BA52669662F4390C8DB6FAB1094572D0459E6"
+    },
+    {
+      "operation": "Normal script IDs never equal the zero no-script sentinel",
+      "source_sha256": "F33FAAC1BE676AB4A381E9B3DF34C42BD15F4C9D0B3A57EB321E7C538B8EC3C2",
+      "slice_sha256": "E6FC143E6B95328091F66E8746D92B6823CE6AC0B17FB8020BF0746FBA764961"
+    },
+    {
+      "operation": "Isolate delegates ID allocation to its heap",
+      "source_sha256": "EEA4CAC8477AE94429B28D2369BECC2DF00E0002A2664AC559435A802A40B2D0",
+      "slice_sha256": "A244BE716BF92113D64D867B26874F257A669F384DB2397035F68D61F25C2040"
+    },
+    {
+      "operation": "Node's default native stack formatter branches on IsEval and no-script ID",
+      "source_sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9",
+      "slice_sha256": "AE9A2862FBE7D02CE9A2B5908F0EF0AFC7DB87085916FA0D11CE4F5FD722B6D0"
+    }
+  ],
+  "constants_verified": 2,
+  "included_cjs_compiler_verified": "87A771EB6291F195C7DEB63DA8B29F20805AEA0F07B6320985E10C090348B639",
+  "build_exact_reversal": true,
+  "build_added_lines": 6
+}
