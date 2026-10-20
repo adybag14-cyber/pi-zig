@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "status": "finite V28 compiler-only field spelling peer closed",
+  "reviewer": "Modules/IO",
+  "execution": false,
+  "packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-backing-v28-field-sourceonly-20261020/source-delta.json",
+    "sha256": "60CAC070F54E0DFAA970D894A8AEE0B279567975C2F9053FB7D2C63F1978C8F3",
+    "bytes": 10417
+  },
+  "original": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-backing-v28-field-sourceonly-20261020/authority/root.before.zig.txt",
+    "sha256": "43E01F6D9C0714E77458F0417E7EBDA026D5EB6E38642923155800739FCB8ABF",
+    "bytes": 31150
+  },
+  "successor": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/src/native_vm_backing_store_adoption_test.zig",
+    "sha256": "431033F1402118DFC89FFA64B4216E35CE413E44E4D9CA4E4250E5ED205F1E68",
+    "bytes": 31153
+  },
+  "exact_edit": {
+    "path": "src/native_vm_backing_store_adoption_test.zig",
+    "before": "    try std.testing.expect(store.functions.release == null and store.functions.opaque == null);",
+    "after": "    try std.testing.expect(store.functions.release == null and store.functions.@\"opaque\" == null);"
+  },
+  "inverse": {
+    "unique": true,
+    "full_source_equal": true,
+    "all20_names_equal": true,
+    "other_bytes_equal": true
+  },
+  "imported_header": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/vendor/quickjs/quickjs.h",
+    "sha256": "621A5F9DD846DA6257C89E78EB25D527CCDFAB0F0E76FA34195CD51E7CF1B32B",
+    "bytes": 111537,
+    "selected_definition": "typedef struct JSPiArrayBufferStorageFunctions {\n    void *(*allocate)(void *opaque, size_t byte_length, size_t max_byte_length,\n                      unsigned flags);\n    /* Trusted same-process SAB serialization table, borrowed native owner.\n       Public external SABs never reach this callback; managed runtimes reject\n       their serialization and preserve the original external free callback. */\n    void *(*shared_owner)(uint8_t *data);\n    uint8_t *(*data)(void *owner);\n    size_t (*byte_length)(void *owner);\n    /* 0 success; -1 native allocation/permission failure; -2 growth race or\n       invalid length. Resize never moves the allocation's base address. */\n    int (*resize)(void *owner, size_t byte_length);\n    void (*retain)(void *owner);\n    void (*release)(void *owner);\n    void *opaque;\n} JSPiArrayBufferStorageFunctions;"
+  },
+  "findings": [
+    "The real C JSPiArrayBufferStorageFunctions has void *opaque. The root includes engine_abi.h and reads that exact imported field through store.functions.",
+    "The corrected Zig quoted identifier @\"opaque\" selects the same C field and removes the reserved-keyword parse ambiguity reported by the retained V28 negative.",
+    "Exactly3 bytes are added at the one field reference. The release/null conjunction, expected null value, all20 names and every other root byte are unchanged.",
+    "Unchanged Script32 was independently digest-read at99A495F924700FDCFB64C479C61FEF6D2E5CE8532944615324079CBB17F17F55/52063B. This receipt does not expand the peer to VM's separate broad lexical scan."
+  ],
+  "exclusions": [
+    "No production C/H change, build-file change, root execution, parsing/compilation or runtime claim.",
+    "Retained failed compiler evidence remains the original negative; the correction is unexecuted."
+  ]
+}

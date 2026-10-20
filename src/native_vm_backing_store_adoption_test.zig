@@ -16,7 +16,7 @@ fn expectEmpty(store: *const c.JSPiArrayBufferBackingStore) !void {
     try std.testing.expect(store.functions.allocate == null and store.functions.shared_owner == null);
     try std.testing.expect(store.functions.data == null and store.functions.byte_length == null);
     try std.testing.expect(store.functions.resize == null and store.functions.retain == null);
-    try std.testing.expect(store.functions.release == null and store.functions.opaque == null);
+    try std.testing.expect(store.functions.release == null and store.functions.@"opaque" == null);
     try std.testing.expect(c.JS_PiArrayBufferBackingStoreData(store) == null);
     try std.testing.expectEqual(@as(usize, 0), c.JS_PiArrayBufferBackingStoreByteLength(store));
 }

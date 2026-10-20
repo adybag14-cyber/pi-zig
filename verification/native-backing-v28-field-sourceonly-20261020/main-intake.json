@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "status": "source_only_one_field_compile_correction",
+  "recorded_utc": "2026-10-20T16:33:54.400078+00:00",
+  "prior_main_head": "1cb800c4e1b8bf84d13db7b90bfe3e49619526cf",
+  "donor_commit": "5808ee87683ac212e535718b1c90704926fac8ac",
+  "prior_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v28-control-20261020-161827\\independent-partial-compile-negative-closure.json",
+    "sha256": "B4375D195DA20693F4E718322DA93E3B0CBD2A531C525136169E8EA958E6A3E6",
+    "bytes": 10901
+  },
+  "source": {
+    "path": "src/native_vm_backing_store_adoption_test.zig",
+    "before_sha256": "43E01F6D9C0714E77458F0417E7EBDA026D5EB6E38642923155800739FCB8ABF",
+    "after_sha256": "431033F1402118DFC89FFA64B4216E35CE413E44E4D9CA4E4250E5ED205F1E68",
+    "before_bytes": 31150,
+    "after_bytes": 31153,
+    "exact_edits": 1,
+    "whole_inverse_matches_prior_main": true
+  },
+  "proof": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-backing-v28-field-sourceonly-20261020\\source-delta.json",
+      "sha256": "60CAC070F54E0DFAA970D894A8AEE0B279567975C2F9053FB7D2C63F1978C8F3",
+      "bytes": 10417
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-backing-v28-field-sourceonly-20261020\\peer-receipt.json",
+      "sha256": "A3299E55481D1BE1833ED9A3787062407AFB17C19197DD432E691418C48022D0",
+      "bytes": 3452
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-backing-v28-field-sourceonly-20261020\\source-verification.json",
+      "sha256": "C99FACF6115F048117DA6A6DAE535DD84412A94AADBB150F4DED8E6813832ED1",
+      "bytes": 581
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-backing-v28-field-sourceonly-20261020\\authority\\root.before.zig.txt",
+      "sha256": "43E01F6D9C0714E77458F0417E7EBDA026D5EB6E38642923155800739FCB8ABF",
+      "bytes": 31150
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-backing-v28-field-sourceonly-20261020\\compile.stderr.log",
+      "sha256": "6BDD77CCCF4A69FEBB77D63209DEB67EF1C89BA0CB05CFEBAD151818AFB3FC4A",
+      "bytes": 19601
+    }
+  ],
+  "actual_main_header": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+    "sha256": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+    "bytes": 110801
+  },
+  "actual_imported_field": "void *opaque;",
+  "script32": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_vm_script_location_test.zig",
+    "sha256": "99A495F924700FDCFB64C479C61FEF6D2E5CE8532944615324079CBB17F17F55",
+    "bytes": 52063
+  },
+  "unchanged_backing_control_declarations": 20,
+  "scope": "Quote actual C field opaque in one Zig assertion; all other source and build bytes remain unchanged.",
+  "native_execution": false,
+  "runtime_qualification": false,
+  "next_gate": "Bounded nonqualifying DiagnosticBuildQuery of eight foundation roots with a private verified copy of independently closed V28 caches; subsequent fresh strict54/1089 required."
+}

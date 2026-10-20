@@ -1,0 +1,17 @@
+{
+  "schema": "native-backing-v28-field-source-verification-v1",
+  "kind": "source bytes only",
+  "verification": {
+    "root_sha256": "431033F1402118DFC89FFA64B4216E35CE413E44E4D9CA4E4250E5ED205F1E68",
+    "root_bytes": 31153,
+    "changes": 1,
+    "forward_inverse_exact": true,
+    "names20_unchanged": true,
+    "script32_unchanged": true,
+    "root_delta_bytes": 3
+  },
+  "root_diff_check_exit": 0,
+  "production_changed": false,
+  "build_changed": false,
+  "execution": "No compiler, formatter, generator, Node, project native test, metadata query or runtime was invoked."
+}
