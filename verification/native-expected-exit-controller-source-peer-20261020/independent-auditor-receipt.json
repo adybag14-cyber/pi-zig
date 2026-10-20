@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "status": "finite_source_peer_closed",
+  "reviewer": "modules_io",
+  "source_only": true,
+  "controller": {
+    "path": "C:/Users/adyba/pi-zig/evidence/native-expected-exit-batch-draft-20261020/Run-NativeExpectedExitBatch-v5.ps1",
+    "sha256": "77329EAB858345188C32B109F3628738E191F213B9FC504954DFDB1AA49A49D6",
+    "bytes": 47046
+  },
+  "auditor": {
+    "path": "C:/Users/adyba/pi-zig/evidence/native-expected-exit-batch-draft-20261020/Audit-NativeExpectedExitBatch-v4.py",
+    "sha256": "7C1E2447880AD33AE69D38331F3CDB8658E4D21747B289337F7B5BF3ABEB41D6",
+    "bytes": 23892
+  },
+  "matrix": {
+    "path": "C:/Users/adyba/pi-zig/evidence/native-expected-exit-batch-draft-20261020/groups-current-cfc03448.json",
+    "sha256": "D4F4223CFA919166E607E37B43B333AFA149F4A027E27CDB37CB9B658C424782",
+    "groups": 3,
+    "cases": 21
+  },
+  "prior_controller_receipt": "02C25B0FEAB8B5D7C6F06DABD4ED943A05C6DA8A9A2582F0822745AE349ED441",
+  "exact_readback": {
+    "auditorForward": true,
+    "auditorInverse": true,
+    "controllerForward": true,
+    "controllerInverse": true
+  },
+  "corrected_finding": {
+    "original_auditor": "A80329D121E729990B0E528B7D2F0D6072ED953440FACDCAA230E19A49679951",
+    "issue": "Outer receipt did not independently verify the same actual live executable, creation time and command identity as native probe receipts.",
+    "correction": "Exact one-insertion successor binds pinned outer executable, retained/native identity text, live PID/executable/UTC100ns creation, Win32_Process command method and exact command, terminal ordering, and absence of original/cleanup failure before using that interval.",
+    "delta_sha256": "7FB2DFDBBD53152F97D9F536C469D23E89EAD0154A82EDAD8DC70B12ABE0D275"
+  },
+  "reviewed": [
+    "Full auditor source was read. It requires Root-reviewed original result/final/grant/job/controller/matrix pins, exact mode and complete cohort, unchanged clean Main, complete tracked/tree/vendor/compiler inventories and current hashes of every sealed role.",
+    "BuildOnly requires fresh cache roles, exact installed and unique cached executable/PDB pairs, PE32+ 16 MiB reserve and original Engine 1 MiB guard. Runtime requires the exact independent complete build certificate, original build result/final seal and artifact identities.",
+    "Every native phase retains the original CI status/error, actual handle/live executable/argv/creation, terminal deadline/time, exact admission, raw output bytes, current artifact hashes and recorded global/instance absence. Expected nonzero terminal remains the original failed CI receipt.",
+    "Native phase and final absence independently validate every older-parent exclusion with exact .NET/Unix 100 ns conversion and strict ten-tick margin. Final actual owner/outer/runner/launcher intervals are checked against a fresh process inventory and the pinned global classifier.",
+    "Successful controls require exactly empty stdout and stderr. Fatal cases require bounded valid UTF-8 stderr, required original site/header text, exactly one native section with an actual numbered address frame, and the explicit exact JavaScript filename/line/column frame when required.",
+    "The V5 controller and auditor V3 marker insertion adds OPTIONS_HEAP_CONTROL: to fatal rejection and changes no successful-control policy. Exact inverse to the closed V4 controller was verified.",
+    "All 13 distinct matrix source/dependency pins were independently checked against current frozen Main bytes. Existing corruption/UV cases and the separately closed silent OOM probe/case contracts are consistent with the selected matrix."
+  ],
+  "current_matrix_pins": [
+    {
+      "path": "src/native_node_corruption_probe.zig",
+      "bytes": 8302,
+      "sha256": "197C1C55CAA5254E058226131E8F8CD3FDF5D2F616B6D811C45B90E86D79279C"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "bytes": 14444,
+      "sha256": "1D051F4154AA80DF217E5EB7E06D6173F60EA367EAABCA664E3AB8185143EE37"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "bytes": 2183,
+      "sha256": "CC49A9A415C8A1729465FB9AC71690F61FB031E3FAF79D4CACAE442A588E0C7C"
+    },
+    {
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "bytes": 37754,
+      "sha256": "8868C64C8B9DF78CC7EA43DE34E682B3ABB74285C6B47BA9D268C015FB9CAF1F"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "bytes": 13027,
+      "sha256": "E0944E5D5EB078D27E548572F4B436345DF093756771C3D9B0561B9C4BAB9B85"
+    },
+    {
+      "path": "src/extensions/native_node_module_callable.zig",
+      "bytes": 12781,
+      "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+    },
+    {
+      "path": "src/native_node_uv_exception_probe.zig",
+      "bytes": 8002,
+      "sha256": "79BC1820098411E92A1BF6A1C28314FFF4F2DF946C494F70BC62231EE3B1821A"
+    },
+    {
+      "path": "src/extensions/native_node_uv_exception.zig",
+      "bytes": 5208,
+      "sha256": "B58AB2B8EBE7A01E28110417446827F74FA54B0D6D1965C44FD8ADAE345FBA64"
+    },
+    {
+      "path": "src/native_node_options_oom_probe.zig",
+      "bytes": 6679,
+      "sha256": "00898AAA3E41A85AF3112487F96C92D95E9D69DFA278AB69D4853ED5D84AE955"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2366135,
+      "sha256": "86EE97602BAD77F3CD094F0EF326919E2E7A5E8FEBE4247486A2B86851C670C2"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 105469,
+      "sha256": "7DD0189F0143D448CD3678FB1B415D200BFA36610371EF87A16B84BBA4871DC3"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.h",
+      "bytes": 1982,
+      "sha256": "A618BB6C25DA7E3B9C87BA6A15D97B81EDE8E2B103C242C0AADC4C52BE08A446"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 486960,
+      "sha256": "30348C988F824617E52EE47ECF64099D537582F8255E1B47C994820AA7814A62"
+    }
+  ],
+  "limits": [
+    "This is source review, not controller/auditor evaluation, build, probe execution or an independent runtime certificate.",
+    "A future exact preparation must preserve these reviewed sources, complete input/control roles and a fresh explicit Root grant. No existing V24 or normal V25 result supplies this separate expected-exit authority.",
+    "No Zig protocol or whole-application qualification is claimed. Expected-exit acceptance depends on the actual later raw receipts and complete independent closure."
+  ],
+  "no_concrete_blocker_in_assigned_source": true,
+  "execution": false
+}

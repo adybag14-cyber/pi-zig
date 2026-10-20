@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "finite_source_peer_closed",
+  "source_only": true,
+  "reviewer": "modules_io",
+  "reviewed_at_utc": "2026-10-20T13:06:56.055Z",
+  "controller": {
+    "path": "C:/Users/adyba/pi-zig/evidence/native-expected-exit-batch-draft-20261020/Run-NativeExpectedExitBatch-v4.ps1",
+    "sha256": "1978FF89C0028A7F0A79A9455EAE651F275A45CB9F1441F680A92B3E32C74115",
+    "bytes": 47024
+  },
+  "original": {
+    "sha256": "1D1B2A1FC995F4ACB0018AA4A66C570B91BEC7616A396E427C45ACE331CBBF28",
+    "bytes": 45198
+  },
+  "exact_successor_checks": [
+    "The one unique V4 filename-pattern replacement reverses byte-for-byte to complete V3 42D969605C34A4986FE252058F37EC6D544FDE79194F77E67E4B092A8651EF61.",
+    "The two unique V3 frame-policy insertions reverse byte-for-byte to complete original 1D1B2A1F.",
+    "The three copied strict-controller regions (original source/compiler setup, Save-Json through before Get-OwnerBinding, and observer environment save/restore) equal the corresponding complete 1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601 source regions."
+  ],
+  "reviewed_scopes": [
+    "Explicit grant/group/case/source-pin selector, numeric bounded exits and output policies, one real selected case per native invocation.",
+    "Assert-ProbeOwner retained handle plus actual live executable/hash/creation-time/command-line identity, exact deadline/arguments, original CI607 negative receipt and error preservation.",
+    "Separate fresh BuildOnly artifact and PE stack/PDB ownership, exact cache/output/source/control seals, and independently admitted ExpectedExitRuntime build/result/final-seal/acceptance prerequisites.",
+    "Complete actual groups and original failed receipts remain required; expected negative outcome is recorded separately and never turns the CI receipt into passed.",
+    "Failure and terminal paths preserve original diagnostics, artifact pins, observer restoration, complete seals, actual-instance and global absence checks.",
+    "Every fatal must contain one native trace section with an actual numbered captured-address frame; required JavaScript frame policy is explicit and a nonnull filename must occur as the exact path token in a numbered bare-position or function(position) frame.",
+    "Original native C7F9BBF35 formatting and the real probe EOF gates/source filenames were read; the header-only and same-suffix-filename findings are corrected by V3/V4."
+  ],
+  "manifest": {
+    "read_original_sha256": "B7C901FF2FA7A6BAEC89294A240EC63D922B9A52E7DDD9E134D7F44D7938F0E7",
+    "original_groups": 2,
+    "original_cases": 17,
+    "status": "Original draft is preserved, not a V4-admissible final manifest; final per-case required_js_frame fields and later OOM source/case pins remain Root's separately sealed inputs."
+  },
+  "excluded": [
+    "No controller evaluation, native launch, build, Node, generator or formatter execution by this peer.",
+    "No completed runtime qualification or new execution authority.",
+    "No claim that the unexecuted V2 replacement-string draft is usable.",
+    "Final candidate/source/artifact/manifest grant and independent closure remain required."
+  ],
+  "dependencies": [
+    {
+      "path": "frame-validation-v3-delta.json",
+      "sha256": "493DE54CE667CBFC63F41212F335005551C1D0C5060330DCF10F2144BFBCD6C8"
+    },
+    {
+      "path": "exact-js-filename-v4-delta.json",
+      "sha256": "F4DAB8E616D9AF06141C75FFDFD7842C4BEEF35AE2266FA1BBEAFB7E6C81DF55"
+    }
+  ],
+  "execution": false
+}
