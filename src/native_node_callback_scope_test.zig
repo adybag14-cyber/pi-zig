@@ -9,7 +9,7 @@ const em = a.v.em;
 const c = em.c;
 const callbacks = @import("extensions/native_node_callback_scope.zig");
 const providers = @import("extensions/native_node_async_providers.zig");
-const callable = @import("extensions/native_node_function.zig");
+const callable = @import("extensions/native_node_module_callable.zig");
 
 fn unselectedHookException(_: *callbacks.Environment) anyerror!void {
     return error.UnselectedActualFatalHookPolicy;
@@ -673,7 +673,8 @@ test "native Node callback scope MakeCallback preserves actual thrown identity w
         // Retire any unexpected successful value before asserting failure.
         if (result) |value| f.engine.freeValue(value);
     } else |err| failure = err;
-    try std.testing.expect(failure == error.JavaScriptException);
+    try std.testing.expect(failure != null);
+    try std.testing.expect(failure.? == error.JavaScriptException);
     const actual = f.engine.captured_exception orelse return error.ExpectedActualCapturedCallbackReason;
     try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, actual, reason));
     try std.testing.expect(!c.JS_IsUncatchableError(actual));

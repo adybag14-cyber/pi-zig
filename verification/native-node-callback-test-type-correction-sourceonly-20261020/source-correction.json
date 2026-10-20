@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "status": "source_only_exact_test_type_correction",
+  "prior_head": "8a42ea86f9a218b564f2c8a83ab8ad8b77b41e2f",
+  "reviewed_utc": "2026-10-20T11:47:40.136913+00:00",
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_callback_scope_test.zig",
+    "bytes": 42744,
+    "sha256": "43A1B3F32F9E522EA84AE86CF39D25941BABA648114F642F6D4E9FE2A5F3CE4C"
+  },
+  "before_sha256": "EED61191CC4A1C81B8DE7196D8137D7F198A3F217A652661D34097AFAF2B8E21",
+  "negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-oauth-options-fresh-v23-control-20261020-113916\\independent-negative-buildquery-closure.json",
+    "bytes": 6099,
+    "sha256": "11A374D6CA5992F1EF8EF8D560396E68B8E570C371CB5D1D1DEB5A6EDEA4B707"
+  },
+  "original_compile_stderr": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-oauth-options-fresh-v23-buildquery-20261020-113916\\groups\\native-node-callback-scope\\compile.stderr.log",
+    "bytes": 21203,
+    "sha256": "9A7227CA0D4274482F2D4D16F2FDEB84E48C846985ED8E961B4F6CF7E58913F5"
+  },
+  "edits": [
+    {
+      "before": "const callable = @import(\"extensions/native_node_function.zig\");",
+      "after": "const callable = @import(\"extensions/native_node_module_callable.zig\");"
+    },
+    {
+      "before": "    try std.testing.expect(failure == error.JavaScriptException);",
+      "after": "    try std.testing.expect(failure != null);\n    try std.testing.expect(failure.? == error.JavaScriptException);"
+    }
+  ],
+  "exact_reverse_reconstructs_all_previous_bytes": true,
+  "preserved_declarations": 28,
+  "preserved_control_assertions": true,
+  "production_sources_changed": false,
+  "review": "Read exact public helper API native_node_module_callable.failure. The three alias references are exclusively failure() calls; no callable factory changes. Split the same optional actual-failure assertion into explicit present check followed by exact JavaScriptException equality. Whole src test-root source scan found no other instances of either pattern. Original four compiler diagnostics preserved, no guessed behavioral correction.",
+  "native_execution": false,
+  "runtime_qualification": false
+}
