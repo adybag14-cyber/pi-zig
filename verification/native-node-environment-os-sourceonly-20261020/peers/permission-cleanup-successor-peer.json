@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "status": "CLOSED: finite explicit native cleanup adaptation; source only",
+  "execution": false,
+  "production": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission.cpp",
+      "sha256": "4DC0D4C70A659B9405E6D4AC6BFC0B008FB48EFB614F811C87F096A105A73EC8",
+      "bytes": 15344
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission_internal.hpp",
+      "sha256": "C15AC7ED37DAFB8F672AAFCFCD6FABA2CF87BB64EE26C8CC4AF5A6695D2E712F",
+      "bytes": 11308
+    }
+  ],
+  "packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/permission-cleanup-adaptation-proposal-v2.json",
+    "sha256": "328ADA249564A2FDA30B6508A93BC0915B0E1B9D4883280724F03434B236716D",
+    "bytes": 3706
+  },
+  "authorization": "Root explicitly approved the two cleanup differences in proposal 328ADA24; this review does not attribute them to the original Node bodies.",
+  "verification": {
+    "current_c": "4DC0D4C70A659B9405E6D4AC6BFC0B008FB48EFB614F811C87F096A105A73EC8",
+    "current_h": "C15AC7ED37DAFB8F672AAFCFCD6FABA2CF87BB64EE26C8CC4AF5A6695D2E712F",
+    "inverse_c": "40553FFA8D674EF8893631F6CB2726713858D61B7D4C2CDA89A10F006CDD518D",
+    "inverse_h": "360B921E6E0A38096E739857C78E1F7B620415E6472CAE3D8E65D20B1C852E41",
+    "expected_c": "40553FFA8D674EF8893631F6CB2726713858D61B7D4C2CDA89A10F006CDD518D",
+    "expected_h": "360B921E6E0A38096E739857C78E1F7B620415E6472CAE3D8E65D20B1C852E41",
+    "unique": true
+  },
+  "findings": [
+    "Both directory branches first construct the original wildcard result in the same concatenation order, then call actual uv_fs_req_cleanup before return. Non-directory/failed stat cleanup and returned-copy order remain unchanged.",
+    "FreeRecursivelyNode retains its original null guard and complete ordinary-child traversal, then recursively retires the separately owned wildcard subtree before deleting its parent. This closes the proved descendant leak without changing lookup, insertion or child ordering.",
+    "The two behavior changes plus two source comments are the complete delta. Exact unique inverse reproduces the previously reviewed CPP40553FFA and internal HPP360B921E bytes."
+  ],
+  "authority": {
+    "original_cleanup_proof": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-fs-permission-cleanup-source-peer-20261020/source-proof.json",
+    "sha256": "522698C721CBB6328A6CE48DFDE53B6012FFC29E7CFE6F13BDC8AFB4C48E0074",
+    "prior_algorithm_receipt": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-permission-core-source-peer-20261020/receipt.json",
+    "prior_algorithm_sha256": "6BDA1DAD389FA3B6DBEB780CC1533FB4369D097589A90928EABB4C70CB630EF4"
+  },
+  "limits": [
+    "No native compiler or control execution.",
+    "No claim of original Source-body equivalence for the two intentional releases.",
+    "Actual allocation-retirement controls, Debug implementation, whole State/permission installation and build remain separate."
+  ]
+}

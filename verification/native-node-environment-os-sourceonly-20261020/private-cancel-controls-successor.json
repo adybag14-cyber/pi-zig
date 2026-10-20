@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "status": "source_only_private_token_cleanup_successor",
+  "execution": false,
+  "finding": "VM finite control peer observed that Cancel does not act on a detached event. These controls had taken the token with GetException before cancelling.",
+  "correction": "Republish an owned duplicate of the known actual private token immediately before Cancel. All producer, identity, occurrence and pending observations remain before this cleanup, and the separately owned token still retires through its existing defer.",
+  "files": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/native_node_native_debug_test.zig",
+      "original": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/original/native_node_native_debug_test.zig.before-private-cancel.txt",
+      "before_sha256": "2AC6D329A744627FF6E39A20E01F363C0E387B00A262A4AF089E75B0874A472B",
+      "after_sha256": "79729DBB464F7F95F89CDD85A9A737897A1D90F6352816E186EFB02EE0470991",
+      "before_bytes": 16437,
+      "after_bytes": 16506,
+      "edits": [
+        {
+          "before": "    try std.testing.expect(c.JS_PiIsExecutionTermination(actual));\n    c.JS_PiCancelExecutionTermination(f.runtime.?);",
+          "after": "    try std.testing.expect(c.JS_PiIsExecutionTermination(actual));\n    _ = c.JS_Throw(f.context.?, c.JS_DupValue(f.context.?, actual));\n    c.JS_PiCancelExecutionTermination(f.runtime.?);"
+        }
+      ],
+      "declarations": 20
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/native_node_permission_test.zig",
+      "original": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/original/native_node_permission_test.zig.before-private-cancel.txt",
+      "before_sha256": "C8D2AC61DF3C3B75131D0258B09E8E239ECFDD646F4453E3FEB5259C1397716E",
+      "after_sha256": "A01BE231E1AA8A03FB9D343B6DAC06CA8EAA0FD2C58D33C1CA79A596E32F554D",
+      "before_bytes": 19098,
+      "after_bytes": 19167,
+      "edits": [
+        {
+          "before": "    try std.testing.expect(c.JS_PiIsExecutionTermination(actual));\n    c.JS_PiCancelExecutionTermination(f.runtime.?);",
+          "after": "    try std.testing.expect(c.JS_PiIsExecutionTermination(actual));\n    _ = c.JS_Throw(f.context.?, c.JS_DupValue(f.context.?, actual));\n    c.JS_PiCancelExecutionTermination(f.runtime.?);"
+        }
+      ],
+      "declarations": 18
+    }
+  ]
+}

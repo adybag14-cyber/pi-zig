@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "reviewer": "vm_foundation",
+  "status": "CLOSED bounded native ownership and placement ABI peer; not whole Permission acceptance",
+  "execution": false,
+  "source_mutation": false,
+  "main_mutated": false,
+  "scope": [
+    "PiNodePermission placement construction/destruction and C ABI borrowed views",
+    "six actual allocate_shared policy/control blocks and conversion to PermissionBase",
+    "class-specific Node allocation/deletion through the established standard allocator",
+    "per-block allocation-domain lifetime and native release without an active allocation scope"
+  ],
+  "packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/native-permission-core-draft.json",
+    "sha256": "998B8AF6ACC4640C1A6E9838BB1234D51E848E1DB265AEA2A745B7B6A74282D5",
+    "bytes": 6643
+  },
+  "production": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission.h",
+      "sha256": "6005cbf37a2fa4a6bf310274ab8338f030e886aaa1461eec95fed2019e3e3c9b",
+      "bytes": 3314
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission_internal.hpp",
+      "sha256": "360b921e6e0a38096e739857c78e1f7b620415e6472cae3d8e65d20b1c852e41",
+      "bytes": 11310
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission.cpp",
+      "sha256": "40553ffa8d674ef8893631f6cb2726713858d61b7d4c2cda89a10f006cdd518d",
+      "bytes": 15177
+    }
+  ],
+  "sources_and_dependencies": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/fs_permission.cc.v24.13.txt",
+      "sha256": "AFD036B1C56806B7F56D69872E391BAB44C2AFF01C0FB36C6CF6672164399AB8",
+      "bytes": 6854
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/fs_permission.h.v24.13.txt",
+      "sha256": "2FC127A57D9EACFA0119C1D11787CEAEBFD9C367A039B09DD627E3C268809F4C",
+      "bytes": 4563
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/permission.cc.v24.13.txt",
+      "sha256": "DE63A54C60EC53734DF9376C8236AF99044D9394A37EC2B2C75DD0E4D7A32C40",
+      "bytes": 6776
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/permission.h.v24.13.txt",
+      "sha256": "4E3D00379FEC7252A2DE67E0DF6F6FE6003DF84716E36359F8A77BDA61BBDF18",
+      "bytes": 6418
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/permission_base.h.v24.13.txt",
+      "sha256": "781460FFF3180CCF3C5BED93CB8195873E6EDACB9F038280457F541584A94901",
+      "bytes": 2402
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-shared_ptr.h.pinned.txt",
+      "sha256": "3241AF290FC414E0228B5312656A4AFBE11B7DE9ED9D09E80A97FAB6E8DC4293",
+      "bytes": 60418
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_standard_allocator.hpp",
+      "sha256": "16D82D2C2143DFAF3861B722BD2E9775FB0BD7D6C9BE400D0ECE37E0674E709B",
+      "bytes": 2562
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_simdjson_memory.hpp",
+      "sha256": "7554ED1DDCA28FAE7B11E025BD9D7EEF560DB657086A40029E5D95DBEFAE5291",
+      "bytes": 2449
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_simdjson_memory.cpp",
+      "sha256": "44794005D36BB3E1EC6B1A7DF3AA9A6B7DE7C02D6F12BBF38115F83E49C5E103",
+      "bytes": 2714
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_environment_paths_internal.hpp",
+      "sha256": "1B56668AF3BBF9A165CF384AE8D3CA7EE4ECE466E832D781C124B2691B580DC6",
+      "bytes": 1285
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/libcxx/include/__memory/allocator_traits.h",
+      "sha256": "C013D853C6E3136FA335B8A8860D4B54E91140E00AF36B748233F3BF26F923D1",
+      "bytes": 15459
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/libcxx/include/__memory/allocation_guard.h",
+      "sha256": "7B4FFB97D19C7759009332FE3EE76E57C8B8706AD27DBA590E2F7F93B682153D",
+      "bytes": 3727
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/libcxx/include/__memory/shared_count.h",
+      "sha256": "2626DE6333A62B24EDC3CB820A13B1A7139537B1009FC34043EDEB3A26B96D0F",
+      "bytes": 4712
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/libcxx/include/__memory/construct_at.h",
+      "sha256": "E0785F06CC52BCD9E71A263B3E8FF43E29222425E62862769F692140F384704B",
+      "bytes": 3070
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/libcxx/include/__memory/shared_ptr.h",
+      "sha256": "3241AF290FC414E0228B5312656A4AFBE11B7DE9ED9D09E80A97FAB6E8DC4293",
+      "bytes": 60418
+    }
+  ],
+  "checks": [
+    "All three complete current production files were read at the supplied pins. The retained shared_ptr header is byte-identical to the current pinned toolchain header, SHA 3241AF290FC414E0228B5312656A4AFBE11B7DE9ED9D09E80A97FAB6E8DC4293.",
+    "Storage size/alignment report the real PiNodePermission. construct starts AllocationScope before placement-new; destroy invokes the real object destructor but never frees caller-owned placement storage.",
+    "Original construction order is retained: FSPermission (with two actual root Nodes) then ChildProcess, Worker, Inspector, WASI and Addon, followed by three filesystem and five distinct policy map insertions.",
+    "The pinned make_shared delegates to allocate_shared. Each new call uses the same actual __shared_ptr_emplace<Derived, Allocator<Derived>> with the ordinary no-argument allocator_traits construct path; __construct_at ultimately uses Derived(), retaining value initialization of the implicit five simple policy constructors.",
+    "Converting and moving shared_ptr<Derived> to shared_ptr<PermissionBase> keeps the same control block. Final release invokes allocator_traits destruction of Derived, not delete through the non-virtual PermissionBase destructor. The control-block weak release then uses the rebound custom allocator.",
+    "Node new routes the actual requested size through allocateStandard; delete routes its exact pointer to the prefix release owner. Prefixes retain their memory owner separately. Map, String, vector and control-block deallocation use that same original prefix and do not depend on the current TLS domain.",
+    "The active AllocationScope retains the caller's domain through synchronous construction/materialization/queries and restores its predecessor on return. Each successful block separately retains its domain, so destruction can occur after allocation scope/runtime/caller domain entitlement retirement.",
+    "C ABI Apply materializes an actual vector of copied Strings under its operation scope, then passes a synchronous borrowed Environment view. These copies retire before AllocationScope. is_granted passes only a synchronous string_view. No Environment, JSContext, Path/Map, trace, debug function table, or caller resource pointer is stored in Permission or policy/node fields.",
+    "The internal ABI requires live/aligned placement storage, nonnull memory owner and valid borrowed inputs for the selected operation. It is not a checked public interface and makes no JS owner or full Environment installation claim.",
+    "The established standard allocator requires the pinned no-C++-exceptions build and preserves its native new_handler/bad_alloc terminal policy; this review does not add a recoverable constructor-failure or JS OOM mapping."
+  ],
+  "result": "No additional concrete ownership or ABI blocker in the assigned slice.",
+  "excluded": [
+    "The supplied original successful-directory uv request cleanup leak remains deliberately present and is not accepted by this receipt.",
+    "The supplied original nonrecursive wildcard-descendant cleanup leak remains deliberately present and is not accepted by this receipt.",
+    "Permission algorithms, path/debug output policy and the two proposed cleanup adaptations are separately owned reviews.",
+    "Actual Environment placement/installation, debug provider, controls, build and runtime remain separate.",
+    "No compilation, generator, formatter, Node or native execution was performed."
+  ],
+  "selected_exact_excerpts": [
+    {
+      "label": "Actual six derived control-block allocations and eight policy registrations",
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission.cpp",
+      "sha256": "40553FFA8D674EF8893631F6CB2726713858D61B7D4C2CDA89A10F006CDD518D",
+      "character_offset": 10536,
+      "text": "Permission::Permission() : enabled_(false) {\n  std::shared_ptr<PermissionBase> fs = std::allocate_shared<FSPermission>(Allocator<FSPermission>{});\n  std::shared_ptr<PermissionBase> child_p =\n      std::allocate_shared<ChildProcessPermission>(Allocator<ChildProcessPermission>{});\n  std::shared_ptr<PermissionBase> worker_t =\n      std::allocate_shared<WorkerPermission>(Allocator<WorkerPermission>{});\n  std::shared_ptr<PermissionBase> inspector =\n      std::allocate_shared<InspectorPermission>(Allocator<InspectorPermission>{});\n  std::shared_ptr<PermissionBase> wasi = std::allocate_shared<WASIPermission>(Allocator<WASIPermission>{});\n  std::shared_ptr<PermissionBase> addon = std::allocate_shared<AddonPermission>(Allocator<AddonPermission>{});\n#define V(Name, _, __, ___)                                                    \\\n  nodes_.insert(std::make_pair(PermissionScope::k##Name, fs));\n  FILESYSTEM_PERMISSIONS(V)\n#undef V\n#define V(Name, _, __, ___)                                                    \\\n  nodes_.insert(std::make_pair(PermissionScope::k##Name, child_p));\n  CHILD_PROCESS_PERMISSIONS(V)\n#undef V\n#define V(Name, _, __, ___)                                                    \\\n  nodes_.insert(std::make_pair(PermissionScope::k##Name, worker_t));\n  WORKER_THREADS_PERMISSIONS(V)\n#undef V\n#define V(Name, _, __, ___)                                                    \\\n  nodes_.insert(std::make_pair(PermissionScope::k##Name, inspector));\n  INSPECTOR_PERMISSIONS(V)\n#undef V\n#define V(Name, _, __, ___)                                                    \\\n  nodes_.insert(std::make_pair(PermissionScope::k##Name, wasi));\n  WASI_PERMISSIONS(V)\n#undef V\n#define V(Name, _, __, ___)                                                    \\\n  nodes_.insert(std::make_pair(PermissionScope::k##Name, addon));\n  ADDON_PERMISSIONS(V)\n#undef V\n}\n\n"
+    },
+    {
+      "label": "Actual placement, borrowed view, materialization and destruction ABI",
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission.cpp",
+      "sha256": "40553FFA8D674EF8893631F6CB2726713858D61B7D4C2CDA89A10F006CDD518D",
+      "character_offset": 12803,
+      "text": "struct PiNodePermission {\n  pi_node::permission::Permission value;\n};\nnamespace {\nstd::optional<pi_node::PermissionEnvironment> BorrowEnvironment(\n    const PiNodePermissionEnvironment* environment) {\n  if (environment == nullptr) return std::nullopt;\n  return pi_node::PermissionEnvironment{\n      {environment->paths, environment->map, environment->context,\n       environment->trace}, environment->process_debug};\n}\n}  // namespace\nextern \"C\" size_t pi_node_permission_storage_size(void) noexcept {\n  return sizeof(PiNodePermission);\n}\nextern \"C\" size_t pi_node_permission_storage_alignment(void) noexcept {\n  return alignof(PiNodePermission);\n}\nextern \"C\" PiNodePermission* pi_node_permission_construct(\n    void* storage, void* memory_owner) noexcept {\n  pi_node::AllocationScope scope(memory_owner);\n  return ::new (storage) PiNodePermission();\n}\nextern \"C\" void pi_node_permission_destroy(\n    PiNodePermission* permission) noexcept {\n  permission->~PiNodePermission();\n}\nextern \"C\" int pi_node_permission_enabled(\n    const PiNodePermission* permission) noexcept {\n  return permission->value.enabled();\n}\nextern \"C\" void pi_node_permission_enable(\n    PiNodePermission* permission) noexcept {\n  permission->value.EnablePermissions();\n}\nextern \"C\" void pi_node_permission_apply(\n    PiNodePermission* permission, void* memory_owner,\n    const PiNodePermissionEnvironment* environment,\n    const PiNodeEnvironmentPathSpan* allow, size_t count, int scope) noexcept {\n  pi_node::AllocationScope allocation_scope(memory_owner);\n  auto env = BorrowEnvironment(environment);\n  PermissionStrings entries;\n  entries.reserve(count);\n  for (size_t i = 0; i < count; ++i)\n    entries.emplace_back(allow[i].data, allow[i].length);\n  permission->value.Apply(env ? &*env : nullptr, entries,\n      static_cast<pi_node::permission::PermissionScope>(scope));\n}\nextern \"C\" int pi_node_permission_is_granted(\n    const PiNodePermission* permission, void* memory_owner,\n    const PiNodePermissionEnvironment* environment, int scope,\n    const char* resource, size_t resource_length) noexcept {\n  pi_node::AllocationScope allocation_scope(memory_owner);\n  auto env = BorrowEnvironment(environment);\n  return permission->value.is_granted(env ? &*env : nullptr,\n      static_cast<pi_node::permission::PermissionScope>(scope),\n      std::string_view(resource, resource_length));\n}\n"
+    },
+    {
+      "label": "Actual class-specific Node allocation and deletion",
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission_internal.hpp",
+      "sha256": "360B921E6E0A38096E739857C78E1F7B620415E6472CAE3D8E65D20B1C852E41",
+      "character_offset": 3634,
+      "text": "      static void* operator new(std::size_t bytes) {\n        return allocateStandard(bytes);\n      }\n      static void operator delete(void* value) noexcept {\n        pi_simd::release(value);\n      }\n\n"
+    },
+    {
+      "label": "Original constructor selected before allocator substitution",
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/permission.cc.v24.13.txt",
+      "sha256": "DE63A54C60EC53734DF9376C8236AF99044D9394A37EC2B2C75DD0E4D7A32C40",
+      "character_offset": 1899,
+      "text": "Permission::Permission() : enabled_(false) {\n  std::shared_ptr<PermissionBase> fs = std::make_shared<FSPermission>();\n  std::shared_ptr<PermissionBase> child_p =\n      std::make_shared<ChildProcessPermission>();\n  std::shared_ptr<PermissionBase> worker_t =\n      std::make_shared<WorkerPermission>();\n  std::shared_ptr<PermissionBase> inspector =\n      std::make_shared<InspectorPermission>();\n  std::shared_ptr<PermissionBase> wasi = std::make_shared<WASIPermission>();\n  std::shared_ptr<PermissionBase> addon = std::make_shared<AddonPermission>();\n#define V(Name, _, __, ___)                                                    \\\n  nodes_.insert(std::make_pair(PermissionScope::k##Name, fs));\n  FILESYSTEM_PERMISSIONS(V)\n#undef V\n#define V(Name, _, __, ___)                                                    \\\n  nodes_.insert(std::make_pair(PermissionScope::k##Name, child_p));\n  CHILD_PROCESS_PERMISSIONS(V)\n#undef V\n#define V(Name, _, __, ___)                                                    \\\n  nodes_.insert(std::make_pair(PermissionScope::k##Name, worker_t));\n  WORKER_THREADS_PERMISSIONS(V)\n#undef V\n#define V(Name, _, __, ___)                                                    \\\n  nodes_.insert(std::make_pair(PermissionScope::k##Name, inspector));\n  INSPECTOR_PERMISSIONS(V)\n#undef V\n#define V(Name, _, __, ___)                                                    \\\n  nodes_.insert(std::make_pair(PermissionScope::k##Name, wasi));\n  WASI_PERMISSIONS(V)\n#undef V\n#define V(Name, _, __, ___)                                                    \\\n  nodes_.insert(std::make_pair(PermissionScope::k##Name, addon));\n  ADDON_PERMISSIONS(V)\n#undef V\n}\n\n"
+    },
+    {
+      "label": "Pinned concrete typed object/control-block destruction",
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-shared_ptr.h.pinned.txt",
+      "sha256": "3241AF290FC414E0228B5312656A4AFBE11B7DE9ED9D09E80A97FAB6E8DC4293",
+      "character_offset": 4953,
+      "text": "struct __shared_ptr_emplace : __shared_weak_count {\n  using __value_type _LIBCPP_NODEBUG = __remove_cv_t<_Tp>;\n\n  template <class... _Args,\n            class _Allocator                                                                         = _Alloc,\n            __enable_if_t<is_same<typename _Allocator::value_type, __for_overwrite_tag>::value, int> = 0>\n  _LIBCPP_HIDE_FROM_ABI explicit __shared_ptr_emplace(_Alloc __a, _Args&&...) : __storage_(std::move(__a)) {\n    static_assert(\n        sizeof...(_Args) == 0, \"No argument should be provided to the control block when using _for_overwrite\");\n    ::new (static_cast<void*>(__get_elem())) __value_type;\n  }\n\n  template <class... _Args,\n            class _Allocator                                                                          = _Alloc,\n            __enable_if_t<!is_same<typename _Allocator::value_type, __for_overwrite_tag>::value, int> = 0>\n  _LIBCPP_HIDE_FROM_ABI explicit __shared_ptr_emplace(_Alloc __a, _Args&&... __args) : __storage_(std::move(__a)) {\n    using _TpAlloc = typename __allocator_traits_rebind<_Alloc, __value_type>::type;\n    _TpAlloc __tmp(*__get_alloc());\n    allocator_traits<_TpAlloc>::construct(__tmp, __get_elem(), std::forward<_Args>(__args)...);\n  }\n\n  _LIBCPP_HIDE_FROM_ABI _Alloc* __get_alloc() _NOEXCEPT { return __storage_.__get_alloc(); }\n\n  _LIBCPP_HIDE_FROM_ABI __value_type* __get_elem() _NOEXCEPT { return __storage_.__get_elem(); }\n\nprivate:\n  template <class _Allocator                                                                         = _Alloc,\n            __enable_if_t<is_same<typename _Allocator::value_type, __for_overwrite_tag>::value, int> = 0>\n  _LIBCPP_HIDE_FROM_ABI void __on_zero_shared_impl() _NOEXCEPT {\n    __get_elem()->~__value_type();\n  }\n\n  template <class _Allocator                                                                          = _Alloc,\n            __enable_if_t<!is_same<typename _Allocator::value_type, __for_overwrite_tag>::value, int> = 0>\n  _LIBCPP_HIDE_FROM_ABI void __on_zero_shared_impl() _NOEXCEPT {\n    using _TpAlloc = typename __allocator_traits_rebind<_Allocator, __remove_cv_t<_Tp> >::type;\n    _TpAlloc __tmp(*__get_alloc());\n    allocator_traits<_TpAlloc>::destroy(__tmp, __get_elem());\n  }\n\n  _LIBCPP_HIDE_FROM_ABI_VIRTUAL void __on_zero_shared() _NOEXCEPT override { __on_zero_shared_impl(); }\n\n  _LIBCPP_HIDE_FROM_ABI_VIRTUAL void __on_zero_shared_weak() _NOEXCEPT override {\n    using _ControlBlockAlloc   = typename __allocator_traits_rebind<_Alloc, __shared_ptr_emplace>::type;\n    using _ControlBlockPointer = typename allocator_traits<_ControlBlockAlloc>::pointer;\n    _ControlBlockAlloc __tmp(*__get_alloc());\n    __storage_.~_Storage();\n    allocator_traits<_ControlBlockAlloc>::deallocate(__tmp, pointer_traits<_ControlBlockPointer>::pointer_to(*this), 1);\n  }\n\n  // TODO: It should be possible to refactor this to remove `_Storage` entirely.\n  // This class implements the control block for non-array shared pointers created\n  // through `std::allocate_shared` and `std::make_shared`.\n  struct _Storage {\n    struct _Data {\n      _LIBCPP_COMPRESSED_PAIR(_Alloc, __alloc_, __value_type, __elem_);\n    };\n\n    _ALIGNAS_TYPE(_Data) char __buffer_[sizeof(_Data)];\n\n    _LIBCPP_HIDE_FROM_ABI explicit _Storage(_Alloc&& __a) { ::new ((void*)__get_alloc()) _Alloc(std::move(__a)); }\n    _LIBCPP_HIDE_FROM_ABI ~_Storage() { __get_alloc()->~_Alloc(); }\n\n    _LIBCPP_HIDE_FROM_ABI _Alloc* __get_alloc() _NOEXCEPT {\n      return std::addressof(reinterpret_cast<_Data*>(__buffer_)->__alloc_);\n    }\n\n    _LIBCPP_HIDE_FROM_ABI _LIBCPP_NO_CFI __value_type* __get_elem() _NOEXCEPT {\n      return std::addressof(reinterpret_cast<_Data*>(__buffer_)->__elem_);\n    }\n  };\n\n  _Storage __storage_;\n};\n\n"
+    },
+    {
+      "label": "Pinned allocate_shared and make_shared same implementation",
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-shared_ptr.h.pinned.txt",
+      "sha256": "3241AF290FC414E0228B5312656A4AFBE11B7DE9ED9D09E80A97FAB6E8DC4293",
+      "character_offset": 27617,
+      "text": "// std::allocate_shared and std::make_shared\n//\ntemplate <class _Tp, class _Alloc, class... _Args, __enable_if_t<!is_array<_Tp>::value, int> = 0>\n_LIBCPP_HIDE_FROM_ABI shared_ptr<_Tp> allocate_shared(const _Alloc& __a, _Args&&... __args) {\n  using _ControlBlock          = __shared_ptr_emplace<_Tp, _Alloc>;\n  using _ControlBlockAllocator = typename __allocator_traits_rebind<_Alloc, _ControlBlock>::type;\n  __allocation_guard<_ControlBlockAllocator> __guard(__a, 1);\n  ::new ((void*)std::addressof(*__guard.__get())) _ControlBlock(__a, std::forward<_Args>(__args)...);\n  auto __control_block = __guard.__release_ptr();\n  return shared_ptr<_Tp>::__create_with_control_block(\n      (*__control_block).__get_elem(), std::addressof(*__control_block));\n}\n\ntemplate <class _Tp, class... _Args, __enable_if_t<!is_array<_Tp>::value, int> = 0>\n_LIBCPP_HIDE_FROM_ABI shared_ptr<_Tp> make_shared(_Args&&... __args) {\n  return std::allocate_shared<_Tp>(allocator<__remove_cv_t<_Tp> >(), std::forward<_Args>(__args)...);\n}\n\n"
+    },
+    {
+      "label": "Converting shared_ptr retains original control block",
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-shared_ptr.h.pinned.txt",
+      "sha256": "3241AF290FC414E0228B5312656A4AFBE11B7DE9ED9D09E80A97FAB6E8DC4293",
+      "character_offset": 18226,
+      "text": "  template <class _Yp, __enable_if_t<__compatible_with<_Yp, _Tp>::value, int> = 0>\n  _LIBCPP_HIDE_FROM_ABI shared_ptr(const shared_ptr<_Yp>& __r) _NOEXCEPT : __ptr_(__r.__ptr_), __cntrl_(__r.__cntrl_) {\n    if (__cntrl_)\n      __cntrl_->__add_shared();\n  }\n\n  _LIBCPP_HIDE_FROM_ABI shared_ptr(shared_ptr&& __r) _NOEXCEPT : __ptr_(__r.__ptr_), __cntrl_(__r.__cntrl_) {\n    __r.__ptr_   = nullptr;\n    __r.__cntrl_ = nullptr;\n  }\n\n  template <class _Yp, __enable_if_t<__compatible_with<_Yp, _Tp>::value, int> = 0>\n  _LIBCPP_HIDE_FROM_ABI shared_ptr(shared_ptr<_Yp>&& __r) _NOEXCEPT : __ptr_(__r.__ptr_), __cntrl_(__r.__cntrl_) {\n    __r.__ptr_   = nullptr;\n    __r.__cntrl_ = nullptr;\n  }\n\n"
+    }
+  ]
+}

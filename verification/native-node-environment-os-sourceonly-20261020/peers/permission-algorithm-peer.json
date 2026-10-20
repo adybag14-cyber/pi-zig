@@ -1,0 +1,247 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "reviewer": "sdk_owners",
+  "status": "CLOSED for the assigned finite native Permission decision/constructor algorithm slice only; no lifetime or complete owner acceptance.",
+  "execution": false,
+  "production": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission.cpp",
+      "sha256": "40553FFA8D674EF8893631F6CB2726713858D61B7D4C2CDA89A10F006CDD518D",
+      "bytes": 15177
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission_internal.hpp",
+      "sha256": "360B921E6E0A38096E739857C78E1F7B620415E6472CAE3D8E65D20B1C852E41",
+      "bytes": 11310
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission.h",
+      "sha256": "6005CBF37A2FA4A6BF310274AB8338F030E886AAA1461EEC95FED2019E3E3C9B",
+      "bytes": 3314
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/native-permission-core-draft.json",
+      "sha256": "998B8AF6ACC4640C1A6E9838BB1234D51E848E1DB265AEA2A745B7B6A74282D5",
+      "bytes": 6643
+    }
+  ],
+  "authority": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/fs_permission.cc.v24.13.txt",
+      "sha256": "AFD036B1C56806B7F56D69872E391BAB44C2AFF01C0FB36C6CF6672164399AB8",
+      "bytes": 6854
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/fs_permission.h.v24.13.txt",
+      "sha256": "2FC127A57D9EACFA0119C1D11787CEAEBFD9C367A039B09DD627E3C268809F4C",
+      "bytes": 4563
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/permission.cc.v24.13.txt",
+      "sha256": "DE63A54C60EC53734DF9376C8236AF99044D9394A37EC2B2C75DD0E4D7A32C40",
+      "bytes": 6776
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/permission.h.v24.13.txt",
+      "sha256": "4E3D00379FEC7252A2DE67E0DF6F6FE6003DF84716E36359F8A77BDA61BBDF18",
+      "bytes": 6418
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/permission_base.h.v24.13.txt",
+      "sha256": "781460FFF3180CCF3C5BED93CB8195873E6EDACB9F038280457F541584A94901",
+      "bytes": 2402
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-shared_ptr.h.pinned.txt",
+      "sha256": "3241AF290FC414E0228B5312656A4AFBE11B7DE9ED9D09E80A97FAB6E8DC4293",
+      "bytes": 60418
+    }
+  ],
+  "additional_complete_policy_bodies": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/addon_permission.cc.v24.13.txt",
+      "sha256": "41C315B404E271B351860EDE4306E22711B1FA77171FB3EB6331B6446792FB03",
+      "bytes": 616
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/addon_permission.h.v24.13.txt",
+      "sha256": "E0C9E3A55D4FC03EAAF0191C0BA1DD816B263BE972D74BD3B63F2E638E581F48",
+      "bytes": 775
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/child_process_permission.cc.v24.13.txt",
+      "sha256": "7ACF603229159AD1D1C172221124FC9E40ECC77B4D1E7C8EB5D4092F7D5B9874",
+      "bytes": 691
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/child_process_permission.h.v24.13.txt",
+      "sha256": "1A518EB92295513743E12AF023E5700274DB0A736328D9CE62BBB40241DD3E71",
+      "bytes": 806
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/inspector_permission.cc.v24.13.txt",
+      "sha256": "440F0F786C231AC3ECA29AE42A6B2C1976B6544B0B3248B20A5D1316C3B24D1D",
+      "bytes": 648
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/inspector_permission.h.v24.13.txt",
+      "sha256": "28892270154C0769E6949FADF36F29C8E3CA2467F4887FE2D7518FD3DF68265A",
+      "bytes": 791
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/wasi_permission.cc.v24.13.txt",
+      "sha256": "448EC6D503CC8EAFD4532AB67964C5800F40421FFB700B3ABABE2FE01B1B340D",
+      "bytes": 647
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/wasi_permission.h.v24.13.txt",
+      "sha256": "1F24DAB51EF889033B6097FFBC266477E7EB9B5F8C08734ED57851E17B757670",
+      "bytes": 771
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/worker_permission.cc.v24.13.txt",
+      "sha256": "E05859A8AD70E6B181A118E212235638E23941F062D0092AB440681559DFFCC2",
+      "bytes": 663
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/worker_permission.h.v24.13.txt",
+      "sha256": "A354FBE02CE80A22FCD2C1EC0855FC4D9AA400765E3172F2DA1DC6F798FC4F35",
+      "bytes": 779
+    }
+  ],
+  "findings": [
+    "Full original scope macros/labels/root/count and eight enum indices match the selected native C/C++ scope declarations. Disabled admission returns true before lookup; unknown enabled scopes return false; Apply delegates only to a found policy.",
+    "The six original concrete policy constructions remain FS, child process, worker, inspector, WASI, addon. Eight map insertions retain their original grouped order and shared policy identity. The pinned libc++ make_shared delegates to allocate_shared; the admitted stateless allocator has no construct override, so this uses the same normal control-block/allocator_traits construction path.",
+    "The original five simple policies keep deny_all_=true on Apply and is_granted as deny_all_==false. Their complete actual headers and implementation bodies were read.",
+    "FS Apply retains wildcard early return, its original read-versus-else write state branch, ordered PathResolve calls, GrantAccess's real physical directory expansion, conditional tree insertion, and deny flag publication. No alternate policy was introduced for a scope the original dispatcher does not normally select.",
+    "Windows is_tree_granted retains sequential device, UNC, and slash prefix removals before Lookup(..., true). Original empty-tree and end-node tests, parent-prefix accounting, wildcard precedence, and lookup bounds are preserved.",
+    "Insert retains original substr(parent_node_prefix_len, i), CreateChild before wildcard child, and parent prefix update. CreateChild retains operator[] null entry publication, actual native CHECK, prefix split/copy/reassign/allocation/publication and recursive decision order; CreateWildcardChild, NextNode and IsEndNode match the original decision bodies.",
+    "Required Debug inputs remain explicit. This peer reads only the pre-Debug Insert algorithm and does not qualify EnabledDebugList, SPrintF/FWrite or native output.",
+    "Pure source comparison of 28 selected decisions/bodies/macros passed after only the documented type/namespace, borrowed Environment parameter, native assertion, and allocate_shared adapter substitutions. Full original and current files were read; no compilation or runtime."
+  ],
+  "comparisons": [
+    {
+      "label": "FS Windows prefixes and lookup",
+      "equal": true
+    },
+    {
+      "label": "FS Apply wildcard early return and flags",
+      "equal": true
+    },
+    {
+      "label": "GrantAccess read/write short circuit and insert",
+      "equal": true
+    },
+    {
+      "label": "FS is_granted",
+      "equal": true
+    },
+    {
+      "label": "Radix Lookup",
+      "equal": true
+    },
+    {
+      "label": "Radix Insert pre-debug algorithm",
+      "equal": true
+    },
+    {
+      "label": "Node CreateWildcardChild",
+      "equal": true
+    },
+    {
+      "label": "Node NextNode",
+      "equal": true
+    },
+    {
+      "label": "Node IsEndNode",
+      "equal": true
+    },
+    {
+      "label": "Node CreateChild",
+      "equal": true
+    },
+    {
+      "label": "Permission::PermissionToString",
+      "equal": true
+    },
+    {
+      "label": "Permission::EnablePermissions",
+      "equal": true
+    },
+    {
+      "label": "Permission six policy construction and insertion order",
+      "equal": true
+    },
+    {
+      "label": "Permission is_scope_granted",
+      "equal": true
+    },
+    {
+      "label": "Permission enabled admission",
+      "equal": true
+    },
+    {
+      "label": "AddonPermission::Apply",
+      "equal": true
+    },
+    {
+      "label": "AddonPermission::is_granted",
+      "equal": true
+    },
+    {
+      "label": "ChildProcessPermission::Apply",
+      "equal": true
+    },
+    {
+      "label": "ChildProcessPermission::is_granted",
+      "equal": true
+    },
+    {
+      "label": "InspectorPermission::Apply",
+      "equal": true
+    },
+    {
+      "label": "InspectorPermission::is_granted",
+      "equal": true
+    },
+    {
+      "label": "WASIPermission::Apply",
+      "equal": true
+    },
+    {
+      "label": "WASIPermission::is_granted",
+      "equal": true
+    },
+    {
+      "label": "WorkerPermission::Apply",
+      "equal": true
+    },
+    {
+      "label": "WorkerPermission::is_granted",
+      "equal": true
+    },
+    {
+      "label": "Permission::StringToPermission",
+      "equal": true
+    },
+    {
+      "label": "Permission::Apply",
+      "equal": true
+    },
+    {
+      "label": "Original eight scope macros and enum ordering",
+      "equal": true
+    }
+  ],
+  "excluded": [
+    "The two original cleanup defects remain unchanged. WildcardIfDir's Windows successful-directory request cleanup and recursive wildcard descendants require Root's separate explicit adaptation decision; this receipt does not close native lifecycle.",
+    "Native allocation/charge failure handling, placement storage/teardown and C ABI embedding materialization are a separate ownership review.",
+    "Actual Debug formatting/gates, native Environment/permission settings installation, denied JS Error/permission namespace and public process.env composition.",
+    "Controls/build/runtime and any policy beyond the exact admitted selected original source."
+  ],
+  "prior_cleanup_proof": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-fs-permission-cleanup-source-peer-20261020/source-proof.json",
+    "sha256": "522698C721CBB6328A6CE48DFDE53B6012FFC29E7CFE6F13BDC8AFB4C48E0074"
+  }
+}

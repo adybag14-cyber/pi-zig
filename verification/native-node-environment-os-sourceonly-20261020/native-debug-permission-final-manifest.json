@@ -1,0 +1,574 @@
+{
+  "schema": "native-debug-permission-source-unit-v1",
+  "status": "all assigned finite source production, control and additive build peers closed; uncompiled and unexecuted",
+  "recorded_utc": "2026-10-20 16:22:21 UTC",
+  "owned_base_commit": "f172af550619d6c6451f6216612d5990e2c8202c",
+  "selected_node_revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "execution": {
+    "native": false,
+    "node": false,
+    "zig": false,
+    "ast": false,
+    "generator": false,
+    "formatter": false,
+    "controls": false,
+    "runtime_qualification": false,
+    "main_mutation": false,
+    "build_file_mutation": false
+  },
+  "source_scope": {
+    "debug": "Actual native EnabledDebugList category/parser, fixed process selector and local owner, selected Permission SPrintF/FWrite and real supplied-Map SafeGetenv composition.",
+    "permission": "Actual selected policy constructor/enable/Apply/is_granted and native filesystem/radix decisions, concrete shared ownership and explicit cleanup adaptation.",
+    "native_lifetime": "Independent per-block charged native allocation owners, one shared standard allocator/TLS, synchronous borrowed Environment/Debug views, process-lifetime category Strings.",
+    "platforms": "Existing helper admits 64-bit Windows and Linux; no expansion."
+  },
+  "production": [
+    {
+      "path": "src/extensions/native_node_native_debug.cpp",
+      "sha256": "AD3446C875DFFD39165AF9514A4A1169125995C5701F4B706706F83CB814A990",
+      "bytes": 6880
+    },
+    {
+      "path": "src/extensions/native_node_native_debug.h",
+      "sha256": "E11332B46CC5DF6001BBEBF3CF094B5ED2C8C4170F4FB0089B264DC0AE5BF8E8",
+      "bytes": 3449
+    },
+    {
+      "path": "src/extensions/native_node_native_debug_internal.hpp",
+      "sha256": "301D73ED189F50DACA4B0E2C16B3C7E9469E716EB935F67D826EDB691F01B4F1",
+      "bytes": 14875
+    },
+    {
+      "path": "src/extensions/native_node_permission.cpp",
+      "sha256": "4DC0D4C70A659B9405E6D4AC6BFC0B008FB48EFB614F811C87F096A105A73EC8",
+      "bytes": 15344
+    },
+    {
+      "path": "src/extensions/native_node_permission.h",
+      "sha256": "6005CBF37A2FA4A6BF310274AB8338F030E886AAA1461EEC95FED2019E3E3C9B",
+      "bytes": 3314
+    },
+    {
+      "path": "src/extensions/native_node_permission_internal.hpp",
+      "sha256": "C15AC7ED37DAFB8F672AAFCFCD6FABA2CF87BB64EE26C8CC4AF5A6695D2E712F",
+      "bytes": 11308
+    },
+    {
+      "path": "src/extensions/native_node_permission_test_support.cpp",
+      "sha256": "362826F62F0F4322961AE0F93E835C178251B49FDCAA3BE06D116B307A1F4BC4",
+      "bytes": 7661
+    },
+    {
+      "path": "src/extensions/native_node_permission_test_support.h",
+      "sha256": "9D128A71AE35CF2A92AFA92E5F8278BA29F564C0C4FBB85F61CA85E105E7E54B",
+      "bytes": 2741
+    },
+    {
+      "path": "src/native_node_native_debug_test.zig",
+      "sha256": "79729DBB464F7F95F89CDD85A9A737897A1D90F6352816E186EFB02EE0470991",
+      "bytes": 16506
+    },
+    {
+      "path": "src/native_node_permission_test.zig",
+      "sha256": "A01BE231E1AA8A03FB9D343B6DAC06CA8EAA0FD2C58D33C1CA79A596E32F554D",
+      "bytes": 19167
+    },
+    {
+      "path": "src/native_node_native_debug_test_support.zig",
+      "sha256": "7AF437A515FF85B16457E854B7FCD93BDBF74545C939E7039040158E5285F604",
+      "bytes": 10530
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/CHECKPOINT-20261020.md",
+      "sha256": "87EC484219978995E533E4DEA7DCBABA90C9FED610E3FCFCB5C26A40106F95F5",
+      "bytes": 5832
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/addon_permission.cc.v24.13.txt",
+      "sha256": "41C315B404E271B351860EDE4306E22711B1FA77171FB3EB6331B6446792FB03",
+      "bytes": 616
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/addon_permission.h.v24.13.txt",
+      "sha256": "E0C9E3A55D4FC03EAAF0191C0BA1DD816B263BE972D74BD3B63F2E638E581F48",
+      "bytes": 775
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/async_wrap.h.v24.13.txt",
+      "sha256": "3EBF97B3044B4875D1F62C3F8BA1668886F4AE19F6369A8DD20EC0E262BBF1EF",
+      "bytes": 12198
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/child_process_permission.cc.v24.13.txt",
+      "sha256": "7ACF603229159AD1D1C172221124FC9E40ECC77B4D1E7C8EB5D4092F7D5B9874",
+      "bytes": 691
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/child_process_permission.h.v24.13.txt",
+      "sha256": "1A518EB92295513743E12AF023E5700274DB0A736328D9CE62BBB40241DD3E71",
+      "bytes": 806
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils-inl.h.v24.13.txt",
+      "sha256": "A3A471FC932B173CC08C53571E7C791A3DD816720443BA6AFD4C5561DDDA7A72",
+      "bytes": 9366
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils.cc.v24.13.txt",
+      "sha256": "9F2904508A8443BEB454DC789A07D60AFB2F2EC7F9B2F56BC651D9C66EDB0EA3",
+      "bytes": 16324
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils.h.v24.13.txt",
+      "sha256": "807D1A5B4C872B0FB5A14DFEB0BD48BEF126CBDCA920E5908E949218617484B4",
+      "bytes": 7649
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/fs-permission-cleanup-source-peer.json",
+      "sha256": "522698C721CBB6328A6CE48DFDE53B6012FFC29E7CFE6F13BDC8AFB4C48E0074",
+      "bytes": 28779
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/fs_permission.cc.v24.13.txt",
+      "sha256": "AFD036B1C56806B7F56D69872E391BAB44C2AFF01C0FB36C6CF6672164399AB8",
+      "bytes": 6854
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/fs_permission.h.v24.13.txt",
+      "sha256": "2FC127A57D9EACFA0119C1D11787CEAEBFD9C367A039B09DD627E3C268809F4C",
+      "bytes": 4563
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/inspector_permission.cc.v24.13.txt",
+      "sha256": "440F0F786C231AC3ECA29AE42A6B2C1976B6544B0B3248B20A5D1316C3B24D1D",
+      "bytes": 648
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/inspector_permission.h.v24.13.txt",
+      "sha256": "28892270154C0769E6949FADF36F29C8E3CA2467F4887FE2D7518FD3DF68265A",
+      "bytes": 791
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-shared_ptr.h.pinned.txt",
+      "sha256": "3241AF290FC414E0228B5312656A4AFBE11B7DE9ED9D09E80A97FAB6E8DC4293",
+      "bytes": 60418
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/permission-debug-and-policies-source.json",
+      "sha256": "56F9E027AFDBD749280A15BFB776E01C36E2F0F43D3F6F308F9A74CAB06F05CD",
+      "bytes": 18858
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/permission.cc.v24.13.txt",
+      "sha256": "DE63A54C60EC53734DF9376C8236AF99044D9394A37EC2B2C75DD0E4D7A32C40",
+      "bytes": 6776
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/permission.h.v24.13.txt",
+      "sha256": "4E3D00379FEC7252A2DE67E0DF6F6FE6003DF84716E36359F8A77BDA61BBDF18",
+      "bytes": 6418
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/permission_base.h.v24.13.txt",
+      "sha256": "781460FFF3180CCF3C5BED93CB8195873E6EDACB9F038280457F541584A94901",
+      "bytes": 2402
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/wasi_permission.cc.v24.13.txt",
+      "sha256": "448EC6D503CC8EAFD4532AB67964C5800F40421FFB700B3ABABE2FE01B1B340D",
+      "bytes": 647
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/wasi_permission.h.v24.13.txt",
+      "sha256": "1F24DAB51EF889033B6097FFBC266477E7EB9B5F8C08734ED57851E17B757670",
+      "bytes": 771
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/worker_permission.cc.v24.13.txt",
+      "sha256": "E05859A8AD70E6B181A118E212235638E23941F062D0092AB440681559DFFCC2",
+      "bytes": 663
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/worker_permission.h.v24.13.txt",
+      "sha256": "A354FBE02CE80A22FCD2C1EC0855FC4D9AA400765E3172F2DA1DC6F798FC4F35",
+      "bytes": 779
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/drafts/native_node_native_debug_internal.initial.hpp",
+      "sha256": "D5A920F54CA25FCD9684031E1E383696B4080E6103787F147C83F31854950E3E",
+      "bytes": 14875
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-debug-permission-build-intake.json",
+      "sha256": "A36A97EBDAC4935FA45271D59E4AD7D82BBDC06537C3CBB05724A98E757B8E2B",
+      "bytes": 11089
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-debug-permission-controls-draft.json",
+      "sha256": "AE7813599E7431050E5430AF0BA487D2DEF9FF2367530D698F6454ADC52A0C83",
+      "bytes": 14037
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-debug-source-draft.json",
+      "sha256": "477F0E70D89BA9025E714CD8ED554EBCA13EB80F897D3C36F71ACA1AC3D5454B",
+      "bytes": 27792
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-permission-core-draft.json",
+      "sha256": "998B8AF6ACC4640C1A6E9838BB1234D51E848E1DB265AEA2A745B7B6A74282D5",
+      "bytes": 6643
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-permission-core-original-draft.cpp.txt",
+      "sha256": "40553FFA8D674EF8893631F6CB2726713858D61B7D4C2CDA89A10F006CDD518D",
+      "bytes": 15177
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-permission-core-original-draft.internal.hpp.txt",
+      "sha256": "360B921E6E0A38096E739857C78E1F7B620415E6472CAE3D8E65D20B1C852E41",
+      "bytes": 11310
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-permission-core-review-status.json",
+      "sha256": "539A206FCF9DBE98C09B1D10AEA52EF2DCB4365E6901D113392A555F79F90FD5",
+      "bytes": 4240
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/original/native_node_native_debug_test.zig.before-private-cancel.txt",
+      "sha256": "2AC6D329A744627FF6E39A20E01F363C0E387B00A262A4AF089E75B0874A472B",
+      "bytes": 16437
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/original/native_node_permission_test.zig.before-private-cancel.txt",
+      "sha256": "C8D2AC61DF3C3B75131D0258B09E8E239ECFDD646F4453E3FEB5259C1397716E",
+      "bytes": 19098
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/native-debug-algorithm-peer.json",
+      "sha256": "464A38DA11121715E1538A18B1287DAC7C64A5A2651CF27F8E5C6C0E6A0BAE36",
+      "bytes": 10308
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/native-debug-controls-peer.json",
+      "sha256": "6C05A7115CD873B364EA57C2B34010267D9AC9813ABA47AF619CDF99178209FE",
+      "bytes": 10129
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/native-debug-owner-peer.json",
+      "sha256": "12AA2A8C1E729BCB103964D125DFD7655B4621775D3DB469685ABA619AEB28B9",
+      "bytes": 20262
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/native-debug-permission-build-root-peer.json",
+      "sha256": "3E3B34E19BB7CE515AF1A72AFBA003ECDC0B45B93FC5D665287B514FE4B22DF1",
+      "bytes": 4279
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/native-debug-permission-controls-owner-peer.json",
+      "sha256": "452B37AF688E2A79508E7576A037266B6F2EB9ACAE7EAB958270D6FC6CC7226D",
+      "bytes": 9093
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/permission-algorithm-peer.json",
+      "sha256": "6BDA1DAD389FA3B6DBEB780CC1533FB4369D097589A90928EABB4C70CB630EF4",
+      "bytes": 11432
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/permission-cleanup-successor-peer.json",
+      "sha256": "2BAD818A10B0DC9586CC06E46BF9BC3156E9AA3C46B88130837DDCE7E14DC05B",
+      "bytes": 3201
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/permission-owner-peer.json",
+      "sha256": "DCDA6816C7DBB8B9536E56FA5ECEEFFFFA9048EFFDFC35FDCD291D5776691950",
+      "bytes": 23555
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/permission-cleanup-adaptation-proposal-v2.json",
+      "sha256": "328ADA249564A2FDA30B6508A93BC0915B0E1B9D4883280724F03434B236716D",
+      "bytes": 3706
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/permission-cleanup-adaptation-proposal.json",
+      "sha256": "44EF44B29F3293618607A1B4E5094C5BE07AB43B390BE77145EBCC27A8C51279",
+      "bytes": 2505
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/private-cancel-controls-successor.json",
+      "sha256": "9B72048BA33981DECFE9546BA6186589057071A573863FAF4FEA0499300424F2",
+      "bytes": 2546
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-debug-permission-source-unit.md",
+      "sha256": "E612DE38BB761D5DFD26C08240B83A5F357C843A30D7AD3AEDDA044EDCD70CBE",
+      "bytes": 5374
+    }
+  ],
+  "corrections": [
+    {
+      "kind": "Root-authorized native cleanup adaptation",
+      "packet": "verification/native-node-environment-os-sourceonly-20261020/permission-cleanup-adaptation-proposal-v2.json",
+      "sha256": "328ADA249564A2FDA30B6508A93BC0915B0E1B9D4883280724F03434B236716D",
+      "changes": [
+        "Construct the original successful-directory wildcard result, then perform actual uv_fs_req_cleanup before return.",
+        "Recursively retire unique wildcard descendants, preserving null guard and normal-child order.",
+        "Two descriptive comments only."
+      ],
+      "originals_preserved": true,
+      "claim": "Explicit correction of two retained original cleanup defects, not original-body allocation-retirement equivalence."
+    },
+    {
+      "kind": "Control-only actual pending cancellation cutpoint",
+      "packet": "verification/native-node-environment-os-sourceonly-20261020/private-cancel-controls-successor.json",
+      "sha256": "9B72048BA33981DECFE9546BA6186589057071A573863FAF4FEA0499300424F2",
+      "changes": [
+        "Debug18 and Permission16 each republish a duplicate of the known actual private token before public Cancel."
+      ],
+      "originals_preserved": true,
+      "observations_and_names_unchanged": true
+    }
+  ],
+  "controls": {
+    "declared": 38,
+    "executed": 0,
+    "roots": [
+      {
+        "root": "src/native_node_native_debug_test.zig",
+        "sha256": "79729DBB464F7F95F89CDD85A9A737897A1D90F6352816E186EFB02EE0470991",
+        "declarations": 20,
+        "filter": "native Debug",
+        "target": "build-native-node-native-debug",
+        "names": [
+          "native Debug constructs complete original category tables with every field disabled",
+          "native Debug empty and unmatched input leave original enabled fields false",
+          "native Debug uses original case-insensitive substring matching",
+          "native Debug leading and internal empty tokens enable every category",
+          "native Debug a trailing comma does not invent a final empty token",
+          "native Debug includes the original literal terminal NUL in category matching",
+          "native Debug parsing is one-way and separate native lists remain independent",
+          "native Debug process selection returns one fixed-feature original list",
+          "native Debug Parse Environment reads the live supplied Map through real SafeGetenv",
+          "native Debug retains the SafeGetenv text before the actual trace callback mutates Map",
+          "native Debug selected sized-string formatter preserves binary bytes and retires its native copies",
+          "native Debug selected tree formatter observes C-string boundaries and UTF8 branch bytes",
+          "native Debug actual FWrite file route preserves exact binary content",
+          "native Debug Permission output callbacks use the original selected format and real stderr route",
+          "native Debug actual Permission insertion reads the live enabled list before printing",
+          "native Debug formatter and parser use real native new-handler retry without JS allocation",
+          "native Debug native formatting preserves actual ordinary and generic pending under heap limit one",
+          "native Debug native operations leave actual private termination pending and generation unchanged",
+          "native Debug formatting retains a native allocation domain beyond VM and caller retirement",
+          "native Debug warmed static category Strings are reused while temporary parse Strings retire"
+        ]
+      },
+      {
+        "root": "src/native_node_permission_test.zig",
+        "sha256": "A01BE231E1AA8A03FB9D343B6DAC06CA8EAA0FD2C58D33C1CA79A596E32F554D",
+        "declarations": 18,
+        "filter": "native Permission",
+        "target": "build-native-node-permission",
+        "names": [
+          "native Permission constructs actual policies and returns every native allocation at destruction",
+          "native Permission enable selects initial policies and each simple Apply denies only its actual scope",
+          "native Permission unknown Apply preserves the native policy map and existing decisions",
+          "native Permission exact missing-file grant does not grant siblings descendants or writes",
+          "native Permission resolves original dot and parent segments before radix lookup",
+          "native Permission actual directory stat grants its original recursive wildcard",
+          "native Permission actual regular file stat retains an exact grant",
+          "native Permission standalone star returns before later grants and keeps the other direction denied",
+          "native Permission aggregate filesystem grant requires both original all-direction flags",
+          "native Permission real radix splits preserve exact sibling grants and duplicate insertion retains no allocation",
+          "native Permission preserves the original nonterminal wildcard lookup decisions",
+          "native Permission successful directory append branch releases its actual synchronous libuv path allocation",
+          "native Permission filesystem-root trailing separator branch releases its actual synchronous libuv path allocation",
+          "native Permission destruction recursively retires unique descendants below nonterminal wildcards",
+          "native Permission actual native allocation failure retries before grant publication without a JS reason",
+          "native Permission apply and query preserve actual ordinary generic and private pending under exhausted JS heap",
+          "native Permission blocks and concrete shared policy destructors survive VM Environment and caller retirement",
+          "native Permission repeated mixed normal and wildcard retirement restores its exact native baseline"
+        ]
+      }
+    ],
+    "adapters": [
+      "Stable native Fixture with separated runtime, Environment and caller-memory retirement.",
+      "Actual std::new_handler retry adapter already admitted in Map22; no replacement allocator.",
+      "Actual FILE/descriptor output observer, including binary bytes; no console runtime claim.",
+      "Actual synchronous libuv allocation observer snapshots live blocks before assertion-failure emergency cleanup."
+    ]
+  },
+  "build": {
+    "proposal": "verification/native-node-environment-os-sourceonly-20261020/native-debug-permission-build-intake.json",
+    "sha256": "A36A97EBDAC4935FA45271D59E4AD7D82BBDC06537C3CBB05724A98E757B8E2B",
+    "files": [
+      {
+        "path": "tools/build_native_node_network.zig",
+        "before_sha256": "64ADAD93DE12560EB7B14DE6759176876CED7F1E212D2CDBF85A251773EE2091",
+        "before_bytes": 5469,
+        "projected_sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369",
+        "projected_bytes": 5905,
+        "added_lines": 8
+      },
+      {
+        "path": "build.zig",
+        "before_sha256": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+        "before_bytes": 493924,
+        "projected_sha256": "F845C93A92822C1CE1B066959E689753BB53B5A7645C3FF01616DD63C5FBE71A",
+        "projected_bytes": 496007,
+        "added_lines": 22
+      }
+    ],
+    "exact_forward_inverse": true,
+    "actual_build_files_changed": false,
+    "shared_memory_compile_and_single_tls_unchanged": true,
+    "install_only": true
+  },
+  "peer_scope": [
+    {
+      "file": "peers/native-debug-algorithm-peer.json",
+      "owner": "SDK",
+      "scope": "Debug algorithms/categories/format/FWrite selected Source."
+    },
+    {
+      "file": "peers/native-debug-owner-peer.json",
+      "owner": "VM",
+      "scope": "Debug placement, active union and native process-lifetime domains."
+    },
+    {
+      "file": "peers/permission-algorithm-peer.json",
+      "owner": "SDK",
+      "scope": "Permission original selected policy/radix algorithms before explicit adaptation."
+    },
+    {
+      "file": "peers/permission-owner-peer.json",
+      "owner": "VM",
+      "scope": "Permission native placement/concrete shared control blocks/borrowed views before explicit adaptation."
+    },
+    {
+      "file": "peers/permission-cleanup-successor-peer.json",
+      "owner": "SDK",
+      "scope": "Exact two behavior/two comment Root-authorized cleanup successor."
+    },
+    {
+      "file": "peers/native-debug-controls-peer.json",
+      "owner": "SDK",
+      "scope": "Debug1–15/Permission1–11 and actual output/path adapters."
+    },
+    {
+      "file": "peers/native-debug-permission-controls-owner-peer.json",
+      "owner": "VM",
+      "scope": "Fixture/storage/UV/new_handler, Debug16–20/Permission12–18 including final token-cancellation successor."
+    },
+    {
+      "file": "peers/native-debug-permission-build-root-peer.json",
+      "owner": "Root",
+      "scope": "Complete shared build forward/inverse, one memory/TLS graph and all38 actual names/filters."
+    }
+  ],
+  "current_main_dependencies": [
+    {
+      "path": "src/extensions/native_node_environment_paths.cpp",
+      "sha256": "B2E838D216E858D7F3DF31347A71C0AFACD0C4AC507CBE5E5E1191460572A395",
+      "bytes": 15087
+    },
+    {
+      "path": "src/extensions/native_node_environment_paths.h",
+      "sha256": "E504065537C5D669EF793D3F8F65BC9FB31DFB211F96091DC20EA87F42373B31",
+      "bytes": 3358
+    },
+    {
+      "path": "src/extensions/native_node_environment_paths_internal.hpp",
+      "sha256": "1B56668AF3BBF9A165CF384AE8D3CA7EE4ECE466E832D781C124B2691B580DC6",
+      "bytes": 1285
+    },
+    {
+      "path": "src/extensions/native_node_environment_map.h",
+      "sha256": "C0700FBF162E6489BD7E632BF01077323234664EAE5F6F642C8578BC0A4A30AB",
+      "bytes": 4139
+    },
+    {
+      "path": "src/extensions/native_node_environment_map_internal.hpp",
+      "sha256": "AFC9532E200F0B37EA894635EF8BA4B75A201ACE1B13E8FCAC2369E59B45E16C",
+      "bytes": 874
+    },
+    {
+      "path": "src/extensions/native_node_standard_allocator.hpp",
+      "sha256": "16D82D2C2143DFAF3861B722BD2E9775FB0BD7D6C9BE400D0ECE37E0674E709B",
+      "bytes": 2562
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.h",
+      "sha256": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D",
+      "bytes": 2287
+    },
+    {
+      "path": "src/extensions/native_node_environment_map_test_support.cpp",
+      "sha256": "DB9AF1D3006DD342E70BF83BC93FAD02936802E12504702E44017E083BB5BB89",
+      "bytes": 2753
+    },
+    {
+      "path": "src/extensions/native_node_environment_map_test_support.h",
+      "sha256": "08242520A8862FB89BAC5815337F35D8E628302DC0676377D75881F14EB3B049",
+      "bytes": 1545
+    },
+    {
+      "path": "src/extensions/native_node_options_environment.h",
+      "sha256": "A110A8332A40AFAEBCFE17B0F7B5D2100E371B4EF729F78653F14C3D17B5AB64",
+      "bytes": 442
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5",
+      "bytes": 2003
+    },
+    {
+      "path": "tools/build_native_node_memory.zig",
+      "sha256": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17",
+      "bytes": 1030
+    },
+    {
+      "path": "tools/build_native_package_json.zig",
+      "sha256": "517AC416D7CE82BC2AED11B34038187EE456B3C599B6DFBE058D303873A2EC73",
+      "bytes": 1596
+    },
+    {
+      "path": "src/extensions/native_simdjson_memory.cpp",
+      "sha256": "44794005D36BB3E1EC6B1A7DF3AA9A6B7DE7C02D6F12BBF38115F83E49C5E103",
+      "bytes": 2714
+    },
+    {
+      "path": "src/extensions/native_simdjson_memory.hpp",
+      "sha256": "7554ED1DDCA28FAE7B11E025BD9D7EEF560DB657086A40029E5D95DBEFAE5291",
+      "bytes": 2449
+    },
+    {
+      "path": "src/extensions/native_node_environment_map.cpp",
+      "sha256": "A5709621EABDA15F79A6367A21E013B24439F4131E23B493A897384B0196F0E6",
+      "bytes": 8330
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "sha256": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F",
+      "bytes": 15237
+    }
+  ],
+  "dependency_note": "The original Debug draft records CHECK header A618. Current Main header972AB8DA adds the separately reviewed backing-store OOM declaration; this unit consumes the unchanged pi_node_assert_failure ABI. Current provider bytes are pinned here without widening their existing source or runtime qualification.",
+  "historical_status": {
+    "files": [
+      "verification/native-node-environment-os-sourceonly-20261020/CHECKPOINT-20261020.md",
+      "verification/native-node-environment-os-sourceonly-20261020/native-permission-core-review-status.json"
+    ],
+    "preserved_byte_identical": true,
+    "interpretation": "Earlier open-boundary snapshots retained as history. This manifest and native-debug-permission-source-unit.md define the current finite closure."
+  },
+  "remaining": [
+    "Native Environment State/settings installation and actual process.env adapters.",
+    "Query-only and integrity-operation VM prerequisites; no Proxy substitution.",
+    "Genuine nonterminal JavaScript snapshot/encoding and original allocation/failure policy.",
+    "RealEnvStore and complete Node CLI/default feature installation.",
+    "Runtime compilation, native controls and console-output qualification."
+  ],
+  "intake": "Apply only this exact new-file inventory and separately compose the two build additions. No unrelated CJS, package, Engine, process or QuickJS draft is part of this unit.",
+  "inventory_convention": "production plus artifacts list every delivered path except this self-describing manifest; no self-hash."
+}

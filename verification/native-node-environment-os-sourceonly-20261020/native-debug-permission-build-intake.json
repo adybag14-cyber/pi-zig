@@ -1,0 +1,118 @@
+{
+  "schema": "exact-source-additive-build-proposal-v1",
+  "status": "source-only, no build mutation or execution",
+  "source_basis": "Main source integration3eca7bc0665bd9fdad2b38c525498e813fb04fe9 / checkpoint7ead6591; build and network pins independently reread",
+  "files": [
+    {
+      "path": "tools/build_native_node_network.zig",
+      "before_sha256": "64ADAD93DE12560EB7B14DE6759176876CED7F1E212D2CDBF85A251773EE2091",
+      "before_bytes": 5469,
+      "after_sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369",
+      "after_bytes": 5905,
+      "edits": [
+        {
+          "before": "        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_paths.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n",
+          "after": "        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_paths.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_permission.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_native_debug.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n"
+        }
+      ],
+      "added_lines": 8
+    },
+    {
+      "path": "build.zig",
+      "before_sha256": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+      "before_bytes": 493924,
+      "after_sha256": "F845C93A92822C1CE1B066959E689753BB53B5A7645C3FF01616DD63C5FBE71A",
+      "after_bytes": 496007,
+      "edits": [
+        {
+          "before": "        b.step(\"build-native-node-environment-paths\", \"Install native Environment path and SafeGetenv controls without execution\").dependOn(&b.addInstallArtifact(native_environment_paths_tests, .{}).step);\n",
+          "after": "        b.step(\"build-native-node-environment-paths\", \"Install native Environment path and SafeGetenv controls without execution\").dependOn(&b.addInstallArtifact(native_environment_paths_tests, .{}).step);\n        const native_node_native_debug_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_native_debug_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native Debug\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_node_native_debug_tests.root_module, quickjs, sqlite_lib_dir);\n        native_node_native_debug_tests.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        native_node_native_debug_tests.root_module.addCSourceFiles(.{\n            .files = &.{ \"src/extensions/native_node_permission_test_support.cpp\", \"src/extensions/native_node_environment_map_test_support.cpp\" },\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        b.step(\"build-native-node-native-debug\", \"Install actual native Debug category formatting and ownership controls without execution\").dependOn(&b.addInstallArtifact(native_node_native_debug_tests, .{}).step);\n        const native_node_permission_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_permission_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native Permission\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_node_permission_tests.root_module, quickjs, sqlite_lib_dir);\n        native_node_permission_tests.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        native_node_permission_tests.root_module.addCSourceFiles(.{\n            .files = &.{ \"src/extensions/native_node_permission_test_support.cpp\", \"src/extensions/native_node_environment_map_test_support.cpp\" },\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        b.step(\"build-native-node-permission\", \"Install actual native Permission algorithms and allocation retirement controls without execution\").dependOn(&b.addInstallArtifact(native_node_permission_tests, .{}).step);\n"
+        }
+      ],
+      "added_lines": 22
+    }
+  ],
+  "roots": [
+    {
+      "variable": "native_node_native_debug_tests",
+      "root": "src/native_node_native_debug_test.zig",
+      "target": "build-native-node-native-debug",
+      "filter": "native Debug",
+      "description": "Install actual native Debug category formatting and ownership controls without execution",
+      "sha256": "79729DBB464F7F95F89CDD85A9A737897A1D90F6352816E186EFB02EE0470991",
+      "declarations": 20,
+      "names": [
+        "native Debug constructs complete original category tables with every field disabled",
+        "native Debug empty and unmatched input leave original enabled fields false",
+        "native Debug uses original case-insensitive substring matching",
+        "native Debug leading and internal empty tokens enable every category",
+        "native Debug a trailing comma does not invent a final empty token",
+        "native Debug includes the original literal terminal NUL in category matching",
+        "native Debug parsing is one-way and separate native lists remain independent",
+        "native Debug process selection returns one fixed-feature original list",
+        "native Debug Parse Environment reads the live supplied Map through real SafeGetenv",
+        "native Debug retains the SafeGetenv text before the actual trace callback mutates Map",
+        "native Debug selected sized-string formatter preserves binary bytes and retires its native copies",
+        "native Debug selected tree formatter observes C-string boundaries and UTF8 branch bytes",
+        "native Debug actual FWrite file route preserves exact binary content",
+        "native Debug Permission output callbacks use the original selected format and real stderr route",
+        "native Debug actual Permission insertion reads the live enabled list before printing",
+        "native Debug formatter and parser use real native new-handler retry without JS allocation",
+        "native Debug native formatting preserves actual ordinary and generic pending under heap limit one",
+        "native Debug native operations leave actual private termination pending and generation unchanged",
+        "native Debug formatting retains a native allocation domain beyond VM and caller retirement",
+        "native Debug warmed static category Strings are reused while temporary parse Strings retire"
+      ]
+    },
+    {
+      "variable": "native_node_permission_tests",
+      "root": "src/native_node_permission_test.zig",
+      "target": "build-native-node-permission",
+      "filter": "native Permission",
+      "description": "Install actual native Permission algorithms and allocation retirement controls without execution",
+      "sha256": "A01BE231E1AA8A03FB9D343B6DAC06CA8EAA0FD2C58D33C1CA79A596E32F554D",
+      "declarations": 18,
+      "names": [
+        "native Permission constructs actual policies and returns every native allocation at destruction",
+        "native Permission enable selects initial policies and each simple Apply denies only its actual scope",
+        "native Permission unknown Apply preserves the native policy map and existing decisions",
+        "native Permission exact missing-file grant does not grant siblings descendants or writes",
+        "native Permission resolves original dot and parent segments before radix lookup",
+        "native Permission actual directory stat grants its original recursive wildcard",
+        "native Permission actual regular file stat retains an exact grant",
+        "native Permission standalone star returns before later grants and keeps the other direction denied",
+        "native Permission aggregate filesystem grant requires both original all-direction flags",
+        "native Permission real radix splits preserve exact sibling grants and duplicate insertion retains no allocation",
+        "native Permission preserves the original nonterminal wildcard lookup decisions",
+        "native Permission successful directory append branch releases its actual synchronous libuv path allocation",
+        "native Permission filesystem-root trailing separator branch releases its actual synchronous libuv path allocation",
+        "native Permission destruction recursively retires unique descendants below nonterminal wildcards",
+        "native Permission actual native allocation failure retries before grant publication without a JS reason",
+        "native Permission apply and query preserve actual ordinary generic and private pending under exhausted JS heap",
+        "native Permission blocks and concrete shared policy destructors survive VM Environment and caller retirement",
+        "native Permission repeated mixed normal and wildcard retirement restores its exact native baseline"
+      ]
+    }
+  ],
+  "graph": [
+    "The existing optional native_memory branch in the one pi-node-network library receives exactly two production CPP translation units, after the existing Environment paths owner. Actual gnu++20/no-exceptions/no-rtti/aliasing flags match adjacent native containers.",
+    "The current single native-memory Compile object and its one memory.cpp TLS translation unit are unchanged. No source is recompiled into another production library.",
+    "The two raw roots are added within the existing native_package_json!=null admission, whose helper requires the same native memory owner on admitted 64-bit Windows/Linux. linkQuickJs reaches the same transitive network/parser/memory owners.",
+    "Each new root alone compiles the actual permission output/UV observer and existing real new_handler test adapter. Neither test-support TU enters a production library. Actual uv/include is added for their direct header consumer.",
+    "Targets install only. No addRunArtifact, custom run, generated source, Engine bootstrap edit, process.env installation or target expansion is added."
+  ],
+  "dependencies": {
+    "native_memory_helper": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17",
+    "unchanged_parser_helper": "517AC416D7CE82BC2AED11B34038187EE456B3C599B6DFBE058D303873A2EC73",
+    "fixture": "7AF437A515FF85B16457E854B7FCD93BDBF74545C939E7039040158E5285F604",
+    "permission_test_cpp": "362826F62F0F4322961AE0F93E835C178251B49FDCAA3BE06D116B307A1F4BC4",
+    "existing_retry_cpp": "DB9AF1D3 (unchanged Main raw Map22 adapter)"
+  },
+  "checks": {
+    "unique_forward_inverse": true,
+    "unchanged_old_build_body": true,
+    "unchanged_library_source_memberships": true,
+    "all38_names_match_filter": true
+  },
+  "execution": false
+}

@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "status": "PROPOSED ONLY: explicit native cleanup adaptation, not original Source-body equivalence",
+  "execution": false,
+  "applied": false,
+  "path": "src/extensions/native_node_permission.cpp",
+  "before": {
+    "sha256": "40553ffa8d674ef8893631f6cb2726713858d61b7d4c2cda89a10f006cdd518d",
+    "bytes": 15177
+  },
+  "after": {
+    "sha256": "4DC0D4C70A659B9405E6D4AC6BFC0B008FB48EFB614F811C87F096A105A73EC8",
+    "bytes": 15344
+  },
+  "edits": [
+    {
+      "reason": "Retire the successful Windows stat request after the original wildcard result has been constructed; retain the old cleanup-before-return-copy order on the non-directory path.",
+      "before": "      if (res.back() == pi_node::kPathSeparator) {\n        return res + \"*\";\n      }\n      return res + pi_node::kPathSeparator + \"*\";",
+      "after": "      if (res.back() == pi_node::kPathSeparator) {\n        EnvironmentString result = res + \"*\";\n        uv_fs_req_cleanup(&req);\n        return result;\n      }\n      EnvironmentString result = res + pi_node::kPathSeparator + \"*\";\n      uv_fs_req_cleanup(&req);\n      return result;"
+    },
+    {
+      "reason": "Retire the actual unique wildcard subtree before its parent, instead of abandoning native descendant Nodes.",
+      "before": "  delete node->wildcard_child;\n  delete node;",
+      "after": "  FreeRecursivelyNode(node->wildcard_child);\n  delete node;"
+    },
+    {
+      "reason": "Make the proposed source accurately describe its explicit cleanup differences.",
+      "before": "// DRAFT ONLY: the two pinned original cleanup defects are deliberately\n// unchanged pending Root's explicit adaptation decision; no acceptance claim.",
+      "after": "// Two explicit native cleanup corrections are recorded separately from the\n// unchanged selected policy algorithm; they are not original-body equivalence."
+    }
+  ],
+  "exact_inverse": true,
+  "authority": "authority/fs-permission-cleanup-source-peer.json 522698C721CBB6328A6CE48DFDE53B6012FFC29E7CFE6F13BDC8AFB4C48E0074",
+  "purpose": "Close proven native resource leaks while preserving the selected policy/path/radix decisions. This is an explicitly reviewed cleanup correction, not a claim that the original Node body performed these releases.",
+  "preserved": [
+    "Wildcard concatenations and their original order; cleanup follows construction of the selected result.",
+    "All original failed/non-directory stat cleanup and returned-copy ordering.",
+    "Normal-child traversal and its native unordered-map order.",
+    "Every selected lookup/insert/scope decision and the actual debugging calls."
+  ],
+  "limits": [
+    "The extra cleanup is an intentional difference from the pinned original and requires Root's explicit adaptation decision.",
+    "No algorithm change, build seam, control execution or runtime acceptance is included.",
+    "The two original full bodies and unmodified native draft remain preserved."
+  ],
+  "header_comment_successor": {
+    "path": "src/extensions/native_node_permission_internal.hpp",
+    "before_sha256": "360B921E6E0A38096E739857C78E1F7B620415E6472CAE3D8E65D20B1C852E41",
+    "after_sha256": "C15AC7ED37DAFB8F672AAFCFCD6FABA2CF87BB64EE26C8CC4AF5A6695D2E712F",
+    "before": "// DRAFT: two original cleanup defects are preserved pending Root's choice.",
+    "after": "// Native cleanup differences are explicit in the separate source packet.",
+    "algorithm_unchanged": true
+  },
+  "prior_proposal": {
+    "path": "permission-cleanup-adaptation-proposal.json",
+    "sha256": "44EF44B29F3293618607A1B4E5094C5BE07AB43B390BE77145EBCC27A8C51279",
+    "status": "preserved; adds explicit source/header comments in this successor"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "status": "Finite original-algorithm and native-owner peers closed on unchanged draft; full native Permission owner remains open",
+  "execution": false,
+  "main_mutated": false,
+  "production_mutated_since_draft": false,
+  "packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/native-permission-core-draft.json",
+    "sha256": "998b8af6acc4640c1a6e9838bb1234d51e848e1db265aea2a745b7b6a74282d5",
+    "bytes": 6643
+  },
+  "production": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission.h",
+      "sha256": "6005cbf37a2fa4a6bf310274ab8338f030e886aaa1461eec95fed2019e3e3c9b",
+      "bytes": 3314
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission_internal.hpp",
+      "sha256": "360b921e6e0a38096e739857c78e1f7b620415e6472cae3d8e65d20b1c852e41",
+      "bytes": 11310
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission.cpp",
+      "sha256": "40553ffa8d674ef8893631f6cb2726713858d61b7d4c2cda89a10f006cdd518d",
+      "bytes": 15177
+    }
+  ],
+  "peers": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/peers/permission-algorithm-peer.json",
+      "sha256": "6bda1dad389fa3b6dbeb780cc1533fb4369d097589a90928eabb4c70cb630ef4",
+      "bytes": 11432
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/peers/permission-owner-peer.json",
+      "sha256": "dcda6816c7dbb8b9536e56fa5eceeffffa9048effdfc35fdcd291d5776691950",
+      "bytes": 23555
+    }
+  ],
+  "peer_copy_readback_exact": true,
+  "closed_scope": [
+    "SDK independently read the complete retained selected originals and found no blocker in the 28 selected policy/constructor/radix decisions after documented adapter substitutions.",
+    "VM independently read the full current production, original concrete shared_ptr control-block implementation and actual native allocator, finding no additional placement/ABI/native-owner blocker.",
+    "Neither finite receipt closes the two known original cleanup defects or the missing actual debug owner."
+  ],
+  "separate_cleanup_proposal": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/permission-cleanup-adaptation-proposal-v2.json",
+    "sha256": "328ada249564a2fda30b6508a93bc0915b0e1b9d4883280724f03434b236716d",
+    "applied": false,
+    "original_cpp": "40553FFA8D674EF8893631F6CB2726713858D61B7D4C2CDA89A10F006CDD518D",
+    "proposed_cpp": "4DC0D4C70A659B9405E6D4AC6BFC0B008FB48EFB614F811C87F096A105A73EC8",
+    "proposed_internal": "C15AC7ED37DAFB8F672AAFCFCD6FABA2CF87BB64EE26C8CC4AF5A6695D2E712F",
+    "dependency": "Root's explicit adaptation choice; then a distinct finite successor peer"
+  },
+  "remaining": [
+    "Apply and independently review the two explicit native cleanup adaptations if Root selects them; preserve the retained original bodies and label the difference.",
+    "Provide the actual per-process EnabledDebugList and SPrintF/FWrite owner; this is distinct from trace_events and cannot be supplied by a false/noop production default.",
+    "Author causal controls using the real native dependencies, compose the single shared native-memory/network graph and complete native State installation.",
+    "Implement the separately proven process.env query-only and integrity-operation VM prerequisites after Root chooses the actual ABI.",
+    "Keep shared Engine/process proposal1D08388C unapplied until the required owners/interceptors are complete; Root exclusively owns Main intake and native qualification."
+  ],
+  "source_only_tool_limit": "A read-only git status attempt encountered existing execution-queue saturation and launched no job. Native file reads/writes and digest readbacks succeeded. No native, Node, Zig, AST, generator or formatter execution was requested or performed."
+}

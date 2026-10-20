@@ -1,0 +1,232 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "status": "source-only Debug leaf draft; independent peers and controls pending",
+  "execution": false,
+  "node_revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "production": [
+    {
+      "path": "src/extensions/native_node_native_debug.h",
+      "sha256": "E11332B46CC5DF6001BBEBF3CF094B5ED2C8C4170F4FB0089B264DC0AE5BF8E8",
+      "bytes": 3449
+    },
+    {
+      "path": "src/extensions/native_node_native_debug_internal.hpp",
+      "sha256": "301D73ED189F50DACA4B0E2C16B3C7E9469E716EB935F67D826EDB691F01B4F1",
+      "bytes": 14875
+    },
+    {
+      "path": "src/extensions/native_node_native_debug.cpp",
+      "sha256": "AD3446C875DFFD39165AF9514A4A1169125995C5701F4B706706F83CB814A990",
+      "bytes": 6880
+    }
+  ],
+  "authority": [
+    {
+      "path": "authority/debug_utils.h.v24.13.txt",
+      "sha256": "807D1A5B4C872B0FB5A14DFEB0BD48BEF126CBDCA920E5908E949218617484B4",
+      "bytes": 7649
+    },
+    {
+      "path": "authority/debug_utils-inl.h.v24.13.txt",
+      "sha256": "A3A471FC932B173CC08C53571E7C791A3DD816720443BA6AFD4C5561DDDA7A72",
+      "bytes": 9366
+    },
+    {
+      "path": "authority/debug_utils.cc.v24.13.txt",
+      "sha256": "9F2904508A8443BEB454DC789A07D60AFB2F2EC7F9B2F56BC651D9C66EDB0EA3",
+      "bytes": 16324
+    },
+    {
+      "path": "authority/async_wrap.h.v24.13.txt",
+      "sha256": "3EBF97B3044B4875D1F62C3F8BA1668886F4AE19F6369A8DD20EC0E262BBF1EF",
+      "bytes": 12198,
+      "origin": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-file-handle-sourceonly-20261019/authority/async_wrap.h.v24.13.txt"
+    },
+    {
+      "path": "authority/path-constants-and-case-source.json",
+      "sha256": "945EECAED523CC4394EC8630CFA41D66726EED66D398B9EBCDF359AE1ED732A9",
+      "source_body_sha256": "8979B5C3115BC3D1C9478910088944D3761130E7D7A0ED8ED7452FCEC5870E83"
+    }
+  ],
+  "selected_originals": {
+    "parse": {
+      "start_byte": 1199,
+      "end_byte": 2256,
+      "sha256": "FD9CF379A5FD661C4E3277D18E223540178641E39E604709BACB98DB265C33C9",
+      "body": "void EnabledDebugList::Parse(Environment* env) {\n  std::string cats;\n  credentials::SafeGetenv(\"NODE_DEBUG_NATIVE\", &cats, env);\n  Parse(cats);\n}\n\nvoid EnabledDebugList::Parse(const std::string& cats) {\n  std::string debug_categories = cats;\n  while (!debug_categories.empty()) {\n    std::string::size_type comma_pos = debug_categories.find(',');\n    std::string wanted = ToLower(debug_categories.substr(0, comma_pos));\n\n#define V(name)                                                                \\\n  {                                                                            \\\n    static const std::string available_category = ToLower(#name);              \\\n    if (available_category.find(wanted) != std::string::npos)                  \\\n      set_enabled(DebugCategory::name);                                        \\\n  }\n\n    DEBUG_CATEGORY_NAMES(V)\n#undef V\n\n    if (comma_pos == std::string::npos) break;\n    // Use everything after the `,` as the list for the next iteration.\n    debug_categories = debug_categories.substr(comma_pos + 1);\n  }\n}\n"
+    },
+    "category_header": {
+      "start_byte": 1410,
+      "end_byte": 3932,
+      "sha256": "78AA68F0C2646070F46ADD44E2CA51ED7AFA7DBA9371776E90674CF2FE9DECE3",
+      "body": "#define DEBUG_CATEGORY_NAMES(V)                                                \\\n  NODE_ASYNC_PROVIDER_TYPES(V)                                                 \\\n  V(CRYPTO)                                                                    \\\n  V(COMPILE_CACHE)                                                             \\\n  V(DIAGNOSTICS)                                                               \\\n  V(HUGEPAGES)                                                                 \\\n  V(INSPECTOR_SERVER)                                                          \\\n  V(INSPECTOR_CLIENT)                                                          \\\n  V(INSPECTOR_PROFILER)                                                        \\\n  V(CODE_CACHE)                                                                \\\n  V(NGTCP2_DEBUG)                                                              \\\n  V(SEA)                                                                       \\\n  V(WASI)                                                                      \\\n  V(MODULE)                                                                    \\\n  V(MKSNAPSHOT)                                                                \\\n  V(SNAPSHOT_SERDES)                                                           \\\n  V(PERMISSION_MODEL)                                                          \\\n  V(PLATFORM_MINIMAL)                                                          \\\n  V(PLATFORM_VERBOSE)                                                          \\\n  V(QUIC)\n\nenum class DebugCategory : unsigned int {\n#define V(name) name,\n  DEBUG_CATEGORY_NAMES(V)\n#undef V\n};\n\n#define V(name) +1\nconstexpr unsigned int kDebugCategoryCount = DEBUG_CATEGORY_NAMES(V);\n#undef V\n\nclass NODE_EXTERN_PRIVATE EnabledDebugList {\n public:\n  bool FORCE_INLINE enabled(DebugCategory category) const {\n    DCHECK_LT(static_cast<unsigned int>(category), kDebugCategoryCount);\n    return enabled_[static_cast<unsigned int>(category)];\n  }\n\n  // Uses NODE_DEBUG_NATIVE to initialize the categories. env->env_vars()\n  // is parsed if it is not a nullptr, otherwise the system environment\n  // variables are parsed.\n  void Parse(Environment* env);\n\n private:\n  // Enable all categories matching cats.\n  void Parse(const std::string& cats);\n  void set_enabled(DebugCategory category) {\n    DCHECK_LT(static_cast<unsigned int>(category), kDebugCategoryCount);\n    enabled_[static_cast<int>(category)] = true;\n  }\n\n  bool enabled_[kDebugCategoryCount] = {false};\n};\n"
+    },
+    "provider_macros": {
+      "start_byte": 1324,
+      "end_byte": 7235,
+      "sha256": "FC67A7A241A68078560EB201A4B78637136AA55164A0C70825B00BDDC3586D5F",
+      "body": "#define NODE_ASYNC_NON_CRYPTO_PROVIDER_TYPES(V)                                \\\n  V(NONE)                                                                      \\\n  V(DIRHANDLE)                                                                 \\\n  V(DNSCHANNEL)                                                                \\\n  V(ELDHISTOGRAM)                                                              \\\n  V(FILEHANDLE)                                                                \\\n  V(FILEHANDLECLOSEREQ)                                                        \\\n  V(BLOBREADER)                                                                \\\n  V(FSEVENTWRAP)                                                               \\\n  V(FSREQCALLBACK)                                                             \\\n  V(FSREQPROMISE)                                                              \\\n  V(GETADDRINFOREQWRAP)                                                        \\\n  V(GETNAMEINFOREQWRAP)                                                        \\\n  V(HEAPSNAPSHOT)                                                              \\\n  V(HTTP2SESSION)                                                              \\\n  V(HTTP2STREAM)                                                               \\\n  V(HTTP2PING)                                                                 \\\n  V(HTTP2SETTINGS)                                                             \\\n  V(HTTPINCOMINGMESSAGE)                                                       \\\n  V(HTTPCLIENTREQUEST)                                                         \\\n  V(LOCKS)                                                                     \\\n  V(JSSTREAM)                                                                  \\\n  V(JSUDPWRAP)                                                                 \\\n  V(MESSAGEPORT)                                                               \\\n  V(PIPECONNECTWRAP)                                                           \\\n  V(PIPESERVERWRAP)                                                            \\\n  V(PIPEWRAP)                                                                  \\\n  V(PROCESSWRAP)                                                               \\\n  V(PROMISE)                                                                   \\\n  V(QUERYWRAP)                                                                 \\\n  V(QUIC_ENDPOINT)                                                             \\\n  V(QUIC_LOGSTREAM)                                                            \\\n  V(QUIC_PACKET)                                                               \\\n  V(QUIC_SESSION)                                                              \\\n  V(QUIC_STREAM)                                                               \\\n  V(QUIC_UDP)                                                                  \\\n  V(SHUTDOWNWRAP)                                                              \\\n  V(SIGNALWRAP)                                                                \\\n  V(STATWATCHER)                                                               \\\n  V(STREAMPIPE)                                                                \\\n  V(TCPCONNECTWRAP)                                                            \\\n  V(TCPSERVERWRAP)                                                             \\\n  V(TCPWRAP)                                                                   \\\n  V(TTYWRAP)                                                                   \\\n  V(UDPSENDWRAP)                                                               \\\n  V(UDPWRAP)                                                                   \\\n  V(SIGINTWATCHDOG)                                                            \\\n  V(WORKER)                                                                    \\\n  V(WORKERCPUPROFILE)                                                          \\\n  V(WORKERCPUUSAGE)                                                            \\\n  V(WORKERHEAPPROFILE)                                                         \\\n  V(WORKERHEAPSNAPSHOT)                                                        \\\n  V(WORKERHEAPSTATISTICS)                                                      \\\n  V(WRITEWRAP)                                                                 \\\n  V(ZLIB)\n\n#if HAVE_OPENSSL\n#define NODE_ASYNC_CRYPTO_PROVIDER_TYPES(V)                                    \\\n  V(CHECKPRIMEREQUEST)                                                         \\\n  V(PBKDF2REQUEST)                                                             \\\n  V(KEYPAIRGENREQUEST)                                                         \\\n  V(KEYGENREQUEST)                                                             \\\n  V(KEYEXPORTREQUEST)                                                          \\\n  V(ARGON2REQUEST)                                                             \\\n  V(CIPHERREQUEST)                                                             \\\n  V(DERIVEBITSREQUEST)                                                         \\\n  V(HASHREQUEST)                                                               \\\n  V(RANDOMBYTESREQUEST)                                                        \\\n  V(RANDOMPRIMEREQUEST)                                                        \\\n  V(SCRYPTREQUEST)                                                             \\\n  V(SIGNREQUEST)                                                               \\\n  V(TLSWRAP)                                                                   \\\n  V(VERIFYREQUEST)\n#else\n#define NODE_ASYNC_CRYPTO_PROVIDER_TYPES(V)\n#endif  // HAVE_OPENSSL\n\n#define NODE_ASYNC_PROVIDER_TYPES(V)                                           \\\n  NODE_ASYNC_NON_CRYPTO_PROVIDER_TYPES(V)                                      \\\n  NODE_ASYNC_CRYPTO_PROVIDER_TYPES(V)\n"
+    },
+    "case_conversion": {
+      "start_byte": 6390,
+      "end_byte": 7093,
+      "sha256": "755369C9F431D926CA574B1103B6501B937AD257F66190E4B9221B73952C0E19",
+      "body": "char ToLower(char c) {\n  return std::tolower(c, std::locale::classic());\n}\n\ntemplate <typename T>\nstd::string ToLower(const T& in) {\n  auto it = std::cbegin(in);\n  auto end = std::cend(in);\n  std::string out(std::distance(it, end), 0);\n  size_t i;\n  for (i = 0; it != end; ++it, ++i) out[i] = ToLower(*it);\n  DCHECK_EQ(i, out.size());\n  return out;\n}\n\nchar ToUpper(char c) {\n  return std::toupper(c, std::locale::classic());\n}\n\ntemplate <typename T>\nstd::string ToUpper(const T& in) {\n  auto it = std::cbegin(in);\n  auto end = std::cend(in);\n  std::string out(std::distance(it, end), 0);\n  size_t i;\n  for (i = 0; it != end; ++it, ++i) out[i] = ToUpper(*it);\n  DCHECK_EQ(i, out.size());\n  return out;\n}\n"
+    },
+    "string_helpers": {
+      "start_byte": 1087,
+      "end_byte": 3381,
+      "sha256": "1C3FC643C60932F87CDF3ED6BC31FC29881962EB2ADE7B239C2EF2479564133F",
+      "body": "struct ToStringHelper {\n  template <typename T>\n    requires(StringConvertible<T>) && (!StringViewConvertible<T>)\n  static std::string Convert(const T& value) {\n    return value.ToString();\n  }\n  template <typename T>\n    requires(StringConvertibleFSPathLike<T>) && (!StringViewConvertible<T>) &&\n            (!StringConvertible<T>)\n  static std::string Convert(const T& value) {\n    return value.string();\n  }\n  template <typename T>\n    requires StringViewConvertible<T>\n  static std::string_view Convert(const T& value) {\n    return value.ToStringView();\n  }\n\n  template <typename T,\n            typename test_for_number = typename std::\n                enable_if_t<std::is_arithmetic_v<T> || std::is_enum_v<T>, bool>,\n            typename dummy = bool>\n  static std::string Convert(const T& value) {\n    return std::to_string(value);\n  }\n  static std::string_view Convert(const char* value) {\n    return value != nullptr ? value : \"(null)\";\n  }\n  static std::string Convert(const std::string& value) { return value; }\n  static std::string_view Convert(std::string_view value) { return value; }\n  static std::string Convert(bool value) { return value ? \"true\" : \"false\"; }\n  template <unsigned BASE_BITS,\n            typename T,\n            typename = std::enable_if_t<std::is_integral_v<T>>>\n  static std::string BaseConvert(const T& value) {\n    auto v = static_cast<uint64_t>(value);\n    char ret[3 * sizeof(T)];\n    char* ptr = ret + 3 * sizeof(T) - 1;\n    *ptr = '\\0';\n    const char* digits = \"0123456789abcdef\";\n    do {\n      unsigned digit = v & ((1 << BASE_BITS) - 1);\n      *--ptr = (BASE_BITS < 4 ? static_cast<char>('0' + digit) : digits[digit]);\n    } while ((v >>= BASE_BITS) != 0);\n    return ptr;\n  }\n  template <unsigned BASE_BITS,\n            typename T,\n            typename = std::enable_if_t<!std::is_integral_v<T>>>\n  static auto BaseConvert(T&& value) {\n    return Convert(std::forward<T>(value));\n  }\n};\n\ntemplate <typename T>\nauto ToStringOrStringView(const T& value) {\n  return ToStringHelper::Convert(value);\n}\n\ntemplate <typename T>\nstd::string ToString(const T& value) {\n  return std::string(ToStringOrStringView(value));\n}\n\ntemplate <unsigned BASE_BITS, typename T>\nauto ToBaseString(const T& value) {\n  return ToStringHelper::BaseConvert<BASE_BITS>(value);\n}\n"
+    },
+    "formatter": {
+      "start_byte": 3382,
+      "end_byte": 7205,
+      "sha256": "F5CEFDFAA62FA2AD2569D54FB1B7831ADB3807234336CC0210C0A15EE3111C2E",
+      "body": "inline std::string SPrintFImpl(std::string_view format) {\n  auto offset = format.find('%');\n  if (offset == std::string_view::npos) return std::string(format);\n  CHECK_LT(offset + 1, format.size());\n  CHECK_EQ(format[offset + 1],\n           '%');  // Only '%%' allowed when there are no arguments.\n\n  return std::string(format.substr(0, offset + 1)) +\n         SPrintFImpl(format.substr(offset + 2));\n}\n\ntemplate <typename Arg, typename... Args>\nstd::string COLD_NOINLINE SPrintFImpl(  // NOLINT(runtime/string)\n    std::string_view format,\n    Arg&& arg,\n    Args&&... args) {\n  auto offset = format.find('%');\n  CHECK_NE(offset, std::string_view::npos);  // If you hit this, you passed in\n                                             // too many arguments.\n  std::string ret(format.substr(0, offset));\n  // Ignore long / size_t modifiers\n  while (++offset < format.size() &&\n         (format[offset] == 'l' || format[offset] == 'z')) {\n  }\n  switch (offset == format.size() ? '\\0' : format[offset]) {\n    case '%': {\n      return ret + '%' +\n             SPrintFImpl(format.substr(offset + 1),\n                         std::forward<Arg>(arg),\n                         std::forward<Args>(args)...);\n    }\n    default: {\n      return ret + '%' +\n             SPrintFImpl(format.substr(offset),\n                         std::forward<Arg>(arg),\n                         std::forward<Args>(args)...);\n    }\n    case 'd':\n    case 'i':\n    case 'u':\n    case 's':\n      ret += ToStringOrStringView(arg);\n      break;\n    case 'o':\n      ret += ToBaseString<3>(arg);\n      break;\n    case 'x':\n      ret += ToBaseString<4>(arg);\n      break;\n    case 'X':\n      ret += node::ToUpper(ToBaseString<4>(arg));\n      break;\n    case 'p': {\n      CHECK(std::is_pointer_v<typename std::remove_reference_t<Arg>>);\n      char out[20];\n      int n = snprintf(\n          out, sizeof(out), \"%p\", *reinterpret_cast<const void* const*>(&arg));\n      CHECK_GE(n, 0);\n      ret += out;\n      break;\n    }\n  }\n  return ret +\n         SPrintFImpl(format.substr(offset + 1), std::forward<Args>(args)...);\n}\n\ntemplate <typename... Args>\nstd::string COLD_NOINLINE SPrintF(  // NOLINT(runtime/string)\n    std::string_view format,\n    Args&&... args) {\n  return SPrintFImpl(format, std::forward<Args>(args)...);\n}\n\ntemplate <typename... Args>\nvoid COLD_NOINLINE FPrintF(FILE* file,\n                           std::string_view format,\n                           Args&&... args) {\n  FWrite(file, SPrintF(format, std::forward<Args>(args)...));\n}\n\ntemplate <typename... Args>\ninline void FORCE_INLINE Debug(EnabledDebugList* list,\n                               DebugCategory cat,\n                               const char* format,\n                               Args&&... args) {\n  if (!list->enabled(cat)) [[unlikely]]\n    return;\n  FPrintF(stderr, format, std::forward<Args>(args)...);\n}\n\ninline void FORCE_INLINE Debug(EnabledDebugList* list,\n                               DebugCategory cat,\n                               const char* message) {\n  if (!list->enabled(cat)) [[unlikely]]\n    return;\n  FPrintF(stderr, \"%s\", message);\n}\n\ntemplate <typename... Args>\ninline void FORCE_INLINE\nDebug(Environment* env, DebugCategory cat, const char* format, Args&&... args) {\n  Debug(env->enabled_debug_list(), cat, format, std::forward<Args>(args)...);\n}\n\ninline void FORCE_INLINE Debug(Environment* env,\n                               DebugCategory cat,\n                               const char* message) {\n  Debug(env->enabled_debug_list(), cat, message);\n}\n\ntemplate <typename... Args>\ninline void Debug(Environment* env,\n                  DebugCategory cat,\n                  const std::string& format,\n                  Args&&... args) {\n  Debug(env->enabled_debug_list(),\n        cat,\n        format.c_str(),\n        std::forward<Args>(args)...);\n}\n"
+    },
+    "fwrite": {
+      "start": 15120,
+      "end": 16183,
+      "original": "void FWrite(FILE* file, const std::string& str) {\n  auto simple_fwrite = [&]() {\n    // The return value is ignored because there's no good way to handle it.\n    fwrite(str.data(), str.size(), 1, file);\n  };\n\n  if (file != stderr && file != stdout) {\n    simple_fwrite();\n    return;\n  }\n#ifdef _WIN32\n  HANDLE handle =\n      GetStdHandle(file == stdout ? STD_OUTPUT_HANDLE : STD_ERROR_HANDLE);\n\n  // Check if stderr is something other than a tty/console\n  if (handle == INVALID_HANDLE_VALUE || handle == nullptr ||\n      uv_guess_handle(_fileno(file)) != UV_TTY) {\n    simple_fwrite();\n    return;\n  }\n\n  // Get required wide buffer size\n  int n = MultiByteToWideChar(CP_UTF8, 0, str.data(), str.size(), nullptr, 0);\n\n  std::vector<wchar_t> wbuf(n);\n  MultiByteToWideChar(CP_UTF8, 0, str.data(), str.size(), wbuf.data(), n);\n\n  WriteConsoleW(handle, wbuf.data(), n, nullptr, nullptr);\n  return;\n#elif defined(__ANDROID__)\n  if (file == stderr) {\n    __android_log_print(ANDROID_LOG_ERROR, \"nodejs\", \"%s\", str.data());\n    return;\n  }\n#endif\n  simple_fwrite();\n}",
+      "actual": "void FWrite(FILE* file, const EnvironmentString& str) {\n  auto simple_fwrite = [&]() {\n    // The return value is ignored because there's no good way to handle it.\n    fwrite(str.data(), str.size(), 1, file);\n  };\n\n  if (file != stderr && file != stdout) {\n    simple_fwrite();\n    return;\n  }\n#ifdef _WIN32\n  HANDLE handle =\n      GetStdHandle(file == stdout ? STD_OUTPUT_HANDLE : STD_ERROR_HANDLE);\n\n  // Check if stderr is something other than a tty/console\n  if (handle == INVALID_HANDLE_VALUE || handle == nullptr ||\n      uv_guess_handle(_fileno(file)) != UV_TTY) {\n    simple_fwrite();\n    return;\n  }\n\n  // Get required wide buffer size\n  int n = MultiByteToWideChar(CP_UTF8, 0, str.data(), str.size(), nullptr, 0);\n\n  std::vector<wchar_t, Allocator<wchar_t>> wbuf(n);\n  MultiByteToWideChar(CP_UTF8, 0, str.data(), str.size(), wbuf.data(), n);\n\n  WriteConsoleW(handle, wbuf.data(), n, nullptr, nullptr);\n  return;\n#elif defined(__ANDROID__)\n  if (file == stderr) {\n    __android_log_print(ANDROID_LOG_ERROR, \"nodejs\", \"%s\", str.data());\n    return;\n  }\n#endif\n  simple_fwrite();\n}",
+      "exact": true
+    }
+  },
+  "category_proof": {
+    "non_crypto": [
+      "NONE",
+      "DIRHANDLE",
+      "DNSCHANNEL",
+      "ELDHISTOGRAM",
+      "FILEHANDLE",
+      "FILEHANDLECLOSEREQ",
+      "BLOBREADER",
+      "FSEVENTWRAP",
+      "FSREQCALLBACK",
+      "FSREQPROMISE",
+      "GETADDRINFOREQWRAP",
+      "GETNAMEINFOREQWRAP",
+      "HEAPSNAPSHOT",
+      "HTTP2SESSION",
+      "HTTP2STREAM",
+      "HTTP2PING",
+      "HTTP2SETTINGS",
+      "HTTPINCOMINGMESSAGE",
+      "HTTPCLIENTREQUEST",
+      "LOCKS",
+      "JSSTREAM",
+      "JSUDPWRAP",
+      "MESSAGEPORT",
+      "PIPECONNECTWRAP",
+      "PIPESERVERWRAP",
+      "PIPEWRAP",
+      "PROCESSWRAP",
+      "PROMISE",
+      "QUERYWRAP",
+      "QUIC_ENDPOINT",
+      "QUIC_LOGSTREAM",
+      "QUIC_PACKET",
+      "QUIC_SESSION",
+      "QUIC_STREAM",
+      "QUIC_UDP",
+      "SHUTDOWNWRAP",
+      "SIGNALWRAP",
+      "STATWATCHER",
+      "STREAMPIPE",
+      "TCPCONNECTWRAP",
+      "TCPSERVERWRAP",
+      "TCPWRAP",
+      "TTYWRAP",
+      "UDPSENDWRAP",
+      "UDPWRAP",
+      "SIGINTWATCHDOG",
+      "WORKER",
+      "WORKERCPUPROFILE",
+      "WORKERCPUUSAGE",
+      "WORKERHEAPPROFILE",
+      "WORKERHEAPSNAPSHOT",
+      "WORKERHEAPSTATISTICS",
+      "WRITEWRAP",
+      "ZLIB"
+    ],
+    "crypto": [
+      "CHECKPRIMEREQUEST",
+      "PBKDF2REQUEST",
+      "KEYPAIRGENREQUEST",
+      "KEYGENREQUEST",
+      "KEYEXPORTREQUEST",
+      "ARGON2REQUEST",
+      "CIPHERREQUEST",
+      "DERIVEBITSREQUEST",
+      "HASHREQUEST",
+      "RANDOMBYTESREQUEST",
+      "RANDOMPRIMEREQUEST",
+      "SCRYPTREQUEST",
+      "SIGNREQUEST",
+      "TLSWRAP",
+      "VERIFYREQUEST"
+    ],
+    "extra": [
+      "CRYPTO",
+      "COMPILE_CACHE",
+      "DIAGNOSTICS",
+      "HUGEPAGES",
+      "INSPECTOR_SERVER",
+      "INSPECTOR_CLIENT",
+      "INSPECTOR_PROFILER",
+      "CODE_CACHE",
+      "NGTCP2_DEBUG",
+      "SEA",
+      "WASI",
+      "MODULE",
+      "MKSNAPSHOT",
+      "SNAPSHOT_SERDES",
+      "PERMISSION_MODEL",
+      "PLATFORM_MINIMAL",
+      "PLATFORM_VERBOSE",
+      "QUIC"
+    ],
+    "plain_count": 72,
+    "crypto_count": 87,
+    "permission_extra_index": 14,
+    "all_names_and_order_match": true
+  },
+  "adaptations": [
+    "std::string is the actual admitted std::basic_string using the shared Allocator<char>; Windows wchar_t vector uses that same real allocator. The actual FWrite body is byte-identical after these two type changes.",
+    "Both complete original HAVE_OPENSSL category variants are compiled as distinct template instances; the embedding chooses one immutable process feature before publication. No runtime guest feature source is read.",
+    "The runtime index replaces the original enum/set_enabled macro store with the same ordered one-way bool store. Release-mode unchecked category access requires a valid index, as the original DCHECK-only getter.",
+    "Original category ToLower(#name) traverses the complete array including its terminal NUL. It is retained; no strlen/case-fold literal shortcut is introduced.",
+    "Each original static available_category String has native process lifetime. Its actual allocation block retains its original native memory domain past Environment/runtime retirement. These statics are not charged as transient caller storage.",
+    "The Permission format_insert callback exposes the existing original String as a borrowed sized span. SizedString converts to an owning String only at the original ToStringHelper::Convert copy, after SPrintF's ret local, avoiding an extra input copy.",
+    "Only the real Permission literals Inserting %s and %s%s with string, string-view or C-string operands are selected. General numeric/Boolean/pathlike formatting is not exposed or qualified.",
+    "Existing CHECK expressions use the actual direct native assertion owner. Valid selected literals do not exercise malformed-format assertion diagnostics; full template pretty-function equivalence is not claimed.",
+    "Caller-provided aligned local storage and the static process placement buffer create the original inline EnabledDebugList bool state. No extra dynamic allocation is introduced for that list.",
+    "parse_text has an explicit embedding String materialization prefix. parse_environment uses the actual retained native SafeGetenv NODE_DEBUG_NATIVE path with a supplied Map and required Trace callbacks; there is no RealEnvStore or guest process.env fallback."
+  ],
+  "dependencies": [
+    {
+      "path": "src/extensions/native_node_standard_allocator.hpp",
+      "sha256": "16D82D2C2143DFAF3861B722BD2E9775FB0BD7D6C9BE400D0ECE37E0674E709B"
+    },
+    {
+      "path": "src/extensions/native_node_environment_paths.cpp",
+      "sha256": "B2E838D216E858D7F3DF31347A71C0AFACD0C4AC507CBE5E5E1191460572A395"
+    },
+    {
+      "path": "src/extensions/native_node_permission.h",
+      "sha256": "6005CBF37A2FA4A6BF310274AB8338F030E886AAA1461EEC95FED2019E3E3C9B"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/main/src/extensions/native_node_check_failure.h",
+      "sha256": "A618BB6C25DA7E3B9C87BA6A15D97B81EDE8E2B103C242C0AADC4C52BE08A446"
+    }
+  ],
+  "scope_limits": [
+    "Source-only; no compilation, controls execution, build or runtime qualification.",
+    "Process feature selection/Parse is original startup-single-owner state. The singleton must not be destroyed through the local-list operation.",
+    "This leaf supplies genuine native Debug behavior only. Environment installation, full Node startup, RealEnvStore, process.env interception, tracing and complete CLI policy remain distinct.",
+    "FWrite retains its ignored I/O results and no-flush behavior. Actual Windows console behavior is source-authored and unexecuted."
+  ]
+}
