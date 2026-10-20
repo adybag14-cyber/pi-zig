@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "2f6ced65b1c41d6fe40d3112182e2e93122782e4",
+  "current_source_head_at_record": "5ca4c084a476feae38584ab554bafff334ad1d30",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -627,18 +627,16 @@
     }
   ],
   "next_native_batch": {
-    "status": "preparing_v29_bounded_diagnostic",
-    "mode": "DiagnosticBuildQuery",
-    "cache_mode": "seeded_diagnostic_batch",
-    "selected_groups": 8,
-    "selected_declarations": 154,
+    "status": "preparing_fresh_v30",
+    "mode": "BuildQuery",
+    "cache_mode": "fresh_private",
+    "selected_groups": 54,
+    "selected_declarations": 1089,
     "catalog_groups": 104,
     "catalog_declarations": 1795,
     "qualification": false,
     "runtime_authority": false,
-    "subsequent_fresh_strict_groups": 54,
-    "subsequent_fresh_strict_declarations": 1089,
-    "requirements": "Specific Root grant after queue admission; private verified copy of closed V28 caches; exact current source/tree delta; unchanged preexisting C/vendor/compiler; original bounded/live/retained native owners and fresh16GiB admission; complete whole bookends, independent current inventories and original process closure."
+    "requirements": "Specific Root grant after queue admission, clean frozen Main, original bounded/live/retained native owners, fresh16GiB admission; strict1DD3 unchanged; whole independent source/compiler/control/process/artifact closure before separate RuntimeOnly."
   },
   "storage_cleanup": {
     "status": "completed_and_independently_verified",
@@ -1571,9 +1569,9 @@
     "sha256": "3E25928B76288B1B186E0A502C914DC10FA1AF2C7CCA7FDCB7B282DE4F92BE3B"
   },
   "current_execution_checkpoint": {
-    "recorded_utc": "2026-10-20T16:34:15.371953+00:00",
-    "status": "v28_partial_compile_negative_closed_field_correction_integrated_v29_diagnostic_pending",
-    "source_head": "2f6ced65b1c41d6fe40d3112182e2e93122782e4",
+    "recorded_utc": "2026-10-20T16:52:31.270120+00:00",
+    "status": "v29_diagnostic_negative_closed_fixture_corrections_integrated_fresh_v30_pending",
+    "source_head": "5ca4c084a476feae38584ab554bafff334ad1d30",
     "source_intake": {
       "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-composed-foundation-intake-20261020\\main-intake.json",
       "sha256": "DBFF9E992792D325EC4B2398CA498841C7B0278C0116BEE1DAFA6267CF25C551",
@@ -1634,53 +1632,58 @@
         "preserved_names": 25
       }
     },
-    "prior_v28": {
-      "head": "1cb800c4e1b8bf84d13db7b90bfe3e49619526cf",
-      "mode": "BuildQuery",
+    "prior_v29": {
+      "head": "f1f75b57790cf5f15af52c6fb60f6984c5a7e092",
+      "mode": "DiagnosticBuildQuery",
       "result": {
-        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v28-buildquery-20261020-161827\\result.json",
-        "bytes": 28350,
-        "sha256": "022F0D1FF427BB6B6CD4C4991C40B77B041FF1FA306DC9F08C29725E2871AF8D"
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-diagnostic-v29-buildquery-20261020-163817\\result.json",
+        "bytes": 116208,
+        "sha256": "DDD2699F486487033D1C1699A010221467DD7B6C23FCEDDB4919166D7FCDD7A0"
       },
       "closure": {
-        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v28-control-20261020-161827\\independent-partial-compile-negative-closure.json",
-        "bytes": 10901,
-        "sha256": "B4375D195DA20693F4E718322DA93E3B0CBD2A531C525136169E8EA958E6A3E6"
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-diagnostic-v29-control-20261020-163817\\independent-diagnostic-compile-negative-closure.json",
+        "bytes": 39898,
+        "sha256": "2F221509291791E5D157383FD095F884EFD0C11029790349FFE3B8E2B3FB15A6"
       },
-      "groups_granted": 54,
-      "groups_attempted": 2,
-      "groups_unstarted": 52,
-      "compiler_errors": [
-        "Backing20 line19 unquoted imported opaque field"
-      ],
-      "actual_partial_metadata_count": 22,
-      "partial_group": "native-node-environment-map",
+      "groups_granted": 8,
+      "groups_attempted": 8,
+      "compile_and_metadata_groups": 5,
+      "compiler_negative_groups": 3,
+      "actual_partial_metadata_count": 94,
+      "actual_named_metadata_count": 92,
+      "imported_metadata_count": 2,
       "metadata_acceptance": false,
       "tests_started": 0,
-      "current_complete_files_rehashed": 33420,
+      "current_complete_files_rehashed": 33436,
       "whole_bookends_unchanged": true,
       "original_process_instances_absent": true,
+      "original_native_owners": 13,
       "qualification": false,
-      "original_negative_preserved": true
+      "original_negative_preserved": true,
+      "seed_files_preserved": 3253,
+      "seed_bytes_preserved": 514522238
     },
     "correction": {
-      "commit": "2f6ced65b1c41d6fe40d3112182e2e93122782e4",
+      "commit": "5ca4c084a476feae38584ab554bafff334ad1d30",
       "intake": {
-        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-backing-v28-field-sourceonly-20261020\\main-intake.json",
-        "bytes": 3066,
-        "sha256": "99D365A2EFD929BE95501E02FBBA5EBDE006A19A456BC4844AD5DF8BD2B41B1A"
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v29-fixture-corrections-main-intake-20261020\\main-intake.json",
+        "bytes": 5941,
+        "sha256": "9954E1870B0A9DD99E4639900CD78030F625AB6C973874BE8B862ED64A78C185"
       },
-      "donor": "5808ee87683ac212e535718b1c90704926fac8ac",
-      "exact_edits": 1,
-      "whole_inverse": true,
-      "backing20_declarations_unchanged": true,
-      "script32_unchanged": true,
-      "other_sources_and_build_graph_unchanged": true
+      "donors": [
+        "2d18c77ce3b17df47c319d4f19b1f1a3de24c359",
+        "24cb9d0eb8cf0bf01e22ebcd10a41524e334939a"
+      ],
+      "exact_edits": 5,
+      "whole_inverses": true,
+      "unchanged_control_declarations": 62,
+      "production_and_build_graph_unchanged": true,
+      "scope": "Rename two conflicting fixture locals, supply two actual context arguments, and align allocation/copy/observed extent to the unchanged seventeen-byte payload."
     },
     "native_executions_on_successor": 0,
     "source_only": true,
     "application_qualification": false,
-    "remaining_next_gate": "Review V29 nonqualifying diagnostic controller for the exact independently closed V28 partial-negative shape, inventory/copy original caches privately, and collect closed compiler/metadata failures for the seven new foundation roots and FS25. Preserve original source/vendor/compiler/cache/process evidence and all negatives. Then a fresh strict54-group/1089-declaration validation is mandatory; no diagnostic metadata acceptance or RuntimeOnly authority."
+    "remaining_next_gate": "Fresh strict54-group/1089-declaration BuildQuery, empty private caches, complete actual metadata and independently rehashed whole source/tree/vendor/compiler/control/artifact evidence plus original process closure; separately grant RuntimeOnly only after build acceptance."
   },
   "retained_recent_native_negatives": [
     {
@@ -2631,6 +2634,118 @@
       "source_only": true,
       "application_qualification": false,
       "remaining_next_gate": "Fresh unchanged strict1DD3 BuildQuery at clean frozen successor: same54 selected groups/1089 declarations, catalog104/1795. Full actual metadata/artifact/current source/compiler/control inventories and original process closure precede any separately granted RuntimeOnly. Additional source units remain outside this cohort."
+    },
+    {
+      "recorded_utc": "2026-10-20T16:34:15.371953+00:00",
+      "status": "v28_partial_compile_negative_closed_field_correction_integrated_v29_diagnostic_pending",
+      "source_head": "2f6ced65b1c41d6fe40d3112182e2e93122782e4",
+      "source_intake": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-composed-foundation-intake-20261020\\main-intake.json",
+        "sha256": "DBFF9E992792D325EC4B2398CA498841C7B0278C0116BEE1DAFA6267CF25C551",
+        "commit": "3eca7bc0665bd9fdad2b38c525498e813fb04fe9",
+        "paths": 177,
+        "source_files": 42,
+        "ordered_reviewed_edits": 178,
+        "whole_inverse_recovers_original_Main": true,
+        "new_roots": [
+          {
+            "path": "src/native_vm_backing_store_adoption_test.zig",
+            "declarations": 20,
+            "target": "build-native-vm-backing-store-adoption",
+            "filter": "VM native backing store"
+          },
+          {
+            "path": "src/native_vm_script_location_test.zig",
+            "declarations": 32,
+            "target": "build-native-vm-script-location",
+            "filter": "VM Script"
+          },
+          {
+            "path": "src/native_node_environment_map_test.zig",
+            "declarations": 22,
+            "target": "build-native-node-environment-map",
+            "filter": "native environment map"
+          },
+          {
+            "path": "src/native_node_environment_paths_test.zig",
+            "declarations": 15,
+            "target": "build-native-node-environment-paths",
+            "filter": "native environment paths"
+          },
+          {
+            "path": "src/native_node_stream_wrapper_test.zig",
+            "declarations": 10,
+            "target": "build-native-node-stream-fields",
+            "filter": "Node StreamFields"
+          },
+          {
+            "path": "src/native_node_managed_buffers_test.zig",
+            "declarations": 12,
+            "target": "build-native-node-managed-buffers",
+            "filter": "Node managed buffers"
+          },
+          {
+            "path": "src/native_node_stream_read_test.zig",
+            "declarations": 18,
+            "target": "build-native-node-stream-read",
+            "filter": "Node StreamBase read"
+          }
+        ],
+        "new_declared_controls": 129,
+        "fs_lexical_correction": {
+          "donor": "583302342175d95bdde2c75f39a380c6b4a38f4c",
+          "exact_blocks": 8,
+          "bindings": 9,
+          "preserved_names": 25
+        }
+      },
+      "prior_v28": {
+        "head": "1cb800c4e1b8bf84d13db7b90bfe3e49619526cf",
+        "mode": "BuildQuery",
+        "result": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v28-buildquery-20261020-161827\\result.json",
+          "bytes": 28350,
+          "sha256": "022F0D1FF427BB6B6CD4C4991C40B77B041FF1FA306DC9F08C29725E2871AF8D"
+        },
+        "closure": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v28-control-20261020-161827\\independent-partial-compile-negative-closure.json",
+          "bytes": 10901,
+          "sha256": "B4375D195DA20693F4E718322DA93E3B0CBD2A531C525136169E8EA958E6A3E6"
+        },
+        "groups_granted": 54,
+        "groups_attempted": 2,
+        "groups_unstarted": 52,
+        "compiler_errors": [
+          "Backing20 line19 unquoted imported opaque field"
+        ],
+        "actual_partial_metadata_count": 22,
+        "partial_group": "native-node-environment-map",
+        "metadata_acceptance": false,
+        "tests_started": 0,
+        "current_complete_files_rehashed": 33420,
+        "whole_bookends_unchanged": true,
+        "original_process_instances_absent": true,
+        "qualification": false,
+        "original_negative_preserved": true
+      },
+      "correction": {
+        "commit": "2f6ced65b1c41d6fe40d3112182e2e93122782e4",
+        "intake": {
+          "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-backing-v28-field-sourceonly-20261020\\main-intake.json",
+          "bytes": 3066,
+          "sha256": "99D365A2EFD929BE95501E02FBBA5EBDE006A19A456BC4844AD5DF8BD2B41B1A"
+        },
+        "donor": "5808ee87683ac212e535718b1c90704926fac8ac",
+        "exact_edits": 1,
+        "whole_inverse": true,
+        "backing20_declarations_unchanged": true,
+        "script32_unchanged": true,
+        "other_sources_and_build_graph_unchanged": true
+      },
+      "native_executions_on_successor": 0,
+      "source_only": true,
+      "application_qualification": false,
+      "remaining_next_gate": "Review V29 nonqualifying diagnostic controller for the exact independently closed V28 partial-negative shape, inventory/copy original caches privately, and collect closed compiler/metadata failures for the seven new foundation roots and FS25. Preserve original source/vendor/compiler/cache/process evidence and all negatives. Then a fresh strict54-group/1089-declaration validation is mandatory; no diagnostic metadata acceptance or RuntimeOnly authority."
     }
   ],
   "source_intake_v18": {
