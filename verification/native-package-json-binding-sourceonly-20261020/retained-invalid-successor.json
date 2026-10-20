@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "status": "source_only_additive_retained_invalid_draft_pending_peer",
+  "baseline_commit": "09a0106056e477db7da7da903cae3c55f251410f",
+  "original": {
+    "node_modules_cpp_sha256": "26C1741820F992983DE87A5EDBE8274B9FFDFF348F988E4D44586B8809EAA414",
+    "selected_body": "GetPackageJSON",
+    "proof": "The original stack PackageConfig is initialized before parse, and every invalid branch invokes throw_invalid_package_config before returning and destroying that native Config. The error macro creates the native intrinsic Error and performs its ordered code Set.Check while the Config is live."
+  },
+  "baseline": {
+    "cpp": "8ACF480084F24FB4C843475C6693BD68C4A871E33F36578D04C20E9CA110D347",
+    "h": "37C9BD3BDF660069FBB322575FE84857CF8798D310DE44F49EE1DA9491832F14",
+    "root": "565C532E7CF2E3C633D24F067EB069A0CC6F94E5BE384A645BC0BA5C3C6DDD8D"
+  },
+  "successor": {
+    "cpp": "0CFCC94234E4D77A98EBCA9A54B936AA7C7EE58BAC69564518C4E9C5F74CA982",
+    "h": "48ABD313181A409DD521166D25C39E957FAD6FD0DA594E4CD1A666C45FE43EEE",
+    "root": "02BCE2014C86ADF79E6CC9053D0B4FC21E11BED30269949FB5084F2A889C800E"
+  },
+  "edits": [
+    {
+      "path": "src/extensions/native_node_package_json_parser.cpp",
+      "label": "select retained invalid Config at the actual private parse boundary",
+      "before": "              PiNodePackageJsonConfig** output) noexcept {\n",
+      "after": "              PiNodePackageJsonConfig** output, bool retain_invalid) noexcept {\n"
+    },
+    {
+      "path": "src/extensions/native_node_package_json_parser.cpp",
+      "label": "retain the complete partially initialized Config before native Error construction",
+      "before": "      ::new (memory) PiNodePackageJsonConfig());\n  if (!paddedInput",
+      "after": "      ::new (memory) PiNodePackageJsonConfig());\n  // Node raises ERR_INVALID_PACKAGE_CONFIG before its stack PackageConfig is\n  // destroyed. Only the binding entry transfers that actual partial owner;\n  // the raw parser entry keeps its original null-on-failure contract.\n  const auto invalid = [&]() noexcept {\n    if (retain_invalid) *output = config.release();\n    return PI_NODE_PACKAGE_JSON_INVALID;\n  };\n  if (!paddedInput"
+    },
+    {
+      "path": "src/extensions/native_node_package_json_parser.cpp",
+      "label": "route every original INVALID exit through the selected owner handoff",
+      "before": "return PI_NODE_PACKAGE_JSON_INVALID;",
+      "after": "return invalid();",
+      "count": 13,
+      "region": "parseBody after paddedInput through its end"
+    },
+    {
+      "path": "src/extensions/native_node_package_json_parser.cpp",
+      "label": "share the actual output and sticky-allocation-failure reducer",
+      "before": "extern \"C\" int pi_node_package_json_parse(PiNodePackageJsonParser* parser,\n                                         const uint8_t* input, size_t length,\n                                         PiNodePackageJsonConfig** output) {",
+      "after": "namespace {\nint parseResult(PiNodePackageJsonParser* parser,\n                const uint8_t* input, size_t length,\n                PiNodePackageJsonConfig** output, bool retain_invalid) noexcept {"
+    },
+    {
+      "path": "src/extensions/native_node_package_json_parser.cpp",
+      "label": "forward only the explicit invalid-retention mode",
+      "before": "  const int result = parseBody(parser, allocations, input, length, output);",
+      "after": "  const int result = parseBody(parser, allocations, input, length, output, retain_invalid);"
+    },
+    {
+      "path": "src/extensions/native_node_package_json_parser.cpp",
+      "label": "keep the raw entry contract and add the genuine native-binding lifetime entry",
+      "before": "  return result;\n}\nextern \"C\" void pi_node_package_json_config_views",
+      "after": "  return result;\n}\n}  // namespace\n\nextern \"C\" int pi_node_package_json_parse(PiNodePackageJsonParser* parser,\n                                         const uint8_t* input, size_t length,\n                                         PiNodePackageJsonConfig** output) {\n  return parseResult(parser, input, length, output, false);\n}\nextern \"C\" int pi_node_package_json_parse_retained(PiNodePackageJsonParser* parser,\n                                                  const uint8_t* input, size_t length,\n                                                  PiNodePackageJsonConfig** output) {\n  return parseResult(parser, input, length, output, true);\n}\nextern \"C\" void pi_node_package_json_config_views"
+    },
+    {
+      "path": "src/extensions/native_node_package_json_parser.h",
+      "label": "document retained INVALID owner and unchanged MEMORY failure contract",
+      "before": "// Views borrow their config, remain independent of the parser, and include exact",
+      "after": "// The native modules binding must construct/throw its INVALID-package Error\n// while the partially parsed Config is still alive. This entry transfers one\n// owned Config on OK or INVALID; MEMORY alone leaves *output NULL and poisons\n// the parser as above. On INVALID, retain this Config through native Error\n// construction and ordered code Set.Check(), then destroy it. This entry does\n// not itself allocate a JS Error or publish a cache entry.\nint pi_node_package_json_parse_retained(PiNodePackageJsonParser* parser,\n                                       const uint8_t* input, size_t length,\n                                       PiNodePackageJsonConfig** output);\n\n// Views borrow their config, remain independent of the parser, and include exact"
+    }
+  ],
+  "appended_control_source": "\n\ntest \"native package JSON parser binding invalid result retains real partial fields while raw failure still retires them\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const input = \"{\\\"name\\\":\\\"retained\\\",\\\"type\\\":\\\"module\\\",\\\"exports\\\":{\\\"x\\\":1},\\\"name\\\":false}\";\n    var result: ?*c.PiNodePackageJsonConfig = null;\n    const status = c.pi_node_package_json_parse_retained(f.parser.?, input.ptr, input.len, &result);\n    var partial: Config = .{ .value = result }; defer partial.deinit();\n    try std.testing.expectEqual(@as(c_int, c.PI_NODE_PACKAGE_JSON_INVALID), status);\n    try std.testing.expect(result != null);\n    try expectSpan(\"retained\", partial.views().name);\n    try expectSpan(\"module\", partial.views().type);\n    try expectSpan(\"{\\\"x\\\":1}\", partial.views().exports);\n    try expectRaw(input, 64, partial.views().raw_json);\n    const held = f.used();\n    try f.fails(input, c.PI_NODE_PACKAGE_JSON_INVALID);\n    try std.testing.expectEqual(held, f.used());\n    {\n        var next = try f.parse(\"{\\\"name\\\":\\\"next\\\"}\"); defer next.deinit();\n        try expectSpan(\"next\", next.views().name);\n        try expectSpan(\"retained\", partial.views().name);\n    }\n    try std.testing.expectEqual(held, f.used());\n}\ntest \"native package JSON parser binding invalid Config independently outlives parser and runtime until explicit release\" {\n    const owners = c.pi_js_native_memory_owners();\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const input = \"{\\\"name\\\":\\\"native-invalid-owner\\\",\\\"type\\\":false}\";\n    var result: ?*c.PiNodePackageJsonConfig = null;\n    const status = c.pi_node_package_json_parse_retained(f.parser.?, input.ptr, input.len, &result);\n    var partial: Config = .{ .value = result }; defer partial.deinit();\n    try std.testing.expectEqual(@as(c_int, c.PI_NODE_PACKAGE_JSON_INVALID), status);\n    try std.testing.expect(result != null);\n    f.dropParser(); f.closeRuntime();\n    try std.testing.expectEqual(owners + 1, c.pi_js_native_memory_owners());\n    try expectSpan(\"native-invalid-owner\", partial.views().name);\n    try expectSpan(\"none\", partial.views().type);\n    try expectRaw(input, 64, partial.views().raw_json);\n    partial.deinit();\n    try std.testing.expectEqual(owners, c.pi_js_native_memory_owners());\n}\ntest \"native package JSON parser binding actual allocation failure leaves no partial Config and forbids reuse\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const before = f.used();\n    var budget = try Budget.leave(&f, 0); defer budget.release();\n    const input = \"{\\\"name\\\":\\\"never-allocated\\\",\\\"type\\\":false}\";\n    var result: ?*c.PiNodePackageJsonConfig = null;\n    const status = c.pi_node_package_json_parse_retained(f.parser.?, input.ptr, input.len, &result);\n    defer c.pi_node_package_json_config_destroy(result);\n    try std.testing.expectEqual(@as(c_int, c.PI_NODE_PACKAGE_JSON_MEMORY), status);\n    try std.testing.expect(result == null);\n    try std.testing.expectEqual(before + budget.bytes, f.used());\n    budget.release();\n    try f.fails(\"{}\", c.PI_NODE_PACKAGE_JSON_MEMORY);\n    const again = c.pi_node_package_json_parse_retained(f.parser.?, input.ptr, input.len, &result);\n    try std.testing.expectEqual(@as(c_int, c.PI_NODE_PACKAGE_JSON_MEMORY), again);\n    try std.testing.expect(result == null);\n    f.dropParser();\n    try std.testing.expectEqual(f.before_parser, f.used());\n    f.parser = c.pi_node_package_json_parser_create(f.memory) orelse return error.OutOfMemory;\n    var recovered = try f.parse(\"{}\"); defer recovered.deinit();\n    try expectSpan(\"none\", recovered.views().type);\n}\n",
+  "checks": {
+    "exact_cpp_reversal": true,
+    "exact_header_reversal": true,
+    "old20_control_prefix_byte_identical": true,
+    "control_count": 23,
+    "original_vendor_allocator_unchanged": true,
+    "raw_entry_null_on_failure_unchanged": true
+  },
+  "review_split": {
+    "sdk": "The 13 original invalid-return sites and selected field-loop preservation; declaration21 raw-versus-retained behavior and partial-field recovery.",
+    "vm": "Shared output/sticky-allocation failure reducer and retained native Config ownership; declarations22–23 lifetime and actual quota failure."
+  },
+  "limits": [
+    "This additive C entry is the lifetime prerequisite; it does not itself construct a JS Error, invoke a code setter or prove the completed native JS binding.",
+    "The actual binding must keep the transferred INVALID Config through Error construction and code Set.Check, then destroy it. That integration and causal setter controls remain separate.",
+    "Physical/cache/permission/Ada/JS namespace and complete loader assembly remain separate.",
+    "No native, Node, AST or formatter execution."
+  ],
+  "native_execution": false
+}

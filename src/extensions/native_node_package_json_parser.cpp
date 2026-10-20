@@ -118,11 +118,18 @@ struct ConfigDelete {
 
 int parseBody(PiNodePackageJsonParser* owner, pi_simd::Scope& allocations,
               const uint8_t* input, std::size_t length,
-              PiNodePackageJsonConfig** output) noexcept {
+              PiNodePackageJsonConfig** output, bool retain_invalid) noexcept {
   void* memory = pi_simd::allocate(sizeof(PiNodePackageJsonConfig));
   if (!memory) return PI_NODE_PACKAGE_JSON_MEMORY;
   std::unique_ptr<PiNodePackageJsonConfig, ConfigDelete> config(
       ::new (memory) PiNodePackageJsonConfig());
+  // Node raises ERR_INVALID_PACKAGE_CONFIG before its stack PackageConfig is
+  // destroyed. Only the binding entry transfers that actual partial owner;
+  // the raw parser entry keeps its original null-on-failure contract.
+  const auto invalid = [&]() noexcept {
+    if (retain_invalid) *output = config.release();
+    return PI_NODE_PACKAGE_JSON_INVALID;
+  };
   if (!paddedInput(config->raw_json, input, length))
     return PI_NODE_PACKAGE_JSON_MEMORY;
 
@@ -144,7 +151,7 @@ int parseBody(PiNodePackageJsonParser* owner, pi_simd::Scope& allocations,
     }
     if (error) {
       if (error != simdjson::CAPACITY) owner->storage_ready = false;
-      return PI_NODE_PACKAGE_JSON_INVALID;
+      return invalid();
     }
     owner->storage_ready = true;
   }
@@ -154,7 +161,7 @@ int parseBody(PiNodePackageJsonParser* owner, pi_simd::Scope& allocations,
   const auto error = owner->parser.iterate(json).get(document);
   if (allocations.failed()) return PI_NODE_PACKAGE_JSON_MEMORY;
   if (error || document.get_object().get(main_object))
-    return PI_NODE_PACKAGE_JSON_INVALID;
+    return invalid();
 
   simdjson::ondemand::raw_json_string key;
   simdjson::ondemand::value value;
@@ -162,14 +169,14 @@ int parseBody(PiNodePackageJsonParser* owner, pi_simd::Scope& allocations,
   simdjson::ondemand::json_type field_type;
   for (auto field : main_object) {
     if (field.key().get(key) || field.value().get(value))
-      return PI_NODE_PACKAGE_JSON_INVALID;
+      return invalid();
     if (key.raw() == nullptr) continue;
 
     if (key == "name") {
       // The selected get_string(receiver) is get_string().get(view), then
       // receiver = view. Preserve that sequence with an explicit checked copy.
       if (value.get_string().get(field_value))
-        return PI_NODE_PACKAGE_JSON_INVALID;
+        return invalid();
       if (!config->name.assign(field_value)) return PI_NODE_PACKAGE_JSON_MEMORY;
     } else if (key == "main") {
       // Original USE ignores the parser error and preserves an earlier main.
@@ -177,42 +184,42 @@ int parseBody(PiNodePackageJsonParser* owner, pi_simd::Scope& allocations,
         if (!config->main.assign(field_value)) return PI_NODE_PACKAGE_JSON_MEMORY;
       }
     } else if (key == "exports") {
-      if (value.type().get(field_type)) return PI_NODE_PACKAGE_JSON_INVALID;
+      if (value.type().get(field_type)) return invalid();
       switch (field_type) {
         case simdjson::ondemand::json_type::object:
         case simdjson::ondemand::json_type::array:
-          if (value.raw_json().get(field_value)) return PI_NODE_PACKAGE_JSON_INVALID;
+          if (value.raw_json().get(field_value)) return invalid();
           if (!config->exports.assign(field_value)) return PI_NODE_PACKAGE_JSON_MEMORY;
           break;
         case simdjson::ondemand::json_type::string:
-          if (value.get_string().get(field_value)) return PI_NODE_PACKAGE_JSON_INVALID;
+          if (value.get_string().get(field_value)) return invalid();
           if (!config->exports.assign(field_value)) return PI_NODE_PACKAGE_JSON_MEMORY;
           break;
         default: break;
       }
     } else if (key == "imports") {
-      if (value.type().get(field_type)) return PI_NODE_PACKAGE_JSON_INVALID;
+      if (value.type().get(field_type)) return invalid();
       switch (field_type) {
         case simdjson::ondemand::json_type::array:
         case simdjson::ondemand::json_type::object:
-          if (value.raw_json().get(field_value)) return PI_NODE_PACKAGE_JSON_INVALID;
+          if (value.raw_json().get(field_value)) return invalid();
           if (!config->imports.assign(field_value)) return PI_NODE_PACKAGE_JSON_MEMORY;
           break;
         case simdjson::ondemand::json_type::string:
-          if (value.get_string().get(field_value)) return PI_NODE_PACKAGE_JSON_INVALID;
+          if (value.get_string().get(field_value)) return invalid();
           if (!config->imports.assign(field_value)) return PI_NODE_PACKAGE_JSON_MEMORY;
           break;
         default: break;
       }
     } else if (key == "type") {
-      if (value.get_string().get(field_value)) return PI_NODE_PACKAGE_JSON_INVALID;
+      if (value.get_string().get(field_value)) return invalid();
       if (field_value == "commonjs") config->type = Kind::commonjs;
       else if (field_value == "module") config->type = Kind::module;
     } else if (key == "scripts") {
-      if (value.type().get(field_type)) return PI_NODE_PACKAGE_JSON_INVALID;
+      if (value.type().get(field_type)) return invalid();
       switch (field_type) {
         case simdjson::ondemand::json_type::object:
-          if (value.raw_json().get(field_value)) return PI_NODE_PACKAGE_JSON_INVALID;
+          if (value.raw_json().get(field_value)) return invalid();
           if (!config->scripts.assign(field_value)) return PI_NODE_PACKAGE_JSON_MEMORY;
           break;
         default: break;
@@ -235,13 +242,14 @@ extern "C" void pi_node_package_json_parser_destroy(PiNodePackageJsonParser* par
   parser->~PiNodePackageJsonParser();
   pi_simd::release(parser);
 }
-extern "C" int pi_node_package_json_parse(PiNodePackageJsonParser* parser,
-                                         const uint8_t* input, size_t length,
-                                         PiNodePackageJsonConfig** output) {
+namespace {
+int parseResult(PiNodePackageJsonParser* parser,
+                const uint8_t* input, size_t length,
+                PiNodePackageJsonConfig** output, bool retain_invalid) noexcept {
   *output = nullptr;
   if (parser->allocation_failed) return PI_NODE_PACKAGE_JSON_MEMORY;
   pi_simd::Scope allocations(parser->memory_owner);
-  const int result = parseBody(parser, allocations, input, length, output);
+  const int result = parseBody(parser, allocations, input, length, output, retain_invalid);
   if (allocations.failed()) {
     parser->allocation_failed = true;
     pi_node_package_json_config_destroy(*output);
@@ -249,6 +257,18 @@ extern "C" int pi_node_package_json_parse(PiNodePackageJsonParser* parser,
     return PI_NODE_PACKAGE_JSON_MEMORY;
   }
   return result;
+}
+}  // namespace
+
+extern "C" int pi_node_package_json_parse(PiNodePackageJsonParser* parser,
+                                         const uint8_t* input, size_t length,
+                                         PiNodePackageJsonConfig** output) {
+  return parseResult(parser, input, length, output, false);
+}
+extern "C" int pi_node_package_json_parse_retained(PiNodePackageJsonParser* parser,
+                                                  const uint8_t* input, size_t length,
+                                                  PiNodePackageJsonConfig** output) {
+  return parseResult(parser, input, length, output, true);
 }
 extern "C" void pi_node_package_json_config_views(const PiNodePackageJsonConfig* config,
                                                   PiNodePackageJsonViews* output) {

@@ -380,3 +380,66 @@ test "native package JSON parser concurrent native scopes keep their actual allo
     c.pi_node_package_json_config_views(b_worker.output.?, &views);
     try expectSpan("separate-domain", views.name);
 }
+
+
+test "native package JSON parser binding invalid result retains real partial fields while raw failure still retires them" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    const input = "{\"name\":\"retained\",\"type\":\"module\",\"exports\":{\"x\":1},\"name\":false}";
+    var result: ?*c.PiNodePackageJsonConfig = null;
+    const status = c.pi_node_package_json_parse_retained(f.parser.?, input.ptr, input.len, &result);
+    var partial: Config = .{ .value = result }; defer partial.deinit();
+    try std.testing.expectEqual(@as(c_int, c.PI_NODE_PACKAGE_JSON_INVALID), status);
+    try std.testing.expect(result != null);
+    try expectSpan("retained", partial.views().name);
+    try expectSpan("module", partial.views().type);
+    try expectSpan("{\"x\":1}", partial.views().exports);
+    try expectRaw(input, 64, partial.views().raw_json);
+    const held = f.used();
+    try f.fails(input, c.PI_NODE_PACKAGE_JSON_INVALID);
+    try std.testing.expectEqual(held, f.used());
+    {
+        var next = try f.parse("{\"name\":\"next\"}"); defer next.deinit();
+        try expectSpan("next", next.views().name);
+        try expectSpan("retained", partial.views().name);
+    }
+    try std.testing.expectEqual(held, f.used());
+}
+test "native package JSON parser binding invalid Config independently outlives parser and runtime until explicit release" {
+    const owners = c.pi_js_native_memory_owners();
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    const input = "{\"name\":\"native-invalid-owner\",\"type\":false}";
+    var result: ?*c.PiNodePackageJsonConfig = null;
+    const status = c.pi_node_package_json_parse_retained(f.parser.?, input.ptr, input.len, &result);
+    var partial: Config = .{ .value = result }; defer partial.deinit();
+    try std.testing.expectEqual(@as(c_int, c.PI_NODE_PACKAGE_JSON_INVALID), status);
+    try std.testing.expect(result != null);
+    f.dropParser(); f.closeRuntime();
+    try std.testing.expectEqual(owners + 1, c.pi_js_native_memory_owners());
+    try expectSpan("native-invalid-owner", partial.views().name);
+    try expectSpan("none", partial.views().type);
+    try expectRaw(input, 64, partial.views().raw_json);
+    partial.deinit();
+    try std.testing.expectEqual(owners, c.pi_js_native_memory_owners());
+}
+test "native package JSON parser binding actual allocation failure leaves no partial Config and forbids reuse" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    const before = f.used();
+    var budget = try Budget.leave(&f, 0); defer budget.release();
+    const input = "{\"name\":\"never-allocated\",\"type\":false}";
+    var result: ?*c.PiNodePackageJsonConfig = null;
+    const status = c.pi_node_package_json_parse_retained(f.parser.?, input.ptr, input.len, &result);
+    defer c.pi_node_package_json_config_destroy(result);
+    try std.testing.expectEqual(@as(c_int, c.PI_NODE_PACKAGE_JSON_MEMORY), status);
+    try std.testing.expect(result == null);
+    try std.testing.expectEqual(before + budget.bytes, f.used());
+    budget.release();
+    try f.fails("{}", c.PI_NODE_PACKAGE_JSON_MEMORY);
+    const again = c.pi_node_package_json_parse_retained(f.parser.?, input.ptr, input.len, &result);
+    try std.testing.expectEqual(@as(c_int, c.PI_NODE_PACKAGE_JSON_MEMORY), again);
+    try std.testing.expect(result == null);
+    f.dropParser();
+    try std.testing.expectEqual(f.before_parser, f.used());
+    f.parser = c.pi_node_package_json_parser_create(f.memory) orelse return error.OutOfMemory;
+    var recovered = try f.parse("{}"); defer recovered.deinit();
+    try expectSpan("none", recovered.views().type);
+}

@@ -44,6 +44,16 @@ int pi_node_package_json_parse(PiNodePackageJsonParser* parser,
                               const uint8_t* input, size_t length,
                               PiNodePackageJsonConfig** output);
 
+// The native modules binding must construct/throw its INVALID-package Error
+// while the partially parsed Config is still alive. This entry transfers one
+// owned Config on OK or INVALID; MEMORY alone leaves *output NULL and poisons
+// the parser as above. On INVALID, retain this Config through native Error
+// construction and ordered code Set.Check(), then destroy it. This entry does
+// not itself allocate a JS Error or publish a cache entry.
+int pi_node_package_json_parse_retained(PiNodePackageJsonParser* parser,
+                                       const uint8_t* input, size_t length,
+                                       PiNodePackageJsonConfig** output);
+
 // Views borrow their config, remain independent of the parser, and include exact
 // lengths (embedded NUL is not truncated). Only type/raw_json are always present.
 // The raw_json bytes include exactly the original pad() trailing-space suffix.
