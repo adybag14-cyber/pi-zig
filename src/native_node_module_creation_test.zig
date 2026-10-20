@@ -1,5 +1,5 @@
-//! Twenty-six authored controls over the genuine Node v24.14 Module creation
-//! component. Seventeen observers have a separate pinned-Node runner; nine
+//! Thirty authored controls over the genuine Node v24.14 Module creation
+//! component. Seventeen observers have a separate pinned-Node runner; thirteen
 //! native controls observe actual retained values/producers. Install only.
 const std = @import("std");
 const a = @import("extensions/native_node_argument_values.zig");
@@ -68,7 +68,12 @@ const Fixture = struct {
     fn initMode(self: *Fixture, pending_deprecation: bool, create_core: bool) !void {
         self.environment = .init(std.testing.allocator);
         errdefer self.environment.deinit();
-        self.engine = try a.v.em.Engine.init(std.testing.allocator, .{});
+        // Explicit feature admission for this pinned Node v24.14 fixture;
+        // production startup must supply its own actual build configuration.
+        self.engine = try a.v.em.Engine.init(std.testing.allocator, .{ .node_options = .{
+            .values = .{ .pending_deprecation = pending_deprecation },
+            .features = .{ .strip_types = true, .quic = false },
+        } });
         errdefer self.engine.deinit();
         self.owner = null;
         self.probe = .{ .engine = self.engine, .first = c.pi_js_undefined() };
@@ -79,7 +84,7 @@ const Fixture = struct {
         try @import("extensions/native_process.zig").install(self.engine, std.testing.io, &self.environment, &.{"native-module-creation-control"});
         try @import("extensions/native_node_os.zig").install(self.engine);
         if (create_core) {
-            self.owner = try core.create(self.engine, .{ .pending_deprecation = pending_deprecation });
+            self.owner = try core.create(self.engine);
         } else {
             const prepared = try @import("extensions/native_node_argument_bootstrap.zig").prepare(self.engine);
             prepared.deinit(self.engine);
@@ -105,6 +110,22 @@ const Fixture = struct {
         try s.put(view, "process", try s.own((try s.engine.requireBuiltin("node:process")) orelse return error.ActualModuleProcessRequired));
         const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));
         try s.put(global, "actualModuleCreation", view);
+        return c.pi_js_undefined();
+    }
+    fn exposeOptions(self: *Fixture) !void {
+        _ = try a.expression(self.engine, exposeOptionsBody, .{});
+    }
+    fn exposeOptionsBody(s: *a.Scope) !c.JSValue {
+        const record = try s.own(try @import("extensions/native_node_options.zig").acquire(s.engine));
+        const get_option = try s.get(record, "getOptionValue");
+        // This test-only view calls the actual retained getCLIOptionsFromBinding
+        // declaration. It neither substitutes its binding nor creates a cache.
+        const roots = try @import("extensions/native_node_module_callable.zig").capturedRoots(s.engine, get_option);
+        if (roots.len != 1) return error.ActualModuleOptionGetterRootsRequired;
+        const dictionary = try s.own(try a.call(s.engine, roots[0], c.pi_js_undefined(), &.{}));
+        const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));
+        try s.define(global, "actualModuleOptions", record, c.JS_PROP_C_W_E);
+        try s.define(global, "actualModuleOptionCache", dictionary, c.JS_PROP_C_W_E);
         return c.pi_js_undefined();
     }
     fn deinit(self: *Fixture) void {
@@ -151,7 +172,7 @@ test "native actual Module creation warned flag precedes failed warning call" { 
 
 test "native actual Module creation completed core shares immutable constructor and cache" {
     var fixture: Fixture = undefined; try fixture.init(false); defer fixture.deinit();
-    const again = try core.create(fixture.engine, .{}); defer fixture.engine.freeValue(again);
+    const again = try core.create(fixture.engine); defer fixture.engine.freeValue(again);
     const lexical = try modules.actualConstructor(fixture.engine); defer fixture.engine.freeValue(lexical);
     try std.testing.expect(c.JS_IsStrictEqual(fixture.engine.context, fixture.owner.?, again));
     try std.testing.expect(c.JS_IsStrictEqual(fixture.engine.context, lexical, again));
@@ -298,7 +319,7 @@ test "native actual Module creation suffix primordial reuses completed argument 
         \\globalThis.actualModuleSavedEndsWith = Object.getOwnPropertyDescriptor(String.prototype,"endsWith");
         \\Object.defineProperty(String.prototype,"endsWith",{configurable:true,get(){throw Error("late core endsWith snapshot");}});
     );
-    fixture.owner = try core.create(fixture.engine, .{});
+    fixture.owner = try core.create(fixture.engine);
     try fixture.run(
         \\Object.defineProperty(String.prototype,"endsWith",actualModuleSavedEndsWith);
         \\delete globalThis.actualModuleSavedEndsWith;
@@ -358,6 +379,147 @@ test "native actual Module creation original from retirement B prevents length g
     // Retained before the call; all values are own primitive data. There is no
     // guest callback after fatal selection, and each guest visit records first.
     inline for (.{ .{ "resolve", @as(u32, 1) }, .{ "length", @as(u32, 0) }, .{ "caught", @as(u32, 0) } }) |field| {
+        const value = c.JS_GetPropertyStr(fixture.engine.context, progress, field[0]);
+        defer fixture.engine.freeValue(value);
+        try std.testing.expect(c.JS_IsNumber(value));
+        var count: u32 = 0;
+        try std.testing.expectEqual(@as(c_int, 0), c.JS_ToUint32(fixture.engine.context, &count, value));
+        try std.testing.expectEqual(field[1], count);
+    }
+}
+
+test "native actual Module creation pending warning follows genuine options refresh" {
+    var fixture: Fixture = undefined; try fixture.init(false); defer fixture.deinit();
+    try fixture.exposeOptions();
+    try fixture.run(
+        \\globalThis.actualModuleOptionWarnings = 0;
+        \\globalThis.actualModuleOriginalWarning = Object.getOwnPropertyDescriptor(actualModuleCreation.process,"emitWarning");
+        \\Object.defineProperty(actualModuleCreation.process,"emitWarning",{configurable:true,value(){
+        \\  actualModuleOptionWarnings++;
+        \\}});
+        \\const getter = Object.getOwnPropertyDescriptor(actualModuleCreation.Module.prototype,"parent").get;
+        \\moduleAssert(actualModuleOptions.getOptionValue("--pending-deprecation") === false,"actual configured initial pending option");
+        \\getter.call(new actualModuleCreation.Module("first"));
+        \\moduleAssert(actualModuleOptionWarnings === 0,"disabled predicate leaves this wrapper unwarned");
+    );
+    // Change the actual native startup-value owner, then invoke its original
+    // refresh declaration. No callback or independently built flag map replaces
+    // the genuine serializer or its JavaScript lazy cell in this control.
+    fixture.engine.node_options.?.values.pending_deprecation = true;
+    try fixture.run(
+        \\try {
+        \\  actualModuleOptions.refreshOptions();
+        \\  moduleAssert(actualModuleOptions.getOptionValue("--pending-deprecation") === true,"real serializer sees current native option after refresh");
+        \\  const getter = Object.getOwnPropertyDescriptor(actualModuleCreation.Module.prototype,"parent").get;
+        \\  getter.call(new actualModuleCreation.Module("second"));
+        \\  getter.call(new actualModuleCreation.Module("third"));
+        \\  moduleAssert(actualModuleOptionWarnings === 1,"same Module wrapper observes refreshed option and then warns once");
+        \\} finally {
+        \\  moduleRestore(actualModuleCreation.process,"emitWarning",actualModuleOriginalWarning);
+        \\}
+    );
+    try fixture.engine.checkNativeEntry();
+}
+
+test "native actual Module creation pending option calls short circuit and retain original declaration" {
+    var fixture: Fixture = undefined; try fixture.init(false); defer fixture.deinit();
+    try fixture.exposeOptions();
+    try fixture.run(
+        \\const process = actualModuleCreation.process, values = actualModuleOptionCache;
+        \\const emit = Object.getOwnPropertyDescriptor(process,"emitWarning");
+        \\const original = Object.getOwnPropertyDescriptor(actualModuleOptions,"getOptionValue");
+        \\const pending = Object.getOwnPropertyDescriptor(values,"--pending-deprecation");
+        \\const noDeprecation = Object.getOwnPropertyDescriptor(values,"--no-deprecation");
+        \\const trace = []; let enabled = false, suppressed = true;
+        \\const getter = Object.getOwnPropertyDescriptor(actualModuleCreation.Module.prototype,"parent").get;
+        \\const receiver = new actualModuleCreation.Module("selected");
+        \\try {
+        \\  Object.defineProperty(actualModuleOptions,"getOptionValue",{configurable:true,get(){throw Error("late option export lookup");}});
+        \\  Object.defineProperty(values,"--pending-deprecation",{configurable:true,get(){trace.push("pending");return enabled;}});
+        \\  Object.defineProperty(values,"--no-deprecation",{configurable:true,get(){trace.push("no");return suppressed;}});
+        \\  Object.defineProperty(process,"emitWarning",{configurable:true,value(){trace.push("warning");}});
+        \\  getter.call(receiver);
+        \\  moduleAssert(JSON.stringify(trace) === '["pending"]',"false first option skips second real getter");
+        \\  enabled = true;
+        \\  getter.call(receiver);
+        \\  moduleAssert(JSON.stringify(trace) === '["pending","pending","no"]',"no-deprecation suppresses before warned publication");
+        \\  suppressed = false;
+        \\  getter.call(receiver);
+        \\  getter.call(receiver);
+        \\  moduleAssert(JSON.stringify(trace) === '["pending","pending","no","pending","no","warning"]',"real repeated calls precede warning and warned short circuits later lookup");
+        \\} finally {
+        \\  Object.defineProperty(values,"--pending-deprecation",pending);
+        \\  Object.defineProperty(values,"--no-deprecation",noDeprecation);
+        \\  Object.defineProperty(actualModuleOptions,"getOptionValue",original);
+        \\  moduleRestore(process,"emitWarning",emit);
+        \\}
+    );
+    try fixture.engine.checkNativeEntry();
+}
+
+test "native actual Module creation pending option holder retires before second option" {
+    var fixture: Fixture = undefined; try fixture.init(false); defer fixture.deinit();
+    try fixture.exposeOptions();
+    try fixture.run(
+        \\const process = actualModuleCreation.process, values = actualModuleOptionCache;
+        \\const emit = Object.getOwnPropertyDescriptor(process,"emitWarning");
+        \\const pending = Object.getOwnPropertyDescriptor(values,"--pending-deprecation");
+        \\const noDeprecation = Object.getOwnPropertyDescriptor(values,"--no-deprecation");
+        \\let first = 0, second = 0, warnings = 0;
+        \\try {
+        \\  Object.defineProperty(values,"--pending-deprecation",{configurable:true,get(){first++;return actualModuleHolder(0);}});
+        \\  Object.defineProperty(values,"--no-deprecation",{configurable:true,get(){
+        \\    second++;
+        \\    moduleAssert(actualModuleFreedCount(0) === 1,"actual first option value retires before second property getter");
+        \\    return false;
+        \\  }});
+        \\  Object.defineProperty(process,"emitWarning",{configurable:true,value(){warnings++;}});
+        \\  const getter = Object.getOwnPropertyDescriptor(actualModuleCreation.Module.prototype,"parent").get;
+        \\  getter.call(new actualModuleCreation.Module("selected"));
+        \\  moduleAssert(first === 1 && second === 1 && warnings === 1,"all original predicate and warning operations reached exactly once");
+        \\} finally {
+        \\  Object.defineProperty(values,"--pending-deprecation",pending);
+        \\  Object.defineProperty(values,"--no-deprecation",noDeprecation);
+        \\  moduleRestore(process,"emitWarning",emit);
+        \\}
+    );
+    try std.testing.expectEqual(@as(u32, 1), fixture.probe.freed[0]);
+    try fixture.engine.checkNativeEntry();
+}
+
+test "native actual Module creation pending option retirement B prevents next option warning and catch" {
+    var fixture: Fixture = undefined; try fixture.init(false); defer fixture.deinit();
+    try fixture.exposeOptions();
+    try fixture.run("globalThis.actualModuleOptionProgress = {first:0,second:0,warning:0,caught:0};");
+    const progress = try fixture.value("actualModuleOptionProgress");
+    defer fixture.engine.freeValue(progress);
+    fixture.probe.fatal_slot = 0;
+    const attempted = fixture.run(
+        \\Object.defineProperty(actualModuleOptionCache,"--pending-deprecation",{configurable:true,get(){
+        \\  actualModuleOptionProgress.first++;
+        \\  return actualModuleHolder(0);
+        \\}});
+        \\Object.defineProperty(actualModuleOptionCache,"--no-deprecation",{configurable:true,get(){
+        \\  actualModuleOptionProgress.second++; return false;
+        \\}});
+        \\Object.defineProperty(actualModuleCreation.process,"emitWarning",{configurable:true,value(){
+        \\  actualModuleOptionProgress.warning++;
+        \\}});
+        \\const getter = Object.getOwnPropertyDescriptor(actualModuleCreation.Module.prototype,"parent").get;
+        \\try { getter.call(new actualModuleCreation.Module("selected")); }
+        \\catch { actualModuleOptionProgress.caught++; }
+    );
+    try std.testing.expectError(error.JavaScriptException, attempted);
+    try std.testing.expectEqual(@as(u32, 1), fixture.probe.freed[0]);
+    const reason = fixture.engine.captured_exception orelse return error.MissingActualModuleOptionFatalReason;
+    try std.testing.expect(c.JS_IsStrictEqual(fixture.engine.context, reason, fixture.probe.first));
+    try std.testing.expect(c.JS_IsUncatchableError(reason));
+    try std.testing.expect(c.pi_js_native_allocation_error_generation(reason) != 0);
+    try std.testing.expect(fixture.engine.native_fatal_invocation == null);
+    // This retained record has only own numeric data properties; no guest
+    // callback is evaluated after the actual fatal has selected its reason.
+    inline for (.{ .{ "first", @as(u32, 1) }, .{ "second", @as(u32, 0) },
+        .{ "warning", @as(u32, 0) }, .{ "caught", @as(u32, 0) } }) |field| {
         const value = c.JS_GetPropertyStr(fixture.engine.context, progress, field[0]);
         defer fixture.engine.freeValue(value);
         try std.testing.expect(c.JS_IsNumber(value));

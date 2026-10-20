@@ -18,8 +18,8 @@ pub const Inputs = struct {
     /// The genuine createRequire declaration linked to this same Module.
     create_require: c.JSValue,
     process: c.JSValue,
-    pending_deprecation: bool,
-    no_deprecation: bool,
+    /// The original getOptionValue declaration from the real options owner.
+    get_option_value: c.JSValue,
 };
 pub const Graph = struct { module_constructor: c.JSValue, namespace_exports: c.JSValue };
 
@@ -113,6 +113,8 @@ fn createBody(s: *Scope, inputs: Inputs) !c.JSValue {
     _ = try method(s, inputs.paths, "dirname");
     _ = try method(s, inputs.paths, "resolve");
     if (!c.JS_IsObject(inputs.process)) return error.RequiredActualModuleProcess;
+    if (!c.JS_IsFunction(s.engine.context, inputs.get_option_value))
+        return error.RequiredActualModuleGetOptionValue;
     try freshCache(s);
     const owner = try s.objectProto(c.pi_js_null());
 
@@ -163,8 +165,7 @@ fn createBody(s: *Scope, inputs: Inputs) !c.JSValue {
     try define(s, owner, "reflectApply", try method(s, try global(s, "Reflect"), "apply"));
     try define(s, owner, "paths", inputs.paths);
     try define(s, owner, "process", inputs.process);
-    try define(s, owner, "pendingDeprecation", a.boolean(s, inputs.pending_deprecation));
-    try define(s, owner, "noDeprecation", a.boolean(s, inputs.no_deprecation));
+    try define(s, owner, "getOptionValue", inputs.get_option_value);
     try define(s, owner, "isPreloading", a.boolean(s, false));
     try define(s, owner, "windows", a.boolean(s, builtin.os.tag == .windows));
     inline for (.{ .{ "bareNodeModules", "node_modules" }, .{ "windowsNodeModules", "\\node_modules" },
@@ -270,9 +271,21 @@ fn warned(s: *Scope, local: c.JSValue) !c.JSValue {
 fn hasCode(s: *Scope, owner: c.JSValue, codes: c.JSValue, code: c.JSValue) !c.JSValue {
     return a.boolean(s, s.truthy(try s.call(try s.get(owner, "setHas"), codes, &.{code})));
 }
+fn optionPredicate(s: *Scope, owner: c.JSValue, name: []const u8) !c.JSValue {
+    const function = try s.get(owner, "getOptionValue");
+    const result = try s.call(function, c.pi_js_undefined(), &.{try s.text(name)});
+    return a.boolean(s, s.truthy(result));
+}
+fn pendingDeprecation(s: *Scope, owner: c.JSValue) !c.JSValue {
+    // The first && operand is retired before the second real call. The false
+    // branch returns only a primitive, as required by its outer predicate.
+    if (!try a.condition(s.engine, optionPredicate, .{ owner, @as([]const u8, "--pending-deprecation") }))
+        return a.boolean(s, false);
+    return a.boolean(s, !try a.condition(s.engine, optionPredicate, .{ owner, @as([]const u8, "--no-deprecation") }));
+}
 fn warn(s: *Scope, owner: c.JSValue, local: c.JSValue) !void {
     if (try a.condition(s.engine, warned, .{local}) or
-        !s.truthy(try s.get(owner, "pendingDeprecation")) or s.truthy(try s.get(owner, "noDeprecation"))) return;
+        !try a.condition(s.engine, pendingDeprecation, .{owner})) return;
     try define(s, local, "warned", a.boolean(s, true));
     const codes = try s.get(owner, "warningCodes");
     const code = try s.text("DEP0144");
