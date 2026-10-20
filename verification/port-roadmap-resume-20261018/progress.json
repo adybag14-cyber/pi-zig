@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "3eca7bc0665bd9fdad2b38c525498e813fb04fe9",
+  "current_source_head_at_record": "e218c405de189fb225c93ef53d65b0ed2fce42ba",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -627,7 +627,7 @@
     }
   ],
   "next_native_batch": {
-    "status": "preparing_reviewed_fresh_cohort",
+    "status": "preparing_v28_same_reviewed_cohort",
     "mode": "BuildQuery",
     "driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
     "cache_mode": "fresh_batch",
@@ -635,7 +635,7 @@
     "selected_declarations": 1089,
     "catalog_groups": 104,
     "catalog_declarations": 1795,
-    "requirements": "Specific fresh Root grant; preserved64-group bound; original retained/live/bounded native owners and16GiB admission; complete source/compiler/control bookends/current inventories; raw actual ordered metadata and exe/PDB; independent process closure before separate RuntimeOnly.",
+    "requirements": "Specific fresh Root grant after queue admission; preserved64-group bound; original retained/live/bounded native owners and16GiB admission; complete source/compiler/control bookends and current inventories; raw actual ordered metadata and exe/PDB; independent process closure before separate RuntimeOnly.",
     "runtime_authority": false
   },
   "storage_cleanup": {
@@ -1569,40 +1569,9 @@
     "sha256": "3E25928B76288B1B186E0A502C914DC10FA1AF2C7CCA7FDCB7B282DE4F92BE3B"
   },
   "current_execution_checkpoint": {
-    "recorded_utc": "2026-10-20T15:54:29.290198+00:00",
-    "status": "source_integrated_fresh_native_validation_pending",
-    "source_head": "3eca7bc0665bd9fdad2b38c525498e813fb04fe9",
-    "prior_v26_strict_negative": {
-      "result_sha256": "F3679BE65BACEBA75C6355F6D2A47EC087222D2274CE7465BCD617C6A5BB5EE5",
-      "closure_sha256": "1F871CDF6042466A37CC1EB09BD677A86CF1767F57F5624010B575F2B7786C02",
-      "actual_partial_metadata_count": 30,
-      "tests_started": 0,
-      "correction_commit": "306445c9174a118bd0f3f54dab51665559a95266"
-    },
-    "diagnostic": {
-      "head": "306445c9174a118bd0f3f54dab51665559a95266",
-      "mode": "DiagnosticBuildQuery",
-      "result_sha256": "A68A3266D4DB57AFF176F86E77816ADF399334BE774968C921EBFB62F72CFAE9",
-      "groups_attempted": 11,
-      "compiled_and_queried": 10,
-      "actual_metadata_count": 203,
-      "declared_successful_controls": 197,
-      "allowed_anonymous_count": 6,
-      "failed_group": "native-node-fs-request-owner",
-      "compiler_errors": 8,
-      "tests_started": 0,
-      "qualification": false,
-      "closure": {
-        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-options-diagnostic-v26-control-20261020-153533\\independent-diagnostic-compile-negative-closure.json",
-        "sha256": "1FD02F1E3F11160009C2B8DBE604CAF701B3D94C55682C46FF6A6958EC398506"
-      },
-      "current_complete_files_rehashed": 33264,
-      "native_process_instances_closed": 21,
-      "outer_runner_launcher_closed": true,
-      "original_seed_files": 3237,
-      "original_seed_bytes": 484640073,
-      "original_seed_preserved": true
-    },
+    "recorded_utc": "2026-10-20T16:17:10.331959+00:00",
+    "status": "v27_compile_negative_closed_exact_correction_integrated_v28_pending",
+    "source_head": "e218c405de189fb225c93ef53d65b0ed2fce42ba",
     "source_intake": {
       "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-composed-foundation-intake-20261020\\main-intake.json",
       "sha256": "DBFF9E992792D325EC4B2398CA498841C7B0278C0116BEE1DAFA6267CF25C551",
@@ -1663,10 +1632,51 @@
         "preserved_names": 25
       }
     },
+    "prior_v27": {
+      "head": "7ead6591a0e4be1ce95249625b9552de2a1583bd",
+      "mode": "BuildQuery",
+      "result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v27-buildquery-20261020-160113\\result.json",
+        "bytes": 12110,
+        "sha256": "26A0F454E67D5D17C137A5D9382972C376E4E68B4FECCA35F63C3AFDA50EB764"
+      },
+      "closure": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v27-control-20261020-160113\\independent-compile-negative-closure.json",
+        "bytes": 5869,
+        "sha256": "49C18C8A16E312908DA471E3A002281D029071AC3BAC2A610C1BC6AF2D2342C7"
+      },
+      "groups_granted": 54,
+      "groups_attempted": 1,
+      "groups_unstarted": 53,
+      "compiler_errors": [
+        "CP_LS undeclared before first use",
+        "CP_PS undeclared before first use"
+      ],
+      "metadata_count": 0,
+      "tests_started": 0,
+      "current_complete_files_rehashed": 33415,
+      "whole_bookends_unchanged": true,
+      "original_process_instances_absent": true,
+      "qualification": false,
+      "original_negative_preserved": true
+    },
+    "correction": {
+      "commit": "e218c405de189fb225c93ef53d65b0ed2fce42ba",
+      "intake": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-script-v27-constants-sourceonly-20261020\\main-intake.json",
+        "bytes": 2463,
+        "sha256": "818AB72A1CF294D9A761DB38698A3CEE1980B0C0E2EE26A0260D5971BC1EC9F9"
+      },
+      "donor": "ce28434cf977b75ed5e1fd1a26468e84c27189a5",
+      "exact_edits": 2,
+      "whole_inverse": true,
+      "script32_declarations_unchanged": true,
+      "other_sources_and_build_graph_unchanged": true
+    },
     "native_executions_on_successor": 0,
     "source_only": true,
     "application_qualification": false,
-    "remaining_next_gate": "Prepare current104-group catalog/1795 declarations and grant unchanged strict1DD3 for fresh54 selected groups/prior47+7 newroots/1089 declarations, then independently accept exact actual metadata/artifacts/complete inputs/process closure before separately granted runtime."
+    "remaining_next_gate": "Fresh unchanged strict1DD3 BuildQuery at clean frozen successor: same54 selected groups/1089 declarations, catalog104/1795. Full actual metadata/artifact/current source/compiler/control inventories and original process closure precede any separately granted RuntimeOnly. Additional source units remain outside this cohort."
   },
   "retained_recent_native_negatives": [
     {
@@ -2407,6 +2417,106 @@
         "Isolated native corruption/UV/option-heap fatal probes under separate grants"
       ],
       "application_qualification": false
+    },
+    {
+      "recorded_utc": "2026-10-20T15:54:29.290198+00:00",
+      "status": "source_integrated_fresh_native_validation_pending",
+      "source_head": "3eca7bc0665bd9fdad2b38c525498e813fb04fe9",
+      "prior_v26_strict_negative": {
+        "result_sha256": "F3679BE65BACEBA75C6355F6D2A47EC087222D2274CE7465BCD617C6A5BB5EE5",
+        "closure_sha256": "1F871CDF6042466A37CC1EB09BD677A86CF1767F57F5624010B575F2B7786C02",
+        "actual_partial_metadata_count": 30,
+        "tests_started": 0,
+        "correction_commit": "306445c9174a118bd0f3f54dab51665559a95266"
+      },
+      "diagnostic": {
+        "head": "306445c9174a118bd0f3f54dab51665559a95266",
+        "mode": "DiagnosticBuildQuery",
+        "result_sha256": "A68A3266D4DB57AFF176F86E77816ADF399334BE774968C921EBFB62F72CFAE9",
+        "groups_attempted": 11,
+        "compiled_and_queried": 10,
+        "actual_metadata_count": 203,
+        "declared_successful_controls": 197,
+        "allowed_anonymous_count": 6,
+        "failed_group": "native-node-fs-request-owner",
+        "compiler_errors": 8,
+        "tests_started": 0,
+        "qualification": false,
+        "closure": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-options-diagnostic-v26-control-20261020-153533\\independent-diagnostic-compile-negative-closure.json",
+          "sha256": "1FD02F1E3F11160009C2B8DBE604CAF701B3D94C55682C46FF6A6958EC398506"
+        },
+        "current_complete_files_rehashed": 33264,
+        "native_process_instances_closed": 21,
+        "outer_runner_launcher_closed": true,
+        "original_seed_files": 3237,
+        "original_seed_bytes": 484640073,
+        "original_seed_preserved": true
+      },
+      "source_intake": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-composed-foundation-intake-20261020\\main-intake.json",
+        "sha256": "DBFF9E992792D325EC4B2398CA498841C7B0278C0116BEE1DAFA6267CF25C551",
+        "commit": "3eca7bc0665bd9fdad2b38c525498e813fb04fe9",
+        "paths": 177,
+        "source_files": 42,
+        "ordered_reviewed_edits": 178,
+        "whole_inverse_recovers_original_Main": true,
+        "new_roots": [
+          {
+            "path": "src/native_vm_backing_store_adoption_test.zig",
+            "declarations": 20,
+            "target": "build-native-vm-backing-store-adoption",
+            "filter": "VM native backing store"
+          },
+          {
+            "path": "src/native_vm_script_location_test.zig",
+            "declarations": 32,
+            "target": "build-native-vm-script-location",
+            "filter": "VM Script"
+          },
+          {
+            "path": "src/native_node_environment_map_test.zig",
+            "declarations": 22,
+            "target": "build-native-node-environment-map",
+            "filter": "native environment map"
+          },
+          {
+            "path": "src/native_node_environment_paths_test.zig",
+            "declarations": 15,
+            "target": "build-native-node-environment-paths",
+            "filter": "native environment paths"
+          },
+          {
+            "path": "src/native_node_stream_wrapper_test.zig",
+            "declarations": 10,
+            "target": "build-native-node-stream-fields",
+            "filter": "Node StreamFields"
+          },
+          {
+            "path": "src/native_node_managed_buffers_test.zig",
+            "declarations": 12,
+            "target": "build-native-node-managed-buffers",
+            "filter": "Node managed buffers"
+          },
+          {
+            "path": "src/native_node_stream_read_test.zig",
+            "declarations": 18,
+            "target": "build-native-node-stream-read",
+            "filter": "Node StreamBase read"
+          }
+        ],
+        "new_declared_controls": 129,
+        "fs_lexical_correction": {
+          "donor": "583302342175d95bdde2c75f39a380c6b4a38f4c",
+          "exact_blocks": 8,
+          "bindings": 9,
+          "preserved_names": 25
+        }
+      },
+      "native_executions_on_successor": 0,
+      "source_only": true,
+      "application_qualification": false,
+      "remaining_next_gate": "Prepare current104-group catalog/1795 declarations and grant unchanged strict1DD3 for fresh54 selected groups/prior47+7 newroots/1089 declarations, then independently accept exact actual metadata/artifacts/complete inputs/process closure before separately granted runtime."
     }
   ],
   "source_intake_v18": {
