@@ -128,6 +128,11 @@ fn createBody(s: *Scope, inputs: Inputs) !c.JSValue {
     try define(s, owner, "weakGet", try method(s, weak_prototype, "get"));
     try define(s, owner, "weakSet", try method(s, weak_prototype, "set"));
     try define(s, owner, "weakHas", try method(s, weak_prototype, "has"));
+    const safe_map = try s.own(try @import("native_node_fs_collections.zig").acquireSafeMap(s.engine));
+    const safe_set = try s.own(try @import("native_node_fs_collections.zig").acquireSafeSet(s.engine));
+    try define(s, owner, "safeMap", safe_map);
+    try define(s, owner, "safeSet", safe_set);
+    try define(s, owner, "objectFreeze", try method(s, try global(s, "Object"), "freeze"));
     const map = try global(s, "Map");
     try define(s, owner, "mapConstructor", map);
     const map_prototype = try s.get(map, "prototype");

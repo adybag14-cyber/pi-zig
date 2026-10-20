@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "status": "source-only additive install target; no execution",
+  "owned_parent": "87c92e0b62d34da48ef0e3ed453f583384dda37f",
+  "baseline_sha256": "895B96E35110A223A76288401A6AC2F18D00D2156E3250B855B2E4620A0E0DBB",
+  "anchor_before": "\n}\n\nfn addCompileOnlyGroup",
+  "exact_added_text": "    if (native_node_network != null) {\n        const commonjs_helpers = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_commonjs_helpers_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native actual CommonJS helpers\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, commonjs_helpers.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, commonjs_helpers.root_module, typescript_parser);\n        linkSqlite(commonjs_helpers.root_module, sqlite_lib_dir, sqlite_library);\n        commonjs_helpers.root_module.addImport(\"catalog_tool\", catalog_tool);\n        if (target.result.os.tag == .windows) {\n            commonjs_helpers.root_module.linkSystemLibrary(\"advapi32\", .{});\n            commonjs_helpers.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-commonjs-helpers\", \"Install twenty-four actual CommonJS helper controls without execution\").dependOn(&b.addInstallArtifact(commonjs_helpers, .{ .dest_sub_path = b.fmt(\"native-node-commonjs-helpers{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n    }\n\n",
+  "added_lines": 16,
+  "target": "build-native-node-commonjs-helpers",
+  "filter": "native actual CommonJS helpers",
+  "authored_declarations": 24,
+  "links": "Existing single QuickJS/transitive native network; same TypeScript/SQLite/catalog and Windows advapi32/userenv as adjacent genuine options/warning controls",
+  "run_step": false
+}
