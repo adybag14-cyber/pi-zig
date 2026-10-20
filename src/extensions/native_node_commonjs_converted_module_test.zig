@@ -11,15 +11,24 @@ const Fixture = struct {
     engine: *v.em.Engine,
     module_constructor: c.JSValue,
     fn init() !Fixture {
-        const engine = try v.em.Engine.init(std.testing.allocator, .{});
+        const engine = try v.em.Engine.init(std.testing.allocator, .{ .node_options = .{
+            .features = .{ .strip_types = true, .quic = false },
+        } });
         errdefer engine.deinit();
+        var environment: std.process.Environ.Map = .init(std.testing.allocator);
+        defer environment.deinit();
+        try @import("native_process.zig").install(engine, std.testing.io,
+            &environment, &.{"converted-module-lifecycle"});
         try @import("node_path.zig").install(engine, std.testing.io);
         try @import("commonjs.zig").install(engine);
         var s: v.Scope = .{ .engine = engine }; defer s.deinit();
         const old_module = engine.native_module_values.get("node:module") orelse return error.RequiredActualModuleImplementation;
-        // Controlled warning-free process input, not advertised as node:process.
-        const process = try s.object();
-        const graph = try ctor.create(engine, .{ .paths = engine.native_module_values.get("node:path").?, .create_require = try s.get(old_module, "createRequire"), .process = process, .pending_deprecation = false, .no_deprecation = false });
+        const process = try s.own((try engine.requireBuiltin("node:process")) orelse
+            return error.ActualConvertedModuleProcessRequired);
+        const options = try s.own(try @import("native_node_options.zig").acquire(engine));
+        const graph = try ctor.create(engine, .{ .paths = engine.native_module_values.get("node:path").?,
+            .create_require = try s.get(old_module, "createRequire"), .process = process,
+            .get_option_value = try s.get(options, "getOptionValue") });
         engine.freeValue(graph.namespace_exports);
         return .{ .engine = engine, .module_constructor = graph.module_constructor };
     }

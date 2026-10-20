@@ -100,7 +100,10 @@ pub fn verifyExactThrownReasons(engine: *v.em.Engine, actual_inputs: module.Inpu
 /// This control deliberately replaces only the guest-visible emitWarning and
 /// restores it. Separate actual host-option reference runs remain required.
 pub fn verifyPendingDeprecation(engine: *v.em.Engine, actual_inputs: module.Inputs) !void {
-    try std.testing.expect(actual_inputs.pending_deprecation and !actual_inputs.no_deprecation);
+    var options_scope: v.Scope = .{ .engine = engine }; defer options_scope.deinit();
+    const pending_deprecation = try options_scope.call(actual_inputs.get_option_value, c.pi_js_undefined(), &.{try options_scope.text("--pending-deprecation")});
+    const no_deprecation = try options_scope.call(actual_inputs.get_option_value, c.pi_js_undefined(), &.{try options_scope.text("--no-deprecation")});
+    try std.testing.expect(options_scope.truthy(pending_deprecation) and !options_scope.truthy(no_deprecation));
     const graph = try module.create(engine, actual_inputs); defer engine.freeValue(graph.module_constructor); defer engine.freeValue(graph.namespace_exports);
     try install(engine, "ActualModule", graph.module_constructor); try install(engine, "ActualProcess", actual_inputs.process);
     const result = try engine.evalModule(
