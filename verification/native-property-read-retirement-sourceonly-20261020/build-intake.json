@@ -1,0 +1,17 @@
+{
+  "source_only": true,
+  "base_sha256": "BE214D02354497862167C82BC4B382A5E47F6112B7A18961D3F9E12DB349D40A",
+  "after_sha256": "B7082B5EDC0AEDC48223379B8B89720D3C6E8DABC747CE083C4B6CAE0E334C74",
+  "added_lines": 6,
+  "edits": [
+    {
+      "before": "    const typebox_execution_termination_tests = b.addTest(.{",
+      "after": "    const property_retirement_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_property_retirement_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM property retirement\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, property_retirement_tests.root_module, quickjs, sqlite_lib_dir);\n    b.step(\"build-native-vm-property-retirement\", \"Install property result retirement controls without execution\").dependOn(&b.addInstallArtifact(property_retirement_tests, .{}).step);\n    const typebox_execution_termination_tests = b.addTest(.{",
+      "count": 1
+    }
+  ],
+  "root": "src/native_vm_property_retirement_test.zig",
+  "filter": "VM property retirement",
+  "target": "build-native-vm-property-retirement",
+  "execution": false
+}

@@ -1,0 +1,15 @@
+{
+  "source_only": true,
+  "production_sha256": "2A847A6628054445688DEE5217BF97270B839AB9D2B923384DB1B543720B36C6",
+  "control_sha256": "2B54725A93CA1C916A2FEBF5E79A8850B3334DC82749390D973C77A6AFA065C0",
+  "production_delta_sha256": "14A6381EB984D86FC6EF93F553F55D9B6649E077DA49BD4FE94D58084731A7A3",
+  "sdk": {
+    "status": "CLOSED",
+    "scope": "Complete three-edit C production; actual Fixture/Probe/native callbacks and controls 1-10. Exact inverse to ce098 verified. Actual pending ownership and first-fatal selection; flagged returned DATA remains DATA."
+  },
+  "modules": {
+    "status": "CLOSED",
+    "scope": "Fixture/Probe and controls 11-20; exact six-line install-only build CACE8865. Real Array/typed/arguments paths, result/receiver failure priority, native termination and no-allocation scalar path. Host probe outlives runtime."
+  },
+  "execution": false
+}

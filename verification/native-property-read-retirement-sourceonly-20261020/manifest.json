@@ -1,0 +1,59 @@
+{
+  "source_only": true,
+  "base_commit": "3af8911182c7777ff7ec862a9e84e8692cc6e632",
+  "source_dependency": "ce098 termination C/H; TypeBox15 build anchor preserved",
+  "application": "Use the three exact production edits after ce098 while preserving Main private-setter addition; use the six additive build lines. Header unchanged.",
+  "root": "src/native_vm_property_retirement_test.zig",
+  "filter": "VM property retirement",
+  "target": "build-native-vm-property-retirement",
+  "declared_count": 20,
+  "metadata_execution": false,
+  "execution": false,
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2361873,
+      "sha256": "2A847A6628054445688DEE5217BF97270B839AB9D2B923384DB1B543720B36C6"
+    },
+    {
+      "path": "src/native_vm_property_retirement_test.zig",
+      "bytes": 25835,
+      "sha256": "2B54725A93CA1C916A2FEBF5E79A8850B3334DC82749390D973C77A6AFA065C0"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 418310,
+      "sha256": "B7082B5EDC0AEDC48223379B8B89720D3C6E8DABC747CE083C4B6CAE0E334C74"
+    },
+    {
+      "path": "verification/native-property-read-retirement-sourceonly-20261020/build-intake.json",
+      "bytes": 1161,
+      "sha256": "CACE88651A33AFC3DE09C86DEDBD85C60E1E81CEA1BD9095B5E0C6EA266BDA87"
+    },
+    {
+      "path": "verification/native-property-read-retirement-sourceonly-20261020/declared-names.json",
+      "bytes": 1937,
+      "sha256": "2999031F682D1499D3392FE90D617D858513E7DB838B0EDA8307D1BEBCBF6456"
+    },
+    {
+      "path": "verification/native-property-read-retirement-sourceonly-20261020/peer-closure.json",
+      "bytes": 875,
+      "sha256": "2EAB5A01B94AF3BD46D03F8FA167A49382DD57AEACE3E76EB38FE9B929068EE4"
+    },
+    {
+      "path": "verification/native-property-read-retirement-sourceonly-20261020/production-delta.json",
+      "bytes": 8959,
+      "sha256": "14A6381EB984D86FC6EF93F553F55D9B6649E077DA49BD4FE94D58084731A7A3"
+    },
+    {
+      "path": "verification/native-property-read-retirement-sourceonly-20261020/README.md",
+      "bytes": 2139,
+      "sha256": "537382F980DC13CC4CE7D1E66B398F28D5B772494FB299B4A016E4DB6C91722C"
+    },
+    {
+      "path": "verification/native-property-read-retirement-sourceonly-20261020/selected-source.json",
+      "bytes": 10418,
+      "sha256": "69CF2429B08FA8FE1EB63C20E0B6CBD7D6B0634D853E252FC08F6C58794260B4"
+    }
+  ]
+}

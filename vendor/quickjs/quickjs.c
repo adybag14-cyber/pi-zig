@@ -19922,6 +19922,27 @@ static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,
     return JS_CallBytecode(caller_ctx, func_obj, this_obj, new_target, argc, argv, flags);
 }
 
+/* Publish a completed result before retiring its consumed operand. The
+   caller removes any other consumed stack slots first. Only an actual pending
+   completion enters the reducer; a returned flagged Error remains DATA. */
+static int js_pi_finish_consumed_value(JSContext *ctx, JSValue *slot,
+                                      JSValue value)
+{
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED };
+    JSValue operand = *slot;
+
+    *slot = value;
+    js_native_async_release(ctx, operand, &owned);
+    if (owned.present) {
+        value = *slot;
+        *slot = JS_UNDEFINED;
+        js_native_async_release(ctx, value, &owned);
+        JS_Throw(ctx, owned.reason);
+        return -1;
+    }
+    return JS_IsException(value) ? -1 : 0;
+}
+
 /* argv[] is modified if (flags & JS_CALL_FLAG_COPY_ARGV) = 0. */
 static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst func_obj,
                                        JSValueConst this_obj, JSValueConst new_target,
@@ -21500,11 +21521,9 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
                 get_field_slow_path:
                     sf->cur_pc = pc;
                     val = JS_GetPropertyInternal(ctx, obj, atom, sp[-1], false);
-                    if (unlikely(JS_IsException(val)))
-                        goto exception;
                 }
-                JS_FreeValue(ctx, sp[-1]);
-                sp[-1] = val;
+                if (unlikely(js_pi_finish_consumed_value(ctx, &sp[-1], val) < 0))
+                    goto exception;
             }
             BREAK;
 
@@ -21785,24 +21804,18 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
                     if (likely(p->class_id == JS_CLASS_ARRAY &&
                                idx < js_array_data_count(p))) {
                         val = js_dup(p->u.array.u.values[idx]);
-                        JS_FreeValue(ctx, sp[-2]);
-                        sp[-2] = val;
-                        sp--;
-                        BREAK;
+                        goto get_array_el_retire_receiver;
                     }
-                    if (js_get_fast_array_element(ctx, p, idx, &val)) {
-                        JS_FreeValue(ctx, sp[-2]);
-                        sp[-2] = val;
-                        sp--;
-                        BREAK;
-                    }
+                    if (js_get_fast_array_element(ctx, p, idx, &val))
+                        goto get_array_el_retire_receiver;
                 }
                 sf->cur_pc = pc;
                 val = JS_GetPropertyValue(ctx, sp[-2], sp[-1]);
-                JS_FreeValue(ctx, sp[-2]);
-                sp[-2] = val;
+            get_array_el_retire_receiver:
+                /* The slow lookup consumed its key; fast keys are immediates. */
+                sp[-1] = JS_UNDEFINED;
                 sp--;
-                if (unlikely(JS_IsException(val)))
+                if (unlikely(js_pi_finish_consumed_value(ctx, &sp[-1], val) < 0))
                     goto exception;
             }
             BREAK;

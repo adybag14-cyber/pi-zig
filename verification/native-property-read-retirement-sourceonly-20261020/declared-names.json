@@ -1,0 +1,27 @@
+{
+  "source_only": true,
+  "count": 20,
+  "names": [
+    "VM property retirement publishes the owned data result before its sole receiver retires",
+    "VM property retirement getter uses the original receiver and returns its selected value once",
+    "VM property retirement inherited accessor keeps the actual receiver through its call",
+    "VM property retirement computed string lookup consumes its key and retains the result",
+    "VM property retirement own data receiver fatal stops later work catch and finally",
+    "VM property retirement successful getter fatal releases its selected result exactly once",
+    "VM property retirement failed field lookup selects a later actual receiver fatal",
+    "VM property retirement first actual field fatal survives a second receiver fatal",
+    "VM property retirement ordinary field lookup reason survives ordinary receiver cleanup",
+    "VM property retirement computed lookup receiver fatal blocks the next guest statement",
+    "VM property retirement computed lookup preserves its first actual fatal through receiver cleanup",
+    "VM property retirement fast array receiver fatal is checked before dispatch",
+    "VM property retirement fast typed array receiver fatal is checked before dispatch",
+    "VM property retirement actual arguments element receiver fatal is checked before dispatch",
+    "VM property retirement result cleanup fatal preempts the receiver ordinary completion",
+    "VM property retirement receiver fatal survives the selected result cleanup fatal",
+    "VM property retirement returned flagged Error remains successful DATA",
+    "VM property retirement actual private termination skips catch and finally without DATA projection",
+    "VM property retirement ordinary receiver throw enters the original guest catch once",
+    "VM property retirement successful scalar read and receiver release need no allocation"
+  ],
+  "metadata_execution": false
+}

@@ -1,0 +1,99 @@
+{
+  "status": "integrated_source_only_pending_native_validation",
+  "base_head": "9ac54fce4024504fa3a3e6ee23eef6bb35db7abc",
+  "donor_commit": "86e4be1ae0455ed0aec42856cca6129e8ee7a6fd",
+  "integrated_utc": "2026-10-20T12:41:00.581977+00:00",
+  "changes": {
+    "vendor/quickjs/quickjs.c": {
+      "before_sha256": "D051392A2FC5557D29ECC7CF4C54950EDA163821DF302C7CC53DC70296764B65",
+      "after_sha256": "1506620A7109D107D0826428B22057BE0D465DA7D812BFC73F17A021FF4B2556",
+      "bytes": 2365214
+    },
+    "build.zig": {
+      "before_sha256": "62867821186B2633C852CE83FE7BDBE004CA975DEA2957E9CF56FC24166B41EC",
+      "after_sha256": "A4C6F3CA8C98F4318C2C2CB4A571BF6856FA1925F9E97A3766F28EC0B678944B",
+      "bytes": 484644
+    },
+    "src/native_vm_property_retirement_test.zig": {
+      "before_sha256": null,
+      "after_sha256": "2B54725A93CA1C916A2FEBF5E79A8850B3334DC82749390D973C77A6AFA065C0",
+      "bytes": 25835
+    },
+    "verification/native-property-read-retirement-sourceonly-20261020/README.md": {
+      "before_sha256": null,
+      "after_sha256": "537382F980DC13CC4CE7D1E66B398F28D5B772494FB299B4A016E4DB6C91722C",
+      "bytes": 2139
+    },
+    "verification/native-property-read-retirement-sourceonly-20261020/build-intake.json": {
+      "before_sha256": null,
+      "after_sha256": "CACE88651A33AFC3DE09C86DEDBD85C60E1E81CEA1BD9095B5E0C6EA266BDA87",
+      "bytes": 1161
+    },
+    "verification/native-property-read-retirement-sourceonly-20261020/declared-names.json": {
+      "before_sha256": null,
+      "after_sha256": "2999031F682D1499D3392FE90D617D858513E7DB838B0EDA8307D1BEBCBF6456",
+      "bytes": 1937
+    },
+    "verification/native-property-read-retirement-sourceonly-20261020/manifest.json": {
+      "before_sha256": null,
+      "after_sha256": "D2FA73A07D4B8CDF563A8DA8FEEFC11257B967666C11F24D8326CEB8E31EDA76",
+      "bytes": 2365
+    },
+    "verification/native-property-read-retirement-sourceonly-20261020/peer-closure.json": {
+      "before_sha256": null,
+      "after_sha256": "2EAB5A01B94AF3BD46D03F8FA167A49382DD57AEACE3E76EB38FE9B929068EE4",
+      "bytes": 875
+    },
+    "verification/native-property-read-retirement-sourceonly-20261020/production-delta.json": {
+      "before_sha256": null,
+      "after_sha256": "14A6381EB984D86FC6EF93F553F55D9B6649E077DA49BD4FE94D58084731A7A3",
+      "bytes": 8959
+    },
+    "verification/native-property-read-retirement-sourceonly-20261020/selected-source.json": {
+      "before_sha256": null,
+      "after_sha256": "69CF2429B08FA8FE1EB63C20E0B6CBD7D6B0634D853E252FC08F6C58794260B4",
+      "bytes": 10418
+    }
+  },
+  "exact_edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before_sha256": "D051392A2FC5557D29ECC7CF4C54950EDA163821DF302C7CC53DC70296764B65",
+      "after_sha256": "80E45F26F6D767F7AD81CC33E79DF3C7C954D6A0D86027AD169C4317FF42F4DA",
+      "offset": 660655,
+      "before": "/* argv[] is modified if (flags & JS_CALL_FLAG_COPY_ARGV) = 0. */\nstatic no_inline JSValue JS_CallBytecode",
+      "after": "/* Publish a completed result before retiring its consumed operand. The\n   caller removes any other consumed stack slots first. Only an actual pending\n   completion enters the reducer; a returned flagged Error remains DATA. */\nstatic int js_pi_finish_consumed_value(JSContext *ctx, JSValue *slot,\n                                      JSValue value)\n{\n    JSNativeAsyncPending owned = { false, JS_UNDEFINED };\n    JSValue operand = *slot;\n\n    *slot = value;\n    js_native_async_release(ctx, operand, &owned);\n    if (owned.present) {\n        value = *slot;\n        *slot = JS_UNDEFINED;\n        js_native_async_release(ctx, value, &owned);\n        JS_Throw(ctx, owned.reason);\n        return -1;\n    }\n    return JS_IsException(value) ? -1 : 0;\n}\n\n/* argv[] is modified if (flags & JS_CALL_FLAG_COPY_ARGV) = 0. */\nstatic no_inline JSValue JS_CallBytecode"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before_sha256": "80E45F26F6D767F7AD81CC33E79DF3C7C954D6A0D86027AD169C4317FF42F4DA",
+      "after_sha256": "CC8291183717ED4DAA2E8CA572095A5D8F4F90AE592603B87604C4434CB1DC31",
+      "offset": 713993,
+      "before": "        CASE(OP_get_field):\n            {\n                JSValue val, obj;\n                JSAtom atom;\n                JSObject *p;\n                JSProperty *pr;\n                JSShapeProperty *prs;\n\n                atom = get_u32(pc);\n                pc += 4;\n\n                obj = sp[-1];\n                if (likely(JS_VALUE_GET_TAG(obj) == JS_TAG_OBJECT)) {\n                    p = JS_VALUE_GET_OBJ(obj);\n                    for(;;) {\n                        prs = find_own_property(&pr, p, atom);\n                        if (prs) {\n                            /* found */\n                            if (unlikely(prs->flags & JS_PROP_TMASK))\n                                goto get_field_slow_path;\n                            val = js_dup(pr->u.value);\n                            break;\n                        }\n                        if (unlikely(p->is_exotic)) {\n                            /* XXX: should avoid the slow path for arrays\n                               and typed arrays by ensuring that 'prop' is\n                               not numeric */\n                            obj = JS_MKPTR(JS_TAG_OBJECT, p);\n                            goto get_field_slow_path;\n                        }\n                        p = p->shape->proto;\n                        if (!p) {\n                            val = JS_UNDEFINED;\n                            break;\n                        }\n                    }\n                } else {\n                get_field_slow_path:\n                    sf->cur_pc = pc;\n                    val = JS_GetPropertyInternal(ctx, obj, atom, sp[-1], false);\n                    if (unlikely(JS_IsException(val)))\n                        goto exception;\n                }\n                JS_FreeValue(ctx, sp[-1]);\n                sp[-1] = val;\n            }\n            BREAK;\n\n",
+      "after": "        CASE(OP_get_field):\n            {\n                JSValue val, obj;\n                JSAtom atom;\n                JSObject *p;\n                JSProperty *pr;\n                JSShapeProperty *prs;\n\n                atom = get_u32(pc);\n                pc += 4;\n\n                obj = sp[-1];\n                if (likely(JS_VALUE_GET_TAG(obj) == JS_TAG_OBJECT)) {\n                    p = JS_VALUE_GET_OBJ(obj);\n                    for(;;) {\n                        prs = find_own_property(&pr, p, atom);\n                        if (prs) {\n                            /* found */\n                            if (unlikely(prs->flags & JS_PROP_TMASK))\n                                goto get_field_slow_path;\n                            val = js_dup(pr->u.value);\n                            break;\n                        }\n                        if (unlikely(p->is_exotic)) {\n                            /* XXX: should avoid the slow path for arrays\n                               and typed arrays by ensuring that 'prop' is\n                               not numeric */\n                            obj = JS_MKPTR(JS_TAG_OBJECT, p);\n                            goto get_field_slow_path;\n                        }\n                        p = p->shape->proto;\n                        if (!p) {\n                            val = JS_UNDEFINED;\n                            break;\n                        }\n                    }\n                } else {\n                get_field_slow_path:\n                    sf->cur_pc = pc;\n                    val = JS_GetPropertyInternal(ctx, obj, atom, sp[-1], false);\n                }\n                if (unlikely(js_pi_finish_consumed_value(ctx, &sp[-1], val) < 0))\n                    goto exception;\n            }\n            BREAK;\n\n"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before_sha256": "CC8291183717ED4DAA2E8CA572095A5D8F4F90AE592603B87604C4434CB1DC31",
+      "after_sha256": "1506620A7109D107D0826428B22057BE0D465DA7D812BFC73F17A021FF4B2556",
+      "offset": 725059,
+      "before": "        CASE(OP_get_array_el):\n            {\n                JSValue val;\n\n                /* fast path: regular/typed array element by int index */\n                if (likely(JS_VALUE_GET_TAG(sp[-2]) == JS_TAG_OBJECT &&\n                           JS_VALUE_GET_TAG(sp[-1]) == JS_TAG_INT)) {\n                    JSObject *p = JS_VALUE_GET_OBJ(sp[-2]);\n                    uint32_t idx = JS_VALUE_GET_INT(sp[-1]);\n                    if (likely(p->class_id == JS_CLASS_ARRAY &&\n                               idx < js_array_data_count(p))) {\n                        val = js_dup(p->u.array.u.values[idx]);\n                        JS_FreeValue(ctx, sp[-2]);\n                        sp[-2] = val;\n                        sp--;\n                        BREAK;\n                    }\n                    if (js_get_fast_array_element(ctx, p, idx, &val)) {\n                        JS_FreeValue(ctx, sp[-2]);\n                        sp[-2] = val;\n                        sp--;\n                        BREAK;\n                    }\n                }\n                sf->cur_pc = pc;\n                val = JS_GetPropertyValue(ctx, sp[-2], sp[-1]);\n                JS_FreeValue(ctx, sp[-2]);\n                sp[-2] = val;\n                sp--;\n                if (unlikely(JS_IsException(val)))\n                    goto exception;\n            }\n            BREAK;\n\n",
+      "after": "        CASE(OP_get_array_el):\n            {\n                JSValue val;\n\n                /* fast path: regular/typed array element by int index */\n                if (likely(JS_VALUE_GET_TAG(sp[-2]) == JS_TAG_OBJECT &&\n                           JS_VALUE_GET_TAG(sp[-1]) == JS_TAG_INT)) {\n                    JSObject *p = JS_VALUE_GET_OBJ(sp[-2]);\n                    uint32_t idx = JS_VALUE_GET_INT(sp[-1]);\n                    if (likely(p->class_id == JS_CLASS_ARRAY &&\n                               idx < js_array_data_count(p))) {\n                        val = js_dup(p->u.array.u.values[idx]);\n                        goto get_array_el_retire_receiver;\n                    }\n                    if (js_get_fast_array_element(ctx, p, idx, &val))\n                        goto get_array_el_retire_receiver;\n                }\n                sf->cur_pc = pc;\n                val = JS_GetPropertyValue(ctx, sp[-2], sp[-1]);\n            get_array_el_retire_receiver:\n                /* The slow lookup consumed its key; fast keys are immediates. */\n                sp[-1] = JS_UNDEFINED;\n                sp--;\n                if (unlikely(js_pi_finish_consumed_value(ctx, &sp[-1], val) < 0))\n                    goto exception;\n            }\n            BREAK;\n\n"
+    },
+    {
+      "path": "build.zig",
+      "before_sha256": "62867821186B2633C852CE83FE7BDBE004CA975DEA2957E9CF56FC24166B41EC",
+      "after_sha256": "A4C6F3CA8C98F4318C2C2CB4A571BF6856FA1925F9E97A3766F28EC0B678944B",
+      "offset": 194812,
+      "before": "    const typebox_execution_termination_tests = b.addTest(.{",
+      "after": "    const property_retirement_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_property_retirement_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM property retirement\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, property_retirement_tests.root_module, quickjs, sqlite_lib_dir);\n    b.step(\"build-native-vm-property-retirement\", \"Install property result retirement controls without execution\").dependOn(&b.addInstallArtifact(property_retirement_tests, .{}).step);\n    const typebox_execution_termination_tests = b.addTest(.{"
+    }
+  ],
+  "complete_inverse": true,
+  "original_header_unchanged": true,
+  "main_private_setter_termination_lazy_prototype_preserved": true,
+  "declared_controls": 20,
+  "target": "build-native-vm-property-retirement",
+  "native_execution": false,
+  "qualification": false
+}
