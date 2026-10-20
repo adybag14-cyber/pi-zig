@@ -1,0 +1,154 @@
+{
+  "schema": 1,
+  "reviewer": "Root independent of module_io_port author",
+  "created_utc": "2026-10-20T18:28:45.373897+00:00",
+  "status": "independently_reviewed_finite_native_v8_fatal_source_only",
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\manifest.json",
+    "sha256": "7DC76CE1A3362BA842CFBBE3B36AB21CC9096D403608CE0C49959650780C65B5"
+  },
+  "current_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_v8_base_fatal.h",
+      "sha256": "C5B2D6E6F7B8DA0E8C9D70E8934392B10BB638DA5C209870385FCE1AC71D3CBF",
+      "bytes": 7727
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_v8_base_fatal.cpp",
+      "sha256": "1C83C0523655ACD3FF64CA067AE2CB5131C98B36A2E60910AEF4C64699BD3BBC",
+      "bytes": 7723
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_node_tracing_clock_diagnostics.cpp",
+      "sha256": "05E4B163D86C32C17A5E9DE57332FD08EA102878654272FA399FF168AE38EC61",
+      "bytes": 2559
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__include__v8config.h",
+      "sha256": "7454D35A34B52B23A50F9EF2742DC0C57025CD9EB1F85C27B7618FE2B269BACF",
+      "bytes": 35211
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__abort-mode.cc",
+      "sha256": "BFDB1CF3DCCAC62D5EC0023B4987F3EEB84D9ED4E89E4329FD3A9417E3050325",
+      "bytes": 322
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__abort-mode.h",
+      "sha256": "9C5CF5EBE2E766F17CDEFCC0F0FFE240DC3AAC8B3AB927E7B5DA633325AB3A25",
+      "bytes": 2076
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__build_config.h",
+      "sha256": "9D8E16FB6A11064851500CC89592B91397F42B14CC15A9B496B1C2F4FDE420F6",
+      "bytes": 3770
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__immediate-crash.h",
+      "sha256": "48B403992C692E20C9212C69E72AD2E1DDFCD2A264278BEE0C1A4E37BB5BD758",
+      "bytes": 6487
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__logging.cc",
+      "sha256": "F358594C0228DA3195B6B0241AFB99558D3B30B295545C0C9C14B2D488EFB3EB",
+      "bytes": 7809
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__logging.h",
+      "sha256": "0FA464788992D2AB04B14F9A9B9B808E29759D111E867BABD69EAED03D931405",
+      "bytes": 21624
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__platform__platform-posix.cc",
+      "sha256": "AB02C74EE5ACC2E517E6452E9E7CCF5BE2C72140BF70BFDC2CA7626378C84A11",
+      "bytes": 45116
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__platform__platform-win32.cc",
+      "sha256": "FE7717174D74251A41DA6C5F69C0DA733D7F760FDAA40C87E7D5397CFD392086",
+      "bytes": 64545
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__platform__platform.cc",
+      "sha256": "98A6CAF579D2BC2AABBEDBAFD51815B59E0D6E15EAD78B7522BA4BAA825AD7F8",
+      "bytes": 802
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\V8-LICENSE.txt",
+      "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509",
+      "bytes": 3093
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\acquisition.json",
+      "sha256": "11E143F5FAA20452917F6802AE17435B4F84294E95F29B8A52ACECD674EF38D5",
+      "bytes": 2926
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\fatal-owner-continuation-acquisition.json",
+      "sha256": "92354F1EEE9B374F5006DD9786BB2AA18C6F3C7F7C46852336D1DADF97C89E91",
+      "bytes": 1508
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\source-body-proof.json",
+      "sha256": "989F792AFC49279B3F71127C17B3CCA84543BFD093A6DA69ED117AF9E8BFA3EB",
+      "bytes": 10667
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\source-body-audit.py",
+      "sha256": "C779CEB05B07C7481256A63DC77AE06E1770A7F148717D2F347190B3F7D6F7C3",
+      "bytes": 12266
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\source-body-proof-attempt1.json",
+      "sha256": "6125C5548D56B69F385DCB65F4021FBB37232402ADAF0A77E7D8FAC92D5680ED",
+      "bytes": 12891
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\macro-selection-source-proof.json",
+      "sha256": "4AA020D6AE695CFD4DD0A5FDCCB6B5D81ADE0D14C3FDF939B1DC53B04D87C562",
+      "bytes": 10219
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.hpp",
+      "sha256": "F7AE55D36E54D64AC7FA36CF6F64D06A631889213EE0E43998F8701004338E98",
+      "bytes": 1236
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.cpp",
+      "sha256": "E0408BD2D94D728FACD1E2B36C7DD831BEF49E12BF53C52FE60D602D001B0064",
+      "bytes": 13664
+    }
+  ],
+  "production_bodies_read_in_full": true,
+  "final_manifest_and_both_source_mapping_proofs_read_in_full": true,
+  "pinned_original_logging_abort_output_and_macro_sources_reviewed": true,
+  "findings": [
+    "FailureMessage retains the actual stack markers, bounded512-byte callback text and separate full output. Fatal callback precedes flushes; print-stack hook precedes final native abort. FatalOOM retains its independent original hook behavior.",
+    "Windows cached output selection, CRT truncation, native debugger break and all four abort modes preserve the pinned source; POSIX and Android guarded bodies are retained source relationships only.",
+    "Original compiler and host predicates were independently checked from complete pinned v8config source, including clang GCC mode versus clang-cl, GNU precedence, coherent host selection and Cygwin exclusion. Full immediate-crash and nine selected logging macros have explicit finite name projections.",
+    "Clock operands remain captured and compared once with original types, int64_t conversion only on failure. DEBUG stream/message allocation and original terminal delete ownership are present; release and official branches preserve their distinct operation.",
+    "The low-level owner stores no guest context or Engine. It consumes existing synchronous diagnostic scope through separately installed native hooks; this unit does not install bootstrap hooks.",
+    "No finite source blocker found in the three-file proposal at the exact hashes. All22 current source/authority/proof/dependency pins and three proposed snapshots matched."
+  ],
+  "preserved_auditor_negatives": "source-body-proof-attempt1.json remains immutable; no production change made to accommodate the two selector/name audit defects.",
+  "finite_commit_authorized": {
+    "worktree": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018",
+    "scope": "Only the three manifest production sources, their three snapshots, the eleven authority originals, two acquisition proofs, four listed source proofs, manifest and this peer receipt. Preserve every other dirty/untracked path.",
+    "source_only": true
+  },
+  "integration_limitations": [
+    "Compose the separately reviewed native_node_tracing_clock.hpp/.cpp at the pinned hashes with this unit; the header is deliberately not copied into provider-af production.",
+    "Admit native_v8_base_fatal.cpp and native_node_tracing_clock_diagnostics.cpp only through a separately reviewed target/build change. This packet changes no build files and adds no build root/filter.",
+    "Use a consistent DEBUG/OFFICIAL_BUILD selection for owner header, owner object, wrappers and callers. Root observed current native flags without either macro. Other declared branches remain source-only.",
+    "Keep the existing genuine C++ allocation owner/AllocationScope composition for DEBUG operand streams/new string. This source adds no fallback allocator, process host, placeholder callback or Node assert substitution.",
+    "Complete native process-bootstrap installation/lifetime/serialization of print-stack, fatal and dcheck hooks when required by the original startup path. Hooks remain null/default here; no process-bootstrap equivalence is claimed.",
+    "Immediate tracing C APIs keep the separately reviewed DiagnosticContextScope first and pass the actual caller or null. This low-level terminal owner neither stores/queues a JSContext nor masks the caller's TLS context with a new null scope. An installed native hook may consume the existing scoped context according to its separate contract.",
+    "Windows native CRT/Kernel32 functions and POSIX libc remain real target dependencies; selected Android native logging additionally needs its actual log library/build selection.",
+    "Source admission is followed by compiler/linker gates, focused native fatal/clock/diagnostic controls, death/output and concurrency coverage, and Root-owned target/runtime qualification."
+  ],
+  "native_or_compiler_execution_authorized": false,
+  "build_admission": false,
+  "runtime_qualification": false,
+  "application_qualification": false,
+  "main_modified": false
+}

@@ -1,0 +1,280 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "native_or_compiler_executed": false,
+  "validation_kind": "read-only lexical source body comparison; comments and C line splices/whitespace removed; string literal content retained",
+  "whole_original_function_renames": "V8/OS names mapped to the prefixed owner and local helpers; original enum names mapped to the identical ordinal C API names; template operand types specialized to int64_t; arraysize(message_) maps to sizeof(char[512]); native DebugBreak remains ::DebugBreak",
+  "pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_v8_base_fatal.h",
+      "bytes": 7727,
+      "sha256": "C5B2D6E6F7B8DA0E8C9D70E8934392B10BB638DA5C209870385FCE1AC71D3CBF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_v8_base_fatal.cpp",
+      "bytes": 7723,
+      "sha256": "1C83C0523655ACD3FF64CA067AE2CB5131C98B36A2E60910AEF4C64699BD3BBC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_node_tracing_clock_diagnostics.cpp",
+      "bytes": 2559,
+      "sha256": "05E4B163D86C32C17A5E9DE57332FD08EA102878654272FA399FF168AE38EC61"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__logging.cc",
+      "bytes": 7809,
+      "sha256": "F358594C0228DA3195B6B0241AFB99558D3B30B295545C0C9C14B2D488EFB3EB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__logging.h",
+      "bytes": 21624,
+      "sha256": "0FA464788992D2AB04B14F9A9B9B808E29759D111E867BABD69EAED03D931405"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__abort-mode.h",
+      "bytes": 2076,
+      "sha256": "9C5CF5EBE2E766F17CDEFCC0F0FFE240DC3AAC8B3AB927E7B5DA633325AB3A25"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__immediate-crash.h",
+      "bytes": 6487,
+      "sha256": "48B403992C692E20C9212C69E72AD2E1DDFCD2A264278BEE0C1A4E37BB5BD758"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__platform__platform-win32.cc",
+      "bytes": 64545,
+      "sha256": "FE7717174D74251A41DA6C5F69C0DA733D7F760FDAA40C87E7D5397CFD392086"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__platform__platform-posix.cc",
+      "bytes": 45116,
+      "sha256": "AB02C74EE5ACC2E517E6452E9E7CCF5BE2C72140BF70BFDC2CA7626378C84A11"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__include__v8config.h",
+      "bytes": 35211,
+      "sha256": "7454D35A34B52B23A50F9EF2742DC0C57025CD9EB1F85C27B7618FE2B269BACF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__build_config.h",
+      "bytes": 3770,
+      "sha256": "9D8E16FB6A11064851500CC89592B91397F42B14CC15A9B496B1C2F4FDE420F6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__abort-mode.cc",
+      "bytes": 322,
+      "sha256": "BFDB1CF3DCCAC62D5EC0023B4987F3EEB84D9ED4E89E4329FD3A9417E3050325"
+    }
+  ],
+  "checks": [
+    {
+      "check": "fatal complete body after build-selected signature",
+      "match": true,
+      "original_tokens": 131,
+      "production_tokens": 131
+    },
+    {
+      "check": "Dcheck dispatch/ignored mode",
+      "match": true,
+      "original_tokens": 30,
+      "production_tokens": 30
+    },
+    {
+      "check": "DefaultDcheck handler",
+      "match": true,
+      "original_tokens": 25,
+      "production_tokens": 25
+    },
+    {
+      "check": "print-stack setter",
+      "match": true,
+      "original_tokens": 4,
+      "production_tokens": 4
+    },
+    {
+      "check": "Dcheck setter",
+      "match": true,
+      "original_tokens": 9,
+      "production_tokens": 9
+    },
+    {
+      "check": "fatal setter",
+      "match": true,
+      "original_tokens": 4,
+      "production_tokens": 4
+    },
+    {
+      "check": "FatalOOM",
+      "match": true,
+      "original_tokens": 52,
+      "production_tokens": 52
+    },
+    {
+      "check": "Windows HasConsole",
+      "match": true,
+      "original_tokens": 46,
+      "production_tokens": 46
+    },
+    {
+      "check": "Windows VPrintHelper",
+      "match": true,
+      "original_tokens": 60,
+      "production_tokens": 60
+    },
+    {
+      "check": "Windows and POSIX PrintError",
+      "match": true,
+      "original_tokens": 27,
+      "production_tokens": 27
+    },
+    {
+      "check": "POSIX PrintError agrees with Windows",
+      "match": true,
+      "original_tokens": 27,
+      "production_tokens": 27
+    },
+    {
+      "check": "Windows OS Abort",
+      "match": true,
+      "original_tokens": 62,
+      "production_tokens": 62
+    },
+    {
+      "check": "POSIX OS Abort",
+      "match": true,
+      "original_tokens": 39,
+      "production_tokens": 39
+    },
+    {
+      "check": "integral MakeCheckOpString",
+      "match": true,
+      "original_tokens": 110,
+      "production_tokens": 110
+    },
+    {
+      "check": "Windows VSNPrintF complete selected body",
+      "match": true,
+      "original_tokens": 55,
+      "production_tokens": 55
+    },
+    {
+      "check": "POSIX VSNPrintF complete selected body",
+      "match": true,
+      "original_tokens": 53,
+      "production_tokens": 53
+    },
+    {
+      "check": "Windows debugger break",
+      "match": true,
+      "original_tokens": 20,
+      "production_tokens": 20
+    },
+    {
+      "check": "ControlledCrashesAreHarmless",
+      "match": true,
+      "original_tokens": 12,
+      "production_tokens": 12
+    },
+    {
+      "check": "DcheckFailuresAreIgnored",
+      "match": true,
+      "original_tokens": 12,
+      "production_tokens": 12
+    },
+    {
+      "check": "FailureMessage complete marker/buffer class",
+      "match": true,
+      "original_tokens": 85,
+      "production_tokens": 85
+    },
+    {
+      "check": "Windows VPrintError selected body",
+      "match": true,
+      "original_tokens": 9,
+      "production_tokens": 9
+    },
+    {
+      "check": "POSIX VPrintError including Android guard",
+      "match": true,
+      "original_tokens": 37,
+      "production_tokens": 37
+    },
+    {
+      "check": "complete immediate-crash macro body with v8config native compiler/host predicate projection",
+      "match": true,
+      "original_tokens": 449,
+      "production_tokens": 449,
+      "mapping": {
+        "V8_CC_GNU": "defined(__GNUC__)",
+        "V8_CC_MSVC": "defined(_MSC_VER)",
+        "V8_HOST_ARCH_X64": "defined(_M_X64) || defined(__x86_64__)",
+        "V8_HOST_ARCH_IA32": "defined(_M_IX86) || defined(__i386__)",
+        "V8_HOST_ARCH_ARM": "defined(__ARMEL__)",
+        "V8_HOST_ARCH_ARM64": "defined(__AARCH64EL__) || defined(_M_ARM64)",
+        "V8_HOST_ARCH_PPC64": "defined(__PPC64__) || defined(_ARCH_PPC64)",
+        "V8_HOST_ARCH_S390X": "defined(__s390x__)",
+        "V8_OS_DARWIN": "defined(__APPLE__)",
+        "V8_OS_AIX": "defined(_AIX)",
+        "V8_OS_ZOS": "defined(__MVS__)",
+        "TRAP_SEQUENCE1_": "PI_V8_BASE_TRAP_SEQUENCE1_",
+        "TRAP_SEQUENCE2_": "PI_V8_BASE_TRAP_SEQUENCE2_",
+        "TRAP_SEQUENCE_": "PI_V8_BASE_TRAP_SEQUENCE_",
+        "WRAPPED_TRAP_SEQUENCE_": "PI_V8_BASE_WRAPPED_TRAP_SEQUENCE_",
+        "IMMEDIATE_CRASH": "PI_V8_BASE_IMMEDIATE_CRASH"
+      }
+    },
+    {
+      "check": "all nine selected FATAL/GRACEFUL/CHECK_FAILED macro definitions in original order",
+      "match": true,
+      "original_definitions": 9,
+      "production_definitions": 9,
+      "mapping": {
+        "FATAL": "PI_V8_BASE_FATAL",
+        "FATAL_HELPER": "PI_V8_BASE_FATAL_HELPER_",
+        "FATAL_DISCARD_ARG": "PI_V8_BASE_FATAL_DISCARD_ARG_",
+        "GRACEFUL_FATAL": "PI_V8_BASE_GRACEFUL_FATAL",
+        "CHECK_FAILED_HANDLER": "PI_V8_BASE_CHECK_FAILED_HANDLER",
+        "V8_Fatal": "pi_v8_base_fatal",
+        "IMMEDIATE_CRASH": "PI_V8_BASE_IMMEDIATE_CRASH"
+      }
+    },
+    {
+      "check": "seven direct C owner declaration/definition names",
+      "match": true,
+      "declarations": [
+        "pi_v8_base_abort",
+        "pi_v8_base_dcheck",
+        "pi_v8_base_fatal",
+        "pi_v8_base_fatal_oom",
+        "pi_v8_base_set_dcheck_function",
+        "pi_v8_base_set_fatal_function",
+        "pi_v8_base_set_print_stack_trace"
+      ],
+      "definitions": [
+        "pi_v8_base_abort",
+        "pi_v8_base_dcheck",
+        "pi_v8_base_fatal",
+        "pi_v8_base_fatal_oom",
+        "pi_v8_base_set_dcheck_function",
+        "pi_v8_base_set_fatal_function",
+        "pi_v8_base_set_print_stack_trace"
+      ]
+    }
+  ],
+  "count": 25,
+  "all_source_matches": true,
+  "retained_attempt": {
+    "path": "source-body-proof-attempt1.json",
+    "sha256": "6125C5548D56B69F385DCB65F4021FBB37232402ADAF0A77E7D8FAC92D5680ED",
+    "failures": [
+      "The broad FATAL selector included two separately audited IMMEDIATE_CRASH definitions. It is narrowed to the five intended owner macro names, producing nine definitions in original order.",
+      "The general DebugBreak rename also renamed the original ::DebugBreak API token inside the helper. The corrected rename excludes colon-qualified native API names."
+    ],
+    "production_changes": "none; both failures were audit projection defects"
+  },
+  "limitations": [
+    "No C/C++ preprocessing, compilation, native execution, death test, concurrency test, platform qualification, target inclusion, linkage or runtime result.",
+    "Predicate substitutions refer to the mutually coherent native compiler/host selections in pinned v8config.h; arbitrary contradictory manually defined host/compiler macros are outside this bounded projection.",
+    "The runtime entry and default hook installation remain separate process-bootstrap integration work."
+  ]
+}

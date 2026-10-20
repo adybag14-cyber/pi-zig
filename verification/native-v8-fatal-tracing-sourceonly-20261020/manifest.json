@@ -1,0 +1,238 @@
+{
+  "schema": 1,
+  "unit": "native_v8_base_fatal_and_tracing_clock_diagnostics",
+  "source_only": true,
+  "created_utc": "2026-10-20T18:22:00.814370+00:00",
+  "worktree": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018",
+  "base_head": "2afdf5601ce5e47334bd65157d0c6c9ebfa51beb",
+  "authorization": "Root exclusive new-file source-only grant for this three-file provider-af unit and its proof files; existing source preserved.",
+  "status": "sealed proposal awaiting independent Root source review; no commit or build admission in this manifest",
+  "source_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_v8_base_fatal.h",
+      "bytes": 7727,
+      "sha256": "C5B2D6E6F7B8DA0E8C9D70E8934392B10BB638DA5C209870385FCE1AC71D3CBF",
+      "relative_path": "src/extensions/native_v8_base_fatal.h",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\proposal\\src\\extensions\\native_v8_base_fatal.h",
+      "new_file": true
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_v8_base_fatal.cpp",
+      "bytes": 7723,
+      "sha256": "1C83C0523655ACD3FF64CA067AE2CB5131C98B36A2E60910AEF4C64699BD3BBC",
+      "relative_path": "src/extensions/native_v8_base_fatal.cpp",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\proposal\\src\\extensions\\native_v8_base_fatal.cpp",
+      "new_file": true
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_node_tracing_clock_diagnostics.cpp",
+      "bytes": 2559,
+      "sha256": "05E4B163D86C32C17A5E9DE57332FD08EA102878654272FA399FF168AE38EC61",
+      "relative_path": "src/extensions/native_node_tracing_clock_diagnostics.cpp",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\proposal\\src\\extensions\\native_node_tracing_clock_diagnostics.cpp",
+      "new_file": true
+    }
+  ],
+  "authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__include__v8config.h",
+      "bytes": 35211,
+      "sha256": "7454D35A34B52B23A50F9EF2742DC0C57025CD9EB1F85C27B7618FE2B269BACF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__abort-mode.cc",
+      "bytes": 322,
+      "sha256": "BFDB1CF3DCCAC62D5EC0023B4987F3EEB84D9ED4E89E4329FD3A9417E3050325"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__abort-mode.h",
+      "bytes": 2076,
+      "sha256": "9C5CF5EBE2E766F17CDEFCC0F0FFE240DC3AAC8B3AB927E7B5DA633325AB3A25"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__build_config.h",
+      "bytes": 3770,
+      "sha256": "9D8E16FB6A11064851500CC89592B91397F42B14CC15A9B496B1C2F4FDE420F6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__immediate-crash.h",
+      "bytes": 6487,
+      "sha256": "48B403992C692E20C9212C69E72AD2E1DDFCD2A264278BEE0C1A4E37BB5BD758"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__logging.cc",
+      "bytes": 7809,
+      "sha256": "F358594C0228DA3195B6B0241AFB99558D3B30B295545C0C9C14B2D488EFB3EB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__logging.h",
+      "bytes": 21624,
+      "sha256": "0FA464788992D2AB04B14F9A9B9B808E29759D111E867BABD69EAED03D931405"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__platform__platform-posix.cc",
+      "bytes": 45116,
+      "sha256": "AB02C74EE5ACC2E517E6452E9E7CCF5BE2C72140BF70BFDC2CA7626378C84A11"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__platform__platform-win32.cc",
+      "bytes": 64545,
+      "sha256": "FE7717174D74251A41DA6C5F69C0DA733D7F760FDAA40C87E7D5397CFD392086"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\deps__v8__src__base__platform__platform.cc",
+      "bytes": 802,
+      "sha256": "98A6CAF579D2BC2AABBEDBAFD51815B59E0D6E15EAD78B7522BA4BAA825AD7F8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\V8-LICENSE.txt",
+      "bytes": 3093,
+      "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509"
+    }
+  ],
+  "acquisition_proofs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\acquisition.json",
+      "bytes": 2926,
+      "sha256": "11E143F5FAA20452917F6802AE17435B4F84294E95F29B8A52ACECD674EF38D5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\authority\\fatal-owner-continuation-acquisition.json",
+      "bytes": 1508,
+      "sha256": "92354F1EEE9B374F5006DD9786BB2AA18C6F3C7F7C46852336D1DADF97C89E91"
+    }
+  ],
+  "proofs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\source-body-proof.json",
+      "bytes": 10667,
+      "sha256": "989F792AFC49279B3F71127C17B3CCA84543BFD093A6DA69ED117AF9E8BFA3EB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\source-body-audit.py",
+      "bytes": 12266,
+      "sha256": "C779CEB05B07C7481256A63DC77AE06E1770A7F148717D2F347190B3F7D6F7C3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\source-body-proof-attempt1.json",
+      "bytes": 12891,
+      "sha256": "6125C5548D56B69F385DCB65F4021FBB37232402ADAF0A77E7D8FAC92D5680ED"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-v8-fatal-tracing-sourceonly-20261020\\macro-selection-source-proof.json",
+      "bytes": 10219,
+      "sha256": "4AA020D6AE695CFD4DD0A5FDCCB6B5D81ADE0D14C3FDF939B1DC53B04D87C562"
+    }
+  ],
+  "unchanged_clock_dependencies": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.hpp",
+      "bytes": 1236,
+      "sha256": "F7AE55D36E54D64AC7FA36CF6F64D06A631889213EE0E43998F8701004338E98"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.cpp",
+      "bytes": 13664,
+      "sha256": "E0408BD2D94D728FACD1E2B36C7DD831BEF49E12BF53C52FE60D602D001B0064"
+    }
+  ],
+  "new_direct_c_functions": [
+    "pi_v8_base_set_print_stack_trace",
+    "pi_v8_base_set_dcheck_function",
+    "pi_v8_base_set_fatal_function",
+    "pi_v8_base_dcheck",
+    "pi_v8_base_fatal",
+    "pi_v8_base_fatal_oom",
+    "pi_v8_base_abort"
+  ],
+  "new_native_process_state": {
+    "abort_mode": "pi_v8_base_g_abort_mode, original four ordinals and explicit C++ int representation; initialized to kDefault",
+    "print_stack_trace": "initial nullptr; genuine native setter; no installation in this unit",
+    "fatal_callback": "initial nullptr; genuine native setter; no installation in this unit",
+    "dcheck_callback": "initial DefaultDcheckHandler; a null setter restores that original default"
+  },
+  "stable_clock_definitions": [
+    "pi_node::tracing::ClockCheckFailure(file,line,expression) noexcept",
+    "pi_node::tracing::ClockCheckFailureOperands(file,line,expression,int64_t lhs,int64_t rhs) noexcept",
+    "pi_node::tracing::Unreachable(file,line)"
+  ],
+  "original_operation_mappings": [
+    {
+      "original": "logging.cc FailureMessage",
+      "projection": "Actual stack object: uintptr_t 0xdecade10 marker, 512 zeroed char bytes formatted by native VSNPrintF, uintptr_t 0xdecade11 marker; four static layout assertions, uncompiled."
+    },
+    {
+      "original": "logging.cc V8_Fatal",
+      "projection": "Complete original normalized body matches: create stack message with first va_list, fatal hook before stdout/stderr flush, harmless/fatal prefixes, fresh va_list for full native output, print actual message object address, print-stack hook, stderr flush and OS abort."
+    },
+    {
+      "original": "logging.cc FatalOOM",
+      "projection": "Original process/JavaScript wording, native PrintError, optional print-stack hook, stderr flush, V8_FUZZILLI _exit(1) or actual OS abort; does not invent a call to the generic fatal hook."
+    },
+    {
+      "original": "logging.cc V8_Dcheck and DefaultDcheckHandler",
+      "projection": "Original ignored-debug mode prints and returns; other modes dispatch the genuine current native callback. Default handler invokes native fatal with DEBUG selected signature."
+    },
+    {
+      "original": "logging.cc SetPrintStackTrace/SetDcheckFunction/SetFatalFunction; abort-mode.h/.cc",
+      "projection": "Genuine process-native function pointers and mutable mode; no added atomics, locks, guest object retention or host bridge."
+    },
+    {
+      "original": "platform-win32.cc 571-609 and 698-732",
+      "projection": "Original UNKNOWN/CONSOLE/ODS cache, two STD_OUTPUT_HANDLE queries and known file-type check, 4096-byte OutputDebugStringA path or vfprintf; original _vsnprintf_s(_TRUNCATE), exact zero termination and return rule; PrintError still flushes stderr after va_end."
+    },
+    {
+      "original": "platform-win32.cc 1236-1270",
+      "projection": "Original debugger check and native DebugBreak selection before output flush; exit success 0, failure -1, exact immediate trap, or final ExitProcess(3)."
+    },
+    {
+      "original": "platform-posix.cc 736-749 and 1015-1055",
+      "projection": "Original _exit(0), _exit(-1), immediate crash or abort(); Android log guard/tag/severity, otherwise vfprintf; exact vsnprintf truncation handling and PrintError flush."
+    },
+    {
+      "original": "immediate-crash.h with full v8config.h/build_config.h",
+      "projection": "Whole macro body matches after explicit compiler/host name projection. Macro selection table includes GNU/clang-cl, ARM/ARM64/PPC/S390, Windows/Linux/Darwin and original fallback sequences. GNU lambda and unreachable epilogue retained."
+    },
+    {
+      "original": "logging.h build-mode FATAL/GRACEFUL/CHECK_FAILED macros",
+      "projection": "All nine selected definitions match in original order; DEBUG uses file/line, non-official release drops them in the actual fatal signature, official one-argument FATAL/CHECK emits direct original trap sequence."
+    },
+    {
+      "original": "logging.h DEBUG CHECK_OP and MakeCheckOpString",
+      "projection": "Unchanged clocks capture and compare once, convert only failing signed operands to int64_t. Actual CheckMessageStream/PrintCheckOperand, original <=50 formatting choice and new std::string; fatal call then original terminal delete path. Non-DEBUG does not allocate operand messages."
+    }
+  ],
+  "source_validation": {
+    "lexical_complete_body_checks": 25,
+    "all_match": true,
+    "kind": "static source analysis, not native controls",
+    "frozen_snapshot_count": 3,
+    "frozen_snapshot_bytes_match_production": true,
+    "tracked_diff_observation": "git diff --stat and git diff --cached --stat both empty before sealing; source additions are new and untracked.",
+    "auditor_negatives_preserved": "source-body-proof-attempt1.json keeps the overbroad FATAL macro selector and qualified DebugBreak rename mismatch. Both were auditor defects; production unchanged.",
+    "compiler_preprocessor_or_target_execution": false,
+    "native_test_controls_compiled": 0,
+    "native_test_controls_run": 0,
+    "node_reference_or_source_generator_run": false,
+    "new_leases": 0
+  },
+  "integration_requirements": [
+    "Compose the separately reviewed native_node_tracing_clock.hpp/.cpp at the pinned hashes with this unit; the header is deliberately not copied into provider-af production.",
+    "Admit native_v8_base_fatal.cpp and native_node_tracing_clock_diagnostics.cpp only through a separately reviewed target/build change. This packet changes no build files and adds no build root/filter.",
+    "Use a consistent DEBUG/OFFICIAL_BUILD selection for owner header, owner object, wrappers and callers. Root observed current native flags without either macro. Other declared branches remain source-only.",
+    "Keep the existing genuine C++ allocation owner/AllocationScope composition for DEBUG operand streams/new string. This source adds no fallback allocator, process host, placeholder callback or Node assert substitution.",
+    "Complete native process-bootstrap installation/lifetime/serialization of print-stack, fatal and dcheck hooks when required by the original startup path. Hooks remain null/default here; no process-bootstrap equivalence is claimed.",
+    "Immediate tracing C APIs keep the separately reviewed DiagnosticContextScope first and pass the actual caller or null. This low-level terminal owner neither stores/queues a JSContext nor masks the caller's TLS context with a new null scope. An installed native hook may consume the existing scoped context according to its separate contract.",
+    "Windows native CRT/Kernel32 functions and POSIX libc remain real target dependencies; selected Android native logging additionally needs its actual log library/build selection.",
+    "Source admission is followed by compiler/linker gates, focused native fatal/clock/diagnostic controls, death/output and concurrency coverage, and Root-owned target/runtime qualification."
+  ],
+  "explicit_nonclaims": [
+    "No existing Node check-failure or diagnostic-context source changed.",
+    "No installed default stack callback, VM diagnostic renderer, event-loop owner or generic host bridge.",
+    "No compiled header, linked symbol, native output capture, death-test result, trap delivery/stack-shape or abort exit-code observation.",
+    "No supported-platform, DEBUG clock DCHECK, Abseil mutex, tracing Agent/controller/Recorder or whole-runtime qualification.",
+    "Retained native global/cached-output race assumptions are original source behavior, not a concurrency proof.",
+    "No native build, Node reference capture, source generator, extra resource lease, Main edit or cleanup."
+  ]
+}
