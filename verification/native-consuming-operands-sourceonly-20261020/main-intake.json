@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "status": "reviewed_source_only_intake",
+  "utc": "2026-10-20T13:05:44.927697+00:00",
+  "main_parent": "382fa9a64caa01a7eb33da1999d93bb5c077ae72",
+  "donor_commit": "f8a73a046683aab610c8a3b77c45938d2aaf5294",
+  "manifest_sha256": "8E825F581D5387D75CA6AC7904A47B81CC83999E56F758B1E254B06BDBE15B19",
+  "source_only": true,
+  "native_execution": false,
+  "qualification": false,
+  "production_packets": [
+    {
+      "packet": "branch-production-delta.json",
+      "sha256": "BFF9E6778980F585A84B3F451D4FC76E8AD02DA28C65CE3833FB51F772BD42E2",
+      "edits": [
+        {
+          "label": "OP_if_true consumed Boolean operand retirement",
+          "offset": 701734,
+          "before_sha256": "259043AE6418417144227EEA07EA17DF5FAAB805F70AB7C60E27CD071880D52B",
+          "after_sha256": "C15008097409CB68EA80A2F049C424D4709A5172DB02E666AC7FF6BB5C796CCF"
+        },
+        {
+          "label": "OP_if_false consumed Boolean operand retirement",
+          "offset": 702505,
+          "before_sha256": "9ECEF951CCFF7B23385DC91227EFC1D1A901341AB8C5017C2B9EC5427C9160BF",
+          "after_sha256": "B828154322FE774F9AC417F448B449FEB63BE20D92211E88F20F78619AFE5945"
+        },
+        {
+          "label": "OP_if_true8 consumed Boolean operand retirement",
+          "offset": 703278,
+          "before_sha256": "74B0E54F943D454AD5A68BDACCA2BF32EAB23B90A2817E79426DD9967F183B14",
+          "after_sha256": "8F71A4CE527CE7A6325899F22E2BEC0DF2618EF3DEC0750183738C04D055E130"
+        },
+        {
+          "label": "OP_if_false8 consumed Boolean operand retirement",
+          "offset": 704040,
+          "before_sha256": "A748D10AAC2900B65C46053242F8D69D9B593BB362FAA27549F83A9AF5E9881C",
+          "after_sha256": "E76BE360974180C256BC6FF90B66BEEB2AFAD1E7C3BEB21CE20F7092271C7A7A"
+        }
+      ]
+    },
+    {
+      "packet": "property-key-production-delta.json",
+      "sha256": "57F77D2038D4B6AF58DF4434250865B28B2F4E91F8F66B5574D111AECFDE167D",
+      "edits": [
+        {
+          "label": "OP_to_propkey consumed conversion operand retirement",
+          "offset": 759211,
+          "before_sha256": "E438AC22BF6B81E2CA238609E6F5E8A882D071E51FC97A7E9AA139E8482C909D",
+          "after_sha256": "3EF24907176732294A27C54A08ED17383871C441F8FEE4F4A9C0E2CC52156FBE"
+        }
+      ]
+    },
+    {
+      "packet": "drop-production-delta.json",
+      "sha256": "8873D5C702B6D32816A3AF5C92BF321A4B7F4911CCBA6551CA4AE4B8E82496AF",
+      "edits": [
+        {
+          "label": "OP_drop actual consumed-value retirement before dispatch",
+          "offset": 673219,
+          "before_sha256": "B2396B9CC00F547AA5D35B08E824A5FF6A4FA9CA6E47D641EED8DE5729CBE2BB",
+          "after_sha256": "C068E8A655E8DF38C72BB5CBA6D41F6E316FB7EDC080A89046A4BC8FA732C811"
+        }
+      ]
+    }
+  ],
+  "build_edits": [
+    {
+      "label": null,
+      "offset": 194812,
+      "before_sha256": "4DBCC3B3D07623E4B86A4F7A4E58210DD0547CB68EFB39B2C3A69F51481D516A",
+      "after_sha256": "9F6BFCB93D4DC17C3A0B64ED0E8985855C8082EFEAC4B9559563D7FE56615473"
+    }
+  ],
+  "build_added_lines": 6,
+  "declared_tests": 25,
+  "header_unchanged": "8CEC97C3D562550425747E8AA7848F3A4DFE45AFC5FF4D9E89283A4120289591",
+  "shared_main_deltas_preserved": "Exact six packet edits preserve complete Main preimage including private setter, execution termination, lazy ordinary function prototype and property retirement; no donor shared-file replacement.",
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2365877,
+      "sha256": "3FD1D75CE5331D4938A65DF3CB0FC1182A9AB39CC557F6E58C74CA04753EE3CD",
+      "before_sha256": "1506620A7109D107D0826428B22057BE0D465DA7D812BFC73F17A021FF4B2556"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 485199,
+      "sha256": "09F971E1CEFC1D608C4513970958BA46D2446A5066A9C2EE97D83393EDBF0D11",
+      "before_sha256": "A4C6F3CA8C98F4318C2C2CB4A571BF6856FA1925F9E97A3766F28EC0B678944B"
+    },
+    {
+      "path": "src/native_vm_consuming_operand_test.zig",
+      "bytes": 28216,
+      "sha256": "3DB098F3876C4139176EBEFF8BDA4225036C6E3AFAF675774692E52092F56CC2",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/README.md",
+      "bytes": 2480,
+      "sha256": "5C128830236B3380EC76DF7AAEC8A9A55724F006FA45E09FCCD8272918D60152",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/actual-emission-source.json",
+      "bytes": 10541,
+      "sha256": "3E29ECC9ACFD94DAFB915FC87F99087BED087D14F4DBC3B17BFCBF3B581AEA69",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/branch-production-delta.json",
+      "bytes": 7052,
+      "sha256": "BFF9E6778980F585A84B3F451D4FC76E8AD02DA28C65CE3833FB51F772BD42E2",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/build-intake.json",
+      "bytes": 1136,
+      "sha256": "4A5E80B92C5A6267825D8F4AC207B1DFED9E92DF498F4ED3F3BF944785A840C0",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/declared-names.json",
+      "bytes": 2286,
+      "sha256": "5B93C913E019FDB9F358F6EB0DA5399126F3BAB22D19F2CCB781DBA7DF2DBF8D",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/drop-and-assignment-source.json",
+      "bytes": 3280,
+      "sha256": "36382EC024F9221A62C54B4C59A3C3E9146900B4C010412BE5592672EFA23ADB",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/drop-production-delta.json",
+      "bytes": 936,
+      "sha256": "8873D5C702B6D32816A3AF5C92BF321A4B7F4911CCBA6551CA4AE4B8E82496AF",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/manifest.json",
+      "bytes": 3114,
+      "sha256": "8E825F581D5387D75CA6AC7904A47B81CC83999E56F758B1E254B06BDBE15B19",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/peer-closure.json",
+      "bytes": 716,
+      "sha256": "74B6EC9B14E6AC59F7CD83E0129FD1F6804F4C25CAED60368A949F119355400A",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/property-key-production-delta.json",
+      "bytes": 1627,
+      "sha256": "57F77D2038D4B6AF58DF4434250865B28B2F4E91F8F66B5574D111AECFDE167D",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/selected-source.json",
+      "bytes": 5110,
+      "sha256": "D4706C9AD2A22A0AA41830B0E78295D63C8CDC47AF10AAD346012606D310DFCA",
+      "before_sha256": null
+    }
+  ]
+}

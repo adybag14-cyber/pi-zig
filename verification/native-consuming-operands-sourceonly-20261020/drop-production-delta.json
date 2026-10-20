@@ -1,0 +1,18 @@
+{
+  "source_only": true,
+  "path": "vendor/quickjs/quickjs.c",
+  "before_sha256": "A7865952B60DCB2443F7BAB9E22F085A87D3CAB1AB8680FDD8D3F573050D2414",
+  "after_sha256": "793048A6A71DCED89B40668C75B0779CCEE76048E722A05E74CA980460392F9F",
+  "scope": "Only actual OP_drop ownership retirement, including original computed object-literal key after OP_define_array_el; no call-entry/local-store change.",
+  "edits": [
+    {
+      "label": "OP_drop actual consumed-value retirement before dispatch",
+      "before": "        CASE(OP_drop):\n            JS_FreeValue(ctx, sp[-1]);\n            sp--;\n            BREAK;\n",
+      "after": "        CASE(OP_drop):\n            sp--;\n            if (unlikely(js_pi_finish_consumed_value(ctx, sp, JS_UNDEFINED) < 0))\n                goto exception;\n            BREAK;\n",
+      "count": 1,
+      "before_byte_offset": 669878,
+      "after_byte_offset": 669878
+    }
+  ],
+  "execution": false
+}

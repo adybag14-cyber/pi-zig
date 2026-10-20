@@ -1,0 +1,32 @@
+{
+  "source_only": true,
+  "count": 25,
+  "names": [
+    "VM consuming operand truthy branch retires its holder without invoking conversion",
+    "VM consuming operand immediate false branch values keep their actual truthiness",
+    "VM consuming operand short forward branch checks actual holder fatal before its body",
+    "VM consuming operand short backward branch stops before a second actual loop body",
+    "VM consuming operand long forward branch checks actual holder fatal before side effects",
+    "VM consuming operand long backward branch stops before repeating its actual body",
+    "VM consuming operand ordinary Boolean cleanup enters the genuine guest catch",
+    "VM consuming operand flagged Error truthiness is successful DATA",
+    "VM consuming operand Boolean cleanup preserves actual private termination",
+    "VM consuming operand computed String key retains the completed primitive after its receiver retires",
+    "VM consuming operand computed Symbol key preserves the selected intrinsic identity",
+    "VM consuming operand successful key conversion checks receiver fatal before value evaluation",
+    "VM consuming operand failed key conversion selects a later actual operand fatal",
+    "VM consuming operand first actual conversion fatal survives a second operand fatal",
+    "VM consuming operand ordinary conversion reason survives ordinary operand retirement",
+    "VM consuming operand ordinary successful-key cleanup enters the original catch",
+    "VM consuming operand flagged Error key receiver remains DATA during real conversion",
+    "VM consuming operand key retirement preserves private termination before value creation",
+    "VM consuming operand precompiled Boolean completion needs no allocation",
+    "VM consuming operand direct drop checks actual fatal before its next statement",
+    "VM consuming operand ordinary direct drop enters the original catch",
+    "VM consuming operand dropping flagged Error DATA does not create an event",
+    "VM consuming operand object literal key drop stops after its already evaluated value",
+    "VM consuming operand ordinary object literal key drop preserves exact catch identity",
+    "VM consuming operand direct drop preserves actual private termination"
+  ],
+  "metadata_execution": false
+}

@@ -1,0 +1,43 @@
+{
+  "source_only": true,
+  "path": "vendor/quickjs/quickjs.c",
+  "base_commit": "86e4be1ae0455ed0aec42856cca6129e8ee7a6fd",
+  "before_sha256": "2A847A6628054445688DEE5217BF97270B839AB9D2B923384DB1B543720B36C6",
+  "after_sha256": "468D2FE2DFA9C916AC14C3E8BC0468482FFE5D81A5B052018BBC0524BD09A724",
+  "scope": "Only consuming OP_if_true/false and their short forms; immediate path unchanged, original non-guest Boolean conversion then cleared/popped actual operand retirement before branch dispatch.",
+  "edits": [
+    {
+      "label": "OP_if_true consumed Boolean operand retirement",
+      "before": "        CASE(OP_if_true):\n            {\n                int res;\n                JSValue op1;\n\n                op1 = sp[-1];\n                pc += 4;\n                if ((uint32_t)JS_VALUE_GET_TAG(op1) <= JS_TAG_UNDEFINED) {\n                    res = JS_VALUE_GET_INT(op1);\n                } else {\n                    res = JS_ToBoolFree(ctx, op1);\n                }\n                sp--;\n                if (res) {\n                    pc += (int32_t)get_u32(pc - 4) - 4;\n                }\n                if (unlikely(js_poll_interrupts(ctx)))\n                    goto exception;\n            }\n            BREAK;\n",
+      "after": "        CASE(OP_if_true):\n            {\n                int res;\n                JSValue op1;\n\n                op1 = sp[-1];\n                pc += 4;\n                if ((uint32_t)JS_VALUE_GET_TAG(op1) <= JS_TAG_UNDEFINED) {\n                    res = JS_VALUE_GET_INT(op1);\n                    sp--;\n                } else {\n                    res = JS_ToBool(ctx, op1);\n                    sp--;\n                    if (unlikely(js_pi_finish_consumed_value(ctx, sp, JS_UNDEFINED) < 0))\n                        goto exception;\n                }\n                if (res) {\n                    pc += (int32_t)get_u32(pc - 4) - 4;\n                }\n                if (unlikely(js_poll_interrupts(ctx)))\n                    goto exception;\n            }\n            BREAK;\n",
+      "count": 1,
+      "before_byte_offset": 698393,
+      "after_byte_offset": 698393
+    },
+    {
+      "label": "OP_if_false consumed Boolean operand retirement",
+      "before": "        CASE(OP_if_false):\n            {\n                int res;\n                JSValue op1;\n\n                op1 = sp[-1];\n                pc += 4;\n                if ((uint32_t)JS_VALUE_GET_TAG(op1) <= JS_TAG_UNDEFINED) {\n                    res = JS_VALUE_GET_INT(op1);\n                } else {\n                    res = JS_ToBoolFree(ctx, op1);\n                }\n                sp--;\n                if (!res) {\n                    pc += (int32_t)get_u32(pc - 4) - 4;\n                }\n                if (unlikely(js_poll_interrupts(ctx)))\n                    goto exception;\n            }\n            BREAK;\n",
+      "after": "        CASE(OP_if_false):\n            {\n                int res;\n                JSValue op1;\n\n                op1 = sp[-1];\n                pc += 4;\n                if ((uint32_t)JS_VALUE_GET_TAG(op1) <= JS_TAG_UNDEFINED) {\n                    res = JS_VALUE_GET_INT(op1);\n                    sp--;\n                } else {\n                    res = JS_ToBool(ctx, op1);\n                    sp--;\n                    if (unlikely(js_pi_finish_consumed_value(ctx, sp, JS_UNDEFINED) < 0))\n                        goto exception;\n                }\n                if (!res) {\n                    pc += (int32_t)get_u32(pc - 4) - 4;\n                }\n                if (unlikely(js_poll_interrupts(ctx)))\n                    goto exception;\n            }\n            BREAK;\n",
+      "count": 1,
+      "before_byte_offset": 699164,
+      "after_byte_offset": 699164
+    },
+    {
+      "label": "OP_if_true8 consumed Boolean operand retirement",
+      "before": "        CASE(OP_if_true8):\n            {\n                int res;\n                JSValue op1;\n\n                op1 = sp[-1];\n                pc += 1;\n                if ((uint32_t)JS_VALUE_GET_TAG(op1) <= JS_TAG_UNDEFINED) {\n                    res = JS_VALUE_GET_INT(op1);\n                } else {\n                    res = JS_ToBoolFree(ctx, op1);\n                }\n                sp--;\n                if (res) {\n                    pc += (int8_t)pc[-1] - 1;\n                }\n                if (unlikely(js_poll_interrupts(ctx)))\n                    goto exception;\n            }\n            BREAK;\n",
+      "after": "        CASE(OP_if_true8):\n            {\n                int res;\n                JSValue op1;\n\n                op1 = sp[-1];\n                pc += 1;\n                if ((uint32_t)JS_VALUE_GET_TAG(op1) <= JS_TAG_UNDEFINED) {\n                    res = JS_VALUE_GET_INT(op1);\n                    sp--;\n                } else {\n                    res = JS_ToBool(ctx, op1);\n                    sp--;\n                    if (unlikely(js_pi_finish_consumed_value(ctx, sp, JS_UNDEFINED) < 0))\n                        goto exception;\n                }\n                if (res) {\n                    pc += (int8_t)pc[-1] - 1;\n                }\n                if (unlikely(js_poll_interrupts(ctx)))\n                    goto exception;\n            }\n            BREAK;\n",
+      "count": 1,
+      "before_byte_offset": 699937,
+      "after_byte_offset": 699937
+    },
+    {
+      "label": "OP_if_false8 consumed Boolean operand retirement",
+      "before": "        CASE(OP_if_false8):\n            {\n                int res;\n                JSValue op1;\n\n                op1 = sp[-1];\n                pc += 1;\n                if ((uint32_t)JS_VALUE_GET_TAG(op1) <= JS_TAG_UNDEFINED) {\n                    res = JS_VALUE_GET_INT(op1);\n                } else {\n                    res = JS_ToBoolFree(ctx, op1);\n                }\n                sp--;\n                if (!res) {\n                    pc += (int8_t)pc[-1] - 1;\n                }\n                if (unlikely(js_poll_interrupts(ctx)))\n                    goto exception;\n            }\n            BREAK;\n",
+      "after": "        CASE(OP_if_false8):\n            {\n                int res;\n                JSValue op1;\n\n                op1 = sp[-1];\n                pc += 1;\n                if ((uint32_t)JS_VALUE_GET_TAG(op1) <= JS_TAG_UNDEFINED) {\n                    res = JS_VALUE_GET_INT(op1);\n                    sp--;\n                } else {\n                    res = JS_ToBool(ctx, op1);\n                    sp--;\n                    if (unlikely(js_pi_finish_consumed_value(ctx, sp, JS_UNDEFINED) < 0))\n                        goto exception;\n                }\n                if (!res) {\n                    pc += (int8_t)pc[-1] - 1;\n                }\n                if (unlikely(js_poll_interrupts(ctx)))\n                    goto exception;\n            }\n            BREAK;\n",
+      "count": 1,
+      "before_byte_offset": 700699,
+      "after_byte_offset": 700699
+    }
+  ],
+  "execution": false
+}

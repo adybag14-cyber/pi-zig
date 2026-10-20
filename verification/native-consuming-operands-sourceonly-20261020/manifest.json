@@ -1,0 +1,82 @@
+{
+  "source_only": true,
+  "base_commit": "86e4be1ae0455ed0aec42856cca6129e8ee7a6fd",
+  "production_packets": [
+    "branch-production-delta.json",
+    "property-key-production-delta.json",
+    "drop-production-delta.json"
+  ],
+  "declared_count": 25,
+  "root": "src/native_vm_consuming_operand_test.zig",
+  "filter": "VM consuming operand",
+  "target": "build-native-vm-consuming-operands",
+  "metadata_execution": false,
+  "execution": false,
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2362536,
+      "sha256": "793048A6A71DCED89B40668C75B0779CCEE76048E722A05E74CA980460392F9F"
+    },
+    {
+      "path": "src/native_vm_consuming_operand_test.zig",
+      "bytes": 28216,
+      "sha256": "3DB098F3876C4139176EBEFF8BDA4225036C6E3AFAF675774692E52092F56CC2"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 418865,
+      "sha256": "F4077C59CC40812415EB597F38DA987F75445E81A47700DAA1F693ED14F7BE3B"
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/actual-emission-source.json",
+      "bytes": 10541,
+      "sha256": "3E29ECC9ACFD94DAFB915FC87F99087BED087D14F4DBC3B17BFCBF3B581AEA69"
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/branch-production-delta.json",
+      "bytes": 7052,
+      "sha256": "BFF9E6778980F585A84B3F451D4FC76E8AD02DA28C65CE3833FB51F772BD42E2"
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/build-intake.json",
+      "bytes": 1136,
+      "sha256": "4A5E80B92C5A6267825D8F4AC207B1DFED9E92DF498F4ED3F3BF944785A840C0"
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/declared-names.json",
+      "bytes": 2286,
+      "sha256": "5B93C913E019FDB9F358F6EB0DA5399126F3BAB22D19F2CCB781DBA7DF2DBF8D"
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/drop-and-assignment-source.json",
+      "bytes": 3280,
+      "sha256": "36382EC024F9221A62C54B4C59A3C3E9146900B4C010412BE5592672EFA23ADB"
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/drop-production-delta.json",
+      "bytes": 936,
+      "sha256": "8873D5C702B6D32816A3AF5C92BF321A4B7F4911CCBA6551CA4AE4B8E82496AF"
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/peer-closure.json",
+      "bytes": 716,
+      "sha256": "74B6EC9B14E6AC59F7CD83E0129FD1F6804F4C25CAED60368A949F119355400A"
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/property-key-production-delta.json",
+      "bytes": 1627,
+      "sha256": "57F77D2038D4B6AF58DF4434250865B28B2F4E91F8F66B5574D111AECFDE167D"
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/README.md",
+      "bytes": 2480,
+      "sha256": "5C128830236B3380EC76DF7AAEC8A9A55724F006FA45E09FCCD8272918D60152"
+    },
+    {
+      "path": "verification/native-consuming-operands-sourceonly-20261020/selected-source.json",
+      "bytes": 5110,
+      "sha256": "D4706C9AD2A22A0AA41830B0E78295D63C8CDC47AF10AAD346012606D310DFCA"
+    }
+  ]
+}

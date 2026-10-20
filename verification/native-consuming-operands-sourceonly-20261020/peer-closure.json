@@ -1,0 +1,14 @@
+{
+  "source_only": true,
+  "production_sha256": "793048A6A71DCED89B40668C75B0779CCEE76048E722A05E74CA980460392F9F",
+  "root_sha256": "3DB098F3876C4139176EBEFF8BDA4225036C6E3AFAF675774692E52092F56CC2",
+  "modules": {
+    "status": "CLOSED",
+    "scope": "Four Boolean branch edits plus OP_to_propkey at A786, then exact OP_drop8873 at7930; Fixture/Probe/helpers and controls10-18/20-25 at3DB0. Actual Helpers literal and assignment emission mapped separately."
+  },
+  "sdk": {
+    "status": "CLOSED",
+    "scope": "Fixture/Probe/helpers and controls1-9/19 at3DB0; six-line build4A5E80B9. Actual short/long observable branch bodies, one/24 counts, ordinary/DATA/private and limit1 routes."
+  },
+  "execution": false
+}

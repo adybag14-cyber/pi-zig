@@ -1989,6 +1989,12 @@ pub fn build(b: *std.Build) void {
         linkQuickJs(b, vm_array_buffer_view_length_tests.root_module, quickjs, sqlite_lib_dir);
         b.step("build-native-vm-array-buffer-view-length", "Install intrinsic ArrayBufferView byteLength controls without execution").dependOn(&b.addInstallArtifact(vm_array_buffer_view_length_tests, .{}).step);
     }
+    const consuming_operand_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_consuming_operand_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"VM consuming operand"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, consuming_operand_tests.root_module, quickjs, sqlite_lib_dir);
+    b.step("build-native-vm-consuming-operands", "Install actual consuming operand retirement controls without execution").dependOn(&b.addInstallArtifact(consuming_operand_tests, .{}).step);
     const property_retirement_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_property_retirement_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"VM property retirement"}, .use_llvm = use_llvm,

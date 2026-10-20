@@ -1,0 +1,18 @@
+{
+  "source_only": true,
+  "path": "vendor/quickjs/quickjs.c",
+  "before_sha256": "468D2FE2DFA9C916AC14C3E8BC0468482FFE5D81A5B052018BBC0524BD09A724",
+  "after_sha256": "A7865952B60DCB2443F7BAB9E22F085A87D3CAB1AB8680FDD8D3F573050D2414",
+  "scope": "Only OP_to_propkey conversion-result/consumed-operand retirement; OP_to_propkey2 unchanged.",
+  "edits": [
+    {
+      "label": "OP_to_propkey consumed conversion operand retirement",
+      "before": "        CASE(OP_to_propkey):\n            switch (JS_VALUE_GET_TAG(sp[-1])) {\n            case JS_TAG_INT:\n            case JS_TAG_STRING:\n            case JS_TAG_SYMBOL:\n                break;\n            default:\n                sf->cur_pc = pc;\n                ret_val = JS_ToPropertyKey(ctx, sp[-1]);\n                if (JS_IsException(ret_val))\n                    goto exception;\n                JS_FreeValue(ctx, sp[-1]);\n                sp[-1] = ret_val;\n                break;\n            }\n            BREAK;\n\n",
+      "after": "        CASE(OP_to_propkey):\n            switch (JS_VALUE_GET_TAG(sp[-1])) {\n            case JS_TAG_INT:\n            case JS_TAG_STRING:\n            case JS_TAG_SYMBOL:\n                break;\n            default:\n                sf->cur_pc = pc;\n                ret_val = JS_ToPropertyKey(ctx, sp[-1]);\n                if (unlikely(js_pi_finish_consumed_value(ctx, &sp[-1], ret_val) < 0))\n                    goto exception;\n                break;\n            }\n            BREAK;\n\n",
+      "count": 1,
+      "before_byte_offset": 755870,
+      "after_byte_offset": 755870
+    }
+  ],
+  "execution": false
+}

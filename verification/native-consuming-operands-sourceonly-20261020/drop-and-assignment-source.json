@@ -1,0 +1,18 @@
+{
+  "source_only": true,
+  "base_sha256": "A7865952B60DCB2443F7BAB9E22F085A87D3CAB1AB8680FDD8D3F573050D2414",
+  "observed_helpers_mapping": "Boolean initialization condition -> OP_if_*. Computed object literal -> OP_define_array_el duplicate key -> OP_drop original key. Assignment controls select OP_to_propkey explicitly before RHS.",
+  "slices": [
+    {
+      "key": "        CASE(OP_define_array_el):",
+      "offset": 730732,
+      "text": "        CASE(OP_define_array_el):\n            {\n                int ret;\n                ret = JS_DefinePropertyValueValue(ctx, sp[-3], js_dup(sp[-2]), sp[-1],\n                                                  JS_PROP_C_W_E | JS_PROP_THROW);\n                sp -= 1;\n                if (unlikely(ret < 0))\n                    goto exception;\n            }\n            BREAK;\n\n        CASE(OP_append):    /* array pos enumobj -- array pos */\n            {\n                sf->cur_pc = pc;\n                if (js_append_enumerate(ctx, sp))\n                    goto exception;\n                JS_FreeValue(ctx, *--sp);\n            }\n            BREAK;\n\n        CASE(OP_copy_data_properties):    /* targe"
+    },
+    {
+      "key": "emit_op(s, OP_to_propkey);\n            emit_op(s, OP_swap);",
+      "offset": 1072447,
+      "text": "token(s))\n            return -1;\n        if (get_lvalue(s, &opcode, &scope, &name, &label, NULL, (op != '='), op) < 0)\n            return -1;\n\n        // comply with rather obtuse evaluation order of computed properties:\n        // obj[key]=val evaluates val->obj->key when obj is null/undefined\n        // but key->obj->val when an object\n        // FIXME(bnoordhuis) less stack shuffling; don't to_propkey twice in\n        // happy path; replace `dup is_undefined_or_null if_true` with new\n        // opcode if_undefined_or_null? replace `swap dup` with over?\n        if (op == '=' && opcode == OP_get_array_el) {\n            int label_next = -1;\n            JSFunctionDef *fd = s->cur_func;\n            assert(OP_to_propkey2 == fd->byte_code.buf[fd->last_opcode_pos]);\n            fd->byte_code.size = fd->last_opcode_pos;\n            fd->last_opcode_pos = -1;\n            emit_op(s, OP_swap); // obj key -> key obj\n            emit_op(s, OP_dup);\n            emit_op(s, OP_is_undefined_or_null);\n            label_next = emit_goto(s, OP_if_true, -1);\n            emit_op(s, OP_swap);\n            emit_op(s, OP_to_propkey);\n            emit_op(s, OP_swap);\n            emit_label(s, label_next);\n            emit_op(s, OP_swap);\n        }\n\n        if (js_parse_assign_expr2(s, parse_flags)) {\n            JS_FreeAtom(s->ctx, name);\n            return -1;\n        }\n\n        if (op == '=' && opcode == OP_get_array_el) {\n            emit_op(s, OP_swap); // obj key val -> obj val key\n            emit_op(s, OP_to_propkey);\n            emit_op(s, OP_swap);\n        }\n\n        if (op == '=') {\n            if ((opcode == OP_get_ref_value || opcode == OP_scope_get_var) && name == name0) {\n                set_object_name(s, name);\n            }\n        } else {\n            emit_op(s, op - TOK_MUL_ASSIGN + OP_mul);\n        }\n        put_lvalue(s, opcode, scope, name, label, PUT_LVALUE_KEEP_TOP, fal"
+    }
+  ],
+  "execution": false
+}

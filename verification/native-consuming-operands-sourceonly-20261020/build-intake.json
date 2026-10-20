@@ -1,0 +1,17 @@
+{
+  "source_only": true,
+  "before_sha256": "B7082B5EDC0AEDC48223379B8B89720D3C6E8DABC747CE083C4B6CAE0E334C74",
+  "after_sha256": "F4077C59CC40812415EB597F38DA987F75445E81A47700DAA1F693ED14F7BE3B",
+  "added_lines": 6,
+  "edits": [
+    {
+      "before": "    const property_retirement_tests = b.addTest(.{",
+      "after": "    const consuming_operand_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_consuming_operand_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM consuming operand\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, consuming_operand_tests.root_module, quickjs, sqlite_lib_dir);\n    b.step(\"build-native-vm-consuming-operands\", \"Install actual consuming operand retirement controls without execution\").dependOn(&b.addInstallArtifact(consuming_operand_tests, .{}).step);\n    const property_retirement_tests = b.addTest(.{",
+      "count": 1
+    }
+  ],
+  "root": "src/native_vm_consuming_operand_test.zig",
+  "filter": "VM consuming operand",
+  "target": "build-native-vm-consuming-operands",
+  "execution": false
+}

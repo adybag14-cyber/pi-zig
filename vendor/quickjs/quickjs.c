@@ -20272,8 +20272,9 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
             BREAK;
 
         CASE(OP_drop):
-            JS_FreeValue(ctx, sp[-1]);
             sp--;
+            if (unlikely(js_pi_finish_consumed_value(ctx, sp, JS_UNDEFINED) < 0))
+                goto exception;
             BREAK;
         CASE(OP_nip):
             JS_FreeValue(ctx, sp[-2]);
@@ -21114,10 +21115,13 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
                 pc += 4;
                 if ((uint32_t)JS_VALUE_GET_TAG(op1) <= JS_TAG_UNDEFINED) {
                     res = JS_VALUE_GET_INT(op1);
+                    sp--;
                 } else {
-                    res = JS_ToBoolFree(ctx, op1);
+                    res = JS_ToBool(ctx, op1);
+                    sp--;
+                    if (unlikely(js_pi_finish_consumed_value(ctx, sp, JS_UNDEFINED) < 0))
+                        goto exception;
                 }
-                sp--;
                 if (res) {
                     pc += (int32_t)get_u32(pc - 4) - 4;
                 }
@@ -21134,10 +21138,13 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
                 pc += 4;
                 if ((uint32_t)JS_VALUE_GET_TAG(op1) <= JS_TAG_UNDEFINED) {
                     res = JS_VALUE_GET_INT(op1);
+                    sp--;
                 } else {
-                    res = JS_ToBoolFree(ctx, op1);
+                    res = JS_ToBool(ctx, op1);
+                    sp--;
+                    if (unlikely(js_pi_finish_consumed_value(ctx, sp, JS_UNDEFINED) < 0))
+                        goto exception;
                 }
-                sp--;
                 if (!res) {
                     pc += (int32_t)get_u32(pc - 4) - 4;
                 }
@@ -21154,10 +21161,13 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
                 pc += 1;
                 if ((uint32_t)JS_VALUE_GET_TAG(op1) <= JS_TAG_UNDEFINED) {
                     res = JS_VALUE_GET_INT(op1);
+                    sp--;
                 } else {
-                    res = JS_ToBoolFree(ctx, op1);
+                    res = JS_ToBool(ctx, op1);
+                    sp--;
+                    if (unlikely(js_pi_finish_consumed_value(ctx, sp, JS_UNDEFINED) < 0))
+                        goto exception;
                 }
-                sp--;
                 if (res) {
                     pc += (int8_t)pc[-1] - 1;
                 }
@@ -21174,10 +21184,13 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
                 pc += 1;
                 if ((uint32_t)JS_VALUE_GET_TAG(op1) <= JS_TAG_UNDEFINED) {
                     res = JS_VALUE_GET_INT(op1);
+                    sp--;
                 } else {
-                    res = JS_ToBoolFree(ctx, op1);
+                    res = JS_ToBool(ctx, op1);
+                    sp--;
+                    if (unlikely(js_pi_finish_consumed_value(ctx, sp, JS_UNDEFINED) < 0))
+                        goto exception;
                 }
-                sp--;
                 if (!res) {
                     pc += (int8_t)pc[-1] - 1;
                 }
@@ -22673,10 +22686,8 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
             default:
                 sf->cur_pc = pc;
                 ret_val = JS_ToPropertyKey(ctx, sp[-1]);
-                if (JS_IsException(ret_val))
+                if (unlikely(js_pi_finish_consumed_value(ctx, &sp[-1], ret_val) < 0))
                     goto exception;
-                JS_FreeValue(ctx, sp[-1]);
-                sp[-1] = ret_val;
                 break;
             }
             BREAK;
