@@ -1,0 +1,91 @@
+{
+  "schema": "source-only-correction-v1",
+  "created_utc": "2026-10-20",
+  "unit": "Module creation warning fixture uses actual CLI option admission",
+  "baseline_main": "1129cc97e4e3367fc553e33d3091bc4fb7635d65",
+  "production_changes": false,
+  "correction": {
+    "path": "src/native_node_module_creation_test.zig",
+    "before": {
+      "sha256": "9d3172e58bb2f697032640e778dd7b12561a6943d49e991759c1232fbfd4cb6f",
+      "bytes": 33660,
+      "preserved_file": "native_node_module_creation_test.before.zig.txt"
+    },
+    "after": {
+      "sha256": "c7a6956fe9ff1fbe53fe91f532c5af421ea84df3869225bf792d4c33e629c9a3",
+      "bytes": 33683
+    },
+    "edits": [
+      {
+        "before": "            .values = .{ .pending_deprecation = pending_deprecation },",
+        "after": "            .exec_arguments = if (pending_deprecation) &.{\"--pending-deprecation\"} else &.{},",
+        "count": 1
+      }
+    ]
+  },
+  "cause": "Config.captureEnvironment assigns pending_deprecation from NODE_PENDING_DEPRECATION before parsing retained CLI arguments. The old fixture only initialized Input.values.pending_deprecation, so absent environment admission reset it to false. The selected real CLI argument now enables the actual warning path after environment capture.",
+  "authority": {
+    "path": "C:/Users/adyba/pi-zig/main/src/extensions/native_node_options_config.zig",
+    "sha256": "1e00540adce1d3ce012578c64f582776e06fe6027f79d71be8ed0ef5f91e076e",
+    "bytes": 20006,
+    "capture_environment_excerpt": "pub fn captureEnvironment(self: *Config, environment: *const std.process.Environ.Map) !void {\n        if (self.environment_ready) return;\n        var arena: std.heap.ArenaAllocator = .init(self.memory.allocator());\n        errdefer arena.deinit();\n        const allocator = arena.allocator();\n        var next = try cloneValues(allocator, self.original.values);\n        if (next.strip_types == null) next.strip_types = self.original.features.strip_types;\n        // Exact HandleEnvOptions assignments. The native environment is read\n        // before its mutable JavaScript process.env counterpart exists.\n        next.pending_deprecation = envOne(environment, \"NODE_PENDING_DEPRECATION\");\n        next.preserve_symlinks = envOne(environment, \"NODE_PRESERVE_SYMLINKS\");\n        next.preserve_symlinks_main = envOne(environment, \"NODE_PRESERVE_SYMLINKS_MAIN\");\n        next.use_env_proxy = envOne(environment, \"NODE_USE_ENV_PROXY\");\n        if (next.redirect_warnings.len == 0)\n            next.redirect_warnings = try allocator.dupe(u8, envRead(environment, \"NODE_REDIRECT_WARNINGS\") orelse \"\");\n        const raw = envRead(environment, \"NODE_OPTIONS\") orelse \"\";\n        const tokens = try tokenize(allocator, raw);\n        var vm_abort_on_uncaught_exception = false;\n        try parse(allocator, &next, &vm_abort_on_uncaught_exception, tokens, .environment, self.original.features);\n        try parse(allocator, &next, &vm_abort_on_uncaught_exception, self.original.exec_arguments, .command_line, self.original.features);\n        try validate(&next);\n        self.environment_arena = arena;\n        self.values = next;\n        self.vm_abort_on_uncaught_exception = vm_abort_on_uncaught_exception;\n        self.environment_ready = true;\n    }"
+  },
+  "preserved_negative": {
+    "directory": "C:/Users/adyba/pi-zig/evidence/root-vm-io-oauth-options-v24-diagnostic-runtime-20261020-121245/groups/native-node-module-creation",
+    "stderr_sha256": "5211453481E4198C6E774606ACD3EF4274DE34D9EACF219FE1489C68C253398E",
+    "results_sha256": "5E5EFF6AF45D0CE9CD695E4BD6D6D4C62DE09BA77E62C77B1EAFD4EA4836BD3C",
+    "failed_zero_based_indices": [
+      15,
+      16
+    ]
+  },
+  "static_checks": {
+    "exact_one_edit_inverse": true,
+    "all_other_bytes_identical": true,
+    "declared_control_count": 30,
+    "declared_names": [
+      "native actual Module creation constructor fields cache and ordinary call shape",
+      "native actual Module creation public assignments and own exports preserve order",
+      "native actual Module creation actual parent children and parent setter",
+      "native actual Module creation accessor flags and ordinary versus shorthand shapes",
+      "native actual Module creation reverse path scan roots and UTF16",
+      "native actual Module creation nmChars observes inherited index beyond twelve",
+      "native actual Module creation nmChars indexed getter ordinary throw",
+      "native actual Module creation retains actual path scan primordials",
+      "native actual Module creation createRequire captures the real Module and directory",
+      "native actual Module creation createRequire preserves Node24 URL context",
+      "native actual Module creation createRequire live path callee precedes arguments",
+      "native actual Module creation createRequire genuine errors and outside catch gate",
+      "native actual Module creation createRequire uses original URL and suffix callable",
+      "native actual Module creation require main own definition and following assignments",
+      "native actual Module creation require dispatches actual live Module methods",
+      "native actual Module creation pending parent warning uses original code owner",
+      "native actual Module creation warned flag precedes failed warning call",
+      "native actual Module creation completed core shares immutable constructor and cache",
+      "native actual Module creation callee and child lexical retire before next statement",
+      "native actual Module creation callee cleanup fatal stops before next setter and catch",
+      "native actual Module creation actual getter fatal stops before next setter and catch",
+      "native actual Module creation ordinary private dirname DATA keeps exact identity",
+      "native actual Module creation successful flagged dirname DATA is assigned unchanged",
+      "native actual Module creation suffix primordial reuses completed argument owner",
+      "native actual Module creation original from argument retires before returned length getter",
+      "native actual Module creation original from retirement B prevents length getter and catch",
+      "native actual Module creation pending warning follows genuine options refresh",
+      "native actual Module creation pending option calls short circuit and retain original declaration",
+      "native actual Module creation pending option holder retires before second option",
+      "native actual Module creation pending option retirement B prevents next option warning and catch"
+    ],
+    "guest_bodies_and_assertions_unchanged": true
+  },
+  "finite_peer": {
+    "reviewer": "/root",
+    "status": "closed",
+    "pin": "C7A6956FE9FF1FBE53FE91F532C5AF421EA84DF3869225BF792D4C33E629C9A3",
+    "scope": "Exact inverse; all 30 names; actual captureEnvironment environment assignment followed by CLI parse; unchanged guest bodies and assertions.",
+    "execution": false
+  },
+  "native_execution": false,
+  "node_execution": false,
+  "qualification": false,
+  "remaining": "Source-only correction. The original V24 failures remain evidence; fresh compiled artifact and runtime validation are Root-owned future gates."
+}

@@ -71,7 +71,7 @@ const Fixture = struct {
         // Explicit feature admission for this pinned Node v24.14 fixture;
         // production startup must supply its own actual build configuration.
         self.engine = try a.v.em.Engine.init(std.testing.allocator, .{ .node_options = .{
-            .values = .{ .pending_deprecation = pending_deprecation },
+            .exec_arguments = if (pending_deprecation) &.{"--pending-deprecation"} else &.{},
             .features = .{ .strip_types = true, .quic = false },
         } });
         errdefer self.engine.deinit();
