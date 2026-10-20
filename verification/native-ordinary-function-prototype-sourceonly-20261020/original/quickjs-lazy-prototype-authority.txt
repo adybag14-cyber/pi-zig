@@ -1,0 +1,74 @@
+static int JS_DefineAutoInitProperty(JSContext *ctx, JSValueConst this_obj,
+                                     JSAtom prop, JSAutoInitIDEnum id,
+                                     void *opaque, int flags)
+{
+    JSObject *p;
+    JSProperty *pr;
+
+    if (JS_VALUE_GET_TAG(this_obj) != JS_TAG_OBJECT)
+        return false;
+
+    p = JS_VALUE_GET_OBJ(this_obj);
+
+    if (find_own_property(&pr, p, prop)) {
+        /* property already exists */
+        abort();
+        return false;
+    }
+
+    /* Specialized CreateProperty */
+    pr = add_property(ctx, p, prop, (flags & JS_PROP_C_W_E) | JS_PROP_AUTOINIT);
+    if (unlikely(!pr))
+        return -1;
+    pr->u.init.realm_and_id = (uintptr_t)JS_DupContext(ctx);
+    assert((pr->u.init.realm_and_id & 3) == 0);
+    assert(id <= 3);
+    pr->u.init.realm_and_id |= id;
+    pr->u.init.opaque = opaque;
+    return true;
+}
+
+
+
+static JSValue js_instantiate_prototype(JSContext *ctx, JSObject *p, JSAtom atom, void *opaque)
+{
+    JSValue obj, this_val;
+    int ret;
+
+    this_val = JS_MKPTR(JS_TAG_OBJECT, p);
+    obj = JS_NewObject(ctx);
+    if (JS_IsException(obj))
+        return JS_EXCEPTION;
+    ret = JS_DefinePropertyValue(ctx, obj, JS_ATOM_constructor,
+                                 js_dup(this_val),
+                                 JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);
+    if (ret < 0) {
+        JS_FreeValue(ctx, obj);
+        return JS_EXCEPTION;
+    }
+    return obj;
+}
+
+
+
+        /* add the 'prototype' property: delay instantiation to avoid
+           creating cycles for every javascript function. The prototype
+           object is created on the fly when first accessed */
+        JS_SetConstructorBit(ctx, func_obj, true);
+        int status = JS_DefineAutoInitProperty(ctx, func_obj, JS_ATOM_prototype,
+                                             JS_AUTOINIT_ID_PROTOTYPE, NULL,
+                                             JS_PROP_WRITABLE);
+        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx)))
+            goto fail;
+        if (ctx->pi_compiler_diagnostic && (status < 0 || JS_HasException(ctx)))
+            goto fail;
+    }
+    return func_obj;
+ fail:
+    /* bfunc is freed when func_obj is freed */
+    if (ctx->pi_link_preparing)
+        return js_pi_link_failure_free(ctx, func_obj);
+    if (ctx->pi_compiler_diagnostic)
+        return js_pi_compiler_fail_owned(ctx, func_obj);
+    JS_FreeValue(ctx, func_obj);
+    return JS_EXCEPTION;

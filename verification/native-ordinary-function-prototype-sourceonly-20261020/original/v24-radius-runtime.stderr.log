@@ -1,0 +1,19 @@
+Actual Radius provider expected-success native=true: JavaScriptException; captured=Error: sole baseline cell released once
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:1149:9: 0x7ff640ee845f in awaitValueImpl (test_zcu.obj)
+        return switch (c.JS_PromiseState(self.context, value)) {
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:1089:9: 0x7ff640ee8509 in awaitValue (test_zcu.obj)
+        return self.awaitValueImpl(value, true);
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:652:25: 0x7ff640ee8a33 in evalModule (test_zcu.obj)
+        const settled = try self.awaitValue(evaluated);
+                        ^
+C:\Users\adyba\pi-zig\main\src\native_ai_radius_provider_genuine_af_test.zig:49:23: 0x7ff640ee8d13 in run (test_zcu.obj)
+    const namespace = try engine.evalModule(script, "actual-radius-provider-observation.mjs");
+                      ^
+C:\Users\adyba\pi-zig\main\src\native_ai_radius_provider_genuine_af_test.zig:91:13: 0x7ff640f862ed in both__anon_77173 (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_ai_radius_provider_genuine_af_test.zig:192:5: 0x7ff640f863a5 in test.native Radius provider actual baseline stays alive through its sole getModels cell (test_zcu.obj)
+    try both(
+    ^

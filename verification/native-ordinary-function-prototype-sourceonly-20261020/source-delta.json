@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "status": "source_written_finite_peers_pending",
+  "main_base_commit": "1129cc97e4e3367fc553e33d3091bc4fb7635d65",
+  "created_utc": "2026-10-20T12:30:02.207338+00:00",
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "static const uint16_t func_kind_to_class_id[] = {",
+      "after": "/* Native ordinary functions use the same lazy own prototype as bytecode\n   declarations. An unused factory must not acquire a constructor backedge. */\nint JS_PiDefineOrdinaryFunctionPrototype(JSContext *ctx, JSValueConst function)\n{\n    JSObject *p;\n    JSProperty *pr;\n\n    if (JS_HasException(ctx))\n        return -1;\n    if (!JS_IsConstructor(ctx, function)) {\n        JS_ThrowTypeError(ctx, \"ordinary native constructor required\");\n        return -1;\n    }\n    p = JS_VALUE_GET_OBJ(function);\n    if (find_own_property(&pr, p, JS_ATOM_prototype)) {\n        JS_ThrowTypeError(ctx, \"ordinary function prototype already defined\");\n        return -1;\n    }\n    return JS_DefineAutoInitProperty(ctx, function, JS_ATOM_prototype,\n                                    JS_AUTOINIT_ID_PROTOTYPE, NULL,\n                                    JS_PROP_WRITABLE);\n}\n\nstatic const uint16_t func_kind_to_class_id[] = {",
+      "count": 1,
+      "label": "Borrow actual constructor and use original lazy intrinsic prototype"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "JS_EXTERN bool JS_SetConstructorBit(JSContext *ctx, JSValueConst func_obj, bool val);\n",
+      "after": "JS_EXTERN bool JS_SetConstructorBit(JSContext *ctx, JSValueConst func_obj, bool val);\n/* Borrow a fresh actual native constructor; lazily define its own prototype. */\nJS_EXTERN int JS_PiDefineOrdinaryFunctionPrototype(JSContext *ctx, JSValueConst function);\n",
+      "count": 1,
+      "label": "Expose narrow lazy ordinary-function prototype bridge"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "before": "    if (constructible) {\n        const instance_prototype = try js.object(engine);\n        defer engine.freeValue(instance_prototype);\n        if (c.JS_DefinePropertyValueStr(engine.context, instance_prototype, \"constructor\", c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);\n        if (c.JS_DefinePropertyValueStr(engine.context, function, \"prototype\", c.JS_DupValue(engine.context, instance_prototype), c.JS_PROP_WRITABLE) < 0) return js.capture(engine);\n    }",
+      "after": "    if (constructible) {\n        if (c.JS_PiDefineOrdinaryFunctionPrototype(engine.context, function) < 0) return js.capture(engine);\n        try engine.checkNativeEntry();\n    }",
+      "count": 1,
+      "label": "Legacy ordinary native declaration uses original lazy prototype"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "before": "    if (constructible) {\n        const instance_prototype = try scope.object();\n        try scope.define(instance_prototype, \"constructor\", function, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE);\n        try scope.define(function, \"prototype\", instance_prototype, c.JS_PROP_WRITABLE);\n    }",
+      "after": "    if (constructible) {\n        const prototype_generation = try scope.beforeAllocation();\n        const status = c.JS_PiDefineOrdinaryFunctionPrototype(engine.context, function);\n        try scope.boundary.checkPendingSince(prototype_generation);\n        if (status < 0) return error.MissingActualNodeFunctionPrototypeReason;\n    }",
+      "count": 1,
+      "label": "Actual argument-owned native declaration uses same lazy prototype"
+    },
+    {
+      "path": "src/native_ai_radius_provider_genuine_af_test.zig",
+      "before": "test \"native Radius provider option getters and gateway normalization retain Source order\" {",
+      "after": "test \"native Radius provider ordinary prototype materializes with original descriptors and identity\" {\n    try both(\n        \\\\const f=radiusProviderMake(radiusProviderMinimalImports());\n        \\\\const descriptor=Object.getOwnPropertyDescriptor(f,\"prototype\");\n        \\\\radiusProviderCheck(descriptor.writable&&!descriptor.enumerable&&!descriptor.configurable,\"ordinary prototype descriptor\");\n        \\\\const prototype=descriptor.value,constructor=Object.getOwnPropertyDescriptor(prototype,\"constructor\");\n        \\\\radiusProviderCheck(f.prototype===prototype&&Object.getPrototypeOf(prototype)===Object.prototype,\"original prototype identity and inheritance\");\n        \\\\radiusProviderCheck(constructor.value===f&&constructor.writable&&!constructor.enumerable&&constructor.configurable,\"original constructor backedge descriptor\");\n        \\\\const replacement={replacement:true};f.prototype=replacement;\n        \\\\radiusProviderCheck(f.prototype===replacement,\"original writable prototype replacement\");\n    );\n}\ntest \"native Radius provider option getters and gateway normalization retain Source order\" {",
+      "count": 1,
+      "label": "Preserve baseline lifetime regression and check actual materialized property contract"
+    }
+  ],
+  "files": {
+    "src/extensions/native_node_function.zig": {
+      "before_bytes": 14346,
+      "before_sha256": "469B1CFE5B3C589881533EA38EA45163BE4282C29234B11EDAA82DA1F557B73B",
+      "after_bytes": 14036,
+      "after_sha256": "059B7A18548071D365765F8179C7F5C1455FF3F64132B2FCA11FA251EB732CFD"
+    },
+    "src/native_ai_radius_provider_genuine_af_test.zig": {
+      "before_bytes": 15532,
+      "before_sha256": "82DD978A5DBBB3C269D2A121101712F83F676FA84208FD0E7728C6CE1CAD0E43",
+      "after_bytes": 16547,
+      "after_sha256": "9A76786FFE9530CBCFFD517E05B78AB548FCDA49AA219577DDE5DBDCF0950476"
+    },
+    "vendor/quickjs/quickjs.c": {
+      "before_bytes": 2344986,
+      "before_sha256": "007524CB5AE21DB10D1EDDC4F3A3A687107108AAF8168C22543A6AC6620B46CA",
+      "after_bytes": 2345841,
+      "after_sha256": "0B00C43F7BC4DB367BBA3D8ECF725A9AD605C240073BC3173B469321D4FC4B25"
+    },
+    "vendor/quickjs/quickjs.h": {
+      "before_bytes": 99798,
+      "before_sha256": "31135048FB0EC404549BF3F95A52A629B9836BDBE85DB5C4DE50D9186A27AA79",
+      "after_bytes": 99970,
+      "after_sha256": "60D799BEEB66C9A452F8C5ECB112E3690DF2C004BBE20AFE358C4ED95381B7EF"
+    }
+  },
+  "exact_forward_reverse": true,
+  "original_controls_preserved": 27,
+  "successor_controls": 28,
+  "diagnosis": "The native ordinary factory eagerly allocated function.prototype and constructor backedge, retaining the imported Radius catalog as an unreachable cycle. The linked C interpreter's real js_closure deliberately uses JS_AUTOINIT_ID_PROTOTYPE to avoid this cycle until first property access. The unchanged failing V24 baseline sole-cell control and added Source/native descriptor comparison exercise the exact source lifetime and observable materialization contract.",
+  "composition": "Apply exact C/H insertions after VM termination and receiver-release work; they do not overlap. Apply the two function creation edits after the reviewed ExecutionTerminated gateway6683; do not replace the whole old469B function body. Root proposal files are source-only; Main is unchanged.",
+  "scope": [
+    "Reuse actual JS_DefineAutoInitProperty and js_instantiate_prototype; no public accessor or synthetic weak constructor.",
+    "No provider lexical/capture, ordinary call-entry or source evaluation policy change.",
+    "Actual constructor validation and duplicate own-prototype rejection precede original allocator.",
+    "Existing materialized prototype property flags and constructor identity are unchanged."
+  ],
+  "limits": [
+    "No compilation or native execution; finite C and Zig peers pending.",
+    "The existing V24 lifetime failure remains retained and must pass on the actual successor artifact."
+  ]
+}
