@@ -1371,6 +1371,11 @@ JS_EXTERN JSValue JS_NewUint8Array(JSContext *ctx, uint8_t *buf, size_t len,
                                    JSReallocArrayBufferDataFunc *realloc_func,
                                    void *opaque, bool is_shared);
 /* returns -1 if not a typed array otherwise return a JSTypedArrayEnum value */
+/* Borrow an actual TypedArray/DataView; return its intrinsic current byte
+   length. Detached/OOB views and invalid brands return zero. No allocation,
+   guest operation, storage entitlement, or pending-exception change occurs.
+   This is a VM-owner-thread operation, including for shared backing storage. */
+JS_EXTERN size_t JS_PiArrayBufferViewByteLength(JSValueConst view);
 JS_EXTERN JSValue JS_PiGetArrayBufferViewBuffer(JSContext *ctx, JSValueConst obj,
                                                 size_t *pbyte_offset,
                                                 size_t *pbyte_length,

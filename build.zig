@@ -1979,6 +1979,14 @@ pub fn build(b: *std.Build) void {
         linkQuickJs(b, vm_array_buffer_backing_tests.root_module, quickjs, sqlite_lib_dir);
         b.step("build-native-vm-array-buffer-backing", "Install actual native ArrayBuffer storage and lease controls without execution").dependOn(&b.addInstallArtifact(vm_array_buffer_backing_tests, .{}).step);
     }
+    if (target.result.os.tag == .windows or target.result.os.tag == .linux) {
+        const vm_array_buffer_view_length_tests = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_array_buffer_view_length_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"VM view byteLength"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, vm_array_buffer_view_length_tests.root_module, quickjs, sqlite_lib_dir);
+        b.step("build-native-vm-array-buffer-view-length", "Install intrinsic ArrayBufferView byteLength controls without execution").dependOn(&b.addInstallArtifact(vm_array_buffer_view_length_tests, .{}).step);
+    }
     const existing_promise_settlement_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_existing_promise_settlement_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"VM Promise settlement"}, .use_llvm = use_llvm,

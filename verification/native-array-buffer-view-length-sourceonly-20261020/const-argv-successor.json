@@ -1,0 +1,8 @@
+{
+  "status": "source-only; three explicit public C argv pointer casts, no ownership or assertion change",
+  "before_sha256": "7BBCD791A09AA0A7D2B1AF5BC20F9DCFD2724F70F1CD29E93342CDAB3538312D",
+  "after_sha256": "EB50A3A8F29B5FDA51CCB6939681BCF7C60092CE181E7016107C6774B90ABEF8",
+  "before": "c.JS_NewTypedArray(f.context.?, args.len, &args,",
+  "after": "c.JS_NewTypedArray(f.context.?, args.len, @constCast(&args),",
+  "occurrences": 3
+}

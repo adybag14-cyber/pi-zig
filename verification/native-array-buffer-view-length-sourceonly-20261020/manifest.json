@@ -1,0 +1,51 @@
+{
+  "status": "SOURCE_ONLY_NOT_EXECUTED",
+  "parent_commit": "d81d0f76386186b61d100a3d80e015cb23bbad5a",
+  "target": "build-native-vm-array-buffer-view-length",
+  "filter": "VM view byteLength",
+  "declaration_count": 11,
+  "declarations": [
+    "VM view byteLength fixed spans use every actual typed-array element width and DataView bytes",
+    "VM view byteLength bypasses guest getters and rejects live and revoked proxy brands",
+    "VM view byteLength detached views return zero while actual lease acquisition still throws",
+    "VM view byteLength fixed resizable views become zero out of bounds and recover on regrowth",
+    "VM view byteLength tracking resizable spans round typed elements and preserve exact DataView bytes",
+    "VM view byteLength shared growth preserves fixed spans and updates tracking spans",
+    "VM view byteLength sees foreign runtime shared growth before any receiver realm getter",
+    "VM view byteLength is allocation free under the real VM heap limit",
+    "VM view byteLength preserves actual ordinary and uncatchable pending reasons without inspection",
+    "VM view byteLength borrows without retaining the view or its native backing entitlement",
+    "VM view byteLength leaves unmanaged external storage ownership and callback unchanged"
+  ],
+  "build_added_lines": 8,
+  "files": [
+    {
+      "path": "build.zig",
+      "bytes": 416458,
+      "sha256": "3843AA95C1E8137F2ECA2CF459D67B2324CD658CEC594DD176EE305D52BD95AC"
+    },
+    {
+      "path": "src/native_vm_array_buffer_view_length_test.zig",
+      "bytes": 17397,
+      "sha256": "EB50A3A8F29B5FDA51CCB6939681BCF7C60092CE181E7016107C6774B90ABEF8"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "parent_sha256": "61BBC702EB0871CBF219658F9B8C86C5C22553725A3D74ACBF4C3BFC01B6D749",
+      "source_sha256": "E77D2A6B22D294579A8F4063BB0E913AE3A291E83FD30330B108E88A747EB51B",
+      "bytes": 2342500
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "parent_sha256": "990B4A99FEE0EFA03540925F6F6968C0400B3D7BB35A92AEF4B80CEC1AF43CD9",
+      "source_sha256": "F116BEC15280A6950711A8C27437E7A57B2D6034BE058494F0A8F83FE3E16C7F",
+      "bytes": 99259
+    }
+  ],
+  "source_peer": "SDK CLOSED on exact production-delta 32C37035 and source-proof 54993739.",
+  "controls_peer": {
+    "SDK": "Declarations 1-7 and Clone CLOSED on 7BBCD791; exact three const-argv casts successor CLOSED on EB50A3A8.",
+    "Modules": "Fixture/External, declarations 8-11 and eight-line install-only build CLOSED on EB50A3A8 / 11ACD2DA."
+  },
+  "limit": "The commit contains only the isolated intrinsic view-length addition, 11 controls and their source receipt. The unfinished constructor-name work remains outside the index. No native, Node, generator or formatter execution."
+}

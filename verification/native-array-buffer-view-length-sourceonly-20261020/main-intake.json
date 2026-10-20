@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "status": "source-only reviewed intrinsic view length intake; no execution",
+  "parent_main": "06785680f7b41bc2d11793d59476f4c544203b45",
+  "donor": "5ddf165d802280e22c3a1efd4c048b956bbbacf4",
+  "reviewed_utc": "2026-10-20T10:48:33.270188+00:00",
+  "production": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "main_before_sha256": "DF038A2F5D1D8D322615D5378205A2AC7656FED84779B778F5D404811A77B758",
+      "main_after_sha256": "007524CB5AE21DB10D1EDDC4F3A3A687107108AAF8168C22543A6AC6620B46CA",
+      "exact_reverse": true
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "main_before_sha256": "7D8C6DB221ABD07AB95774FC8403702DBA623A03598AC78F780CDD851CEF9A51",
+      "main_after_sha256": "31135048FB0EC404549BF3F95A52A629B9836BDBE85DB5C4DE50D9186A27AA79",
+      "exact_reverse": true
+    }
+  ],
+  "donor_whole_C_H_not_imported": true,
+  "constructor_draft_excluded": true,
+  "build_added_lines": 8,
+  "controls": 11,
+  "all_finite_peers_closed": true,
+  "files": [
+    {
+      "path": "src/native_vm_array_buffer_view_length_test.zig",
+      "bytes": 17397,
+      "sha256": "EB50A3A8F29B5FDA51CCB6939681BCF7C60092CE181E7016107C6774B90ABEF8"
+    },
+    {
+      "path": "verification/native-array-buffer-view-length-sourceonly-20261020/README.md",
+      "bytes": 2734,
+      "sha256": "9F8DECABB2B3DA1AEEA45EF5847FD0ED9369556A719C8798FA6A055772CADE6F"
+    },
+    {
+      "path": "verification/native-array-buffer-view-length-sourceonly-20261020/build-intake.json",
+      "bytes": 1129,
+      "sha256": "11ACD2DA4664B7C97C4F75CBCEB734043C5C93120F643C3F49071DF550130B28"
+    },
+    {
+      "path": "verification/native-array-buffer-view-length-sourceonly-20261020/const-argv-successor.json",
+      "bytes": 440,
+      "sha256": "BAAF1890D138F0E2B3C9E21D50E27143CA545FF1C6228918CBE1E650B3E4D380"
+    },
+    {
+      "path": "verification/native-array-buffer-view-length-sourceonly-20261020/isolated-intake.json",
+      "bytes": 2732,
+      "sha256": "3B851733ACB9D358C08CB35995CA701DE17354B0CB9489D5C4886FC0D2EB9710"
+    },
+    {
+      "path": "verification/native-array-buffer-view-length-sourceonly-20261020/manifest.json",
+      "bytes": 2771,
+      "sha256": "A7925A0B6AC2C6F992E696EF65E816D16456BD8832C91528C192D8152065BA02"
+    },
+    {
+      "path": "verification/native-array-buffer-view-length-sourceonly-20261020/production-delta.json",
+      "bytes": 2400,
+      "sha256": "32C37035338931C324C9B35BB3DBDCB1BEEB56D8AD3E2E0661E4685B2B886775"
+    },
+    {
+      "path": "verification/native-array-buffer-view-length-sourceonly-20261020/source-proof.json",
+      "bytes": 34273,
+      "sha256": "549937394B9321AFE2F25F5DA490C5CA564528F7C2343F30D508D5A2145ED810"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2344986,
+      "sha256": "007524CB5AE21DB10D1EDDC4F3A3A687107108AAF8168C22543A6AC6620B46CA"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 99798,
+      "sha256": "31135048FB0EC404549BF3F95A52A629B9836BDBE85DB5C4DE50D9186A27AA79"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 472847,
+      "sha256": "2C13F0DA723F3C65F8FA8A8336A79B8070A9937BD8720339BA89275CD5115B5C"
+    }
+  ],
+  "runtime_started": false,
+  "qualified": false
+}

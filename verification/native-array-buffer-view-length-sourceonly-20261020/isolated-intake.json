@@ -1,0 +1,28 @@
+{
+  "status": "source-only; isolated from unfinished constructor worktree edits",
+  "parent_commit": "d81d0f76386186b61d100a3d80e015cb23bbad5a",
+  "paths": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "parent_sha256": "61BBC702EB0871CBF219658F9B8C86C5C22553725A3D74ACBF4C3BFC01B6D749",
+      "source_sha256": "E77D2A6B22D294579A8F4063BB0E913AE3A291E83FD30330B108E88A747EB51B",
+      "bytes": 2342500,
+      "edit": {
+        "path": "vendor/quickjs/quickjs.c",
+        "before": "/* Borrow obj; return an owned backing reference. Keep the existing typed-array",
+        "after": "/* Intrinsic V8 ArrayBufferView::ByteLength projection. Borrow the actual view;\n   do not consult guest properties, acquire storage, allocate, or touch pending\n   state. One current backing-length snapshot supplies tracking and OOB rules. */\nsize_t JS_PiArrayBufferViewByteLength(JSValueConst view)\n{\n    JSObject *p;\n    JSTypedArray *ta;\n    JSArrayBuffer *abuf;\n    size_t length, remaining;\n\n    if (JS_VALUE_GET_TAG(view) != JS_TAG_OBJECT)\n        return 0;\n    p = JS_VALUE_GET_OBJ(view);\n    if (!is_typed_array(p->class_id) && p->class_id != JS_CLASS_DATAVIEW)\n        return 0;\n    ta = p->u.typed_array;\n    if (!ta)\n        return 0;\n    abuf = ta->buffer->u.array_buffer;\n    if (abuf->detached)\n        return 0;\n    length = js_array_buffer_current_length(abuf);\n    if (ta->offset > length)\n        return 0;\n    remaining = length - ta->offset;\n    if (!ta->track_rab)\n        return ta->length <= remaining ? ta->length : 0;\n    if (p->class_id == JS_CLASS_DATAVIEW)\n        return remaining;\n    return remaining & ~(((size_t)1 << typed_array_size_log2(p->class_id)) - 1);\n}\n\n/* Borrow obj; return an owned backing reference. Keep the existing typed-array"
+      }
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "parent_sha256": "990B4A99FEE0EFA03540925F6F6968C0400B3D7BB35A92AEF4B80CEC1AF43CD9",
+      "source_sha256": "F116BEC15280A6950711A8C27437E7A57B2D6034BE058494F0A8F83FE3E16C7F",
+      "bytes": 99259,
+      "edit": {
+        "path": "vendor/quickjs/quickjs.h",
+        "before": "JS_EXTERN JSValue JS_PiGetArrayBufferViewBuffer(JSContext *ctx, JSValueConst obj,",
+        "after": "/* Borrow an actual TypedArray/DataView; return its intrinsic current byte\n   length. Detached/OOB views and invalid brands return zero. No allocation,\n   guest operation, storage entitlement, or pending-exception change occurs.\n   This is a VM-owner-thread operation, including for shared backing storage. */\nJS_EXTERN size_t JS_PiArrayBufferViewByteLength(JSValueConst view);\nJS_EXTERN JSValue JS_PiGetArrayBufferViewBuffer(JSContext *ctx, JSValueConst obj,"
+      }
+    }
+  ]
+}

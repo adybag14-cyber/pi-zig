@@ -1,0 +1,9 @@
+{
+  "path": "build.zig",
+  "before_sha256": "D9AE7907D466288C7834ED1BCD940C90142C6ED199E4C4E0761B6C98B3D600F0",
+  "after_sha256": "3843AA95C1E8137F2ECA2CF459D67B2324CD658CEC594DD176EE305D52BD95AC",
+  "added_lines": 8,
+  "before": "    const existing_promise_settlement_tests = b.addTest(.{",
+  "after": "    if (target.result.os.tag == .windows or target.result.os.tag == .linux) {\n        const vm_array_buffer_view_length_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_array_buffer_view_length_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"VM view byteLength\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, vm_array_buffer_view_length_tests.root_module, quickjs, sqlite_lib_dir);\n        b.step(\"build-native-vm-array-buffer-view-length\", \"Install intrinsic ArrayBufferView byteLength controls without execution\").dependOn(&b.addInstallArtifact(vm_array_buffer_view_length_tests, .{}).step);\n    }\n    const existing_promise_settlement_tests = b.addTest(.{",
+  "status": "install-only; no execution"
+}

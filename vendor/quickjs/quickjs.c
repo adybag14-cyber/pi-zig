@@ -66337,6 +66337,38 @@ static JSValue js_dataview_get_byteOffset(JSContext *ctx, JSValueConst this_val)
     return js_uint32(ta->offset);
 }
 
+/* Intrinsic V8 ArrayBufferView::ByteLength projection. Borrow the actual view;
+   do not consult guest properties, acquire storage, allocate, or touch pending
+   state. One current backing-length snapshot supplies tracking and OOB rules. */
+size_t JS_PiArrayBufferViewByteLength(JSValueConst view)
+{
+    JSObject *p;
+    JSTypedArray *ta;
+    JSArrayBuffer *abuf;
+    size_t length, remaining;
+
+    if (JS_VALUE_GET_TAG(view) != JS_TAG_OBJECT)
+        return 0;
+    p = JS_VALUE_GET_OBJ(view);
+    if (!is_typed_array(p->class_id) && p->class_id != JS_CLASS_DATAVIEW)
+        return 0;
+    ta = p->u.typed_array;
+    if (!ta)
+        return 0;
+    abuf = ta->buffer->u.array_buffer;
+    if (abuf->detached)
+        return 0;
+    length = js_array_buffer_current_length(abuf);
+    if (ta->offset > length)
+        return 0;
+    remaining = length - ta->offset;
+    if (!ta->track_rab)
+        return ta->length <= remaining ? ta->length : 0;
+    if (p->class_id == JS_CLASS_DATAVIEW)
+        return remaining;
+    return remaining & ~(((size_t)1 << typed_array_size_log2(p->class_id)) - 1);
+}
+
 /* Borrow obj; return an owned backing reference. Keep the existing typed-array
    accessor unchanged. DataView spans use the same brand and bounds predicates
    as the interpreter's own DataView getters, including length-tracking RABs. */

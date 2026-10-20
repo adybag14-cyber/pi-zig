@@ -1,0 +1,19 @@
+{
+  "status": "source-only; unexecuted",
+  "c_before": "754EC93F4D363BD994A14C5D55C239990D64C83D01E9B7C9C74165BBF26C0EDC",
+  "c_after": "8FF24C23C695A6D20408DD93AA58FC937523DDF61F0ADA305302607609231200",
+  "h_before": "FF5C696CF7DB5C94E443D32D83B2EC173F9B817D417CD9ECD086C0030875E5FA",
+  "h_after": "56BDF36E7407C3AB04D054046D0D0F144A45E121BC83C52FE1B571EDA857D856",
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "/* Borrow obj; return an owned backing reference. Keep the existing typed-array",
+      "after": "/* Intrinsic V8 ArrayBufferView::ByteLength projection. Borrow the actual view;\n   do not consult guest properties, acquire storage, allocate, or touch pending\n   state. One current backing-length snapshot supplies tracking and OOB rules. */\nsize_t JS_PiArrayBufferViewByteLength(JSValueConst view)\n{\n    JSObject *p;\n    JSTypedArray *ta;\n    JSArrayBuffer *abuf;\n    size_t length, remaining;\n\n    if (JS_VALUE_GET_TAG(view) != JS_TAG_OBJECT)\n        return 0;\n    p = JS_VALUE_GET_OBJ(view);\n    if (!is_typed_array(p->class_id) && p->class_id != JS_CLASS_DATAVIEW)\n        return 0;\n    ta = p->u.typed_array;\n    if (!ta)\n        return 0;\n    abuf = ta->buffer->u.array_buffer;\n    if (abuf->detached)\n        return 0;\n    length = js_array_buffer_current_length(abuf);\n    if (ta->offset > length)\n        return 0;\n    remaining = length - ta->offset;\n    if (!ta->track_rab)\n        return ta->length <= remaining ? ta->length : 0;\n    if (p->class_id == JS_CLASS_DATAVIEW)\n        return remaining;\n    return remaining & ~(((size_t)1 << typed_array_size_log2(p->class_id)) - 1);\n}\n\n/* Borrow obj; return an owned backing reference. Keep the existing typed-array"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "JS_EXTERN JSValue JS_PiGetArrayBufferViewBuffer(JSContext *ctx, JSValueConst obj,",
+      "after": "/* Borrow an actual TypedArray/DataView; return its intrinsic current byte\n   length. Detached/OOB views and invalid brands return zero. No allocation,\n   guest operation, storage entitlement, or pending-exception change occurs.\n   This is a VM-owner-thread operation, including for shared backing storage. */\nJS_EXTERN size_t JS_PiArrayBufferViewByteLength(JSValueConst view);\nJS_EXTERN JSValue JS_PiGetArrayBufferViewBuffer(JSContext *ctx, JSValueConst obj,"
+    }
+  ]
+}
