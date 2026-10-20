@@ -1,0 +1,71 @@
+{
+  "schema": "pi.native-exotic-operation-guards.source-readback.v1",
+  "source_only": true,
+  "execution": false,
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2395972,
+      "sha256": "4DA0CA0668224BF9D0930DD41AF54206443BBCFE32310418B4814956EBC8A5D9"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 112763,
+      "sha256": "FF3D7F9A46E41CEC7C5619A42A6B590BD8F2F298A73DE7F717DD5BCFF651D600"
+    },
+    {
+      "path": "src/native_vm_exotic_operations_test.zig",
+      "bytes": 35891,
+      "sha256": "9FFBDF6B2C033898E7D1738943293DCD13F758EF9893F794293C8AA71A5FAA7B"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 421822,
+      "sha256": "F988BAC20C4615AF0A6D00589156829862D7D1068369BB3AD620D52146BA465C"
+    }
+  ],
+  "production_steps": 5,
+  "production_forward_exact": true,
+  "production_inverse_exact": true,
+  "controls_pointer_only_forward_exact": true,
+  "controls_pointer_only_inverse_exact": true,
+  "declarations": [
+    "VM exotic operations enumerable keys query flags without fetching values",
+    "VM exotic operations full descriptors still query then fetch an owned value",
+    "VM exotic operations existence requests retain their original descriptor callback",
+    "VM exotic operations unfiltered own keys enumerate without a descriptor query",
+    "VM exotic operations values filter each key before its actual Get",
+    "VM exotic operations missing flags hook retains temporary descriptor ownership",
+    "VM exotic operations physical own data precedes the optional query hook",
+    "VM exotic operations SET_ENUM queries both string and Symbol descriptors without Get",
+    "VM exotic operations ordinary Proxy descriptor traps retain their original order",
+    "VM exotic operations admitted query performs no VM allocation under heap limit",
+    "VM exotic operations descriptor getter may return flagged Error DATA successfully",
+    "VM exotic operations ordinary query failure remains the exact catchable reason",
+    "VM exotic operations actual fatal query stops later guest catch and finally",
+    "VM exotic operations active and cancelled private query completions stay native",
+    "VM exotic operations Reflect prevent rejection is normal and allocation free",
+    "VM exotic operations Object prevent keeps its actual throwing rejection path",
+    "VM exotic operations seal rejection uses SEALED before any enumeration",
+    "VM exotic operations freeze rejection uses FROZEN before any definition",
+    "VM exotic operations positive admission completes each real integrity mutation",
+    "VM exotic operations a missing admission hook preserves legacy extension mutation",
+    "VM exotic operations ordinary objects and Proxy refusal retain their old behavior",
+    "VM exotic operations a Proxy forwarding trap selects only its actual prevent call",
+    "VM exotic operations nonobject integrity requests keep existing public semantics",
+    "VM exotic operations ordinary integrity failure preserves its exact reason",
+    "VM exotic operations actual fatal integrity failure bypasses guest cleanup",
+    "VM exotic operations active and cancelled private integrity completion bypasses handlers",
+    "VM exotic operations normal native rejection preserves the actual prior pending owner",
+    "VM exotic operations borrowed receiver callbacks create no lasting object root"
+  ],
+  "declaration_count": 28,
+  "build_forward_exact": true,
+  "build_inverse_exact": true,
+  "build_added_lines": 6,
+  "build_target": "build-native-vm-exotic-operations",
+  "build_filter": "VM exotic operations",
+  "selected_controls_packet": "control-pointer-successor.json",
+  "superseded_controls_packet": "control-abi-successor.json",
+  "limit": "Text/hash verification only. No compiler, metadata, test, formatter, Node or native execution."
+}

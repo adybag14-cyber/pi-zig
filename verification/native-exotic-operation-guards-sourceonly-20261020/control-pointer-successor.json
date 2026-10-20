@@ -1,0 +1,27 @@
+{
+  "schema": "pi.source-control-successor.v1",
+  "source_only": true,
+  "execution": false,
+  "path": "src/native_vm_exotic_operations_test.zig",
+  "before": {
+    "sha256": "b9465fd9236c2d9582f032f903c1b98101f43d5e8213654544798a473303d18d",
+    "bytes": 35881
+  },
+  "after": {
+    "sha256": "9ffbdf6b2c033898e7d1738943293dcd13f758ef9893f794293c8aa71a5faa7b",
+    "bytes": 35891
+  },
+  "edits": [
+    {
+      "before": "            c.js_free(f.context.?, table);",
+      "after": "            c.js_free(f.context.?, @ptrCast(table));"
+    }
+  ],
+  "correction": "The peer rechecked exact prior punctuation packet51709364 and withdrew the semicolon concern: conditional defer-if blocks require the original semicolon. The unneeded explicit-block intermediate29247/F9CB is retained separately, and all four original conditional blocks remain unchanged in this selected pointer-only successor.",
+  "findings": [
+    "Actual js_free takes void*. The existing enum-table C pointer is explicitly cast; the table null guard and all atom/value retirement operations remain unchanged.",
+    "Exact one-edit inverse reproduces B946; all28 declarations and observations are unchanged."
+  ],
+  "forward_exact": true,
+  "reverse_exact": true
+}

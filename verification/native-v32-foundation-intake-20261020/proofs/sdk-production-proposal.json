@@ -1,0 +1,89 @@
+{
+  "kind": "finite source proposal for genuine FSReqCallback template and FileHandle read composition",
+  "time_utc": "2026-10-20T17:49:21.770302+00:00",
+  "runtime_executed": false,
+  "compiled": false,
+  "source_review_pending": true,
+  "files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_async_wrap_state.zig",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\proposal\\native_node_async_wrap_state.zig",
+      "bytes": 26761,
+      "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994",
+      "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\original\\native_node_async_wrap_state.zig"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_async_wrap.zig",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\proposal\\native_node_async_wrap.zig",
+      "bytes": 19741,
+      "sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0",
+      "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\original\\native_node_async_wrap.zig"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_uv_fs.h",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\proposal\\native_uv_fs.h",
+      "bytes": 4931,
+      "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+      "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\original\\native_uv_fs.h"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_uv_tcp.c",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\proposal\\native_uv_tcp.c",
+      "bytes": 45730,
+      "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+      "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\original\\native_uv_tcp.c"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_fs_request_callback.zig",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\proposal\\native_node_fs_request_callback.zig",
+      "bytes": 7570,
+      "sha256": "85EA8C7E5B7020F6BCB6AB88AD2B20A85EE0DFC0383861239185D898C5FC82E2",
+      "original": null
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_read.zig",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\proposal\\native_node_file_handle_read.zig",
+      "bytes": 14225,
+      "sha256": "DEEEDCB2CFA51512571574F676091D71E49448FFDF23F1B60DF881B73B9307FD",
+      "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\original\\native_node_file_handle_read.zig"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_read_wrap.zig",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\proposal\\native_node_file_handle_read_wrap.zig",
+      "bytes": 9466,
+      "sha256": "1E98E0231C43EF57A35010CD2B531BB2FE23A84D8A6AA9DD0A885286799E6A49",
+      "original": null
+    }
+  ],
+  "authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\node_file.v24.13.cc",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\node_file.v24.13.h",
+      "bytes": 17193,
+      "sha256": "A63A31D1BCAEB7AF416B19ABEAFAB880DB7D424378DC27050F9FC2EE4921E16F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\node_file-inl.v24.13.h",
+      "bytes": 14756,
+      "sha256": "2E96C28CB0BBB4520D8E0C0997188922C3DDE28853D14A3E19D7D559BC9493D5"
+    }
+  ],
+  "mapping": [
+    "node_file.cc541-543 and node_file-inl.h42-49/77-83: allocate physical storage before AsyncWrap; provider8; ReqWrap queue/MakeWeak/Reset then original borrowed FileHandle or FSReqBase use_bigint/BindingData ptr",
+    "node_file.cc726-730: present native NewFSReqCallback constructor, genuine native IsConstructCall CHECK, strict IsTrue argument, no Promise or BaseObjectPtr",
+    "node_file.cc3931-3947: distinct real callback FunctionTemplate; same actual FSReqCallback InstanceTemplate selected for FileHandleReadWrap with constructor bypass",
+    "node_file.cc545-665: actual FileHandle read dispatch/completion/reset/reuse and live restart",
+    "native C admission: unassigned constructor storage remains generic across Reset; operation assigned only at validated actual admission; preexisting typed request restriction retained; event release/queue logic unchanged"
+  ],
+  "remaining": [
+    "Concrete native FileHandle constructor/close/GC/transfer and owner assembly",
+    "Configure shared Controller before genuine FSReqCallback template admission",
+    "General FSReqBase Init/continuation/Resolve/Reject/stat methods and their native caller bindings",
+    "Production trace and native backing allocator retry/GC owner composition",
+    "Source controls, independent finite source review, compiler and exact runtime qualification"
+  ]
+}

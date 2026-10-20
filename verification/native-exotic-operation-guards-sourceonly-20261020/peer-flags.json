@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "status": "finite exotic flags-only dispatch and ABI peer closed",
+  "reviewer": "Modules/IO",
+  "source_only": true,
+  "execution": false,
+  "packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-exotic-operation-guards-sourceonly-20261020/production-delta.json",
+    "sha256": "DC714C58CDB035BE1D48BDEC8A41AED0B54BB84B1F23673B38373925F4A7E229",
+    "bytes": 9055
+  },
+  "current": {
+    "c": {
+      "sha256": "4DA0CA0668224BF9D0930DD41AF54206443BBCFE32310418B4814956EBC8A5D9",
+      "bytes": 2395972
+    },
+    "h": {
+      "sha256": "FF3D7F9A46E41CEC7C5619A42A6B590BD8F2F298A73DE7F717DD5BCFF651D600",
+      "bytes": 112763
+    }
+  },
+  "assigned_scope": [
+    "optional get_own_property_flags ABI",
+    "actual flags_only selection in JS_GetOwnPropertyInternal2",
+    "original enumerable Query versus full own-descriptor Query/Get distinction"
+  ],
+  "actual_read": {
+    "c_offset": 391800,
+    "c_bytes": 15500,
+    "c_region_sha256": "c35f707c225fc1318d9d5f2a9e098aa733a322ce4966039da01e198dd3500185",
+    "full_header_read": true,
+    "c_full_digest_verified": true
+  },
+  "inverse": {
+    "flags_function_exact_old_C990_text": true,
+    "flags_function_old_sha256": "08920F5E5DAD523CD80F1CE7D4530A6ED7FAF10A40D7D8673B411B95492105DA",
+    "flags_function_new_sha256": "E5D75BF07473D970DAC047EF3C319DC9D35BFCBCDE365A2BC94A84ED4CDBFFD8",
+    "full_header_two_appended_edits_inverse_sha256": "621A5F9DD846DA6257C89E78EB25D527CCDFAB0F0E76FA34195CD51E7CF1B32B"
+  },
+  "authority": {
+    "flags_proposal_sha256": "C9901F29DC414F19CF34BDFF3F87647FF33E23E30CE8AF3FEF221EA62DA7E26C",
+    "earlier_independent_operation_peer": "6067F94F050CB80744C022CB17166654E768AE627F77525AC8DDAD2653A1A004",
+    "node_env_var": {
+      "path": "authority/node_env_var.v24.13.cc",
+      "sha256": "4872E9CAF5AEE8F7ABD73BE4F79FA5B73793F5D09DFCED63001A022D92AD2AF8"
+    },
+    "v8_js_objects": {
+      "path": "verification/native-constructor-name-source-peer-20261020/authority/v8-js-objects.def0.cc",
+      "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480",
+      "bytes": 234488
+    },
+    "v8_keys": "6bc4d9318f5d165583ed00a771e9bd278d647762ce07a5dbcd826404d9d0fba6"
+  },
+  "findings": [
+    "The new callback is appended after all original exotic methods. It receives the original borrowed object/atom and the existing nonnull pflags only when desc==NULL && pflags!=NULL. No JS value is created or retained by the new dispatch.",
+    "Physical own properties and the actual fast-array branch remain earlier and byte-identical. Full descriptors and null-descriptor existence requests do not select the callback. The absent-hook temporary descriptor/read/free route remains exact.",
+    "Replacing only the selected flags dispatch insertion reproduces the complete previously source-proven JS_GetOwnPropertyInternal2 body byte-for-byte (08920F5E). Reversing the two header insertions reproduces the full621A5F9D header.",
+    "The existing flags helper is the only route supplying the operation distinction. Original V8 enumerable filtering can therefore invoke only EnvQuery, while the separately retained full descriptor callback still performs Query then Getter. No live getter/string allocation is forced by the new flags-only input.",
+    "Return -1/0/1 is passed through directly. The dispatch introduces no pending clear, exception classification, operand retirement, host result or process.env implementation. Existing native callback contract remains responsible for writing flags on success and an actual exception on -1."
+  ],
+  "exclusions": [
+    "Integrity dispatch/diagnostic algorithm belongs to the separate SDK slice; its header contract was read only as part of the append-only ABI.",
+    "Dedicated controls, native process.env consumer/template/public installation, compilation and execution are not covered.",
+    "No full unrelated C review; exact assigned function read/reversal and full current C digest are recorded."
+  ]
+}

@@ -10,11 +10,12 @@ pub const Engine = a.v.em.Engine;
 pub const LocalScope = a.Scope;
 pub const Environment = callbacks.Environment;
 
-pub const Kind = enum { async_wrap, fsreqpromise, filehandleclosereq, filehandle };
+pub const Kind = enum { async_wrap, fsreqpromise, filehandleclosereq, filehandle, fsreqcallback };
 pub const Provider = struct {
     pub const none: u32 = 0;
     pub const filehandle: u32 = 4;
     pub const filehandleclosereq: u32 = 5;
+    pub const fsreqcallback: u32 = 8;
     pub const fsreqpromise: u32 = 9;
 };
 /// Native CHECK sites belong to the shared Environment's actual terminal owner.
@@ -63,7 +64,7 @@ const StreamFields = struct {
 pub const Registry = struct {
     environment: *Environment,
     references: usize = 1,
-    class_ids: [4]c.JSClassID = .{ 0, 0, 0, 0 },
+    class_ids: [5]c.JSClassID = .{ 0, 0, 0, 0, 0 },
     head: ?*BaseEntry = null,
     tail: ?*BaseEntry = null,
     fs_binding_data: ?WeakBindingSlot = null,
@@ -92,7 +93,7 @@ pub const Registry = struct {
             environment.allocator().destroy(self);
             environment.release();
         }
-        inline for (.{ "AsyncWrap", "FSReqPromise", "FileHandleCloseReq", "FileHandle" }, 0..) |name, index| {
+        inline for (.{ "AsyncWrap", "FSReqPromise", "FileHandleCloseReq", "FileHandle", "FSReqCallback" }, 0..) |name, index| {
             const generation = try s.beforeAllocation();
             if (c.JS_NewClassID(s.engine.runtime, &self.class_ids[index]) == 0)
                 return error.OutOfMemory;

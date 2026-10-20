@@ -1,0 +1,91 @@
+{
+  "schema": "pi.native-exotic-operation-guards.delta.v1",
+  "status": "source-only; Root-authorized two opt-in VM operations; not process.env assembly",
+  "base_head": "5808ee87683ac212e535718b1c90704926fac8ac",
+  "base_files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2394786,
+      "sha256": "DE3C05D6698F2D1AC5F3D7F92540F4775B374101A71EAE2C4925FD3F48FAFCAE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\vendor\\quickjs\\quickjs.h",
+      "bytes": 111537,
+      "sha256": "621A5F9DD846DA6257C89E78EB25D527CCDFAB0F0E76FA34195CD51E7CF1B32B"
+    }
+  ],
+  "authority": {
+    "flags": "C9901F29DC414F19CF34BDFF3F87647FF33E23E30CE8AF3FEF221EA62DA7E26C",
+    "integrity": "48D3AE0372949C22E651EFEB7AD92CBE406F89A1D3436D10E37114479325D16C",
+    "diagnostics": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-microtask-message-sourceonly-20261020\\authority\\v8-message-template.v24.13.h",
+      "bytes": 61623,
+      "sha256": "0B4100C04E752548600D39CB126EA188B0AFBFF8AE2EBE7BCEB95E96236013B9",
+      "selected": [
+        {
+          "name": "CannotPreventExt",
+          "byte_offset": 5659,
+          "line": 79,
+          "text": "  T(CannotPreventExt, \"Cannot prevent extensions\")                             \\\n"
+        },
+        {
+          "name": "CannotSeal",
+          "byte_offset": 5983,
+          "line": 83,
+          "text": "  T(CannotSeal, \"Cannot seal\")                                                 \\\n"
+        },
+        {
+          "name": "CannotFreeze",
+          "byte_offset": 5740,
+          "line": 80,
+          "text": "  T(CannotFreeze, \"Cannot freeze\")                                             \\\n"
+        }
+      ]
+    }
+  },
+  "steps": [
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "declare explicit integrity operation modes",
+      "before": "typedef struct JSClassExoticMethods {",
+      "after": "/* The actual operation being admitted by an opt-in exotic class. */\ntypedef enum JSPiIntegrityLevel {\n    JS_PI_INTEGRITY_NONE,\n    JS_PI_INTEGRITY_SEALED,\n    JS_PI_INTEGRITY_FROZEN,\n} JSPiIntegrityLevel;\n\ntypedef struct JSClassExoticMethods {"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "append optional query-only and integrity-admission callbacks",
+      "before": "    int (*set_property)(JSContext *ctx, JSValueConst obj, JSAtom atom,\n                        JSValueConst value, JSValueConst receiver, int flags);\n} JSClassExoticMethods;",
+      "after": "    int (*set_property)(JSContext *ctx, JSValueConst obj, JSAtom atom,\n                        JSValueConst value, JSValueConst receiver, int flags);\n    /* Optional attribute-only lookup. Called only when the VM requests\n       existence/flags without a descriptor value. obj and prop are borrowed.\n       Return -1 on exception, 0 if absent, or 1 after writing *flags.\n       A missing hook retains the get_own_property temporary-descriptor path. */\n    int (*get_own_property_flags)(JSContext *ctx, int *flags,\n                                  JSValueConst obj, JSAtom prop);\n    /* Optional admission before ordinary prevention/sealing/freezing changes\n       extensibility or enumerates properties. obj is borrowed. Return -1 on\n       exception, 0 to reject, or 1 to continue the existing ordinary operation.\n       A normal rejection leaves the object unchanged. NONE returns false to\n       the caller; SEALED/FROZEN select the corresponding intrinsic TypeError.\n       Missing hooks and Proxy dispatch retain their previous behavior. */\n    int (*prevent_extensions)(JSContext *ctx, JSValueConst obj,\n                              JSPiIntegrityLevel level);\n} JSClassExoticMethods;"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "select only actual flags-only requests",
+      "before": "            const JSClassExoticMethods *em = ctx->rt->class_array[p->class_id].exotic;\n            if (em && em->get_own_property) {\n                if (flags_only) {",
+      "after": "            const JSClassExoticMethods *em = ctx->rt->class_array[p->class_id].exotic;\n            if (flags_only && em && em->get_own_property_flags) {\n                return em->get_own_property_flags(ctx, pflags,\n                                                  JS_MKPTR(JS_TAG_OBJECT, p),\n                                                  prop);\n            }\n            if (em && em->get_own_property) {\n                if (flags_only) {"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "admit actual integrity mode before mutation",
+      "before": "/* return -1 if exception (Proxy object only) or true/false */\nint JS_PreventExtensions(JSContext *ctx, JSValueConst obj)\n{\n    JSObject *p;\n\n    if (unlikely(JS_VALUE_GET_TAG(obj) != JS_TAG_OBJECT))\n        return false;\n    p = JS_VALUE_GET_OBJ(obj);\n    if (unlikely(p->class_id == JS_CLASS_PROXY))\n        return js_proxy_preventExtensions(ctx, obj);\n    if (is_typed_array(p->class_id)) {\n        JSTypedArray *ta = p->u.typed_array;\n        JSArrayBuffer *abuf = ta->buffer->u.array_buffer;\n        if (ta->track_rab ||\n            (array_buffer_is_resizable(abuf) && !abuf->shared))\n        {\n            return false;\n        }\n    }\n    p->extensible = false;\n    return true;\n}\n",
+      "after": "/* return -1 if exception or true/false */\nstatic int js_prevent_extensions(JSContext *ctx, JSValueConst obj,\n                                 JSPiIntegrityLevel level)\n{\n    JSObject *p;\n\n    if (unlikely(JS_VALUE_GET_TAG(obj) != JS_TAG_OBJECT))\n        return false;\n    p = JS_VALUE_GET_OBJ(obj);\n    if (unlikely(p->class_id == JS_CLASS_PROXY))\n        return js_proxy_preventExtensions(ctx, obj);\n    if (p->is_exotic) {\n        const JSClassExoticMethods *em =\n            ctx->rt->class_array[p->class_id].exotic;\n        if (em && em->prevent_extensions) {\n            int ret = em->prevent_extensions(ctx, obj, level);\n            if (ret <= 0) {\n                if (ret == 0 && level != JS_PI_INTEGRITY_NONE) {\n                    JS_ThrowTypeError(ctx, level == JS_PI_INTEGRITY_FROZEN\n                                              ? \"Cannot freeze\" : \"Cannot seal\");\n                    return -1;\n                }\n                return ret;\n            }\n        }\n    }\n    if (is_typed_array(p->class_id)) {\n        JSTypedArray *ta = p->u.typed_array;\n        JSArrayBuffer *abuf = ta->buffer->u.array_buffer;\n        if (ta->track_rab ||\n            (array_buffer_is_resizable(abuf) && !abuf->shared))\n        {\n            return false;\n        }\n    }\n    p->extensible = false;\n    return true;\n}\n\nint JS_PreventExtensions(JSContext *ctx, JSValueConst obj)\n{\n    return js_prevent_extensions(ctx, obj, JS_PI_INTEGRITY_NONE);\n}\n"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "preserve seal versus freeze at direct-object admission",
+      "before": "    res = JS_PreventExtensions(ctx, obj);\n    if (res < 0)\n        return JS_EXCEPTION;\n    if (!res) {\n        return JS_ThrowTypeError(ctx, \"proxy preventExtensions handler returned false\");\n    }\n\n    if (freeze_flag && is_typed_array(p->class_id)) {",
+      "after": "    res = js_prevent_extensions(ctx, obj, freeze_flag\n                                          ? JS_PI_INTEGRITY_FROZEN\n                                          : JS_PI_INTEGRITY_SEALED);\n    if (res < 0)\n        return JS_EXCEPTION;\n    if (!res) {\n        return JS_ThrowTypeError(ctx, \"proxy preventExtensions handler returned false\");\n    }\n\n    if (freeze_flag && is_typed_array(p->class_id)) {"
+    }
+  ],
+  "contracts": [
+    "Only actual flags_only may select the new attribute callback. Physical own properties and fast arrays precede it; no full descriptor/value/existence-only path is changed.",
+    "The optional integrity callback is admission, not the operation implementation. A positive result continues the original algorithm; a negative result propagates its actual pending reason. Normal zero rejects before mutation/enumeration.",
+    "Proxy dispatch remains first and never receives the direct-object SEALED/FROZEN hook mode. Its existing target prevention uses NONE, and its existing trap/false diagnostics remain unchanged.",
+    "No pending-slot clearing, polling, native-event classification, callback result substitute, process.env consumer or global Engine policy is introduced.",
+    "Append-only struct fields require rebuilding consumers against the current header. Existing designated/zero-default initializers leave both hooks absent."
+  ],
+  "exclusions": [
+    "No native execution/build/metadata/formatter",
+    "No native process.env owner/public installation",
+    "No diagnostic stack snapshot implementation",
+    "No ordinary/Proxy/global pending-policy expansion"
+  ]
+}

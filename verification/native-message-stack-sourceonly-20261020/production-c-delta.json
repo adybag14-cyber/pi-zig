@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "status": "source draft, no execution",
+  "parent": "bc518be926f55ae6af0b5e5ceb54989dd11174a5",
+  "proposal_sha256": "2D631A44A0EC1BCC5E80B0B8BB62326E3454F97CE125081718B6D0027A74BFD4",
+  "bases": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "8407EA70CAC10FD41EFADBF31B8C043F86B322EA1A1D09DCB1EA00176761C241",
+      "bytes": 2392187
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "08230E99EB7AB2AC38C94ED3810D81DEE850CB5A067902634E0C2CC5D112F966",
+      "bytes": 110090
+    }
+  ],
+  "current": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/vendor/quickjs/quickjs.c",
+      "append": false,
+      "previous_file_size": 2392187,
+      "final_file_size": 2394786,
+      "bytes_written": 2394786,
+      "content_sha256": "8a5d1dc383f50454dee372c2b9df7b8cf95b70ed58c99e6a69d3167bb9787b18",
+      "verification_mode": "whole-file-sha256",
+      "verified": true,
+      "expected_sha256_verified": null,
+      "target_existed": true,
+      "file_sha256": "8a5d1dc383f50454dee372c2b9df7b8cf95b70ed58c99e6a69d3167bb9787b18"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/vendor/quickjs/quickjs.h",
+      "append": false,
+      "previous_file_size": 110090,
+      "final_file_size": 111537,
+      "bytes_written": 111537,
+      "content_sha256": "621a5f9dd846da6257c89e78eb25d527ccdfab0f0e76fa34195cd51e7cf1b32b",
+      "verification_mode": "whole-file-sha256",
+      "verified": true,
+      "expected_sha256_verified": null,
+      "target_existed": true,
+      "file_sha256": "621a5f9dd846da6257c89e78eb25d527ccdfab0f0e76fa34195cd51e7cf1b32b"
+    }
+  ],
+  "steps": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Explicit native fallback presence",
+      "before": "            uint64_t native_allocation_generation;\n        } native_error;",
+      "after": "            uint64_t native_allocation_generation;\n            /* Set only by the actual hook-recursion fallback publication. */\n            bool stack_fallback_present;\n        } native_error;",
+      "before_character_offset": 51418,
+      "after_character_offset": 51418
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Initialize actual fallback provenance",
+      "before": "    case JS_CLASS_ERROR:\n        p->u.native_error.native_allocation_generation = 0;\n        p->u.object_data = JS_UNDEFINED;",
+      "after": "    case JS_CLASS_ERROR:\n        p->u.native_error.native_allocation_generation = 0;\n        p->u.native_error.stack_fallback_present = false;\n        p->u.object_data = JS_UNDEFINED;",
+      "before_character_offset": 240731,
+      "after_character_offset": 240731
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Publish fallback owner before retiring former native capture",
+      "before": "        JS_FreeValue(ctx, JS_VALUE_GET_OBJ(error)->u.object_data);\n        JS_VALUE_GET_OBJ(error)->u.object_data = frames;\n        return 0;",
+      "after": "        {\n            JSObject *object = JS_VALUE_GET_OBJ(error);\n            JSValue previous = object->u.object_data;\n            JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n            object->u.object_data = frames;\n            object->u.native_error.stack_fallback_present = true;\n            js_native_async_release(ctx, previous, &pending);\n            if (pending.present) {\n                JS_Throw(ctx, pending.reason);\n                return -1;\n            }\n        }\n        return 0;",
+      "before_character_offset": 334469,
+      "after_character_offset": 334469
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Actual presence and consuming fallback transfer",
+      "before": "void JS_SetNativeErrorStackHook(JSRuntime *rt, JSNativeErrorStackHook *cb, void *opaque)\n{",
+      "after": "bool JS_PiHasPendingNativeErrorStack(JSValueConst error)\n{\n    JSObject *object;\n    if (!JS_IsError(error))\n        return false;\n    object = JS_VALUE_GET_OBJ(error);\n    return object->u.native_error.stack_fallback_present &&\n           (JS_IsArray(object->u.object_data) ||\n            JS_IsUndefined(object->u.object_data));\n}\n\nint JS_PiTakePendingNativeErrorStack(JSValueConst error, JSValue *frames)\n{\n    JSObject *object;\n    JSValue value;\n    if (!frames || !JS_PiHasPendingNativeErrorStack(error))\n        return 0;\n    object = JS_VALUE_GET_OBJ(error);\n    value = object->u.object_data;\n    object->u.object_data = JS_UNDEFINED;\n    object->u.native_error.stack_fallback_present = false;\n    *frames = value;\n    return 1;\n}\n\nvoid JS_SetNativeErrorStackHook(JSRuntime *rt, JSNativeErrorStackHook *cb, void *opaque)\n{",
+      "before_character_offset": 2042341,
+      "after_character_offset": 2042341
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Share the genuine intrinsic Map read with a nonthrowing WeakMap projection",
+      "before": "static JSValue js_map_get(JSContext *ctx, JSValueConst this_val,\n                          int argc, JSValueConst *argv, int magic)\n{\n    JSMapState *s = JS_GetOpaque2(ctx, this_val, JS_CLASS_MAP + magic);\n    JSMapRecord *mr;\n    JSValueConst key;\n\n    if (!s)\n        return JS_EXCEPTION;\n    key = map_normalize_key_const(ctx, argv[0]);\n    mr = map_find_record(ctx, s, key);\n    if (!mr)\n        return JS_UNDEFINED;\n    else\n        return js_dup(mr->value);\n}",
+      "after": "static JSValue js_map_read(JSContext *ctx, JSMapState *s,\n                           JSValueConst key, int *present)\n{\n    JSMapRecord *mr;\n    key = map_normalize_key_const(ctx, key);\n    mr = map_find_record(ctx, s, key);\n    if (present)\n        *present = mr != NULL;\n    return mr ? js_dup(mr->value) : JS_UNDEFINED;\n}\n\nstatic JSValue js_map_get(JSContext *ctx, JSValueConst this_val,\n                          int argc, JSValueConst *argv, int magic)\n{\n    JSMapState *s = JS_GetOpaque2(ctx, this_val, JS_CLASS_MAP + magic);\n    if (!s)\n        return JS_EXCEPTION;\n    return js_map_read(ctx, s, argv[0], NULL);\n}\n\nint JS_PiReadWeakMapEntry(JSContext *ctx, JSValueConst map,\n                         JSValueConst key, JSValue *value)\n{\n    JSMapState *s = JS_GetOpaque(map, JS_CLASS_WEAKMAP);\n    int present;\n    if (!s || !value)\n        return -1;\n    *value = js_map_read(ctx, s, key, &present);\n    return present;\n}",
+      "before_character_offset": 1972405,
+      "after_character_offset": 1972405
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Project only native captured Script and actual position from dense frame storage",
+      "before": "int JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx, JSValueConst frame,\n                                       int *is_eval, int *has_script_id)\n{",
+      "after": "JSNativeScript *JS_PiFindCapturedStackScriptLocation(JSValueConst frames,\n                                                   int *start, int *end)\n{\n    JSObject *array;\n    uint32_t index;\n    if (!start || !end || !JS_IsArray(frames))\n        return NULL;\n    array = JS_VALUE_GET_OBJ(frames);\n    if (!array->fast_array)\n        return NULL;\n    for (index = 0; index < array->u.array.count; index++) {\n        JSCallSiteData *data = JS_GetOpaque(array->u.array.u.values[index],\n                                           JS_CLASS_CALL_SITE);\n        if (data && data->pi_script && JS_IsString(data->pi_script->source)) {\n            int position = data->pi_source_position;\n            *start = position;\n            *end = position < 0 ? -1 : position + 1;\n            return JS_PiDupScript(data->pi_script);\n        }\n    }\n    return NULL;\n}\n\nint JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx, JSValueConst frame,\n                                       int *is_eval, int *has_script_id)\n{",
+      "before_character_offset": 2348966,
+      "after_character_offset": 2348966
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "Intrinsic WeakMap read ABI",
+      "before": "JS_EXTERN bool JS_IsWeakMap(JSValueConst val);\nJS_EXTERN bool JS_IsDataView(JSValueConst val);",
+      "after": "JS_EXTERN bool JS_IsWeakMap(JSValueConst val);\n/* Borrow map/key and use the map's actual operation context. Genuine WeakMap\n   entry -> 1 with an owned value; missing -> 0 with owned undefined; invalid\n   map/output -> -1 with output unchanged. No allocation, guest call, kept\n   object, exception or pending-state operation. */\nJS_EXTERN int JS_PiReadWeakMapEntry(JSContext *ctx, JSValueConst map,\n                                  JSValueConst key, JSValue *value);\nJS_EXTERN bool JS_IsDataView(JSValueConst val);",
+      "before_character_offset": 57766,
+      "after_character_offset": 57766
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "Explicit native fallback owner ABI",
+      "before": "JS_EXTERN int JS_ReadPendingNativeErrorStack(JSContext *ctx, JSValueConst error, JSValue *frames);\nJS_EXTERN void JS_SetNativeErrorStackHook",
+      "after": "JS_EXTERN int JS_ReadPendingNativeErrorStack(JSContext *ctx, JSValueConst error, JSValue *frames);\n/* Actual hook-recursion fallback only; initialized Error data is not capture\n   provenance. Has borrows. Take returns 1 and transfers the owned Array or\n   captured undefined after clearing the native owner; otherwise 0 with\n   output/state unchanged. No allocation, finalization, guest or pending work.\n   The legacy Read operation above retains its existing read-only behavior. */\nJS_EXTERN bool JS_PiHasPendingNativeErrorStack(JSValueConst error);\nJS_EXTERN int JS_PiTakePendingNativeErrorStack(JSValueConst error, JSValue *frames);\nJS_EXTERN void JS_SetNativeErrorStackHook",
+      "before_character_offset": 81353,
+      "after_character_offset": 81353
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "Raw simple-stack Script location ABI",
+      "before": "JS_EXTERN JSNativeScript *JS_PiGetCapturedStackFrameScript(JSValueConst frame,\n                                                         int *position);\nJS_EXTERN JSNativeScript *JS_PiDupScript",
+      "after": "JS_EXTERN JSNativeScript *JS_PiGetCapturedStackFrameScript(JSValueConst frame,\n                                                         int *position);\n/* Borrow the actual private dense captured-frame Array; return an owned first\n   debuggable Script and its actual UTF-16 start/end (end=start+1), or -1/-1\n   when that frame has no PC position. Unsupported/missing input -> NULL with\n   outputs unchanged. Native/synthetic records supply no Script. No property\n   lookup, allocation, guest call or pending-state operation. */\nJS_EXTERN JSNativeScript *JS_PiFindCapturedStackScriptLocation(\n    JSValueConst frames, int *start, int *end);\nJS_EXTERN JSNativeScript *JS_PiDupScript",
+      "before_character_offset": 85355,
+      "after_character_offset": 85355
+    }
+  ],
+  "scope": [
+    "intrinsic genuine WeakMap read shared with current map get",
+    "explicit actual Error fallback presence and consuming transfer",
+    "raw dense private-frame Script/actual-position projection"
+  ],
+  "limits": [
+    "No Message, detailed trace, ThrowAt, reporter or owner installation.",
+    "Existing legacy ReadPendingNativeErrorStack behavior unchanged.",
+    "All inputs borrowed except Take transfers actual native root and Script projection returns owned native Script.",
+    "No native build/run/Node/generator/formatter."
+  ]
+}

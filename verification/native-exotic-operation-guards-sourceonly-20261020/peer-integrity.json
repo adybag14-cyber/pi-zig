@@ -1,0 +1,45 @@
+{
+  "schema": "pi.finite-source-peer.v1",
+  "reviewer": "sdk_owners",
+  "source_only": true,
+  "execution": false,
+  "status": "CLOSED",
+  "unit": "Optional exotic integrity admission helper and ABI",
+  "packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-exotic-operation-guards-sourceonly-20261020/production-delta.json",
+    "sha256": "DC714C58CDB035BE1D48BDEC8A41AED0B54BB84B1F23673B38373925F4A7E229"
+  },
+  "current": {
+    "c": "4DA0CA0668224BF9D0930DD41AF54206443BBCFE32310418B4814956EBC8A5D9",
+    "h": "FF3D7F9A46E41CEC7C5619A42A6B590BD8F2F298A73DE7F717DD5BCFF651D600"
+  },
+  "base": {
+    "c": "DE3C05D6698F2D1AC5F3D7F92540F4775B374101A71EAE2C4925FD3F48FAFCAE",
+    "h": "621A5F9DD846DA6257C89E78EB25D527CCDFAB0F0E76FA34195CD51E7CF1B32B"
+  },
+  "scope": [
+    "JSPiIntegrityLevel declaration and optional prevent_extensions hook contract",
+    "Complete current js_prevent_extensions, JS_PreventExtensions and direct-object seal/freeze entry",
+    "Actual current Object/Reflect preventExtensions result mapping"
+  ],
+  "authority": {
+    "integrity": "48D3AE0372949C22E651EFEB7AD92CBE406F89A1D3436D10E37114479325D16C",
+    "full_v8": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480",
+    "messages": "0B4100C04E752548600D39CB126EA188B0AFBFF8AE2EBE7BCEB95E96236013B9"
+  },
+  "findings": [
+    "Independently reversed all5 exact packet edits against the actual complete current C/H and recovered both full declared base hashes. The query-only algorithm remains Modules' separate semantic slice.",
+    "The actual Node named-interceptor prerequisite and exact full V8 ranges establish early rejection before transition/enumeration; the three original message templates match the new seal/freeze literals and existing preventExtensions literal.",
+    "Proxy dispatch remains first. Missing optional hook reaches the unchanged original typed-array guard/extensible mutation. Only a selected direct exotic class receives the explicit operation mode.",
+    "A normal zero hook result for NONE remains false for the existing public caller; existing Object maps false to its intrinsic TypeError and Reflect returns false. SEALED/FROZEN zero creates its respective intrinsic error and returns -1 before own-key enumeration or ordinary mutation.",
+    "A negative result propagates the hook's actual failure; a positive result is admission followed by the existing operation. Borrowed object ownership and actual pending policy are unchanged; no diagnostic DATA or pending clear is added.",
+    "Append-only C ABI fields require rebuilding consumers with the current header; absent hooks remain the old algorithm. This is a selected optional admission contract, not a completed process.env owner."
+  ],
+  "excluded": [
+    "query-only implementation semantic slice",
+    "process.env assembly/installation",
+    "controls",
+    "build",
+    "execution"
+  ]
+}

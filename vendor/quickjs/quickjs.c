@@ -1353,6 +1353,8 @@ struct JSObject {
             JSValue data;
             /* Host-only identity tag; not a property or a GC root. */
             uint64_t native_allocation_generation;
+            /* Set only by the actual hook-recursion fallback publication. */
+            bool stack_fallback_present;
         } native_error;
     } u;
     /* byte sizes: 40/48/72 */
@@ -7132,6 +7134,7 @@ static JSValue JS_NewObjectFromShape(JSContext *ctx, JSShape *sh, JSClassID clas
         break;
     case JS_CLASS_ERROR:
         p->u.native_error.native_allocation_generation = 0;
+        p->u.native_error.stack_fallback_present = false;
         p->u.object_data = JS_UNDEFINED;
         break;
     case JS_CLASS_NUMBER:
@@ -9860,8 +9863,18 @@ static int capture_error_stack(JSContext *ctx, JSValueConst error,
             JS_FreeValue(ctx, frames);
             return -1;
         }
-        JS_FreeValue(ctx, JS_VALUE_GET_OBJ(error)->u.object_data);
-        JS_VALUE_GET_OBJ(error)->u.object_data = frames;
+        {
+            JSObject *object = JS_VALUE_GET_OBJ(error);
+            JSValue previous = object->u.object_data;
+            JSNativeAsyncPending pending = { false, JS_UNDEFINED };
+            object->u.object_data = frames;
+            object->u.native_error.stack_fallback_present = true;
+            js_native_async_release(ctx, previous, &pending);
+            if (pending.present) {
+                JS_Throw(ctx, pending.reason);
+                return -1;
+            }
+        }
         return 0;
     }
     return build_backtrace(ctx, error, filter, filename, line, column, flags);
@@ -11535,6 +11548,11 @@ retry:
             }
         } else {
             const JSClassExoticMethods *em = ctx->rt->class_array[p->class_id].exotic;
+            if (flags_only && em && em->get_own_property_flags) {
+                return em->get_own_property_flags(ctx, pflags,
+                                                  JS_MKPTR(JS_TAG_OBJECT, p),
+                                                  prop);
+            }
             if (em && em->get_own_property) {
                 if (flags_only) {
                     /* Call the exotic handler with a temporary desc,
@@ -11603,8 +11621,9 @@ int JS_IsExtensible(JSContext *ctx, JSValueConst obj)
         return p->extensible;
 }
 
-/* return -1 if exception (Proxy object only) or true/false */
-int JS_PreventExtensions(JSContext *ctx, JSValueConst obj)
+/* return -1 if exception or true/false */
+static int js_prevent_extensions(JSContext *ctx, JSValueConst obj,
+                                 JSPiIntegrityLevel level)
 {
     JSObject *p;
 
@@ -11613,6 +11632,21 @@ int JS_PreventExtensions(JSContext *ctx, JSValueConst obj)
     p = JS_VALUE_GET_OBJ(obj);
     if (unlikely(p->class_id == JS_CLASS_PROXY))
         return js_proxy_preventExtensions(ctx, obj);
+    if (p->is_exotic) {
+        const JSClassExoticMethods *em =
+            ctx->rt->class_array[p->class_id].exotic;
+        if (em && em->prevent_extensions) {
+            int ret = em->prevent_extensions(ctx, obj, level);
+            if (ret <= 0) {
+                if (ret == 0 && level != JS_PI_INTEGRITY_NONE) {
+                    JS_ThrowTypeError(ctx, level == JS_PI_INTEGRITY_FROZEN
+                                              ? "Cannot freeze" : "Cannot seal");
+                    return -1;
+                }
+                return ret;
+            }
+        }
+    }
     if (is_typed_array(p->class_id)) {
         JSTypedArray *ta = p->u.typed_array;
         JSArrayBuffer *abuf = ta->buffer->u.array_buffer;
@@ -11624,6 +11658,11 @@ int JS_PreventExtensions(JSContext *ctx, JSValueConst obj)
     }
     p->extensible = false;
     return true;
+}
+
+int JS_PreventExtensions(JSContext *ctx, JSValueConst obj)
+{
+    return js_prevent_extensions(ctx, obj, JS_PI_INTEGRITY_NONE);
 }
 
 /* return -1 if exception otherwise true or false */
@@ -46740,7 +46779,9 @@ static JSValue js_object_seal(JSContext *ctx, JSValueConst this_val,
                                  freeze_flag ? "freeze" : "seal");
     }
 
-    res = JS_PreventExtensions(ctx, obj);
+    res = js_prevent_extensions(ctx, obj, freeze_flag
+                                          ? JS_PI_INTEGRITY_FROZEN
+                                          : JS_PI_INTEGRITY_SEALED);
     if (res < 0)
         return JS_EXCEPTION;
     if (!res) {
@@ -58672,21 +58713,35 @@ static JSValue js_map_set(JSContext *ctx, JSValueConst this_val,
     return js_dup(this_val);
 }
 
+static JSValue js_map_read(JSContext *ctx, JSMapState *s,
+                           JSValueConst key, int *present)
+{
+    JSMapRecord *mr;
+    key = map_normalize_key_const(ctx, key);
+    mr = map_find_record(ctx, s, key);
+    if (present)
+        *present = mr != NULL;
+    return mr ? js_dup(mr->value) : JS_UNDEFINED;
+}
+
 static JSValue js_map_get(JSContext *ctx, JSValueConst this_val,
                           int argc, JSValueConst *argv, int magic)
 {
     JSMapState *s = JS_GetOpaque2(ctx, this_val, JS_CLASS_MAP + magic);
-    JSMapRecord *mr;
-    JSValueConst key;
-
     if (!s)
         return JS_EXCEPTION;
-    key = map_normalize_key_const(ctx, argv[0]);
-    mr = map_find_record(ctx, s, key);
-    if (!mr)
-        return JS_UNDEFINED;
-    else
-        return js_dup(mr->value);
+    return js_map_read(ctx, s, argv[0], NULL);
+}
+
+int JS_PiReadWeakMapEntry(JSContext *ctx, JSValueConst map,
+                         JSValueConst key, JSValue *value)
+{
+    JSMapState *s = JS_GetOpaque(map, JS_CLASS_WEAKMAP);
+    int present;
+    if (!s || !value)
+        return -1;
+    *value = js_map_read(ctx, s, key, &present);
+    return present;
 }
 
 static JSValue js_map_getOrInsert(JSContext *ctx, JSValueConst this_val,
@@ -60746,6 +60801,31 @@ int JS_ReadPendingNativeErrorStack(JSContext *ctx, JSValueConst error, JSValue *
     *frames = js_dup(object->u.object_data);
     return 1;
 }
+bool JS_PiHasPendingNativeErrorStack(JSValueConst error)
+{
+    JSObject *object;
+    if (!JS_IsError(error))
+        return false;
+    object = JS_VALUE_GET_OBJ(error);
+    return object->u.native_error.stack_fallback_present &&
+           (JS_IsArray(object->u.object_data) ||
+            JS_IsUndefined(object->u.object_data));
+}
+
+int JS_PiTakePendingNativeErrorStack(JSValueConst error, JSValue *frames)
+{
+    JSObject *object;
+    JSValue value;
+    if (!frames || !JS_PiHasPendingNativeErrorStack(error))
+        return 0;
+    object = JS_VALUE_GET_OBJ(error);
+    value = object->u.object_data;
+    object->u.object_data = JS_UNDEFINED;
+    object->u.native_error.stack_fallback_present = false;
+    *frames = value;
+    return 1;
+}
+
 void JS_SetNativeErrorStackHook(JSRuntime *rt, JSNativeErrorStackHook *cb, void *opaque)
 {
     rt->native_error_stack_hook = cb;
@@ -69612,6 +69692,29 @@ JSNativeScript *JS_PiGetCapturedStackFrameScript(JSValueConst frame, int *positi
         return NULL;
     *position = data->pi_source_position;
     return JS_PiDupScript(data->pi_script);
+}
+
+JSNativeScript *JS_PiFindCapturedStackScriptLocation(JSValueConst frames,
+                                                   int *start, int *end)
+{
+    JSObject *array;
+    uint32_t index;
+    if (!start || !end || !JS_IsArray(frames))
+        return NULL;
+    array = JS_VALUE_GET_OBJ(frames);
+    if (!array->fast_array)
+        return NULL;
+    for (index = 0; index < array->u.array.count; index++) {
+        JSCallSiteData *data = JS_GetOpaque(array->u.array.u.values[index],
+                                           JS_CLASS_CALL_SITE);
+        if (data && data->pi_script && JS_IsString(data->pi_script->source)) {
+            int position = data->pi_source_position;
+            *start = position;
+            *end = position < 0 ? -1 : position + 1;
+            return JS_PiDupScript(data->pi_script);
+        }
+    }
+    return NULL;
 }
 
 int JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx, JSValueConst frame,

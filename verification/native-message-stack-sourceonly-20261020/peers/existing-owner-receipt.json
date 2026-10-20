@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "status": "finite existing simple-stack owner peer closed",
+  "execution": false,
+  "production": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/src/extensions/native_error_stack.zig",
+    "sha256": "FB755EC4331C26D7CB92294684A89C3F7D282609236AB0CCF76D3CD1D57296E0",
+    "bytes": 32901
+  },
+  "packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-message-stack-sourceonly-20261020/production-owner-delta.json",
+    "sha256": "D8EAA8702356C351F0A724DC613F30766020853236B1FFB57649F17534C16DBE",
+    "edits": 19,
+    "full_forward_inverse_exact": true,
+    "actual_main_base": "EC0002CEED53432B26BA135F2D4CDC6FFB8C2D0460ADE1C6B8D003C8194826BF"
+  },
+  "read_dependencies": [
+    {
+      "path": "Main/src/extensions/engine.zig",
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417",
+      "bytes": 99337
+    },
+    {
+      "path": "Main/src/extensions/native_sdk_owned_completion.zig",
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC",
+      "bytes": 15176
+    },
+    {
+      "path": "Main/src/extensions/native_node_commonjs_owned_boundary.zig",
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "bytes": 9934
+    },
+    {
+      "path": "Main/src/extensions/native_tui_alt_frame.zig",
+      "sha256": "4265F1B1B76A521FD31B1EEC454D1BBC2BC50910E6A04D27746180C389AF520C",
+      "bytes": 9195
+    },
+    {
+      "path": "native-message-stack-sourceonly-20261020/production-c-delta.json",
+      "sha256": "B52F8C55743904B7EE81D2A8C7DF669D8428F84BE53576FA40887D27C5601F1F",
+      "scope": "actual raw read/transfer header and bodies; C algorithm closure is SDK's distinct slice"
+    },
+    {
+      "path": "native-message-stack-sourceonly-20261020/authority/stack-data-source-proof.json",
+      "sha256": "1A66CB1C67B30BCDCEA75DE72BA42DAC8D260B453976E15103E32A94E82C08C8"
+    },
+    {
+      "path": "native-message-stack-sourceonly-20261020/peers/existing-error-stack-owner.json",
+      "sha256": "EE9AE43FB142971E98DB3C8362BEC4B08A4D9E11900C12A144F7C6D6E24B3BA9"
+    }
+  ],
+  "findings": [
+    "Independently read the complete successor and Main preimage and reversed all nineteen unique edits exactly. The extra Map root is the same genuine private WeakMap already held by bindings; both counted edges are marked, cleared and retired.",
+    "StackData now owns exactly one none/frames/formatted state, including formatted undefined. Finalization clears that state before raw runtime retirement; only its currently selected root is marked. This removes the permanent old simple-frames edge after successful formatting or a setter.",
+    "publishFormatted consumes a concrete owned record handle, publishes a duplicate of the new formatted value before retiring the former state, and reduces those actual retirements through Main's Completion. Setter and formatter keep their selected holder/record rooted across that boundary.",
+    "The formatter-local duplicate of the old raw frame Array is independently completed through ownRoot and survives reentrant stack setters or CaptureStackTrace. Successful default FixedArray formatting obtains the selected holder's CURRENT private record, as the original Object::SetProperty branch requires; throwing formatting skips the final write.",
+    "Raw lookup uses actual native WeakMap storage and a direct non-Proxy prototype path. It invokes no public getter, descriptor lookup, formatter, adoption, entry poll or allocation. A present none/formatted state blocks inheritance. Its duplicated record/fallback/holder handles cannot be finalizable last references under the declared installed-owner and independently rooted receiver contract.",
+    "The raw projection returns only an independently owned native Script and actual stored positions. It does not return or permanently retain raw CallSite receiver/function graphs; missing state leaves caller outputs unchanged and prior pending untouched.",
+    "Fallback adoption requires actual capture provenance, creates one owned simple state, and consumes the old C entitlement only after successful real Map publication. At that transfer the local raw-frame owner and published record retain the Array; releasing the transferred C entitlement cannot discard its last finalizable root.",
+    "Updated hook/getter/setter/CallSite callbacks record the actual return/error before Frame retirement through Main Completion and caller-stable NativeInvocation. Explicit cancelled native-abrupt completion remains separate from flagged returned DATA; the integer hook restores only that explicit result when it has no pending channel.",
+    "The returned install owner must still outlive hook use and be uninstalled before release. Additional installation staging retains the exact Map only after checked construction, and normal Engine.init remains unmodified."
+  ],
+  "limits": [
+    "Source-only finite owner review; no compilation, controls execution or complete Error.stack semantic qualification.",
+    "Actual C/H raw primitives are a separate SDK peer. This receipt checks their contracts at the owner seam.",
+    "Detailed ErrorStackData, Message/reporting, ThrowAt, reporter/catcher installation and full prior formatter algorithm/layout behavior are outside this delta.",
+    "The selected current-record success write is only the ordinary simple FixedArray branch; optional detailed ErrorStackData has a distinct old-record write policy and is not silently included."
+  ]
+}

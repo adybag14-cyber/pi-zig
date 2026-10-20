@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "status": "finite ReqWrap routing controls/build peer closed",
+  "reviewer": "Modules/IO",
+  "execution": false,
+  "source_only": true,
+  "root": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/native_node_reqwrap_callback_routing_test.zig",
+    "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7",
+    "bytes": 31452,
+    "declarations": 12
+  },
+  "production": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_request_state.zig",
+      "sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+      "bytes": 5818
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_fs_request_io.zig",
+      "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "bytes": 14502
+    }
+  ],
+  "assigned": {
+    "declarations": [
+      1,
+      2,
+      3,
+      4,
+      10,
+      11
+    ],
+    "helpers": [
+      "File.init/deinit",
+      "Fixture.dispatch/dispatchBody/waitQueued/pump/stopIo",
+      "completed/firstCallback/secondCallback",
+      "expectRetired/expectWrapper"
+    ],
+    "fixture_limit": "Read complete actual Fixture/Node context; VM owns its separate lifetime/5–9/12 closure."
+  },
+  "findings": [
+    "File.init owns the actual sentinel path and real uv descriptor; request cleanup follows uv_fs_open even on a negative status. Temporary path buffers retire with their correct original extents. File.deinit stops/joins and drains the genuine shared service before closing the fd and removing the temporary file.",
+    "Each Node contains the real raw buffer until its actual native destruction. Selected callbacks copy scalar completion info and run physical cleanup before any fallible observer or possible Reset. The observation is native fixture storage and remains alive through delivery.",
+    "Control1 exercises actual Entry dispatchStarted/setCallback/reset without manufacturing physical completion or a waiting count; reset clears the same native callback field.",
+    "Control2 observes success-only strong/waiting publication, then callback entry after native retain/Detach/decrement with the original callback/address still selected. Actual bytes at offset1 equal B. Retire/destroy trace and wrapper opaque clear are checked after completion.",
+    "Control3 reaches actual raw null-span admission UV_EINVAL. Callback/dispatched fields remain, while count, strong persistent and events do not appear. Actual Entry and physical request Reset permit later real admission with a different callback and offset2/C.",
+    "Control4 accepts the actual asynchronous fd=-1 operation and observes its real UV_EBADF completion through callback2; no synthetic callback or guessed raw immediate error is substituted.",
+    "Control10 waits for the first actual event before admitting the second, then drains both through shared shutdown with JavaScript disabled. D/F bytes and waiting1→0 distinguish the same FIFO and actual decrement order. Both native requests retire.",
+    "Control11 stops the actual service first, then preserves real UV_ECANCELED with dispatched/callback fields but no count, strengthened wrapper or callback/event.",
+    "No assigned control weakens original assertions or labels the generic native derivative as a complete FileHandle constructor/freelist or public namespace."
+  ],
+  "original_order_peer": {
+    "path": "verification/native-reqwrap-callback-routing-source-peer-20261020/receipt.json",
+    "sha256": "26AB057C430CA93CADEFEA0C37628FE57BB0E344027098AE2632179F619B8C7B",
+    "scope": "Original ReqWrap27C7 Reset/For/Dispatch/Wrapper order, independently closed before these controls."
+  },
+  "build": {
+    "packet": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-reqwrap-callback-routing-sourceonly-20261020/build-intake.json",
+    "sha256": "6D2839EFF1ECA8657A924B667525F75F4B545D99D3BCF2E486DC35E81DBE3A26",
+    "bytes": 2216,
+    "before_sha256": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+    "before_bytes": 493924,
+    "projected_sha256": "DC07DFEAACC02CE3E6FAD42BC5D61E0491126E10C898C3C4F02AD7473C658606",
+    "projected_bytes": 495501,
+    "added_lines": 15,
+    "full_unique_forward_inverse": true,
+    "actual_main_digest_confirmed": true,
+    "root": "src/native_node_reqwrap_callback_routing_test.zig",
+    "filter": "native ReqWrap routing",
+    "target": "build-native-node-reqwrap-callback-routing",
+    "all12_names_match": true,
+    "graph": "Same existing network guard and Compile, linkQuickJs/TypeScript/SQLite/catalog/UV include and Windows advapi32/userenv as adjacent actual FS25 target. Installation only, no new library or run edge."
+  },
+  "exclusions": [
+    "No native/Node/Zig/AST or control execution.",
+    "VM's separate Fixture/Node and5–9/12 lifetime slice; generic fatal/pending policy is not requalified by this receipt.",
+    "No actual FileHandle template, ReadStart/freelist, bootstrap/task queues or complete public FS graph claim."
+  ]
+}

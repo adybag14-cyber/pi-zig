@@ -1,0 +1,119 @@
+{
+  "schema": 2,
+  "status": "finite_source_control_and_install_proposal_peer_pending",
+  "created_utc": "2026-10-20T18:36:49.103162+00:00",
+  "production_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\production-proposal.json",
+    "sha256": "0753466963F6EB964F582B99E7CD5002A278CB82C13C5F8722A22C9DBC563313",
+    "all_seven_live_snapshot_pairs_match": true
+  },
+  "integration_delta": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\finite-integration-delta.json",
+    "sha256": "E112095F84AAAE433B8317E1D18B30B05A15A2349FBDAA62F4FEEEC1BCE151BF",
+    "bytes": 20528
+  },
+  "control_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\control-inventory.json",
+    "sha256": "F4DA82AE992A3F22F63B3882174835E7DD75B80306D539287A647BC6329B74FF",
+    "bytes": 3543
+  },
+  "dependencies": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\dependency-inventory.json",
+    "sha256": "3D515709FB2E2E6208CC700390E9E80E6FCCD74B10C5CE7AE02208F81710CBDE",
+    "bytes": 500708
+  },
+  "independent_production_peers": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-read-source-peer-20261020.json",
+      "sha256": "D3F8D6910760F2E2D0F7FF89FF419C8A62A55D75868A45CF1267AA8661E90DB0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-fsreqcallback-template-source-peer-20261020\\peer.json",
+      "sha256": "3E2950011B1B5492A91AFB73B111ABD79F4B8D93FC31038C92C7D2EDC6E7DC52"
+    }
+  ],
+  "preserved_main_callback": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_async_wrap_make_callback.zig",
+    "sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+  },
+  "new_roots": 2,
+  "new_declared_controls": 25,
+  "setup_lifetime_correction": "The fixture retains the actual weak BindingData target across bootstrap/assembly only until its real derived Handle retains BindingData. The original source support snapshot is preserved separately. This is fixture setup, not a substitute production constructor.",
+  "limits": [
+    "No compiler, native executable, test, Node reference, source generator or formatter was executed.",
+    "Install-only build blocks contain no run step; execution remains Root-owned and separately gated.",
+    "Fixture Handle, trace probes and first-success backing allocation do not implement or qualify concrete native FileHandle constructor/close/GC/transfer, production trace owner, retry/GC/backing allocation policy, or whole internal/fs assembly.",
+    "General FSReqBase Init/continuation/stat/Resolve/Reject algorithms remain open. The storage control observer only records a real callback result.",
+    "The source inventory conservatively resolves literal imports; no compiler semantic analysis, C preprocessor expansion or runtime reachability is claimed.",
+    "Reviewed shared production sources were not changed after peer review. This packet layers finite deltas on the reviewed seven-root projection instead of overwriting Main wholesale."
+  ],
+  "compiled": false,
+  "native_execution": false,
+  "test_execution": false,
+  "main_modified": false,
+  "application_qualification": false,
+  "supersedes_count_schema_only": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\handoff.json",
+    "sha256": "015C6FB355B1556C9DF0FEF256933BD5832E1448A519D64E2213EFCBB2D9D3AE",
+    "bytes": 3847,
+    "original_preserved": true
+  },
+  "count_schema_correction": {
+    "reason": "The original optional_future_cohort.existing_controls field mixed 1121 previously accepted metadata names with the declared-source total 1249. These quantities use different inventories and cannot be added interchangeably.",
+    "original_field": "optional_future_cohort.existing_controls",
+    "original_value": 1121,
+    "replacement_declared_source_value": 1089,
+    "scope": "Additive metadata/readme correction only. Production, control, support, integration delta and dependency snapshots are unchanged.",
+    "prior_source_count_authority": "Root and module_io_port confirmations in the current source-intake review: 54 prior roots / 1089 named source declarations; earlier V31 accepted metadata was 54 / 1121."
+  },
+  "optional_future_declared_source_cohort": {
+    "basis": "Named source declarations, not compiler-selected or accepted metadata names.",
+    "existing": {
+      "roots": 54,
+      "declared_source_controls": 1089
+    },
+    "prior_pending": {
+      "roots": 7,
+      "declared_source_controls": 135,
+      "projection": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-native-integration-projection-20261020-172540\\projection.json",
+        "sha256": "44949486FA0304F822CFF48C587166FBD9F29E1CC51EAF6AAF583E562ACB484B"
+      }
+    },
+    "this": {
+      "roots": 2,
+      "declared_source_controls": 25
+    },
+    "sum": {
+      "roots": 63,
+      "declared_source_controls": 1249
+    },
+    "arithmetic": "54 + 7 + 2 = 63 roots; 1089 + 135 + 25 = 1249 named source declarations.",
+    "not_executed": true
+  },
+  "prior_accepted_metadata_observation": {
+    "cohort": "Earlier V31 inventory",
+    "roots": 54,
+    "accepted_metadata_names": 1121,
+    "separate_from_declared_source_counts": true,
+    "not_a_runtime_success_claim": true
+  },
+  "future_actual_metadata": {
+    "status": "unknown_until_Root_build_query",
+    "name_count": null,
+    "not_inferred_from_source_declarations": true,
+    "not_projected_by_adding_to_prior_metadata": true,
+    "root_ownership_and_existing_acceptance_gates_unchanged": true
+  },
+  "corrected_readme": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\README-count-separation.md",
+    "sha256": "5F151964A20DAA301AFD7988FB6DBE9F169EF70B238A5D462676DCCF5E996E80",
+    "bytes": 7386,
+    "original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\README.md",
+      "sha256": "E3A300C868CEA5639BE1FA88CBFAFA9CA8F470BF4A244D6A7E919EA5CBFE9DFD",
+      "bytes": 6981,
+      "preserved": true
+    }
+  }
+}

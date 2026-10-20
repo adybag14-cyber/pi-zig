@@ -4,8 +4,10 @@ const std = @import("std");
 const js = @import("native_js_values.zig");
 const c = js.c;
 const Frame = @import("native_tui_alt_frame.zig").Frame;
-const Owner = struct { engine: *js.Engine, bindings: c.JSValue, data_class: c.JSClassID, formatting: bool = false };
-const StackData = struct { engine: *js.Engine, captured: bool = false, frames: ?c.JSValue = null, formatted: ?c.JSValue = null };
+const completion = @import("native_sdk_owned_completion.zig");
+const Owner = struct { engine: *js.Engine, bindings: c.JSValue, map: c.JSValue, data_class: c.JSClassID, formatting: bool = false };
+const SimpleStack = union(enum) { none, frames: c.JSValue, formatted: c.JSValue };
+const StackData = struct { engine: *js.Engine, captured: bool = false, simple: SimpleStack = .none };
 fn owner(value: c.JSValue) *Owner {
     return @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
 }
@@ -14,28 +16,55 @@ fn data(value: c.JSValue, class: c.JSClassID) *StackData {
 }
 fn finalizeOwner(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const state: *Owner = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
-    c.JS_FreeValueRT(runtime, state.bindings);
+    const bindings = state.bindings;
+    const map = state.map;
+    state.bindings = c.pi_js_undefined();
+    state.map = c.pi_js_undefined();
+    c.JS_FreeValueRT(runtime, bindings);
+    c.JS_FreeValueRT(runtime, map);
     state.engine.gpa.destroy(state);
 }
 fn markOwner(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
     const state: *Owner = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
     c.JS_MarkValue(runtime, state.bindings, marker);
+    c.JS_MarkValue(runtime, state.map, marker);
 }
 fn finalizeData(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const state: *StackData = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
-    if (state.frames) |frames| c.JS_FreeValueRT(runtime, frames);
-    if (state.formatted) |formatted| c.JS_FreeValueRT(runtime, formatted);
+    const previous = state.simple;
+    state.simple = .none;
+    switch (previous) { .frames, .formatted => |root| c.JS_FreeValueRT(runtime, root), .none => {} }
     state.engine.gpa.destroy(state);
 }
 fn markData(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
     const state: *StackData = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
-    if (state.frames) |frames| c.JS_MarkValue(runtime, frames, marker);
-    if (state.formatted) |formatted| c.JS_MarkValue(runtime, formatted, marker);
+    switch (state.simple) { .frames, .formatted => |root| c.JS_MarkValue(runtime, root, marker), .none => {} }
 }
 fn failure(engine: *js.Engine, err: anyerror) c.JSValue {
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     if (err == error.JavaScriptException) return engine.throwCaptured();
     if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     return c.JS_ThrowInternalError(engine.context, "Native Error stack: %s", @as([*:0]const u8, @errorName(err)));
+}
+fn finishFrame(f: *Frame, result: anyerror!c.JSValue) !c.JSValue {
+    const owned: anyerror!c.JSValue = if (result) |value| f.result(value) else |err| err;
+    return completion.finishValue(f, owned);
+}
+fn finishCallback(f: *Frame, invocation: *js.Engine.NativeInvocation, result: anyerror!c.JSValue) c.JSValue {
+    const engine = f.engine;
+    const selected = finishFrame(f, result) catch |err| failure(engine, err);
+    return engine.leaveNativeInvocation(invocation, selected);
+}
+// Consumes the concrete record handle. Publication precedes every finalizable
+// retirement; the selected simple state is one union, including undefined.
+fn publishFormatted(engine: *js.Engine, record_value: c.JSValue, formatted: c.JSValue, class: c.JSClassID) !void {
+    const record = data(record_value, class);
+    const previous = record.simple;
+    record.simple = .{ .formatted = c.JS_DupValue(engine.context, formatted) };
+    var retired = completion.Completion.initVoid(engine, {});
+    switch (previous) { .frames, .formatted => |root| retired.release(root), .none => {} }
+    retired.release(record_value);
+    try retired.finishVoid();
 }
 fn mapGet(f: *Frame, key: c.JSValue) !c.JSValue {
     return f.call(try f.get(f.bindings, "mapGet"), try f.get(f.bindings, "map"), &.{key});
@@ -97,24 +126,37 @@ fn capture(f: *Frame, state: *Owner, target: c.JSValue, filter: c.JSValue, filen
     if (c.JS_ToFloat64(f.engine.context, &number, limit_value) < 0) return js.capture(f.engine);
     const limit: u32 = if (std.math.isNan(number) or number <= 0) 0 else if (std.math.isInf(number) or number >= std.math.maxInt(u32)) std.math.maxInt(u32) else @intFromFloat(number);
     const frames = try f.engine.checked(c.JS_CaptureCurrentStackFrames(f.engine.context, limit, filter, filename, line, column, flags));
-    record.frames = frames;
+    record.simple = .{ .frames = frames };
 }
 fn hook(context: ?*c.JSContext, target: c.JSValue, phase: c_int, filter: c.JSValue, filename: [*c]const u8, line: c_int, column: c_int, flags: c_int, raw: ?*anyopaque) callconv(.c) c_int {
     const state: *Owner = @ptrCast(@alignCast(raw.?));
     _ = context;
+    var invocation: js.Engine.NativeInvocation = .{};
+    state.engine.enterNativeInvocation(&invocation);
     var f: Frame = .{ .engine = state.engine, .object = target, .bindings = state.bindings };
     defer f.deinit();
-    const result = if (phase == c.JS_ERROR_STACK_PREPARE) prepared: {
-        _ = installOwn(&f, state, target, false) catch |err| break :prepared @as(anyerror!void, err);
-        break :prepared @as(anyerror!void, {});
-    } else capture(&f, state, target, filter, filename, line, column, flags, phase == c.JS_ERROR_STACK_RECAPTURE);
-    result catch |err| {
-        _ = failure(state.engine, err);
-        return -1;
+    const result: anyerror!c.JSValue = body: {
+        state.engine.checkNativeEntry() catch |err| break :body err;
+        if (phase == c.JS_ERROR_STACK_PREPARE) {
+            _ = installOwn(&f, state, target, false) catch |err| break :body err;
+        } else {
+            capture(&f, state, target, filter, filename, line, column, flags, phase == c.JS_ERROR_STACK_RECAPTURE) catch |err| break :body err;
+        }
+        break :body c.pi_js_undefined();
     };
+    const selected = finishCallback(&f, &invocation, result);
+    if (c.JS_IsException(selected)) {
+        // This integer hook has no JSValue result channel. Preserve an explicit
+        // cancelled unwind in the actual pending slot without reviving a lease.
+        if (c.JS_PiIsExecutionTermination(selected) and !c.JS_HasException(state.engine.context))
+            _ = c.JS_Throw(state.engine.context, selected);
+        return -1;
+    }
+    state.engine.freeValue(selected);
     return 0;
 }
 fn adoptPending(f: *Frame, state: *Owner, target: c.JSValue) !?c.JSValue {
+    if (!c.JS_PiHasPendingNativeErrorStack(target)) return null;
     var frames: c.JSValue = undefined;
     const pending = c.JS_ReadPendingNativeErrorStack(f.engine.context, target, &frames);
     if (pending == 0) return null;
@@ -123,15 +165,21 @@ fn adoptPending(f: *Frame, state: *Owner, target: c.JSValue) !?c.JSValue {
     const record = try f.engine.gpa.create(StackData);
     var attached = false;
     errdefer if (!attached) f.engine.gpa.destroy(record);
-    record.* = .{ .engine = f.engine, .captured = true, .frames = if (c.JS_IsUndefined(rooted_frames)) null else c.JS_DupValue(f.engine.context, rooted_frames) };
-    errdefer if (!attached) if (record.frames) |value| f.engine.freeValue(value);
+    record.* = .{ .engine = f.engine, .captured = true, .simple = if (c.JS_IsUndefined(rooted_frames)) .none else .{ .frames = c.JS_DupValue(f.engine.context, rooted_frames) } };
+    errdefer if (!attached) switch (record.simple) { .frames, .formatted => |root| f.engine.freeValue(root), .none => {} };
     const value = try f.own(try f.engine.checked(c.JS_NewObjectClass(f.engine.context, state.data_class)));
     _ = c.JS_SetOpaque(value, record);
     attached = true;
     _ = try f.call(try f.get(f.bindings, "mapSet"), try f.get(f.bindings, "map"), &.{ target, value });
+    var transferred: c.JSValue = undefined;
+    if (c.JS_PiTakePendingNativeErrorStack(target, &transferred) != 1)
+        return error.MissingNativeFallbackStackOwner;
+    // rooted_frames and the published record still own this same Array; this
+    // exact old C entitlement cannot be its finalizable last reference.
+    f.engine.freeValue(transferred);
     return value;
 }
-const Found = struct { holder: c.JSValue, record: *StackData };
+const Found = struct { holder: c.JSValue, value: c.JSValue, record: *StackData };
 fn lookup(f: *Frame, state: *Owner, receiver: c.JSValue) !?Found {
     var current = receiver;
     while (c.JS_IsObject(current)) {
@@ -140,7 +188,7 @@ fn lookup(f: *Frame, state: *Owner, receiver: c.JSValue) !?Found {
         if (c.JS_IsUndefined(value)) if (try adoptPending(f, state, current)) |adopted| {
             value = adopted;
         };
-        if (!c.JS_IsUndefined(value)) return .{ .holder = current, .record = data(value, state.data_class) };
+        if (!c.JS_IsUndefined(value)) return .{ .holder = current, .value = value, .record = data(value, state.data_class) };
         current = try f.own(try f.engine.checked(c.JS_GetPrototype(f.engine.context, current)));
     }
     return null;
@@ -148,24 +196,35 @@ fn lookup(f: *Frame, state: *Owner, receiver: c.JSValue) !?Found {
 fn getter(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, values: [*c]c.JSValue) callconv(.c) c.JSValue {
     const state = owner(values[0]);
     _ = context;
+    var invocation: js.Engine.NativeInvocation = .{};
+    state.engine.enterNativeInvocation(&invocation);
     var f: Frame = .{ .engine = state.engine, .object = receiver, .bindings = state.bindings };
     defer f.deinit();
     state.engine.native_exception_diagnostics_suppressed += 1;
     defer state.engine.native_exception_diagnostics_suppressed -= 1;
-    const value = getStack(&f, state, receiver) catch |err| return failure(state.engine, err);
-    return f.result(value);
+    const result: anyerror!c.JSValue = body: {
+        state.engine.checkNativeEntry() catch |err| break :body err;
+        break :body getStack(&f, state, receiver);
+    };
+    return finishCallback(&f, &invocation, result);
 }
 fn setter(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, values: [*c]c.JSValue) callconv(.c) c.JSValue {
     const state = owner(values[0]);
     _ = context;
+    var invocation: js.Engine.NativeInvocation = .{};
+    state.engine.enterNativeInvocation(&invocation);
     var f: Frame = .{ .engine = state.engine, .object = receiver, .bindings = state.bindings };
     defer f.deinit();
-    const found = lookup(&f, state, receiver) catch |err| return failure(state.engine, err);
-    if (found) |selected| {
-        if (selected.record.formatted) |previous| state.engine.freeValue(previous);
-        selected.record.formatted = c.JS_DupValue(state.engine.context, if (argc > 0) argv[0] else c.pi_js_undefined());
-    }
-    return c.pi_js_undefined();
+    const result: anyerror!c.JSValue = body: {
+        state.engine.checkNativeEntry() catch |err| break :body err;
+        const found = lookup(&f, state, receiver) catch |err| break :body err;
+        if (found) |selected| {
+            publishFormatted(state.engine, c.JS_DupValue(state.engine.context, selected.value),
+                if (argc > 0) argv[0] else c.pi_js_undefined(), state.data_class) catch |err| break :body err;
+        }
+        break :body c.pi_js_undefined();
+    };
+    return finishCallback(&f, &invocation, result);
 }
 fn asString(f: *Frame, value: c.JSValue) !c.JSValue {
     return f.own(try f.engine.checked(c.JS_ToString(f.engine.context, value)));
@@ -191,8 +250,11 @@ fn defaultPrepareCall(engine: *js.Engine, _: c.JSValue, args: []const c.JSValue,
     defer engine.native_exception_diagnostics_suppressed -= 1;
     var f: Frame = .{ .engine = engine, .object = values[0], .bindings = state.bindings };
     defer f.deinit();
-    const result = try defaultPrepare(&f, if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined());
-    return f.result(result);
+    const result: anyerror!c.JSValue = body: {
+        engine.checkNativeEntry() catch |err| break :body err;
+        break :body defaultPrepare(&f, if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined());
+    };
+    return finishFrame(&f, result);
 }
 fn prepare(f: *Frame, error_value: c.JSValue, frames: c.JSValue) !c.JSValue {
     const global = try f.get(f.bindings, "global");
@@ -255,22 +317,40 @@ fn fallbackFormat(f: *Frame, error_value: c.JSValue, raw_frames: c.JSValue) !c.J
 }
 fn getStack(f: *Frame, state: *Owner, receiver: c.JSValue) !c.JSValue {
     const found = try lookup(f, state, receiver) orelse return c.pi_js_undefined();
-    if (found.record.formatted) |formatted| return formatted;
-    const frames = found.record.frames orelse return c.pi_js_undefined();
+    const raw_frames = switch (found.record.simple) {
+        .formatted => |formatted| return formatted,
+        .frames => |frames| frames,
+        .none => return c.pi_js_undefined(),
+    };
+    // V8's formatter-local raw_stack/elems handle survives every setter or
+    // recapture during guest formatting, independently of the stored union.
+    const frames = try completion.ownRoot(f, c.JS_DupValue(f.engine.context, raw_frames));
     const reentrant = state.formatting;
     state.formatting = true;
     defer state.formatting = reentrant;
     const formatted = if (reentrant) try fallbackFormat(f, found.holder, frames) else try prepare(f, found.holder, try preparedFrames(f, frames));
-    found.record.formatted = c.JS_DupValue(f.engine.context, formatted);
+    try f.engine.checkNativeEntry();
+    // The selected default representation is the original FixedArray branch:
+    // successful formatting writes the selected holder's CURRENT private state.
+    // A reentrant CaptureStackTrace can have replaced the earlier record.
+    var current: c.JSValue = undefined;
+    if (c.JS_PiReadWeakMapEntry(f.engine.context, state.map, found.holder, &current) != 1)
+        return error.MissingNativeFormattedStackRecord;
+    try publishFormatted(f.engine, current, formatted, state.data_class);
     return formatted;
 }
 fn frameStringCall(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, values: [*c]c.JSValue) callconv(.c) c.JSValue {
     const state = owner(values[0]);
     _ = context;
+    var invocation: js.Engine.NativeInvocation = .{};
+    state.engine.enterNativeInvocation(&invocation);
     var f: Frame = .{ .engine = state.engine, .object = receiver, .bindings = state.bindings };
     defer f.deinit();
-    const result = frameString(&f, receiver) catch |err| return failure(state.engine, err);
-    return f.result(result);
+    const result: anyerror!c.JSValue = body: {
+        state.engine.checkNativeEntry() catch |err| break :body err;
+        break :body frameString(&f, receiver);
+    };
+    return finishCallback(&f, &invocation, result);
 }
 fn frameString(f: *Frame, receiver: c.JSValue) !c.JSValue {
     var filename: c.JSValue = undefined;
@@ -317,7 +397,8 @@ fn reorderPrototype(f: *Frame, object: c.JSValue, keys: []const [*:0]const u8) !
     for (entries.items) |entry| if (c.JS_DefinePropertyValueStr(f.engine.context, object, entry.key, c.JS_DupValue(f.engine.context, entry.value), entry.flags) < 0) return js.capture(f.engine);
 }
 /// Caller retains the returned private owner until uninstall precedes its release.
-/// This candidate is installed only by focused tests, not Engine.init or workers.
+/// Selected tests and explicitly admitted worker fatal owners install this;
+/// normal Engine.init does not. No Message/reporting installation is implied.
 pub fn install(engine: *js.Engine) !c.JSValue {
     const bindings = try js.object(engine);
     defer engine.freeValue(bindings);
@@ -341,7 +422,9 @@ pub fn install(engine: *js.Engine) !c.JSValue {
     defer engine.freeValue(weak_prototype);
     try js.define(engine, bindings, "mapGet", try js.get(engine, weak_prototype, "get"));
     try js.define(engine, bindings, "mapSet", try js.get(engine, weak_prototype, "set"));
-    try js.define(engine, bindings, "map", try engine.checked(c.JS_CallConstructor(engine.context, weak_constructor, 0, null)));
+    const map = try engine.checked(c.JS_CallConstructor(engine.context, weak_constructor, 0, null));
+    defer engine.freeValue(map);
+    try js.define(engine, bindings, "map", c.JS_DupValue(engine.context, map));
     const symbol = try js.get(engine, global, "Symbol");
     defer engine.freeValue(symbol);
     const label = try engine.checked(c.JS_NewString(engine.context, "kIsNodeError"));
@@ -360,7 +443,7 @@ pub fn install(engine: *js.Engine) !c.JSValue {
     errdefer if (!attached) engine.gpa.destroy(state);
     const owner_value = try engine.checked(c.JS_NewObjectClass(engine.context, owner_class));
     errdefer engine.freeValue(owner_value);
-    state.* = .{ .engine = engine, .bindings = c.JS_DupValue(engine.context, bindings), .data_class = data_class };
+    state.* = .{ .engine = engine, .bindings = c.JS_DupValue(engine.context, bindings), .map = c.JS_DupValue(engine.context, map), .data_class = data_class };
     _ = c.JS_SetOpaque(owner_value, state);
     attached = true;
     var values = [_]c.JSValue{owner_value};
@@ -392,6 +475,72 @@ pub fn install(engine: *js.Engine) !c.JSValue {
     c.JS_SetNativeErrorStackHook(engine.runtime, hook, state);
     return owner_value;
 }
+
+// All handles in this raw view are real owned duplicates. Its caller keeps the
+// installed owner and receiver live, so these read-only duplicate retirements
+// cannot discard their last source roots or enter a guest finalizer.
+const RawFound = struct {
+    holder: c.JSValue,
+    record: ?c.JSValue = null,
+    fallback: ?c.JSValue = null,
+    fn deinit(self: *RawFound, engine: *js.Engine) void {
+        const record = self.record;
+        const fallback = self.fallback;
+        const holder = self.holder;
+        self.record = null;
+        self.fallback = null;
+        self.holder = c.pi_js_undefined();
+        if (fallback) |value| engine.freeValue(value);
+        if (record) |value| engine.freeValue(value);
+        engine.freeValue(holder);
+    }
+};
+fn rawLookup(state: *Owner, receiver: c.JSValue) ?RawFound {
+    const engine = state.engine;
+    var current = c.JS_DupValue(engine.context, receiver);
+    while (c.JS_IsObject(current)) {
+        if (c.JS_IsProxy(current)) break;
+        var record: c.JSValue = undefined;
+        const present = c.JS_PiReadWeakMapEntry(engine.context, state.map, current, &record);
+        if (present == 1) return .{ .holder = current, .record = record };
+        if (present < 0) break;
+        if (c.JS_PiHasPendingNativeErrorStack(current)) {
+            var frames: c.JSValue = undefined;
+            if (c.JS_ReadPendingNativeErrorStack(engine.context, current, &frames) == 1)
+                return .{ .holder = current, .fallback = frames };
+            break;
+        }
+        // The actual non-Proxy JS_GetPrototype path only duplicates shape->proto.
+        // There is no exotic/property lookup or pending-state operation here.
+        const next = c.JS_GetPrototype(engine.context, current);
+        engine.freeValue(current);
+        current = next;
+    }
+    engine.freeValue(current);
+    return null;
+}
+/// Borrow the genuine owner returned by install and an independently rooted
+/// receiver in that owner's Engine. Return only an owned native Script with
+/// actual positions; no Message, formatting, adoption, guest call or allocation.
+/// Missing/unsupported simple state leaves both outputs unchanged. A present
+/// formatted/undefined state blocks inheritance. Prior pending stays untouched.
+pub fn readSimpleStackLocation(installed_owner: c.JSValue, receiver: c.JSValue, start: *c_int, end: *c_int) ?*c.JSNativeScript {
+    const state = owner(installed_owner);
+    var found = rawLookup(state, receiver) orelse return null;
+    defer found.deinit(state.engine);
+    if (found.record) |value| {
+        const pointer = c.JS_GetOpaque(value, state.data_class) orelse return null;
+        const record: *StackData = @ptrCast(@alignCast(pointer));
+        return switch (record.simple) {
+            .frames => |frames| c.JS_PiFindCapturedStackScriptLocation(frames, start, end),
+            .none, .formatted => null,
+        };
+    }
+    if (found.fallback) |frames|
+        return c.JS_PiFindCapturedStackScriptLocation(frames, start, end);
+    return null;
+}
+
 pub fn uninstall(engine: *js.Engine) void {
     c.JS_SetNativeErrorStackHook(engine.runtime, null, null);
     c.JS_SetNativeErrorStackAccessors(engine.context, c.pi_js_undefined(), c.pi_js_undefined());

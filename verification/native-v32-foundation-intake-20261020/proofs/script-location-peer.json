@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "status": "independent_finite_source_peer_no_concrete_blocker",
+  "reviewer": "sdk_environment_port",
+  "scope": "V31 script-location fixture private completion comparison correction; source only",
+  "packet": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v31-script-location-fixture-source-review-20261020\\proposal.json",
+    "sha256": "B66347861B8D557CAD4B24FAC183A1E6A2B9B998A7B0694C46EBADF54DCB2702"
+  },
+  "candidate_head": "14615dfc179f9e7e2044591a2d8aa9592b9d883b",
+  "files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v31-script-location-fixture-source-review-20261020\\original.zig",
+      "sha256": "30A2FEA5671546E4A285E68AD5B6D667A49E698B1C51C699DDF83A84495DA000",
+      "live_main_byte_identical": true
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v31-script-location-fixture-source-review-20261020\\projected.zig",
+      "sha256": "286A630630468043BD80E8F6A6C99D4DFAA6A09D86C43636D874E28F538C6A3F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "sha256": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "sha256": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4"
+    }
+  ],
+  "validation": {
+    "exact_forward_projection": true,
+    "whole_original_byte_inverse": true,
+    "edit_count": 3,
+    "named_declarations_before": 32,
+    "named_declarations_after": 32,
+    "ordered_names_equal": true,
+    "position_semantics": "The packet positions are Unicode string offsets after each preceding edit, not byte offsets into the original file. Applied sequentially at those positions and reversed in reverse order, the original and projected full byte strings are exact.",
+    "initial_audit_correction": "An initial audit incorrectly interpreted position as an original byte offset and rejected before writing anything; inspection established the actual sequential Unicode convention. The successful audit used that explicit convention and independently checked unique before spans."
+  },
+  "findings": [
+    {
+      "authority": "quickjs.c:1539-1559; quickjs.h:196,298-305,329-332,405",
+      "conclusion": "JS_PiNativeTerminationResult returns JS_MKVAL(JS_TAG_EXCEPTION, 1). JS_PiIsExecutionTermination checks both exact tag and integer payload; ordinary JS_EXCEPTION has payload 0. Neither operation allocates or establishes a runtime event. This is an immediate private native completion, not a guest object identity."
+    },
+    {
+      "authority": "quickjs.c:18132-18260,68693-68695",
+      "conclusion": "JS_IsSameValue delegates to js_same_value and js_strict_eq2 with SAME_VALUE mode. The complete tag switch has no exception-sentinel case. JS_TAG_EXCEPTION reaches default false even when operands have identical private representation. The old mode 2 SameValue condition is therefore unsatisfiable for the intended exact token, independently of any raw Script projection."
+    },
+    {
+      "authority": "quickjs.c:2846-2912,9206-9247",
+      "conclusion": "Mode 2 requests and services the actual native event before sampling generation. Servicing increments generation and installs the private pending token; IsExecutionTerminating requires both in-flight ownership and that exact current token. JS_GetException directly copies current_exception and clears that field to UNINITIALIZED. Thus the corrected predicate checks the exact detached representation, the unchanged generation checks that no newer event was serviced, and the retained pre-detach IsExecutionTerminating condition checks the live event lease."
+    },
+    {
+      "authority": "quickjs.c:7491-7519,69608-69615,7394-7399,1975-1991,13950-13958",
+      "conclusion": "The five raw calls under the unchanged memory limit read existing native metadata, duplicate retained values by reference count, or validate an existing frame class and increment its existing Script reference count. None enters JavaScript, allocates a new error, services termination or rewrites current_exception. The complete causal chain supports preserving the actual pending event rather than explaining the negative result as a production projection defect."
+    },
+    {
+      "authority": "projected.zig:446-490",
+      "conclusion": "All three ordinary/fatal/private modes still execute all five raw calls with memory limit 1, require success, validate owner and string results, and require an actual pending exception. Modes 0/1 retain object SameValue and the original uncatchable flag check verbatim. Mode 2 retains the live termination check, switches only its impossible guest comparison to the dedicated private representation predicate, then rethrows and cancels the same actual event as before. Generation equality is an additional condition in all modes."
+    }
+  ],
+  "conclusion": "Agree with the finite fixture correction. It preserves the intended exact pending reason checks using the correct domain-specific operation, and adds event-generation preservation. No concrete blocker in these three source edits; no production assertion or algorithm changes are included.",
+  "limits": [
+    "This is source review and exact finite projection verification only.",
+    "The reported V31 negative and its raw captures were not rerun by this reviewer; no runtime acceptance is inferred.",
+    "The corrected fixture still requires Root's authorized build/run and unchanged cohort/closure checks.",
+    "No Main files, production sources, historical evidence or existing assertions were edited by this reviewer."
+  ],
+  "compiler_execution": false,
+  "native_execution": false,
+  "test_execution": false,
+  "main_modified": false,
+  "production_modified": false,
+  "qualification": false
+}

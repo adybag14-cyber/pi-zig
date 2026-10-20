@@ -29,7 +29,7 @@ pub const Check = enum {
     outer_execution_id, outer_trigger_id, callback_scope_order,
     invalid_provider, invalid_wrap_brand, unfinished_live_fs_request,
     promise_property_settle,
-    request_before_bootstrap, negative_waiting_requests,
+    request_before_bootstrap, request_callback_already_set, negative_waiting_requests,
     waiting_requests_after_io_join, request_queue_during_disarm,
     callback_argument_count, callback_argument_buffer,
     binding_data_property_set, binding_data_slot_occupied,

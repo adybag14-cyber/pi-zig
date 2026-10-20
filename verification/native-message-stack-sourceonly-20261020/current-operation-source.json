@@ -1,0 +1,65 @@
+{
+  "status": "source-only proposal evidence; no production mutation",
+  "base_commit": "bc518be926f55ae6af0b5e5ceb54989dd11174a5",
+  "c": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\vendor\\quickjs\\quickjs.c",
+    "sha256": "8407EA70CAC10FD41EFADBF31B8C043F86B322EA1A1D09DCB1EA00176761C241",
+    "bytes": 2392187,
+    "ranges": [
+      {
+        "label": "Error native field",
+        "start_byte": 51252,
+        "end_byte_exclusive": 51495,
+        "sha256": "31D83BB1666F323418DE64F6BE29E1F30D1016C0238887AA311AA7AB375C75EF",
+        "text": "        struct { /* JS_CLASS_ERROR: data aliases object_data above. */\n            JSValue data;\n            /* Host-only identity tag; not a property or a GC root. */\n            uint64_t native_allocation_generation;\n        } native_error;\n"
+      },
+      {
+        "label": "Error initialization",
+        "start_byte": 240614,
+        "end_byte_exclusive": 240755,
+        "sha256": "ED63DBCEA459FED567E5F5D81C9BD721E65E2DEEAC80B37B84D48B96EE6AFDE2",
+        "text": "    case JS_CLASS_ERROR:\n        p->u.native_error.native_allocation_generation = 0;\n        p->u.object_data = JS_UNDEFINED;\n        break;\n"
+      },
+      {
+        "label": "actual recursion fallback",
+        "start_byte": 332965,
+        "end_byte_exclusive": 334523,
+        "sha256": "2CBEC651ED9DD089F4D207691A36E2B105E024E5EA7BAA05925305AEAE02D8C0",
+        "text": "static int capture_error_stack(JSContext *ctx, JSValueConst error,\n                                JSValueConst filter, const char *filename,\n                                int line, int column, int flags)\n{\n    if (ctx->rt->native_error_stack_hook && !ctx->rt->native_error_stack_hook_active) {\n        int status = native_error_stack_hook(ctx, error, JS_ERROR_STACK_CAPTURE, filter,\n                                       filename, line, column, flags);\n        /* All callers historically test only <0. Reserve -2 for this helper's\n           actual metadata failure, never an embedding callback's integer. */\n        return status < 0 ? -1 : status;\n    }\n    if (ctx->rt->native_error_stack_hook && ctx->rt->native_error_stack_hook_active) {\n        JSValue frames = JS_UNDEFINED;\n        bool enabled;\n        uint32_t limit;\n        if (ctx->rt->native_error_stack_fallback_active) return 0;\n        ctx->rt->native_error_stack_fallback_active = true;\n        limit = native_stack_limit(ctx, &enabled);\n        if (enabled)\n            frames = JS_CaptureCurrentStackFrames(ctx, limit, filter, filename, line, column, flags);\n        ctx->rt->native_error_stack_fallback_active = false;\n        if (JS_IsException(frames) || JS_HasException(ctx)) {\n            JS_FreeValue(ctx, frames);\n            return -1;\n        }\n        JS_FreeValue(ctx, JS_VALUE_GET_OBJ(error)->u.object_data);\n        JS_VALUE_GET_OBJ(error)->u.object_data = frames;\n        return 0;\n    }\n    return build_backtrace(ctx, error, filter, filename, line, column, flags);\n}\n"
+      },
+      {
+        "label": "legacy pending-stack read",
+        "start_byte": 2041452,
+        "end_byte_exclusive": 2041797,
+        "sha256": "C1EF93C8DEA9B164B53ECC098A1CC505FAA36F2C220D3D3363C6E5D12B259986",
+        "text": "int JS_ReadPendingNativeErrorStack(JSContext *ctx, JSValueConst error, JSValue *frames)\n{\n    JSObject *object;\n    if (!JS_IsError(error)) return 0;\n    object = JS_VALUE_GET_OBJ(error);\n    if (!JS_IsArray(object->u.object_data) && !JS_IsUndefined(object->u.object_data)) return 0;\n    *frames = js_dup(object->u.object_data);\n    return 1;\n}\n"
+      },
+      {
+        "label": "actual map get",
+        "start_byte": 1971861,
+        "end_byte_exclusive": 1972328,
+        "sha256": "CC593E1686723ED7E212101C13010F0C693F1E46F07696AE305D20343588D683",
+        "text": "static JSValue js_map_get(JSContext *ctx, JSValueConst this_val,\n                          int argc, JSValueConst *argv, int magic)\n{\n    JSMapState *s = JS_GetOpaque2(ctx, this_val, JS_CLASS_MAP + magic);\n    JSMapRecord *mr;\n    JSValueConst key;\n\n    if (!s)\n        return JS_EXCEPTION;\n    key = map_normalize_key_const(ctx, argv[0]);\n    mr = map_find_record(ctx, s, key);\n    if (!mr)\n        return JS_UNDEFINED;\n    else\n        return js_dup(mr->value);\n}\n\n"
+      },
+      {
+        "label": "raw captured Script projection",
+        "start_byte": 2346907,
+        "end_byte_exclusive": 2347219,
+        "sha256": "1149A5C04DECEB56E52885D43C4C050138C42761478233983CE972B8E13C5692",
+        "text": "JSNativeScript *JS_PiGetCapturedStackFrameScript(JSValueConst frame, int *position)\n{\n    JSCallSiteData *data = JS_GetOpaque(frame, JS_CLASS_CALL_SITE);\n    if (!data || !position || !data->pi_script)\n        return NULL;\n    *position = data->pi_source_position;\n    return JS_PiDupScript(data->pi_script);\n}\n\n"
+      }
+    ]
+  },
+  "existing_owner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\src\\extensions\\native_error_stack.zig",
+    "sha256": "EC0002CEED53432B26BA135F2D4CDC6FFB8C2D0460ADE1C6B8D003C8194826BF",
+    "bytes": 25360
+  },
+  "conclusions": [
+    "The Error data field initializes to undefined before capture; its tag alone does not identify a completed fallback capture.",
+    "Successful native-hook recursion capture publishes either actual frames or disabled-capture undefined. An explicit presence marker can distinguish this from initialization without guest observation.",
+    "The existing reader remains a legacy duplicate API. A new raw query must use actual capture presence; adoption may transfer the old native entitlement only after real Map publication.",
+    "The actual js_map_get operation has no callback or allocation after intrinsic class validation. The new proposed raw seam will preserve its normalization/hash/search and add no pending operation.",
+    "Script32 already supplies a raw opaque-frame Script/position projection, independently owned from JS receiver/function roots."
+  ]
+}

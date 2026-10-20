@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "status": "finite_source_peer_no_read_core_blocker",
+  "reviewer": "handover_review",
+  "reviewed_utc": "2026-10-20T17:56:45.640134+00:00",
+  "source_only": true,
+  "source_modified": false,
+  "main_modified": false,
+  "execution_performed": false,
+  "compiled": false,
+  "qualification": false,
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\production-proposal.json",
+    "bytes": 6540,
+    "sha256": "0753466963F6EB964F582B99E7CD5002A278CB82C13C5F8722A22C9DBC563313"
+  },
+  "reviewed_read": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_read.zig",
+    "bytes": 14225,
+    "sha256": "DEEEDCB2CFA51512571574F676091D71E49448FFDF23F1B60DF881B73B9307FD"
+  },
+  "reviewed_read_wrap": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_read_wrap.zig",
+    "bytes": 9466,
+    "sha256": "1E98E0231C43EF57A35010CD2B531BB2FE23A84D8A6AA9DD0A885286799E6A49"
+  },
+  "authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\node_file.v24.13.cc",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\node_file.v24.13.h",
+      "bytes": 17193,
+      "sha256": "A63A31D1BCAEB7AF416B19ABEAFAB880DB7D424378DC27050F9FC2EE4921E16F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\node_file-inl.v24.13.h",
+      "bytes": 14756,
+      "sha256": "2E96C28CB0BBB4520D8E0C0997188922C3DDE28853D14A3E19D7D559BC9493D5"
+    }
+  ],
+  "shared_context_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_async_wrap.zig",
+      "bytes": 19741,
+      "sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_async_wrap_state.zig",
+      "bytes": 26761,
+      "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_fs_request_io.zig",
+      "bytes": 14502,
+      "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_request_state.zig",
+      "bytes": 5818,
+      "sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+      "bytes": 9934,
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA"
+    }
+  ],
+  "live_and_snapshot_pairs_verified": 7,
+  "original_read": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\original\\native_node_file_handle_read.zig",
+    "bytes": 14079,
+    "sha256": "1189976EA8E3DF01CCD267A0AB971827A1D88EC7E28C027B85495D581058D431"
+  },
+  "direct_template_successor_diff": "--- original-read\n+++ direct-template-read\n@@ -6,15 +6,16 @@\n //! original fields; this module creates no second handle or ownership graph.\n //! Handle.getReadState() returns State, getReadInputs() returns Inputs,\n //! getStreamBase()/getAsyncWrap()/getBindingData() return their real owners.\n-//! Handle.newReadWrapInstance(scope) must instantiate the actual stored\n-//! FSReqCallback InstanceTemplate. There is no fallback constructor here.\n+//! NewInstance uses the genuine stored FSReqCallback template directly.\n+//! Its assembler must configure the same real shared Controller beforehand.\n //!\n-//! First-instance template construction, native close/GC/transfer ownership,\n-//! and the production trace controller remain explicit integration obligations.\n+//! Concrete FileHandle close/GC/transfer ownership and the production trace\n+//! and backing-allocation controllers remain explicit integration obligations.\n const std = @import(\"std\");\n const a = @import(\"native_node_argument_values.zig\");\n const requests = @import(\"native_node_request_state.zig\");\n const read_wrap = @import(\"native_node_file_handle_read_wrap.zig\");\n+const templates = @import(\"native_node_async_wrap.zig\");\n const io = @import(\"native_node_fs_request_io.zig\");\n const check = @import(\"native_node_check_failure.zig\");\n const c = a.c;\n@@ -190,9 +191,10 @@\n                 return;\n             }\n \n-            // The true original instance-template implementation is required\n-            // from the concrete owner. It bypasses the constructor callback.\n-            const wrapper = (try handle.newReadWrapInstance(s)) orelse return;\n+            // node_file.cc stores fst->InstanceTemplate(), where fst is the\n+            // genuine FSReqCallback callback template. This actual template\n+            // operation bypasses its callback but keeps its prototype/brand.\n+            const wrapper = try templates.newFSReqCallbackInstance(s, data.template_owner);\n             selected.* = try ReadWrap.createDetached(s, inputs.controller, handle, wrapper);\n         }\n \n",
+  "findings": [
+    "Read both complete current Read/ReadWrap implementations and the pinned original node_file.cc528-665 with node_file.h299-316. No source-level ownership/control-flow blocker found in this finite read core. This does not establish the absent concrete FileHandle assembler or runtime qualification.",
+    "ReadStart/ReadStop/AfterClose preserve original shared closed/closing/reading/current_read/fd fields, EOF/no-current selection and recommended-read bound. ReadStop changes only reading and an immediate negative native Dispatch is ignored without a synthetic callback or release.",
+    "Acquisition moves the last original freelist native pointer, creates fresh resource and cached handle-key property, runs AsyncReset, then rewrites borrowed FileHandle*. The default trigger scope restores before inner local roots retire. No second FileHandle or BindingData owner is introduced.",
+    "Checked native constructor order and refcounts against the original: physical reusable storage before AsyncWrap init, providerFSREQCALLBACK8, actual Environment request queue then MakeWeak/Reset, borrowed handle member after bases, native pointer acquire then detach. The read buffer and handle are borrowed; derived retirement removes the real queue entry and releases only C storage.",
+    "Ordinary JavaScript init/reset/EmitRead completions are recorded in the existing stable boundary and preserve the original void native continuation. Fatal and other host errors stop. Read/ReadWrap and Controller dispatchRawRead do not add a post-init pending-exception early return that suppresses real dispatch; inspected frozen Main Scope/Boundary as shared composition context.",
+    "Completion retains the original callback pointer through Entry.beginCallback/endCallback, saves buffer/result, moves current_read out, calls actual uv_fs_req_cleanup, resets/recycles before EmitRead, clamps count/length/offset, turnszero intoEOF, then observes live reading flag and restarts. Full-freelist local pointer releases after EmitRead/restart; old callback pointer releases last, including reentrant same-Entry reuse.",
+    "Verified direct successor call templates.newFSReqCallbackInstance uses the actual caller Scope and BindingData.template_owner, selecting fsreqcallback with new_targetnull. instantiate is constructor-bypass; normal constructor separately performs fs_callback.Request.construct. This follows original node_file.cc3931-3947, whose stored FileHandleReadWrap template is fst->InstanceTemplate. The missing Handle.newReadWrapInstance dependency is removed.",
+    "The retained template owner must be configured with the SAME shared Controller before admission. Constructor/general FSReqCallback/UV semantic review is separately owned by module_io_port; this receipt covers its direct composition into the Read/ReadWrap core only.",
+    "Verified all seven live proposal files and immutable snapshots plus three pinned source authorities. The read successor differs from preserved1189976E original only in explicit direct-template documentation/import/call; exact diff retained below.",
+    "Remaining concrete FileHandle constructor/close/GC/transfer ownership and shared same-State/StreamBase/BindingData assembly, real trace owner and backing allocator retry/GC composition, meaningful source controls and Root-owned native build/runtime are explicit unresolved dependencies."
+  ],
+  "open_dependencies": [
+    "Concrete native FileHandle constructor/close/GC/transfer and owner assembly",
+    "Configure shared Controller before genuine FSReqCallback template admission",
+    "General FSReqBase Init/continuation/Resolve/Reject/stat methods and their native caller bindings",
+    "Production trace and native backing allocator retry/GC owner composition",
+    "Source controls, independent finite source review, compiler and exact runtime qualification"
+  ]
+}

@@ -1,0 +1,212 @@
+{
+  "schema": "pi.finite-source-peer.v1",
+  "date": "2026-10-20",
+  "reviewer": "sdk_owners",
+  "status": "CLOSED for assigned Debug/Permission algorithm and output controls",
+  "execution": "none",
+  "input_packet": "AE7813599E7431050E5430AF0BA487D2DEF9FF2367530D698F6454ADC52A0C83",
+  "pins": [
+    {
+      "path": "src/native_node_native_debug_test.zig",
+      "sha256": "2AC6D329A744627FF6E39A20E01F363C0E387B00A262A4AF089E75B0874A472B",
+      "bytes": 16437
+    },
+    {
+      "path": "src/native_node_permission_test.zig",
+      "sha256": "C8D2AC61DF3C3B75131D0258B09E8E239ECFDD646F4453E3FEB5259C1397716E",
+      "bytes": 19098
+    },
+    {
+      "path": "src/native_node_native_debug_test_support.zig",
+      "sha256": "7AF437A515FF85B16457E854B7FCD93BDBF74545C939E7039040158E5285F604",
+      "bytes": 10530
+    },
+    {
+      "path": "src/extensions/native_node_permission_test_support.cpp",
+      "sha256": "362826F62F0F4322961AE0F93E835C178251B49FDCAA3BE06D116B307A1F4BC4",
+      "bytes": 7661
+    },
+    {
+      "path": "src/extensions/native_node_permission_test_support.h",
+      "sha256": "9D128A71AE35CF2A92AFA92E5F8278BA29F564C0C4FBB85F61CA85E105E7E54B",
+      "bytes": 2741
+    },
+    {
+      "path": "src/extensions/native_node_native_debug.cpp",
+      "sha256": "AD3446C875DFFD39165AF9514A4A1169125995C5701F4B706706F83CB814A990",
+      "bytes": 6880
+    },
+    {
+      "path": "src/extensions/native_node_permission.cpp",
+      "sha256": "4DC0D4C70A659B9405E6D4AC6BFC0B008FB48EFB614F811C87F096A105A73EC8",
+      "bytes": 15344
+    },
+    {
+      "path": "src/extensions/native_node_permission_internal.hpp",
+      "sha256": "C15AC7ED37DAFB8F672AAFCFCD6FABA2CF87BB64EE26C8CC4AF5A6695D2E712F",
+      "bytes": 11308
+    }
+  ],
+  "assigned": {
+    "debug": [
+      {
+        "index": 1,
+        "name": "native Debug constructs complete original category tables with every field disabled"
+      },
+      {
+        "index": 2,
+        "name": "native Debug empty and unmatched input leave original enabled fields false"
+      },
+      {
+        "index": 3,
+        "name": "native Debug uses original case-insensitive substring matching"
+      },
+      {
+        "index": 4,
+        "name": "native Debug leading and internal empty tokens enable every category"
+      },
+      {
+        "index": 5,
+        "name": "native Debug a trailing comma does not invent a final empty token"
+      },
+      {
+        "index": 6,
+        "name": "native Debug includes the original literal terminal NUL in category matching"
+      },
+      {
+        "index": 7,
+        "name": "native Debug parsing is one-way and separate native lists remain independent"
+      },
+      {
+        "index": 8,
+        "name": "native Debug process selection returns one fixed-feature original list"
+      },
+      {
+        "index": 9,
+        "name": "native Debug Parse Environment reads the live supplied Map through real SafeGetenv"
+      },
+      {
+        "index": 10,
+        "name": "native Debug retains the SafeGetenv text before the actual trace callback mutates Map"
+      },
+      {
+        "index": 11,
+        "name": "native Debug selected sized-string formatter preserves binary bytes and retires its native copies"
+      },
+      {
+        "index": 12,
+        "name": "native Debug selected tree formatter observes C-string boundaries and UTF8 branch bytes"
+      },
+      {
+        "index": 13,
+        "name": "native Debug actual FWrite file route preserves exact binary content"
+      },
+      {
+        "index": 14,
+        "name": "native Debug Permission output callbacks use the original selected format and real stderr route"
+      },
+      {
+        "index": 15,
+        "name": "native Debug actual Permission insertion reads the live enabled list before printing"
+      }
+    ],
+    "permission": [
+      {
+        "index": 1,
+        "name": "native Permission constructs actual policies and returns every native allocation at destruction"
+      },
+      {
+        "index": 2,
+        "name": "native Permission enable selects initial policies and each simple Apply denies only its actual scope"
+      },
+      {
+        "index": 3,
+        "name": "native Permission unknown Apply preserves the native policy map and existing decisions"
+      },
+      {
+        "index": 4,
+        "name": "native Permission exact missing-file grant does not grant siblings descendants or writes"
+      },
+      {
+        "index": 5,
+        "name": "native Permission resolves original dot and parent segments before radix lookup"
+      },
+      {
+        "index": 6,
+        "name": "native Permission actual directory stat grants its original recursive wildcard"
+      },
+      {
+        "index": 7,
+        "name": "native Permission actual regular file stat retains an exact grant"
+      },
+      {
+        "index": 8,
+        "name": "native Permission standalone star returns before later grants and keeps the other direction denied"
+      },
+      {
+        "index": 9,
+        "name": "native Permission aggregate filesystem grant requires both original all-direction flags"
+      },
+      {
+        "index": 10,
+        "name": "native Permission real radix splits preserve exact sibling grants and duplicate insertion retains no allocation"
+      },
+      {
+        "index": 11,
+        "name": "native Permission preserves the original nonterminal wildcard lookup decisions"
+      }
+    ],
+    "helpers": [
+      "Capture.receive/expect, expectOutput, PermissionOperation and FormatOperation",
+      "TraceProbe, DirectOutput, selected format, Directory, initialize, applyOne, makeRegular",
+      "C++ selected SPrintF bridge, File/ReadOutput and synchronous stderr capture/restore"
+    ]
+  },
+  "findings": [
+    {
+      "area": "Debug1–8 native Parse/category state",
+      "finding": "Both actual feature tables are constructed with zero enabled flags; current categories/count/conditional ordering match the previously closed complete table. Case-insensitive substring, leading/interior empty tokens, trailing comma, terminal NUL in the real static literal, one-way state and independent lists reach the actual production Parse. The single process selection control only creates the same fixed noncrypto process storage and does not destroy it."
+    },
+    {
+      "area": "Debug9–10 SafeGetenv ordering",
+      "finding": "The real supplied Map and native Environment paths feed Parse(Environment). Trace callback changes the actual Map after SafeGetenv selected/copied its text; the original Permission category succeeds while the later ZLIB replacement stays absent. No guest lookup or false category gate supplies the observation."
+    },
+    {
+      "area": "Debug11–14 formatting/output",
+      "finding": "Real sized-string and const-char SPrintF instantiations distinguish embedded binary bytes from C-string truncation and preserve UTF-8 branch prefixes. Output visitor runs while the actual native String is owned; charge observation occurs before its retirement. File and stderr observers use actual production FWrite. The stderr descriptor, flush and Windows CRT mode are restored before observation assertions. Direct callbacks test formatting, while the separate actual Permission control tests enabled gating."
+    },
+    {
+      "area": "Debug15 live Permission gate",
+      "finding": "Initially disabled actual list yields no output from a real insertion. The same list is enabled through Parse before insertion into the independent write tree; the real inserting/tree lines are compared byte-for-byte. A single branch avoids inventing an unordered sibling iteration order; the actual native path is retained in the expected bytes."
+    },
+    {
+      "area": "Permission1–3 construction/policy",
+      "finding": "Actual value-initialized concrete shared policies, Enable and simple Apply produce the original scope-specific decisions. Root and unknown scopes behave through the real native map. Unknown Apply preserves retained allocation state and existing policy decisions. Placement and native owner lifetime are independently reviewed by VM."
+    },
+    {
+      "area": "Permission4–11 filesystem decisions",
+      "finding": "Actual temporary paths, real uv_fs_open/close and directory stat distinguish missing leaves, regular files and directory wildcards. Native PathResolve handles dot/parent segments before lookup. Star's early return prevents retained later radix entries; read/write all flags remain independent. Exact sibling splits/duplicate insertion and nonterminal wildcard results are grounded in the original radix algorithm, not host filesystem existence substitutes."
+    },
+    {
+      "area": "Failure/setup review",
+      "finding": "Temporary path allocations, raw descriptor setup cleanup and observed buffers are retained until their selected operations finish. The shared Fixture is read in full for these uses; the independent VM peer owns its complete native storage/retirement coverage and the UV allocation observer. No remaining concrete blocker was found in the assigned algorithm/output slice."
+    }
+  ],
+  "preserved_limits": [
+    "VM owns Debug16–20, Permission12–18, shared Fixture/Storage native lifetime/retry and UV allocator cleanup observer.",
+    "The two approved Permission cleanup adaptations remain explicitly distinct from original leaking Source branches; these assigned tests do not close their allocation-retirement coverage.",
+    "File output does not qualify console WriteConsoleW, terminal encoding, generic numeric SPrintF or arbitrary malformed format diagnostics.",
+    "No RealEnvStore, process.env interceptor, public permission/CLI namespace, full Environment bootstrap, native CHECK negative process or runtime execution claim."
+  ],
+  "prior_receipts": {
+    "debug_production": "464A38DA11121715E1538A18B1287DAC7C64A5A2651CF27F8E5C6C0E6A0BAE36",
+    "approved_permission_cleanup": "2BAD818A10B0DC9586CC06E46BF9BC3156E9AA3C46B88130837DDCE7E14DC05B"
+  },
+  "verification": {
+    "all_assigned_source_read": true,
+    "debug_count": 15,
+    "permission_count": 11,
+    "mutations": 0,
+    "blockers": []
+  }
+}

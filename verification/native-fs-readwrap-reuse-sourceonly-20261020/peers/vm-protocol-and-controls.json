@@ -1,0 +1,105 @@
+{
+  "schema": "finite-source-peer-v1",
+  "date": "2026-10-20",
+  "reviewer": "vm_foundation",
+  "status": "closed for assigned proposal/event ownership and control slice; no execution",
+  "proposal": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-fs-readwrap-reuse-sourceonly-20261020/readwrap-reuse-proposal-v3.json",
+    "sha256": "625A46DF30FF353AD2EB7ADDFF5C4705B0655B89F99F7D052A0A7B2BFCE40108"
+  },
+  "bases": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_uv_tcp.c",
+      "sha256": "FF046966BB81E915F0A69FD158DD8DD10533A6E2590FE1CA8975A5DCB503EE83",
+      "bytes": 42250,
+      "original": "original/native_uv_tcp.before-readwrap-reuse.c.txt"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_uv_fs.h",
+      "sha256": "A8E758C49AC4E0583BA08ABF28771BFC7843A730796A6F3E5C471698249011BE",
+      "bytes": 3072,
+      "original": "original/native_uv_fs.before-readwrap-reuse.h.txt"
+    }
+  ],
+  "projected": {
+    "c_sha256": "6BA884B63C1C89FE65DFD90C97AC2604280749EFA5095755347EA06FC52CE92A",
+    "c_bytes": 45160,
+    "h_sha256": "B738A0EAECC8E06781305D953B0FFE56753B774F8507CDBE4052BCBC2014F117",
+    "h_bytes": 4679
+  },
+  "control": {
+    "path": "src/native_node_fs_readwrap_reuse_test.zig",
+    "sha256": "1976069B2406CBB9B0B78F67EB8E8DAE562B05EB4E9C5DDE52AEAABB525A9972",
+    "bytes": 28267,
+    "assigned_declarations": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "assigned_names": [
+      "native actual FS reuse initial Reset preserves unsubmitted storage and charge",
+      "native actual FS reuse Reset rejects submitted and queued work until actual dequeue",
+      "native actual FS reuse dequeued result still requires actual cleanup before Reset",
+      "native actual FS reuse new completion queues before old event entitlement retires",
+      "native actual FS reuse old release preserves the reused embedded event FIFO next link",
+      "native actual FS reuse several event tickets may own one embedded address",
+      "native actual FS reuse completion owns request after old event and explicit owner retire"
+    ],
+    "helpers": "Fixture/Ticket/completion/request/event release and actual stop/join ownership"
+  },
+  "verification": {
+    "source_read_full": true,
+    "c_edits": 5,
+    "h_edits": 3,
+    "forward_and_reverse_exact": true,
+    "v3_changes_only_FS_actual_dequeue_in_use_clear_and_comment": true,
+    "production_unmutated_at_read": true,
+    "no_execution": true
+  },
+  "closed_finding": {
+    "prior": "v2 9EC4D23D",
+    "fact": "pi_uv_event_queue asserts !event->in_use and sets it; v2 only cleared event_queued, so a second completion would assert.",
+    "correction": "v3 clears event->in_use only after actual FS FIFO removal under event_mutex, immediately before the release store to event_queued. Reset and older event release still do not mutate next/in_use."
+  },
+  "conclusions": [
+    "The new queued release store precedes completed release; an acquire observation of completion therefore cannot admit Reset during the completion-before-enqueue window.",
+    "Actual dequeue removes the embedded node/next link and clears the FS slot admission state before exposing the event; Reset still requires completed and actual cleaned, not merely an old host ticket.",
+    "Original synchronous command admission serializes reset/resubmit with worker access. The previous callback retains its request entitlement through final accesses; a later command cannot execute on the same worker until it returns.",
+    "Each accepted native completion retains a request and event_queue retains the service. The old ticket release snapshots only stable fields and drops one independent reference pair. It never clears the newly queued next link, in_use or event_queued.",
+    "A final request release can invoke cleanup only when no new native callback/queued ticket still owns the request. New in-flight and queued operations independently prevent that final release.",
+    "Raw span admission copies the caller's actual buffer fields, validates Windows ULONG extent, and retains no JS value or invented lease. The caller keeps the native storage through completion/cleanup, with stop/join before destruction.",
+    "Initial Reset is a no-op only for unsubmitted uncleaned storage. Completed native rejection has no queued event and may reset only after real cleanup. After service stop, resubmission returns actual unaccepted cancellation and queues nothing.",
+    "Assigned controls distinguish ticket entitlement from event address; they test uncleaned/queued rejection, repeat ownership, FIFO A-before-B after old release, and final request lifetime after explicit owner plus old ticket retirement. Every acquired event enters the fixture before fallible assertions; teardown joins before borrowed spans/descriptors retire."
+  ],
+  "exclusions": [
+    "Remaining controls2-3/10-14 and build are Modules' slice.",
+    "Original FileHandleReadWrap/template/freelist/controller assembly, UV execution and runtime qualification remain separate.",
+    "No source mutation authorization or full FileHandle acceptance is implied."
+  ],
+  "exact_operations": {
+    "event_prepare_and_queue": {
+      "offset": 6710,
+      "body": "static void pi_uv_event_prepare(PiUvEvent *event, PiUvService *service,\n        PiUvEndpoint *source, PiUvEndpoint *keeper, enum PiUvStorage storage,\n        int kind, int status, uint64_t token) {\n    assert(!event->in_use);\n    memset(event, 0, sizeof(*event));\n    event->service = service;\n    event->keeper = keeper;\n    event->storage = storage;\n    event->info.source = source;\n    event->info.kind = kind;\n    event->info.status = status;\n    event->info.token = token;\n}\nstatic void pi_uv_event_queue(PiUvEvent *event) {\n    PiUvService *service = event->service;\n    assert(!event->in_use);\n    event->in_use = 1;\n    pi_uv_service_retain(service);\n    if (event->info.source) pi_uv_endpoint_retain(event->info.source);\n    if (event->keeper && event->keeper != event->info.source)\n        pi_uv_endpoint_retain(event->keeper);\n    uv_mutex_lock(&service->event_mutex);\n    if (service->event_tail) service->event_tail->next = event;\n    else service->event_head = event;\n    service->event_tail = event;\n    atomic_fetch_add_explicit(&service->queued_events, 1, memory_order_release);\n    uv_mutex_unlock(&service->event_mutex);\n    service->wake(service->wake_slot, service->wake_generation);\n}\n"
+    },
+    "fs_release_completion": {
+      "offset": 15562,
+      "body": "void pi_uv_fs_request_retain(PiUvFsRequest *request) {\n    atomic_fetch_add_explicit(&request->references, 1, memory_order_relaxed);\n}\nvoid pi_uv_fs_request_cleanup(PiUvFsRequest *request) {\n    assert(!request->submitted || atomic_load_explicit(&request->completed, memory_order_acquire));\n    if (atomic_exchange_explicit(&request->cleaned, 1, memory_order_acq_rel))\n        return;\n    /* Actual uv cleanup is delayed until the original AfterScope cutpoint.\n     * The independent backing entitlement is no longer used by native work. */\n    if (request->entered) uv_fs_req_cleanup(&request->uv);\n    JS_PiReleaseArrayBufferLease(&request->backing);\n}\nvoid pi_uv_fs_request_release(PiUvFsRequest *request) {\n    if (!request || atomic_fetch_sub_explicit(&request->references, 1,\n                                              memory_order_acq_rel) != 1)\n        return;\n    assert(!request->submitted || atomic_load_explicit(&request->completed, memory_order_acquire));\n    pi_uv_fs_request_cleanup(request);\n    PiUvService *service = request->service;\n    pi_uv_free(service->memory_owner, request);\n    pi_uv_service_release(service);\n}\nstatic PiUvFsRequest *pi_uv_fs_request_allocate(PiUvService *service,\n                                               int kind, uint64_t token) {\n    PiUvFsRequest *request = pi_uv_alloc(service->memory_owner, sizeof(*request));\n    if (!request) return NULL;\n    request->service = service;\n    request->kind = kind;\n    atomic_init(&request->references, 1);\n    atomic_init(&request->completed, 0);\n    atomic_init(&request->cleaned, 0);\n    atomic_init(&request->event_queued, 0);\n    pi_uv_service_retain(service);\n    pi_uv_event_prepare(&request->event, service, NULL, NULL,\n        PI_UV_FS_REQUEST, PI_UV_FS_COMPLETION, 0, token);\n    request->event.allocation = request;\n    return request;\n}\nstatic void pi_uv_fs_completed(uv_fs_t *actual) {\n    PiUvFsRequest *request = actual->data;\n    PiUvService *service = request->service;\n    if (request->previous) request->previous->next = request->next;\n    else service->fs_requests = request->next;\n    if (request->next) request->next->previous = request->previous;\n    request->previous = request->next = NULL;\n    request->event.info.status = actual->result < 0 ? (int)actual->result : 0;\n    if (request->kind == PI_UV_FS_READ && actual->result >= 0)\n        request->event.info.length = (size_t)actual->result;\n    atomic_fetch_sub_explicit(&service->pending_requests, 1, memory_order_release);\n    /* Publish the queued state before completed: observing completed must\n     * never admit Reset in the interval before FIFO publication. Only actual\n     * dequeue clears this state for an accepted operation. */\n    atomic_store_explicit(&request->event_queued, 1, memory_order_release);\n    atomic_store_explicit(&request->completed, 1, memory_order_release);\n    pi_uv_fs_request_retain(request); /* actual queued event entitlement */\n    pi_uv_event_queue(&request->event);\n    /* The owner may already have drained the event. Keep this native callback\n     * entitlement until all callback accesses have completed. */\n    pi_uv_fs_request_release(request);\n}\nstatic int pi_uv_fs_run(PiUvService *service, PiUvCommand *command) {\n    PiUvFsRequest *request = command->fs_request;\n    if (command->kind == PI_UV_CMD_FS_CANCEL) {\n        if (!request->accepted ||\n            atomic_load_explicit(&request->completed, memory_order_acquire))\n            return UV_EINVAL;\n        return uv_cancel((uv_req_t *)&request->uv);\n    }\n    request->uv.data = request;\n    request->entered = 1;\n    int status;\n    switch (command->kind) {\n    case PI_UV_CMD_FS_READ:\n        status = uv_fs_read(&service->loop, &request->uv, request->descriptor,\n            &request->buffer, 1, request->position, pi_uv_fs_completed);\n        break;\n    case PI_UV_CMD_FS_OPEN:\n        status = uv_fs_open(&service->loop, &request->uv, command->path,\n            request->flags, request->mode, pi_uv_fs_completed);\n        break;\n    case PI_UV_CMD_FS_CLOSE:\n        status = uv_fs_close(&service->loop, &request->uv, request->descriptor,\n                            pi_uv_fs_completed);\n        break;\n    default:\n        return UV_EINVAL;\n    }\n    if (status >= 0) {\n        request->accepted = 1;\n        request->next = service->fs_requests;\n        if (request->next) request->next->previous = request;\n        service->fs_requests = request;\n        pi_uv_fs_request_retain(request); /* actual in-flight uv request */\n        atomic_fetch_add_explicit(&service->pending_requests, 1, memory_order_release);\n    } else {\n        /* AsyncDestCall sets the failed result/path before directly invoking\n         * the original after callback. No queued event or waiting count. */\n        request->uv.result = status;\n        request->uv.path = NULL;\n        atomic_store_explicit(&request->completed, 1, memory_order_release);\n    }\n    return status;\n}\n"
+    },
+    "dequeue_release": {
+      "offset": 31745,
+      "body": "PiUvEvent *pi_uv_service_next(PiUvService *service) {\n    uv_mutex_lock(&service->event_mutex);\n    PiUvEvent *event = service->event_head;\n    if (event) {\n        service->event_head = event->next;\n        if (!service->event_head) service->event_tail = NULL;\n        event->next = NULL;\n        if (event->storage == PI_UV_FS_REQUEST) {\n            PiUvFsRequest *request = event->allocation;\n            /* Only actual FS dequeue admits reuse of this embedded slot.\n             * Older host tickets retain independent release-only owners. */\n            event->in_use = 0;\n            atomic_store_explicit(&request->event_queued, 0, memory_order_release);\n        }\n        atomic_fetch_sub_explicit(&service->queued_events, 1, memory_order_release);\n    }\n    uv_mutex_unlock(&service->event_mutex);\n    return event;\n}\nPiUvEventInfo pi_uv_event_info(const PiUvEvent *event) { return event->info; }\nPiUvEndpoint *pi_uv_event_take_accepted(PiUvEvent *event) {\n    if (event->info.kind != PI_UV_ACCEPT || !event->accepted) return NULL;\n    PiUvEndpoint *accepted = event->accepted;\n    event->accepted = NULL;\n    pi_uv_endpoint_retain(accepted);\n    return accepted;\n}\nvoid pi_uv_event_release(PiUvEvent *event) {\n    PiUvService *service = event->service;\n    PiUvEndpoint *source = event->info.source;\n    PiUvEndpoint *keeper = event->keeper;\n    PiUvEndpoint *unclaimed = event->accepted;\n    enum PiUvStorage storage = event->storage;\n    void *allocation = event->allocation;\n    if (unclaimed) pi_uv_endpoint_abandon(unclaimed);\n    if (storage == PI_UV_EMBED_READ) {\n        event->allocation = NULL;\n        event->info.bytes = NULL;\n        pi_uv_free(service->memory_owner, allocation);\n        PiUvCommand command = { .kind = PI_UV_CMD_READ_ACK, .endpoint = source };\n        int status = pi_uv_submit(service, &command);\n        assert(status == 0 || status == UV_ECANCELED);\n        /* No further access to event: worker may have reused this read slot. */\n    } else if (storage == PI_UV_FS_REQUEST) {\n        pi_uv_fs_request_release(allocation);\n    } else if (storage == PI_UV_REQUEST || storage == PI_UV_HEAP_EVENT) {\n        pi_uv_free(service->memory_owner, allocation);\n    } else if (storage == PI_UV_EMBED_OOM) {\n        /* A fatal owner publication closes the environment before later work.\n         * Clearing only through the worker would need a fresh command after\n         * stop; this outstanding record is intentionally one-shot per service.\n         */\n    }\n    if (keeper && keeper != source) pi_uv_endpoint_release(keeper);\n    if (source) pi_uv_endpoint_release(source);\n    pi_uv_service_release(service);\n}\n"
+    },
+    "new_reset_and_raw": {
+      "offset": 36146,
+      "body": "int pi_uv_fs_request_reset(PiUvFsRequest *request) {\n    if (!request) return UV_EINVAL;\n    /* Initial ReqWrap::Reset has no completed native operation to clean. */\n    if (!request->submitted)\n        return atomic_load_explicit(&request->cleaned, memory_order_acquire)\n            ? UV_EBUSY : 0;\n    if (!atomic_load_explicit(&request->completed, memory_order_acquire) ||\n        !atomic_load_explicit(&request->cleaned, memory_order_acquire) ||\n        atomic_load_explicit(&request->event_queued, memory_order_acquire))\n        return UV_EBUSY;\n    assert(request->previous == NULL && request->next == NULL);\n    assert(request->backing.owner == NULL);\n    /* The prior event was taken from the FIFO. Its independent entitlement\n     * may still be alive in the host callback, but release reads only stable\n     * service/storage/allocation/source fields. Do not reinitialize that event\n     * or clear its next link: a new completion can already occupy the FIFO\n     * when the prior event entitlement is finally retired. */\n    request->uv.data = NULL;\n    request->submitted = 0;\n    request->entered = 0;\n    request->accepted = 0;\n    request->event.info.status = 0;\n    request->event.info.length = 0;\n    atomic_store_explicit(&request->completed, 0, memory_order_release);\n    atomic_store_explicit(&request->cleaned, 0, memory_order_release);\n    return 0;\n}\nint pi_uv_fs_read_buffer(PiUvFsRequest *request, int descriptor,\n    char *base, size_t length, int64_t position) {\n    if (!pi_uv_fs_unsubmitted(request, PI_UV_FS_READ) ||\n        (!base && length)) return UV_EINVAL;\n#if defined(_WIN32)\n    if (length > ULONG_MAX) return UV_EINVAL;\n#endif\n    /* Copy the actual caller's uv_buf_t fields without a JS lease or wrapper.\n     * Its native owner, normally Environment's managed table, retains these\n     * bytes through the real uv callback and native request cleanup. */\n    request->descriptor = descriptor;\n    request->buffer.base = base;\n    request->buffer.len = length;\n    request->position = position;\n    PiUvCommand command = { .kind = PI_UV_CMD_FS_READ, .fs_request = request };\n    return pi_uv_fs_submit(request, &command);\n}\n"
+    },
+    "command_admission": {
+      "offset": 25421,
+      "body": "static void pi_uv_command_ready(uv_async_t *async) {\n    PiUvService *service = async->data;\n    uv_mutex_lock(&service->command_mutex);\n    PiUvCommand *command = service->command;\n    uv_mutex_unlock(&service->command_mutex);\n    if (!command) return;\n    int result = pi_uv_command_run(service, command);\n    pi_uv_refresh_referenced(service);\n    uv_mutex_lock(&service->command_mutex);\n    command->result = result;\n    command->done = 1;\n    service->command = NULL;\n    uv_cond_broadcast(&service->command_condition);\n    uv_mutex_unlock(&service->command_mutex);\n}\nstatic int pi_uv_submit(PiUvService *service, PiUvCommand *command) {\n    command->done = 0;\n    uv_mutex_lock(&service->command_mutex);\n    while (service->command &&\n           !atomic_load_explicit(&service->close_requested, memory_order_acquire))\n        uv_cond_wait(&service->command_condition, &service->command_mutex);\n    if (atomic_load_explicit(&service->close_requested, memory_order_acquire)) {\n        uv_mutex_unlock(&service->command_mutex);\n        return UV_ECANCELED;\n    }\n    service->command = command;\n    int status = uv_async_send(&service->command_async);\n    if (status < 0) {\n        service->command = NULL;\n        uv_cond_broadcast(&service->command_condition);\n        uv_mutex_unlock(&service->command_mutex);\n        return status;\n    }\n    while (!command->done)\n        uv_cond_wait(&service->command_condition, &service->command_mutex);\n    status = command->result;\n    uv_mutex_unlock(&service->command_mutex);\n    return status;\n}\nstatic void pi_uv_thread_main(void *opaque) {\n    PiUvService *service = opaque;\n    (void)uv_run(&service->loop, UV_RUN_DEFAULT);\n    service->loop_close_status = uv_loop_close(&service->loop);\n    pi_uv_service_release(service); /* owner is retained until stop joins */\n}\n"
+    }
+  }
+}

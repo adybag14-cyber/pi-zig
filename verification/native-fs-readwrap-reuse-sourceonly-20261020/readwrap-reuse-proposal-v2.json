@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "status": "Proposed exact typed native FS read/reset additions; source-only independent event/ownership review requested before production mutation.",
+  "production_mutated": false,
+  "execution": false,
+  "bases": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_uv_tcp.c",
+      "sha256": "FF046966BB81E915F0A69FD158DD8DD10533A6E2590FE1CA8975A5DCB503EE83",
+      "bytes": 42250,
+      "original": "original/native_uv_tcp.before-readwrap-reuse.c.txt"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_uv_fs.h",
+      "sha256": "A8E758C49AC4E0583BA08ABF28771BFC7843A730796A6F3E5C471698249011BE",
+      "bytes": 3072,
+      "original": "original/native_uv_fs.before-readwrap-reuse.h.txt"
+    }
+  ],
+  "c_edits": [
+    {
+      "before": "    _Atomic int cleaned;\n};\nenum PiUvCommandKind",
+      "after": "    _Atomic int cleaned;\n    _Atomic int event_queued;\n};\nenum PiUvCommandKind"
+    },
+    {
+      "before": "    atomic_init(&request->cleaned, 0);\n    pi_uv_service_retain(service);",
+      "after": "    atomic_init(&request->cleaned, 0);\n    atomic_init(&request->event_queued, 0);\n    pi_uv_service_retain(service);"
+    },
+    {
+      "before": "    atomic_store_explicit(&request->completed, 1, memory_order_release);\n    pi_uv_fs_request_retain(request); /* actual queued event entitlement */\n    pi_uv_event_queue(&request->event);",
+      "after": "    /* Publish the queued state before completed: observing completed must\n     * never admit Reset in the interval before FIFO publication. Only actual\n     * dequeue clears this state for an accepted operation. */\n    atomic_store_explicit(&request->event_queued, 1, memory_order_release);\n    atomic_store_explicit(&request->completed, 1, memory_order_release);\n    pi_uv_fs_request_retain(request); /* actual queued event entitlement */\n    pi_uv_event_queue(&request->event);"
+    },
+    {
+      "before": "        event->next = NULL;\n        atomic_fetch_sub_explicit(&service->queued_events, 1, memory_order_release);",
+      "after": "        event->next = NULL;\n        if (event->storage == PI_UV_FS_REQUEST) {\n            PiUvFsRequest *request = event->allocation;\n            atomic_store_explicit(&request->event_queued, 0, memory_order_release);\n        }\n        atomic_fetch_sub_explicit(&service->queued_events, 1, memory_order_release);"
+    },
+    {
+      "before": "int pi_uv_fs_read(PiUvFsRequest *request, int descriptor,\n",
+      "after": "int pi_uv_fs_request_reset(PiUvFsRequest *request) {\n    if (!request) return UV_EINVAL;\n    /* Initial ReqWrap::Reset has no completed native operation to clean. */\n    if (!request->submitted)\n        return atomic_load_explicit(&request->cleaned, memory_order_acquire)\n            ? UV_EBUSY : 0;\n    if (!atomic_load_explicit(&request->completed, memory_order_acquire) ||\n        !atomic_load_explicit(&request->cleaned, memory_order_acquire) ||\n        atomic_load_explicit(&request->event_queued, memory_order_acquire))\n        return UV_EBUSY;\n    assert(request->previous == NULL && request->next == NULL);\n    assert(request->backing.owner == NULL);\n    /* The prior event was taken from the FIFO. Its independent entitlement\n     * may still be alive in the host callback, but release reads only stable\n     * service/storage/allocation/source fields. Do not reinitialize that event\n     * or clear its next link: a new completion can already occupy the FIFO\n     * when the prior event entitlement is finally retired. */\n    request->uv.data = NULL;\n    request->submitted = 0;\n    request->entered = 0;\n    request->accepted = 0;\n    request->event.info.status = 0;\n    request->event.info.length = 0;\n    atomic_store_explicit(&request->completed, 0, memory_order_release);\n    atomic_store_explicit(&request->cleaned, 0, memory_order_release);\n    return 0;\n}\nint pi_uv_fs_read_buffer(PiUvFsRequest *request, int descriptor,\n    char *base, size_t length, int64_t position) {\n    if (!pi_uv_fs_unsubmitted(request, PI_UV_FS_READ) ||\n        (!base && length)) return UV_EINVAL;\n#if defined(_WIN32)\n    if (length > ULONG_MAX) return UV_EINVAL;\n#endif\n    /* Copy the actual caller's uv_buf_t fields without a JS lease or wrapper.\n     * Its native owner, normally Environment's managed table, retains these\n     * bytes through the real uv callback and native request cleanup. */\n    request->descriptor = descriptor;\n    request->buffer.base = base;\n    request->buffer.len = length;\n    request->position = position;\n    PiUvCommand command = { .kind = PI_UV_CMD_FS_READ, .fs_request = request };\n    return pi_uv_fs_submit(request, &command);\n}\nint pi_uv_fs_read(PiUvFsRequest *request, int descriptor,\n"
+    }
+  ],
+  "h_edits": [
+    {
+      "before": "int pi_uv_fs_read(PiUvFsRequest *request, int descriptor,\n",
+      "after": "/* Reset the same native request after its actual completion was removed from\n * the FIFO and request_cleanup ran. A new/unsubmitted request also admits its\n * initial Reset. In-flight, still-queued or uncleaned operations return\n * UV_EBUSY without changing state. No wrapper, event, backing or request is\n * allocated by Reset.\n *\n * The previous dequeued event entitlement may remain owned while the request\n * is submitted again, as in FileHandleReadWrap's original completion callback.\n * After Reset the old event may ONLY be released: its mutable completion info\n * now belongs to the next operation. Stable event release fields never change,\n * and its next link must not be touched by the old owner. Each actual queued\n * completion still transfers one independent request and service entitlement.\n */\nint pi_uv_fs_request_reset(PiUvFsRequest *request);\n/* Native FileHandle/StreamResource span: the caller supplies the exact\n * uv_buf_t base/length and keeps its native storage owner alive through actual\n * completion and request_cleanup. This call borrows bytes and makes no JS\n * wrapper/lease, copy or extra native allocation. The library does not infer\n * or extend that external buffer lifetime. Wrong state/invalid native span\n * returns UV_EINVAL before admission. Windows requires its real ULONG extent.\n */\nint pi_uv_fs_read_buffer(PiUvFsRequest *request, int descriptor,\n    char *base, size_t length, int64_t position);\nint pi_uv_fs_read(PiUvFsRequest *request, int descriptor,\n"
+    },
+    {
+      "before": " * The caller must not reuse a submitted or cleaned request.\n",
+      "after": " * Reuse requires successful request_reset after actual completion/dequeue and\n * cleanup; submitted or cleaned storage cannot be passed directly to admission.\n"
+    },
+    {
+      "before": " * acquisition. Cleanup is idempotent and occurs at FSReqAfterScope::Clear;\n",
+      "after": " * acquisition, and before a successful request_reset invalidates that result.\n * Cleanup is idempotent and occurs at FSReqAfterScope::Clear;\n"
+    }
+  ],
+  "source": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-file-handle-sourceonly-20261019/authority/node_file.v24.13.cc",
+      "full_sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F",
+      "full_bytes": 139386,
+      "selected_start_character": 19384,
+      "selected_end_character_exclusive": 23243,
+      "body": "int FileHandle::ReadStart() {\n  if (!IsAlive() || IsClosing())\n    return UV_EOF;\n\n  reading_ = true;\n\n  if (current_read_)\n    return 0;\n\n  BaseObjectPtr<FileHandleReadWrap> read_wrap;\n\n  if (read_length_ == 0) {\n    EmitRead(UV_EOF);\n    return 0;\n  }\n\n  {\n    // Create a new FileHandleReadWrap or re-use one.\n    // Either way, we need these two scopes for AsyncReset() or otherwise\n    // for creating the new instance.\n    HandleScope handle_scope(env()->isolate());\n    AsyncHooks::DefaultTriggerAsyncIdScope trigger_scope(this);\n\n    auto& freelist = binding_data_->file_handle_read_wrap_freelist;\n    if (freelist.size() > 0) {\n      read_wrap = std::move(freelist.back());\n      freelist.pop_back();\n      // Use a fresh async resource.\n      // Lifetime is ensured via AsyncWrap::resource_.\n      Local<Object> resource = Object::New(env()->isolate());\n      USE(resource->Set(\n          env()->context(), env()->handle_string(), read_wrap->object()));\n      read_wrap->AsyncReset(resource);\n      read_wrap->file_handle_ = this;\n    } else {\n      Local<Object> wrap_obj;\n      if (!env()\n               ->filehandlereadwrap_template()\n               ->NewInstance(env()->context())\n               .ToLocal(&wrap_obj)) {\n        return UV_EBUSY;\n      }\n      read_wrap = MakeDetachedBaseObject<FileHandleReadWrap>(this, wrap_obj);\n    }\n  }\n  int64_t recommended_read = 65536;\n  if (read_length_ >= 0 && read_length_ <= recommended_read)\n    recommended_read = read_length_;\n\n  read_wrap->buffer_ = EmitAlloc(recommended_read);\n\n  current_read_ = std::move(read_wrap);\n  FS_ASYNC_TRACE_BEGIN0(UV_FS_READ, current_read_.get())\n  current_read_->Dispatch(uv_fs_read,\n                          fd_,\n                          &current_read_->buffer_,\n                          1,\n                          read_offset_,\n                          uv_fs_callback_t{[](uv_fs_t* req) {\n    FileHandle* handle;\n    {\n      FileHandleReadWrap* req_wrap = FileHandleReadWrap::from_req(req);\n      FS_ASYNC_TRACE_END1(\n          req->fs_type, req_wrap, \"result\", static_cast<int>(req->result))\n      handle = req_wrap->file_handle_;\n      CHECK_EQ(handle->current_read_.get(), req_wrap);\n    }\n\n    // ReadStart() checks whether current_read_ is set to determine whether\n    // a read is in progress. Moving it into a local variable makes sure that\n    // the ReadStart() call below doesn't think we're still actively reading.\n    BaseObjectPtr<FileHandleReadWrap> read_wrap =\n        std::move(handle->current_read_);\n\n    ssize_t result = req->result;\n    uv_buf_t buffer = read_wrap->buffer_;\n\n    uv_fs_req_cleanup(req);\n\n    // Push the read wrap back to the freelist, or let it be destroyed\n    // once we’re exiting the current scope.\n    constexpr size_t kWantedFreelistFill = 100;\n    auto& freelist = handle->binding_data_->file_handle_read_wrap_freelist;\n    if (freelist.size() < kWantedFreelistFill) {\n      read_wrap->Reset();\n      freelist.emplace_back(std::move(read_wrap));\n    }\n\n    if (result >= 0) {\n      // Read at most as many bytes as we originally planned to.\n      if (handle->read_length_ >= 0 && handle->read_length_ < result)\n        result = handle->read_length_;\n\n      // If we read data and we have an expected length, decrease it by\n      // how much we have read.\n      if (handle->read_length_ >= 0)\n        handle->read_length_ -= result;\n\n      // If we have an offset, increase it by how much we have read.\n      if (handle->read_offset_ >= 0)\n        handle->read_offset_ += result;\n    }\n\n    // Reading 0 bytes from a file always means EOF, or that we reached\n    // the end of the requested range.\n    if (result == 0)\n      result = UV_EOF;\n\n    handle->EmitRead(result, buffer);\n\n    // Start over, if EmitRead() didn’t tell us to stop.\n    if (handle->reading_)\n      handle->ReadStart();\n  }});\n\n  return 0;\n}\n"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/req_wrap-inl.h",
+      "body_sha256": "27c770d8756b626c80210f96f9db1cf31bfbf09aab1da53dc35b382314883e67",
+      "body": "#ifndef SRC_REQ_WRAP_INL_H_\n#define SRC_REQ_WRAP_INL_H_\n\n#if defined(NODE_WANT_INTERNALS) && NODE_WANT_INTERNALS\n\n#include \"req_wrap.h\"\n#include \"async_wrap-inl.h\"\n#include \"uv.h\"\n\nnamespace node {\n\nReqWrapBase::ReqWrapBase(Environment* env) {\n  CHECK(env->has_run_bootstrapping_code());\n  env->req_wrap_queue()->PushBack(this);\n}\n\ntemplate <typename T>\nReqWrap<T>::ReqWrap(Environment* env,\n                    v8::Local<v8::Object> object,\n                    AsyncWrap::ProviderType provider)\n    : AsyncWrap(env, object, provider),\n      ReqWrapBase(env) {\n  MakeWeak();\n  Reset();\n}\n\ntemplate <typename T>\nReqWrap<T>::~ReqWrap() {}\n\ntemplate <typename T>\nvoid ReqWrap<T>::Dispatched() {\n  req_.data = this;\n}\n\ntemplate <typename T>\nvoid ReqWrap<T>::Reset() {\n  original_callback_ = nullptr;\n  req_.data = nullptr;\n}\n\ntemplate <typename T>\nReqWrap<T>* ReqWrap<T>::from_req(T* req) {\n  return ContainerOf(&ReqWrap<T>::req_, req);\n}\n\ntemplate <typename T>\nvoid ReqWrap<T>::Cancel() {\n  if (req_.data == this)  // Only cancel if already dispatched.\n    uv_cancel(reinterpret_cast<uv_req_t*>(&req_));\n}\n\ntemplate <typename T>\nbool ReqWrap<T>::IsDispatched() {\n  return req_.data != nullptr;\n}\n\ntemplate <typename T>\nAsyncWrap* ReqWrap<T>::GetAsyncWrap() {\n  return this;\n}\n\n// Below is dark template magic designed to invoke libuv functions that\n// initialize uv_req_t instances in a unified fashion, to allow easier\n// tracking of active/inactive requests.\n\n// Invoke a generic libuv function that initializes uv_req_t instances.\n// This is, unfortunately, necessary since they come in three different\n// variants that can not all be invoked in the same way:\n// - int uv_foo(uv_loop_t* loop, uv_req_t* request, ...);\n// - int uv_foo(uv_req_t* request, ...);\n// - void uv_foo(uv_req_t* request, ...);\ntemplate <typename ReqT, typename T>\nstruct CallLibuvFunction;\n\n// Detect `int uv_foo(uv_loop_t* loop, uv_req_t* request, ...);`.\ntemplate <typename ReqT, typename... Args>\nstruct CallLibuvFunction<ReqT, int(*)(uv_loop_t*, ReqT*, Args...)> {\n  using T = int(*)(uv_loop_t*, ReqT*, Args...);\n  template <typename... PassedArgs>\n  static int Call(T fn, uv_loop_t* loop, ReqT* req, PassedArgs... args) {\n    return fn(loop, req, args...);\n  }\n};\n\n// Detect `int uv_foo(uv_req_t* request, ...);`.\ntemplate <typename ReqT, typename... Args>\nstruct CallLibuvFunction<ReqT, int(*)(ReqT*, Args...)> {\n  using T = int(*)(ReqT*, Args...);\n  template <typename... PassedArgs>\n  static int Call(T fn, uv_loop_t* loop, ReqT* req, PassedArgs... args) {\n    return fn(req, args...);\n  }\n};\n\n// Detect `void uv_foo(uv_req_t* request, ...);`.\ntemplate <typename ReqT, typename... Args>\nstruct CallLibuvFunction<ReqT, void(*)(ReqT*, Args...)> {\n  using T = void(*)(ReqT*, Args...);\n  template <typename... PassedArgs>\n  static int Call(T fn, uv_loop_t* loop, ReqT* req, PassedArgs... args) {\n    fn(req, args...);\n    return 0;\n  }\n};\n\n// This is slightly darker magic: This template is 'applied' to each parameter\n// passed to the libuv function. If the parameter type (aka `T`) is a\n// function type, it is assumed that this it is the request callback, and a\n// wrapper that calls the original callback is created.\n// If not, the parameter is passed through verbatim.\ntemplate <typename ReqT, typename T>\nstruct MakeLibuvRequestCallback {\n  static T For(ReqWrap<ReqT>* req_wrap, T v) {\n    static_assert(!is_callable<T>,\n                  \"MakeLibuvRequestCallback missed a callback\");\n    return v;\n  }\n};\n\n// Match the `void callback(uv_req_t*, ...);` signature that all libuv\n// callbacks use.\ntemplate <typename ReqT, typename... Args>\nstruct MakeLibuvRequestCallback<ReqT, void(*)(ReqT*, Args...)> {\n  using F = void(*)(ReqT* req, Args... args);\n\n  static void Wrapper(ReqT* req, Args... args) {\n    BaseObjectPtr<ReqWrap<ReqT>> req_wrap{ReqWrap<ReqT>::from_req(req)};\n    req_wrap->Detach();\n    req_wrap->env()->DecreaseWaitingRequestCounter();\n    F original_callback = reinterpret_cast<F>(req_wrap->original_callback_);\n    original_callback(req, args...);\n  }\n\n  static F For(ReqWrap<ReqT>* req_wrap, F v) {\n    CHECK_NULL(req_wrap->original_callback_);\n    req_wrap->original_callback_ =\n        reinterpret_cast<typename ReqWrap<ReqT>::callback_t>(v);\n    return Wrapper;\n  }\n};\n\ntemplate <typename T>\ntemplate <typename LibuvFunction, typename... Args>\nint ReqWrap<T>::Dispatch(LibuvFunction fn, Args... args) {\n  Dispatched();\n  // This expands as:\n  //\n  // int err = fn(env()->event_loop(), req(), arg1, arg2, Wrapper, arg3, ...)\n  //              ^                                       ^        ^\n  //              |                                       |        |\n  //              \\-- Omitted if `fn` has no              |        |\n  //                  first `uv_loop_t*` argument         |        |\n  //                                                      |        |\n  //        A function callback whose first argument      |        |\n  //        matches the libuv request type is replaced ---/        |\n  //        by the `Wrapper` method defined above                  |\n  //                                                               |\n  //               Other (non-function) arguments are passed  -----/\n  //               through verbatim\n  int err = CallLibuvFunction<T, LibuvFunction>::Call(\n      fn,\n      env()->event_loop(),\n      req(),\n      MakeLibuvRequestCallback<T, Args>::For(this, args)...);\n  if (err >= 0) {\n    ClearWeak();\n    env()->IncreaseWaitingRequestCounter();\n  }\n  return err;\n}\n\n}  // namespace node\n\n#endif  // defined(NODE_WANT_INTERNALS) && NODE_WANT_INTERNALS\n\n#endif  // SRC_REQ_WRAP_INL_H_\n"
+    }
+  ],
+  "protocol": [
+    "One existing PiUvFsRequest remains the actual uv_fs_t storage and has one embedded event slot. There is no per-dispatch allocation, second loop/service, raw loop export, JS value, or callback execution on the worker.",
+    "The worker unlinks the completed native request and decrements actual pending_requests, then publishes event_queued before completed. An acquire observation of completed cannot see the pre-queued window. The worker then owns its queued-event entitlement before existing FIFO publication.",
+    "The existing FIFO next operation removes the slot and clears event_queued under its mutex before handing the event to the host. Reset requires actual completed+cleaned and not queued.",
+    "An old event entitlement may survive Reset and resubmission, but its mutable info is no longer inspectable. Only event_release remains valid. That routine reads stable service, source, keeper, accepted, storage and allocation fields; the FS branch only drops one independent request and service entitlement and never changes event.next.",
+    "A new actual completion can therefore enqueue that same embedded slot before the prior host event is retired. It owns another request/service entitlement, and old event_release cannot unlink the new queue entry.",
+    "Reset changes only port admission/bookkeeping and req.data at the original ReqWrap Reset boundary; it never pretends cleanup or event dequeue happened. Old callbacks may finish their final atomic request release after reuse; their request owner remains independently alive.",
+    "FileHandle's actual EmitAlloc storage owner, normally the Environment managed-buffer map, is the borrowed native span lifetime authority. The raw API does not obtain a JS lease or an earlier wrapper.",
+    "The existing lease-based read, admission/cancel/completion/cleanup algorithms, TCP endpoint behavior and original FS14/TCP12 controls remain unchanged except additive FS dequeue bookkeeping.",
+    "The initial proposed queued/completed publication order was corrected before production mutation. Accepted operations cannot pass Reset between completed publication and queue insertion; event_queued is already true. Immediate native admission rejection has no event and remains distinguishable by accepted=false."
+  ],
+  "planned_controls": [
+    "Real raw buffer reads and offsets with no JS backing object; caller storage remains alive through stop/join.",
+    "Cleaned and dequeued first completion is reset and resubmitted while the first event entitlement remains owned; second completion queues before first event release; exact bytes, request identity and reference/queue accounting.",
+    "FIFO order with another real request while one embedded event slot is reused, proving old release does not clear the newly published next link.",
+    "Reject reset while in-flight/still queued or before cleanup without changing the request; initial no-op Reset uses the same storage.",
+    "Mix real JS-lease read and native span reuse so cleanup/Reset releases prior backing exactly once.",
+    "Shutdown/cancellation with a reused actual request preserves one callback per accepted dispatch and joins before native buffer retirement."
+  ],
+  "open_scope": [
+    "The actual FileHandleReadWrap/template/freelist constructor and single FS Controller callback routing are next native consumers, not supplied by this raw bridge.",
+    "Original ReadStart ignores its Dispatch return; this API does not synthesize an immediate callback for it.",
+    "Full native trace and backing retry policy remain separate required StreamBase inputs.",
+    "The new FS request bookkeeping adds one atomic native field; no native allocation-size parity beyond actual charged storage is claimed."
+  ],
+  "verification": {
+    "c_forward_inverse_exact": true,
+    "h_forward_inverse_exact": true,
+    "production_files_not_modified": true,
+    "race_publication_order_corrected_before_mutation": true
+  },
+  "prior_proposal": {
+    "path": "readwrap-reuse-proposal.json",
+    "sha256": "DC9125F88E5F413710B7F866912023431ED337D3A76498E7295F34D39537AA30",
+    "preserved": true
+  },
+  "projected": {
+    "c_sha256": "AC6767269B9B76BFC17D445417FCA4B516E19B37FE911CBA1F3081C935A90503",
+    "c_bytes": 44978,
+    "h_sha256": "B738A0EAECC8E06781305D953B0FFE56753B774F8507CDBE4052BCBC2014F117",
+    "h_bytes": 4679
+  }
+}

@@ -1,0 +1,30 @@
+thread 26784 panic: reached unreachable code
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\debug.zig:420:14: 0x7ff6112c586d in assert (test_zcu.obj)
+    if (!ok) unreachable; // assertion failure
+             ^
+C:\Users\adyba\pi-zig\main\src\native_node_stream_read_test.zig:337:25: 0x7ff6115a216d in fill (test_zcu.obj)
+        std.debug.assert(bytes.len <= buffer.len);
+                        ^
+C:\Users\adyba\pi-zig\main\src\native_node_stream_read_test.zig:527:17: 0x7ff6115aed43 in test.Node StreamBase read full extent adopts the same native bytes and advances the counter before callback (test_zcu.obj)
+    Fixture.fill(buffer, "native-map-bytes!");
+                ^
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\compiler\test_runner.zig:140:68: 0x7ff6112c2d25 in mainServer (test_zcu.obj)
+                const status: TestResults.Status = if (test_fn.func()) |v| s: {
+                                                                   ^
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\compiler\test_runner.zig:71:26: 0x7ff6112c3404 in main (test_zcu.obj)
+        return mainServer(init) catch |err| panic("internal test runner failure: {t}", .{err});
+                         ^
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\start.zig:699: 0x7ff6112c1151 in callMain (test_zcu.obj)
+    if (fn_info.params[0].type.? == std.process.Init.Minimal) return wrapMain(root.main(.{
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\start.zig:658:28: 0x7ff6112c1151 in main (test_zcu.obj)
+            return callMain(std.os.windows.peb().ProcessParameters.CommandLine.slice(), .global);
+                           ^
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\libc\mingw\crt\crtexe.c:259: 0x7ff6115b1c4b in __tmainCRTStartup (crt2.obj)
+    mainret = _tmain (argc, argv, envp);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\libc\mingw\crt\crtexe.c:179: 0x7ff6115b1cab in mainCRTStartup (crt2.obj)
+  ret = __tmainCRTStartup ();
+
+???:?:?: 0x7ff97ddadda6 in ??? (KERNEL32.DLL)
+???:?:?: 0x7ff97df9ee4b in ??? (ntdll.dll)

@@ -60,6 +60,14 @@ pub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builti
             .file = b.path("src/extensions/native_node_environment_paths.cpp"),
             .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
         });
+        module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_permission.cpp"),
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+        module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_native_debug.cpp"),
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
     }
     return library;
 }

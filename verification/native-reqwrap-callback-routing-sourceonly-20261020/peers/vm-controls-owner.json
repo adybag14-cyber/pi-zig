@@ -1,0 +1,82 @@
+{
+  "schema": "native-reqwrap-routing-controls-owner-peer-v1",
+  "reviewer": "VM foundation",
+  "status": "finite assigned source peer CLOSED",
+  "execution": false,
+  "root": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/native_node_reqwrap_callback_routing_test.zig",
+    "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7",
+    "bytes": 31452,
+    "declarations": 12
+  },
+  "scope": {
+    "declarations": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      12
+    ],
+    "names": [
+      "native ReqWrap routing reset and redispatch precede old Wrapper and event retirement",
+      "native ReqWrap routing callback error after redispatch preserves the new request pointer and event",
+      "native ReqWrap routing typed callback failure still retires the final native Wrapper pointer",
+      "native ReqWrap routing actual ordinary callback reason survives Entry destruction",
+      "native ReqWrap routing actual native fatal callback still completes native request retirement",
+      "native ReqWrap routing retained Controller rejects a retired Hub before touching Entry inputs"
+    ],
+    "helpers": [
+      "Fixture",
+      "Node initialize/retire/destroy",
+      "firstCallback/secondCallback/completed",
+      "File",
+      "expectRetired",
+      "expectWrapper"
+    ]
+  },
+  "actual_dependencies": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_request_state.zig",
+      "sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+      "bytes": 5818
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_fs_request_io.zig",
+      "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "bytes": 14502
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_async_wrap_state.zig",
+      "sha256": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25",
+      "bytes": 26688
+    }
+  ],
+  "prior_protocol_receipts": [
+    {
+      "path": "verification/native-fs-readwrap-reuse-source-peer-20261020/receipt.json",
+      "sha256": "649786C0D1B41E7A4C3A1253171C43FD0B58367D50F7736C9949492786EC50B7"
+    },
+    {
+      "path": "verification/native-reqwrap-routing-owner-source-peer-20261020/receipt.json",
+      "sha256": "3F99899FC00CD84458FFC671DC77BDEA54584DA705E8C4033F141738241D5A63"
+    }
+  ],
+  "findings": [
+    "The fixture creates the actual Registry State, intrusive Entry and shared-service native uv request. Its deliberately compiled native derivative supplies no fake FileHandle template, Promise, request counter, event loop or checkpoint. Unselected operations fail explicitly.",
+    "Physical request creation attaches its owned pointer before fallible wrapper/State work. A pre-attachment error releases the request and native Node; after actual State attachment, the normal derived retirement owns cleanup. Entry initialization publishes into the sole queue only after its checks, so entry_initialized accurately selects deinit.",
+    "completed copies current request info and performs physical cleanup before its fallible observations or Reset. It does not defer old cleanup across reuse. The raw span resides in the actual native Node and stays alive through the retained native pointer.",
+    "Declaration5 resets the same Entry and native request, selects a different native callback, and waits for the second real queued completion before the first Wrapper/event retires. The observations require two native references on each callback, one retained pointer after release, real A/B bytes and abrd destruction order.",
+    "Declaration6 throws the original owned ordinary reason after successful redispatch. The first failure retains the actual new request/count/callback and native pointer; taking the captured reason owns it before assertions, then the second real pump observes D and retires the same Node.",
+    "Declarations7-9 use distinct typed-host, actual ordinary JS_Throw and genuine native OOM fatal producers. The unchanged Controller owner records the callback result, invokes endCallback last, and finishes the real Scope; tests assert removal/destruction and actual reason identity/flags rather than using DATA as pending authority.",
+    "Node.destroy reads the allocator before destroying the native object, clears the fixture slot, and releases only its actual request entitlement. The embedded event ticket retains the independent C request across Node destruction. No access to a deleted Node occurs after its last release in the selected paths.",
+    "Declaration12 retains the Controller, stops the real Hub, and checks NativeEnvClosed before Entry/physical inputs change. Its owned success alternative is retired before the expected-error assertion. The retained Controller releases before fixture teardown.",
+    "File cleanup stops and joins physical I/O before closing the descriptor and deleting its temporary directory. Fixture teardown disables JS before shared stop, releases test native pointers after delivery/join, then performs genuine Realm cleanup/disarm, wrapper/root/Environment retirement and Engine teardown while all fixture observation storage remains alive.",
+    "No concrete blocker remains in the assigned lifetime/control slice at these exact source bytes."
+  ],
+  "exclusions": [
+    "No execution, build or metadata query was performed.",
+    "No closure of declarations1-4/10-11, their functional oracles, the Root Env/Check integration, full FileHandle/freelist/public template, native checkpoint implementation or original source algorithm beyond the already closed protocol slices.",
+    "The native callback descriptor itself adds no entitlement beyond the enclosing Wrapper; the test's explicit retained native pointer is essential to redispatch survival."
+  ]
+}

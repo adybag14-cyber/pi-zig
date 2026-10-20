@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "status": "finite original-source order and raw-span peer closed",
+  "execution": false,
+  "proposal": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-fs-readwrap-reuse-sourceonly-20261020/readwrap-reuse-proposal.json",
+    "sha256": "DC9125F88E5F413710B7F866912023431ED337D3A76498E7295F34D39537AA30"
+  },
+  "authority": {
+    "node_full_sha": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F",
+    "node_full_bytes": 139386,
+    "read_start_byte": 19384,
+    "read_bytes": 3863,
+    "reqwrap_full_sha": "27C770D8756B626C80210F96F9DB1CF31BFBF09AAB1DA53DC35B382314883E67",
+    "reqwrap_full_bytes": 5640
+  },
+  "findings": [
+    "Independently read the complete actual FileHandle::ReadStart body from the pinned 139386-byte node_file source, verifying its supplied excerpt as exact UTF-8 bytes, and the complete 5640-byte ReqWrap inline source with its original hash.",
+    "ReqWrap construction runs AsyncWrap, ReqWrapBase, then MakeWeak and Reset. Reset clears original_callback_ and req_.data only. Dispatch sets req_.data before the native call; callback installation occurs in that call's argument conversion; successful immediate status alone clears weakness and increases the waiting counter.",
+    "The wrapper callback owns a BaseObjectPtr, detaches the request, decrements the waiting counter, copies the actual original callback and invokes it. That outer pointer remains live until the original callback returns, including its nested ReadStart.",
+    "ReadStart removes a reusable wrapper from the freelist before fresh resource creation/ignored Set/AsyncReset/file_handle assignment. New template instance failure returns UV_EBUSY. Its selected allocation is bounded by recommended 65536 and any nonnegative remaining length; it stores EmitAlloc's real uv_buf_t before moving the wrapper into current_read_.",
+    "ReadStart issues the actual one-buffer Dispatch after trace-begin and ignores its immediate return, then returns zero. A bridge must not invent an immediate callback or release path for an original ignored dispatch error.",
+    "The completion reads handle and asserts current_read identity, moves current_read to a local owner, copies result and uv_buf_t, and calls uv_fs_req_cleanup. A freelist with fewer than 100 items receives the same wrapper after Reset, before range/offset adjustment and before EmitRead.",
+    "EmitRead receives the copied original native span after request cleanup. If reading remains true, ReadStart can select that same freelist wrapper and submit it again before the outer ReqWrap callback pointer retires.",
+    "Raw uv_buf_t copying creates neither a JS wrapper nor a native payload owner. The actual caller owns its storage: selected FileHandle/StreamBase managed backing must survive the whole original callback and its EmitRead consumption, not merely uv_fs_req_cleanup. Cleanup of request bookkeeping does not retire that payload owner."
+  ],
+  "conditions": [
+    "The actual native-buffer caller must retain the independent backing owner through host delivery/EmitRead or the explicit abandoned joined cleanup path. Only the descriptor/length are copied by the raw bridge.",
+    "The proposal's no synthetic immediate callback rule is required by the original ignored Dispatch return."
+  ],
+  "excluded": [
+    "No C/H mutation or acceptance of the embedded event concurrency/refcount/reset protocol. Those changes remain Root/VM slices.",
+    "No FileHandle template/freelist constructor, StreamBase retry/tracing assembly, control execution, compilation or complete API qualification."
+  ]
+}

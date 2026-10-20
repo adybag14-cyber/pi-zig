@@ -1,0 +1,52 @@
+{
+  "schema": "native-diagnostic-context-build-source-peer-v1",
+  "source_only": true,
+  "execution": false,
+  "main_mutated": false,
+  "peer": "modules_io",
+  "status": "CLOSED: finite additive build composition only",
+  "proposal": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/verification/native-node-diagnostic-context-sourceonly-20261020/build-proposal.json",
+    "sha256": "3a8331cf313e113c528b13058650a790cfc3602ad111f444f89ad11107a07d5b",
+    "bytes": 2233
+  },
+  "actual_basis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+    "sha256": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+    "bytes": 493924
+  },
+  "projected": {
+    "sha256": "045872305EEC389D0130E6EA0ADFD4CC2AE7B451B3B012E48869D359929D7F77",
+    "bytes": 495035,
+    "whole_forward": true,
+    "whole_inverse": true,
+    "added_lines": 14
+  },
+  "controls": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/src/native_node_diagnostic_context_test.zig",
+    "sha256": "95cb9bb6c3f640494e5b917bd85b4e1321c3baf0907ff4a6fb94ad256b472bdd",
+    "names": [
+      "Node diagnostic context actual VM creation does not admit an ambient context",
+      "Node diagnostic context nested actual contexts restore their caller without retaining a VM",
+      "Node diagnostic context explicit native-only admission masks and restores an entered caller",
+      "Node diagnostic context same-context reentry leaves the outer borrowed admission live",
+      "Node diagnostic context native projection works with an exhausted JS heap without allocating",
+      "Node diagnostic context ordinary and fatal pending reasons remain the same actual owned value",
+      "Node diagnostic context private termination lease and actual pending token survive admission",
+      "Node diagnostic context C++ locals retire before nested and outer scopes restore",
+      "Node diagnostic context C++ early return keeps each destructor in its real caller scope",
+      "Node diagnostic context actual worker thread neither inherits nor overwrites its caller admission"
+    ]
+  },
+  "findings": [
+    "The unique actual EnvironmentPaths anchor receives exactly14 additive lines inside its existing guard; original build bytes are unchanged after exact reversal.",
+    "The root's three C includes resolve through actual linkQuickJs src/extensions and vendor/quickjs include paths. That same helper sets link_libcpp and link_libc and links the existing QuickJS compile object.",
+    "Exactly one gnu11 production diagnostic-context translation unit and one gnu++20 test-support translation unit are added to this test module; no duplicate TLS owner, additional library graph or network dependency is introduced.",
+    "The C++ test-support source uses genuine DiagnosticContextScope/stack destructors and no Engine dependency, so no parser/catalog import is required by the root's actual source graph.",
+    "The target is unique and uses b.addInstallArtifact only. Existing normal install/run actions are untouched. All10 actual declaration names match the exact filter."
+  ],
+  "limits": [
+    "Production/controls semantics are other assigned peer slices.",
+    "No compiler, metadata, runtime, integration or complete tracing admission qualification."
+  ]
+}

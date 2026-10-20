@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "reviewer": "vm_foundation",
+  "status": "CLOSED for native owner/control slice; source-only",
+  "inputs": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/native_node_native_debug_test_support.zig",
+      "sha256": "7AF437A515FF85B16457E854B7FCD93BDBF74545C939E7039040158E5285F604",
+      "bytes": 10530
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission_test_support.cpp",
+      "sha256": "362826F62F0F4322961AE0F93E835C178251B49FDCAA3BE06D116B307A1F4BC4",
+      "bytes": 7661
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission_test_support.h",
+      "sha256": "9D128A71AE35CF2A92AFA92E5F8278BA29F564C0C4FBB85F61CA85E105E7E54B",
+      "bytes": 2741
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/private-cancel-controls-successor.json",
+      "sha256": "9B72048BA33981DECFE9546BA6186589057071A573863FAF4FEA0499300424F2",
+      "bytes": 2546
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/native_node_native_debug_test.zig",
+      "sha256": "79729DBB464F7F95F89CDD85A9A737897A1D90F6352816E186EFB02EE0470991",
+      "bytes": 16506
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/native_node_permission_test.zig",
+      "sha256": "A01BE231E1AA8A03FB9D343B6DAC06CA8EAA0FD2C58D33C1CA79A596E32F554D",
+      "bytes": 19167
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_environment_map_test_support.cpp",
+      "sha256": "DB9AF1D3006DD342E70BF83BC93FAD02936802E12504702E44017E083BB5BB89",
+      "bytes": 2753
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_environment_map_test_support.h",
+      "sha256": "08242520A8862FB89BAC5815337F35D8E628302DC0676377D75881F14EB3B049",
+      "bytes": 1545
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission.cpp",
+      "sha256": "4DC0D4C70A659B9405E6D4AC6BFC0B008FB48EFB614F811C87F096A105A73EC8",
+      "bytes": 15344
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission_internal.hpp",
+      "sha256": "C15AC7ED37DAFB8F672AAFCFCD6FABA2CF87BB64EE26C8CC4AF5A6695D2E712F",
+      "bytes": 11308
+    }
+  ],
+  "packet": {
+    "path": "verification/native-node-environment-os-sourceonly-20261020/native-debug-permission-controls-draft.json",
+    "sha256": "AE7813599E7431050E5430AF0BA487D2DEF9FF2367530D698F6454ADC52A0C83"
+  },
+  "scope": {
+    "debug_declarations": [
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "permission_declarations": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+    ],
+    "helpers": [
+      "Fixture/Storage init, partial rollback, closeVM, closeEnvironment, closePermission, releaseCallerMemory",
+      "Capture, PermissionOperation, FormatOperation, ParseOperation",
+      "Directory/observeDirectory actual sync uv owner",
+      "UvTracker wrappers, publication, snapshot and emergency retirement",
+      "Actual shared new_handler Retry reservation/handler restoration"
+    ]
+  },
+  "findings": [
+    "Storage retains its actual native domain before reserve/allocation, rolls both layers back on failure, clears the owned pointer before free and returns the charge before releasing its domain. Fixture is initialized before errdefer and stores each completed native owner before later fallible work.",
+    "Fixture teardown keeps native Permission, Environment placement/Map, VM and caller entitlements ordered; selected after-VM tests keep real independent placement/block owners. Permission17 passes no retired Environment for the original allow-all empty-path short circuit, then destroys concrete shared policy control blocks and restores the owner count.",
+    "Debug16 and Permission15 reserve the genuine remaining native quota; actual standard allocation invokes the existing real new_handler, which releases that reservation once and restores the former handler. Long String/vector operations force a real native allocation, while actual JS pending and OOM occurrence remain separate.",
+    "Debug17/18 and Permission16 retain actual ordinary/generic/private reasons under JS heap limit1 and restore the heap before assertions. The two corrected private cleanup sites publish an owned duplicate of the already observed actual token immediately before Cancel, so the active lease is truly retired; no DATA inference occurs.",
+    "Actual sync UV observation warms platform stat first, wraps only this one no-async Apply, retains a fixed native pointer table, restores the original allocator policy and snapshots live block/byte counts before emergency cleanup. Windows requires real allocation/peak observations; original omitted cleanup would still fail the snapshot and allocation/free assertions.",
+    "Permission14/18 build real ordinary and wildcard-descendant native nodes and destroy the actual policy graph before comparing the exact charged baseline. The approved recursive wildcard and two directory cleanup adaptations are required for these controls; no equality to the old leaking cleanup branches is claimed.",
+    "Debug19 keeps its native domain via placement/storage after VM and caller retirement; actual formatted output allocation is observed during the borrowed visitor and retires before the final baseline comparison. Debug20 warms each selected real static category table before asserting temporary parse String retirement."
+  ],
+  "correction": {
+    "packet_sha256": "9B72048BA33981DECFE9546BA6186589057071A573863FAF4FEA0499300424F2",
+    "exact_one_line_inverse_each": true,
+    "debug_before": "2AC6D329A744627FF6E39A20E01F363C0E387B00A262A4AF089E75B0874A472B",
+    "permission_before": "C8D2AC61DF3C3B75131D0258B09E8E239ECFDD646F4453E3FEB5259C1397716E",
+    "assertions_and_names_unchanged": true
+  },
+  "authority": {
+    "path": "vendor/node-v24.13.0/uv/src/uv-common.c",
+    "sha256": "C311E17AE0F891C9EBA52626ADF9EA33A91B7459654EB1C20E56C24D30D6B446",
+    "bytes": 23928,
+    "selected_byte_offset": 1531,
+    "selected": "typedef struct {\n  uv_malloc_func local_malloc;\n  uv_realloc_func local_realloc;\n  uv_calloc_func local_calloc;\n  uv_free_func local_free;\n} uv__allocator_t;\n\nstatic uv__allocator_t uv__allocator = {\n  malloc,\n  realloc,\n  calloc,\n  free,\n};\n\nchar* uv__strdup(const char* s) {\n  size_t len = strlen(s) + 1;\n  char* m = uv__malloc(len);\n  if (m == NULL)\n    return NULL;\n  return memcpy(m, s, len);\n}\n\nchar* uv__strndup(const char* s, size_t n) {\n  char* m;\n  size_t len = strlen(s);\n  if (n < len)\n    len = n;\n  m = uv__malloc(len + 1);\n  if (m == NULL)\n    return NULL;\n  m[len] = '\\0';\n  return memcpy(m, s, len);\n}\n\nvoid* uv__malloc(size_t size) {\n  if (size > 0)\n    return uv__allocator.local_malloc(size);\n  return NULL;\n}\n\nvoid uv__free(void* ptr) {\n  int saved_errno;\n\n  /* Libuv expects that free() does not clobber errno.  The system allocator\n   * honors that assumption but custom allocators may not be so careful.\n   */\n  saved_errno = errno;\n  uv__allocator.local_free(ptr);\n  errno = saved_errno;\n}\n\nvoid* uv__calloc(size_t count, size_t size) {\n  return uv__allocator.local_calloc(count, size);\n}\n\nvoid* uv__realloc(void* ptr, size_t size) {\n  if (size > 0)\n    return uv__allocator.local_realloc(ptr, size);\n  uv__free(ptr);\n  return NULL;\n}\n\nvoid* uv__reallocf(void* ptr, size_t size) {\n  void* newptr;\n\n  newptr = uv__realloc(ptr, size);\n  if (newptr == NULL)\n    if (size > 0)\n      uv__free(ptr);\n\n  return newptr;\n}\n\nint uv_replace_allocator(uv_malloc_func malloc_func,\n                         uv_realloc_func realloc_func,\n                         uv_calloc_func calloc_func,\n                         uv_free_func free_func) {\n  if (malloc_func == NULL || realloc_func == NULL ||\n      calloc_func == NULL || free_func == NULL) {\n    return UV_EINVAL;\n  }\n\n  uv__allocator.local_malloc = malloc_func;\n  uv__allocator.local_realloc = realloc_func;\n  uv__allocator.local_calloc = calloc_func;\n  uv__allocator.local_free = free_func;\n\n  return 0;\n}\n"
+  },
+  "limits": [
+    "SDK owns Debug1–15/Permission1–11 and formatter/file/stdout algorithms. This receipt does not extend those slices.",
+    "Serial original-allocator/no-live-async UV preconditions remain explicit; this is not a concurrent global allocator replacement API.",
+    "Shared build composition, public process Environment/bootstrap, console WriteConsoleW behavior and native abort negatives remain separate.",
+    "No native compile/run/Node/generator/formatter was invoked; source closure is not runtime qualification."
+  ],
+  "concrete_blockers": []
+}

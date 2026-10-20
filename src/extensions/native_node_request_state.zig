@@ -7,6 +7,12 @@ const callbacks = @import("native_node_callback_scope.zig");
 const wraps = @import("native_node_async_wrap_state.zig");
 pub const Environment = callbacks.Environment;
 pub const Cancel = *const fn (*Entry) void;
+/// The compiled original libuv callback plus its actual native request address.
+/// Both are borrowed; this descriptor creates no root or separate entitlement.
+pub const NativeCallback = struct {
+    request: *anyopaque,
+    call: *const fn (*Entry, *anyopaque) anyerror!void,
+};
 
 pub const Registry = struct {
     head: ?*Entry = null,
@@ -53,6 +59,7 @@ pub const Registry = struct {
 pub const Entry = struct {
     wrap: *wraps.State,
     cancel_native: Cancel,
+    original_callback: ?NativeCallback = null,
     queue: ?*Registry = null,
     previous: ?*Entry = null,
     next: ?*Entry = null,
@@ -76,11 +83,21 @@ pub const Entry = struct {
     }
     pub fn reset(self: *Entry) void {
         std.debug.assert(!self.counted);
+        self.original_callback = null;
         self.dispatched = false;
     }
     /// Source Dispatched() precedes the actual uv request initialization call.
     pub fn dispatchStarted(self: *Entry) void {
         self.dispatched = true;
+    }
+    /// MakeLibuvRequestCallback::For follows Dispatched and precedes the real
+    /// libuv call. Reset clears this same field before a reused Dispatch.
+    pub fn setCallback(self: *Entry, callback: NativeCallback) !void {
+        if (self.original_callback != null) {
+            const environment = self.wrap.registry.environment;
+            return environment.operations.native_check_failure(environment, .request_callback_already_set);
+        }
+        self.original_callback = callback;
     }
     /// Call only after successful real admission. A negative native Dispatch
     /// result neither strengthens the persistent nor increments this counter.

@@ -1,0 +1,56 @@
+{
+  "root_sha256": "1863129EC7E28E0F99D3B6C94E3B28FDC754781C7BF0DEF296552688DC0D5DF9",
+  "bytes": 53404,
+  "declarations": 33,
+  "names": [
+    "VM simple stack source WeakMap intrinsic distinguishes absent and stored undefined",
+    "VM simple stack source WeakMap invalid brands and Proxy leave output untouched",
+    "VM simple stack source WeakMap read bypasses poisoned methods and heap and execution gates",
+    "VM simple stack source WeakMap raw read preserves actual ordinary fatal and private pending",
+    "VM simple stack source WeakMap returned value owns one root without keeping the key alive",
+    "VM simple stack source real Error selects its original complete Script and source position",
+    "VM simple stack source inherited holder remains visible through a never-captured native Error",
+    "VM simple stack source captured-disabled state blocks an inherited raw stack",
+    "VM simple stack source formatted undefined and other DATA block inheritance",
+    "VM simple stack source raw lookup stops at Proxy without invoking its traps",
+    "VM simple stack source raw lookup ignores guest fields and preserves actual pending at heap limit one",
+    "VM simple stack source native Script result retains no captured receiver graph",
+    "VM simple stack source raw projection skips native and synthetic records before a real Script",
+    "VM simple stack source raw projection rejects Proxy and accessor arrays without guest entry",
+    "VM simple stack source fallback presence distinguishes untouched Error and consuming transfer",
+    "VM simple stack source raw fallback read neither allocates nor adopts its C owner",
+    "VM simple stack source successful map adoption consumes fallback before formatter failure",
+    "VM simple stack source failed map adoption leaves the original C fallback intact",
+    "VM simple stack source present undefined fallback blocks inherited provenance and transfers once",
+    "VM simple stack source consuming fallback transfer preserves actual pending without allocation",
+    "VM simple stack source setter publishes formatted state before retiring captured receiver",
+    "VM simple stack source successful formatting retires simple frames after actual formatter returns",
+    "VM simple stack source formatter-local raw owner survives setter and success overwrites its DATA",
+    "VM simple stack source formatter throw preserves a reentrant setter and retires local frames",
+    "VM simple stack source FixedArray success replaces a record recaptured during formatting",
+    "VM simple stack source formatter failure preserves the new record and its actual recapture Script",
+    "VM simple stack source inherited formatting writes the selected holder without creating child state",
+    "VM simple stack source flagged formatter DATA remains a successful formatted value",
+    "VM simple stack source setter retirement preserves the actual ordinary cleanup reason",
+    "VM simple stack source actual fatal receiver retirement stops later guest catch and finally",
+    "VM simple stack source actual private receiver retirement keeps its native completion",
+    "VM simple stack source cancelled formatter unwind stays native and preserves unformatted state",
+    "VM simple stack source formatter failure and final raw retirement reduce actual fatal owners"
+  ],
+  "control_ranges": {
+    "sdk": [
+      1,
+      20
+    ],
+    "modules": [
+      21,
+      33
+    ]
+  },
+  "execution": "none; source-only review",
+  "dependencies": {
+    "Engine": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417",
+    "Completion": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC",
+    "Frame": "4265F1B1B76A521FD31B1EEC454D1BBC2BC50910E6A04D27746180C389AF520C"
+  }
+}

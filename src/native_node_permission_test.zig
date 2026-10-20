@@ -1,0 +1,346 @@
+//! Actual native Permission policy, filesystem decisions and allocation owners.
+//! Two cleanup controls exercise explicitly approved native adaptations; no
+//! equivalence to the original leaking cleanup branches is claimed.
+const std = @import("std");
+const builtin = @import("builtin");
+const support = @import("native_node_native_debug_test_support.zig");
+const c = support.c;
+const Fixture = support.Fixture;
+const Span = support.Span;
+const windows = builtin.os.tag == .windows;
+
+const Directory = struct {
+    temporary: std.testing.TmpDir = undefined,
+    path: ?[:0]u8 = null,
+    initialized: bool = false,
+    fn init(self: *Directory) !void {
+        self.* = .{};
+        self.temporary = std.testing.tmpDir(.{});
+        self.initialized = true;
+        errdefer self.deinit();
+        self.path = try self.temporary.dir.realPathFileAlloc(
+            std.testing.io, ".", std.testing.allocator);
+    }
+    fn child(self: *Directory, name: []const u8) ![:0]u8 {
+        const joined = try std.fs.path.join(std.testing.allocator, &.{self.path.?, name});
+        defer std.testing.allocator.free(joined);
+        return try std.testing.allocator.dupeZ(u8, joined);
+    }
+    fn deinit(self: *Directory) void {
+        if (self.path) |path| { self.path = null; std.testing.allocator.free(path); }
+        if (self.initialized) { self.initialized = false; self.temporary.cleanup(); }
+    }
+};
+fn initialize(f: *Fixture) !void {
+    try f.init(false);
+    errdefer f.deinit();
+    try f.openPermission();
+    c.pi_node_permission_enable(f.permission.?);
+}
+fn applyOne(f: *Fixture, scope: c_int, path: []const u8) void {
+    const entries = [_]Span{support.span(path)};
+    f.apply(scope, &entries);
+}
+fn makeRegular(path: [*:0]const u8) !void {
+    var request: c.uv_fs_t = undefined;
+    const descriptor = c.uv_fs_open(null, &request, path,
+        c.O_CREAT | c.O_WRONLY | c.O_TRUNC, 0o600, null);
+    c.uv_fs_req_cleanup(&request);
+    if (descriptor < 0) return error.ActualFileOpenFailed;
+    const closed = c.uv_fs_close(null, &request, descriptor, null);
+    c.uv_fs_req_cleanup(&request);
+    try std.testing.expectEqual(@as(c_int, 0), closed);
+}
+fn observeDirectory(f: *Fixture, directory: [:0]const u8) !void {
+    var observation: c.PiPermissionUvAllocationObservation =
+        std.mem.zeroes(c.PiPermissionUvAllocationObservation);
+    const status = c.pi_native_permission_test_directory_apply(f.permission.?,
+        f.owner(), &f.environment, directory.ptr, directory.len,
+        c.PI_NODE_PERMISSION_FS_READ, &observation);
+    try std.testing.expectEqual(@as(c_int, 0), status);
+    try std.testing.expectEqual(@as(c_int, 0), observation.warm_status);
+    try std.testing.expectEqual(@as(c_int, 0), observation.overflow);
+    if (windows) {
+        // Actual fs__capture_path allocates its UTF16 path even for sync stat.
+        try std.testing.expect(observation.allocations > 0);
+        try std.testing.expect(observation.peak_blocks > 0);
+    }
+    try std.testing.expectEqual(@as(usize, 0), observation.live_blocks_before_observer_cleanup);
+    try std.testing.expectEqual(@as(usize, 0), observation.live_bytes_before_observer_cleanup);
+    try std.testing.expectEqual(observation.allocations, observation.frees);
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS_READ, directory));
+}
+
+test "native Permission constructs actual policies and returns every native allocation at destruction" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    const before = f.used();
+    try f.openPermission();
+    try std.testing.expect(f.used() > before);
+    try std.testing.expectEqual(@as(c_int, 0), c.pi_node_permission_enabled(f.permission.?));
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS_READ, "unrestricted"));
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_ROOT, ""));
+    try std.testing.expect(f.granted(987654, ""));
+    f.closePermission();
+    try std.testing.expectEqual(before, f.used());
+}
+
+test "native Permission enable selects initial policies and each simple Apply denies only its actual scope" {
+    var f: Fixture = .{}; try initialize(&f); defer f.deinit();
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS, ""));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS_READ, ""));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS_WRITE, ""));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_ROOT, ""));
+    const policies = [_]c_int{c.PI_NODE_PERMISSION_CHILD_PROCESS, c.PI_NODE_PERMISSION_WORKER,
+        c.PI_NODE_PERMISSION_INSPECTOR, c.PI_NODE_PERMISSION_WASI, c.PI_NODE_PERMISSION_ADDON};
+    for (policies) |scope| try std.testing.expect(f.granted(scope, ""));
+    for (policies) |scope| {
+        try std.testing.expect(f.granted(scope, ""));
+        f.apply(scope, &.{});
+        try std.testing.expect(!f.granted(scope, ""));
+        c.pi_node_permission_enable(f.permission.?);
+        try std.testing.expect(!f.granted(scope, ""));
+    }
+}
+
+test "native Permission unknown Apply preserves the native policy map and existing decisions" {
+    var f: Fixture = .{}; try initialize(&f); defer f.deinit();
+    const before = f.used();
+    const entries = [_]Span{support.span("unused-" ++ ("q" ** 700))};
+    f.apply(987654, &entries);
+    try std.testing.expectEqual(before, f.used());
+    try std.testing.expect(!f.granted(987654, ""));
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_CHILD_PROCESS, ""));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS_READ, ""));
+}
+
+test "native Permission exact missing-file grant does not grant siblings descendants or writes" {
+    var f: Fixture = .{}; try initialize(&f); defer f.deinit();
+    var directory: Directory = .{}; try directory.init(); defer directory.deinit();
+    const allowed = try directory.child("allowed-leaf"); defer std.testing.allocator.free(allowed);
+    const sibling = try directory.child("other-leaf"); defer std.testing.allocator.free(sibling);
+    const descendant = try std.fs.path.join(std.testing.allocator, &.{allowed, "child"});
+    defer std.testing.allocator.free(descendant);
+    applyOne(&f, c.PI_NODE_PERMISSION_FS_READ, allowed);
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS_READ, allowed));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS_READ, sibling));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS_READ, descendant));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS_WRITE, allowed));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS, ""));
+}
+
+test "native Permission resolves original dot and parent segments before radix lookup" {
+    var f: Fixture = .{}; try initialize(&f); defer f.deinit();
+    var directory: Directory = .{}; try directory.init(); defer directory.deinit();
+    const path = try directory.child(if (windows) "missing\\.\\..\\selected" else "missing/./../selected");
+    defer std.testing.allocator.free(path);
+    const normalized = try directory.child("selected"); defer std.testing.allocator.free(normalized);
+    applyOne(&f, c.PI_NODE_PERMISSION_FS_READ, path);
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS_READ, normalized));
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS_READ, path));
+}
+
+test "native Permission actual directory stat grants its original recursive wildcard" {
+    var f: Fixture = .{}; try initialize(&f); defer f.deinit();
+    var directory: Directory = .{}; try directory.init(); defer directory.deinit();
+    const child = try directory.child(if (windows) "not-created\\deep\\leaf" else "not-created/deep/leaf");
+    defer std.testing.allocator.free(child);
+    applyOne(&f, c.PI_NODE_PERMISSION_FS_READ, directory.path.?);
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS_READ, directory.path.?));
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS_READ, child));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS_WRITE, child));
+}
+
+test "native Permission actual regular file stat retains an exact grant" {
+    var f: Fixture = .{}; try initialize(&f); defer f.deinit();
+    var directory: Directory = .{}; try directory.init(); defer directory.deinit();
+    const path = try directory.child("actual-regular.bin"); defer std.testing.allocator.free(path);
+    try makeRegular(path.ptr);
+    const child = try std.fs.path.join(std.testing.allocator, &.{path, "child"});
+    defer std.testing.allocator.free(child);
+    applyOne(&f, c.PI_NODE_PERMISSION_FS_READ, path);
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS_READ, path));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS_READ, child));
+}
+
+test "native Permission standalone star returns before later grants and keeps the other direction denied" {
+    var f: Fixture = .{}; try initialize(&f); defer f.deinit();
+    var directory: Directory = .{}; try directory.init(); defer directory.deinit();
+    const later = try directory.child("later-missing"); defer std.testing.allocator.free(later);
+    const entries = [_]Span{support.span("*"), support.span(later)};
+    const before = f.used();
+    f.apply(c.PI_NODE_PERMISSION_FS_READ, &entries);
+    try std.testing.expectEqual(before, f.used());
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS_READ, ""));
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS_READ, later));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS_WRITE, later));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS, ""));
+}
+
+test "native Permission aggregate filesystem grant requires both original all-direction flags" {
+    var f: Fixture = .{}; try initialize(&f); defer f.deinit();
+    applyOne(&f, c.PI_NODE_PERMISSION_FS_WRITE, "*");
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS_WRITE, ""));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS_READ, ""));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS, ""));
+    applyOne(&f, c.PI_NODE_PERMISSION_FS_READ, "*");
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS, ""));
+}
+
+test "native Permission real radix splits preserve exact sibling grants and duplicate insertion retains no allocation" {
+    var f: Fixture = .{}; try initialize(&f); defer f.deinit();
+    var directory: Directory = .{}; try directory.init(); defer directory.deinit();
+    const first = try directory.child("shared-prefix-first"); defer std.testing.allocator.free(first);
+    const second = try directory.child("shared-prefix-second"); defer std.testing.allocator.free(second);
+    const absent = try directory.child("shared-prefix-never"); defer std.testing.allocator.free(absent);
+    applyOne(&f, c.PI_NODE_PERMISSION_FS_READ, first);
+    applyOne(&f, c.PI_NODE_PERMISSION_FS_READ, second);
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS_READ, first));
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS_READ, second));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS_READ, absent));
+    const before = f.used();
+    applyOne(&f, c.PI_NODE_PERMISSION_FS_READ, first);
+    try std.testing.expectEqual(before, f.used());
+}
+
+test "native Permission preserves the original nonterminal wildcard lookup decisions" {
+    var f: Fixture = .{}; try initialize(&f); defer f.deinit();
+    var directory: Directory = .{}; try directory.init(); defer directory.deinit();
+    const wildcard = try directory.child(if (windows) "prefix*inside\\retained\\deeper" else "prefix*inside/retained/deeper");
+    defer std.testing.allocator.free(wildcard);
+    const match = try directory.child("prefix-any-original-tail"); defer std.testing.allocator.free(match);
+    const absent = try directory.child("different-prefix"); defer std.testing.allocator.free(absent);
+    applyOne(&f, c.PI_NODE_PERMISSION_FS_READ, wildcard);
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS_READ, match));
+    try std.testing.expect(!f.granted(c.PI_NODE_PERMISSION_FS_READ, absent));
+}
+
+test "native Permission successful directory append branch releases its actual synchronous libuv path allocation" {
+    var f: Fixture = .{}; try initialize(&f); defer f.deinit();
+    var directory: Directory = .{}; try directory.init(); defer directory.deinit();
+    try observeDirectory(&f, directory.path.?);
+}
+
+test "native Permission filesystem-root trailing separator branch releases its actual synchronous libuv path allocation" {
+    var f: Fixture = .{}; try initialize(&f); defer f.deinit();
+    var directory: Directory = .{}; try directory.init(); defer directory.deinit();
+    if (windows) {
+        try std.testing.expect(directory.path.?.len >= 3 and directory.path.?[1] == ':');
+    }
+    const root = try std.testing.allocator.dupeZ(u8,
+        if (windows) directory.path.?[0..3] else "/");
+    defer std.testing.allocator.free(root);
+    try observeDirectory(&f, root);
+}
+
+test "native Permission destruction recursively retires unique descendants below nonterminal wildcards" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    var directory: Directory = .{}; try directory.init(); defer directory.deinit();
+    const first = try directory.child(if (windows) "alpha*branch\\deep\\owned" else "alpha*branch/deep/owned");
+    defer std.testing.allocator.free(first);
+    const second = try directory.child(if (windows) "beta*one*two\\retained" else "beta*one*two/retained");
+    defer std.testing.allocator.free(second);
+    const normal = try directory.child("ordinary-child"); defer std.testing.allocator.free(normal);
+    const before = f.used();
+    try f.openPermission();
+    const constructed = f.used();
+    applyOne(&f, c.PI_NODE_PERMISSION_FS_READ, first);
+    applyOne(&f, c.PI_NODE_PERMISSION_FS_READ, normal);
+    applyOne(&f, c.PI_NODE_PERMISSION_FS_WRITE, second);
+    try std.testing.expect(f.used() > constructed);
+    f.closePermission();
+    try std.testing.expectEqual(before, f.used());
+}
+
+test "native Permission actual native allocation failure retries before grant publication without a JS reason" {
+    var f: Fixture = .{}; try initialize(&f); defer f.deinit();
+    var directory: Directory = .{}; try directory.init(); defer directory.deinit();
+    const path = try directory.child("long-" ++ ("n" ** 600));
+    defer std.testing.allocator.free(path);
+    const entries = [_]Span{support.span(path)};
+    var operation: support.PermissionOperation = .{ .fixture = &f,
+        .scope = c.PI_NODE_PERMISSION_FS_READ, .entries = &entries };
+    var observation: c.PiEnvironmentRetryObservation = std.mem.zeroes(c.PiEnvironmentRetryObservation);
+    const occurrence = c.JS_PiOutOfMemoryOccurrence(f.runtime.?);
+    try std.testing.expectEqual(@as(c_int, 0), c.pi_environment_test_retry(f.owner(),
+        support.memory_limit, support.PermissionOperation.run, &operation, &observation));
+    try std.testing.expect(operation.called);
+    try std.testing.expectEqual(@as(usize, 1), observation.calls);
+    try std.testing.expectEqual(support.memory_limit, observation.first_used);
+    try std.testing.expect(observation.reserved != 0);
+    try std.testing.expect(f.granted(c.PI_NODE_PERMISSION_FS_READ, path));
+    try std.testing.expectEqual(occurrence, c.JS_PiOutOfMemoryOccurrence(f.runtime.?));
+    try std.testing.expect(!c.JS_HasException(f.context.?));
+}
+
+test "native Permission apply and query preserve actual ordinary generic and private pending under exhausted JS heap" {
+    var f: Fixture = .{}; try initialize(&f); defer f.deinit();
+    for ([_]bool{false, true}) |fatal| {
+        const reason = c.JS_NewError(f.context.?);
+        defer c.JS_FreeValue(f.context.?, reason);
+        try std.testing.expect(!c.JS_IsException(reason));
+        if (fatal) c.JS_SetUncatchableError(f.context.?, reason);
+        _ = c.JS_Throw(f.context.?, c.JS_DupValue(f.context.?, reason));
+        const occurrence = c.JS_PiOutOfMemoryOccurrence(f.runtime.?);
+        var granted: bool = false;
+        {
+            c.JS_SetMemoryLimit(f.runtime.?, 1);
+            defer c.JS_SetMemoryLimit(f.runtime.?, 0);
+            applyOne(&f, c.PI_NODE_PERMISSION_FS_READ, "*");
+            granted = f.granted(c.PI_NODE_PERMISSION_FS_READ, "");
+        }
+        try std.testing.expect(granted);
+        try std.testing.expectEqual(occurrence, c.JS_PiOutOfMemoryOccurrence(f.runtime.?));
+        try std.testing.expect(c.JS_HasException(f.context.?));
+        const actual = c.JS_GetException(f.context.?);
+        defer c.JS_FreeValue(f.context.?, actual);
+        try std.testing.expect(c.JS_IsSameValue(f.context.?, reason, actual));
+        try std.testing.expectEqual(fatal, c.JS_IsUncatchableError(actual));
+    }
+    c.JS_PiRequestExecutionTermination(f.runtime.?);
+    try std.testing.expectEqual(@as(c_int, -1), c.JS_PiCheckExecutionTermination(f.context.?));
+    const generation = c.JS_PiExecutionTerminationGeneration(f.runtime.?);
+    {
+        c.JS_SetMemoryLimit(f.runtime.?, 1);
+        defer c.JS_SetMemoryLimit(f.runtime.?, 0);
+        applyOne(&f, c.PI_NODE_PERMISSION_FS_WRITE, "*");
+    }
+    try std.testing.expect(c.JS_PiIsExecutionTerminating(f.runtime.?));
+    try std.testing.expectEqual(generation, c.JS_PiExecutionTerminationGeneration(f.runtime.?));
+    const actual = c.JS_GetException(f.context.?);
+    defer c.JS_FreeValue(f.context.?, actual);
+    try std.testing.expect(c.JS_PiIsExecutionTermination(actual));
+    _ = c.JS_Throw(f.context.?, c.JS_DupValue(f.context.?, actual));
+    c.JS_PiCancelExecutionTermination(f.runtime.?);
+}
+
+test "native Permission blocks and concrete shared policy destructors survive VM Environment and caller retirement" {
+    const owners = c.pi_js_native_memory_owners();
+    var f: Fixture = .{}; try initialize(&f); defer f.deinit();
+    applyOne(&f, c.PI_NODE_PERMISSION_FS_READ, "*");
+    f.closeVm();
+    f.closeEnvironment();
+    f.releaseCallerMemory();
+    try std.testing.expect(f.context == null and f.runtime == null and f.memory == null);
+    try std.testing.expectEqual(owners + 1, c.pi_js_native_memory_owners());
+    try std.testing.expectEqual(@as(c_int, 1), c.pi_node_permission_is_granted(f.permission.?,
+        f.permission_storage.memory, null, c.PI_NODE_PERMISSION_FS_READ, "", 0));
+    f.closePermission();
+    try std.testing.expectEqual(owners, c.pi_js_native_memory_owners());
+}
+
+test "native Permission repeated mixed normal and wildcard retirement restores its exact native baseline" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    var directory: Directory = .{}; try directory.init(); defer directory.deinit();
+    const normal = try directory.child("ordinary"); defer std.testing.allocator.free(normal);
+    const wildcard = try directory.child(if (windows) "nested*middle\\remaining" else "nested*middle/remaining");
+    defer std.testing.allocator.free(wildcard);
+    const before = f.used();
+    for (0..3) |_| {
+        try f.openPermission();
+        applyOne(&f, c.PI_NODE_PERMISSION_FS_READ, normal);
+        applyOne(&f, c.PI_NODE_PERMISSION_FS_READ, wildcard);
+        applyOne(&f, c.PI_NODE_PERMISSION_FS_WRITE, wildcard);
+        f.closePermission();
+        try std.testing.expectEqual(before, f.used());
+    }
+}

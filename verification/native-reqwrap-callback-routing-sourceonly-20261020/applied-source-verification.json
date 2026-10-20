@@ -1,0 +1,56 @@
+{
+  "status": "source applied; all three finite peers closed; controls not yet authored",
+  "execution": "none",
+  "main_mutated": false,
+  "root_authorization": "Apply exact shared Check enum/dispatcher in SDK after Modules order peer; exact Main bases allowed.",
+  "packet": "E15DC1E14112C94663D309FEF1B7919AF0BCF9114664357EDDDF7180EC99046B",
+  "files": [
+    {
+      "path": "src/extensions/native_node_request_state.zig",
+      "base": "01DA46DC010A3108D592172C6F65AAB8100560FC274228FE9F1B6643A70A755A",
+      "successor": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+      "bytes": 5818,
+      "edits": 4,
+      "forward_inverse_exact": true
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "base": "C360094C29E55F7F9C6BE6677390D94986D1FFED2680A05D8AF34162E20644C4",
+      "successor": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "bytes": 14502,
+      "edits": 6,
+      "forward_inverse_exact": true
+    },
+    {
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "base": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "successor": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "bytes": 39890,
+      "edits": 1,
+      "forward_inverse_exact": true
+    },
+    {
+      "path": "src/extensions/native_node_callback_checks.zig",
+      "base": "FFB8FDEC742A0884DE9C1A4819012A172B6253E148505372E928134004335605",
+      "successor": "1E3C1597DF365B561713C7D67EE4A07BBB9245BC75355A57EECDCB224758BC7E",
+      "bytes": 6452,
+      "edits": 1,
+      "forward_inverse_exact": true
+    }
+  ],
+  "preserved_sdk_environment_draft": "E267756ECEFDFA7577E68A18BB2D04EA5392579E837385BA437808DD75F6E397",
+  "peers": [
+    {
+      "file": "root-source-review.json",
+      "sha256": "3A5DDC153317ADFD491B3E150B926019BA7394AD9CE1C7E06EDEA8B4E64537FC"
+    },
+    {
+      "file": "vm-owner-review.json",
+      "sha256": "3F99899FC00CD84458FFC671DC77BDEA54584DA705E8C4033F141738241D5A63"
+    },
+    {
+      "file": "modules-source-order.json",
+      "sha256": "26AB057C430CA93CADEFEA0C37628FE57BB0E344027098AE2632179F619B8C7B"
+    }
+  ]
+}

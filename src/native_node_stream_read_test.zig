@@ -523,15 +523,17 @@ test "Node StreamBase read negative status publishes undefined and leaves the po
 
 test "Node StreamBase read full extent adopts the same native bytes and advances the counter before callback" {
     var f: Fixture = undefined; try f.init(); defer f.deinit();
-    const buffer = try f.allocate(16);
-    Fixture.fill(buffer, "native-map-bytes!");
-    try f.read(16, buffer);
+    const payload = "native-map-bytes!";
+    const buffer = try f.allocate(payload.len);
+    Fixture.fill(buffer, payload);
+    try f.read(@intCast(payload.len), buffer);
     try std.testing.expectEqual(@intFromPtr(buffer.base), f.received_pointer);
-    try std.testing.expectEqual(@as(usize, 16), f.received_length);
-    try std.testing.expectEqualSlices(u8, "native-map-bytes!", f.bytes[0..f.received_length]);
-    try std.testing.expectEqual(@as(u64, 16), f.observed_counter);
-    try std.testing.expectEqual(@as(i32, 16), f.observed_read);
+    try std.testing.expectEqual(@as(usize, payload.len), f.received_length);
+    try std.testing.expectEqualSlices(u8, payload, f.bytes[0..f.received_length]);
+    try std.testing.expectEqual(@as(u64, payload.len), f.observed_counter);
+    try std.testing.expectEqual(@as(i32, @intCast(payload.len)), f.observed_read);
     try std.testing.expectEqual(@as(usize, 1), f.allocation_count);
+    try std.testing.expectEqual(@as(usize, payload.len), f.allocations[0].length);
     try std.testing.expectEqual(@as(usize, 0), f.env().managed_buffers.count());
     try f.expectTrace("bca");
 }

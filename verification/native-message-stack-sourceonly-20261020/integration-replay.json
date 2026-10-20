@@ -1,0 +1,394 @@
+{
+  "schema": 1,
+  "status": "read-only exact source replay; no execution",
+  "parent": "ce28434cf977b75ed5e1fd1a26468e84c27189a5",
+  "ordered_packets": [
+    "production-c-delta.json",
+    "production-owner-delta.json",
+    "build-intake.json"
+  ],
+  "prior_independent_compiler_correction": {
+    "commit": "ce28434cf977b75ed5e1fd1a26468e84c27189a5",
+    "packet": "../native-script-v27-constants-sourceonly-20261020/source-delta.json",
+    "sha256": "F1E4705BC4624D43855E606788FD61A6E0BC09010B8B6E3D45CCC2825CBD1D12"
+  },
+  "donor": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "base_sha256": "1202748142E8E549F917F446C4BA027718D555A73444F40AA7ADDCFE126D416D",
+      "base_bytes": 2392187,
+      "after_sha256": "DE3C05D6698F2D1AC5F3D7F92540F4775B374101A71EAE2C4925FD3F48FAFCAE",
+      "after_bytes": 2394786
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "base_sha256": "08230E99EB7AB2AC38C94ED3810D81DEE850CB5A067902634E0C2CC5D112F966",
+      "base_bytes": 110090,
+      "after_sha256": "621A5F9DD846DA6257C89E78EB25D527CCDFAB0F0E76FA34195CD51E7CF1B32B",
+      "after_bytes": 111537
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "base_sha256": "EC0002CEED53432B26BA135F2D4CDC6FFB8C2D0460ADE1C6B8D003C8194826BF",
+      "base_bytes": 25360,
+      "after_sha256": "FB755EC4331C26D7CB92294684A89C3F7D282609236AB0CCF76D3CD1D57296E0",
+      "after_bytes": 32901
+    },
+    {
+      "path": "build.zig",
+      "base_sha256": "35AD68E15D17BEAE0820B1EE1AB57EB0DB8B7F71885B95306AAF676B36581686",
+      "base_bytes": 420622,
+      "after_sha256": "CCADEFC7788AB8194561A7465261EAB59BEF1C765CC4C780C42BC3DC4010054B",
+      "after_bytes": 421276
+    }
+  ],
+  "donor_exact_forward_reverse": true,
+  "main_observed": {
+    "head": "7ead6591a0e4be1ce95249625b9552de2a1583bd",
+    "before": [
+      {
+        "path": "vendor/quickjs/quickjs.c",
+        "sha256": "3B24170B01A5FC07B3E9A193396300A35F5D84380116CC192E15B1516200A496",
+        "bytes": 2395528
+      },
+      {
+        "path": "vendor/quickjs/quickjs.h",
+        "sha256": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+        "bytes": 110801
+      },
+      {
+        "path": "src/extensions/native_error_stack.zig",
+        "sha256": "EC0002CEED53432B26BA135F2D4CDC6FFB8C2D0460ADE1C6B8D003C8194826BF",
+        "bytes": 25360
+      },
+      {
+        "path": "build.zig",
+        "sha256": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+        "bytes": 493924
+      }
+    ],
+    "after_macro": [
+      {
+        "path": "vendor/quickjs/quickjs.c",
+        "sha256": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+        "bytes": 2395528
+      },
+      {
+        "path": "vendor/quickjs/quickjs.h",
+        "sha256": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+        "bytes": 110801
+      },
+      {
+        "path": "src/extensions/native_error_stack.zig",
+        "sha256": "EC0002CEED53432B26BA135F2D4CDC6FFB8C2D0460ADE1C6B8D003C8194826BF",
+        "bytes": 25360
+      },
+      {
+        "path": "build.zig",
+        "sha256": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+        "bytes": 493924
+      }
+    ],
+    "prospective_message2a": [
+      {
+        "path": "vendor/quickjs/quickjs.c",
+        "sha256": "629DEAA87880A0B094FF23CCF2FBC5567F0EF6751CC5DFA7F277CEFE1F243743",
+        "bytes": 2398127
+      },
+      {
+        "path": "vendor/quickjs/quickjs.h",
+        "sha256": "A4F69F784547DD0D3F4F0931A5411E3C5F8BEBEFC170992367CA488B51ECA281",
+        "bytes": 112248
+      },
+      {
+        "path": "src/extensions/native_error_stack.zig",
+        "sha256": "FB755EC4331C26D7CB92294684A89C3F7D282609236AB0CCF76D3CD1D57296E0",
+        "bytes": 32901
+      },
+      {
+        "path": "build.zig",
+        "sha256": "DBFAE7DD1BF0EC2D2A3708E248250FECA4CF6A66623BAADED79DCD7D39BD54D2",
+        "bytes": 494578
+      }
+    ],
+    "exact_forward_reverse": true,
+    "mutation": false
+  },
+  "main_steps_with_actual_offsets": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Explicit native fallback presence",
+      "offset_character": 51418,
+      "before": "            uint64_t native_allocation_generation;\n        } native_error;",
+      "after": "            uint64_t native_allocation_generation;\n            /* Set only by the actual hook-recursion fallback publication. */\n            bool stack_fallback_present;\n        } native_error;"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Initialize actual fallback provenance",
+      "offset_character": 240731,
+      "before": "    case JS_CLASS_ERROR:\n        p->u.native_error.native_allocation_generation = 0;\n        p->u.object_data = JS_UNDEFINED;",
+      "after": "    case JS_CLASS_ERROR:\n        p->u.native_error.native_allocation_generation = 0;\n        p->u.native_error.stack_fallback_present = false;\n        p->u.object_data = JS_UNDEFINED;"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Publish fallback owner before retiring former native capture",
+      "offset_character": 334516,
+      "before": "        JS_FreeValue(ctx, JS_VALUE_GET_OBJ(error)->u.object_data);\n        JS_VALUE_GET_OBJ(error)->u.object_data = frames;\n        return 0;",
+      "after": "        {\n            JSObject *object = JS_VALUE_GET_OBJ(error);\n            JSValue previous = object->u.object_data;\n            JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n            object->u.object_data = frames;\n            object->u.native_error.stack_fallback_present = true;\n            js_native_async_release(ctx, previous, &pending);\n            if (pending.present) {\n                JS_Throw(ctx, pending.reason);\n                return -1;\n            }\n        }\n        return 0;"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Actual presence and consuming fallback transfer",
+      "offset_character": 2045682,
+      "before": "void JS_SetNativeErrorStackHook(JSRuntime *rt, JSNativeErrorStackHook *cb, void *opaque)\n{",
+      "after": "bool JS_PiHasPendingNativeErrorStack(JSValueConst error)\n{\n    JSObject *object;\n    if (!JS_IsError(error))\n        return false;\n    object = JS_VALUE_GET_OBJ(error);\n    return object->u.native_error.stack_fallback_present &&\n           (JS_IsArray(object->u.object_data) ||\n            JS_IsUndefined(object->u.object_data));\n}\n\nint JS_PiTakePendingNativeErrorStack(JSValueConst error, JSValue *frames)\n{\n    JSObject *object;\n    JSValue value;\n    if (!frames || !JS_PiHasPendingNativeErrorStack(error))\n        return 0;\n    object = JS_VALUE_GET_OBJ(error);\n    value = object->u.object_data;\n    object->u.object_data = JS_UNDEFINED;\n    object->u.native_error.stack_fallback_present = false;\n    *frames = value;\n    return 1;\n}\n\nvoid JS_SetNativeErrorStackHook(JSRuntime *rt, JSNativeErrorStackHook *cb, void *opaque)\n{"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Share the genuine intrinsic Map read with a nonthrowing WeakMap projection",
+      "offset_character": 1975746,
+      "before": "static JSValue js_map_get(JSContext *ctx, JSValueConst this_val,\n                          int argc, JSValueConst *argv, int magic)\n{\n    JSMapState *s = JS_GetOpaque2(ctx, this_val, JS_CLASS_MAP + magic);\n    JSMapRecord *mr;\n    JSValueConst key;\n\n    if (!s)\n        return JS_EXCEPTION;\n    key = map_normalize_key_const(ctx, argv[0]);\n    mr = map_find_record(ctx, s, key);\n    if (!mr)\n        return JS_UNDEFINED;\n    else\n        return js_dup(mr->value);\n}",
+      "after": "static JSValue js_map_read(JSContext *ctx, JSMapState *s,\n                           JSValueConst key, int *present)\n{\n    JSMapRecord *mr;\n    key = map_normalize_key_const(ctx, key);\n    mr = map_find_record(ctx, s, key);\n    if (present)\n        *present = mr != NULL;\n    return mr ? js_dup(mr->value) : JS_UNDEFINED;\n}\n\nstatic JSValue js_map_get(JSContext *ctx, JSValueConst this_val,\n                          int argc, JSValueConst *argv, int magic)\n{\n    JSMapState *s = JS_GetOpaque2(ctx, this_val, JS_CLASS_MAP + magic);\n    if (!s)\n        return JS_EXCEPTION;\n    return js_map_read(ctx, s, argv[0], NULL);\n}\n\nint JS_PiReadWeakMapEntry(JSContext *ctx, JSValueConst map,\n                         JSValueConst key, JSValue *value)\n{\n    JSMapState *s = JS_GetOpaque(map, JS_CLASS_WEAKMAP);\n    int present;\n    if (!s || !value)\n        return -1;\n    *value = js_map_read(ctx, s, key, &present);\n    return present;\n}"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Project only native captured Script and actual position from dense frame storage",
+      "offset_character": 2352307,
+      "before": "int JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx, JSValueConst frame,\n                                       int *is_eval, int *has_script_id)\n{",
+      "after": "JSNativeScript *JS_PiFindCapturedStackScriptLocation(JSValueConst frames,\n                                                   int *start, int *end)\n{\n    JSObject *array;\n    uint32_t index;\n    if (!start || !end || !JS_IsArray(frames))\n        return NULL;\n    array = JS_VALUE_GET_OBJ(frames);\n    if (!array->fast_array)\n        return NULL;\n    for (index = 0; index < array->u.array.count; index++) {\n        JSCallSiteData *data = JS_GetOpaque(array->u.array.u.values[index],\n                                           JS_CLASS_CALL_SITE);\n        if (data && data->pi_script && JS_IsString(data->pi_script->source)) {\n            int position = data->pi_source_position;\n            *start = position;\n            *end = position < 0 ? -1 : position + 1;\n            return JS_PiDupScript(data->pi_script);\n        }\n    }\n    return NULL;\n}\n\nint JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx, JSValueConst frame,\n                                       int *is_eval, int *has_script_id)\n{"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "Intrinsic WeakMap read ABI",
+      "offset_character": 57938,
+      "before": "JS_EXTERN bool JS_IsWeakMap(JSValueConst val);\nJS_EXTERN bool JS_IsDataView(JSValueConst val);",
+      "after": "JS_EXTERN bool JS_IsWeakMap(JSValueConst val);\n/* Borrow map/key and use the map's actual operation context. Genuine WeakMap\n   entry -> 1 with an owned value; missing -> 0 with owned undefined; invalid\n   map/output -> -1 with output unchanged. No allocation, guest call, kept\n   object, exception or pending-state operation. */\nJS_EXTERN int JS_PiReadWeakMapEntry(JSContext *ctx, JSValueConst map,\n                                  JSValueConst key, JSValue *value);\nJS_EXTERN bool JS_IsDataView(JSValueConst val);"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "Explicit native fallback owner ABI",
+      "offset_character": 82064,
+      "before": "JS_EXTERN int JS_ReadPendingNativeErrorStack(JSContext *ctx, JSValueConst error, JSValue *frames);\nJS_EXTERN void JS_SetNativeErrorStackHook",
+      "after": "JS_EXTERN int JS_ReadPendingNativeErrorStack(JSContext *ctx, JSValueConst error, JSValue *frames);\n/* Actual hook-recursion fallback only; initialized Error data is not capture\n   provenance. Has borrows. Take returns 1 and transfers the owned Array or\n   captured undefined after clearing the native owner; otherwise 0 with\n   output/state unchanged. No allocation, finalization, guest or pending work.\n   The legacy Read operation above retains its existing read-only behavior. */\nJS_EXTERN bool JS_PiHasPendingNativeErrorStack(JSValueConst error);\nJS_EXTERN int JS_PiTakePendingNativeErrorStack(JSValueConst error, JSValue *frames);\nJS_EXTERN void JS_SetNativeErrorStackHook"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "Raw simple-stack Script location ABI",
+      "offset_character": 86066,
+      "before": "JS_EXTERN JSNativeScript *JS_PiGetCapturedStackFrameScript(JSValueConst frame,\n                                                         int *position);\nJS_EXTERN JSNativeScript *JS_PiDupScript",
+      "after": "JS_EXTERN JSNativeScript *JS_PiGetCapturedStackFrameScript(JSValueConst frame,\n                                                         int *position);\n/* Borrow the actual private dense captured-frame Array; return an owned first\n   debuggable Script and its actual UTF-16 start/end (end=start+1), or -1/-1\n   when that frame has no PC position. Unsupported/missing input -> NULL with\n   outputs unchanged. Native/synthetic records supply no Script. No property\n   lookup, allocation, guest call or pending-state operation. */\nJS_EXTERN JSNativeScript *JS_PiFindCapturedStackScriptLocation(\n    JSValueConst frames, int *start, int *end);\nJS_EXTERN JSNativeScript *JS_PiDupScript"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "One simple state and retained intrinsic map owner",
+      "offset_character": 248,
+      "before": "const Frame = @import(\"native_tui_alt_frame.zig\").Frame;\nconst Owner = struct { engine: *js.Engine, bindings: c.JSValue, data_class: c.JSClassID, formatting: bool = false };\nconst StackData = struct { engine: *js.Engine, captured: bool = false, frames: ?c.JSValue = null, formatted: ?c.JSValue = null };",
+      "after": "const Frame = @import(\"native_tui_alt_frame.zig\").Frame;\nconst completion = @import(\"native_sdk_owned_completion.zig\");\nconst Owner = struct { engine: *js.Engine, bindings: c.JSValue, map: c.JSValue, data_class: c.JSClassID, formatting: bool = false };\nconst SimpleStack = union(enum) { none, frames: c.JSValue, formatted: c.JSValue };\nconst StackData = struct { engine: *js.Engine, captured: bool = false, simple: SimpleStack = .none };"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Owner marks its exact extra map root and clears before retirement",
+      "offset_character": 1120,
+      "before": "    c.JS_FreeValueRT(runtime, state.bindings);\n    state.engine.gpa.destroy(state);\n}\nfn markOwner",
+      "after": "    const bindings = state.bindings;\n    const map = state.map;\n    state.bindings = c.pi_js_undefined();\n    state.map = c.pi_js_undefined();\n    c.JS_FreeValueRT(runtime, bindings);\n    c.JS_FreeValueRT(runtime, map);\n    state.engine.gpa.destroy(state);\n}\nfn markOwner"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Trace the same retained map entitlement",
+      "offset_character": 1594,
+      "before": "    c.JS_MarkValue(runtime, state.bindings, marker);\n}\nfn finalizeData",
+      "after": "    c.JS_MarkValue(runtime, state.bindings, marker);\n    c.JS_MarkValue(runtime, state.map, marker);\n}\nfn finalizeData"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Exclusive simple state finalizer and mark",
+      "offset_character": 1888,
+      "before": "    if (state.frames) |frames| c.JS_FreeValueRT(runtime, frames);\n    if (state.formatted) |formatted| c.JS_FreeValueRT(runtime, formatted);\n    state.engine.gpa.destroy(state);\n}\nfn markData(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {\n    const state: *StackData = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));\n    if (state.frames) |frames| c.JS_MarkValue(runtime, frames, marker);\n    if (state.formatted) |formatted| c.JS_MarkValue(runtime, formatted, marker);\n}",
+      "after": "    const previous = state.simple;\n    state.simple = .none;\n    switch (previous) { .frames, .formatted => |root| c.JS_FreeValueRT(runtime, root), .none => {} }\n    state.engine.gpa.destroy(state);\n}\nfn markData(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {\n    const state: *StackData = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));\n    switch (state.simple) { .frames, .formatted => |root| c.JS_MarkValue(runtime, root, marker), .none => {} }\n}"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Explicit native-abrupt gateway and canonical local retirement",
+      "offset_character": 2420,
+      "before": "fn failure(engine: *js.Engine, err: anyerror) c.JSValue {\n    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();\n    return c.JS_ThrowInternalError(engine.context, \"Native Error stack: %s\", @as([*:0]const u8, @errorName(err)));\n}",
+      "after": "fn failure(engine: *js.Engine, err: anyerror) c.JSValue {\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();\n    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();\n    return c.JS_ThrowInternalError(engine.context, \"Native Error stack: %s\", @as([*:0]const u8, @errorName(err)));\n}\nfn finishFrame(f: *Frame, result: anyerror!c.JSValue) !c.JSValue {\n    const owned: anyerror!c.JSValue = if (result) |value| f.result(value) else |err| err;\n    return completion.finishValue(f, owned);\n}\nfn finishCallback(f: *Frame, invocation: *js.Engine.NativeInvocation, result: anyerror!c.JSValue) c.JSValue {\n    const engine = f.engine;\n    const selected = finishFrame(f, result) catch |err| failure(engine, err);\n    return engine.leaveNativeInvocation(invocation, selected);\n}\n// Consumes the concrete record handle. Publication precedes every finalizable\n// retirement; the selected simple state is one union, including undefined.\nfn publishFormatted(engine: *js.Engine, record_value: c.JSValue, formatted: c.JSValue, class: c.JSClassID) !void {\n    const record = data(record_value, class);\n    const previous = record.simple;\n    record.simple = .{ .formatted = c.JS_DupValue(engine.context, formatted) };\n    var retired = completion.Completion.initVoid(engine, {});\n    switch (previous) { .frames, .formatted => |root| retired.release(root), .none => {} }\n    retired.release(record_value);\n    try retired.finishVoid();\n}"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Capture publishes one owned simple frame state",
+      "offset_character": 7696,
+      "before": "    record.frames = frames;",
+      "after": "    record.simple = .{ .frames = frames };"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Real hook result selected before Frame retirement",
+      "offset_character": 7741,
+      "before": "fn hook(context: ?*c.JSContext, target: c.JSValue, phase: c_int, filter: c.JSValue, filename: [*c]const u8, line: c_int, column: c_int, flags: c_int, raw: ?*anyopaque) callconv(.c) c_int {\n    const state: *Owner = @ptrCast(@alignCast(raw.?));\n    _ = context;\n    var f: Frame = .{ .engine = state.engine, .object = target, .bindings = state.bindings };\n    defer f.deinit();\n    const result = if (phase == c.JS_ERROR_STACK_PREPARE) prepared: {\n        _ = installOwn(&f, state, target, false) catch |err| break :prepared @as(anyerror!void, err);\n        break :prepared @as(anyerror!void, {});\n    } else capture(&f, state, target, filter, filename, line, column, flags, phase == c.JS_ERROR_STACK_RECAPTURE);\n    result catch |err| {\n        _ = failure(state.engine, err);\n        return -1;\n    };\n    return 0;\n}\n",
+      "after": "fn hook(context: ?*c.JSContext, target: c.JSValue, phase: c_int, filter: c.JSValue, filename: [*c]const u8, line: c_int, column: c_int, flags: c_int, raw: ?*anyopaque) callconv(.c) c_int {\n    const state: *Owner = @ptrCast(@alignCast(raw.?));\n    _ = context;\n    var invocation: js.Engine.NativeInvocation = .{};\n    state.engine.enterNativeInvocation(&invocation);\n    var f: Frame = .{ .engine = state.engine, .object = target, .bindings = state.bindings };\n    defer f.deinit();\n    const result: anyerror!c.JSValue = body: {\n        state.engine.checkNativeEntry() catch |err| break :body err;\n        if (phase == c.JS_ERROR_STACK_PREPARE) {\n            _ = installOwn(&f, state, target, false) catch |err| break :body err;\n        } else {\n            capture(&f, state, target, filter, filename, line, column, flags, phase == c.JS_ERROR_STACK_RECAPTURE) catch |err| break :body err;\n        }\n        break :body c.pi_js_undefined();\n    };\n    const selected = finishCallback(&f, &invocation, result);\n    if (c.JS_IsException(selected)) {\n        // This integer hook has no JSValue result channel. Preserve an explicit\n        // cancelled unwind in the actual pending slot without reviving a lease.\n        if (c.JS_PiIsExecutionTermination(selected) and !c.JS_HasException(state.engine.context))\n            _ = c.JS_Throw(state.engine.context, selected);\n        return -1;\n    }\n    state.engine.freeValue(selected);\n    return 0;\n}\n"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Adoption admits only actual captured fallback provenance",
+      "offset_character": 9190,
+      "before": "fn adoptPending(f: *Frame, state: *Owner, target: c.JSValue) !?c.JSValue {\n    var frames: c.JSValue = undefined;",
+      "after": "fn adoptPending(f: *Frame, state: *Owner, target: c.JSValue) !?c.JSValue {\n    if (!c.JS_PiHasPendingNativeErrorStack(target)) return null;\n    var frames: c.JSValue = undefined;"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Adoption creates one simple state",
+      "offset_character": 9727,
+      "before": "    record.* = .{ .engine = f.engine, .captured = true, .frames = if (c.JS_IsUndefined(rooted_frames)) null else c.JS_DupValue(f.engine.context, rooted_frames) };\n    errdefer if (!attached) if (record.frames) |value| f.engine.freeValue(value);",
+      "after": "    record.* = .{ .engine = f.engine, .captured = true, .simple = if (c.JS_IsUndefined(rooted_frames)) .none else .{ .frames = c.JS_DupValue(f.engine.context, rooted_frames) } };\n    errdefer if (!attached) switch (record.simple) { .frames, .formatted => |root| f.engine.freeValue(root), .none => {} };"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Consume fallback only after actual Map publication",
+      "offset_character": 10198,
+      "before": "    _ = try f.call(try f.get(f.bindings, \"mapSet\"), try f.get(f.bindings, \"map\"), &.{ target, value });\n    return value;\n}\nconst Found = struct { holder: c.JSValue, record: *StackData };",
+      "after": "    _ = try f.call(try f.get(f.bindings, \"mapSet\"), try f.get(f.bindings, \"map\"), &.{ target, value });\n    var transferred: c.JSValue = undefined;\n    if (c.JS_PiTakePendingNativeErrorStack(target, &transferred) != 1)\n        return error.MissingNativeFallbackStackOwner;\n    // rooted_frames and the published record still own this same Array; this\n    // exact old C entitlement cannot be its finalizable last reference.\n    f.engine.freeValue(transferred);\n    return value;\n}\nconst Found = struct { holder: c.JSValue, value: c.JSValue, record: *StackData };"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Keep concrete record handle for selected holder",
+      "offset_character": 11115,
+      "before": "        if (!c.JS_IsUndefined(value)) return .{ .holder = current, .record = data(value, state.data_class) };",
+      "after": "        if (!c.JS_IsUndefined(value)) return .{ .holder = current, .value = value, .record = data(value, state.data_class) };"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Getter and setter keep actual outcome across new state/local retirement",
+      "offset_character": 11363,
+      "before": "fn getter(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, values: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const state = owner(values[0]);\n    _ = context;\n    var f: Frame = .{ .engine = state.engine, .object = receiver, .bindings = state.bindings };\n    defer f.deinit();\n    state.engine.native_exception_diagnostics_suppressed += 1;\n    defer state.engine.native_exception_diagnostics_suppressed -= 1;\n    const value = getStack(&f, state, receiver) catch |err| return failure(state.engine, err);\n    return f.result(value);\n}\nfn setter(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, values: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const state = owner(values[0]);\n    _ = context;\n    var f: Frame = .{ .engine = state.engine, .object = receiver, .bindings = state.bindings };\n    defer f.deinit();\n    const found = lookup(&f, state, receiver) catch |err| return failure(state.engine, err);\n    if (found) |selected| {\n        if (selected.record.formatted) |previous| state.engine.freeValue(previous);\n        selected.record.formatted = c.JS_DupValue(state.engine.context, if (argc > 0) argv[0] else c.pi_js_undefined());\n    }\n    return c.pi_js_undefined();\n}\n",
+      "after": "fn getter(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, values: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const state = owner(values[0]);\n    _ = context;\n    var invocation: js.Engine.NativeInvocation = .{};\n    state.engine.enterNativeInvocation(&invocation);\n    var f: Frame = .{ .engine = state.engine, .object = receiver, .bindings = state.bindings };\n    defer f.deinit();\n    state.engine.native_exception_diagnostics_suppressed += 1;\n    defer state.engine.native_exception_diagnostics_suppressed -= 1;\n    const result: anyerror!c.JSValue = body: {\n        state.engine.checkNativeEntry() catch |err| break :body err;\n        break :body getStack(&f, state, receiver);\n    };\n    return finishCallback(&f, &invocation, result);\n}\nfn setter(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, values: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const state = owner(values[0]);\n    _ = context;\n    var invocation: js.Engine.NativeInvocation = .{};\n    state.engine.enterNativeInvocation(&invocation);\n    var f: Frame = .{ .engine = state.engine, .object = receiver, .bindings = state.bindings };\n    defer f.deinit();\n    const result: anyerror!c.JSValue = body: {\n        state.engine.checkNativeEntry() catch |err| break :body err;\n        const found = lookup(&f, state, receiver) catch |err| break :body err;\n        if (found) |selected| {\n            publishFormatted(state.engine, c.JS_DupValue(state.engine.context, selected.value),\n                if (argc > 0) argv[0] else c.pi_js_undefined(), state.data_class) catch |err| break :body err;\n        }\n        break :body c.pi_js_undefined();\n    };\n    return finishCallback(&f, &invocation, result);\n}\n"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Default preparation uses actual local completion",
+      "offset_character": 14644,
+      "before": "    const result = try defaultPrepare(&f, if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined());\n    return f.result(result);",
+      "after": "    const result: anyerror!c.JSValue = body: {\n        engine.checkNativeEntry() catch |err| break :body err;\n        break :body defaultPrepare(&f, if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined());\n    };\n    return finishFrame(&f, result);"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Formatter owns raw frames locally and writes selected holder current state",
+      "offset_character": 18364,
+      "before": "fn getStack(f: *Frame, state: *Owner, receiver: c.JSValue) !c.JSValue {\n    const found = try lookup(f, state, receiver) orelse return c.pi_js_undefined();\n    if (found.record.formatted) |formatted| return formatted;\n    const frames = found.record.frames orelse return c.pi_js_undefined();\n    const reentrant = state.formatting;\n    state.formatting = true;\n    defer state.formatting = reentrant;\n    const formatted = if (reentrant) try fallbackFormat(f, found.holder, frames) else try prepare(f, found.holder, try preparedFrames(f, frames));\n    found.record.formatted = c.JS_DupValue(f.engine.context, formatted);\n    return formatted;\n}\n",
+      "after": "fn getStack(f: *Frame, state: *Owner, receiver: c.JSValue) !c.JSValue {\n    const found = try lookup(f, state, receiver) orelse return c.pi_js_undefined();\n    const raw_frames = switch (found.record.simple) {\n        .formatted => |formatted| return formatted,\n        .frames => |frames| frames,\n        .none => return c.pi_js_undefined(),\n    };\n    // V8's formatter-local raw_stack/elems handle survives every setter or\n    // recapture during guest formatting, independently of the stored union.\n    const frames = try completion.ownRoot(f, c.JS_DupValue(f.engine.context, raw_frames));\n    const reentrant = state.formatting;\n    state.formatting = true;\n    defer state.formatting = reentrant;\n    const formatted = if (reentrant) try fallbackFormat(f, found.holder, frames) else try prepare(f, found.holder, try preparedFrames(f, frames));\n    try f.engine.checkNativeEntry();\n    // The selected default representation is the original FixedArray branch:\n    // successful formatting writes the selected holder's CURRENT private state.\n    // A reentrant CaptureStackTrace can have replaced the earlier record.\n    var current: c.JSValue = undefined;\n    if (c.JS_PiReadWeakMapEntry(f.engine.context, state.map, found.holder, &current) != 1)\n        return error.MissingNativeFormattedStackRecord;\n    try publishFormatted(f.engine, current, formatted, state.data_class);\n    return formatted;\n}\n"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "CallSite formatting callback records result before local cleanup",
+      "offset_character": 19770,
+      "before": "fn frameStringCall(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, values: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const state = owner(values[0]);\n    _ = context;\n    var f: Frame = .{ .engine = state.engine, .object = receiver, .bindings = state.bindings };\n    defer f.deinit();\n    const result = frameString(&f, receiver) catch |err| return failure(state.engine, err);\n    return f.result(result);\n}\n",
+      "after": "fn frameStringCall(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, values: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const state = owner(values[0]);\n    _ = context;\n    var invocation: js.Engine.NativeInvocation = .{};\n    state.engine.enterNativeInvocation(&invocation);\n    var f: Frame = .{ .engine = state.engine, .object = receiver, .bindings = state.bindings };\n    defer f.deinit();\n    const result: anyerror!c.JSValue = body: {\n        state.engine.checkNativeEntry() catch |err| break :body err;\n        break :body frameString(&f, receiver);\n    };\n    return finishCallback(&f, &invocation, result);\n}\n"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Retain the genuine WeakMap directly at installation",
+      "offset_character": 24997,
+      "before": "    try js.define(engine, bindings, \"map\", try engine.checked(c.JS_CallConstructor(engine.context, weak_constructor, 0, null)));",
+      "after": "    const map = try engine.checked(c.JS_CallConstructor(engine.context, weak_constructor, 0, null));\n    defer engine.freeValue(map);\n    try js.define(engine, bindings, \"map\", c.JS_DupValue(engine.context, map));"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Attach the extra actual map root to its owner",
+      "offset_character": 26485,
+      "before": "    state.* = .{ .engine = engine, .bindings = c.JS_DupValue(engine.context, bindings), .data_class = data_class };",
+      "after": "    state.* = .{ .engine = engine, .bindings = c.JS_DupValue(engine.context, bindings), .map = c.JS_DupValue(engine.context, map), .data_class = data_class };"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Accurate selected installation scope",
+      "offset_character": 23453,
+      "before": "/// This candidate is installed only by focused tests, not Engine.init or workers.",
+      "after": "/// Selected tests and explicitly admitted worker fatal owners install this;\n/// normal Engine.init does not. No Message/reporting installation is implied."
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "label": "Allocation-free read-only simple-stack lookup",
+      "offset_character": 29658,
+      "before": "pub fn uninstall(engine: *js.Engine) void {",
+      "after": "\n// All handles in this raw view are real owned duplicates. Its caller keeps the\n// installed owner and receiver live, so these read-only duplicate retirements\n// cannot discard their last source roots or enter a guest finalizer.\nconst RawFound = struct {\n    holder: c.JSValue,\n    record: ?c.JSValue = null,\n    fallback: ?c.JSValue = null,\n    fn deinit(self: *RawFound, engine: *js.Engine) void {\n        const record = self.record;\n        const fallback = self.fallback;\n        const holder = self.holder;\n        self.record = null;\n        self.fallback = null;\n        self.holder = c.pi_js_undefined();\n        if (fallback) |value| engine.freeValue(value);\n        if (record) |value| engine.freeValue(value);\n        engine.freeValue(holder);\n    }\n};\nfn rawLookup(state: *Owner, receiver: c.JSValue) ?RawFound {\n    const engine = state.engine;\n    var current = c.JS_DupValue(engine.context, receiver);\n    while (c.JS_IsObject(current)) {\n        if (c.JS_IsProxy(current)) break;\n        var record: c.JSValue = undefined;\n        const present = c.JS_PiReadWeakMapEntry(engine.context, state.map, current, &record);\n        if (present == 1) return .{ .holder = current, .record = record };\n        if (present < 0) break;\n        if (c.JS_PiHasPendingNativeErrorStack(current)) {\n            var frames: c.JSValue = undefined;\n            if (c.JS_ReadPendingNativeErrorStack(engine.context, current, &frames) == 1)\n                return .{ .holder = current, .fallback = frames };\n            break;\n        }\n        // The actual non-Proxy JS_GetPrototype path only duplicates shape->proto.\n        // There is no exotic/property lookup or pending-state operation here.\n        const next = c.JS_GetPrototype(engine.context, current);\n        engine.freeValue(current);\n        current = next;\n    }\n    engine.freeValue(current);\n    return null;\n}\n/// Borrow the genuine owner returned by install and an independently rooted\n/// receiver in that owner's Engine. Return only an owned native Script with\n/// actual positions; no Message, formatting, adoption, guest call or allocation.\n/// Missing/unsupported simple state leaves both outputs unchanged. A present\n/// formatted/undefined state blocks inheritance. Prior pending stays untouched.\npub fn readSimpleStackLocation(installed_owner: c.JSValue, receiver: c.JSValue, start: *c_int, end: *c_int) ?*c.JSNativeScript {\n    const state = owner(installed_owner);\n    var found = rawLookup(state, receiver) orelse return null;\n    defer found.deinit(state.engine);\n    if (found.record) |value| {\n        const pointer = c.JS_GetOpaque(value, state.data_class) orelse return null;\n        const record: *StackData = @ptrCast(@alignCast(pointer));\n        return switch (record.simple) {\n            .frames => |frames| c.JS_PiFindCapturedStackScriptLocation(frames, start, end),\n            .none, .formatted => null,\n        };\n    }\n    if (found.fallback) |frames|\n        return c.JS_PiFindCapturedStackScriptLocation(frames, start, end);\n    return null;\n}\n\npub fn uninstall(engine: *js.Engine) void {"
+    },
+    {
+      "path": "build.zig",
+      "label": "Seven install-only lines",
+      "offset_character": 195728,
+      "before": "    const script_location_tests = b.addTest(.{\n",
+      "after": "    const simple_stack_source_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_simple_stack_source_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM simple stack source\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, simple_stack_source_tests.root_module, quickjs, sqlite_lib_dir);\n    simple_stack_source_tests.root_module.addImport(\"catalog_tool\", catalog_tool);\n    b.step(\"build-native-vm-simple-stack-source\", \"Install actual simple stack state and raw source controls without execution\").dependOn(&b.addInstallArtifact(simple_stack_source_tests, .{}).step);\n    const script_location_tests = b.addTest(.{\n"
+    }
+  ],
+  "actual_main_dependencies": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417",
+      "bytes": 99337
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC",
+      "bytes": 15176
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "bytes": 9934
+    },
+    {
+      "path": "src/extensions/native_tui_alt_frame.zig",
+      "sha256": "4265F1B1B76A521FD31B1EEC454D1BBC2BC50910E6A04D27746180C389AF520C",
+      "bytes": 9195
+    },
+    {
+      "path": "src/extensions/native_node_operation_scope.zig",
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+      "bytes": 7087
+    }
+  ],
+  "controls": {
+    "path": "src/native_vm_simple_stack_source_test.zig",
+    "sha256": "1863129EC7E28E0F99D3B6C94E3B28FDC754781C7BF0DEF296552688DC0D5DF9",
+    "bytes": 53404,
+    "names": [
+      "VM simple stack source WeakMap intrinsic distinguishes absent and stored undefined",
+      "VM simple stack source WeakMap invalid brands and Proxy leave output untouched",
+      "VM simple stack source WeakMap read bypasses poisoned methods and heap and execution gates",
+      "VM simple stack source WeakMap raw read preserves actual ordinary fatal and private pending",
+      "VM simple stack source WeakMap returned value owns one root without keeping the key alive",
+      "VM simple stack source real Error selects its original complete Script and source position",
+      "VM simple stack source inherited holder remains visible through a never-captured native Error",
+      "VM simple stack source captured-disabled state blocks an inherited raw stack",
+      "VM simple stack source formatted undefined and other DATA block inheritance",
+      "VM simple stack source raw lookup stops at Proxy without invoking its traps",
+      "VM simple stack source raw lookup ignores guest fields and preserves actual pending at heap limit one",
+      "VM simple stack source native Script result retains no captured receiver graph",
+      "VM simple stack source raw projection skips native and synthetic records before a real Script",
+      "VM simple stack source raw projection rejects Proxy and accessor arrays without guest entry",
+      "VM simple stack source fallback presence distinguishes untouched Error and consuming transfer",
+      "VM simple stack source raw fallback read neither allocates nor adopts its C owner",
+      "VM simple stack source successful map adoption consumes fallback before formatter failure",
+      "VM simple stack source failed map adoption leaves the original C fallback intact",
+      "VM simple stack source present undefined fallback blocks inherited provenance and transfers once",
+      "VM simple stack source consuming fallback transfer preserves actual pending without allocation",
+      "VM simple stack source setter publishes formatted state before retiring captured receiver",
+      "VM simple stack source successful formatting retires simple frames after actual formatter returns",
+      "VM simple stack source formatter-local raw owner survives setter and success overwrites its DATA",
+      "VM simple stack source formatter throw preserves a reentrant setter and retires local frames",
+      "VM simple stack source FixedArray success replaces a record recaptured during formatting",
+      "VM simple stack source formatter failure preserves the new record and its actual recapture Script",
+      "VM simple stack source inherited formatting writes the selected holder without creating child state",
+      "VM simple stack source flagged formatter DATA remains a successful formatted value",
+      "VM simple stack source setter retirement preserves the actual ordinary cleanup reason",
+      "VM simple stack source actual fatal receiver retirement stops later guest catch and finally",
+      "VM simple stack source actual private receiver retirement keeps its native completion",
+      "VM simple stack source cancelled formatter unwind stays native and preserves unformatted state",
+      "VM simple stack source formatter failure and final raw retirement reduce actual fatal owners"
+    ]
+  },
+  "limits": [
+    "Prospective Main application is a read-only projection, not permission or a mutation.",
+    "Never replace Main shared files wholesale; use exact finite packet edits and inverse by recorded offsets.",
+    "Macro move changes none of the peer-closed Message2a bodies. Native execution and complete Message/report/detailed trace installation remain outside."
+  ]
+}

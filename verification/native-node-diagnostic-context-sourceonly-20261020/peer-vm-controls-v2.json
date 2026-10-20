@@ -1,0 +1,84 @@
+{
+  "schema": "pi.native-diagnostic-context-controls.source-peer.v1",
+  "reviewer": "vm_foundation",
+  "source_only": true,
+  "execution": false,
+  "status": "CLOSED finite actual ABI/Fixture, all ten controls and C++ retirement support",
+  "root": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/src/native_node_diagnostic_context_test.zig",
+    "sha256": "536C002F636323E9F2D3C7A195BEEA054DA919DC600E86DA2850E2A63B51B861",
+    "bytes": 9765
+  },
+  "before": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/src/native_node_diagnostic_context_test.zig",
+    "sha256": "95CB9BB6C3F640494E5B917BD85B4E1321C3BAF0907FF4A6FB94AD256B472BDD",
+    "bytes": 9532
+  },
+  "correction": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/verification/native-node-diagnostic-context-sourceonly-20261020/controls-correction-v2.json",
+    "sha256": "A126409898B33B1FC9F8D81D6BAF1B08E4B1F7FEB5B0FF396D154083884469E7",
+    "bytes": 1549
+  },
+  "full_forward_exact": true,
+  "full_inverse_exact": true,
+  "all_ten_names_preserved": true,
+  "actual_support": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/src/extensions/native_node_diagnostic_context.c",
+      "sha256": "AC01853D724253740008E26D2663545D2F564A6E59DE91AA8CE2C8777C7B832C",
+      "bytes": 789
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/src/extensions/native_node_diagnostic_context.h",
+      "sha256": "4D8E43A6527FED6AA19F86A2A51CD490E5DDEAC6CCC323635B700ED4E8B798C0",
+      "bytes": 775
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/src/extensions/native_node_diagnostic_context.hpp",
+      "sha256": "7EA7700F4EDCC6ED5C27DF98574BE27A572AFF01E151B9F39667E6737ACC30B9",
+      "bytes": 914
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/src/extensions/native_node_diagnostic_context_test_support.cpp",
+      "sha256": "BF99BC71F7F7EE89748F7D0F663220087D1ADD6044CBD0DA9256C12974EE935E",
+      "bytes": 1308
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/src/extensions/native_node_diagnostic_context_test_support.h",
+      "sha256": "D6C452A902245779308A9CBE5CF6762B862B73B616C4A60DDD7B10A48AD37009",
+      "bytes": 359
+    }
+  ],
+  "allocator": {
+    "path": "C:/Users/adyba/pi-zig/main/src/extensions/engine_abi.c",
+    "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC",
+    "bytes": 18016
+  },
+  "names": [
+    "Node diagnostic context actual VM creation does not admit an ambient context",
+    "Node diagnostic context nested actual contexts restore their caller without retaining a VM",
+    "Node diagnostic context explicit native-only admission masks and restores an entered caller",
+    "Node diagnostic context same-context reentry leaves the outer borrowed admission live",
+    "Node diagnostic context native projection works with an exhausted JS heap without allocating",
+    "Node diagnostic context ordinary and fatal pending reasons remain the same actual owned value",
+    "Node diagnostic context private termination lease and actual pending token survive admission",
+    "Node diagnostic context C++ locals retire before nested and outer scopes restore",
+    "Node diagnostic context C++ early return keeps each destructor in its real caller scope",
+    "Node diagnostic context actual worker thread neither inherits nor overwrites its caller admission"
+  ],
+  "findings": [
+    "Actual C admission consists solely of native thread-local pointer load/store. Both C and C++ interfaces borrow the supplied context and restore the exact previous pointer; no JS/runtime value entitlement or VM call is introduced.",
+    "Each Fixture restores admission before context/runtime retirement. Explicit second-runtime destruction occurs only after its nested admission has restored the first context. Same-context and explicit-null nesting retain the actual caller pointer.",
+    "pi_js_new_runtime passes the real pi allocator to JS_NewRuntime2; its native owner limit32MiB is independent from the original VM malloc_limit0. The v2 control restores the saved actual before.malloc_limit with an explicit integer cast, after both native memory and VM memory observations under limit1.",
+    "Ordinary and actually flagged fatal pending values are independently retained, taken only after the admission observations and compared by real identity/flag. The private test observes actual published event plus stable generation before taking its token.",
+    "V2 installs cleanup immediately after taking the private reason. On every exit, an actual private token is republished through JS_Throw(DupValue), then Cancel sees its required actual pending condition, then the held reason retires. This closes the detached-lease cleanup finding without altering any preceding observation.",
+    "The C++ support constructs the admission Scope before its later ObserveRetirement object. Actual reverse local destruction gives both inner/outer destructor observations while the respective context is current. Normal mask63 includes post-inner bit16; early-return mask47 omits that bit and still observes both destructors and final caller restoration.",
+    "The worker creates and retires its own real VM on its actual thread, begins/ends with native TLS null, and is joined before the parent reads its flags or retires any shared native record. Thread-spawn failure still restores the parent's outer scope through its existing defers.",
+    "All raw reasons have cleanup before fallible identity assertions; native Probe/output records remain live through their actual C++ calls and thread join."
+  ],
+  "limits": [
+    "Production source projection is SDK's separate assigned peer.",
+    "No complete V8 isolate/context-enter implementation, tracing integration or stack snapshot is claimed.",
+    "No build, compiler, metadata, Node, formatter, native test or runtime execution."
+  ]
+}

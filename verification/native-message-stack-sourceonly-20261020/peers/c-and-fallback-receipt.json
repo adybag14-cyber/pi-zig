@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "status": "finite_source_peer_closed",
+  "reviewer": "SDK owners",
+  "date": "2026-10-20",
+  "execution": false,
+  "scope": "All nine C/H edits in Message2a production-c-delta; actual fallback ownership, intrinsic WeakMap read and raw captured Script projection only.",
+  "packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-message-stack-sourceonly-20261020/production-c-delta.json",
+    "sha256": "B52F8C55743904B7EE81D2A8C7DF669D8428F84BE53576FA40887D27C5601F1F"
+  },
+  "current": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "8A5D1DC383F50454DEE372C2B9DF7B8CF95B70ED58C99E6A69D3167BB9787B18",
+      "bytes": 2394786
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "621A5F9DD846DA6257C89E78EB25D527CCDFAB0F0E76FA34195CD51E7CF1B32B",
+      "bytes": 111537
+    }
+  ],
+  "independent_verification": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "current_sha256": "8A5D1DC383F50454DEE372C2B9DF7B8CF95B70ED58C99E6A69D3167BB9787B18",
+      "current_bytes": 2394786,
+      "reversed_sha256": "8407EA70CAC10FD41EFADBF31B8C043F86B322EA1A1D09DCB1EA00176761C241",
+      "reversed_bytes": 2392187,
+      "all_unique_forward_inverse": true,
+      "steps": 6
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "current_sha256": "621A5F9DD846DA6257C89E78EB25D527CCDFAB0F0E76FA34195CD51E7CF1B32B",
+      "current_bytes": 111537,
+      "reversed_sha256": "08230E99EB7AB2AC38C94ED3810D81DEE850CB5A067902634E0C2CC5D112F966",
+      "reversed_bytes": 110090,
+      "all_unique_forward_inverse": true,
+      "steps": 3
+    }
+  ],
+  "selected_body_readback": [
+    {
+      "label": "Explicit native fallback presence",
+      "matched": [
+        "vmMessageField"
+      ]
+    },
+    {
+      "label": "Initialize actual fallback provenance",
+      "matched": [
+        "vmMessageInit"
+      ]
+    },
+    {
+      "label": "Publish fallback owner before retiring former native capture",
+      "matched": [
+        "vmMessageFallbackText"
+      ]
+    },
+    {
+      "label": "Actual presence and consuming fallback transfer",
+      "matched": [
+        "vmMessageTake"
+      ]
+    },
+    {
+      "label": "Share the genuine intrinsic Map read with a nonthrowing WeakMap projection",
+      "matched": [
+        "vmMessageMap"
+      ]
+    },
+    {
+      "label": "Project only native captured Script and actual position from dense frame storage",
+      "matched": [
+        "vmMessageLocation"
+      ]
+    },
+    {
+      "label": "Intrinsic WeakMap read ABI",
+      "matched": [
+        "vmMessageHWeak"
+      ]
+    },
+    {
+      "label": "Explicit native fallback owner ABI",
+      "matched": [
+        "vmMessageHTake2"
+      ]
+    },
+    {
+      "label": "Raw simple-stack Script location ABI",
+      "matched": [
+        "vmMessageHTake"
+      ]
+    }
+  ],
+  "authority": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-message-stack-sourceonly-20261020/authority/stack-data-source-proof.json",
+    "sha256": "1A66CB1C67B30BCDCEA75DE72BA42DAC8D260B453976E15103E32A94E82C08C8"
+  },
+  "findings": [
+    "The new Error presence bit starts false. Only successful actual hook-recursion fallback publication sets it. Initialized undefined native data alone does not establish capture provenance.",
+    "Fallback publishes the owned frames and presence before retiring the previous root. The existing actual-pending reducer protects an event from that retirement; its selected reason is republished before failure returns.",
+    "Has borrows the genuine Error. Take transfers exactly the owned Array or captured undefined after clearing the field and presence; unsupported input and null output do not change state. No value release, kept-object operation or guest call is introduced by Take.",
+    "The WeakMap projection shares the unchanged normalization, hash-table lookup, same-value comparison and owned duplication used by intrinsic Map.get. It performs a genuine WeakMap brand check without a proxy trap or exception. The caller must supply the map's actual operation context, as documented, because lookup uses the context hash seed.",
+    "The raw Script projection reads only the genuine dense private Array storage and branded CallSite records. It skips records without actual Script source, duplicates the selected native Script, and returns its retained UTF-16 position or -1/-1. It does not infer a position from display line/column, inspect guest fields or manufacture a Script for native/synthetic records.",
+    "All output contracts distinguish missing from present undefined. Invalid WeakMap/output and unsupported Script input leave caller outputs unchanged. The legacy ReadPendingNativeErrorStack body is unchanged.",
+    "The original V8 union/holder evidence remains applicable to the pending Zig owner work: present formatted/undefined state blocks inherited lookup; formatter-local raw handles retain frames; successful writes follow the exact fixed-array versus selected ErrorStackData branch; a thrown formatter does not perform the final overwrite."
+  ],
+  "limits": [
+    "Source review only; no compilation, native tests, Node, generator or formatter was run.",
+    "No closure of the separate Zig WeakMap owner, adoption/recapture union transitions, Message, detailed trace, ThrowAt, reporting, installation or complete bootstrap.",
+    "No new cross-context WeakMap policy; the actual operation-context contract is explicit.",
+    "Only the new fallback retirement is reviewed here; no broader change to earlier native stack capture failure policy is claimed."
+  ]
+}

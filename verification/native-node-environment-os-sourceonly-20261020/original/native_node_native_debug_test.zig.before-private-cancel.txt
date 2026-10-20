@@ -1,0 +1,319 @@
+//! Source-authored controls for actual EnabledDebugList, Permission formatting
+//! and FWrite. File observers do not qualify the separate console branch.
+const std = @import("std");
+const builtin = @import("builtin");
+const support = @import("native_node_native_debug_test_support.zig");
+const c = support.c;
+const Fixture = support.Fixture;
+const Capture = support.Capture;
+const long_text = "native-debug-string-" ++ ("x" ** 700);
+
+const ParseOperation = struct {
+    fixture: *Fixture,
+    input: []const u8,
+    called: bool = false,
+    fn run(raw: ?*anyopaque) callconv(.c) void {
+        const self: *ParseOperation = @ptrCast(@alignCast(raw.?));
+        self.called = true;
+        self.fixture.parse(self.input);
+    }
+};
+const TraceProbe = struct {
+    fixture: *Fixture,
+    calls: usize = 0,
+    fn visit(raw: ?*anyopaque) callconv(.c) void {
+        const self: *TraceProbe = @ptrCast(@alignCast(raw.?));
+        self.calls += 1;
+        self.fixture.setEnv("NODE_DEBUG_NATIVE", "zlib");
+    }
+};
+const DirectOutput = struct {
+    fixture: *Fixture,
+    fn run(raw: ?*anyopaque) callconv(.c) void {
+        const self: *DirectOutput = @ptrCast(@alignCast(raw.?));
+        const operations = &self.fixture.debug_operations;
+        operations.format_insert.?(operations.user, "a\x00b", 3);
+        operations.format_tree_line.?(operations.user, "\xe2\x94\x94\xe2\x94\x80 ", "leaf");
+    }
+};
+fn format(f: *Fixture, bytes: []const u8, output: *Capture) void {
+    c.pi_native_debug_test_format(f.owner(), f.context, 0,
+        bytes.ptr, bytes.len, "", Capture.receive, output);
+}
+
+test "native Debug constructs complete original category tables with every field disabled" {
+    for ([_]bool{false, true}) |crypto| {
+        var f: Fixture = .{}; try f.init(crypto); defer f.deinit();
+        const count = c.pi_node_native_debug_category_count(f.debug_list.?);
+        try std.testing.expectEqual(@as(usize, if (crypto) 87 else 72), count);
+        try std.testing.expectEqual(@as(usize, 0), f.countEnabled());
+        try std.testing.expectEqualStrings("NONE", std.mem.span(c.pi_node_native_debug_category_name(f.debug_list.?, 0)));
+        try std.testing.expectEqualStrings("ZLIB", std.mem.span(c.pi_node_native_debug_category_name(f.debug_list.?, 53)));
+        try std.testing.expectEqualStrings(if (crypto) "CHECKPRIMEREQUEST" else "CRYPTO",
+            std.mem.span(c.pi_node_native_debug_category_name(f.debug_list.?, 54)));
+        try std.testing.expectEqualStrings("PERMISSION_MODEL",
+            std.mem.span(c.pi_node_native_debug_category_name(f.debug_list.?, count - 4)));
+        try std.testing.expectEqualStrings("QUIC",
+            std.mem.span(c.pi_node_native_debug_category_name(f.debug_list.?, count - 1)));
+    }
+}
+
+test "native Debug empty and unmatched input leave original enabled fields false" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    f.parse("");
+    try std.testing.expectEqual(@as(usize, 0), f.countEnabled());
+    f.parse("category-that-does-not-exist");
+    try std.testing.expectEqual(@as(usize, 0), f.countEnabled());
+}
+
+test "native Debug uses original case-insensitive substring matching" {
+    var f: Fixture = .{}; try f.init(true); defer f.deinit();
+    f.parse("PeRmIsSiOn,wrap");
+    try std.testing.expect(try f.enabled("PERMISSION_MODEL"));
+    try std.testing.expect(try f.enabled("TCPWRAP"));
+    try std.testing.expect(try f.enabled("TLSWRAP"));
+    try std.testing.expect(!(try f.enabled("DNSCHANNEL")));
+    try std.testing.expect(!(try f.enabled("CRYPTO")));
+}
+
+test "native Debug leading and internal empty tokens enable every category" {
+    for ([_][]const u8{",", "permission_model,,unmatched"}) |input| {
+        var f: Fixture = .{}; try f.init(false); defer f.deinit();
+        f.parse(input);
+        try std.testing.expectEqual(c.pi_node_native_debug_category_count(f.debug_list.?), f.countEnabled());
+    }
+}
+
+test "native Debug a trailing comma does not invent a final empty token" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    f.parse("permission_model,");
+    try std.testing.expectEqual(@as(usize, 1), f.countEnabled());
+    try std.testing.expect(try f.enabled("PERMISSION_MODEL"));
+}
+
+test "native Debug includes the original literal terminal NUL in category matching" {
+    for ([_]bool{false, true}) |crypto| {
+        var f: Fixture = .{}; try f.init(crypto); defer f.deinit();
+        f.parse("\x00");
+        try std.testing.expectEqual(c.pi_node_native_debug_category_count(f.debug_list.?), f.countEnabled());
+    }
+}
+
+test "native Debug parsing is one-way and separate native lists remain independent" {
+    var first: Fixture = .{}; try first.init(false); defer first.deinit();
+    var second: Fixture = .{}; try second.init(false); defer second.deinit();
+    first.parse("permission_model");
+    first.parse("zlib");
+    first.parse("");
+    second.parse("zlib");
+    try std.testing.expect(try first.enabled("PERMISSION_MODEL"));
+    try std.testing.expect(try first.enabled("ZLIB"));
+    try std.testing.expect(!(try second.enabled("PERMISSION_MODEL")));
+    try std.testing.expect(try second.enabled("ZLIB"));
+}
+
+test "native Debug process selection returns one fixed-feature original list" {
+    const first = c.pi_node_process_debug_select(0, null);
+    const second = c.pi_node_process_debug_select(0, null);
+    try std.testing.expect(first != null and first == second);
+    try std.testing.expectEqual(@as(usize, 72), c.pi_node_native_debug_category_count(first));
+    try std.testing.expectEqual(@as(c_int, 0), c.pi_node_native_debug_permission_enabled(first));
+    // Process storage is intentionally never passed to local destruction.
+}
+
+test "native Debug Parse Environment reads the live supplied Map through real SafeGetenv" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    try std.testing.expect(c.pi_node_options_environment_allowed() != 0);
+    c.pi_node_native_debug_parse_environment(f.debug_list.?, f.owner(), &f.environment);
+    try std.testing.expectEqual(@as(usize, 0), f.countEnabled());
+    f.setEnv("NODE_DEBUG_NATIVE", "PERMISSION_MODEL");
+    c.pi_node_native_debug_parse_environment(f.debug_list.?, f.owner(), &f.environment);
+    try std.testing.expect(try f.enabled("PERMISSION_MODEL"));
+    f.setEnv("NODE_DEBUG_NATIVE", "zlib");
+    c.pi_node_native_debug_parse_environment(f.debug_list.?, f.owner(), &f.environment);
+    try std.testing.expect(try f.enabled("PERMISSION_MODEL"));
+    try std.testing.expect(try f.enabled("ZLIB"));
+}
+
+test "native Debug retains the SafeGetenv text before the actual trace callback mutates Map" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    try std.testing.expect(c.pi_node_options_environment_allowed() != 0);
+    f.setEnv("NODE_DEBUG_NATIVE", "permission_model");
+    var probe: TraceProbe = .{ .fixture = &f };
+    f.trace.print_native_stack = 1;
+    f.trace.native_stack = TraceProbe.visit;
+    f.trace.user = &probe;
+    c.pi_node_native_debug_parse_environment(f.debug_list.?, f.owner(), &f.environment);
+    try std.testing.expectEqual(@as(usize, 1), probe.calls);
+    try std.testing.expect(try f.enabled("PERMISSION_MODEL"));
+    try std.testing.expect(!(try f.enabled("ZLIB")));
+}
+
+test "native Debug selected sized-string formatter preserves binary bytes and retires its native copies" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    const before = f.used();
+    var output: Capture = .{ .memory = f.owner() };
+    format(&f, long_text ++ "\x00\xc3\xa9\xff", &output);
+    try output.expect("Inserting " ++ long_text ++ "\x00\xc3\xa9\xff\n");
+    try std.testing.expect(output.used_during > before);
+    try std.testing.expectEqual(before, f.used());
+}
+
+test "native Debug selected tree formatter observes C-string boundaries and UTF8 branch bytes" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    var output: Capture = .{};
+    c.pi_native_debug_test_format(f.owner(), f.context, 1,
+        "\xe2\x94\x94\xe2\x94\x80 \x00ignored", 14, "leaf\x00ignored",
+        Capture.receive, &output);
+    try output.expect("\xe2\x94\x94\xe2\x94\x80 leaf\n");
+}
+
+test "native Debug actual FWrite file route preserves exact binary content" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    const input = "prefix\x00\xc3\xa9\xff\n" ++ long_text;
+    var observed: c.PiNativeOutputObservation = std.mem.zeroes(c.PiNativeOutputObservation);
+    const before = f.used();
+    try std.testing.expectEqual(@as(c_int, 0),
+        c.pi_native_debug_test_file_write(f.owner(), input.ptr, input.len, &observed));
+    try support.expectOutput(&observed, input);
+    try std.testing.expectEqual(before, f.used());
+}
+
+test "native Debug Permission output callbacks use the original selected format and real stderr route" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    var operation: DirectOutput = .{ .fixture = &f };
+    var observed: c.PiNativeOutputObservation = std.mem.zeroes(c.PiNativeOutputObservation);
+    try std.testing.expectEqual(@as(c_int, 0),
+        c.pi_native_debug_test_capture_stderr(DirectOutput.run, &operation, &observed));
+    try support.expectOutput(&observed, "Inserting a\x00b\n\xe2\x94\x94\xe2\x94\x80 leaf\n");
+}
+
+test "native Debug actual Permission insertion reads the live enabled list before printing" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    try f.openPermission();
+    var temporary = std.testing.tmpDir(.{}); defer temporary.cleanup();
+    const parent = try temporary.dir.realPathFileAlloc(std.testing.io, ".", std.testing.allocator);
+    defer std.testing.allocator.free(parent);
+    const first = try std.fs.path.join(std.testing.allocator, &.{parent, "first-native-missing"});
+    defer std.testing.allocator.free(first);
+    const second = try std.fs.path.join(std.testing.allocator, &.{parent, "second-native-missing"});
+    defer std.testing.allocator.free(second);
+    const first_entries = [_]support.Span{support.span(first)};
+    var operation: support.PermissionOperation = .{ .fixture = &f,
+        .scope = c.PI_NODE_PERMISSION_FS_READ, .entries = &first_entries };
+    var observed: c.PiNativeOutputObservation = std.mem.zeroes(c.PiNativeOutputObservation);
+    try std.testing.expectEqual(@as(c_int, 0),
+        c.pi_native_debug_test_capture_stderr(support.PermissionOperation.run, &operation, &observed));
+    try support.expectOutput(&observed, "");
+    f.parse("permission_model");
+    // A separate policy tree makes its sole branch output unambiguous.
+    const second_entries = [_]support.Span{support.span(second)};
+    operation = .{ .fixture = &f, .scope = c.PI_NODE_PERMISSION_FS_WRITE, .entries = &second_entries };
+    try std.testing.expectEqual(@as(c_int, 0),
+        c.pi_native_debug_test_capture_stderr(support.PermissionOperation.run, &operation, &observed));
+    const expected = try std.mem.concat(std.testing.allocator, u8,
+        &.{"Inserting ", second, "\n\xe2\x94\x94\xe2\x94\x80 ", second, "\n"});
+    defer std.testing.allocator.free(expected);
+    try support.expectOutput(&observed, expected);
+    try std.testing.expect(operation.called);
+}
+
+test "native Debug formatter and parser use real native new-handler retry without JS allocation" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    f.warmDebug();
+    const before = f.used();
+    const occurrence = c.JS_PiOutOfMemoryOccurrence(f.runtime.?);
+    var format_operation: support.FormatOperation = .{ .fixture = &f, .input = long_text };
+    var observed: c.PiEnvironmentRetryObservation = std.mem.zeroes(c.PiEnvironmentRetryObservation);
+    try std.testing.expectEqual(@as(c_int, 0), c.pi_environment_test_retry(f.owner(),
+        support.memory_limit, support.FormatOperation.run, &format_operation, &observed));
+    try std.testing.expect(format_operation.called);
+    try format_operation.capture.expect("Inserting " ++ long_text ++ "\n");
+    try std.testing.expectEqual(@as(usize, 1), observed.calls);
+    try std.testing.expectEqual(support.memory_limit, observed.first_used);
+    try std.testing.expect(observed.reserved != 0);
+    var parse_operation: ParseOperation = .{ .fixture = &f, .input = long_text ++ ",permission_model" };
+    try std.testing.expectEqual(@as(c_int, 0), c.pi_environment_test_retry(f.owner(),
+        support.memory_limit, ParseOperation.run, &parse_operation, &observed));
+    try std.testing.expect(parse_operation.called);
+    try std.testing.expect(try f.enabled("PERMISSION_MODEL"));
+    try std.testing.expectEqual(@as(usize, 1), observed.calls);
+    try std.testing.expectEqual(before, f.used());
+    try std.testing.expectEqual(occurrence, c.JS_PiOutOfMemoryOccurrence(f.runtime.?));
+    try std.testing.expect(!c.JS_HasException(f.context.?));
+}
+
+test "native Debug native formatting preserves actual ordinary and generic pending under heap limit one" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    f.warmDebug();
+    for ([_]bool{false, true}) |fatal| {
+        const reason = c.JS_NewError(f.context.?);
+        defer c.JS_FreeValue(f.context.?, reason);
+        try std.testing.expect(!c.JS_IsException(reason));
+        if (fatal) c.JS_SetUncatchableError(f.context.?, reason);
+        _ = c.JS_Throw(f.context.?, c.JS_DupValue(f.context.?, reason));
+        const occurrence = c.JS_PiOutOfMemoryOccurrence(f.runtime.?);
+        var output: Capture = .{};
+        {
+            c.JS_SetMemoryLimit(f.runtime.?, 1);
+            defer c.JS_SetMemoryLimit(f.runtime.?, 0);
+            f.parse("permission_model");
+            format(&f, long_text, &output);
+        }
+        try output.expect("Inserting " ++ long_text ++ "\n");
+        try std.testing.expectEqual(occurrence, c.JS_PiOutOfMemoryOccurrence(f.runtime.?));
+        try std.testing.expect(c.JS_HasException(f.context.?));
+        const actual = c.JS_GetException(f.context.?);
+        defer c.JS_FreeValue(f.context.?, actual);
+        try std.testing.expect(c.JS_IsSameValue(f.context.?, reason, actual));
+        try std.testing.expectEqual(fatal, c.JS_IsUncatchableError(actual));
+    }
+}
+
+test "native Debug native operations leave actual private termination pending and generation unchanged" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    f.warmDebug();
+    c.JS_PiRequestExecutionTermination(f.runtime.?);
+    try std.testing.expectEqual(@as(c_int, -1), c.JS_PiCheckExecutionTermination(f.context.?));
+    const generation = c.JS_PiExecutionTerminationGeneration(f.runtime.?);
+    const occurrence = c.JS_PiOutOfMemoryOccurrence(f.runtime.?);
+    var output: Capture = .{};
+    {
+        c.JS_SetMemoryLimit(f.runtime.?, 1);
+        defer c.JS_SetMemoryLimit(f.runtime.?, 0);
+        f.parse("permission_model");
+        format(&f, long_text, &output);
+    }
+    try output.expect("Inserting " ++ long_text ++ "\n");
+    try std.testing.expectEqual(generation, c.JS_PiExecutionTerminationGeneration(f.runtime.?));
+    try std.testing.expectEqual(occurrence, c.JS_PiOutOfMemoryOccurrence(f.runtime.?));
+    try std.testing.expect(c.JS_PiIsExecutionTerminating(f.runtime.?));
+    const actual = c.JS_GetException(f.context.?);
+    defer c.JS_FreeValue(f.context.?, actual);
+    try std.testing.expect(c.JS_PiIsExecutionTermination(actual));
+    c.JS_PiCancelExecutionTermination(f.runtime.?);
+}
+
+test "native Debug formatting retains a native allocation domain beyond VM and caller retirement" {
+    var f: Fixture = .{}; try f.init(false); defer f.deinit();
+    f.closeVm(); f.releaseCallerMemory();
+    try std.testing.expect(f.runtime == null and f.context == null and f.memory == null);
+    const before = f.used();
+    var output: Capture = .{ .memory = f.owner() };
+    format(&f, long_text, &output);
+    try output.expect("Inserting " ++ long_text ++ "\n");
+    try std.testing.expect(output.used_during > before);
+    try std.testing.expectEqual(before, f.used());
+}
+
+test "native Debug warmed static category Strings are reused while temporary parse Strings retire" {
+    var f: Fixture = .{}; try f.init(true); defer f.deinit();
+    f.warmDebug();
+    const before = f.used();
+    f.parse(long_text ++ ",permission_model");
+    try std.testing.expect(try f.enabled("PERMISSION_MODEL"));
+    try std.testing.expectEqual(before, f.used());
+    f.parse("tlswrap");
+    try std.testing.expect(try f.enabled("TLSWRAP"));
+    try std.testing.expectEqual(before, f.used());
+}

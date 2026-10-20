@@ -1,0 +1,277 @@
+{
+  "schema": 1,
+  "unit": "Message2a existing simple Error stack source",
+  "status": "sealed source ready for Root intake review; no native execution",
+  "date": "2026-10-20",
+  "parent": "ce28434cf977b75ed5e1fd1a26468e84c27189a5",
+  "source_paths": [
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "src/extensions/native_error_stack.zig",
+    "src/native_vm_simple_stack_source_test.zig",
+    "build.zig"
+  ],
+  "paths": [
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "src/extensions/native_error_stack.zig",
+    "src/native_vm_simple_stack_source_test.zig",
+    "build.zig",
+    "verification/native-message-stack-sourceonly-20261020/PROPOSAL.md",
+    "verification/native-message-stack-sourceonly-20261020/README.md",
+    "verification/native-message-stack-sourceonly-20261020/authority/build.before.txt",
+    "verification/native-message-stack-sourceonly-20261020/authority/stack-data-source-proof.json",
+    "verification/native-message-stack-sourceonly-20261020/build-intake.json",
+    "verification/native-message-stack-sourceonly-20261020/control-inventory.json",
+    "verification/native-message-stack-sourceonly-20261020/current-operation-source.json",
+    "verification/native-message-stack-sourceonly-20261020/integration-replay.json",
+    "verification/native-message-stack-sourceonly-20261020/peers/c-and-fallback-receipt.json",
+    "verification/native-message-stack-sourceonly-20261020/peers/existing-error-stack-owner.json",
+    "verification/native-message-stack-sourceonly-20261020/peers/existing-owner-receipt.json",
+    "verification/native-message-stack-sourceonly-20261020/peers/formatter-controls-build-receipt.json",
+    "verification/native-message-stack-sourceonly-20261020/peers/raw-controls-receipt.json",
+    "verification/native-message-stack-sourceonly-20261020/production-c-delta.json",
+    "verification/native-message-stack-sourceonly-20261020/production-owner-delta.json",
+    "verification/native-message-stack-sourceonly-20261020/production-review-input.json",
+    "verification/native-message-stack-sourceonly-20261020/manifest.json"
+  ],
+  "path_count": 22,
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DE3C05D6698F2D1AC5F3D7F92540F4775B374101A71EAE2C4925FD3F48FAFCAE",
+      "bytes": 2394786
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "621A5F9DD846DA6257C89E78EB25D527CCDFAB0F0E76FA34195CD51E7CF1B32B",
+      "bytes": 111537
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "sha256": "FB755EC4331C26D7CB92294684A89C3F7D282609236AB0CCF76D3CD1D57296E0",
+      "bytes": 32901
+    },
+    {
+      "path": "src/native_vm_simple_stack_source_test.zig",
+      "sha256": "1863129EC7E28E0F99D3B6C94E3B28FDC754781C7BF0DEF296552688DC0D5DF9",
+      "bytes": 53404
+    },
+    {
+      "path": "build.zig",
+      "sha256": "CCADEFC7788AB8194561A7465261EAB59BEF1C765CC4C780C42BC3DC4010054B",
+      "bytes": 421276
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/PROPOSAL.md",
+      "sha256": "2D631A44A0EC1BCC5E80B0B8BB62326E3454F97CE125081718B6D0027A74BFD4",
+      "bytes": 14061
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/README.md",
+      "sha256": "E7AF7635DD69F4A76E1A6E79C04D81D27D41D7BDDF4995440442C87DD8EF3464",
+      "bytes": 3270
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/authority/build.before.txt",
+      "sha256": "35AD68E15D17BEAE0820B1EE1AB57EB0DB8B7F71885B95306AAF676B36581686",
+      "bytes": 420622
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/authority/stack-data-source-proof.json",
+      "sha256": "1A66CB1C67B30BCDCEA75DE72BA42DAC8D260B453976E15103E32A94E82C08C8",
+      "bytes": 39089
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/build-intake.json",
+      "sha256": "9AD963FC1B0198912D225A67703AA44F91A95B2ADE3F9686C45F69F80082EDAB",
+      "bytes": 1352
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/control-inventory.json",
+      "sha256": "2687531CF6F9D046FB042121CA45804892ACAB592D8708A9D79810CCAA8592A5",
+      "bytes": 3754
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/current-operation-source.json",
+      "sha256": "8A7E82828E39D19BAED94D394A3244656138ACD76760E2B8861A07209AE388B1",
+      "bytes": 6061
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/integration-replay.json",
+      "sha256": "1F7062370152A3051824B7BEAC28A7B2B08D18B5BD7B93E99673BC9738986643",
+      "bytes": 41903
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/peers/c-and-fallback-receipt.json",
+      "sha256": "8EE3C6CF2F4C8E448E0683D47DB6C203DB4F5D887F6566E6AABACEC150CCD5D1",
+      "bytes": 5655
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/peers/existing-error-stack-owner.json",
+      "sha256": "EE9AE43FB142971E98DB3C8362BEC4B08A4D9E11900C12A144F7C6D6E24B3BA9",
+      "bytes": 12626
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/peers/existing-owner-receipt.json",
+      "sha256": "6BD9D711A961D7C4AA2427C247AA745914023FCBF9417A4787571FA71E6DD7E6",
+      "bytes": 5593
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/peers/formatter-controls-build-receipt.json",
+      "sha256": "8E97C8E89CEE3C0A76D7004432D45A8E0407C24726195128C203CA39A23DE42A",
+      "bytes": 6979
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/peers/raw-controls-receipt.json",
+      "sha256": "14E948DCFD27DDD99EEF075FDE73495BCA536151D2E956B4BD40AE309974F397",
+      "bytes": 7662
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/production-c-delta.json",
+      "sha256": "B52F8C55743904B7EE81D2A8C7DF669D8428F84BE53576FA40887D27C5601F1F",
+      "bytes": 11586
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/production-owner-delta.json",
+      "sha256": "D8EAA8702356C351F0A724DC613F30766020853236B1FFB57649F17534C16DBE",
+      "bytes": 27137
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/production-review-input.json",
+      "sha256": "FD74BC7F29377BB7B5DCA8937EEE3991CB475A7938893DBF38B14768934FF903",
+      "bytes": 39432
+    }
+  ],
+  "target": {
+    "root": "src/native_vm_simple_stack_source_test.zig",
+    "filter": "VM simple stack source",
+    "step": "build-native-vm-simple-stack-source",
+    "declarations": 33,
+    "build_lines": 7,
+    "mode": "install-only",
+    "names": [
+      "VM simple stack source WeakMap intrinsic distinguishes absent and stored undefined",
+      "VM simple stack source WeakMap invalid brands and Proxy leave output untouched",
+      "VM simple stack source WeakMap read bypasses poisoned methods and heap and execution gates",
+      "VM simple stack source WeakMap raw read preserves actual ordinary fatal and private pending",
+      "VM simple stack source WeakMap returned value owns one root without keeping the key alive",
+      "VM simple stack source real Error selects its original complete Script and source position",
+      "VM simple stack source inherited holder remains visible through a never-captured native Error",
+      "VM simple stack source captured-disabled state blocks an inherited raw stack",
+      "VM simple stack source formatted undefined and other DATA block inheritance",
+      "VM simple stack source raw lookup stops at Proxy without invoking its traps",
+      "VM simple stack source raw lookup ignores guest fields and preserves actual pending at heap limit one",
+      "VM simple stack source native Script result retains no captured receiver graph",
+      "VM simple stack source raw projection skips native and synthetic records before a real Script",
+      "VM simple stack source raw projection rejects Proxy and accessor arrays without guest entry",
+      "VM simple stack source fallback presence distinguishes untouched Error and consuming transfer",
+      "VM simple stack source raw fallback read neither allocates nor adopts its C owner",
+      "VM simple stack source successful map adoption consumes fallback before formatter failure",
+      "VM simple stack source failed map adoption leaves the original C fallback intact",
+      "VM simple stack source present undefined fallback blocks inherited provenance and transfers once",
+      "VM simple stack source consuming fallback transfer preserves actual pending without allocation",
+      "VM simple stack source setter publishes formatted state before retiring captured receiver",
+      "VM simple stack source successful formatting retires simple frames after actual formatter returns",
+      "VM simple stack source formatter-local raw owner survives setter and success overwrites its DATA",
+      "VM simple stack source formatter throw preserves a reentrant setter and retires local frames",
+      "VM simple stack source FixedArray success replaces a record recaptured during formatting",
+      "VM simple stack source formatter failure preserves the new record and its actual recapture Script",
+      "VM simple stack source inherited formatting writes the selected holder without creating child state",
+      "VM simple stack source flagged formatter DATA remains a successful formatted value",
+      "VM simple stack source setter retirement preserves the actual ordinary cleanup reason",
+      "VM simple stack source actual fatal receiver retirement stops later guest catch and finally",
+      "VM simple stack source actual private receiver retirement keeps its native completion",
+      "VM simple stack source cancelled formatter unwind stays native and preserves unformatted state",
+      "VM simple stack source formatter failure and final raw retirement reduce actual fatal owners"
+    ]
+  },
+  "ordered_intake": [
+    "production-c-delta.json",
+    "production-owner-delta.json",
+    "add actual control root",
+    "build-intake.json"
+  ],
+  "original_packet_parent": "bc518be926f55ae6af0b5e5ceb54989dd11174a5",
+  "independent_macro_predecessor": "ce28434cf977b75ed5e1fd1a26468e84c27189a5",
+  "exact_composition_proof": {
+    "path": "integration-replay.json",
+    "sha256": "1F7062370152A3051824B7BEAC28A7B2B08D18B5BD7B93E99673BC9738986643",
+    "steps": 29,
+    "complete_donor_forward_reverse": true,
+    "read_only_main_forward_reverse": true
+  },
+  "native_interfaces": [
+    "int JS_PiReadWeakMapEntry(JSContext*, borrowed map, borrowed key, owned-result output)",
+    "bool JS_PiHasPendingNativeErrorStack(borrowed Error)",
+    "int JS_PiTakePendingNativeErrorStack(borrowed Error, consuming-owned-frame output)",
+    "JSNativeScript* JS_PiFindCapturedStackScriptLocation(borrowed actual dense frame array, int*start, int*end)",
+    "native_error_stack.readSimpleStackLocation(installed_owner, receiver, start, end) -> owned native Script"
+  ],
+  "actual_main_dependencies": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417",
+      "bytes": 99337
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC",
+      "bytes": 15176
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "bytes": 9934
+    },
+    {
+      "path": "src/extensions/native_tui_alt_frame.zig",
+      "sha256": "4265F1B1B76A521FD31B1EEC454D1BBC2BC50910E6A04D27746180C389AF520C",
+      "bytes": 9195
+    },
+    {
+      "path": "src/extensions/native_node_operation_scope.zig",
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+      "bytes": 7087
+    }
+  ],
+  "peers": [
+    {
+      "path": "peers/c-and-fallback-receipt.json",
+      "sha256": "8EE3C6CF2F4C8E448E0683D47DB6C203DB4F5D887F6566E6AABACEC150CCD5D1",
+      "scope": "SDK C/H/fallback/raw projection",
+      "status": "closed"
+    },
+    {
+      "path": "peers/existing-owner-receipt.json",
+      "sha256": "6BD9D711A961D7C4AA2427C247AA745914023FCBF9417A4787571FA71E6DD7E6",
+      "scope": "Modules existing simple owner",
+      "status": "closed"
+    },
+    {
+      "path": "peers/raw-controls-receipt.json",
+      "sha256": "14E948DCFD27DDD99EEF075FDE73495BCA536151D2E956B4BD40AE309974F397",
+      "scope": "SDK controls1\u201320",
+      "status": "closed"
+    },
+    {
+      "path": "peers/formatter-controls-build-receipt.json",
+      "sha256": "8E97C8E89CEE3C0A76D7004432D45A8E0407C24726195128C203CA39A23DE42A",
+      "scope": "Modules Fixture/controls21\u201333/build7",
+      "status": "closed"
+    }
+  ],
+  "verification": {
+    "all_required_source_and_control_peers_closed": true,
+    "controls_unique_and_filter_matched": true,
+    "native_execution": false,
+    "main_mutation": false
+  },
+  "limits": [
+    "Apply finite packets only; preserve Main shared C/H/build additions.",
+    "Current donor C includes the separate constant-definition relocation. The reviewed Message bodies remain byte-identical; the exact two-order composition is recorded.",
+    "Canonical actual Main Engine/Completion/Boundary/Scope/Frame dependencies must be present; older isolated copies were not replaced.",
+    "No detailed stack/ThrowAt/Message/reporting/normal stack-owner installation/nonterminal diagnostic snapshot claim.",
+    "Source controls and review are separate from future compilation, metadata and runtime acceptance."
+  ]
+}

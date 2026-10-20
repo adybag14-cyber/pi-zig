@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "status": "finite_source_composition_review_passed",
+  "reviewed_utc": "2026-10-20T17:27:07.598485+00:00",
+  "source_only": true,
+  "executions": 0,
+  "runtime_qualification": false,
+  "application_qualification": false,
+  "projection_sha256": "44949486FA0304F822CFF48C587166FBD9F29E1CC51EAF6AAF583E562ACB484B",
+  "files": [
+    {
+      "path": "src/extensions/native_uv_fs.h",
+      "projected_sha256": "B738A0EAECC8E06781305D953B0FFE56753B774F8507CDBE4052BCBC2014F117",
+      "exact_current_sdk": true
+    },
+    {
+      "path": "src/extensions/native_uv_tcp.c",
+      "projected_sha256": "6BA884B63C1C89FE65DFD90C97AC2604280749EFA5095755347EA06FC52CE92A",
+      "exact_current_sdk": true
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "projected_sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "exact_current_sdk": true
+    },
+    {
+      "path": "src/extensions/native_node_request_state.zig",
+      "projected_sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+      "exact_current_sdk": true
+    },
+    {
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "projected_sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "exact_current_sdk": true
+    },
+    {
+      "path": "src/extensions/native_node_callback_checks.zig",
+      "projected_sha256": "1E3C1597DF365B561713C7D67EE4A07BBB9245BC75355A57EECDCB224758BC7E",
+      "exact_current_sdk": true
+    }
+  ],
+  "preserved_async_wrap": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_async_wrap_make_callback.zig",
+    "sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2",
+    "not_overwritten_by_projection": true
+  },
+  "review": [
+    "The six projected FS transport and callback files are byte-identical to the sealed reusable-request/callback donor composition. The new VM/context/permission units do not rewrite these bytes.",
+    "Reset requires actual completion, cleanup and FIFO dequeue; it leaves previous event release fields and next link alone. The same storage may be redispatched while an old event retains its independent entitlement.",
+    "Raw Dispatch stores the original native callback after dispatched state and before libuv admission; only nonnegative admission clears weak state and increments Environment waiting. Immediate negative status creates no callback.",
+    "Delivery finds the actual callback by original native request identity, retains and detaches before decrementing waiting, invokes the original callback, then releases only the old Wrapper pointer after possible reset and redispatch.",
+    "Pending ordinary/native-fatal callback failure remains owned during endCallback retirement; shutdown requires disabled JS and joined service before delivery.",
+    "Main b5ebda01 return-try coercion remains exact: successful callback values are adopted as optional only after error propagation; trace-after remains before adoption and never reads possibly retired State."
+  ],
+  "limits": [
+    "This is a finite FS/request/callback integration source review. It does not review the new VM, Permission or diagnostic-context algorithms.",
+    "No compiler, test runtime, Node, source generator, formatter, or native probe was executed.",
+    "Full final FileHandle and true FSReqCallback template constructor remain separate work."
+  ]
+}

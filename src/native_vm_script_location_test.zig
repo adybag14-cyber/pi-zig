@@ -458,6 +458,7 @@ test "VM Script raw projections allocate nothing and preserve actual ordinary fa
             c.JS_PiRequestExecutionTermination(f.runtime.?);
             try std.testing.expectEqual(@as(c_int, -1), c.JS_PiCheckExecutionTermination(f.context.?));
         } else _ = c.JS_Throw(f.context.?, c.JS_DupValue(f.context.?, reason));
+        const generation = c.JS_PiExecutionTerminationGeneration(f.runtime.?);
         c.JS_SetMemoryLimit(f.runtime.?, 1);
         var details: c.JSPiScriptInfo = undefined;
         const status = c.JS_PiScriptReadInfo(owner, &details);
@@ -471,10 +472,17 @@ test "VM Script raw projections allocate nothing and preserve actual ordinary fa
         try std.testing.expectEqual(@as(c_int, 0), status);
         try std.testing.expect(duplicate == owner and c.JS_IsString(source) and c.JS_IsString(resource));
         try std.testing.expect(c.JS_HasException(f.context.?));
+        try std.testing.expectEqual(generation, c.JS_PiExecutionTerminationGeneration(f.runtime.?));
         if (mode == 2) try std.testing.expect(c.JS_PiIsExecutionTerminating(f.runtime.?));
         const actual = c.JS_GetException(f.context.?); defer c.JS_FreeValue(f.context.?, actual);
-        try std.testing.expect(c.JS_IsSameValue(f.context.?, reason, actual));
-        if (mode != 2) try std.testing.expectEqual(mode == 1, c.JS_IsUncatchableError(actual));
+        if (mode == 2) {
+            // Private native completions are outside JavaScript SameValue.
+            // This predicate verifies the exact exception tag and payload.
+            try std.testing.expect(c.JS_PiIsExecutionTermination(actual));
+        } else {
+            try std.testing.expect(c.JS_IsSameValue(f.context.?, reason, actual));
+            try std.testing.expectEqual(mode == 1, c.JS_IsUncatchableError(actual));
+        }
         if (mode == 2) {
             _ = c.JS_Throw(f.context.?, c.JS_DupValue(f.context.?, actual));
             c.JS_PiCancelExecutionTermination(f.runtime.?);

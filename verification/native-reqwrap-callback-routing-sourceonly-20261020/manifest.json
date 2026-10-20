@@ -1,0 +1,141 @@
+{
+  "schema": "pi.source-only.reqwrap-routing-manifest.v1",
+  "status": "sealed source-only candidate",
+  "execution": false,
+  "source_paths": [
+    "src/extensions/native_node_request_state.zig",
+    "src/extensions/native_node_fs_request_io.zig",
+    "src/extensions/native_node_callback_scope.zig",
+    "src/extensions/native_node_callback_checks.zig",
+    "src/native_node_reqwrap_callback_routing_test.zig"
+  ],
+  "shared_paths_use_exact_packet_only": [
+    "src/extensions/native_node_callback_scope.zig",
+    "src/extensions/native_node_callback_checks.zig"
+  ],
+  "build_packet": "verification/native-reqwrap-callback-routing-sourceonly-20261020/build-intake.json",
+  "controls": 12,
+  "verification_sha256": "0AA032A1A7C0EF2DA0FE9C156A5DCE6AABCDEA8AC1AE7B8C79FB22C6FA28AB17",
+  "files": [
+    {
+      "path": "src/extensions/native_node_request_state.zig",
+      "sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+      "bytes": 5818
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "bytes": 14502
+    },
+    {
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "bytes": 39890
+    },
+    {
+      "path": "src/extensions/native_node_callback_checks.zig",
+      "sha256": "1E3C1597DF365B561713C7D67EE4A07BBB9245BC75355A57EECDCB224758BC7E",
+      "bytes": 6452
+    },
+    {
+      "path": "src/native_node_reqwrap_callback_routing_test.zig",
+      "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7",
+      "bytes": 31452
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/applied-source-verification.json",
+      "sha256": "B5CFFB4166442AA8A05C5045EDC5313047F0F2375712DA63E64AEA0CB5045F66",
+      "bytes": 2176
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/build-intake.json",
+      "sha256": "6D2839EFF1ECA8657A924B667525F75F4B545D99D3BCF2E486DC35E81DBE3A26",
+      "bytes": 2216
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/build-proposal-verification.json",
+      "sha256": "9FC72ACE801AD1413F8DF6F301E6B5EDE28CF1322A9232FD4B31D5540C4EEC3F",
+      "bytes": 1557
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/original/native_node_callback_checks.zig.txt",
+      "sha256": "FFB8FDEC742A0884DE9C1A4819012A172B6253E148505372E928134004335605",
+      "bytes": 6288
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/original/native_node_callback_scope.sdk-prior-draft.zig.txt",
+      "sha256": "E267756ECEFDFA7577E68A18BB2D04EA5392579E837385BA437808DD75F6E397",
+      "bytes": 38246
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/original/native_node_callback_scope.zig.txt",
+      "sha256": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "bytes": 39860
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/original/native_node_fs_request_io.zig.txt",
+      "sha256": "C360094C29E55F7F9C6BE6677390D94986D1FFED2680A05D8AF34162E20644C4",
+      "bytes": 12858
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/original/native_node_request_state.zig.txt",
+      "sha256": "01DA46DC010A3108D592172C6F65AAB8100560FC274228FE9F1B6643A70A755A",
+      "bytes": 4949
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/peers/modules-controls-build.json",
+      "sha256": "FAADE9F861FA49D2B1C3BFA58319845E66BD6D905D01685E732A8EC696853F3E",
+      "bytes": 5135
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/peers/modules-source-order.json",
+      "sha256": "26AB057C430CA93CADEFEA0C37628FE57BB0E344027098AE2632179F619B8C7B",
+      "bytes": 3234
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/peers/root-source-review.json",
+      "sha256": "3A5DDC153317ADFD491B3E150B926019BA7394AD9CE1C7E06EDEA8B4E64537FC",
+      "bytes": 5233
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/peers/vm-controls-owner.json",
+      "sha256": "9CB444FCA956607E24F11A43E0BD03DD02F38797BCC9BD9E8822E260604B34AD",
+      "bytes": 5945
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/peers/vm-owner-review.json",
+      "sha256": "3F99899FC00CD84458FFC671DC77BDEA54584DA705E8C4033F141738241D5A63",
+      "bytes": 38518
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/projected/native_node_callback_checks.zig.txt",
+      "sha256": "1E3C1597DF365B561713C7D67EE4A07BBB9245BC75355A57EECDCB224758BC7E",
+      "bytes": 6452
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/projected/native_node_callback_scope.zig.txt",
+      "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "bytes": 39890
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/projected/native_node_fs_request_io.zig.txt",
+      "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "bytes": 14502
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/projected/native_node_request_state.zig.txt",
+      "sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+      "bytes": 5818
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/source-intake-verification.json",
+      "sha256": "0AA032A1A7C0EF2DA0FE9C156A5DCE6AABCDEA8AC1AE7B8C79FB22C6FA28AB17",
+      "bytes": 3807
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/source-proposal.json",
+      "sha256": "E15DC1E14112C94663D309FEF1B7919AF0BCF9114664357EDDDF7180EC99046B",
+      "bytes": 18286
+    }
+  ]
+}

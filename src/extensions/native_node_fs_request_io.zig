@@ -1,5 +1,5 @@
-//! Actual ReqWrap dispatch and AfterInteger completion for the private read
-//! binding. The existing Environment owns the only request queue/counter; the
+//! Actual ReqWrap dispatch and original native callback delivery for private
+//! FS requests. The existing Environment owns the only request queue/counter; the
 //! shared Hub service owns the only libuv thread, event FIFO and stop/join.
 const std = @import("std");
 const a = @import("native_node_argument_values.zig");
@@ -89,6 +89,7 @@ pub const Controller = struct {
             return error.ActualFSReadDispatchInputsRequired;
         const actual = request.native_request orelse return error.ActualFSNativeRequestRequired;
         request.entry.dispatchStarted();
+        try request.entry.setCallback(.{ .request = actual, .call = afterIntegerCallback });
         const status = uv.pi_uv_fs_read(actual, descriptor, @ptrCast(backing),
             offset, length, position);
         if (status >= 0) {
@@ -99,19 +100,40 @@ pub const Controller = struct {
         try afterInteger(request, actual);
     }
 
+    /// FileHandleReadWrap supplies its actual StreamResource span and original
+    /// native completion. The caller retains the backing through delivery and
+    /// EmitRead consumption. A failed native Dispatch returns its status and
+    /// does not manufacture a callback; the original ReadStart ignores it.
+    pub fn dispatchRawRead(self: *Controller, s: *Scope, entry: *request_state.Entry,
+        actual: *uv.PiUvFsRequest, descriptor: c_int, base: ?[*]u8,
+        length: usize, position: i64,
+        callback: *const fn (*request_state.Entry, *anyopaque) anyerror!void) !c_int
+    {
+        try self.enter(s.engine);
+        defer self.leave();
+        if (entry.wrap.registry.environment != self.environment or
+            entry.queue != &self.environment.requests)
+            return error.ActualFSRequestEnvironmentMismatch;
+        entry.dispatchStarted();
+        try entry.setCallback(.{ .request = actual, .call = callback });
+        const status = uv.pi_uv_fs_read_buffer(actual, descriptor,
+            @ptrCast(base), length, position);
+        if (status >= 0) try entry.dispatchAccepted();
+        return status;
+    }
+
     fn ready(raw: *anyopaque) bool {
         const self: *Controller = @ptrCast(@alignCast(raw));
         return self.busy == 0;
     }
-    fn find(self: *Controller, actual: *uv.PiUvFsRequest) !*requests.Request {
-        // The genuine intrusive Environment queue is authoritative. The
-        // compiled cancellation function identifies this derived owner before
-        // taking the containing Request; no parallel registry owns JS roots.
+    fn find(self: *Controller, actual: *uv.PiUvFsRequest) !*request_state.Entry {
+        // The one intrusive Environment queue and the actual request address
+        // stored at Dispatch identify the selected native original callback.
+        // No parallel map or Promise-only cancellation-function cast is used.
         var cursor = self.environment.requests.head;
         while (cursor) |entry| : (cursor = entry.next) {
-            if (entry.cancel_native != cancelRequest) continue;
-            const request: *requests.Request = @alignCast(@fieldParentPtr("entry", entry));
-            if (request.native_request == actual) return request;
+            if (entry.original_callback) |callback|
+                if (callback.request == @as(*anyopaque, @ptrCast(actual))) return entry;
         }
         return error.ActualFSCompletionRequestRequired;
     }
@@ -120,22 +142,25 @@ pub const Controller = struct {
         try self.hub.assertOwner();
         const actual = uv.pi_uv_event_fs_request(event) orelse
             return error.ActualFSCompletionEventRequired;
-        const request = try self.find(actual);
-        if (!request.entry.dispatched or !request.entry.counted)
+        const entry = try self.find(actual);
+        if (!entry.dispatched or !entry.counted)
             return error.ActualFSAcceptedCompletionRequired;
         self.busy += 1;
         defer self.leave();
         // MakeLibuvRequestCallback::Wrapper: native strong pointer, Detach,
-        // decrement, then the original callback. Its pointer retires last.
-        try request.entry.beginCallback();
+        // decrement, then select/call the original callback. Its pointer dies
+        // last, even if that callback resets and redispatches this same Entry.
+        try entry.beginCallback();
         const engine = self.hub.engine;
         var handles = Scope.init(engine);
         var failure: ?anyerror = null;
-        afterInteger(request, actual) catch |err| {
+        const outcome: anyerror!void = if (entry.original_callback) |callback|
+            callback.call(entry, callback.request) else error.ActualFSOriginalCallbackRequired;
+        outcome catch |err| {
             record(&handles, err);
             failure = err;
         };
-        request.entry.endCallback() catch |err| {
+        entry.endCallback() catch |err| {
             record(&handles, err);
             if (failure == null) failure = err;
         };
@@ -195,6 +220,11 @@ fn cancelRequest(entry: *request_state.Entry) void {
 fn cleanupRequest(raw: *anyopaque) void {
     const actual: *uv.PiUvFsRequest = @ptrCast(@alignCast(raw));
     uv.pi_uv_fs_request_cleanup(actual);
+}
+fn afterIntegerCallback(entry: *request_state.Entry, raw: *anyopaque) !void {
+    const request: *requests.Request = @alignCast(@fieldParentPtr("entry", entry));
+    const actual: *uv.PiUvFsRequest = @ptrCast(@alignCast(raw));
+    return afterInteger(request, actual);
 }
 fn afterInteger(request: *requests.Request, actual: *uv.PiUvFsRequest) !void {
     const info = uv.pi_uv_fs_request_info(actual);

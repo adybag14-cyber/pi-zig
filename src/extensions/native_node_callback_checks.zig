@@ -38,6 +38,8 @@ fn description(site: Check) failure.AssertionInfo {
             "src/node_file-inl.h", "FSReqPromise::~FSReqPromise"),
         .request_before_bootstrap => assertion("env->has_run_bootstrapping_code()",
             "src/req_wrap-inl.h", "ReqWrapBase::ReqWrapBase"),
+        .request_callback_already_set => assertion("(req_wrap->original_callback_) == nullptr",
+            "src/req_wrap-inl.h", "MakeLibuvRequestCallback::For"),
         .negative_waiting_requests => assertion("(request_waiting_) >= (0)",
             "src/env-inl.h", "Environment::DecreaseWaitingRequestCounter"),
         .waiting_requests_after_io_join => assertion("environment.requests.waiting == 0",

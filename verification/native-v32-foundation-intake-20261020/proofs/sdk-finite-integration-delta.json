@@ -1,0 +1,313 @@
+{
+  "schema": 1,
+  "base_projection": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-native-integration-projection-20261020-172540\\projection.json",
+    "sha256": "44949486FA0304F822CFF48C587166FBD9F29E1CC51EAF6AAF583E562ACB484B"
+  },
+  "production_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\production-proposal.json",
+    "sha256": "0753466963F6EB964F582B99E7CD5002A278CB82C13C5F8722A22C9DBC563313"
+  },
+  "position_semantics": "Byte offsets into the stated before and after images; apply before offsets descending, invert after offsets descending. All full byte inverses verified.",
+  "files": [
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before_sha256": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25",
+      "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994",
+      "bytes": 26761,
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\projected\\src\\extensions\\native_node_async_wrap_state.zig",
+      "action": "finite_modify",
+      "edits": [
+        {
+          "before_byte_offset": 575,
+          "after_byte_offset": 575,
+          "before": "pub const Kind = enum { async_wrap, fsreqpromise, filehandleclosereq, filehandle };\n",
+          "after": "pub const Kind = enum { async_wrap, fsreqpromise, filehandleclosereq, filehandle, fsreqcallback };\n"
+        },
+        {
+          "before_byte_offset": 796,
+          "after_byte_offset": 811,
+          "before": "",
+          "after": "    pub const fsreqcallback: u32 = 8;\n"
+        },
+        {
+          "before_byte_offset": 2729,
+          "after_byte_offset": 2782,
+          "before": "    class_ids: [4]c.JSClassID = .{ 0, 0, 0, 0 },\n",
+          "after": "    class_ids: [5]c.JSClassID = .{ 0, 0, 0, 0, 0 },\n"
+        },
+        {
+          "before_byte_offset": 3929,
+          "after_byte_offset": 3985,
+          "before": "        inline for (.{ \"AsyncWrap\", \"FSReqPromise\", \"FileHandleCloseReq\", \"FileHandle\" }, 0..) |name, index| {\n",
+          "after": "        inline for (.{ \"AsyncWrap\", \"FSReqPromise\", \"FileHandleCloseReq\", \"FileHandle\", \"FSReqCallback\" }, 0..) |name, index| {\n"
+        }
+      ],
+      "whole_byte_inverse_exact": true
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before_sha256": "540F5D468DA75E474FDD8731E06C55A48BB2E20470A0BE1DEDC1C6BCF61B0D15",
+      "sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0",
+      "bytes": 19741,
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\projected\\src\\extensions\\native_node_async_wrap.zig",
+      "action": "finite_modify",
+      "edits": [
+        {
+          "before_byte_offset": 501,
+          "after_byte_offset": 501,
+          "before": "",
+          "after": "const fs_io = @import(\"native_node_fs_request_io.zig\");\nconst fs_callback = @import(\"native_node_fs_request_callback.zig\");\nconst check = @import(\"native_node_check_failure.zig\");\n"
+        },
+        {
+          "before_byte_offset": 897,
+          "after_byte_offset": 1077,
+          "before": "    constructors: [4]?c.JSValue = .{ null, null, null, null },\n    cached_instances: [4]?c.JSValue = .{ null, null, null, null },\n",
+          "after": "    constructors: [5]?c.JSValue = .{ null, null, null, null, null },\n    cached_instances: [5]?c.JSValue = .{ null, null, null, null, null },\n    fs_callback_controller: ?*fs_io.Controller = null,\n"
+        },
+        {
+          "before_byte_offset": 2056,
+          "after_byte_offset": 2303,
+          "before": "",
+          "after": "    if (self.fs_callback_controller) |controller| {\n        self.fs_callback_controller = null;\n        controller.release();\n    }\n"
+        },
+        {
+          "before_byte_offset": 3353,
+          "after_byte_offset": 3732,
+          "before": "    _: c_int, _: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue\n",
+          "after": "    argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue\n"
+        },
+        {
+          "before_byte_offset": 3747,
+          "after_byte_offset": 4132,
+          "before": "",
+          "after": "        if (argc > 0) argv[0] else c.pi_js_undefined(),\n"
+        },
+        {
+          "before_byte_offset": 3916,
+          "after_byte_offset": 4357,
+          "before": "    receiver_or_target: c.JSValue, constructing: bool) !c.JSValue\n",
+          "after": "    receiver_or_target: c.JSValue, first_argument: c.JSValue,\n    constructing: bool) !c.JSValue\n"
+        },
+        {
+          "before_byte_offset": 4215,
+          "after_byte_offset": 4687,
+          "before": "        return a.duplicate(s.engine, try instantiate(s, owner, self.owner, self.kind,\n            if (simple) null else receiver_or_target));\n",
+          "after": "        const receiver = try instantiate(s, owner, self.owner, self.kind,\n            if (simple) null else receiver_or_target);\n        if (self.kind == .fsreqcallback) {\n            // NewFSReqCallback is a genuine present native callback. The\n            // instance-template operation above did not invoke it.\n            const controller = owner.fs_callback_controller orelse\n                return error.ActualFSReqCallbackControllerRequired;\n            const use_bigint = c.JS_IsBool(first_argument) and\n                c.JS_ToBool(s.engine.context, first_argument) == 1;\n            try fs_callback.Request.construct(s, owner.registry, controller,\n                receiver, use_bigint);\n        }\n        return a.duplicate(s.engine, receiver);\n"
+        },
+        {
+          "before_byte_offset": 4363,
+          "after_byte_offset": 5447,
+          "before": "",
+          "after": "    // InvokeApiFunction converts its receiver before the present callback's\n    // CHECK, including the primitive-boxing/global-receiver branches.\n    const receiver = try convertedReceiver(s, receiver_or_target);\n    if (self.kind == .fsreqcallback)\n        check.assertion(s.engine, .{\n            .file_line = \"src/node_file.cc:727\",\n            .message = \"args.IsConstructCall()\",\n            .function = \"node::fs::NewFSReqCallback\",\n        });\n"
+        },
+        {
+          "before_byte_offset": 4515,
+          "after_byte_offset": 6052,
+          "before": "    return a.duplicate(s.engine, try convertedReceiver(s, receiver_or_target));\n",
+          "after": "    return a.duplicate(s.engine, receiver);\n"
+        },
+        {
+          "before_byte_offset": 5355,
+          "after_byte_offset": 6856,
+          "before": "",
+          "after": "        .fsreqcallback => \"FSReqCallback\",\n"
+        },
+        {
+          "before_byte_offset": 5364,
+          "after_byte_offset": 6908,
+          "before": "fn requireNoHandler(kind: Kind) !void {\n",
+          "after": "fn requireTemplate(owner: *Bundle, kind: Kind) !void {\n"
+        },
+        {
+          "before_byte_offset": 5488,
+          "after_byte_offset": 7047,
+          "before": "",
+          "after": "    if (kind == .fsreqcallback and owner.fs_callback_controller == null)\n        return error.ActualFSReqCallbackControllerRequired;\n"
+        },
+        {
+          "before_byte_offset": 8881,
+          "after_byte_offset": 10573,
+          "before": "    try requireNoHandler(kind);\n",
+          "after": "    try requireTemplate(owner, kind);\n"
+        },
+        {
+          "before_byte_offset": 11028,
+          "after_byte_offset": 12726,
+          "before": "    try requireNoHandler(kind);\n",
+          "after": "    try requireTemplate(owner, kind);\n"
+        },
+        {
+          "before_byte_offset": 11882,
+          "after_byte_offset": 13586,
+          "before": "    try requireNoHandler(kind);\n",
+          "after": "    try requireTemplate(owner, kind);\n"
+        },
+        {
+          "before_byte_offset": 16733,
+          "after_byte_offset": 18443,
+          "before": "",
+          "after": "\n/// The genuine internal/fs assembler binds its already-acquired shared\n/// Controller before exposing FSReqCallback or its stored InstanceTemplate.\n/// This retains the actual native owner; it starts no new service/worker.\npub fn configureFSReqCallback(engine: *Engine, known_owner: c.JSValue,\n    controller: *fs_io.Controller) !void\n{\n    const owner = try bundleOf(engine, known_owner);\n    if (owner.registry.environment != controller.environment)\n        return error.ActualFSReqCallbackEnvironmentMismatch;\n    try controller.beginCall(engine);\n    defer controller.endCall();\n    if (owner.fs_callback_controller) |existing| {\n        if (existing != controller) return error.ActualFSReqCallbackControllerMismatch;\n        return;\n    }\n    owner.fs_callback_controller = controller.retain();\n}\n\n/// The exact template stored by node_file.cc is fst->InstanceTemplate(),\n/// where fst is the genuine FSReqCallback callback template. Instantiating it\n/// bypasses NewFSReqCallback while retaining that real prototype and brand.\n/// Its JS locals belong to the caller's existing FileHandle HandleScope.\npub fn newFSReqCallbackInstance(s: *Scope, known_owner: c.JSValue) !c.JSValue {\n    return instantiate(s, try bundleOf(s.engine, known_owner),\n        known_owner, .fsreqcallback, null);\n}\n"
+        }
+      ],
+      "whole_byte_inverse_exact": true
+    },
+    {
+      "path": "src/extensions/native_uv_fs.h",
+      "before_sha256": "B738A0EAECC8E06781305D953B0FFE56753B774F8507CDBE4052BCBC2014F117",
+      "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+      "bytes": 4931,
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\projected\\src\\extensions\\native_uv_fs.h",
+      "action": "finite_modify",
+      "edits": [
+        {
+          "before_byte_offset": 413,
+          "after_byte_offset": 413,
+          "before": "enum PiUvFsKind { PI_UV_FS_READ = 1, PI_UV_FS_OPEN, PI_UV_FS_CLOSE };\n",
+          "after": "enum PiUvFsKind { PI_UV_FS_UNASSIGNED = 0, PI_UV_FS_READ, PI_UV_FS_OPEN, PI_UV_FS_CLOSE };\n"
+        },
+        {
+          "before_byte_offset": 1019,
+          "after_byte_offset": 1040,
+          "before": "",
+          "after": " * UNASSIGNED reserves the genuine generic FSReqCallback storage before its\n * operation is known. Only a validated actual admission selects its operation;\n * typed READ/OPEN/CLOSE storage keeps its original operation restriction.\n"
+        }
+      ],
+      "whole_byte_inverse_exact": true
+    },
+    {
+      "path": "src/extensions/native_uv_tcp.c",
+      "before_sha256": "6BA884B63C1C89FE65DFD90C97AC2604280749EFA5095755347EA06FC52CE92A",
+      "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+      "bytes": 45730,
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\projected\\src\\extensions\\native_uv_tcp.c",
+      "action": "finite_modify",
+      "edits": [
+        {
+          "before_byte_offset": 2359,
+          "after_byte_offset": 2359,
+          "before": "",
+          "after": "    int storage_kind; /* immutable generic/typed native allocation admission */\n"
+        },
+        {
+          "before_byte_offset": 17021,
+          "after_byte_offset": 17101,
+          "before": "",
+          "after": "    request->storage_kind = kind;\n"
+        },
+        {
+          "before_byte_offset": 35206,
+          "after_byte_offset": 35320,
+          "before": "    if (!service || (kind != PI_UV_FS_READ && kind != PI_UV_FS_OPEN &&\n                     kind != PI_UV_FS_CLOSE))\n",
+          "after": "    if (!service || (kind != PI_UV_FS_UNASSIGNED && kind != PI_UV_FS_READ &&\n                     kind != PI_UV_FS_OPEN && kind != PI_UV_FS_CLOSE))\n"
+        },
+        {
+          "before_byte_offset": 35550,
+          "after_byte_offset": 35695,
+          "before": "static int pi_uv_fs_submit(PiUvFsRequest *request, PiUvCommand *command) {\n",
+          "after": "static int pi_uv_fs_submit(PiUvFsRequest *request, PiUvCommand *command, int kind) {\n    /* Generic FSReqCallback storage receives its actual operation only after\n     * all native input/state checks, at the same real admission cutpoint. */\n    assert(request->storage_kind == PI_UV_FS_UNASSIGNED || request->storage_kind == kind);\n    request->kind = kind;\n"
+        },
+        {
+          "before_byte_offset": 36002,
+          "after_byte_offset": 36430,
+          "before": "    return request && request->kind == kind && !request->submitted &&\n",
+          "after": "    return request && (request->storage_kind == PI_UV_FS_UNASSIGNED ||\n                       request->storage_kind == kind) && !request->submitted &&\n"
+        },
+        {
+          "before_byte_offset": 38259,
+          "after_byte_offset": 38768,
+          "before": "    return pi_uv_fs_submit(request, &command);\n",
+          "after": "    return pi_uv_fs_submit(request, &command, PI_UV_FS_READ);\n"
+        },
+        {
+          "before_byte_offset": 39037,
+          "after_byte_offset": 39561,
+          "before": "    return pi_uv_fs_submit(request, &command);\n",
+          "after": "    return pi_uv_fs_submit(request, &command, PI_UV_FS_READ);\n"
+        },
+        {
+          "before_byte_offset": 39599,
+          "after_byte_offset": 40138,
+          "before": "    return pi_uv_fs_submit(request, &command);\n",
+          "after": "    return pi_uv_fs_submit(request, &command, PI_UV_FS_OPEN);\n"
+        },
+        {
+          "before_byte_offset": 39902,
+          "after_byte_offset": 40456,
+          "before": "    return pi_uv_fs_submit(request, &command);\n",
+          "after": "    return pi_uv_fs_submit(request, &command, PI_UV_FS_CLOSE);\n"
+        }
+      ],
+      "whole_byte_inverse_exact": true
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_callback.zig",
+      "before_sha256": "missing",
+      "sha256": "85EA8C7E5B7020F6BCB6AB88AD2B20A85EE0DFC0383861239185D898C5FC82E2",
+      "bytes": 7570,
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\projected\\src\\extensions\\native_node_fs_request_callback.zig",
+      "action": "add"
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_read.zig",
+      "before_sha256": "missing",
+      "sha256": "DEEEDCB2CFA51512571574F676091D71E49448FFDF23F1B60DF881B73B9307FD",
+      "bytes": 14225,
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\projected\\src\\extensions\\native_node_file_handle_read.zig",
+      "action": "add"
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_read_wrap.zig",
+      "before_sha256": "missing",
+      "sha256": "1E98E0231C43EF57A35010CD2B531BB2FE23A84D8A6AA9DD0A885286799E6A49",
+      "bytes": 9466,
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\projected\\src\\extensions\\native_node_file_handle_read_wrap.zig",
+      "action": "add"
+    },
+    {
+      "path": "src/native_node_file_handle_read_test_support.zig",
+      "before_sha256": "missing",
+      "sha256": "F72A583ED548F7BE10477B0AEFD0F77E3D035FB48F2708324AF2E92EB6CA90EC",
+      "bytes": 23302,
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\projected\\src\\native_node_file_handle_read_test_support.zig",
+      "action": "add"
+    },
+    {
+      "path": "src/native_node_file_handle_read_test.zig",
+      "before_sha256": "missing",
+      "sha256": "FFAEE39E71868A92884A855B886D296686558C955EA700C0D735F68DB8D2777D",
+      "bytes": 16427,
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\projected\\src\\native_node_file_handle_read_test.zig",
+      "action": "add"
+    },
+    {
+      "path": "src/native_node_fs_callback_template_test.zig",
+      "before_sha256": "missing",
+      "sha256": "1DC90343E1BB318344F4C9652C73610B8098AA50D6A3F8B3E9EC0C17BECA8BCC",
+      "bytes": 14838,
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\projected\\src\\native_node_fs_callback_template_test.zig",
+      "action": "add"
+    },
+    {
+      "path": "build.zig",
+      "before_sha256": "B2CC65057664436C2F40D70175C439BAA8CE7B372899F61DD6AB6BB7113B06D2",
+      "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E",
+      "bytes": 503440,
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\projected\\build.zig",
+      "action": "finite_modify",
+      "edits": [
+        {
+          "before_byte_offset": 211049,
+          "after_byte_offset": 211049,
+          "before": "",
+          "after": "        const node_file_handle_read = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_file_handle_read_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native FileHandle\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_file_handle_read.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_file_handle_read.root_module, typescript_parser);\n        linkSqlite(node_file_handle_read.root_module, sqlite_lib_dir, sqlite_library);\n        node_file_handle_read.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_file_handle_read.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_file_handle_read.root_module.linkLibrary(network);\n        if (target.result.os.tag == .windows) {\n            node_file_handle_read.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_file_handle_read.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-file-handle-read\", \"Install fourteen actual FileHandle read owner controls without execution\").dependOn(&b.addInstallArtifact(node_file_handle_read, .{ .dest_sub_path = b.fmt(\"native-node-file-handle-read{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const node_fs_callback_template = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_fs_callback_template_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native FSReqCallback\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_fs_callback_template.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_fs_callback_template.root_module, typescript_parser);\n        linkSqlite(node_fs_callback_template.root_module, sqlite_lib_dir, sqlite_library);\n        node_fs_callback_template.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_fs_callback_template.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_fs_callback_template.root_module.linkLibrary(network);\n        if (target.result.os.tag == .windows) {\n            node_fs_callback_template.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_fs_callback_template.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-fs-callback-template\", \"Install eleven actual FSReqCallback template and storage controls without execution\").dependOn(&b.addInstallArtifact(node_fs_callback_template, .{ .dest_sub_path = b.fmt(\"native-node-fs-callback-template{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n"
+        }
+      ],
+      "whole_byte_inverse_exact": true
+    }
+  ],
+  "existing_file_hunks": 32,
+  "main_modified": false,
+  "execution": false,
+  "qualification": false
+}

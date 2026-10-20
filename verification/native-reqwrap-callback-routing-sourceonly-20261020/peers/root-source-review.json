@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "status": "root_finite_source_review_closed",
+  "reviewed_utc": "2026-10-20T16:12:14.253055+00:00",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-reqwrap-callback-routing-sourceonly-20261020\\source-proposal.json",
+    "sha256": "E15DC1E14112C94663D309FEF1B7919AF0BCF9114664357EDDDF7180EC99046B",
+    "bytes": 18286
+  },
+  "authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\async-wrap-base-object-template-source.json",
+    "sha256": "4EF8C9356EB012AD209827473494E9A00D848AE8F184B10E4A89F0784F96870B",
+    "bytes": 55873
+  },
+  "exact_source_edits": [
+    {
+      "path": "src/extensions/native_node_request_state.zig",
+      "actual_base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_request_state.zig",
+        "sha256": "01DA46DC010A3108D592172C6F65AAB8100560FC274228FE9F1B6643A70A755A",
+        "bytes": 4949
+      },
+      "projected_sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+      "edits": 4,
+      "exact_full_inverse": true
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "actual_base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_fs_request_io.zig",
+        "sha256": "C360094C29E55F7F9C6BE6677390D94986D1FFED2680A05D8AF34162E20644C4",
+        "bytes": 12858
+      },
+      "projected_sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "edits": 6,
+      "exact_full_inverse": true
+    },
+    {
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "actual_base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+        "sha256": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+        "bytes": 39860
+      },
+      "projected_sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "edits": 1,
+      "exact_full_inverse": true
+    },
+    {
+      "path": "src/extensions/native_node_callback_checks.zig",
+      "actual_base": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_checks.zig",
+        "sha256": "FFB8FDEC742A0884DE9C1A4819012A172B6253E148505372E928134004335605",
+        "bytes": 6288
+      },
+      "projected_sha256": "1E3C1597DF365B561713C7D67EE4A07BBB9245BC75355A57EECDCB224758BC7E",
+      "edits": 1,
+      "exact_full_inverse": true
+    }
+  ],
+  "findings": [
+    "Entry stores a borrowed actual request address and compiled original callback without another allocation, registry, JS edge or independent ownership token. Entry initialization defaults it null; Reset clears it before dispatched state.",
+    "Both real read dispatch routes call Dispatched before callback selection and native libuv admission. Only nonnegative actual native admission strengthens the wrapper and increments the one Environment waiting counter. The existing immediate-negative Promise path and raw ignored-return consumer behavior are distinct and retained.",
+    "Generic delivery finds the actual Entry by its native address in the existing intrusive queue, retains the native BaseObject pointer, detaches and decrements before reading/calling its original callback. A callback may reset/redispatch; after it returns only endCallback retires the outer native pointer, and no Entry access follows that potentially final release.",
+    "The existing Hub resource/controller busy guard and real service/FIFO remain the sole dispatch owners. No extra worker callback, Promise or native event allocation is introduced.",
+    "The new request_callback_already_set Check tag maps the actual original CHECK_NULL expression at retained req_wrap-inl.h line135. Production native_check_failure reaches the direct terminating CHECK owner, with no ordinary-error replacement. The port diagnostics retain the established simplified file/function labels, not compiler-generated file:line/PRETTY_FUNCTION byte equality.",
+    "Each proposed source block was independently applied and reversed against complete current SDK Entry/Controller and actual Main Environment/Check mapper inputs. All other source bytes remain unchanged."
+  ],
+  "authorization": "Root approves this exact shared Check enum/dispatcher addition and the finite routing proposal for source-only SDK work. SDK may copy the exact current Main EEF21 Environment/FFB8 dispatcher bases if needed and apply only these reviewed edits after its Modules source-order peer closes. No Main mutation/native execution is granted.",
+  "limits": [
+    "Controls and actual compile/runtime behavior remain separate requirements.",
+    "This is the native request routing prerequisite, not completed FileHandle/ReadWrap/freelist assembly or public API installation.",
+    "Future concurrent native-address reuse must preserve actual Entry/native allocation lifetime; no general concurrent host mutation contract is added."
+  ],
+  "runtime_qualification": false,
+  "production_mutated": false
+}

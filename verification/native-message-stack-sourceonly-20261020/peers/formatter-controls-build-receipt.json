@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "status": "finite_source_control_and_build_peer_closed",
+  "reviewer": "modules_io",
+  "execution": false,
+  "inputs": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/src/native_vm_simple_stack_source_test.zig",
+      "sha256": "1863129EC7E28E0F99D3B6C94E3B28FDC754781C7BF0DEF296552688DC0D5DF9",
+      "bytes": 53404
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-message-stack-sourceonly-20261020/build-intake.json",
+      "sha256": "9AD963FC1B0198912D225A67703AA44F91A95B2ADE3F9686C45F69F80082EDAB",
+      "bytes": 1352
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/src/extensions/native_error_stack.zig",
+      "sha256": "FB755EC4331C26D7CB92294684A89C3F7D282609236AB0CCF76D3CD1D57296E0",
+      "bytes": 32901
+    }
+  ],
+  "production_owner_prior_receipt": {
+    "path": "verification/native-message-stack-owner-source-peer-20261020/receipt.json",
+    "sha256": "6BD9D711A961D7C4AA2427C247AA745914023FCBF9417A4787571FA71E6DD7E6"
+  },
+  "assigned_declarations": [
+    {
+      "index": 21,
+      "name": "VM simple stack source setter publishes formatted state before retiring captured receiver"
+    },
+    {
+      "index": 22,
+      "name": "VM simple stack source successful formatting retires simple frames after actual formatter returns"
+    },
+    {
+      "index": 23,
+      "name": "VM simple stack source formatter-local raw owner survives setter and success overwrites its DATA"
+    },
+    {
+      "index": 24,
+      "name": "VM simple stack source formatter throw preserves a reentrant setter and retires local frames"
+    },
+    {
+      "index": 25,
+      "name": "VM simple stack source FixedArray success replaces a record recaptured during formatting"
+    },
+    {
+      "index": 26,
+      "name": "VM simple stack source formatter failure preserves the new record and its actual recapture Script"
+    },
+    {
+      "index": 27,
+      "name": "VM simple stack source inherited formatting writes the selected holder without creating child state"
+    },
+    {
+      "index": 28,
+      "name": "VM simple stack source flagged formatter DATA remains a successful formatted value"
+    },
+    {
+      "index": 29,
+      "name": "VM simple stack source setter retirement preserves the actual ordinary cleanup reason"
+    },
+    {
+      "index": 30,
+      "name": "VM simple stack source actual fatal receiver retirement stops later guest catch and finally"
+    },
+    {
+      "index": 31,
+      "name": "VM simple stack source actual private receiver retirement keeps its native completion"
+    },
+    {
+      "index": 32,
+      "name": "VM simple stack source cancelled formatter unwind stays native and preserves unformatted state"
+    },
+    {
+      "index": 33,
+      "name": "VM simple stack source formatter failure and final raw retirement reduce actual fatal owners"
+    }
+  ],
+  "helper_scope": [
+    "Fixture init/deinit and installed native stack owner",
+    "Probe/Token/retire, known held Error receiver, actual formatter and cancellation callbacks",
+    "Location ownership, raw source observation, retained own Boolean progress and first-reason checks"
+  ],
+  "findings": [
+    "Fixture retains its real installed owner, callback carrier, reasons and Probe storage through runtime teardown. It disables finalizer producers before releasing roots, uninstalls the actual native stack hook/accessors, restores limits/entry policy and drains actual pending state. Setup failures use the same ownership cleanup.",
+    "HeldError makes a real native finalizer receiver the captured frame's sole remaining holder after the call/formal roots retire. Each assigned test retains the Error separately and keeps any borrowed observed receiver valid until its observation is disabled.",
+    "Controls21/22 require the formatted state to be visible to the finalizer, unchanged absence sentinels and receiver retirement only after the actual formatter returns. Clearing the public prepared-frame array does not remove the independently owned raw formatter frames.",
+    "Controls23/24 require the raw local to survive a reentrant setter: ordinary success overwrites its DATA, while an actual formatter throw preserves that setter result and the same pending reason. Neither can be passed by retaining both raw and formatted state indefinitely.",
+    "Controls25/26 distinguish success writing the selected holder's CURRENT recaptured record from failure preserving the genuine replacement Script. The failure control reads the complete actual source input and a real source position.",
+    "Control27 invokes inherited formatting with the selected parent and proves no child own stack is introduced. Control28 returns a publicly flagged Error as DATA, checking identity, absent pending and actual raw-frame retirement.",
+    "Controls29–31 separate ordinary cleanup from actual fatal and private producers. They retain the plain Boolean progress record before entry and inspect only its known own data after failure; no guest eval follows fatal observation. Raw finalizer source lookup is non-adopting and does not execute a guest getter.",
+    "ExpectNative keeps an owned token, checks real active/inactive priority, and for active completion republishes a duplicate before the public Cancel. Control32 actually requests/services/cancels inside the formatter, returns the native abrupt result, proves all catch/finally/later flags remain false, and verifies the original unformatted Script/positions remain.",
+    "Control33 drives both an ordinary first throw followed by fatal retirement and a real fatal first throw followed by another fatal. The same exact reasons and finalizer count distinguish the winning completion, while the already-published formatted state remains visible.",
+    "The exact seven-line build insertion reverses the complete current CCADEFC7 build to35AD68E1 and reapplies uniquely at the packet offset. All33 names match the real filter; the only additions are the actual test root, shared QuickJS/catalog import and installation target."
+  ],
+  "build": {
+    "base_sha256": "35AD68E15D17BEAE0820B1EE1AB57EB0DB8B7F71885B95306AAF676B36581686",
+    "successor_sha256": "CCADEFC7788AB8194561A7465261EAB59BEF1C765CC4C780C42BC3DC4010054B",
+    "base_bytes": 420622,
+    "successor_bytes": 421276,
+    "insertion_bytes": 654,
+    "insertion_lines": 7,
+    "declarations": 33,
+    "root": "src/native_vm_simple_stack_source_test.zig",
+    "target": "build-native-vm-simple-stack-source"
+  },
+  "limits": [
+    "C/raw/fallback controls1–20 and their C/H production semantics are SDK's separate closed slice.",
+    "This receipt does not install the stack owner in ordinary Engine bootstrap, create detailed stacks or Message/reporting owners, or qualify runtime behavior.",
+    "Only source and exact in-memory comparisons were performed; no Zig/Node/test/formatter execution."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "exact-source-insertion-v1",
+  "path": "build.zig",
+  "before_sha256": "35AD68E15D17BEAE0820B1EE1AB57EB0DB8B7F71885B95306AAF676B36581686",
+  "before_bytes": 420622,
+  "after_sha256": "CCADEFC7788AB8194561A7465261EAB59BEF1C765CC4C780C42BC3DC4010054B",
+  "after_bytes": 421276,
+  "offset_bytes": 195162,
+  "needle": "    const script_location_tests = b.addTest(.{\n",
+  "insertion": "    const simple_stack_source_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_simple_stack_source_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM simple stack source\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, simple_stack_source_tests.root_module, quickjs, sqlite_lib_dir);\n    simple_stack_source_tests.root_module.addImport(\"catalog_tool\", catalog_tool);\n    b.step(\"build-native-vm-simple-stack-source\", \"Install actual simple stack state and raw source controls without execution\").dependOn(&b.addInstallArtifact(simple_stack_source_tests, .{}).step);\n",
+  "lines_added": 7,
+  "target": "build-native-vm-simple-stack-source",
+  "root": "src/native_vm_simple_stack_source_test.zig",
+  "filter": "VM simple stack source",
+  "declarations": 33,
+  "execution": "none; install only",
+  "prior_complete_source": "authority/build.before.txt"
+}

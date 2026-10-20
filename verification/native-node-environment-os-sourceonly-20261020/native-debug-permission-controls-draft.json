@@ -1,0 +1,155 @@
+{
+  "schema": 1,
+  "status": "source_authored_controls_not_executed",
+  "scope": "Actual selected native Debug20 and Permission18 leaves; approved cleanup adaptations are tested separately from unchanged policy algorithms.",
+  "production": [
+    {
+      "path": "src/extensions/native_node_native_debug.h",
+      "sha256": "E11332B46CC5DF6001BBEBF3CF094B5ED2C8C4170F4FB0089B264DC0AE5BF8E8"
+    },
+    {
+      "path": "src/extensions/native_node_native_debug_internal.hpp",
+      "sha256": "301D73ED189F50DACA4B0E2C16B3C7E9469E716EB935F67D826EDB691F01B4F1"
+    },
+    {
+      "path": "src/extensions/native_node_native_debug.cpp",
+      "sha256": "AD3446C875DFFD39165AF9514A4A1169125995C5701F4B706706F83CB814A990"
+    },
+    {
+      "path": "src/extensions/native_node_permission.cpp",
+      "sha256": "4DC0D4C70A659B9405E6D4AC6BFC0B008FB48EFB614F811C87F096A105A73EC8"
+    },
+    {
+      "path": "src/extensions/native_node_permission_internal.hpp",
+      "sha256": "C15AC7ED37DAFB8F672AAFCFCD6FABA2CF87BB64EE26C8CC4AF5A6695D2E712F"
+    },
+    {
+      "path": "src/extensions/native_node_permission.h",
+      "sha256": "6005CBF37A2FA4A6BF310274AB8338F030E886AAA1461EEC95FED2019E3E3C9B"
+    }
+  ],
+  "authored_files": [
+    {
+      "path": "src/native_node_native_debug_test_support.zig",
+      "sha256": "7AF437A515FF85B16457E854B7FCD93BDBF74545C939E7039040158E5285F604",
+      "bytes": 10530
+    },
+    {
+      "path": "src/native_node_native_debug_test.zig",
+      "sha256": "2AC6D329A744627FF6E39A20E01F363C0E387B00A262A4AF089E75B0874A472B",
+      "bytes": 16437
+    },
+    {
+      "path": "src/native_node_permission_test.zig",
+      "sha256": "C8D2AC61DF3C3B75131D0258B09E8E239ECFDD646F4453E3FEB5259C1397716E",
+      "bytes": 19098
+    },
+    {
+      "path": "src/extensions/native_node_permission_test_support.cpp",
+      "sha256": "362826F62F0F4322961AE0F93E835C178251B49FDCAA3BE06D116B307A1F4BC4",
+      "bytes": 7661
+    },
+    {
+      "path": "src/extensions/native_node_permission_test_support.h",
+      "sha256": "9D128A71AE35CF2A92AFA92E5F8278BA29F564C0C4FBB85F61CA85E105E7E54B",
+      "bytes": 2741
+    }
+  ],
+  "controls": [
+    {
+      "path": "src/native_node_native_debug_test.zig",
+      "filter": "native Debug",
+      "declarations": 20,
+      "names": [
+        "native Debug constructs complete original category tables with every field disabled",
+        "native Debug empty and unmatched input leave original enabled fields false",
+        "native Debug uses original case-insensitive substring matching",
+        "native Debug leading and internal empty tokens enable every category",
+        "native Debug a trailing comma does not invent a final empty token",
+        "native Debug includes the original literal terminal NUL in category matching",
+        "native Debug parsing is one-way and separate native lists remain independent",
+        "native Debug process selection returns one fixed-feature original list",
+        "native Debug Parse Environment reads the live supplied Map through real SafeGetenv",
+        "native Debug retains the SafeGetenv text before the actual trace callback mutates Map",
+        "native Debug selected sized-string formatter preserves binary bytes and retires its native copies",
+        "native Debug selected tree formatter observes C-string boundaries and UTF8 branch bytes",
+        "native Debug actual FWrite file route preserves exact binary content",
+        "native Debug Permission output callbacks use the original selected format and real stderr route",
+        "native Debug actual Permission insertion reads the live enabled list before printing",
+        "native Debug formatter and parser use real native new-handler retry without JS allocation",
+        "native Debug native formatting preserves actual ordinary and generic pending under heap limit one",
+        "native Debug native operations leave actual private termination pending and generation unchanged",
+        "native Debug formatting retains a native allocation domain beyond VM and caller retirement",
+        "native Debug warmed static category Strings are reused while temporary parse Strings retire"
+      ]
+    },
+    {
+      "path": "src/native_node_permission_test.zig",
+      "filter": "native Permission",
+      "declarations": 18,
+      "names": [
+        "native Permission constructs actual policies and returns every native allocation at destruction",
+        "native Permission enable selects initial policies and each simple Apply denies only its actual scope",
+        "native Permission unknown Apply preserves the native policy map and existing decisions",
+        "native Permission exact missing-file grant does not grant siblings descendants or writes",
+        "native Permission resolves original dot and parent segments before radix lookup",
+        "native Permission actual directory stat grants its original recursive wildcard",
+        "native Permission actual regular file stat retains an exact grant",
+        "native Permission standalone star returns before later grants and keeps the other direction denied",
+        "native Permission aggregate filesystem grant requires both original all-direction flags",
+        "native Permission real radix splits preserve exact sibling grants and duplicate insertion retains no allocation",
+        "native Permission preserves the original nonterminal wildcard lookup decisions",
+        "native Permission successful directory append branch releases its actual synchronous libuv path allocation",
+        "native Permission filesystem-root trailing separator branch releases its actual synchronous libuv path allocation",
+        "native Permission destruction recursively retires unique descendants below nonterminal wildcards",
+        "native Permission actual native allocation failure retries before grant publication without a JS reason",
+        "native Permission apply and query preserve actual ordinary generic and private pending under exhausted JS heap",
+        "native Permission blocks and concrete shared policy destructors survive VM Environment and caller retirement",
+        "native Permission repeated mixed normal and wildcard retirement restores its exact native baseline"
+      ]
+    }
+  ],
+  "actual_adapters": [
+    "Shared Fixture owns charged aligned placement storage and the actual runtime/native memory owner, actual Environment Paths/Map, actual EnabledDebugList and Permission debug callbacks. The selected trace callback is an explicitly named delegation observer only.",
+    "Permission controls never Parse Debug: their list is genuinely initially disabled. No fake disabled callback is supplied. Debug15 uses actual live parsing and real Permission Insert output under a synchronous stderr capture.",
+    "C++ formatter test adapter invokes only the two actual Permission SPrintF instantiations, then visits the real native result String while it remains owned. FWrite is the production function.",
+    "FILE observers use actual tmpfile, flush/seek/read and a temporary descriptor redirect. Windows binary CRT mode is explicit fixture input. They restore the prior stderr descriptor/mode before assertion inspection and do not qualify WriteConsoleW.",
+    "The UV adapter uses real uv_replace_allocator, which the retained original source shows installs the provided callbacks directly. Each wrapper calls actual original malloc/realloc/calloc/free and tracks real pointers in a fixed native array. It wraps only one synchronous actual Permission directory Apply after stat+cleanup warmup; no asynchronous libuv work or surviving UV object is admitted.",
+    "Both directory cleanup controls read live-block and byte counts captured BEFORE emergency observer cleanup. On Windows they also require actual allocations and a nonzero peak, so the original missing request cleanup causes a nonzero observed leak even though the adapter later retires that dead stack-request allocation.",
+    "Permission14/18 exercise actual nonterminal wildcard descendants and ordinary children, then destroy the genuine Permission and assert the exact native allocation baseline. The previously approved recursion correction is required for these assertions.",
+    "Native retry controls reuse the previously closed actual std::new_handler adapter and shared one-TLS allocation domain. No allocation or error result is mocked. Existing JS OOM occurrence and pending reasons are observed independently.",
+    "Native raw operations under limit1 retain exact ordinary/generic reasons or the actual private termination generation. Fixture disables private termination only during final VM cleanup. All raw reason values are owned before assertions.",
+    "Permission17 explicitly retires the VM, other Environment leaves and caller entitlement before exercising retained Permission flags and its concrete derived shared_ptr destruction. Debug19 formats after VM/caller retirement using the genuine remaining native owner."
+  ],
+  "authorities": {
+    "libuv_allocator": {
+      "path": "vendor/node-v24.13.0/uv/src/uv-common.c",
+      "sha256": "C311E17AE0F891C9EBA52626ADF9EA33A91B7459654EB1C20E56C24D30D6B446",
+      "bytes": 23928,
+      "selected_byte_offset": 1531,
+      "selected": "typedef struct {\n  uv_malloc_func local_malloc;\n  uv_realloc_func local_realloc;\n  uv_calloc_func local_calloc;\n  uv_free_func local_free;\n} uv__allocator_t;\n\nstatic uv__allocator_t uv__allocator = {\n  malloc,\n  realloc,\n  calloc,\n  free,\n};\n\nchar* uv__strdup(const char* s) {\n  size_t len = strlen(s) + 1;\n  char* m = uv__malloc(len);\n  if (m == NULL)\n    return NULL;\n  return memcpy(m, s, len);\n}\n\nchar* uv__strndup(const char* s, size_t n) {\n  char* m;\n  size_t len = strlen(s);\n  if (n < len)\n    len = n;\n  m = uv__malloc(len + 1);\n  if (m == NULL)\n    return NULL;\n  m[len] = '\\0';\n  return memcpy(m, s, len);\n}\n\nvoid* uv__malloc(size_t size) {\n  if (size > 0)\n    return uv__allocator.local_malloc(size);\n  return NULL;\n}\n\nvoid uv__free(void* ptr) {\n  int saved_errno;\n\n  /* Libuv expects that free() does not clobber errno.  The system allocator\n   * honors that assumption but custom allocators may not be so careful.\n   */\n  saved_errno = errno;\n  uv__allocator.local_free(ptr);\n  errno = saved_errno;\n}\n\nvoid* uv__calloc(size_t count, size_t size) {\n  return uv__allocator.local_calloc(count, size);\n}\n\nvoid* uv__realloc(void* ptr, size_t size) {\n  if (size > 0)\n    return uv__allocator.local_realloc(ptr, size);\n  uv__free(ptr);\n  return NULL;\n}\n\nvoid* uv__reallocf(void* ptr, size_t size) {\n  void* newptr;\n\n  newptr = uv__realloc(ptr, size);\n  if (newptr == NULL)\n    if (size > 0)\n      uv__free(ptr);\n\n  return newptr;\n}\n\nint uv_replace_allocator(uv_malloc_func malloc_func,\n                         uv_realloc_func realloc_func,\n                         uv_calloc_func calloc_func,\n                         uv_free_func free_func) {\n  if (malloc_func == NULL || realloc_func == NULL ||\n      calloc_func == NULL || free_func == NULL) {\n    return UV_EINVAL;\n  }\n\n  uv__allocator.local_malloc = malloc_func;\n  uv__allocator.local_realloc = realloc_func;\n  uv__allocator.local_calloc = calloc_func;\n  uv__allocator.local_free = free_func;\n\n  return 0;\n}\n"
+    },
+    "pinned_realpath": {
+      "path": "toolchain/zig-x86_64-windows-0.16.0/lib/std/Io/Threaded.zig",
+      "read_range": {
+        "offset": 0,
+        "bytes": 524288,
+        "sha256": "C588E0CB0A64383F99FF2A2E136CF6777AF0AA777CE7ABEF649AABD7099D787E"
+      },
+      "selected_byte_offset": 245984,
+      "selected": "fn realPathWindowsBuf(h_file: windows.HANDLE, out_buffer: []u8, wtf16_buffer: []u16) File.RealPathError!usize {\n    const wide_slice = try GetFinalPathNameByHandle(h_file, .{}, wtf16_buffer);\n\n    const len = std.unicode.calcWtf8Len(wide_slice);\n    if (len > out_buffer.len)\n        return error.NameTooLong;\n\n    return std.unicode.wtf16LeToWtf8(out_buffer, wide_slice);\n}\n\n/// Specifies how to format volume path in the result of `GetFinalPathNameByHandle`.\n/// Defaults to DOS volume names.\npub const GetFinalPathNameByHandleFormat = struct {\n    volume_name: enum {\n        /// Format as DOS volume name\n        Dos,\n        /// Format as NT volume name\n        Nt,\n    } = .Dos,\n};\n\npub const GetFinalPathNameByHandleError = error{\n    AccessDenied,\n    FileNotFound,\n    NameTooLong,\n    /// The volume does not contain a recognized file system. File system\n    /// drivers might not be loaded, or the volume may be corrupt.\n    UnrecognizedVolume,\n} || Io.Cancelable || Io.UnexpectedError;\n\n/// Returns canonical (normalized) path of handle.\n/// Use `GetFinalPathNameByHandleFormat` to specify whether the path is meant to include\n/// NT or DOS volume name (e.g., `\\Device\\HarddiskVolume0\\foo.txt` versus `C:\\foo.txt`).\n/// If DOS volume name format is selected, note that this function does *not* prepend\n/// `\\\\?\\` prefix to the resultant path.\n",
+      "fact": "The actual DOS-format helper explicitly does not prepend an extended Windows namespace; fixtures preserve the original sentinel allocation."
+    }
+  },
+  "review_assignment": {
+    "sdk": "Debug controls1–15, Permission controls1–11, selected formatter/FILE/stderr helpers and actual output/order oracles.",
+    "vm": "Shared Fixture/Storage/cleanup, Debug16–20, Permission12–18, actual UV allocator observer and lifetime/retry cutpoints.",
+    "root": "Separate additive build composition packet after controls source boundary."
+  },
+  "limits": [
+    "No tests, native compiler, Node, generator, formatter or AST checker executed.",
+    "No production default process Environment, RealEnvStore, public process.env/permission binding or bootstrap installation claim.",
+    "No console/terminal FWrite output qualification or general numeric SPrintF instantiation claim.",
+    "No complete CLI Permission option parsing or native abort-negative harness is added by these normal controls."
+  ]
+}

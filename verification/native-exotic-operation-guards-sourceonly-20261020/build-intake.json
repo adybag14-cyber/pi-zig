@@ -1,0 +1,29 @@
+{
+  "schema": "pi.additive-build-intake.v1",
+  "source_only": true,
+  "execution": false,
+  "path": "build.zig",
+  "before": {
+    "sha256": "CCADEFC7788AB8194561A7465261EAB59BEF1C765CC4C780C42BC3DC4010054B",
+    "bytes": 421276
+  },
+  "after": {
+    "sha256": "F988BAC20C4615AF0A6D00589156829862D7D1068369BB3AD620D52146BA465C",
+    "bytes": 421822
+  },
+  "edits": [
+    {
+      "before": "    const script_location_tests = b.addTest(.{\n",
+      "after": "    const exotic_operation_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_exotic_operations_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM exotic operations\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, exotic_operation_tests.root_module, quickjs, sqlite_lib_dir);\n    b.step(\"build-native-vm-exotic-operations\", \"Install actual opt-in exotic operation controls without execution\").dependOn(&b.addInstallArtifact(exotic_operation_tests, .{}).step);\n    const script_location_tests = b.addTest(.{\n"
+    }
+  ],
+  "added_lines": 6,
+  "root": "src/native_vm_exotic_operations_test.zig",
+  "filter": "VM exotic operations",
+  "target": "build-native-vm-exotic-operations",
+  "declarations": 28,
+  "link": "existing linkQuickJs once",
+  "mode": "b.addInstallArtifact only",
+  "forward_exact": true,
+  "reverse_exact": true
+}

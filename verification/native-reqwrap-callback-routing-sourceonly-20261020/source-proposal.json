@@ -1,0 +1,132 @@
+{
+  "schema": "pi.source-only.reqwrap-original-callback-routing.v1",
+  "date": "2026-10-20",
+  "status": "finite proposed source successor; production paths unchanged",
+  "execution": "none",
+  "files": [
+    {
+      "path": "src/extensions/native_node_request_state.zig",
+      "base_sha256": "01DA46DC010A3108D592172C6F65AAB8100560FC274228FE9F1B6643A70A755A",
+      "base_bytes": 4949,
+      "successor_sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+      "successor_bytes": 5818,
+      "edits": [
+        {
+          "before": "pub const Cancel = *const fn (*Entry) void;\n",
+          "after": "pub const Cancel = *const fn (*Entry) void;\n/// The compiled original libuv callback plus its actual native request address.\n/// Both are borrowed; this descriptor creates no root or separate entitlement.\npub const NativeCallback = struct {\n    request: *anyopaque,\n    call: *const fn (*Entry, *anyopaque) anyerror!void,\n};\n"
+        },
+        {
+          "before": "    cancel_native: Cancel,\n    queue: ?*Registry = null,\n",
+          "after": "    cancel_native: Cancel,\n    original_callback: ?NativeCallback = null,\n    queue: ?*Registry = null,\n"
+        },
+        {
+          "before": "        std.debug.assert(!self.counted);\n        self.dispatched = false;\n",
+          "after": "        std.debug.assert(!self.counted);\n        self.original_callback = null;\n        self.dispatched = false;\n"
+        },
+        {
+          "before": "    pub fn dispatchStarted(self: *Entry) void {\n        self.dispatched = true;\n    }\n",
+          "after": "    pub fn dispatchStarted(self: *Entry) void {\n        self.dispatched = true;\n    }\n    /// MakeLibuvRequestCallback::For follows Dispatched and precedes the real\n    /// libuv call. Reset clears this same field before a reused Dispatch.\n    pub fn setCallback(self: *Entry, callback: NativeCallback) !void {\n        if (self.original_callback != null) {\n            const environment = self.wrap.registry.environment;\n            return environment.operations.native_check_failure(environment, .request_callback_already_set);\n        }\n        self.original_callback = callback;\n    }\n"
+        }
+      ]
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "base_sha256": "C360094C29E55F7F9C6BE6677390D94986D1FFED2680A05D8AF34162E20644C4",
+      "base_bytes": 12858,
+      "successor_sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "successor_bytes": 14502,
+      "edits": [
+        {
+          "before": "//! Actual ReqWrap dispatch and AfterInteger completion for the private read\n//! binding. The existing Environment owns the only request queue/counter; the\n",
+          "after": "//! Actual ReqWrap dispatch and original native callback delivery for private\n//! FS requests. The existing Environment owns the only request queue/counter; the\n"
+        },
+        {
+          "before": "        request.entry.dispatchStarted();\n        const status = uv.pi_uv_fs_read(actual, descriptor, @ptrCast(backing),\n",
+          "after": "        request.entry.dispatchStarted();\n        try request.entry.setCallback(.{ .request = actual, .call = afterIntegerCallback });\n        const status = uv.pi_uv_fs_read(actual, descriptor, @ptrCast(backing),\n"
+        },
+        {
+          "before": "    fn ready(raw: *anyopaque) bool {\n",
+          "after": "    /// FileHandleReadWrap supplies its actual StreamResource span and original\n    /// native completion. The caller retains the backing through delivery and\n    /// EmitRead consumption. A failed native Dispatch returns its status and\n    /// does not manufacture a callback; the original ReadStart ignores it.\n    pub fn dispatchRawRead(self: *Controller, s: *Scope, entry: *request_state.Entry,\n        actual: *uv.PiUvFsRequest, descriptor: c_int, base: ?[*]u8,\n        length: usize, position: i64,\n        callback: *const fn (*request_state.Entry, *anyopaque) anyerror!void) !c_int\n    {\n        try self.enter(s.engine);\n        defer self.leave();\n        if (entry.wrap.registry.environment != self.environment or\n            entry.queue != &self.environment.requests)\n            return error.ActualFSRequestEnvironmentMismatch;\n        entry.dispatchStarted();\n        try entry.setCallback(.{ .request = actual, .call = callback });\n        const status = uv.pi_uv_fs_read_buffer(actual, descriptor,\n            @ptrCast(base), length, position);\n        if (status >= 0) try entry.dispatchAccepted();\n        return status;\n    }\n\n    fn ready(raw: *anyopaque) bool {\n"
+        },
+        {
+          "before": "    fn find(self: *Controller, actual: *uv.PiUvFsRequest) !*requests.Request {\n        // The genuine intrusive Environment queue is authoritative. The\n        // compiled cancellation function identifies this derived owner before\n        // taking the containing Request; no parallel registry owns JS roots.\n        var cursor = self.environment.requests.head;\n        while (cursor) |entry| : (cursor = entry.next) {\n            if (entry.cancel_native != cancelRequest) continue;\n            const request: *requests.Request = @alignCast(@fieldParentPtr(\"entry\", entry));\n            if (request.native_request == actual) return request;\n        }\n        return error.ActualFSCompletionRequestRequired;\n    }\n",
+          "after": "    fn find(self: *Controller, actual: *uv.PiUvFsRequest) !*request_state.Entry {\n        // The one intrusive Environment queue and the actual request address\n        // stored at Dispatch identify the selected native original callback.\n        // No parallel map or Promise-only cancellation-function cast is used.\n        var cursor = self.environment.requests.head;\n        while (cursor) |entry| : (cursor = entry.next) {\n            if (entry.original_callback) |callback|\n                if (callback.request == @as(*anyopaque, @ptrCast(actual))) return entry;\n        }\n        return error.ActualFSCompletionRequestRequired;\n    }\n"
+        },
+        {
+          "before": "        const request = try self.find(actual);\n        if (!request.entry.dispatched or !request.entry.counted)\n            return error.ActualFSAcceptedCompletionRequired;\n        self.busy += 1;\n        defer self.leave();\n        // MakeLibuvRequestCallback::Wrapper: native strong pointer, Detach,\n        // decrement, then the original callback. Its pointer retires last.\n        try request.entry.beginCallback();\n        const engine = self.hub.engine;\n        var handles = Scope.init(engine);\n        var failure: ?anyerror = null;\n        afterInteger(request, actual) catch |err| {\n            record(&handles, err);\n            failure = err;\n        };\n        request.entry.endCallback() catch |err| {\n            record(&handles, err);\n            if (failure == null) failure = err;\n        };\n",
+          "after": "        const entry = try self.find(actual);\n        if (!entry.dispatched or !entry.counted)\n            return error.ActualFSAcceptedCompletionRequired;\n        self.busy += 1;\n        defer self.leave();\n        // MakeLibuvRequestCallback::Wrapper: native strong pointer, Detach,\n        // decrement, then select/call the original callback. Its pointer dies\n        // last, even if that callback resets and redispatches this same Entry.\n        try entry.beginCallback();\n        const engine = self.hub.engine;\n        var handles = Scope.init(engine);\n        var failure: ?anyerror = null;\n        const outcome: anyerror!void = if (entry.original_callback) |callback|\n            callback.call(entry, callback.request) else error.ActualFSOriginalCallbackRequired;\n        outcome catch |err| {\n            record(&handles, err);\n            failure = err;\n        };\n        entry.endCallback() catch |err| {\n            record(&handles, err);\n            if (failure == null) failure = err;\n        };\n"
+        },
+        {
+          "before": "fn afterInteger(request: *requests.Request, actual: *uv.PiUvFsRequest) !void {\n",
+          "after": "fn afterIntegerCallback(entry: *request_state.Entry, raw: *anyopaque) !void {\n    const request: *requests.Request = @alignCast(@fieldParentPtr(\"entry\", entry));\n    const actual: *uv.PiUvFsRequest = @ptrCast(@alignCast(raw));\n    return afterInteger(request, actual);\n}\nfn afterInteger(request: *requests.Request, actual: *uv.PiUvFsRequest) !void {\n"
+        }
+      ]
+    },
+    {
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "base_sha256": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "base_bytes": 39860,
+      "successor_sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "successor_bytes": 39890,
+      "edits": [
+        {
+          "before": "    request_before_bootstrap, negative_waiting_requests,\n",
+          "after": "    request_before_bootstrap, request_callback_already_set, negative_waiting_requests,\n"
+        }
+      ]
+    },
+    {
+      "path": "src/extensions/native_node_callback_checks.zig",
+      "base_sha256": "FFB8FDEC742A0884DE9C1A4819012A172B6253E148505372E928134004335605",
+      "base_bytes": 6288,
+      "successor_sha256": "1E3C1597DF365B561713C7D67EE4A07BBB9245BC75355A57EECDCB224758BC7E",
+      "successor_bytes": 6452,
+      "edits": [
+        {
+          "before": "        .request_before_bootstrap => assertion(\"env->has_run_bootstrapping_code()\",\n            \"src/req_wrap-inl.h\", \"ReqWrapBase::ReqWrapBase\"),\n",
+          "after": "        .request_before_bootstrap => assertion(\"env->has_run_bootstrapping_code()\",\n            \"src/req_wrap-inl.h\", \"ReqWrapBase::ReqWrapBase\"),\n        .request_callback_already_set => assertion(\"(req_wrap->original_callback_) == nullptr\",\n            \"src/req_wrap-inl.h\", \"MakeLibuvRequestCallback::For\"),\n"
+        }
+      ]
+    }
+  ],
+  "authority": {
+    "packet": "verification/native-node-file-handle-sourceonly-20261019/authority/async-wrap-base-object-template-source.json",
+    "packet_sha256": "4EF8C9356EB012AD209827473494E9A00D848AE8F184B10E4A89F0784F96870B",
+    "req_wrap_inl": {
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/req_wrap-inl.h",
+      "sha256": "27C770D8756B626C80210F96F9DB1CF31BFBF09AAB1DA53DC35B382314883E67",
+      "body": "#ifndef SRC_REQ_WRAP_INL_H_\n#define SRC_REQ_WRAP_INL_H_\n\n#if defined(NODE_WANT_INTERNALS) && NODE_WANT_INTERNALS\n\n#include \"req_wrap.h\"\n#include \"async_wrap-inl.h\"\n#include \"uv.h\"\n\nnamespace node {\n\nReqWrapBase::ReqWrapBase(Environment* env) {\n  CHECK(env->has_run_bootstrapping_code());\n  env->req_wrap_queue()->PushBack(this);\n}\n\ntemplate <typename T>\nReqWrap<T>::ReqWrap(Environment* env,\n                    v8::Local<v8::Object> object,\n                    AsyncWrap::ProviderType provider)\n    : AsyncWrap(env, object, provider),\n      ReqWrapBase(env) {\n  MakeWeak();\n  Reset();\n}\n\ntemplate <typename T>\nReqWrap<T>::~ReqWrap() {}\n\ntemplate <typename T>\nvoid ReqWrap<T>::Dispatched() {\n  req_.data = this;\n}\n\ntemplate <typename T>\nvoid ReqWrap<T>::Reset() {\n  original_callback_ = nullptr;\n  req_.data = nullptr;\n}\n\ntemplate <typename T>\nReqWrap<T>* ReqWrap<T>::from_req(T* req) {\n  return ContainerOf(&ReqWrap<T>::req_, req);\n}\n\ntemplate <typename T>\nvoid ReqWrap<T>::Cancel() {\n  if (req_.data == this)  // Only cancel if already dispatched.\n    uv_cancel(reinterpret_cast<uv_req_t*>(&req_));\n}\n\ntemplate <typename T>\nbool ReqWrap<T>::IsDispatched() {\n  return req_.data != nullptr;\n}\n\ntemplate <typename T>\nAsyncWrap* ReqWrap<T>::GetAsyncWrap() {\n  return this;\n}\n\n// Below is dark template magic designed to invoke libuv functions that\n// initialize uv_req_t instances in a unified fashion, to allow easier\n// tracking of active/inactive requests.\n\n// Invoke a generic libuv function that initializes uv_req_t instances.\n// This is, unfortunately, necessary since they come in three different\n// variants that can not all be invoked in the same way:\n// - int uv_foo(uv_loop_t* loop, uv_req_t* request, ...);\n// - int uv_foo(uv_req_t* request, ...);\n// - void uv_foo(uv_req_t* request, ...);\ntemplate <typename ReqT, typename T>\nstruct CallLibuvFunction;\n\n// Detect `int uv_foo(uv_loop_t* loop, uv_req_t* request, ...);`.\ntemplate <typename ReqT, typename... Args>\nstruct CallLibuvFunction<ReqT, int(*)(uv_loop_t*, ReqT*, Args...)> {\n  using T = int(*)(uv_loop_t*, ReqT*, Args...);\n  template <typename... PassedArgs>\n  static int Call(T fn, uv_loop_t* loop, ReqT* req, PassedArgs... args) {\n    return fn(loop, req, args...);\n  }\n};\n\n// Detect `int uv_foo(uv_req_t* request, ...);`.\ntemplate <typename ReqT, typename... Args>\nstruct CallLibuvFunction<ReqT, int(*)(ReqT*, Args...)> {\n  using T = int(*)(ReqT*, Args...);\n  template <typename... PassedArgs>\n  static int Call(T fn, uv_loop_t* loop, ReqT* req, PassedArgs... args) {\n    return fn(req, args...);\n  }\n};\n\n// Detect `void uv_foo(uv_req_t* request, ...);`.\ntemplate <typename ReqT, typename... Args>\nstruct CallLibuvFunction<ReqT, void(*)(ReqT*, Args...)> {\n  using T = void(*)(ReqT*, Args...);\n  template <typename... PassedArgs>\n  static int Call(T fn, uv_loop_t* loop, ReqT* req, PassedArgs... args) {\n    fn(req, args...);\n    return 0;\n  }\n};\n\n// This is slightly darker magic: This template is 'applied' to each parameter\n// passed to the libuv function. If the parameter type (aka `T`) is a\n// function type, it is assumed that this it is the request callback, and a\n// wrapper that calls the original callback is created.\n// If not, the parameter is passed through verbatim.\ntemplate <typename ReqT, typename T>\nstruct MakeLibuvRequestCallback {\n  static T For(ReqWrap<ReqT>* req_wrap, T v) {\n    static_assert(!is_callable<T>,\n                  \"MakeLibuvRequestCallback missed a callback\");\n    return v;\n  }\n};\n\n// Match the `void callback(uv_req_t*, ...);` signature that all libuv\n// callbacks use.\ntemplate <typename ReqT, typename... Args>\nstruct MakeLibuvRequestCallback<ReqT, void(*)(ReqT*, Args...)> {\n  using F = void(*)(ReqT* req, Args... args);\n\n  static void Wrapper(ReqT* req, Args... args) {\n    BaseObjectPtr<ReqWrap<ReqT>> req_wrap{ReqWrap<ReqT>::from_req(req)};\n    req_wrap->Detach();\n    req_wrap->env()->DecreaseWaitingRequestCounter();\n    F original_callback = reinterpret_cast<F>(req_wrap->original_callback_);\n    original_callback(req, args...);\n  }\n\n  static F For(ReqWrap<ReqT>* req_wrap, F v) {\n    CHECK_NULL(req_wrap->original_callback_);\n    req_wrap->original_callback_ =\n        reinterpret_cast<typename ReqWrap<ReqT>::callback_t>(v);\n    return Wrapper;\n  }\n};\n\ntemplate <typename T>\ntemplate <typename LibuvFunction, typename... Args>\nint ReqWrap<T>::Dispatch(LibuvFunction fn, Args... args) {\n  Dispatched();\n  // This expands as:\n  //\n  // int err = fn(env()->event_loop(), req(), arg1, arg2, Wrapper, arg3, ...)\n  //              ^                                       ^        ^\n  //              |                                       |        |\n  //              \\-- Omitted if `fn` has no              |        |\n  //                  first `uv_loop_t*` argument         |        |\n  //                                                      |        |\n  //        A function callback whose first argument      |        |\n  //        matches the libuv request type is replaced ---/        |\n  //        by the `Wrapper` method defined above                  |\n  //                                                               |\n  //               Other (non-function) arguments are passed  -----/\n  //               through verbatim\n  int err = CallLibuvFunction<T, LibuvFunction>::Call(\n      fn,\n      env()->event_loop(),\n      req(),\n      MakeLibuvRequestCallback<T, Args>::For(this, args)...);\n  if (err >= 0) {\n    ClearWeak();\n    env()->IncreaseWaitingRequestCounter();\n  }\n  return err;\n}\n\n}  // namespace node\n\n#endif  // defined(NODE_WANT_INTERNALS) && NODE_WANT_INTERNALS\n\n#endif  // SRC_REQ_WRAP_INL_H_\n"
+    },
+    "native_check": {
+      "macro": "CHECK_NULL(val) CHECK((val) == nullptr)",
+      "expression": "(req_wrap->original_callback_) == nullptr",
+      "original_site": {
+        "file": "src/req_wrap-inl.h",
+        "line": 135
+      },
+      "function_diagnostic": "MakeLibuvRequestCallback::For is the port's simplified diagnostic label, not compiler __PRETTY_FUNCTION__ or __FUNCSIG__ byte equivalence."
+    }
+  },
+  "invariants": [
+    "One shared Environment request queue, waiting counter, FS client, UV service and FIFO; no new map, task, Promise or retained wrapper.",
+    "Actual Dispatch stores the original callback after Dispatched and before libuv invocation; success alone clears weak and increments waiting.",
+    "Reset clears the callback field before dispatched state, as original original_callback_=nullptr before req_.data=nullptr.",
+    "Actual Wrapper retains native pointer, detaches, decrements, then selects callback; callback may Reset/resubmit before outer pointer retirement.",
+    "Raw failed admission returns the actual status without synthesizing AfterInteger. The actual FileHandle caller retains the original ignored-return behavior.",
+    "Descriptor carries a borrowed native address and function; its size/layout is a port representation, not an additional allocation or native layout parity claim."
+  ],
+  "dependencies": [
+    "Reviewed raw span/reset C/H v3 625A46DF, actual C6BA884B6/HB738",
+    "Existing State4912 and shared Scope/Boundary actual owner; Main Environment EEF21",
+    "Root-owned native Check enum/dispatcher exact additive proposals included, no Root/Main edits"
+  ],
+  "exclusions": [
+    "No FileHandle/ReadWrap construction/template assembly yet",
+    "No change to original Promise AfterScope/AfterInteger or JS reason selection",
+    "No runtime, native CHECK process qualification or public API claim"
+  ],
+  "verification": {
+    "all_unique_forward_and_reverse": true,
+    "original_TCP12_FS14_FS25_roots_unchanged": true
+  }
+}

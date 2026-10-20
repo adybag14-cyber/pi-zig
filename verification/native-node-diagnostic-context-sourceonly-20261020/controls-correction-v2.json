@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "execution": false,
+  "root": "src/native_node_diagnostic_context_test.zig",
+  "before_sha256": "95CB9BB6C3F640494E5B917BD85B4E1321C3BAF0907FF4A6FB94AD256B472BDD",
+  "after_sha256": "536C002F636323E9F2D3C7A195BEEA054DA919DC600E86DA2850E2A63B51B861",
+  "before_bytes": 9532,
+  "after_bytes": 9765,
+  "steps": [
+    {
+      "label": "restore the actual saved VM heap limit",
+      "before": "    defer c.JS_SetMemoryLimit(f.runtime.?, memory_limit);",
+      "after": "    defer c.JS_SetMemoryLimit(f.runtime.?, @intCast(before.malloc_limit));"
+    },
+    {
+      "label": "cancel the actual detached private lease during every exit path",
+      "before": "    const reason = c.JS_GetException(f.context.?);\n    defer c.JS_FreeValue(f.context.?, reason);\n    try std.testing.expect(c.JS_PiIsExecutionTermination(reason));\n",
+      "after": "    const reason = c.JS_GetException(f.context.?);\n    defer {\n        if (c.JS_PiIsExecutionTermination(reason)) {\n            _ = c.JS_Throw(f.context.?, c.JS_DupValue(f.context.?, reason));\n            c.JS_PiCancelExecutionTermination(f.runtime.?);\n        }\n        c.JS_FreeValue(f.context.?, reason);\n    }\n    try std.testing.expect(c.JS_PiIsExecutionTermination(reason));\n"
+    }
+  ],
+  "whole_inverse": true,
+  "unchanged_declarations": 10,
+  "review": "VM finite peer identified restoration of actual prior malloc_limit0 and cleanup of a detached actual private termination lease. No production or oracle change; observations precede cleanup."
+}

@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "status": "finite_original_source_order_peer_closed_for_proposal",
+  "reviewer": "modules_io",
+  "execution": false,
+  "packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-reqwrap-callback-routing-sourceonly-20261020/source-proposal.json",
+    "sha256": "E15DC1E14112C94663D309FEF1B7919AF0BCF9114664357EDDDF7180EC99046B",
+    "bytes": 18286
+  },
+  "files": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_request_state.zig",
+      "base_sha256": "01DA46DC010A3108D592172C6F65AAB8100560FC274228FE9F1B6643A70A755A",
+      "successor_sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+      "edits": 4,
+      "bytes": 5818
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_fs_request_io.zig",
+      "base_sha256": "C360094C29E55F7F9C6BE6677390D94986D1FFED2680A05D8AF34162E20644C4",
+      "successor_sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "edits": 6,
+      "bytes": 14502
+    }
+  ],
+  "authority": {
+    "sha256": "27C770D8756B626C80210F96F9DB1CF31BFBF09AAB1DA53DC35B382314883E67",
+    "bytes": 5640,
+    "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/req_wrap-inl.h"
+  },
+  "checks": [
+    "Original Reset clears original_callback_ before req_.data. Proposed Entry.reset clears the same borrowed callback descriptor before dispatched=false, preserving counted precondition.",
+    "Original Dispatch calls Dispatched before MakeLibuvRequestCallback::For; For checks the null field and stores the original callback before the actual libuv call. Both proposed read routes preserve this order.",
+    "Only a nonnegative actual native result calls dispatchAccepted, which retains the existing original ClearWeak then waiting-counter order. Raw dispatch returns the real c_int result and does not synthesize a completion for negative admission.",
+    "Original Wrapper takes BaseObjectPtr, Detach, DecreaseWaitingRequestCounter, then reads/calls original_callback_. Proposed delivery calls the unchanged beginCallback before copying the callback descriptor, invokes it once, and releases the retained native pointer only after its actual callback and failure recording.",
+    "A callback may Reset/resubmit the same Entry. Delivery uses the locally selected descriptor; after invocation it does not reread old callback fields or result metadata. EndCallback retires only the outer native pointer entitlement.",
+    "The one Environment queue remains authoritative. Borrowed native address/function records add no retained JS wrapper, allocation, map, request, service or event owner."
+  ],
+  "limits": [
+    "Review is the requested Source/order slice of a proposal. Root owns shared native CHECK dispatch, and VM owns embedded-event concurrency and native protocol qualification.",
+    "Actual FileHandle/ReadWrap construction, backing retention through EmitRead, callback implementation and runtime remain separate dependencies.",
+    "The simplified CHECK function diagnostic label is not compiler __PRETTY_FUNCTION__/__FUNCSIG__ byte equivalence."
+  ]
+}

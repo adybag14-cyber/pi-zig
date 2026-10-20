@@ -1,0 +1,8 @@
+{
+  "base_sha256": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+  "projected_sha256": "E78993A3F5E86A18FBA7D65755B78AA034AF04B02AE9DD858C94FD7F6A1F7BA7",
+  "projected_bytes": 494739,
+  "added_lines": 8,
+  "full_forward_inverse_exact": true,
+  "execution": "none; source strings only"
+}

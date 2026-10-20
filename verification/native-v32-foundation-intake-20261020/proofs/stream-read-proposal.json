@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "status": "finite_source_fixture_correction_for_root_review",
+  "created_utc": "2026-10-20T18:31:38.628041+00:00",
+  "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_stream_read_test.zig",
+  "original_sha256": "17978D19E46922C6B5A974D57DF0B9131BA7BE149125F923CBA472D09975B55B",
+  "projected_sha256": "BF29DB0783C38D6FCA9161C5C5555F3C7666B10675E041B4FEFA23E2E0A43688",
+  "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v31-stream-read-fixture-sourceonly-20261020\\original.zig",
+  "projected": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v31-stream-read-fixture-sourceonly-20261020\\projected.zig",
+  "edits": [
+    {
+      "before_byte_offset": 24041,
+      "after_byte_offset": 24041,
+      "before": "test \"Node StreamBase read full extent adopts the same native bytes and advances the counter before callback\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const buffer = try f.allocate(16);\n    Fixture.fill(buffer, \"native-map-bytes!\");\n    try f.read(16, buffer);\n    try std.testing.expectEqual(@intFromPtr(buffer.base), f.received_pointer);\n    try std.testing.expectEqual(@as(usize, 16), f.received_length);\n    try std.testing.expectEqualSlices(u8, \"native-map-bytes!\", f.bytes[0..f.received_length]);\n    try std.testing.expectEqual(@as(u64, 16), f.observed_counter);\n    try std.testing.expectEqual(@as(i32, 16), f.observed_read);\n    try std.testing.expectEqual(@as(usize, 1), f.allocation_count);\n    try std.testing.expectEqual(@as(usize, 0), f.env().managed_buffers.count());\n    try f.expectTrace(\"bca\");\n}\n",
+      "after": "test \"Node StreamBase read full extent adopts the same native bytes and advances the counter before callback\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const payload = \"native-map-bytes!\";\n    const buffer = try f.allocate(payload.len);\n    Fixture.fill(buffer, payload);\n    try f.read(@intCast(payload.len), buffer);\n    try std.testing.expectEqual(@intFromPtr(buffer.base), f.received_pointer);\n    try std.testing.expectEqual(@as(usize, payload.len), f.received_length);\n    try std.testing.expectEqualSlices(u8, payload, f.bytes[0..f.received_length]);\n    try std.testing.expectEqual(@as(u64, payload.len), f.observed_counter);\n    try std.testing.expectEqual(@as(i32, @intCast(payload.len)), f.observed_read);\n    try std.testing.expectEqual(@as(usize, 1), f.allocation_count);\n    try std.testing.expectEqual(@as(usize, payload.len), f.allocations[0].length);\n    try std.testing.expectEqual(@as(usize, 0), f.env().managed_buffers.count());\n    try f.expectTrace(\"bca\");\n}\n"
+    }
+  ],
+  "whole_byte_inverse_exact": true,
+  "all_bytes_outside_selected_control_unchanged": true,
+  "named_source_declarations_before": 18,
+  "named_source_declarations_after": 18,
+  "ordered_source_names_unchanged": true,
+  "source_names": [
+    "Node StreamBase read initializes the real default listener and native wrapper pointer",
+    "Node StreamBase read selects internal onread beneath an ordinary own property and writes aliases first",
+    "Node StreamBase read allocates actual native backing without a JS wrapper under an exhausted JS heap",
+    "Node StreamBase read zero bytes consumes the managed token without a callback or trace",
+    "Node StreamBase read negative status publishes undefined and leaves the positive byte counter unchanged",
+    "Node StreamBase read full extent adopts the same native bytes and advances the counter before callback",
+    "Node StreamBase read short extent performs the real exact native reallocation and copies before adoption",
+    "Node StreamBase read later ArrayBuffer adoption bypasses the live global constructor",
+    "Node StreamBase read a returned flagged Error stays successful DATA",
+    "Node StreamBase read actual ordinary callback failure retains its exact reason through native cleanup",
+    "Node StreamBase read actual fatal callback reason remains owned while static after trace still runs",
+    "Node StreamBase read retains the selected callback across live replacement until caller scope retirement",
+    "Node StreamBase read ignored callback return retires only after the static after operation",
+    "Node StreamBase read can delete its actual native State before static after uses cached identifiers",
+    "Node StreamBase read enters the real captured frame and restores the enclosing native callback scope",
+    "Node StreamBase read disabled JS returns the actual empty callback while native buffer cleanup completes",
+    "Node StreamBase read uses the live listener head and advances bytes before a real forwarding method",
+    "Node StreamBase read null buffer negative status bypasses the managed map without an allocation"
+  ],
+  "previous_accepted_runtime_metadata_names": 19,
+  "require_existing_metadata_names_unchanged_at_future_build_query": true,
+  "future_actual_metadata": null,
+  "metadata_distinction": "Root confirmed18 named source declarations and19 prior accepted metadata names. This source edit preserves all source imports and outside-control bytes. Future actual metadata must be queried under Root ownership rather than inferred.",
+  "selected_control": "Node StreamBase read full extent adopts the same native bytes and advances the counter before callback",
+  "source_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_stream_read_test.zig",
+      "sha256": "17978D19E46922C6B5A974D57DF0B9131BA7BE149125F923CBA472D09975B55B",
+      "bytes": 33652
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_stream_base.zig",
+      "sha256": "0A3F4EB5133BC9543D5AD77DC33F4753ABEC866EB721BCE0A8F08C16BECD5ABF",
+      "bytes": 10864
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_stream_resource.zig",
+      "sha256": "6CA4CF5CD5E71EAD8C9E6F4FCF0D0075190C853E26978B497389F7D29EBE0AC6",
+      "bytes": 5762
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_managed_buffers.zig",
+      "sha256": "BE567B795D5129373EEFCF2A7C95E9017C481E020F17472E2C35838689F22B88",
+      "bytes": 2875
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_async_wrap_make_callback.zig",
+      "sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2",
+      "bytes": 3361
+    }
+  ],
+  "original_mismatch": {
+    "literal": "native-map-bytes!",
+    "literal_ascii_bytes": 17,
+    "allocated_extent": 16,
+    "read_extent": 16,
+    "original_fill_assertion": "std.debug.assert(bytes.len <= buffer.len);",
+    "inequality": "17 <= 16 is false",
+    "location": "Fixture.fill336-339; selected control524-537"
+  },
+  "correction": "One unchanged payload constant determines allocation, fill, read result, received length, byte comparison, callback-visible counter and observed read result. An explicit actual initial-allocation length check also uses payload.len.",
+  "preserved_exact_assertion_lines": [
+    "    try std.testing.expectEqual(@intFromPtr(buffer.base), f.received_pointer);",
+    "    try std.testing.expectEqual(@as(usize, 1), f.allocation_count);",
+    "    try std.testing.expectEqual(@as(usize, 0), f.env().managed_buffers.count());",
+    "    try f.expectTrace(\"bca\");"
+  ],
+  "reasoning": [
+    "Fixture.allocate333-334 delegates the supplied length to actual StreamResource.emitAlloc. firstSuccessfulAllocation135-156 passes that exact length to JS_PiTryNewArrayBufferBackingStore and records the length and actual data pointer.",
+    "Fixture.fill336-339 checks bytes.len against buffer.len before memcpy. The ASCII literal is17 bytes while the original selected allocation is16; the contradiction occurs before native read/adoption.",
+    "Fixture.read341-342 forwards nread to StreamResource.emitRead. The full-extent control needs nread to equal its backing extent to exercise direct adoption; changing only allocation to17 while retaining read16 would select the short-read branch and invalidate its pointer/no-copy condition.",
+    "The projected payload.len drives every extent-dependent operation/assertion. Native pointer equality, exactly one allocation, empty managed map and bca trace order are unchanged. The payload itself and fill assertion are unchanged.",
+    "readCallbackBody75-94 records the actual ArrayBuffer pointer/length/bytes plus the stream counter already visible at callback entry. Those observations stay checked against the same full payload extent."
+  ],
+  "runtime_negative": "Root reported the original V31 fill panic. This proposer established the source contradiction independently and did not execute the control.",
+  "compiler_execution": false,
+  "native_execution": false,
+  "test_execution": false,
+  "source_generator_execution": false,
+  "main_modified": false,
+  "production_modified": false,
+  "qualification": false
+}

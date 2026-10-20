@@ -1,0 +1,148 @@
+{
+  "schema": "pi.finite-source-peer.v1",
+  "date": "2026-10-20",
+  "reviewer": "sdk_owners",
+  "status": "CLOSED for assigned source-only controls and required helpers",
+  "execution": "none; no build, compiler, native process, Node, generator or test execution",
+  "pins": {
+    "root": {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/src/native_vm_simple_stack_source_test.zig",
+      "sha256": "1863129EC7E28E0F99D3B6C94E3B28FDC754781C7BF0DEF296552688DC0D5DF9",
+      "bytes": 53404
+    },
+    "owner_read": {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/src/extensions/native_error_stack.zig",
+      "sha256": "FB755EC4331C26D7CB92294684A89C3F7D282609236AB0CCF76D3CD1D57296E0",
+      "bytes": 32901
+    },
+    "c_delta": "B52F8C55743904B7EE81D2A8C7DF669D8428F84BE53576FA40887D27C5601F1F",
+    "c": "8A5D1DC383F50454DEE372C2B9DF7B8CF95B70ED58C99E6A69D3167BB9787B18",
+    "h": "621A5F9DD846DA6257C89E78EB25D527CCDFAB0F0E76FA34195CD51E7CF1B32B",
+    "prior_c_peer": "8EE3C6CF2F4C8E448E0683D47DB6C203DB4F5D887F6566E6AABACEC150CCD5D1"
+  },
+  "scope": {
+    "declarations": [
+      {
+        "index": 1,
+        "name": "VM simple stack source WeakMap intrinsic distinguishes absent and stored undefined"
+      },
+      {
+        "index": 2,
+        "name": "VM simple stack source WeakMap invalid brands and Proxy leave output untouched"
+      },
+      {
+        "index": 3,
+        "name": "VM simple stack source WeakMap read bypasses poisoned methods and heap and execution gates"
+      },
+      {
+        "index": 4,
+        "name": "VM simple stack source WeakMap raw read preserves actual ordinary fatal and private pending"
+      },
+      {
+        "index": 5,
+        "name": "VM simple stack source WeakMap returned value owns one root without keeping the key alive"
+      },
+      {
+        "index": 6,
+        "name": "VM simple stack source real Error selects its original complete Script and source position"
+      },
+      {
+        "index": 7,
+        "name": "VM simple stack source inherited holder remains visible through a never-captured native Error"
+      },
+      {
+        "index": 8,
+        "name": "VM simple stack source captured-disabled state blocks an inherited raw stack"
+      },
+      {
+        "index": 9,
+        "name": "VM simple stack source formatted undefined and other DATA block inheritance"
+      },
+      {
+        "index": 10,
+        "name": "VM simple stack source raw lookup stops at Proxy without invoking its traps"
+      },
+      {
+        "index": 11,
+        "name": "VM simple stack source raw lookup ignores guest fields and preserves actual pending at heap limit one"
+      },
+      {
+        "index": 12,
+        "name": "VM simple stack source native Script result retains no captured receiver graph"
+      },
+      {
+        "index": 13,
+        "name": "VM simple stack source raw projection skips native and synthetic records before a real Script"
+      },
+      {
+        "index": 14,
+        "name": "VM simple stack source raw projection rejects Proxy and accessor arrays without guest entry"
+      },
+      {
+        "index": 15,
+        "name": "VM simple stack source fallback presence distinguishes untouched Error and consuming transfer"
+      },
+      {
+        "index": 16,
+        "name": "VM simple stack source raw fallback read neither allocates nor adopts its C owner"
+      },
+      {
+        "index": 17,
+        "name": "VM simple stack source successful map adoption consumes fallback before formatter failure"
+      },
+      {
+        "index": 18,
+        "name": "VM simple stack source failed map adoption leaves the original C fallback intact"
+      },
+      {
+        "index": 19,
+        "name": "VM simple stack source present undefined fallback blocks inherited provenance and transfers once"
+      },
+      {
+        "index": 20,
+        "name": "VM simple stack source consuming fallback transfer preserves actual pending without allocation"
+      }
+    ],
+    "helpers": [
+      "Fixture init/deinit/checked/rawEval/eval/publish/get/read/expectMissing/source/expectPending/expectNative/weakSet/heldError/fallbackError",
+      "Probe holder/observe, retire count path, captureAll and recursiveCapture",
+      "Location native Script retirement",
+      "Actual native_error_stack rawLookup/readSimpleStackLocation and adoptPending required consumer paths read"
+    ]
+  },
+  "findings": [
+    {
+      "slice": "1–5 intrinsic WeakMap",
+      "conclusion": "Actual empty versus present-undefined distinction, plain/Proxy brand rejection without output change, retained value after map/key retirement, poisoned guest methods and VM heap/Disallow gates, and actual ordinary/generic-fatal/private pending all exercise the intrinsic. Results that can carry an owned root retire through their real Fixture/locals; limits and execution permission restore before assertions."
+    },
+    {
+      "slice": "6–12 selected raw owner",
+      "conclusion": "Actual compiled Script identity/full source and real position projection are distinct from displayed names. A never-captured native Error can inherit; present disabled or formatted DATA blocks inheritance. Proxy is a traversal stop. Guest name/message/stack and WeakMap.get poison are not entered under the actual heap limit and pending modes. The independent Script owner remains after the Error/receiver graph retires."
+    },
+    {
+      "slice": "13–14 native frame projection",
+      "conclusion": "Real captureAll native+Script frames and independently synthetic no-Script frames establish first actual Script selection. Proxy/accessor arrays and unsupported arguments return no projection without traps. The script/result owner is established before assertions; missing-source outputs remain unchanged."
+    },
+    {
+      "slice": "15–20 native fallback",
+      "conclusion": "recursiveCapture creates a real nested Error while the linked C hook is active; it does not write fallback fields itself. Presence is distinct from untouched Error even where the legacy reader returns undefined. Raw lookup neither adopts nor allocates. Successful actual map adoption consumes the C entitlement before formatter failure; failed actual VM allocation retains it and exact Script identity. Present undefined blocks inheritance until consuming transfer. Transfer preserves actual ordinary, generic fatal and private completion and the allocation occurrence count."
+    },
+    {
+      "slice": "Fixture lifetime",
+      "conclusion": "Fixture and Probe live at their final caller address. The Fixture owns installed owner/carrier/reasons/fallback through real cleanup; deinit disables finalizer actions, restores native gates, clears actual completion, uninstalls the actual hooks/accessors and frees roots before Engine teardown. Native Script and JS outcomes have independent retirement. The private event check republishes its actual token before cancellation; diagnostic DATA is not adopted."
+    }
+  ],
+  "limits": [
+    "Declarations21–33 and their formatter/setter retirement tails are Modules' separate assigned peer.",
+    "Reading the required owner paths is not an independent closure of all native_error_stack production changes.",
+    "No Message construction, detailed stacks, ThrowAt metadata, reporting, normal Engine installation or complete bootstrap claim.",
+    "No execution or runtime qualification; source tests retain all existing assertions and names."
+  ],
+  "verification": {
+    "full_root_read": true,
+    "full_owner_read": true,
+    "assigned_control_count": 20,
+    "actual_root_declarations": 33,
+    "concrete_blockers": []
+  }
+}

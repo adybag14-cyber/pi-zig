@@ -1,0 +1,160 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "kind": "immutable original-source acquisition and finite prerequisite proof",
+  "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "source_only": true,
+  "execution": false,
+  "files": [
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/debug_utils.h",
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils.h.v24.13.txt",
+      "bytes": 7649,
+      "sha256": "807d1a5b4c872b0fb5a14dfeb0bd48bef126cbdca920e5908e949218617484b4",
+      "retrieved_at": "2026-10-19T20:35:34.612Z",
+      "validated_at": "2026-10-20T14:50:30.606Z",
+      "full_file": true
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/debug_utils-inl.h",
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils-inl.h.v24.13.txt",
+      "bytes": 9366,
+      "sha256": "a3a471fc932b173cc08c53571e7c791a3dd816720443ba6afd4c5561ddda7a72",
+      "retrieved_at": "2026-10-20T14:50:30.894Z",
+      "validated_at": "2026-10-20T14:50:30.894Z",
+      "full_file": true
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/debug_utils.cc",
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils.cc.v24.13.txt",
+      "bytes": 16324,
+      "sha256": "9f2904508a8443beb454dc789a07d60afb2f2ec7f9b2f56bc651d9c66edb0ea3",
+      "retrieved_at": "2026-10-19T20:13:40.430Z",
+      "validated_at": "2026-10-20T14:50:31.171Z",
+      "full_file": true
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/addon_permission.h.v24.13.txt",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/permission/addon_permission.h",
+      "body_sha256": "e0c9e3a55d4fc03eaaf0191c0ba1dd816b263be972d74bd3b63f2e638e581f48",
+      "bytes": 775,
+      "retrieved_at": "2026-10-20T14:58:19.361Z",
+      "full": true
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/child_process_permission.h.v24.13.txt",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/permission/child_process_permission.h",
+      "body_sha256": "1a518eb92295513743e12af023e5700274db0a736328d9ce62bbb40241dd3e71",
+      "bytes": 806,
+      "retrieved_at": "2026-10-20T14:58:19.628Z",
+      "full": true
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/inspector_permission.h.v24.13.txt",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/permission/inspector_permission.h",
+      "body_sha256": "28892270154c0769e6949fadf36f29c8e3ca2467f4887fe2d7518fd3df68265a",
+      "bytes": 791,
+      "retrieved_at": "2026-10-20T14:58:19.900Z",
+      "full": true
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/wasi_permission.h.v24.13.txt",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/permission/wasi_permission.h",
+      "body_sha256": "1f24dab51ef889033b6097ffbc266477e7eb9b5f8c08734ed57851e17b757670",
+      "bytes": 771,
+      "retrieved_at": "2026-10-20T14:58:20.185Z",
+      "full": true
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/worker_permission.h.v24.13.txt",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/permission/worker_permission.h",
+      "body_sha256": "a354fbe02ce80a22fcd2c1ec0855fc4d9aa400765e3172f2da1dc6f798fc4f35",
+      "bytes": 779,
+      "retrieved_at": "2026-10-20T14:58:20.462Z",
+      "full": true
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/addon_permission.cc.v24.13.txt",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/permission/addon_permission.cc",
+      "body_sha256": "41c315b404e271b351860ede4306e22711b1fa77171fb3eb6331b6446792fb03",
+      "bytes": 616,
+      "retrieved_at": "2026-10-20T14:58:38.548Z",
+      "full": true
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/child_process_permission.cc.v24.13.txt",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/permission/child_process_permission.cc",
+      "body_sha256": "7acf603229159ad1d1c172221124fc9e40ecc77b4d1e7c8eb5d4092f7d5b9874",
+      "bytes": 691,
+      "retrieved_at": "2026-10-20T14:58:38.823Z",
+      "full": true
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/inspector_permission.cc.v24.13.txt",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/permission/inspector_permission.cc",
+      "body_sha256": "440f0f786c231ac3eca29ae42a6b2c1976b6544b0b3248b20a5d1316c3b24d1d",
+      "bytes": 648,
+      "retrieved_at": "2026-10-20T14:58:39.097Z",
+      "full": true
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/wasi_permission.cc.v24.13.txt",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/permission/wasi_permission.cc",
+      "body_sha256": "448ec6d503cc8eafd4532ab67964c5800f40421ffb700b3ababe2fe01b1b340d",
+      "bytes": 647,
+      "retrieved_at": "2026-10-20T14:58:39.346Z",
+      "full": true
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/worker_permission.cc.v24.13.txt",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/permission/worker_permission.cc",
+      "body_sha256": "e05859a8ad70e6b181a118e212235638e23941f062d0092ab440681559dffcc2",
+      "bytes": 663,
+      "retrieved_at": "2026-10-20T14:58:39.635Z",
+      "full": true
+    }
+  ],
+  "preservation": "The complete licensed original files are retained unchanged. Debug originals were reconstructed from complete bounded overlapping public HTTP excerpts and checked against the full raw HTTP body hash with actual file_state. Policy headers/bodies each fit in one complete native HTTP excerpt; exact length and SHA were checked before preservation.",
+  "debug_excerpts": [
+    {
+      "file": "debug_utils.h.v24.13.txt",
+      "start": 1410,
+      "end": 3933,
+      "text": "#define DEBUG_CATEGORY_NAMES(V)                                                \\\n  NODE_ASYNC_PROVIDER_TYPES(V)                                                 \\\n  V(CRYPTO)                                                                    \\\n  V(COMPILE_CACHE)                                                             \\\n  V(DIAGNOSTICS)                                                               \\\n  V(HUGEPAGES)                                                                 \\\n  V(INSPECTOR_SERVER)                                                          \\\n  V(INSPECTOR_CLIENT)                                                          \\\n  V(INSPECTOR_PROFILER)                                                        \\\n  V(CODE_CACHE)                                                                \\\n  V(NGTCP2_DEBUG)                                                              \\\n  V(SEA)                                                                       \\\n  V(WASI)                                                                      \\\n  V(MODULE)                                                                    \\\n  V(MKSNAPSHOT)                                                                \\\n  V(SNAPSHOT_SERDES)                                                           \\\n  V(PERMISSION_MODEL)                                                          \\\n  V(PLATFORM_MINIMAL)                                                          \\\n  V(PLATFORM_VERBOSE)                                                          \\\n  V(QUIC)\n\nenum class DebugCategory : unsigned int {\n#define V(name) name,\n  DEBUG_CATEGORY_NAMES(V)\n#undef V\n};\n\n#define V(name) +1\nconstexpr unsigned int kDebugCategoryCount = DEBUG_CATEGORY_NAMES(V);\n#undef V\n\nclass NODE_EXTERN_PRIVATE EnabledDebugList {\n public:\n  bool FORCE_INLINE enabled(DebugCategory category) const {\n    DCHECK_LT(static_cast<unsigned int>(category), kDebugCategoryCount);\n    return enabled_[static_cast<unsigned int>(category)];\n  }\n\n  // Uses NODE_DEBUG_NATIVE to initialize the categories. env->env_vars()\n  // is parsed if it is not a nullptr, otherwise the system environment\n  // variables are parsed.\n  void Parse(Environment* env);\n\n private:\n  // Enable all categories matching cats.\n  void Parse(const std::string& cats);\n  void set_enabled(DebugCategory category) {\n    DCHECK_LT(static_cast<unsigned int>(category), kDebugCategoryCount);\n    enabled_[static_cast<int>(category)] = true;\n  }\n\n  bool enabled_[kDebugCategoryCount] = {false};\n};\n\n",
+      "offset_unit": "UTF-16 string positions; whole-file byte identity pinned independently"
+    },
+    {
+      "file": "debug_utils.cc.v24.13.txt",
+      "start": 1095,
+      "end": 2257,
+      "text": "namespace per_process {\nEnabledDebugList enabled_debug_list;\n}\n\nusing v8::Local;\nusing v8::StackTrace;\n\nvoid EnabledDebugList::Parse(Environment* env) {\n  std::string cats;\n  credentials::SafeGetenv(\"NODE_DEBUG_NATIVE\", &cats, env);\n  Parse(cats);\n}\n\nvoid EnabledDebugList::Parse(const std::string& cats) {\n  std::string debug_categories = cats;\n  while (!debug_categories.empty()) {\n    std::string::size_type comma_pos = debug_categories.find(',');\n    std::string wanted = ToLower(debug_categories.substr(0, comma_pos));\n\n#define V(name)                                                                \\\n  {                                                                            \\\n    static const std::string available_category = ToLower(#name);              \\\n    if (available_category.find(wanted) != std::string::npos)                  \\\n      set_enabled(DebugCategory::name);                                        \\\n  }\n\n    DEBUG_CATEGORY_NAMES(V)\n#undef V\n\n    if (comma_pos == std::string::npos) break;\n    // Use everything after the `,` as the list for the next iteration.\n    debug_categories = debug_categories.substr(comma_pos + 1);\n  }\n}\n\n",
+      "offset_unit": "UTF-16 string positions; whole-file byte identity pinned independently"
+    },
+    {
+      "file": "debug_utils-inl.h.v24.13.txt",
+      "start": 3382,
+      "end": 7206,
+      "text": "inline std::string SPrintFImpl(std::string_view format) {\n  auto offset = format.find('%');\n  if (offset == std::string_view::npos) return std::string(format);\n  CHECK_LT(offset + 1, format.size());\n  CHECK_EQ(format[offset + 1],\n           '%');  // Only '%%' allowed when there are no arguments.\n\n  return std::string(format.substr(0, offset + 1)) +\n         SPrintFImpl(format.substr(offset + 2));\n}\n\ntemplate <typename Arg, typename... Args>\nstd::string COLD_NOINLINE SPrintFImpl(  // NOLINT(runtime/string)\n    std::string_view format,\n    Arg&& arg,\n    Args&&... args) {\n  auto offset = format.find('%');\n  CHECK_NE(offset, std::string_view::npos);  // If you hit this, you passed in\n                                             // too many arguments.\n  std::string ret(format.substr(0, offset));\n  // Ignore long / size_t modifiers\n  while (++offset < format.size() &&\n         (format[offset] == 'l' || format[offset] == 'z')) {\n  }\n  switch (offset == format.size() ? '\\0' : format[offset]) {\n    case '%': {\n      return ret + '%' +\n             SPrintFImpl(format.substr(offset + 1),\n                         std::forward<Arg>(arg),\n                         std::forward<Args>(args)...);\n    }\n    default: {\n      return ret + '%' +\n             SPrintFImpl(format.substr(offset),\n                         std::forward<Arg>(arg),\n                         std::forward<Args>(args)...);\n    }\n    case 'd':\n    case 'i':\n    case 'u':\n    case 's':\n      ret += ToStringOrStringView(arg);\n      break;\n    case 'o':\n      ret += ToBaseString<3>(arg);\n      break;\n    case 'x':\n      ret += ToBaseString<4>(arg);\n      break;\n    case 'X':\n      ret += node::ToUpper(ToBaseString<4>(arg));\n      break;\n    case 'p': {\n      CHECK(std::is_pointer_v<typename std::remove_reference_t<Arg>>);\n      char out[20];\n      int n = snprintf(\n          out, sizeof(out), \"%p\", *reinterpret_cast<const void* const*>(&arg));\n      CHECK_GE(n, 0);\n      ret += out;\n      break;\n    }\n  }\n  return ret +\n         SPrintFImpl(format.substr(offset + 1), std::forward<Args>(args)...);\n}\n\ntemplate <typename... Args>\nstd::string COLD_NOINLINE SPrintF(  // NOLINT(runtime/string)\n    std::string_view format,\n    Args&&... args) {\n  return SPrintFImpl(format, std::forward<Args>(args)...);\n}\n\ntemplate <typename... Args>\nvoid COLD_NOINLINE FPrintF(FILE* file,\n                           std::string_view format,\n                           Args&&... args) {\n  FWrite(file, SPrintF(format, std::forward<Args>(args)...));\n}\n\ntemplate <typename... Args>\ninline void FORCE_INLINE Debug(EnabledDebugList* list,\n                               DebugCategory cat,\n                               const char* format,\n                               Args&&... args) {\n  if (!list->enabled(cat)) [[unlikely]]\n    return;\n  FPrintF(stderr, format, std::forward<Args>(args)...);\n}\n\ninline void FORCE_INLINE Debug(EnabledDebugList* list,\n                               DebugCategory cat,\n                               const char* message) {\n  if (!list->enabled(cat)) [[unlikely]]\n    return;\n  FPrintF(stderr, \"%s\", message);\n}\n\ntemplate <typename... Args>\ninline void FORCE_INLINE\nDebug(Environment* env, DebugCategory cat, const char* format, Args&&... args) {\n  Debug(env->enabled_debug_list(), cat, format, std::forward<Args>(args)...);\n}\n\ninline void FORCE_INLINE Debug(Environment* env,\n                               DebugCategory cat,\n                               const char* message) {\n  Debug(env->enabled_debug_list(), cat, message);\n}\n\ntemplate <typename... Args>\ninline void Debug(Environment* env,\n                  DebugCategory cat,\n                  const std::string& format,\n                  Args&&... args) {\n  Debug(env->enabled_debug_list(),\n        cat,\n        format.c_str(),\n        std::forward<Args>(args)...);\n}\n\n",
+      "offset_unit": "UTF-16 string positions; whole-file byte identity pinned independently"
+    },
+    {
+      "file": "debug_utils.cc.v24.13.txt",
+      "start": 15120,
+      "end": 16183,
+      "text": "void FWrite(FILE* file, const std::string& str) {\n  auto simple_fwrite = [&]() {\n    // The return value is ignored because there's no good way to handle it.\n    fwrite(str.data(), str.size(), 1, file);\n  };\n\n  if (file != stderr && file != stdout) {\n    simple_fwrite();\n    return;\n  }\n#ifdef _WIN32\n  HANDLE handle =\n      GetStdHandle(file == stdout ? STD_OUTPUT_HANDLE : STD_ERROR_HANDLE);\n\n  // Check if stderr is something other than a tty/console\n  if (handle == INVALID_HANDLE_VALUE || handle == nullptr ||\n      uv_guess_handle(_fileno(file)) != UV_TTY) {\n    simple_fwrite();\n    return;\n  }\n\n  // Get required wide buffer size\n  int n = MultiByteToWideChar(CP_UTF8, 0, str.data(), str.size(), nullptr, 0);\n\n  std::vector<wchar_t> wbuf(n);\n  MultiByteToWideChar(CP_UTF8, 0, str.data(), str.size(), wbuf.data(), n);\n\n  WriteConsoleW(handle, wbuf.data(), n, nullptr, nullptr);\n  return;\n#elif defined(__ANDROID__)\n  if (file == stderr) {\n    __android_log_print(ANDROID_LOG_ERROR, \"nodejs\", \"%s\", str.data());\n    return;\n  }\n#endif\n  simple_fwrite();\n}\n",
+      "offset_unit": "UTF-16 string positions; whole-file byte identity pinned independently"
+    }
+  ],
+  "findings": [
+    "EnabledDebugList has an actual initially false category array; Parse obtains NODE_DEBUG_NATIVE through credentials::SafeGetenv before parsing. The global per_process list and each Environment list are separate owners.",
+    "Parse copies its incoming text, repeatedly lowercases the comma-delimited wanted component, and tests it as a substring of every static lowercased category name. It only enables flags. An empty component within a nonempty comma list therefore matches all category names; an initially empty input does not enter the loop.",
+    "FSPermission debug uses the global per_process list. Its explicit gate and the delegated Debug gate are separate reads. This is distinct from the trace_events category/controller owner.",
+    "Debug formatting and FWrite are real native allocation/output paths. A std::string argument copies under ToStringOrStringView; const char* arguments remain views. On Windows stdout/stderr console output performs actual UTF-8 conversion and WriteConsoleW, with fwrite fallback.",
+    "Addon/child-process/inspector/WASI/worker policies each contain the original deny_all_ Boolean, Apply sets it true and is_granted returns its negation. The original value-initialized construction must be preserved; an uninitialized raw allocation is not equivalent."
+  ],
+  "open_boundaries": [
+    "Permission implementation, process-level/Environment debug ownership and native allocation-domain initialization remain to be authored and peer reviewed.",
+    "Original FSPermission directory-stat early-return cleanup and wildcard-descendant destructor behavior are separately reported to Root; this proof does not silently correct or qualify them.",
+    "No production default Environment, RealEnvStore, JS interceptor, bootstrap, native build or runtime claim."
+  ]
+}

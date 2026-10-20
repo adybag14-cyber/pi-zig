@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "status": "source_only_finite_private_pending_fixture_correction_review_pending",
+  "utc": "2026-10-20T18:04:47.031830+00:00",
+  "candidate_head": "14615dfc179f9e7e2044591a2d8aa9592b9d883b",
+  "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_vm_script_location_test.zig",
+  "original_sha256": "30A2FEA5671546E4A285E68AD5B6D667A49E698B1C51C699DDF83A84495DA000",
+  "projected_sha256": "286A630630468043BD80E8F6A6C99D4DFAA6A09D86C43636D874E28F538C6A3F",
+  "source_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+    "sha256": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC"
+  },
+  "edits": [
+    {
+      "position": 26551,
+      "before": "        } else _ = c.JS_Throw(f.context.?, c.JS_DupValue(f.context.?, reason));\n        c.JS_SetMemoryLimit(f.runtime.?, 1);",
+      "after": "        } else _ = c.JS_Throw(f.context.?, c.JS_DupValue(f.context.?, reason));\n        const generation = c.JS_PiExecutionTerminationGeneration(f.runtime.?);\n        c.JS_SetMemoryLimit(f.runtime.?, 1);"
+    },
+    {
+      "position": 27507,
+      "before": "        try std.testing.expect(c.JS_HasException(f.context.?));\n        if (mode == 2) try std.testing.expect(c.JS_PiIsExecutionTerminating(f.runtime.?));",
+      "after": "        try std.testing.expect(c.JS_HasException(f.context.?));\n        try std.testing.expectEqual(generation, c.JS_PiExecutionTerminationGeneration(f.runtime.?));\n        if (mode == 2) try std.testing.expect(c.JS_PiIsExecutionTerminating(f.runtime.?));"
+    },
+    {
+      "position": 27861,
+      "before": "        try std.testing.expect(c.JS_IsSameValue(f.context.?, reason, actual));\n        if (mode != 2) try std.testing.expectEqual(mode == 1, c.JS_IsUncatchableError(actual));",
+      "after": "        if (mode == 2) {\n            // Private native completions are outside JavaScript SameValue.\n            // This predicate verifies the exact exception tag and payload.\n            try std.testing.expect(c.JS_PiIsExecutionTermination(actual));\n        } else {\n            try std.testing.expect(c.JS_IsSameValue(f.context.?, reason, actual));\n            try std.testing.expectEqual(mode == 1, c.JS_IsUncatchableError(actual));\n        }"
+    }
+  ],
+  "full_byte_inverse_verified": true,
+  "named_declarations_before": 32,
+  "named_declarations_after": 32,
+  "causal_source_chain": [
+    "JS_PiNativeTerminationResult returns private JS_TAG_EXCEPTION payload 1; JS_PiIsExecutionTermination verifies this exact representation.",
+    "JS_IsSameValue calls js_same_value -> js_strict_eq2; native exception sentinels hit default false, even when identical.",
+    "JS_PiScriptReadInfo reads owned fields; Source/ResourceName/SourceMapURL duplicate retained values; GetCapturedStackFrameScript duplicates owner; none allocate or mutate pending event.",
+    "JS_GetException directly detaches current_exception. Mode 0/1 remain object SameValue and uncatchable-flag checks; mode 2 now verifies exact private token and all modes assert unchanged native event generation."
+  ],
+  "original_negative_result_sha256": "532F2452A9547136F496FCAAF62F6C155051DDCBA00E231AC231A0FC02D2E624",
+  "original_stderr_sha256": "C917E6A292C20C453E3429BCD63341F2AAB9A0C15E654F5A4BAE828992570BDF",
+  "main_modified": false,
+  "production_source_modified": false,
+  "native_execution": false,
+  "qualification": false
+}

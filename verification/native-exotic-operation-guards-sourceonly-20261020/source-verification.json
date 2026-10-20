@@ -1,0 +1,58 @@
+{
+  "status": "source-only five-edit forward and offset inverse exact",
+  "base_head": "5808ee87683ac212e535718b1c90704926fac8ac",
+  "steps": [
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "declare explicit integrity operation modes",
+      "offset": 35458,
+      "before_bytes": 37,
+      "after_bytes": 245
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "append optional query-only and integrity-admission callbacks",
+      "offset": 37162,
+      "before_bytes": 173,
+      "after_bytes": 1191
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "select only actual flags-only requests",
+      "offset": 396166,
+      "before_bytes": 166,
+      "after_bytes": 444
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "admit actual integrity mode before mutation",
+      "offset": 398895,
+      "before_bytes": 688,
+      "after_bytes": 1448
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "preserve seal versus freeze at direct-object admission",
+      "offset": 1592581,
+      "before_bytes": 253,
+      "after_bytes": 401
+    }
+  ],
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before_sha256": "DE3C05D6698F2D1AC5F3D7F92540F4775B374101A71EAE2C4925FD3F48FAFCAE",
+      "after_sha256": "4DA0CA0668224BF9D0930DD41AF54206443BBCFE32310418B4814956EBC8A5D9",
+      "before_bytes": 2394786,
+      "after_bytes": 2395972
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before_sha256": "621A5F9DD846DA6257C89E78EB25D527CCDFAB0F0E76FA34195CD51E7CF1B32B",
+      "after_sha256": "FF3D7F9A46E41CEC7C5619A42A6B590BD8F2F298A73DE7F717DD5BCFF651D600",
+      "before_bytes": 111537,
+      "after_bytes": 112763
+    }
+  ],
+  "execution": false
+}

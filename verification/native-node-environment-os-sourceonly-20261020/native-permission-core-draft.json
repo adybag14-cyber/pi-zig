@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "status": "DRAFT: native Permission core; original cleanup defects retained, no source closure claimed",
+  "execution": false,
+  "main_mutated": false,
+  "production": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission.h",
+      "sha256": "6005cbf37a2fa4a6bf310274ab8338f030e886aaa1461eec95fed2019e3e3c9b",
+      "bytes": 3314
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission_internal.hpp",
+      "sha256": "360b921e6e0a38096e739857c78e1f7b620415e6472cae3d8e65d20b1c852e41",
+      "bytes": 11310
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission.cpp",
+      "sha256": "40553ffa8d674ef8893631f6cb2726713858d61b7d4c2cda89a10f006cdd518d",
+      "bytes": 15177
+    }
+  ],
+  "authority": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/fs_permission.cc.v24.13.txt",
+      "sha256": "afd036b1c56806b7f56d69872e391bab44c2aff01c0fb36c6cf6672164399ab8",
+      "bytes": 6854
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/fs_permission.h.v24.13.txt",
+      "sha256": "2fc127a57d9eacfa0119c1d11787ceaebfd9c367a039b09dd627e3c268809f4c",
+      "bytes": 4563
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/permission.cc.v24.13.txt",
+      "sha256": "de63a54c60ec53734df9376c8236af99044d9394a37ec2b2c75dd0e4d7a32c40",
+      "bytes": 6776
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/permission.h.v24.13.txt",
+      "sha256": "4e3d00379fec7252a2de67e0df6f6fe6003df84716e36359f8a77bda61bbdf18",
+      "bytes": 6418
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/permission_base.h.v24.13.txt",
+      "sha256": "781460fff3180ccf3c5bed93cb8195873e6edacb9f038280457f541584a94901",
+      "bytes": 2402
+    }
+  ],
+  "additional_authority": {
+    "debug_and_policies": "56F9E027AFDBD749280A15BFB776E01C36E2F0F43D3F6F308F9A74CAB06F05CD",
+    "sdk_original_cleanup": "522698C721CBB6328A6CE48DFDE53B6012FFC29E7CFE6F13BDC8AFB4C48E0074",
+    "shared_ptr": {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-shared_ptr.h.pinned.txt",
+      "sha": "3241af290fc414e0228b5312656a4afbe11b7de9ed9d09e80a97fab6e8dc4293",
+      "bytes": 60418,
+      "source": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/libcxx/include/__memory/shared_ptr.h"
+    }
+  },
+  "adaptations": [
+    "Original PermissionScope macros, policy class order, six policy constructors, eight unordered-map insertions, live permission enable/lookup and FS tree algorithms are selected from the complete retained original files.",
+    "Native std::string and std::vector aliases use the same libc++ containers with the already peer-closed stateless Allocator. Unordered maps preserve actual default enum/char hashing and native iteration. No sorted or Zig-map replacement is introduced.",
+    "Original make_shared calls become allocate_shared with the same actual libc++ control-block implementation and no arguments. The actual make_shared body delegates to allocate_shared; normal allocator_traits construction preserves value initialization of the five deny_all_ fields.",
+    "Original raw Node allocation/deallocation uses class-specific new/delete through the same real standard allocator and per-block prefix owner. The original children[label] publication before Node construction is retained.",
+    "Environment is a synchronous borrowed view of the already closed native PathResolve/GetCwd/SafeGetenv inputs. Original path calls use its native path view; no guest process property is consulted.",
+    "Original process-global debug gates are represented by required native operations, including both insertion gates and each tree-line gate. Formatting itself remains an uninstalled actual SPrintF/FWrite dependency; neither a false gate nor no-op output is supplied.",
+    "Original Node CHECK in CreateChild is routed to the real shared native assertion owner with original file/line/expression and borrowed current JSContext. It is not converted to a guest exception.",
+    "The C ABI provides placement construction/destruction and explicit embedding materialization before Apply; this prefix is not claimed as full Node CLI or Environment startup allocation parity."
+  ],
+  "allocation_paths": [
+    "Actual six shared policy/control-block allocations; the FSPermission construction allocates the in/out root Nodes before later policies.",
+    "Actual policy unordered-map nodes and buckets, FS char-key nodes and buckets, each native String/vector allocation, prefix/suffix copies and original native concatenations.",
+    "Each successful custom block independently retains its native allocation domain. Real standard new_handler retry or native bad_alloc termination applies; no native container failure is relabeled as JS OOM.",
+    "Placement PiNodePermission storage belongs to the later single native Environment allocation and is not independently freed by this owner."
+  ],
+  "known_open": [
+    "WildcardIfDir retains the exact original Windows successful-directory early return before request cleanup. SDK proved the actual libuv path allocation has no compensating owner. This draft is not accepted for memory-cleanup qualification.",
+    "FreeRecursivelyNode retains the exact original delete of wildcard_child without recursive deletion of wildcard descendants. SDK proved nonterminal wildcard input can leave those native nodes unreachable.",
+    "Root must choose and review a separately explicit native cleanup adaptation before this owner is closed or installed. No cleanup behavior was silently altered in this draft.",
+    "Actual per-process EnabledDebugList initialization and SPrintF/FWrite operations, native State/settings composition, denied Error construction, process.env interceptors and any public permission namespace remain outside this draft.",
+    "No build target, controls, compilation, Main intake or runtime qualification."
+  ]
+}

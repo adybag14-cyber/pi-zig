@@ -1,0 +1,104 @@
+{
+  "schema": "finite-native-owner-peer-v1",
+  "date": "2026-10-20",
+  "reviewer": "vm_foundation",
+  "status": "closed in assigned placement/native-owner slice; source-only",
+  "production": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_native_debug.cpp",
+      "sha256": "AD3446C875DFFD39165AF9514A4A1169125995C5701F4B706706F83CB814A990",
+      "bytes": 6880
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_native_debug_internal.hpp",
+      "sha256": "301D73ED189F50DACA4B0E2C16B3C7E9469E716EB935F67D826EDB691F01B4F1",
+      "bytes": 14875
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_native_debug.h",
+      "sha256": "E11332B46CC5DF6001BBEBF3CF094B5ED2C8C4170F4FB0089B264DC0AE5BF8E8",
+      "bytes": 3449
+    }
+  ],
+  "packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/native-debug-source-draft.json",
+    "sha256": "477F0E70D89BA9025E714CD8ED554EBCA13EB80F897D3C36F71ACA1AC3D5454B",
+    "bytes": 27792
+  },
+  "dependencies": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_standard_allocator.hpp",
+      "sha256": "16D82D2C2143DFAF3861B722BD2E9775FB0BD7D6C9BE400D0ECE37E0674E709B",
+      "bytes": 2562
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_simdjson_memory.hpp",
+      "sha256": "7554ED1DDCA28FAE7B11E025BD9D7EEF560DB657086A40029E5D95DBEFAE5291",
+      "bytes": 2449
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_simdjson_memory.cpp",
+      "sha256": "44794005D36BB3E1EC6B1A7DF3AA9A6B7DE7C02D6F12BBF38115F83E49C5E103",
+      "bytes": 2714
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_environment_paths_internal.hpp",
+      "sha256": "1B56668AF3BBF9A165CF384AE8D3CA7EE4ECE466E832D781C124B2691B580DC6",
+      "bytes": 1285
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_permission.h",
+      "sha256": "6005CBF37A2FA4A6BF310274AB8338F030E886AAA1461EEC95FED2019E3E3C9B",
+      "bytes": 3314
+    }
+  ],
+  "originals": [
+    {
+      "path": "authority/debug_utils.h.v24.13.txt",
+      "sha256": "807D1A5B4C872B0FB5A14DFEB0BD48BEF126CBDCA920E5908E949218617484B4",
+      "bytes": 7649
+    },
+    {
+      "path": "authority/debug_utils-inl.h.v24.13.txt",
+      "sha256": "A3A471FC932B173CC08C53571E7C791A3DD816720443BA6AFD4C5561DDDA7A72",
+      "bytes": 9366
+    },
+    {
+      "path": "authority/debug_utils.cc.v24.13.txt",
+      "sha256": "9F2904508A8443BEB454DC789A07D60AFB2F2EC7F9B2F56BC651D9C66EDB0EA3",
+      "bytes": 16324
+    },
+    {
+      "path": "authority/async_wrap.h.v24.13.txt",
+      "sha256": "3EBF97B3044B4875D1F62C3F8BA1668886F4AE19F6369A8DD20EC0E262BBF1EF",
+      "bytes": 12198,
+      "origin": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-file-handle-sourceonly-20261019/authority/async_wrap.h.v24.13.txt"
+    },
+    {
+      "path": "authority/path-constants-and-case-source.json",
+      "sha256": "945EECAED523CC4394EC8630CFA41D66726EED66D398B9EBCDF359AE1ED732A9",
+      "source_body_sha256": "8979B5C3115BC3D1C9478910088944D3761130E7D7A0ED8ED7452FCEC5870E83"
+    }
+  ],
+  "conclusions": [
+    "The local placement owner uses alignof/sizeof of the actual discriminated union. Exactly the selected Plain or Crypto member is placement-constructed and its same member destructor runs. Both selected types own only their original bool array; list construction introduces no dynamic allocation.",
+    "The process singleton occupies a statically aligned native buffer. Feature selection is fixed before publication and mismatch takes the actual native assertion owner. Its single-owner startup/Parse contract is explicit; no concurrent mutation or destruction guarantee beyond that contract is inferred.",
+    "Each selected Parse instantiation retains actual function-local static category EnvironmentStrings until native process destruction. Any allocated string block holds the actual original memory-owner prefix, so its later release remains valid after the first parsing Environment/runtime has retired. SSO strings add no invented allocation.",
+    "parse_text materializes one owned EnvironmentString under the actual AllocationScope before Parse copies it. parse_environment keeps the supplied EnvironmentPathAccess only on the stack and uses the retained SafeGetenv output before its own Parse. No JS value, Engine, Map or borrowed input pointer is stored by the debug list.",
+    "Permission callback binding stores a borrowed synchronous call view only. PermissionEnabled reads the still-live selected list; formatting callbacks enter the actual supplied native domain, then consume borrowed spans before returning. SizedString performs its owning copy at the original ToStringHelper conversion point, after the formatter ret local.",
+    "Formatting output temporaries and the Windows wchar vector use the exact common standard allocator. AllocationScope restores the previous TLS domain only after local native temporaries retire. Every successful heap block retains its independent owner and deallocation uses its stored prefix rather than the current TLS scope.",
+    "The native process static String destructor can release its block without an AllocationScope or live runtime. The already-reviewed allocate/release prefix owns the native domain through reserve rollback and final payload retirement."
+  ],
+  "exclusions": [
+    "SDK owns category/matching/format/host-output algorithms; this closure is not a second algorithm receipt.",
+    "Environment/process installation, full startup input ownership, RealEnvStore, guest interception, control roots/build and execution remain separate.",
+    "Valid category indices, stable aligned local storage, live borrowed call views and startup-single-owner feature selection are explicit native ABI preconditions.",
+    "No runtime qualification, Windows console observation or process-global initialization concurrency test is claimed."
+  ],
+  "inspected_code": {
+    "placement_and_borrowed_ABI": "struct PiNodeNativeDebugList {\n  using Plain = pi_node::debug::EnabledDebugList<false>;\n  using Crypto = pi_node::debug::EnabledDebugList<true>;\n  bool have_openssl;\n  union Contents {\n    Plain plain;\n    Crypto crypto;\n    Contents() {}\n    ~Contents() {}\n  } contents;\n  explicit PiNodeNativeDebugList(bool crypto) : have_openssl(crypto) {\n    if (have_openssl) ::new (&contents.crypto) Crypto();\n    else ::new (&contents.plain) Plain();\n  }\n  ~PiNodeNativeDebugList() {\n    if (have_openssl) contents.crypto.~Crypto();\n    else contents.plain.~Plain();\n  }\n  size_t count() const noexcept {\n    return have_openssl ? Crypto::category_count : Plain::category_count;\n  }\n  bool enabled(size_t category) const noexcept {\n    return have_openssl ? contents.crypto.enabled(category)\n                        : contents.plain.enabled(category);\n  }\n  bool permission_enabled() const noexcept {\n    return enabled(have_openssl ? Crypto::permission_category\n                               : Plain::permission_category);\n  }\n  template<typename T>\n  void parse(const T& value) {\n    if (have_openssl) contents.crypto.Parse(value);\n    else contents.plain.Parse(value);\n  }\n};\nnamespace {\nalignas(PiNodeNativeDebugList)\nunsigned char process_debug_storage[sizeof(PiNodeNativeDebugList)];\nPiNodeNativeDebugList* process_debug_list = nullptr;\n\nint PermissionEnabled(void* user) {\n  auto* call = static_cast<PiNodeNativeDebugCall*>(user);\n  return call->list->permission_enabled();\n}\nvoid PermissionInsert(void* user, const char* bytes, size_t length) {\n  auto* call = static_cast<PiNodeNativeDebugCall*>(user);\n  pi_node::AllocationScope scope(call->memory_owner);\n  pi_node::debug::FPrintF(call->context, stderr, \"Inserting %s\\n\",\n                        pi_node::debug::SizedString{bytes, length});\n}\nvoid PermissionTreeLine(void* user, const char* indent, const char* prefix) {\n  auto* call = static_cast<PiNodeNativeDebugCall*>(user);\n  pi_node::AllocationScope scope(call->memory_owner);\n  pi_node::debug::FPrintF(call->context, stderr, \"%s%s\\n\", indent, prefix);\n}\n}  // namespace\nextern \"C\" size_t pi_node_native_debug_storage_size(void) noexcept {\n  return sizeof(PiNodeNativeDebugList);\n}\nextern \"C\" size_t pi_node_native_debug_storage_alignment(void) noexcept {\n  return alignof(PiNodeNativeDebugList);\n}\nextern \"C\" PiNodeNativeDebugList* pi_node_native_debug_construct(\n    void* storage, int have_openssl) noexcept {\n  return ::new (storage) PiNodeNativeDebugList(have_openssl != 0);\n}\nextern \"C\" void pi_node_native_debug_destroy(\n    PiNodeNativeDebugList* list) noexcept {\n  list->~PiNodeNativeDebugList();\n}\nextern \"C\" size_t pi_node_native_debug_category_count(\n    const PiNodeNativeDebugList* list) noexcept {\n  return list->count();\n}\nextern \"C\" const char* pi_node_native_debug_category_name(\n    const PiNodeNativeDebugList* list, size_t category) noexcept {\n#define V(name) #name,\n  static constexpr const char* non_crypto[] = {\n    PI_NODE_DEBUG_NON_CRYPTO(V)\n  };\n  static constexpr const char* crypto[] = { PI_NODE_DEBUG_CRYPTO(V) };\n  static constexpr const char* extra[] = { PI_NODE_DEBUG_EXTRA(V) };\n#undef V\n  if (category < pi_node::debug::non_crypto_count) return non_crypto[category];\n  category -= pi_node::debug::non_crypto_count;\n  if (list->have_openssl) {\n    if (category < pi_node::debug::crypto_count) return crypto[category];\n    category -= pi_node::debug::crypto_count;\n  }\n  return extra[category];\n}\nextern \"C\" int pi_node_native_debug_enabled(\n    const PiNodeNativeDebugList* list, size_t category) noexcept {\n  return list->enabled(category);\n}\nextern \"C\" int pi_node_native_debug_permission_enabled(\n    const PiNodeNativeDebugList* list) noexcept {\n  return list->permission_enabled();\n}\nextern \"C\" void pi_node_native_debug_parse_text(\n    PiNodeNativeDebugList* list, void* memory_owner,\n    const char* cats, size_t length) noexcept {\n  pi_node::AllocationScope scope(memory_owner);\n  pi_node::EnvironmentString input(cats, length);\n  list->parse(input);\n}\nextern \"C\" void pi_node_native_debug_parse_environment(\n    PiNodeNativeDebugList* list, void* memory_owner,\n    const PiNodePermissionEnvironment* environment) noexcept {\n  pi_node::AllocationScope scope(memory_owner);\n  const pi_node::EnvironmentPathAccess env{\n      environment->paths, environment->map,\n      environment->context, environment->trace};\n  list->parse(&env);\n}\nextern \"C\" PiNodeNativeDebugList* pi_node_process_debug_select(\n    int have_openssl, JSContext* context) noexcept {\n  const bool feature = have_openssl != 0;\n  if (process_debug_list == nullptr) {\n    process_debug_list =\n        ::new (process_debug_storage) PiNodeNativeDebugList(feature);\n  } else {\n    pi_node::debug::Check(\n        context, process_debug_list->have_openssl == feature,\n        \"process_debug_list->have_openssl == feature\",\n        \"native_node_native_debug.cpp\", \"pi_node_process_debug_select\");\n  }\n  return process_debug_list;\n}\nextern \"C\" void pi_node_native_debug_bind_permission(\n    PiNodeNativeDebugCall* call, PiNodePermissionDebug* operations,\n    PiNodeNativeDebugList* list, void* memory_owner,\n    JSContext* context) noexcept {\n  *call = {list, memory_owner, context};\n  *operations = {PermissionEnabled, PermissionInsert, PermissionTreeLine, call};\n}\n",
+    "static_strings": "template<bool HaveOpenSSL>\nclass EnabledDebugList {\n public:\n  static constexpr size_t category_count =\n      non_crypto_count + (HaveOpenSSL ? crypto_count : 0) + extra_count;\n  static constexpr size_t permission_category =\n      non_crypto_count + (HaveOpenSSL ? crypto_count : 0) +\n      static_cast<size_t>(ExtraCategory::PERMISSION_MODEL);\n  bool enabled(size_t category) const { return enabled_[category]; }\n  void Parse(const EnvironmentPathAccess* env) {\n    EnvironmentString cats;\n    SafeGetenv(\"NODE_DEBUG_NATIVE\", &cats, env);\n    Parse(cats);\n  }\n  void Parse(const EnvironmentString& cats) {\n    EnvironmentString debug_categories = cats;\n    while (!debug_categories.empty()) {\n      EnvironmentString::size_type comma_pos = debug_categories.find(',');\n      EnvironmentString wanted = ToLower(debug_categories.substr(0, comma_pos));\n      size_t category = 0;\n#define V(name)                                                               \\\n      {                                                                       \\\n        static const EnvironmentString available_category = ToLower(#name);    \\\n        if (available_category.find(wanted) != EnvironmentString::npos)        \\\n          enabled_[category] = true;                                          \\\n        ++category;                                                           \\\n      }\n      PI_NODE_DEBUG_NON_CRYPTO(V)\n      if constexpr (HaveOpenSSL) { PI_NODE_DEBUG_CRYPTO(V) }\n      PI_NODE_DEBUG_EXTRA(V)\n#undef V\n      if (comma_pos == EnvironmentString::npos) break;\n      debug_categories = debug_categories.substr(comma_pos + 1);\n    }\n  }\n private:\n  bool enabled_[category_count] = {false};\n};\n\n// The C call view borrows the existing original String span. Its sole\n// conversion below performs the original ToStringHelper String copy, without\n// manufacturing an extra owning input String before SPrintF's ret local.\nstruct SizedString {\n  const char* data;\n  size_t length;\n};\nstruct ToStringHelper {\n  static EnvironmentString Convert(const SizedString& value) {\n    return EnvironmentString(value.data, value.length);\n  }\n  static EnvironmentString Convert(const EnvironmentString& value) {\n    return value;\n  }\n  static std::string_view Convert(const char* value) {\n    return value != nullptr ? value : \"(null)\";\n  }\n  static std::string_view Convert(std::string_view value) { return value; }\n  template<unsigned BASE_BITS, typename T>\n  static auto BaseConvert(T&& value) {\n    return Convert(std::forward<T>(value));\n  }\n};\ntemplate<typename T>\nauto ToStringOrStringView(const T& value) {\n  return ToStringHelper::Convert(value);\n}\ntemplate<unsigned BASE_BITS, typename T>\nauto ToBaseString(const T& value) {\n  return ToStringHelper::BaseConvert<BASE_BITS>(value);\n}\n\n",
+    "actual_allocator": "// Native C++ standard-container allocation for the pinned libc++ build.\n// The allocation/new-handler sequence follows libc++ new.cpp (Apache-2.0\n// WITH LLVM-exception); the underlying charged block owner is shared with\n// the separately reviewed simdjson owner. No Engine or JS value is stored.\n#ifndef PI_NATIVE_NODE_STANDARD_ALLOCATOR_HPP\n#define PI_NATIVE_NODE_STANDARD_ALLOCATOR_HPP\n#include \"native_simdjson_memory.hpp\"\n#include <__new/exceptions.h>\n#include <cstddef>\n#include <limits>\n#include <new>\n#include <type_traits>\n\n#if !defined(_LIBCPP_VERSION) || _LIBCPP_STD_VER < 20\n#error \"the standard-container owner requires the pinned C++20 libc++ source\"\n#endif\n#if _LIBCPP_HAS_EXCEPTIONS\n#error \"the selected Node standard-container translation units disable exceptions\"\n#endif\n\nnamespace pi_node {\nusing AllocationScope = pi_simd::Scope;\n\n// A standard allocator must not return nullptr. Preserve the actual native\n// new-handler retry and bad_alloc path; this is never a JavaScript exception.\n// The prefix allocator rolls a failed physical malloc reservation back before\n// the handler runs. Every successful block retains its original native owner.\ninline void* allocateStandard(std::size_t bytes) {\n  if (bytes == 0) bytes = 1;\n  for (;;) {\n    if (void* result = pi_simd::allocate(bytes)) return result;\n    const std::new_handler handler = std::get_new_handler();\n    if (handler) handler();\n    else std::__throw_bad_alloc();\n  }\n}\n\ntemplate<class T>\nclass Allocator {\n public:\n  using value_type = T;\n  using size_type = std::size_t;\n  using difference_type = std::ptrdiff_t;\n  using propagate_on_container_move_assignment = std::true_type;\n  using is_always_equal = std::true_type;\n\n  constexpr Allocator() noexcept = default;\n  template<class U>\n  constexpr Allocator(const Allocator<U>&) noexcept {}\n\n  [[nodiscard]] T* allocate(std::size_t count) {\n    static_assert(alignof(T) <= alignof(std::max_align_t),\n                  \"the admitted native containers use malloc-aligned elements\");\n    if (count > std::numeric_limits<std::size_t>::max() / sizeof(T))\n      std::__throw_bad_array_new_length();\n    return static_cast<T*>(allocateStandard(count * sizeof(T)));\n  }\n  void deallocate(T* value, std::size_t) noexcept {\n    pi_simd::release(value);\n  }\n};\n\ntemplate<class T, class U>\nconstexpr bool operator==(const Allocator<T>&, const Allocator<U>&) noexcept {\n  return true;\n}\nstatic_assert(std::is_empty_v<Allocator<char>>,\n              \"the allocator must not add per-string state or remove SSO\");\n}  // namespace pi_node\n#endif\n",
+    "actual_block_owner": "// Actual per-allocation accounting for the private simdjson successor.\n// The allocator domain may leave scope before a parser or one of its blocks\n// retires. Each block holds its own native memory-owner entitlement.\n#include \"native_simdjson_memory.hpp\"\n\nextern \"C\" {\nvoid pi_js_retain_memory_owner(void* memory_owner);\nvoid pi_js_release_memory_owner(void* memory_owner);\nint pi_js_native_memory_reserve(void* memory_owner, std::size_t bytes);\nvoid pi_js_native_memory_release(void* memory_owner, std::size_t bytes);\n}\n\nnamespace pi_simd {\nnamespace {\nstruct alignas(std::max_align_t) Allocation {\n  void* memory_owner;\n  std::size_t charge;\n};\nstatic_assert(sizeof(Allocation) % alignof(std::max_align_t) == 0,\n              \"the payload must retain malloc alignment\");\nthread_local Scope* current_scope = nullptr;\n}\n\nScope::Scope(void* memory_owner) noexcept\n    : previous_(current_scope), memory_owner_(memory_owner) {\n  // This is an internal C ABI precondition. The public native parser owner\n  // obtains the actual nonnull memory owner before any parser operation.\n  if (!memory_owner_) std::abort();\n  pi_js_retain_memory_owner(memory_owner_);\n  current_scope = this;\n}\nScope::~Scope() noexcept {\n  if (current_scope != this) std::abort();\n  current_scope = previous_;\n  pi_js_release_memory_owner(memory_owner_);\n}\nvoid allocationFailure() noexcept {\n  if (!current_scope) std::abort();\n  current_scope->failed_ = true;\n}\nvoid* allocate(std::size_t payload) noexcept {\n  Scope* scope = current_scope;\n  if (!scope) std::abort();\n  if (payload > std::numeric_limits<std::size_t>::max() - sizeof(Allocation)) {\n    scope->failed_ = true;\n    return nullptr;\n  }\n  const std::size_t charge = sizeof(Allocation) + payload;\n  void* owner = scope->memory_owner_;\n  if (!pi_js_native_memory_reserve(owner, charge)) {\n    scope->failed_ = true;\n    return nullptr;\n  }\n  auto* allocation = static_cast<Allocation*>(std::malloc(charge));\n  if (!allocation) {\n    // Roll back only this failed request. Existing parser blocks keep both\n    // their exact charges and their independent ownership entitlements.\n    pi_js_native_memory_release(owner, charge);\n    scope->failed_ = true;\n    return nullptr;\n  }\n  pi_js_retain_memory_owner(owner);\n  ::new (static_cast<void*>(allocation)) Allocation{owner, charge};\n  return allocation + 1;\n}\nvoid release(void* block) noexcept {\n  if (!block) return;\n  auto* allocation = static_cast<Allocation*>(block) - 1;\n  void* owner = allocation->memory_owner;\n  const std::size_t charge = allocation->charge;\n  allocation->~Allocation();\n  std::free(allocation);\n  pi_js_native_memory_release(owner, charge);\n  pi_js_release_memory_owner(owner);\n}\n}  // namespace pi_simd\n"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema": 2,
+  "status": "root_released_v31_main_for_exact_v32_source_intake",
+  "released_utc": "2026-10-20T18:48:25.110407+00:00",
+  "candidate_head": "14615dfc179f9e7e2044591a2d8aa9592b9d883b",
+  "specific_source_mutation_authorized": true,
+  "no_native_or_build_execution_outstanding": true,
+  "diagnostic_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-diagnostic-runtime-control-20261020-181658\\independent-partial-diagnostic-runtime-closure.json",
+    "sha256": "36D4EAB4F1D7A1E9632C847220F8CD6FE03DDF1FEC422C3F431F96B8519B71BD",
+    "bytes": 51849
+  },
+  "projection": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\reviewed-v32-source-union-20261020\\source-union.json",
+    "sha256": "7131D8A92DF12269437DA1C8610376B0903DBE24193A98919C41F060FE77AC93",
+    "bytes": 145791
+  },
+  "source_union_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\reviewed-v32-source-union-20261020\\independent-source-union-applier-peer.json",
+    "sha256": "BEAA36175DB36CE596DB8F01C908935C6B7DBDFBA54EE07A90B7874D0423A5E4",
+    "bytes": 12133
+  },
+  "applier_sha256": "DD65AA75DA15DFB5DCB615D7E992D869DB94F619A46C7442FE0A78FFF522B201",
+  "scope": "Apply only the205 independently reviewed projected paths plus the4 exact intake proof files, retain18 verified original backups, protect972B AsyncWrap callback, and perform Root staging/commit and following progress checkpoint. No new compiler/native/runtime grant.",
+  "review": "Root read the complete final union/applier peer, all finite semantic peers and corrected count schema. Both actual V31 runtime negatives remain immutable and unqualified. The final independent audit rehashed33559 current files, preserved all54 accepted artifacts and independently observed all10 original process instances absent. Fresh durable task job listing returned no running or queued jobs before release.",
+  "expected_applied_paths": 209,
+  "new_groups": 9,
+  "new_named_declarations": 160,
+  "selected_groups": 63,
+  "selected_named_declarations": 1249,
+  "actual_future_metadata_unknown": true,
+  "old_qualification": false,
+  "new_source_qualification": false,
+  "application_qualification": false,
+  "production_bridge_removed": false
+}

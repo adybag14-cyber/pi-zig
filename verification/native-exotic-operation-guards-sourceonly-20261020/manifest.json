@@ -1,0 +1,220 @@
+{
+  "schema": "pi.native-exotic-operation-guards.intake.v1",
+  "status": "source-only finite production/control/build peers closed; not compiled or executed",
+  "source_only": true,
+  "execution": false,
+  "runtime_qualification": false,
+  "source_parent": "2d18c77ce3b17df47c319d4f19b1f1a3de24c359",
+  "existing_paths": [
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "build.zig"
+  ],
+  "new_source_paths": [
+    "src/native_vm_exotic_operations_test.zig"
+  ],
+  "pathset": [
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "build.zig",
+    "src/native_vm_exotic_operations_test.zig",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/authority/build.before.zig.txt",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/authority/controls.explicit-defer-intermediate.zig.txt",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/authority/controls.initial.zig.txt",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/authority/original-flags-prerequisite.json",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/authority/original-integrity-prerequisite.json",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/authority/quickjs.c.before.txt",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/authority/quickjs.h.before.txt",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/build-intake.json",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/control-abi-successor.json",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/control-pointer-successor.json",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/final-source-verification.json",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/peer-controls-integrity.json",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/peer-controls-query-and-build.json",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/peer-flags.json",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/peer-integrity.json",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/production-delta.json",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/source-verification.json",
+    "verification/native-exotic-operation-guards-sourceonly-20261020/manifest.json"
+  ],
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2395972,
+      "sha256": "4DA0CA0668224BF9D0930DD41AF54206443BBCFE32310418B4814956EBC8A5D9"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 112763,
+      "sha256": "FF3D7F9A46E41CEC7C5619A42A6B590BD8F2F298A73DE7F717DD5BCFF651D600"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 421822,
+      "sha256": "F988BAC20C4615AF0A6D00589156829862D7D1068369BB3AD620D52146BA465C"
+    },
+    {
+      "path": "src/native_vm_exotic_operations_test.zig",
+      "bytes": 35891,
+      "sha256": "9FFBDF6B2C033898E7D1738943293DCD13F758EF9893F794293C8AA71A5FAA7B"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/authority/build.before.zig.txt",
+      "bytes": 421276,
+      "sha256": "CCADEFC7788AB8194561A7465261EAB59BEF1C765CC4C780C42BC3DC4010054B"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/authority/controls.explicit-defer-intermediate.zig.txt",
+      "bytes": 36015,
+      "sha256": "29247BEFF417EABAA1FE8AA867643A33D252300062AC8F1B436B25A541AFA6C9"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/authority/controls.initial.zig.txt",
+      "bytes": 35881,
+      "sha256": "B9465FD9236C2D9582F032F903C1B98101F43D5E8213654544798A473303D18D"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/authority/original-flags-prerequisite.json",
+      "bytes": 20821,
+      "sha256": "C9901F29DC414F19CF34BDFF3F87647FF33E23E30CE8AF3FEF221EA62DA7E26C"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/authority/original-integrity-prerequisite.json",
+      "bytes": 14668,
+      "sha256": "48D3AE0372949C22E651EFEB7AD92CBE406F89A1D3436D10E37114479325D16C"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/authority/quickjs.c.before.txt",
+      "bytes": 2394786,
+      "sha256": "DE3C05D6698F2D1AC5F3D7F92540F4775B374101A71EAE2C4925FD3F48FAFCAE"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/authority/quickjs.h.before.txt",
+      "bytes": 111537,
+      "sha256": "621A5F9DD846DA6257C89E78EB25D527CCDFAB0F0E76FA34195CD51E7CF1B32B"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/build-intake.json",
+      "bytes": 1388,
+      "sha256": "F9FE839C85D0C724DBB6BE71A690B8988AFC71422DB61150B4BE0B2F6D571087"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/control-abi-successor.json",
+      "bytes": 11838,
+      "sha256": "F9CBF876B4FB6B6FA352AAB8345BEB94412EDFB41AC7C0F912A86E2E548C104A"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/control-pointer-successor.json",
+      "bytes": 1233,
+      "sha256": "D72561705EC7DD82B208A4638BC88D2B615F99992D27412548AC43CB4E68C084"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/final-source-verification.json",
+      "bytes": 3831,
+      "sha256": "CE935D1A088865B902A5A9C01E610EBDC4A98189DE85B741A001AEA551091EC0"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/peer-controls-integrity.json",
+      "bytes": 4816,
+      "sha256": "018CB092D7C02FD93C224CC3C4C896ABC98CDFDFA26B59FE0D0DE58DCC0E9E9A"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/peer-controls-query-and-build.json",
+      "bytes": 7851,
+      "sha256": "3EB90DBA022EFF2FB731622D5AEB6156CA9352B5796ED3E94BB6FABD3216A96B"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/peer-flags.json",
+      "bytes": 4033,
+      "sha256": "9CA98D167B32524E28B98695824C1A2C5586F843406F0F7F38DBC323821CB43A"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/peer-integrity.json",
+      "bytes": 2930,
+      "sha256": "A94FB61278CF1084911F25478DBA285860D4C6F5D5A575C8730D9FAC2268B496"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/production-delta.json",
+      "bytes": 9055,
+      "sha256": "DC714C58CDB035BE1D48BDEC8A41AED0B54BB84B1F23673B38373925F4A7E229"
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/source-verification.json",
+      "bytes": 1765,
+      "sha256": "126CCC3F156E3F67233AD6EFFFF672E734DECD00B7052B67BF898C760C3B3E45"
+    }
+  ],
+  "production": {
+    "packet": "verification/native-exotic-operation-guards-sourceonly-20261020/production-delta.json",
+    "exact_edits": 5,
+    "c_edits": 3,
+    "header_edits": 2,
+    "rule": "Apply exact packet preimages to the current composed C/H; do not replace them with full donor files. Preserve Main private-setter, lazy-prototype and every independent delta. The donor base includes Message2a; these five operation edits do not use its new APIs."
+  },
+  "build": {
+    "packet": "verification/native-exotic-operation-guards-sourceonly-20261020/build-intake.json",
+    "added_lines": 6,
+    "root": "src/native_vm_exotic_operations_test.zig",
+    "filter": "VM exotic operations",
+    "target": "build-native-vm-exotic-operations",
+    "declarations": 28,
+    "install_only": true
+  },
+  "selected_control_successor": "verification/native-exotic-operation-guards-sourceonly-20261020/control-pointer-successor.json",
+  "superseded_intermediate": "verification/native-exotic-operation-guards-sourceonly-20261020/control-abi-successor.json",
+  "declarations": [
+    "VM exotic operations enumerable keys query flags without fetching values",
+    "VM exotic operations full descriptors still query then fetch an owned value",
+    "VM exotic operations existence requests retain their original descriptor callback",
+    "VM exotic operations unfiltered own keys enumerate without a descriptor query",
+    "VM exotic operations values filter each key before its actual Get",
+    "VM exotic operations missing flags hook retains temporary descriptor ownership",
+    "VM exotic operations physical own data precedes the optional query hook",
+    "VM exotic operations SET_ENUM queries both string and Symbol descriptors without Get",
+    "VM exotic operations ordinary Proxy descriptor traps retain their original order",
+    "VM exotic operations admitted query performs no VM allocation under heap limit",
+    "VM exotic operations descriptor getter may return flagged Error DATA successfully",
+    "VM exotic operations ordinary query failure remains the exact catchable reason",
+    "VM exotic operations actual fatal query stops later guest catch and finally",
+    "VM exotic operations active and cancelled private query completions stay native",
+    "VM exotic operations Reflect prevent rejection is normal and allocation free",
+    "VM exotic operations Object prevent keeps its actual throwing rejection path",
+    "VM exotic operations seal rejection uses SEALED before any enumeration",
+    "VM exotic operations freeze rejection uses FROZEN before any definition",
+    "VM exotic operations positive admission completes each real integrity mutation",
+    "VM exotic operations a missing admission hook preserves legacy extension mutation",
+    "VM exotic operations ordinary objects and Proxy refusal retain their old behavior",
+    "VM exotic operations a Proxy forwarding trap selects only its actual prevent call",
+    "VM exotic operations nonobject integrity requests keep existing public semantics",
+    "VM exotic operations ordinary integrity failure preserves its exact reason",
+    "VM exotic operations actual fatal integrity failure bypasses guest cleanup",
+    "VM exotic operations active and cancelled private integrity completion bypasses handlers",
+    "VM exotic operations normal native rejection preserves the actual prior pending owner",
+    "VM exotic operations borrowed receiver callbacks create no lasting object root"
+  ],
+  "peers": {
+    "flags_production": "peer-flags.json",
+    "integrity_production": "peer-integrity.json",
+    "fixture_query_controls_1_14_28_and_build": "peer-controls-query-and-build.json",
+    "integrity_controls_15_27": "peer-controls-integrity.json"
+  },
+  "validation": {
+    "production_forward_and_inverse_exact": true,
+    "control_pointer_only_inverse_exact": true,
+    "build_forward_and_inverse_exact": true,
+    "all_28_control_names_preserved": true,
+    "source_verification": "final-source-verification.json"
+  },
+  "abi_note": "Two optional append-only JSClassExoticMethods fields require rebuilding native consumers with this header. Existing designated or zero-default initializers leave the hooks absent.",
+  "behavior": [
+    "Only the actual flags-only descriptor path selects the optional Query callback; full descriptors, existence-only calls and absent-hook fallback retain their old paths.",
+    "Integrity admission distinguishes NONE, SEALED and FROZEN before actual ordinary mutation/enumeration; direct normal rejection preserves the actual Object/Reflect error/false branch.",
+    "Proxy-first behavior and ordinary/absent-hook behavior stay unchanged."
+  ],
+  "exclusions": [
+    "No process.env consumer or public installation.",
+    "No generic call-entry/pending policy expansion.",
+    "No Message reporter, allocated diagnostic snapshot or GetDebugName implementation.",
+    "No native build, metadata, tests, Node or formatter execution."
+  ]
+}

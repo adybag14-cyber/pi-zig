@@ -1,0 +1,68 @@
+{
+  "schema": "pi.source-only.reqwrap-routing-seal.v1",
+  "status": "all finite production/control/build source peers closed",
+  "execution": false,
+  "files": [
+    {
+      "path": "src/extensions/native_node_request_state.zig",
+      "sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+      "bytes": 5818,
+      "edits": 4,
+      "forward_inverse": true
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "bytes": 14502,
+      "edits": 6,
+      "forward_inverse": true
+    },
+    {
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "bytes": 39890,
+      "edits": 1,
+      "forward_inverse": true
+    },
+    {
+      "path": "src/extensions/native_node_callback_checks.zig",
+      "sha256": "1E3C1597DF365B561713C7D67EE4A07BBB9245BC75355A57EECDCB224758BC7E",
+      "bytes": 6452,
+      "edits": 1,
+      "forward_inverse": true
+    }
+  ],
+  "root": {
+    "path": "src/native_node_reqwrap_callback_routing_test.zig",
+    "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7",
+    "bytes": 31452,
+    "declarations": [
+      "native ReqWrap routing Reset clears the actual callback before reuse without counting admission",
+      "native ReqWrap routing selects the real callback after retain Detach and waiting decrement",
+      "native ReqWrap routing negative raw admission keeps callback but does not strengthen count or synthesize completion",
+      "native ReqWrap routing accepted bad descriptor preserves the real callback negative result",
+      "native ReqWrap routing reset and redispatch precede old Wrapper and event retirement",
+      "native ReqWrap routing callback error after redispatch preserves the new request pointer and event",
+      "native ReqWrap routing typed callback failure still retires the final native Wrapper pointer",
+      "native ReqWrap routing actual ordinary callback reason survives Entry destruction",
+      "native ReqWrap routing actual native fatal callback still completes native request retirement",
+      "native ReqWrap routing shared shutdown drains real callbacks after JavaScript is disabled",
+      "native ReqWrap routing stopped native service returns its real status without a callback or count",
+      "native ReqWrap routing retained Controller rejects a retired Hub before touching Entry inputs"
+    ]
+  },
+  "source_proposal_sha256": "E15DC1E14112C94663D309FEF1B7919AF0BCF9114664357EDDDF7180EC99046B",
+  "shared_intake": "Apply only the exact one enum edit and one dispatcher edit to Root-owned current Environment/Check files; complete projected SDK copies are retained context, not a whole-file Main replacement.",
+  "build_intake": "Only the reviewed fifteen install-only lines in build-intake.json; build.zig was not changed.",
+  "dependencies": [
+    "Raw reusable request/spans source commit 2a1ee31fa35c80e35db25fdd7e99733d44936e9c; C6BA884B6/HB738 and existing shared TCP H B6F8",
+    "State4912 / genuine Environment EEF21 / real current Scope and Completion boundaries",
+    "Existing physical AfterScope and Promise owner unchanged outside exact Controller routing edits"
+  ],
+  "limits": [
+    "No compiler, native runtime, AST, metadata or Node execution",
+    "Generic compiled ReqWrap derivative controls do not claim FileHandle templates, freelist, ReadStart or public FS completion",
+    "Function diagnostic MakeLibuvRequestCallback::For is an explicit simplified port label, not PRETTY_FUNCTION or FUNCSIG byte equivalence",
+    "Native descriptor is borrowed; outer Wrapper or a separately retained native pointer must own Entry through all callback work"
+  ]
+}

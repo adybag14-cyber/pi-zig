@@ -1,0 +1,94 @@
+{
+  "status": "CLOSED finite exotic integrity controls 15 through 27 and required helper paths",
+  "reviewer": "sdk_owners",
+  "source_only": true,
+  "root": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\src\\native_vm_exotic_operations_test.zig",
+    "bytes": 35891,
+    "sha256": "9FFBDF6B2C033898E7D1738943293DCD13F758EF9893F794293C8AA71A5FAA7B"
+  },
+  "successor_packet": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-exotic-operation-guards-sourceonly-20261020\\control-pointer-successor.json",
+    "bytes": 1233,
+    "sha256": "D72561705EC7DD82B208A4638BC88D2B615F99992D27412548AC43CB4E68C084"
+  },
+  "before_sha256": "B9465FD9236C2D9582F032F903C1B98101F43D5E8213654544798A473303D18D",
+  "exact_inverse": true,
+  "all_28_names_preserved": true,
+  "assigned_declarations": [
+    {
+      "number": 15,
+      "name": "VM exotic operations Reflect prevent rejection is normal and allocation free"
+    },
+    {
+      "number": 16,
+      "name": "VM exotic operations Object prevent keeps its actual throwing rejection path"
+    },
+    {
+      "number": 17,
+      "name": "VM exotic operations seal rejection uses SEALED before any enumeration"
+    },
+    {
+      "number": 18,
+      "name": "VM exotic operations freeze rejection uses FROZEN before any definition"
+    },
+    {
+      "number": 19,
+      "name": "VM exotic operations positive admission completes each real integrity mutation"
+    },
+    {
+      "number": 20,
+      "name": "VM exotic operations a missing admission hook preserves legacy extension mutation"
+    },
+    {
+      "number": 21,
+      "name": "VM exotic operations ordinary objects and Proxy refusal retain their old behavior"
+    },
+    {
+      "number": 22,
+      "name": "VM exotic operations a Proxy forwarding trap selects only its actual prevent call"
+    },
+    {
+      "number": 23,
+      "name": "VM exotic operations nonobject integrity requests keep existing public semantics"
+    },
+    {
+      "number": 24,
+      "name": "VM exotic operations ordinary integrity failure preserves its exact reason"
+    },
+    {
+      "number": 25,
+      "name": "VM exotic operations actual fatal integrity failure bypasses guest cleanup"
+    },
+    {
+      "number": 26,
+      "name": "VM exotic operations active and cancelled private integrity completion bypasses handlers"
+    },
+    {
+      "number": 27,
+      "name": "VM exotic operations normal native rejection preserves the actual prior pending owner"
+    }
+  ],
+  "helpers_read": [
+    "Probe.perform and exact ordinary/fatal/private producer operations",
+    "admit and the optional class-method tables",
+    "Fixture init/deinit/compile/call and result helpers as needed by assigned controls",
+    "expectQuietRejection and expectAbrupt"
+  ],
+  "findings": [
+    "Normal Reflect/NONE rejection observes false and still-extensible state, exactly one actual admission, no enumeration/Get/definition, and unchanged fresh OOM occurrence under real heap limit. Object.preventExtensions keeps its actual TypeError branch.",
+    "SEALED and FROZEN zero-admission failures assert their exact intrinsic TypeError messages and level before any enumeration or mutation.",
+    "Positive admission mutates an actual physical own data property. Configurable/writable descriptors distinguish NONE/SEALED/FROZEN, and the genuine same-object result is retained before assertions.",
+    "Absent hooks, ordinary objects, Proxy refusal/forwarding and nonobjects use real linked public operations. Proxy forwarding reaches only NONE in the actual target call; the existing Proxy-specific failure text is preserved.",
+    "Ordinary callback throw returns the exact caught reason and runs finally; actual generic fatal and active/cancelled private native completions bypass both guest catch and finally. Raw outcomes and taken reasons have immediate owner cleanup.",
+    "Prior ordinary/generic-fatal/private pending is tested through the raw zero-admission API under actual heap limit, with exact reason identity/private provenance, no new OOM occurrence and the actual private lease cancellation when appropriate.",
+    "Expected integrity enum values use actual JSPiIntegrityLevel types; no narrowed actual observation or expected-side signed/unsigned mismatch was found in the assigned slice.",
+    "Pointer-only successor affects declaration8 outside this assignment; exact one-edit inverse and byte-identical 15-27 were independently verified."
+  ],
+  "limits": [
+    "Fixture/flags-query controls1-14 and28/build remain Modules assigned slice.",
+    "This receipt closes source causality and ownership only; no native compiler/test execution or complete process.env admission is claimed."
+  ],
+  "defects_found": [],
+  "execution_performed": false
+}

@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "status": "finite_source_control_and_build_peer_closed",
+  "reviewer": "modules_io",
+  "execution": false,
+  "root": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/native_node_fs_readwrap_reuse_test.zig",
+    "sha256": "1976069B2406CBB9B0B78F67EB8E8DAE562B05EB4E9C5DDE52AEAABB525A9972",
+    "bytes": 28267,
+    "declared": 14
+  },
+  "build_packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-fs-readwrap-reuse-sourceonly-20261020/build-intake.json",
+    "sha256": "16D99C963103262CF0FC67D95B60F177781D820F20BA89EA0AE5BC429F3BD2ED",
+    "bytes": 3703
+  },
+  "native_inputs": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_uv_fs.h",
+      "sha256": "B738A0EAECC8E06781305D953B0FFE56753B774F8507CDBE4052BCBC2014F117",
+      "bytes": 4679
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_uv_tcp.h",
+      "sha256": "B6F8D5269B8EF9DC9964E7F356EF1A23DBB483FB9B485C2C6D77D464816B4F45",
+      "bytes": 5344
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_uv_tcp.c",
+      "sha256": "6BA884B63C1C89FE65DFD90C97AC2604280749EFA5095755347EA06FC52CE92A",
+      "bytes": 45160
+    }
+  ],
+  "assigned_declarations": [
+    {
+      "index": 2,
+      "name": "native actual FS reuse raw span preserves offset sentinels and payload after cleanup"
+    },
+    {
+      "index": 3,
+      "name": "native actual FS reuse invalid raw spans leave the same request admissible"
+    },
+    {
+      "index": 10,
+      "name": "native actual FS reuse lease cleanup releases backing before later raw span"
+    },
+    {
+      "index": 11,
+      "name": "native actual FS reuse raw request can later acquire a genuine JS backing lease"
+    },
+    {
+      "index": 12,
+      "name": "native actual FS reuse null zero length and later EOF preserve real result zero"
+    },
+    {
+      "index": 13,
+      "name": "native actual FS reuse cancellation and stop retain exactly the reused completion"
+    },
+    {
+      "index": 14,
+      "name": "native actual FS reuse raw admission and Reset preserve actual pending without JS heap work"
+    }
+  ],
+  "helper_scope": [
+    "Fixture including failure paths, request/event/descriptor entitlement arrays, actual service join and VM/memory retirement",
+    "File real temporary path and sentinel allocation extent",
+    "Buffer raw JS value/view/lease ownership"
+  ],
+  "checks": [
+    "Fixture stops and joins the real service before releasing held or queued event tickets, requests, descriptors, VM or native memory. Raw local payloads remain alive throughout the enclosing test scope and this cleanup.",
+    "Each successful dequeue is stored as an independent ticket. Old tickets are only released after Reset; their completion info is not reread. An assertion failure retains remaining tickets and requests for joined fixture cleanup.",
+    "Controls2/3 use actual bytes at an offset with unchanged prefix/suffix, invalid raw spans/kind and real Windows ULONG overflow admission, followed by successful reuse of the same request.",
+    "Control10 retires the original JS wrappers and caller lease while the request lease owns bytes, observes bytes before cleanup, then observes the actual native-charge decrease before a raw-span operation. Control11 reverses the raw/lease transition and keeps its genuine caller lease through inspection.",
+    "Control12 distinguishes NULL/zero from later EOF and checks untouched bytes. Control13 admits actual cancellation race results, requires cancellation status when uv_cancel succeeds, joins before result observation, then requires a stopped-service unaccepted result with no queued event.",
+    "Control14 retains the real pending integer through raw admission/cleanup/Reset under actual JS heap limit1. It checks exact native charge restoration and the original reason, restoring the heap limit before fixture teardown.",
+    "The eight added build lines apply uniquely to complete Main AD72 and reverse byte-for-byte. Root/filter match all14 names; QuickJS, retained UV includes and the same network Compile pointer are reused. No run edge or second source graph is added."
+  ],
+  "build_verification": {
+    "base": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+    "successor": "E78993A3F5E86A18FBA7D65755B78AA034AF04B02AE9DD858C94FD7F6A1F7BA7",
+    "added_lines": 8
+  },
+  "limits": [
+    "C event publication/concurrency protocol and controls1/4–9 are separate Root/VM slices, not requalified by this receipt.",
+    "No complete FileHandle/StreamBase bootstrap or runtime result is claimed. Native raw-span callers must retain actual bytes through their real delivery/EmitRead use, not merely the transport callback."
+  ]
+}

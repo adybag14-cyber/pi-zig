@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "status": "PROPOSAL ONLY: additional exact process.env interceptor integrity prerequisite",
+  "date": "2026-10-20",
+  "execution": false,
+  "production_changed": false,
+  "earlier_flags_only_proposal": "C9901F29DC414F19CF34BDFF3F87647FF33E23E30CE8AF3FEF221EA62DA7E26C",
+  "source": {
+    "node_env_var": {
+      "path": "authority/node_env_var.v24.13.cc",
+      "sha256": "4872E9CAF5AEE8F7ABD73BE4F79FA5B73793F5D09DFCED63001A022D92AD2AF8"
+    },
+    "v8": {
+      "path": "verification/native-constructor-name-source-peer-20261020/authority/v8-js-objects.def0.cc",
+      "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480",
+      "bytes": 234488
+    },
+    "quickjs": {
+      "path": "C:/Users/adyba/pi-zig/main/vendor/quickjs/quickjs.c",
+      "sha256": "86ee97602bad77f3cd094f0ef326919e2e7a5e8febe4247486a2b86851c670c2",
+      "bytes": 2366135
+    },
+    "header": {
+      "path": "C:/Users/adyba/pi-zig/main/vendor/quickjs/quickjs.h",
+      "sha256": "7DD0189F0143D448CD3678FB1B415D200BFA36610371EF87A16B84BBA4871DC3"
+    },
+    "builtin_range": {
+      "offset": 1564400,
+      "bytes": 10000,
+      "sha256": "E3EB1B2602315E4B628C51D718816128A43A14E96D419DF6E8B4F7124BEDCA79"
+    }
+  },
+  "excerpts": {
+    "v8": [
+      {
+        "name": "JSObject::PreventExtensions",
+        "offset": 169496,
+        "text": "Maybe<bool> JSObject::PreventExtensions(Isolate* isolate,\n                                        DirectHandle<JSObject> object,\n                                        ShouldThrow should_throw) {\n  if (!object->HasSloppyArgumentsElements()) {\n    return PreventExtensionsWithTransition<NONE>(isolate, object, should_throw);\n  }\n\n  if (IsAccessCheckNeeded(*object) &&\n      !isolate->MayAccess(isolate->native_context(), object)) {\n    RETURN_ON_EXCEPTION_VALUE(isolate, isolate->ReportFailedAccessCheck(object),\n                              Nothing<bool>());\n    UNREACHABLE();\n  }\n\n  if (!object->map()->is_extensible()) return Just(true);\n\n  if (IsJSGlobalProxy(*object)) {\n    PrototypeIterator iter(isolate, object);\n    if (iter.IsAtEnd()) return Just(true);\n    DCHECK(IsJSGlobalObject(*PrototypeIterator::GetCurrent(iter)));\n    return PreventExtensions(\n        isolate, PrototypeIterator::GetCurrent<JSObject>(iter), should_throw);\n  }\n\n  if (object->map()->has_named_interceptor() ||\n      object->map()->has_indexed_interceptor()) {\n    RETURN_FAILURE(isolate, should_throw,\n                   NewTypeError(MessageTemplate::kCannotPreventExt));\n  }\n\n  DCHECK(!object->HasTypedArrayOrRabGsabTypedArrayElements());\n\n  // Normalize fast elements.\n  DirectHandle<NumberDictionary> dictionary = NormalizeElements(object);\n  DCHECK(object->HasDictionaryElements() || object->HasSlowArgumentsElements());\n\n  // Make sure that we never go back to fast case.\n  if (*dictionary != ReadOnlyRoots(isolate).empty_slow_element_dictionary()) {\n    object->RequireSlowElements(*dictionary);\n  }\n\n  // Do a map transition, other objects with this map may still\n  // be extensible.\n  // TODO(adamk): Extend the NormalizedMapCache to handle non-extensible maps.\n  DirectHandle<Map> new_map = Map::Copy(\n      isolate, direct_handle(object->map(), isolate), \"PreventExtensions\");\n\n  new_map->set_is_extensible(false);\n  JSObject::MigrateToMap(isolate, object, new_map);\n  DCHECK(!object->map()->is_extensible());\n\n  return Just(true);\n}\n\nbool JSObject::IsExtensible(Isolate* isolate, DirectHandle<JSObject> object) {\n  if (IsAccessCheckNeeded(*object) &&\n      !isolate->MayAccess(isolate->native_context(), object)) {\n    return true;\n  }\n  if (IsJSGlobalProxy(*object)) {\n    PrototypeIterator iter(isolate, *object);\n    if (iter.IsAtEnd()) return false;\n    DCHECK(IsJSGlobalObject(iter.GetCurrent()));\n    return iter.GetCurrent<JSObject>()->map()->is_extensible();\n  }\n  return object->map()->is_extensible();\n}\n\n// static\nMaybeDirectHandle<Object> JSObject::ReadFromOptionsBag(\n    DirectHandle<Object> options, DirectHandle<String> option_name,\n    Isolate* isolate) {\n  if (IsJSReceiver(*options)) "
+      },
+      {
+        "name": "PreventExtensionsWithTransition",
+        "offset": 174138,
+        "text": "template <PropertyAttributes attrs>\nMaybe<bool> JSObject::PreventExtensionsWithTransition(\n    Isolate* isolate, DirectHandle<JSObject> object, ShouldThrow should_throw) {\n  static_assert(attrs == NONE || attrs == SEALED || attrs == FROZEN);\n\n  // Sealing/freezing sloppy arguments or namespace objects should be handled\n  // elsewhere.\n  DCHECK(!object->HasSloppyArgumentsElements());\n  DCHECK_IMPLIES(IsJSModuleNamespace(*object), attrs == NONE);\n\n  if (IsAccessCheckNeeded(*object) &&\n      !isolate->MayAccess(isolate->native_context(), object)) {\n    RETURN_ON_EXCEPTION_VALUE(isolate, isolate->ReportFailedAccessCheck(object),\n                              Nothing<bool>());\n    UNREACHABLE();\n  }\n\n  if (attrs == NONE && !object->map()->is_extensible()) {\n    return Just(true);\n  }\n\n  {\n    ElementsKind old_elements_kind = object->map()->elements_kind();\n    if (IsFrozenElementsKind(old_elements_kind)) return Just(true);\n    if (attrs != FROZEN && IsSealedElementsKind(old_elements_kind)) {\n      return Just(true);\n    }\n  }\n\n  if (IsJSGlobalProxy(*object)) {\n    PrototypeIterator iter(isolate, object);\n    if (iter.IsAtEnd()) return Just(true);\n    DCHECK(IsJSGlobalObject(*PrototypeIterator::GetCurrent(iter)));\n    return PreventExtensionsWithTransition<attrs>(\n        isolate, PrototypeIterator::GetCurrent<JSObject>(iter), should_throw);\n  }\n\n  // Shared objects are designed to have fixed layout, i.e. their maps are\n  // effectively immutable. They are constructed seal, but the semantics of\n  // ordinary ECMAScript objects allow sealed to be upgraded to frozen. This\n  // upgrade violates the fixed layout invariant and is disallowed.\n  if (IsAlwaysSharedSpaceJSObject(*object)) {\n    DCHECK(FastTestIntegrityLevel(isolate, *object, SEALED));\n    if (attrs != FROZEN) return Just(true);\n    RETURN_FAILURE(isolate, should_throw,\n                   NewTypeError(MessageTemplate::kCannotFreeze));\n  }\n\n  if (object->map()->has_named_interceptor() ||\n      object->map()->has_indexed_interceptor() ||\n      (object->HasTypedArrayOrRabGsabTypedArrayElements() &&\n       Cast<JSTypedArray>(*object)->IsVariableLength())) {\n    MessageTemplate message = MessageTemplate::kNone;\n    switch (attrs) {\n      case NONE:\n        message = MessageTemplate::kCannotPreventExt;\n        break;\n\n      case SEALED:\n        message = MessageTemplate::kCannotSeal;\n        break;\n\n      case FROZEN:\n        message = MessageTemplate::kCannotFreeze;\n        break;\n    }\n    RETURN_FAILURE(isolate, should_throw, NewTypeError(message));\n  }\n\n  DirectHandle<Symbol> transition_marker;\n  if (attrs == NONE) {\n    transition_marker = isolate->factory()->nonextensible_symbol();\n  } else if (attrs == SEALED) {\n    transition_marker = isolate->factory()->sealed_symbol();\n  } else {\n    DCHECK(attrs == FROZEN);\n    transition_marker = isolate->factory()->froz"
+      }
+    ],
+    "quickjs_prevent": {
+      "offset": 389109,
+      "text": "int JS_PreventExtensions(JSContext *ctx, JSValueConst obj)\n{\n    JSObject *p;\n\n    if (unlikely(JS_VALUE_GET_TAG(obj) != JS_TAG_OBJECT))\n        return false;\n    p = JS_VALUE_GET_OBJ(obj);\n    if (unlikely(p->class_id == JS_CLASS_PROXY))\n        return js_proxy_preventExtensions(ctx, obj);\n    if (is_typed_array(p->class_id)) {\n        JSTypedArray *ta = p->u.typed_array;\n        JSArrayBuffer *abuf = ta->buffer->u.array_buffer;\n        if (ta->track_rab ||\n            (array_buffer_is_resizable(abuf) && !abuf->shared))\n        {\n            return false;\n        }\n    }\n    p->extensible = false;\n    return true;\n}\n"
+    },
+    "quickjs_builtin_prevent": {
+      "offset": 1564439,
+      "text": "static JSValue js_object_preventExtensions(JSContext *ctx, JSValueConst this_val,\n                                           int argc, JSValueConst *argv, int reflect)\n{\n    JSValueConst obj;\n    int ret;\n\n    obj = argv[0];\n    if (JS_VALUE_GET_TAG(obj) != JS_TAG_OBJECT) {\n        if (reflect)\n            return JS_ThrowTypeErrorNotAnObject(ctx);\n        else\n            return js_dup(obj);\n    }\n    ret = JS_PreventExtensions(ctx, obj);\n    if (ret < 0)\n        return JS_EXCEPTION;\n    if (reflect) {\n        return js_bool(ret);\n    } else {\n        if (!ret)\n            return JS_ThrowTypeError(ctx, \"Cannot prevent extensions\");\n        return js_dup(obj);\n    }\n}\n"
+    },
+    "quickjs_builtin_seal": {
+      "offset": 1569496,
+      "text": "static JSValue js_object_seal(JSContext *ctx, JSValueConst this_val,\n                              int argc, JSValueConst *argv, int freeze_flag)\n{\n    JSValueConst obj = argv[0];\n    JSObject *p;\n    JSTypedArray *ta;\n    JSArrayBuffer *abuf;\n    JSPropertyEnum *props;\n    uint32_t len, i;\n    int flags, desc_flags, res;\n\n    if (!JS_IsObject(obj))\n        return js_dup(obj);\n\n    p = JS_VALUE_GET_OBJ(obj);\n    if (p->class_id == JS_CLASS_MODULE_NS) {\n        return JS_ThrowTypeError(ctx, \"cannot %s module namespace\",\n                                 freeze_flag ? \"freeze\" : \"seal\");\n    }\n\n    res = JS_PreventExtensions(ctx, obj);\n    if (res < 0)\n        return JS_EXCEPTION;\n    if (!res) {\n        return JS_ThrowTypeError(ctx, \"proxy preventExtensions handler returned false\");\n    }\n\n    if (freeze_flag && is_typed_array(p->class_id)) {\n        ta = p->u.typed_array;\n        abuf = ta->buffer->u.array_buffer;\n        if (array_buffer_is_resizable(abuf) || typed_array_is_oob(p))\n            return JS_ThrowTypeError(ctx, \"cannot freeze resizable typed array\");\n    }\n\n    flags = JS_GPN_STRING_MASK | JS_GPN_SYMBOL_MASK;\n    if (JS_GetOwnPropertyNamesInternal(ctx, &props, &len, p, flags))\n        return JS_EXCEPTION;\n\n    for(i = 0; i < len; i++) {\n        int prop_flags;\n        JSAtom prop = props[i].atom;\n\n        desc_flags = JS_PROP_THROW | JS_PROP_HAS_CONFIGURABLE;\n        if (freeze_flag) {\n            res = JS_GetOwnPropertyFlagsInternal(ctx, &prop_flags, p, prop);\n            if (res < 0)\n                goto exception;\n            if (res) {\n                if (prop_flags & JS_PROP_WRITABLE)\n                    desc_flags |= JS_PROP_HAS_WRITABLE;\n            }\n        }\n        if (JS_DefineProperty(ctx, obj, prop, JS_UNDEFINED,\n                              JS_UNDEFINED, JS_UNDEFINED, desc_flags) < 0)\n            goto exception;\n    }\n    js_free_prop_enum(ctx, props, len);\n    return js_dup(obj);\n\n exception:\n    js_free_prop_enum(ctx, props, len);\n    return JS_EXCEPTION;\n}\n"
+    },
+    "header_exotic": {
+      "offset": 35458,
+      "text": "typedef struct JSClassExoticMethods {\n    /* Return -1 if exception (can only happen in case of Proxy object),\n       false if the property does not exists, true if it exists. If 1 is\n       returned, the property descriptor 'desc' is filled if != NULL. */\n    int (*get_own_property)(JSContext *ctx, JSPropertyDescriptor *desc,\n                             JSValueConst obj, JSAtom prop);\n    /* '*ptab' should hold the '*plen' property keys. Return 0 if OK,\n       -1 if exception. The 'is_enumerable' field is ignored.\n    */\n    int (*get_own_property_names)(JSContext *ctx, JSPropertyEnum **ptab,\n                                  uint32_t *plen, JSValueConst obj);\n    /* return < 0 if exception, or true/false */\n    int (*delete_property)(JSContext *ctx, JSValueConst obj, JSAtom prop);\n    /* return < 0 if exception or true/false */\n    int (*define_own_property)(JSContext *ctx, JSValueConst this_obj,\n                               JSAtom prop, JSValueConst val,\n                               JSValueConst getter, JSValueConst setter,\n                               int flags);\n    /* The following methods can be emulated with the previous ones,\n       so they are usually not needed */\n    /* return < 0 if exception or true/false */\n    int (*has_property)(JSContext *ctx, JSValueConst obj, JSAtom atom);\n    JSValue (*get_property)(JSContext *ctx, JSValueConst obj, JSAtom atom,\n                            JSValueConst receiver);\n    /* return < 0 if exception or true/false */\n    int (*set_property)(JSContext *ctx, JSValueConst obj, JSAtom atom,\n                        JSValueConst value, JSValueConst receiver, int flags);\n} "
+    }
+  },
+  "findings": [
+    "Actual Node CreateEnvProxyTemplate installs a named interceptor. Original V8 PreventExtensions and PreventExtensionsWithTransition explicitly refuse named/indexed interceptors; the latter chooses the distinct prevent/seal/freeze failure at that point before property enumeration.",
+    "Current QuickJS JS_PreventExtensions only delegates for Proxy, rejects selected RAB cases, then clears extensible for an ordinary custom class. The existing exotic-method ABI has no matching prevention callback.",
+    "Therefore a custom process.env class built solely from current getter/query/setter/delete/enumerate/define hooks would incorrectly become non-extensible. Object.seal/freeze could then enumerate and call its definer after mutating extensibility, unlike the original early rejection.",
+    "Current QuickJS Object.preventExtensions converts a false raw result to its TypeError while Reflect.preventExtensions returns false. Current seal/freeze uses the same raw helper, but its existing false case has a Proxy-specific diagnostic. A complete selected adaptation must preserve the separate original modes without altering absent-hook/Proxy behavior."
+  ],
+  "proposed_boundary": [
+    "Have VM evaluate a narrow opt-in exotic prevention capability for the actual interceptor class, keeping the previous path byte-identical when absent.",
+    "The operation must refuse without mutating extensibility or enumerating/getting/defining properties. Reflect's false result and the actual Object prevent/seal/freeze throw modes must remain distinct.",
+    "A raw-false-only hook would fix state mutation but leave seal/freeze diagnostic selection incomplete. The final VM design should state the mode/diagnostic cutpoint rather than manufacture guest property probes.",
+    "Own causal controls must check unchanged extensibility, zero query/get/enumeration/define observations, correct separate Object/Reflect outcomes, and unchanged ordinary/Proxy behavior. This packet authorizes neither C edits nor execution."
+  ]
+}

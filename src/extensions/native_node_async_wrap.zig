@@ -6,6 +6,9 @@ const a = @import("native_node_argument_values.zig");
 const native = @import("native_node_async_wrap_state.zig");
 const callable = @import("native_node_module_callable.zig");
 const publication = @import("native_node_fs_private_publication.zig");
+const fs_io = @import("native_node_fs_request_io.zig");
+const fs_callback = @import("native_node_fs_request_callback.zig");
+const check = @import("native_node_check_failure.zig");
 const c = a.c;
 pub const Engine = native.Engine;
 pub const Environment = native.Environment;
@@ -19,8 +22,9 @@ const cache_key = "\x00native.node.AsyncWrap.actual-templates.v24.13";
 const Bundle = struct {
     engine: *Engine,
     registry: *Registry,
-    constructors: [4]?c.JSValue = .{ null, null, null, null },
-    cached_instances: [4]?c.JSValue = .{ null, null, null, null },
+    constructors: [5]?c.JSValue = .{ null, null, null, null, null },
+    cached_instances: [5]?c.JSValue = .{ null, null, null, null, null },
+    fs_callback_controller: ?*fs_io.Controller = null,
     constructor_class: c.JSClassID = 0,
 };
 const Constructor = struct {
@@ -47,6 +51,10 @@ fn bundleFinalizer(runtime: ?*c.JSRuntime, owner: c.JSValue) callconv(.c) void {
         slot.* = null;
         c.JS_FreeValueRT(runtime, value);
     };
+    if (self.fs_callback_controller) |controller| {
+        self.fs_callback_controller = null;
+        controller.release();
+    }
     registry_owner.environment.allocator().destroy(self);
     registry_owner.release();
 }
@@ -68,28 +76,50 @@ fn constructorMark(runtime: ?*c.JSRuntime, function: c.JSValue, marker: ?*const 
     c.JS_MarkValue(runtime, self.owner, marker);
 }
 fn callConstructor(_: ?*c.JSContext, function: c.JSValue, receiver_or_target: c.JSValue,
-    _: c_int, _: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue
+    argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue
 {
     const self: *Constructor = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)).?));
     const engine = self.registry.environment.requireEngine() catch return c.pi_js_exception();
     var scope = Scope.init(engine);
     return scope.finish(constructorBody(&scope, self, function, receiver_or_target,
+        if (argc > 0) argv[0] else c.pi_js_undefined(),
         flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0)) catch |err| callable.failure(engine, err, 0);
 }
 fn constructorBody(s: *Scope, self: *Constructor, function: c.JSValue,
-    receiver_or_target: c.JSValue, constructing: bool) !c.JSValue
+    receiver_or_target: c.JSValue, first_argument: c.JSValue,
+    constructing: bool) !c.JSValue
 {
     try s.pending();
     try s.engine.checkNativeEntry();
     if (constructing) {
         const owner = try bundleOf(s.engine, self.owner);
         const simple = c.JS_IsStrictEqual(s.engine.context, function, receiver_or_target);
-        return a.duplicate(s.engine, try instantiate(s, owner, self.owner, self.kind,
-            if (simple) null else receiver_or_target));
+        const receiver = try instantiate(s, owner, self.owner, self.kind,
+            if (simple) null else receiver_or_target);
+        if (self.kind == .fsreqcallback) {
+            // NewFSReqCallback is a genuine present native callback. The
+            // instance-template operation above did not invoke it.
+            const controller = owner.fs_callback_controller orelse
+                return error.ActualFSReqCallbackControllerRequired;
+            const use_bigint = c.JS_IsBool(first_argument) and
+                c.JS_ToBool(s.engine.context, first_argument) == 1;
+            try fs_callback.Request.construct(s, owner.registry, controller,
+                receiver, use_bigint);
+        }
+        return a.duplicate(s.engine, receiver);
     }
+    // InvokeApiFunction converts its receiver before the present callback's
+    // CHECK, including the primitive-boxing/global-receiver branches.
+    const receiver = try convertedReceiver(s, receiver_or_target);
+    if (self.kind == .fsreqcallback)
+        check.assertion(s.engine, .{
+            .file_line = "src/node_file.cc:727",
+            .message = "args.IsConstructCall()",
+            .function = "node::fs::NewFSReqCallback",
+        });
     // V8's no-handler FunctionTemplate returns its actual converted receiver.
     // It is not the separate present-callback/empty-return-handle case.
-    return a.duplicate(s.engine, try convertedReceiver(s, receiver_or_target));
+    return a.duplicate(s.engine, receiver);
 }
 fn convertedReceiver(s: *Scope, receiver: c.JSValue) !c.JSValue {
     // InvokeApiFunction converts before signature admission. Keep any actual
@@ -106,10 +136,13 @@ fn name(kind: Kind) [:0]const u8 {
         .fsreqpromise => "FSReqPromise",
         .filehandleclosereq => "FileHandleCloseReq",
         .filehandle => "FileHandle",
+        .fsreqcallback => "FSReqCallback",
     };
 }
-fn requireNoHandler(kind: Kind) !void {
+fn requireTemplate(owner: *Bundle, kind: Kind) !void {
     if (kind == .filehandle) return error.ActualFileHandleCallbackTemplateRequired;
+    if (kind == .fsreqcallback and owner.fs_callback_controller == null)
+        return error.ActualFSReqCallbackControllerRequired;
 }
 fn markApi(s: *Scope, function: c.JSValue) !void {
     try s.pending();
@@ -173,7 +206,7 @@ fn addMethod(s: *Scope, prototype: c.JSValue, owner_value: c.JSValue,
     try s.define(prototype, method_name, method, c.JS_PROP_C_W_E);
 }
 fn createConstructor(s: *Scope, owner: *Bundle, owner_value: c.JSValue, kind: Kind) !c.JSValue {
-    try requireNoHandler(kind);
+    try requireTemplate(owner, kind);
     // InstantiateFunction configures the prototype template before allocating
     // the API function. The parent template is instantiated at its real use.
     const prototype = try s.object();
@@ -207,7 +240,7 @@ fn createConstructor(s: *Scope, owner: *Bundle, owner_value: c.JSValue, kind: Ki
     return a.duplicate(s.engine, function);
 }
 fn ensureConstructor(s: *Scope, owner: *Bundle, owner_value: c.JSValue, kind: Kind) !c.JSValue {
-    try requireNoHandler(kind);
+    try requireTemplate(owner, kind);
     if (owner.constructors[@intFromEnum(kind)]) |existing| return existing;
     // Cache only the completed real function. A prior prototype lookup may
     // reenter; retain the completed winner before retiring this candidate.
@@ -224,7 +257,7 @@ fn ensureConstructor(s: *Scope, owner: *Bundle, owner_value: c.JSValue, kind: Ki
 fn instantiate(s: *Scope, owner: *Bundle, owner_value: c.JSValue,
     kind: Kind, new_target: ?c.JSValue) !c.JSValue
 {
-    try requireNoHandler(kind);
+    try requireTemplate(owner, kind);
     if (new_target) |target| {
         // Subclass construction does not use the simple-template object cache.
         const prototype = try s.checked(c.JS_PiGetObjectPrototypeFromConstructor(s.engine.context, target));
@@ -307,4 +340,31 @@ pub fn newInstance(engine: *Engine, known_owner: c.JSValue, kind: Kind) !c.JSVal
 }
 fn newInstanceBody(s: *Scope, known_owner: c.JSValue, kind: Kind) !c.JSValue {
     return a.duplicate(s.engine, try instantiate(s, try bundleOf(s.engine, known_owner), known_owner, kind, null));
+}
+
+/// The genuine internal/fs assembler binds its already-acquired shared
+/// Controller before exposing FSReqCallback or its stored InstanceTemplate.
+/// This retains the actual native owner; it starts no new service/worker.
+pub fn configureFSReqCallback(engine: *Engine, known_owner: c.JSValue,
+    controller: *fs_io.Controller) !void
+{
+    const owner = try bundleOf(engine, known_owner);
+    if (owner.registry.environment != controller.environment)
+        return error.ActualFSReqCallbackEnvironmentMismatch;
+    try controller.beginCall(engine);
+    defer controller.endCall();
+    if (owner.fs_callback_controller) |existing| {
+        if (existing != controller) return error.ActualFSReqCallbackControllerMismatch;
+        return;
+    }
+    owner.fs_callback_controller = controller.retain();
+}
+
+/// The exact template stored by node_file.cc is fst->InstanceTemplate(),
+/// where fst is the genuine FSReqCallback callback template. Instantiating it
+/// bypasses NewFSReqCallback while retaining that real prototype and brand.
+/// Its JS locals belong to the caller's existing FileHandle HandleScope.
+pub fn newFSReqCallbackInstance(s: *Scope, known_owner: c.JSValue) !c.JSValue {
+    return instantiate(s, try bundleOf(s.engine, known_owner),
+        known_owner, .fsreqcallback, null);
 }

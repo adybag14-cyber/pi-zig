@@ -1,0 +1,226 @@
+{
+  "schema": 1,
+  "status": "finite_source_peer_closed",
+  "reviewer": "SDK owners",
+  "date": "2026-10-20",
+  "execution": false,
+  "scope": "Selected category/Parse, original case conversion, string-only SPrintF/FWrite and actual Permission dispatches; native Debug algorithm slice.",
+  "packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/native-debug-source-draft.json",
+    "sha256": "477F0E70D89BA9025E714CD8ED554EBCA13EB80F897D3C36F71ACA1AC3D5454B"
+  },
+  "production": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_native_debug.h",
+      "sha256": "E11332B46CC5DF6001BBEBF3CF094B5ED2C8C4170F4FB0089B264DC0AE5BF8E8",
+      "bytes": 3449
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_native_debug.cpp",
+      "sha256": "AD3446C875DFFD39165AF9514A4A1169125995C5701F4B706706F83CB814A990",
+      "bytes": 6880
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_native_debug_internal.hpp",
+      "sha256": "301D73ED189F50DACA4B0E2C16B3C7E9469E716EB935F67D826EDB691F01B4F1",
+      "bytes": 14875
+    }
+  ],
+  "verification": {
+    "selections": [
+      {
+        "selection": "parse",
+        "body_sha256": "FD9CF379A5FD661C4E3277D18E223540178641E39E604709BACB98DB265C33C9",
+        "matches": [
+          {
+            "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils.cc.v24.13.txt",
+            "sha256": "9f2904508a8443beb454dc789a07d60afb2f2ec7f9b2f56bc651d9c66edb0ea3"
+          }
+        ]
+      },
+      {
+        "selection": "category_header",
+        "body_sha256": "78AA68F0C2646070F46ADD44E2CA51ED7AFA7DBA9371776E90674CF2FE9DECE3",
+        "matches": [
+          {
+            "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils.h.v24.13.txt",
+            "sha256": "807d1a5b4c872b0fb5a14dfeb0bd48bef126cbdca920e5908e949218617484b4"
+          }
+        ]
+      },
+      {
+        "selection": "provider_macros",
+        "body_sha256": "FC67A7A241A68078560EB201A4B78637136AA55164A0C70825B00BDDC3586D5F",
+        "matches": [
+          {
+            "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/async_wrap.h.v24.13.txt",
+            "sha256": "3ebf97b3044b4875d1f62c3f8ba1668886f4ae19f6369a8dd20ec0e262bbf1ef"
+          }
+        ]
+      },
+      {
+        "selection": "case_conversion",
+        "body_sha256": "755369C9F431D926CA574B1103B6501B937AD257F66190E4B9221B73952C0E19",
+        "matches": [
+          {
+            "source": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/util-inl.h",
+            "sha256": "8979b5c3115bc3d1c9478910088944d3761130e7d7a0ed8ed7452fcec5870e83",
+            "excerpt_start_byte": 4395,
+            "excerpt_end_byte": 12395,
+            "packet": "945EECAED523CC4394EC8630CFA41D66726EED66D398B9EBCDF359AE1ED732A9"
+          }
+        ]
+      },
+      {
+        "selection": "string_helpers",
+        "body_sha256": "1C3FC643C60932F87CDF3ED6BC31FC29881962EB2ADE7B239C2EF2479564133F",
+        "matches": [
+          {
+            "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils-inl.h.v24.13.txt",
+            "sha256": "a3a471fc932b173cc08c53571e7c791a3dd816720443ba6afd4c5561ddda7a72"
+          }
+        ]
+      },
+      {
+        "selection": "formatter",
+        "body_sha256": "F5CEFDFAA62FA2AD2569D54FB1B7831ADB3807234336CC0210C0A15EE3111C2E",
+        "matches": [
+          {
+            "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils-inl.h.v24.13.txt",
+            "sha256": "a3a471fc932b173cc08c53571e7c791a3dd816720443ba6afd4c5561ddda7a72"
+          }
+        ]
+      },
+      {
+        "selection": "fwrite",
+        "body_sha256": "716836DF07BE994D9E4F41ED2615B5CDF00AED605F53AF8F3C8259EB8E79DFC0",
+        "matches": [
+          {
+            "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils.cc.v24.13.txt",
+            "sha256": "9f2904508a8443beb454dc789a07d60afb2f2ec7f9b2f56bc651d9c66edb0ea3"
+          }
+        ]
+      }
+    ],
+    "tables": {
+      "all_exact": true,
+      "counts": {
+        "non_crypto": 54,
+        "crypto": 15,
+        "extra": 18
+      },
+      "actualTables": {
+        "non_crypto": [
+          "NONE",
+          "DIRHANDLE",
+          "DNSCHANNEL",
+          "ELDHISTOGRAM",
+          "FILEHANDLE",
+          "FILEHANDLECLOSEREQ",
+          "BLOBREADER",
+          "FSEVENTWRAP",
+          "FSREQCALLBACK",
+          "FSREQPROMISE",
+          "GETADDRINFOREQWRAP",
+          "GETNAMEINFOREQWRAP",
+          "HEAPSNAPSHOT",
+          "HTTP2SESSION",
+          "HTTP2STREAM",
+          "HTTP2PING",
+          "HTTP2SETTINGS",
+          "HTTPINCOMINGMESSAGE",
+          "HTTPCLIENTREQUEST",
+          "LOCKS",
+          "JSSTREAM",
+          "JSUDPWRAP",
+          "MESSAGEPORT",
+          "PIPECONNECTWRAP",
+          "PIPESERVERWRAP",
+          "PIPEWRAP",
+          "PROCESSWRAP",
+          "PROMISE",
+          "QUERYWRAP",
+          "QUIC_ENDPOINT",
+          "QUIC_LOGSTREAM",
+          "QUIC_PACKET",
+          "QUIC_SESSION",
+          "QUIC_STREAM",
+          "QUIC_UDP",
+          "SHUTDOWNWRAP",
+          "SIGNALWRAP",
+          "STATWATCHER",
+          "STREAMPIPE",
+          "TCPCONNECTWRAP",
+          "TCPSERVERWRAP",
+          "TCPWRAP",
+          "TTYWRAP",
+          "UDPSENDWRAP",
+          "UDPWRAP",
+          "SIGINTWATCHDOG",
+          "WORKER",
+          "WORKERCPUPROFILE",
+          "WORKERCPUUSAGE",
+          "WORKERHEAPPROFILE",
+          "WORKERHEAPSNAPSHOT",
+          "WORKERHEAPSTATISTICS",
+          "WRITEWRAP",
+          "ZLIB"
+        ],
+        "crypto": [
+          "CHECKPRIMEREQUEST",
+          "PBKDF2REQUEST",
+          "KEYPAIRGENREQUEST",
+          "KEYGENREQUEST",
+          "KEYEXPORTREQUEST",
+          "ARGON2REQUEST",
+          "CIPHERREQUEST",
+          "DERIVEBITSREQUEST",
+          "HASHREQUEST",
+          "RANDOMBYTESREQUEST",
+          "RANDOMPRIMEREQUEST",
+          "SCRYPTREQUEST",
+          "SIGNREQUEST",
+          "TLSWRAP",
+          "VERIFYREQUEST"
+        ],
+        "extra": [
+          "CRYPTO",
+          "COMPILE_CACHE",
+          "DIAGNOSTICS",
+          "HUGEPAGES",
+          "INSPECTOR_SERVER",
+          "INSPECTOR_CLIENT",
+          "INSPECTOR_PROFILER",
+          "CODE_CACHE",
+          "NGTCP2_DEBUG",
+          "SEA",
+          "WASI",
+          "MODULE",
+          "MKSNAPSHOT",
+          "SNAPSHOT_SERDES",
+          "PERMISSION_MODEL",
+          "PLATFORM_MINIMAL",
+          "PLATFORM_VERBOSE",
+          "QUIC"
+        ]
+      }
+    },
+    "fwrite_exact_two_type_changes": true
+  },
+  "findings": [
+    "All 54 non-crypto, 15 crypto and 18 extra labels match the complete original macro bodies in the original order. The immutable HAVE_OPENSSL choice gives 72 or 87 actual bool entries and places PERMISSION_MODEL at the corresponding index.",
+    "Parse copies cats, then each real prefix substring, applies original classic-locale case conversion, checks each available category with find, publishes only true, and advances after the comma. Empty input, leading/repeated comma, trailing comma, substring and later Parse behavior follow that exact loop.",
+    "ToLower(#name) deduces the actual literal array and traverses its terminal NUL. The production keeps that byte; ToLower(cats substring) traverses only the actual string extent. No C-string shortcut or different case-fold policy was introduced.",
+    "Parse(environment) creates the original native empty cats String, invokes the genuine selected SafeGetenv NODE_DEBUG_NATIVE path, then parses its result. The explicit parse_text embedding String prefix and absence of a RealEnvStore fallback remain documented.",
+    "The selected Inserting %s call borrows its original native String span. SizedString creates the owning copy at ToStringHelper conversion after the formatter ret prefix local; it does not add a separate pre-format input copy. Tree lines use the original two c_str operands and their C-string extent.",
+    "The selected SPrintF recursive expression, prefix construction, conversion/append and final recursion ordering are preserved for the two Permission literals and string operands. Permission retains its outer enabled check, the inner Debug check and each actual tree-line check.",
+    "FWrite is exactly the original complete function after only the EnvironmentString and Allocator<wchar_t> type substitutions. It retains actual FILE identity, Windows tty detection and UTF-8 conversion, native console versus fwrite selection, ignored I/O results and absence of an added flush.",
+    "Local lists and the process selection buffer retain actual inline bool state. The process feature is fixed before publication; native category String statics have their original process lifetime. This algorithm review does not independently close shared native allocator ownership."
+  ],
+  "limits": [
+    "Source-only; no compilation, test execution, actual stdout/stderr or Windows-console observation.",
+    "Only the admitted Windows/Linux, release-mode selected Permission String/C-string formatting path is covered. General numeric/pathlike/pointer formatting and malformed-format full compiler-generated assertion diagnostics are not qualified.",
+    "Actual native allocation/guard lifetime, singleton installation, native Environment assembly, RealEnvStore, full startup and public process behavior remain separate peers/dependencies.",
+    "Original loop-end DCHECKs and valid-index DCHECK-only checks do not add a new release-mode behavior here; this receipt does not claim a debug-build assertion equivalence."
+  ]
+}

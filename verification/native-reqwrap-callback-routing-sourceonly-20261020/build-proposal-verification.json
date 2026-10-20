@@ -1,0 +1,23 @@
+{
+  "main_sha256": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+  "main_bytes": 493924,
+  "projected_sha256": "DC07DFEAACC02CE3E6FAD42BC5D61E0491126E10C898C3C4F02AD7473C658606",
+  "projected_bytes": 495501,
+  "unique_forward_reverse_exact": true,
+  "declarations": [
+    "native ReqWrap routing Reset clears the actual callback before reuse without counting admission",
+    "native ReqWrap routing selects the real callback after retain Detach and waiting decrement",
+    "native ReqWrap routing negative raw admission keeps callback but does not strengthen count or synthesize completion",
+    "native ReqWrap routing accepted bad descriptor preserves the real callback negative result",
+    "native ReqWrap routing reset and redispatch precede old Wrapper and event retirement",
+    "native ReqWrap routing callback error after redispatch preserves the new request pointer and event",
+    "native ReqWrap routing typed callback failure still retires the final native Wrapper pointer",
+    "native ReqWrap routing actual ordinary callback reason survives Entry destruction",
+    "native ReqWrap routing actual native fatal callback still completes native request retirement",
+    "native ReqWrap routing shared shutdown drains real callbacks after JavaScript is disabled",
+    "native ReqWrap routing stopped native service returns its real status without a callback or count",
+    "native ReqWrap routing retained Controller rejects a retired Hub before touching Entry inputs"
+  ],
+  "execution": "none",
+  "build_mutated": false
+}

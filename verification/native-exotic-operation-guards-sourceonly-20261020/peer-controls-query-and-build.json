@@ -1,0 +1,102 @@
+{
+  "schema": "native-exotic-operations-controls-source-peer-v1",
+  "reviewer": "modules_io",
+  "source_only": true,
+  "execution": false,
+  "status": "CLOSED finite Fixture/Probe/helper ownership, declarations1-14 and28, and six-line build seam",
+  "root": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/src/native_vm_exotic_operations_test.zig",
+    "sha256": "9ffbdf6b2c033898e7d1738943293dcd13f758ef9893f794293c8aa71a5faa7b",
+    "bytes": 35891
+  },
+  "predecessor": {
+    "sha256": "b9465fd9236c2d9582f032f903c1b98101f43d5e8213654544798a473303d18d",
+    "bytes": 35881
+  },
+  "successor_packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-exotic-operation-guards-sourceonly-20261020/control-pointer-successor.json",
+    "sha256": "d72561705ec7dd82b208a4638bc88d2b615f99992d27412548ac43cb4e68c084",
+    "bytes": 1233,
+    "unique_inverse": true
+  },
+  "assigned_names": [
+    "VM exotic operations enumerable keys query flags without fetching values",
+    "VM exotic operations full descriptors still query then fetch an owned value",
+    "VM exotic operations existence requests retain their original descriptor callback",
+    "VM exotic operations unfiltered own keys enumerate without a descriptor query",
+    "VM exotic operations values filter each key before its actual Get",
+    "VM exotic operations missing flags hook retains temporary descriptor ownership",
+    "VM exotic operations physical own data precedes the optional query hook",
+    "VM exotic operations SET_ENUM queries both string and Symbol descriptors without Get",
+    "VM exotic operations ordinary Proxy descriptor traps retain their original order",
+    "VM exotic operations admitted query performs no VM allocation under heap limit",
+    "VM exotic operations descriptor getter may return flagged Error DATA successfully",
+    "VM exotic operations ordinary query failure remains the exact catchable reason",
+    "VM exotic operations actual fatal query stops later guest catch and finally",
+    "VM exotic operations active and cancelled private query completions stay native",
+    "VM exotic operations borrowed receiver callbacks create no lasting object root"
+  ],
+  "all_declared_names": [
+    "VM exotic operations enumerable keys query flags without fetching values",
+    "VM exotic operations full descriptors still query then fetch an owned value",
+    "VM exotic operations existence requests retain their original descriptor callback",
+    "VM exotic operations unfiltered own keys enumerate without a descriptor query",
+    "VM exotic operations values filter each key before its actual Get",
+    "VM exotic operations missing flags hook retains temporary descriptor ownership",
+    "VM exotic operations physical own data precedes the optional query hook",
+    "VM exotic operations SET_ENUM queries both string and Symbol descriptors without Get",
+    "VM exotic operations ordinary Proxy descriptor traps retain their original order",
+    "VM exotic operations admitted query performs no VM allocation under heap limit",
+    "VM exotic operations descriptor getter may return flagged Error DATA successfully",
+    "VM exotic operations ordinary query failure remains the exact catchable reason",
+    "VM exotic operations actual fatal query stops later guest catch and finally",
+    "VM exotic operations active and cancelled private query completions stay native",
+    "VM exotic operations Reflect prevent rejection is normal and allocation free",
+    "VM exotic operations Object prevent keeps its actual throwing rejection path",
+    "VM exotic operations seal rejection uses SEALED before any enumeration",
+    "VM exotic operations freeze rejection uses FROZEN before any definition",
+    "VM exotic operations positive admission completes each real integrity mutation",
+    "VM exotic operations a missing admission hook preserves legacy extension mutation",
+    "VM exotic operations ordinary objects and Proxy refusal retain their old behavior",
+    "VM exotic operations a Proxy forwarding trap selects only its actual prevent call",
+    "VM exotic operations nonobject integrity requests keep existing public semantics",
+    "VM exotic operations ordinary integrity failure preserves its exact reason",
+    "VM exotic operations actual fatal integrity failure bypasses guest cleanup",
+    "VM exotic operations active and cancelled private integrity completion bypasses handlers",
+    "VM exotic operations normal native rejection preserves the actual prior pending owner",
+    "VM exotic operations borrowed receiver callbacks create no lasting object root"
+  ],
+  "build": {
+    "packet_path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-exotic-operation-guards-sourceonly-20261020/build-intake.json",
+    "packet_sha256": "f9fe839c85d0c724dbb6be71a690b8988afc71422db61150b4be0b2f6d571087",
+    "before_sha256": "CCADEFC7788AB8194561A7465261EAB59BEF1C765CC4C780C42BC3DC4010054B",
+    "before_bytes": 421276,
+    "after_sha256": "F988BAC20C4615AF0A6D00589156829862D7D1068369BB3AD620D52146BA465C",
+    "after_bytes": 421822,
+    "additive_lines": 6,
+    "declared_names": 28,
+    "forward_exact": true,
+    "reverse_exact": true,
+    "unique_target_count": 1
+  },
+  "production_dependency": "Previously independently closed flags-only dispatch/ABI at packetDC714C58; modules flags receipt9CA98D16.",
+  "findings": [
+    "Fixture seeds every value/atom before fallible initialization, installs rollback after runtime creation, retains actual target/reason/progress owners and keeps native Probe storage alive through context/runtime destruction.",
+    "Shutdown disables producers first, restores unlimited heap, handles actual published private cancellation before clearing pending, and releases real values/atoms before context/runtime retirement.",
+    "Actual exotic callbacks distinguish flags-only Query from full descriptor Query/Get and null-descriptor existence. Returned descriptor markers transfer once and are freed by the actual temporary-descriptor consumer or by conditional caller cleanup.",
+    "Controls1-9 observe the exact e/q/g traces, enumerable/missing/hidden/Symbol selection, legacy temporary value retirement, physical own-property precedence, and unchanged real Proxy traps. The heap1 warmed query in10 records unchanged real OOM occurrence and no pending result.",
+    "Control11 returns a flagged Error as successful descriptor DATA. Controls12-14 use actual JS_Throw/native termination producers and retained reason identity; the function body/catch/finally observations come from an already-retained plain own-data record, without a subsequent guest evaluation.",
+    "The active private token is republished before its public Cancel, while the cancelled native completion remains an explicit inactive private unwind. No public Error flag is used to manufacture a private event.",
+    "Control28 removes the genuine global edges and then its native value roots before GC, proving callbacks add no lasting receiver entitlement.",
+    "Selected successor changes only enum-table void* @ptrCast; exact reversal recovers all initialB946 bytes. All conditional defer-if blocks,28names and observations remain unchanged.",
+    "The initial punctuation concern was withdrawn after reading exact prior packet51709364, which adds semicolons to that conditional form. Superseded explicit-block29247/F9CB is not the selected control source."
+  ],
+  "limits": [
+    "Integrity production and controls15-27 are SDK's separate assigned slice.",
+    "No process.env installation, compile, runtime, native execution or broader class-API qualification."
+  ],
+  "actual_header": {
+    "js_free": "JS_EXTERN void js_free(JSContext *ctx, void *ptr);",
+    "enum_fields": "bool is_enumerable; JSAtom atom;"
+  }
+}

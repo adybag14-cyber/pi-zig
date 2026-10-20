@@ -1,0 +1,114 @@
+{
+  "schema": "pi.native-isolate-context-source.v1",
+  "source_only": true,
+  "execution": false,
+  "operations": [
+    {
+      "source": "api",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-existing-promise-settlement-sourceonly-20261019\\authority\\v8-api.v24.13.cc",
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "term": "void Isolate::Enter()",
+      "start_line": 10162,
+      "body": "void Isolate::Enter() {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  i_isolate->Enter();\n}\n"
+    },
+    {
+      "source": "api",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-existing-promise-settlement-sourceonly-20261019\\authority\\v8-api.v24.13.cc",
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "term": "void Isolate::Exit()",
+      "start_line": 10167,
+      "body": "void Isolate::Exit() {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  i_isolate->Exit();\n}\n"
+    },
+    {
+      "source": "api",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-existing-promise-settlement-sourceonly-20261019\\authority\\v8-api.v24.13.cc",
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "term": "Isolate* Isolate::TryGetCurrent()",
+      "start_line": 9982,
+      "body": "Isolate* Isolate::TryGetCurrent() {\n  i::Isolate* i_isolate = i::Isolate::TryGetCurrent();\n  return reinterpret_cast<Isolate*>(i_isolate);\n}\n"
+    },
+    {
+      "source": "api",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-existing-promise-settlement-sourceonly-20261019\\authority\\v8-api.v24.13.cc",
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "term": "void Context::Enter()",
+      "start_line": 818,
+      "body": "void Context::Enter() {\n  i::DisallowGarbageCollection no_gc;\n  i::Tagged<i::NativeContext> env = *Utils::OpenDirectHandle(this);\n  i::Isolate* i_isolate = env->GetIsolate();\n  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);\n  i::HandleScopeImplementer* impl = i_isolate->handle_scope_implementer();\n  impl->EnterContext(env);\n  impl->SaveContext(i_isolate->context());\n  i_isolate->set_context(env);\n}\n"
+    },
+    {
+      "source": "api",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-existing-promise-settlement-sourceonly-20261019\\authority\\v8-api.v24.13.cc",
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "term": "void Context::Exit()",
+      "start_line": 829,
+      "body": "void Context::Exit() {\n  auto env = Utils::OpenDirectHandle(this);\n  i::Isolate* i_isolate = env->GetIsolate();\n  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);\n  i::HandleScopeImplementer* impl = i_isolate->handle_scope_implementer();\n  if (!Utils::ApiCheck(impl->LastEnteredContextWas(*env), \"v8::Context::Exit()\",\n                       \"Cannot exit non-entered context\")) {\n    return;\n  }\n  impl->LeaveContext();\n  i_isolate->set_context(impl->RestoreContext());\n}\n"
+    },
+    {
+      "source": "api",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-existing-promise-settlement-sourceonly-20261019\\authority\\v8-api.v24.13.cc",
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "term": "bool Isolate::InContext()",
+      "start_line": 9774,
+      "body": "bool Isolate::InContext() {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  return !i_isolate->context().is_null();\n}\n"
+    },
+    {
+      "source": "isolate",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-captured-frame-logging-sourceonly-20261019\\authority\\isolate.v24.13.cc",
+      "sha256": "EEA4CAC8477AE94429B28D2369BECC2DF00E0002A2664AC559435A802A40B2D0",
+      "term": "void Isolate::Enter()",
+      "start_line": 5933,
+      "body": "void Isolate::Enter() {\n  Isolate* current_isolate = nullptr;\n  PerIsolateThreadData* current_data = CurrentPerIsolateThreadData();\n\n#ifdef V8_ENABLE_CHECKS\n  // No different thread must have entered the isolate. Allow re-entering.\n  ThreadId thread_id = ThreadId::Current();\n  if (current_thread_id_.IsValid()) {\n    CHECK_EQ(current_thread_id_, thread_id);\n  } else {\n    CHECK_EQ(0, current_thread_counter_);\n    current_thread_id_ = thread_id;\n  }\n  current_thread_counter_++;\n#endif\n\n  // Set the stack start for the main thread that enters the isolate.\n  heap()->SetStackStart();\n\n  if (current_data != nullptr) {\n    current_isolate = current_data->isolate_;\n    DCHECK_NOT_NULL(current_isolate);\n    if (current_isolate == this) {\n      DCHECK(Current() == this);\n      auto entry_stack = entry_stack_.load();\n      DCHECK_NOT_NULL(entry_stack);\n      DCHECK(entry_stack->previous_thread_data == nullptr ||\n             entry_stack->previous_thread_data->thread_id() ==\n                 ThreadId::Current());\n      // Same thread re-enters the isolate, no need to re-init anything.\n      entry_stack->entry_count++;\n      return;\n    }\n  }\n\n  PerIsolateThreadData* data = FindOrAllocatePerThreadDataForThisThread();\n  DCHECK_NOT_NULL(data);\n  DCHECK(data->isolate_ == this);\n\n  EntryStackItem* item =\n      new EntryStackItem(current_data, current_isolate, entry_stack_);\n  entry_stack_ = item;\n\n  SetIsolateThreadLocals(this, data);\n\n  // In case it's the first time some thread enters the isolate.\n  set_thread_id(data->thread_id());\n}\n"
+    },
+    {
+      "source": "isolate",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-captured-frame-logging-sourceonly-20261019\\authority\\isolate.v24.13.cc",
+      "sha256": "EEA4CAC8477AE94429B28D2369BECC2DF00E0002A2664AC559435A802A40B2D0",
+      "term": "void Isolate::Exit()",
+      "start_line": 5982,
+      "body": "void Isolate::Exit() {\n  auto current_entry_stack = entry_stack_.load();\n  DCHECK_NOT_NULL(current_entry_stack);\n  DCHECK(current_entry_stack->previous_thread_data == nullptr ||\n         current_entry_stack->previous_thread_data->thread_id() ==\n             ThreadId::Current());\n\n#ifdef V8_ENABLE_CHECKS\n  // The current thread must have entered the isolate.\n  CHECK_EQ(current_thread_id_, ThreadId::Current());\n  if (--current_thread_counter_ == 0) current_thread_id_ = ThreadId::Invalid();\n#endif\n\n  if (--current_entry_stack->entry_count > 0) return;\n\n  DCHECK_NOT_NULL(CurrentPerIsolateThreadData());\n  DCHECK(CurrentPerIsolateThreadData()->isolate_ == this);\n\n  // Pop the stack.\n  entry_stack_ = current_entry_stack->previous_item;\n\n  PerIsolateThreadData* previous_thread_data =\n      current_entry_stack->previous_thread_data;\n  Isolate* previous_isolate = current_entry_stack->previous_isolate;\n\n  delete current_entry_stack;\n\n  // Reinit the current thread for the isolate it was running before this one.\n  SetIsolateThreadLocals(previous_isolate, previous_thread_data);\n}\n"
+    },
+    {
+      "source": "isolate",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-captured-frame-logging-sourceonly-20261019\\authority\\isolate.v24.13.cc",
+      "sha256": "EEA4CAC8477AE94429B28D2369BECC2DF00E0002A2664AC559435A802A40B2D0",
+      "term": "thread_local Isolate* g_current_isolate_",
+      "start_line": 523,
+      "body": "thread_local Isolate* g_current_isolate_ V8_CONSTINIT = nullptr;\n\nV8_TLS_DEFINE_GETTER(Isolate::TryGetCurrent, Isolate*, g_current_isolate_)\n\n// static\nvoid Isolate::SetCurrent(Isolate* isolate) { g_current_isolate_ = isolate; }\n"
+    },
+    {
+      "source": "inl",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-captured-frame-logging-sourceonly-20261019\\authority\\isolate-inl.v24.13.h",
+      "sha256": "772D5CF1DD8E849E5D495D84DF6F6A122E41905808C7E3B5870B51335CC89ED2",
+      "term": "SetCurrentIsolateScope::SetCurrentIsolateScope",
+      "start_line": 243,
+      "body": "SetCurrentIsolateScope::SetCurrentIsolateScope(Isolate* isolate)\n    : ptr_compr_cage_access_scope_(isolate),\n      previous_isolate_(Isolate::TryGetCurrent()) {\n  Isolate::SetCurrent(isolate);\n}\n"
+    },
+    {
+      "source": "inl",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-captured-frame-logging-sourceonly-20261019\\authority\\isolate-inl.v24.13.h",
+      "sha256": "772D5CF1DD8E849E5D495D84DF6F6A122E41905808C7E3B5870B51335CC89ED2",
+      "term": "SetCurrentIsolateScope::~SetCurrentIsolateScope",
+      "start_line": 249,
+      "body": "SetCurrentIsolateScope::~SetCurrentIsolateScope() {\n  Isolate::SetCurrent(previous_isolate_);\n}\n"
+    },
+    {
+      "source": "inl",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-captured-frame-logging-sourceonly-20261019\\authority\\isolate-inl.v24.13.h",
+      "sha256": "772D5CF1DD8E849E5D495D84DF6F6A122E41905808C7E3B5870B51335CC89ED2",
+      "term": "void Isolate::set_context(",
+      "start_line": 43,
+      "body": "void Isolate::set_context(Tagged<Context> context) {\n  DCHECK(context.is_null() || IsContext(context));\n  thread_local_top()->context_ = context;\n}\n"
+    }
+  ],
+  "findings": [
+    "Actual TryGetCurrent reads a thread_local pointer initialized to null.",
+    "Isolate entry/exit preserves native per-thread nested entry ownership separately from the current context.",
+    "Context entry/exit selects and restores the current context through the actual handle-scope implementer; InContext checks that current context, not merely isolate presence.",
+    "SetCurrentIsolateScope is a saved-pointer native scope; it does not itself establish a current context."
+  ],
+  "exclusions": [
+    "QuickJS TLS implementation",
+    "native tracing admission implementation",
+    "execution"
+  ]
+}

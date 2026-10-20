@@ -1,0 +1,60 @@
+{
+  "status": "source applied and peer closed; no execution",
+  "production": [
+    {
+      "path": "src/extensions/native_uv_tcp.c",
+      "base_sha256": "FF046966BB81E915F0A69FD158DD8DD10533A6E2590FE1CA8975A5DCB503EE83",
+      "sha256": "6BA884B63C1C89FE65DFD90C97AC2604280749EFA5095755347EA06FC52CE92A",
+      "bytes": 45160,
+      "edits": 5,
+      "full_forward_inverse_exact": true
+    },
+    {
+      "path": "src/extensions/native_uv_fs.h",
+      "base_sha256": "A8E758C49AC4E0583BA08ABF28771BFC7843A730796A6F3E5C471698249011BE",
+      "sha256": "B738A0EAECC8E06781305D953B0FFE56753B774F8507CDBE4052BCBC2014F117",
+      "bytes": 4679,
+      "edits": 3,
+      "full_forward_inverse_exact": true
+    }
+  ],
+  "controls": {
+    "path": "src/native_node_fs_readwrap_reuse_test.zig",
+    "sha256": "1976069B2406CBB9B0B78F67EB8E8DAE562B05EB4E9C5DDE52AEAABB525A9972",
+    "bytes": 28267,
+    "declarations": [
+      "native actual FS reuse initial Reset preserves unsubmitted storage and charge",
+      "native actual FS reuse raw span preserves offset sentinels and payload after cleanup",
+      "native actual FS reuse invalid raw spans leave the same request admissible",
+      "native actual FS reuse Reset rejects submitted and queued work until actual dequeue",
+      "native actual FS reuse dequeued result still requires actual cleanup before Reset",
+      "native actual FS reuse new completion queues before old event entitlement retires",
+      "native actual FS reuse old release preserves the reused embedded event FIFO next link",
+      "native actual FS reuse several event tickets may own one embedded address",
+      "native actual FS reuse completion owns request after old event and explicit owner retire",
+      "native actual FS reuse lease cleanup releases backing before later raw span",
+      "native actual FS reuse raw request can later acquire a genuine JS backing lease",
+      "native actual FS reuse null zero length and later EOF preserve real result zero",
+      "native actual FS reuse cancellation and stop retain exactly the reused completion",
+      "native actual FS reuse raw admission and Reset preserve actual pending without JS heap work"
+    ]
+  },
+  "unchanged_existing_roots": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_tcp_transport_test.zig",
+      "sha256": "3C475C5FA0C43BBEE875E58E54E705282E2319C75EE1E0216D775E84E56C58D5",
+      "bytes": 19529,
+      "in_this_intake": false
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_fs_request_transport_test.zig",
+      "sha256": "68A71CE9352580918156CAFB676927D8E4CC10272A2FAEA1CB5A6F8E9E823151",
+      "bytes": 34210,
+      "in_this_intake": false
+    }
+  ],
+  "negative_v2_retained": true,
+  "v3_packet": "625A46DF30FF353AD2EB7ADDFF5C4705B0655B89F99F7D052A0A7B2BFCE40108",
+  "build_packet": "16D99C963103262CF0FC67D95B60F177781D820F20BA89EA0AE5BC429F3BD2ED",
+  "execution": "none"
+}

@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "status": "root_finite_source_protocol_peer_closed",
+  "reviewed_utc": "2026-10-20T16:02:26.839546+00:00",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-readwrap-reuse-sourceonly-20261020\\readwrap-reuse-proposal-v3.json",
+    "sha256": "625A46DF30FF353AD2EB7ADDFF5C4705B0655B89F99F7D052A0A7B2BFCE40108",
+    "bytes": 23290
+  },
+  "exact_edits": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_uv_tcp.c",
+      "base_sha256": "FF046966BB81E915F0A69FD158DD8DD10533A6E2590FE1CA8975A5DCB503EE83",
+      "projected_sha256": "6BA884B63C1C89FE65DFD90C97AC2604280749EFA5095755347EA06FC52CE92A",
+      "edits": 5,
+      "full_inverse": true
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_uv_fs.h",
+      "base_sha256": "A8E758C49AC4E0583BA08ABF28771BFC7843A730796A6F3E5C471698249011BE",
+      "projected_sha256": "B738A0EAECC8E06781305D953B0FFE56753B774F8507CDBE4052BCBC2014F117",
+      "edits": 3,
+      "full_inverse": true
+    }
+  ],
+  "authority": {
+    "node_file_full_sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F",
+    "selected_body_exact": true,
+    "req_wrap_body_sha256": "27C770D8756B626C80210F96F9DB1CF31BFBF09AAB1DA53DC35B382314883E67"
+  },
+  "findings": [
+    "Actual completion removes the native request from the worker list, records the result, publishes event_queued before completed, then retains the independent event entitlement and inserts the embedded slot. An acquire completed observation therefore cannot admit Reset in the pre-enqueue window.",
+    "Actual FIFO dequeue alone clears the FS event in_use and event_queued under event_mutex. Reset additionally requires completed and cleaned. The v2 missing in_use transition is explicitly corrected; unchanged TCP branches retain their previous acknowledgement policy.",
+    "Every accepted dispatch retains one native callback owner, every queued completion retains one request owner and one service owner, and the initial request owns its service independently. An old callback or old dequeued ticket may retire after resubmission without becoming the final request owner while new native work or a queued completion is alive.",
+    "Old event release reads only stable service/source/keeper/accepted/storage/allocation fields for the FS branch. It does not read mutable status/length, clear event.next, or alter in_use. Requeued A may therefore remain before B while the prior A ticket is released; callers must never inspect old mutable info after Reset.",
+    "Raw read copies actual base/length/position into the existing uv_buf_t/uv_fs_t request and uses the original synchronous worker admission. It neither allocates another request nor duplicates a JS lease. Windows checks the real ULONG extent. Caller native storage must survive actual work, cleanup, and its later EmitRead use.",
+    "Lease cleanup empties the prior genuine backing entitlement before Reset. Existing request command synchronization publishes the reset fields before the next worker admission. Delayed old callback release touches only atomic references unless it is the actual final owner, when all other entitlements have retired.",
+    "Immediate negative admission has no queued event; after actual cleanup Reset is also admissible and no fake completion is added. Initially unsubmitted/uncleaned Reset is a no-op. Submitted direct admission without Reset and initial-cleaned storage remain rejected.",
+    "Actual Node ReadStart copies result and uv_buf_t before cleanup, resets and returns the wrapper to the freelist before EmitRead, then may restart while its outer callback is still live. The proposed release-only old ticket matches this specific consumer ordering.",
+    "All production changes are precisely five C replacements and three header replacements, fully inverted to FF046966/A8E758C4. Current production files remain unchanged during this review."
+  ],
+  "limits": [
+    "Finite source protocol review only; controls remain independently reviewed and require original fresh build/runtime execution.",
+    "Does not qualify FileHandle constructors/freelist, caller managed buffer retention through EmitRead, ReqWrap callback dispatch, JS public installation, tracing or allocation retry policy.",
+    "One owning host thread must serialize reset/admission/cleanup and stop/join before retiring borrowed raw spans; this API does not promise arbitrary concurrent host mutation."
+  ],
+  "runtime_qualification": false,
+  "application_qualification": false,
+  "production_mutated": false,
+  "source_mutation_authorization": "Root protocol approval is closed for this exact v3 proposal; SDK may apply it in its assigned source-only worktree after VM protocol peer also closes. Main remains frozen under V27 BuildQuery."
+}

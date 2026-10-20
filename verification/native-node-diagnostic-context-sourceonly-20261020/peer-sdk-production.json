@@ -1,0 +1,59 @@
+{
+  "status": "CLOSED finite borrowed diagnostic context production/API source peer",
+  "reviewer": "sdk_owners",
+  "source_only": true,
+  "production": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_node_diagnostic_context.c",
+      "bytes": 789,
+      "sha256": "AC01853D724253740008E26D2663545D2F564A6E59DE91AA8CE2C8777C7B832C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_node_diagnostic_context.h",
+      "bytes": 775,
+      "sha256": "4D8E43A6527FED6AA19F86A2A51CD490E5DDEAC6CCC323635B700ED4E8B798C0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_node_diagnostic_context.hpp",
+      "bytes": 914,
+      "sha256": "7EA7700F4EDCC6ED5C27DF98574BE27A572AFF01E151B9F39667E6737ACC30B9"
+    }
+  ],
+  "proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-diagnostic-context-sourceonly-20261020\\source-proof.json",
+    "bytes": 6459,
+    "sha256": "59B45ADA4D5BD9558F123F7AA7A4B1787E696881C1991B1A344C1615B2ACA738"
+  },
+  "authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-diagnostic-context-sourceonly-20261020\\v8-entry-authority.json",
+      "bytes": 10231,
+      "sha256": "A0D6A6327583D3A740DFF931584FB89955C508A1E46FC11B634A45FDFA305032"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-diagnostic-context-sourceonly-20261020\\node-diagnostic-guards-authority.json",
+      "bytes": 10065,
+      "sha256": "8C84E5CC132C637EFCA7E7CE162885C6614FF7658CB40A5376A7C39F85890F3C"
+    }
+  ],
+  "original_verification": {
+    "full_original_files": 6,
+    "all_file_pins_verified": true,
+    "all_12_V8_bodies_verified_at_original_line": true,
+    "all_7_Node_guard_spans_verified_at_original_character_offset": true
+  },
+  "findings": [
+    "enter saves the exact prior thread-local pointer before publishing the supplied borrowed pointer; leave restores that saved pointer without reading or mutating either context. current is a raw read. Explicit null masks a valid outer admission, same-context nesting and different-context nesting restore identically.",
+    "The TLS definition is native zero-initialized per thread. The API contains no allocator, JS/runtime ownership, VM entry, pending inspection, exception classification or flag mutation. Workers receive no inherited context through this owner.",
+    "The C++ scope stores only const previous pointer, has noexcept construction/destruction and deletes both copy and move paths. Declaring it first in the synchronous body makes later locals retire before restoration, including normal return and C++ unwind.",
+    "The selected original TryGetCurrent reads TLS initialized to null, InContext independently checks entered context, and native saved-pointer scope restores its predecessor. The adapter explicitly translates an already-entered caller and does not claim to replace original Isolate/Context entry allocations or thread-entitlement checks.",
+    "Original Node diagnostics require current isolate plus entered context and also retain native OOM/recursive-capture gates. This scope supplies only current borrowed context admission; it does not bypass those independent guards."
+  ],
+  "remaining_contract": [
+    "Every real C ABI caller must supply its actual currently entered live context or explicit null; a retained Environment/Agent/last-created runtime is insufficient.",
+    "The scope must stay on the same thread and end before its borrowed context can retire; later cleanup must not invalidate the entered caller before the diagnostic scope leaves.",
+    "Actual tracing integration, full diagnostic stack capture, 10 assigned VM controls, build and runtime remain separate."
+  ],
+  "defects_found": [],
+  "execution_performed": false
+}

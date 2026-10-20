@@ -74,6 +74,7 @@ struct PiUvFsRequest {
     PiUvFsRequest *previous;
     PiUvFsRequest *next;
     int kind;
+    int storage_kind; /* immutable generic/typed native allocation admission */
     int descriptor;
     int flags;
     int mode;
@@ -83,6 +84,7 @@ struct PiUvFsRequest {
     int accepted;
     _Atomic int completed;
     _Atomic int cleaned;
+    _Atomic int event_queued;
 };
 enum PiUvCommandKind { PI_UV_CMD_INIT, PI_UV_CMD_BIND, PI_UV_CMD_LISTEN,
     PI_UV_CMD_CONNECT, PI_UV_CMD_READ_START, PI_UV_CMD_READ_STOP,
@@ -417,9 +419,11 @@ static PiUvFsRequest *pi_uv_fs_request_allocate(PiUvService *service,
     if (!request) return NULL;
     request->service = service;
     request->kind = kind;
+    request->storage_kind = kind;
     atomic_init(&request->references, 1);
     atomic_init(&request->completed, 0);
     atomic_init(&request->cleaned, 0);
+    atomic_init(&request->event_queued, 0);
     pi_uv_service_retain(service);
     pi_uv_event_prepare(&request->event, service, NULL, NULL,
         PI_UV_FS_REQUEST, PI_UV_FS_COMPLETION, 0, token);
@@ -437,6 +441,10 @@ static void pi_uv_fs_completed(uv_fs_t *actual) {
     if (request->kind == PI_UV_FS_READ && actual->result >= 0)
         request->event.info.length = (size_t)actual->result;
     atomic_fetch_sub_explicit(&service->pending_requests, 1, memory_order_release);
+    /* Publish the queued state before completed: observing completed must
+     * never admit Reset in the interval before FIFO publication. Only actual
+     * dequeue clears this state for an accepted operation. */
+    atomic_store_explicit(&request->event_queued, 1, memory_order_release);
     atomic_store_explicit(&request->completed, 1, memory_order_release);
     pi_uv_fs_request_retain(request); /* actual queued event entitlement */
     pi_uv_event_queue(&request->event);
@@ -739,6 +747,13 @@ PiUvEvent *pi_uv_service_next(PiUvService *service) {
         service->event_head = event->next;
         if (!service->event_head) service->event_tail = NULL;
         event->next = NULL;
+        if (event->storage == PI_UV_FS_REQUEST) {
+            PiUvFsRequest *request = event->allocation;
+            /* Only actual FS dequeue admits reuse of this embedded slot.
+             * Older host tickets retain independent release-only owners. */
+            event->in_use = 0;
+            atomic_store_explicit(&request->event_queued, 0, memory_order_release);
+        }
         atomic_fetch_sub_explicit(&service->queued_events, 1, memory_order_release);
     }
     uv_mutex_unlock(&service->event_mutex);
@@ -799,15 +814,19 @@ PiUvResult pi_uv_fs_request_create(PiUvService *service, int kind,
                                      uint64_t token, PiUvFsRequest **out) {
     if (!out) return pi_uv_result(UV_EINVAL, 0);
     *out = NULL;
-    if (!service || (kind != PI_UV_FS_READ && kind != PI_UV_FS_OPEN &&
-                     kind != PI_UV_FS_CLOSE))
+    if (!service || (kind != PI_UV_FS_UNASSIGNED && kind != PI_UV_FS_READ &&
+                     kind != PI_UV_FS_OPEN && kind != PI_UV_FS_CLOSE))
         return pi_uv_result(UV_EINVAL, 0);
     PiUvFsRequest *request = pi_uv_fs_request_allocate(service, kind, token);
     if (!request) return pi_uv_result(UV_ENOMEM, 1);
     *out = request;
     return pi_uv_result(0, 0);
 }
-static int pi_uv_fs_submit(PiUvFsRequest *request, PiUvCommand *command) {
+static int pi_uv_fs_submit(PiUvFsRequest *request, PiUvCommand *command, int kind) {
+    /* Generic FSReqCallback storage receives its actual operation only after
+     * all native input/state checks, at the same real admission cutpoint. */
+    assert(request->storage_kind == PI_UV_FS_UNASSIGNED || request->storage_kind == kind);
+    request->kind = kind;
     request->submitted = 1;
     const int status = pi_uv_submit(request->service, command);
     if (status < 0 && !request->entered) {
@@ -818,8 +837,53 @@ static int pi_uv_fs_submit(PiUvFsRequest *request, PiUvCommand *command) {
     return status;
 }
 static int pi_uv_fs_unsubmitted(PiUvFsRequest *request, int kind) {
-    return request && request->kind == kind && !request->submitted &&
+    return request && (request->storage_kind == PI_UV_FS_UNASSIGNED ||
+                       request->storage_kind == kind) && !request->submitted &&
         !atomic_load_explicit(&request->cleaned, memory_order_acquire);
+}
+int pi_uv_fs_request_reset(PiUvFsRequest *request) {
+    if (!request) return UV_EINVAL;
+    /* Initial ReqWrap::Reset has no completed native operation to clean. */
+    if (!request->submitted)
+        return atomic_load_explicit(&request->cleaned, memory_order_acquire)
+            ? UV_EBUSY : 0;
+    if (!atomic_load_explicit(&request->completed, memory_order_acquire) ||
+        !atomic_load_explicit(&request->cleaned, memory_order_acquire) ||
+        atomic_load_explicit(&request->event_queued, memory_order_acquire))
+        return UV_EBUSY;
+    assert(request->previous == NULL && request->next == NULL);
+    assert(request->backing.owner == NULL);
+    /* The prior event was taken from the FIFO. Its independent entitlement
+     * may still be alive in the host callback, but release reads only stable
+     * service/storage/allocation/source fields. Do not reinitialize that event
+     * or clear its next link: a new completion can already occupy the FIFO
+     * when the prior event entitlement is finally retired. */
+    request->uv.data = NULL;
+    request->submitted = 0;
+    request->entered = 0;
+    request->accepted = 0;
+    request->event.info.status = 0;
+    request->event.info.length = 0;
+    atomic_store_explicit(&request->completed, 0, memory_order_release);
+    atomic_store_explicit(&request->cleaned, 0, memory_order_release);
+    return 0;
+}
+int pi_uv_fs_read_buffer(PiUvFsRequest *request, int descriptor,
+    char *base, size_t length, int64_t position) {
+    if (!pi_uv_fs_unsubmitted(request, PI_UV_FS_READ) ||
+        (!base && length)) return UV_EINVAL;
+#if defined(_WIN32)
+    if (length > ULONG_MAX) return UV_EINVAL;
+#endif
+    /* Copy the actual caller's uv_buf_t fields without a JS lease or wrapper.
+     * Its native owner, normally Environment's managed table, retains these
+     * bytes through the real uv callback and native request cleanup. */
+    request->descriptor = descriptor;
+    request->buffer.base = base;
+    request->buffer.len = length;
+    request->position = position;
+    PiUvCommand command = { .kind = PI_UV_CMD_FS_READ, .fs_request = request };
+    return pi_uv_fs_submit(request, &command, PI_UV_FS_READ);
 }
 int pi_uv_fs_read(PiUvFsRequest *request, int descriptor,
     const JSPiArrayBufferLease *backing, size_t offset, uint32_t length,
@@ -835,7 +899,7 @@ int pi_uv_fs_read(PiUvFsRequest *request, int descriptor,
     request->buffer = uv_buf_init((char *)bytes, length);
     request->position = position;
     PiUvCommand command = { .kind = PI_UV_CMD_FS_READ, .fs_request = request };
-    return pi_uv_fs_submit(request, &command);
+    return pi_uv_fs_submit(request, &command, PI_UV_FS_READ);
 }
 int pi_uv_fs_open(PiUvFsRequest *request, const char *path, int flags,
                   int mode) {
@@ -846,13 +910,13 @@ int pi_uv_fs_open(PiUvFsRequest *request, const char *path, int flags,
                             .path = path };
     /* Command completion proves libuv has copied every path byte it needs.
      * The borrowed input does not escape this synchronous admission call. */
-    return pi_uv_fs_submit(request, &command);
+    return pi_uv_fs_submit(request, &command, PI_UV_FS_OPEN);
 }
 int pi_uv_fs_close(PiUvFsRequest *request, int descriptor) {
     if (!pi_uv_fs_unsubmitted(request, PI_UV_FS_CLOSE)) return UV_EINVAL;
     request->descriptor = descriptor;
     PiUvCommand command = { .kind = PI_UV_CMD_FS_CLOSE, .fs_request = request };
-    return pi_uv_fs_submit(request, &command);
+    return pi_uv_fs_submit(request, &command, PI_UV_FS_CLOSE);
 }
 int pi_uv_fs_cancel(PiUvFsRequest *request) {
     PiUvCommand command = { .kind = PI_UV_CMD_FS_CANCEL, .fs_request = request };

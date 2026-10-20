@@ -1,0 +1,6 @@
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:615:14: 0x7ff62a50104f in expect (test_zcu.obj)
+    if (!ok) return error.TestUnexpectedResult;
+             ^
+C:\Users\adyba\pi-zig\main\src\native_vm_script_location_test.zig:476:9: 0x7ff62a520752 in test.VM Script raw projections allocate nothing and preserve actual ordinary fatal and private pending (test_zcu.obj)
+        try std.testing.expect(c.JS_IsSameValue(f.context.?, reason, actual));
+        ^

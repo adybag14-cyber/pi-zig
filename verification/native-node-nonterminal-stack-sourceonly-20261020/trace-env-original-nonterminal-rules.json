@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "status": "Finite original TraceEnvVar/nonterminal diagnostic call, flush and pending rules",
+  "source_only": true,
+  "execution": false,
+  "original_node_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "files": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/node_env_var.v24.13.cc",
+      "sha256": "4872E9CAF5AEE8F7ABD73BE4F79FA5B73793F5D09DFCED63001A022D92AD2AF8",
+      "bytes": 19557
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils.cc.v24.13.txt",
+      "sha256": "9F2904508A8443BEB454DC789A07D60AFB2F2EC7F9B2F56BC651D9C66EDB0EA3",
+      "bytes": 16324
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/verification/native-node-callback-scope-sourceonly-20261019/authority/src_node_errors.cc.txt",
+      "sha256": "eed18c160145dae84c4ade25afc90cb799d4ad18275d3eae42aa66331371a2c9",
+      "bytes": 43095
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-existing-promise-settlement-sourceonly-20261019/authority/v8-api.v24.13.cc",
+      "sha256": "573f6f992a93eb59751953a372f9071e32aeb36d9b6f5328bd50967d3008f201",
+      "bytes": 489340
+    }
+  ],
+  "selected": [
+    {
+      "label": "Trace flags, all three overloads and exact order",
+      "source": 0,
+      "character_offset": 10833,
+      "text": "struct TraceEnvVarOptions {\n  bool print_message : 1 = 0;\n  bool print_js_stack : 1 = 0;\n  bool print_native_stack : 1 = 0;\n};\n\ntemplate <typename... Args>\ninline void TraceEnvVarImpl(Environment* env,\n                            TraceEnvVarOptions options,\n                            const char* format,\n                            Args&&... args) {\n  if (options.print_message) {\n    fprintf(stderr, format, std::forward<Args>(args)...);\n  }\n  if (options.print_native_stack) {\n    DumpNativeBacktrace(stderr);\n  }\n  if (options.print_js_stack) {\n    DumpJavaScriptBacktrace(stderr);\n  }\n}\n\nTraceEnvVarOptions GetTraceEnvVarOptions(Environment* env) {\n  TraceEnvVarOptions options;\n  auto cli_options = env != nullptr\n                         ? env->options()\n                         : per_process::cli_options->per_isolate->per_env;\n  if (cli_options->trace_env) {\n    options.print_message = 1;\n  };\n  if (cli_options->trace_env_js_stack) {\n    options.print_js_stack = 1;\n  };\n  if (cli_options->trace_env_native_stack) {\n    options.print_native_stack = 1;\n  };\n  return options;\n}\n\nvoid TraceEnvVar(Environment* env, const char* message) {\n  TraceEnvVarImpl(\n      env, GetTraceEnvVarOptions(env), \"[--trace-env] %s\\n\", message);\n}\n\nvoid TraceEnvVar(Environment* env, const char* message, const char* key) {\n  TraceEnvVarImpl(env,\n                  GetTraceEnvVarOptions(env),\n                  \"[--trace-env] %s \\\"%s\\\"\\n\",\n                  message,\n                  key);\n}\n\nvoid TraceEnvVar(Environment* env,\n                 const char* message,\n                 v8::Local<v8::String> key) {\n  TraceEnvVarOptions options = GetTraceEnvVarOptions(env);\n  if (options.print_message) {\n    Utf8Value key_utf8(env->isolate(), key);\n    TraceEnvVarImpl(env,\n                    options,\n                    \"[--trace-env] %s \\\"%.*s\\\"\\n\",\n                    message,\n                    static_cast<int>(key_utf8.length()),\n                    key_utf8.out());\n  }\n}\n\n"
+    },
+    {
+      "label": "Native trace",
+      "source": 1,
+      "character_offset": 8834,
+      "text": "void DumpNativeBacktrace(FILE* fp) {\n  fprintf(fp, \"----- Native stack trace -----\\n\\n\");\n  auto sym_ctx = NativeSymbolDebuggingContext::New();\n  void* frames[256];\n  const int size = sym_ctx->GetStackTrace(frames, arraysize(frames));\n  for (int i = 1; i < size; i += 1) {\n    void* frame = frames[i];\n    NativeSymbolDebuggingContext::SymbolInfo s = sym_ctx->LookupSymbol(frame);\n    fprintf(fp, \"%2d: %p %s\\n\", i, frame, s.Display().c_str());\n  }\n}\n"
+    },
+    {
+      "label": "JavaScript trace",
+      "source": 1,
+      "character_offset": 9286,
+      "text": "void DumpJavaScriptBacktrace(FILE* fp) {\n  v8::Isolate* isolate = v8::Isolate::TryGetCurrent();\n  if (isolate == nullptr) {\n    return;\n  }\n\n  Local<StackTrace> stack;\n  if (!GetCurrentStackTrace(isolate).ToLocal(&stack) ||\n      stack->GetFrameCount() == 0) {\n    return;\n  }\n\n  fprintf(fp, \"\\n----- JavaScript stack trace -----\\n\\n\");\n  PrintStackTrace(isolate, stack, StackTracePrefix::kNumber);\n  fprintf(fp, \"\\n\");\n}\n"
+    },
+    {
+      "label": "Capture native guards",
+      "source": 2,
+      "character_offset": 6740,
+      "text": "MaybeLocal<StackTrace> GetCurrentStackTrace(Isolate* isolate, int frame_count) {\n  if (isolate == nullptr) {\n    return MaybeLocal<StackTrace>();\n  }\n  // Generating JavaScript stack trace can result in V8 fatal error,\n  // which can re-enter this function.\n  if (is_retrieving_js_stacktrace.load()) {\n    return MaybeLocal<StackTrace>();\n  }\n\n  // Can not capture the stacktrace when the isolate is in a OOM state or no\n  // context is entered.\n  if (is_in_oom.load() || !isolate->InContext()) {\n    return MaybeLocal<StackTrace>();\n  }\n\n  constexpr StackTrace::StackTraceOptions options =\n      static_cast<StackTrace::StackTraceOptions>(\n          StackTrace::kDetailed |\n          StackTrace::kExposeFramesAcrossSecurityOrigins);\n\n  is_retrieving_js_stacktrace.store(true);\n  EscapableHandleScope scope(isolate);\n  Local<StackTrace> stack =\n      StackTrace::CurrentStackTrace(isolate, frame_count, options);\n\n  is_retrieving_js_stacktrace.store(false);\n\n  return scope.Escape(stack);\n}\n"
+    },
+    {
+      "label": "Only selected body flush",
+      "source": 2,
+      "character_offset": 9713,
+      "text": "static void PrintToStderrAndFlush(const std::string& str) {\n  FPrintF(stderr, \"%s\\n\", str);\n  fflush(stderr);\n}\n"
+    },
+    {
+      "label": "PrintStackTrace body route",
+      "source": 2,
+      "character_offset": 9826,
+      "text": "void PrintStackTrace(Isolate* isolate,\n                     Local<StackTrace> stack,\n                     StackTracePrefix prefix) {\n  PrintToStderrAndFlush(FormatStackTrace(isolate, stack, prefix));\n}\n"
+    },
+    {
+      "label": "V8 intrinsic no-script/no-exception capture entry",
+      "source": 3,
+      "character_offset": 124361,
+      "text": "Local<StackTrace> StackTrace::CurrentStackTrace(Isolate* v8_isolate,\n                                                int frame_limit,\n                                                StackTraceOptions options) {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(v8_isolate);\n  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);\n  i::DirectHandle<i::StackTraceInfo> stack_trace =\n      i_isolate->CaptureDetailedStackTrace(frame_limit, options);\n  return Utils::StackTraceToLocal(stack_trace);\n}\n"
+    }
+  ],
+  "findings": [
+    "GetTraceEnvVarOptions selects actual Environment options when nonnull, otherwise actual per_process cli_options->per_isolate->per_env. It snapshots message, JS stack and native stack flags into a by-value local.",
+    "TraceEnvVarImpl performs selected fprintf(stderr) first, selected DumpNativeBacktrace(stderr) second, then selected DumpJavaScriptBacktrace(stderr). There is no explicit flush, pending-reason capture, TryCatch, clear, throw, or terminal operation in TraceEnvVarImpl.",
+    "The const-char message and const-char key overloads invoke that helper even when message output is disabled, so a selected native or JS stack still runs.",
+    "The Local<String> key overload encloses Utf8Value construction AND the entire helper call in print_message. When print_message is false this original overload does not invoke either stack, even if its stack flags are true.",
+    "DumpNativeBacktrace prints the native header, captures up to256 frames, skips index0, emits numbered address/name lines and has no fflush call.",
+    "DumpJavaScriptBacktrace returns without output for no current isolate or an empty/unavailable captured stack. Its capture uses GetCurrentStackTrace's original default frame count, not a count chosen by this packet.",
+    "GetCurrentStackTrace returns empty for recursive capture, native is_in_oom, or no entered context. It sets its native thread-local reentry flag around intrinsic CurrentStackTrace using an EscapableHandleScope.",
+    "For a nonempty JS stack, DumpJavaScriptBacktrace writes its leading/header lines, calls PrintStackTrace(...kNumber), then writes one trailing newline. PrintStackTrace alone routes through FPrintF(stderr,\"%s\\n\",formatted) followed by fflush(stderr). The final DumpJavaScriptBacktrace newline occurs after that flush and is not explicitly flushed again.",
+    "The original trace path does not read guest Error.stack, call a guest formatter, or deliberately consume/replace an existing ordinary pending reason. The captured-stack entry is ENTER_V8_NO_SCRIPT_NO_EXCEPTION. Actual native allocation failure/termination policy is separate and must not be converted into a fabricated guest reason or suppressed by a generic pending bypass.",
+    "The selected Environment path ABI already carries required nonterminal native_stack(user) and js_stack(user,JSContext*) operations. Both are called for stderr semantics; no report/abort/default noop is supplied. The actual original default frame count and lower capture allocation policy remain the shared diagnostic owner's retained dependencies."
+  ],
+  "callback_contract": {
+    "header": "src/extensions/native_node_environment_paths.h",
+    "sha256": "E504065537C5D669EF793D3F8F65BC9FB31DFB211F96091DC20EA87F42373B31",
+    "native_stack": "void (*)(void* user)",
+    "js_stack": "void (*)(void* user, JSContext* context)",
+    "output": "stderr",
+    "terminal": false
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "schema": "native-process-env-flags-only-exotic-prerequisite-v1",
+  "status": "source-proven dependency and finite API proposal only; no C/H mutation",
+  "source_only": true,
+  "execution": false,
+  "original": {
+    "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+    "node_env_var": {
+      "path": "authority/node_env_var.v24.13.cc",
+      "sha256": "4872E9CAF5AEE8F7ABD73BE4F79FA5B73793F5D09DFCED63001A022D92AD2AF8"
+    },
+    "v8_js_objects": {
+      "path": "verification/native-constructor-name-source-peer-20261020/authority/v8-js-objects.def0.cc",
+      "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480",
+      "bytes": 234488
+    },
+    "v8_keys": {
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/objects/keys.cc",
+      "sha256": "6bc4d9318f5d165583ed00a771e9bd278d647762ce07a5dbcd826404d9d0fba6",
+      "bytes": 58060,
+      "retrieved_at": "2026-10-20T14:58:03.591Z",
+      "validated_at": "2026-10-20T14:58:03.591Z",
+      "excerpt_sha256": "BC110FC95EA31A869E7635FBD7063F1784A58F6B2487EA1231DAE6164EFC65AB",
+      "excerpt_start_byte": 28523,
+      "excerpt_end_byte": 36523
+    }
+  },
+  "linked": {
+    "c_full": {
+      "exists": true,
+      "bytes": 2366135,
+      "sha256": "86ee97602bad77f3cd094f0ef326919e2e7a5e8febe4247486a2b86851c670c2"
+    },
+    "h_full": {
+      "exists": true,
+      "bytes": 105469,
+      "sha256": "7dd0189f0143d448cd3678fb1b415d200bfa36610371ef87a16b84bba4871dc3"
+    },
+    "c_read": {
+      "bytes": 470000,
+      "sha256": "0c17185f4fdd16e96ab2d7bfb5c62b9c9496dd746f5492caaafd092a1954bba9"
+    },
+    "h_read": {
+      "bytes": 45000,
+      "sha256": "dd19ef618a33fdf94bd813133e6ff3263fd9de291243f58d11e39bb66aca7948"
+    }
+  },
+  "slices": {
+    "quickjs_flags": {
+      "start_byte": 383149,
+      "end_byte": 387600,
+      "sha256": "08920F5E5DAD523CD80F1CE7D4530A6ED7FAF10A40D7D8673B411B95492105DA",
+      "text": "static int JS_GetOwnPropertyInternal2(JSContext *ctx, JSPropertyDescriptor *desc,\n                                      JSObject *p, JSAtom prop, int *pflags)\n{\n    JSShapeProperty *prs;\n    JSProperty *pr;\n    int flags_only = (desc == NULL && pflags != NULL);\n\nretry:\n    prs = find_own_property(&pr, p, prop);\n    if (prs) {\n        if (desc) {\n            desc->flags = prs->flags & JS_PROP_C_W_E;\n            desc->getter = JS_UNDEFINED;\n            desc->setter = JS_UNDEFINED;\n            desc->value = JS_UNDEFINED;\n            if (unlikely(prs->flags & JS_PROP_TMASK)) {\n                if ((prs->flags & JS_PROP_TMASK) == JS_PROP_GETSET) {\n                    desc->flags |= JS_PROP_GETSET;\n                    if (pr->u.getset.getter)\n                        desc->getter = js_dup(JS_MKPTR(JS_TAG_OBJECT, pr->u.getset.getter));\n                    if (pr->u.getset.setter)\n                        desc->setter = js_dup(JS_MKPTR(JS_TAG_OBJECT, pr->u.getset.setter));\n                } else if ((prs->flags & JS_PROP_TMASK) == JS_PROP_VARREF) {\n                    JSValue val = *pr->u.var_ref->pvalue;\n                    if (unlikely(JS_IsUninitialized(val))) {\n                        JS_ThrowReferenceErrorUninitialized(ctx, prs->atom);\n                        return -1;\n                    }\n                    desc->value = js_dup(val);\n                } else if ((prs->flags & JS_PROP_TMASK) == JS_PROP_AUTOINIT) {\n                    /* Instantiate property and retry */\n                    if (JS_AutoInitProperty(ctx, p, prop, pr, prs))\n                        return -1;\n                    goto retry;\n                }\n            } else {\n                desc->value = js_dup(pr->u.value);\n            }\n        } else {\n            if (pflags) {\n                *pflags = prs->flags & JS_PROP_C_W_E;\n                if ((prs->flags & JS_PROP_TMASK) == JS_PROP_GETSET)\n                    *pflags |= JS_PROP_GETSET;\n            }\n            /* for consistency, send the exception even if desc is NULL */\n            if (unlikely((prs->flags & JS_PROP_TMASK) == JS_PROP_VARREF)) {\n                if (unlikely(JS_IsUninitialized(*pr->u.var_ref->pvalue))) {\n                    JS_ThrowReferenceErrorUninitialized(ctx, prs->atom);\n                    return -1;\n                }\n            } else if ((prs->flags & JS_PROP_TMASK) == JS_PROP_AUTOINIT) {\n                /* nothing to do: delay instantiation until actual value and/or attributes are read */\n            }\n        }\n        return true;\n    }\n    if (p->is_exotic) {\n        if (p->fast_array) {\n            /* specific case for fast arrays */\n            if (__JS_AtomIsTaggedInt(prop)) {\n                uint32_t idx;\n                idx = __JS_AtomToUInt32(prop);\n                if (idx < js_array_data_count(p)) {\n                    if (desc) {\n                        desc->flags = JS_PROP_WRITABLE | JS_PROP_ENUMERABLE |\n                            JS_PROP_CONFIGURABLE;\n                        desc->getter = JS_UNDEFINED;\n                        desc->setter = JS_UNDEFINED;\n                        desc->value = JS_GetPropertyUint32(ctx, JS_MKPTR(JS_TAG_OBJECT, p), idx);\n                    } else if (flags_only) {\n                        *pflags = JS_PROP_WRITABLE | JS_PROP_ENUMERABLE |\n                            JS_PROP_CONFIGURABLE;\n                    }\n                    return true;\n                }\n            }\n        } else {\n            const JSClassExoticMethods *em = ctx->rt->class_array[p->class_id].exotic;\n            if (em && em->get_own_property) {\n                if (flags_only) {\n                    /* Call the exotic handler with a temporary desc,\n                       extract flags, and free the values. For Proxy\n                       objects, the JS trap runs regardless, so the\n                       dup+free overhead is negligible. */\n                    JSPropertyDescriptor d;\n                    int ret = em->get_own_property(ctx, &d,\n                                                   JS_MKPTR(JS_TAG_OBJECT, p), prop);\n                    if (ret > 0) {\n                        *pflags = d.flags;\n                        js_free_desc(ctx, &d);\n                    }\n                    return ret;\n                }\n                return em->get_own_property(ctx, desc,\n                                            JS_MKPTR(JS_TAG_OBJECT, p), prop);\n            }\n        }\n    }\n    return false;\n}\n\n"
+    },
+    "quickjs_names": {
+      "start_byte": 377896,
+      "end_byte": 379346,
+      "sha256": "E83D59B6F1BC1C8734D1876C5C24ECEB1FAA9E8326F7878DD1322C52AA2E7DA6",
+      "text": "                if (em->get_own_property_names(ctx, &tab_exotic, &exotic_count,\n                                               JS_MKPTR(JS_TAG_OBJECT, p)))\n                    return -1;\n                for(i = 0; i < exotic_count; i++) {\n                    atom = tab_exotic[i].atom;\n                    kind = JS_AtomGetKind(ctx, atom);\n                    if (((flags >> kind) & 1) != 0) {\n                        is_enumerable = false;\n                        if (flags & (JS_GPN_SET_ENUM | JS_GPN_ENUM_ONLY)) {\n                            int desc_flags, res;\n                            /* set the \"is_enumerable\" field if necessary */\n                            res = JS_GetOwnPropertyFlagsInternal(ctx, &desc_flags, p, atom);\n                            if (res < 0) {\n                                js_free_prop_enum(ctx, tab_exotic, exotic_count);\n                                return -1;\n                            }\n                            if (res) {\n                                is_enumerable =\n                                    ((desc_flags & JS_PROP_ENUMERABLE) != 0);\n                            }\n                            tab_exotic[i].is_enumerable = is_enumerable;\n                        }\n                        if (!(flags & JS_GPN_ENUM_ONLY) || is_enumerable) {\n                            exotic_keys_count++;\n                        }\n                    }\n                }\n            }\n        }\n    }\n\n"
+    },
+    "quickjs_abi": {
+      "start_byte": 35458,
+      "end_byte": 37129,
+      "sha256": "CADDB0EA39FEA67C97C74A2AD2D4DE36C8294F2C4456AA765C5CF09B9491FE8F",
+      "text": "typedef struct JSClassExoticMethods {\n    /* Return -1 if exception (can only happen in case of Proxy object),\n       false if the property does not exists, true if it exists. If 1 is\n       returned, the property descriptor 'desc' is filled if != NULL. */\n    int (*get_own_property)(JSContext *ctx, JSPropertyDescriptor *desc,\n                             JSValueConst obj, JSAtom prop);\n    /* '*ptab' should hold the '*plen' property keys. Return 0 if OK,\n       -1 if exception. The 'is_enumerable' field is ignored.\n    */\n    int (*get_own_property_names)(JSContext *ctx, JSPropertyEnum **ptab,\n                                  uint32_t *plen, JSValueConst obj);\n    /* return < 0 if exception, or true/false */\n    int (*delete_property)(JSContext *ctx, JSValueConst obj, JSAtom prop);\n    /* return < 0 if exception or true/false */\n    int (*define_own_property)(JSContext *ctx, JSValueConst this_obj,\n                               JSAtom prop, JSValueConst val,\n                               JSValueConst getter, JSValueConst setter,\n                               int flags);\n    /* The following methods can be emulated with the previous ones,\n       so they are usually not needed */\n    /* return < 0 if exception or true/false */\n    int (*has_property)(JSContext *ctx, JSValueConst obj, JSAtom atom);\n    JSValue (*get_property)(JSContext *ctx, JSValueConst obj, JSAtom atom,\n                            JSValueConst receiver);\n    /* return < 0 if exception or true/false */\n    int (*set_property)(JSContext *ctx, JSValueConst obj, JSAtom atom,\n                        JSValueConst value, JSValueConst receiver, int flags);\n} JSClassExoticMethods;\n\n"
+    },
+    "v8_descriptor": {
+      "start_byte": 75421,
+      "end_byte": 78221,
+      "sha256": "FE2790C00CB171AE038D345FC24639EA886DCE44CB98323B9FB7E2B6A7A99AFC",
+      "text": "Maybe<bool> JSReceiver::GetOwnPropertyDescriptor(LookupIterator* it,\n                                                 PropertyDescriptor* desc) {\n  Isolate* isolate = it->isolate();\n  // \"Virtual\" dispatch.\n  if (it->IsFound() && IsJSProxy(*it->GetHolder<JSReceiver>())) {\n    return JSProxy::GetOwnPropertyDescriptor(isolate, it->GetHolder<JSProxy>(),\n                                             it->GetName(), desc);\n  }\n\n  Maybe<bool> intercepted = GetPropertyDescriptorWithInterceptor(it, desc);\n  MAYBE_RETURN(intercepted, Nothing<bool>());\n  if (intercepted.FromJust()) {\n    return Just(true);\n  }\n\n  // Request was not intercepted, continue as normal.\n  // 1. (Assert)\n  // 2. If O does not have an own property with key P, return undefined.\n  Maybe<PropertyAttributes> maybe = JSObject::GetPropertyAttributes(it);\n  MAYBE_RETURN(maybe, Nothing<bool>());\n  PropertyAttributes attrs = maybe.FromJust();\n  if (attrs == ABSENT) return Just(false);\n  DCHECK(!isolate->has_exception());\n\n  // 3. Let D be a newly created Property Descriptor with no fields.\n  DCHECK(desc->is_empty());\n  // 4. Let X be O's own property whose key is P.\n  // 5. If X is a data property, then\n  bool is_accessor_pair = it->state() == LookupIterator::ACCESSOR &&\n                          IsAccessorPair(*it->GetAccessors());\n  if (!is_accessor_pair) {\n    // 5a. Set D.[[Value]] to the value of X's [[Value]] attribute.\n    DirectHandle<JSAny> value;\n    if (!Cast<JSAny>(Object::GetProperty(it)).ToHandle(&value)) {\n      DCHECK(isolate->has_exception());\n      return Nothing<bool>();\n    }\n    desc->set_value(value);\n    // 5b. Set D.[[Writable]] to the value of X's [[Writable]] attribute\n    desc->set_writable((attrs & READ_ONLY) == 0);\n  } else {\n    // 6. Else X is an accessor property, so\n    auto accessors = Cast<AccessorPair>(it->GetAccessors());\n    DirectHandle<NativeContext> holder_realm(\n        it->GetHolder<JSReceiver>()->GetCreationContext().value(), isolate);\n    // 6a. Set D.[[Get]] to the value of X's [[Get]] attribute.\n    desc->set_get(AccessorPair::GetComponent(isolate, holder_realm, accessors,\n                                             ACCESSOR_GETTER));\n    // 6b. Set D.[[Set]] to the value of X's [[Set]] attribute.\n    desc->set_set(AccessorPair::GetComponent(isolate, holder_realm, accessors,\n                                             ACCESSOR_SETTER));\n  }\n\n  // 7. Set D.[[Enumerable]] to the value of X's [[Enumerable]] attribute.\n  desc->set_enumerable((attrs & DONT_ENUM) == 0);\n  // 8. Set D.[[Configurable]] to the value of X's [[Configurable]] attribute.\n  desc->set_configurable((attrs & DONT_DELETE) == 0);\n  // 9. Return D.\n  DCHECK(PropertyDescriptor::IsAccessorDescriptor(desc) !=\n         PropertyDescriptor::IsDataDescriptor(desc));\n  return Just(true);\n}\n\n"
+    },
+    "node_getter": {
+      "start_byte": 12809,
+      "end_byte": 13475,
+      "sha256": "B1EE5B7CB0B35E139F844682855BD35B380722D2A9ECB87FB885F3DCE55D3209",
+      "text": "static Intercepted EnvGetter(Local<Name> property,\n                             const PropertyCallbackInfo<Value>& info) {\n  Environment* env = Environment::GetCurrent(info);\n  CHECK(env->has_run_bootstrapping_code());\n  if (property->IsSymbol()) {\n    info.GetReturnValue().SetUndefined();\n    return Intercepted::kYes;\n  }\n  CHECK(property->IsString());\n  MaybeLocal<String> value_string =\n      env->env_vars()->Get(env->isolate(), property.As<String>());\n\n  TraceEnvVar(env, \"get\", property.As<String>());\n\n  Local<Value> ret;\n  if (!value_string.ToLocal(&ret)) {\n    return Intercepted::kNo;\n  }\n  info.GetReturnValue().Set(ret);\n  return Intercepted::kYes;\n}\n\n"
+    },
+    "node_query": {
+      "start_byte": 14822,
+      "end_byte": 15415,
+      "sha256": "EDB43B5D115EAAF1EC2A541C6830000766E8D4AC33C5143046A2117741D94903",
+      "text": "static Intercepted EnvQuery(Local<Name> property,\n                            const PropertyCallbackInfo<Integer>& info) {\n  Environment* env = Environment::GetCurrent(info);\n  CHECK(env->has_run_bootstrapping_code());\n  if (property->IsString()) {\n    int32_t rc = env->env_vars()->Query(env->isolate(), property.As<String>());\n    bool has_env = (rc != -1);\n    TraceEnvVar(env, \"query\", property.As<String>());\n    if (has_env) {\n      // Return attributes for the property.\n      info.GetReturnValue().Set(v8::None);\n      return Intercepted::kYes;\n    }\n  }\n  return Intercepted::kNo;\n}\n\n"
+    },
+    "v8_keys": {
+      "start_byte": 28771,
+      "end_byte": 31985,
+      "sha256": "986B8695ACA6442E6A1C28F247450280860D6F1748001264B4DE06A730A3F419",
+      "text": "V8_WARN_UNUSED_RESULT ExceptionStatus\nKeyAccumulator::FilterForEnumerableProperties(\n    DirectHandle<JSReceiver> receiver, DirectHandle<JSObject> object,\n    DirectHandle<InterceptorInfo> interceptor, DirectHandle<JSObject> result,\n    IndexedOrNamed type) {\n  DCHECK(IsJSArray(*result) || result->HasSloppyArgumentsElements());\n  ElementsAccessor* accessor = result->GetElementsAccessor();\n\n  size_t length = accessor->GetCapacity(*result, result->elements());\n  for (InternalIndex entry : InternalIndex::Range(length)) {\n    if (!accessor->HasEntry(*result, entry)) continue;\n\n    // args are invalid after args.Call(), create a new one in every iteration.\n    // Query callbacks are not expected to have side effects.\n    PropertyCallbackArguments args(isolate_, interceptor->data(), *receiver,\n                                   *object, Just(kDontThrow));\n    DirectHandle<Object> element = accessor->Get(isolate_, result, entry);\n    DirectHandle<Object> attributes;\n    if (type == kIndexed) {\n      uint32_t number;\n      CHECK(Object::ToUint32(*element, &number));\n      attributes = args.CallIndexedQuery(interceptor, number);\n    } else {\n      CHECK(IsName(*element));\n      attributes = args.CallNamedQuery(interceptor, Cast<Name>(element));\n    }\n    // An exception was thrown in the interceptor. Propagate.\n    RETURN_VALUE_IF_EXCEPTION(isolate_, ExceptionStatus::kException);\n\n    if (!attributes.is_null()) {\n      int32_t value;\n      CHECK(Object::ToInt32(*attributes, &value));\n      if ((value & DONT_ENUM) == 0) {\n        RETURN_FAILURE_IF_NOT_SUCCESSFUL(AddKey(element, DO_NOT_CONVERT));\n      }\n    }\n  }\n  return ExceptionStatus::kSuccess;\n}\n\n// Returns |true| on success, |nothing| on exception.\nMaybe<bool> KeyAccumulator::CollectInterceptorKeysInternal(\n    DirectHandle<JSReceiver> receiver, DirectHandle<JSObject> object,\n    DirectHandle<InterceptorInfo> interceptor, IndexedOrNamed type) {\n  PropertyCallbackArguments enum_args(isolate_, interceptor->data(), *receiver,\n                                      *object, Just(kDontThrow));\n\n  if (IsUndefined(interceptor->enumerator(), isolate_)) {\n    return Just(true);\n  }\n  DirectHandle<JSObjectOrUndefined> maybe_result;\n  if (type == kIndexed) {\n    maybe_result = enum_args.CallIndexedEnumerator(interceptor);\n  } else {\n    DCHECK_EQ(type, kNamed);\n    maybe_result = enum_args.CallNamedEnumerator(interceptor);\n  }\n  // An exception was thrown in the interceptor. Propagate.\n  RETURN_VALUE_IF_EXCEPTION_DETECTOR(isolate_, enum_args, Nothing<bool>());\n  if (IsUndefined(*maybe_result)) return Just(true);\n  DCHECK(IsJSObject(*maybe_result));\n  DirectHandle<JSObject> result = Cast<JSObject>(maybe_result);\n\n  // Request was successfully intercepted, so accept potential side effects\n  // happened up to this point.\n  enum_args.AcceptSideEffects();\n\n  if ((filter_ & ONLY_ENUMERABLE) &&\n      !IsUndefined(interceptor->query(), isolate_)) {\n    RETURN_NOTHING_IF_NOT_SUCCESSFUL(FilterForEnumerableProperties(\n        receiver, object, interceptor, result, type));\n  } else {\n    RETURN_NOTHING_IF_NOT_SUCCESSFUL(AddKeys(\n        result, type == kIndexed ? CONVERT_TO_ARRAY_INDEX : DO_NOT_CONVERT));\n  }\n  return Just(true);\n}\n\n"
+    }
+  },
+  "finding": [
+    "The real named interceptor has a query callback and no descriptor callback. V8 enumerable-key filtering invokes only the query, with no getter or value allocation.",
+    "The real own-property-descriptor path obtains attributes, then calls Object::GetProperty to obtain the actual data value. An existing key therefore has a distinct query-then-getter route.",
+    "The current QuickJS flags-only internal helper invokes exotic get_own_property with a temporary nonnull descriptor, then discards value/getter/setter. That callback input is the same as a full own descriptor request.",
+    "A single existing callback therefore cannot preserve both actual EnvQuery-only enumeration and EnvQuery-plus-EnvGetter full descriptors without an explicit VM operation distinction. A value read adds actual Map/string copies, intrinsic string allocation and Trace get."
+  ],
+  "proposal": {
+    "owner": "vm_foundation, subject to Root authorization",
+    "abi": "Optional get_own_property_flags(ctx, int* flags, borrowed obj, atom) field appended to JSClassExoticMethods. Return -1/0/1 under the existing attribute/existence contract.",
+    "selection": "Only the existing flags_only branch may select the optional hook. If absent, the entire previous temporary-descriptor fallback remains unchanged. Ordinary objects, full descriptors, value Gets, null-descriptor existence checks and Proxy behavior retain their existing paths.",
+    "native_env_consumer": "EnvQuery-only for the new flags hook. Full descriptor remains actual EnvQuery then EnvGetter; ordinary get_property remains actual getter plus original not-intercepted prototype continuation.",
+    "controls": [
+      "Distinct callback counters and returned value holder prove flags-only invokes no getter or retirement.",
+      "Existing classes without the optional hook retain the old fallback and descriptor ownership.",
+      "Actual pending ordinary/private/fatal outcomes and prior-pending admission must follow the current VM boundary contract.",
+      "Future process.env controls must distinguish enumerate/query/get trace order, missing keys and full descriptors."
+    ]
+  },
+  "limits": [
+    "This is not a process.env implementation, VM patch, runtime observation or complete native template review.",
+    "All mutable Main files are read-only. The selected linked source regions are pinned to the full file hashes above.",
+    "Other process.env interceptors, cached constructor/prototype semantics and preventExtensions behavior remain separate source work."
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "status": "finite_source_build_peer_closed",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-20T16:20:06.816532+00:00",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-environment-os-sourceonly-20261020\\native-debug-permission-build-intake.json",
+    "sha256": "A36A97EBDAC4935FA45271D59E4AD7D82BBDC06537C3CBB05724A98E757B8E2B",
+    "bytes": 11089
+  },
+  "files": [
+    {
+      "path": "tools/build_native_node_network.zig",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_node_network.zig",
+        "sha256": "64ADAD93DE12560EB7B14DE6759176876CED7F1E212D2CDBF85A251773EE2091",
+        "bytes": 5469
+      },
+      "projected_sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369",
+      "projected_bytes": 5905,
+      "added_lines": 8,
+      "exact_inverse": true
+    },
+    {
+      "path": "build.zig",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "sha256": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+        "bytes": 493924
+      },
+      "projected_sha256": "F845C93A92822C1CE1B066959E689753BB53B5A7645C3FF01616DD63C5FBE71A",
+      "projected_bytes": 496007,
+      "added_lines": 22,
+      "exact_inverse": true
+    }
+  ],
+  "roots": [
+    {
+      "path": "src/native_node_native_debug_test.zig",
+      "sha256": "79729DBB464F7F95F89CDD85A9A737897A1D90F6352816E186EFB02EE0470991",
+      "bytes": 16506,
+      "declarations": 20,
+      "filter": "native Debug",
+      "target": "build-native-node-native-debug"
+    },
+    {
+      "path": "src/native_node_permission_test.zig",
+      "sha256": "A01BE231E1AA8A03FB9D343B6DAC06CA8EAA0FD2C58D33C1CA79A596E32F554D",
+      "bytes": 19167,
+      "declarations": 18,
+      "filter": "native Permission",
+      "target": "build-native-node-permission"
+    }
+  ],
+  "actual_declared_controls": 38,
+  "source_checks": [
+    "One shared native-memory Compile object/TLS translation unit remains unchanged; existing parser and network libraries share that exact object.",
+    "Exactly two production C++ translation units are added once inside existing optional-memory branch with adjacent flags and actual extension/QuickJS/UV include paths.",
+    "Two raw roots are inserted inside existing native_package_json admission; parser requires admitted64-bit Windows/Linux and non-null native-memory owner.",
+    "Actual linkQuickJs reaches the existing network/parser/memory graph, enables libc++ and provides actual extension/QuickJS include paths.",
+    "Only each new test executable compiles actual Permission output/libuv observers plus existing real new_handler adapter; direct uv.h include path is present.",
+    "All38 literal names and filters match actual complete pinned roots. Targets install only; no run edge, new allocator owner or source generator.",
+    "Both projected shared files reverse byte-for-byte to current frozen Main; original target/source memberships outside exactly8+22 added lines remain unchanged."
+  ],
+  "support_files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_permission_test_support.cpp",
+      "sha256": "362826F62F0F4322961AE0F93E835C178251B49FDCAA3BE06D116B307A1F4BC4",
+      "bytes": 7661
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_environment_map_test_support.cpp",
+      "sha256": "DB9AF1D3006DD342E70BF83BC93FAD02936802E12504702E44017E083BB5BB89",
+      "bytes": 2753
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_node_memory.zig",
+      "sha256": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17",
+      "bytes": 1030
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_package_json.zig",
+      "sha256": "517AC416D7CE82BC2AED11B34038187EE456B3C599B6DFBE058D303873A2EC73",
+      "bytes": 1596
+    }
+  ],
+  "authorization": "Exact source-only proposal may be sealed in Modules worktree. Main stays frozen through V28; later Root intake must compose only the two reviewed additions against current exact bases.",
+  "native_execution": false,
+  "runtime_qualification": false
+}

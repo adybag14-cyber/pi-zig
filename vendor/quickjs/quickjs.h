@@ -799,6 +799,13 @@ typedef struct JSPropertyDescriptor {
     JSValue setter;
 } JSPropertyDescriptor;
 
+/* The actual operation being admitted by an opt-in exotic class. */
+typedef enum JSPiIntegrityLevel {
+    JS_PI_INTEGRITY_NONE,
+    JS_PI_INTEGRITY_SEALED,
+    JS_PI_INTEGRITY_FROZEN,
+} JSPiIntegrityLevel;
+
 typedef struct JSClassExoticMethods {
     /* Return -1 if exception (can only happen in case of Proxy object),
        false if the property does not exists, true if it exists. If 1 is
@@ -826,6 +833,20 @@ typedef struct JSClassExoticMethods {
     /* return < 0 if exception or true/false */
     int (*set_property)(JSContext *ctx, JSValueConst obj, JSAtom atom,
                         JSValueConst value, JSValueConst receiver, int flags);
+    /* Optional attribute-only lookup. Called only when the VM requests
+       existence/flags without a descriptor value. obj and prop are borrowed.
+       Return -1 on exception, 0 if absent, or 1 after writing *flags.
+       A missing hook retains the get_own_property temporary-descriptor path. */
+    int (*get_own_property_flags)(JSContext *ctx, int *flags,
+                                  JSValueConst obj, JSAtom prop);
+    /* Optional admission before ordinary prevention/sealing/freezing changes
+       extensibility or enumerates properties. obj is borrowed. Return -1 on
+       exception, 0 to reject, or 1 to continue the existing ordinary operation.
+       A normal rejection leaves the object unchanged. NONE returns false to
+       the caller; SEALED/FROZEN select the corresponding intrinsic TypeError.
+       Missing hooks and Proxy dispatch retain their previous behavior. */
+    int (*prevent_extensions)(JSContext *ctx, JSValueConst obj,
+                              JSPiIntegrityLevel level);
 } JSClassExoticMethods;
 
 typedef void JSClassFinalizer(JSRuntime *rt, JSValueConst val);
@@ -1233,6 +1254,12 @@ JS_EXTERN bool JS_IsSet(JSValueConst val);
 JS_EXTERN bool JS_IsWeakRef(JSValueConst val);
 JS_EXTERN bool JS_IsWeakSet(JSValueConst val);
 JS_EXTERN bool JS_IsWeakMap(JSValueConst val);
+/* Borrow map/key and use the map's actual operation context. Genuine WeakMap
+   entry -> 1 with an owned value; missing -> 0 with owned undefined; invalid
+   map/output -> -1 with output unchanged. No allocation, guest call, kept
+   object, exception or pending-state operation. */
+JS_EXTERN int JS_PiReadWeakMapEntry(JSContext *ctx, JSValueConst map,
+                                  JSValueConst key, JSValue *value);
 JS_EXTERN bool JS_IsDataView(JSValueConst val);
 
 JS_EXTERN JSValue JS_NewArray(JSContext *ctx);
@@ -1626,6 +1653,13 @@ typedef int JSNativeErrorStackHook(JSContext *ctx, JSValueConst error, int phase
                                    int line, int column, int flags, void *opaque);
 JS_EXTERN void JS_SetNativeErrorStackAccessors(JSContext *ctx, JSValueConst getter, JSValueConst setter);
 JS_EXTERN int JS_ReadPendingNativeErrorStack(JSContext *ctx, JSValueConst error, JSValue *frames);
+/* Actual hook-recursion fallback only; initialized Error data is not capture
+   provenance. Has borrows. Take returns 1 and transfers the owned Array or
+   captured undefined after clearing the native owner; otherwise 0 with
+   output/state unchanged. No allocation, finalization, guest or pending work.
+   The legacy Read operation above retains its existing read-only behavior. */
+JS_EXTERN bool JS_PiHasPendingNativeErrorStack(JSValueConst error);
+JS_EXTERN int JS_PiTakePendingNativeErrorStack(JSValueConst error, JSValue *frames);
 JS_EXTERN void JS_SetNativeErrorStackHook(JSRuntime *rt, JSNativeErrorStackHook *cb,
                                          void *opaque);
 JS_EXTERN bool JS_IsStackTraceFunction(JSContext *ctx, JSValueConst value);
@@ -1680,6 +1714,13 @@ typedef struct JSPiScriptPositionInfo {
 JS_EXTERN JSNativeScript *JS_PiGetCompiledScript(JSValueConst value);
 JS_EXTERN JSNativeScript *JS_PiGetCapturedStackFrameScript(JSValueConst frame,
                                                          int *position);
+/* Borrow the actual private dense captured-frame Array; return an owned first
+   debuggable Script and its actual UTF-16 start/end (end=start+1), or -1/-1
+   when that frame has no PC position. Unsupported/missing input -> NULL with
+   outputs unchanged. Native/synthetic records supply no Script. No property
+   lookup, allocation, guest call or pending-state operation. */
+JS_EXTERN JSNativeScript *JS_PiFindCapturedStackScriptLocation(
+    JSValueConst frames, int *start, int *end);
 JS_EXTERN JSNativeScript *JS_PiDupScript(JSNativeScript *script);
 JS_EXTERN void JS_PiFreeScript(JSNativeScript *script);
 JS_EXTERN int JS_PiScriptReadInfo(const JSNativeScript *script,

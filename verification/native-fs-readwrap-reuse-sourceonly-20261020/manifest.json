@@ -1,0 +1,97 @@
+{
+  "schema": "pi.source-unit.manifest.v1",
+  "date": "2026-10-20",
+  "unit": "native FS ReadWrap raw spans and reusable request14",
+  "status": "all finite source/control/build peers closed; unexecuted",
+  "intake": {
+    "production": "Apply only exact v3 five C and three H edits to retained FF046/A8E bases.",
+    "root": "Install complete new 1976069B control root.",
+    "build": "Apply exact eight-line16D99 proposal to actual existing network guard; do not replace build.zig.",
+    "exclude": [
+      "v1/v2 are retained proposal history, not production intake",
+      "No ReqWrap callback-routing or FileHandle template/freelist source is in this unit"
+    ]
+  },
+  "files": [
+    {
+      "path": "src/extensions/native_uv_tcp.c",
+      "sha256": "6BA884B63C1C89FE65DFD90C97AC2604280749EFA5095755347EA06FC52CE92A",
+      "bytes": 45160
+    },
+    {
+      "path": "src/extensions/native_uv_fs.h",
+      "sha256": "B738A0EAECC8E06781305D953B0FFE56753B774F8507CDBE4052BCBC2014F117",
+      "bytes": 4679
+    },
+    {
+      "path": "src/native_node_fs_readwrap_reuse_test.zig",
+      "sha256": "1976069B2406CBB9B0B78F67EB8E8DAE562B05EB4E9C5DDE52AEAABB525A9972",
+      "bytes": 28267
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/build-intake.json",
+      "sha256": "16D99C963103262CF0FC67D95B60F177781D820F20BA89EA0AE5BC429F3BD2ED",
+      "bytes": 3703
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/build-proposal-verification.json",
+      "sha256": "9C04CDCB98F39F609DCFF081B4F1E69DDA943FC3C62D00748CAAF7CA860798D2",
+      "bytes": 309
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/original/native_uv_fs.before-readwrap-reuse.h.txt",
+      "sha256": "A8E758C49AC4E0583BA08ABF28771BFC7843A730796A6F3E5C471698249011BE",
+      "bytes": 3072
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/original/native_uv_tcp.before-readwrap-reuse.c.txt",
+      "sha256": "FF046966BB81E915F0A69FD158DD8DD10533A6E2590FE1CA8975A5DCB503EE83",
+      "bytes": 42250
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/peers/modules-controls-build.json",
+      "sha256": "E1920D9DC0144934C2EC854E742DAD079751520BC69A087575DB2D5160F802F2",
+      "bytes": 4891
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/peers/modules-source-order.json",
+      "sha256": "E268814E80C4E38AE4C7783C1DEB430E9DEF0F903F9C765CDEA3032154C414E3",
+      "bytes": 3666
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/peers/root-protocol-v3.json",
+      "sha256": "1C7F92820280C27EB8E06D1AB941F5C79CFFF9A0AC93131A7CD036744DA644E6",
+      "bytes": 4942
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/peers/vm-protocol-and-controls.json",
+      "sha256": "649786C0D1B41E7A4C3A1253171C43FD0B58367D50F7736C9949492786EC50B7",
+      "bytes": 18723
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/README.md",
+      "sha256": "BDFD2B144E1CECAF36FF12A35BFBEF68CBA20DE80D9F89F2798B619E868D8CFD",
+      "bytes": 2859
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/readwrap-reuse-proposal-v2.json",
+      "sha256": "9EC4D23DD7033CE375D9E475B4F84D7D4FB3EA3398E70C0B656D16F773B1A0E3",
+      "bytes": 21891
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/readwrap-reuse-proposal-v3.json",
+      "sha256": "625A46DF30FF353AD2EB7ADDFF5C4705B0655B89F99F7D052A0A7B2BFCE40108",
+      "bytes": 23290
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/readwrap-reuse-proposal.json",
+      "sha256": "DC9125F88E5F413710B7F866912023431ED337D3A76498E7295F34D39537AA30",
+      "bytes": 20097
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/source-intake-verification.json",
+      "sha256": "9CA7C266FAF5B6843A4561C1F59DEA2D3AA83E61297BE768607F7B93E4E0B571",
+      "bytes": 2935
+    }
+  ]
+}

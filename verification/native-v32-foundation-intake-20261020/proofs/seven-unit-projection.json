@@ -1,0 +1,1862 @@
+{
+  "schema": 1,
+  "status": "exact_source_projection_ready_for_independent_review",
+  "candidate_head": "14615dfc179f9e7e2044591a2d8aa9592b9d883b",
+  "main_modified": false,
+  "execution": false,
+  "qualification": false,
+  "units": [
+    {
+      "commit": "38211958de5fa99ed98141be39393e29775dcfc9",
+      "name": "simple-stack-source-33",
+      "added_paths": [
+        "src/native_vm_simple_stack_source_test.zig",
+        "verification/native-message-stack-sourceonly-20261020/PROPOSAL.md",
+        "verification/native-message-stack-sourceonly-20261020/README.md",
+        "verification/native-message-stack-sourceonly-20261020/authority/build.before.txt",
+        "verification/native-message-stack-sourceonly-20261020/authority/stack-data-source-proof.json",
+        "verification/native-message-stack-sourceonly-20261020/build-intake.json",
+        "verification/native-message-stack-sourceonly-20261020/control-inventory.json",
+        "verification/native-message-stack-sourceonly-20261020/current-operation-source.json",
+        "verification/native-message-stack-sourceonly-20261020/integration-replay.json",
+        "verification/native-message-stack-sourceonly-20261020/manifest.json",
+        "verification/native-message-stack-sourceonly-20261020/peers/c-and-fallback-receipt.json",
+        "verification/native-message-stack-sourceonly-20261020/peers/existing-error-stack-owner.json",
+        "verification/native-message-stack-sourceonly-20261020/peers/existing-owner-receipt.json",
+        "verification/native-message-stack-sourceonly-20261020/peers/formatter-controls-build-receipt.json",
+        "verification/native-message-stack-sourceonly-20261020/peers/raw-controls-receipt.json",
+        "verification/native-message-stack-sourceonly-20261020/production-c-delta.json",
+        "verification/native-message-stack-sourceonly-20261020/production-owner-delta.json",
+        "verification/native-message-stack-sourceonly-20261020/production-review-input.json"
+      ]
+    },
+    {
+      "commit": "77ac9bd786cf19a46675d3b7c44a7c1d0472cd2f",
+      "name": "exotic-query-integrity-28",
+      "added_paths": [
+        "src/native_vm_exotic_operations_test.zig",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/authority/build.before.zig.txt",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/authority/controls.explicit-defer-intermediate.zig.txt",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/authority/controls.initial.zig.txt",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/authority/original-flags-prerequisite.json",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/authority/original-integrity-prerequisite.json",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/authority/quickjs.c.before.txt",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/authority/quickjs.h.before.txt",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/build-intake.json",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/control-abi-successor.json",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/control-pointer-successor.json",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/final-source-verification.json",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/manifest.json",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/peer-controls-integrity.json",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/peer-controls-query-and-build.json",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/peer-flags.json",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/peer-integrity.json",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/production-delta.json",
+        "verification/native-exotic-operation-guards-sourceonly-20261020/source-verification.json"
+      ]
+    },
+    {
+      "commit": "a9d6d60d78d4992191f93b1391d1afa2028d7263",
+      "name": "nonterminal-native-stack",
+      "added_paths": [
+        "verification/native-node-nonterminal-stack-sourceonly-20261020/manifest.json",
+        "verification/native-node-nonterminal-stack-sourceonly-20261020/peer-receipt.json",
+        "verification/native-node-nonterminal-stack-sourceonly-20261020/production-delta-v2.json",
+        "verification/native-node-nonterminal-stack-sourceonly-20261020/production-delta.json",
+        "verification/native-node-nonterminal-stack-sourceonly-20261020/trace-env-original-nonterminal-rules.json"
+      ]
+    },
+    {
+      "commit": "2afdf5601ce5e47334bd65157d0c6c9ebfa51beb",
+      "name": "borrowed-diagnostic-context-10",
+      "added_paths": [
+        "src/extensions/native_node_diagnostic_context.c",
+        "src/extensions/native_node_diagnostic_context.h",
+        "src/extensions/native_node_diagnostic_context.hpp",
+        "src/extensions/native_node_diagnostic_context_test_support.cpp",
+        "src/extensions/native_node_diagnostic_context_test_support.h",
+        "src/native_node_diagnostic_context_test.zig",
+        "verification/native-node-diagnostic-context-sourceonly-20261020/build-proposal.json",
+        "verification/native-node-diagnostic-context-sourceonly-20261020/controls-correction-v2.json",
+        "verification/native-node-diagnostic-context-sourceonly-20261020/independent-original-source-read.json",
+        "verification/native-node-diagnostic-context-sourceonly-20261020/manifest.json",
+        "verification/native-node-diagnostic-context-sourceonly-20261020/node-diagnostic-guards-authority.json",
+        "verification/native-node-diagnostic-context-sourceonly-20261020/peer-modules-build.json",
+        "verification/native-node-diagnostic-context-sourceonly-20261020/peer-sdk-production.json",
+        "verification/native-node-diagnostic-context-sourceonly-20261020/peer-vm-controls-v2.json",
+        "verification/native-node-diagnostic-context-sourceonly-20261020/root-v1.zig.txt",
+        "verification/native-node-diagnostic-context-sourceonly-20261020/source-proof-v1.json",
+        "verification/native-node-diagnostic-context-sourceonly-20261020/source-proof.json",
+        "verification/native-node-diagnostic-context-sourceonly-20261020/v8-entry-authority.json"
+      ]
+    },
+    {
+      "commit": "8fc2313c9ce5176802a19922b10f30fbd1b53dab",
+      "name": "native-debug20-permission18",
+      "added_paths": [
+        "src/extensions/native_node_native_debug.cpp",
+        "src/extensions/native_node_native_debug.h",
+        "src/extensions/native_node_native_debug_internal.hpp",
+        "src/extensions/native_node_permission.cpp",
+        "src/extensions/native_node_permission.h",
+        "src/extensions/native_node_permission_internal.hpp",
+        "src/extensions/native_node_permission_test_support.cpp",
+        "src/extensions/native_node_permission_test_support.h",
+        "src/native_node_native_debug_test.zig",
+        "src/native_node_native_debug_test_support.zig",
+        "src/native_node_permission_test.zig",
+        "verification/native-node-environment-os-sourceonly-20261020/CHECKPOINT-20261020.md",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/addon_permission.cc.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/addon_permission.h.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/async_wrap.h.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/child_process_permission.cc.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/child_process_permission.h.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils-inl.h.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils.cc.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils.h.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/fs-permission-cleanup-source-peer.json",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/fs_permission.cc.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/fs_permission.h.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/inspector_permission.cc.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/inspector_permission.h.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-shared_ptr.h.pinned.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/permission-debug-and-policies-source.json",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/permission.cc.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/permission.h.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/permission_base.h.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/wasi_permission.cc.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/wasi_permission.h.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/worker_permission.cc.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/authority/worker_permission.h.v24.13.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/drafts/native_node_native_debug_internal.initial.hpp",
+        "verification/native-node-environment-os-sourceonly-20261020/native-debug-permission-build-intake.json",
+        "verification/native-node-environment-os-sourceonly-20261020/native-debug-permission-controls-draft.json",
+        "verification/native-node-environment-os-sourceonly-20261020/native-debug-permission-final-manifest.json",
+        "verification/native-node-environment-os-sourceonly-20261020/native-debug-permission-source-unit.md",
+        "verification/native-node-environment-os-sourceonly-20261020/native-debug-source-draft.json",
+        "verification/native-node-environment-os-sourceonly-20261020/native-permission-core-draft.json",
+        "verification/native-node-environment-os-sourceonly-20261020/native-permission-core-original-draft.cpp.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/native-permission-core-original-draft.internal.hpp.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/native-permission-core-review-status.json",
+        "verification/native-node-environment-os-sourceonly-20261020/original/native_node_native_debug_test.zig.before-private-cancel.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/original/native_node_permission_test.zig.before-private-cancel.txt",
+        "verification/native-node-environment-os-sourceonly-20261020/peers/native-debug-algorithm-peer.json",
+        "verification/native-node-environment-os-sourceonly-20261020/peers/native-debug-controls-peer.json",
+        "verification/native-node-environment-os-sourceonly-20261020/peers/native-debug-owner-peer.json",
+        "verification/native-node-environment-os-sourceonly-20261020/peers/native-debug-permission-build-root-peer.json",
+        "verification/native-node-environment-os-sourceonly-20261020/peers/native-debug-permission-controls-owner-peer.json",
+        "verification/native-node-environment-os-sourceonly-20261020/peers/permission-algorithm-peer.json",
+        "verification/native-node-environment-os-sourceonly-20261020/peers/permission-cleanup-successor-peer.json",
+        "verification/native-node-environment-os-sourceonly-20261020/peers/permission-owner-peer.json",
+        "verification/native-node-environment-os-sourceonly-20261020/permission-cleanup-adaptation-proposal-v2.json",
+        "verification/native-node-environment-os-sourceonly-20261020/permission-cleanup-adaptation-proposal.json",
+        "verification/native-node-environment-os-sourceonly-20261020/private-cancel-controls-successor.json"
+      ]
+    },
+    {
+      "commit": "2a1ee31fa35c80e35db25fdd7e99733d44936e9c",
+      "name": "native-readwrap-reuse",
+      "added_paths": [
+        "src/native_node_fs_readwrap_reuse_test.zig",
+        "verification/native-fs-readwrap-reuse-sourceonly-20261020/README.md",
+        "verification/native-fs-readwrap-reuse-sourceonly-20261020/build-intake.json",
+        "verification/native-fs-readwrap-reuse-sourceonly-20261020/build-proposal-verification.json",
+        "verification/native-fs-readwrap-reuse-sourceonly-20261020/manifest.json",
+        "verification/native-fs-readwrap-reuse-sourceonly-20261020/original/native_uv_fs.before-readwrap-reuse.h.txt",
+        "verification/native-fs-readwrap-reuse-sourceonly-20261020/original/native_uv_tcp.before-readwrap-reuse.c.txt",
+        "verification/native-fs-readwrap-reuse-sourceonly-20261020/peers/modules-controls-build.json",
+        "verification/native-fs-readwrap-reuse-sourceonly-20261020/peers/modules-source-order.json",
+        "verification/native-fs-readwrap-reuse-sourceonly-20261020/peers/root-protocol-v3.json",
+        "verification/native-fs-readwrap-reuse-sourceonly-20261020/peers/vm-protocol-and-controls.json",
+        "verification/native-fs-readwrap-reuse-sourceonly-20261020/readwrap-reuse-proposal-v2.json",
+        "verification/native-fs-readwrap-reuse-sourceonly-20261020/readwrap-reuse-proposal-v3.json",
+        "verification/native-fs-readwrap-reuse-sourceonly-20261020/readwrap-reuse-proposal.json",
+        "verification/native-fs-readwrap-reuse-sourceonly-20261020/source-intake-verification.json"
+      ]
+    },
+    {
+      "commit": "350b9b0c8fb9650a84b4ba3ce3dd35c61af40d14",
+      "name": "request-callback-routing-12",
+      "added_paths": [
+        "src/native_node_reqwrap_callback_routing_test.zig",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/applied-source-verification.json",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/build-intake.json",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/build-proposal-verification.json",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/manifest.json",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/original/native_node_callback_checks.zig.txt",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/original/native_node_callback_scope.sdk-prior-draft.zig.txt",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/original/native_node_callback_scope.zig.txt",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/original/native_node_fs_request_io.zig.txt",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/original/native_node_request_state.zig.txt",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/peers/modules-controls-build.json",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/peers/modules-source-order.json",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/peers/root-source-review.json",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/peers/vm-controls-owner.json",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/peers/vm-owner-review.json",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/projected/native_node_callback_checks.zig.txt",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/projected/native_node_callback_scope.zig.txt",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/projected/native_node_fs_request_io.zig.txt",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/projected/native_node_request_state.zig.txt",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/source-intake-verification.json",
+        "verification/native-reqwrap-callback-routing-sourceonly-20261020/source-proposal.json"
+      ]
+    }
+  ],
+  "packets": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-message-stack-sourceonly-20261020\\production-c-delta.json",
+      "sha256": "B52F8C55743904B7EE81D2A8C7DF669D8428F84BE53576FA40887D27C5601F1F",
+      "bytes": 11586
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-message-stack-sourceonly-20261020\\production-owner-delta.json",
+      "sha256": "D8EAA8702356C351F0A724DC613F30766020853236B1FFB57649F17534C16DBE",
+      "bytes": 27137
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-message-stack-sourceonly-20261020\\build-intake.json",
+      "sha256": "9AD963FC1B0198912D225A67703AA44F91A95B2ADE3F9686C45F69F80082EDAB",
+      "bytes": 1352
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-exotic-operation-guards-sourceonly-20261020\\production-delta.json",
+      "sha256": "DC714C58CDB035BE1D48BDEC8A41AED0B54BB84B1F23673B38373925F4A7E229",
+      "bytes": 9055
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-exotic-operation-guards-sourceonly-20261020\\build-intake.json",
+      "sha256": "F9FE839C85D0C724DBB6BE71A690B8988AFC71422DB61150B4BE0B2F6D571087",
+      "bytes": 1388
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-nonterminal-stack-sourceonly-20261020\\production-delta-v2.json",
+      "sha256": "C05686CCA619E5DEFEDB07EF853836A701511A80502C0F011D9447F150BB4E57",
+      "bytes": 6316
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-diagnostic-context-sourceonly-20261020\\build-proposal.json",
+      "sha256": "3A8331CF313E113C528B13058650A790CFC3602AD111F444F89AD11107A07D5B",
+      "bytes": 2233
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-environment-os-sourceonly-20261020\\native-debug-permission-build-intake.json",
+      "sha256": "A36A97EBDAC4935FA45271D59E4AD7D82BBDC06537C3CBB05724A98E757B8E2B",
+      "bytes": 11089
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-readwrap-reuse-sourceonly-20261020\\readwrap-reuse-proposal-v3.json",
+      "sha256": "625A46DF30FF353AD2EB7ADDFF5C4705B0655B89F99F7D052A0A7B2BFCE40108",
+      "bytes": 23290
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fs-readwrap-reuse-sourceonly-20261020\\build-intake.json",
+      "sha256": "16D99C963103262CF0FC67D95B60F177781D820F20BA89EA0AE5BC429F3BD2ED",
+      "bytes": 3703
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-reqwrap-callback-routing-sourceonly-20261020\\source-proposal.json",
+      "sha256": "E15DC1E14112C94663D309FEF1B7919AF0BCF9114664357EDDDF7180EC99046B",
+      "bytes": 18286
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-reqwrap-callback-routing-sourceonly-20261020\\build-intake.json",
+      "sha256": "6D2839EFF1ECA8657A924B667525F75F4B545D99D3BCF2E486DC35E81DBE3A26",
+      "bytes": 2216
+    }
+  ],
+  "ordered_edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "            uint64_t native_allocation_generation;\n        } native_error;",
+      "after": "            uint64_t native_allocation_generation;\n            /* Set only by the actual hook-recursion fallback publication. */\n            bool stack_fallback_present;\n        } native_error;",
+      "label": "simple-stack-C:0"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    case JS_CLASS_ERROR:\n        p->u.native_error.native_allocation_generation = 0;\n        p->u.object_data = JS_UNDEFINED;",
+      "after": "    case JS_CLASS_ERROR:\n        p->u.native_error.native_allocation_generation = 0;\n        p->u.native_error.stack_fallback_present = false;\n        p->u.object_data = JS_UNDEFINED;",
+      "label": "simple-stack-C:1"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "        JS_FreeValue(ctx, JS_VALUE_GET_OBJ(error)->u.object_data);\n        JS_VALUE_GET_OBJ(error)->u.object_data = frames;\n        return 0;",
+      "after": "        {\n            JSObject *object = JS_VALUE_GET_OBJ(error);\n            JSValue previous = object->u.object_data;\n            JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n            object->u.object_data = frames;\n            object->u.native_error.stack_fallback_present = true;\n            js_native_async_release(ctx, previous, &pending);\n            if (pending.present) {\n                JS_Throw(ctx, pending.reason);\n                return -1;\n            }\n        }\n        return 0;",
+      "label": "simple-stack-C:2"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "void JS_SetNativeErrorStackHook(JSRuntime *rt, JSNativeErrorStackHook *cb, void *opaque)\n{",
+      "after": "bool JS_PiHasPendingNativeErrorStack(JSValueConst error)\n{\n    JSObject *object;\n    if (!JS_IsError(error))\n        return false;\n    object = JS_VALUE_GET_OBJ(error);\n    return object->u.native_error.stack_fallback_present &&\n           (JS_IsArray(object->u.object_data) ||\n            JS_IsUndefined(object->u.object_data));\n}\n\nint JS_PiTakePendingNativeErrorStack(JSValueConst error, JSValue *frames)\n{\n    JSObject *object;\n    JSValue value;\n    if (!frames || !JS_PiHasPendingNativeErrorStack(error))\n        return 0;\n    object = JS_VALUE_GET_OBJ(error);\n    value = object->u.object_data;\n    object->u.object_data = JS_UNDEFINED;\n    object->u.native_error.stack_fallback_present = false;\n    *frames = value;\n    return 1;\n}\n\nvoid JS_SetNativeErrorStackHook(JSRuntime *rt, JSNativeErrorStackHook *cb, void *opaque)\n{",
+      "label": "simple-stack-C:3"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "static JSValue js_map_get(JSContext *ctx, JSValueConst this_val,\n                          int argc, JSValueConst *argv, int magic)\n{\n    JSMapState *s = JS_GetOpaque2(ctx, this_val, JS_CLASS_MAP + magic);\n    JSMapRecord *mr;\n    JSValueConst key;\n\n    if (!s)\n        return JS_EXCEPTION;\n    key = map_normalize_key_const(ctx, argv[0]);\n    mr = map_find_record(ctx, s, key);\n    if (!mr)\n        return JS_UNDEFINED;\n    else\n        return js_dup(mr->value);\n}",
+      "after": "static JSValue js_map_read(JSContext *ctx, JSMapState *s,\n                           JSValueConst key, int *present)\n{\n    JSMapRecord *mr;\n    key = map_normalize_key_const(ctx, key);\n    mr = map_find_record(ctx, s, key);\n    if (present)\n        *present = mr != NULL;\n    return mr ? js_dup(mr->value) : JS_UNDEFINED;\n}\n\nstatic JSValue js_map_get(JSContext *ctx, JSValueConst this_val,\n                          int argc, JSValueConst *argv, int magic)\n{\n    JSMapState *s = JS_GetOpaque2(ctx, this_val, JS_CLASS_MAP + magic);\n    if (!s)\n        return JS_EXCEPTION;\n    return js_map_read(ctx, s, argv[0], NULL);\n}\n\nint JS_PiReadWeakMapEntry(JSContext *ctx, JSValueConst map,\n                         JSValueConst key, JSValue *value)\n{\n    JSMapState *s = JS_GetOpaque(map, JS_CLASS_WEAKMAP);\n    int present;\n    if (!s || !value)\n        return -1;\n    *value = js_map_read(ctx, s, key, &present);\n    return present;\n}",
+      "label": "simple-stack-C:4"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "int JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx, JSValueConst frame,\n                                       int *is_eval, int *has_script_id)\n{",
+      "after": "JSNativeScript *JS_PiFindCapturedStackScriptLocation(JSValueConst frames,\n                                                   int *start, int *end)\n{\n    JSObject *array;\n    uint32_t index;\n    if (!start || !end || !JS_IsArray(frames))\n        return NULL;\n    array = JS_VALUE_GET_OBJ(frames);\n    if (!array->fast_array)\n        return NULL;\n    for (index = 0; index < array->u.array.count; index++) {\n        JSCallSiteData *data = JS_GetOpaque(array->u.array.u.values[index],\n                                           JS_CLASS_CALL_SITE);\n        if (data && data->pi_script && JS_IsString(data->pi_script->source)) {\n            int position = data->pi_source_position;\n            *start = position;\n            *end = position < 0 ? -1 : position + 1;\n            return JS_PiDupScript(data->pi_script);\n        }\n    }\n    return NULL;\n}\n\nint JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx, JSValueConst frame,\n                                       int *is_eval, int *has_script_id)\n{",
+      "label": "simple-stack-C:5"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "JS_EXTERN bool JS_IsWeakMap(JSValueConst val);\nJS_EXTERN bool JS_IsDataView(JSValueConst val);",
+      "after": "JS_EXTERN bool JS_IsWeakMap(JSValueConst val);\n/* Borrow map/key and use the map's actual operation context. Genuine WeakMap\n   entry -> 1 with an owned value; missing -> 0 with owned undefined; invalid\n   map/output -> -1 with output unchanged. No allocation, guest call, kept\n   object, exception or pending-state operation. */\nJS_EXTERN int JS_PiReadWeakMapEntry(JSContext *ctx, JSValueConst map,\n                                  JSValueConst key, JSValue *value);\nJS_EXTERN bool JS_IsDataView(JSValueConst val);",
+      "label": "simple-stack-C:6"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "JS_EXTERN int JS_ReadPendingNativeErrorStack(JSContext *ctx, JSValueConst error, JSValue *frames);\nJS_EXTERN void JS_SetNativeErrorStackHook",
+      "after": "JS_EXTERN int JS_ReadPendingNativeErrorStack(JSContext *ctx, JSValueConst error, JSValue *frames);\n/* Actual hook-recursion fallback only; initialized Error data is not capture\n   provenance. Has borrows. Take returns 1 and transfers the owned Array or\n   captured undefined after clearing the native owner; otherwise 0 with\n   output/state unchanged. No allocation, finalization, guest or pending work.\n   The legacy Read operation above retains its existing read-only behavior. */\nJS_EXTERN bool JS_PiHasPendingNativeErrorStack(JSValueConst error);\nJS_EXTERN int JS_PiTakePendingNativeErrorStack(JSValueConst error, JSValue *frames);\nJS_EXTERN void JS_SetNativeErrorStackHook",
+      "label": "simple-stack-C:7"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "JS_EXTERN JSNativeScript *JS_PiGetCapturedStackFrameScript(JSValueConst frame,\n                                                         int *position);\nJS_EXTERN JSNativeScript *JS_PiDupScript",
+      "after": "JS_EXTERN JSNativeScript *JS_PiGetCapturedStackFrameScript(JSValueConst frame,\n                                                         int *position);\n/* Borrow the actual private dense captured-frame Array; return an owned first\n   debuggable Script and its actual UTF-16 start/end (end=start+1), or -1/-1\n   when that frame has no PC position. Unsupported/missing input -> NULL with\n   outputs unchanged. Native/synthetic records supply no Script. No property\n   lookup, allocation, guest call or pending-state operation. */\nJS_EXTERN JSNativeScript *JS_PiFindCapturedStackScriptLocation(\n    JSValueConst frames, int *start, int *end);\nJS_EXTERN JSNativeScript *JS_PiDupScript",
+      "label": "simple-stack-C:8"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "const Frame = @import(\"native_tui_alt_frame.zig\").Frame;\nconst Owner = struct { engine: *js.Engine, bindings: c.JSValue, data_class: c.JSClassID, formatting: bool = false };\nconst StackData = struct { engine: *js.Engine, captured: bool = false, frames: ?c.JSValue = null, formatted: ?c.JSValue = null };",
+      "after": "const Frame = @import(\"native_tui_alt_frame.zig\").Frame;\nconst completion = @import(\"native_sdk_owned_completion.zig\");\nconst Owner = struct { engine: *js.Engine, bindings: c.JSValue, map: c.JSValue, data_class: c.JSClassID, formatting: bool = false };\nconst SimpleStack = union(enum) { none, frames: c.JSValue, formatted: c.JSValue };\nconst StackData = struct { engine: *js.Engine, captured: bool = false, simple: SimpleStack = .none };",
+      "label": "simple-stack-Zig:0"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "    c.JS_FreeValueRT(runtime, state.bindings);\n    state.engine.gpa.destroy(state);\n}\nfn markOwner",
+      "after": "    const bindings = state.bindings;\n    const map = state.map;\n    state.bindings = c.pi_js_undefined();\n    state.map = c.pi_js_undefined();\n    c.JS_FreeValueRT(runtime, bindings);\n    c.JS_FreeValueRT(runtime, map);\n    state.engine.gpa.destroy(state);\n}\nfn markOwner",
+      "label": "simple-stack-Zig:1"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "    c.JS_MarkValue(runtime, state.bindings, marker);\n}\nfn finalizeData",
+      "after": "    c.JS_MarkValue(runtime, state.bindings, marker);\n    c.JS_MarkValue(runtime, state.map, marker);\n}\nfn finalizeData",
+      "label": "simple-stack-Zig:2"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "    if (state.frames) |frames| c.JS_FreeValueRT(runtime, frames);\n    if (state.formatted) |formatted| c.JS_FreeValueRT(runtime, formatted);\n    state.engine.gpa.destroy(state);\n}\nfn markData(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {\n    const state: *StackData = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));\n    if (state.frames) |frames| c.JS_MarkValue(runtime, frames, marker);\n    if (state.formatted) |formatted| c.JS_MarkValue(runtime, formatted, marker);\n}",
+      "after": "    const previous = state.simple;\n    state.simple = .none;\n    switch (previous) { .frames, .formatted => |root| c.JS_FreeValueRT(runtime, root), .none => {} }\n    state.engine.gpa.destroy(state);\n}\nfn markData(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {\n    const state: *StackData = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));\n    switch (state.simple) { .frames, .formatted => |root| c.JS_MarkValue(runtime, root, marker), .none => {} }\n}",
+      "label": "simple-stack-Zig:3"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "fn failure(engine: *js.Engine, err: anyerror) c.JSValue {\n    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();\n    return c.JS_ThrowInternalError(engine.context, \"Native Error stack: %s\", @as([*:0]const u8, @errorName(err)));\n}",
+      "after": "fn failure(engine: *js.Engine, err: anyerror) c.JSValue {\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();\n    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();\n    return c.JS_ThrowInternalError(engine.context, \"Native Error stack: %s\", @as([*:0]const u8, @errorName(err)));\n}\nfn finishFrame(f: *Frame, result: anyerror!c.JSValue) !c.JSValue {\n    const owned: anyerror!c.JSValue = if (result) |value| f.result(value) else |err| err;\n    return completion.finishValue(f, owned);\n}\nfn finishCallback(f: *Frame, invocation: *js.Engine.NativeInvocation, result: anyerror!c.JSValue) c.JSValue {\n    const engine = f.engine;\n    const selected = finishFrame(f, result) catch |err| failure(engine, err);\n    return engine.leaveNativeInvocation(invocation, selected);\n}\n// Consumes the concrete record handle. Publication precedes every finalizable\n// retirement; the selected simple state is one union, including undefined.\nfn publishFormatted(engine: *js.Engine, record_value: c.JSValue, formatted: c.JSValue, class: c.JSClassID) !void {\n    const record = data(record_value, class);\n    const previous = record.simple;\n    record.simple = .{ .formatted = c.JS_DupValue(engine.context, formatted) };\n    var retired = completion.Completion.initVoid(engine, {});\n    switch (previous) { .frames, .formatted => |root| retired.release(root), .none => {} }\n    retired.release(record_value);\n    try retired.finishVoid();\n}",
+      "label": "simple-stack-Zig:4"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "    record.frames = frames;",
+      "after": "    record.simple = .{ .frames = frames };",
+      "label": "simple-stack-Zig:5"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "fn hook(context: ?*c.JSContext, target: c.JSValue, phase: c_int, filter: c.JSValue, filename: [*c]const u8, line: c_int, column: c_int, flags: c_int, raw: ?*anyopaque) callconv(.c) c_int {\n    const state: *Owner = @ptrCast(@alignCast(raw.?));\n    _ = context;\n    var f: Frame = .{ .engine = state.engine, .object = target, .bindings = state.bindings };\n    defer f.deinit();\n    const result = if (phase == c.JS_ERROR_STACK_PREPARE) prepared: {\n        _ = installOwn(&f, state, target, false) catch |err| break :prepared @as(anyerror!void, err);\n        break :prepared @as(anyerror!void, {});\n    } else capture(&f, state, target, filter, filename, line, column, flags, phase == c.JS_ERROR_STACK_RECAPTURE);\n    result catch |err| {\n        _ = failure(state.engine, err);\n        return -1;\n    };\n    return 0;\n}\n",
+      "after": "fn hook(context: ?*c.JSContext, target: c.JSValue, phase: c_int, filter: c.JSValue, filename: [*c]const u8, line: c_int, column: c_int, flags: c_int, raw: ?*anyopaque) callconv(.c) c_int {\n    const state: *Owner = @ptrCast(@alignCast(raw.?));\n    _ = context;\n    var invocation: js.Engine.NativeInvocation = .{};\n    state.engine.enterNativeInvocation(&invocation);\n    var f: Frame = .{ .engine = state.engine, .object = target, .bindings = state.bindings };\n    defer f.deinit();\n    const result: anyerror!c.JSValue = body: {\n        state.engine.checkNativeEntry() catch |err| break :body err;\n        if (phase == c.JS_ERROR_STACK_PREPARE) {\n            _ = installOwn(&f, state, target, false) catch |err| break :body err;\n        } else {\n            capture(&f, state, target, filter, filename, line, column, flags, phase == c.JS_ERROR_STACK_RECAPTURE) catch |err| break :body err;\n        }\n        break :body c.pi_js_undefined();\n    };\n    const selected = finishCallback(&f, &invocation, result);\n    if (c.JS_IsException(selected)) {\n        // This integer hook has no JSValue result channel. Preserve an explicit\n        // cancelled unwind in the actual pending slot without reviving a lease.\n        if (c.JS_PiIsExecutionTermination(selected) and !c.JS_HasException(state.engine.context))\n            _ = c.JS_Throw(state.engine.context, selected);\n        return -1;\n    }\n    state.engine.freeValue(selected);\n    return 0;\n}\n",
+      "label": "simple-stack-Zig:6"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "fn adoptPending(f: *Frame, state: *Owner, target: c.JSValue) !?c.JSValue {\n    var frames: c.JSValue = undefined;",
+      "after": "fn adoptPending(f: *Frame, state: *Owner, target: c.JSValue) !?c.JSValue {\n    if (!c.JS_PiHasPendingNativeErrorStack(target)) return null;\n    var frames: c.JSValue = undefined;",
+      "label": "simple-stack-Zig:7"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "    record.* = .{ .engine = f.engine, .captured = true, .frames = if (c.JS_IsUndefined(rooted_frames)) null else c.JS_DupValue(f.engine.context, rooted_frames) };\n    errdefer if (!attached) if (record.frames) |value| f.engine.freeValue(value);",
+      "after": "    record.* = .{ .engine = f.engine, .captured = true, .simple = if (c.JS_IsUndefined(rooted_frames)) .none else .{ .frames = c.JS_DupValue(f.engine.context, rooted_frames) } };\n    errdefer if (!attached) switch (record.simple) { .frames, .formatted => |root| f.engine.freeValue(root), .none => {} };",
+      "label": "simple-stack-Zig:8"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "    _ = try f.call(try f.get(f.bindings, \"mapSet\"), try f.get(f.bindings, \"map\"), &.{ target, value });\n    return value;\n}\nconst Found = struct { holder: c.JSValue, record: *StackData };",
+      "after": "    _ = try f.call(try f.get(f.bindings, \"mapSet\"), try f.get(f.bindings, \"map\"), &.{ target, value });\n    var transferred: c.JSValue = undefined;\n    if (c.JS_PiTakePendingNativeErrorStack(target, &transferred) != 1)\n        return error.MissingNativeFallbackStackOwner;\n    // rooted_frames and the published record still own this same Array; this\n    // exact old C entitlement cannot be its finalizable last reference.\n    f.engine.freeValue(transferred);\n    return value;\n}\nconst Found = struct { holder: c.JSValue, value: c.JSValue, record: *StackData };",
+      "label": "simple-stack-Zig:9"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "        if (!c.JS_IsUndefined(value)) return .{ .holder = current, .record = data(value, state.data_class) };",
+      "after": "        if (!c.JS_IsUndefined(value)) return .{ .holder = current, .value = value, .record = data(value, state.data_class) };",
+      "label": "simple-stack-Zig:10"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "fn getter(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, values: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const state = owner(values[0]);\n    _ = context;\n    var f: Frame = .{ .engine = state.engine, .object = receiver, .bindings = state.bindings };\n    defer f.deinit();\n    state.engine.native_exception_diagnostics_suppressed += 1;\n    defer state.engine.native_exception_diagnostics_suppressed -= 1;\n    const value = getStack(&f, state, receiver) catch |err| return failure(state.engine, err);\n    return f.result(value);\n}\nfn setter(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, values: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const state = owner(values[0]);\n    _ = context;\n    var f: Frame = .{ .engine = state.engine, .object = receiver, .bindings = state.bindings };\n    defer f.deinit();\n    const found = lookup(&f, state, receiver) catch |err| return failure(state.engine, err);\n    if (found) |selected| {\n        if (selected.record.formatted) |previous| state.engine.freeValue(previous);\n        selected.record.formatted = c.JS_DupValue(state.engine.context, if (argc > 0) argv[0] else c.pi_js_undefined());\n    }\n    return c.pi_js_undefined();\n}\n",
+      "after": "fn getter(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, values: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const state = owner(values[0]);\n    _ = context;\n    var invocation: js.Engine.NativeInvocation = .{};\n    state.engine.enterNativeInvocation(&invocation);\n    var f: Frame = .{ .engine = state.engine, .object = receiver, .bindings = state.bindings };\n    defer f.deinit();\n    state.engine.native_exception_diagnostics_suppressed += 1;\n    defer state.engine.native_exception_diagnostics_suppressed -= 1;\n    const result: anyerror!c.JSValue = body: {\n        state.engine.checkNativeEntry() catch |err| break :body err;\n        break :body getStack(&f, state, receiver);\n    };\n    return finishCallback(&f, &invocation, result);\n}\nfn setter(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, values: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const state = owner(values[0]);\n    _ = context;\n    var invocation: js.Engine.NativeInvocation = .{};\n    state.engine.enterNativeInvocation(&invocation);\n    var f: Frame = .{ .engine = state.engine, .object = receiver, .bindings = state.bindings };\n    defer f.deinit();\n    const result: anyerror!c.JSValue = body: {\n        state.engine.checkNativeEntry() catch |err| break :body err;\n        const found = lookup(&f, state, receiver) catch |err| break :body err;\n        if (found) |selected| {\n            publishFormatted(state.engine, c.JS_DupValue(state.engine.context, selected.value),\n                if (argc > 0) argv[0] else c.pi_js_undefined(), state.data_class) catch |err| break :body err;\n        }\n        break :body c.pi_js_undefined();\n    };\n    return finishCallback(&f, &invocation, result);\n}\n",
+      "label": "simple-stack-Zig:11"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "    const result = try defaultPrepare(&f, if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined());\n    return f.result(result);",
+      "after": "    const result: anyerror!c.JSValue = body: {\n        engine.checkNativeEntry() catch |err| break :body err;\n        break :body defaultPrepare(&f, if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined());\n    };\n    return finishFrame(&f, result);",
+      "label": "simple-stack-Zig:12"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "fn getStack(f: *Frame, state: *Owner, receiver: c.JSValue) !c.JSValue {\n    const found = try lookup(f, state, receiver) orelse return c.pi_js_undefined();\n    if (found.record.formatted) |formatted| return formatted;\n    const frames = found.record.frames orelse return c.pi_js_undefined();\n    const reentrant = state.formatting;\n    state.formatting = true;\n    defer state.formatting = reentrant;\n    const formatted = if (reentrant) try fallbackFormat(f, found.holder, frames) else try prepare(f, found.holder, try preparedFrames(f, frames));\n    found.record.formatted = c.JS_DupValue(f.engine.context, formatted);\n    return formatted;\n}\n",
+      "after": "fn getStack(f: *Frame, state: *Owner, receiver: c.JSValue) !c.JSValue {\n    const found = try lookup(f, state, receiver) orelse return c.pi_js_undefined();\n    const raw_frames = switch (found.record.simple) {\n        .formatted => |formatted| return formatted,\n        .frames => |frames| frames,\n        .none => return c.pi_js_undefined(),\n    };\n    // V8's formatter-local raw_stack/elems handle survives every setter or\n    // recapture during guest formatting, independently of the stored union.\n    const frames = try completion.ownRoot(f, c.JS_DupValue(f.engine.context, raw_frames));\n    const reentrant = state.formatting;\n    state.formatting = true;\n    defer state.formatting = reentrant;\n    const formatted = if (reentrant) try fallbackFormat(f, found.holder, frames) else try prepare(f, found.holder, try preparedFrames(f, frames));\n    try f.engine.checkNativeEntry();\n    // The selected default representation is the original FixedArray branch:\n    // successful formatting writes the selected holder's CURRENT private state.\n    // A reentrant CaptureStackTrace can have replaced the earlier record.\n    var current: c.JSValue = undefined;\n    if (c.JS_PiReadWeakMapEntry(f.engine.context, state.map, found.holder, &current) != 1)\n        return error.MissingNativeFormattedStackRecord;\n    try publishFormatted(f.engine, current, formatted, state.data_class);\n    return formatted;\n}\n",
+      "label": "simple-stack-Zig:13"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "fn frameStringCall(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, values: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const state = owner(values[0]);\n    _ = context;\n    var f: Frame = .{ .engine = state.engine, .object = receiver, .bindings = state.bindings };\n    defer f.deinit();\n    const result = frameString(&f, receiver) catch |err| return failure(state.engine, err);\n    return f.result(result);\n}\n",
+      "after": "fn frameStringCall(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, values: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const state = owner(values[0]);\n    _ = context;\n    var invocation: js.Engine.NativeInvocation = .{};\n    state.engine.enterNativeInvocation(&invocation);\n    var f: Frame = .{ .engine = state.engine, .object = receiver, .bindings = state.bindings };\n    defer f.deinit();\n    const result: anyerror!c.JSValue = body: {\n        state.engine.checkNativeEntry() catch |err| break :body err;\n        break :body frameString(&f, receiver);\n    };\n    return finishCallback(&f, &invocation, result);\n}\n",
+      "label": "simple-stack-Zig:14"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "    try js.define(engine, bindings, \"map\", try engine.checked(c.JS_CallConstructor(engine.context, weak_constructor, 0, null)));",
+      "after": "    const map = try engine.checked(c.JS_CallConstructor(engine.context, weak_constructor, 0, null));\n    defer engine.freeValue(map);\n    try js.define(engine, bindings, \"map\", c.JS_DupValue(engine.context, map));",
+      "label": "simple-stack-Zig:15"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "    state.* = .{ .engine = engine, .bindings = c.JS_DupValue(engine.context, bindings), .data_class = data_class };",
+      "after": "    state.* = .{ .engine = engine, .bindings = c.JS_DupValue(engine.context, bindings), .map = c.JS_DupValue(engine.context, map), .data_class = data_class };",
+      "label": "simple-stack-Zig:16"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "/// This candidate is installed only by focused tests, not Engine.init or workers.",
+      "after": "/// Selected tests and explicitly admitted worker fatal owners install this;\n/// normal Engine.init does not. No Message/reporting installation is implied.",
+      "label": "simple-stack-Zig:17"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before": "pub fn uninstall(engine: *js.Engine) void {",
+      "after": "\n// All handles in this raw view are real owned duplicates. Its caller keeps the\n// installed owner and receiver live, so these read-only duplicate retirements\n// cannot discard their last source roots or enter a guest finalizer.\nconst RawFound = struct {\n    holder: c.JSValue,\n    record: ?c.JSValue = null,\n    fallback: ?c.JSValue = null,\n    fn deinit(self: *RawFound, engine: *js.Engine) void {\n        const record = self.record;\n        const fallback = self.fallback;\n        const holder = self.holder;\n        self.record = null;\n        self.fallback = null;\n        self.holder = c.pi_js_undefined();\n        if (fallback) |value| engine.freeValue(value);\n        if (record) |value| engine.freeValue(value);\n        engine.freeValue(holder);\n    }\n};\nfn rawLookup(state: *Owner, receiver: c.JSValue) ?RawFound {\n    const engine = state.engine;\n    var current = c.JS_DupValue(engine.context, receiver);\n    while (c.JS_IsObject(current)) {\n        if (c.JS_IsProxy(current)) break;\n        var record: c.JSValue = undefined;\n        const present = c.JS_PiReadWeakMapEntry(engine.context, state.map, current, &record);\n        if (present == 1) return .{ .holder = current, .record = record };\n        if (present < 0) break;\n        if (c.JS_PiHasPendingNativeErrorStack(current)) {\n            var frames: c.JSValue = undefined;\n            if (c.JS_ReadPendingNativeErrorStack(engine.context, current, &frames) == 1)\n                return .{ .holder = current, .fallback = frames };\n            break;\n        }\n        // The actual non-Proxy JS_GetPrototype path only duplicates shape->proto.\n        // There is no exotic/property lookup or pending-state operation here.\n        const next = c.JS_GetPrototype(engine.context, current);\n        engine.freeValue(current);\n        current = next;\n    }\n    engine.freeValue(current);\n    return null;\n}\n/// Borrow the genuine owner returned by install and an independently rooted\n/// receiver in that owner's Engine. Return only an owned native Script with\n/// actual positions; no Message, formatting, adoption, guest call or allocation.\n/// Missing/unsupported simple state leaves both outputs unchanged. A present\n/// formatted/undefined state blocks inheritance. Prior pending stays untouched.\npub fn readSimpleStackLocation(installed_owner: c.JSValue, receiver: c.JSValue, start: *c_int, end: *c_int) ?*c.JSNativeScript {\n    const state = owner(installed_owner);\n    var found = rawLookup(state, receiver) orelse return null;\n    defer found.deinit(state.engine);\n    if (found.record) |value| {\n        const pointer = c.JS_GetOpaque(value, state.data_class) orelse return null;\n        const record: *StackData = @ptrCast(@alignCast(pointer));\n        return switch (record.simple) {\n            .frames => |frames| c.JS_PiFindCapturedStackScriptLocation(frames, start, end),\n            .none, .formatted => null,\n        };\n    }\n    if (found.fallback) |frames|\n        return c.JS_PiFindCapturedStackScriptLocation(frames, start, end);\n    return null;\n}\n\npub fn uninstall(engine: *js.Engine) void {",
+      "label": "simple-stack-Zig:18"
+    },
+    {
+      "path": "build.zig",
+      "before": "    const script_location_tests = b.addTest(.{\n",
+      "after": "    const simple_stack_source_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_simple_stack_source_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM simple stack source\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, simple_stack_source_tests.root_module, quickjs, sqlite_lib_dir);\n    simple_stack_source_tests.root_module.addImport(\"catalog_tool\", catalog_tool);\n    b.step(\"build-native-vm-simple-stack-source\", \"Install actual simple stack state and raw source controls without execution\").dependOn(&b.addInstallArtifact(simple_stack_source_tests, .{}).step);\n    const script_location_tests = b.addTest(.{\n",
+      "label": "simple-stack-build"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "typedef struct JSClassExoticMethods {",
+      "after": "/* The actual operation being admitted by an opt-in exotic class. */\ntypedef enum JSPiIntegrityLevel {\n    JS_PI_INTEGRITY_NONE,\n    JS_PI_INTEGRITY_SEALED,\n    JS_PI_INTEGRITY_FROZEN,\n} JSPiIntegrityLevel;\n\ntypedef struct JSClassExoticMethods {",
+      "label": "exotic-operations:0"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "    int (*set_property)(JSContext *ctx, JSValueConst obj, JSAtom atom,\n                        JSValueConst value, JSValueConst receiver, int flags);\n} JSClassExoticMethods;",
+      "after": "    int (*set_property)(JSContext *ctx, JSValueConst obj, JSAtom atom,\n                        JSValueConst value, JSValueConst receiver, int flags);\n    /* Optional attribute-only lookup. Called only when the VM requests\n       existence/flags without a descriptor value. obj and prop are borrowed.\n       Return -1 on exception, 0 if absent, or 1 after writing *flags.\n       A missing hook retains the get_own_property temporary-descriptor path. */\n    int (*get_own_property_flags)(JSContext *ctx, int *flags,\n                                  JSValueConst obj, JSAtom prop);\n    /* Optional admission before ordinary prevention/sealing/freezing changes\n       extensibility or enumerates properties. obj is borrowed. Return -1 on\n       exception, 0 to reject, or 1 to continue the existing ordinary operation.\n       A normal rejection leaves the object unchanged. NONE returns false to\n       the caller; SEALED/FROZEN select the corresponding intrinsic TypeError.\n       Missing hooks and Proxy dispatch retain their previous behavior. */\n    int (*prevent_extensions)(JSContext *ctx, JSValueConst obj,\n                              JSPiIntegrityLevel level);\n} JSClassExoticMethods;",
+      "label": "exotic-operations:1"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "            const JSClassExoticMethods *em = ctx->rt->class_array[p->class_id].exotic;\n            if (em && em->get_own_property) {\n                if (flags_only) {",
+      "after": "            const JSClassExoticMethods *em = ctx->rt->class_array[p->class_id].exotic;\n            if (flags_only && em && em->get_own_property_flags) {\n                return em->get_own_property_flags(ctx, pflags,\n                                                  JS_MKPTR(JS_TAG_OBJECT, p),\n                                                  prop);\n            }\n            if (em && em->get_own_property) {\n                if (flags_only) {",
+      "label": "exotic-operations:2"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "/* return -1 if exception (Proxy object only) or true/false */\nint JS_PreventExtensions(JSContext *ctx, JSValueConst obj)\n{\n    JSObject *p;\n\n    if (unlikely(JS_VALUE_GET_TAG(obj) != JS_TAG_OBJECT))\n        return false;\n    p = JS_VALUE_GET_OBJ(obj);\n    if (unlikely(p->class_id == JS_CLASS_PROXY))\n        return js_proxy_preventExtensions(ctx, obj);\n    if (is_typed_array(p->class_id)) {\n        JSTypedArray *ta = p->u.typed_array;\n        JSArrayBuffer *abuf = ta->buffer->u.array_buffer;\n        if (ta->track_rab ||\n            (array_buffer_is_resizable(abuf) && !abuf->shared))\n        {\n            return false;\n        }\n    }\n    p->extensible = false;\n    return true;\n}\n",
+      "after": "/* return -1 if exception or true/false */\nstatic int js_prevent_extensions(JSContext *ctx, JSValueConst obj,\n                                 JSPiIntegrityLevel level)\n{\n    JSObject *p;\n\n    if (unlikely(JS_VALUE_GET_TAG(obj) != JS_TAG_OBJECT))\n        return false;\n    p = JS_VALUE_GET_OBJ(obj);\n    if (unlikely(p->class_id == JS_CLASS_PROXY))\n        return js_proxy_preventExtensions(ctx, obj);\n    if (p->is_exotic) {\n        const JSClassExoticMethods *em =\n            ctx->rt->class_array[p->class_id].exotic;\n        if (em && em->prevent_extensions) {\n            int ret = em->prevent_extensions(ctx, obj, level);\n            if (ret <= 0) {\n                if (ret == 0 && level != JS_PI_INTEGRITY_NONE) {\n                    JS_ThrowTypeError(ctx, level == JS_PI_INTEGRITY_FROZEN\n                                              ? \"Cannot freeze\" : \"Cannot seal\");\n                    return -1;\n                }\n                return ret;\n            }\n        }\n    }\n    if (is_typed_array(p->class_id)) {\n        JSTypedArray *ta = p->u.typed_array;\n        JSArrayBuffer *abuf = ta->buffer->u.array_buffer;\n        if (ta->track_rab ||\n            (array_buffer_is_resizable(abuf) && !abuf->shared))\n        {\n            return false;\n        }\n    }\n    p->extensible = false;\n    return true;\n}\n\nint JS_PreventExtensions(JSContext *ctx, JSValueConst obj)\n{\n    return js_prevent_extensions(ctx, obj, JS_PI_INTEGRITY_NONE);\n}\n",
+      "label": "exotic-operations:3"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    res = JS_PreventExtensions(ctx, obj);\n    if (res < 0)\n        return JS_EXCEPTION;\n    if (!res) {\n        return JS_ThrowTypeError(ctx, \"proxy preventExtensions handler returned false\");\n    }\n\n    if (freeze_flag && is_typed_array(p->class_id)) {",
+      "after": "    res = js_prevent_extensions(ctx, obj, freeze_flag\n                                          ? JS_PI_INTEGRITY_FROZEN\n                                          : JS_PI_INTEGRITY_SEALED);\n    if (res < 0)\n        return JS_EXCEPTION;\n    if (!res) {\n        return JS_ThrowTypeError(ctx, \"proxy preventExtensions handler returned false\");\n    }\n\n    if (freeze_flag && is_typed_array(p->class_id)) {",
+      "label": "exotic-operations:4"
+    },
+    {
+      "path": "build.zig",
+      "before": "    const script_location_tests = b.addTest(.{\n",
+      "after": "    const exotic_operation_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_exotic_operations_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM exotic operations\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, exotic_operation_tests.root_module, quickjs, sqlite_lib_dir);\n    b.step(\"build-native-vm-exotic-operations\", \"Install actual opt-in exotic operation controls without execution\").dependOn(&b.addInstallArtifact(exotic_operation_tests, .{}).step);\n    const script_location_tests = b.addTest(.{\n",
+      "label": "exotic-build:0"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "before": " * Selected Node default fatal, CHECK, and corrupted async-stack native paths.\n",
+      "after": " * Selected Node fatal, CHECK, corrupted async-stack and native trace paths.\n",
+      "label": "nonterminal-native-stack:0"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "before": "static void pi_node_restore_diagnostic_exception(JSContext *context,\n",
+      "after": "/* TraceEnvVar's nonterminal native operation writes to stderr without an\n * additional flush. The native symbol/capture owner is shared unchanged. */\nvoid pi_node_trace_native_stack(void *opaque) {\n    (void)opaque;\n    pi_node_dump_native_backtrace(stderr);\n}\n\nstatic void pi_node_restore_diagnostic_exception(JSContext *context,\n",
+      "label": "nonterminal-native-stack:1"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "before": "    if (!context || pi_node_retrieving_js_stacktrace) return;\n",
+      "after": "    if (!context || pi_node_retrieving_js_stacktrace ||\n        atomic_load(&pi_node_in_oom)) return;\n",
+      "label": "nonterminal-native-stack:2"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.h",
+      "before": " * Native Node default failure path. These functions never dispatch guest events.\n * The exported declarations deliberately omit a noreturn attribute so that\n",
+      "after": " * Native Node failure paths and nonterminal stack output. No guest dispatch.\n * Fatal declarations deliberately omit a noreturn attribute so that\n",
+      "label": "nonterminal-native-stack:0"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.h",
+      "before": "/* Only for an actual failed intrinsic allocation whose current occurrence is\n",
+      "after": "/* Nonterminal TraceEnvVar callback. Uses the actual native stack owner and\n * stderr; opaque is unused. No extra flush or terminal operation is added. */\nvoid pi_node_trace_native_stack(void *opaque);\n/* Only for an actual failed intrinsic allocation whose current occurrence is\n",
+      "label": "nonterminal-native-stack:1"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before": "//! Zig calls into the actual native Node fatal/CHECK platform owner.\n//! These calls terminate the native process. They do not mark a guest value\n",
+      "after": "//! Zig calls into native Node fatal/CHECK and nonterminal stack owners.\n//! Fatal calls terminate the native process. They do not mark a guest value\n",
+      "label": "nonterminal-native-stack:0"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before": "extern fn pi_node_heap_out_of_memory(?*c.JSContext, ?*const Diagnostics) void;\n",
+      "after": "extern fn pi_node_trace_native_stack(?*anyopaque) void;\nextern fn pi_node_heap_out_of_memory(?*c.JSContext, ?*const Diagnostics) void;\n",
+      "label": "nonterminal-native-stack:1"
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before": "/// The caller proves a new actual failed intrinsic allocation. This is the\n",
+      "after": "/// Actual nonterminal native-stack callback for Environment tracing.\npub fn traceNativeStack(raw_owner: ?*anyopaque) callconv(.c) void {\n    pi_node_trace_native_stack(raw_owner);\n}\n\n/// The caller proves a new actual failed intrinsic allocation. This is the\n",
+      "label": "nonterminal-native-stack:2"
+    },
+    {
+      "path": "build.zig",
+      "before": "        b.step(\"build-native-node-environment-paths\", \"Install native Environment path and SafeGetenv controls without execution\").dependOn(&b.addInstallArtifact(native_environment_paths_tests, .{}).step);\n",
+      "after": "        b.step(\"build-native-node-environment-paths\", \"Install native Environment path and SafeGetenv controls without execution\").dependOn(&b.addInstallArtifact(native_environment_paths_tests, .{}).step);\n        const native_diagnostic_context_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_diagnostic_context_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"Node diagnostic context\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_diagnostic_context_tests.root_module, quickjs, sqlite_lib_dir);\n        native_diagnostic_context_tests.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context.c\"),\n            .flags = &.{ \"-std=gnu11\", \"-fno-strict-aliasing\" },\n        });\n        native_diagnostic_context_tests.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context_test_support.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        b.step(\"build-native-node-diagnostic-context\", \"Install native borrowed diagnostic context controls without execution\").dependOn(&b.addInstallArtifact(native_diagnostic_context_tests, .{}).step);\n",
+      "label": "diagnostic-context-build:0"
+    },
+    {
+      "path": "tools/build_native_node_network.zig",
+      "before": "        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_paths.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n",
+      "after": "        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_paths.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_permission.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_native_debug.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n",
+      "label": "debug-permission-build:0"
+    },
+    {
+      "path": "build.zig",
+      "before": "        b.step(\"build-native-node-environment-paths\", \"Install native Environment path and SafeGetenv controls without execution\").dependOn(&b.addInstallArtifact(native_environment_paths_tests, .{}).step);\n",
+      "after": "        b.step(\"build-native-node-environment-paths\", \"Install native Environment path and SafeGetenv controls without execution\").dependOn(&b.addInstallArtifact(native_environment_paths_tests, .{}).step);\n        const native_node_native_debug_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_native_debug_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native Debug\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_node_native_debug_tests.root_module, quickjs, sqlite_lib_dir);\n        native_node_native_debug_tests.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        native_node_native_debug_tests.root_module.addCSourceFiles(.{\n            .files = &.{ \"src/extensions/native_node_permission_test_support.cpp\", \"src/extensions/native_node_environment_map_test_support.cpp\" },\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        b.step(\"build-native-node-native-debug\", \"Install actual native Debug category formatting and ownership controls without execution\").dependOn(&b.addInstallArtifact(native_node_native_debug_tests, .{}).step);\n        const native_node_permission_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_permission_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native Permission\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_node_permission_tests.root_module, quickjs, sqlite_lib_dir);\n        native_node_permission_tests.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        native_node_permission_tests.root_module.addCSourceFiles(.{\n            .files = &.{ \"src/extensions/native_node_permission_test_support.cpp\", \"src/extensions/native_node_environment_map_test_support.cpp\" },\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        b.step(\"build-native-node-permission\", \"Install actual native Permission algorithms and allocation retirement controls without execution\").dependOn(&b.addInstallArtifact(native_node_permission_tests, .{}).step);\n",
+      "label": "debug-permission-build:0"
+    },
+    {
+      "path": "src/extensions/native_uv_tcp.c",
+      "before": "    _Atomic int cleaned;\n};\nenum PiUvCommandKind",
+      "after": "    _Atomic int cleaned;\n    _Atomic int event_queued;\n};\nenum PiUvCommandKind",
+      "label": "readwrap-reuse-C:0"
+    },
+    {
+      "path": "src/extensions/native_uv_tcp.c",
+      "before": "    atomic_init(&request->cleaned, 0);\n    pi_uv_service_retain(service);",
+      "after": "    atomic_init(&request->cleaned, 0);\n    atomic_init(&request->event_queued, 0);\n    pi_uv_service_retain(service);",
+      "label": "readwrap-reuse-C:1"
+    },
+    {
+      "path": "src/extensions/native_uv_tcp.c",
+      "before": "    atomic_store_explicit(&request->completed, 1, memory_order_release);\n    pi_uv_fs_request_retain(request); /* actual queued event entitlement */\n    pi_uv_event_queue(&request->event);",
+      "after": "    /* Publish the queued state before completed: observing completed must\n     * never admit Reset in the interval before FIFO publication. Only actual\n     * dequeue clears this state for an accepted operation. */\n    atomic_store_explicit(&request->event_queued, 1, memory_order_release);\n    atomic_store_explicit(&request->completed, 1, memory_order_release);\n    pi_uv_fs_request_retain(request); /* actual queued event entitlement */\n    pi_uv_event_queue(&request->event);",
+      "label": "readwrap-reuse-C:2"
+    },
+    {
+      "path": "src/extensions/native_uv_tcp.c",
+      "before": "        event->next = NULL;\n        atomic_fetch_sub_explicit(&service->queued_events, 1, memory_order_release);",
+      "after": "        event->next = NULL;\n        if (event->storage == PI_UV_FS_REQUEST) {\n            PiUvFsRequest *request = event->allocation;\n            /* Only actual FS dequeue admits reuse of this embedded slot.\n             * Older host tickets retain independent release-only owners. */\n            event->in_use = 0;\n            atomic_store_explicit(&request->event_queued, 0, memory_order_release);\n        }\n        atomic_fetch_sub_explicit(&service->queued_events, 1, memory_order_release);",
+      "label": "readwrap-reuse-C:3"
+    },
+    {
+      "path": "src/extensions/native_uv_tcp.c",
+      "before": "int pi_uv_fs_read(PiUvFsRequest *request, int descriptor,\n",
+      "after": "int pi_uv_fs_request_reset(PiUvFsRequest *request) {\n    if (!request) return UV_EINVAL;\n    /* Initial ReqWrap::Reset has no completed native operation to clean. */\n    if (!request->submitted)\n        return atomic_load_explicit(&request->cleaned, memory_order_acquire)\n            ? UV_EBUSY : 0;\n    if (!atomic_load_explicit(&request->completed, memory_order_acquire) ||\n        !atomic_load_explicit(&request->cleaned, memory_order_acquire) ||\n        atomic_load_explicit(&request->event_queued, memory_order_acquire))\n        return UV_EBUSY;\n    assert(request->previous == NULL && request->next == NULL);\n    assert(request->backing.owner == NULL);\n    /* The prior event was taken from the FIFO. Its independent entitlement\n     * may still be alive in the host callback, but release reads only stable\n     * service/storage/allocation/source fields. Do not reinitialize that event\n     * or clear its next link: a new completion can already occupy the FIFO\n     * when the prior event entitlement is finally retired. */\n    request->uv.data = NULL;\n    request->submitted = 0;\n    request->entered = 0;\n    request->accepted = 0;\n    request->event.info.status = 0;\n    request->event.info.length = 0;\n    atomic_store_explicit(&request->completed, 0, memory_order_release);\n    atomic_store_explicit(&request->cleaned, 0, memory_order_release);\n    return 0;\n}\nint pi_uv_fs_read_buffer(PiUvFsRequest *request, int descriptor,\n    char *base, size_t length, int64_t position) {\n    if (!pi_uv_fs_unsubmitted(request, PI_UV_FS_READ) ||\n        (!base && length)) return UV_EINVAL;\n#if defined(_WIN32)\n    if (length > ULONG_MAX) return UV_EINVAL;\n#endif\n    /* Copy the actual caller's uv_buf_t fields without a JS lease or wrapper.\n     * Its native owner, normally Environment's managed table, retains these\n     * bytes through the real uv callback and native request cleanup. */\n    request->descriptor = descriptor;\n    request->buffer.base = base;\n    request->buffer.len = length;\n    request->position = position;\n    PiUvCommand command = { .kind = PI_UV_CMD_FS_READ, .fs_request = request };\n    return pi_uv_fs_submit(request, &command);\n}\nint pi_uv_fs_read(PiUvFsRequest *request, int descriptor,\n",
+      "label": "readwrap-reuse-C:4"
+    },
+    {
+      "path": "src/extensions/native_uv_fs.h",
+      "before": "int pi_uv_fs_read(PiUvFsRequest *request, int descriptor,\n",
+      "after": "/* Reset the same native request after its actual completion was removed from\n * the FIFO and request_cleanup ran. A new/unsubmitted request also admits its\n * initial Reset. In-flight, still-queued or uncleaned operations return\n * UV_EBUSY without changing state. No wrapper, event, backing or request is\n * allocated by Reset.\n *\n * The previous dequeued event entitlement may remain owned while the request\n * is submitted again, as in FileHandleReadWrap's original completion callback.\n * After Reset the old event may ONLY be released: its mutable completion info\n * now belongs to the next operation. Stable event release fields never change,\n * and its next link must not be touched by the old owner. Each actual queued\n * completion still transfers one independent request and service entitlement.\n */\nint pi_uv_fs_request_reset(PiUvFsRequest *request);\n/* Native FileHandle/StreamResource span: the caller supplies the exact\n * uv_buf_t base/length and keeps its native storage owner alive through actual\n * completion and request_cleanup. This call borrows bytes and makes no JS\n * wrapper/lease, copy or extra native allocation. The library does not infer\n * or extend that external buffer lifetime. Wrong state/invalid native span\n * returns UV_EINVAL before admission. Windows requires its real ULONG extent.\n */\nint pi_uv_fs_read_buffer(PiUvFsRequest *request, int descriptor,\n    char *base, size_t length, int64_t position);\nint pi_uv_fs_read(PiUvFsRequest *request, int descriptor,\n",
+      "label": "readwrap-reuse-header:0"
+    },
+    {
+      "path": "src/extensions/native_uv_fs.h",
+      "before": " * The caller must not reuse a submitted or cleaned request.\n",
+      "after": " * Reuse requires successful request_reset after actual completion/dequeue and\n * cleanup; submitted or cleaned storage cannot be passed directly to admission.\n",
+      "label": "readwrap-reuse-header:1"
+    },
+    {
+      "path": "src/extensions/native_uv_fs.h",
+      "before": " * acquisition. Cleanup is idempotent and occurs at FSReqAfterScope::Clear;\n",
+      "after": " * acquisition, and before a successful request_reset invalidates that result.\n * Cleanup is idempotent and occurs at FSReqAfterScope::Clear;\n",
+      "label": "readwrap-reuse-header:2"
+    },
+    {
+      "path": "build.zig",
+      "before": "        b.step(\"build-native-node-fs-request-transport\", \"Install actual shared libuv FS request ownership controls without execution\").dependOn(&b.addInstallArtifact(native_node_fs_request_transport_tests, .{}).step);\n",
+      "after": "        b.step(\"build-native-node-fs-request-transport\", \"Install actual shared libuv FS request ownership controls without execution\").dependOn(&b.addInstallArtifact(native_node_fs_request_transport_tests, .{}).step);\n        const native_node_fs_readwrap_reuse_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_fs_readwrap_reuse_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native actual FS reuse\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_node_fs_readwrap_reuse_tests.root_module, quickjs, sqlite_lib_dir);\n        native_node_fs_readwrap_reuse_tests.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        native_node_fs_readwrap_reuse_tests.root_module.linkLibrary(network);\n        b.step(\"build-native-node-fs-readwrap-reuse\", \"Install actual shared libuv reusable ReadWrap controls without execution\").dependOn(&b.addInstallArtifact(native_node_fs_readwrap_reuse_tests, .{}).step);\n",
+      "label": "readwrap-reuse-build:0"
+    },
+    {
+      "path": "src/extensions/native_node_request_state.zig",
+      "before": "pub const Cancel = *const fn (*Entry) void;\n",
+      "after": "pub const Cancel = *const fn (*Entry) void;\n/// The compiled original libuv callback plus its actual native request address.\n/// Both are borrowed; this descriptor creates no root or separate entitlement.\npub const NativeCallback = struct {\n    request: *anyopaque,\n    call: *const fn (*Entry, *anyopaque) anyerror!void,\n};\n",
+      "label": "request-callback-routing:0"
+    },
+    {
+      "path": "src/extensions/native_node_request_state.zig",
+      "before": "    cancel_native: Cancel,\n    queue: ?*Registry = null,\n",
+      "after": "    cancel_native: Cancel,\n    original_callback: ?NativeCallback = null,\n    queue: ?*Registry = null,\n",
+      "label": "request-callback-routing:1"
+    },
+    {
+      "path": "src/extensions/native_node_request_state.zig",
+      "before": "        std.debug.assert(!self.counted);\n        self.dispatched = false;\n",
+      "after": "        std.debug.assert(!self.counted);\n        self.original_callback = null;\n        self.dispatched = false;\n",
+      "label": "request-callback-routing:2"
+    },
+    {
+      "path": "src/extensions/native_node_request_state.zig",
+      "before": "    pub fn dispatchStarted(self: *Entry) void {\n        self.dispatched = true;\n    }\n",
+      "after": "    pub fn dispatchStarted(self: *Entry) void {\n        self.dispatched = true;\n    }\n    /// MakeLibuvRequestCallback::For follows Dispatched and precedes the real\n    /// libuv call. Reset clears this same field before a reused Dispatch.\n    pub fn setCallback(self: *Entry, callback: NativeCallback) !void {\n        if (self.original_callback != null) {\n            const environment = self.wrap.registry.environment;\n            return environment.operations.native_check_failure(environment, .request_callback_already_set);\n        }\n        self.original_callback = callback;\n    }\n",
+      "label": "request-callback-routing:3"
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "before": "//! Actual ReqWrap dispatch and AfterInteger completion for the private read\n//! binding. The existing Environment owns the only request queue/counter; the\n",
+      "after": "//! Actual ReqWrap dispatch and original native callback delivery for private\n//! FS requests. The existing Environment owns the only request queue/counter; the\n",
+      "label": "request-callback-routing:0"
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "before": "        request.entry.dispatchStarted();\n        const status = uv.pi_uv_fs_read(actual, descriptor, @ptrCast(backing),\n",
+      "after": "        request.entry.dispatchStarted();\n        try request.entry.setCallback(.{ .request = actual, .call = afterIntegerCallback });\n        const status = uv.pi_uv_fs_read(actual, descriptor, @ptrCast(backing),\n",
+      "label": "request-callback-routing:1"
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "before": "    fn ready(raw: *anyopaque) bool {\n",
+      "after": "    /// FileHandleReadWrap supplies its actual StreamResource span and original\n    /// native completion. The caller retains the backing through delivery and\n    /// EmitRead consumption. A failed native Dispatch returns its status and\n    /// does not manufacture a callback; the original ReadStart ignores it.\n    pub fn dispatchRawRead(self: *Controller, s: *Scope, entry: *request_state.Entry,\n        actual: *uv.PiUvFsRequest, descriptor: c_int, base: ?[*]u8,\n        length: usize, position: i64,\n        callback: *const fn (*request_state.Entry, *anyopaque) anyerror!void) !c_int\n    {\n        try self.enter(s.engine);\n        defer self.leave();\n        if (entry.wrap.registry.environment != self.environment or\n            entry.queue != &self.environment.requests)\n            return error.ActualFSRequestEnvironmentMismatch;\n        entry.dispatchStarted();\n        try entry.setCallback(.{ .request = actual, .call = callback });\n        const status = uv.pi_uv_fs_read_buffer(actual, descriptor,\n            @ptrCast(base), length, position);\n        if (status >= 0) try entry.dispatchAccepted();\n        return status;\n    }\n\n    fn ready(raw: *anyopaque) bool {\n",
+      "label": "request-callback-routing:2"
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "before": "    fn find(self: *Controller, actual: *uv.PiUvFsRequest) !*requests.Request {\n        // The genuine intrusive Environment queue is authoritative. The\n        // compiled cancellation function identifies this derived owner before\n        // taking the containing Request; no parallel registry owns JS roots.\n        var cursor = self.environment.requests.head;\n        while (cursor) |entry| : (cursor = entry.next) {\n            if (entry.cancel_native != cancelRequest) continue;\n            const request: *requests.Request = @alignCast(@fieldParentPtr(\"entry\", entry));\n            if (request.native_request == actual) return request;\n        }\n        return error.ActualFSCompletionRequestRequired;\n    }\n",
+      "after": "    fn find(self: *Controller, actual: *uv.PiUvFsRequest) !*request_state.Entry {\n        // The one intrusive Environment queue and the actual request address\n        // stored at Dispatch identify the selected native original callback.\n        // No parallel map or Promise-only cancellation-function cast is used.\n        var cursor = self.environment.requests.head;\n        while (cursor) |entry| : (cursor = entry.next) {\n            if (entry.original_callback) |callback|\n                if (callback.request == @as(*anyopaque, @ptrCast(actual))) return entry;\n        }\n        return error.ActualFSCompletionRequestRequired;\n    }\n",
+      "label": "request-callback-routing:3"
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "before": "        const request = try self.find(actual);\n        if (!request.entry.dispatched or !request.entry.counted)\n            return error.ActualFSAcceptedCompletionRequired;\n        self.busy += 1;\n        defer self.leave();\n        // MakeLibuvRequestCallback::Wrapper: native strong pointer, Detach,\n        // decrement, then the original callback. Its pointer retires last.\n        try request.entry.beginCallback();\n        const engine = self.hub.engine;\n        var handles = Scope.init(engine);\n        var failure: ?anyerror = null;\n        afterInteger(request, actual) catch |err| {\n            record(&handles, err);\n            failure = err;\n        };\n        request.entry.endCallback() catch |err| {\n            record(&handles, err);\n            if (failure == null) failure = err;\n        };\n",
+      "after": "        const entry = try self.find(actual);\n        if (!entry.dispatched or !entry.counted)\n            return error.ActualFSAcceptedCompletionRequired;\n        self.busy += 1;\n        defer self.leave();\n        // MakeLibuvRequestCallback::Wrapper: native strong pointer, Detach,\n        // decrement, then select/call the original callback. Its pointer dies\n        // last, even if that callback resets and redispatches this same Entry.\n        try entry.beginCallback();\n        const engine = self.hub.engine;\n        var handles = Scope.init(engine);\n        var failure: ?anyerror = null;\n        const outcome: anyerror!void = if (entry.original_callback) |callback|\n            callback.call(entry, callback.request) else error.ActualFSOriginalCallbackRequired;\n        outcome catch |err| {\n            record(&handles, err);\n            failure = err;\n        };\n        entry.endCallback() catch |err| {\n            record(&handles, err);\n            if (failure == null) failure = err;\n        };\n",
+      "label": "request-callback-routing:4"
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "before": "fn afterInteger(request: *requests.Request, actual: *uv.PiUvFsRequest) !void {\n",
+      "after": "fn afterIntegerCallback(entry: *request_state.Entry, raw: *anyopaque) !void {\n    const request: *requests.Request = @alignCast(@fieldParentPtr(\"entry\", entry));\n    const actual: *uv.PiUvFsRequest = @ptrCast(@alignCast(raw));\n    return afterInteger(request, actual);\n}\nfn afterInteger(request: *requests.Request, actual: *uv.PiUvFsRequest) !void {\n",
+      "label": "request-callback-routing:5"
+    },
+    {
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "before": "    request_before_bootstrap, negative_waiting_requests,\n",
+      "after": "    request_before_bootstrap, request_callback_already_set, negative_waiting_requests,\n",
+      "label": "request-callback-routing:0"
+    },
+    {
+      "path": "src/extensions/native_node_callback_checks.zig",
+      "before": "        .request_before_bootstrap => assertion(\"env->has_run_bootstrapping_code()\",\n            \"src/req_wrap-inl.h\", \"ReqWrapBase::ReqWrapBase\"),\n",
+      "after": "        .request_before_bootstrap => assertion(\"env->has_run_bootstrapping_code()\",\n            \"src/req_wrap-inl.h\", \"ReqWrapBase::ReqWrapBase\"),\n        .request_callback_already_set => assertion(\"(req_wrap->original_callback_) == nullptr\",\n            \"src/req_wrap-inl.h\", \"MakeLibuvRequestCallback::For\"),\n",
+      "label": "request-callback-routing:0"
+    },
+    {
+      "path": "build.zig",
+      "before": "        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "after": "        const native_node_reqwrap_callback_routing_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_reqwrap_callback_routing_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native ReqWrap routing\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_node_reqwrap_callback_routing_tests.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, native_node_reqwrap_callback_routing_tests.root_module, typescript_parser);\n        linkSqlite(native_node_reqwrap_callback_routing_tests.root_module, sqlite_lib_dir, sqlite_library);\n        native_node_reqwrap_callback_routing_tests.root_module.addImport(\"catalog_tool\", catalog_tool);\n        native_node_reqwrap_callback_routing_tests.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        native_node_reqwrap_callback_routing_tests.root_module.linkLibrary(network);\n        if (target.result.os.tag == .windows) {\n            native_node_reqwrap_callback_routing_tests.root_module.linkSystemLibrary(\"advapi32\", .{});\n            native_node_reqwrap_callback_routing_tests.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-reqwrap-callback-routing\", \"Install twelve real native ReqWrap callback routing controls without execution\").dependOn(&b.addInstallArtifact(native_node_reqwrap_callback_routing_tests, .{ .dest_sub_path = b.fmt(\"native-node-reqwrap-callback-routing{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "label": "request-callback-build"
+    }
+  ],
+  "source_path_count": 35,
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before_sha256": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "sha256": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "bytes": 2399313
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before_sha256": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C",
+      "bytes": 113474
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "before_sha256": "EC0002CEED53432B26BA135F2D4CDC6FFB8C2D0460ADE1C6B8D003C8194826BF",
+      "sha256": "FB755EC4331C26D7CB92294684A89C3F7D282609236AB0CCF76D3CD1D57296E0",
+      "bytes": 32901
+    },
+    {
+      "path": "build.zig",
+      "before_sha256": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+      "sha256": "B2CC65057664436C2F40D70175C439BAA8CE7B372899F61DD6AB6BB7113B06D2",
+      "bytes": 500710
+    },
+    {
+      "path": "src/native_vm_simple_stack_source_test.zig",
+      "before_sha256": "missing",
+      "sha256": "1863129EC7E28E0F99D3B6C94E3B28FDC754781C7BF0DEF296552688DC0D5DF9",
+      "bytes": 53404
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/PROPOSAL.md",
+      "before_sha256": "missing",
+      "sha256": "2D631A44A0EC1BCC5E80B0B8BB62326E3454F97CE125081718B6D0027A74BFD4",
+      "bytes": 14061
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/README.md",
+      "before_sha256": "missing",
+      "sha256": "E7AF7635DD69F4A76E1A6E79C04D81D27D41D7BDDF4995440442C87DD8EF3464",
+      "bytes": 3270
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/authority/build.before.txt",
+      "before_sha256": "missing",
+      "sha256": "35AD68E15D17BEAE0820B1EE1AB57EB0DB8B7F71885B95306AAF676B36581686",
+      "bytes": 420622
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/authority/stack-data-source-proof.json",
+      "before_sha256": "missing",
+      "sha256": "1A66CB1C67B30BCDCEA75DE72BA42DAC8D260B453976E15103E32A94E82C08C8",
+      "bytes": 39089
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/build-intake.json",
+      "before_sha256": "missing",
+      "sha256": "9AD963FC1B0198912D225A67703AA44F91A95B2ADE3F9686C45F69F80082EDAB",
+      "bytes": 1352
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/control-inventory.json",
+      "before_sha256": "missing",
+      "sha256": "2687531CF6F9D046FB042121CA45804892ACAB592D8708A9D79810CCAA8592A5",
+      "bytes": 3754
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/current-operation-source.json",
+      "before_sha256": "missing",
+      "sha256": "8A7E82828E39D19BAED94D394A3244656138ACD76760E2B8861A07209AE388B1",
+      "bytes": 6061
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/integration-replay.json",
+      "before_sha256": "missing",
+      "sha256": "1F7062370152A3051824B7BEAC28A7B2B08D18B5BD7B93E99673BC9738986643",
+      "bytes": 41903
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/manifest.json",
+      "before_sha256": "missing",
+      "sha256": "D20EDF60A4C123F05F87C6AA27A89A2F9DB141056F7318C32F2B058C93981784",
+      "bytes": 13679
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/peers/c-and-fallback-receipt.json",
+      "before_sha256": "missing",
+      "sha256": "8EE3C6CF2F4C8E448E0683D47DB6C203DB4F5D887F6566E6AABACEC150CCD5D1",
+      "bytes": 5655
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/peers/existing-error-stack-owner.json",
+      "before_sha256": "missing",
+      "sha256": "EE9AE43FB142971E98DB3C8362BEC4B08A4D9E11900C12A144F7C6D6E24B3BA9",
+      "bytes": 12626
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/peers/existing-owner-receipt.json",
+      "before_sha256": "missing",
+      "sha256": "6BD9D711A961D7C4AA2427C247AA745914023FCBF9417A4787571FA71E6DD7E6",
+      "bytes": 5593
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/peers/formatter-controls-build-receipt.json",
+      "before_sha256": "missing",
+      "sha256": "8E97C8E89CEE3C0A76D7004432D45A8E0407C24726195128C203CA39A23DE42A",
+      "bytes": 6979
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/peers/raw-controls-receipt.json",
+      "before_sha256": "missing",
+      "sha256": "14E948DCFD27DDD99EEF075FDE73495BCA536151D2E956B4BD40AE309974F397",
+      "bytes": 7662
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/production-c-delta.json",
+      "before_sha256": "missing",
+      "sha256": "B52F8C55743904B7EE81D2A8C7DF669D8428F84BE53576FA40887D27C5601F1F",
+      "bytes": 11586
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/production-owner-delta.json",
+      "before_sha256": "missing",
+      "sha256": "D8EAA8702356C351F0A724DC613F30766020853236B1FFB57649F17534C16DBE",
+      "bytes": 27137
+    },
+    {
+      "path": "verification/native-message-stack-sourceonly-20261020/production-review-input.json",
+      "before_sha256": "missing",
+      "sha256": "FD74BC7F29377BB7B5DCA8937EEE3991CB475A7938893DBF38B14768934FF903",
+      "bytes": 39432
+    },
+    {
+      "path": "src/native_vm_exotic_operations_test.zig",
+      "before_sha256": "missing",
+      "sha256": "9FFBDF6B2C033898E7D1738943293DCD13F758EF9893F794293C8AA71A5FAA7B",
+      "bytes": 35891
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/authority/build.before.zig.txt",
+      "before_sha256": "missing",
+      "sha256": "CCADEFC7788AB8194561A7465261EAB59BEF1C765CC4C780C42BC3DC4010054B",
+      "bytes": 421276
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/authority/controls.explicit-defer-intermediate.zig.txt",
+      "before_sha256": "missing",
+      "sha256": "29247BEFF417EABAA1FE8AA867643A33D252300062AC8F1B436B25A541AFA6C9",
+      "bytes": 36015
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/authority/controls.initial.zig.txt",
+      "before_sha256": "missing",
+      "sha256": "B9465FD9236C2D9582F032F903C1B98101F43D5E8213654544798A473303D18D",
+      "bytes": 35881
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/authority/original-flags-prerequisite.json",
+      "before_sha256": "missing",
+      "sha256": "C9901F29DC414F19CF34BDFF3F87647FF33E23E30CE8AF3FEF221EA62DA7E26C",
+      "bytes": 20821
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/authority/original-integrity-prerequisite.json",
+      "before_sha256": "missing",
+      "sha256": "48D3AE0372949C22E651EFEB7AD92CBE406F89A1D3436D10E37114479325D16C",
+      "bytes": 14668
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/authority/quickjs.c.before.txt",
+      "before_sha256": "missing",
+      "sha256": "DE3C05D6698F2D1AC5F3D7F92540F4775B374101A71EAE2C4925FD3F48FAFCAE",
+      "bytes": 2394786
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/authority/quickjs.h.before.txt",
+      "before_sha256": "missing",
+      "sha256": "621A5F9DD846DA6257C89E78EB25D527CCDFAB0F0E76FA34195CD51E7CF1B32B",
+      "bytes": 111537
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/build-intake.json",
+      "before_sha256": "missing",
+      "sha256": "F9FE839C85D0C724DBB6BE71A690B8988AFC71422DB61150B4BE0B2F6D571087",
+      "bytes": 1388
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/control-abi-successor.json",
+      "before_sha256": "missing",
+      "sha256": "F9CBF876B4FB6B6FA352AAB8345BEB94412EDFB41AC7C0F912A86E2E548C104A",
+      "bytes": 11838
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/control-pointer-successor.json",
+      "before_sha256": "missing",
+      "sha256": "D72561705EC7DD82B208A4638BC88D2B615F99992D27412548AC43CB4E68C084",
+      "bytes": 1233
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/final-source-verification.json",
+      "before_sha256": "missing",
+      "sha256": "CE935D1A088865B902A5A9C01E610EBDC4A98189DE85B741A001AEA551091EC0",
+      "bytes": 3831
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/manifest.json",
+      "before_sha256": "missing",
+      "sha256": "44F3C9D83032B1257325346FE6C68F2E81DB218D9E594AE562CAE9A160DAB5CF",
+      "bytes": 11968
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/peer-controls-integrity.json",
+      "before_sha256": "missing",
+      "sha256": "018CB092D7C02FD93C224CC3C4C896ABC98CDFDFA26B59FE0D0DE58DCC0E9E9A",
+      "bytes": 4816
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/peer-controls-query-and-build.json",
+      "before_sha256": "missing",
+      "sha256": "3EB90DBA022EFF2FB731622D5AEB6156CA9352B5796ED3E94BB6FABD3216A96B",
+      "bytes": 7851
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/peer-flags.json",
+      "before_sha256": "missing",
+      "sha256": "9CA98D167B32524E28B98695824C1A2C5586F843406F0F7F38DBC323821CB43A",
+      "bytes": 4033
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/peer-integrity.json",
+      "before_sha256": "missing",
+      "sha256": "A94FB61278CF1084911F25478DBA285860D4C6F5D5A575C8730D9FAC2268B496",
+      "bytes": 2930
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/production-delta.json",
+      "before_sha256": "missing",
+      "sha256": "DC714C58CDB035BE1D48BDEC8A41AED0B54BB84B1F23673B38373925F4A7E229",
+      "bytes": 9055
+    },
+    {
+      "path": "verification/native-exotic-operation-guards-sourceonly-20261020/source-verification.json",
+      "before_sha256": "missing",
+      "sha256": "126CCC3F156E3F67233AD6EFFFF672E734DECD00B7052B67BF898C760C3B3E45",
+      "bytes": 1765
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "before_sha256": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F",
+      "sha256": "33D2F0524B59E477707937D6589BF4A30C5D959B1EFE4779BE4BF02D39B39593",
+      "bytes": 15538
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.h",
+      "before_sha256": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D",
+      "sha256": "5A4B14849140F79C5A3555EC2721914D6C4382FEEB94DA0DACAE07E78EAF1CBD",
+      "bytes": 2478
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before_sha256": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC",
+      "sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09",
+      "bytes": 2857
+    },
+    {
+      "path": "verification/native-node-nonterminal-stack-sourceonly-20261020/manifest.json",
+      "before_sha256": "missing",
+      "sha256": "2D751679F6CBEF3D09AC7254975EB983F8CBAB69E4609162DAB37A277B77DC65",
+      "bytes": 2490
+    },
+    {
+      "path": "verification/native-node-nonterminal-stack-sourceonly-20261020/peer-receipt.json",
+      "before_sha256": "missing",
+      "sha256": "19B1A22BEAD5B1CB7510427C696AD6A02A48A6AD13207EA23778FA9A1856FB54",
+      "bytes": 3742
+    },
+    {
+      "path": "verification/native-node-nonterminal-stack-sourceonly-20261020/production-delta-v2.json",
+      "before_sha256": "missing",
+      "sha256": "C05686CCA619E5DEFEDB07EF853836A701511A80502C0F011D9447F150BB4E57",
+      "bytes": 6316
+    },
+    {
+      "path": "verification/native-node-nonterminal-stack-sourceonly-20261020/production-delta.json",
+      "before_sha256": "missing",
+      "sha256": "9A899FF4979C7100F094756196002D8A436E95D0D88A0441D563766CEA9FE82F",
+      "bytes": 5751
+    },
+    {
+      "path": "verification/native-node-nonterminal-stack-sourceonly-20261020/trace-env-original-nonterminal-rules.json",
+      "before_sha256": "missing",
+      "sha256": "8C84E5CC132C637EFCA7E7CE162885C6614FF7658CB40A5376A7C39F85890F3C",
+      "bytes": 10065
+    },
+    {
+      "path": "src/extensions/native_node_diagnostic_context.c",
+      "before_sha256": "missing",
+      "sha256": "AC01853D724253740008E26D2663545D2F564A6E59DE91AA8CE2C8777C7B832C",
+      "bytes": 789
+    },
+    {
+      "path": "src/extensions/native_node_diagnostic_context.h",
+      "before_sha256": "missing",
+      "sha256": "4D8E43A6527FED6AA19F86A2A51CD490E5DDEAC6CCC323635B700ED4E8B798C0",
+      "bytes": 775
+    },
+    {
+      "path": "src/extensions/native_node_diagnostic_context.hpp",
+      "before_sha256": "missing",
+      "sha256": "7EA7700F4EDCC6ED5C27DF98574BE27A572AFF01E151B9F39667E6737ACC30B9",
+      "bytes": 914
+    },
+    {
+      "path": "src/extensions/native_node_diagnostic_context_test_support.cpp",
+      "before_sha256": "missing",
+      "sha256": "BF99BC71F7F7EE89748F7D0F663220087D1ADD6044CBD0DA9256C12974EE935E",
+      "bytes": 1308
+    },
+    {
+      "path": "src/extensions/native_node_diagnostic_context_test_support.h",
+      "before_sha256": "missing",
+      "sha256": "D6C452A902245779308A9CBE5CF6762B862B73B616C4A60DDD7B10A48AD37009",
+      "bytes": 359
+    },
+    {
+      "path": "src/native_node_diagnostic_context_test.zig",
+      "before_sha256": "missing",
+      "sha256": "536C002F636323E9F2D3C7A195BEEA054DA919DC600E86DA2850E2A63B51B861",
+      "bytes": 9765
+    },
+    {
+      "path": "verification/native-node-diagnostic-context-sourceonly-20261020/build-proposal.json",
+      "before_sha256": "missing",
+      "sha256": "3A8331CF313E113C528B13058650A790CFC3602AD111F444F89AD11107A07D5B",
+      "bytes": 2233
+    },
+    {
+      "path": "verification/native-node-diagnostic-context-sourceonly-20261020/controls-correction-v2.json",
+      "before_sha256": "missing",
+      "sha256": "A126409898B33B1FC9F8D81D6BAF1B08E4B1F7FEB5B0FF396D154083884469E7",
+      "bytes": 1549
+    },
+    {
+      "path": "verification/native-node-diagnostic-context-sourceonly-20261020/independent-original-source-read.json",
+      "before_sha256": "missing",
+      "sha256": "9D60BC103B52B2EBB98A3372E75975976A7DB0746D1EB0DB6F5B02E9DDD30EBA",
+      "bytes": 9658
+    },
+    {
+      "path": "verification/native-node-diagnostic-context-sourceonly-20261020/manifest.json",
+      "before_sha256": "missing",
+      "sha256": "AA76DE55D38EEF47A256D5ED3807B2542BB1F4D5C18B804B83202E1653DA80D4",
+      "bytes": 9774
+    },
+    {
+      "path": "verification/native-node-diagnostic-context-sourceonly-20261020/node-diagnostic-guards-authority.json",
+      "before_sha256": "missing",
+      "sha256": "8C84E5CC132C637EFCA7E7CE162885C6614FF7658CB40A5376A7C39F85890F3C",
+      "bytes": 10065
+    },
+    {
+      "path": "verification/native-node-diagnostic-context-sourceonly-20261020/peer-modules-build.json",
+      "before_sha256": "missing",
+      "sha256": "134F6EEE39CE8673645E3EDE2966BAC040278422EF21D8EF82B5213FB72C2DFC",
+      "bytes": 3290
+    },
+    {
+      "path": "verification/native-node-diagnostic-context-sourceonly-20261020/peer-sdk-production.json",
+      "before_sha256": "missing",
+      "sha256": "1FB39DF98E061A5B3C36E465BB8ACAFD04C0D71579CFB91AB0E4146B3B50240C",
+      "bytes": 4033
+    },
+    {
+      "path": "verification/native-node-diagnostic-context-sourceonly-20261020/peer-vm-controls-v2.json",
+      "before_sha256": "missing",
+      "sha256": "12AB60F9D56646DAD386A95CBB5DF39D4AC3D368C0D9DAAC962D307177D4DDD0",
+      "bytes": 6040
+    },
+    {
+      "path": "verification/native-node-diagnostic-context-sourceonly-20261020/root-v1.zig.txt",
+      "before_sha256": "missing",
+      "sha256": "95CB9BB6C3F640494E5B917BD85B4E1321C3BAF0907FF4A6FB94AD256B472BDD",
+      "bytes": 9532
+    },
+    {
+      "path": "verification/native-node-diagnostic-context-sourceonly-20261020/source-proof-v1.json",
+      "before_sha256": "missing",
+      "sha256": "59B45ADA4D5BD9558F123F7AA7A4B1787E696881C1991B1A344C1615B2ACA738",
+      "bytes": 6459
+    },
+    {
+      "path": "verification/native-node-diagnostic-context-sourceonly-20261020/source-proof.json",
+      "before_sha256": "missing",
+      "sha256": "E46E054DE607A6CF5A3BD51D9A69DD2DA8F5A73FE7457A46DFEB994A5FFEEDCC",
+      "bytes": 7389
+    },
+    {
+      "path": "verification/native-node-diagnostic-context-sourceonly-20261020/v8-entry-authority.json",
+      "before_sha256": "missing",
+      "sha256": "A0D6A6327583D3A740DFF931584FB89955C508A1E46FC11B634A45FDFA305032",
+      "bytes": 10231
+    },
+    {
+      "path": "tools/build_native_node_network.zig",
+      "before_sha256": "64ADAD93DE12560EB7B14DE6759176876CED7F1E212D2CDBF85A251773EE2091",
+      "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369",
+      "bytes": 5905
+    },
+    {
+      "path": "src/extensions/native_node_native_debug.cpp",
+      "before_sha256": "missing",
+      "sha256": "AD3446C875DFFD39165AF9514A4A1169125995C5701F4B706706F83CB814A990",
+      "bytes": 6880
+    },
+    {
+      "path": "src/extensions/native_node_native_debug.h",
+      "before_sha256": "missing",
+      "sha256": "E11332B46CC5DF6001BBEBF3CF094B5ED2C8C4170F4FB0089B264DC0AE5BF8E8",
+      "bytes": 3449
+    },
+    {
+      "path": "src/extensions/native_node_native_debug_internal.hpp",
+      "before_sha256": "missing",
+      "sha256": "301D73ED189F50DACA4B0E2C16B3C7E9469E716EB935F67D826EDB691F01B4F1",
+      "bytes": 14875
+    },
+    {
+      "path": "src/extensions/native_node_permission.cpp",
+      "before_sha256": "missing",
+      "sha256": "4DC0D4C70A659B9405E6D4AC6BFC0B008FB48EFB614F811C87F096A105A73EC8",
+      "bytes": 15344
+    },
+    {
+      "path": "src/extensions/native_node_permission.h",
+      "before_sha256": "missing",
+      "sha256": "6005CBF37A2FA4A6BF310274AB8338F030E886AAA1461EEC95FED2019E3E3C9B",
+      "bytes": 3314
+    },
+    {
+      "path": "src/extensions/native_node_permission_internal.hpp",
+      "before_sha256": "missing",
+      "sha256": "C15AC7ED37DAFB8F672AAFCFCD6FABA2CF87BB64EE26C8CC4AF5A6695D2E712F",
+      "bytes": 11308
+    },
+    {
+      "path": "src/extensions/native_node_permission_test_support.cpp",
+      "before_sha256": "missing",
+      "sha256": "362826F62F0F4322961AE0F93E835C178251B49FDCAA3BE06D116B307A1F4BC4",
+      "bytes": 7661
+    },
+    {
+      "path": "src/extensions/native_node_permission_test_support.h",
+      "before_sha256": "missing",
+      "sha256": "9D128A71AE35CF2A92AFA92E5F8278BA29F564C0C4FBB85F61CA85E105E7E54B",
+      "bytes": 2741
+    },
+    {
+      "path": "src/native_node_native_debug_test.zig",
+      "before_sha256": "missing",
+      "sha256": "79729DBB464F7F95F89CDD85A9A737897A1D90F6352816E186EFB02EE0470991",
+      "bytes": 16506
+    },
+    {
+      "path": "src/native_node_native_debug_test_support.zig",
+      "before_sha256": "missing",
+      "sha256": "7AF437A515FF85B16457E854B7FCD93BDBF74545C939E7039040158E5285F604",
+      "bytes": 10530
+    },
+    {
+      "path": "src/native_node_permission_test.zig",
+      "before_sha256": "missing",
+      "sha256": "A01BE231E1AA8A03FB9D343B6DAC06CA8EAA0FD2C58D33C1CA79A596E32F554D",
+      "bytes": 19167
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/CHECKPOINT-20261020.md",
+      "before_sha256": "missing",
+      "sha256": "87EC484219978995E533E4DEA7DCBABA90C9FED610E3FCFCB5C26A40106F95F5",
+      "bytes": 5832
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/addon_permission.cc.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "41C315B404E271B351860EDE4306E22711B1FA77171FB3EB6331B6446792FB03",
+      "bytes": 616
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/addon_permission.h.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "E0C9E3A55D4FC03EAAF0191C0BA1DD816B263BE972D74BD3B63F2E638E581F48",
+      "bytes": 775
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/async_wrap.h.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "3EBF97B3044B4875D1F62C3F8BA1668886F4AE19F6369A8DD20EC0E262BBF1EF",
+      "bytes": 12198
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/child_process_permission.cc.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "7ACF603229159AD1D1C172221124FC9E40ECC77B4D1E7C8EB5D4092F7D5B9874",
+      "bytes": 691
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/child_process_permission.h.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "1A518EB92295513743E12AF023E5700274DB0A736328D9CE62BBB40241DD3E71",
+      "bytes": 806
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils-inl.h.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "A3A471FC932B173CC08C53571E7C791A3DD816720443BA6AFD4C5561DDDA7A72",
+      "bytes": 9366
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils.cc.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "9F2904508A8443BEB454DC789A07D60AFB2F2EC7F9B2F56BC651D9C66EDB0EA3",
+      "bytes": 16324
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/debug_utils.h.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "807D1A5B4C872B0FB5A14DFEB0BD48BEF126CBDCA920E5908E949218617484B4",
+      "bytes": 7649
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/fs-permission-cleanup-source-peer.json",
+      "before_sha256": "missing",
+      "sha256": "522698C721CBB6328A6CE48DFDE53B6012FFC29E7CFE6F13BDC8AFB4C48E0074",
+      "bytes": 28779
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/fs_permission.cc.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "AFD036B1C56806B7F56D69872E391BAB44C2AFF01C0FB36C6CF6672164399AB8",
+      "bytes": 6854
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/fs_permission.h.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "2FC127A57D9EACFA0119C1D11787CEAEBFD9C367A039B09DD627E3C268809F4C",
+      "bytes": 4563
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/inspector_permission.cc.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "440F0F786C231AC3ECA29AE42A6B2C1976B6544B0B3248B20A5D1316C3B24D1D",
+      "bytes": 648
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/inspector_permission.h.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "28892270154C0769E6949FADF36F29C8E3CA2467F4887FE2D7518FD3DF68265A",
+      "bytes": 791
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-shared_ptr.h.pinned.txt",
+      "before_sha256": "missing",
+      "sha256": "3241AF290FC414E0228B5312656A4AFBE11B7DE9ED9D09E80A97FAB6E8DC4293",
+      "bytes": 60418
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/permission-debug-and-policies-source.json",
+      "before_sha256": "missing",
+      "sha256": "56F9E027AFDBD749280A15BFB776E01C36E2F0F43D3F6F308F9A74CAB06F05CD",
+      "bytes": 18858
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/permission.cc.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "DE63A54C60EC53734DF9376C8236AF99044D9394A37EC2B2C75DD0E4D7A32C40",
+      "bytes": 6776
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/permission.h.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "4E3D00379FEC7252A2DE67E0DF6F6FE6003DF84716E36359F8A77BDA61BBDF18",
+      "bytes": 6418
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/permission_base.h.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "781460FFF3180CCF3C5BED93CB8195873E6EDACB9F038280457F541584A94901",
+      "bytes": 2402
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/wasi_permission.cc.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "448EC6D503CC8EAFD4532AB67964C5800F40421FFB700B3ABABE2FE01B1B340D",
+      "bytes": 647
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/wasi_permission.h.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "1F24DAB51EF889033B6097FFBC266477E7EB9B5F8C08734ED57851E17B757670",
+      "bytes": 771
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/worker_permission.cc.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "E05859A8AD70E6B181A118E212235638E23941F062D0092AB440681559DFFCC2",
+      "bytes": 663
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/worker_permission.h.v24.13.txt",
+      "before_sha256": "missing",
+      "sha256": "A354FBE02CE80A22FCD2C1EC0855FC4D9AA400765E3172F2DA1DC6F798FC4F35",
+      "bytes": 779
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/drafts/native_node_native_debug_internal.initial.hpp",
+      "before_sha256": "missing",
+      "sha256": "D5A920F54CA25FCD9684031E1E383696B4080E6103787F147C83F31854950E3E",
+      "bytes": 14875
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-debug-permission-build-intake.json",
+      "before_sha256": "missing",
+      "sha256": "A36A97EBDAC4935FA45271D59E4AD7D82BBDC06537C3CBB05724A98E757B8E2B",
+      "bytes": 11089
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-debug-permission-controls-draft.json",
+      "before_sha256": "missing",
+      "sha256": "AE7813599E7431050E5430AF0BA487D2DEF9FF2367530D698F6454ADC52A0C83",
+      "bytes": 14037
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-debug-permission-final-manifest.json",
+      "before_sha256": "missing",
+      "sha256": "D6E7DCC75808D98C627E27FA51B572B15450EBCD71D85A32EFAC877544799C34",
+      "bytes": 27507
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-debug-permission-source-unit.md",
+      "before_sha256": "missing",
+      "sha256": "E612DE38BB761D5DFD26C08240B83A5F357C843A30D7AD3AEDDA044EDCD70CBE",
+      "bytes": 5374
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-debug-source-draft.json",
+      "before_sha256": "missing",
+      "sha256": "477F0E70D89BA9025E714CD8ED554EBCA13EB80F897D3C36F71ACA1AC3D5454B",
+      "bytes": 27792
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-permission-core-draft.json",
+      "before_sha256": "missing",
+      "sha256": "998B8AF6ACC4640C1A6E9838BB1234D51E848E1DB265AEA2A745B7B6A74282D5",
+      "bytes": 6643
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-permission-core-original-draft.cpp.txt",
+      "before_sha256": "missing",
+      "sha256": "40553FFA8D674EF8893631F6CB2726713858D61B7D4C2CDA89A10F006CDD518D",
+      "bytes": 15177
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-permission-core-original-draft.internal.hpp.txt",
+      "before_sha256": "missing",
+      "sha256": "360B921E6E0A38096E739857C78E1F7B620415E6472CAE3D8E65D20B1C852E41",
+      "bytes": 11310
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-permission-core-review-status.json",
+      "before_sha256": "missing",
+      "sha256": "539A206FCF9DBE98C09B1D10AEA52EF2DCB4365E6901D113392A555F79F90FD5",
+      "bytes": 4240
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/original/native_node_native_debug_test.zig.before-private-cancel.txt",
+      "before_sha256": "missing",
+      "sha256": "2AC6D329A744627FF6E39A20E01F363C0E387B00A262A4AF089E75B0874A472B",
+      "bytes": 16437
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/original/native_node_permission_test.zig.before-private-cancel.txt",
+      "before_sha256": "missing",
+      "sha256": "C8D2AC61DF3C3B75131D0258B09E8E239ECFDD646F4453E3FEB5259C1397716E",
+      "bytes": 19098
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/native-debug-algorithm-peer.json",
+      "before_sha256": "missing",
+      "sha256": "464A38DA11121715E1538A18B1287DAC7C64A5A2651CF27F8E5C6C0E6A0BAE36",
+      "bytes": 10308
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/native-debug-controls-peer.json",
+      "before_sha256": "missing",
+      "sha256": "6C05A7115CD873B364EA57C2B34010267D9AC9813ABA47AF619CDF99178209FE",
+      "bytes": 10129
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/native-debug-owner-peer.json",
+      "before_sha256": "missing",
+      "sha256": "12AA2A8C1E729BCB103964D125DFD7655B4621775D3DB469685ABA619AEB28B9",
+      "bytes": 20262
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/native-debug-permission-build-root-peer.json",
+      "before_sha256": "missing",
+      "sha256": "3E3B34E19BB7CE515AF1A72AFBA003ECDC0B45B93FC5D665287B514FE4B22DF1",
+      "bytes": 4279
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/native-debug-permission-controls-owner-peer.json",
+      "before_sha256": "missing",
+      "sha256": "452B37AF688E2A79508E7576A037266B6F2EB9ACAE7EAB958270D6FC6CC7226D",
+      "bytes": 9093
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/permission-algorithm-peer.json",
+      "before_sha256": "missing",
+      "sha256": "6BDA1DAD389FA3B6DBEB780CC1533FB4369D097589A90928EABB4C70CB630EF4",
+      "bytes": 11432
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/permission-cleanup-successor-peer.json",
+      "before_sha256": "missing",
+      "sha256": "2BAD818A10B0DC9586CC06E46BF9BC3156E9AA3C46B88130837DDCE7E14DC05B",
+      "bytes": 3201
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/permission-owner-peer.json",
+      "before_sha256": "missing",
+      "sha256": "DCDA6816C7DBB8B9536E56FA5ECEEFFFFA9048EFFDFC35FDCD291D5776691950",
+      "bytes": 23555
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/permission-cleanup-adaptation-proposal-v2.json",
+      "before_sha256": "missing",
+      "sha256": "328ADA249564A2FDA30B6508A93BC0915B0E1B9D4883280724F03434B236716D",
+      "bytes": 3706
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/permission-cleanup-adaptation-proposal.json",
+      "before_sha256": "missing",
+      "sha256": "44EF44B29F3293618607A1B4E5094C5BE07AB43B390BE77145EBCC27A8C51279",
+      "bytes": 2505
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/private-cancel-controls-successor.json",
+      "before_sha256": "missing",
+      "sha256": "9B72048BA33981DECFE9546BA6186589057071A573863FAF4FEA0499300424F2",
+      "bytes": 2546
+    },
+    {
+      "path": "src/extensions/native_uv_tcp.c",
+      "before_sha256": "FF046966BB81E915F0A69FD158DD8DD10533A6E2590FE1CA8975A5DCB503EE83",
+      "sha256": "6BA884B63C1C89FE65DFD90C97AC2604280749EFA5095755347EA06FC52CE92A",
+      "bytes": 45160
+    },
+    {
+      "path": "src/extensions/native_uv_fs.h",
+      "before_sha256": "A8E758C49AC4E0583BA08ABF28771BFC7843A730796A6F3E5C471698249011BE",
+      "sha256": "B738A0EAECC8E06781305D953B0FFE56753B774F8507CDBE4052BCBC2014F117",
+      "bytes": 4679
+    },
+    {
+      "path": "src/native_node_fs_readwrap_reuse_test.zig",
+      "before_sha256": "missing",
+      "sha256": "1976069B2406CBB9B0B78F67EB8E8DAE562B05EB4E9C5DDE52AEAABB525A9972",
+      "bytes": 28267
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/README.md",
+      "before_sha256": "missing",
+      "sha256": "BDFD2B144E1CECAF36FF12A35BFBEF68CBA20DE80D9F89F2798B619E868D8CFD",
+      "bytes": 2859
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/build-intake.json",
+      "before_sha256": "missing",
+      "sha256": "16D99C963103262CF0FC67D95B60F177781D820F20BA89EA0AE5BC429F3BD2ED",
+      "bytes": 3703
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/build-proposal-verification.json",
+      "before_sha256": "missing",
+      "sha256": "9C04CDCB98F39F609DCFF081B4F1E69DDA943FC3C62D00748CAAF7CA860798D2",
+      "bytes": 309
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/manifest.json",
+      "before_sha256": "missing",
+      "sha256": "2362676A34A9860CB858CFDC4741B15982201E1DA59AC31E83F65F6013EBC44E",
+      "bytes": 4116
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/original/native_uv_fs.before-readwrap-reuse.h.txt",
+      "before_sha256": "missing",
+      "sha256": "A8E758C49AC4E0583BA08ABF28771BFC7843A730796A6F3E5C471698249011BE",
+      "bytes": 3072
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/original/native_uv_tcp.before-readwrap-reuse.c.txt",
+      "before_sha256": "missing",
+      "sha256": "FF046966BB81E915F0A69FD158DD8DD10533A6E2590FE1CA8975A5DCB503EE83",
+      "bytes": 42250
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/peers/modules-controls-build.json",
+      "before_sha256": "missing",
+      "sha256": "E1920D9DC0144934C2EC854E742DAD079751520BC69A087575DB2D5160F802F2",
+      "bytes": 4891
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/peers/modules-source-order.json",
+      "before_sha256": "missing",
+      "sha256": "E268814E80C4E38AE4C7783C1DEB430E9DEF0F903F9C765CDEA3032154C414E3",
+      "bytes": 3666
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/peers/root-protocol-v3.json",
+      "before_sha256": "missing",
+      "sha256": "1C7F92820280C27EB8E06D1AB941F5C79CFFF9A0AC93131A7CD036744DA644E6",
+      "bytes": 4942
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/peers/vm-protocol-and-controls.json",
+      "before_sha256": "missing",
+      "sha256": "649786C0D1B41E7A4C3A1253171C43FD0B58367D50F7736C9949492786EC50B7",
+      "bytes": 18723
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/readwrap-reuse-proposal-v2.json",
+      "before_sha256": "missing",
+      "sha256": "9EC4D23DD7033CE375D9E475B4F84D7D4FB3EA3398E70C0B656D16F773B1A0E3",
+      "bytes": 21891
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/readwrap-reuse-proposal-v3.json",
+      "before_sha256": "missing",
+      "sha256": "625A46DF30FF353AD2EB7ADDFF5C4705B0655B89F99F7D052A0A7B2BFCE40108",
+      "bytes": 23290
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/readwrap-reuse-proposal.json",
+      "before_sha256": "missing",
+      "sha256": "DC9125F88E5F413710B7F866912023431ED337D3A76498E7295F34D39537AA30",
+      "bytes": 20097
+    },
+    {
+      "path": "verification/native-fs-readwrap-reuse-sourceonly-20261020/source-intake-verification.json",
+      "before_sha256": "missing",
+      "sha256": "9CA7C266FAF5B6843A4561C1F59DEA2D3AA83E61297BE768607F7B93E4E0B571",
+      "bytes": 2935
+    },
+    {
+      "path": "src/extensions/native_node_request_state.zig",
+      "before_sha256": "01DA46DC010A3108D592172C6F65AAB8100560FC274228FE9F1B6643A70A755A",
+      "sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+      "bytes": 5818
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "before_sha256": "C360094C29E55F7F9C6BE6677390D94986D1FFED2680A05D8AF34162E20644C4",
+      "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "bytes": 14502
+    },
+    {
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "before_sha256": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "bytes": 39890
+    },
+    {
+      "path": "src/extensions/native_node_callback_checks.zig",
+      "before_sha256": "FFB8FDEC742A0884DE9C1A4819012A172B6253E148505372E928134004335605",
+      "sha256": "1E3C1597DF365B561713C7D67EE4A07BBB9245BC75355A57EECDCB224758BC7E",
+      "bytes": 6452
+    },
+    {
+      "path": "src/native_node_reqwrap_callback_routing_test.zig",
+      "before_sha256": "missing",
+      "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7",
+      "bytes": 31452
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/applied-source-verification.json",
+      "before_sha256": "missing",
+      "sha256": "B5CFFB4166442AA8A05C5045EDC5313047F0F2375712DA63E64AEA0CB5045F66",
+      "bytes": 2176
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/build-intake.json",
+      "before_sha256": "missing",
+      "sha256": "6D2839EFF1ECA8657A924B667525F75F4B545D99D3BCF2E486DC35E81DBE3A26",
+      "bytes": 2216
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/build-proposal-verification.json",
+      "before_sha256": "missing",
+      "sha256": "9FC72ACE801AD1413F8DF6F301E6B5EDE28CF1322A9232FD4B31D5540C4EEC3F",
+      "bytes": 1557
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/manifest.json",
+      "before_sha256": "missing",
+      "sha256": "D27BA0B872FD601F0E773E186A35A762AECA3D45A16CEBCA91DE462BDA707213",
+      "bytes": 6201
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/original/native_node_callback_checks.zig.txt",
+      "before_sha256": "missing",
+      "sha256": "FFB8FDEC742A0884DE9C1A4819012A172B6253E148505372E928134004335605",
+      "bytes": 6288
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/original/native_node_callback_scope.sdk-prior-draft.zig.txt",
+      "before_sha256": "missing",
+      "sha256": "E267756ECEFDFA7577E68A18BB2D04EA5392579E837385BA437808DD75F6E397",
+      "bytes": 38246
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/original/native_node_callback_scope.zig.txt",
+      "before_sha256": "missing",
+      "sha256": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "bytes": 39860
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/original/native_node_fs_request_io.zig.txt",
+      "before_sha256": "missing",
+      "sha256": "C360094C29E55F7F9C6BE6677390D94986D1FFED2680A05D8AF34162E20644C4",
+      "bytes": 12858
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/original/native_node_request_state.zig.txt",
+      "before_sha256": "missing",
+      "sha256": "01DA46DC010A3108D592172C6F65AAB8100560FC274228FE9F1B6643A70A755A",
+      "bytes": 4949
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/peers/modules-controls-build.json",
+      "before_sha256": "missing",
+      "sha256": "FAADE9F861FA49D2B1C3BFA58319845E66BD6D905D01685E732A8EC696853F3E",
+      "bytes": 5135
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/peers/modules-source-order.json",
+      "before_sha256": "missing",
+      "sha256": "26AB057C430CA93CADEFEA0C37628FE57BB0E344027098AE2632179F619B8C7B",
+      "bytes": 3234
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/peers/root-source-review.json",
+      "before_sha256": "missing",
+      "sha256": "3A5DDC153317ADFD491B3E150B926019BA7394AD9CE1C7E06EDEA8B4E64537FC",
+      "bytes": 5233
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/peers/vm-controls-owner.json",
+      "before_sha256": "missing",
+      "sha256": "9CB444FCA956607E24F11A43E0BD03DD02F38797BCC9BD9E8822E260604B34AD",
+      "bytes": 5945
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/peers/vm-owner-review.json",
+      "before_sha256": "missing",
+      "sha256": "3F99899FC00CD84458FFC671DC77BDEA54584DA705E8C4033F141738241D5A63",
+      "bytes": 38518
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/projected/native_node_callback_checks.zig.txt",
+      "before_sha256": "missing",
+      "sha256": "1E3C1597DF365B561713C7D67EE4A07BBB9245BC75355A57EECDCB224758BC7E",
+      "bytes": 6452
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/projected/native_node_callback_scope.zig.txt",
+      "before_sha256": "missing",
+      "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "bytes": 39890
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/projected/native_node_fs_request_io.zig.txt",
+      "before_sha256": "missing",
+      "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "bytes": 14502
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/projected/native_node_request_state.zig.txt",
+      "before_sha256": "missing",
+      "sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+      "bytes": 5818
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/source-intake-verification.json",
+      "before_sha256": "missing",
+      "sha256": "0AA032A1A7C0EF2DA0FE9C156A5DCE6AABCDEA8AC1AE7B8C79FB22C6FA28AB17",
+      "bytes": 3807
+    },
+    {
+      "path": "verification/native-reqwrap-callback-routing-sourceonly-20261020/source-proposal.json",
+      "before_sha256": "missing",
+      "sha256": "E15DC1E14112C94663D309FEF1B7919AF0BCF9114664357EDDDF7180EC99046B",
+      "bytes": 18286
+    }
+  ],
+  "roots": [
+    {
+      "path": "src/native_vm_simple_stack_source_test.zig",
+      "count": 33,
+      "names": [
+        "VM simple stack source WeakMap intrinsic distinguishes absent and stored undefined",
+        "VM simple stack source WeakMap invalid brands and Proxy leave output untouched",
+        "VM simple stack source WeakMap read bypasses poisoned methods and heap and execution gates",
+        "VM simple stack source WeakMap raw read preserves actual ordinary fatal and private pending",
+        "VM simple stack source WeakMap returned value owns one root without keeping the key alive",
+        "VM simple stack source real Error selects its original complete Script and source position",
+        "VM simple stack source inherited holder remains visible through a never-captured native Error",
+        "VM simple stack source captured-disabled state blocks an inherited raw stack",
+        "VM simple stack source formatted undefined and other DATA block inheritance",
+        "VM simple stack source raw lookup stops at Proxy without invoking its traps",
+        "VM simple stack source raw lookup ignores guest fields and preserves actual pending at heap limit one",
+        "VM simple stack source native Script result retains no captured receiver graph",
+        "VM simple stack source raw projection skips native and synthetic records before a real Script",
+        "VM simple stack source raw projection rejects Proxy and accessor arrays without guest entry",
+        "VM simple stack source fallback presence distinguishes untouched Error and consuming transfer",
+        "VM simple stack source raw fallback read neither allocates nor adopts its C owner",
+        "VM simple stack source successful map adoption consumes fallback before formatter failure",
+        "VM simple stack source failed map adoption leaves the original C fallback intact",
+        "VM simple stack source present undefined fallback blocks inherited provenance and transfers once",
+        "VM simple stack source consuming fallback transfer preserves actual pending without allocation",
+        "VM simple stack source setter publishes formatted state before retiring captured receiver",
+        "VM simple stack source successful formatting retires simple frames after actual formatter returns",
+        "VM simple stack source formatter-local raw owner survives setter and success overwrites its DATA",
+        "VM simple stack source formatter throw preserves a reentrant setter and retires local frames",
+        "VM simple stack source FixedArray success replaces a record recaptured during formatting",
+        "VM simple stack source formatter failure preserves the new record and its actual recapture Script",
+        "VM simple stack source inherited formatting writes the selected holder without creating child state",
+        "VM simple stack source flagged formatter DATA remains a successful formatted value",
+        "VM simple stack source setter retirement preserves the actual ordinary cleanup reason",
+        "VM simple stack source actual fatal receiver retirement stops later guest catch and finally",
+        "VM simple stack source actual private receiver retirement keeps its native completion",
+        "VM simple stack source cancelled formatter unwind stays native and preserves unformatted state",
+        "VM simple stack source formatter failure and final raw retirement reduce actual fatal owners"
+      ]
+    },
+    {
+      "path": "src/native_vm_exotic_operations_test.zig",
+      "count": 28,
+      "names": [
+        "VM exotic operations enumerable keys query flags without fetching values",
+        "VM exotic operations full descriptors still query then fetch an owned value",
+        "VM exotic operations existence requests retain their original descriptor callback",
+        "VM exotic operations unfiltered own keys enumerate without a descriptor query",
+        "VM exotic operations values filter each key before its actual Get",
+        "VM exotic operations missing flags hook retains temporary descriptor ownership",
+        "VM exotic operations physical own data precedes the optional query hook",
+        "VM exotic operations SET_ENUM queries both string and Symbol descriptors without Get",
+        "VM exotic operations ordinary Proxy descriptor traps retain their original order",
+        "VM exotic operations admitted query performs no VM allocation under heap limit",
+        "VM exotic operations descriptor getter may return flagged Error DATA successfully",
+        "VM exotic operations ordinary query failure remains the exact catchable reason",
+        "VM exotic operations actual fatal query stops later guest catch and finally",
+        "VM exotic operations active and cancelled private query completions stay native",
+        "VM exotic operations Reflect prevent rejection is normal and allocation free",
+        "VM exotic operations Object prevent keeps its actual throwing rejection path",
+        "VM exotic operations seal rejection uses SEALED before any enumeration",
+        "VM exotic operations freeze rejection uses FROZEN before any definition",
+        "VM exotic operations positive admission completes each real integrity mutation",
+        "VM exotic operations a missing admission hook preserves legacy extension mutation",
+        "VM exotic operations ordinary objects and Proxy refusal retain their old behavior",
+        "VM exotic operations a Proxy forwarding trap selects only its actual prevent call",
+        "VM exotic operations nonobject integrity requests keep existing public semantics",
+        "VM exotic operations ordinary integrity failure preserves its exact reason",
+        "VM exotic operations actual fatal integrity failure bypasses guest cleanup",
+        "VM exotic operations active and cancelled private integrity completion bypasses handlers",
+        "VM exotic operations normal native rejection preserves the actual prior pending owner",
+        "VM exotic operations borrowed receiver callbacks create no lasting object root"
+      ]
+    },
+    {
+      "path": "src/native_node_diagnostic_context_test.zig",
+      "count": 10,
+      "names": [
+        "Node diagnostic context actual VM creation does not admit an ambient context",
+        "Node diagnostic context nested actual contexts restore their caller without retaining a VM",
+        "Node diagnostic context explicit native-only admission masks and restores an entered caller",
+        "Node diagnostic context same-context reentry leaves the outer borrowed admission live",
+        "Node diagnostic context native projection works with an exhausted JS heap without allocating",
+        "Node diagnostic context ordinary and fatal pending reasons remain the same actual owned value",
+        "Node diagnostic context private termination lease and actual pending token survive admission",
+        "Node diagnostic context C++ locals retire before nested and outer scopes restore",
+        "Node diagnostic context C++ early return keeps each destructor in its real caller scope",
+        "Node diagnostic context actual worker thread neither inherits nor overwrites its caller admission"
+      ]
+    },
+    {
+      "path": "src/native_node_native_debug_test.zig",
+      "count": 20,
+      "names": [
+        "native Debug constructs complete original category tables with every field disabled",
+        "native Debug empty and unmatched input leave original enabled fields false",
+        "native Debug uses original case-insensitive substring matching",
+        "native Debug leading and internal empty tokens enable every category",
+        "native Debug a trailing comma does not invent a final empty token",
+        "native Debug includes the original literal terminal NUL in category matching",
+        "native Debug parsing is one-way and separate native lists remain independent",
+        "native Debug process selection returns one fixed-feature original list",
+        "native Debug Parse Environment reads the live supplied Map through real SafeGetenv",
+        "native Debug retains the SafeGetenv text before the actual trace callback mutates Map",
+        "native Debug selected sized-string formatter preserves binary bytes and retires its native copies",
+        "native Debug selected tree formatter observes C-string boundaries and UTF8 branch bytes",
+        "native Debug actual FWrite file route preserves exact binary content",
+        "native Debug Permission output callbacks use the original selected format and real stderr route",
+        "native Debug actual Permission insertion reads the live enabled list before printing",
+        "native Debug formatter and parser use real native new-handler retry without JS allocation",
+        "native Debug native formatting preserves actual ordinary and generic pending under heap limit one",
+        "native Debug native operations leave actual private termination pending and generation unchanged",
+        "native Debug formatting retains a native allocation domain beyond VM and caller retirement",
+        "native Debug warmed static category Strings are reused while temporary parse Strings retire"
+      ]
+    },
+    {
+      "path": "src/native_node_permission_test.zig",
+      "count": 18,
+      "names": [
+        "native Permission constructs actual policies and returns every native allocation at destruction",
+        "native Permission enable selects initial policies and each simple Apply denies only its actual scope",
+        "native Permission unknown Apply preserves the native policy map and existing decisions",
+        "native Permission exact missing-file grant does not grant siblings descendants or writes",
+        "native Permission resolves original dot and parent segments before radix lookup",
+        "native Permission actual directory stat grants its original recursive wildcard",
+        "native Permission actual regular file stat retains an exact grant",
+        "native Permission standalone star returns before later grants and keeps the other direction denied",
+        "native Permission aggregate filesystem grant requires both original all-direction flags",
+        "native Permission real radix splits preserve exact sibling grants and duplicate insertion retains no allocation",
+        "native Permission preserves the original nonterminal wildcard lookup decisions",
+        "native Permission successful directory append branch releases its actual synchronous libuv path allocation",
+        "native Permission filesystem-root trailing separator branch releases its actual synchronous libuv path allocation",
+        "native Permission destruction recursively retires unique descendants below nonterminal wildcards",
+        "native Permission actual native allocation failure retries before grant publication without a JS reason",
+        "native Permission apply and query preserve actual ordinary generic and private pending under exhausted JS heap",
+        "native Permission blocks and concrete shared policy destructors survive VM Environment and caller retirement",
+        "native Permission repeated mixed normal and wildcard retirement restores its exact native baseline"
+      ]
+    },
+    {
+      "path": "src/native_node_fs_readwrap_reuse_test.zig",
+      "count": 14,
+      "names": [
+        "native actual FS reuse initial Reset preserves unsubmitted storage and charge",
+        "native actual FS reuse raw span preserves offset sentinels and payload after cleanup",
+        "native actual FS reuse invalid raw spans leave the same request admissible",
+        "native actual FS reuse Reset rejects submitted and queued work until actual dequeue",
+        "native actual FS reuse dequeued result still requires actual cleanup before Reset",
+        "native actual FS reuse new completion queues before old event entitlement retires",
+        "native actual FS reuse old release preserves the reused embedded event FIFO next link",
+        "native actual FS reuse several event tickets may own one embedded address",
+        "native actual FS reuse completion owns request after old event and explicit owner retire",
+        "native actual FS reuse lease cleanup releases backing before later raw span",
+        "native actual FS reuse raw request can later acquire a genuine JS backing lease",
+        "native actual FS reuse null zero length and later EOF preserve real result zero",
+        "native actual FS reuse cancellation and stop retain exactly the reused completion",
+        "native actual FS reuse raw admission and Reset preserve actual pending without JS heap work"
+      ]
+    },
+    {
+      "path": "src/native_node_reqwrap_callback_routing_test.zig",
+      "count": 12,
+      "names": [
+        "native ReqWrap routing Reset clears the actual callback before reuse without counting admission",
+        "native ReqWrap routing selects the real callback after retain Detach and waiting decrement",
+        "native ReqWrap routing negative raw admission keeps callback but does not strengthen count or synthesize completion",
+        "native ReqWrap routing accepted bad descriptor preserves the real callback negative result",
+        "native ReqWrap routing reset and redispatch precede old Wrapper and event retirement",
+        "native ReqWrap routing callback error after redispatch preserves the new request pointer and event",
+        "native ReqWrap routing typed callback failure still retires the final native Wrapper pointer",
+        "native ReqWrap routing actual ordinary callback reason survives Entry destruction",
+        "native ReqWrap routing actual native fatal callback still completes native request retirement",
+        "native ReqWrap routing shared shutdown drains real callbacks after JavaScript is disabled",
+        "native ReqWrap routing stopped native service returns its real status without a callback or count",
+        "native ReqWrap routing retained Controller rejects a retired Hub before touching Entry inputs"
+      ]
+    }
+  ],
+  "whole_existing_file_inverse_exact": true
+}

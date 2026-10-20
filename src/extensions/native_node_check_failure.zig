@@ -1,5 +1,5 @@
-//! Zig calls into the actual native Node fatal/CHECK platform owner.
-//! These calls terminate the native process. They do not mark a guest value
+//! Zig calls into native Node fatal/CHECK and nonterminal stack owners.
+//! Fatal calls terminate the native process. They do not mark a guest value
 //! uncatchable or dispatch any process event.
 const em = @import("engine.zig");
 const c = em.c;
@@ -13,6 +13,7 @@ pub const AssertionInfo = extern struct {
     message: [*:0]const u8,
     function: ?[*:0]const u8,
 };
+extern fn pi_node_trace_native_stack(?*anyopaque) void;
 extern fn pi_node_heap_out_of_memory(?*c.JSContext, ?*const Diagnostics) void;
 extern fn pi_node_backing_store_out_of_memory(?*c.JSContext, ?*const Diagnostics) void;
 extern fn pi_node_maybe_check_failure(?*c.JSContext, ?*const Diagnostics) void;
@@ -20,6 +21,11 @@ extern fn pi_node_default_fatal_error(?*c.JSContext, ?[*:0]const u8,
     [*:0]const u8, ?*const Diagnostics) void;
 extern fn pi_node_assert_failure(?*c.JSContext, *const AssertionInfo) void;
 extern fn pi_node_corrupted_async_stack(?*c.JSContext, f64, f64, c_int) void;
+
+/// Actual nonterminal native-stack callback for Environment tracing.
+pub fn traceNativeStack(raw_owner: ?*anyopaque) callconv(.c) void {
+    pi_node_trace_native_stack(raw_owner);
+}
 
 /// The caller proves a new actual failed intrinsic allocation. This is the
 /// selected original native heap OOM handler, before operand rollback.
