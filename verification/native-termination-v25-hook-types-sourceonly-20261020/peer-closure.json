@@ -1,0 +1,8 @@
+{
+  "status": "finite source peer CLOSED",
+  "reviewer": "modules_io",
+  "root_sha256": "379906C65E6A21B0419CB93D68CE7DE57B33367969E6EB96766954CD1625D93E",
+  "packet_sha256": "0AC06E997FE81C471B1DC864FBEBB7419106F106AFB31C1024880B4EBBBD417A",
+  "scope": "Independently applied and reversed all four unique expected-side casts against complete Main164F8DCA; exact forward/inverse; all30 names unchanged. Actual Hook.kind/callback/header use JSPromiseHookType. No value, observation, cleanup or assertion changes.",
+  "executed": false
+}

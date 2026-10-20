@@ -1,0 +1,42 @@
+{
+  "unit": "native-termination-v25-hook-types",
+  "base_commit": "c2eec1e2875eb0ed6954b154fd22c749e8cf8c6e",
+  "source_only": true,
+  "declared_tests": 30,
+  "target": "build-native-vm-execution-termination",
+  "filter": "VM termination",
+  "production_changes": 0,
+  "build_changes": 0,
+  "paths": [
+    {
+      "path": "src/native_vm_execution_termination_test.zig",
+      "sha256": "379906C65E6A21B0419CB93D68CE7DE57B33367969E6EB96766954CD1625D93E",
+      "bytes": 59183
+    },
+    {
+      "path": "verification/native-termination-v25-hook-types-sourceonly-20261020/original-compile.stderr.log",
+      "sha256": "D6EEDB0E13F25F3DFEDF4ECF6E60EB56181C5C50E69DAA4B8EF92111AED73516",
+      "bytes": 20515
+    },
+    {
+      "path": "verification/native-termination-v25-hook-types-sourceonly-20261020/original-test.zig.txt",
+      "sha256": "164F8DCA345A71FA43D2894E8F07173A04304FDB6E0BED5FCA9EC3277E304EA8",
+      "bytes": 59079
+    },
+    {
+      "path": "verification/native-termination-v25-hook-types-sourceonly-20261020/peer-closure.json",
+      "sha256": "8E3CB070DD400EF73B669D4B22C0245BDCCB96B279E103D23F58B6637363CAD4",
+      "bytes": 536
+    },
+    {
+      "path": "verification/native-termination-v25-hook-types-sourceonly-20261020/README.md",
+      "sha256": "EC93AC40128D38A2AFB947949E122038A1299106B38D4DF101C4478616E847E4",
+      "bytes": 1365
+    },
+    {
+      "path": "verification/native-termination-v25-hook-types-sourceonly-20261020/source-delta.json",
+      "sha256": "0AC06E997FE81C471B1DC864FBEBB7419106F106AFB31C1024880B4EBBBD417A",
+      "bytes": 6935
+    }
+  ]
+}

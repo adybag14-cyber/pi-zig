@@ -273,8 +273,8 @@ const Probe = struct {
     fn hooksAre(self: *Probe, f: *Fixture, promise: c.JSValue, before_calls: usize, after_calls: usize) !void {
         try std.testing.expect(!self.overflow);
         try std.testing.expectEqual(@as(usize, 2), self.hook_count);
-        try std.testing.expectEqual(c.JS_PROMISE_HOOK_BEFORE, self.hooks[0].kind);
-        try std.testing.expectEqual(c.JS_PROMISE_HOOK_AFTER, self.hooks[1].kind);
+        try std.testing.expectEqual(@as(c.JSPromiseHookType, c.JS_PROMISE_HOOK_BEFORE), self.hooks[0].kind);
+        try std.testing.expectEqual(@as(c.JSPromiseHookType, c.JS_PROMISE_HOOK_AFTER), self.hooks[1].kind);
         for (self.hooks[0..2]) |event|
             try std.testing.expect(c.JS_IsStrictEqual(f.context.?, promise, event.promise));
         try std.testing.expectEqual(before_calls, self.hooks[0].calls);
@@ -786,8 +786,8 @@ test "VM termination reaction holds its real Promise until outer restore queue d
     probe.expected_hook_promise = c.pi_js_undefined();
     try std.testing.expectEqual(@as(usize, 2), probe.hook_count);
     try std.testing.expect(probe.hooks[0].matched_expected and probe.hooks[1].matched_expected);
-    try std.testing.expectEqual(c.JS_PROMISE_HOOK_BEFORE, probe.hooks[0].kind);
-    try std.testing.expectEqual(c.JS_PROMISE_HOOK_AFTER, probe.hooks[1].kind);
+    try std.testing.expectEqual(@as(c.JSPromiseHookType, c.JS_PROMISE_HOOK_BEFORE), probe.hooks[0].kind);
+    try std.testing.expectEqual(@as(c.JSPromiseHookType, c.JS_PROMISE_HOOK_AFTER), probe.hooks[1].kind);
     try std.testing.expectEqual(@as(usize, 0), probe.hooks[0].calls);
     try std.testing.expectEqual(@as(usize, 1), probe.hooks[1].calls);
     try std.testing.expectEqual(@as(i32, 77), probe.hooks[1].frame);
