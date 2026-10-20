@@ -1,0 +1,350 @@
+{
+  "schema": 1,
+  "status": "finite source/control/build peers CLOSED; ready for Root-only source intake",
+  "source_only": true,
+  "native_execution": false,
+  "runtime_qualification": false,
+  "unit": "Native supplied MapKVStore with actual standard-container allocation and lifetime",
+  "source_basis": {
+    "node": "v24.13.0 def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+    "native_library": "Pinned Zig 0.16 libc++; C++20, exceptions disabled, RTTI disabled",
+    "platforms": [
+      "64-bit Windows",
+      "64-bit Linux"
+    ]
+  },
+  "production_paths": [
+    "src/extensions/native_node_standard_allocator.hpp",
+    "src/extensions/native_node_environment_map.h",
+    "src/extensions/native_node_environment_map.cpp",
+    "src/extensions/native_node_environment_map.zig"
+  ],
+  "test_root": {
+    "path": "src/native_node_environment_map_test.zig",
+    "sha256": "7E58CB891ECF37A215A4D637B64A3F1B062FB3763552DEBC6C775ADDA603F15E",
+    "declarations": [
+      {
+        "index": 1,
+        "name": "native environment map starts empty without exposing a detached key snapshot"
+      },
+      {
+        "index": 2,
+        "name": "native environment map copies caller key and value storage before publication"
+      },
+      {
+        "index": 3,
+        "name": "native environment map replacement constructs the original long temporary key"
+      },
+      {
+        "index": 4,
+        "name": "native environment map Get constructs and retires a long C string lookup key"
+      },
+      {
+        "index": 5,
+        "name": "native environment map Query constructs the same real temporary even for an absent key"
+      },
+      {
+        "index": 6,
+        "name": "native environment map Get unlocks before its owned value survives a real replacement"
+      },
+      {
+        "index": 7,
+        "name": "native environment map JS Get retains both original native string copies"
+      },
+      {
+        "index": 8,
+        "name": "native environment map missing Get still allocates and retires its long temporary key"
+      },
+      {
+        "index": 9,
+        "name": "native environment map Get and Query use C prefixes while Set retains full spans"
+      },
+      {
+        "index": 10,
+        "name": "native environment map Delete selects the full span independently of C prefix lookups"
+      },
+      {
+        "index": 11,
+        "name": "native environment map uses the original case sensitive map on admitted platforms"
+      },
+      {
+        "index": 12,
+        "name": "native environment map enumeration follows the actual original standard container after growth and erase"
+      },
+      {
+        "index": 13,
+        "name": "native environment map Clone copies actual entries before independent mutation"
+      },
+      {
+        "index": 14,
+        "name": "native environment map enumeration retains its native owner after caller release"
+      },
+      {
+        "index": 15,
+        "name": "native environment map mutation guard independently retains the live native table"
+      },
+      {
+        "index": 16,
+        "name": "native environment map retained store survives full runtime and caller domain retirement"
+      },
+      {
+        "index": 17,
+        "name": "native environment map actual workers share a mutex and domain after runtime retirement"
+      },
+      {
+        "index": 18,
+        "name": "native environment map Clone allocations belong to the actual destination domain"
+      },
+      {
+        "index": 19,
+        "name": "native environment map empty keys are ignored but empty values remain real entries"
+      },
+      {
+        "index": 20,
+        "name": "native environment map native retry leaves actual pending and VM OOM occurrence untouched"
+      },
+      {
+        "index": 21,
+        "name": "native environment map actual short string lookup needs no artificial heap allocation"
+      },
+      {
+        "index": 22,
+        "name": "native environment map Delete constructs its real long span temporary before erase"
+      }
+    ]
+  },
+  "closed_peers": [
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/sdk-container-receipt.json",
+      "sha256": "6AFBA2540FCC0121CA28B5A7BF382356C8307CEBD3ECF9484D98D5E52C1621F7",
+      "scope": "Original C++ Map expressions/container paths"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/sdk-controls-receipt.json",
+      "sha256": "94FD9AB4B049B0FD70ED50E1D2E5E45C440A614EF713A45DF0E39316AF643FE2",
+      "scope": "Controls 1-13,19,21-22 and reference/retry adapters"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/vm-owner-controls-receipt.json",
+      "sha256": "BD9F5A6E39D2253DD3E6EB8C9E03F5C0C93A539872E0BB730614789C60F560D2",
+      "scope": "Native allocation/lifetime, Fixture/Worker, controls 14-18,20"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/sdk-build-receipt.json",
+      "sha256": "B2372E6763A341CB3333A9984CF8211EF60C25B6BBB4886EE66C9BEB82BAA466",
+      "scope": "Single native-memory/TLS graph and install-only Map22 wiring"
+    }
+  ],
+  "build_intake": {
+    "shared": "verification/native-node-environment-os-sourceonly-20261020/shared-native-memory-build-proposal.json",
+    "shared_sha256": "0427BE866F23AFF75EC6083F823C4A1A9EE1A29A033EB71A9092E651C3507C80",
+    "target": "verification/native-node-environment-os-sourceonly-20261020/map-controls-build-intake.json",
+    "target_sha256": "8BEFCB2A9D057907FE20B8C20640A98E61AED38BD80FE0392E8DB8D09B726B6B",
+    "new_helper": "tools/build_native_node_memory.zig",
+    "existing_shared_build_files_modified": false
+  },
+  "prerequisites": [
+    {
+      "path": "src/extensions/native_simdjson_memory.hpp",
+      "sha256": "7554ED1DDCA28FAE7B11E025BD9D7EEF560DB657086A40029E5D95DBEFAE5291",
+      "bytes": 2449,
+      "note": "Unchanged existing native allocation domain header."
+    },
+    {
+      "path": "src/extensions/native_simdjson_memory.cpp",
+      "sha256": "44794005D36BB3E1EC6B1A7DF3AA9A6B7DE7C02D6F12BBF38115F83E49C5E103",
+      "bytes": 2714,
+      "note": "Unchanged existing prefix/TLS allocation owner; exactly one translation unit in proposed graph."
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5",
+      "bytes": 2003,
+      "note": "Existing independent native memory-owner accounting API."
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.h",
+      "sha256": "A618BB6C25DA7E3B9C87BA6A15D97B81EDE8E2B103C242C0AADC4C52BE08A446",
+      "bytes": 1982,
+      "note": "Existing native assertion ABI; no guest error replacement."
+    },
+    {
+      "path": "vendor/node-v24.13.0/uv",
+      "note": "Existing shared actual uv mutex/library owner; no vendor change."
+    }
+  ],
+  "limits": [
+    "No native compilation or runtime acceptance.",
+    "No Engine/process/environment interceptor/permission edits included.",
+    "No foreign standard-library allocation or iteration parity claim.",
+    "Native new_handler test adapter requires serial execution within its isolated test process."
+  ],
+  "files": [
+    {
+      "path": "src/extensions/native_node_standard_allocator.hpp",
+      "bytes": 2562,
+      "sha256": "16D82D2C2143DFAF3861B722BD2E9775FB0BD7D6C9BE400D0ECE37E0674E709B"
+    },
+    {
+      "path": "src/extensions/native_node_environment_map.h",
+      "bytes": 4139,
+      "sha256": "C0700FBF162E6489BD7E632BF01077323234664EAE5F6F642C8578BC0A4A30AB"
+    },
+    {
+      "path": "src/extensions/native_node_environment_map.cpp",
+      "bytes": 8214,
+      "sha256": "D5ECC5EEA1DA575125D39DCF9EA9AF646CB3584CA1D2471EEE9E7DAA2EB701E1"
+    },
+    {
+      "path": "src/extensions/native_node_environment_map.zig",
+      "bytes": 5238,
+      "sha256": "A062E1D0D492E1D3D81BC411A768FC4738D7C8C37B736D53D3FDD6C2FF261698"
+    },
+    {
+      "path": "src/extensions/native_node_environment_map_test_support.h",
+      "bytes": 1545,
+      "sha256": "08242520A8862FB89BAC5815337F35D8E628302DC0676377D75881F14EB3B049"
+    },
+    {
+      "path": "src/extensions/native_node_environment_map_test_support.cpp",
+      "bytes": 2753,
+      "sha256": "DB9AF1D3006DD342E70BF83BC93FAD02936802E12504702E44017E083BB5BB89"
+    },
+    {
+      "path": "src/native_node_environment_map_test.zig",
+      "bytes": 23495,
+      "sha256": "7E58CB891ECF37A215A4D637B64A3F1B062FB3763552DEBC6C775ADDA603F15E"
+    },
+    {
+      "path": "tools/build_native_node_memory.zig",
+      "bytes": 1030,
+      "sha256": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/map-native-container-source.json",
+      "bytes": 9019,
+      "sha256": "33DFEF6F62BF538EA4EC4A34FB503F1FDF4E48B3EEBACFCB6EEDB9595DD35329"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/map-controls-source-draft.json",
+      "bytes": 5306,
+      "sha256": "C6BFEEA21AF05EA7635AD3FCC19818A130E4FEE93D9DDD4B4D2FE541AC369B1E"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/shared-native-memory-build-proposal.json",
+      "bytes": 7829,
+      "sha256": "0427BE866F23AFF75EC6083F823C4A1A9EE1A29A033EB71A9092E651C3507C80"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/map-controls-build-intake.json",
+      "bytes": 2295,
+      "sha256": "8BEFCB2A9D057907FE20B8C20640A98E61AED38BD80FE0392E8DB8D09B726B6B"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/map-zig-before-native-container.zig.txt",
+      "bytes": 7231,
+      "sha256": "16AA5BBC53C6AA73711FA9A945F8D2C21A4338366DE3EE2F7CAE0310A3C6BD43"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/vm-owner-controls-receipt.json",
+      "bytes": 2146,
+      "sha256": "BD9F5A6E39D2253DD3E6EB8C9E03F5C0C93A539872E0BB730614789C60F560D2"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/sdk-container-receipt.json",
+      "bytes": 3401,
+      "sha256": "6AFBA2540FCC0121CA28B5A7BF382356C8307CEBD3ECF9484D98D5E52C1621F7"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/sdk-controls-receipt.json",
+      "bytes": 1936,
+      "sha256": "94FD9AB4B049B0FD70ED50E1D2E5E45C440A614EF713A45DF0E39316AF643FE2"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/node_env_var.v24.13.cc",
+      "bytes": 19557,
+      "sha256": "4872E9CAF5AEE8F7ABD73BE4F79FA5B73793F5D09DFCED63001A022D92AD2AF8"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/node_mutex.v24.13.h",
+      "bytes": 7963,
+      "sha256": "79FC7058F5380DA98638682684E77F72D4B413753C0BECD621B0D0E2F69600E5"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-string.pinned.txt",
+      "bytes": 184514,
+      "sha256": "ACEB0163FE57054B02069B990DAC7B0EAD7AB1A9A258E12CE2CA5EB3C51E7D81"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-unordered-map.pinned.txt",
+      "bytes": 115764,
+      "sha256": "1152111122205DB40BFA9941AB84F6EAADDEBC4E58FE55C73FD392DF2D57AA51"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-hash-table.pinned.txt",
+      "bytes": 89199,
+      "sha256": "75CD64059523376A1C9C7A860686463B1727110941884551D2A2394AB8860536"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-new.cpp.pinned.txt",
+      "bytes": 8638,
+      "sha256": "577F431626811D06993C0B81F9D3042A278573B64BDF6D5EC114DFEA21002671"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-allocator.h.pinned.txt",
+      "bytes": 6303,
+      "sha256": "51CCFB63B3AADFFE77C5231D6A95CA4BA9DE5A4136635AEFF18B0A46CC9245E3"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-new_helpers.cpp.pinned.txt",
+      "bytes": 745,
+      "sha256": "82B6B57506EDC48DCBB13EAA5BF533E680167F983A2A2CF85064C003CB8CDB38"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-verbose_abort.cpp.pinned.txt",
+      "bytes": 1910,
+      "sha256": "498DDB2D90967295140D7B1126D67BB70DF6AC7820DE7CA5EE5EF4D2325F9773"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-__verbose_abort.pinned.txt",
+      "bytes": 2226,
+      "sha256": "6983D7B621CC322B4145E45A64CF8B8A15CA3824D55409F4DA3EFAE4AC947BD5"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-exceptions.h.pinned.txt",
+      "bytes": 2544,
+      "sha256": "0A553F0D4476C94B767D71F598EB31FCB48170AD8D7D9504D6B0166F34FC0673"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-new_handler.cpp.pinned.txt",
+      "bytes": 1250,
+      "sha256": "0B17697B569D4A4CC9B3C2F97EF69FDF8D6CAC72DE9871489456C5D9235B1BBF"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-allocator_traits.h.pinned.txt",
+      "bytes": 15459,
+      "sha256": "C013D853C6E3136FA335B8A8860D4B54E91140E00AF36B748233F3BF26F923D1"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/libcxx-allocate_at_least.h.pinned.txt",
+      "bytes": 1339,
+      "sha256": "154126D253126555850287C03EE3C069D30A35D916F72107D673F2F4D2212AB6"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/peers/sdk-build-receipt.json",
+      "bytes": 1981,
+      "sha256": "B2372E6763A341CB3333A9984CF8211EF60C25B6BBB4886EE66C9BEB82BAA466"
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/map-source-unit.md",
+      "bytes": 2187,
+      "sha256": "69236C3C1D91CC0ED974AF42341BFCC6E6C5502E870FE1534120B8A5C2C5AB28"
+    }
+  ],
+  "final_main_build_readback": {
+    "build": "30348C988F824617E52EE47ECF64099D537582F8255E1B47C994820AA7814A62",
+    "network_helper": "CAECF005866364925F79959C8BAC3534DA051894FB841A1C2CC594C9C15BA499",
+    "parser_helper": "52BC1D9F41324EA6EDFA1A594D36F5344163E21C0146F4CFC3F9932432464031",
+    "matches_proposal_bases": true
+  }
+}

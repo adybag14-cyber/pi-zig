@@ -1,0 +1,86 @@
+{
+  "status": "CLOSED finite source-only native MapKVStore expression/container peer; no compilation or runtime",
+  "production": {
+    "cpp": "D5ECC5EEA1DA575125D39DCF9EA9AF646CB3584CA1D2471EEE9E7DAA2EB701E1",
+    "header": "C0700FBF162E6489BD7E632BF01077323234664EAE5F6F642C8578BC0A4A30AB",
+    "zig": "A062E1D0D492E1D3D81BC411A768FC4738D7C8C37B736D53D3FDD6C2FF261698",
+    "allocator_header": "16D82D2C2143DFAF3861B722BD2E9775FB0BD7D6C9BE400D0ECE37E0674E709B",
+    "packet": "33DFEF6F62BF538EA4EC4A34FB503F1FDF4E48B3EEBACFCB6EEDB9595DD35329"
+  },
+  "scope": [
+    "Get/Query actual C-string temporary and prefix; optional value copy under lock; original separate JS-Get local string copy after unlock.",
+    "Set retains original value RHS construction before full-span key even on replacement; actual temporary key is retired rather than skipped. Delete uses an actual full-span String.",
+    "Enumerate holds native lock through caller's actual vector/string/array producers. Original reserve precedes real iterator initialization; real unordered_map iteration has no copied or sorted keys.",
+    "Clone preserves original specialized copy constructor with a fresh mutex and direct map copy, without adding a lock. Caller concurrency exclusion is explicit.",
+    "Actual pinned libc++ templates retain SSO/long-string branching, exact hash<String> __do_string_hash, nontransparent temporary-key lookup, node allocation before rehash, copy constructor bucket-count reservation and insertion. Empty allocator preserves relevant propagation/equality traits."
+  ],
+  "authority": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/node_env_var.v24.13.cc",
+      "sha256": "4872E9CAF5AEE8F7ABD73BE4F79FA5B73793F5D09DFCED63001A022D92AD2AF8"
+    },
+    {
+      "name": "libcxx-string.pinned.txt",
+      "sha256": "ACEB0163FE57054B02069B990DAC7B0EAD7AB1A9A258E12CE2CA5EB3C51E7D81",
+      "selected_lines": [
+        [
+          875,
+          950
+        ],
+        [
+          2540,
+          2595
+        ],
+        [
+          3902,
+          3920
+        ]
+      ]
+    },
+    {
+      "name": "libcxx-unordered-map.pinned.txt",
+      "sha256": "1152111122205DB40BFA9941AB84F6EAADDEBC4E58FE55C73FD392DF2D57AA51",
+      "selected_lines": [
+        [
+          1300,
+          1335
+        ],
+        [
+          1559,
+          1580
+        ],
+        [
+          1643,
+          1666
+        ]
+      ]
+    },
+    {
+      "name": "libcxx-hash-table.pinned.txt",
+      "sha256": "75CD64059523376A1C9C7A860686463B1727110941884551D2A2394AB8860536",
+      "selected_lines": [
+        [
+          1100,
+          1128
+        ],
+        [
+          1561,
+          1610
+        ],
+        [
+          1867,
+          1896
+        ]
+      ]
+    },
+    {
+      "name": "libcxx-allocator.h.pinned.txt",
+      "sha256": "51CCFB63B3AADFFE77C5231D6A95CA4BA9DE5A4136635AEFF18B0A46CC9245E3"
+    }
+  ],
+  "limits": [
+    "Allocator physical charge/new_handler/bad_alloc lifetime is VM's separate peer.",
+    "This admits the selected pinned libc++ implementation, not a foreign stock Node binary's libstdc++ or MSVC allocation layout or iteration order.",
+    "One actual shared native-memory/TLS link, JS adapters/UTF8 conversion placement, full Environment/permission, controls and runtime remain separate."
+  ]
+}

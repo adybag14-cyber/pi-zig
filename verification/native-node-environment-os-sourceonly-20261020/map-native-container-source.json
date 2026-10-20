@@ -1,0 +1,108 @@
+{
+  "status": "source-written private native leaf; no compilation, runtime or public environment acceptance",
+  "source_basis": "Node v24.13.0 commit def0bdf8abee441cfcbf793a8dc24a6f3b899573; actual pinned Zig 0.16 libc++ native C++20 implementation",
+  "inputs": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_standard_allocator.hpp",
+      "sha256": "16D82D2C2143DFAF3861B722BD2E9775FB0BD7D6C9BE400D0ECE37E0674E709B",
+      "bytes": 2562
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_environment_map.h",
+      "sha256": "C0700FBF162E6489BD7E632BF01077323234664EAE5F6F642C8578BC0A4A30AB",
+      "bytes": 4139
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_environment_map.cpp",
+      "sha256": "D5ECC5EEA1DA575125D39DCF9EA9AF646CB3584CA1D2471EEE9E7DAA2EB701E1",
+      "bytes": 8214
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_environment_map.zig",
+      "sha256": "A062E1D0D492E1D3D81BC411A768FC4738D7C8C37B736D53D3FDD6C2FF261698",
+      "bytes": 5238
+    }
+  ],
+  "authorities": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/authority/node_env_var.v24.13.cc",
+      "sha256": "4872E9CAF5AEE8F7ABD73BE4F79FA5B73793F5D09DFCED63001A022D92AD2AF8",
+      "bytes": 19557
+    },
+    {
+      "original_path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/libcxx/include/string",
+      "retained_path": "authority/libcxx-string.pinned.txt",
+      "sha256": "ACEB0163FE57054B02069B990DAC7B0EAD7AB1A9A258E12CE2CA5EB3C51E7D81",
+      "bytes": 184514
+    },
+    {
+      "original_path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/libcxx/include/unordered_map",
+      "retained_path": "authority/libcxx-unordered-map.pinned.txt",
+      "sha256": "1152111122205DB40BFA9941AB84F6EAADDEBC4E58FE55C73FD392DF2D57AA51",
+      "bytes": 115764
+    },
+    {
+      "original_path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/libcxx/include/__hash_table",
+      "retained_path": "authority/libcxx-hash-table.pinned.txt",
+      "sha256": "75CD64059523376A1C9C7A860686463B1727110941884551D2A2394AB8860536",
+      "bytes": 89199
+    },
+    {
+      "original_path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/libcxx/src/new.cpp",
+      "retained_path": "authority/libcxx-new.cpp.pinned.txt",
+      "sha256": "577F431626811D06993C0B81F9D3042A278573B64BDF6D5EC114DFEA21002671",
+      "bytes": 8638
+    },
+    {
+      "original_path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/libcxx/include/__memory/allocator.h",
+      "retained_path": "authority/libcxx-allocator.h.pinned.txt",
+      "sha256": "51CCFB63B3AADFFE77C5231D6A95CA4BA9DE5A4136635AEFF18B0A46CC9245E3",
+      "bytes": 6303
+    },
+    {
+      "original_path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/libcxx/src/new_helpers.cpp",
+      "retained_path": "authority/libcxx-new_helpers.cpp.pinned.txt",
+      "sha256": "82B6B57506EDC48DCBB13EAA5BF533E680167F983A2A2CF85064C003CB8CDB38",
+      "bytes": 745
+    },
+    {
+      "original_path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/libcxx/src/verbose_abort.cpp",
+      "retained_path": "authority/libcxx-verbose_abort.cpp.pinned.txt",
+      "sha256": "498DDB2D90967295140D7B1126D67BB70DF6AC7820DE7CA5EE5EF4D2325F9773",
+      "bytes": 1910
+    },
+    {
+      "original_path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/libcxx/include/__verbose_abort",
+      "retained_path": "authority/libcxx-__verbose_abort.pinned.txt",
+      "sha256": "6983D7B621CC322B4145E45A64CF8B8A15CA3824D55409F4DA3EFAE4AC947BD5",
+      "bytes": 2226
+    },
+    {
+      "original_path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/libcxx/include/__new/exceptions.h",
+      "retained_path": "authority/libcxx-exceptions.h.pinned.txt",
+      "sha256": "0A553F0D4476C94B767D71F598EB31FCB48170AD8D7D9504D6B0166F34FC0673",
+      "bytes": 2544
+    }
+  ],
+  "original_map_methods": {
+    "full_sha256": "4872E9CAF5AEE8F7ABD73BE4F79FA5B73793F5D09DFCED63001A022D92AD2AF8",
+    "offset": 7075,
+    "end": 9147,
+    "text": "std::optional<std::string> MapKVStore::Get(const char* key) const {\n  Mutex::ScopedLock lock(mutex_);\n  auto it = map_.find(key);\n  return it == map_.end() ? std::nullopt : std::make_optional(it->second);\n}\n\nMaybeLocal<String> MapKVStore::Get(Isolate* isolate, Local<String> key) const {\n  Utf8Value str(isolate, key);\n  std::optional<std::string> value = Get(*str);\n  if (!value.has_value()) return MaybeLocal<String>();\n  std::string val = value.value();\n  Local<Value> ret;\n  if (!ToV8Value(isolate->GetCurrentContext(), val).ToLocal(&ret)) {\n    return {};\n  }\n  DCHECK(ret->IsString());\n  return ret.As<String>();\n}\n\nvoid MapKVStore::Set(Isolate* isolate, Local<String> key, Local<String> value) {\n  Mutex::ScopedLock lock(mutex_);\n  Utf8Value key_str(isolate, key);\n  Utf8Value value_str(isolate, value);\n  if (*key_str != nullptr && key_str.length() > 0 && *value_str != nullptr) {\n    map_[std::string(*key_str, key_str.length())] =\n        std::string(*value_str, value_str.length());\n  }\n}\n\nint32_t MapKVStore::Query(const char* key) const {\n  Mutex::ScopedLock lock(mutex_);\n  return map_.contains(key) ? 0 : -1;\n}\n\nint32_t MapKVStore::Query(Isolate* isolate, Local<String> key) const {\n  Utf8Value str(isolate, key);\n  return Query(*str);\n}\n\nvoid MapKVStore::Delete(Isolate* isolate, Local<String> key) {\n  Mutex::ScopedLock lock(mutex_);\n  Utf8Value str(isolate, key);\n  map_.erase(std::string(*str, str.length()));\n}\n\nMaybeLocal<Array> MapKVStore::Enumerate(Isolate* isolate) const {\n  Mutex::ScopedLock lock(mutex_);\n  LocalVector<Value> values(isolate);\n  values.reserve(map_.size());\n  for (const auto& pair : map_) {\n    Local<Value> val;\n    if (!ToV8Value(isolate->GetCurrentContext(), pair.first).ToLocal(&val)) {\n      return {};\n    }\n    values.emplace_back(val);\n  }\n  return Array::New(isolate, values.data(), values.size());\n}\n\nstd::shared_ptr<KVStore> MapKVStore::Clone(Isolate* isolate) const {\n  return std::make_shared<MapKVStore>(*this);\n}\n\nstd::shared_ptr<KVStore> KVStore::CreateMapKVStore() {\n  return std::make_shared<MapKVStore>();\n}\n\n"
+  },
+  "selected_allocation_basis": [
+    "The old Zig StringHashMap draft is retained as map-zig-before-native-container.zig.txt. This successor instantiates the actual pinned libc++ basic_string and unordered_map templates with an empty allocator having the same propagation/equality properties as the default allocator.",
+    "Original MapKVStore C++ expressions are retained: find/contains construct their actual const-char String temporary; Set constructs RHS value then full-span key even on replacement; Delete constructs the full-span key; optional Get copy and the JS-facing second local copy remain distinct.",
+    "The original map's actual hash, bucket growth, element movement and iteration are executed by the same retained standard-container source. No guessed capacity charges, sorted keys, copied key snapshot or synthetic bucket order.",
+    "Every native allocation request uses the real unchanged pi_simd per-block aligned prefix and independently retains the native domain. AllocationScope is thread-local and synchronous. Every deallocation uses the original block owner, not the current scope.",
+    "Standard allocation retries the real native new_handler and uses the standard native bad_alloc/bad_array_new_length path. It never turns a native standard-container failure into an ordinary JavaScript reason. Translation units explicitly require exceptions disabled.",
+    "The stable Map object has one counted native lifetime, a real uv mutex, and the actual standard container. Lock guards retain before lock and unlock before release. The clone keeps the original no-added-lock copy contract.",
+    "The synchronous enumeration callback holds the actual mutex through native vector/string/array construction and retirement. Actual iterator initialization occurs on its first next after the caller's vector reservation."
+  ],
+  "explicit_dependencies": [
+    "One shared native_simdjson_memory.cpp definition/TLS instance across parser and Map consumers; exact additive link proposal is still being prepared.",
+    "Actual native Environment State, supplied-map JS interceptors, Permission and physical cwd/execPath remain separate source units, not supplied by this leaf.",
+    "Source controls and native failure subprocess probes are not yet authored or executed.",
+    "This pins the admitted native libc++ implementation; it does not claim foreign stock Node libstdc++/MSVC binary allocation layout or iteration-order identity."
+  ]
+}

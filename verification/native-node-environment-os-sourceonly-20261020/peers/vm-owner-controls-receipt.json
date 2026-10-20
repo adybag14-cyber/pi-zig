@@ -1,0 +1,35 @@
+{
+  "status": "finite source peer CLOSED; no execution",
+  "production": [
+    "16D82D2C2143DFAF3861B722BD2E9775FB0BD7D6C9BE400D0ECE37E0674E709B",
+    "D5ECC5EEA1DA575125D39DCF9EA9AF646CB3584CA1D2471EEE9E7DAA2EB701E1",
+    "C0700FBF162E6489BD7E632BF01077323234664EAE5F6F642C8578BC0A4A30AB",
+    "A062E1D0D492E1D3D81BC411A768FC4738D7C8C37B736D53D3FDD6C2FF261698"
+  ],
+  "root": "7E58CB891ECF37A215A4D637B64A3F1B062FB3763552DEBC6C775ADDA603F15E",
+  "support": [
+    "DB9AF1D3006DD342E70BF83BC93FAD02936802E12504702E44017E083BB5BB89",
+    "08242520A8862FB89BAC5815337F35D8E628302DC0676377D75881F14EB3B049"
+  ],
+  "source": "33DFEF6F62BF538EA4EC4A34FB503F1FDF4E48B3EEBACFCB6EEDB9595DD35329",
+  "scope": [
+    "native allocator and charged block lifetime",
+    "Map atomic owner, retained guards, TLS domain and borrowed visitors",
+    "Fixture/Worker and controls 14-18,20",
+    "serial native new_handler adapter reservation/restore"
+  ],
+  "findings": [
+    "Empty stateless allocator uses exact count overflow guard, malloc-aligned actual per-block ownership and native new_handler/bad_alloc retry.",
+    "Map members retire before its stable charged block; each table/string block carries independent native-domain ownership.",
+    "Operation and mutation guards retain before lock and unlock before final map release; synchronous borrowed keys never escape.",
+    "Two workers retain independent entitlements, join on normal and spawn/assert failure paths, and operate after runtime/caller domain retirement.",
+    "Clone allocation scopes use destination domain while source is independently retained; no concurrent clone mutation is admitted.",
+    "Retry adapter restores previous global handler and TLS state and releases reservation before returning; serial-process limitation is explicit.",
+    "Actual pending reason and VM OOM occurrence remain unchanged during successful native retry."
+  ],
+  "limits": [
+    "SDK owns Map expressions/container equivalence and other controls.",
+    "Single-TLS link composition and JS environment integration are separate.",
+    "No execution or cross-standard-library allocation-layout claim."
+  ]
+}
