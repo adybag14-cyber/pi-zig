@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "status": "paused for Root-priority SDK 18 + 3 controls and FSReqPromise continuation source peer",
+  "production_modified": false,
+  "compiler_or_native_execution": false,
+  "working_commit": "5e4646ad8268fdfc8007691ccbda28b6d6985807",
+  "findings": [
+    "Existing 29-entry tracing ABI lacks AddTraceEvent/WithTimestamp/metadata/duration/observer boundaries; old core/controller/Agent drafts remain unchanged.",
+    "Current low-level category-enabled entry requires a controller; original TraceEventHelper adds the separate null-controller static-disabled fallback before category interning.",
+    "Original AddTraceEventImpl/WithTimestampImpl/metadata adopt up to two actual native convertibles before resolving controller/Agent; null-controller returns must destroy them synchronously.",
+    "Original Process NodeTraceStateObserver emits title/version/main-thread/ProcessMeta metadata once and removes itself; original Environment observer has a distinct callback/teardown policy.",
+    "Process Initialize publishes Agent before observer/default writer/start, then creates platform threads. Dispose clears global publication, resets writer, stops platform threads, destroys Agent, then observer.",
+    "Original traced_value.cc was not found among contained named originals; successful native fetch of pinned URL returns SHA D3090ECDF316735A388C1A38DB70396D6A1B91B0108D493E40D8B9E91AF91EF8; raw file not yet saved. No new implementation."
+  ],
+  "source_pins": {
+    "trace_event_h": "BD14C8D2C10225377540F5C594ECE93BC49D1041EB393D5D4ED48348513BFCFE",
+    "trace_event_common_h": "F3BE0A8224D4F0653011E48B6941ED185872BFBA86A1C576408D079D78110383",
+    "traced_value_h": "6AF556F76F05858839929E5D1BBBF94372C4D31B3028F2956284704A721DC081",
+    "node_v8_platform_h": "90F09737D3F80E58CC83D27DF48FEB07CE74BE657E750EC69C693876CB1CA55D",
+    "env_cc": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+  },
+  "original_revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "SDK_authority": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority",
+  "env_authority": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-callback-scope-sourceonly-20261019\\authority\\src_env.cc.txt"
+}

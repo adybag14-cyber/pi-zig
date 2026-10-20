@@ -1,0 +1,216 @@
+{
+  "schema": "pi-zig.tracing-event-five-body-source-proof.v1",
+  "qualification": "Source-only exact body adaptation and one-line recipe projection; not compiled, linked or executed.",
+  "inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__tracing__trace_event.h.txt",
+      "bytes": 34423,
+      "sha256": "BD14C8D2C10225377540F5C594ECE93BC49D1041EB393D5D4ED48348513BFCFE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\proposal\\src\\extensions\\native_node_tracing_event_api.cpp",
+      "bytes": 5371,
+      "sha256": "8CD4D1AF43AF6C0F80304020EB1027C82F72C9B3BFCA68D72FBF0AB1506837EB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\proposal\\src\\extensions\\native_node_tracing_event_api.h",
+      "bytes": 3807,
+      "sha256": "454EE9ECD5E84795751A9D1826FCF18B52E3E43513CE70A200A5F41B01C7194F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\original\\tools\\build_native_node_tracing.zig",
+      "bytes": 6147,
+      "sha256": "A42B1433A277097BE8FDC7E6A670FEDB94DC5CCC58397C6A864F1BC06206D20A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\proposal\\tools\\build_native_node_tracing.zig",
+      "bytes": 6203,
+      "sha256": "F59C17999269A0B82F780BCD8862FF6E834A95A1493B74CE2A83666D7D70016F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_api.h",
+      "bytes": 7902,
+      "sha256": "6AA6586C71DAE6E72F1A59860E54F550E076AC9BEFFFA67264C59FD6A3CFFEA3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_api.cpp",
+      "bytes": 10645,
+      "sha256": "C747E51D8813DE4697B91B8EA7B723A7D442AF6B1BEE98EAC35499AB3BFF7993"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_core.hpp",
+      "bytes": 9947,
+      "sha256": "C41AA33C90695AE0CD3887C052E7FD40E950CE917B808313C392848EA66B7F53"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_core.cpp",
+      "bytes": 11560,
+      "sha256": "3C4E500BE25DFD39FC93BFFB61A137CDB4AED95862716413367B85B7E68D5332"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_controller.hpp",
+      "bytes": 3193,
+      "sha256": "03B722CC934185543B960EDB5CBEE537786C5C920416E80B019A0B5B481CAB83"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_controller.cpp",
+      "bytes": 10371,
+      "sha256": "B80F6BEB5D4B3848214569FF0D871D38C62BC5AEC3D35F9BC8BEEE5B64E8D0BC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_agent.hpp",
+      "bytes": 7114,
+      "sha256": "D7B4F316372F7897E325108D84C2D5645CD49AB718FADC3B152328E3CE82B016"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_agent.cpp",
+      "bytes": 8689,
+      "sha256": "14BAE7F832AA2DCFA839C652173D9B13D8E4A380F317C1B34160BCF353BB58B0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_buffer.hpp",
+      "bytes": 2192,
+      "sha256": "3F3A289C1C695AF7BB7A84E1BFC08B2BA6D823D513AEF26C864CF10F94397B32"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_buffer.cpp",
+      "bytes": 6679,
+      "sha256": "F8AF213F5F5CEB903651CA0B8D91F2437DE48D1A91E96F1C243FF55FDEEBCB2F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_writer.hpp",
+      "bytes": 2197,
+      "sha256": "A4B15B27A91E5FDDF986B59C7D3C94D595E1C843F4A732484534A3DF31E53376"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_writer.cpp",
+      "bytes": 8571,
+      "sha256": "DB994685F7E370ACF1C3423E76DB36E7C37F74DEA48F4B3EF98CFCD36FF08893"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.cpp",
+      "bytes": 13664,
+      "sha256": "E0408BD2D94D728FACD1E2B36C7DD831BEF49E12BF53C52FE60D602D001B0064"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.hpp",
+      "bytes": 1236,
+      "sha256": "F7AE55D36E54D64AC7FA36CF6F64D06A631889213EE0E43998F8701004338E98"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\tools\\build_native_node_tracing.zig",
+      "bytes": 6147,
+      "sha256": "A42B1433A277097BE8FDC7E6A670FEDB94DC5CCC58397C6A864F1BC06206D20A"
+    }
+  ],
+  "scopes_first_for_all_five": true,
+  "matching_C_declaration_definition_names": [
+    "pi_node_tracing_event_add",
+    "pi_node_tracing_event_add_metadata",
+    "pi_node_tracing_event_add_with_timestamp",
+    "pi_node_tracing_event_category_enabled",
+    "pi_node_tracing_event_update_duration"
+  ],
+  "normalization": [
+    "Remove exactly the two leading admission-scope declarations, after checking their order.",
+    "Map only the four original namespace-qualified type/helper names listed in the checker.",
+    "Ignore line comments and whitespace in these string-free operation bodies."
+  ],
+  "comparisons": [
+    {
+      "original_symbol": "static inline const uint8_t* GetCategoryGroupEnabled",
+      "candidate_symbol": "pi_node_tracing_event_category_enabled",
+      "authority_lines": [
+        321,
+        328
+      ],
+      "candidate_lines": [
+        22,
+        31
+      ],
+      "extra_normalization": [
+        "Qualify the original class-local GetTracingController call through the same TraceEventHelper class at the free C boundary."
+      ],
+      "normalized_original": "TracingController*controller=TraceEventHelper::GetTracingController();staticconstuint8_tdisabled=0;if(controller==nullptr)[[unlikely]]{return&disabled;}returncontroller->GetCategoryGroupEnabled(group);",
+      "normalized_candidate": "TracingController*controller=TraceEventHelper::GetTracingController();staticconstuint8_tdisabled=0;if(controller==nullptr)[[unlikely]]{return&disabled;}returncontroller->GetCategoryGroupEnabled(group);",
+      "equal": true
+    },
+    {
+      "original_symbol": "static inline uint64_t AddTraceEventImpl",
+      "candidate_symbol": "pi_node_tracing_event_add",
+      "authority_lines": [
+        464,
+        481
+      ],
+      "candidate_lines": [
+        38,
+        57
+      ],
+      "extra_normalization": [],
+      "normalized_original": "std::unique_ptr<ConvertableToTraceFormat>arg_convertibles[2];if(num_args>0&&arg_types[0]==TRACE_VALUE_TYPE_CONVERTABLE){arg_convertibles[0].reset(reinterpret_cast<ConvertableToTraceFormat*>(static_cast<intptr_t>(arg_values[0])));}if(num_args>1&&arg_types[1]==TRACE_VALUE_TYPE_CONVERTABLE){arg_convertibles[1].reset(reinterpret_cast<ConvertableToTraceFormat*>(static_cast<intptr_t>(arg_values[1])));}TracingController*controller=TraceEventHelper::GetTracingController();if(controller==nullptr)return0;returncontroller->AddTraceEvent(phase,category_group_enabled,name,scope,id,bind_id,num_args,arg_names,arg_types,arg_values,arg_convertibles,flags);",
+      "normalized_candidate": "std::unique_ptr<ConvertableToTraceFormat>arg_convertibles[2];if(num_args>0&&arg_types[0]==TRACE_VALUE_TYPE_CONVERTABLE){arg_convertibles[0].reset(reinterpret_cast<ConvertableToTraceFormat*>(static_cast<intptr_t>(arg_values[0])));}if(num_args>1&&arg_types[1]==TRACE_VALUE_TYPE_CONVERTABLE){arg_convertibles[1].reset(reinterpret_cast<ConvertableToTraceFormat*>(static_cast<intptr_t>(arg_values[1])));}TracingController*controller=TraceEventHelper::GetTracingController();if(controller==nullptr)return0;returncontroller->AddTraceEvent(phase,category_group_enabled,name,scope,id,bind_id,num_args,arg_names,arg_types,arg_values,arg_convertibles,flags);",
+      "equal": true
+    },
+    {
+      "original_symbol": "static V8_INLINE uint64_t AddTraceEventWithTimestampImpl",
+      "candidate_symbol": "pi_node_tracing_event_add_with_timestamp",
+      "authority_lines": [
+        487,
+        504
+      ],
+      "candidate_lines": [
+        64,
+        83
+      ],
+      "extra_normalization": [],
+      "normalized_original": "std::unique_ptr<ConvertableToTraceFormat>arg_convertibles[2];if(num_args>0&&arg_types[0]==TRACE_VALUE_TYPE_CONVERTABLE){arg_convertibles[0].reset(reinterpret_cast<ConvertableToTraceFormat*>(static_cast<intptr_t>(arg_values[0])));}if(num_args>1&&arg_types[1]==TRACE_VALUE_TYPE_CONVERTABLE){arg_convertibles[1].reset(reinterpret_cast<ConvertableToTraceFormat*>(static_cast<intptr_t>(arg_values[1])));}TracingController*controller=TraceEventHelper::GetTracingController();if(controller==nullptr)return0;returncontroller->AddTraceEventWithTimestamp(phase,category_group_enabled,name,scope,id,bind_id,num_args,arg_names,arg_types,arg_values,arg_convertibles,flags,timestamp);",
+      "normalized_candidate": "std::unique_ptr<ConvertableToTraceFormat>arg_convertibles[2];if(num_args>0&&arg_types[0]==TRACE_VALUE_TYPE_CONVERTABLE){arg_convertibles[0].reset(reinterpret_cast<ConvertableToTraceFormat*>(static_cast<intptr_t>(arg_values[0])));}if(num_args>1&&arg_types[1]==TRACE_VALUE_TYPE_CONVERTABLE){arg_convertibles[1].reset(reinterpret_cast<ConvertableToTraceFormat*>(static_cast<intptr_t>(arg_values[1])));}TracingController*controller=TraceEventHelper::GetTracingController();if(controller==nullptr)return0;returncontroller->AddTraceEventWithTimestamp(phase,category_group_enabled,name,scope,id,bind_id,num_args,arg_names,arg_types,arg_values,arg_convertibles,flags,timestamp);",
+      "equal": true
+    },
+    {
+      "original_symbol": "static V8_INLINE void AddMetadataEventImpl",
+      "candidate_symbol": "pi_node_tracing_event_add_metadata",
+      "authority_lines": [
+        509,
+        525
+      ],
+      "candidate_lines": [
+        89,
+        107
+      ],
+      "extra_normalization": [],
+      "normalized_original": "std::unique_ptr<ConvertableToTraceFormat>arg_convertibles[2];if(num_args>0&&arg_types[0]==TRACE_VALUE_TYPE_CONVERTABLE){arg_convertibles[0].reset(reinterpret_cast<ConvertableToTraceFormat*>(static_cast<intptr_t>(arg_values[0])));}if(num_args>1&&arg_types[1]==TRACE_VALUE_TYPE_CONVERTABLE){arg_convertibles[1].reset(reinterpret_cast<ConvertableToTraceFormat*>(static_cast<intptr_t>(arg_values[1])));}Agent*agent=TraceEventHelper::GetAgent();if(agent==nullptr)return;returnagent->GetTracingController()->AddMetadataEvent(category_group_enabled,name,num_args,arg_names,arg_types,arg_values,arg_convertibles,flags);",
+      "normalized_candidate": "std::unique_ptr<ConvertableToTraceFormat>arg_convertibles[2];if(num_args>0&&arg_types[0]==TRACE_VALUE_TYPE_CONVERTABLE){arg_convertibles[0].reset(reinterpret_cast<ConvertableToTraceFormat*>(static_cast<intptr_t>(arg_values[0])));}if(num_args>1&&arg_types[1]==TRACE_VALUE_TYPE_CONVERTABLE){arg_convertibles[1].reset(reinterpret_cast<ConvertableToTraceFormat*>(static_cast<intptr_t>(arg_values[1])));}Agent*agent=TraceEventHelper::GetAgent();if(agent==nullptr)return;returnagent->GetTracingController()->AddMetadataEvent(category_group_enabled,name,num_args,arg_names,arg_types,arg_values,arg_convertibles,flags);",
+      "equal": true
+    },
+    {
+      "original_symbol": "TRACE_EVENT_API_UPDATE_TRACE_EVENT_DURATION and ScopedTracer destructor invocation",
+      "authority_macro_lines": [
+        117,
+        120
+      ],
+      "authority_call_lines": [
+        692,
+        693
+      ],
+      "caller_guard_retained_outside_raw_entry": "ScopedTracer p_data_ and enabled-byte guard at lines 690-694 belongs to the producer lifetime.",
+      "candidate_symbol": "pi_node_tracing_event_update_duration",
+      "candidate_lines": [
+        112,
+        117
+      ],
+      "extra_normalization": [
+        "Expand only the exact named macro at the actual ScopedTracer invocation.",
+        "Bind its data_.category_group_enabled, data_.name and data_.event_handle operands to the three C parameters."
+      ],
+      "normalized_original": "if(autocontroller=TraceEventHelper::GetTracingController())controller->UpdateTraceEventDuration(category_group_enabled,name,handle);",
+      "normalized_candidate": "if(autocontroller=TraceEventHelper::GetTracingController())controller->UpdateTraceEventDuration(category_group_enabled,name,handle);",
+      "equal": true
+    }
+  ],
+  "comparison_count": 5,
+  "all_equal": true,
+  "build_one_line_forward_inverse_exact": true,
+  "submitted_old_sources_unchanged": true,
+  "main_or_production_writes": false
+}

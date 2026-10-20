@@ -1,0 +1,46 @@
+{
+  "schema": "pi-zig.root-tracing-event-source-review.v1",
+  "basis_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "donor_head": "5e4646ad8268fdfc8007691ccbda28b6d6985807",
+  "scope": "Five native event ABI entries and one tracing recipe member; source review only.",
+  "manifest_sha256": "74315CAA31B176DCDAC1C2407C23CB2610E0E93FB8EA45F72B2E878B7A527893",
+  "candidate_header_sha256": "454EE9ECD5E84795751A9D1826FCF18B52E3E43513CE70A200A5F41B01C7194F",
+  "candidate_source_sha256": "8CD4D1AF43AF6C0F80304020EB1027C82F72C9B3BFCA68D72FBF0AB1506837EB",
+  "recipe_before_sha256": "A42B1433A277097BE8FDC7E6A670FEDB94DC5CCC58397C6A864F1BC06206D20A",
+  "recipe_after_sha256": "F59C17999269A0B82F780BCD8862FF6E834A95A1493B74CE2A83666D7D70016F",
+  "analysis_sha256": "48A86AC4C98115B83EDA9E07F55D28E6BF779268631F8292347B425590993462",
+  "peer_sha256": "EAAFBAFBCE09905AC0A60C5812A2740784E10667466A2E696DB7E75C61973199",
+  "independent_checker_sha256": "547D2AE90BD269659FC9890F466886640D3EC069F0570B699E750656E3A362B2",
+  "independent_proof_sha256": "4105BECDD37708EA193888265CBDE918963E598CC0DD6070E63D45E711C025F6",
+  "root_reads": [
+    "Two complete production candidates",
+    "One complete build proposal and exact insertion/inverse",
+    "Complete analysis and source-body checker/proof",
+    "Independent complete source-audit checker and peer",
+    "Authority binding records and exact consumer-basis snapshot bindings"
+  ],
+  "root_checks": {
+    "original_five_body_proof_reproduced": true,
+    "independent_full_proof_reproduced_bytes": 91194,
+    "independent_full_proof_reproduced": true,
+    "current_input_pins": 227,
+    "exact_operation_bodies": 5,
+    "contained_original_equalities": 14,
+    "native_fetch_body_bindings": 5,
+    "current_consumers": 9,
+    "whole_recipe_forward_inverse": true
+  },
+  "findings": [
+    "Diagnostic context precedes allocation scope; native captured-value owners retire while both scopes remain active.",
+    "Native convertibles are adopted before nullable global controller or Agent lookup; no guest conversion was substituted.",
+    "Original producer guards, process Agent lifetime and shared allocation ownership remain caller obligations.",
+    "No finite source blocker found; composite diagnostic linkage, typed values, producer insertion and Agent/Environment bootstrap remain open."
+  ],
+  "next_authority": "Prepare exact worktree-only intake manifest for source-only commit; no Main or native execution.",
+  "main_source_hold_released": false,
+  "compiler_executed": false,
+  "native_executed": false,
+  "runtime_qualified": false,
+  "application_qualified": false,
+  "created_utc": "2026-10-20T20:41:27.948677+00:00"
+}

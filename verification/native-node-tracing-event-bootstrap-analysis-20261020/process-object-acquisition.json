@@ -1,0 +1,8 @@
+{
+  "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__node_process_object.cc.txt",
+  "bytes": 8595,
+  "sha256": "301C1819A6CD59A48BD28F4C2252298137B6631CC33DDA0DDB55DD8067D48957",
+  "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_process_object.cc",
+  "http_status": 200,
+  "native_receipt_sha256": "C9C95FB6482DF5CC9E9F5AD3A6F1A6274EA167AD10500DD28B8AB8FE70CF2CAB"
+}

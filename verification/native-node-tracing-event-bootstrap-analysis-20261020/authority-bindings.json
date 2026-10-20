@@ -1,0 +1,423 @@
+{
+  "schema": "pi-zig.tracing-event-authority-bindings.v1",
+  "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "contained_reuse_count": 14,
+  "raw_fetch_count": 5,
+  "complete_authority_count": 19,
+  "bindings": [
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__tracing__trace_event.h.txt",
+        "bytes": 34423,
+        "sha256": "BD14C8D2C10225377540F5C594ECE93BC49D1041EB393D5D4ED48348513BFCFE"
+      },
+      "method": "byte-exact contained original reuse",
+      "upstream_path": "src/tracing/trace_event.h",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\contained-source-reuse.json",
+        "bytes": 9633,
+        "sha256": "8F2301C1F2929DED358EED4BA6EA108EEB3AF42AEF7E112DA94ECD68BDEED86B"
+      },
+      "receipt_selector": "sources[0]",
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\src__tracing__trace_event.h.txt",
+        "bytes": 34423,
+        "sha256": "BD14C8D2C10225377540F5C594ECE93BC49D1041EB393D5D4ED48348513BFCFE"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__tracing__trace_event_common.h.txt",
+        "bytes": 67606,
+        "sha256": "F3BE0A8224D4F0653011E48B6941ED185872BFBA86A1C576408D079D78110383"
+      },
+      "method": "byte-exact contained original reuse",
+      "upstream_path": "src/tracing/trace_event_common.h",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\contained-source-reuse.json",
+        "bytes": 9633,
+        "sha256": "8F2301C1F2929DED358EED4BA6EA108EEB3AF42AEF7E112DA94ECD68BDEED86B"
+      },
+      "receipt_selector": "sources[1]",
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\src__tracing__trace_event_common.h.txt",
+        "bytes": 67606,
+        "sha256": "F3BE0A8224D4F0653011E48B6941ED185872BFBA86A1C576408D079D78110383"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__tracing__traced_value.h.txt",
+        "bytes": 3673,
+        "sha256": "6AF556F76F05858839929E5D1BBBF94372C4D31B3028F2956284704A721DC081"
+      },
+      "method": "byte-exact contained original reuse",
+      "upstream_path": "src/tracing/traced_value.h",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\contained-source-reuse.json",
+        "bytes": 9633,
+        "sha256": "8F2301C1F2929DED358EED4BA6EA108EEB3AF42AEF7E112DA94ECD68BDEED86B"
+      },
+      "receipt_selector": "sources[2]",
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\src__tracing__traced_value.h.txt",
+        "bytes": 3673,
+        "sha256": "6AF556F76F05858839929E5D1BBBF94372C4D31B3028F2956284704A721DC081"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__node_v8_platform-inl.h.txt",
+        "bytes": 6045,
+        "sha256": "90F09737D3F80E58CC83D27DF48FEB07CE74BE657E750EC69C693876CB1CA55D"
+      },
+      "method": "byte-exact contained original reuse",
+      "upstream_path": "src/node_v8_platform-inl.h",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\contained-source-reuse.json",
+        "bytes": 9633,
+        "sha256": "8F2301C1F2929DED358EED4BA6EA108EEB3AF42AEF7E112DA94ECD68BDEED86B"
+      },
+      "receipt_selector": "sources[3]",
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\src__node_v8_platform-inl.h.txt",
+        "bytes": 6045,
+        "sha256": "90F09737D3F80E58CC83D27DF48FEB07CE74BE657E750EC69C693876CB1CA55D"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__tracing__trace_event.cc.txt",
+        "bytes": 917,
+        "sha256": "C4A8E0EB89A2A2DE1A77C3B87BB784940E0BDD944354B354D6095A734D7097F2"
+      },
+      "method": "byte-exact contained original reuse",
+      "upstream_path": "src/tracing/trace_event.cc",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\contained-source-reuse.json",
+        "bytes": 9633,
+        "sha256": "8F2301C1F2929DED358EED4BA6EA108EEB3AF42AEF7E112DA94ECD68BDEED86B"
+      },
+      "receipt_selector": "sources[4]",
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\src__tracing__trace_event.cc.txt",
+        "bytes": 917,
+        "sha256": "C4A8E0EB89A2A2DE1A77C3B87BB784940E0BDD944354B354D6095A734D7097F2"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__node_trace_events.cc.txt",
+        "bytes": 6763,
+        "sha256": "A621D1E86F742AE4605792A7BD516E817D604CE240DEDFA89409EC405921A6A5"
+      },
+      "method": "byte-exact contained original reuse",
+      "upstream_path": "src/node_trace_events.cc",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\contained-source-reuse.json",
+        "bytes": 9633,
+        "sha256": "8F2301C1F2929DED358EED4BA6EA108EEB3AF42AEF7E112DA94ECD68BDEED86B"
+      },
+      "receipt_selector": "sources[5]",
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\src__node_trace_events.cc.txt",
+        "bytes": 6763,
+        "sha256": "A621D1E86F742AE4605792A7BD516E817D604CE240DEDFA89409EC405921A6A5"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__tracing__agent.cc.txt",
+        "bytes": 7763,
+        "sha256": "2F3B1134C2231CF3E1D0C63701685616FE532918A27E01C2334ECD01EBFB64EE"
+      },
+      "method": "byte-exact contained original reuse",
+      "upstream_path": "src/tracing/agent.cc",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\contained-source-reuse.json",
+        "bytes": 9633,
+        "sha256": "8F2301C1F2929DED358EED4BA6EA108EEB3AF42AEF7E112DA94ECD68BDEED86B"
+      },
+      "receipt_selector": "sources[6]",
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\src__tracing__agent.cc.txt",
+        "bytes": 7763,
+        "sha256": "2F3B1134C2231CF3E1D0C63701685616FE532918A27E01C2334ECD01EBFB64EE"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__env.cc.txt",
+        "bytes": 84987,
+        "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+      },
+      "method": "byte-exact contained original reuse",
+      "upstream_path": "src/env.cc",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\contained-source-reuse.json",
+        "bytes": 9633,
+        "sha256": "8F2301C1F2929DED358EED4BA6EA108EEB3AF42AEF7E112DA94ECD68BDEED86B"
+      },
+      "receipt_selector": "sources[7]",
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-node-callback-scope-sourceonly-20261019\\authority\\src_env.cc.txt",
+        "bytes": 84987,
+        "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__env.h.txt",
+        "bytes": 45315,
+        "sha256": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0"
+      },
+      "method": "byte-exact contained original reuse",
+      "upstream_path": "src/env.h",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\contained-source-reuse.json",
+        "bytes": 9633,
+        "sha256": "8F2301C1F2929DED358EED4BA6EA108EEB3AF42AEF7E112DA94ECD68BDEED86B"
+      },
+      "receipt_selector": "sources[8]",
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\env.v24.13.h",
+        "bytes": 45315,
+        "sha256": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__async_wrap.cc.txt",
+        "bytes": 27043,
+        "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC"
+      },
+      "method": "byte-exact contained original reuse",
+      "upstream_path": "src/async_wrap.cc",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\contained-source-reuse.json",
+        "bytes": 9633,
+        "sha256": "8F2301C1F2929DED358EED4BA6EA108EEB3AF42AEF7E112DA94ECD68BDEED86B"
+      },
+      "receipt_selector": "sources[9]",
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\async_wrap.cc.v24.13.txt",
+        "bytes": 27043,
+        "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__node_file.cc.txt",
+        "bytes": 139386,
+        "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+      },
+      "method": "byte-exact contained original reuse",
+      "upstream_path": "src/node_file.cc",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\contained-source-reuse.json",
+        "bytes": 9633,
+        "sha256": "8F2301C1F2929DED358EED4BA6EA108EEB3AF42AEF7E112DA94ECD68BDEED86B"
+      },
+      "receipt_selector": "sources[10]",
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\node_file.v24.13.cc",
+        "bytes": 139386,
+        "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__util.cc.txt",
+        "bytes": 32300,
+        "sha256": "5CCCE50BA4570EE147C259F45C30E16A81E33EC896332BE25E8BE9B0FD20563B"
+      },
+      "method": "byte-exact contained original reuse",
+      "upstream_path": "src/util.cc",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\contained-source-reuse.json",
+        "bytes": 9633,
+        "sha256": "8F2301C1F2929DED358EED4BA6EA108EEB3AF42AEF7E112DA94ECD68BDEED86B"
+      },
+      "receipt_selector": "sources[11]",
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-platform-sourceonly-20261020\\authority\\src__util.cc",
+        "bytes": 32300,
+        "sha256": "5CCCE50BA4570EE147C259F45C30E16A81E33EC896332BE25E8BE9B0FD20563B"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\V8-LICENSE.txt",
+        "bytes": 3093,
+        "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509"
+      },
+      "method": "byte-exact contained original reuse",
+      "upstream_path": "deps/v8/LICENSE",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\contained-source-reuse.json",
+        "bytes": 9633,
+        "sha256": "8F2301C1F2929DED358EED4BA6EA108EEB3AF42AEF7E112DA94ECD68BDEED86B"
+      },
+      "receipt_selector": "sources[12]",
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\V8-LICENSE.txt",
+        "bytes": 3093,
+        "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\Node-MIT-LICENSE-excerpt.txt",
+        "bytes": 2337,
+        "sha256": "EC62DC96DA0099B87F4511736C87309335527FB7031639493E06C95728DC8C54"
+      },
+      "method": "byte-exact contained original reuse",
+      "upstream_path": "LICENSE (retained complete MIT grant excerpt)",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\contained-source-reuse.json",
+        "bytes": 9633,
+        "sha256": "8F2301C1F2929DED358EED4BA6EA108EEB3AF42AEF7E112DA94ECD68BDEED86B"
+      },
+      "receipt_selector": "sources[13]",
+      "contained_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\Node-MIT-LICENSE-excerpt.txt",
+        "bytes": 2337,
+        "sha256": "EC62DC96DA0099B87F4511736C87309335527FB7031639493E06C95728DC8C54"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__tracing__traced_value.cc.txt",
+        "bytes": 6833,
+        "sha256": "D3090ECDF316735A388C1A38DB70396D6A1B91B0108D493E40D8B9E91AF91EF8"
+      },
+      "method": "raw original with matching successful native fetch body",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/tracing/traced_value.cc",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\traced-value-acquisition.json",
+        "bytes": 2084,
+        "sha256": "89F6F2E85D22EB87CD25A529D77F3A6AA535B7258446BFFFE1FCBCF98198755D"
+      },
+      "receipt_selector": "$",
+      "native_receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\traced-value-native-fetch.json",
+        "bytes": 12590,
+        "sha256": "0195F74322280CD6DBF187DD8376E18568F4E6491F4A94591BE96D5E6B98459E"
+      },
+      "native_selector": "structuredContent.data.documents[0]",
+      "native_http_status": 200,
+      "native_body_sha256": "D3090ECDF316735A388C1A38DB70396D6A1B91B0108D493E40D8B9E91AF91EF8"
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__node_metadata.h.txt",
+        "bytes": 5344,
+        "sha256": "015CAF56ACE2F631645BF8BB25C5B163D5050F0B0EB590A543051747C671789C"
+      },
+      "method": "raw original with matching successful native fetch body",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_metadata.h",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\metadata-acquisition.json",
+        "bytes": 2228,
+        "sha256": "D0E1F3C400F5B8B7DA9BD2A3FB516B1C18EC60E2C25B8A636C4873DF2DAC41AA"
+      },
+      "receipt_selector": "sources[0]",
+      "native_receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\metadata-native-fetch.json",
+        "bytes": 24424,
+        "sha256": "6D80BEB65B70CFF8A4D80F9D184C6172800DE6FE4E126AFCD3CB21BEC672781E"
+      },
+      "native_selector": "structuredContent.data.documents[0]",
+      "native_http_status": 200,
+      "native_body_sha256": "015CAF56ACE2F631645BF8BB25C5B163D5050F0B0EB590A543051747C671789C"
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__node_metadata.cc.txt",
+        "bytes": 5422,
+        "sha256": "B145FC07B66176E4E93BFF4F752A666F21F3C8D26D7268171840FA8D37917F9B"
+      },
+      "method": "raw original with matching successful native fetch body",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_metadata.cc",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\metadata-acquisition.json",
+        "bytes": 2228,
+        "sha256": "D0E1F3C400F5B8B7DA9BD2A3FB516B1C18EC60E2C25B8A636C4873DF2DAC41AA"
+      },
+      "receipt_selector": "sources[1]",
+      "native_receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\metadata-native-fetch.json",
+        "bytes": 24424,
+        "sha256": "6D80BEB65B70CFF8A4D80F9D184C6172800DE6FE4E126AFCD3CB21BEC672781E"
+      },
+      "native_selector": "structuredContent.data.documents[1]",
+      "native_http_status": 200,
+      "native_body_sha256": "B145FC07B66176E4E93BFF4F752A666F21F3C8D26D7268171840FA8D37917F9B"
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__node_process_methods.cc.txt",
+        "bytes": 28464,
+        "sha256": "36888E7A5FC1BA740BEFFBE8A6C6DD0C8BEDC81A3BD52893BE96403790092622"
+      },
+      "method": "raw original with matching successful native fetch body",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_process_methods.cc",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\metadata-acquisition.json",
+        "bytes": 2228,
+        "sha256": "D0E1F3C400F5B8B7DA9BD2A3FB516B1C18EC60E2C25B8A636C4873DF2DAC41AA"
+      },
+      "receipt_selector": "sources[2]",
+      "native_receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\metadata-native-fetch.json",
+        "bytes": 24424,
+        "sha256": "6D80BEB65B70CFF8A4D80F9D184C6172800DE6FE4E126AFCD3CB21BEC672781E"
+      },
+      "native_selector": "structuredContent.data.documents[2]",
+      "native_http_status": 200,
+      "native_body_sha256": "36888E7A5FC1BA740BEFFBE8A6C6DD0C8BEDC81A3BD52893BE96403790092622"
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__node_process_object.cc.txt",
+        "bytes": 8595,
+        "sha256": "301C1819A6CD59A48BD28F4C2252298137B6631CC33DDA0DDB55DD8067D48957"
+      },
+      "method": "raw original with matching successful native fetch body",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_process_object.cc",
+      "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\process-object-acquisition.json",
+        "bytes": 533,
+        "sha256": "67832A539C39CCB02F4BBEBA4680ACC2D27CC6146CA33BE618BE1F69473FDAC6"
+      },
+      "receipt_selector": "$",
+      "native_receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\process-object-native-fetch.json",
+        "bytes": 9433,
+        "sha256": "C9C95FB6482DF5CC9E9F5AD3A6F1A6274EA167AD10500DD28B8AB8FE70CF2CAB"
+      },
+      "native_selector": "structuredContent.data.documents[0]",
+      "native_http_status": 200,
+      "native_body_sha256": "301C1819A6CD59A48BD28F4C2252298137B6631CC33DDA0DDB55DD8067D48957"
+    }
+  ]
+}

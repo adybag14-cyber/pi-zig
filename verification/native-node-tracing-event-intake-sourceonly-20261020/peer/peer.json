@@ -1,0 +1,156 @@
+{
+  "schema": "pi-zig.independent-tracing-event-bootstrap-source-peer.v1",
+  "status": "independently_reviewed_finite_source_proposal_no_concrete_blocker",
+  "reviewer": "handover_review",
+  "source_only": true,
+  "qualification": "Review of the two proposed event ABI files, their exact five original operation bodies, one-member recipe projection, provenance and bounded native producer/bootstrap analysis. This does not admit a composite build, install process hooks, establish runtime behavior, or release any Main source hold.",
+  "main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "donor_head": "5e4646ad8268fdfc8007691ccbda28b6d6985807",
+  "upstream_revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\manifest.json",
+    "bytes": 29093,
+    "sha256": "74315CAA31B176DCDAC1C2407C23CB2610E0E93FB8EA45F72B2E878B7A527893"
+  },
+  "candidate_sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\proposal\\src\\extensions\\native_node_tracing_event_api.h",
+      "bytes": 3807,
+      "sha256": "454EE9ECD5E84795751A9D1826FCF18B52E3E43513CE70A200A5F41B01C7194F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\proposal\\src\\extensions\\native_node_tracing_event_api.cpp",
+      "bytes": 5371,
+      "sha256": "8CD4D1AF43AF6C0F80304020EB1027C82F72C9B3BFCA68D72FBF0AB1506837EB"
+    }
+  ],
+  "analysis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\analysis.md",
+    "bytes": 19695,
+    "sha256": "48A86AC4C98115B83EDA9E07F55D28E6BF779268631F8292347B425590993462"
+  },
+  "build_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\build-proposal.json",
+    "bytes": 1277,
+    "sha256": "3B7C750D5B671F63D141D3B337357EAB0A81FFE372C28F03C68EF12820067589"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-tracing-event-bootstrap-source-peer-20261020\\source-audit.py",
+    "bytes": 11872,
+    "sha256": "547D2AE90BD269659FC9890F466886640D3EC069F0570B699E750656E3A362B2"
+  },
+  "independent_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-tracing-event-bootstrap-source-peer-20261020\\source-audit.json",
+    "bytes": 91194,
+    "sha256": "4105BECDD37708EA193888265CBDE918963E598CC0DD6070E63D45E711C025F6"
+  },
+  "independent_checks": {
+    "distinct_current_files": 227,
+    "manifest_inventory_files": 48,
+    "external_manifest_pins": 19,
+    "complete_contained_authority_equalities": 14,
+    "successful_pinned_native_fetch_body_bindings": 5,
+    "current_consumer_snapshot_equalities": 9,
+    "exact_token_body_comparisons": 5,
+    "matching_C_declarations_and_definitions": 5,
+    "one_recipe_member_complete_forward_and_inverse": true,
+    "preserved_tracked_dirty_files": 7,
+    "preserved_old_tracing_drafts": 10,
+    "preserved_other_untracked_predecessor_files": 134,
+    "preservation_sets_may_overlap": true,
+    "donor_index_empty": true,
+    "proposed_live_candidate_files_absent": true,
+    "all_inputs_rehashed_before_new_proof_write": true,
+    "main_head_read_before_and_after_unchanged": true
+  },
+  "body_review": [
+    {
+      "entry": "pi_node_tracing_event_category_enabled",
+      "authority": "src/tracing/trace_event.h:313-329",
+      "finding": "Same genuine published-controller lookup and registry call. Null returns the separate static zero byte; this byte is not a category-registry index. Original producer cache and process lifetime constraints remain outside the raw entry."
+    },
+    {
+      "entry": "pi_node_tracing_event_add",
+      "authority": "src/tracing/trace_event.h:460-481",
+      "finding": "The original int32 argument count and uint64 payload representation are retained. Up to two actual native ConvertableToTraceFormat pointers are adopted by unique_ptr before global lookup. Null controller returns zero and destroys the local owned convertibles under both admission scopes."
+    },
+    {
+      "entry": "pi_node_tracing_event_add_with_timestamp",
+      "authority": "src/tracing/trace_event.h:483-504",
+      "finding": "Same adoption/null semantics and exact timestamped controller operation; no guest conversion or allocation substitute was introduced."
+    },
+    {
+      "entry": "pi_node_tracing_event_add_metadata",
+      "authority": "src/tracing/trace_event.h:506-525",
+      "finding": "Same actual native ownership transfer before resolving the published Agent. The Node tracing controller receives metadata if present; otherwise local owners are destroyed synchronously."
+    },
+    {
+      "entry": "pi_node_tracing_event_update_duration",
+      "authority": "src/tracing/trace_event.h:117-120 and 690-694",
+      "finding": "The candidate matches the exact original duration macro expanded only at its original destructor call. The p_data_ and enabled-category-byte guard belongs to ScopedTracer and is explicitly retained as a future producer responsibility, not claimed inside this raw entry."
+    }
+  ],
+  "admission_and_lifetime_review": [
+    "Every body begins with DiagnosticContextScope diagnostic(context), then AllocationScope allocation(memory_owner), with exactly one of each. Reverse destruction keeps the diagnostic context through convertible and allocation-scope teardown. No new context or scope is stored, queued or passed to a delayed guest callback.",
+    "The supplied memory owner remains a nonnull live owner for the selected process Agent/controller. This is an explicit native caller precondition; the two raw scope declarations do not prove that future callers satisfy it.",
+    "Main DiagnosticContextScope header 7EA7700F is byte-identical to the existing contained composition copy. The standalone donor currently lacks that live header; the packet's composite diagnostic/fatal/build dependency remains open and is not silently treated as installed.",
+    "The current controller moves accepted convertibles into TraceObject only on the original recording/buffer path. The native writer formats genuine ConvertableToTraceFormat objects later. Header contracts retain native owned data and ordinary long-lived name/string pointers; FLAG_COPY and COPY_STRING remain distinct.",
+    "Native standard allocation uses the existing pi_simd scope and per-block retained native owner. The proposed entries add no allocator, guest JSON proxy, fake trace store, or new failure fallback."
+  ],
+  "bootstrap_analysis_review": [
+    {
+      "authority": "src/node_v8_platform-inl.h:23-62 and its full Initialize/Dispose bodies; current native_node_tracing_controller.cpp",
+      "finding": "Process observer metadata, first-enabled self-removal, and unreachable OnTraceDisabled are mapped correctly. Registration can call OnTraceEnabled immediately after releasing the controller mutex, so the observer must be fully formed before registration."
+    },
+    {
+      "authority": "src/node_v8_platform-inl.h Initialize/Dispose",
+      "finding": "The analysis preserves initialized state, Agent construction, global publication, process observer registration, default client/optional tracing start, and only then platform threads. Teardown clears global publication, resets the file client, shuts down/deletes the platform, destroys Agent, then observer; the allocation owner must outlive the complete sequence."
+    },
+    {
+      "authority": "src/env.cc:638-665,882-903,1041-1049 and src/env.h:467-481",
+      "finding": "The distinct Environment observer retains owns_process_state, can_call_into_js, principal realm, actual trace-category callback, native handle scope and verbose exception behavior. Registration/begin and observer-removal/end ordering are correctly separated from process observer behavior."
+    },
+    {
+      "authority": "src/tracing/traced_value.cc:20-111,209-259; src/util.cc:188-211; src/node_metadata.cc:99-204; src/node_process_object.cc:31-47",
+      "finding": "The future genuine native value/process-metadata owner is accurately scoped. Original I18N selection, string-name assumptions, double formatting, AsyncWrap ID-to-int narrowing, native immutable versions/release values, process-title growth/error behavior, and title metadata ordering remain explicit obligations."
+    },
+    {
+      "authority": "Pinned Main and SDK consumer-basis copies; src/async_wrap.cc and src/node_file.cc retained originals",
+      "finding": "The analysis distinguishes actual FileHandle ReadWrap and CloseReq identities, synchronous GC close events, before-callback live State use versus saved provider/ID after callback, and the two additive State reset/destroy positions. These adapters and insertions are mapped only; none is installed or validated by this packet."
+    }
+  ],
+  "recipe_review": {
+    "whole_before_sha256": "A42B1433A277097BE8FDC7E6A670FEDB94DC5CCC58397C6A864F1BC06206D20A",
+    "whole_after_sha256": "F59C17999269A0B82F780BCD8862FF6E834A95A1493B74CE2A83666D7D70016F",
+    "change": "Add src/extensions/native_node_tracing_event_api.cpp immediately after native_node_tracing_api.cpp in the one selected source list.",
+    "unchanged_live_recipe": true,
+    "explicit_shared_owners": [
+      "network",
+      "native_memory",
+      "diagnostic",
+      "abseil"
+    ],
+    "flags_owner": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\tools\\build_native_node_abseil.zig",
+      "bytes": 7328,
+      "sha256": "8053B6A69B570372A9A895787C66F76FF055A6225D333C5A55F8E307293AF9F1"
+    },
+    "release_selection": "The selected recipe flags include GNU C++20/no exceptions/no RTTI/no strict aliasing, and do not define DEBUG, NDEBUG or OFFICIAL_BUILD. This is a source selection statement, not a claim about an executed compiler or original V8 Debug behavior.",
+    "target_limit": "Windows/Linux/Darwin branches and shared owners remain separately admitted; the one member does not supply missing Darwin or composite owners."
+  },
+  "remaining_owners": [
+    "Genuine native TracedValue and typed EnvironmentArgs/AsyncWrapArgs/ProcessMeta factories with explicit I18N/header selection.",
+    "Native immutable process metadata/version/release owner and original process-title retrieval.",
+    "Exact native producer adapters and additive SDK State reset/destroy and Environment begin/end insertions.",
+    "One-shot process trace observer and process-single Agent/client/native-producer bootstrap and teardown owner.",
+    "Distinct Environment category observer with actual principal realm, owns_process_state, callback and verbose exception policy.",
+    "Complete composite source/link admission, selected target owners and actual compiler/native/concurrency/OS qualification.",
+    "Production fatal/stack bootstrap hook installation; no Node assert substitution."
+  ],
+  "blockers_in_finite_proposed_source": [],
+  "production_source_changes": 0,
+  "Main_modified": false,
+  "compiler_or_native_or_reference_execution": false,
+  "complete_tracing_qualification": false,
+  "source_mutation_hold_released": false
+}

@@ -1,0 +1,33 @@
+{
+  "sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__node_metadata.h.txt",
+      "source_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_metadata.h",
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_metadata.h",
+      "bytes": 5344,
+      "sha256": "015CAF56ACE2F631645BF8BB25C5B163D5050F0B0EB590A543051747C671789C",
+      "native_status": "ok",
+      "raw_notices_preserved": true
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__node_metadata.cc.txt",
+      "source_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_metadata.cc",
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_metadata.cc",
+      "bytes": 5422,
+      "sha256": "B145FC07B66176E4E93BFF4F752A666F21F3C8D26D7268171840FA8D37917F9B",
+      "native_status": "ok",
+      "raw_notices_preserved": true
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\authority\\src__node_process_methods.cc.txt",
+      "source_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_process_methods.cc",
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_process_methods.cc",
+      "bytes": 28464,
+      "sha256": "36888E7A5FC1BA740BEFFBE8A6C6DD0C8BEDC81A3BD52893BE96403790092622",
+      "native_status": "ok",
+      "raw_notices_preserved": true
+    }
+  ],
+  "native_fetch_receipt": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\metadata-native-fetch.json",
+  "native_fetch_receipt_sha256": "6D80BEB65B70CFF8A4D80F9D184C6172800DE6FE4E126AFCD3CB21BEC672781E"
+}

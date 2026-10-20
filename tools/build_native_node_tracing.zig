@@ -136,6 +136,7 @@ pub const sources = [_][]const u8{
     "src/extensions/native_node_tracing_agent.cpp",
     "src/extensions/native_node_tracing_clock.cpp",
     "src/extensions/native_node_tracing_api.cpp",
+    "src/extensions/native_node_tracing_event_api.cpp",
     "src/extensions/native_node_tracing_platform.cpp",
     "src/extensions/native_node_tracing_loop.cpp",
 };

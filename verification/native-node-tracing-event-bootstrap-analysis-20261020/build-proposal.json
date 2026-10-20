@@ -1,0 +1,27 @@
+{
+  "schema": "pi-zig.tracing-event-source-recipe-proposal.v1",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\original\\tools\\build_native_node_tracing.zig",
+    "bytes": 6147,
+    "sha256": "A42B1433A277097BE8FDC7E6A670FEDB94DC5CCC58397C6A864F1BC06206D20A"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\proposal\\tools\\build_native_node_tracing.zig",
+    "bytes": 6203,
+    "sha256": "F59C17999269A0B82F780BCD8862FF6E834A95A1493B74CE2A83666D7D70016F"
+  },
+  "live_source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\tools\\build_native_node_tracing.zig",
+  "edits": [
+    {
+      "before": "    \"src/extensions/native_node_tracing_api.cpp\",\n",
+      "after": "    \"src/extensions/native_node_tracing_api.cpp\",\n    \"src/extensions/native_node_tracing_event_api.cpp\",\n",
+      "occurrences_before": 1,
+      "occurrences_after": 1
+    }
+  ],
+  "whole_forward_exact": true,
+  "whole_inverse_exact": true,
+  "production_build_modified": false,
+  "new_translation_units": 1,
+  "execution_admitted": false
+}

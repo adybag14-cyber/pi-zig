@@ -1,0 +1,77 @@
+{
+  "schema": "pi-zig.tracing-event-consumer-basis.v1",
+  "main_head_read_before_and_after": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "main_writes": false,
+  "sdk_writes": false,
+  "source_only": true,
+  "snapshot_method": "Exact byte copies into this new analysis packet; every source reread unchanged before copy. No project code execution.",
+  "records": [
+    {
+      "kind": "main",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_async_wrap_make_callback.zig",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\consumer-basis\\main\\src\\extensions\\native_node_async_wrap_make_callback.zig",
+      "bytes": 3361,
+      "sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+    },
+    {
+      "kind": "main",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_async_wrap_state.zig",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\consumer-basis\\main\\src\\extensions\\native_node_async_wrap_state.zig",
+      "bytes": 26761,
+      "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "kind": "main",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_read.zig",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\consumer-basis\\main\\src\\extensions\\native_node_file_handle_read.zig",
+      "bytes": 14346,
+      "sha256": "733A1A3F86A2C2761181A4EE67FD679941AEE10F86CC1A44D4F18988C50922E1"
+    },
+    {
+      "kind": "main",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_process.zig",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\consumer-basis\\main\\src\\extensions\\native_process.zig",
+      "bytes": 6626,
+      "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+    },
+    {
+      "kind": "main",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\consumer-basis\\main\\src\\extensions\\engine.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    {
+      "kind": "sdk-owner-projected",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_async_wrap_state.zig",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\consumer-basis\\sdk-owner-projected\\src\\extensions\\native_node_async_wrap_state.zig",
+      "bytes": 28133,
+      "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1"
+    },
+    {
+      "kind": "sdk-owner-projected",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_callback_scope.zig",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\consumer-basis\\sdk-owner-projected\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+    },
+    {
+      "kind": "sdk-close-projected",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\projected\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\consumer-basis\\sdk-close-projected\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A"
+    },
+    {
+      "kind": "sdk-owner-production",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\production\\src\\extensions\\native_node_file_handle_gc_close.zig",
+      "snapshot": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\consumer-basis\\sdk-owner-production\\src\\extensions\\native_node_file_handle_gc_close.zig",
+      "bytes": 6402,
+      "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4"
+    }
+  ],
+  "sdk_owner_projection_manifest": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\proposal.json",
+  "sdk_owner_projection_manifest_sha256": "C195AE5D402ED457AF651D6BEB37B2BB8DBD3DF36CD74106EB172F00B64618FC",
+  "sdk_close_projection_manifest": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\proposal.json",
+  "sdk_close_projection_manifest_sha256": "BA6543E47B33A5D994AD097FBF0CBC58A6E35F262DF42FFE5909D9A736118319"
+}

@@ -1,0 +1,1758 @@
+{
+  "schema": "pi-zig.tracing-event-exact-source-intake-plan.v1",
+  "qualification": "Prepared worktree-only source intake. No production source application, staging, commit, compiler, native, reference, test or bootstrap action has occurred.",
+  "worktree": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018",
+  "branch": "work/modules-io-resume-20261018",
+  "expected_head": "5e4646ad8268fdfc8007691ccbda28b6d6985807",
+  "source_manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\manifest.json",
+    "bytes": 29093,
+    "sha256": "74315CAA31B176DCDAC1C2407C23CB2610E0E93FB8EA45F72B2E878B7A527893"
+  },
+  "content_path_count_excluding_this_manifest": 56,
+  "commit_path_count_including_this_manifest": 57,
+  "content_paths": [
+    {
+      "path": "src/extensions/native_node_tracing_event_api.h",
+      "kind": "new-production-source",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\proposal\\src\\extensions\\native_node_tracing_event_api.h",
+        "bytes": 3807,
+        "sha256": "454EE9ECD5E84795751A9D1826FCF18B52E3E43513CE70A200A5F41B01C7194F"
+      },
+      "expected_prior": "absent",
+      "bytes": 3807,
+      "sha256": "454EE9ECD5E84795751A9D1826FCF18B52E3E43513CE70A200A5F41B01C7194F"
+    },
+    {
+      "path": "src/extensions/native_node_tracing_event_api.cpp",
+      "kind": "new-production-source",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\proposal\\src\\extensions\\native_node_tracing_event_api.cpp",
+        "bytes": 5371,
+        "sha256": "8CD4D1AF43AF6C0F80304020EB1027C82F72C9B3BFCA68D72FBF0AB1506837EB"
+      },
+      "expected_prior": "absent",
+      "bytes": 5371,
+      "sha256": "8CD4D1AF43AF6C0F80304020EB1027C82F72C9B3BFCA68D72FBF0AB1506837EB"
+    },
+    {
+      "path": "tools/build_native_node_tracing.zig",
+      "kind": "exact-reviewed-recipe-member-edit",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\proposal\\tools\\build_native_node_tracing.zig",
+        "bytes": 6203,
+        "sha256": "F59C17999269A0B82F780BCD8862FF6E834A95A1493B74CE2A83666D7D70016F"
+      },
+      "expected_prior": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-bootstrap-analysis-20261020\\original\\tools\\build_native_node_tracing.zig",
+        "bytes": 6147,
+        "sha256": "A42B1433A277097BE8FDC7E6A670FEDB94DC5CCC58397C6A864F1BC06206D20A"
+      },
+      "bytes": 6203,
+      "sha256": "F59C17999269A0B82F780BCD8862FF6E834A95A1493B74CE2A83666D7D70016F"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/analysis.md",
+      "kind": "reviewed-source-packet",
+      "bytes": 19695,
+      "sha256": "48A86AC4C98115B83EDA9E07F55D28E6BF779268631F8292347B425590993462"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/Node-MIT-LICENSE-excerpt.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 2337,
+      "sha256": "EC62DC96DA0099B87F4511736C87309335527FB7031639493E06C95728DC8C54"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__async_wrap.cc.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 27043,
+      "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__env.cc.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 84987,
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__env.h.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 45315,
+      "sha256": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__node_file.cc.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__node_metadata.cc.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 5422,
+      "sha256": "B145FC07B66176E4E93BFF4F752A666F21F3C8D26D7268171840FA8D37917F9B"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__node_metadata.h.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 5344,
+      "sha256": "015CAF56ACE2F631645BF8BB25C5B163D5050F0B0EB590A543051747C671789C"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__node_process_methods.cc.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 28464,
+      "sha256": "36888E7A5FC1BA740BEFFBE8A6C6DD0C8BEDC81A3BD52893BE96403790092622"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__node_process_object.cc.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 8595,
+      "sha256": "301C1819A6CD59A48BD28F4C2252298137B6631CC33DDA0DDB55DD8067D48957"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__node_trace_events.cc.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 6763,
+      "sha256": "A621D1E86F742AE4605792A7BD516E817D604CE240DEDFA89409EC405921A6A5"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__node_v8_platform-inl.h.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 6045,
+      "sha256": "90F09737D3F80E58CC83D27DF48FEB07CE74BE657E750EC69C693876CB1CA55D"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__tracing__agent.cc.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 7763,
+      "sha256": "2F3B1134C2231CF3E1D0C63701685616FE532918A27E01C2334ECD01EBFB64EE"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__tracing__trace_event.cc.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 917,
+      "sha256": "C4A8E0EB89A2A2DE1A77C3B87BB784940E0BDD944354B354D6095A734D7097F2"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__tracing__trace_event.h.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 34423,
+      "sha256": "BD14C8D2C10225377540F5C594ECE93BC49D1041EB393D5D4ED48348513BFCFE"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__tracing__trace_event_common.h.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 67606,
+      "sha256": "F3BE0A8224D4F0653011E48B6941ED185872BFBA86A1C576408D079D78110383"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__tracing__traced_value.cc.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 6833,
+      "sha256": "D3090ECDF316735A388C1A38DB70396D6A1B91B0108D493E40D8B9E91AF91EF8"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__tracing__traced_value.h.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 3673,
+      "sha256": "6AF556F76F05858839929E5D1BBBF94372C4D31B3028F2956284704A721DC081"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__util.cc.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 32300,
+      "sha256": "5CCCE50BA4570EE147C259F45C30E16A81E33EC896332BE25E8BE9B0FD20563B"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/V8-LICENSE.txt",
+      "kind": "reviewed-source-packet",
+      "bytes": 3093,
+      "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority-bindings.json",
+      "kind": "reviewed-source-packet",
+      "bytes": 24269,
+      "sha256": "CC53F2F0CE2FBBE8CE5D74AA14F673B9376FF34055885B5B81A1AE92ED74A3D7"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/build-proposal.json",
+      "kind": "reviewed-source-packet",
+      "bytes": 1277,
+      "sha256": "3B7C750D5B671F63D141D3B337357EAB0A81FFE372C28F03C68EF12820067589"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/capture-consumer-basis.py",
+      "kind": "reviewed-source-packet",
+      "bytes": 3697,
+      "sha256": "0C5B47B12AAAA633DD7EA44E56EC65AC13E5D60700DC3A2B91B6B1F4C38D2035"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/checkpoint.json",
+      "kind": "reviewed-source-packet",
+      "bytes": 2310,
+      "sha256": "D50B5E7E75B1A28566BD170CE4860C18BA900E3AD9A39A4F9824BB252BC613F1"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/main/src/extensions/engine.zig",
+      "kind": "reviewed-source-packet",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/main/src/extensions/native_node_async_wrap_make_callback.zig",
+      "kind": "reviewed-source-packet",
+      "bytes": 3361,
+      "sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/main/src/extensions/native_node_async_wrap_state.zig",
+      "kind": "reviewed-source-packet",
+      "bytes": 26761,
+      "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/main/src/extensions/native_node_file_handle_read.zig",
+      "kind": "reviewed-source-packet",
+      "bytes": 14346,
+      "sha256": "733A1A3F86A2C2761181A4EE67FD679941AEE10F86CC1A44D4F18988C50922E1"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/main/src/extensions/native_process.zig",
+      "kind": "reviewed-source-packet",
+      "bytes": 6626,
+      "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/sdk-close-projected/src/extensions/native_node_file_handle_close_request.zig",
+      "kind": "reviewed-source-packet",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/sdk-owner-production/src/extensions/native_node_file_handle_gc_close.zig",
+      "kind": "reviewed-source-packet",
+      "bytes": 6402,
+      "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/sdk-owner-projected/src/extensions/native_node_async_wrap_state.zig",
+      "kind": "reviewed-source-packet",
+      "bytes": 28133,
+      "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/sdk-owner-projected/src/extensions/native_node_callback_scope.zig",
+      "kind": "reviewed-source-packet",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis.json",
+      "kind": "reviewed-source-packet",
+      "bytes": 5767,
+      "sha256": "CDCE815B22D3413209370231020BA2BB90B15DB47991644BBFE7C65C7452FB45"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/contained-source-reuse.json",
+      "kind": "reviewed-source-packet",
+      "bytes": 9633,
+      "sha256": "8F2301C1F2929DED358EED4BA6EA108EEB3AF42AEF7E112DA94ECD68BDEED86B"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/metadata-acquisition.json",
+      "kind": "reviewed-source-packet",
+      "bytes": 2228,
+      "sha256": "D0E1F3C400F5B8B7DA9BD2A3FB516B1C18EC60E2C25B8A636C4873DF2DAC41AA"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/metadata-native-fetch.json",
+      "kind": "reviewed-source-packet",
+      "bytes": 24424,
+      "sha256": "6D80BEB65B70CFF8A4D80F9D184C6172800DE6FE4E126AFCD3CB21BEC672781E"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/original/tools/build_native_node_tracing.zig",
+      "kind": "reviewed-source-packet",
+      "bytes": 6147,
+      "sha256": "A42B1433A277097BE8FDC7E6A670FEDB94DC5CCC58397C6A864F1BC06206D20A"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/process-object-acquisition.json",
+      "kind": "reviewed-source-packet",
+      "bytes": 533,
+      "sha256": "67832A539C39CCB02F4BBEBA4680ACC2D27CC6146CA33BE618BE1F69473FDAC6"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/process-object-native-fetch.json",
+      "kind": "reviewed-source-packet",
+      "bytes": 9433,
+      "sha256": "C9C95FB6482DF5CC9E9F5AD3A6F1A6274EA167AD10500DD28B8AB8FE70CF2CAB"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/proposal/src/extensions/native_node_tracing_event_api.cpp",
+      "kind": "reviewed-source-packet",
+      "bytes": 5371,
+      "sha256": "8CD4D1AF43AF6C0F80304020EB1027C82F72C9B3BFCA68D72FBF0AB1506837EB"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/proposal/src/extensions/native_node_tracing_event_api.h",
+      "kind": "reviewed-source-packet",
+      "bytes": 3807,
+      "sha256": "454EE9ECD5E84795751A9D1826FCF18B52E3E43513CE70A200A5F41B01C7194F"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/proposal/tools/build_native_node_tracing.zig",
+      "kind": "reviewed-source-packet",
+      "bytes": 6203,
+      "sha256": "F59C17999269A0B82F780BCD8862FF6E834A95A1493B74CE2A83666D7D70016F"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/seal-source-proposal.py",
+      "kind": "reviewed-source-packet",
+      "bytes": 9352,
+      "sha256": "8D4FC992B78840DC8674F132DCF167F22AFB6E3CA8C87AB05AE78011F79A05D7"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/source-body-audit.py",
+      "kind": "reviewed-source-packet",
+      "bytes": 8100,
+      "sha256": "1CEBFA1EB0F4BCEBAB5F6C4B57B5D8E03E78BCC20AAA46233ACF3D622E4D6BAB"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/source-body-proof.json",
+      "kind": "reviewed-source-packet",
+      "bytes": 13391,
+      "sha256": "F85B637262B70874FA47AAD44D15A0EE0DA50B2316C51DBC32AAB4B2F0498EED"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/traced-value-acquisition.json",
+      "kind": "reviewed-source-packet",
+      "bytes": 2084,
+      "sha256": "89F6F2E85D22EB87CD25A529D77F3A6AA535B7258446BFFFE1FCBCF98198755D"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/traced-value-native-fetch.json",
+      "kind": "reviewed-source-packet",
+      "bytes": 12590,
+      "sha256": "0195F74322280CD6DBF187DD8376E18568F4E6491F4A94591BE96D5E6B98459E"
+    },
+    {
+      "path": "verification/native-node-tracing-event-bootstrap-analysis-20261020/manifest.json",
+      "kind": "reviewed-source-packet",
+      "bytes": 29093,
+      "sha256": "74315CAA31B176DCDAC1C2407C23CB2610E0E93FB8EA45F72B2E878B7A527893"
+    },
+    {
+      "path": "verification/native-node-tracing-event-intake-sourceonly-20261020/peer/source-audit.py",
+      "kind": "independent-review-receipt",
+      "bytes": 11872,
+      "sha256": "547D2AE90BD269659FC9890F466886640D3EC069F0570B699E750656E3A362B2"
+    },
+    {
+      "path": "verification/native-node-tracing-event-intake-sourceonly-20261020/peer/source-audit.json",
+      "kind": "independent-review-receipt",
+      "bytes": 91194,
+      "sha256": "4105BECDD37708EA193888265CBDE918963E598CC0DD6070E63D45E711C025F6"
+    },
+    {
+      "path": "verification/native-node-tracing-event-intake-sourceonly-20261020/peer/peer.json",
+      "kind": "independent-review-receipt",
+      "bytes": 11447,
+      "sha256": "EAAFBAFBCE09905AC0A60C5812A2740784E10667466A2E696DB7E75C61973199"
+    },
+    {
+      "path": "verification/native-node-tracing-event-intake-sourceonly-20261020/root-peer/root-review.json",
+      "kind": "independent-review-receipt",
+      "bytes": 2688,
+      "sha256": "B0E128480DE51E719158636FB3993AAC79C7821696E6BF743A07F2CD9107CDCB"
+    }
+  ],
+  "commit_paths": [
+    "src/extensions/native_node_tracing_event_api.cpp",
+    "src/extensions/native_node_tracing_event_api.h",
+    "tools/build_native_node_tracing.zig",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/analysis.md",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority-bindings.json",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/Node-MIT-LICENSE-excerpt.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/V8-LICENSE.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__async_wrap.cc.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__env.cc.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__env.h.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__node_file.cc.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__node_metadata.cc.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__node_metadata.h.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__node_process_methods.cc.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__node_process_object.cc.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__node_trace_events.cc.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__node_v8_platform-inl.h.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__tracing__agent.cc.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__tracing__trace_event.cc.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__tracing__trace_event.h.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__tracing__trace_event_common.h.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__tracing__traced_value.cc.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__tracing__traced_value.h.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/authority/src__util.cc.txt",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/build-proposal.json",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/capture-consumer-basis.py",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/checkpoint.json",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis.json",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/main/src/extensions/engine.zig",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/main/src/extensions/native_node_async_wrap_make_callback.zig",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/main/src/extensions/native_node_async_wrap_state.zig",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/main/src/extensions/native_node_file_handle_read.zig",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/main/src/extensions/native_process.zig",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/sdk-close-projected/src/extensions/native_node_file_handle_close_request.zig",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/sdk-owner-production/src/extensions/native_node_file_handle_gc_close.zig",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/sdk-owner-projected/src/extensions/native_node_async_wrap_state.zig",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/consumer-basis/sdk-owner-projected/src/extensions/native_node_callback_scope.zig",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/contained-source-reuse.json",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/manifest.json",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/metadata-acquisition.json",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/metadata-native-fetch.json",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/original/tools/build_native_node_tracing.zig",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/process-object-acquisition.json",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/process-object-native-fetch.json",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/proposal/src/extensions/native_node_tracing_event_api.cpp",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/proposal/src/extensions/native_node_tracing_event_api.h",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/proposal/tools/build_native_node_tracing.zig",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/seal-source-proposal.py",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/source-body-audit.py",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/source-body-proof.json",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/traced-value-acquisition.json",
+    "verification/native-node-tracing-event-bootstrap-analysis-20261020/traced-value-native-fetch.json",
+    "verification/native-node-tracing-event-intake-sourceonly-20261020/manifest.json",
+    "verification/native-node-tracing-event-intake-sourceonly-20261020/peer/peer.json",
+    "verification/native-node-tracing-event-intake-sourceonly-20261020/peer/source-audit.json",
+    "verification/native-node-tracing-event-intake-sourceonly-20261020/peer/source-audit.py",
+    "verification/native-node-tracing-event-intake-sourceonly-20261020/root-peer/root-review.json"
+  ],
+  "manifest_self_path": "verification/native-node-tracing-event-intake-sourceonly-20261020/manifest.json",
+  "composition_counts": {
+    "new_live_candidate_sources": 2,
+    "reviewed_recipe_edit": 1,
+    "reviewed_packet_inventory": 48,
+    "reviewed_packet_manifest": 1,
+    "independent_peer_copies": 3,
+    "root_peer_copy": 1,
+    "this_intake_manifest": 1
+  },
+  "exact_recipe_delta": [
+    {
+      "before": "    \"src/extensions/native_node_tracing_api.cpp\",\n",
+      "after": "    \"src/extensions/native_node_tracing_api.cpp\",\n    \"src/extensions/native_node_tracing_event_api.cpp\",\n",
+      "occurrences_before": 1,
+      "occurrences_after": 1
+    }
+  ],
+  "whole_recipe_forward_inverse_exact": true,
+  "recipe_protected_membership": {
+    "tracked_clean_at_expected_head": true,
+    "preserved_tracked_dirty": false,
+    "preserved_old_drafts": false,
+    "preserved_other_untracked": false,
+    "earlier_platform_manifest_live_recipe_pin": "A42B1433A277097BE8FDC7E6A670FEDB94DC5CCC58397C6A864F1BC06206D20A",
+    "selected_successor": "F59C17999269A0B82F780BCD8862FF6E834A95A1493B74CE2A83666D7D70016F",
+    "historic_pin_handling": "The earlier source packet and event original/recipe snapshot retain exact predecessor bytes. Applying this declared recipe edit evolves only its clean live path; earlier snapshot records remain immutable and retain their original-time meaning."
+  },
+  "peer_copy_equalities": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-tracing-event-bootstrap-source-peer-20261020\\source-audit.py",
+        "bytes": 11872,
+        "sha256": "547D2AE90BD269659FC9890F466886640D3EC069F0570B699E750656E3A362B2"
+      },
+      "copy": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-intake-sourceonly-20261020\\peer\\source-audit.py",
+        "bytes": 11872,
+        "sha256": "547D2AE90BD269659FC9890F466886640D3EC069F0570B699E750656E3A362B2"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-tracing-event-bootstrap-source-peer-20261020\\source-audit.json",
+        "bytes": 91194,
+        "sha256": "4105BECDD37708EA193888265CBDE918963E598CC0DD6070E63D45E711C025F6"
+      },
+      "copy": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-intake-sourceonly-20261020\\peer\\source-audit.json",
+        "bytes": 91194,
+        "sha256": "4105BECDD37708EA193888265CBDE918963E598CC0DD6070E63D45E711C025F6"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-tracing-event-bootstrap-source-peer-20261020\\peer.json",
+        "bytes": 11447,
+        "sha256": "EAAFBAFBCE09905AC0A60C5812A2740784E10667466A2E696DB7E75C61973199"
+      },
+      "copy": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-intake-sourceonly-20261020\\peer\\peer.json",
+        "bytes": 11447,
+        "sha256": "EAAFBAFBCE09905AC0A60C5812A2740784E10667466A2E696DB7E75C61973199"
+      }
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-tracing-event-source-review-20261020.json",
+        "bytes": 2688,
+        "sha256": "B0E128480DE51E719158636FB3993AAC79C7821696E6BF743A07F2CD9107CDCB"
+      },
+      "copy": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-event-intake-sourceonly-20261020\\root-peer\\root-review.json",
+        "bytes": 2688,
+        "sha256": "B0E128480DE51E719158636FB3993AAC79C7821696E6BF743A07F2CD9107CDCB"
+      }
+    }
+  ],
+  "preserved_historical_sets": {
+    "preserved_tracked_dirty": {
+      "src/extensions/native_node_commonjs_find_path.zig": {
+        "bytes": 16138,
+        "sha256": "C1757023F280540739C26E9B5ABDA20247BBAEA62090CF0182D22D8D5B03A905"
+      },
+      "src/extensions/native_node_commonjs_packages.zig": {
+        "bytes": 18815,
+        "sha256": "AD783AADCA1E2612923B572F14BB229A800688D10AB4BFAF0EFE992987AFC408"
+      },
+      "src/extensions/native_node_commonjs_prototype.zig": {
+        "bytes": 16761,
+        "sha256": "9B7CA2D8AD065D54EF79ED044D9F4B7C28ABAEA6F65032597112BBAB83030FA5"
+      },
+      "src/extensions/native_node_commonjs_resolve_filename.zig": {
+        "bytes": 20345,
+        "sha256": "CF0F6263E8FE493374268E37102485AF038370F14F8F4AB2A0A85BDE157E82DB"
+      },
+      "src/extensions/native_node_commonjs_state.zig": {
+        "bytes": 5479,
+        "sha256": "5EE557ECBD55B44FF9FF31E40B46F2AF61742B304770FCE66B71D9EF4A74CA66"
+      },
+      "src/extensions/native_node_commonjs_try_files.zig": {
+        "bytes": 13196,
+        "sha256": "66C1356C7F8379BF211E0DC2E11BB9243C2D9AE6B56AB821780445593ED89E92"
+      },
+      "src/extensions/native_node_object_spread.zig": {
+        "bytes": 3009,
+        "sha256": "B642836E0D32EC69A4F8FB56C375599F5BA1B6492C70CE29F56A1AB2219DE59D"
+      }
+    },
+    "preserved_old_drafts": {
+      "src/extensions/native_node_tracing_core.hpp": {
+        "bytes": 9947,
+        "sha256": "C41AA33C90695AE0CD3887C052E7FD40E950CE917B808313C392848EA66B7F53"
+      },
+      "src/extensions/native_node_tracing_core.cpp": {
+        "bytes": 11560,
+        "sha256": "3C4E500BE25DFD39FC93BFFB61A137CDB4AED95862716413367B85B7E68D5332"
+      },
+      "src/extensions/native_node_tracing_controller.hpp": {
+        "bytes": 3193,
+        "sha256": "03B722CC934185543B960EDB5CBEE537786C5C920416E80B019A0B5B481CAB83"
+      },
+      "src/extensions/native_node_tracing_controller.cpp": {
+        "bytes": 10371,
+        "sha256": "B80F6BEB5D4B3848214569FF0D871D38C62BC5AEC3D35F9BC8BEEE5B64E8D0BC"
+      },
+      "src/extensions/native_node_tracing_buffer.hpp": {
+        "bytes": 2192,
+        "sha256": "3F3A289C1C695AF7BB7A84E1BFC08B2BA6D823D513AEF26C864CF10F94397B32"
+      },
+      "src/extensions/native_node_tracing_buffer.cpp": {
+        "bytes": 6679,
+        "sha256": "F8AF213F5F5CEB903651CA0B8D91F2437DE48D1A91E96F1C243FF55FDEEBCB2F"
+      },
+      "src/extensions/native_node_tracing_writer.hpp": {
+        "bytes": 2197,
+        "sha256": "A4B15B27A91E5FDDF986B59C7D3C94D595E1C843F4A732484534A3DF31E53376"
+      },
+      "src/extensions/native_node_tracing_writer.cpp": {
+        "bytes": 8571,
+        "sha256": "DB994685F7E370ACF1C3423E76DB36E7C37F74DEA48F4B3EF98CFCD36FF08893"
+      },
+      "src/extensions/native_node_tracing_agent.hpp": {
+        "bytes": 7114,
+        "sha256": "D7B4F316372F7897E325108D84C2D5645CD49AB718FADC3B152328E3CE82B016"
+      },
+      "src/extensions/native_node_tracing_agent.cpp": {
+        "bytes": 8689,
+        "sha256": "14BAE7F832AA2DCFA839C652173D9B13D8E4A380F317C1B34160BCF353BB58B0"
+      }
+    },
+    "preserved_other_untracked": {
+      "src/extensions/native_node_check_failure.zig": {
+        "bytes": 1788,
+        "sha256": "E4C368A322B65340D70C7F48153CA898ECF0290A47696823AA557876775E114E"
+      },
+      "src/extensions/native_node_commonjs_stat.zig": {
+        "bytes": 8759,
+        "sha256": "9A0129DC3E1ACD7035CFF0EF340B47E404032B6FA8F57B081B5A3D499864C70F"
+      },
+      "src/extensions/native_node_inspect_colors.zig": {
+        "bytes": 10301,
+        "sha256": "0927127D486C82318886E5DE147229B3885A7E98DCA97DD011C554A0FBAB2D41"
+      },
+      "src/extensions/native_node_modules_binding_data.zig": {
+        "bytes": 9778,
+        "sha256": "E5FA24C354EB890026675EBD841432EC552F4E73ECCC8EDEB06B30DDFFCAF538"
+      },
+      "src/extensions/native_node_package_json_cache.zig": {
+        "bytes": 7658,
+        "sha256": "5DF03B411D7BF2945999966B003A8E8B693625150CB962A1DA17EBC3B9ABBFC8"
+      },
+      "src/extensions/native_node_package_json_error.zig": {
+        "bytes": 3069,
+        "sha256": "E647A52B7C940BA83285592DA67ADC3273995BDAE10E1C336787942537383CA1"
+      },
+      "src/extensions/native_node_package_json_frontend.zig": {
+        "bytes": 18426,
+        "sha256": "C88348EC6F4B1F5233CD704F8F4A750BE745FB8B98C88AB3FBD39D436C8631D8"
+      },
+      "src/extensions/native_node_package_json_io.zig": {
+        "bytes": 3515,
+        "sha256": "102A224F6EAA9BF57533BAEECB549ADB8815ABE63A49D68725349FE1568B6259"
+      },
+      "src/extensions/native_node_package_json_values.zig": {
+        "bytes": 3175,
+        "sha256": "603FC5166E320E58833BAFCCE1312A92372C89BF4E7E58D4D810CC037B130C2A"
+      },
+      "src/extensions/native_node_tracing_agent.cpp": {
+        "bytes": 8689,
+        "sha256": "14BAE7F832AA2DCFA839C652173D9B13D8E4A380F317C1B34160BCF353BB58B0"
+      },
+      "src/extensions/native_node_tracing_agent.hpp": {
+        "bytes": 7114,
+        "sha256": "D7B4F316372F7897E325108D84C2D5645CD49AB718FADC3B152328E3CE82B016"
+      },
+      "src/extensions/native_node_tracing_buffer.cpp": {
+        "bytes": 6679,
+        "sha256": "F8AF213F5F5CEB903651CA0B8D91F2437DE48D1A91E96F1C243FF55FDEEBCB2F"
+      },
+      "src/extensions/native_node_tracing_buffer.hpp": {
+        "bytes": 2192,
+        "sha256": "3F3A289C1C695AF7BB7A84E1BFC08B2BA6D823D513AEF26C864CF10F94397B32"
+      },
+      "src/extensions/native_node_tracing_controller.cpp": {
+        "bytes": 10371,
+        "sha256": "B80F6BEB5D4B3848214569FF0D871D38C62BC5AEC3D35F9BC8BEEE5B64E8D0BC"
+      },
+      "src/extensions/native_node_tracing_controller.hpp": {
+        "bytes": 3193,
+        "sha256": "03B722CC934185543B960EDB5CBEE537786C5C920416E80B019A0B5B481CAB83"
+      },
+      "src/extensions/native_node_tracing_core.cpp": {
+        "bytes": 11560,
+        "sha256": "3C4E500BE25DFD39FC93BFFB61A137CDB4AED95862716413367B85B7E68D5332"
+      },
+      "src/extensions/native_node_tracing_core.hpp": {
+        "bytes": 9947,
+        "sha256": "C41AA33C90695AE0CD3887C052E7FD40E950CE917B808313C392848EA66B7F53"
+      },
+      "src/extensions/native_node_tracing_writer.cpp": {
+        "bytes": 8571,
+        "sha256": "DB994685F7E370ACF1C3423E76DB36E7C37F74DEA48F4B3EF98CFCD36FF08893"
+      },
+      "src/extensions/native_node_tracing_writer.hpp": {
+        "bytes": 2197,
+        "sha256": "A4B15B27A91E5FDDF986B59C7D3C94D595E1C843F4A732484534A3DF31E53376"
+      },
+      "src/extensions/native_public_template_literal.zig": {
+        "bytes": 1246,
+        "sha256": "0A3366E1F76152C9D771F81E074EB08948C7C188AED1109FE1EAACFC6AC74EE3"
+      },
+      "src/extensions/native_sdk_guest_operation.zig": {
+        "bytes": 7009,
+        "sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C"
+      },
+      "verification/controller-v21-process-ancestry-peer-20261020/auditor-receipt.json": {
+        "bytes": 1953,
+        "sha256": "4DF116DD6B13DD51C3F13664C08BD0536971583C2064BACC009DDF10E4F6DC51"
+      },
+      "verification/controller-v21-process-ancestry-peer-20261020/receipt.json": {
+        "bytes": 3241,
+        "sha256": "F16CA88D4FB3E66B1B2A907526740FE038CBAA43C1FF70288E4680B7F0D55531"
+      },
+      "verification/native-backing-store-adoption-source-peer-20261020/receipt.json": {
+        "bytes": 6824,
+        "sha256": "A7A0134BEE42196D933C999222BD16638D3E479BFF33CE0DD26A237654700B76"
+      },
+      "verification/native-backing-v28-field-source-peer-20261020/receipt.json": {
+        "bytes": 3452,
+        "sha256": "A3299E55481D1BE1833ED9A3787062407AFB17C19197DD432E691418C48022D0"
+      },
+      "verification/native-composed-foundation-build-source-peer-20261020/receipt.json": {
+        "bytes": 8275,
+        "sha256": "212509F6AAF5E43A29E892C0E85E32BF7DD526B94921EDA324F57AB3398BDFD3"
+      },
+      "verification/native-constructor-name-source-peer-20261020/authority/v8-js-objects-acquisition.json": {
+        "bytes": 597,
+        "sha256": "62FE9062E0110D9A18CE544DAD3B07228C736CB13EF132DFC4347A38FE89B7D6"
+      },
+      "verification/native-constructor-name-source-peer-20261020/authority/v8-js-objects.def0.cc": {
+        "bytes": 234488,
+        "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480"
+      },
+      "verification/native-constructor-name-source-peer-20261020/class-constructor-inference-proof.json": {
+        "bytes": 12628,
+        "sha256": "ABC4C4DA042F4150E743415272B97A24607ABB1BEAFF610735FFF258E0101BF1"
+      },
+      "verification/native-constructor-name-source-peer-20261020/descriptor-proof.json": {
+        "bytes": 28383,
+        "sha256": "E8CFF738FDBEF66011BD28A5DFF5EAE4C814A8761766213C5FC262654DF9D37D"
+      },
+      "verification/native-constructor-name-source-peer-20261020/function-prototype-define-proof.json": {
+        "bytes": 45957,
+        "sha256": "4EDD4BD1A57949B3D1DB76F510453862142C1C68CAC180AB193C9F71D386F735"
+      },
+      "verification/native-constructor-name-source-peer-20261020/lazy-eager-name-proof.json": {
+        "bytes": 41221,
+        "sha256": "6BAAD2FC70903AC3AABF10358C15804D3C0408CD2B565CE6A79EA78560DC28C7"
+      },
+      "verification/native-constructor-name-source-peer-20261020/parser-name-proof.json": {
+        "bytes": 48019,
+        "sha256": "D6AE303910D52251E45863B75504C9DE8E8CF94B3DBC464C8E92A19CA737671C"
+      },
+      "verification/native-diagnostic-context-build-source-peer-20261020/receipt.json": {
+        "bytes": 3290,
+        "sha256": "134F6EEE39CE8673645E3EDE2966BAC040278422EF21D8EF82B5213FB72C2DFC"
+      },
+      "verification/native-diagnostic-v26-controller-source-peer-20261020/receipt.json": {
+        "bytes": 5719,
+        "sha256": "92F1CAD5A10B977FB64C11F65556554A0C7F6B0729BD52C0D2DE905E1FA51AEC"
+      },
+      "verification/native-error-stack-message-prerequisite-source-peer-20261020/receipt.json": {
+        "bytes": 12626,
+        "sha256": "EE9AE43FB142971E98DB3C8362BEC4B08A4D9E11900C12A144F7C6D6E24B3BA9"
+      },
+      "verification/native-exotic-operation-guards-source-peer-20261020/controls-build-receipt.json": {
+        "bytes": 7851,
+        "sha256": "3EB90DBA022EFF2FB731622D5AEB6156CA9352B5796ED3E94BB6FABD3216A96B"
+      },
+      "verification/native-exotic-operation-guards-source-peer-20261020/flags-receipt.json": {
+        "bytes": 4033,
+        "sha256": "9CA98D167B32524E28B98695824C1A2C5586F843406F0F7F38DBC323821CB43A"
+      },
+      "verification/native-file-handle-read-controls-source-peer-20261020/layering-audit-attempt1.json": {
+        "bytes": 669,
+        "sha256": "249F2619A653663A70F026DD1D706CD3AC277149637B7E3415388C1E025FBD92"
+      },
+      "verification/native-file-handle-read-controls-source-peer-20261020/layering-audit.json": {
+        "bytes": 15712,
+        "sha256": "272C89E90A7362859C05AC290C6FCD1E8C34C25B729B8027FA677EC8680B2EA2"
+      },
+      "verification/native-file-handle-read-controls-source-peer-20261020/layering-audit.py": {
+        "bytes": 7636,
+        "sha256": "C8511CA7218387E8BCF0B7EAC95E4A7528E4EBC3F0DDF97F2A887AAC90F70754"
+      },
+      "verification/native-file-handle-read-controls-source-peer-20261020/original/layering-audit-before-path-correction.py": {
+        "bytes": 7631,
+        "sha256": "217E9986361C0F9703C2EC82FD554931D64417E8B58C667E3420B492E6F489AE"
+      },
+      "verification/native-file-handle-read-controls-source-peer-20261020/peer.json": {
+        "bytes": 31460,
+        "sha256": "17C2996FB8751E5DA2AD28D2AF1784DBE93CEFBB5A707630A3D386750E5DB505"
+      },
+      "verification/native-file-handle-read-controls-source-peer-20261020/seal-peer.py": {
+        "bytes": 18886,
+        "sha256": "09080E6FB9C621F43521218CD56108615D9B8BDEDECA5475D9D67FAE812AC9D8"
+      },
+      "verification/native-file-handle-readwrap-constructor-source-peer-20261020/receipt.json": {
+        "bytes": 5759,
+        "sha256": "544590E618D14673F27118EF9D2712576F7C1FF5AF5B7B382386A34BCC035841"
+      },
+      "verification/native-fs-owner-v26-shadow-source-peer-20261020/receipt.json": {
+        "bytes": 2389,
+        "sha256": "C1A19CFB00C9549B5521CC611A33345804345E0785F77575D801BDC5F32B9460"
+      },
+      "verification/native-fs-readwrap-reuse-source-peer-20261020/controls-build-receipt.json": {
+        "bytes": 4891,
+        "sha256": "E1920D9DC0144934C2EC854E742DAD079751520BC69A087575DB2D5160F802F2"
+      },
+      "verification/native-fs-readwrap-reuse-source-peer-20261020/receipt.json": {
+        "bytes": 3666,
+        "sha256": "E268814E80C4E38AE4C7783C1DEB430E9DEF0F903F9C765CDEA3032154C414E3"
+      },
+      "verification/native-fsreqcallback-template-source-peer-20261020/peer.json": {
+        "bytes": 16889,
+        "sha256": "3E2950011B1B5492A91AFB73B111ABD79F4B8D93FC31038C92C7D2EDC6E7DC52"
+      },
+      "verification/native-global-cell-source-peer-20261019/local-get-source.json": {
+        "bytes": 20894,
+        "sha256": "4CC038CC2C8EC0ABF47D05352D7792D0CA8EF197B98DDD44941C0D8D52D2ED28"
+      },
+      "verification/native-host-termination-controls-source-peer-20261020/receipt.json": {
+        "bytes": 2880,
+        "sha256": "839B52FF5E525225313F450F5C44C233233D41A4BDBD526671AA7126E619CBC0"
+      },
+      "verification/native-managed-buffers-container-source-peer-20261020/controls-build-receipt.json": {
+        "bytes": 3312,
+        "sha256": "673F5A4069BFB16C7747454C74F74C02CE9A76BC4C208CAEE1BA2E2626213E9B"
+      },
+      "verification/native-managed-buffers-container-source-peer-20261020/receipt.json": {
+        "bytes": 2884,
+        "sha256": "C709F72911383CA9CA4E8E8A654FCEED1F44979CA667DDC188DF19819C3E2E43"
+      },
+      "verification/native-message-stack-owner-source-peer-20261020/controls-build-receipt.json": {
+        "bytes": 6979,
+        "sha256": "8E97C8E89CEE3C0A76D7004432D45A8E0407C24726195128C203CA39A23DE42A"
+      },
+      "verification/native-message-stack-owner-source-peer-20261020/receipt.json": {
+        "bytes": 5593,
+        "sha256": "6BD9D711A961D7C4AA2427C247AA745914023FCBF9417A4787571FA71E6DD7E6"
+      },
+      "verification/native-next-foundation-build-source-peer-20261020/anonymous-controls-source-peer.json": {
+        "bytes": 225975,
+        "sha256": "19B626D2E14982325A6DA7DA9A0427001597D38B7CACB24E72DB4F1926F5F70E"
+      },
+      "verification/native-next-foundation-build-source-peer-20261020/artifact-default-source-peer.json": {
+        "bytes": 14472,
+        "sha256": "6041970EDBC9CC21E33340520ED5DA34A1BF3243235F991B5E3553BAF8759110"
+      },
+      "verification/native-next-foundation-build-source-peer-20261020/attempt1-count-negative.json": {
+        "bytes": 837,
+        "sha256": "67144C78EEF44AA808EB1758E4F5271D841E6DD26DD84D73B421A7165372C890"
+      },
+      "verification/native-next-foundation-build-source-peer-20261020/receipt.json": {
+        "bytes": 7933,
+        "sha256": "7FA32682E6E7FBF02F718157A9CA95630706E3B2EF719E739F8F02A55B474371"
+      },
+      "verification/native-node-abort-option-peer-20261020/receipt.json": {
+        "bytes": 5892,
+        "sha256": "9133E2976F1C09C64291ACC6C343B18CDD9814A4C1059CCE7A2A5C9C10554BEA"
+      },
+      "verification/native-node-environment-os-sourceonly-20261020/engine-process-proposal.json": {
+        "bytes": 33504,
+        "sha256": "1D08388C4D44BE6FACAA191612DF53B994CDD96D7702966555181FE517FDA67E"
+      },
+      "verification/native-node-environment-os-sourceonly-20261020/peers/process-env-operation-prerequisite-peer.json": {
+        "bytes": 10749,
+        "sha256": "6067F94F050CB80744C022CB17166654E768AE627F77525AC8DDAD2653A1A004"
+      },
+      "verification/native-node-environment-os-sourceonly-20261020/process-env-exotic-flags-prerequisite.json": {
+        "bytes": 20821,
+        "sha256": "C9901F29DC414F19CF34BDFF3F87647FF33E23E30CE8AF3FEF221EA62DA7E26C"
+      },
+      "verification/native-node-environment-os-sourceonly-20261020/process-env-integrity-prerequisite.json": {
+        "bytes": 14668,
+        "sha256": "48D3AE0372949C22E651EFEB7AD92CBE406F89A1D3436D10E37114479325D16C"
+      },
+      "verification/native-node-environment-os-sourceonly-20261020/trace-env-original-nonterminal-rules.json": {
+        "bytes": 10065,
+        "sha256": "8C84E5CC132C637EFCA7E7CE162885C6614FF7658CB40A5376A7C39F85890F3C"
+      },
+      "verification/native-node-nonterminal-stack-source-peer-20261020/receipt.json": {
+        "bytes": 3742,
+        "sha256": "19B1A22BEAD5B1CB7510427C696AD6A02A48A6AD13207EA23778FA9A1856FB54"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/abseil-initial-acquisition-plan.json": {
+        "bytes": 3555,
+        "sha256": "822711A2528C0BE34FE1D9EBC352B725150F1159EA0B1E1C72CBE24A4D72DB77"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/agent-writer-component.json": {
+        "bytes": 8279,
+        "sha256": "67BE46A0A376BE01A765197C7FE9D063A0BF0D2DE4D70A75E182A2FE28D59D22"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/acquisition.json": {
+        "bytes": 4836,
+        "sha256": "4B099A8F518EE9328E1949B09938C6E52DB5E18444175034D4102BCD6068D6B2"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/deps__v8__third_party__abseil-cpp__LICENSE": {
+        "bytes": 11361,
+        "sha256": "C79A7FEA0E3CAC04CD43F20E7B648E5A0FF8FA5344E644B0EE09CA1162B62747"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/deps__v8__third_party__abseil-cpp__absl__base__internal__low_level_alloc.cc": {
+        "bytes": 23038,
+        "sha256": "15335878E3A42C52BEF27E86BECC3DEF962B0DE7365D7B9A153F5B8E0601C76D"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/deps__v8__third_party__abseil-cpp__absl__base__internal__low_level_alloc.h": {
+        "bytes": 4718,
+        "sha256": "01852293051647A19798FA0EF3DA90E82E4EC8F899297A8D96072DC4BB7DF2AB"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/deps__v8__third_party__abseil-cpp__absl__synchronization__BUILD.bazel": {
+        "bytes": 9878,
+        "sha256": "E625C000DF6655C90280A3664F906802767AB8198F156CE0B2C42C0CB5930099"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/deps__v8__third_party__abseil-cpp__absl__synchronization__mutex.cc": {
+        "bytes": 117966,
+        "sha256": "F885F93AE398B0C511BBD79497F2019603BF4880E267D01DB4922C23BCAD6740"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/deps__v8__third_party__abseil-cpp__absl__synchronization__mutex.h": {
+        "bytes": 49247,
+        "sha256": "BF211821EE59511EEC29137EEC3B81323BA633A7A79B45E02699474F63933DFC"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/tools__v8_gypfiles__abseil.gyp": {
+        "bytes": 22346,
+        "sha256": "827CCF3AC3DD6E5B5094B4D199EB332EC75ABE478E6B4C7EA150A23221AA3C40"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/absl__base__internal__thread_identity.cc": {
+        "bytes": 6586,
+        "sha256": "15ADD2981DD37BD509DDACD063745C339E0D15169A6D16EFFB8DA91DB5BD8B6C"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/absl__base__internal__thread_identity.h": {
+        "bytes": 11501,
+        "sha256": "4AB0597E24501F9EF77D55AFDEB2B227AD787CEE41773AB2A1E9A34240E3FC20"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/absl__synchronization__internal__create_thread_identity.cc": {
+        "bytes": 5895,
+        "sha256": "B79720EE203F80AB447BC93C5A21A39BE902B0EC5899B177C41D6272728BF0C2"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/absl__synchronization__internal__futex_waiter.cc": {
+        "bytes": 3545,
+        "sha256": "C082F4E0D690B214AA53177E2BDDCD6FA290046A84B4068BE40E6403498E3684"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/absl__synchronization__internal__per_thread_sem.cc": {
+        "bytes": 3877,
+        "sha256": "157058C93C415FEFFB562002D51F9946E3A18F347D23E3C7423FBA8DFCB32B43"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/absl__synchronization__internal__waiter.h": {
+        "bytes": 2462,
+        "sha256": "6AD9C13FDD0972908E01FB394C002CD17E1B6AFBF6248C454938F82CF4945394"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/absl__synchronization__internal__win32_waiter.cc": {
+        "bytes": 4847,
+        "sha256": "8AB262FEC4937BA44E46994A1CEA87B4EA9DD7E58AFC85B1465F80B9DFC3C796"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/acquisition.json": {
+        "bytes": 4854,
+        "sha256": "8F7E8DBE08499C0CF83E704501CC186CE939A4492236AC1B32394C1389213A06"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/deps__v8__include__libplatform__v8-tracing.h.txt": {
+        "bytes": 11054,
+        "sha256": "57C1D3C4EA4DB2E0AF7790105A82C21719DD48CBC4B17232981645AB981DFCCC"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/deps__v8__src__libplatform__tracing__trace-buffer.cc.txt": {
+        "bytes": 3539,
+        "sha256": "785F47A04460FC9567B1832275498855A02959D9E0405CBC676D1B7028DC02D6"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/deps__v8__src__libplatform__tracing__trace-buffer.h.txt": {
+        "bytes": 1539,
+        "sha256": "2DF1BB151FE87B693FB6A1B3AB58B3B4A94E88E1E6376D37B7C68E80C7E9AA6F"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/deps__v8__src__libplatform__tracing__trace-config.cc.txt": {
+        "bytes": 1174,
+        "sha256": "9D6BE6C50FD475486B82ACAAFE9998BD4CD237B7C60154B1B1DF5678DC0EEB60"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/deps__v8__src__libplatform__tracing__trace-object.cc.txt": {
+        "bytes": 4532,
+        "sha256": "8312AB18B094B37D99B88DAB669562D535D1632C3E039485E4AE969884FFF062"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/deps__v8__src__libplatform__tracing__trace-writer.cc.txt": {
+        "bytes": 7052,
+        "sha256": "8E12C3F0978C3E152285F411013A27932A746B13A7A9F0E9FED171EC54002E3E"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/deps__v8__src__libplatform__tracing__trace-writer.h.txt": {
+        "bytes": 1326,
+        "sha256": "C3B92D03DEE9F57BA2BC21FC05059C250C405044A4462F49B1D4848832F5F714"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/libcxx-ios.cpp.txt": {
+        "bytes": 12181,
+        "sha256": "1C26A8FE9E565AF612953459C6F0F3E4A2A9ABDE47F76AB5EECFF470812C1DFE"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/libcxx-num.h.txt": {
+        "bytes": 37723,
+        "sha256": "4AA5AF94F28E2A2A62DC216F7E1C27C9685B5149783DAC0F942E6F4E541D6501"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/libcxx-sstream.txt": {
+        "bytes": 56101,
+        "sha256": "10D4DACCF7B7B164C0D51C6676D1AA6997318C76B115F4EA248C903511AF0A19"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/libcxx-string.cpp.txt": {
+        "bytes": 13865,
+        "sha256": "C3005540D04E444F7F3FE8BAAB65E8D0CE1BCA89794B6387F414C3F90E0A1C55"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/src__node_mutex.h.txt": {
+        "bytes": 7963,
+        "sha256": "79FC7058F5380DA98638682684E77F72D4B413753C0BECD621B0D0E2F69600E5"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/src__tracing__node_trace_buffer.cc.txt": {
+        "bytes": 6606,
+        "sha256": "ECEFCDDBFEE7509E8769C2D59A7BAF669FA72EE6A5B6A0D3666A7A974EA1B495"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/src__tracing__node_trace_buffer.h.txt": {
+        "bytes": 2336,
+        "sha256": "88DB456B71B2A73BE49038F2264BD62E93BA2063F42DBB5396AA7BADD4962E8A"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/src__tracing__node_trace_writer.cc.txt": {
+        "bytes": 7678,
+        "sha256": "4D8641B72B66496DE0BECD7A956BC29907AD56881F23B3DAD8EFB8439722AFCA"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/src__tracing__node_trace_writer.h.txt": {
+        "bytes": 2274,
+        "sha256": "E27FA928DCCBB5392D193CF7ABEA7CFEC66B31C6092ADAEDEB69A97BB26B5B11"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/authority/util-containerof-check-excerpts.json": {
+        "bytes": 17470,
+        "sha256": "B4B58BD0E14EA8DB779B19DC0EE0443A69C52DAE0BFB8095FB8F69E9002F31A5"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/controller-buffer-component.json": {
+        "bytes": 24867,
+        "sha256": "C7FED89164C45B8F39AB95ACA95480A3247176F49FAD349029978E6D73C65017"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/core-component.json": {
+        "bytes": 64840,
+        "sha256": "565A2FD8F7D7D90F7863643A2B2BA8E005865525AD5041D2F65A4F2E2F14C3D0"
+      },
+      "verification/native-node-tracing-sourceonly-20261020/sdk-core-algorithm-peer.json": {
+        "bytes": 4319,
+        "sha256": "BED25F3D8C83392C24F33D45C8C21F8B4FD34512422D7A5809CA53E347F98E9A"
+      },
+      "verification/native-nonterminal-js-stack-source-peer-20261020/node-capture-encoding-receipt.json": {
+        "bytes": 22283,
+        "sha256": "41742D2663777B54169683665C2B638016BE5443F9645859EEF57EB2C1225575"
+      },
+      "verification/native-package-json-binding-sourceonly-20261020/authority/native-package-error-source.json": {
+        "bytes": 16453,
+        "sha256": "F4CE26EDD850F5F3982E3D03D393F473E7FA9DDD12B74A97ECEC554E09F3749C"
+      },
+      "verification/native-process-warning-source-peer-20261020/initial-control-peer.json": {
+        "bytes": 4158,
+        "sha256": "2C1F4BE73EC206102BB016001BA605E1F8E41013DBFE1EE5BF0D2768A0DF6F4A"
+      },
+      "verification/native-process-warning-source-peer-20261020/successor-peer.json": {
+        "bytes": 2572,
+        "sha256": "6FAA2551564D2D724846AC4A8B758A3439C0E18F541E8A2F58849160EB7081D0"
+      },
+      "verification/native-reqwrap-callback-routing-source-peer-20261020/controls-build-receipt.json": {
+        "bytes": 5135,
+        "sha256": "FAADE9F861FA49D2B1C3BFA58319845E66BD6D905D01685E732A8EC696853F3E"
+      },
+      "verification/native-reqwrap-callback-routing-source-peer-20261020/receipt.json": {
+        "bytes": 3234,
+        "sha256": "26AB057C430CA93CADEFEA0C37628FE57BB0E344027098AE2632179F619B8C7B"
+      },
+      "verification/native-script-location-owner-source-peer-20261020/controls-receipt.json": {
+        "bytes": 3178,
+        "sha256": "A3EF8591C561A37FB9BAC939973363004957BA8E3E282BF7E2027BCB7FAC60AB"
+      },
+      "verification/native-script-location-owner-source-peer-20261020/receipt.json": {
+        "bytes": 9648,
+        "sha256": "EDEFE96CB8F3696243C61D74AEBC7AB04D7760D89E79A04143F7150DCA68F5E8"
+      },
+      "verification/native-script-v27-constants-source-peer-20261020/receipt.json": {
+        "bytes": 3157,
+        "sha256": "9FF630CCA3D91DC2F40E1C25B779283FE07AC86AF9954BE181ED85668BC2ED06"
+      },
+      "verification/native-stream-fields-source-peer-20261020/build-receipt.json": {
+        "bytes": 3172,
+        "sha256": "D3C78B3785E738743730DF837A75BAA52A1880C16AD719C0428BBDB3D6484F6B"
+      },
+      "verification/native-stream-read-source-peer-20261020/controls-build-receipt.json": {
+        "bytes": 5694,
+        "sha256": "BB37DB501FD85A96DA54D048E055884D40C659D5625C1BC7CED5DB4FEE65B438"
+      },
+      "verification/native-stream-read-source-peer-20261020/receipt.json": {
+        "bytes": 5490,
+        "sha256": "0061094EF4C006942198FB8FC0DFAF33FB841709CB36EE18C2A6FAB3C570247B"
+      },
+      "verification/native-termination-engine-source-peer-20261020/receipt.json": {
+        "bytes": 6131,
+        "sha256": "7A08BE06C5702CADE32B795556DECAE12A13662CD376AD3943372B1CADE13D94"
+      },
+      "verification/native-termination-queue-source-peer-20261020/raw30-controls-receipt.json": {
+        "bytes": 3392,
+        "sha256": "74ED965F54915423AFA0F1C6E75E49825DD001714BD15A350041E374296BF305"
+      },
+      "verification/native-termination-queue-source-peer-20261020/receipt.json": {
+        "bytes": 1719,
+        "sha256": "29A322B483AE4713CE47547868F13B47FF35D0D208D7177CDF78FA97391DBD05"
+      },
+      "verification/native-v29-diagnostic-controller-source-peer-20261020/receipt.json": {
+        "bytes": 16600,
+        "sha256": "3BBFBCBDF8EDC94EE420D3B97A57FF900EF6F0B3A7BE269831DAC281365A953A"
+      },
+      "verification/native-v8-fatal-tracing-commit-sourceonly-20261020/closure.json": {
+        "bytes": 1672,
+        "sha256": "7211EE3AD0280B8A043603FD3244EE4CFD80036FC35F8D90E9829A5A27882FA5"
+      },
+      "verification/native-v8-fatal-tracing-commit-sourceonly-20261020/staged-blobs.json": {
+        "bytes": 7499,
+        "sha256": "89EE893708B19D1D7B71C8082852831A40CE9A73C29FF309CC1206D72923B4C7"
+      },
+      "verification/node-commonjs-loader-chain-sourceonly-20261019/authority/options-http-evidence.json": {
+        "bytes": 7862,
+        "sha256": "E051B71E45CE44FC1B7C0E5408F5AA42B1C0312FDBCEC28D390537DC8453829F"
+      },
+      "verification/node-experimental-warning-sourceonly-20261019/build-intake.patch": {
+        "bytes": 1753,
+        "sha256": "31A1D0EC7F909EEE9CDCF73117BD089B70D50DD18CBC63AF7E138410524D80E9"
+      },
+      "verification/node-inspect-format-sourceonly-20261019/draft/inspector-with-format-and-color.zig.txt": {
+        "bytes": 43751,
+        "sha256": "8AEB5ED9735E575141B4482BC64EC2D66758E642748956539A4FA2DF94A54B2B"
+      },
+      "verification/node-template-authority-review-20261019/README.md": {
+        "bytes": 1650,
+        "sha256": "76C2585E2A2FFE764FA6D76E48FA7A806195A9F8955BE50988DFF3DD4B4D4747"
+      },
+      "verification/node-template-authority-review-20261019/withdrawn-live-concat-draft/native_node_argument_error_registration.zig.txt": {
+        "bytes": 13156,
+        "sha256": "EE93A7EFFA9EE9FDEC1DE769866DF06FBE2F0B4DE827F52241CE2F4B9BD32EA7"
+      },
+      "verification/node-template-authority-review-20261019/withdrawn-live-concat-draft/native_node_argument_messages.zig.txt": {
+        "bytes": 22975,
+        "sha256": "D3C080AF7DAB9217E2565ABC7481841674A69C0A6FD876AC52DF8AC62E4AC824"
+      },
+      "verification/node-template-authority-review-20261019/withdrawn-live-concat-draft/native_node_argument_specific_type.zig.txt": {
+        "bytes": 8031,
+        "sha256": "3783FC2D85348551B249265287BAD44E1140D9AB6C2C33262403F04F6FAC096A"
+      },
+      "verification/root-v18b-controller-source-peer-20261020/receipt.json": {
+        "bytes": 1689,
+        "sha256": "96FD12787E3BCF5F3256C7324B859F95C5C6050622120E90006563303D266943"
+      },
+      "verification/root-v24-diagnostic-controller-source-peer-20261020/receipt.json": {
+        "bytes": 7610,
+        "sha256": "9255A1DD6AC579F19C18F1987B18261CED97FA1EFA20A724F07F576B5EE1BC21"
+      },
+      "verification/static-ast-controller-source-peer-20261020/receipt.json": {
+        "bytes": 3938,
+        "sha256": "997A05161EAB68227FEE01FFDD52A55797690FBE5F87C56460587F71CAC964AC"
+      },
+      "verification/v32-quickjs-map-entry-symbol-source-peer-20261020/peer.json": {
+        "bytes": 4813,
+        "sha256": "242485A74552796CE152616D6D157CAE6CEE97435AE8B1EDCBF2AB1FF0C21E3F"
+      },
+      "verification/v32-quickjs-map-entry-symbol-source-peer-20261020/source-audit.py": {
+        "bytes": 5823,
+        "sha256": "D353242220FDC77374EE7D5A2E87975BFCAACDA17F611F07E7E989D0FF373209"
+      }
+    }
+  },
+  "all_current_unrelated_untracked": {
+    "src/extensions/native_node_check_failure.zig": {
+      "bytes": 1788,
+      "sha256": "E4C368A322B65340D70C7F48153CA898ECF0290A47696823AA557876775E114E"
+    },
+    "src/extensions/native_node_commonjs_stat.zig": {
+      "bytes": 8759,
+      "sha256": "9A0129DC3E1ACD7035CFF0EF340B47E404032B6FA8F57B081B5A3D499864C70F"
+    },
+    "src/extensions/native_node_inspect_colors.zig": {
+      "bytes": 10301,
+      "sha256": "0927127D486C82318886E5DE147229B3885A7E98DCA97DD011C554A0FBAB2D41"
+    },
+    "src/extensions/native_node_modules_binding_data.zig": {
+      "bytes": 9778,
+      "sha256": "E5FA24C354EB890026675EBD841432EC552F4E73ECCC8EDEB06B30DDFFCAF538"
+    },
+    "src/extensions/native_node_package_json_cache.zig": {
+      "bytes": 7658,
+      "sha256": "5DF03B411D7BF2945999966B003A8E8B693625150CB962A1DA17EBC3B9ABBFC8"
+    },
+    "src/extensions/native_node_package_json_error.zig": {
+      "bytes": 3069,
+      "sha256": "E647A52B7C940BA83285592DA67ADC3273995BDAE10E1C336787942537383CA1"
+    },
+    "src/extensions/native_node_package_json_frontend.zig": {
+      "bytes": 18426,
+      "sha256": "C88348EC6F4B1F5233CD704F8F4A750BE745FB8B98C88AB3FBD39D436C8631D8"
+    },
+    "src/extensions/native_node_package_json_io.zig": {
+      "bytes": 3515,
+      "sha256": "102A224F6EAA9BF57533BAEECB549ADB8815ABE63A49D68725349FE1568B6259"
+    },
+    "src/extensions/native_node_package_json_values.zig": {
+      "bytes": 3175,
+      "sha256": "603FC5166E320E58833BAFCCE1312A92372C89BF4E7E58D4D810CC037B130C2A"
+    },
+    "src/extensions/native_node_tracing_agent.cpp": {
+      "bytes": 8689,
+      "sha256": "14BAE7F832AA2DCFA839C652173D9B13D8E4A380F317C1B34160BCF353BB58B0"
+    },
+    "src/extensions/native_node_tracing_agent.hpp": {
+      "bytes": 7114,
+      "sha256": "D7B4F316372F7897E325108D84C2D5645CD49AB718FADC3B152328E3CE82B016"
+    },
+    "src/extensions/native_node_tracing_buffer.cpp": {
+      "bytes": 6679,
+      "sha256": "F8AF213F5F5CEB903651CA0B8D91F2437DE48D1A91E96F1C243FF55FDEEBCB2F"
+    },
+    "src/extensions/native_node_tracing_buffer.hpp": {
+      "bytes": 2192,
+      "sha256": "3F3A289C1C695AF7BB7A84E1BFC08B2BA6D823D513AEF26C864CF10F94397B32"
+    },
+    "src/extensions/native_node_tracing_controller.cpp": {
+      "bytes": 10371,
+      "sha256": "B80F6BEB5D4B3848214569FF0D871D38C62BC5AEC3D35F9BC8BEEE5B64E8D0BC"
+    },
+    "src/extensions/native_node_tracing_controller.hpp": {
+      "bytes": 3193,
+      "sha256": "03B722CC934185543B960EDB5CBEE537786C5C920416E80B019A0B5B481CAB83"
+    },
+    "src/extensions/native_node_tracing_core.cpp": {
+      "bytes": 11560,
+      "sha256": "3C4E500BE25DFD39FC93BFFB61A137CDB4AED95862716413367B85B7E68D5332"
+    },
+    "src/extensions/native_node_tracing_core.hpp": {
+      "bytes": 9947,
+      "sha256": "C41AA33C90695AE0CD3887C052E7FD40E950CE917B808313C392848EA66B7F53"
+    },
+    "src/extensions/native_node_tracing_writer.cpp": {
+      "bytes": 8571,
+      "sha256": "DB994685F7E370ACF1C3423E76DB36E7C37F74DEA48F4B3EF98CFCD36FF08893"
+    },
+    "src/extensions/native_node_tracing_writer.hpp": {
+      "bytes": 2197,
+      "sha256": "A4B15B27A91E5FDDF986B59C7D3C94D595E1C843F4A732484534A3DF31E53376"
+    },
+    "src/extensions/native_public_template_literal.zig": {
+      "bytes": 1246,
+      "sha256": "0A3366E1F76152C9D771F81E074EB08948C7C188AED1109FE1EAACFC6AC74EE3"
+    },
+    "src/extensions/native_sdk_guest_operation.zig": {
+      "bytes": 7009,
+      "sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C"
+    },
+    "verification/controller-v21-process-ancestry-peer-20261020/auditor-receipt.json": {
+      "bytes": 1953,
+      "sha256": "4DF116DD6B13DD51C3F13664C08BD0536971583C2064BACC009DDF10E4F6DC51"
+    },
+    "verification/controller-v21-process-ancestry-peer-20261020/receipt.json": {
+      "bytes": 3241,
+      "sha256": "F16CA88D4FB3E66B1B2A907526740FE038CBAA43C1FF70288E4680B7F0D55531"
+    },
+    "verification/native-backing-store-adoption-source-peer-20261020/receipt.json": {
+      "bytes": 6824,
+      "sha256": "A7A0134BEE42196D933C999222BD16638D3E479BFF33CE0DD26A237654700B76"
+    },
+    "verification/native-backing-v28-field-source-peer-20261020/receipt.json": {
+      "bytes": 3452,
+      "sha256": "A3299E55481D1BE1833ED9A3787062407AFB17C19197DD432E691418C48022D0"
+    },
+    "verification/native-composed-foundation-build-source-peer-20261020/receipt.json": {
+      "bytes": 8275,
+      "sha256": "212509F6AAF5E43A29E892C0E85E32BF7DD526B94921EDA324F57AB3398BDFD3"
+    },
+    "verification/native-constructor-name-source-peer-20261020/authority/v8-js-objects-acquisition.json": {
+      "bytes": 597,
+      "sha256": "62FE9062E0110D9A18CE544DAD3B07228C736CB13EF132DFC4347A38FE89B7D6"
+    },
+    "verification/native-constructor-name-source-peer-20261020/authority/v8-js-objects.def0.cc": {
+      "bytes": 234488,
+      "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480"
+    },
+    "verification/native-constructor-name-source-peer-20261020/class-constructor-inference-proof.json": {
+      "bytes": 12628,
+      "sha256": "ABC4C4DA042F4150E743415272B97A24607ABB1BEAFF610735FFF258E0101BF1"
+    },
+    "verification/native-constructor-name-source-peer-20261020/descriptor-proof.json": {
+      "bytes": 28383,
+      "sha256": "E8CFF738FDBEF66011BD28A5DFF5EAE4C814A8761766213C5FC262654DF9D37D"
+    },
+    "verification/native-constructor-name-source-peer-20261020/function-prototype-define-proof.json": {
+      "bytes": 45957,
+      "sha256": "4EDD4BD1A57949B3D1DB76F510453862142C1C68CAC180AB193C9F71D386F735"
+    },
+    "verification/native-constructor-name-source-peer-20261020/lazy-eager-name-proof.json": {
+      "bytes": 41221,
+      "sha256": "6BAAD2FC70903AC3AABF10358C15804D3C0408CD2B565CE6A79EA78560DC28C7"
+    },
+    "verification/native-constructor-name-source-peer-20261020/parser-name-proof.json": {
+      "bytes": 48019,
+      "sha256": "D6AE303910D52251E45863B75504C9DE8E8CF94B3DBC464C8E92A19CA737671C"
+    },
+    "verification/native-diagnostic-context-build-source-peer-20261020/receipt.json": {
+      "bytes": 3290,
+      "sha256": "134F6EEE39CE8673645E3EDE2966BAC040278422EF21D8EF82B5213FB72C2DFC"
+    },
+    "verification/native-diagnostic-v26-controller-source-peer-20261020/receipt.json": {
+      "bytes": 5719,
+      "sha256": "92F1CAD5A10B977FB64C11F65556554A0C7F6B0729BD52C0D2DE905E1FA51AEC"
+    },
+    "verification/native-error-stack-message-prerequisite-source-peer-20261020/receipt.json": {
+      "bytes": 12626,
+      "sha256": "EE9AE43FB142971E98DB3C8362BEC4B08A4D9E11900C12A144F7C6D6E24B3BA9"
+    },
+    "verification/native-exotic-operation-guards-source-peer-20261020/controls-build-receipt.json": {
+      "bytes": 7851,
+      "sha256": "3EB90DBA022EFF2FB731622D5AEB6156CA9352B5796ED3E94BB6FABD3216A96B"
+    },
+    "verification/native-exotic-operation-guards-source-peer-20261020/flags-receipt.json": {
+      "bytes": 4033,
+      "sha256": "9CA98D167B32524E28B98695824C1A2C5586F843406F0F7F38DBC323821CB43A"
+    },
+    "verification/native-file-handle-owner-controls-source-peer-20261020/fixture-storage-clarification.json": {
+      "bytes": 7244,
+      "sha256": "A698C2FE95E134BACFCDE504A14492FCF038A7936C17339F7FBB6632B2CC2194"
+    },
+    "verification/native-file-handle-owner-controls-source-peer-20261020/peer.json": {
+      "bytes": 16273,
+      "sha256": "1DBE9B36132197B23B7E502CBBB73A89B5D1DC33C706E924172F74EC57CF2DD2"
+    },
+    "verification/native-file-handle-owner-controls-source-peer-20261020/source-audit.json": {
+      "bytes": 252361,
+      "sha256": "556446A9B0E1ED3C630DCE686996D00BA10419360C9EF34B670FF5AEED1BC217"
+    },
+    "verification/native-file-handle-owner-controls-source-peer-20261020/source-audit.py": {
+      "bytes": 12282,
+      "sha256": "A94B4400FC70D98AF6CBEAC05C518C179F0960D2C7CA95D148F01DD0210C3B04"
+    },
+    "verification/native-file-handle-read-controls-source-peer-20261020/layering-audit-attempt1.json": {
+      "bytes": 669,
+      "sha256": "249F2619A653663A70F026DD1D706CD3AC277149637B7E3415388C1E025FBD92"
+    },
+    "verification/native-file-handle-read-controls-source-peer-20261020/layering-audit.json": {
+      "bytes": 15712,
+      "sha256": "272C89E90A7362859C05AC290C6FCD1E8C34C25B729B8027FA677EC8680B2EA2"
+    },
+    "verification/native-file-handle-read-controls-source-peer-20261020/layering-audit.py": {
+      "bytes": 7636,
+      "sha256": "C8511CA7218387E8BCF0B7EAC95E4A7528E4EBC3F0DDF97F2A887AAC90F70754"
+    },
+    "verification/native-file-handle-read-controls-source-peer-20261020/original/layering-audit-before-path-correction.py": {
+      "bytes": 7631,
+      "sha256": "217E9986361C0F9703C2EC82FD554931D64417E8B58C667E3420B492E6F489AE"
+    },
+    "verification/native-file-handle-read-controls-source-peer-20261020/peer.json": {
+      "bytes": 31460,
+      "sha256": "17C2996FB8751E5DA2AD28D2AF1784DBE93CEFBB5A707630A3D386750E5DB505"
+    },
+    "verification/native-file-handle-read-controls-source-peer-20261020/seal-peer.py": {
+      "bytes": 18886,
+      "sha256": "09080E6FB9C621F43521218CD56108615D9B8BDEDECA5475D9D67FAE812AC9D8"
+    },
+    "verification/native-file-handle-readwrap-constructor-source-peer-20261020/receipt.json": {
+      "bytes": 5759,
+      "sha256": "544590E618D14673F27118EF9D2712576F7C1FF5AF5B7B382386A34BCC035841"
+    },
+    "verification/native-file-handle-sync-close-source-peer-20261020/peer.json": {
+      "bytes": 7899,
+      "sha256": "090FA7C8485CA0DB4763BBFBA91BC2E2D481E76936BF26B9F9CBF2EE1237504C"
+    },
+    "verification/native-file-handle-sync-close-source-peer-20261020/source-audit.json": {
+      "bytes": 40694,
+      "sha256": "79FB56CF7C7F41512EA059BDB16B0EF21DDFF0C14DE7171C0C94A9DEF01E00AB"
+    },
+    "verification/native-file-handle-sync-close-source-peer-20261020/source-audit.py": {
+      "bytes": 7926,
+      "sha256": "6C977B86D765AC765C3DE8EAD22950994FD73ACC49DD020A81B99EF9FDF930A8"
+    },
+    "verification/native-fs-owner-v26-shadow-source-peer-20261020/receipt.json": {
+      "bytes": 2389,
+      "sha256": "C1A19CFB00C9549B5521CC611A33345804345E0785F77575D801BDC5F32B9460"
+    },
+    "verification/native-fs-readwrap-reuse-source-peer-20261020/controls-build-receipt.json": {
+      "bytes": 4891,
+      "sha256": "E1920D9DC0144934C2EC854E742DAD079751520BC69A087575DB2D5160F802F2"
+    },
+    "verification/native-fs-readwrap-reuse-source-peer-20261020/receipt.json": {
+      "bytes": 3666,
+      "sha256": "E268814E80C4E38AE4C7783C1DEB430E9DEF0F903F9C765CDEA3032154C414E3"
+    },
+    "verification/native-fsreqcallback-template-source-peer-20261020/peer.json": {
+      "bytes": 16889,
+      "sha256": "3E2950011B1B5492A91AFB73B111ABD79F4B8D93FC31038C92C7D2EDC6E7DC52"
+    },
+    "verification/native-global-cell-source-peer-20261019/local-get-source.json": {
+      "bytes": 20894,
+      "sha256": "4CC038CC2C8EC0ABF47D05352D7792D0CA8EF197B98DDD44941C0D8D52D2ED28"
+    },
+    "verification/native-host-termination-controls-source-peer-20261020/receipt.json": {
+      "bytes": 2880,
+      "sha256": "839B52FF5E525225313F450F5C44C233233D41A4BDBD526671AA7126E619CBC0"
+    },
+    "verification/native-managed-buffers-container-source-peer-20261020/controls-build-receipt.json": {
+      "bytes": 3312,
+      "sha256": "673F5A4069BFB16C7747454C74F74C02CE9A76BC4C208CAEE1BA2E2626213E9B"
+    },
+    "verification/native-managed-buffers-container-source-peer-20261020/receipt.json": {
+      "bytes": 2884,
+      "sha256": "C709F72911383CA9CA4E8E8A654FCEED1F44979CA667DDC188DF19819C3E2E43"
+    },
+    "verification/native-message-stack-owner-source-peer-20261020/controls-build-receipt.json": {
+      "bytes": 6979,
+      "sha256": "8E97C8E89CEE3C0A76D7004432D45A8E0407C24726195128C203CA39A23DE42A"
+    },
+    "verification/native-message-stack-owner-source-peer-20261020/receipt.json": {
+      "bytes": 5593,
+      "sha256": "6BD9D711A961D7C4AA2427C247AA745914023FCBF9417A4787571FA71E6DD7E6"
+    },
+    "verification/native-next-foundation-build-source-peer-20261020/anonymous-controls-source-peer.json": {
+      "bytes": 225975,
+      "sha256": "19B626D2E14982325A6DA7DA9A0427001597D38B7CACB24E72DB4F1926F5F70E"
+    },
+    "verification/native-next-foundation-build-source-peer-20261020/artifact-default-source-peer.json": {
+      "bytes": 14472,
+      "sha256": "6041970EDBC9CC21E33340520ED5DA34A1BF3243235F991B5E3553BAF8759110"
+    },
+    "verification/native-next-foundation-build-source-peer-20261020/attempt1-count-negative.json": {
+      "bytes": 837,
+      "sha256": "67144C78EEF44AA808EB1758E4F5271D841E6DD26DD84D73B421A7165372C890"
+    },
+    "verification/native-next-foundation-build-source-peer-20261020/receipt.json": {
+      "bytes": 7933,
+      "sha256": "7FA32682E6E7FBF02F718157A9CA95630706E3B2EF719E739F8F02A55B474371"
+    },
+    "verification/native-node-abort-option-peer-20261020/receipt.json": {
+      "bytes": 5892,
+      "sha256": "9133E2976F1C09C64291ACC6C343B18CDD9814A4C1059CCE7A2A5C9C10554BEA"
+    },
+    "verification/native-node-environment-os-sourceonly-20261020/engine-process-proposal.json": {
+      "bytes": 33504,
+      "sha256": "1D08388C4D44BE6FACAA191612DF53B994CDD96D7702966555181FE517FDA67E"
+    },
+    "verification/native-node-environment-os-sourceonly-20261020/peers/process-env-operation-prerequisite-peer.json": {
+      "bytes": 10749,
+      "sha256": "6067F94F050CB80744C022CB17166654E768AE627F77525AC8DDAD2653A1A004"
+    },
+    "verification/native-node-environment-os-sourceonly-20261020/process-env-exotic-flags-prerequisite.json": {
+      "bytes": 20821,
+      "sha256": "C9901F29DC414F19CF34BDFF3F87647FF33E23E30CE8AF3FEF221EA62DA7E26C"
+    },
+    "verification/native-node-environment-os-sourceonly-20261020/process-env-integrity-prerequisite.json": {
+      "bytes": 14668,
+      "sha256": "48D3AE0372949C22E651EFEB7AD92CBE406F89A1D3436D10E37114479325D16C"
+    },
+    "verification/native-node-environment-os-sourceonly-20261020/trace-env-original-nonterminal-rules.json": {
+      "bytes": 10065,
+      "sha256": "8C84E5CC132C637EFCA7E7CE162885C6614FF7658CB40A5376A7C39F85890F3C"
+    },
+    "verification/native-node-nonterminal-stack-source-peer-20261020/receipt.json": {
+      "bytes": 3742,
+      "sha256": "19B1A22BEAD5B1CB7510427C696AD6A02A48A6AD13207EA23778FA9A1856FB54"
+    },
+    "verification/native-node-tracing-platform-commit-closure-20261020/closure.json": {
+      "bytes": 2170,
+      "sha256": "0DB2D67771CFF3833F17D20D21D9B732C747009F33AB40DE6CFE9E2D01A07C58"
+    },
+    "verification/native-node-tracing-platform-commit-closure-20261020/committed-verification.json": {
+      "bytes": 806,
+      "sha256": "5B64F0922712932290D86018DB4B5865BD0C2E8BF3625C623A2DBD39F963A20C"
+    },
+    "verification/native-node-tracing-platform-commit-closure-20261020/exact-pathspec.nul": {
+      "bytes": 36568,
+      "sha256": "2466D99F7279EBCD071446B6C94FC42FC3E0ACCE9CF74054CA0319A96C191CD6"
+    },
+    "verification/native-node-tracing-platform-commit-closure-20261020/preflight.json": {
+      "bytes": 125763,
+      "sha256": "71FAD3C1B2938F6BAB1E23DF0B287FAE7E40914E8226B29722C49F8D4643C687"
+    },
+    "verification/native-node-tracing-platform-commit-closure-20261020/staged-verification.json": {
+      "bytes": 136137,
+      "sha256": "E8C3C44E385D7019B0B9CAC331B4E5D2808575F10276DDE21D24E3D17C2573AD"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/abseil-initial-acquisition-plan.json": {
+      "bytes": 3555,
+      "sha256": "822711A2528C0BE34FE1D9EBC352B725150F1159EA0B1E1C72CBE24A4D72DB77"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/agent-writer-component.json": {
+      "bytes": 8279,
+      "sha256": "67BE46A0A376BE01A765197C7FE9D063A0BF0D2DE4D70A75E182A2FE28D59D22"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/acquisition.json": {
+      "bytes": 4836,
+      "sha256": "4B099A8F518EE9328E1949B09938C6E52DB5E18444175034D4102BCD6068D6B2"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/deps__v8__third_party__abseil-cpp__LICENSE": {
+      "bytes": 11361,
+      "sha256": "C79A7FEA0E3CAC04CD43F20E7B648E5A0FF8FA5344E644B0EE09CA1162B62747"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/deps__v8__third_party__abseil-cpp__absl__base__internal__low_level_alloc.cc": {
+      "bytes": 23038,
+      "sha256": "15335878E3A42C52BEF27E86BECC3DEF962B0DE7365D7B9A153F5B8E0601C76D"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/deps__v8__third_party__abseil-cpp__absl__base__internal__low_level_alloc.h": {
+      "bytes": 4718,
+      "sha256": "01852293051647A19798FA0EF3DA90E82E4EC8F899297A8D96072DC4BB7DF2AB"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/deps__v8__third_party__abseil-cpp__absl__synchronization__BUILD.bazel": {
+      "bytes": 9878,
+      "sha256": "E625C000DF6655C90280A3664F906802767AB8198F156CE0B2C42C0CB5930099"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/deps__v8__third_party__abseil-cpp__absl__synchronization__mutex.cc": {
+      "bytes": 117966,
+      "sha256": "F885F93AE398B0C511BBD79497F2019603BF4880E267D01DB4922C23BCAD6740"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/deps__v8__third_party__abseil-cpp__absl__synchronization__mutex.h": {
+      "bytes": 49247,
+      "sha256": "BF211821EE59511EEC29137EEC3B81323BA633A7A79B45E02699474F63933DFC"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-initial/tools__v8_gypfiles__abseil.gyp": {
+      "bytes": 22346,
+      "sha256": "827CCF3AC3DD6E5B5094B4D199EB332EC75ABE478E6B4C7EA150A23221AA3C40"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/absl__base__internal__thread_identity.cc": {
+      "bytes": 6586,
+      "sha256": "15ADD2981DD37BD509DDACD063745C339E0D15169A6D16EFFB8DA91DB5BD8B6C"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/absl__base__internal__thread_identity.h": {
+      "bytes": 11501,
+      "sha256": "4AB0597E24501F9EF77D55AFDEB2B227AD787CEE41773AB2A1E9A34240E3FC20"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/absl__synchronization__internal__create_thread_identity.cc": {
+      "bytes": 5895,
+      "sha256": "B79720EE203F80AB447BC93C5A21A39BE902B0EC5899B177C41D6272728BF0C2"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/absl__synchronization__internal__futex_waiter.cc": {
+      "bytes": 3545,
+      "sha256": "C082F4E0D690B214AA53177E2BDDCD6FA290046A84B4068BE40E6403498E3684"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/absl__synchronization__internal__per_thread_sem.cc": {
+      "bytes": 3877,
+      "sha256": "157058C93C415FEFFB562002D51F9946E3A18F347D23E3C7423FBA8DFCB32B43"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/absl__synchronization__internal__waiter.h": {
+      "bytes": 2462,
+      "sha256": "6AD9C13FDD0972908E01FB394C002CD17E1B6AFBF6248C454938F82CF4945394"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/absl__synchronization__internal__win32_waiter.cc": {
+      "bytes": 4847,
+      "sha256": "8AB262FEC4937BA44E46994A1CEA87B4EA9DD7E58AFC85B1465F80B9DFC3C796"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/abseil-thread-identity/acquisition.json": {
+      "bytes": 4854,
+      "sha256": "8F7E8DBE08499C0CF83E704501CC186CE939A4492236AC1B32394C1389213A06"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/deps__v8__include__libplatform__v8-tracing.h.txt": {
+      "bytes": 11054,
+      "sha256": "57C1D3C4EA4DB2E0AF7790105A82C21719DD48CBC4B17232981645AB981DFCCC"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/deps__v8__src__libplatform__tracing__trace-buffer.cc.txt": {
+      "bytes": 3539,
+      "sha256": "785F47A04460FC9567B1832275498855A02959D9E0405CBC676D1B7028DC02D6"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/deps__v8__src__libplatform__tracing__trace-buffer.h.txt": {
+      "bytes": 1539,
+      "sha256": "2DF1BB151FE87B693FB6A1B3AB58B3B4A94E88E1E6376D37B7C68E80C7E9AA6F"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/deps__v8__src__libplatform__tracing__trace-config.cc.txt": {
+      "bytes": 1174,
+      "sha256": "9D6BE6C50FD475486B82ACAAFE9998BD4CD237B7C60154B1B1DF5678DC0EEB60"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/deps__v8__src__libplatform__tracing__trace-object.cc.txt": {
+      "bytes": 4532,
+      "sha256": "8312AB18B094B37D99B88DAB669562D535D1632C3E039485E4AE969884FFF062"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/deps__v8__src__libplatform__tracing__trace-writer.cc.txt": {
+      "bytes": 7052,
+      "sha256": "8E12C3F0978C3E152285F411013A27932A746B13A7A9F0E9FED171EC54002E3E"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/deps__v8__src__libplatform__tracing__trace-writer.h.txt": {
+      "bytes": 1326,
+      "sha256": "C3B92D03DEE9F57BA2BC21FC05059C250C405044A4462F49B1D4848832F5F714"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/libcxx-ios.cpp.txt": {
+      "bytes": 12181,
+      "sha256": "1C26A8FE9E565AF612953459C6F0F3E4A2A9ABDE47F76AB5EECFF470812C1DFE"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/libcxx-num.h.txt": {
+      "bytes": 37723,
+      "sha256": "4AA5AF94F28E2A2A62DC216F7E1C27C9685B5149783DAC0F942E6F4E541D6501"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/libcxx-sstream.txt": {
+      "bytes": 56101,
+      "sha256": "10D4DACCF7B7B164C0D51C6676D1AA6997318C76B115F4EA248C903511AF0A19"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/libcxx-string.cpp.txt": {
+      "bytes": 13865,
+      "sha256": "C3005540D04E444F7F3FE8BAAB65E8D0CE1BCA89794B6387F414C3F90E0A1C55"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/src__node_mutex.h.txt": {
+      "bytes": 7963,
+      "sha256": "79FC7058F5380DA98638682684E77F72D4B413753C0BECD621B0D0E2F69600E5"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/src__tracing__node_trace_buffer.cc.txt": {
+      "bytes": 6606,
+      "sha256": "ECEFCDDBFEE7509E8769C2D59A7BAF669FA72EE6A5B6A0D3666A7A974EA1B495"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/src__tracing__node_trace_buffer.h.txt": {
+      "bytes": 2336,
+      "sha256": "88DB456B71B2A73BE49038F2264BD62E93BA2063F42DBB5396AA7BADD4962E8A"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/src__tracing__node_trace_writer.cc.txt": {
+      "bytes": 7678,
+      "sha256": "4D8641B72B66496DE0BECD7A956BC29907AD56881F23B3DAD8EFB8439722AFCA"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/src__tracing__node_trace_writer.h.txt": {
+      "bytes": 2274,
+      "sha256": "E27FA928DCCBB5392D193CF7ABEA7CFEC66B31C6092ADAEDEB69A97BB26B5B11"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/authority/util-containerof-check-excerpts.json": {
+      "bytes": 17470,
+      "sha256": "B4B58BD0E14EA8DB779B19DC0EE0443A69C52DAE0BFB8095FB8F69E9002F31A5"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/controller-buffer-component.json": {
+      "bytes": 24867,
+      "sha256": "C7FED89164C45B8F39AB95ACA95480A3247176F49FAD349029978E6D73C65017"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/core-component.json": {
+      "bytes": 64840,
+      "sha256": "565A2FD8F7D7D90F7863643A2B2BA8E005865525AD5041D2F65A4F2E2F14C3D0"
+    },
+    "verification/native-node-tracing-sourceonly-20261020/sdk-core-algorithm-peer.json": {
+      "bytes": 4319,
+      "sha256": "BED25F3D8C83392C24F33D45C8C21F8B4FD34512422D7A5809CA53E347F98E9A"
+    },
+    "verification/native-nonterminal-js-stack-source-peer-20261020/node-capture-encoding-receipt.json": {
+      "bytes": 22283,
+      "sha256": "41742D2663777B54169683665C2B638016BE5443F9645859EEF57EB2C1225575"
+    },
+    "verification/native-package-json-binding-sourceonly-20261020/authority/native-package-error-source.json": {
+      "bytes": 16453,
+      "sha256": "F4CE26EDD850F5F3982E3D03D393F473E7FA9DDD12B74A97ECEC554E09F3749C"
+    },
+    "verification/native-process-warning-source-peer-20261020/initial-control-peer.json": {
+      "bytes": 4158,
+      "sha256": "2C1F4BE73EC206102BB016001BA605E1F8E41013DBFE1EE5BF0D2768A0DF6F4A"
+    },
+    "verification/native-process-warning-source-peer-20261020/successor-peer.json": {
+      "bytes": 2572,
+      "sha256": "6FAA2551564D2D724846AC4A8B758A3439C0E18F541E8A2F58849160EB7081D0"
+    },
+    "verification/native-reqwrap-callback-routing-source-peer-20261020/controls-build-receipt.json": {
+      "bytes": 5135,
+      "sha256": "FAADE9F861FA49D2B1C3BFA58319845E66BD6D905D01685E732A8EC696853F3E"
+    },
+    "verification/native-reqwrap-callback-routing-source-peer-20261020/receipt.json": {
+      "bytes": 3234,
+      "sha256": "26AB057C430CA93CADEFEA0C37628FE57BB0E344027098AE2632179F619B8C7B"
+    },
+    "verification/native-script-location-owner-source-peer-20261020/controls-receipt.json": {
+      "bytes": 3178,
+      "sha256": "A3EF8591C561A37FB9BAC939973363004957BA8E3E282BF7E2027BCB7FAC60AB"
+    },
+    "verification/native-script-location-owner-source-peer-20261020/receipt.json": {
+      "bytes": 9648,
+      "sha256": "EDEFE96CB8F3696243C61D74AEBC7AB04D7760D89E79A04143F7150DCA68F5E8"
+    },
+    "verification/native-script-v27-constants-source-peer-20261020/receipt.json": {
+      "bytes": 3157,
+      "sha256": "9FF630CCA3D91DC2F40E1C25B779283FE07AC86AF9954BE181ED85668BC2ED06"
+    },
+    "verification/native-stream-fields-source-peer-20261020/build-receipt.json": {
+      "bytes": 3172,
+      "sha256": "D3C78B3785E738743730DF837A75BAA52A1880C16AD719C0428BBDB3D6484F6B"
+    },
+    "verification/native-stream-read-source-peer-20261020/controls-build-receipt.json": {
+      "bytes": 5694,
+      "sha256": "BB37DB501FD85A96DA54D048E055884D40C659D5625C1BC7CED5DB4FEE65B438"
+    },
+    "verification/native-stream-read-source-peer-20261020/receipt.json": {
+      "bytes": 5490,
+      "sha256": "0061094EF4C006942198FB8FC0DFAF33FB841709CB36EE18C2A6FAB3C570247B"
+    },
+    "verification/native-termination-engine-source-peer-20261020/receipt.json": {
+      "bytes": 6131,
+      "sha256": "7A08BE06C5702CADE32B795556DECAE12A13662CD376AD3943372B1CADE13D94"
+    },
+    "verification/native-termination-queue-source-peer-20261020/raw30-controls-receipt.json": {
+      "bytes": 3392,
+      "sha256": "74ED965F54915423AFA0F1C6E75E49825DD001714BD15A350041E374296BF305"
+    },
+    "verification/native-termination-queue-source-peer-20261020/receipt.json": {
+      "bytes": 1719,
+      "sha256": "29A322B483AE4713CE47547868F13B47FF35D0D208D7177CDF78FA97391DBD05"
+    },
+    "verification/native-v29-diagnostic-controller-source-peer-20261020/receipt.json": {
+      "bytes": 16600,
+      "sha256": "3BBFBCBDF8EDC94EE420D3B97A57FF900EF6F0B3A7BE269831DAC281365A953A"
+    },
+    "verification/native-v8-fatal-tracing-commit-sourceonly-20261020/closure.json": {
+      "bytes": 1672,
+      "sha256": "7211EE3AD0280B8A043603FD3244EE4CFD80036FC35F8D90E9829A5A27882FA5"
+    },
+    "verification/native-v8-fatal-tracing-commit-sourceonly-20261020/staged-blobs.json": {
+      "bytes": 7499,
+      "sha256": "89EE893708B19D1D7B71C8082852831A40CE9A73C29FF309CC1206D72923B4C7"
+    },
+    "verification/native-vm-error-constructor-name-source-peer-20261020/final-binding-audit.json": {
+      "bytes": 74424,
+      "sha256": "86D6EE694E4FE48AFD076E3F287D3CA9FB34143628DFFDA991A8B40CDCEFE2E3"
+    },
+    "verification/native-vm-error-constructor-name-source-peer-20261020/final-binding-audit.py": {
+      "bytes": 9358,
+      "sha256": "0E0CEB0A4A69AD2FF88081428BC4A3E9A85C65AAFD97861DF352984290BBA4A3"
+    },
+    "verification/native-vm-error-constructor-name-source-peer-20261020/peer.json": {
+      "bytes": 10982,
+      "sha256": "2E4164DCA07EE67018D3F0B733408D9CC7E26A80835DCCC6D2D9742624B1A271"
+    },
+    "verification/native-vm-error-constructor-name-source-peer-20261020/source-audit.json": {
+      "bytes": 21985,
+      "sha256": "B1253548E211E8E7BCE2484A39C70819471D6F6DB4D64D1672F2A2471C1D4817"
+    },
+    "verification/native-vm-error-constructor-name-source-peer-20261020/source-audit.py": {
+      "bytes": 6764,
+      "sha256": "DFFC8934AF4AF2B3FD16A9C2C0F5F072560239C2E4003E87856A29DEDAA6E5EA"
+    },
+    "verification/native-vm-error-constructor-name-source-peer-20261020/source-findings.json": {
+      "bytes": 9301,
+      "sha256": "5F6724D4DD338CDE7AF6C54A49C1D41DC6FDC8427C063A6FACE01F2E20A6B2B5"
+    },
+    "verification/node-commonjs-loader-chain-sourceonly-20261019/authority/options-http-evidence.json": {
+      "bytes": 7862,
+      "sha256": "E051B71E45CE44FC1B7C0E5408F5AA42B1C0312FDBCEC28D390537DC8453829F"
+    },
+    "verification/node-experimental-warning-sourceonly-20261019/build-intake.patch": {
+      "bytes": 1753,
+      "sha256": "31A1D0EC7F909EEE9CDCF73117BD089B70D50DD18CBC63AF7E138410524D80E9"
+    },
+    "verification/node-inspect-format-sourceonly-20261019/draft/inspector-with-format-and-color.zig.txt": {
+      "bytes": 43751,
+      "sha256": "8AEB5ED9735E575141B4482BC64EC2D66758E642748956539A4FA2DF94A54B2B"
+    },
+    "verification/node-template-authority-review-20261019/README.md": {
+      "bytes": 1650,
+      "sha256": "76C2585E2A2FFE764FA6D76E48FA7A806195A9F8955BE50988DFF3DD4B4D4747"
+    },
+    "verification/node-template-authority-review-20261019/withdrawn-live-concat-draft/native_node_argument_error_registration.zig.txt": {
+      "bytes": 13156,
+      "sha256": "EE93A7EFFA9EE9FDEC1DE769866DF06FBE2F0B4DE827F52241CE2F4B9BD32EA7"
+    },
+    "verification/node-template-authority-review-20261019/withdrawn-live-concat-draft/native_node_argument_messages.zig.txt": {
+      "bytes": 22975,
+      "sha256": "D3C080AF7DAB9217E2565ABC7481841674A69C0A6FD876AC52DF8AC62E4AC824"
+    },
+    "verification/node-template-authority-review-20261019/withdrawn-live-concat-draft/native_node_argument_specific_type.zig.txt": {
+      "bytes": 8031,
+      "sha256": "3783FC2D85348551B249265287BAD44E1140D9AB6C2C33262403F04F6FAC096A"
+    },
+    "verification/root-v18b-controller-source-peer-20261020/receipt.json": {
+      "bytes": 1689,
+      "sha256": "96FD12787E3BCF5F3256C7324B859F95C5C6050622120E90006563303D266943"
+    },
+    "verification/root-v24-diagnostic-controller-source-peer-20261020/receipt.json": {
+      "bytes": 7610,
+      "sha256": "9255A1DD6AC579F19C18F1987B18261CED97FA1EFA20A724F07F576B5EE1BC21"
+    },
+    "verification/static-ast-controller-source-peer-20261020/receipt.json": {
+      "bytes": 3938,
+      "sha256": "997A05161EAB68227FEE01FFDD52A55797690FBE5F87C56460587F71CAC964AC"
+    },
+    "verification/v32-quickjs-map-entry-symbol-source-peer-20261020/peer.json": {
+      "bytes": 4813,
+      "sha256": "242485A74552796CE152616D6D157CAE6CEE97435AE8B1EDCBF2AB1FF0C21E3F"
+    },
+    "verification/v32-quickjs-map-entry-symbol-source-peer-20261020/source-audit.py": {
+      "bytes": 5823,
+      "sha256": "D353242220FDC77374EE7D5A2E87975BFCAACDA17F611F07E7E989D0FF373209"
+    }
+  },
+  "all_current_unrelated_untracked_count": 152,
+  "preservation_checks": "All historical 7/10/134 pins and every other current unrelated untracked file rehashed. No protected-set recipe collision.",
+  "index_empty": true,
+  "live_candidate_files_absent": true,
+  "live_recipe_unchanged": true,
+  "prepared_only": true,
+  "future_application_gates": [
+    "Recheck HEAD, empty index, every source pin, exact prior recipe bytes, candidate absence and all preservation pins.",
+    "Install exactly the two source snapshots and whole reviewed recipe successor bytes.",
+    "Stage only the 57 listed paths after explicit source-only commit admission, compare every index blob to its selected byte pin and this manifest to the exact sealed manifest bytes.",
+    "After commit, verify exact changed path set and committed blobs; rehash all protected/unrelated paths and leave every other staged/untracked path untouched."
+  ],
+  "remaining_owners": [
+    "Genuine native TracedValue and typed EnvironmentArgs/AsyncWrapArgs/ProcessMeta factories with explicit I18N/header selection.",
+    "Native immutable process metadata/version/release owner and original process-title retrieval.",
+    "Exact native producer adapters and additive SDK State reset/destroy and Environment begin/end insertions.",
+    "One-shot process trace observer and process-single Agent/client/native-producer bootstrap and teardown owner.",
+    "Distinct Environment category observer with actual principal realm, owns_process_state, callback and verbose exception policy.",
+    "Complete composite source/link admission, selected target owners and actual compiler/native/concurrency/OS qualification.",
+    "Production fatal/stack bootstrap hook installation; no Node assert substitution."
+  ],
+  "main_authority": false,
+  "native_execution_authority": false,
+  "bootstrap_installed": false,
+  "runtime_qualified": false
+}
