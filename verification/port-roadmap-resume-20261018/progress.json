@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "b5ebda01d3b407d123fe2b4d7a894a230565d223",
+  "current_source_head_at_record": "39d13e047f55c598cfac0e841fed6d23220025b0",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -36,8 +36,8 @@
   "application_qualification": false,
   "production_bridge_removed": false,
   "published_release": false,
-  "updated_utc": "2026-10-20T15:54:29.290198+00:00",
-  "record_note": "Cleanup445 is complete and unchanged. Original V26 strict and seeded diagnostic negatives are preserved and independently closed. Ten diagnostic targets compiled/queried203 actual names, zero runtime. Main3eca7bc integrates Backing20, Script32, native Map22/Path15, StreamFields10/Managed12/StreamBase18, exact Environment6+10 and nine lexical FS bindings while preserving25 declarations. 178 reviewed edits reverse to every original Main input; all source diff checks pass. These are source-only changes awaiting fresh native execution. Original native allocation/retry policy, trace controller/writer, FileHandle read/reuse, process Environment/Permission/Debug, Error Message/reporter, public lazy accessors/bootstrap, full loader/SDK/HTTP/application/platform/fresh-install/bridge-removal/release remain open.",
+  "updated_utc": "2026-10-20T18:59:30.577526+00:00",
+  "record_note": "V31 fresh 54-group BuildQuery accepted 1121 actual metadata names. Original strict and partial diagnostic failures are independently closed and preserved. The reviewed nine-root intake, two fixture corrections and canonical UV namespace correction are committed. Fresh V32 build/query/runtime remains pending. The entire application and production bridge replacement remain unqualified.",
   "integrated_source_units": [
     "Reviewed VM union, Agent/Node/SDK guest operation guards, CJS compiler and source metadata bodies, Engine ownership, genuine Agent/session/auth owners, real Exec live waiter, Git/Chalk/Ignore/Semver consumers, actual InitialModel guest boundaries, genuine Anthropic auth, genuine PKCE body and ten declared controls, genuine RemoteCatalog bodies and nine declared controls.",
     "Actual public CLI parser10 controls, truncation9, Theme10 and extension helpers8; child dependency and11 real frontend/spawn/waiter controls; shared stdio lease assertion; genuine six-export output guard dependency; genuine DeviceCode12 controls including linked-VM loop-slot lifetime; RemoteCatalog now11 controls; PKCE actual host job checkpoints; optional CommonJS host-error correction and explicit component filters.",
@@ -91,7 +91,47 @@
     "Physical Windows filesystem writer with12 controls, exact partial-write limits and owned task/completion/shutdown; Main01d62bbc donor0da9f7ba.",
     "Actual independently owned ArrayBuffer storage, intrinsic view leases, resize/transfer/GC/shared-runtime semantics with24 controls; Main6788e872 donor4832692a.",
     "Actual own private-symbol Set with nine controls, genuine proxy/frozen-object/value ownership and exact raw allocation failure; Main1d3cf384 donord980b862.",
-    "After V11: backing pointer cast corrections; private fixture compile/allocation controls; genuine existing Promise settlement17; shared native async function class name correction; Radius prompt/error-producer corrections; options20 with actual native options configuration and SafeGetenv; fs writer option/error/Windows packed permissions+zlib corrections; UVException6 and shared native immediate queue; exact V14b parser brace correction. All are source-reviewed; no earlier runtime success transfers."
+    "After V11: backing pointer cast corrections; private fixture compile/allocation controls; genuine existing Promise settlement17; shared native async function class name correction; Radius prompt/error-producer corrections; options20 with actual native options configuration and SafeGetenv; fs writer option/error/Windows packed permissions+zlib corrections; UVException6 and shared native immediate queue; exact V14b parser brace correction. All are source-reviewed; no earlier runtime success transfers.",
+    {
+      "name": "V32 reviewed native foundation and actual FileHandle read / FSReqCallback source union",
+      "commit": "5521437c5581de3232e8fa1a2d017f2f4eb865af",
+      "intake": {
+        "commit": "5521437c5581de3232e8fa1a2d017f2f4eb865af",
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-foundation-intake-20261020\\receipt.json",
+        "sha256": "75B8888E6AFDDA487D3BEEF9A6AFC100F6A4FF5F08CA090F03E3E43FB6F8E1C4",
+        "files": 209,
+        "new_groups": 9,
+        "new_named_declarations": 160,
+        "source_files": 45,
+        "finite_existing_edits": 104
+      },
+      "new_groups": 9,
+      "new_named_declarations": 160,
+      "source_files": 45,
+      "finite_existing_edits": 104,
+      "whole_forward_inverse_verified": true,
+      "source_only": true,
+      "application_qualification": false
+    },
+    {
+      "name": "Canonical UV type and constant namespace correction",
+      "commit": "39d13e047f55c598cfac0e841fed6d23220025b0",
+      "receipt": {
+        "commit": "39d13e047f55c598cfac0e841fed6d23220025b0",
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-uv-namespace-correction-20261020\\receipt.json",
+        "sha256": "E4BD386169320FD193D8F0FDE656CEBF82B9BAA0CAA7D9BE0E44EF96C0F97108",
+        "source_files": 4,
+        "finite_hunks": 21,
+        "unchanged_named_declarations": 25,
+        "peer_sha256": "6EDDB24D85B7F876BCBA2802D166DE71702E21AF8CFD3B53E5F3E47B8C4329E5"
+      },
+      "source_files": 4,
+      "finite_existing_edits": 21,
+      "unchanged_named_declarations": 25,
+      "whole_forward_inverse_verified": true,
+      "source_only": true,
+      "application_qualification": false
+    }
   ],
   "combined_native_execution": {
     "scope": "Exact Windows component artifact and complete actual ordered metadata only; no whole-application or other-head acceptance.",
@@ -627,16 +667,17 @@
     }
   ],
   "next_native_batch": {
-    "status": "preparing_fresh_v31",
+    "status": "preparing_fresh_v32",
     "mode": "BuildQuery",
     "cache_mode": "fresh_private",
-    "selected_groups": 54,
-    "selected_declarations": 1089,
-    "catalog_groups": 104,
-    "catalog_declarations": 1795,
+    "selected_groups": 63,
+    "selected_declarations": 1249,
+    "catalog_groups": 113,
+    "catalog_declarations": 1955,
+    "actual_metadata_count": null,
     "qualification": false,
     "runtime_authority": false,
-    "requirements": "Specific Root grant after queue admission, clean frozen Main, original bounded/live/retained owners, fresh16GiB admission; strict1DD3 unchanged; whole independent source/compiler/control/process/artifact closure before separate RuntimeOnly."
+    "requirements": "Specific Root fresh grant after queue admission; exact unchanged strict1DD3, clean frozen source, original live/retained bounded owners and16GiB admission. Full actual metadata/artifact and independent complete source/tree/vendor/compiler/control/current-original-process closure precede separate strict RuntimeOnly. Prior declared1089 and accepted1121 counts remain distinct."
   },
   "storage_cleanup": {
     "status": "completed_and_independently_verified",
@@ -1569,117 +1610,138 @@
     "sha256": "3E25928B76288B1B186E0A502C914DC10FA1AF2C7CCA7FDCB7B282DE4F92BE3B"
   },
   "current_execution_checkpoint": {
-    "recorded_utc": "2026-10-20T17:09:54.055765+00:00",
-    "status": "v30_strict_negative_closed_callback_return_corrected_fresh_v31_pending",
-    "source_head": "b5ebda01d3b407d123fe2b4d7a894a230565d223",
+    "schema": 3,
+    "status": "v31_closed_reviewed_v32_source_committed_fresh_validation_pending",
+    "source_head": "39d13e047f55c598cfac0e841fed6d23220025b0",
+    "branch": "work/pi-zig-consolidated-20261016",
     "source_intake": {
-      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-composed-foundation-intake-20261020\\main-intake.json",
-      "sha256": "DBFF9E992792D325EC4B2398CA498841C7B0278C0116BEE1DAFA6267CF25C551",
-      "commit": "3eca7bc0665bd9fdad2b38c525498e813fb04fe9",
-      "paths": 177,
-      "source_files": 42,
-      "ordered_reviewed_edits": 178,
-      "whole_inverse_recovers_original_Main": true,
-      "new_roots": [
-        {
-          "path": "src/native_vm_backing_store_adoption_test.zig",
-          "declarations": 20,
-          "target": "build-native-vm-backing-store-adoption",
-          "filter": "VM native backing store"
-        },
-        {
-          "path": "src/native_vm_script_location_test.zig",
-          "declarations": 32,
-          "target": "build-native-vm-script-location",
-          "filter": "VM Script"
-        },
-        {
-          "path": "src/native_node_environment_map_test.zig",
-          "declarations": 22,
-          "target": "build-native-node-environment-map",
-          "filter": "native environment map"
-        },
-        {
-          "path": "src/native_node_environment_paths_test.zig",
-          "declarations": 15,
-          "target": "build-native-node-environment-paths",
-          "filter": "native environment paths"
-        },
-        {
-          "path": "src/native_node_stream_wrapper_test.zig",
-          "declarations": 10,
-          "target": "build-native-node-stream-fields",
-          "filter": "Node StreamFields"
-        },
-        {
-          "path": "src/native_node_managed_buffers_test.zig",
-          "declarations": 12,
-          "target": "build-native-node-managed-buffers",
-          "filter": "Node managed buffers"
-        },
-        {
-          "path": "src/native_node_stream_read_test.zig",
-          "declarations": 18,
-          "target": "build-native-node-stream-read",
-          "filter": "Node StreamBase read"
-        }
-      ],
-      "new_declared_controls": 129,
-      "fs_lexical_correction": {
-        "donor": "583302342175d95bdde2c75f39a380c6b4a38f4c",
-        "exact_blocks": 8,
-        "bindings": 9,
-        "preserved_names": 25
+      "commit": "5521437c5581de3232e8fa1a2d017f2f4eb865af",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-foundation-intake-20261020\\receipt.json",
+      "sha256": "75B8888E6AFDDA487D3BEEF9A6AFC100F6A4FF5F08CA090F03E3E43FB6F8E1C4",
+      "files": 209,
+      "new_groups": 9,
+      "new_named_declarations": 160,
+      "source_files": 45,
+      "finite_existing_edits": 104
+    },
+    "uv_namespace_correction": {
+      "commit": "39d13e047f55c598cfac0e841fed6d23220025b0",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-uv-namespace-correction-20261020\\receipt.json",
+      "sha256": "E4BD386169320FD193D8F0FDE656CEBF82B9BAA0CAA7D9BE0E44EF96C0F97108",
+      "source_files": 4,
+      "finite_hunks": 21,
+      "unchanged_named_declarations": 25,
+      "peer_sha256": "6EDDB24D85B7F876BCBA2802D166DE71702E21AF8CFD3B53E5F3E47B8C4329E5"
+    },
+    "v31_build": {
+      "status": "independently_closed_positive_buildquery_only",
+      "job_id": "job-op-f53d984de7dc6c1d9e9b7f6f163b0e5e112843885e3d26d1deaf70be46c97c83",
+      "source_head": "14615dfc179f9e7e2044591a2d8aa9592b9d883b",
+      "groups": 54,
+      "source_declarations": 1089,
+      "actual_metadata_names": 1121,
+      "catalog_groups": 104,
+      "catalog_declarations": 1795,
+      "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v31-buildquery-20261020-171134",
+      "result_sha256": "B4EF5C9687891EB25C026F8F5AFE5180E8B22325D74D79D155D770A1DCE751B0",
+      "metadata_closure_sha256": "5C951AAC2128A2C67A92C6E347CE5B4D1E744816975E725B91C293C650A41392",
+      "current_seal_closure_sha256": "A7750EE7463D338AE5CB77E8D13FD7098C52941FE4EC3319252B2A1B8B6D8367",
+      "current_files_rehashed": 33447,
+      "original_compile_query_owners": 108,
+      "all_original_instances_absent": true,
+      "runtime_qualification": false
+    },
+    "retained_runtime_negatives": [
+      {
+        "name": "V31 strict RuntimeOnly canonical test failure",
+        "status": "independently_closed_negative",
+        "job_id": "job-op-b42d9f8eb6cc99a1e0dea3e66d1ecced828f9f06dc242a18bf4488e888001765",
+        "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-runtime-20261020-175939",
+        "groups_started": 3,
+        "started": 74,
+        "completed": 74,
+        "passed": 73,
+        "flagged": 1,
+        "incomplete": 0,
+        "not_started": 1047,
+        "expected_actual_metadata": 1121,
+        "result_sha256": "532F2452A9547136F496FCAAF62F6C155051DDCBA00E231AC231A0FC02D2E624",
+        "closure_sha256": "8F55C557EC227EE9803F7C7D9969B4202C5C539BA482F18790C2694B5C356BEA",
+        "all_original_instances_absent": true,
+        "current_files_rehashed": 33558,
+        "failed_control": "native_vm_script_location_test.test.VM Script raw projections allocate nothing and preserve actual ordinary fatal and private pending",
+        "reason": "Private native exception sentinel has no guest SameValue case; finite fixture correction preserves exact private token predicate and execution generation.",
+        "fixture_correction_committed": true,
+        "qualification": false
+      },
+      {
+        "name": "V31 diagnostic RuntimeOnly partial failure and panic",
+        "status": "independently_closed_partial_negative",
+        "job_id": "job-op-6ad070d5816f4d13050eb01b81e20dce57b3052cf6253bcd1c153e201b441801",
+        "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-diagnostic-runtime-20261020-181658",
+        "groups_started": 7,
+        "started": 118,
+        "completed": 117,
+        "passed": 116,
+        "flagged": 1,
+        "incomplete": 1,
+        "not_started": 1003,
+        "expected_actual_metadata": 1121,
+        "result_sha256": "E03BF62D1FCE0FF7B176AA1473E41D016927046B260EC68B22CAEFF3E58EE293",
+        "closure_sha256": "36D4EAB4F1D7A1E9632C847220F8CD6FE03DDF1FEC422C3F431F96B8519B71BD",
+        "all_original_instances_absent": true,
+        "current_files_rehashed": 33559,
+        "panic_control": "native_node_stream_read_test.test.Node StreamBase read full extent adopts the same native bytes and advances the counter before callback",
+        "reason": "Fixture filled a 17-byte literal into a 16-byte allocation; corrected every extent to payload.len with identity, allocation count, map and callback order assertions preserved.",
+        "fixture_correction_committed": true,
+        "complete_diagnostic": false,
+        "qualification": false
       }
+    ],
+    "retained_auditor_negative": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v31-control-20261020-171134\\independent-metadata-pid-rejection.json",
+      "sha256": "F451C234D1906498CF17BBBDCF382B726685007485CAA2C2E530D320BF7C7235",
+      "reason": "PID 14188 had been reused after the original compiler exited. The corrected auditor compares exact UTC100ns process creation against every original completion; unknown or overlapping identity still fails.",
+      "corrected_auditor_sha256": "EE9F6FCA6923BDA3A81D3E5FFC34537EF3E853301DCD4BD229226808A297CF1D",
+      "original_preserved": true
     },
-    "prior_v30": {
-      "head": "558049f2a77528944412824fba7f3c0823ba8ffa",
-      "mode": "BuildQuery",
-      "result": {
-        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\result.json",
-        "bytes": 109013,
-        "sha256": "8264B961ABBE258AC9B32308B6C161452A09DE3143AE990716817339E09609B0"
-      },
-      "closure": {
-        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-control-20261020-165337\\independent-partial-compile-negative-closure.json",
-        "bytes": 32149,
-        "sha256": "CC4A348630D267A9A9F308D662CC366428C0E74A36E159B5DED41493E06DBE9C"
-      },
-      "groups_granted": 54,
-      "groups_attempted": 7,
-      "groups_unstarted": 47,
-      "compile_and_metadata_groups": 6,
-      "compiler_negative_groups": 1,
-      "actual_partial_metadata_count": 112,
-      "actual_named_metadata_count": 111,
-      "imported_metadata_count": 1,
-      "metadata_acceptance": false,
-      "tests_started": 0,
-      "current_complete_files_rehashed": 33440,
-      "whole_bookends_unchanged": true,
-      "original_process_instances_absent": true,
-      "original_native_owners": 13,
-      "qualification": false,
-      "original_negative_preserved": true
+    "source_mutation_release": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v31-to-v32-root-source-release-20261020.json",
+      "sha256": "157A3E999D998FD59E75D30D89B3B61C2F3E8A27F3A2A1D0C2208E6C63752CC8",
+      "source_only": true,
+      "native_grant": false
     },
-    "correction": {
-      "commit": "b5ebda01d3b407d123fe2b4d7a894a230565d223",
-      "intake": {
-        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-async-wrap-callback-v30-coercion-sourceonly-20261020\\main-intake.json",
-        "bytes": 3323,
-        "sha256": "B309380148C4A99C20C0B1144D6EF873079483D338E68CFD9454BD5E1DFA2A28"
-      },
-      "donor": "b1aa3e3935d903f46cf42746d2c3081de4df0891",
-      "exact_edits": 1,
-      "whole_forward_inverse": true,
-      "unchanged_stream_read_declarations": 18,
-      "build_graph_unchanged": true,
-      "scope": "Resolve the actual Scope.own error union with try before optional success injection; preserve callback adoption, trace order and Environment retirement."
+    "next_validation": {
+      "status": "preparing_fresh_v32",
+      "selected_groups": 63,
+      "source_declarations": 1249,
+      "catalog_groups": 113,
+      "catalog_declarations": 1955,
+      "actual_metadata_names": null,
+      "strict_driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+      "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+      "resource_gate": "Fresh 16 GiB admission, serial native lease, specific Root grant after durable queue admission.",
+      "native_execution": false
     },
-    "native_executions_on_successor": 0,
-    "source_only": true,
+    "tracing_source_only": {
+      "clock_commit": "88fe6ba2883acf3b9b546d7ea37125e95ebf946a",
+      "api_commit": "1700aeaa800003130cce60106c243f6f293e81a9",
+      "fatal_commit": "5059d6a04a29232fa3a39614d7e73e3690472c4f",
+      "integrated_in_main": false,
+      "built": false,
+      "runtime_qualified": false,
+      "fatal_peer_sha256": "B1D0CF86C04745CEEFD2B7066790C671E3DF56A24A7A81E6DD8EFF61AAF28CB4",
+      "remaining": "Actual Abseil mutex/condition dependencies, Recorder platform headers and bootstrap/build integration remain open."
+    },
+    "remaining_application_blockers": [
+      "Production Node host bridge remains selected.",
+      "Concrete FileHandle constructor, CloseReq, close and GC ownership remain under source development.",
+      "Production tracing and backing retry dependencies remain incomplete.",
+      "Loader, Message and complete platform acceptance remain open."
+    ],
+    "production_bridge_removed": false,
     "application_qualification": false,
-    "remaining_next_gate": "Fresh strict54-group/1089-declaration BuildQuery from empty private caches; complete actual metadata and independently rehashed whole source/tree/vendor/compiler/control/artifact plus original process closure before separately granted RuntimeOnly."
+    "recorded_utc": "2026-10-20T18:59:30.577526+00:00"
   },
   "retained_recent_native_negatives": [
     {
@@ -1713,6 +1775,51 @@
       "native_process_instances": 7,
       "raw_metadata_names": 45,
       "runtime_started": false,
+      "qualification": false
+    },
+    {
+      "name": "V31 strict RuntimeOnly canonical test failure",
+      "status": "independently_closed_negative",
+      "job_id": "job-op-b42d9f8eb6cc99a1e0dea3e66d1ecced828f9f06dc242a18bf4488e888001765",
+      "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-runtime-20261020-175939",
+      "groups_started": 3,
+      "started": 74,
+      "completed": 74,
+      "passed": 73,
+      "flagged": 1,
+      "incomplete": 0,
+      "not_started": 1047,
+      "expected_actual_metadata": 1121,
+      "result_sha256": "532F2452A9547136F496FCAAF62F6C155051DDCBA00E231AC231A0FC02D2E624",
+      "closure_sha256": "8F55C557EC227EE9803F7C7D9969B4202C5C539BA482F18790C2694B5C356BEA",
+      "all_original_instances_absent": true,
+      "current_files_rehashed": 33558,
+      "failed_control": "native_vm_script_location_test.test.VM Script raw projections allocate nothing and preserve actual ordinary fatal and private pending",
+      "reason": "Private native exception sentinel has no guest SameValue case; finite fixture correction preserves exact private token predicate and execution generation.",
+      "fixture_correction_committed": true,
+      "qualification": false
+    },
+    {
+      "name": "V31 diagnostic RuntimeOnly partial failure and panic",
+      "status": "independently_closed_partial_negative",
+      "job_id": "job-op-6ad070d5816f4d13050eb01b81e20dce57b3052cf6253bcd1c153e201b441801",
+      "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-diagnostic-runtime-20261020-181658",
+      "groups_started": 7,
+      "started": 118,
+      "completed": 117,
+      "passed": 116,
+      "flagged": 1,
+      "incomplete": 1,
+      "not_started": 1003,
+      "expected_actual_metadata": 1121,
+      "result_sha256": "E03BF62D1FCE0FF7B176AA1473E41D016927046B260EC68B22CAEFF3E58EE293",
+      "closure_sha256": "36D4EAB4F1D7A1E9632C847220F8CD6FE03DDF1FEC422C3F431F96B8519B71BD",
+      "all_original_instances_absent": true,
+      "current_files_rehashed": 33559,
+      "panic_control": "native_node_stream_read_test.test.Node StreamBase read full extent adopts the same native bytes and advances the counter before callback",
+      "reason": "Fixture filled a 17-byte literal into a 16-byte allocation; corrected every extent to payload.len with identity, allocation count, map and callback order assertions preserved.",
+      "fixture_correction_committed": true,
+      "complete_diagnostic": false,
       "qualification": false
     }
   ],
@@ -2859,6 +2966,119 @@
       "source_only": true,
       "application_qualification": false,
       "remaining_next_gate": "Fresh strict54-group/1089-declaration BuildQuery, empty private caches, complete actual metadata and independently rehashed whole source/tree/vendor/compiler/control/artifact evidence plus original process closure; separately grant RuntimeOnly only after build acceptance."
+    },
+    {
+      "recorded_utc": "2026-10-20T17:09:54.055765+00:00",
+      "status": "v30_strict_negative_closed_callback_return_corrected_fresh_v31_pending",
+      "source_head": "b5ebda01d3b407d123fe2b4d7a894a230565d223",
+      "source_intake": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-composed-foundation-intake-20261020\\main-intake.json",
+        "sha256": "DBFF9E992792D325EC4B2398CA498841C7B0278C0116BEE1DAFA6267CF25C551",
+        "commit": "3eca7bc0665bd9fdad2b38c525498e813fb04fe9",
+        "paths": 177,
+        "source_files": 42,
+        "ordered_reviewed_edits": 178,
+        "whole_inverse_recovers_original_Main": true,
+        "new_roots": [
+          {
+            "path": "src/native_vm_backing_store_adoption_test.zig",
+            "declarations": 20,
+            "target": "build-native-vm-backing-store-adoption",
+            "filter": "VM native backing store"
+          },
+          {
+            "path": "src/native_vm_script_location_test.zig",
+            "declarations": 32,
+            "target": "build-native-vm-script-location",
+            "filter": "VM Script"
+          },
+          {
+            "path": "src/native_node_environment_map_test.zig",
+            "declarations": 22,
+            "target": "build-native-node-environment-map",
+            "filter": "native environment map"
+          },
+          {
+            "path": "src/native_node_environment_paths_test.zig",
+            "declarations": 15,
+            "target": "build-native-node-environment-paths",
+            "filter": "native environment paths"
+          },
+          {
+            "path": "src/native_node_stream_wrapper_test.zig",
+            "declarations": 10,
+            "target": "build-native-node-stream-fields",
+            "filter": "Node StreamFields"
+          },
+          {
+            "path": "src/native_node_managed_buffers_test.zig",
+            "declarations": 12,
+            "target": "build-native-node-managed-buffers",
+            "filter": "Node managed buffers"
+          },
+          {
+            "path": "src/native_node_stream_read_test.zig",
+            "declarations": 18,
+            "target": "build-native-node-stream-read",
+            "filter": "Node StreamBase read"
+          }
+        ],
+        "new_declared_controls": 129,
+        "fs_lexical_correction": {
+          "donor": "583302342175d95bdde2c75f39a380c6b4a38f4c",
+          "exact_blocks": 8,
+          "bindings": 9,
+          "preserved_names": 25
+        }
+      },
+      "prior_v30": {
+        "head": "558049f2a77528944412824fba7f3c0823ba8ffa",
+        "mode": "BuildQuery",
+        "result": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\result.json",
+          "bytes": 109013,
+          "sha256": "8264B961ABBE258AC9B32308B6C161452A09DE3143AE990716817339E09609B0"
+        },
+        "closure": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-control-20261020-165337\\independent-partial-compile-negative-closure.json",
+          "bytes": 32149,
+          "sha256": "CC4A348630D267A9A9F308D662CC366428C0E74A36E159B5DED41493E06DBE9C"
+        },
+        "groups_granted": 54,
+        "groups_attempted": 7,
+        "groups_unstarted": 47,
+        "compile_and_metadata_groups": 6,
+        "compiler_negative_groups": 1,
+        "actual_partial_metadata_count": 112,
+        "actual_named_metadata_count": 111,
+        "imported_metadata_count": 1,
+        "metadata_acceptance": false,
+        "tests_started": 0,
+        "current_complete_files_rehashed": 33440,
+        "whole_bookends_unchanged": true,
+        "original_process_instances_absent": true,
+        "original_native_owners": 13,
+        "qualification": false,
+        "original_negative_preserved": true
+      },
+      "correction": {
+        "commit": "b5ebda01d3b407d123fe2b4d7a894a230565d223",
+        "intake": {
+          "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-async-wrap-callback-v30-coercion-sourceonly-20261020\\main-intake.json",
+          "bytes": 3323,
+          "sha256": "B309380148C4A99C20C0B1144D6EF873079483D338E68CFD9454BD5E1DFA2A28"
+        },
+        "donor": "b1aa3e3935d903f46cf42746d2c3081de4df0891",
+        "exact_edits": 1,
+        "whole_forward_inverse": true,
+        "unchanged_stream_read_declarations": 18,
+        "build_graph_unchanged": true,
+        "scope": "Resolve the actual Scope.own error union with try before optional success injection; preserve callback adoption, trace order and Environment retirement."
+      },
+      "native_executions_on_successor": 0,
+      "source_only": true,
+      "application_qualification": false,
+      "remaining_next_gate": "Fresh strict54-group/1089-declaration BuildQuery from empty private caches; complete actual metadata and independently rehashed whole source/tree/vendor/compiler/control/artifact plus original process closure before separately granted RuntimeOnly."
     }
   ],
   "source_intake_v18": {
@@ -3098,5 +3318,139 @@
     "source_only": true,
     "application_qualification": false,
     "remaining_next_gate": "Prepare current104-group catalog/1795 declarations and grant unchanged strict1DD3 for fresh54 selected groups/prior47+7 newroots/1089 declarations, then independently accept exact actual metadata/artifacts/complete inputs/process closure before separately granted runtime."
+  },
+  "v31_validation_and_v32_successor": {
+    "schema": 3,
+    "status": "v31_closed_reviewed_v32_source_committed_fresh_validation_pending",
+    "source_head": "39d13e047f55c598cfac0e841fed6d23220025b0",
+    "branch": "work/pi-zig-consolidated-20261016",
+    "source_intake": {
+      "commit": "5521437c5581de3232e8fa1a2d017f2f4eb865af",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-foundation-intake-20261020\\receipt.json",
+      "sha256": "75B8888E6AFDDA487D3BEEF9A6AFC100F6A4FF5F08CA090F03E3E43FB6F8E1C4",
+      "files": 209,
+      "new_groups": 9,
+      "new_named_declarations": 160,
+      "source_files": 45,
+      "finite_existing_edits": 104
+    },
+    "uv_namespace_correction": {
+      "commit": "39d13e047f55c598cfac0e841fed6d23220025b0",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-uv-namespace-correction-20261020\\receipt.json",
+      "sha256": "E4BD386169320FD193D8F0FDE656CEBF82B9BAA0CAA7D9BE0E44EF96C0F97108",
+      "source_files": 4,
+      "finite_hunks": 21,
+      "unchanged_named_declarations": 25,
+      "peer_sha256": "6EDDB24D85B7F876BCBA2802D166DE71702E21AF8CFD3B53E5F3E47B8C4329E5"
+    },
+    "v31_build": {
+      "status": "independently_closed_positive_buildquery_only",
+      "job_id": "job-op-f53d984de7dc6c1d9e9b7f6f163b0e5e112843885e3d26d1deaf70be46c97c83",
+      "source_head": "14615dfc179f9e7e2044591a2d8aa9592b9d883b",
+      "groups": 54,
+      "source_declarations": 1089,
+      "actual_metadata_names": 1121,
+      "catalog_groups": 104,
+      "catalog_declarations": 1795,
+      "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v31-buildquery-20261020-171134",
+      "result_sha256": "B4EF5C9687891EB25C026F8F5AFE5180E8B22325D74D79D155D770A1DCE751B0",
+      "metadata_closure_sha256": "5C951AAC2128A2C67A92C6E347CE5B4D1E744816975E725B91C293C650A41392",
+      "current_seal_closure_sha256": "A7750EE7463D338AE5CB77E8D13FD7098C52941FE4EC3319252B2A1B8B6D8367",
+      "current_files_rehashed": 33447,
+      "original_compile_query_owners": 108,
+      "all_original_instances_absent": true,
+      "runtime_qualification": false
+    },
+    "retained_runtime_negatives": [
+      {
+        "name": "V31 strict RuntimeOnly canonical test failure",
+        "status": "independently_closed_negative",
+        "job_id": "job-op-b42d9f8eb6cc99a1e0dea3e66d1ecced828f9f06dc242a18bf4488e888001765",
+        "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-runtime-20261020-175939",
+        "groups_started": 3,
+        "started": 74,
+        "completed": 74,
+        "passed": 73,
+        "flagged": 1,
+        "incomplete": 0,
+        "not_started": 1047,
+        "expected_actual_metadata": 1121,
+        "result_sha256": "532F2452A9547136F496FCAAF62F6C155051DDCBA00E231AC231A0FC02D2E624",
+        "closure_sha256": "8F55C557EC227EE9803F7C7D9969B4202C5C539BA482F18790C2694B5C356BEA",
+        "all_original_instances_absent": true,
+        "current_files_rehashed": 33558,
+        "failed_control": "native_vm_script_location_test.test.VM Script raw projections allocate nothing and preserve actual ordinary fatal and private pending",
+        "reason": "Private native exception sentinel has no guest SameValue case; finite fixture correction preserves exact private token predicate and execution generation.",
+        "fixture_correction_committed": true,
+        "qualification": false
+      },
+      {
+        "name": "V31 diagnostic RuntimeOnly partial failure and panic",
+        "status": "independently_closed_partial_negative",
+        "job_id": "job-op-6ad070d5816f4d13050eb01b81e20dce57b3052cf6253bcd1c153e201b441801",
+        "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-diagnostic-runtime-20261020-181658",
+        "groups_started": 7,
+        "started": 118,
+        "completed": 117,
+        "passed": 116,
+        "flagged": 1,
+        "incomplete": 1,
+        "not_started": 1003,
+        "expected_actual_metadata": 1121,
+        "result_sha256": "E03BF62D1FCE0FF7B176AA1473E41D016927046B260EC68B22CAEFF3E58EE293",
+        "closure_sha256": "36D4EAB4F1D7A1E9632C847220F8CD6FE03DDF1FEC422C3F431F96B8519B71BD",
+        "all_original_instances_absent": true,
+        "current_files_rehashed": 33559,
+        "panic_control": "native_node_stream_read_test.test.Node StreamBase read full extent adopts the same native bytes and advances the counter before callback",
+        "reason": "Fixture filled a 17-byte literal into a 16-byte allocation; corrected every extent to payload.len with identity, allocation count, map and callback order assertions preserved.",
+        "fixture_correction_committed": true,
+        "complete_diagnostic": false,
+        "qualification": false
+      }
+    ],
+    "retained_auditor_negative": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v31-control-20261020-171134\\independent-metadata-pid-rejection.json",
+      "sha256": "F451C234D1906498CF17BBBDCF382B726685007485CAA2C2E530D320BF7C7235",
+      "reason": "PID 14188 had been reused after the original compiler exited. The corrected auditor compares exact UTC100ns process creation against every original completion; unknown or overlapping identity still fails.",
+      "corrected_auditor_sha256": "EE9F6FCA6923BDA3A81D3E5FFC34537EF3E853301DCD4BD229226808A297CF1D",
+      "original_preserved": true
+    },
+    "source_mutation_release": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v31-to-v32-root-source-release-20261020.json",
+      "sha256": "157A3E999D998FD59E75D30D89B3B61C2F3E8A27F3A2A1D0C2208E6C63752CC8",
+      "source_only": true,
+      "native_grant": false
+    },
+    "next_validation": {
+      "status": "preparing_fresh_v32",
+      "selected_groups": 63,
+      "source_declarations": 1249,
+      "catalog_groups": 113,
+      "catalog_declarations": 1955,
+      "actual_metadata_names": null,
+      "strict_driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+      "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+      "resource_gate": "Fresh 16 GiB admission, serial native lease, specific Root grant after durable queue admission.",
+      "native_execution": false
+    },
+    "tracing_source_only": {
+      "clock_commit": "88fe6ba2883acf3b9b546d7ea37125e95ebf946a",
+      "api_commit": "1700aeaa800003130cce60106c243f6f293e81a9",
+      "fatal_commit": "5059d6a04a29232fa3a39614d7e73e3690472c4f",
+      "integrated_in_main": false,
+      "built": false,
+      "runtime_qualified": false,
+      "fatal_peer_sha256": "B1D0CF86C04745CEEFD2B7066790C671E3DF56A24A7A81E6DD8EFF61AAF28CB4",
+      "remaining": "Actual Abseil mutex/condition dependencies, Recorder platform headers and bootstrap/build integration remain open."
+    },
+    "remaining_application_blockers": [
+      "Production Node host bridge remains selected.",
+      "Concrete FileHandle constructor, CloseReq, close and GC ownership remain under source development.",
+      "Production tracing and backing retry dependencies remain incomplete.",
+      "Loader, Message and complete platform acceptance remain open."
+    ],
+    "production_bridge_removed": false,
+    "application_qualification": false,
+    "recorded_utc": "2026-10-20T18:59:30.577526+00:00"
   }
 }
