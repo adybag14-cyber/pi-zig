@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "status": "root_independent_source_review_accepted",
+  "utc": "2026-10-20T21:50:05.181925+00:00",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\proposal.json",
+    "bytes": 12811,
+    "sha256": "262AFAA489DC7620FECE7D077FCB1C7A4904E6B65BC420A8A697B6C2341A158A"
+  },
+  "authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\zig-naming-authority.json",
+    "bytes": 11751,
+    "sha256": "F972718987A310E725142A598637E08FDC688639B6EA5AA53B0E3F1E97F13CDD"
+  },
+  "basis_main_head": "160b4e0562f0eb1139bf2e4e9c00f4c10ab6aa64",
+  "root_all_two_edits_and_complete_before_after_blocks_read": true,
+  "all2_intermediate_hashes_and_whole_offset_inverse": true,
+  "both_transfer_composition_orders_and_inverses": true,
+  "all5_pinned_Zig_owners_and12_excerpts_reproduced": true,
+  "actual_strict_artifact_and_metadata_gates_read_unchanged": true,
+  "all24_control_source_bytes_unchanged": true,
+  "all_bytes_outside_error_block_unchanged": true,
+  "reason": "Default addTest name preserves canonical cached test.exe/test.pdb; explicit destination preserves installed Error executable name while PDB remains test.pdb.",
+  "native_execution_authorized": false,
+  "source_execution_authorized": false,
+  "qualification": false
+}

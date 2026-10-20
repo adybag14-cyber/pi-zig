@@ -1,0 +1,253 @@
+{
+  "schema": 1,
+  "basis_main_head": "160b4e0562f0eb1139bf2e4e9c00f4c10ab6aa64",
+  "target_manifest": "verification/native-error-build-artifact-naming-intake-20261020/manifest.json",
+  "source_build_paths": 1,
+  "source_edits": 2,
+  "unchanged_named_controls": 24,
+  "total_commit_paths": 19,
+  "packet_inventory": {
+    "directory": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020",
+    "files": 16,
+    "bytes": 2536357,
+    "inventory_sha256": "CE059BB303AF6B832A0BAF76D7B0F53A1B12F2E53B729DBD9DB43C699289A719",
+    "rows": [
+      {
+        "relative_path": "authority/zig/Build/Step/Compile.zig",
+        "bytes": 84912,
+        "sha256": "6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84"
+      },
+      {
+        "relative_path": "authority/zig/Build/Step/InstallArtifact.zig",
+        "bytes": 8841,
+        "sha256": "6008437F2DF91E09396B0732B5E10094EF2DF5BE21AA6ABA53F08926FEF685A0"
+      },
+      {
+        "relative_path": "authority/zig/Build.zig",
+        "bytes": 102991,
+        "sha256": "DFFB5A172899D660C370C6CDECA04C073468C64F28B9BB6FCE919E71D1D5326D"
+      },
+      {
+        "relative_path": "authority/zig/Target.zig",
+        "bytes": 117251,
+        "sha256": "B830BAC98558E0E6B83AF9917F3FF492452F57F608C3C54F009384C793A6F345"
+      },
+      {
+        "relative_path": "authority/zig/zig.zig",
+        "bytes": 44987,
+        "sha256": "5445596331AD810FC60057FCE5555477E9317441FB36F69C632F37F0D1DA0824"
+      },
+      {
+        "relative_path": "control/src/native_vm_error_constructor_name_test.zig",
+        "bytes": 28931,
+        "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+      },
+      {
+        "relative_path": "original/Audit-CombinedNativeBatch.py",
+        "bytes": 17691,
+        "sha256": "1436211CABD8D2D2C0A31DB4005C05BA3451E50E381F7EC3AFF8ACC094CAE98B"
+      },
+      {
+        "relative_path": "original/before-transfer-build.zig",
+        "bytes": 506940,
+        "sha256": "399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52"
+      },
+      {
+        "relative_path": "original/build.zig",
+        "bytes": 508955,
+        "sha256": "DB9BEE3C8B7C8FF817F1FB2AE761F7A7400EA3250CDD7AF7AFBAA4118FD13909"
+      },
+      {
+        "relative_path": "original/Run-CombinedNativeBatch.ps1",
+        "bytes": 60094,
+        "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+      },
+      {
+        "relative_path": "original/transfer-build-proposal.json",
+        "bytes": 4151,
+        "sha256": "D662D5DF7D2C21CD8376666E120CAEEA8BB46E0518C5B3560E6A97522D6BB212"
+      },
+      {
+        "relative_path": "Prepare-ErrorBuildNaming-SourceOnly.py",
+        "bytes": 10020,
+        "sha256": "300C8D36B8798464BFD6CB04AF6671B1DA5FA5E137057452AEC0031A746D69D2"
+      },
+      {
+        "relative_path": "projected/before-transfer-build.zig",
+        "bytes": 507008,
+        "sha256": "309EB4B389F77A6C8C665AD4D366F4764CFE7D44C6D7DADB56AD15632E926A7D"
+      },
+      {
+        "relative_path": "projected/build.zig",
+        "bytes": 509023,
+        "sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55"
+      },
+      {
+        "relative_path": "proposal.json",
+        "bytes": 12811,
+        "sha256": "262AFAA489DC7620FECE7D077FCB1C7A4904E6B65BC420A8A697B6C2341A158A"
+      },
+      {
+        "relative_path": "zig-naming-authority.json",
+        "bytes": 11751,
+        "sha256": "F972718987A310E725142A598637E08FDC688639B6EA5AA53B0E3F1E97F13CDD"
+      }
+    ]
+  },
+  "rows": [
+    {
+      "target": "build.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\projected\\build.zig",
+      "bytes": 509023,
+      "sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55",
+      "role": "build_artifact_naming",
+      "before": {
+        "bytes": 508955,
+        "sha256": "DB9BEE3C8B7C8FF817F1FB2AE761F7A7400EA3250CDD7AF7AFBAA4118FD13909"
+      }
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/authority/zig/Build/Step/Compile.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\authority\\zig\\Build\\Step\\Compile.zig",
+      "bytes": 84912,
+      "sha256": "6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/authority/zig/Build/Step/InstallArtifact.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\authority\\zig\\Build\\Step\\InstallArtifact.zig",
+      "bytes": 8841,
+      "sha256": "6008437F2DF91E09396B0732B5E10094EF2DF5BE21AA6ABA53F08926FEF685A0",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/authority/zig/Build.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\authority\\zig\\Build.zig",
+      "bytes": 102991,
+      "sha256": "DFFB5A172899D660C370C6CDECA04C073468C64F28B9BB6FCE919E71D1D5326D",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/authority/zig/Target.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\authority\\zig\\Target.zig",
+      "bytes": 117251,
+      "sha256": "B830BAC98558E0E6B83AF9917F3FF492452F57F608C3C54F009384C793A6F345",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/authority/zig/zig.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\authority\\zig\\zig.zig",
+      "bytes": 44987,
+      "sha256": "5445596331AD810FC60057FCE5555477E9317441FB36F69C632F37F0D1DA0824",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/control/src/native_vm_error_constructor_name_test.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\control\\src\\native_vm_error_constructor_name_test.zig",
+      "bytes": 28931,
+      "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/original/Audit-CombinedNativeBatch.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\original\\Audit-CombinedNativeBatch.py",
+      "bytes": 17691,
+      "sha256": "1436211CABD8D2D2C0A31DB4005C05BA3451E50E381F7EC3AFF8ACC094CAE98B",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/original/before-transfer-build.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\original\\before-transfer-build.zig",
+      "bytes": 506940,
+      "sha256": "399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/original/build.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\original\\build.zig",
+      "bytes": 508955,
+      "sha256": "DB9BEE3C8B7C8FF817F1FB2AE761F7A7400EA3250CDD7AF7AFBAA4118FD13909",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/original/Run-CombinedNativeBatch.ps1",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\original\\Run-CombinedNativeBatch.ps1",
+      "bytes": 60094,
+      "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/original/transfer-build-proposal.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\original\\transfer-build-proposal.json",
+      "bytes": 4151,
+      "sha256": "D662D5DF7D2C21CD8376666E120CAEEA8BB46E0518C5B3560E6A97522D6BB212",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/Prepare-ErrorBuildNaming-SourceOnly.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\Prepare-ErrorBuildNaming-SourceOnly.py",
+      "bytes": 10020,
+      "sha256": "300C8D36B8798464BFD6CB04AF6671B1DA5FA5E137057452AEC0031A746D69D2",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/projected/before-transfer-build.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\projected\\before-transfer-build.zig",
+      "bytes": 507008,
+      "sha256": "309EB4B389F77A6C8C665AD4D366F4764CFE7D44C6D7DADB56AD15632E926A7D",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/projected/build.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\projected\\build.zig",
+      "bytes": 509023,
+      "sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/proposal.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\proposal.json",
+      "bytes": 12811,
+      "sha256": "262AFAA489DC7620FECE7D077FCB1C7A4904E6B65BC420A8A697B6C2341A158A",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/proposal/zig-naming-authority.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\zig-naming-authority.json",
+      "bytes": 11751,
+      "sha256": "F972718987A310E725142A598637E08FDC688639B6EA5AA53B0E3F1E97F13CDD",
+      "role": "immutable_source_evidence",
+      "before": null
+    },
+    {
+      "target": "verification/native-error-build-artifact-naming-intake-20261020/root-review.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-error-artifact-naming-review-20261020.json",
+      "bytes": 1374,
+      "sha256": "48E16158FE09367A9E124889FA05D217E33E4212F5DEFF28A66601866E4A30DA",
+      "role": "root_source_review",
+      "before": null
+    }
+  ],
+  "root_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-error-artifact-naming-review-20261020.json",
+    "bytes": 1374,
+    "sha256": "48E16158FE09367A9E124889FA05D217E33E4212F5DEFF28A66601866E4A30DA"
+  },
+  "native_execution_authorized": false,
+  "qualification": false
+}

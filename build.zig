@@ -2007,12 +2007,11 @@ pub fn build(b: *std.Build) void {
     simple_stack_source_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-vm-simple-stack-source", "Install actual simple stack state and raw source controls without execution").dependOn(&b.addInstallArtifact(simple_stack_source_tests, .{}).step);
     const native_error_constructor_name_tests = b.addTest(.{
-        .name = "native-vm-error-constructor-name",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_error_constructor_name_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"VM native Error constructor"}, .use_llvm = use_llvm,
     });
     linkQuickJs(b, native_error_constructor_name_tests.root_module, quickjs, sqlite_lib_dir);
-    b.step("build-native-vm-error-constructor-name", "Install actual native Error constructor provenance controls without execution").dependOn(&b.addInstallArtifact(native_error_constructor_name_tests, .{}).step);
+    b.step("build-native-vm-error-constructor-name", "Install actual native Error constructor provenance controls without execution").dependOn(&b.addInstallArtifact(native_error_constructor_name_tests, .{ .dest_sub_path = b.fmt("native-vm-error-constructor-name{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
     const exotic_operation_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_exotic_operations_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"VM exotic operations"}, .use_llvm = use_llvm,

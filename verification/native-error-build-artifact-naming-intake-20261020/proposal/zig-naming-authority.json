@@ -1,0 +1,160 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build.zig",
+        "bytes": 102991,
+        "sha256": "DFFB5A172899D660C370C6CDECA04C073468C64F28B9BB6FCE919E71D1D5326D"
+      },
+      "excerpts": [
+        {
+          "first_line": 858,
+          "last_line": 888,
+          "bytes": 1222,
+          "sha256": "EE9C4706DB5E9801729FEF37049B457991792A3BBB7BB238CD8CC2D80EC7750E",
+          "text": "pub const TestOptions = struct {\n    name: []const u8 = \"test\",\n    root_module: *Module,\n    max_rss: usize = 0,\n    filters: []const []const u8 = &.{},\n    test_runner: ?Step.Compile.TestRunner = null,\n    use_llvm: ?bool = null,\n    use_lld: ?bool = null,\n    zig_lib_dir: ?LazyPath = null,\n    /// Emits an object file instead of a test binary.\n    /// The object must be linked separately.\n    /// Usually used in conjunction with a custom `test_runner`.\n    emit_object: bool = false,\n};\n\n/// Creates an executable containing unit tests.\n///\n/// Equivalent to running the command `zig test --test-no-exec ...`.\n///\n/// **This step does not run the unit tests**. Typically, the result of this\n/// function will be passed to `addRunArtifact`, creating a `Step.Run`. These\n/// two steps are separated because they are independently configured and\n/// cached.\npub fn addTest(b: *Build, options: TestOptions) *Step.Compile {\n    return .create(b, .{\n        .name = options.name,\n        .kind = if (options.emit_object) .test_obj else .@\"test\",\n        .root_module = options.root_module,\n        .max_rss = options.max_rss,\n        .filters = b.dupeStrings(options.filters),\n        .test_runner = options.test_runner,\n"
+        }
+      ],
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\authority\\zig\\Build.zig",
+        "bytes": 102991,
+        "sha256": "DFFB5A172899D660C370C6CDECA04C073468C64F28B9BB6FCE919E71D1D5326D"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\Compile.zig",
+        "bytes": 84912,
+        "sha256": "6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84"
+      },
+      "excerpts": [
+        {
+          "first_line": 381,
+          "last_line": 410,
+          "bytes": 1326,
+          "sha256": "2829D2CC11C0A63DF639AC88BAF76F55F704CB58B90377B076696975AC527F62",
+          "text": "    const name = owner.dupe(options.name);\n    if (mem.find(u8, name, \"/\") != null or mem.find(u8, name, \"\\\\\") != null) {\n        panic(\"invalid name: '{s}'. It looks like a file path, but it is supposed to be the library or application name.\", .{name});\n    }\n\n    const resolved_target = options.root_module.resolved_target orelse\n        @panic(\"the root Module of a Compile step must be created with a known 'target' field\");\n    const target = &resolved_target.result;\n\n    const step_name = owner.fmt(\"compile {s} {s} {s}\", .{\n        // Avoid the common case of the step name looking like \"compile test test\".\n        if (options.kind.isTest() and mem.eql(u8, name, \"test\"))\n            @tagName(options.kind)\n        else\n            owner.fmt(\"{s} {s}\", .{ @tagName(options.kind), name }),\n        @tagName(options.root_module.optimize orelse .Debug),\n        resolved_target.query.zigTriple(owner.allocator) catch @panic(\"OOM\"),\n    });\n\n    const out_filename = std.zig.binNameAlloc(owner.allocator, .{\n        .root_name = name,\n        .target = target,\n        .output_mode = switch (options.kind) {\n            .lib => .Lib,\n            .obj, .test_obj => .Obj,\n            .exe, .@\"test\" => .Exe,\n        },\n        .link_mode = options.linkage,\n        .version = options.version,\n    }) catch @panic(\"OOM\");\n"
+        },
+        {
+          "first_line": 1484,
+          "last_line": 1485,
+          "bytes": 74,
+          "sha256": "95F4A3364C03246EBE12D0CAD19805A012E152766A4C24A626B58856848B5500",
+          "text": "    try zig_args.append(\"--name\");\n    try zig_args.append(compile.name);\n"
+        },
+        {
+          "first_line": 1810,
+          "last_line": 1813,
+          "bytes": 249,
+          "sha256": "DF19F568321B9B44BE85EAA24A46EEE9C3C9BFD83F42C809B6898BA1E8265FEA",
+          "text": "        // zig fmt: off\n        if (compile.generated_bin)     |lp| lp.path = compile.outputPath(output_dir, .bin);\n        if (compile.generated_pdb)     |lp| lp.path = compile.outputPath(output_dir, .pdb);\n        // hack for stage2_x86_64 + coff\n"
+        },
+        {
+          "first_line": 1836,
+          "last_line": 1850,
+          "bytes": 576,
+          "sha256": "F43BD1DAC664A97ECA873FFD5B0A7E950A2507F13CD73B60BEB38285DF81533A",
+          "text": "fn outputPath(c: *Compile, out_dir: std.Build.Cache.Path, ea: std.zig.EmitArtifact) []const u8 {\n    const arena = c.step.owner.graph.arena;\n    const name = ea.cacheName(arena, .{\n        .root_name = c.name,\n        .target = &c.root_module.resolved_target.?.result,\n        .output_mode = switch (c.kind) {\n            .lib => .Lib,\n            .obj, .test_obj => .Obj,\n            .exe, .@\"test\" => .Exe,\n        },\n        .link_mode = c.linkage,\n        .version = c.version,\n    }) catch @panic(\"OOM\");\n    return out_dir.joinString(arena, name) catch @panic(\"OOM\");\n}\n"
+        }
+      ],
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\authority\\zig\\Build\\Step\\Compile.zig",
+        "bytes": 84912,
+        "sha256": "6239A10E6EF3027173BD108877544E32717DA6E51CBBC1A8FB4485F8F4F6AB84"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Build\\Step\\InstallArtifact.zig",
+        "bytes": 8841,
+        "sha256": "6008437F2DF91E09396B0732B5E10094EF2DF5BE21AA6ABA53F08926FEF685A0"
+      },
+      "excerpts": [
+        {
+          "first_line": 78,
+          "last_line": 82,
+          "bytes": 196,
+          "sha256": "49796C6EB2DE6B1F05DF62C3F55554636C03C238A981E2BA6C11129A3E5F3310",
+          "text": "        .pdb_dir = switch (options.pdb_dir) {\n            .disabled => null,\n            .default => if (artifact.producesPdbFile()) dest_dir else null,\n            .override => |o| o,\n        },\n"
+        },
+        {
+          "first_line": 104,
+          "last_line": 108,
+          "bytes": 165,
+          "sha256": "DBEC95C5551721D4A24EDBF7CD3A73FFDA38F4D10BBE2D04D33C730085025D25",
+          "text": "            .name_only_filename = artifact.name_only_filename.?,\n        } else null,\n\n        .dest_sub_path = options.dest_sub_path orelse artifact.out_filename,\n\n"
+        },
+        {
+          "first_line": 162,
+          "last_line": 165,
+          "bytes": 289,
+          "sha256": "C2F5D1D19869A33D6B0E30246B0DD14FF76501CABF4B24D3A9938E09EFD5FBE9",
+          "text": "    if (install_artifact.pdb_dir) |pdb_dir| {\n        const full_pdb_path = b.getInstallPath(pdb_dir, install_artifact.emitted_pdb.?.basename(b, step));\n        const p = try step.installFile(install_artifact.emitted_pdb.?, full_pdb_path);\n        all_cached = all_cached and p == .fresh;\n"
+        }
+      ],
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\authority\\zig\\Build\\Step\\InstallArtifact.zig",
+        "bytes": 8841,
+        "sha256": "6008437F2DF91E09396B0732B5E10094EF2DF5BE21AA6ABA53F08926FEF685A0"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\zig.zig",
+        "bytes": 44987,
+        "sha256": "5445596331AD810FC60057FCE5555477E9317441FB36F69C632F37F0D1DA0824"
+      },
+      "excerpts": [
+        {
+          "first_line": 156,
+          "last_line": 161,
+          "bytes": 334,
+          "sha256": "2B17AA1AFF55A298739007ADAD77C9CEBECFEFCC59B4D405237F3D0A1B4134AC",
+          "text": "pub fn binNameAlloc(allocator: Allocator, options: BinNameOptions) error{OutOfMemory}![]u8 {\n    const root_name = options.root_name;\n    const t = options.target;\n    switch (t.ofmt) {\n        .coff => switch (options.output_mode) {\n            .Exe => return std.fmt.allocPrint(allocator, \"{s}{s}\", .{ root_name, t.exeFileExt() }),\n"
+        },
+        {
+          "first_line": 979,
+          "last_line": 1010,
+          "bytes": 1150,
+          "sha256": "761905ECF83F8ECA5F1D272DC28760FB3C624617A1364C9CAC1CB10B1D560398",
+          "text": "/// Every kind of artifact which the compiler can emit.\npub const EmitArtifact = enum {\n    bin,\n    @\"asm\",\n    implib,\n    llvm_ir,\n    llvm_bc,\n    docs,\n    pdb,\n    h,\n    compiler_rt_dyn_lib,\n\n    /// If using `Server` to communicate with the compiler, it will place requested artifacts in\n    /// paths under the output directory, where those paths are named according to this function.\n    /// Returned string is allocated with `gpa` and owned by the caller.\n    pub fn cacheName(ea: EmitArtifact, gpa: Allocator, opts: BinNameOptions) Allocator.Error![]const u8 {\n        // hack for stage2_x86_64 + coff. See Coff.flush.\n        if (ea == .compiler_rt_dyn_lib) return \"compiler_rt.dll\";\n        const suffix: []const u8 = switch (ea) {\n            .bin => return binNameAlloc(gpa, opts),\n            .@\"asm\" => \".s\",\n            .implib => \".lib\",\n            .llvm_ir => \".ll\",\n            .llvm_bc => \".bc\",\n            .docs => \"-docs\",\n            .pdb => \".pdb\",\n            .h => \".h\",\n            .compiler_rt_dyn_lib => unreachable,\n        };\n        return std.fmt.allocPrint(gpa, \"{s}{s}\", .{ opts.root_name, suffix });\n    }\n};\n"
+        }
+      ],
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\authority\\zig\\zig.zig",
+        "bytes": 44987,
+        "sha256": "5445596331AD810FC60057FCE5555477E9317441FB36F69C632F37F0D1DA0824"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Target.zig",
+        "bytes": 117251,
+        "sha256": "B830BAC98558E0E6B83AF9917F3FF492452F57F608C3C54F009384C793A6F345"
+      },
+      "excerpts": [
+        {
+          "first_line": 100,
+          "last_line": 111,
+          "bytes": 379,
+          "sha256": "FB3565975603188D5A62814B5F18A31550AB9CE075A4AF978F247DAAEDA0E512",
+          "text": "        pub fn exeFileExt(tag: Tag, arch: Cpu.Arch) [:0]const u8 {\n            return switch (tag) {\n                .windows => \".exe\",\n                .uefi => \".efi\",\n                .plan9 => arch.plan9Ext(),\n                else => switch (arch) {\n                    .wasm32, .wasm64 => \".wasm\",\n                    else => \"\",\n                },\n            };\n        }\n\n"
+        },
+        {
+          "first_line": 2119,
+          "last_line": 2121,
+          "bytes": 112,
+          "sha256": "008316C2EA8A3E808300C8A90C3F5630E1799FE1346A85772112D06C81BA58DA",
+          "text": "pub fn exeFileExt(target: *const Target) [:0]const u8 {\n    return target.os.tag.exeFileExt(target.cpu.arch);\n}\n"
+        }
+      ],
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\authority\\zig\\Target.zig",
+        "bytes": 117251,
+        "sha256": "B830BAC98558E0E6B83AF9917F3FF492452F57F608C3C54F009384C793A6F345"
+      }
+    }
+  ],
+  "compiler_executed": false
+}
