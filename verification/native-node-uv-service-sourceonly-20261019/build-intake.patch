@@ -1,0 +1,17 @@
+--- a/build.zig
++++ b/build.zig
+@@ -2031,6 +2031,14 @@
+         native_node_tcp_transport_tests.root_module.addIncludePath(b.path("vendor/node-v24.13.0/llhttp/include"));
+         native_node_tcp_transport_tests.root_module.linkLibrary(network);
+         b.step("build-native-node-tcp-transport", "Install actual libuv TCP ownership controls without execution").dependOn(&b.addInstallArtifact(native_node_tcp_transport_tests, .{}).step);
++        const native_node_fs_request_transport_tests = b.addTest(.{
++            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_fs_request_transport_test.zig"), .target = target, .optimize = optimize }),
++            .filters = &.{"native actual FS transport"}, .use_llvm = use_llvm,
++        });
++        linkQuickJs(b, native_node_fs_request_transport_tests.root_module, quickjs, sqlite_lib_dir);
++        native_node_fs_request_transport_tests.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
++        native_node_fs_request_transport_tests.root_module.linkLibrary(network);
++        b.step("build-native-node-fs-request-transport", "Install actual shared libuv FS request ownership controls without execution").dependOn(&b.addInstallArtifact(native_node_fs_request_transport_tests, .{}).step);
+         const native_node_uv_exception_tests = b.addTest(.{
+             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_uv_exception_test.zig"), .target = target, .optimize = optimize }),
+             .filters = &.{"native UVException"}, .use_llvm = use_llvm,

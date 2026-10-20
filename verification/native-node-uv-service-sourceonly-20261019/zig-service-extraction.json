@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "status": "source_only_draft",
+  "ownership": "one actual native libuv service and event FIFO per Env I/O Hub",
+  "base": {
+    "tcp_sha256": "1DF60228E9CBEDE8FB0CDE3BDCED9E3F196291D5E6AD5035B38CC224DB47B4AA",
+    "tcp_bytes": 30447
+  },
+  "current": [
+    {
+      "path": "src/extensions/native_node_uv_service.zig",
+      "sha256": "3D1D632D250F78ED0EB7DEF8A7B44F99429D81CCB82F3199F3118C9FFA037D17",
+      "bytes": 8933
+    },
+    {
+      "path": "src/extensions/native_node_net_tcp_transport.zig",
+      "sha256": "48601693F5FEBFA3E68BC1CCABC1DD61F5CC5AB5E77C8ADDA1AB93DFC6421A96",
+      "bytes": 29019
+    }
+  ],
+  "c_dependency": "c-production-delta.json",
+  "edits": [
+    {
+      "before": "const wake = @import(\"native_owner_wake.zig\");\nconst completion_wake = @import(\"native_owner_completion.zig\");",
+      "after": "const shared_service = @import(\"native_node_uv_service.zig\");"
+    },
+    {
+      "before": "const uv = @cImport({ @cInclude(\"native_uv_tcp.h\"); });",
+      "after": "const uv = shared_service.uv;"
+    },
+    {
+      "before": "    wake_ref: wake.Ref,\n    provider: socket.Provider,",
+      "after": "    provider: socket.Provider,"
+    },
+    {
+      "before": "    fn poll(raw: *anyopaque) !bool {\n        const self: *Controller = @ptrCast(@alignCast(raw));\n        try self.entry();\n        if (self.busy != 0 or c.JS_IsJobPending(self.hub.engine.runtime)) return false;\n        const event = uv.pi_uv_service_next(self.service) orelse return false;\n        self.busy += 1; defer self.busy -= 1;\n        const engine = self.hub.engine;\n        engine.native_exception_diagnostics_suppressed += 1;\n        defer engine.native_exception_diagnostics_suppressed -= 1;\n        // Capture a producer/body failure before native event/buffer retirement.\n        var completion = Completion.initVoid(engine, self.dispatch(event));\n        uv.pi_uv_event_release(event);\n        try completion.finishVoid();\n        return true; // Hub supplies the next actual microtask checkpoint.\n    }\n    fn referenced(raw: *anyopaque) bool {\n        const self: *Controller = @ptrCast(@alignCast(raw));\n        return !self.stopping and uv.pi_uv_service_has_referenced(self.service) != 0;\n    }\n",
+      "after": "    fn ready(raw: *anyopaque) bool {\n        const self: *Controller = @ptrCast(@alignCast(raw));\n        return self.busy == 0 and !self.stopping;\n    }\n    fn deliver(raw: *anyopaque, event: *uv.PiUvEvent) !void {\n        const self: *Controller = @ptrCast(@alignCast(raw));\n        try self.entry();\n        self.busy += 1;\n        defer self.busy -= 1;\n        return self.dispatch(event);\n    }\n    fn abandon(_: *anyopaque, _: *uv.PiUvEvent) !void {\n        // Preserve original TCP teardown: queued events are released without\n        // invoking guest actors; stopped() then retires their native entries.\n    }\n"
+    },
+    {
+      "before": "        const status = uv.pi_uv_service_stop(self.service);\n        const actual = uv.pi_uv_service_snapshot(self.service);\n        // A failed real join cannot be reported as a closed owner or followed\n        // by freeing live worker state. The Hub has no recoverable stop result.\n        if (status != 0 or actual.thread_joined == 0 or actual.live_handles != 0 or actual.pending_requests != 0)\n            std.debug.panic(\"libuv TCP owner did not close: status={d}\", .{status});\n",
+      "after": "        const actual = uv.pi_uv_service_snapshot(self.service);\n        // The shared service was registered before this controller, so its\n        // sole stop owner has already drained callbacks and joined the loop.\n        if (actual.thread_joined == 0 or actual.live_handles != 0 or actual.pending_requests != 0)\n            @panic(\"libuv TCP controller stopped before its shared service\");\n"
+    },
+    {
+      "before": "        // All callbacks finished on the joined native loop. Discarding their\n        // actual packets never invokes guest code during environment teardown.\n        while (uv.pi_uv_service_next(self.service)) |event| uv.pi_uv_event_release(event);\n",
+      "after": "        // The earlier shared resource has drained/released the actual FIFO.\n"
+    },
+    {
+      "before": "        uv.pi_uv_service_release(self.service);\n        wake.release(self.wake_ref);\n        hostDestroy(engine, self);",
+      "after": "        uv.pi_uv_service_release(self.service);\n        hostDestroy(engine, self);"
+    },
+    {
+      "before": "fn notify(slot: u32, generation: u64) callconv(.c) void {\n    if (slot > std.math.maxInt(u8)) return;\n    wake.notify(.{ .slot = @intCast(slot), .generation = generation });\n}\nfn statusName(status: c_int) []const u8 { return std.mem.span(uv.pi_uv_error_name(status)); }",
+      "after": "fn statusName(status: c_int) []const u8 { return std.mem.span(uv.pi_uv_error_name(status)); }"
+    },
+    {
+      "before": "    const reference = try completion_wake.acquireNativeWake(engine);\n    const self = hostCreate(engine, Controller) catch |err| {\n        var completion = Completion.initVoid(engine, err);\n        wake.release(reference); try completion.finishVoid(); unreachable;\n    };\n    var service: ?*uv.PiUvService = null;\n    const started = uv.pi_uv_service_create(engine.native_memory_owner, notify, reference.slot, reference.generation, &service);\n    if (started.status < 0 or started.allocation_failed != 0) {\n        const failure: anyerror!void = if (started.allocation_failed != 0) error.OutOfMemory\n            else raiseStatus(engine, inputs.errno_exception, started.status, \"uv_loop\");\n        var completion = Completion.initVoid(engine, failure);\n        hostDestroy(engine, self); wake.release(reference);\n        try completion.finishVoid(); unreachable;\n    }\n    const actual = service orelse unreachable;\n    const provider = inputs.provider.clone(engine) catch |err| {\n        var completion = Completion.initVoid(engine, err);\n        if (uv.pi_uv_service_stop(actual) != 0) @panic(\"libuv TCP admission rollback did not join\");\n        while (uv.pi_uv_service_next(actual)) |event| uv.pi_uv_event_release(event);\n        uv.pi_uv_service_release(actual); hostDestroy(engine, self); wake.release(reference);\n        try completion.finishVoid(); unreachable;\n    };\n    hub.resources.ensureUnusedCapacity(engine.gpa, 1) catch |err| {\n        var completion = Completion.initVoid(engine, err);\n        completion.release(provider.constructor); completion.release(provider.states);\n        if (uv.pi_uv_service_stop(actual) != 0) @panic(\"libuv TCP admission rollback did not join\");\n        while (uv.pi_uv_service_next(actual)) |event| uv.pi_uv_event_release(event);\n        uv.pi_uv_service_release(actual); hostDestroy(engine, self); wake.release(reference);\n        try completion.finishVoid(); unreachable;\n    };\n    self.* = .{ .hub = hub, .service = actual, .wake_ref = reference, .provider = provider,\n        .errno_exception = c.JS_DupValue(engine.context, inputs.errno_exception) };\n    hub.resources.appendAssumeCapacity(.{ .raw = self, .tag = &controller_tag, .poll = Controller.poll,\n        .referenced = Controller.referenced, .stop = Controller.stop, .stopped = Controller.stopped });\n    return self;\n}\n",
+      "after": "    const shared = switch (try shared_service.acquire(engine)) {\n        .ready => |actual| actual,\n        .failed => |status| {\n            try raiseStatus(engine, inputs.errno_exception, status, \"uv_loop\");\n            unreachable;\n        },\n    };\n    const self = try hostCreate(engine, Controller);\n    const provider = inputs.provider.clone(engine) catch |err| {\n        var completion = Completion.initVoid(engine, err);\n        hostDestroy(engine, self);\n        try completion.finishVoid();\n        unreachable;\n    };\n    hub.resources.ensureUnusedCapacity(engine.gpa, 1) catch |err| {\n        var completion = Completion.initVoid(engine, err);\n        completion.release(provider.constructor);\n        completion.release(provider.states);\n        hostDestroy(engine, self);\n        try completion.finishVoid();\n        unreachable;\n    };\n    self.* = .{ .hub = hub, .service = shared.service, .provider = provider,\n        .errno_exception = c.JS_DupValue(engine.context, inputs.errno_exception) };\n    shared.attach(.tcp, .{\n        .raw = self, .ready = Controller.ready,\n        .complete = Controller.deliver, .abandon = Controller.abandon,\n    }) catch |err| {\n        var completion = Completion.initVoid(engine, err);\n        completion.release(self.provider.constructor);\n        completion.release(self.provider.states);\n        completion.release(self.errno_exception);\n        hostDestroy(engine, self);\n        try completion.finishVoid();\n        unreachable;\n    };\n    // No guest call/allocation follows attachment. Controller's own native\n    // service entitlement survives the earlier shared resource's stopped().\n    uv.pi_uv_service_retain(shared.service);\n    hub.resources.appendAssumeCapacity(.{\n        .raw = self, .tag = &controller_tag,\n        .stop = Controller.stop, .stopped = Controller.stopped,\n    });\n    return self;\n}\n"
+    }
+  ],
+  "exact_reversal": true,
+  "contract": [
+    "The shared resource is registered before domain controllers and is the only service stop/join/event-FIFO owner.",
+    "Every controller owns an independent native service entitlement through its own stopped callback.",
+    "Hub calls every stop before any stopped callback; FS can disable JS before the shared drain executes actual native request completion/cleanup.",
+    "The existing TCP endpoint/actor/dispatch bodies and all twelve raw TCP declarations remain unchanged.",
+    "Domain clients are private native structs on the Engine thread; no JS/Engine pointer or raw loop escapes to workers.",
+    "Loop status is returned to the original domain error constructor; actual wrapper allocation failure remains typed OOM."
+  ],
+  "limits": [
+    "FS domain client and request dispatch/AfterScope integration are still being authored.",
+    "No native compiler, runtime, Node, or generator execution has occurred.",
+    "No complete public TCP/FS namespace qualification."
+  ],
+  "execution_claim": false
+}

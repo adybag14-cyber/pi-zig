@@ -1,0 +1,129 @@
+{
+  "status": "source-only initial typed FS C draft; finite peers and actual controls pending; no execution",
+  "base": {
+    "c": {
+      "sha256": "e1204e4b4b30f46534940d5f9089b8d00b0e2dd845fda0a798bb0d2f252b71f7",
+      "bytes": 32726
+    },
+    "h": {
+      "sha256": "f0fa0e66f2823bf458a7b7faff7482a0aec00053e0ab3cfdd60f61bc1b18a17e",
+      "bytes": 5319
+    }
+  },
+  "current": [
+    {
+      "path": "native_uv_tcp.c",
+      "sha256": "9ddb6759ad5ebf860f016eeb3fbd9e7eeae931213ecaaabe570caf7f9294e401",
+      "bytes": 42103
+    },
+    {
+      "path": "native_uv_tcp.h",
+      "sha256": "b6f8d5269b8ef9dc9964e7f356ef1a23dbb483fb9b485c2c6d77d464816b4f45",
+      "bytes": 5344
+    },
+    {
+      "path": "native_uv_fs.h",
+      "sha256": "9253a8c906ee85b01d6ca0b720797c912f25f015a012860bac08b61173701a79",
+      "bytes": 2814
+    }
+  ],
+  "edits": [
+    {
+      "file": "h",
+      "before": "    PI_UV_NATIVE_ALLOCATION_FAILURE\n",
+      "after": "    PI_UV_NATIVE_ALLOCATION_FAILURE,\n    PI_UV_FS_COMPLETION\n"
+    },
+    {
+      "file": "c",
+      "before": "#include \"native_uv_tcp.h\"\n",
+      "after": "#include \"native_uv_tcp.h\"\n#include \"native_uv_fs.h\"\n"
+    },
+    {
+      "file": "c",
+      "before": "                   PI_UV_REQUEST, PI_UV_HEAP_EVENT, PI_UV_EMBED_OOM };",
+      "after": "                   PI_UV_REQUEST, PI_UV_HEAP_EVENT, PI_UV_EMBED_OOM,\n                   PI_UV_FS_REQUEST };"
+    },
+    {
+      "file": "c",
+      "before": "} PiUvRequest;\nenum PiUvCommandKind",
+      "after": "} PiUvRequest;\n/* The real uv_fs_t survives its native callback until the owner executes\n * FSReqAfterScope::Clear. Neither this request nor its backing entitlement\n * contains a JS value, Engine pointer, or guest callback. */\nstruct PiUvFsRequest {\n    PiUvService *service;\n    _Atomic size_t references;\n    uv_fs_t uv;\n    uv_buf_t buffer;\n    JSPiArrayBufferLease backing;\n    PiUvEvent event;\n    PiUvFsRequest *previous;\n    PiUvFsRequest *next;\n    int kind;\n    int descriptor;\n    int flags;\n    int mode;\n    int64_t position;\n    int entered;\n    int accepted;\n    _Atomic int completed;\n    _Atomic int cleaned;\n};\nenum PiUvCommandKind"
+    },
+    {
+      "file": "c",
+      "before": "    PI_UV_CMD_ADDRESS, PI_UV_CMD_STOP };",
+      "after": "    PI_UV_CMD_ADDRESS, PI_UV_CMD_FS_READ, PI_UV_CMD_FS_OPEN,\n    PI_UV_CMD_FS_CLOSE, PI_UV_CMD_FS_CANCEL, PI_UV_CMD_STOP };"
+    },
+    {
+      "file": "c",
+      "before": "    PiUvRequest *request;\n    struct sockaddr_storage address;",
+      "after": "    PiUvRequest *request;\n    PiUvFsRequest *fs_request;\n    const char *path;\n    struct sockaddr_storage address;"
+    },
+    {
+      "file": "c",
+      "before": "    PiUvEndpoint *endpoints;\n    PiUvEvent *event_head;",
+      "after": "    PiUvEndpoint *endpoints;\n    PiUvFsRequest *fs_requests;\n    PiUvEvent *event_head;"
+    },
+    {
+      "file": "c",
+      "before": "    assert(service->endpoints == NULL && service->event_head == NULL);",
+      "after": "    assert(service->endpoints == NULL && service->fs_requests == NULL &&\n           service->event_head == NULL);"
+    },
+    {
+      "file": "c",
+      "before": "static int pi_uv_numeric_address(const char *text, unsigned int port,",
+      "after": "void pi_uv_fs_request_retain(PiUvFsRequest *request) {\n    atomic_fetch_add_explicit(&request->references, 1, memory_order_relaxed);\n}\nvoid pi_uv_fs_request_cleanup(PiUvFsRequest *request) {\n    assert(atomic_load_explicit(&request->completed, memory_order_acquire));\n    if (atomic_exchange_explicit(&request->cleaned, 1, memory_order_acq_rel))\n        return;\n    /* Actual uv cleanup is delayed until the original AfterScope cutpoint.\n     * The independent backing entitlement is no longer used by native work. */\n    if (request->entered) uv_fs_req_cleanup(&request->uv);\n    JS_PiReleaseArrayBufferLease(&request->backing);\n}\nvoid pi_uv_fs_request_release(PiUvFsRequest *request) {\n    if (!request || atomic_fetch_sub_explicit(&request->references, 1,\n                                              memory_order_acq_rel) != 1)\n        return;\n    assert(atomic_load_explicit(&request->completed, memory_order_acquire));\n    pi_uv_fs_request_cleanup(request);\n    PiUvService *service = request->service;\n    pi_uv_free(service->memory_owner, request);\n    pi_uv_service_release(service);\n}\nstatic PiUvFsRequest *pi_uv_fs_request_allocate(PiUvService *service,\n                                               int kind, uint64_t token) {\n    PiUvFsRequest *request = pi_uv_alloc(service->memory_owner, sizeof(*request));\n    if (!request) return NULL;\n    request->service = service;\n    request->kind = kind;\n    atomic_init(&request->references, 1);\n    atomic_init(&request->completed, 0);\n    atomic_init(&request->cleaned, 0);\n    pi_uv_service_retain(service);\n    pi_uv_event_prepare(&request->event, service, NULL, NULL,\n        PI_UV_FS_REQUEST, PI_UV_FS_COMPLETION, 0, token);\n    request->event.allocation = request;\n    return request;\n}\nstatic void pi_uv_fs_completed(uv_fs_t *actual) {\n    PiUvFsRequest *request = actual->data;\n    PiUvService *service = request->service;\n    if (request->previous) request->previous->next = request->next;\n    else service->fs_requests = request->next;\n    if (request->next) request->next->previous = request->previous;\n    request->previous = request->next = NULL;\n    request->event.info.status = actual->result < 0 ? (int)actual->result : 0;\n    if (request->kind == PI_UV_FS_READ && actual->result >= 0)\n        request->event.info.length = (size_t)actual->result;\n    atomic_fetch_sub_explicit(&service->pending_requests, 1, memory_order_release);\n    atomic_store_explicit(&request->completed, 1, memory_order_release);\n    pi_uv_fs_request_retain(request); /* actual queued event entitlement */\n    pi_uv_event_queue(&request->event);\n    /* The owner may already have drained the event. Keep this native callback\n     * entitlement until all callback accesses have completed. */\n    pi_uv_fs_request_release(request);\n}\nstatic int pi_uv_fs_run(PiUvService *service, PiUvCommand *command) {\n    PiUvFsRequest *request = command->fs_request;\n    if (command->kind == PI_UV_CMD_FS_CANCEL) {\n        if (!request->entered) return UV_EINVAL;\n        return uv_cancel((uv_req_t *)&request->uv);\n    }\n    request->uv.data = request;\n    request->entered = 1;\n    int status;\n    switch (command->kind) {\n    case PI_UV_CMD_FS_READ:\n        status = uv_fs_read(&service->loop, &request->uv, request->descriptor,\n            &request->buffer, 1, request->position, pi_uv_fs_completed);\n        break;\n    case PI_UV_CMD_FS_OPEN:\n        status = uv_fs_open(&service->loop, &request->uv, command->path,\n            request->flags, request->mode, pi_uv_fs_completed);\n        break;\n    case PI_UV_CMD_FS_CLOSE:\n        status = uv_fs_close(&service->loop, &request->uv, request->descriptor,\n                            pi_uv_fs_completed);\n        break;\n    default:\n        return UV_EINVAL;\n    }\n    if (status >= 0) {\n        request->accepted = 1;\n        request->next = service->fs_requests;\n        if (request->next) request->next->previous = request;\n        service->fs_requests = request;\n        pi_uv_fs_request_retain(request); /* actual in-flight uv request */\n        atomic_fetch_add_explicit(&service->pending_requests, 1, memory_order_release);\n    } else {\n        /* AsyncDestCall sets the failed result/path before directly invoking\n         * the original after callback. No queued event or waiting count. */\n        request->uv.result = status;\n        request->uv.path = NULL;\n        atomic_store_explicit(&request->completed, 1, memory_order_release);\n    }\n    return status;\n}\nstatic int pi_uv_numeric_address(const char *text, unsigned int port,"
+    },
+    {
+      "file": "c",
+      "before": "        for (PiUvEndpoint *item = service->endpoints; item; item = item->next)\n            pi_uv_close_worker(item);\n        uv_close",
+      "after": "        for (PiUvEndpoint *item = service->endpoints; item; item = item->next)\n            pi_uv_close_worker(item);\n        for (PiUvFsRequest *item = service->fs_requests; item; item = item->next)\n            (void)uv_cancel((uv_req_t *)&item->uv);\n        uv_close"
+    },
+    {
+      "file": "c",
+      "before": "    if (command->kind == PI_UV_CMD_INIT) return pi_uv_initialize_worker(endpoint);",
+      "after": "    if (command->kind == PI_UV_CMD_FS_READ || command->kind == PI_UV_CMD_FS_OPEN ||\n        command->kind == PI_UV_CMD_FS_CLOSE || command->kind == PI_UV_CMD_FS_CANCEL)\n        return pi_uv_fs_run(service, command);\n    if (command->kind == PI_UV_CMD_INIT) return pi_uv_initialize_worker(endpoint);"
+    },
+    {
+      "file": "c",
+      "before": "    } else if (storage == PI_UV_REQUEST || storage == PI_UV_HEAP_EVENT) {",
+      "after": "    } else if (storage == PI_UV_FS_REQUEST) {\n        pi_uv_fs_request_release(allocation);\n    } else if (storage == PI_UV_REQUEST || storage == PI_UV_HEAP_EVENT) {"
+    },
+    {
+      "file": "c",
+      "before": "PiUvResult pi_uv_tcp_create(PiUvService *service, PiUvEndpoint **result) {",
+      "after": "PiUvFsRequest *pi_uv_event_fs_request(const PiUvEvent *event) {\n    return event->storage == PI_UV_FS_REQUEST ? event->allocation : NULL;\n}\nPiUvFsInfo pi_uv_fs_request_info(const PiUvFsRequest *request) {\n    assert(atomic_load_explicit(&request->completed, memory_order_acquire));\n    const int cleaned = atomic_load_explicit(&request->cleaned, memory_order_acquire);\n    PiUvFsInfo result = {\n        .kind = request->kind, .result = (int64_t)request->uv.result,\n        .path = cleaned ? NULL : request->uv.path,\n        .accepted = request->accepted, .cleaned = cleaned\n    };\n    return result;\n}\nstatic PiUvResult pi_uv_fs_submit(PiUvService *service, PiUvCommand *command,\n                                  PiUvFsRequest **out) {\n    PiUvFsRequest *request = command->fs_request;\n    const int status = pi_uv_submit(service, command);\n    if (status < 0 && !request->entered) {\n        request->uv.result = status;\n        request->uv.path = NULL;\n        atomic_store_explicit(&request->completed, 1, memory_order_release);\n    }\n    *out = request; /* caller owns one request even after immediate rejection */\n    return pi_uv_result(status, 0);\n}\nPiUvResult pi_uv_fs_read(PiUvService *service, int descriptor,\n    const JSPiArrayBufferLease *backing, size_t offset, uint32_t length,\n    int64_t position, uint64_t token, PiUvFsRequest **out) {\n    if (!out) return pi_uv_result(UV_EINVAL, 0);\n    *out = NULL;\n    if (!backing || !backing->owner || length > INT_MAX ||\n        offset > backing->byte_length || length > backing->byte_length - offset)\n        return pi_uv_result(UV_EINVAL, 0);\n    PiUvFsRequest *request = pi_uv_fs_request_allocate(service, PI_UV_FS_READ, token);\n    if (!request) return pi_uv_result(UV_ENOMEM, 1);\n    JS_PiDupArrayBufferLease(&request->backing, backing);\n    unsigned char *bytes = request->backing.data;\n    if (offset) bytes += offset;\n    request->descriptor = descriptor;\n    request->buffer = uv_buf_init((char *)bytes, length);\n    request->position = position;\n    PiUvCommand command = { .kind = PI_UV_CMD_FS_READ, .fs_request = request };\n    return pi_uv_fs_submit(service, &command, out);\n}\nPiUvResult pi_uv_fs_open(PiUvService *service, const char *path, int flags,\n    int mode, uint64_t token, PiUvFsRequest **out) {\n    if (!out) return pi_uv_result(UV_EINVAL, 0);\n    *out = NULL;\n    if (!path) return pi_uv_result(UV_EINVAL, 0);\n    PiUvFsRequest *request = pi_uv_fs_request_allocate(service, PI_UV_FS_OPEN, token);\n    if (!request) return pi_uv_result(UV_ENOMEM, 1);\n    request->flags = flags;\n    request->mode = mode;\n    PiUvCommand command = { .kind = PI_UV_CMD_FS_OPEN, .fs_request = request,\n                            .path = path };\n    /* Command completion proves libuv has copied every path byte it needs.\n     * The borrowed input does not escape this synchronous admission call. */\n    return pi_uv_fs_submit(service, &command, out);\n}\nPiUvResult pi_uv_fs_close(PiUvService *service, int descriptor, uint64_t token,\n    PiUvFsRequest **out) {\n    if (!out) return pi_uv_result(UV_EINVAL, 0);\n    *out = NULL;\n    PiUvFsRequest *request = pi_uv_fs_request_allocate(service, PI_UV_FS_CLOSE, token);\n    if (!request) return pi_uv_result(UV_ENOMEM, 1);\n    request->descriptor = descriptor;\n    PiUvCommand command = { .kind = PI_UV_CMD_FS_CLOSE, .fs_request = request };\n    return pi_uv_fs_submit(service, &command, out);\n}\nint pi_uv_fs_cancel(PiUvFsRequest *request) {\n    PiUvCommand command = { .kind = PI_UV_CMD_FS_CANCEL, .fs_request = request };\n    return pi_uv_submit(request->service, &command);\n}\nPiUvResult pi_uv_tcp_create(PiUvService *service, PiUvEndpoint **result) {"
+    }
+  ],
+  "reversal": "Each exact after segment occurs once; reversing all13 reproduces the complete current Main E120/F0FA bytes.",
+  "tcp_controls": {
+    "sha256": "3c475c5fa0c43bbee875e58e54e705282e2319c75ee1e0216d775e84e56c58d5",
+    "bytes": 19529,
+    "names": [
+      "native actual TCP empty service owns native loop and closes its independent budget",
+      "native actual TCP binds ephemeral IPv4 and reports actual local and peer addresses",
+      "native actual TCP copies caller write bytes and preserves tokens across real segmented reads",
+      "native actual TCP read packet owns bytes until release and resumes only with new demand",
+      "native actual TCP half close yields real EOF while the opposite direction remains writable",
+      "native actual TCP releasing an unclaimed accept closes the real accepted connection",
+      "native actual TCP numeric argument errors remain ordinary libuv statuses without callbacks",
+      "native actual TCP exhausted shared budget is a distinct wrapper allocation producer",
+      "native actual TCP read allocation failure is delivered by its real embedded owner event",
+      "native actual TCP close tokens use observed native closure and never a second close",
+      "native actual TCP listener reference tracks actual active handle and queued closure separately",
+      "native actual TCP native endpoint and event owners can outlive their original VM runtime"
+    ],
+    "changed": false
+  },
+  "network_helper": {
+    "sha256": "caecf005866364925f79959c8bac3534da051894fb841a1c2cc594c9c15ba499",
+    "changed": false
+  },
+  "requirements": [
+    "The one actual service loop executes uv_fs_read/open/close with non-null real callbacks. Commands synchronously return the actual libuv admission status.",
+    "Successful admission acquires one native in-flight request entitlement and queues exactly one completion. Immediate rejection returns the actual request to its caller without a queued event or pending counter increment.",
+    "The actual uv_fs_t, path and backing entitlement survive native callback publication until explicit FSReqAfterScope cleanup; native release is abandonment fallback only.",
+    "Service stop calls actual uv_cancel for every still-pending FS request, keeps actual callbacks draining until uv_run completes, then joins. No guest callback or VM value exists on the worker.",
+    "Open descriptors are returned as actual native integers. uv_fs_req_cleanup does not close a descriptor; actual FileHandle ownership remains the separate derived consumer.",
+    "The existing twelve TCP declarations and all TCP actor algorithms are unchanged. The generic Hub/service extraction and actual FSReq dispatch adapter are separate pending source slices."
+  ]
+}

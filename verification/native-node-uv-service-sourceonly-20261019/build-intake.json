@@ -1,0 +1,13 @@
+{
+  "status": "source-only; unexecuted",
+  "before_sha256": "6d6d6509f45c219b74d72688b170bf8b2c83d732ddcdda33488b307be7dfc731",
+  "after_sha256": "d2d76174e1d1c4b8fe0b794212b9c83981eb83fe14821023b21ebb4c855102d5",
+  "before_bytes": 471299,
+  "after_bytes": 472142,
+  "target": "build-native-node-fs-request-transport",
+  "root": "src/native_node_fs_request_transport_test.zig",
+  "filter": "native actual FS transport",
+  "declared_controls": 14,
+  "addition": "        const native_node_fs_request_transport_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_fs_request_transport_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native actual FS transport\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_node_fs_request_transport_tests.root_module, quickjs, sqlite_lib_dir);\n        native_node_fs_request_transport_tests.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        native_node_fs_request_transport_tests.root_module.linkLibrary(network);\n        b.step(\"build-native-node-fs-request-transport\", \"Install actual shared libuv FS request ownership controls without execution\").dependOn(&b.addInstallArtifact(native_node_fs_request_transport_tests, .{}).step);\n",
+  "scope": "Eight additive install-only lines inside the existing native_node_network Windows/Linux guard. Uses the same existing library and linkQuickJs; preserves the original TCP12 registration."
+}

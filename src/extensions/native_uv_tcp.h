@@ -26,7 +26,8 @@ enum PiUvEventKind {
     PI_UV_SHUTDOWN,
     PI_UV_CONNECT,
     PI_UV_CLOSE,
-    PI_UV_NATIVE_ALLOCATION_FAILURE
+    PI_UV_NATIVE_ALLOCATION_FAILURE,
+    PI_UV_FS_COMPLETION
 };
 typedef struct PiUvEventInfo {
     int kind;

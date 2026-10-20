@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "status": "reviewed source-only FS14 intake; no runtime claim",
+  "donor": "b5bd7ae8267c9c62bed24b32cce7aaeabcd9eb15",
+  "parent_main": "098b0f565e38b1af6b970196424b3e4e4bdbd19e",
+  "reviewed_utc": "2026-10-20T10:48:09.042410+00:00",
+  "independent_prior_closure_sha256": "B2C30FBFF878CD8AB4FA364A14E7A599737C6F6E1916E2C90C24DEECB25AF8FA",
+  "production_deltas_reverse_exactly_to_Main": true,
+  "build_lines_added": 8,
+  "declared_controls": 14,
+  "TCP12_unchanged": true,
+  "network_helper_unchanged": true,
+  "all_finite_peers_closed": true,
+  "files": [
+    {
+      "path": "src/extensions/native_node_net_tcp_transport.zig",
+      "bytes": 29019,
+      "sha256": "48601693F5FEBFA3E68BC1CCABC1DD61F5CC5AB5E77C8ADDA1AB93DFC6421A96"
+    },
+    {
+      "path": "src/extensions/native_node_uv_service.zig",
+      "bytes": 8933,
+      "sha256": "3D1D632D250F78ED0EB7DEF8A7B44F99429D81CCB82F3199F3118C9FFA037D17"
+    },
+    {
+      "path": "src/extensions/native_uv_fs.h",
+      "bytes": 3072,
+      "sha256": "A8E758C49AC4E0583BA08ABF28771BFC7843A730796A6F3E5C471698249011BE"
+    },
+    {
+      "path": "src/extensions/native_uv_tcp.c",
+      "bytes": 42250,
+      "sha256": "FF046966BB81E915F0A69FD158DD8DD10533A6E2590FE1CA8975A5DCB503EE83"
+    },
+    {
+      "path": "src/extensions/native_uv_tcp.h",
+      "bytes": 5344,
+      "sha256": "B6F8D5269B8EF9DC9964E7F356EF1A23DBB483FB9B485C2C6D77D464816B4F45"
+    },
+    {
+      "path": "src/native_node_fs_request_transport_test.zig",
+      "bytes": 34210,
+      "sha256": "68A71CE9352580918156CAFB676927D8E4CC10272A2FAEA1CB5A6F8E9E823151"
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/README.md",
+      "bytes": 3330,
+      "sha256": "A32158E81C779BBB5B6AFDCEDD07EB396D5D2B726159D81A9265AB363CE78CBB"
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/baseline/native_node_tcp_transport_test.zig",
+      "bytes": 19529,
+      "sha256": "3C475C5FA0C43BBEE875E58E54E705282E2319C75EE1E0216D775E84E56C58D5"
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/baseline/native_uv_tcp.c",
+      "bytes": 32726,
+      "sha256": "E1204E4B4B30F46534940D5F9089B8D00B0E2DD845FDA0A798BB0D2F252B71F7"
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/baseline/native_uv_tcp.h",
+      "bytes": 5319,
+      "sha256": "F0FA0E66F2823BF458A7B7FAFF7482A0AEC00053E0AB3CFDD60F61BC1B18A17E"
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/build-intake.json",
+      "bytes": 1527,
+      "sha256": "0EB2072E3B88B8916A3C7014B11C596E4DB152D2EF9926CC6BD1ED02EAED8514"
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/build-intake.patch",
+      "bytes": 1580,
+      "sha256": "D579E2A82B6025E1CCA9DF8E3975684D9D2814E1F4A3455A8DA74E0DB19AB021"
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/c-allocation-admission-successor.json",
+      "bytes": 13520,
+      "sha256": "C568F57D0631DE908CD2B4945496B62371703A4AC27B0AE1A93806934A3476B3"
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/c-cancel-admission-successor.json",
+      "bytes": 1821,
+      "sha256": "83423B49155E113B0CF83416FFB66A727396E88DC16FE353449CDD5B008CA263"
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/c-production-delta.json",
+      "bytes": 15792,
+      "sha256": "B0DD991DE8C8F580FD27414F3B5926BB2D3092D7A6F0F39B56A7337184EAA6D6"
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/intake-manifest.json",
+      "bytes": 11079,
+      "sha256": "EC9B91553C1E4B3090E651CACC8953795074B3B494898E2B5AA548449F5E2B38"
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/peer-receipts.json",
+      "bytes": 2542,
+      "sha256": "5AC8D0C9981060A9F41510EE65C87781B5B3310A372C7A51000CC38113F0F4D5"
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/zig-service-extraction.json",
+      "bytes": 10313,
+      "sha256": "2F2EA19EB7232FF41A8462390D67B7EEBCEEEDDBA574A4F51809B1D55291AB65"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 472142,
+      "sha256": "D2D76174E1D1C4B8FE0B794212B9C83981EB83FE14821023B21EBB4C855102D5"
+    }
+  ],
+  "runtime_started": false,
+  "qualified": false
+}

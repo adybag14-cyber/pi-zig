@@ -1,0 +1,32 @@
+{
+  "scope": "Source-only finite cancellation admission correction; no execution",
+  "base": {
+    "c": "440EAA89BB823AD2336B48676928CD76DB82DA9152324E83C041B31D9CA03A0C",
+    "h": "3BE305AADBA7224106041678E45D89323E97ABF0A384C1C6FC2344FDC98761EF"
+  },
+  "reason": "An actual asynchronous libuv call can fail before uv__work_submit initializes work_req.loop. entered alone is not an in-flight admission proof. Only accepted and not-completed requests reach uv_cancel; immediate admission failure, unsubmitted and completed requests return UV_EINVAL at the service command.",
+  "files": [
+    {
+      "path": "src/extensions/native_uv_tcp.c",
+      "sha256": "ff046966bb81e915f0a69fd158dd8dd10533a6e2590fe1ca8975a5dcb503ee83",
+      "bytes": 42250
+    },
+    {
+      "path": "src/extensions/native_uv_fs.h",
+      "sha256": "a8e758c49ac4e0583ba08abf28771bfc7843a730796a6f3e5c471698249011be",
+      "bytes": 3072
+    }
+  ],
+  "edits": [
+    {
+      "path": "src/extensions/native_uv_tcp.c",
+      "before": "        if (!request->entered) return UV_EINVAL;\n        return uv_cancel((uv_req_t *)&request->uv);",
+      "after": "        if (!request->accepted ||\n            atomic_load_explicit(&request->completed, memory_order_acquire))\n            return UV_EINVAL;\n        return uv_cancel((uv_req_t *)&request->uv);"
+    },
+    {
+      "path": "src/extensions/native_uv_fs.h",
+      "before": "/* Actual uv_cancel runs on the service thread. It never clears the native\n * request or suppresses the eventual callback of an accepted operation. */",
+      "after": "/* Actual uv_cancel runs on the service thread only for an accepted request\n * whose callback is still pending. A no-in-flight command returns UV_EINVAL.\n * It never clears the request or suppresses an accepted operation's callback. */"
+    }
+  ]
+}

@@ -7,10 +7,9 @@ const p = @import("native_public_values.zig");
 const c = p.c;
 const Engine = p.em.Engine;
 const env = @import("native_env_io.zig");
-const wake = @import("native_owner_wake.zig");
-const completion_wake = @import("native_owner_completion.zig");
+const shared_service = @import("native_node_uv_service.zig");
 const socket = @import("native_node_net_socket.zig");
-const uv = @cImport({ @cInclude("native_uv_tcp.h"); });
+const uv = shared_service.uv;
 const Completion = p.owned.Completion;
 const controller_tag: u8 = 0;
 
@@ -222,7 +221,6 @@ const Entry = struct {
 pub const Controller = struct {
     hub: *env.Hub,
     service: *uv.PiUvService,
-    wake_ref: wake.Ref,
     provider: socket.Provider,
     errno_exception: c.JSValue,
     entries: ?*Entry = null,
@@ -453,36 +451,31 @@ pub const Controller = struct {
         }
         if (item.listener) |listener| try listener.closed(listener.context, self);
     }
-    fn poll(raw: *anyopaque) !bool {
+    fn ready(raw: *anyopaque) bool {
+        const self: *Controller = @ptrCast(@alignCast(raw));
+        return self.busy == 0 and !self.stopping;
+    }
+    fn deliver(raw: *anyopaque, event: *uv.PiUvEvent) !void {
         const self: *Controller = @ptrCast(@alignCast(raw));
         try self.entry();
-        if (self.busy != 0 or c.JS_IsJobPending(self.hub.engine.runtime)) return false;
-        const event = uv.pi_uv_service_next(self.service) orelse return false;
-        self.busy += 1; defer self.busy -= 1;
-        const engine = self.hub.engine;
-        engine.native_exception_diagnostics_suppressed += 1;
-        defer engine.native_exception_diagnostics_suppressed -= 1;
-        // Capture a producer/body failure before native event/buffer retirement.
-        var completion = Completion.initVoid(engine, self.dispatch(event));
-        uv.pi_uv_event_release(event);
-        try completion.finishVoid();
-        return true; // Hub supplies the next actual microtask checkpoint.
+        self.busy += 1;
+        defer self.busy -= 1;
+        return self.dispatch(event);
     }
-    fn referenced(raw: *anyopaque) bool {
-        const self: *Controller = @ptrCast(@alignCast(raw));
-        return !self.stopping and uv.pi_uv_service_has_referenced(self.service) != 0;
+    fn abandon(_: *anyopaque, _: *uv.PiUvEvent) !void {
+        // Preserve original TCP teardown: queued events are released without
+        // invoking guest actors; stopped() then retires their native entries.
     }
     fn stop(raw: *anyopaque) void {
         const self: *Controller = @ptrCast(@alignCast(raw));
         if (self.stopping) return;
         std.debug.assert(self.busy == 0);
         self.stopping = true;
-        const status = uv.pi_uv_service_stop(self.service);
         const actual = uv.pi_uv_service_snapshot(self.service);
-        // A failed real join cannot be reported as a closed owner or followed
-        // by freeing live worker state. The Hub has no recoverable stop result.
-        if (status != 0 or actual.thread_joined == 0 or actual.live_handles != 0 or actual.pending_requests != 0)
-            std.debug.panic("libuv TCP owner did not close: status={d}", .{status});
+        // The shared service was registered before this controller, so its
+        // sole stop owner has already drained callbacks and joined the loop.
+        if (actual.thread_joined == 0 or actual.live_handles != 0 or actual.pending_requests != 0)
+            @panic("libuv TCP controller stopped before its shared service");
         var cursor = self.entries;
         while (cursor) |item| : (cursor = item.next) item.native.close_observed = true;
     }
@@ -490,9 +483,7 @@ pub const Controller = struct {
         const self: *Controller = @ptrCast(@alignCast(raw));
         const engine = self.hub.engine;
         std.debug.assert(self.stopping);
-        // All callbacks finished on the joined native loop. Discarding their
-        // actual packets never invokes guest code during environment teardown.
-        while (uv.pi_uv_service_next(self.service)) |event| uv.pi_uv_event_release(event);
+        // The earlier shared resource has drained/released the actual FIFO.
         var completion = Completion.initVoid(engine, {});
         while (self.entries) |item| {
             self.entries = item.next; item.next = null;
@@ -503,15 +494,10 @@ pub const Controller = struct {
         completion.release(self.errno_exception);
         _ = completion.finishVoid() catch {};
         uv.pi_uv_service_release(self.service);
-        wake.release(self.wake_ref);
         hostDestroy(engine, self);
     }
 };
 
-fn notify(slot: u32, generation: u64) callconv(.c) void {
-    if (slot > std.math.maxInt(u8)) return;
-    wake.notify(.{ .slot = @intCast(slot), .generation = generation });
-}
 fn statusName(status: c_int) []const u8 { return std.mem.span(uv.pi_uv_error_name(status)); }
 fn hostCreate(engine: *Engine, comptime T: type) !*T {
     if (c.pi_js_native_memory_reserve(engine.native_memory_owner, @sizeOf(T)) == 0) return error.OutOfMemory;
@@ -553,39 +539,48 @@ pub fn acquire(engine: *Engine, inputs: Inputs) !*Controller {
             return error.NativeTcpDependencyMismatch;
         return existing;
     };
-    const reference = try completion_wake.acquireNativeWake(engine);
-    const self = hostCreate(engine, Controller) catch |err| {
-        var completion = Completion.initVoid(engine, err);
-        wake.release(reference); try completion.finishVoid(); unreachable;
+    const shared = switch (try shared_service.acquire(engine)) {
+        .ready => |actual| actual,
+        .failed => |status| {
+            try raiseStatus(engine, inputs.errno_exception, status, "uv_loop");
+            unreachable;
+        },
     };
-    var service: ?*uv.PiUvService = null;
-    const started = uv.pi_uv_service_create(engine.native_memory_owner, notify, reference.slot, reference.generation, &service);
-    if (started.status < 0 or started.allocation_failed != 0) {
-        const failure: anyerror!void = if (started.allocation_failed != 0) error.OutOfMemory
-            else raiseStatus(engine, inputs.errno_exception, started.status, "uv_loop");
-        var completion = Completion.initVoid(engine, failure);
-        hostDestroy(engine, self); wake.release(reference);
-        try completion.finishVoid(); unreachable;
-    }
-    const actual = service orelse unreachable;
+    const self = try hostCreate(engine, Controller);
     const provider = inputs.provider.clone(engine) catch |err| {
         var completion = Completion.initVoid(engine, err);
-        if (uv.pi_uv_service_stop(actual) != 0) @panic("libuv TCP admission rollback did not join");
-        while (uv.pi_uv_service_next(actual)) |event| uv.pi_uv_event_release(event);
-        uv.pi_uv_service_release(actual); hostDestroy(engine, self); wake.release(reference);
-        try completion.finishVoid(); unreachable;
+        hostDestroy(engine, self);
+        try completion.finishVoid();
+        unreachable;
     };
     hub.resources.ensureUnusedCapacity(engine.gpa, 1) catch |err| {
         var completion = Completion.initVoid(engine, err);
-        completion.release(provider.constructor); completion.release(provider.states);
-        if (uv.pi_uv_service_stop(actual) != 0) @panic("libuv TCP admission rollback did not join");
-        while (uv.pi_uv_service_next(actual)) |event| uv.pi_uv_event_release(event);
-        uv.pi_uv_service_release(actual); hostDestroy(engine, self); wake.release(reference);
-        try completion.finishVoid(); unreachable;
+        completion.release(provider.constructor);
+        completion.release(provider.states);
+        hostDestroy(engine, self);
+        try completion.finishVoid();
+        unreachable;
     };
-    self.* = .{ .hub = hub, .service = actual, .wake_ref = reference, .provider = provider,
+    self.* = .{ .hub = hub, .service = shared.service, .provider = provider,
         .errno_exception = c.JS_DupValue(engine.context, inputs.errno_exception) };
-    hub.resources.appendAssumeCapacity(.{ .raw = self, .tag = &controller_tag, .poll = Controller.poll,
-        .referenced = Controller.referenced, .stop = Controller.stop, .stopped = Controller.stopped });
+    shared.attach(.tcp, .{
+        .raw = self, .ready = Controller.ready,
+        .complete = Controller.deliver, .abandon = Controller.abandon,
+    }) catch |err| {
+        var completion = Completion.initVoid(engine, err);
+        completion.release(self.provider.constructor);
+        completion.release(self.provider.states);
+        completion.release(self.errno_exception);
+        hostDestroy(engine, self);
+        try completion.finishVoid();
+        unreachable;
+    };
+    // No guest call/allocation follows attachment. Controller's own native
+    // service entitlement survives the earlier shared resource's stopped().
+    uv.pi_uv_service_retain(shared.service);
+    hub.resources.appendAssumeCapacity(.{
+        .raw = self, .tag = &controller_tag,
+        .stop = Controller.stop, .stopped = Controller.stopped,
+    });
     return self;
 }

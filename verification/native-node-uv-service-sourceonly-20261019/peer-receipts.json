@@ -1,0 +1,69 @@
+{
+  "status": "source-only; no execution",
+  "date": "2026-10-20",
+  "production": [
+    {
+      "reviewer": "vm_foundation",
+      "status": "closed",
+      "scope": "C FF046966 / TCP H B6F8D526 / FS H A8E758C4; allocation/admission, accepted request cancellation, callback/list/event/native backing, stop/drain",
+      "packets": [
+        "B0DD991D",
+        "C568F57D",
+        "83423B49"
+      ]
+    },
+    {
+      "reviewer": "modules_io",
+      "status": "closed",
+      "scope": "Service 3D1D632D / TCP 48601693; sole FIFO/stop/join ownership, wake/resource rollback, capture before event release and TCP delivery gate",
+      "packets": [
+        "2F2EA19E"
+      ]
+    }
+  ],
+  "controls": [
+    {
+      "reviewer": "vm_foundation",
+      "root_sha256": "68a71ce9352580918156cafb676927d8e4cc10272a2faea1cb5a6f8e9e823151",
+      "declarations": [
+        1,
+        2,
+        5,
+        6,
+        10,
+        11,
+        13,
+        14
+      ],
+      "result": "closed",
+      "findings": "Actual construction charge and invalid-input distinction, same-request reuse after invalid spans, one accepted bad-fd callback, accepted cancel race, Windows immediate rejection, all eight stop completions and late stopped status all read with no remaining blocker."
+    },
+    {
+      "reviewer": "modules_io",
+      "root_sha256": "68a71ce9352580918156cafb676927d8e4cc10272a2faea1cb5a6f8e9e823151",
+      "declarations": [
+        3,
+        4,
+        7,
+        8,
+        9,
+        12
+      ],
+      "shared_helpers": [
+        "Fixture",
+        "File",
+        "Buffer"
+      ],
+      "build_patch_sha256": "d579e2a82b6025e1cca9df8e3975684d9d2814e1f4a3455a8da74e0db19ab021",
+      "result": "closed",
+      "findings": "Real path copy/read/file ownership, assertion-unwind OPEN/CLOSE cleanup, detach/runtime-independent backing and event/request entitlements all read with no blocker. FIFO uses real enqueue observations; eight build lines reuse one network graph."
+    }
+  ],
+  "limits": [
+    "No native build, runtime, Node, generator or formatter execution.",
+    "No public FS/FileHandle or TCP namespace qualification.",
+    "The private Read binding, FSReqPromise, AfterScope, FS completion Controller and their lifecycle controls are not included in this first intake.",
+    "The new nonthrowing ArrayBufferView length API is a separate VM prerequisite for private Read and is not needed by this raw transport target.",
+    "No change to the original TCP12 root, admitted libuv sources or common network build helper."
+  ]
+}

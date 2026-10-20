@@ -1,0 +1,265 @@
+{
+  "schema": "native-shared-uv-fs-source-intake-v1",
+  "status": "source-only: all finite production, raw control and build peers closed; unexecuted",
+  "owner": "sdk_owners",
+  "created_date": "2026-10-20",
+  "boundary": "One shared native UV service and typed physical FS requests, with unchanged original TCP controls. Private Read/FSReq/AfterScope and public FileHandle assembly are separate.",
+  "files": [
+    {
+      "path": "src/extensions/native_uv_tcp.c",
+      "sha256": "ff046966bb81e915f0a69fd158dd8dd10533a6e2590fe1ca8975a5dcb503ee83",
+      "bytes": 42250
+    },
+    {
+      "path": "src/extensions/native_uv_tcp.h",
+      "sha256": "b6f8d5269b8ef9dc9964e7f356ef1a23dbb483fb9b485c2c6d77d464816b4f45",
+      "bytes": 5344
+    },
+    {
+      "path": "src/extensions/native_uv_fs.h",
+      "sha256": "a8e758c49ac4e0583ba08abf28771bfc7843a730796a6f3e5c471698249011be",
+      "bytes": 3072
+    },
+    {
+      "path": "src/extensions/native_node_uv_service.zig",
+      "sha256": "3d1d632d250f78ed0eb7def8a7b44f99429d81ccb82f3199f3118c9ffa037d17",
+      "bytes": 8933
+    },
+    {
+      "path": "src/extensions/native_node_net_tcp_transport.zig",
+      "sha256": "48601693f5febfa3e68bc1ccabc1dd61f5cc5ab5e77c8adda1ab93dfc6421a96",
+      "bytes": 29019
+    },
+    {
+      "path": "src/native_node_fs_request_transport_test.zig",
+      "sha256": "68a71ce9352580918156cafb676927d8e4cc10272a2faea1cb5a6f8e9e823151",
+      "bytes": 34210
+    }
+  ],
+  "build": {
+    "target": "build-native-node-fs-request-transport",
+    "root": "src/native_node_fs_request_transport_test.zig",
+    "filter": "native actual FS transport",
+    "declared_controls": 14,
+    "install_only": true,
+    "patch": "verification/native-node-uv-service-sourceonly-20261019/build-intake.patch",
+    "patch_sha256": "d579e2a82b6025e1cca9df8e3975684d9d2814e1f4a3455a8da74e0db19ab021",
+    "additions": 8,
+    "before_sha256": "6d6d6509f45c219b74d72688b170bf8b2c83d732ddcdda33488b307be7dfc731",
+    "after_sha256": "d2d76174e1d1c4b8fe0b794212b9c83981eb83fe14821023b21ebb4c855102d5"
+  },
+  "declarations": [
+    {
+      "index": 1,
+      "name": "native actual FS transport constructs request storage before dispatch and rolls it back unsubmitted",
+      "reviewer": "vm_foundation",
+      "source_peer": "closed"
+    },
+    {
+      "index": 2,
+      "name": "native actual FS transport distinguishes charged wrapper allocation failure from ordinary invalid input",
+      "reviewer": "vm_foundation",
+      "source_peer": "closed"
+    },
+    {
+      "index": 3,
+      "name": "native actual FS transport opens a real path and defers uv cleanup until the explicit cutpoint",
+      "reviewer": "modules_io",
+      "source_peer": "closed"
+    },
+    {
+      "index": 4,
+      "name": "native actual FS transport reads the real offset span position EOF and zero length",
+      "reviewer": "modules_io",
+      "source_peer": "closed"
+    },
+    {
+      "index": 5,
+      "name": "native actual FS transport reports ordinary bad descriptor through one genuine accepted callback",
+      "reviewer": "vm_foundation",
+      "source_peer": "closed"
+    },
+    {
+      "index": 6,
+      "name": "native actual FS transport rejects invalid spans without submitting or consuming the request",
+      "reviewer": "vm_foundation",
+      "source_peer": "closed"
+    },
+    {
+      "index": 7,
+      "name": "native actual FS transport retains the original backing allocation through guest detachment",
+      "reviewer": "modules_io",
+      "source_peer": "closed"
+    },
+    {
+      "index": 8,
+      "name": "native actual FS transport request backing and event survive the original runtime and memory entitlement",
+      "reviewer": "modules_io",
+      "source_peer": "closed"
+    },
+    {
+      "index": 9,
+      "name": "native actual FS transport event owns a request after its initial caller entitlement is released",
+      "reviewer": "modules_io",
+      "source_peer": "closed"
+    },
+    {
+      "index": 10,
+      "name": "native actual FS transport cancellation preserves the one actual callback across completion races",
+      "reviewer": "vm_foundation",
+      "source_peer": "closed"
+    },
+    {
+      "index": 11,
+      "name": "native actual FS transport rejected open admission cannot cancel an uninitialized work request",
+      "reviewer": "vm_foundation",
+      "source_peer": "closed"
+    },
+    {
+      "index": 12,
+      "name": "native actual FS transport and TCP closure share one ordered native event FIFO",
+      "reviewer": "modules_io",
+      "source_peer": "closed"
+    },
+    {
+      "index": 13,
+      "name": "native actual FS transport stop joins all accepted requests and retains every completion for draining",
+      "reviewer": "vm_foundation",
+      "source_peer": "closed"
+    },
+    {
+      "index": 14,
+      "name": "native actual FS transport stopped admission remains an ordinary status with explicit cleanup and no event",
+      "reviewer": "vm_foundation",
+      "source_peer": "closed"
+    }
+  ],
+  "production_peers": [
+    {
+      "reviewer": "vm_foundation",
+      "status": "closed",
+      "scope": "C FF046966 / TCP H B6F8D526 / FS H A8E758C4; allocation/admission, accepted request cancellation, callback/list/event/native backing, stop/drain",
+      "packets": [
+        "B0DD991D",
+        "C568F57D",
+        "83423B49"
+      ]
+    },
+    {
+      "reviewer": "modules_io",
+      "status": "closed",
+      "scope": "Service 3D1D632D / TCP 48601693; sole FIFO/stop/join ownership, wake/resource rollback, capture before event release and TCP delivery gate",
+      "packets": [
+        "2F2EA19E"
+      ]
+    }
+  ],
+  "control_peers": {
+    "modules_io": {
+      "status": "closed",
+      "scope": "Fixture/File/Buffer; declarations 3–4/7–9/12; eight-line build patch",
+      "root_sha256": "68a71ce9352580918156cafb676927d8e4cc10272a2faea1cb5a6f8e9e823151",
+      "build_patch_sha256": "d579e2a82b6025e1cca9df8e3975684d9d2814e1f4a3455a8da74e0db19ab021"
+    },
+    "vm_foundation": {
+      "status": "closed",
+      "scope": "declarations 1–2/5–6/10–11/13–14",
+      "root_sha256": "68a71ce9352580918156cafb676927d8e4cc10272a2faea1cb5a6f8e9e823151"
+    }
+  },
+  "verification": {
+    "all_c_packets_to_current_Main": true,
+    "all_zig_edits_to_current_Main": true,
+    "original_TCP12_unchanged": true,
+    "original_TCP12_sha256": "3c475c5fa0c43bbee875e58e54e705282e2319c75ee1e0216d775e84e56c58d5",
+    "network_helper_unchanged": true,
+    "network_helper_sha256": "caecf005866364925f79959c8bac3534da051894fb841a1c2cc594c9c15ba499"
+  },
+  "proof_files": [
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/baseline/native_node_tcp_transport_test.zig",
+      "sha256": "3c475c5fa0c43bbee875e58e54e705282e2319c75ee1e0216d775e84e56c58d5",
+      "bytes": 19529
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/baseline/native_uv_tcp.c",
+      "sha256": "e1204e4b4b30f46534940d5f9089b8d00b0e2dd845fda0a798bb0d2f252b71f7",
+      "bytes": 32726
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/baseline/native_uv_tcp.h",
+      "sha256": "f0fa0e66f2823bf458a7b7faff7482a0aec00053e0ab3cfdd60f61bc1b18a17e",
+      "bytes": 5319
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/build-intake.json",
+      "sha256": "0eb2072e3b88b8916a3c7014b11c596e4db152d2ef9926cc6bd1ed02eaed8514",
+      "bytes": 1527
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/build-intake.patch",
+      "sha256": "d579e2a82b6025e1cca9df8e3975684d9d2814e1f4a3455a8da74e0db19ab021",
+      "bytes": 1580
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/c-allocation-admission-successor.json",
+      "sha256": "c568f57d0631de908cd2b4945496b62371703a4ac27b0ae1a93806934a3476b3",
+      "bytes": 13520
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/c-cancel-admission-successor.json",
+      "sha256": "83423b49155e113b0cf83416ffb66a727396e88dc16fe353449cdd5b008ca263",
+      "bytes": 1821
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/c-production-delta.json",
+      "sha256": "b0dd991de8c8f580fd27414f3b5926bb2d3092d7a6f0f39b56a7337184eaa6d6",
+      "bytes": 15792
+    },
+    {
+      "path": "verification/native-node-uv-service-sourceonly-20261019/zig-service-extraction.json",
+      "sha256": "2f2ea19eb7232ff41a8462390d67b7eebceeeddba574a4f51809b1d55291ab65",
+      "bytes": 10313
+    }
+  ],
+  "native_contract": [
+    "The actual uv_loop, command admission and callbacks remain on the service worker. No raw loop, Engine pointer or guest callback is exported to the worker.",
+    "One Hub resource owns the shared service/FIFO/stop/join. Domain controllers hold independent service entitlements and attach after fallible staging.",
+    "Native uv_fs_t storage is allocated before original ReqWrap constructor/init hooks. Actual nonnegative admission acquires a flight/list/counter entitlement and promises one completion; immediate negative admission promises none.",
+    "Cancellation calls uv_cancel only for accepted, still-pending work. Rejected/unsubmitted/completed requests return an ordinary no-in-flight status.",
+    "Request cleanup is explicit and idempotent. Native path/backing survive callback/event delivery until cleanup. OPEN's successful descriptor remains an independent consumer resource.",
+    "The real Environment must disable JavaScript before shared stop/drain and retain Environment/VM through actual completion and request retirement. Root owns phased native-immediate/lifecycle composition."
+  ],
+  "exclusions": [
+    "No native build, runtime, Node, generator or formatter execution.",
+    "No public FS/FileHandle or TCP namespace qualification.",
+    "The private Read binding, FSReqPromise, AfterScope, FS completion Controller and their lifecycle controls are not included in this first intake.",
+    "The new nonthrowing ArrayBufferView length API is a separate VM prerequisite for private Read and is not needed by this raw transport target.",
+    "No change to the original TCP12 root, admitted libuv sources or common network build helper."
+  ],
+  "execution": {
+    "native_build": false,
+    "runtime": false,
+    "node": false,
+    "generator": false,
+    "formatter": false
+  },
+  "intake_instructions": {
+    "production_and_controls": [
+      "src/extensions/native_uv_tcp.c",
+      "src/extensions/native_uv_tcp.h",
+      "src/extensions/native_uv_fs.h",
+      "src/extensions/native_node_uv_service.zig",
+      "src/extensions/native_node_net_tcp_transport.zig",
+      "src/native_node_fs_request_transport_test.zig"
+    ],
+    "build_patch": "verification/native-node-uv-service-sourceonly-20261019/build-intake.patch",
+    "whole_build_file": "not included",
+    "first_fresh_validation_targets": [
+      "build-native-node-tcp-transport",
+      "build-native-node-fs-request-transport"
+    ],
+    "unchanged_tcp_controls": 12,
+    "authored_fs_controls": 14
+  }
+}
