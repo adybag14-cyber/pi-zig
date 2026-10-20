@@ -128,7 +128,7 @@ fn valuesBody(s: *Scope, cached_names: []const c.JSValue) !c.JSValue {
     if (!owner.bootstrapped) {
         // THROW_ERR is a void native helper. The actual throw is escrowed by
         // this same boundary while only the intrinsic native tail continues.
-        _ = a.raise(s, try bootstrapReason(s));
+        @as(anyerror!void, a.raise(s, try bootstrapReason(s))) catch {};
     }
     owner.serialized = true;
     var fields: NativeFields = undefined;
@@ -167,7 +167,7 @@ fn valuesCallback(engine: *a.v.em.Engine, _: c.JSValue, _: *@import("native_sync
 }
 fn embedderBody(s: *Scope) !c.JSValue {
     const owner = try known(s.engine);
-    if (!owner.bootstrapped) _ = a.raise(s, try bootstrapReason(s));
+    if (!owner.bootstrapped) @as(anyerror!void, a.raise(s, try bootstrapReason(s))) catch {};
     // Original fixed names and primitive values are all produced before the
     // final intrinsic null-prototype Object. This binding has no serialized flag.
     const names = [_]c.JSValue{
