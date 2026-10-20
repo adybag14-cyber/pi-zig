@@ -800,6 +800,18 @@ void pi_uv_event_release(PiUvEvent *event) {
 PiUvFsRequest *pi_uv_event_fs_request(const PiUvEvent *event) {
     return event->storage == PI_UV_FS_REQUEST ? event->allocation : NULL;
 }
+PiUvFsPreparationInfo pi_uv_fs_request_preparation_info(
+    const PiUvFsRequest *request) {
+    assert(request != NULL);
+    assert(!request->submitted);
+    PiUvFsPreparationInfo result = {
+        .kind = request->kind,
+        .accepted = request->accepted,
+        .cleaned = atomic_load_explicit(&request->cleaned, memory_order_acquire),
+        .completed = atomic_load_explicit(&request->completed, memory_order_acquire)
+    };
+    return result;
+}
 PiUvFsInfo pi_uv_fs_request_info(const PiUvFsRequest *request) {
     assert(atomic_load_explicit(&request->completed, memory_order_acquire));
     const int cleaned = atomic_load_explicit(&request->cleaned, memory_order_acquire);

@@ -1,0 +1,296 @@
+{
+  "schema": "v34-fs-request-init-observer-independent-causal-source-triage-v1",
+  "basis_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "source_only": true,
+  "new_native_execution": false,
+  "main_mutations": false,
+  "existing_negative_preserved": true,
+  "runtime": [
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-request-owner\\runtime.stderr.log",
+        "bytes": 157,
+        "sha256": "6AE6E82B866AA07A01730451E487596C2B906D25E19A7ADF1CB976FF79F816A1"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\runtime\\runtime.stderr.log",
+        "bytes": 157,
+        "sha256": "6AE6E82B866AA07A01730451E487596C2B906D25E19A7ADF1CB976FF79F816A1"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-request-owner\\runtime.json",
+        "bytes": 1411,
+        "sha256": "92351BACC20B56E9371668F7BF5ECA5D7976CAC3B158E05A57EAB7696BEC9E14"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\runtime\\runtime.json",
+        "bytes": 1411,
+        "sha256": "92351BACC20B56E9371668F7BF5ECA5D7976CAC3B158E05A57EAB7696BEC9E14"
+      }
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-request-owner\\runtime-raw-frame-observation.json",
+        "bytes": 2572,
+        "sha256": "A21C23AF07BF1AE805B257940D7FC2E43928F1C07CC66AE3F0A68783D8AC5B5B"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\runtime\\runtime-raw-frame-observation.json",
+        "bytes": 2572,
+        "sha256": "A21C23AF07BF1AE805B257940D7FC2E43928F1C07CC66AE3F0A68783D8AC5B5B"
+      }
+    }
+  ],
+  "files": [
+    {
+      "relative_path": "src/native_node_fs_request_owner_test.zig",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_fs_request_owner_test.zig",
+        "bytes": 57142,
+        "sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\native_node_fs_request_owner_test.zig",
+        "bytes": 57142,
+        "sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_uv_fs.h",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_fs.h",
+        "bytes": 4931,
+        "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_uv_fs.h",
+        "bytes": 4931,
+        "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_uv_tcp.c",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 45730,
+        "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 45730,
+        "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_fs_request_promise.zig",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_request_promise.zig",
+        "bytes": 18834,
+        "sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_node_fs_request_promise.zig",
+        "bytes": 18834,
+        "sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_fs_request_io.zig",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_request_io.zig",
+        "bytes": 14502,
+        "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_node_fs_request_io.zig",
+        "bytes": 14502,
+        "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_file_handle_read_binding.zig",
+      "live": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_read_binding.zig",
+        "bytes": 9556,
+        "sha256": "A620FEDB2C50D46A17947845B5FE2D7EE1AE4603F10BFA3F55FB44A588DD4375"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_node_file_handle_read_binding.zig",
+        "bytes": 9556,
+        "sha256": "A620FEDB2C50D46A17947845B5FE2D7EE1AE4603F10BFA3F55FB44A588DD4375"
+      }
+    }
+  ],
+  "excerpts": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\native_node_fs_request_owner_test.zig",
+      "source_sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4",
+      "first_line": 52,
+      "last_line": 73,
+      "text": "fn initProbe(context: ?*c.JSContext, _: c.JSValue, argc: c_int,\n    argv: [*c]c.JSValue) callconv(.c) c.JSValue\n{\n    const f = active orelse return c.pi_js_exception();\n    if (argc != 1) return callable.failure(f.engine, error.ActualInitProbeArgumentRequired, 0);\n    return initProbeBody(f, argv[0]) catch |err|\n        callable.failure(em.Engine.fromContext(context.?), err, 0);\n}\nfn initProbeBody(f: *Fixture, wrapper: c.JSValue) !c.JSValue {\n    const state = (try f.registry()).unwrap(wrapper) orelse\n        return error.ActualInitProbeWrapperRequired;\n    if (state.provider != native.Provider.fsreqpromise)\n        return error.ActualInitProbeRequestRequired;\n    const req: *requests.Request = @alignCast(@fieldParentPtr(\"wrap\", state));\n    f.init_probe_calls += 1;\n    const actual = req.native_request orelse return error.ActualInitProbeNativeStorageRequired;\n    const info = uv.pi_uv_fs_request_info(actual);\n    f.init_probe_prepared = info.kind == uv.PI_UV_FS_READ and info.accepted == 0 and\n        info.cleaned == 0 and !req.constructed and !req.entry_initialized and req.binding_data == null;\n    f.init_probe_before_queue = f.env().requests.head == null and\n        f.env().requests.tail == null and f.env().requests.waiting == 0;\n    return c.pi_js_undefined();\n",
+      "excerpt_sha256": "952F751F33A3943A23C24B51474FFBDB0AF6D79175B5496C1905A7F5D53DAAB0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\native_node_fs_request_owner_test.zig",
+      "source_sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4",
+      "first_line": 778,
+      "last_line": 810,
+      "text": "test \"native FS request owner physical Read constructs native storage before init and dispatches the actual view span\" {\n    var f: Fixture = undefined; try f.init(.{ .physical_read = true }); defer f.deinit();\n    var file: PhysicalFile = undefined; try file.init(&f, \"0123456789\"); defer file.deinit();\n    f.env().field(.init).* = 1;\n    try f.evaluate(\n        \\\\globalThis.ownerInitProbe = true;\n        \\\\globalThis.actualReadBuffer = new ArrayBuffer(12);\n        \\\\globalThis.actualReadView = new Uint8Array(actualReadBuffer, 3, 6);\n    );\n    const promise = f.keep(try f.value(\n        \"actualNativeRead(actualReadFd, actualReadView, 1, 4, 1, actualUsePromises)\"));\n    const request = try f.firstRequest();\n    const wrapper = f.keep(a.duplicate(f.engine, try request.object()));\n    const native_request = try f.retainNativeRequest();\n    defer uv.pi_uv_fs_request_release(native_request);\n    try std.testing.expectEqual(@as(usize, 1), f.init_probe_calls);\n    try std.testing.expect(f.init_probe_prepared and f.init_probe_before_queue);\n    try std.testing.expect(request.constructed and request.entry.dispatched and request.entry.counted);\n    try std.testing.expectEqual(@as(c_int, 1), f.env().requests.waiting);\n    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(f.engine.context, promise));\n    try f.pumpPending();\n    try f.expectPromiseInt(promise, 4);\n    try f.expect(\n        \\\\Array.from(new Uint8Array(actualReadBuffer)).join(\",\") === \"0,0,0,0,49,50,51,52,0,0,0,0\"\n    );\n    try std.testing.expectEqual(@as(c_int, 0), f.env().requests.waiting);\n    try std.testing.expect(f.env().requests.head == null and f.env().requests.tail == null);\n    try std.testing.expect((try f.registry()).unwrap(wrapper) == null);\n    const info = uv.pi_uv_fs_request_info(native_request);\n    try std.testing.expectEqual(@as(c_int, 1), info.accepted);\n    try std.testing.expectEqual(@as(c_int, 1), info.cleaned);\n    try std.testing.expectEqual(@as(i64, 4), info.result);\n}\n",
+      "excerpt_sha256": "790B2D9DC762DAE828F44A08D5AB1022D5596405E79A6321AA7750EB74B35798"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_uv_fs.h",
+      "source_sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+      "first_line": 14,
+      "last_line": 20,
+      "text": "typedef struct PiUvFsInfo {\n    int kind;\n    int64_t result; /* actual uv_fs_t::result, never a synthesized Promise value */\n    const char *path; /* borrowed until request_cleanup */\n    int accepted;\n    int cleaned;\n} PiUvFsInfo;\n",
+      "excerpt_sha256": "4AFE27C052F8A2EF851E1D25BC49E46949B80704A8039CAF40FA0E5AF1F0257E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_uv_fs.h",
+      "source_sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+      "first_line": 22,
+      "last_line": 33,
+      "text": "/* Allocate the native request storage during the original ReqWrap allocation,\n * before its actual constructor/init hooks and SetReturnValue. A proven\n * wrapper allocation failure sets allocation_failed and leaves *out NULL.\n * Success transfers one request; an unsubmitted request can be released.\n * UNASSIGNED reserves the genuine generic FSReqCallback storage before its\n * operation is known. Only a validated actual admission selects its operation;\n * typed READ/OPEN/CLOSE storage keeps its original operation restriction.\n * Reuse requires successful request_reset after actual completion/dequeue and\n * cleanup; submitted or cleaned storage cannot be passed directly to admission.\n */\nPiUvResult pi_uv_fs_request_create(PiUvService *service, int kind,\n    uint64_t token, PiUvFsRequest **out);\n",
+      "excerpt_sha256": "3684980EAD6FB660501F5AC6F017C75983794C9F03C7FABF40EC13612140EEB5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_uv_fs.h",
+      "source_sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+      "first_line": 75,
+      "last_line": 83,
+      "text": "/* Info is available after immediate negative admission or actual event\n * acquisition, and before a successful request_reset invalidates that result.\n * Cleanup is idempotent and occurs at FSReqAfterScope::Clear;\n * release also handles an unsubmitted native construction rollback.\n * Cleanup does not close a descriptor returned by OPEN: the selected original\n * FileHandle/descriptor consumer owns that independent native resource.\n */\nPiUvFsInfo pi_uv_fs_request_info(const PiUvFsRequest *request);\nvoid pi_uv_fs_request_cleanup(PiUvFsRequest *request);\n",
+      "excerpt_sha256": "0264C3C5F8E6DC1751D3C273323BAF493A8F494A81259D0E88577B61687826C2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_uv_tcp.c",
+      "source_sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+      "first_line": 19,
+      "last_line": 31,
+      "text": "static void *pi_uv_alloc(void *owner, size_t size) {\n    if (size > SIZE_MAX - sizeof(PiUvAllocation)) return NULL;\n    size_t charge = sizeof(PiUvAllocation) + size;\n    if (!pi_js_native_memory_reserve(owner, charge)) return NULL;\n    PiUvAllocation *allocation = malloc(charge);\n    if (!allocation) {\n        pi_js_native_memory_release(owner, charge);\n        return NULL;\n    }\n    allocation->charge = charge;\n    void *result = allocation + 1;\n    memset(result, 0, size);\n    return result;\n",
+      "excerpt_sha256": "AA75FA683D43DA0A40C40E00D04C5865AD9B64AB7AB18F150F8A6D0EC40A0F0D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_uv_tcp.c",
+      "source_sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+      "first_line": 67,
+      "last_line": 88,
+      "text": "struct PiUvFsRequest {\n    PiUvService *service;\n    _Atomic size_t references;\n    uv_fs_t uv;\n    uv_buf_t buffer;\n    JSPiArrayBufferLease backing;\n    PiUvEvent event;\n    PiUvFsRequest *previous;\n    PiUvFsRequest *next;\n    int kind;\n    int storage_kind; /* immutable generic/typed native allocation admission */\n    int descriptor;\n    int flags;\n    int mode;\n    int64_t position;\n    int submitted;\n    int entered;\n    int accepted;\n    _Atomic int completed;\n    _Atomic int cleaned;\n    _Atomic int event_queued;\n};\n",
+      "excerpt_sha256": "178EB3AF9FE7766E5D9C8239AD968EC32F0BB55237D6332852D6B383429C58DC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_uv_tcp.c",
+      "source_sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+      "first_line": 394,
+      "last_line": 431,
+      "text": "void pi_uv_fs_request_retain(PiUvFsRequest *request) {\n    atomic_fetch_add_explicit(&request->references, 1, memory_order_relaxed);\n}\nvoid pi_uv_fs_request_cleanup(PiUvFsRequest *request) {\n    assert(!request->submitted || atomic_load_explicit(&request->completed, memory_order_acquire));\n    if (atomic_exchange_explicit(&request->cleaned, 1, memory_order_acq_rel))\n        return;\n    /* Actual uv cleanup is delayed until the original AfterScope cutpoint.\n     * The independent backing entitlement is no longer used by native work. */\n    if (request->entered) uv_fs_req_cleanup(&request->uv);\n    JS_PiReleaseArrayBufferLease(&request->backing);\n}\nvoid pi_uv_fs_request_release(PiUvFsRequest *request) {\n    if (!request || atomic_fetch_sub_explicit(&request->references, 1,\n                                              memory_order_acq_rel) != 1)\n        return;\n    assert(!request->submitted || atomic_load_explicit(&request->completed, memory_order_acquire));\n    pi_uv_fs_request_cleanup(request);\n    PiUvService *service = request->service;\n    pi_uv_free(service->memory_owner, request);\n    pi_uv_service_release(service);\n}\nstatic PiUvFsRequest *pi_uv_fs_request_allocate(PiUvService *service,\n                                               int kind, uint64_t token) {\n    PiUvFsRequest *request = pi_uv_alloc(service->memory_owner, sizeof(*request));\n    if (!request) return NULL;\n    request->service = service;\n    request->kind = kind;\n    request->storage_kind = kind;\n    atomic_init(&request->references, 1);\n    atomic_init(&request->completed, 0);\n    atomic_init(&request->cleaned, 0);\n    atomic_init(&request->event_queued, 0);\n    pi_uv_service_retain(service);\n    pi_uv_event_prepare(&request->event, service, NULL, NULL,\n        PI_UV_FS_REQUEST, PI_UV_FS_COMPLETION, 0, token);\n    request->event.allocation = request;\n    return request;\n",
+      "excerpt_sha256": "41E968FAEF233DF039DD797729B41ED6B084A736A41A0B0E0B5C185749C9758E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_uv_tcp.c",
+      "source_sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+      "first_line": 433,
+      "last_line": 453,
+      "text": "static void pi_uv_fs_completed(uv_fs_t *actual) {\n    PiUvFsRequest *request = actual->data;\n    PiUvService *service = request->service;\n    if (request->previous) request->previous->next = request->next;\n    else service->fs_requests = request->next;\n    if (request->next) request->next->previous = request->previous;\n    request->previous = request->next = NULL;\n    request->event.info.status = actual->result < 0 ? (int)actual->result : 0;\n    if (request->kind == PI_UV_FS_READ && actual->result >= 0)\n        request->event.info.length = (size_t)actual->result;\n    atomic_fetch_sub_explicit(&service->pending_requests, 1, memory_order_release);\n    /* Publish the queued state before completed: observing completed must\n     * never admit Reset in the interval before FIFO publication. Only actual\n     * dequeue clears this state for an accepted operation. */\n    atomic_store_explicit(&request->event_queued, 1, memory_order_release);\n    atomic_store_explicit(&request->completed, 1, memory_order_release);\n    pi_uv_fs_request_retain(request); /* actual queued event entitlement */\n    pi_uv_event_queue(&request->event);\n    /* The owner may already have drained the event. Keep this native callback\n     * entitlement until all callback accesses have completed. */\n    pi_uv_fs_request_release(request);\n",
+      "excerpt_sha256": "0D9CE125054C6012D53AEDAE9CAAE346D246D1A9EE931666D82E7D3E775530BA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_uv_tcp.c",
+      "source_sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+      "first_line": 803,
+      "last_line": 824,
+      "text": "PiUvFsInfo pi_uv_fs_request_info(const PiUvFsRequest *request) {\n    assert(atomic_load_explicit(&request->completed, memory_order_acquire));\n    const int cleaned = atomic_load_explicit(&request->cleaned, memory_order_acquire);\n    PiUvFsInfo result = {\n        .kind = request->kind, .result = (int64_t)request->uv.result,\n        .path = cleaned ? NULL : request->uv.path,\n        .accepted = request->accepted, .cleaned = cleaned\n    };\n    return result;\n}\nPiUvResult pi_uv_fs_request_create(PiUvService *service, int kind,\n                                     uint64_t token, PiUvFsRequest **out) {\n    if (!out) return pi_uv_result(UV_EINVAL, 0);\n    *out = NULL;\n    if (!service || (kind != PI_UV_FS_UNASSIGNED && kind != PI_UV_FS_READ &&\n                     kind != PI_UV_FS_OPEN && kind != PI_UV_FS_CLOSE))\n        return pi_uv_result(UV_EINVAL, 0);\n    PiUvFsRequest *request = pi_uv_fs_request_allocate(service, kind, token);\n    if (!request) return pi_uv_result(UV_ENOMEM, 1);\n    *out = request;\n    return pi_uv_result(0, 0);\n}\n",
+      "excerpt_sha256": "5FC391699C228219CD38376AEA5B7EAAC6A2191174E4D5A280122330AB140BF2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_uv_tcp.c",
+      "source_sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+      "first_line": 825,
+      "last_line": 842,
+      "text": "static int pi_uv_fs_submit(PiUvFsRequest *request, PiUvCommand *command, int kind) {\n    /* Generic FSReqCallback storage receives its actual operation only after\n     * all native input/state checks, at the same real admission cutpoint. */\n    assert(request->storage_kind == PI_UV_FS_UNASSIGNED || request->storage_kind == kind);\n    request->kind = kind;\n    request->submitted = 1;\n    const int status = pi_uv_submit(request->service, command);\n    if (status < 0 && !request->entered) {\n        request->uv.result = status;\n        request->uv.path = NULL;\n        atomic_store_explicit(&request->completed, 1, memory_order_release);\n    }\n    return status;\n}\nstatic int pi_uv_fs_unsubmitted(PiUvFsRequest *request, int kind) {\n    return request && (request->storage_kind == PI_UV_FS_UNASSIGNED ||\n                       request->storage_kind == kind) && !request->submitted &&\n        !atomic_load_explicit(&request->cleaned, memory_order_acquire);\n",
+      "excerpt_sha256": "1A775EC7D0ED1B0287E4FAB7ADC885CC92FDCE1099EF8E4D5DBB7C8CEA59F647"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_node_fs_request_promise.zig",
+      "source_sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721",
+      "first_line": 118,
+      "last_line": 154,
+      "text": "    fn initialize(self: *Request, s: *Scope, data: *BindingData,\n        wrapper: c.JSValue, use_bigint: bool, cancel_native: request_state.Cancel,\n        native_request: ?*uv.PiUvFsRequest) !void\n    {\n        self.* = .{\n            .wrap = undefined, .entry = undefined,\n            .use_bigint = use_bigint, .cancel_native = cancel_native,\n            .native_request = native_request,\n        };\n        const registry = try templates.registry(s.engine, data.template_owner);\n        self.wrap.initialize(registry, wrapper,\n            .{ .mark = mark, .retire = retire, .destroy = destroy },\n            native.Provider.fsreqpromise, -1) catch |err|\n        {\n            self.attached = c.JS_GetOpaque(wrapper, registry.classId(.fsreqpromise)) != null;\n            s.boundary.escaping();\n            // AsyncWrap construction calls void AsyncReset. An ordinary init\n            // rethrow does not skip the later native ReqWrap/derived members.\n            // The caller's HandleScope retains that completion through the\n            // subsequent SetReturnValue and actual Dispatch operations.\n            if (!self.attached or !self.wrap.init_hook_ran or\n                err != error.JavaScriptException or s.boundary.fatal) return err;\n        };\n        self.attached = true;\n        // ReqWrapBase queues the real native object after AsyncWrap's init.\n        try self.entry.initialize(&self.wrap, cancel_native);\n        self.entry_initialized = true;\n        try self.wrap.makeWeak();\n        self.entry.reset();\n        // Original FSReqBase initializes its native BindingData strong pointer\n        // after ReqWrap construction and before the derived alias allocations.\n        try data.retainNative();\n        self.binding_data = data;\n        self.stats_field_array = try Fields.create(s, 18, use_bigint);\n        self.statfs_field_array = try Fields.create(s, 7, use_bigint);\n        self.constructed = true;\n    }\n",
+      "excerpt_sha256": "A871AB42569A3FDEB2674C5A15EE09F805A968376E41739E5F4B4DF8B25CAF19"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_node_fs_request_promise.zig",
+      "source_sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721",
+      "first_line": 320,
+      "last_line": 376,
+      "text": "pub fn createPhysicalRequest(s: *Scope, known_factory: c.JSValue,\n    use_bigint: bool, cancel_native: request_state.Cancel, physical: Physical) !c.JSValue\n{\n    return createRequestBody(s, known_factory, use_bigint, cancel_native, physical);\n}\nfn createRequestBody(s: *Scope, known_factory: c.JSValue,\n    use_bigint: bool, cancel_native: request_state.Cancel, physical: ?Physical) !c.JSValue\n{\n    const data = try factoryData(s.engine, known_factory);\n    const wrapper = try s.own(try templates.newInstance(s.engine, data.template_owner, .fsreqpromise));\n    // INIT hook execution makes this a guest-capable operation. Never tag its\n    // whole allocation span as a purely native producer.\n    try s.pending();\n    const resolver = try s.checked(c.JS_PiNewPendingPromise(s.engine.context));\n    // Original Object::Set uses kDontThrow; a normal false result continues.\n    try s.pending();\n    const status = c.JS_SetPropertyValue(s.engine.context, wrapper,\n        a.duplicate(s.engine, data.promise_string), a.duplicate(s.engine, resolver), 0);\n    try s.pending();\n    if (status < 0) return error.MissingActualFSReqPromiseSetReason;\n\n    const self = try data.environment.allocator().create(Request);\n    var native_request: ?*uv.PiUvFsRequest = null;\n    if (physical) |input| {\n        // Only native charged storage is created here. The actual init hook\n        // remains in initialize(), outside this proven allocation producer.\n        const result = uv.pi_uv_fs_request_create(input.service, input.kind, 0, &native_request);\n        if (result.allocation_failed != 0 or result.status < 0) {\n            const failure: anyerror = if (result.allocation_failed != 0)\n                error.OutOfMemory else error.ActualFSReqPhysicalInputsRequired;\n            var completion = a.owned.Completion.initVoid(s.engine, failure);\n            data.environment.allocator().destroy(self);\n            try completion.finishVoid();\n            unreachable;\n        }\n        if (native_request == null) {\n            var completion = a.owned.Completion.initVoid(s.engine, error.ActualFSReqNativeStorageRequired);\n            data.environment.allocator().destroy(self);\n            try completion.finishVoid();\n            unreachable;\n        }\n    }\n    self.initialize(s, data, wrapper, use_bigint, cancel_native, native_request) catch |err| {\n        // Record the real construction failure before its partially attached\n        // native owner or any derived alias is retired.\n        var completion = a.owned.Completion.initVoid(s.engine, err);\n        completion.release(c.pi_js_undefined());\n        if (self.attached) {\n            self.wrap.retire(false) catch {};\n        } else {\n            if (native_request) |actual| uv.pi_uv_fs_request_release(actual);\n            data.environment.allocator().destroy(self);\n        }\n        try completion.finishVoid();\n        unreachable;\n    };\n    return a.duplicate(s.engine, wrapper);\n",
+      "excerpt_sha256": "492BA9C1C755265D2F52D55E517BDC47D0E9E0AF2FADCE0F5A1EAF04929E7B52"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_node_fs_request_io.zig",
+      "source_sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "first_line": 61,
+      "last_line": 101,
+      "text": "    /// Creation uses the caller's real HandleScope and native constructor\n    /// allocation cutpoint. No extra Promise or native request is made at\n    /// Dispatch. The caller preserves this Local through SetReturnValue.\n    pub fn createReadRequest(self: *Controller, s: *Scope, factory: c.JSValue) !*requests.Request {\n        try self.enter(s.engine);\n        defer self.leave();\n        const wrapper = try s.own(try requests.createPhysicalRequest(s, factory,\n            false, cancelRequest, .{ .service = self.service, .kind = uv.PI_UV_FS_READ }));\n        const request = try requests.unwrap(s.engine, factory, wrapper);\n        if (request.environment() != self.environment)\n            return error.ActualFSRequestEnvironmentMismatch;\n        return request;\n    }\n\n    /// Private inputs were checked by the genuine native Read binding. The\n    /// stored request is the one constructed above, not a worker Task copy.\n    /// An immediate negative Dispatch calls the original AfterInteger directly\n    /// and never enters Wrapper or the waiting counter.\n    pub fn dispatchRead(self: *Controller, s: *Scope, request: *requests.Request,\n        descriptor: c_int, backing: *const c.JSPiArrayBufferLease,\n        offset: usize, length: u32, position: i64) !void\n    {\n        try self.enter(s.engine);\n        defer self.leave();\n        if (request.environment() != self.environment or\n            request.entry.cancel_native != cancelRequest or request.entry.dispatched or\n            backing.owner == null or length > std.math.maxInt(i32) or\n            offset > backing.byte_length or length > backing.byte_length - offset)\n            return error.ActualFSReadDispatchInputsRequired;\n        const actual = request.native_request orelse return error.ActualFSNativeRequestRequired;\n        request.entry.dispatchStarted();\n        try request.entry.setCallback(.{ .request = actual, .call = afterIntegerCallback });\n        const status = uv.pi_uv_fs_read(actual, descriptor, @ptrCast(backing),\n            offset, length, position);\n        if (status >= 0) {\n            try request.entry.dispatchAccepted();\n            return;\n        }\n        // AfterInteger may delete the native request. Do not read it afterward.\n        try afterInteger(request, actual);\n    }\n",
+      "excerpt_sha256": "57C813FEEFA40D725843BD67C323DB68B5D62BAA598FBB9D4578598CF7ED39A0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_node_fs_request_io.zig",
+      "source_sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "first_line": 229,
+      "last_line": 245,
+      "text": "fn afterInteger(request: *requests.Request, actual: *uv.PiUvFsRequest) !void {\n    const info = uv.pi_uv_fs_request_info(actual);\n    if (info.kind != uv.PI_UV_FS_READ) return error.ActualFSReadCompletionRequired;\n    var after: after_scope.AfterScope = undefined;\n    try after.init(request, .{ .raw = actual, .run = cleanupRequest });\n    return after.finish(afterIntegerBody(&after, request, info));\n}\nfn afterIntegerBody(after: *after_scope.AfterScope, request: *requests.Request,\n    info: uv.PiUvFsInfo) !void\n{\n    // Read's validated Int32 length bounds every successful uv result.\n    const result = std.math.cast(c_int, info.result) orelse\n        return error.ActualFSReadResultRequired;\n    const path: ?[]const u8 = if (info.path == null) null else\n        std.mem.span(@as([*:0]const u8, @ptrCast(info.path)));\n    if (try after.proceed(.{ .code = result, .syscall = \"read\", .path = path }))\n        try request.resolve(c.JS_NewInt32(after.handles.engine.context, result));\n",
+      "excerpt_sha256": "1F3F5739A1F2E93A5E9E78C003632C7944BEE3DE77894BCABAEE8AF36A970ED6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_node_file_handle_read_binding.zig",
+      "source_sha256": "A620FEDB2C50D46A17947845B5FE2D7EE1AE4603F10BFA3F55FB44A588DD4375",
+      "first_line": 111,
+      "last_line": 135,
+      "text": "    var lease: c.JSPiArrayBufferLease = std.mem.zeroes(c.JSPiArrayBufferLease);\n    defer c.JS_PiReleaseArrayBufferLease(&lease);\n    // All preceding operations are intrinsic primitive checks. Acquire the\n    // original span before init/SetReturnValue can detach or transfer it.\n    try storage(s, args[1], &lease);\n    const request = controller.createReadRequest(s, roots[1]) catch |err| {\n        s.boundary.escaping();\n        // Original empty NewInstance/Resolver/Set Maybe leaves GetReqWrap\n        // null, which reaches Read's native CHECK. An attached ordinary init\n        // rethrow already completed its native constructor in createRequest.\n        // Actual fatal/host/dependency failures retain their existing policy.\n        if (err == error.JavaScriptException and !s.boundary.fatal)\n            return controller.environment.operations.native_check_failure(\n                controller.environment, .fs_read_request);\n        return err;\n    };\n    var returned = c.pi_js_undefined();\n    if (request.returnPromise()) |value| {\n        returned = try s.own(value);\n    } else |err| {\n        s.boundary.escaping();\n        // SetReturnValue is void. Its ordinary failed Get does not remove the\n        // non-null request or skip the following native AsyncCall/Dispatch.\n        if (err != error.JavaScriptException or s.boundary.fatal) return err;\n    }\n",
+      "excerpt_sha256": "88C2FC61B6867D17553347D78867A7401801FE486379E455A1254574E5FD5997"
+    }
+  ],
+  "named_declarations": [
+    "native FS request owner exposes real no-handler templates and converted receiver returns",
+    "native FS request owner preserves actual template cache and subclass prototype selection",
+    "native FS request owner enforces the genuine signature and preserves a cleared template brand",
+    "native FS request owner initializes the real provider IDs frame queue and derived aliases",
+    "native FS request owner keeps general reset resource and explicit ID ordering",
+    "native FS request owner publishes all four original BindingData views without AsyncWrap init",
+    "native FS request owner accepts normal false native alias Set and weakens the unreferenced view",
+    "native FS request owner retains native BindingData through each real derived request",
+    "native FS request owner returns the original one pending Promise and reads its live property",
+    "native FS request owner settles the live replacement Promise without replacing the earlier return",
+    "native FS request owner uses the captured request frame through before Get after and restores the parent",
+    "native FS request owner preserves ordinary Error data in both fulfill and reject settlement",
+    "native FS request owner completes its callback destructor after an ordinary live Promise Get throw",
+    "native FS request owner settled Promise bypasses incoming then lookup through the actual native resolver",
+    "native FS request owner realm cleanup follows the actual BindingData then request FIFO and clears native slots",
+    "native FS request owner retained factory observes the real empty Realm weak slot after cleanup",
+    "native FS request owner physical Read constructs native storage before init and dispatches the actual view span",
+    "native FS request owner physical Read uses DataView and wider typed-array byte spans",
+    "native FS request owner physical Read preserves BigInt wrapping safe minus zero and zero length",
+    "native FS request owner physical Read retains backing storage before the real init hook transfers its buffer",
+    "native FS request owner physical Read still dispatches after the ordinary void return-Promise Get fails",
+    "native FS request owner physical Read rejects accepted bad descriptors through actual UVException",
+    "native FS request owner physical completion preserves live Promise getter failure and still retires the request",
+    "native FS request owner disabled Hub shutdown drains genuine queued reads without Promise or guest callbacks",
+    "native FS request owner retained Read controller refuses admission after the real Hub is retired"
+  ],
+  "declared_count": 25,
+  "finding": "initProbeBody calls the completed-result accessor inside the actual AsyncWrap init hook, while native request storage is deliberately allocated and published before initialization, queue insertion or dispatch. The native completed==0 assertion is a valid completion-only contract check and deterministically rejects that fixture observer.",
+  "ordering": [
+    "createReadRequest selects typed READ native storage",
+    "createRequestBody creates native storage before calling Request.initialize",
+    "native allocation zeroes all storage and explicitly initializes completed/cleaned/event_queued to zero",
+    "Request.initialize publishes native_request then invokes AsyncWrap.initialize and the actual JS init hook",
+    "fixture initProbeBody incorrectly calls pi_uv_fs_request_info at that point",
+    "Entry queue initialization, BindingData capture and constructed flag occur only after that hook",
+    "actual Read dispatch and native completion occur later; the separate control's post-pump info read is in the correct phase"
+  ],
+  "bounded_correction_recommendation": "Retain the completion accessor and its assertion byte-for-byte. Add a separate read-only unsubmitted-phase observer, bound to the existing owner thread, exposing actual lifecycle kind/accepted/cleaned without reading uv.result/path; use it in this init observer while preserving the same assertions and all names. Exact API design/projection requires Root coordination.",
+  "coverage_limit": "This source trace explains the first recorded group-17 abort. It does not establish later control behavior, native acceptance or full group/runtime closure."
+}

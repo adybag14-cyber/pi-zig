@@ -65,9 +65,11 @@ fn initProbeBody(f: *Fixture, wrapper: c.JSValue) !c.JSValue {
     const req: *requests.Request = @alignCast(@fieldParentPtr("wrap", state));
     f.init_probe_calls += 1;
     const actual = req.native_request orelse return error.ActualInitProbeNativeStorageRequired;
-    const info = uv.pi_uv_fs_request_info(actual);
+    // Init observes real unsubmitted storage, before any completion exists.
+    const info = uv.pi_uv_fs_request_preparation_info(actual);
     f.init_probe_prepared = info.kind == uv.PI_UV_FS_READ and info.accepted == 0 and
-        info.cleaned == 0 and !req.constructed and !req.entry_initialized and req.binding_data == null;
+        info.cleaned == 0 and info.completed == 0 and
+        !req.constructed and !req.entry_initialized and req.binding_data == null;
     f.init_probe_before_queue = f.env().requests.head == null and
         f.env().requests.tail == null and f.env().requests.waiting == 0;
     return c.pi_js_undefined();

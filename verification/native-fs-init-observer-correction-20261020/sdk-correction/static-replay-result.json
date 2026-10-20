@@ -1,0 +1,18 @@
+{
+  "schema": "v34-fs-init-observer-static-replay-v1",
+  "source_only": true,
+  "proposal_sha256": "E22848488C054D9B748CD6A7E078EFECF468D32804F8161842562250F4DBF454",
+  "own_files": 3,
+  "own_edits": 4,
+  "c195_files": 5,
+  "c195_edits": 12,
+  "combined_files": 6,
+  "both_forward_orders_identical": true,
+  "both_full_inverses_exact": true,
+  "completed_info_body_unchanged": true,
+  "entire_test_declaration_section_unchanged": true,
+  "declared_names": 25,
+  "runtime_negative_files_preserved": 3,
+  "exact_causal_excerpts": 16,
+  "native_compiler_execution": false
+}

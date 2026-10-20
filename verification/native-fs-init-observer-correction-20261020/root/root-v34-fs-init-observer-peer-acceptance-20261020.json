@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "status": "root_accepts_independent_fs_init_observer_peer",
+  "utc": "2026-10-20T21:31:09.248446+00:00",
+  "proposal_sha256": "E22848488C054D9B748CD6A7E078EFECF468D32804F8161842562250F4DBF454",
+  "root_source_review_sha256": "7F86896E6895ADA3E9DC5E0920E14460063B195F417C1A2865F731E1A852A110",
+  "independent_peer_sha256": "01BB78974EAF63864A20ACD1FE17A49E8EF57A1F718D70EC11C1ACABA6E13841",
+  "checker_sha256": "688BBDF4755193024BCD588446B257EAD81EECE79AE33F5601AACCE857688A0F",
+  "source_audit_sha256": "B56A46F9CAD547DB604F3B9F1573E8E4C5647F3B70A3D3E18C28FBCE6089D100",
+  "entire25174_byte_source_audit_reproduced": true,
+  "adaptation": "Read-only prefix before proof.mkdir; replace immutable-output absence assertion by its exact hash check. Retain original reviewed_utc only for byte-exact comparison. No other checker changes.",
+  "current_pins": 56,
+  "raw_c764_baselines": 8,
+  "both_composition_orders_and_whole_inverses": true,
+  "source_accepted": true,
+  "qualification": false,
+  "source_mutation_hold_released": false
+}

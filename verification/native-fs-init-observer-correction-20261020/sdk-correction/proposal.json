@@ -1,0 +1,271 @@
+{
+  "schema": "v34-fs-request-init-observer-correction-v1",
+  "basis_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "source_only": true,
+  "compiler_native_test_execution": false,
+  "main_mutations": false,
+  "live_existing_donor_mutations": false,
+  "causal_triage": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\triage.json",
+    "bytes": 39007,
+    "sha256": "313163DB8C2280C03D9C8FEC5689A94B6E4C216136B1AB72BE1EEA510FE97328"
+  },
+  "files": [
+    {
+      "relative_path": "src/extensions/native_uv_fs.h",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_fs.h",
+        "bytes": 4931,
+        "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE"
+      },
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\original\\src\\extensions\\native_uv_fs.h",
+        "bytes": 4931,
+        "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\projected\\src\\extensions\\native_uv_fs.h",
+        "bytes": 5692,
+        "sha256": "783791F2AE41793E18EC620DFB1D5C4D0B2984AB5E1FF34D6F93204D21C23051"
+      },
+      "edits": [
+        {
+          "index": 0,
+          "offset_in_sequential_input": 724,
+          "before": "} PiUvFsInfo;\n",
+          "after": "} PiUvFsInfo;\ntypedef struct PiUvFsPreparationInfo {\n    int kind;\n    int accepted;\n    int cleaned;\n    int completed;\n} PiUvFsPreparationInfo;\n",
+          "input_sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+          "output_sha256": "3F84E4D188DE292BB552FE1F1E13C628D301A191204F044ECE55ED6D5EE4F60F"
+        },
+        {
+          "index": 1,
+          "offset_in_sequential_input": 4254,
+          "before": "/* Info is available after immediate negative admission or actual event\n",
+          "after": "/* Observe actual native storage during its caller-owned unsubmitted phase:\n * before first admission, or after request_reset returned successfully.\n * The caller must retain the request and invoke this on its dispatch/owner\n * thread, with no concurrent admission, cleanup, reset or release. This is\n * not a concurrent lifecycle snapshot. The unsubmitted assertion guards the\n * phase; it does not establish thread ownership. No uv.result/path is read,\n * no completion is inferred, and no request state or entitlement is changed.\n */\nPiUvFsPreparationInfo pi_uv_fs_request_preparation_info(\n    const PiUvFsRequest *request);\n/* Info is available after immediate negative admission or actual event\n",
+          "input_sha256": "3F84E4D188DE292BB552FE1F1E13C628D301A191204F044ECE55ED6D5EE4F60F",
+          "output_sha256": "783791F2AE41793E18EC620DFB1D5C4D0B2984AB5E1FF34D6F93204D21C23051"
+        }
+      ],
+      "forward_exact": true,
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/extensions/native_uv_tcp.c",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 45730,
+        "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71"
+      },
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\original\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 45730,
+        "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\projected\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 46187,
+        "sha256": "40501DC986978EB041E3D80965CCB29B30D5A099067C97959DD9FF360113A7F8"
+      },
+      "edits": [
+        {
+          "index": 0,
+          "offset_in_sequential_input": 34649,
+          "before": "PiUvFsInfo pi_uv_fs_request_info(const PiUvFsRequest *request) {\n",
+          "after": "PiUvFsPreparationInfo pi_uv_fs_request_preparation_info(\n    const PiUvFsRequest *request) {\n    assert(request != NULL);\n    assert(!request->submitted);\n    PiUvFsPreparationInfo result = {\n        .kind = request->kind,\n        .accepted = request->accepted,\n        .cleaned = atomic_load_explicit(&request->cleaned, memory_order_acquire),\n        .completed = atomic_load_explicit(&request->completed, memory_order_acquire)\n    };\n    return result;\n}\nPiUvFsInfo pi_uv_fs_request_info(const PiUvFsRequest *request) {\n",
+          "input_sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+          "output_sha256": "40501DC986978EB041E3D80965CCB29B30D5A099067C97959DD9FF360113A7F8"
+        }
+      ],
+      "forward_exact": true,
+      "whole_inverse_exact": true
+    },
+    {
+      "relative_path": "src/native_node_fs_request_owner_test.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_fs_request_owner_test.zig",
+        "bytes": 57142,
+        "sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4"
+      },
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\original\\src\\native_node_fs_request_owner_test.zig",
+        "bytes": 57142,
+        "sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4"
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\projected\\src\\native_node_fs_request_owner_test.zig",
+        "bytes": 57263,
+        "sha256": "402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81"
+      },
+      "edits": [
+        {
+          "index": 0,
+          "offset_in_sequential_input": 3347,
+          "before": "    const info = uv.pi_uv_fs_request_info(actual);\n    f.init_probe_prepared = info.kind == uv.PI_UV_FS_READ and info.accepted == 0 and\n        info.cleaned == 0 and !req.constructed and !req.entry_initialized and req.binding_data == null;\n",
+          "after": "    // Init observes real unsubmitted storage, before any completion exists.\n    const info = uv.pi_uv_fs_request_preparation_info(actual);\n    f.init_probe_prepared = info.kind == uv.PI_UV_FS_READ and info.accepted == 0 and\n        info.cleaned == 0 and info.completed == 0 and\n        !req.constructed and !req.entry_initialized and req.binding_data == null;\n",
+          "input_sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4",
+          "output_sha256": "402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81"
+        }
+      ],
+      "forward_exact": true,
+      "whole_inverse_exact": true
+    }
+  ],
+  "file_count": 3,
+  "sequential_edit_count": 4,
+  "whole_inverse_exact": true,
+  "selected_api": {
+    "type": "PiUvFsPreparationInfo",
+    "function": "pi_uv_fs_request_preparation_info",
+    "new_struct_fields": [
+      "int kind",
+      "int accepted",
+      "int cleaned",
+      "int completed"
+    ],
+    "abi": "Four existing C int state representations in a new return struct. The existing PiUvFsInfo, opaque PiUvFsRequest layout and every existing signature remain unchanged; Zig obtains the new declaration through the same canonical native_uv_fs.h cImport.",
+    "reads": [
+      "request->kind",
+      "request->accepted",
+      "atomic request->cleaned (acquire)",
+      "atomic request->completed (acquire)"
+    ],
+    "precondition": "The caller retains the request and owns its unsubmitted dispatch-thread phase, before first admission or after successful Reset, without concurrent admission/cleanup/reset/release.",
+    "guards": [
+      "request != NULL",
+      "!request->submitted"
+    ],
+    "not_synchronization": "The non-atomic submitted guard and kind/accepted reads rely on the caller's existing phase ownership. The API makes no thread-owner verification or concurrent snapshot claim.",
+    "mutations": [],
+    "completion_payload_reads": [],
+    "new_allocations": 0,
+    "new_native_entitlements": 0
+  },
+  "unchanged": {
+    "completed_only_info_body_sha256": "79017499AF4F350D8AE74BA81BA5A0190FBBD1B093C6C429C003108532E8FDCB",
+    "completed_only_info_body_byte_identical": true,
+    "completed_only_info_contract_and_assertion_retained": true,
+    "complete_test_declaration_section_byte_identical": true,
+    "named_declarations": [
+      "native FS request owner exposes real no-handler templates and converted receiver returns",
+      "native FS request owner preserves actual template cache and subclass prototype selection",
+      "native FS request owner enforces the genuine signature and preserves a cleared template brand",
+      "native FS request owner initializes the real provider IDs frame queue and derived aliases",
+      "native FS request owner keeps general reset resource and explicit ID ordering",
+      "native FS request owner publishes all four original BindingData views without AsyncWrap init",
+      "native FS request owner accepts normal false native alias Set and weakens the unreferenced view",
+      "native FS request owner retains native BindingData through each real derived request",
+      "native FS request owner returns the original one pending Promise and reads its live property",
+      "native FS request owner settles the live replacement Promise without replacing the earlier return",
+      "native FS request owner uses the captured request frame through before Get after and restores the parent",
+      "native FS request owner preserves ordinary Error data in both fulfill and reject settlement",
+      "native FS request owner completes its callback destructor after an ordinary live Promise Get throw",
+      "native FS request owner settled Promise bypasses incoming then lookup through the actual native resolver",
+      "native FS request owner realm cleanup follows the actual BindingData then request FIFO and clears native slots",
+      "native FS request owner retained factory observes the real empty Realm weak slot after cleanup",
+      "native FS request owner physical Read constructs native storage before init and dispatches the actual view span",
+      "native FS request owner physical Read uses DataView and wider typed-array byte spans",
+      "native FS request owner physical Read preserves BigInt wrapping safe minus zero and zero length",
+      "native FS request owner physical Read retains backing storage before the real init hook transfers its buffer",
+      "native FS request owner physical Read still dispatches after the ordinary void return-Promise Get fails",
+      "native FS request owner physical Read rejects accepted bad descriptors through actual UVException",
+      "native FS request owner physical completion preserves live Promise getter failure and still retires the request",
+      "native FS request owner disabled Hub shutdown drains genuine queued reads without Promise or guest callbacks",
+      "native FS request owner retained Read controller refuses admission after the real Hub is retired"
+    ],
+    "declared_count": 25,
+    "all_original_init_predicates_retained": true,
+    "new_predicate": "info.completed == 0",
+    "later_info_calls_retained": true,
+    "existing_request_layout_and_lifecycle_algorithms_unmodified": true
+  },
+  "pending_filehandle_composition": {
+    "predecessor_packet": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\shared\\proposal.json",
+      "bytes": 18499,
+      "sha256": "C195AE5D402ED457AF651D6BEB37B2BB8DBD3DF36CD74106EB172F00B64618FC"
+    },
+    "c195_file_count": 5,
+    "c195_edit_count": 12,
+    "overlap": [
+      "src/extensions/native_uv_fs.h",
+      "src/extensions/native_uv_tcp.c"
+    ],
+    "combined_union_files": 6,
+    "both_forward_orders_byte_identical": true,
+    "both_full_inverse_orders_byte_exact": true,
+    "files": [
+      {
+        "relative_path": "src/extensions/native_node_async_wrap_state.zig",
+        "original_sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994",
+        "combined": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\combined-after-C195\\src\\extensions\\native_node_async_wrap_state.zig",
+          "bytes": 28133,
+          "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1"
+        },
+        "same_bytes_in_both_orders": true,
+        "whole_inverse_both_orders": true
+      },
+      {
+        "relative_path": "src/extensions/native_node_callback_scope.zig",
+        "original_sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+        "combined": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\combined-after-C195\\src\\extensions\\native_node_callback_scope.zig",
+          "bytes": 40069,
+          "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+        },
+        "same_bytes_in_both_orders": true,
+        "whole_inverse_both_orders": true
+      },
+      {
+        "relative_path": "src/extensions/native_node_fs_request_io.zig",
+        "original_sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+        "combined": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\combined-after-C195\\src\\extensions\\native_node_fs_request_io.zig",
+          "bytes": 15469,
+          "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996"
+        },
+        "same_bytes_in_both_orders": true,
+        "whole_inverse_both_orders": true
+      },
+      {
+        "relative_path": "src/extensions/native_uv_fs.h",
+        "original_sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+        "combined": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\combined-after-C195\\src\\extensions\\native_uv_fs.h",
+          "bytes": 6334,
+          "sha256": "23B85BBB1BD8395D1D5085BE0797F06CE2C323DAACF366F5CF3B587D06EACA6D"
+        },
+        "same_bytes_in_both_orders": true,
+        "whole_inverse_both_orders": true
+      },
+      {
+        "relative_path": "src/extensions/native_uv_tcp.c",
+        "original_sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+        "combined": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\combined-after-C195\\src\\extensions\\native_uv_tcp.c",
+          "bytes": 46648,
+          "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2"
+        },
+        "same_bytes_in_both_orders": true,
+        "whole_inverse_both_orders": true
+      },
+      {
+        "relative_path": "src/native_node_fs_request_owner_test.zig",
+        "original_sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4",
+        "combined": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\combined-after-C195\\src\\native_node_fs_request_owner_test.zig",
+          "bytes": 57263,
+          "sha256": "402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81"
+        },
+        "same_bytes_in_both_orders": true,
+        "whole_inverse_both_orders": true
+      }
+    ]
+  },
+  "limits": [
+    "No new runtime or compiler evidence is produced by this packet.",
+    "The source correction explains the first group-17 abort only; it does not claim later V34 controls pass.",
+    "All original runtime stdout/stderr/process evidence remains unchanged.",
+    "No build/catalog/grant/assertion option, completed-only operation, production request algorithm or existing control body is changed."
+  ]
+}

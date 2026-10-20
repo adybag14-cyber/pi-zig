@@ -19,6 +19,12 @@ typedef struct PiUvFsInfo {
     int accepted;
     int cleaned;
 } PiUvFsInfo;
+typedef struct PiUvFsPreparationInfo {
+    int kind;
+    int accepted;
+    int cleaned;
+    int completed;
+} PiUvFsPreparationInfo;
 
 /* Allocate the native request storage during the original ReqWrap allocation,
  * before its actual constructor/init hooks and SetReturnValue. A proven
@@ -83,6 +89,16 @@ int pi_uv_fs_close_sync(PiUvService *service, struct uv_fs_s *request,
 int pi_uv_fs_cancel(PiUvFsRequest *request);
 void pi_uv_fs_request_retain(PiUvFsRequest *request);
 void pi_uv_fs_request_release(PiUvFsRequest *request);
+/* Observe actual native storage during its caller-owned unsubmitted phase:
+ * before first admission, or after request_reset returned successfully.
+ * The caller must retain the request and invoke this on its dispatch/owner
+ * thread, with no concurrent admission, cleanup, reset or release. This is
+ * not a concurrent lifecycle snapshot. The unsubmitted assertion guards the
+ * phase; it does not establish thread ownership. No uv.result/path is read,
+ * no completion is inferred, and no request state or entitlement is changed.
+ */
+PiUvFsPreparationInfo pi_uv_fs_request_preparation_info(
+    const PiUvFsRequest *request);
 /* Info is available after immediate negative admission or actual event
  * acquisition, and before a successful request_reset invalidates that result.
  * Cleanup is idempotent and occurs at FSReqAfterScope::Clear;

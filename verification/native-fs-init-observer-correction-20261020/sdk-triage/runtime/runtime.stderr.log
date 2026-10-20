@@ -1,0 +1,1 @@
+Assertion failed: atomic_load_explicit(&request->completed, memory_order_acquire), file C:\Users\adyba\pi-zig\main\src\extensions\native_uv_tcp.c, line 804

@@ -1,0 +1,324 @@
+{
+  "schema": 1,
+  "status": "exact_future_fs_init_observer_source_intake_unissued",
+  "created_utc": "2026-10-20T21:31:34.633164+00:00",
+  "comparison_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "source_paths": 3,
+  "finite_hunks": 4,
+  "source_declarations_unchanged": 25,
+  "prior_actual_metadata_count": 26,
+  "future_actual_metadata_count": null,
+  "manifest_target": "verification/native-fs-init-observer-correction-20261020/manifest.json",
+  "path_count_including_manifest": 34,
+  "rows": [
+    {
+      "target": "src/extensions/native_uv_fs.h",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\combined-after-C195\\src\\extensions\\native_uv_fs.h",
+      "bytes": 6334,
+      "sha256": "23B85BBB1BD8395D1D5085BE0797F06CE2C323DAACF366F5CF3B587D06EACA6D",
+      "before": {
+        "bytes": 5573,
+        "sha256": "D5BB021DFECD726A7FBB6860616753957C1B25B11C4776BAFD24F2C935589D34"
+      },
+      "role": "source_or_fixture"
+    },
+    {
+      "target": "src/extensions/native_uv_tcp.c",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\combined-after-C195\\src\\extensions\\native_uv_tcp.c",
+      "bytes": 46648,
+      "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+      "before": {
+        "bytes": 46191,
+        "sha256": "85E49522C7C05764957ADACF6B80F2745D5C06E0A361D33531A8BAF9FEA49F87"
+      },
+      "role": "source_or_fixture"
+    },
+    {
+      "target": "src/native_node_fs_request_owner_test.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\combined-after-C195\\src\\native_node_fs_request_owner_test.zig",
+      "bytes": 57263,
+      "sha256": "402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81",
+      "before": {
+        "bytes": 57142,
+        "sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4"
+      },
+      "role": "source_or_fixture"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/audit-sourceonly.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\audit-sourceonly.py",
+      "bytes": 4322,
+      "sha256": "B582D9925615FE30574F15A9553CA82A263A796A1E15AEA13EDDA11DAE9C6353",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/combined-after-C195/src/extensions/native_node_async_wrap_state.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\combined-after-C195\\src\\extensions\\native_node_async_wrap_state.zig",
+      "bytes": 28133,
+      "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/combined-after-C195/src/extensions/native_node_callback_scope.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\combined-after-C195\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/combined-after-C195/src/extensions/native_node_fs_request_io.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\combined-after-C195\\src\\extensions\\native_node_fs_request_io.zig",
+      "bytes": 15469,
+      "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/combined-after-C195/src/extensions/native_uv_fs.h",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\combined-after-C195\\src\\extensions\\native_uv_fs.h",
+      "bytes": 6334,
+      "sha256": "23B85BBB1BD8395D1D5085BE0797F06CE2C323DAACF366F5CF3B587D06EACA6D",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/combined-after-C195/src/extensions/native_uv_tcp.c",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\combined-after-C195\\src\\extensions\\native_uv_tcp.c",
+      "bytes": 46648,
+      "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/combined-after-C195/src/native_node_fs_request_owner_test.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\combined-after-C195\\src\\native_node_fs_request_owner_test.zig",
+      "bytes": 57263,
+      "sha256": "402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/original/src/extensions/native_uv_fs.h",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\original\\src\\extensions\\native_uv_fs.h",
+      "bytes": 4931,
+      "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/original/src/extensions/native_uv_tcp.c",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\original\\src\\extensions\\native_uv_tcp.c",
+      "bytes": 45730,
+      "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/original/src/native_node_fs_request_owner_test.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\original\\src\\native_node_fs_request_owner_test.zig",
+      "bytes": 57142,
+      "sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/projected/src/extensions/native_uv_fs.h",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\projected\\src\\extensions\\native_uv_fs.h",
+      "bytes": 5692,
+      "sha256": "783791F2AE41793E18EC620DFB1D5C4D0B2984AB5E1FF34D6F93204D21C23051",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/projected/src/extensions/native_uv_tcp.c",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\projected\\src\\extensions\\native_uv_tcp.c",
+      "bytes": 46187,
+      "sha256": "40501DC986978EB041E3D80965CCB29B30D5A099067C97959DD9FF360113A7F8",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/projected/src/native_node_fs_request_owner_test.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\projected\\src\\native_node_fs_request_owner_test.zig",
+      "bytes": 57263,
+      "sha256": "402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/proposal.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\proposal.json",
+      "bytes": 16691,
+      "sha256": "E22848488C054D9B748CD6A7E078EFECF468D32804F8161842562250F4DBF454",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/static-replay-result.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\static-replay-result.json",
+      "bytes": 571,
+      "sha256": "5F4BD313E75EE0CB50EF9537502EB1AF5BE36DFC2518AB53AC5CE6256AD95FD4",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/original/src/extensions/native_node_file_handle_read_binding.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_node_file_handle_read_binding.zig",
+      "bytes": 9556,
+      "sha256": "A620FEDB2C50D46A17947845B5FE2D7EE1AE4603F10BFA3F55FB44A588DD4375",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/original/src/extensions/native_node_fs_request_io.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_node_fs_request_io.zig",
+      "bytes": 14502,
+      "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/original/src/extensions/native_node_fs_request_promise.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_node_fs_request_promise.zig",
+      "bytes": 18834,
+      "sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/original/src/extensions/native_uv_fs.h",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_uv_fs.h",
+      "bytes": 4931,
+      "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/original/src/extensions/native_uv_tcp.c",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\extensions\\native_uv_tcp.c",
+      "bytes": 45730,
+      "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/original/src/native_node_fs_request_owner_test.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\original\\src\\native_node_fs_request_owner_test.zig",
+      "bytes": 57142,
+      "sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/runtime/runtime-raw-frame-observation.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\runtime\\runtime-raw-frame-observation.json",
+      "bytes": 2572,
+      "sha256": "A21C23AF07BF1AE805B257940D7FC2E43928F1C07CC66AE3F0A68783D8AC5B5B",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/runtime/runtime.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\runtime\\runtime.json",
+      "bytes": 1411,
+      "sha256": "92351BACC20B56E9371668F7BF5ECA5D7976CAC3B158E05A57EAB7696BEC9E14",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/runtime/runtime.stderr.log",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\runtime\\runtime.stderr.log",
+      "bytes": 157,
+      "sha256": "6AE6E82B866AA07A01730451E487596C2B906D25E19A7ADF1CB976FF79F816A1",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/triage.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020\\triage.json",
+      "bytes": 39007,
+      "sha256": "313163DB8C2280C03D9C8FEC5689A94B6E4C216136B1AB72BE1EEA510FE97328",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/independent-peer/peer.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-fs-request-init-observer-source-peer-20261020\\peer.json",
+      "bytes": 7387,
+      "sha256": "01BB78974EAF63864A20ACD1FE17A49E8EF57A1F718D70EC11C1ACABA6E13841",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/independent-peer/source-audit.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-fs-request-init-observer-source-peer-20261020\\source-audit.json",
+      "bytes": 25174,
+      "sha256": "B56A46F9CAD547DB604F3B9F1573E8E4C5647F3B70A3D3E18C28FBCE6089D100",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/independent-peer/Verify-SourceOnlyFsInitObserver.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-fs-request-init-observer-source-peer-20261020\\Verify-SourceOnlyFsInitObserver.py",
+      "bytes": 9466,
+      "sha256": "688BBDF4755193024BCD588446B257EAD81EECE79AE33F5601AACCE857688A0F",
+      "before": null,
+      "role": "immutable_source_evidence"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/root/root-v34-fs-init-observer-source-review-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-fs-init-observer-source-review-20261020.json",
+      "bytes": 2404,
+      "sha256": "7F86896E6895ADA3E9DC5E0920E14460063B195F417C1A2865F731E1A852A110",
+      "before": null,
+      "role": "root_source_review"
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/root/root-v34-fs-init-observer-peer-acceptance-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-fs-init-observer-peer-acceptance-20261020.json",
+      "bytes": 1052,
+      "sha256": "1BF72157A797F8FCF0C9B20F39F8616B215C2592BAC8E9C7DEC1339449403113",
+      "before": null,
+      "role": "root_source_review"
+    }
+  ],
+  "packet_inventories": [
+    {
+      "directory": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020",
+      "files": 15,
+      "bytes": 432445,
+      "inventory_sha256": "56CB7A6DCD6F062BE23C8086651D2679C4901110D349C412CDDA3EED9DC2AE60"
+    },
+    {
+      "directory": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-triage-sourceonly-20261020",
+      "files": 10,
+      "bytes": 193842,
+      "inventory_sha256": "4A6DB8C6589D6930FA047315CFEC737667F8164F1C5213245DD2FC7312145598"
+    },
+    {
+      "directory": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-fs-request-init-observer-source-peer-20261020",
+      "files": 3,
+      "bytes": 42027,
+      "inventory_sha256": "2ACB088F84027C97C355936CF5FE18103EB4E44C545A73CD775EAEE8DC1E1C43"
+    }
+  ],
+  "required_predecessor_manifests": [
+    "5730CB5FA9F17FE33478C128E763287E59A37477B2AF2A0820BBCA002D0FADCF",
+    "BA8482D0DA4837630E158C5F345C9D5F58D8AE2614F8F372E164EDB9894EEF73"
+  ],
+  "gate": "Only after independent V34 diagnostic closure and distinct Root source release. Require exact committed192-path owner/error then10-path ReqWrap predecessor receipts, clean Main and unchanged resulting preimages. This third commit uses the proven combined-after-C195 C/H bytes; c764 by itself is not an admissible intake head.",
+  "main_applied": false,
+  "native_execution_authorized": false,
+  "qualification": false,
+  "immutable_successor": {
+    "previous_manifest": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-fs-init-observer-main-intake-20261020\\manifest.json",
+      "bytes": 18837,
+      "sha256": "8CCF654B605C496E1E188E12EFD8CAFA6BF54B84CEBD58731A3219196DCA6D70"
+    },
+    "reason": "Only bind the exact192 and10-path predecessor manifest successors. All33 explicit rows and34-path count unchanged."
+  }
+}
