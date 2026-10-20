@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "execution": false,
+  "path": "build.zig",
+  "basis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+    "bytes": 493924,
+    "sha256": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E"
+  },
+  "steps": [
+    {
+      "before": "        b.step(\"build-native-node-environment-paths\", \"Install native Environment path and SafeGetenv controls without execution\").dependOn(&b.addInstallArtifact(native_environment_paths_tests, .{}).step);\n",
+      "after": "        b.step(\"build-native-node-environment-paths\", \"Install native Environment path and SafeGetenv controls without execution\").dependOn(&b.addInstallArtifact(native_environment_paths_tests, .{}).step);\n        const native_diagnostic_context_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_diagnostic_context_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"Node diagnostic context\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_diagnostic_context_tests.root_module, quickjs, sqlite_lib_dir);\n        native_diagnostic_context_tests.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context.c\"),\n            .flags = &.{ \"-std=gnu11\", \"-fno-strict-aliasing\" },\n        });\n        native_diagnostic_context_tests.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context_test_support.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        b.step(\"build-native-node-diagnostic-context\", \"Install native borrowed diagnostic context controls without execution\").dependOn(&b.addInstallArtifact(native_diagnostic_context_tests, .{}).step);\n"
+    }
+  ],
+  "prospective_sha256": "045872305EEC389D0130E6EA0ADFD4CC2AE7B451B3B012E48869D359929D7F77",
+  "prospective_bytes": 495035,
+  "whole_inverse": true,
+  "target": "build-native-node-diagnostic-context",
+  "filter": "Node diagnostic context",
+  "install_only": true,
+  "normal_install_changed": false,
+  "actual_main_unchanged": true
+}

@@ -1,0 +1,63 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-existing-promise-settlement-sourceonly-20261019\\authority\\v8-api.v24.13.cc",
+    "bytes": 489340,
+    "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+    "slices": [
+      {
+        "first": 810,
+        "last": 850,
+        "text": "bool Data::IsFunctionTemplate() const {\n  return i::IsFunctionTemplateInfo(*Utils::OpenDirectHandle(this));\n}\n\nbool Data::IsContext() const {\n  return i::IsContext(*Utils::OpenDirectHandle(this));\n}\n\nvoid Context::Enter() {\n  i::DisallowGarbageCollection no_gc;\n  i::Tagged<i::NativeContext> env = *Utils::OpenDirectHandle(this);\n  i::Isolate* i_isolate = env->GetIsolate();\n  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);\n  i::HandleScopeImplementer* impl = i_isolate->handle_scope_implementer();\n  impl->EnterContext(env);\n  impl->SaveContext(i_isolate->context());\n  i_isolate->set_context(env);\n}\n\nvoid Context::Exit() {\n  auto env = Utils::OpenDirectHandle(this);\n  i::Isolate* i_isolate = env->GetIsolate();\n  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);\n  i::HandleScopeImplementer* impl = i_isolate->handle_scope_implementer();\n  if (!Utils::ApiCheck(impl->LastEnteredContextWas(*env), \"v8::Context::Exit()\",\n                       \"Cannot exit non-entered context\")) {\n    return;\n  }\n  impl->LeaveContext();\n  i_isolate->set_context(impl->RestoreContext());\n}\n\nContext::BackupIncumbentScope::BackupIncumbentScope(\n    Local<Context> backup_incumbent_context)\n    : backup_incumbent_context_(backup_incumbent_context) {\n  DCHECK(!backup_incumbent_context_.IsEmpty());\n\n  auto env = Utils::OpenDirectHandle(*backup_incumbent_context_);\n  i::Isolate* i_isolate = env->GetIsolate();\n\n  js_stack_comparable_address_ =\n"
+      },
+      {
+        "first": 9764,
+        "last": 9784,
+        "text": "void Isolate::SetIdle(bool is_idle) {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  i_isolate->SetIdle(is_idle);\n}\n\nArrayBuffer::Allocator* Isolate::GetArrayBufferAllocator() {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  return i_isolate->array_buffer_allocator();\n}\n\nbool Isolate::InContext() {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  return !i_isolate->context().is_null();\n}\n\nvoid Isolate::ClearKeptObjects() {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  i_isolate->ClearKeptObjects();\n}\n\nv8::Local<v8::Context> Isolate::GetCurrentContext() {\n"
+      },
+      {
+        "first": 9972,
+        "last": 9993,
+        "text": "                        stack_state);\n  }\n  RequestGarbageCollectionForTesting(type);\n}\n\nIsolate* Isolate::GetCurrent() {\n  i::Isolate* i_isolate = i::Isolate::Current();\n  return reinterpret_cast<Isolate*>(i_isolate);\n}\n\nIsolate* Isolate::TryGetCurrent() {\n  i::Isolate* i_isolate = i::Isolate::TryGetCurrent();\n  return reinterpret_cast<Isolate*>(i_isolate);\n}\n\nbool Isolate::IsCurrent() const {\n  return reinterpret_cast<const i::Isolate*>(this)->IsCurrent();\n}\n\n// static\nIsolate* Isolate::Allocate() {\n  return Isolate::Allocate(IsolateGroup::GetDefault());\n"
+      },
+      {
+        "first": 10156,
+        "last": 10175,
+        "text": "\nvoid Isolate::DiscardThreadSpecificMetadata() {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  i_isolate->DiscardPerThreadDataForThisThread();\n}\n\nvoid Isolate::Enter() {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  i_isolate->Enter();\n}\n\nvoid Isolate::Exit() {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  i_isolate->Exit();\n}\n\nvoid Isolate::SetAbortOnUncaughtExceptionCallback(\n    AbortOnUncaughtExceptionCallback callback) {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  i_isolate->SetAbortOnUncaughtExceptionCallback(callback);\n"
+      }
+    ]
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-captured-frame-logging-sourceonly-20261019\\authority\\isolate.v24.13.cc",
+    "bytes": 296824,
+    "sha256": "EEA4CAC8477AE94429B28D2369BECC2DF00E0002A2664AC559435A802A40B2D0",
+    "slices": [
+      {
+        "first": 518,
+        "last": 534,
+        "text": "  return hash;\n}\n\nthread_local Isolate::PerIsolateThreadData* g_current_per_isolate_thread_data_\n    V8_CONSTINIT = nullptr;\nthread_local Isolate* g_current_isolate_ V8_CONSTINIT = nullptr;\n\nV8_TLS_DEFINE_GETTER(Isolate::TryGetCurrent, Isolate*, g_current_isolate_)\n\n// static\nvoid Isolate::SetCurrent(Isolate* isolate) { g_current_isolate_ = isolate; }\n\nnamespace {\n// A global counter for all generated Isolates, might overflow.\nstd::atomic<int> isolate_counter{0};\n}  // namespace\n\n"
+      },
+      {
+        "first": 5926,
+        "last": 6018,
+        "text": "#endif  // defined(V8_USE_PERFETTO)\n\n  initialized_ = true;\n\n  return true;\n}\n\nvoid Isolate::Enter() {\n  Isolate* current_isolate = nullptr;\n  PerIsolateThreadData* current_data = CurrentPerIsolateThreadData();\n\n#ifdef V8_ENABLE_CHECKS\n  // No different thread must have entered the isolate. Allow re-entering.\n  ThreadId thread_id = ThreadId::Current();\n  if (current_thread_id_.IsValid()) {\n    CHECK_EQ(current_thread_id_, thread_id);\n  } else {\n    CHECK_EQ(0, current_thread_counter_);\n    current_thread_id_ = thread_id;\n  }\n  current_thread_counter_++;\n#endif\n\n  // Set the stack start for the main thread that enters the isolate.\n  heap()->SetStackStart();\n\n  if (current_data != nullptr) {\n    current_isolate = current_data->isolate_;\n    DCHECK_NOT_NULL(current_isolate);\n    if (current_isolate == this) {\n      DCHECK(Current() == this);\n      auto entry_stack = entry_stack_.load();\n      DCHECK_NOT_NULL(entry_stack);\n      DCHECK(entry_stack->previous_thread_data == nullptr ||\n             entry_stack->previous_thread_data->thread_id() ==\n                 ThreadId::Current());\n      // Same thread re-enters the isolate, no need to re-init anything.\n      entry_stack->entry_count++;\n      return;\n    }\n  }\n\n  PerIsolateThreadData* data = FindOrAllocatePerThreadDataForThisThread();\n  DCHECK_NOT_NULL(data);\n  DCHECK(data->isolate_ == this);\n\n  EntryStackItem* item =\n      new EntryStackItem(current_data, current_isolate, entry_stack_);\n  entry_stack_ = item;\n\n  SetIsolateThreadLocals(this, data);\n\n  // In case it's the first time some thread enters the isolate.\n  set_thread_id(data->thread_id());\n}\n\nvoid Isolate::Exit() {\n  auto current_entry_stack = entry_stack_.load();\n  DCHECK_NOT_NULL(current_entry_stack);\n  DCHECK(current_entry_stack->previous_thread_data == nullptr ||\n         current_entry_stack->previous_thread_data->thread_id() ==\n             ThreadId::Current());\n\n#ifdef V8_ENABLE_CHECKS\n  // The current thread must have entered the isolate.\n  CHECK_EQ(current_thread_id_, ThreadId::Current());\n  if (--current_thread_counter_ == 0) current_thread_id_ = ThreadId::Invalid();\n#endif\n\n  if (--current_entry_stack->entry_count > 0) return;\n\n  DCHECK_NOT_NULL(CurrentPerIsolateThreadData());\n  DCHECK(CurrentPerIsolateThreadData()->isolate_ == this);\n\n  // Pop the stack.\n  entry_stack_ = current_entry_stack->previous_item;\n\n  PerIsolateThreadData* previous_thread_data =\n      current_entry_stack->previous_thread_data;\n  Isolate* previous_isolate = current_entry_stack->previous_isolate;\n\n  delete current_entry_stack;\n\n  // Reinit the current thread for the isolate it was running before this one.\n  SetIsolateThreadLocals(previous_isolate, previous_thread_data);\n}\n\nOptimizingCompileDispatcher* Isolate::SetOptimizingCompileDispatcherForTesting(\n    OptimizingCompileDispatcher* dispatcher) {\n  return std::exchange(optimizing_compile_dispatcher_, dispatcher);\n}\n\nstd::unique_ptr<PersistentHandles> Isolate::NewPersistentHandles() {\n"
+      }
+    ]
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-captured-frame-logging-sourceonly-20261019\\authority\\isolate-inl.v24.13.h",
+    "bytes": 8668,
+    "sha256": "772D5CF1DD8E849E5D495D84DF6F6A122E41905808C7E3B5870B51335CC89ED2",
+    "slices": [
+      {
+        "first": 37,
+        "last": 58,
+        "text": "  DCHECK_NOT_NULL(isolate);\n  return isolate;\n}\n\nbool Isolate::IsCurrent() const { return this == TryGetCurrent(); }\n\nvoid Isolate::set_context(Tagged<Context> context) {\n  DCHECK(context.is_null() || IsContext(context));\n  thread_local_top()->context_ = context;\n}\n\nHandle<NativeContext> Isolate::native_context() {\n  DCHECK(!context().is_null());\n  return handle(context()->native_context(), this);\n}\n\nTagged<NativeContext> Isolate::raw_native_context() {\n  DCHECK(!context().is_null());\n  return context()->native_context();\n}\n\nvoid Isolate::set_topmost_script_having_context(Tagged<Context> context) {\n"
+      },
+      {
+        "first": 238,
+        "last": 257,
+        "text": "    return raw_native_context()->is_##name(value);                    \\\n  }\nNATIVE_CONTEXT_FIELDS(NATIVE_CONTEXT_FIELD_ACCESSOR)\n#undef NATIVE_CONTEXT_FIELD_ACCESSOR\n\nSetCurrentIsolateScope::SetCurrentIsolateScope(Isolate* isolate)\n    : ptr_compr_cage_access_scope_(isolate),\n      previous_isolate_(Isolate::TryGetCurrent()) {\n  Isolate::SetCurrent(isolate);\n}\n\nSetCurrentIsolateScope::~SetCurrentIsolateScope() {\n  Isolate::SetCurrent(previous_isolate_);\n}\n\n}  // namespace v8::internal\n\n#endif  // V8_EXECUTION_ISOLATE_INL_H_\n"
+      }
+    ]
+  }
+]

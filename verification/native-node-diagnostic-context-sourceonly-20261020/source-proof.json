@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "status": "source_only_borrowed_diagnostic_context_projection",
+  "source_only": true,
+  "execution": false,
+  "original_node_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "production": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_node_diagnostic_context.c",
+      "bytes": 789,
+      "sha256": "AC01853D724253740008E26D2663545D2F564A6E59DE91AA8CE2C8777C7B832C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_node_diagnostic_context.h",
+      "bytes": 775,
+      "sha256": "4D8E43A6527FED6AA19F86A2A51CD490E5DDEAC6CCC323635B700ED4E8B798C0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_node_diagnostic_context.hpp",
+      "bytes": 914,
+      "sha256": "7EA7700F4EDCC6ED5C27DF98574BE27A572AFF01E151B9F39667E6737ACC30B9"
+    }
+  ],
+  "controls": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\native_node_diagnostic_context_test.zig",
+      "bytes": 9765,
+      "sha256": "536C002F636323E9F2D3C7A195BEEA054DA919DC600E86DA2850E2A63B51B861"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_node_diagnostic_context_test_support.cpp",
+      "bytes": 1308,
+      "sha256": "BF99BC71F7F7EE89748F7D0F663220087D1ADD6044CBD0DA9256C12974EE935E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_node_diagnostic_context_test_support.h",
+      "bytes": 359,
+      "sha256": "D6C452A902245779308A9CBE5CF6762B862B73B616C4A60DDD7B10A48AD37009"
+    }
+  ],
+  "declarations": [
+    "Node diagnostic context actual VM creation does not admit an ambient context",
+    "Node diagnostic context nested actual contexts restore their caller without retaining a VM",
+    "Node diagnostic context explicit native-only admission masks and restores an entered caller",
+    "Node diagnostic context same-context reentry leaves the outer borrowed admission live",
+    "Node diagnostic context native projection works with an exhausted JS heap without allocating",
+    "Node diagnostic context ordinary and fatal pending reasons remain the same actual owned value",
+    "Node diagnostic context private termination lease and actual pending token survive admission",
+    "Node diagnostic context C++ locals retire before nested and outer scopes restore",
+    "Node diagnostic context C++ early return keeps each destructor in its real caller scope",
+    "Node diagnostic context actual worker thread neither inherits nor overwrites its caller admission"
+  ],
+  "authority": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-diagnostic-context-sourceonly-20261020\\v8-entry-authority.json",
+      "bytes": 10231,
+      "sha256": "A0D6A6327583D3A740DFF931584FB89955C508A1E46FC11B634A45FDFA305032"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-diagnostic-context-sourceonly-20261020\\node-diagnostic-guards-authority.json",
+      "bytes": 10065,
+      "sha256": "8C84E5CC132C637EFCA7E7CE162885C6614FF7658CB40A5376A7C39F85890F3C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-diagnostic-context-sourceonly-20261020\\independent-original-source-read.json",
+      "bytes": 9658,
+      "sha256": "9D60BC103B52B2EBB98A3372E75975976A7DB0746D1EB0DB6F5B02E9DDD30EBA"
+    }
+  ],
+  "build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-diagnostic-context-sourceonly-20261020\\build-proposal.json",
+    "bytes": 2233,
+    "sha256": "3A8331CF313E113C528B13058650A790CFC3602AD111F444F89AD11107A07D5B"
+  },
+  "mapping": [
+    {
+      "original": "TryGetCurrent reads native thread-local isolate; InContext separately checks the entered context.",
+      "port": "The immediate synchronous native ABI supplies its actual borrowed caller JSContext, or explicit null. This projection is never inferred from an Agent, retained Environment, or last-created VM."
+    },
+    {
+      "original": "Context Enter/Exit and current-isolate native scopes save and restore their preceding pointer.",
+      "port": "C enter returns previous TLS context; leave restores it; noncopyable/nonmovable C++ Scope brackets one immediate ABI body and all its later locals. Explicit null masks an outer caller until that scope returns."
+    },
+    {
+      "original": "DumpJavaScriptBacktrace/GetCurrentStackTrace bypass JS capture when no current isolate or no context is entered.",
+      "port": "Worker thread TLS starts null. Context-free native classes use the current projection only at a terminal CHECK, while all Agent/writer/buffer/task members remain free of JSContext and Engine."
+    },
+    {
+      "original": "The original trace body does not enter a new isolate or manufacture a context.",
+      "port": "This adapter projects an already-entered caller, not Isolate::Enter, Context::Enter, an ownership entitlement, or a replacement for their heap allocations. It makes no VM call and cannot consume or republish pending values."
+    }
+  ],
+  "lifetime_contract": "Declare DiagnosticContextScope first in every immediate synchronous tracing ABI body. Pass the actual caller context or null. It must outlive every later local/destructor/cleanup and restore before the admitted context can retire. Never copy the Scope, queue its borrowed pointer, or store it in a long-lived owner. Worker callbacks start with native TLS null; actual synchronous observer callbacks see their enclosing caller scope.",
+  "control_rationale": "Live VM identity, nested same/different runtime restoration, explicit null masking, exhausted-heap/no-allocation behavior, actual ordinary/fatal/private pending preservation, C++ normal/early-return destructor order, and real worker-thread isolation are observed directly. The control helpers perform real C++ stack construction/destruction and actual native threads; they do not replace production admission.",
+  "open": [
+    "finite peer review",
+    "future actual compile and metadata",
+    "separate runtime verification",
+    "real tracing caller integration"
+  ],
+  "qualification": false,
+  "controls_revision": {
+    "previous": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-diagnostic-context-sourceonly-20261020\\source-proof-v1.json",
+      "bytes": 6459,
+      "sha256": "59B45ADA4D5BD9558F123F7AA7A4B1787E696881C1991B1A344C1615B2ACA738"
+    },
+    "original_root": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-diagnostic-context-sourceonly-20261020\\root-v1.zig.txt",
+      "bytes": 9532,
+      "sha256": "95CB9BB6C3F640494E5B917BD85B4E1321C3BAF0907FF4A6FB94AD256B472BDD"
+    },
+    "delta": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-diagnostic-context-sourceonly-20261020\\controls-correction-v2.json",
+      "bytes": 1549,
+      "sha256": "A126409898B33B1FC9F8D81D6BAF1B08E4B1F7FEB5B0FF396D154083884469E7"
+    }
+  }
+}
