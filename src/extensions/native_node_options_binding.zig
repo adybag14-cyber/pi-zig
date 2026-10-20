@@ -132,8 +132,11 @@ fn valuesBody(s: *Scope, cached_names: []const c.JSValue) !c.JSValue {
     }
     owner.serialized = true;
     var fields: NativeFields = undefined;
-    try fields.init(s, (config.entries.len + 6) * 2);
+    try fields.init(s, (config.entries.len + 7) * 2);
     defer fields.deinit();
+    // Original kV8Option special case: one native Boolean, without a
+    // synthesized --no-* dictionary entry. This reads the Environment latch.
+    try fields.append(s, "--abort-on-uncaught-exception", a.boolean(s, owner.values.abort_on_uncaught_exception));
     inline for (config.entries) |entry| {
         if (comptime entry.kind == .boolean or entry.kind == .optional_boolean) {
             const value = @field(owner.values, @tagName(entry.field));

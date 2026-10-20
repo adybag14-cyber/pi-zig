@@ -22,6 +22,7 @@ pub const Embedder = struct {
 /// Original EnvironmentOptions fields used by the active loader declarations.
 /// Strings/lists supplied here are borrowed only for Config.create.
 pub const Values = struct {
+    abort_on_uncaught_exception: bool = false,
     conditions: []const []const u8 = &.{},
     allow_native_addons: bool = true,
     global_search_paths: bool = true,
@@ -122,6 +123,9 @@ pub const Config = struct {
     environment_ready: bool = false,
     bootstrapped: bool = false,
     serialized: bool = false,
+    /// Actual final V8 flag, distinct from the native Environment latch.
+    /// Installation into the linked VM uncaught policy is a separate owner.
+    vm_abort_on_uncaught_exception: bool = false,
 
     pub fn create(engine: *engine_mod.Engine, input: Input) !*Config {
         if (c.pi_js_native_memory_reserve(engine.native_memory_owner, @sizeOf(Config)) == 0)
@@ -169,11 +173,13 @@ pub const Config = struct {
             next.redirect_warnings = try allocator.dupe(u8, envRead(environment, "NODE_REDIRECT_WARNINGS") orelse "");
         const raw = envRead(environment, "NODE_OPTIONS") orelse "";
         const tokens = try tokenize(allocator, raw);
-        try parse(allocator, &next, tokens, .environment, self.original.features);
-        try parse(allocator, &next, self.original.exec_arguments, .command_line, self.original.features);
+        var vm_abort_on_uncaught_exception = false;
+        try parse(allocator, &next, &vm_abort_on_uncaught_exception, tokens, .environment, self.original.features);
+        try parse(allocator, &next, &vm_abort_on_uncaught_exception, self.original.exec_arguments, .command_line, self.original.features);
         try validate(&next);
         self.environment_arena = arena;
         self.values = next;
+        self.vm_abort_on_uncaught_exception = vm_abort_on_uncaught_exception;
         self.environment_ready = true;
     }
     pub fn finishBootstrap(self: *Config) void {
@@ -255,7 +261,40 @@ fn appendString(allocator: std.mem.Allocator, target: *[]const []const u8, value
     result[target.len] = try allocator.dupe(u8, value);
     target.* = result;
 }
-fn parse(allocator: std.mem.Allocator, output: *Values, tokens: []const []const u8, source: Source, features: FeatureDefaults) !void {
+// The selected V8 flag is admitted by Node, then parsed by V8 from its raw
+// spelling. Node's Environment bit is separately latched from two exact raw
+// positive tokens in ProcessGlobalArgsInternal; it is not the final V8 bit.
+fn sameAbortName(raw: []const u8, expected: []const u8) bool {
+    if (raw.len != expected.len) return false;
+    for (raw, expected) |actual, wanted|
+        if ((if (actual == '_') @as(u8, '-') else actual) != wanted) return false;
+    return true;
+}
+fn abortOption(raw: []const u8, source: Source) !?bool {
+    if (raw.len < 2 or raw[0] != '-') return null;
+    const equals = std.mem.indexOfScalar(u8, raw, '=');
+    const full_name = raw[0 .. equals orelse raw.len];
+    var name = full_name[1..];
+    if (name.len != 0 and name[0] == '-') name = name[1..];
+    var negative = false;
+    if (std.mem.startsWith(u8, name, "no")) {
+        negative = true;
+        name = name[2..];
+        if (name.len != 0 and (name[0] == '-' or name[0] == '_')) name = name[1..];
+    }
+    if (!sameAbortName(name, "abort-on-uncaught-exception")) return null;
+    // The original Node parser's env allowlist runs before the V8 parser.
+    // Single-dash/no-without-dash forms only reach V8 on the CLI path.
+    if (source == .environment and
+        !sameAbortName(full_name, "--abort-on-uncaught-exception") and
+        !sameAbortName(full_name, "--no-abort-on-uncaught-exception"))
+        return error.NodeOptionsEntryNotAllowed;
+    // V8 rejects any explicit value for a Boolean flag, even =true or =.
+    if (equals != null) return error.InvalidNodeV8BooleanValue;
+    return !negative;
+}
+
+fn parse(allocator: std.mem.Allocator, output: *Values, vm_abort_on_uncaught_exception: *bool, tokens: []const []const u8, source: Source, features: FeatureDefaults) !void {
     var position: usize = 0;
     while (position < tokens.len) : (position += 1) {
         const original = tokens[position];
@@ -269,6 +308,13 @@ fn parse(allocator: std.mem.Allocator, output: *Values, tokens: []const []const 
             if (source == .environment) return error.NodeOptionsEntryNotAllowed;
             if (position + 1 != tokens.len) return error.ActualNodeExecArgumentBoundaryRequired;
             return;
+        }
+        if (try abortOption(original, source)) |enabled| {
+            vm_abort_on_uncaught_exception.* = enabled;
+            if (std.mem.eql(u8, original, "--abort-on-uncaught-exception") or
+                std.mem.eql(u8, original, "--abort_on_uncaught_exception"))
+                output.abort_on_uncaught_exception = true;
+            continue;
         }
         const equal = if (std.mem.startsWith(u8, original, "--")) std.mem.indexOfScalar(u8, original, '=') else null;
         const name_bytes = try allocator.dupe(u8, original[0..equal orelse original.len]);

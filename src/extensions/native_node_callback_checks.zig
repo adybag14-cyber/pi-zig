@@ -88,14 +88,15 @@ pub fn fail(environment: *Environment, site: Check) anyerror {
     }
 }
 
-/// The genuine Environment options owner supplies abort_on_uncaught. This
-/// operation reads the actual current execution ID before native diagnostics.
-pub fn corruptedStack(environment: *Environment, expected: f64,
-    abort_on_uncaught: bool) anyerror
-{
+/// Read the actual native Environment option, independent of any mutable
+/// guest options dictionary and of the separate final VM abort flag.
+pub fn corruptedStack(environment: *Environment, expected: f64) anyerror {
     const engine = environment.engine orelse failure.assertion(null,
         assertion("environment.engine != null",
             "src/extensions/native_node_callback_checks.zig", "corruptedStack"));
+    const options = engine.node_options orelse failure.assertion(engine,
+        assertion("engine.node_options != null",
+            "src/extensions/native_node_callback_checks.zig", "corruptedStack"));
     failure.corruptedAsyncStack(engine, environment.executionAsyncId(),
-        expected, abort_on_uncaught);
+        expected, options.values.abort_on_uncaught_exception);
 }

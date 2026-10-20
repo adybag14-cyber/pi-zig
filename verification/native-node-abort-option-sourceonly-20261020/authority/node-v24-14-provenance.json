@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "status": "current authority bytes verified; provenance of the already acquired pinned Node source",
+  "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/src/node.cc",
+  "observed_current_utc": "2026-10-20T10:24:58.526960+00:00",
+  "bytes": 56236,
+  "sha256": "01D3EA16FD426F98A13C2BBA6DF787EE363B677291C21588274D78B50F28927E",
+  "local_path": "authority/node.v24.14.cc",
+  "runtime_execution": false
+}

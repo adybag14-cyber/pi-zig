@@ -1,0 +1,16 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-abort-option-sourceonly-20261020\\authority\\node.cc",
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node.cc",
+    "bytes": 55881,
+    "sha256": "FE21FC104D4227511792F64781701FB2805CB27AD7483A2F7262349EA6A4707A",
+    "observed_utc": "2026-10-20T10:05:44.248516+00:00"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-abort-option-sourceonly-20261020\\authority\\v8-flags.cc",
+    "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/flags/flags.cc",
+    "bytes": 41355,
+    "sha256": "90C8958E344F419A0BCBBE20BA75B8F7289D7D1A5653F29419286BC17271E6E6",
+    "observed_utc": "2026-10-20T10:05:44.492385+00:00"
+  }
+]

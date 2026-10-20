@@ -649,3 +649,78 @@ test "native actual Node options captured process survives an actual global lexi
         try fixture.engine.checkNativeEntry();
     }
 }
+
+const AbortOptionCase = struct {
+    environment: []const u8 = "",
+    arguments: []const []const u8 = &.{},
+    initial_native: bool = false,
+    native: bool,
+    vm: bool,
+};
+fn verifyAbortValues(s: *a.Scope, expected: bool) !c.JSValue {
+    const pair = try s.own(try bindingRecord(s));
+    const values = try s.get(pair, "values");
+    const record = try s.call(values, c.pi_js_undefined(), &.{});
+    try std.testing.expectEqual(expected, s.truthy(try s.get(record, "--abort-on-uncaught-exception")));
+    try std.testing.expect(!try s.hasOwn(record, try s.text("--no-abort-on-uncaught-exception")));
+    // The ordinary returned dictionary is mutable DATA. Native diagnostics
+    // continue to read the original Environment options owner.
+    try s.define(record, "--abort-on-uncaught-exception", a.boolean(s, !expected), c.JS_PROP_C_W_E);
+    try std.testing.expectEqual(expected, s.engine.node_options.?.values.abort_on_uncaught_exception);
+    const fresh = try s.call(values, c.pi_js_undefined(), &.{});
+    try std.testing.expectEqual(expected, s.truthy(try s.get(fresh, "--abort-on-uncaught-exception")));
+    return c.pi_js_undefined();
+}
+fn expectAbortOptions(case: AbortOptionCase) !void {
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try environment.put("NODE_OPTIONS", case.environment);
+    const engine = try a.v.em.Engine.init(std.testing.allocator, .{ .node_options = .{
+        .features = .{ .strip_types = true, .quic = false },
+        .values = .{ .abort_on_uncaught_exception = case.initial_native },
+        .exec_arguments = case.arguments,
+    } });
+    defer engine.deinit();
+    try @import("extensions/native_process.zig").install(engine, std.testing.io,
+        &environment, &.{"actual-abort-option"});
+    try std.testing.expectEqual(case.native, engine.node_options.?.values.abort_on_uncaught_exception);
+    try std.testing.expectEqual(case.vm, engine.node_options.?.vm_abort_on_uncaught_exception);
+    const ignored = try a.expression(engine, verifyAbortValues, .{case.native});
+    engine.freeValue(ignored);
+    try engine.checkNativeEntry();
+}
+test "native actual Node options abort native field serializes without a negated V8 option entry" {
+    try expectAbortOptions(.{ .native = false, .vm = false });
+    try expectAbortOptions(.{ .initial_native = true, .native = true, .vm = false });
+    try expectAbortOptions(.{ .arguments = &.{"--no-abort-on-uncaught-exception"}, .native = false, .vm = false });
+}
+test "native actual Node options exact positive abort tokens latch the native field across later negation" {
+    inline for (.{ "--abort-on-uncaught-exception", "--abort_on_uncaught_exception" }) |positive| {
+        try expectAbortOptions(.{ .arguments = &.{ positive, "--no-abort-on-uncaught-exception" }, .native = true, .vm = false });
+        try expectAbortOptions(.{ .environment = positive, .arguments = &.{"--no_abort_on_uncaught_exception"}, .native = true, .vm = false });
+    }
+}
+test "native actual Node options raw V8 spelling and final VM flag remain distinct from native environment latch" {
+    try expectAbortOptions(.{ .arguments = &.{"--abort_on-uncaught_exception"}, .native = false, .vm = true });
+    try expectAbortOptions(.{ .arguments = &.{"-abort-on-uncaught-exception"}, .native = false, .vm = true });
+    try expectAbortOptions(.{ .arguments = &.{ "--abort-on-uncaught-exception", "--noabort_on_uncaught_exception" }, .native = true, .vm = false });
+    try expectAbortOptions(.{ .environment = "--abort_on-uncaught_exception", .native = false, .vm = true });
+}
+test "native actual Node options abort V8 Boolean values and disallowed environment aliases reject before publication" {
+    inline for (.{
+        .{ "--abort-on-uncaught-exception=true", error.InvalidNodeV8BooleanValue },
+        .{ "--no-abort-on-uncaught-exception=", error.InvalidNodeV8BooleanValue },
+        .{ "-abort-on-uncaught-exception", error.NodeOptionsEntryNotAllowed },
+        .{ "--noabort-on-uncaught-exception", error.NodeOptionsEntryNotAllowed },
+    }) |case| {
+        var environment: std.process.Environ.Map = .init(std.testing.allocator);
+        defer environment.deinit();
+        try environment.put("NODE_OPTIONS", case[0]);
+        const engine = try a.v.em.Engine.init(std.testing.allocator, .{});
+        defer engine.deinit();
+        try std.testing.expectError(case[1], engine.node_options.?.captureEnvironment(&environment));
+        try std.testing.expect(!engine.node_options.?.environment_ready);
+        try std.testing.expect(!engine.node_options.?.values.abort_on_uncaught_exception);
+        try std.testing.expect(!engine.node_options.?.vm_abort_on_uncaught_exception);
+    }
+}
