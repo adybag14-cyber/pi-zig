@@ -1,0 +1,86 @@
+{
+  "status": "source-only compiler-negative correction; no execution",
+  "scope": "Two uses of one Fixture.function parameter only. All 15 declarations, assertions, actual plan identity, callbacks and production are unchanged.",
+  "main_original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_typebox_execution_termination_test.zig",
+    "sha256": "077285CC19DBD42222897A7BCDC4EB56B76B1B190288B3F62C01171C7EE7C360",
+    "bytes": 23046
+  },
+  "owned_successor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_typebox_execution_termination_test.zig",
+    "sha256": "36BDDC56E44B3677D69A48F00652BD13EB536183C81B5B3ACD577DF33957823A",
+    "bytes": 23064
+  },
+  "compiler_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-oauth-options-fresh-v26-buildquery-20261020-132653\\groups\\native-typebox-execution-termination\\compile.stderr.log",
+    "retained": "original-compile.stderr.log",
+    "sha256": "D1EF335C9833768E747EC8223668F455AF4980F656EEE490A28CCDF800C9050F",
+    "bytes": 19182
+  },
+  "edits": [
+    {
+      "before": "    fn function(self: *Fixture, plan: *const heap.Plan) !c.JSValue {\n        return node.createPlanned(self.engine, \"termination-plan\", 1, legacy, &.{self.carrier}, true, plan);\n    }",
+      "after": "    fn function(self: *Fixture, selected_plan: *const heap.Plan) !c.JSValue {\n        return node.createPlanned(self.engine, \"termination-plan\", 1, legacy, &.{self.carrier}, true, selected_plan);\n    }",
+      "count": 1
+    }
+  ],
+  "inverse_exact": true,
+  "source_name_inventory": {
+    "top_level_names": [
+      "Cleanup",
+      "Fixture",
+      "Mode",
+      "Probe",
+      "Token",
+      "after",
+      "body",
+      "c",
+      "childBody",
+      "childEnter",
+      "childFinally",
+      "child_plan",
+      "child_steps",
+      "em",
+      "enter",
+      "finally",
+      "heap",
+      "js",
+      "legacy",
+      "node",
+      "plan",
+      "probeOf",
+      "rawChild",
+      "retire",
+      "std",
+      "steps",
+      "terminate"
+    ],
+    "parameter_collisions_before": [
+      {
+        "function": "function",
+        "parameter": "plan",
+        "line": 114
+      }
+    ],
+    "indented_local_declarations_colliding_with_top_level_names": [],
+    "qualification": "Read-only source inventory plus manual review, not a Zig compiler or syntax pass"
+  },
+  "declarations": [
+    "TypeBox native termination active step skips finally and retires its actual frame",
+    "TypeBox native termination cancelled step keeps native unwind apart from diagnostic DATA",
+    "TypeBox native termination planned child unwinds both actual finally owners",
+    "TypeBox native termination cancelled planned child never resumes either guest frame",
+    "TypeBox native termination actual callback failure stays native through Machine call",
+    "TypeBox native termination cleanup can cancel a detached event without reviving finally",
+    "TypeBox native termination cancelled cleanup permits its later actual ordinary reason",
+    "TypeBox native termination cancelled cleanup permits its later actual allocation fatal",
+    "TypeBox native termination losing cleanup event leaves the later request unserviced",
+    "TypeBox native termination cached generic fatal survives a later public flag clear",
+    "TypeBox native termination retains ordinary cleanup override and real finally behavior",
+    "TypeBox native termination cached ordinary reason cannot acquire fatal authority during cleanup",
+    "TypeBox native termination returned flagged Error remains DATA through actual finally",
+    "TypeBox native termination explicit planned throw establishes actual generic authority",
+    "TypeBox native termination during captured-slot retirement preempts the planned ordinary throw"
+  ],
+  "peer": "pending VM"
+}

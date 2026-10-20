@@ -1,0 +1,55 @@
+{
+  "status": "source_only_reviewed_compiler_fixture_intake",
+  "recorded_utc": "2026-10-20T13:37:52.918178+00:00",
+  "base_head": "3719e2d1ac7384bbf4bbc3164cb8636a5c3e3b02",
+  "donor_commit": "c782c902b33bdebd5acd0fd4a8d77b0d71c19a5a",
+  "prior_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-oauth-options-fresh-v26-control-20261020-132653\\independent-partial-compile-negative-closure.json",
+    "bytes": 10867,
+    "sha256": "1F871CDF6042466A37CC1EB09BD677A86CF1767F57F5624010B575F2B7786C02"
+  },
+  "packet": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-typebox-v26-parameter-sourceonly-20261020\\source-delta.json",
+    "bytes": 3836,
+    "sha256": "A1E1C641F6F61F7CD3FBE95C3A78035BC59F960E6D904C862A0A1649C7EDC5AA"
+  },
+  "peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-typebox-v26-parameter-sourceonly-20261020\\closure.json",
+    "bytes": 675,
+    "sha256": "624FCE97DC76FD9EEB8C8B8DA927D40D6354AE24D77440CFE99D9046481F8E57"
+  },
+  "exact_forward_inverse": true,
+  "changed_parameter": "Fixture.function plan -> selected_plan",
+  "changed_source_uses": 2,
+  "declarations_preserved": 15,
+  "production_changed": false,
+  "source_paths": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_typebox_execution_termination_test.zig",
+      "bytes": 23064,
+      "sha256": "36BDDC56E44B3677D69A48F00652BD13EB536183C81B5B3ACD577DF33957823A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-typebox-v26-parameter-sourceonly-20261020\\closure.json",
+      "bytes": 675,
+      "sha256": "624FCE97DC76FD9EEB8C8B8DA927D40D6354AE24D77440CFE99D9046481F8E57"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-typebox-v26-parameter-sourceonly-20261020\\original-compile.stderr.log",
+      "bytes": 19182,
+      "sha256": "D1EF335C9833768E747EC8223668F455AF4980F656EEE490A28CCDF800C9050F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-typebox-v26-parameter-sourceonly-20261020\\original-native_typebox_execution_termination_test.zig.txt",
+      "bytes": 23046,
+      "sha256": "077285CC19DBD42222897A7BCDC4EB56B76B1B190288B3F62C01171C7EE7C360"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-typebox-v26-parameter-sourceonly-20261020\\source-delta.json",
+      "bytes": 3836,
+      "sha256": "A1E1C641F6F61F7CD3FBE95C3A78035BC59F960E6D904C862A0A1649C7EDC5AA"
+    }
+  ],
+  "native_execution": false,
+  "qualification": false
+}

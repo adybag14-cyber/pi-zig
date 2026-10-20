@@ -1,0 +1,13 @@
+{
+  "status": "closed source-only finite compiler correction",
+  "production_changed": false,
+  "native_execution": false,
+  "peer": {
+    "agent": "/root/vm_foundation",
+    "result": "CLOSED",
+    "root_sha256": "36BDDC56E44B3677D69A48F00652BD13EB536183C81B5B3ACD577DF33957823A",
+    "packet_sha256": "A1E1C641F6F61F7CD3FBE95C3A78035BC59F960E6D904C862A0A1649C7EDC5AA",
+    "scope": "Actual Fixture.function and full root read. Exact one-block inverse recreates original077285CC; all15 declarations unchanged; the same borrowed Plan pointer reaches createPlanned."
+  },
+  "intake": "Apply the one exact block to current Main root; preserve all surrounding current bytes."
+}

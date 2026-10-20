@@ -111,8 +111,8 @@ const Fixture = struct {
         for (self.probe.reasons) |reason| self.engine.freeValue(reason);
         self.engine.deinit();
     }
-    fn function(self: *Fixture, plan: *const heap.Plan) !c.JSValue {
-        return node.createPlanned(self.engine, "termination-plan", 1, legacy, &.{self.carrier}, true, plan);
+    fn function(self: *Fixture, selected_plan: *const heap.Plan) !c.JSValue {
+        return node.createPlanned(self.engine, "termination-plan", 1, legacy, &.{self.carrier}, true, selected_plan);
     }
     fn call(self: *Fixture, function_value: c.JSValue, args: []const c.JSValue) c.JSValue {
         return c.JS_Call(self.engine.context, function_value, c.pi_js_undefined(), @intCast(args.len), @constCast(args.ptr));
