@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "status": "source-written, split finite peer pending, no native execution",
+  "execution": false,
+  "root": "src/native_node_environment_paths_test.zig",
+  "sha256": "08D46CDD94AB720F6C37C3E8FEBF6E2BAB685D41521508FBE22E9E5EEAE1C48E",
+  "bytes": 20422,
+  "production": "native-path-source-draft.json139252C1",
+  "build": "native-path-build-intake.jsonF6456812",
+  "declarations": [
+    {
+      "index": 1,
+      "name": "native environment paths captures the actual executable independently of caller argv bytes"
+    },
+    {
+      "index": 2,
+      "name": "native environment paths reads the actual native working directory"
+    },
+    {
+      "index": 3,
+      "name": "native environment paths normalizes absolute dot and parent segments without trace"
+    },
+    {
+      "index": 4,
+      "name": "native environment paths selects the rightmost absolute tail and original drive"
+    },
+    {
+      "index": 5,
+      "name": "native environment paths retains real UNC device roots or POSIX backslash bytes"
+    },
+    {
+      "index": 6,
+      "name": "native environment paths selects live supplied drive variables only on Windows"
+    },
+    {
+      "index": 7,
+      "name": "native environment paths SafeGetenv distinguishes an absent value from an empty string"
+    },
+    {
+      "index": 8,
+      "name": "native environment paths SafeGetenv preserves the actual C string key selection"
+    },
+    {
+      "index": 9,
+      "name": "native environment paths copies the live Map value before native trace reentry"
+    },
+    {
+      "index": 10,
+      "name": "native environment paths snapshots trace options before native and JS delegation"
+    },
+    {
+      "index": 11,
+      "name": "native environment paths retains both SafeGetenv string copies through trace only"
+    },
+    {
+      "index": 12,
+      "name": "native environment paths retries a real native allocation with the original new handler"
+    },
+    {
+      "index": 13,
+      "name": "native environment paths preserves actual pending identity under the exhausted JS heap"
+    },
+    {
+      "index": 14,
+      "name": "native environment paths owns its native strings after runtime and caller retirement"
+    },
+    {
+      "index": 15,
+      "name": "native environment paths retains Map through trace and returns a surviving text copy"
+    }
+  ],
+  "review_split": {
+    "sdk": "Path/SafeGetenv/trace selected algorithms and declarations1-10",
+    "vm": "Native lifetime already closed B991; Fixture/observers/11-15 and additive build wiring pending"
+  },
+  "controls": [
+    "Actual uv_exepath and uv_cwd observations; no substitute OS operation or forced fallback.",
+    "Windows and Linux branches use their actual original selected PathResolve body. Tests do not infer common platform semantics.",
+    "SafeGetenv cases require the real credential admission, and fail if the host disallows it. No admission bypass or coverage suppression.",
+    "Trace tests observe only declared synchronous callback selection, order and value snapshots. They do not claim native or JS stack output.",
+    "Native allocation failure uses the existing actual std::new_handler retry adapter and restores the native quota. No JS OOM is substituted.",
+    "Prior ordinary and actually thrown flagged Error identity is retained while native strings operate under real JS heap limit1.",
+    "Placement memory has a separate native entitlement, and test15 releases the caller Map entitlement while original SafeGetenv still holds it."
+  ],
+  "limits": [
+    "No native State, process.env exotic, permission or default RealEnvStore installation.",
+    "No compiler, AST, Node, target execution or qualification.",
+    "OS failure fallback bodies are source-peered; these controls do not force uv_exepath or uv_cwd failure."
+  ]
+}

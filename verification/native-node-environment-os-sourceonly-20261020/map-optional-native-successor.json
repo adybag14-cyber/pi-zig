@@ -1,0 +1,24 @@
+{
+  "status": "Source-only narrow C++ optional-result seam for genuine SafeGetenv; no existing C ABI or selected Map algorithm change",
+  "before_sha256": "D5ECC5EEA1DA575125D39DCF9EA9AF646CB3584CA1D2471EEE9E7DAA2EB701E1",
+  "after_sha256": "A5709621EABDA15F79A6367A21E013B24439F4131E23B493A897384B0196F0E6",
+  "header_sha256": "AFC9532E200F0B37EA894635EF8BA4B75A201ACE1B13E8FCAC2369E59B45E16C",
+  "edits": [
+    {
+      "label": "same real String type shared with native SafeGetenv",
+      "before": "#include \"native_node_standard_allocator.hpp\"",
+      "after": "#include \"native_node_environment_map_internal.hpp\""
+    },
+    {
+      "label": "same exact String specialization under the internal declaration",
+      "before": "using String = std::basic_string<char, std::char_traits<char>,\n                                 pi_node::Allocator<char>>;",
+      "after": "using String = pi_node::EnvironmentString;"
+    },
+    {
+      "label": "actual optional result without an intermediate String",
+      "before": "};\nnamespace {\nclass Retained {",
+      "after": "};\nstd::optional<pi_node::EnvironmentString> pi_node::environmentMapGet(\n    PiNodeEnvironmentMap* map, const char* key) {\n  AllocationScope scope(map->memory_owner);\n  return map->get(key);\n}\nnamespace {\nclass Retained {"
+    }
+  ],
+  "exact_inverse": true
+}

@@ -1,0 +1,100 @@
+{
+  "status": "Source-only native Environment path/SafeGetenv draft; no shared Engine/process edit, build, controls or execution",
+  "source_basis": "Node v24.13.0 def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "files": [
+    {
+      "path": "src/extensions/native_node_environment_paths.cpp",
+      "sha256": "B2E838D216E858D7F3DF31347A71C0AFACD0C4AC507CBE5E5E1191460572A395",
+      "bytes": 15087
+    },
+    {
+      "path": "src/extensions/native_node_environment_paths.h",
+      "sha256": "E504065537C5D669EF793D3F8F65BC9FB31DFB211F96091DC20EA87F42373B31",
+      "bytes": 3358
+    },
+    {
+      "path": "src/extensions/native_node_environment_paths_internal.hpp",
+      "sha256": "1B56668AF3BBF9A165CF384AE8D3CA7EE4ECE466E832D781C124B2691B580DC6",
+      "bytes": 1285
+    }
+  ],
+  "map_successor": {
+    "status": "Source-only narrow C++ optional-result seam for genuine SafeGetenv; no existing C ABI or selected Map algorithm change",
+    "before_sha256": "D5ECC5EEA1DA575125D39DCF9EA9AF646CB3584CA1D2471EEE9E7DAA2EB701E1",
+    "after_sha256": "A5709621EABDA15F79A6367A21E013B24439F4131E23B493A897384B0196F0E6",
+    "header_sha256": "AFC9532E200F0B37EA894635EF8BA4B75A201ACE1B13E8FCAC2369E59B45E16C",
+    "edits": [
+      {
+        "label": "same real String type shared with native SafeGetenv",
+        "before": "#include \"native_node_standard_allocator.hpp\"",
+        "after": "#include \"native_node_environment_map_internal.hpp\""
+      },
+      {
+        "label": "same exact String specialization under the internal declaration",
+        "before": "using String = std::basic_string<char, std::char_traits<char>,\n                                 pi_node::Allocator<char>>;",
+        "after": "using String = pi_node::EnvironmentString;"
+      },
+      {
+        "label": "actual optional result without an intermediate String",
+        "before": "};\nnamespace {\nclass Retained {",
+        "after": "};\nstd::optional<pi_node::EnvironmentString> pi_node::environmentMapGet(\n    PiNodeEnvironmentMap* map, const char* key) {\n  AllocationScope scope(map->memory_owner);\n  return map->get(key);\n}\nnamespace {\nclass Retained {"
+      }
+    ],
+    "exact_inverse": true
+  },
+  "selected_path": {
+    "authority": "verification/cjs-fs-inputs-sourceonly-20261018/authority/path.cc.txt",
+    "full_sha256": "108A39FE48005F5E22C54B5660C056249321A945476B7C74BEC66DB1D2BC514C",
+    "full_bytes": 11604,
+    "start_byte": 161,
+    "end_byte": 8173,
+    "original_sha256": "D31E40F4EA5167BAAD5E94D421B3102EBB097859EE6E6C5A5140A8510443D2EE",
+    "native_sha256": "417582889AA5EEF3CD9AF324C6DA2CCBA43C7DC400BA95B47DD87153127387C2",
+    "type_mappings": [
+      "std::string -> same actual pinned libc++ EnvironmentString with shared Allocator<char>",
+      "std::vector<std::string_view> -> same actual vector with shared Allocator",
+      "Environment* -> borrowed actual native EnvironmentPathAccess",
+      "credentials::SafeGetenv -> selected supplied-map native SafeGetenv"
+    ],
+    "inverse_exact": true,
+    "original": "#ifdef _WIN32\nconstexpr bool IsPathSeparator(const char c) noexcept {\n  return c == '\\\\' || c == '/';\n}\n#else   // POSIX\nconstexpr bool IsPathSeparator(const char c) noexcept {\n  return c == '/';\n}\n#endif  // _WIN32\n\nstd::string NormalizeString(const std::string_view path,\n                            bool allowAboveRoot,\n                            const std::string_view separator) {\n  std::string res;\n  int lastSegmentLength = 0;\n  int lastSlash = -1;\n  int dots = 0;\n  char code = 0;\n  for (size_t i = 0; i <= path.size(); ++i) {\n    if (i < path.size()) {\n      code = path[i];\n    } else if (IsPathSeparator(code)) {\n      break;\n    } else {\n      code = '/';\n    }\n\n    if (IsPathSeparator(code)) {\n      if (lastSlash == static_cast<int>(i - 1) || dots == 1) {\n        // NOOP\n      } else if (dots == 2) {\n        int len = res.length();\n        if (len < 2 || lastSegmentLength != 2 || res[len - 1] != '.' ||\n            res[len - 2] != '.') {\n          if (len > 2) {\n            auto lastSlashIndex = res.find_last_of(separator);\n            if (lastSlashIndex == std::string::npos) {\n              res = \"\";\n              lastSegmentLength = 0;\n            } else {\n              res = res.substr(0, lastSlashIndex);\n              len = res.length();\n              lastSegmentLength = len - 1 - res.find_last_of(separator);\n            }\n            lastSlash = i;\n            dots = 0;\n            continue;\n          } else if (len != 0) {\n            res = \"\";\n            lastSegmentLength = 0;\n            lastSlash = i;\n            dots = 0;\n            continue;\n          }\n        }\n\n        if (allowAboveRoot) {\n          res += res.length() > 0 ? std::string(separator) + \"..\" : \"..\";\n          lastSegmentLength = 2;\n        }\n      } else {\n        if (!res.empty()) {\n          res += std::string(separator) +\n                 std::string(path.substr(lastSlash + 1, i - (lastSlash + 1)));\n        } else {\n          res = path.substr(lastSlash + 1, i - (lastSlash + 1));\n        }\n        lastSegmentLength = i - lastSlash - 1;\n      }\n      lastSlash = i;\n      dots = 0;\n    } else if (code == '.' && dots != -1) {\n      ++dots;\n    } else {\n      dots = -1;\n    }\n  }\n\n  return res;\n}\n\n#ifdef _WIN32\nconstexpr bool IsWindowsDriveLetter(const std::string_view path) noexcept {\n  return path.size() > 2 && IsWindowsDeviceRoot(path[0]) &&\n         (path[1] == ':' && (path[2] == '/' || path[2] == '\\\\'));\n}\nconstexpr bool IsWindowsDeviceRoot(const char c) noexcept {\n  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');\n}\n\nstd::string PathResolve(Environment* env,\n                        const std::vector<std::string_view>& paths) {\n  std::string resolvedDevice = \"\";\n  std::string resolvedTail = \"\";\n  bool resolvedAbsolute = false;\n  const size_t numArgs = paths.size();\n  auto cwd = env->GetCwd(env->exec_path());\n\n  for (int i = numArgs - 1; i >= -1; i--) {\n    std::string path;\n    if (i >= 0) {\n      path = std::string(paths[i]);\n    } else if (resolvedDevice.empty()) {\n      path = cwd;\n    } else {\n      // Windows has the concept of drive-specific current working\n      // directories. If we've resolved a drive letter but not yet an\n      // absolute path, get cwd for that drive, or the process cwd if\n      // the drive cwd is not available. We're sure the device is not\n      // a UNC path at this points, because UNC paths are always absolute.\n      std::string resolvedDevicePath;\n      const std::string envvar = \"=\" + resolvedDevice;\n      credentials::SafeGetenv(envvar.c_str(), &resolvedDevicePath, env);\n      path = resolvedDevicePath.empty() ? cwd : resolvedDevicePath;\n\n      // Verify that a cwd was found and that it actually points\n      // to our drive. If not, default to the drive's root.\n      if (path.empty() ||\n          (ToLower(path.substr(0, 2)) != ToLower(resolvedDevice) &&\n           path[2] == '/')) {\n        path = resolvedDevice + \"\\\\\";\n      }\n    }\n\n    const size_t len = path.length();\n    int rootEnd = 0;\n    std::string device = \"\";\n    bool isAbsolute = false;\n    const char code = path[0];\n\n    // Try to match a root\n    if (len == 1) {\n      if (IsPathSeparator(code)) {\n        // `path` contains just a path separator\n        rootEnd = 1;\n        isAbsolute = true;\n      }\n    } else if (IsPathSeparator(code)) {\n      // Possible UNC root\n\n      // If we started with a separator, we know we at least have an\n      // absolute path of some kind (UNC or otherwise)\n      isAbsolute = true;\n\n      if (IsPathSeparator(path[1])) {\n        // Matched double path separator at beginning\n        size_t j = 2;\n        size_t last = j;\n        // Match 1 or more non-path separators\n        while (j < len && !IsPathSeparator(path[j])) {\n          j++;\n        }\n        if (j < len && j != last) {\n          const std::string firstPart = path.substr(last, j - last);\n          // Matched!\n          last = j;\n          // Match 1 or more path separators\n          while (j < len && IsPathSeparator(path[j])) {\n            j++;\n          }\n          if (j < len && j != last) {\n            // Matched!\n            last = j;\n            // Match 1 or more non-path separators\n            while (j < len && !IsPathSeparator(path[j])) {\n              j++;\n            }\n            if (j == len || j != last) {\n              if (firstPart != \".\" && firstPart != \"?\") {\n                // We matched a UNC root\n                device =\n                    \"\\\\\\\\\" + firstPart + \"\\\\\" + path.substr(last, j - last);\n                rootEnd = j;\n              } else {\n                // We matched a device root (e.g. \\\\\\\\.\\\\PHYSICALDRIVE0)\n                device = \"\\\\\\\\\" + firstPart;\n                rootEnd = 4;\n              }\n            }\n          }\n        }\n      }\n    } else if (IsWindowsDeviceRoot(code) && path[1] == ':') {\n      // Possible device root\n      device = path.substr(0, 2);\n      rootEnd = 2;\n      if (len > 2 && IsPathSeparator(path[2])) {\n        // Treat separator following drive name as an absolute path\n        // indicator\n        isAbsolute = true;\n        rootEnd = 3;\n      }\n    }\n\n    if (!device.empty()) {\n      if (!resolvedDevice.empty()) {\n        if (ToLower(device) != ToLower(resolvedDevice)) {\n          // This path points to another device so it is not applicable\n          continue;\n        }\n      } else {\n        resolvedDevice = device;\n      }\n    }\n\n    if (resolvedAbsolute) {\n      if (!resolvedDevice.empty()) {\n        break;\n      }\n    } else {\n      resolvedTail = path.substr(rootEnd) + \"\\\\\" + resolvedTail;\n      resolvedAbsolute = isAbsolute;\n      if (isAbsolute && !resolvedDevice.empty()) {\n        break;\n      }\n    }\n  }\n\n  // At this point the path should be resolved to a full absolute path,\n  // but handle relative paths to be safe (might happen when process.cwd()\n  // fails)\n\n  // Normalize the tail path\n  resolvedTail = NormalizeString(resolvedTail, !resolvedAbsolute, \"\\\\\");\n\n  if (resolvedAbsolute) {\n    return resolvedDevice + \"\\\\\" + resolvedTail;\n  }\n\n  if (!resolvedDevice.empty() || !resolvedTail.empty()) {\n    return resolvedDevice + resolvedTail;\n  }\n\n  return \".\";\n}\n#else   // _WIN32\nstd::string PathResolve(Environment* env,\n                        const std::vector<std::string_view>& paths) {\n  std::string resolvedPath;\n  bool resolvedAbsolute = false;\n  auto cwd = env->GetCwd(env->exec_path());\n  const size_t numArgs = paths.size();\n\n  for (int i = numArgs - 1; i >= -1 && !resolvedAbsolute; i--) {\n    const std::string& path = (i >= 0) ? std::string(paths[i]) : cwd;\n\n    if (!path.empty()) {\n      resolvedPath = std::string(path) + \"/\" + resolvedPath;\n\n      if (path.front() == '/') {\n        resolvedAbsolute = true;\n        break;\n      }\n    }\n  }\n\n  // Normalize the path\n  auto normalizedPath = NormalizeString(resolvedPath, !resolvedAbsolute, \"/\");\n\n  if (resolvedAbsolute) {\n    return \"/\" + normalizedPath;\n  }\n\n  if (normalizedPath.empty()) {\n    return \".\";\n  }\n\n  return normalizedPath;\n}\n#endif  // _WIN32\n"
+  },
+  "environment_source": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/verification/native-node-callback-scope-sourceonly-20261019/authority/src_env.cc.txt",
+    "full_sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9",
+    "read_prefix": {
+      "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/verification/native-node-callback-scope-sourceonly-20261019/authority/src_env.cc.txt",
+      "hash": "3f85400b2811b69739638f85dc47764bd731621a0b4cec7c53691214428b7d5f",
+      "size": 84987,
+      "read": 34000
+    },
+    "get_cwd": "std::string Environment::GetCwd(const std::string& exec_path) {\n  char cwd[PATH_MAX_BYTES];\n  size_t size = PATH_MAX_BYTES;\n\n  if (uv_cwd(cwd, &size) == 0) {\n    CHECK_GT(size, 0);\n    return cwd;\n  }\n\n  // This can fail if the cwd is deleted. In that case, fall back to\n  // exec_path.\n  return exec_path.substr(0, exec_path.find_last_of(kPathSeparator));\n}\n",
+    "get_exec_path": "std::string Environment::GetExecPath(const std::vector<std::string>& argv) {\n  char exec_path_buf[2 * PATH_MAX];\n  size_t exec_path_len = sizeof(exec_path_buf);\n  std::string exec_path;\n  if (uv_exepath(exec_path_buf, &exec_path_len) == 0) {\n    exec_path = std::string(exec_path_buf, exec_path_len);\n  } else if (!argv.empty()) {\n    exec_path = argv[0];\n  }\n\n  // On OpenBSD process.execPath will be relative unless we\n  // get the full path before process.execPath is used.\n#if defined(__OpenBSD__)\n  uv_fs_t req;\n  req.ptr = nullptr;\n  if (0 ==\n      uv_fs_realpath(nullptr, &req, exec_path.c_str(), nullptr)) {\n    CHECK_NOT_NULL(req.ptr);\n    exec_path = std::string(static_cast<char*>(req.ptr));\n  }\n  uv_fs_req_cleanup(&req);\n#endif\n\n  return exec_path;\n}\n",
+    "check_gt_line": 716
+  },
+  "credentials_source": {
+    "path": "authority/acquisition-and-selected-originals.json",
+    "full_sha256": "94D68B05ACF482EAF7B2FDE57070F3C0F205E883E5CE5C0170B3E5AD424B0B2E",
+    "body": "bool SafeGetenv(const char* key, std::string* text, Environment* env) {\n#if !defined(__CloudABI__) && !defined(_WIN32)\n#if defined(__linux__)\n  if ((!HasOnly(CAP_NET_BIND_SERVICE) && linux_at_secure()) ||\n      getuid() != geteuid() || getgid() != getegid())\n#else\n  if (linux_at_secure() || getuid() != geteuid() || getgid() != getegid())\n#endif\n    return false;\n#endif\n\n  // Fallback to system environment which reads the real environment variable\n  // through uv_os_getenv.\n  std::shared_ptr<KVStore> env_vars;\n  if (env == nullptr) {\n    env_vars = per_process::system_environment;\n  } else {\n    env_vars = env->env_vars();\n  }\n\n  std::optional<std::string> value = env_vars->Get(key);\n\n  bool has_env = value.has_value();\n  if (has_env) {\n    *text = value.value();\n  }\n\n  TraceEnvVar(env, \"get\", key);\n\n  return has_env;\n}\n",
+    "actual_admission_c": "C50638D4037261A4F0C8F1AFE11BFBB184EB60F7D10CF621E4CAC0B77B8E2596"
+  },
+  "native_boundaries": [
+    "Actual argv-copy then GetExecPath run inside one placement object. Its native size/alignment are reported for the later single State tail. argv and exec-path own the same real String/vector blocks, no JS/Engine pointer.",
+    "Incoming embedding spans are first materialized as an explicit native argument vector. This adapter is outside the selected Node Environment constructor slice; full startup prelude allocation parity is not claimed.",
+    "PathResolve reads real native GetCwd before its original argument loop. Borrowed views are materialized in one real vector, and that vector retires before the result visitor.",
+    "GetCwd uses the original fixed platform buffer, physical uv_cwd, actual CHECK size>0 and captured exec-path fallback. GetExecPath uses uv_exepath and original argv[0] fallback; OpenBSD is excluded by the Windows/Linux compile admission.",
+    "SafeGetenv executes the existing exact credential admission before retaining the actual supplied Map. Its real optional copy stays alive through native String assignment and Trace, then retires before the local Map entitlement.",
+    "The C++ internal Map accessor returns the genuine optional by value under the Map's original allocation domain; it adds no intermediate String and does not change any existing C ABI or algorithm.",
+    "TraceEnvVar's const-char overload retains original fprintf, then native stack, then JS stack ordering. Selected native stack callbacks are explicit required borrowed operations, not a tracing-category stub or noop.",
+    "Pure strings/path state can outlive an Engine only through their native block domains and host-provided storage lifetime. Native C++ allocation/new_handler failure remains separate from guest JS completion."
+  ],
+  "remaining": [
+    "Root nonterminal native/JS stack output operation and actual trace option admission",
+    "Native State construction and lifetime, Engine/process proposal including bootstrap marker",
+    "Filesystem Permission/RealEnvStore and process.env interceptors",
+    "Dedicated native path controls and additive library membership",
+    "No complete Node startup/permission graph or native byte-layout equality claim"
+  ],
+  "execution": false,
+  "trace_snapshot": "The three options and native callback operands are copied before fprintf/native stack/JS stack, matching GetTraceEnvVarOptions's by-value result."
+}

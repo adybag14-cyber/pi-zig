@@ -1,0 +1,83 @@
+{
+  "status": "CLOSED: finite source-only native Environment paths/SafeGetenv algorithm and controls 1–10 peer",
+  "reviewer": "sdk_owners",
+  "source_basis": "Node v24.13.0 def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "files": [
+    {
+      "path": "src/extensions/native_node_environment_paths.cpp",
+      "sha256": "B2E838D216E858D7F3DF31347A71C0AFACD0C4AC507CBE5E5E1191460572A395",
+      "bytes": 15087
+    },
+    {
+      "path": "src/extensions/native_node_environment_paths.h",
+      "sha256": "E504065537C5D669EF793D3F8F65BC9FB31DFB211F96091DC20EA87F42373B31",
+      "bytes": 3358
+    },
+    {
+      "path": "src/extensions/native_node_environment_paths_internal.hpp",
+      "sha256": "1B56668AF3BBF9A165CF384AE8D3CA7EE4ECE466E832D781C124B2691B580DC6",
+      "bytes": 1285
+    },
+    {
+      "path": "src/extensions/native_node_environment_map.cpp",
+      "sha256": "A5709621EABDA15F79A6367A21E013B24439F4131E23B493A897384B0196F0E6",
+      "bytes": 8330
+    },
+    {
+      "path": "src/extensions/native_node_environment_map_internal.hpp",
+      "sha256": "AFC9532E200F0B37EA894635EF8BA4B75A201ACE1B13E8FCAC2369E59B45E16C",
+      "bytes": 874
+    },
+    {
+      "path": "src/native_node_environment_paths_test.zig",
+      "sha256": "08D46CDD94AB720F6C37C3E8FEBF6E2BAB685D41521508FBE22E9E5EEAE1C48E",
+      "bytes": 20422
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/native-path-source-draft.json",
+      "sha256": "139252C1201433C1D357E9EEDE817AC42D3D9DB5DBB16FBAAA795C0540E28491",
+      "bytes": 16779
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/map-optional-native-successor.json",
+      "sha256": "679031C874852DEE0760B8347409041FBCD31EE87B8DD7AD90DAA868CF72AC30",
+      "bytes": 1342
+    },
+    {
+      "path": "verification/cjs-fs-inputs-sourceonly-20261018/authority/path.cc.txt",
+      "sha256": "108A39FE48005F5E22C54B5660C056249321A945476B7C74BEC66DB1D2BC514C",
+      "bytes": 11604
+    },
+    {
+      "path": "verification/cjs-fs-inputs-sourceonly-20261018/authority/util-inl.h.txt",
+      "sha256": "8979B5C3115BC3D1C9478910088944D3761130E7D7A0ED8ED7452FCEC5870E83",
+      "bytes": 27509
+    },
+    {
+      "path": "verification/native-node-environment-os-sourceonly-20261020/authority/node_env_var.v24.13.cc",
+      "sha256": "4872E9CAF5AEE8F7ABD73BE4F79FA5B73793F5D09DFCED63001A022D92AD2AF8",
+      "bytes": 19557
+    }
+  ],
+  "exact_checks": {
+    "selected_path_authority": "Full 108A39FE bytes 161..8173 equal the packet original byte-for-byte; original selected span D31E40F4EA5167BAAD5E94D421B3102EBB097859EE6E6C5A5140A8510443D2EE.",
+    "selected_path_body": "Only the four declared type/name substitutions produce 417582889AA5EEF3CD9AF324C6DA2CCBA43C7DC400BA95B47DD87153127387C2, present exactly once in current B2E838D2.",
+    "map_optional_inverse": "Each of three exact successor blocks occurs uniquely; their reverse yields D5ECC5EEA1DA575125D39DCF9EA9AF646CB3584CA1D2471EEE9E7DAA2EB701E1.",
+    "to_lower": "Read complete retained util-inl.h 8979B5C3, including actual char std::tolower(c, std::locale::classic()) and sized String/cbegin/cend loop; selected native body preserves them."
+  },
+  "scope": [
+    "Actual PathResolve/NormalizeString Windows and POSIX branches, right-to-left input selection, drive/UNC/device handling, native current-directory selection and original normalization expression order.",
+    "Actual GetExecPath and GetCwd use native libuv, copied argv-before-exec path construction, selected Windows/Linux buffers, captured exec-path fallback and exact CHECK site.",
+    "Actual SafeGetenv credential gate precedes the retained Map; real optional copy survives text assignment and const-char Trace, then retires before the local Map entitlement.",
+    "Trace takes the original by-value option snapshot before fprintf/native/JS delegation. The selected native stack callbacks are explicit required operations; no stack formatting/output qualification is made.",
+    "Internal optional Map accessor returns the same real String specialization by value under the actual Map memory owner; existing C ABI and Map operations remain unchanged.",
+    "Controls 1–10 plus path/Map/Trace observers: real uv_exepath/cwd, absolute/UNC/device/order, live drive map, absent/empty, C-string selection, copy-before-trace mutation and trace snapshot are causal."
+  ],
+  "limits": [
+    "VM separately owns Fixture/native placement, allocation retry and controls 11–15.",
+    "This receipt does not supply native State/Engine/process installation, RealEnvStore, filesystem permissions or original stack-output operations.",
+    "Incoming borrowed-view/native-vector materialization and the inline native storage are explicit adapter boundaries; full startup allocation-layout parity is not claimed.",
+    "No compilation, test, Node, native probe or runtime execution was performed."
+  ],
+  "execution": false
+}

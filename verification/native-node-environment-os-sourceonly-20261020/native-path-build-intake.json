@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "status": "source-only additive build proposal; no shared build/helper file edited",
+  "execution": false,
+  "prerequisite": {
+    "commit": "78b8ddf58c9b101a2afd4948ff2ed8f1ded7de63",
+    "shared_memory_proposal": "0427BE866F23AFF75EC6083F823C4A1A9EE1A29A033EB71A9092E651C3507C80",
+    "map_target_proposal": "8BEFCB2A9D057907FE20B8C20640A98E61AED38BD80FE0392E8DB8D09B726B6B"
+  },
+  "edits": [
+    {
+      "path": "tools/build_native_node_network.zig",
+      "before_sha256": "FBDF5BCCA7F09238B9A2FE3C599092AE74AC76E44EA6E2256109EA407F743412",
+      "after_sha256": "8BC887989E8A704530046614F8270160BDF280E4F5BD8131FC1ED163C7C791FF",
+      "before": "        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n",
+      "after": "        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_paths.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n",
+      "added_lines": 4
+    },
+    {
+      "path": "build.zig",
+      "before_sha256": "2106ACFC515CB043AA2C4A721856293203C7549B98BA1C7ABC33BFC87CAFC67D",
+      "after_sha256": "A08F00A3E7D93D3C8F3366959DB294EA6DC39783722BC81BE953462086DE2B99",
+      "before": "        b.step(\"build-native-node-environment-map\", \"Install native MapKVStore allocation and lifetime controls without execution\").dependOn(&b.addInstallArtifact(native_environment_map_tests, .{}).step);\n",
+      "after": "        b.step(\"build-native-node-environment-map\", \"Install native MapKVStore allocation and lifetime controls without execution\").dependOn(&b.addInstallArtifact(native_environment_map_tests, .{}).step);\n        const native_environment_paths_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_environment_paths_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native environment paths\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_environment_paths_tests.root_module, quickjs, sqlite_lib_dir);\n        native_environment_paths_tests.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        native_environment_paths_tests.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map_test_support.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        b.step(\"build-native-node-environment-paths\", \"Install native Environment path and SafeGetenv controls without execution\").dependOn(&b.addInstallArtifact(native_environment_paths_tests, .{}).step);\n",
+      "added_lines": 11
+    }
+  ],
+  "root": {
+    "path": "src/native_node_environment_paths_test.zig",
+    "sha256": "08D46CDD94AB720F6C37C3E8FEBF6E2BAB685D41521508FBE22E9E5EEAE1C48E",
+    "declarations": 15,
+    "filter": "native environment paths",
+    "target": "build-native-node-environment-paths"
+  },
+  "scope": [
+    "The existing native-memory guard admits the selected 64-bit Windows/Linux native C++ path leaf.",
+    "One new production translation unit is compiled in the same network library and consumes the same native-memory Compile/TLS instance as Map and parser.",
+    "The selected options admission and native CHECK dependencies are existing network members. The new header imports no VM callback implementation.",
+    "The target adds only the existing serial native retry/reference adapter as test support plus actual uv/include, and links the existing QuickJS graph.",
+    "No run step, compiler execution, default process.env store, permission State, native trace output or shared Engine/process installation is claimed."
+  ],
+  "validation": {
+    "forward_unique": true,
+    "reverse_byte_exact": true,
+    "common_graph_membership": "No existing C source, link, flag or source admission removed."
+  }
+}

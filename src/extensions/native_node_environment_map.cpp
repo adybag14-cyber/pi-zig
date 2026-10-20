@@ -2,7 +2,7 @@
 // Selected Node v24.13 MapKVStore expressions, using the actual pinned native
 // C++ string/hash-table implementation and independently charged allocations.
 #include "native_node_environment_map.h"
-#include "native_node_standard_allocator.hpp"
+#include "native_node_environment_map_internal.hpp"
 #include "native_node_check_failure.h"
 #include "uv.h"
 #include <atomic>
@@ -13,8 +13,7 @@
 #include <utility>
 
 namespace {
-using String = std::basic_string<char, std::char_traits<char>,
-                                 pi_node::Allocator<char>>;
+using String = pi_node::EnvironmentString;
 using Entry = std::pair<const String, String>;
 using Entries = std::unordered_map<String, String, std::hash<String>,
     std::equal_to<String>, pi_node::Allocator<Entry>>;
@@ -78,6 +77,11 @@ struct PiNodeEnvironmentMap {
     return it == entries.end() ? std::nullopt : std::make_optional(it->second);
   }
 };
+std::optional<pi_node::EnvironmentString> pi_node::environmentMapGet(
+    PiNodeEnvironmentMap* map, const char* key) {
+  AllocationScope scope(map->memory_owner);
+  return map->get(key);
+}
 namespace {
 class Retained {
  public:
