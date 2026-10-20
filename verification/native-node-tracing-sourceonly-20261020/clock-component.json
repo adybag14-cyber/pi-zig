@@ -1,0 +1,139 @@
+{
+  "schema": "native-tracing-clock-source-component-v1",
+  "status": "source_written_pending_independent_algorithm_review_and_fatal_dependency",
+  "recorded_utc": "2026-10-20T17:31:22.693883+00:00",
+  "source_only": true,
+  "main_modified": false,
+  "execution_performed": false,
+  "qualification": false,
+  "production": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.cpp",
+      "bytes": 12919,
+      "sha256": "583189553E80B20206CEB71CC4EE319710C4F3E8724F42693999B4CC86247F9F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.hpp",
+      "bytes": 944,
+      "sha256": "C6A94D7D8818D132C7C6194F146DE8177ABE93BB7C273F0011033444D5C3125E"
+    }
+  ],
+  "original_source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\platform-source-proof.json",
+    "bytes": 52398,
+    "sha256": "08A6757A27003AF50CCBFB21AC287CFC482C83111B22323BBF8878F840BAE12A"
+  },
+  "originals": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\platform-continuation\\deps__v8__src__base__platform__platform.cc.txt",
+      "bytes": 802,
+      "sha256": "98A6CAF579D2BC2AABBEDBAFD51815B59E0D6E15EAD78B7522BA4BAA825AD7F8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\platform-continuation\\deps__v8__src__base__platform__platform-win32.cc.txt",
+      "bytes": 64545,
+      "sha256": "FE7717174D74251A41DA6C5F69C0DA733D7F760FDAA40C87E7D5397CFD392086"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\platform-continuation\\deps__v8__src__base__platform__platform-posix.cc.txt",
+      "bytes": 45116,
+      "sha256": "AB02C74EE5ACC2E517E6452E9E7CCF5BE2C72140BF70BFDC2CA7626378C84A11"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\platform-continuation\\deps__v8__src__base__platform__time.cc.txt",
+      "bytes": 31145,
+      "sha256": "177CF687E799F6B9C6F7C5AA53FE673604A5E1A6563122ACA5ABAAD5AC04C275"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\platform-continuation\\deps__v8__src__base__platform__time.h.txt",
+      "bytes": 17884,
+      "sha256": "782B33C096706ED08A6F34A71F608AA88B42E942103159F6408DD4E48B247CDA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\platform-continuation\\cpu.cc",
+      "bytes": 30468,
+      "sha256": "B31A50162F5AAD6B1518F6884506A5B4F2FC7F19A0EB2ECD14D5E28BE6176F87"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\platform-continuation\\cpu.h",
+      "bytes": 6502,
+      "sha256": "49B1757170E78C5B24EB86635D65F9753B99C793B97A595479D7806EF56C509D"
+    }
+  ],
+  "original_revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "original_operations": [
+    {
+      "name": "TID cached once in actual thread_local",
+      "sha256": "64C2C75E923F833596107D33FFECE771F6E4E6A76855B243053B03846B62B757",
+      "start_line": 1,
+      "end_line_exclusive": 34
+    },
+    {
+      "name": "Windows PID and TID internal",
+      "sha256": "7334F257DBB2008D134D26C03ED8F0CEEC77D2BE4749EF4A453EC8719C512D9D",
+      "start_line": 539,
+      "end_line_exclusive": 547
+    },
+    {
+      "name": "POSIX PID and TID internal",
+      "sha256": "3DD15214D38AD7510128BE029BC4884707279018117984E23BC941BF356F3D13",
+      "start_line": 855,
+      "end_line_exclusive": 879
+    },
+    {
+      "name": "Darwin/Fuchsia/POSIX native clock helpers",
+      "sha256": "6DD0B9502483E2FA8B493EC3EF5FD1F47AEC925DAF26BABCB1386668B7924CB4",
+      "start_line": 51,
+      "end_line_exclusive": 136
+    },
+    {
+      "name": "Windows raw QPC helper",
+      "sha256": "E00C9D580B79AE5EE77856C3A0304A201FCF4CDECA109B3DF8879D89516AAEB5",
+      "start_line": 167,
+      "end_line_exclusive": 180
+    },
+    {
+      "name": "TimeTicks native platform selection and conversion",
+      "sha256": "177F24B26213519288D315E3FED3A72ADBF1C6E32AD5C04DB1465AA083FBEE4C",
+      "start_line": 510,
+      "end_line_exclusive": 777
+    },
+    {
+      "name": "ThreadTicks actual support/calibration/Now",
+      "sha256": "0E361A1E4ABF96ABED76E25BA87952C0577E400EBF81EE915440CAD23E38D113",
+      "start_line": 779,
+      "end_line_exclusive": 928
+    },
+    {
+      "name": "ThreadTicks public contract",
+      "sha256": "D9CC92AD15FA342580625322A312D49F11EA7D0D3B59864F3C692D96DAE89A12",
+      "start_line": 457,
+      "end_line_exclusive": 521
+    }
+  ],
+  "selections": [
+    "CurrentProcessId and CurrentThreadId project actual native identifiers with the original int conversion; CurrentThreadId alone caches its original platform observation in static thread_local int.",
+    "Native Windows/Linux/Android/Darwin are the intended source selections. Other V8-specific AIX/Fuchsia/Solaris/Starboard branches are not claimed by this component.",
+    "Trace-consumed TimeTicks::Now and ThreadTicks::Now return their signed microsecond internal value directly. FromMicroseconds(x) and ToInternalValue are representation wrappers; the original zero TimeTicks plus TimeDelta saturating addition is exactly x for every already represented int64.",
+    "Windows QPC initialization probes performance frequency and the real invariant-TSC predicate in the original order. Low-resolution fallback preserves the original last-top-byte/16-bit-rollover state and atomic CAS publication.",
+    "The exact original time.h QPC boundary literal 0x8637BD05AF7 is retained, including the strict-less-than branch. No floor-threshold approximation remains.",
+    "The invariant-TSC field is specialized from CPU(): original leaf0 and leaf1 hypervisor gate, extended-leaf bound, invariant bit and exact Microsoft Hyper-V exception. Unused CPU fields and their unrelated feature probes are absent. Original Windows ARM64 field is true.",
+    "Windows x86/x64 CPU ticks use actual QueryThreadCycleTime divided by the independently measured RDTSC frequency, not QueryPerformanceFrequency. Initial evaluation under50ms returns zero. Raising/restoring current thread priority, initial readings and later calibration order are retained.",
+    "Windows ARM64 preserves the original user FILETIME-only CPU observation; memcpy reproduces the original bit_cast representation operation before dividing100ns units by10.",
+    "Darwin retains original mach_timebase_info initialization/division order and sums actual thread_info user+system microseconds. Linux/Android retain real clock_gettime, the original upper-second check and wall-clock plus1.",
+    "Release DCHECK expressions remain unevaluated; no IsSupported or waiting call was added to the controller CPU-sampling path. The caller must guard explicit WaitForCpuTimestampInitializationNative with CpuTimestampSupportedNative, matching ThreadTicks public contract."
+  ],
+  "review_notes": [
+    "No source generator, compiler, AST, formatter, Node, target or runtime process was executed. Static Python work only copied known immutable originals, verified hashes and recorded this packet.",
+    "The prior parent expectation125 for unrelated combined controls was corrected in its separate build peer; it does not alter this component or any native observation.",
+    "No shared Main, Engine, QuickJS, diagnostic, controller, Agent or build file was edited."
+  ],
+  "required_remaining": [
+    "Independent finite algorithm and ownership review of this new native clock specialization, including explicit removal of unrelated CPU-field probes.",
+    "Actual V8 ClockCheckFailure and Unreachable fatal diagnostic linkage. These declarations have no noop, guest exception, false-success or catchable fallback implementation.",
+    "Actual Abseil V8Mutex and platform Recorder admission, native trace API and startup composition remain separate required owners.",
+    "Native clock/worker/concurrent observations and negative clock diagnostics require separate meaningful controls, build/link and Root-owned runtime validation.",
+    "The original Windows timestamp function-pointer/frequency and TSC-frequency publication protocol is retained, including its source concurrency assumptions; no stronger thread-race qualification is claimed.",
+    "No whole-process/foreground clock, cross-platform, controller or application qualification is established."
+  ]
+}

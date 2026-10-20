@@ -1,0 +1,85 @@
+{
+  "schema": "native-tracing-clock-operand-successor-v1",
+  "status": "source_written_pending_independent_review_and_root_fatal_linkage",
+  "recorded_utc": "2026-10-20T17:40:59.721215+00:00",
+  "source_only": true,
+  "execution_performed": false,
+  "qualification": false,
+  "main_modified": false,
+  "previous_component": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\clock-component.json",
+    "bytes": 9125,
+    "sha256": "21EAE9DAAC273EA8B711270C7A9CB55E9D0494C1C0146CA11781BB3AC895AF2A"
+  },
+  "previous_production_snapshots": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\drafts\\clock-before-operand-diagnostics\\native_node_tracing_clock.cpp",
+      "bytes": 12919,
+      "sha256": "583189553E80B20206CEB71CC4EE319710C4F3E8724F42693999B4CC86247F9F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\drafts\\clock-before-operand-diagnostics\\native_node_tracing_clock.hpp",
+      "bytes": 944,
+      "sha256": "C6A94D7D8818D132C7C6194F146DE8177ABE93BB7C273F0011033444D5C3125E"
+    }
+  ],
+  "production": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.cpp",
+      "bytes": 13664,
+      "sha256": "E0408BD2D94D728FACD1E2B36C7DD831BEF49E12BF53C52FE60D602D001B0064"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.hpp",
+      "bytes": 1236,
+      "sha256": "F7AE55D36E54D64AC7FA36CF6F64D06A631889213EE0E43998F8701004338E98"
+    }
+  ],
+  "shared_api": {
+    "namespace": "pi_node::tracing",
+    "name": "ClockCheckFailureOperands",
+    "signature": "[[noreturn]] void ClockCheckFailureOperands(const char* file, int line, const char* expression, int64_t lhs, int64_t rhs) noexcept",
+    "compatibility_declarations_unchanged": [
+      "ClockCheckFailure",
+      "Unreachable"
+    ],
+    "implementation_owner": "Root provider-af worktree, exact original V8 diagnostics; no Node assertion substitution"
+  },
+  "changes": [
+    {
+      "before": "PI_TRACE_CLOCK_CHECK(kr == KERN_SUCCESS);",
+      "after": "PI_TRACE_CLOCK_CHECK_OP(==, kr, KERN_SUCCESS);"
+    },
+    {
+      "before": "PI_TRACE_CLOCK_CHECK(thread_info_data.user_time.seconds <=\n      std::numeric_limits<int64_t>::max() -\n          thread_info_data.system_time.seconds);",
+      "after": "PI_TRACE_CLOCK_CHECK_OP(<=, thread_info_data.user_time.seconds,\n      std::numeric_limits<int64_t>::max() -\n          thread_info_data.system_time.seconds);"
+    },
+    {
+      "before": "PI_TRACE_CLOCK_CHECK(kSecondsLimit > seconds);",
+      "after": "PI_TRACE_CLOCK_CHECK_OP(>, kSecondsLimit, seconds);"
+    },
+    {
+      "before": "PI_TRACE_CLOCK_CHECK(kSecondsLimit > ts.tv_sec);",
+      "after": "PI_TRACE_CLOCK_CHECK_OP(>, kSecondsLimit, ts.tv_sec);"
+    }
+  ],
+  "macro": {
+    "before": "#define PI_TRACE_CLOCK_CHECK(expr) \\\n  do { \\\n    if (!(expr)) [[unlikely]] \\\n      ::pi_node::tracing::ClockCheckFailure(__FILE__, __LINE__, #expr); \\\n  } while (0)\n\n",
+    "after": "#define PI_TRACE_CLOCK_CHECK_OP(op, lhs, rhs) \\\n  do { \\\n    const auto pi_trace_clock_lhs = (lhs); \\\n    const auto pi_trace_clock_rhs = (rhs); \\\n    static_assert(std::is_integral_v<decltype(pi_trace_clock_lhs)> && \\\n                  std::is_signed_v<decltype(pi_trace_clock_lhs)> && \\\n                  sizeof(pi_trace_clock_lhs) <= sizeof(int64_t)); \\\n    static_assert(std::is_integral_v<decltype(pi_trace_clock_rhs)> && \\\n                  std::is_signed_v<decltype(pi_trace_clock_rhs)> && \\\n                  sizeof(pi_trace_clock_rhs) <= sizeof(int64_t)); \\\n    if (!(pi_trace_clock_lhs op pi_trace_clock_rhs)) [[unlikely]] \\\n      ::pi_node::tracing::ClockCheckFailureOperands( \\\n          __FILE__, __LINE__, #lhs \" \" #op \" \" #rhs, \\\n          static_cast<int64_t>(pi_trace_clock_lhs), \\\n          static_cast<int64_t>(pi_trace_clock_rhs)); \\\n  } while (0)\n\n"
+  },
+  "semantic_proof": [
+    "Each original lhs and rhs occurs exactly once in its value-capture initializer. Comparison uses those captured original native operand types; only failure arguments convert to signed int64.",
+    "The selected original operands have no side effects or shared reads: they are local scalar values, constants, or fields of the completed local thread_info/timespec native result.",
+    "Every macro instantiation includes compile-time signed-integral and width guards, preventing a wider or unsigned platform substitution from silently losing failure values.",
+    "Darwin kr/kern_return_t and KERN_SUCCESS are signed native int; Mach thread_info seconds are signed integer_t, and max-minus-system-seconds is int64. The final seconds limit and accumulated seconds are int64.",
+    "POSIX CLOCK_MONOTONIC/CLOCK_THREAD_CPUTIME_ID timespec.tv_sec uses signed native time_t in the intended Linux/Android/Darwin selections; Darwin uses its separate helper. No CHECK_OP clock site is active on Windows.",
+    "Four original CHECK_OPs map respectively to ==, <=, >, >. Stringification produces original lhs op rhs expression form; Root chooses debug operand formatting versus release expression-only diagnostics.",
+    "No QPC/TSC/timestamp/PID/TID algorithm, diagnostic declaration, controller call order or native allocation owner changed."
+  ],
+  "remaining": [
+    "Independent source review",
+    "Root V8 fatal implementation plus production linkage",
+    "Actual native mutex, public API/bootstrap/observer/Recorder dependencies",
+    "Meaningful compiled and executed clock controls under Root resource admission"
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "source_only": true,
+  "native_execution": false,
+  "compiler_executed": false,
+  "main_modified": false,
+  "build_admission": "none",
+  "runtime_qualification": false,
+  "recorded_utc": "2026-10-20T18:00:46.302619+00:00",
+  "parent_head": "8fc2313c9ce5176802a19922b10f30fbd1b53dab",
+  "schema": "reviewed-native-tracing-clock-source-unit-v1",
+  "status": "finite_native_clock_algorithm_source_peer_complete",
+  "production": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.cpp",
+      "bytes": 13664,
+      "sha256": "E0408BD2D94D728FACD1E2B36C7DD831BEF49E12BF53C52FE60D602D001B0064"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\src\\extensions\\native_node_tracing_clock.hpp",
+      "bytes": 1236,
+      "sha256": "F7AE55D36E54D64AC7FA36CF6F64D06A631889213EE0E43998F8701004338E98"
+    }
+  ],
+  "component": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\clock-operands-component.json",
+    "bytes": 5948,
+    "sha256": "D9EF572A4F21C925FC332ACB0E2A99F4F9201916EFBD8B9824EACC00DF51734E"
+  },
+  "initial_component": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\clock-component.json",
+    "bytes": 9125,
+    "sha256": "21EAE9DAAC273EA8B711270C7A9CB55E9D0494C1C0146CA11781BB3AC895AF2A"
+  },
+  "peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\independent-clock-source-peer.json",
+    "bytes": 6856,
+    "sha256": "89FAAE29B3A9BFA537D3DAAC2D2C00D97C87D3952BBE25A531CE85BDD47BBF78"
+  },
+  "license": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\authority\\V8-LICENSE.txt",
+    "bytes": 3093,
+    "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509"
+  },
+  "before_operand_source_snapshots": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\drafts\\clock-before-operand-diagnostics\\native_node_tracing_clock.cpp",
+      "bytes": 12919,
+      "sha256": "583189553E80B20206CEB71CC4EE319710C4F3E8724F42693999B4CC86247F9F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-tracing-sourceonly-20261020\\drafts\\clock-before-operand-diagnostics\\native_node_tracing_clock.hpp",
+      "bytes": 944,
+      "sha256": "C6A94D7D8818D132C7C6194F146DE8177ABE93BB7C273F0011033444D5C3125E"
+    }
+  ],
+  "acceptance": "Independent no-blocker source peer for the declared Windows/Linux/Android/Darwin release algorithm and exact operand successor. The source packet does not claim compiler or runtime success.",
+  "required_composition": [
+    "Root exact V8 ClockCheckFailureOperands/Unreachable failure owner and native production linkage",
+    "Real Abseil/V8 mutex, Agent/Recorder/bootstrap consumers",
+    "Meaningful native clock/worker/concurrency/failure controls and Root-owned build/runtime"
+  ]
+}
