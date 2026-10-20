@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "status": "source-only standalone process probes; separate future grant required",
+  "parent_main": "d6475b2654d1ad6e8ef30487c0a9eb26a9d69a26",
+  "donor": "2cfb9ceb4d8ce41a1e120919150493ff39744316",
+  "original_base": "098b0f565e38b1af6b970196424b3e4e4bdbd19e",
+  "source_sha256": "027F034F27FBDB27545BEACE1720606618722E889FBAE6627D71A1E571837315",
+  "build_before_sha256": "2C13F0DA723F3C65F8FA8A8336A79B8070A9937BD8720339BA89275CD5115B5C",
+  "build_after_sha256": "8746560BF637E89180B4CFCCF80191CDF61B51B900E6242FCF6170E20FE52385",
+  "unchanged_exact_added_text": true,
+  "cases": 10,
+  "controls_success": 2,
+  "expected_exit_negative": 8,
+  "peer_closed": true,
+  "ordinary_Zig_protocol_group": false,
+  "runtime_started": false,
+  "qualified": false
+}

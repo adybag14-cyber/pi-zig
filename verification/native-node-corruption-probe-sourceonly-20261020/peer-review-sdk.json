@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "recorded_by": "Root from sdk_owners source-peer message",
+  "recorded_utc": "2026-10-20T10:49:47.318861+00:00",
+  "status": "source peer closed; no execution",
+  "root_sha256": "027F034F27FBDB27545BEACE1720606618722E889FBAE6627D71A1E571837315",
+  "build_intake_sha256": "08954EA23C650E5B6F06A40CD0A515912E101184CAB550DF70D7E94C06E1993E",
+  "reviewer": "sdk_owners",
+  "finding": "Actual Main popAsyncContext/FFB8 native dispatcher/options parser reviewed. Environment attaches to cleanup before fallible mutation/push; active pointer clears before release. Real ID17/pop99 selects native process corruption termination; controls pop17 restores IDs0. Native latch/final VM flag spelling/negative sequence correct. Guest record/process mutation remains separate from native Config. All ten cases and install-only target use actual APIs. Unselected hooks/checkpoint/scheduling are explicit guards and do not establish global bootstrap.",
+  "runtime_started": false,
+  "qualified": false
+}

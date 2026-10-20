@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "status": "source-only standalone expected-exit probe review; no build or runtime claim",
+  "reviewed_utc": "2026-10-20T10:40:17.195023+00:00",
+  "base_main_head": "098b0f565e38b1af6b970196424b3e4e4bdbd19e",
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\native_node_corruption_probe.zig",
+    "bytes": 8049,
+    "sha256": "027F034F27FBDB27545BEACE1720606618722E889FBAE6627D71A1E571837315"
+  },
+  "build_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-corruption-probe-sourceonly-20261020\\build-intake.json",
+    "bytes": 1658,
+    "sha256": "08954EA23C650E5B6F06A40CD0A515912E101184CAB550DF70D7E94C06E1993E"
+  },
+  "dependencies": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 37751,
+      "sha256": "FBD43D092911F08D7CCF5E051C62894747AD6BD42D13309EC1B6B7872B9BE00B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_checks.zig",
+      "bytes": 6288,
+      "sha256": "FFB8FDEC742A0884DE9C1A4819012A172B6253E148505372E928134004335605"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_check_failure.c",
+      "bytes": 13611,
+      "sha256": "7F9BBF35B6DA22A8A8803F7776F2BE0B46B8E1E8FAF49B06407C7FC72EB6D967"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_check_failure.h",
+      "bytes": 1696,
+      "sha256": "72C3677CE0868972B2ACF78463A62A9910047C132C8862193FF267254D25C2F2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_check_failure.zig",
+      "bytes": 1788,
+      "sha256": "E4C368A322B65340D70C7F48153CA898ECF0290A47696823AA557876775E114E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_options.zig",
+      "bytes": 10383,
+      "sha256": "2277A9807AECC454E5609CA2ED794CA53F1FC870D91A1D974149CC244DEAD3FD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_options_binding.zig",
+      "bytes": 11565,
+      "sha256": "E1E6B701FBE6690AA25A78B1FDD9330DEE937CCAC0A3D05E19564B6B80C6BAD0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_node_network.zig",
+      "bytes": 4642,
+      "sha256": "CAECF005866364925F79959C8BAC3534DA051894FB841A1C2CC594C9C15BA499"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+      "bytes": 471299,
+      "sha256": "6D6D6509F45C219B74D72688B170BF8B2C83D732DDCDDA33488B307BE7DFC731"
+    }
+  ],
+  "cases": [
+    {
+      "name": "control-default",
+      "expected_windows_exit": 0,
+      "expected_posix_exit": 0,
+      "stdout_bytes": 0,
+      "stderr": "empty"
+    },
+    {
+      "name": "control-latched",
+      "expected_windows_exit": 0,
+      "expected_posix_exit": 0,
+      "stdout_bytes": 0,
+      "stderr": "empty"
+    },
+    {
+      "name": "corrupt-default",
+      "expected_windows_exit": 1,
+      "expected_posix_exit": 1,
+      "stdout_bytes": 0,
+      "stderr": "actual native corruption prefix + actual native and JavaScript traces, probe script frame, no unexpected-return/guest-catch/guard output"
+    },
+    {
+      "name": "corrupt-positive",
+      "expected_windows_exit": 134,
+      "expected_posix_exit": "SIGABRT",
+      "stdout_bytes": 0,
+      "stderr": "actual native corruption prefix + actual native and JavaScript traces, probe script frame, no unexpected-return/guest-catch/guard output"
+    },
+    {
+      "name": "corrupt-underscored",
+      "expected_windows_exit": 134,
+      "expected_posix_exit": "SIGABRT",
+      "stdout_bytes": 0,
+      "stderr": "actual native corruption prefix + actual native and JavaScript traces, probe script frame, no unexpected-return/guest-catch/guard output"
+    },
+    {
+      "name": "corrupt-latched",
+      "expected_windows_exit": 134,
+      "expected_posix_exit": "SIGABRT",
+      "stdout_bytes": 0,
+      "stderr": "actual native corruption prefix + actual native and JavaScript traces, probe script frame, no unexpected-return/guest-catch/guard output"
+    },
+    {
+      "name": "corrupt-negative",
+      "expected_windows_exit": 1,
+      "expected_posix_exit": 1,
+      "stdout_bytes": 0,
+      "stderr": "actual native corruption prefix + actual native and JavaScript traces, probe script frame, no unexpected-return/guest-catch/guard output"
+    },
+    {
+      "name": "corrupt-mixed",
+      "expected_windows_exit": 1,
+      "expected_posix_exit": 1,
+      "stdout_bytes": 0,
+      "stderr": "actual native corruption prefix + actual native and JavaScript traces, probe script frame, no unexpected-return/guest-catch/guard output"
+    },
+    {
+      "name": "corrupt-record-mutation",
+      "expected_windows_exit": 1,
+      "expected_posix_exit": 1,
+      "stdout_bytes": 0,
+      "stderr": "actual native corruption prefix + actual native and JavaScript traces, probe script frame, no unexpected-return/guest-catch/guard output"
+    },
+    {
+      "name": "corrupt-replaced-process",
+      "expected_windows_exit": 1,
+      "expected_posix_exit": 1,
+      "stdout_bytes": 0,
+      "stderr": "actual native corruption prefix + actual native and JavaScript traces, probe script frame, no unexpected-return/guest-catch/guard output"
+    }
+  ],
+  "native_failure_prefix": "Error: async hook stack has become corrupted (actual: 17, expected: 99)",
+  "lifetimes": [
+    "actual Environment is published to caller before subsequent fallible setup",
+    "real serializer returns are detached from the temporary pair before Scope adoption; unadopted owners retired by actual Boundary",
+    "successful control disarms actual realm/environment before Engine.deinit",
+    "negative requires direct native process termination before ordinary guest catch/normal return",
+    "all unselected Operations fail explicitly; no completed global Node bootstrap claim"
+  ],
+  "controller_requirements": [
+    "separate Root build and expected-exit grants; no reuse as a strict Zig protocol group",
+    "fresh source/compiler/control seals and explicit artifact binding",
+    "owned bounded original process for every case; original negative exit preserved",
+    "expected exit alone cannot pass: require exact native diagnostic and actual probe frame; setup/guard/normal-return evidence fails",
+    "independent exact original process-instance absence and complete final current inventory"
+  ],
+  "runtime_started": false,
+  "qualified": false
+}

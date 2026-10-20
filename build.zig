@@ -4806,6 +4806,24 @@ pub fn build(b: *std.Build) void {
         b.step("build-native-node-commonjs-helpers", "Install twenty-four actual CommonJS helper controls without execution").dependOn(&b.addInstallArtifact(commonjs_helpers, .{ .dest_sub_path = b.fmt("native-node-commonjs-helpers{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
     }
 
+    if (native_node_network != null) {
+        const native_corruption_probe = b.addExecutable(.{
+            .name = "native-node-corruption-probe",
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_corruption_probe.zig"), .target = target, .optimize = optimize }),
+            .use_llvm = use_llvm,
+        });
+        native_corruption_probe.stack_size = 16 * 1024 * 1024;
+        linkQuickJs(b, native_corruption_probe.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, native_corruption_probe.root_module, typescript_parser);
+        linkSqlite(native_corruption_probe.root_module, sqlite_lib_dir, sqlite_library);
+        native_corruption_probe.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            native_corruption_probe.root_module.linkSystemLibrary("advapi32", .{});
+            native_corruption_probe.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-corruption-probe", "Install isolated native corrupted-stack expected-exit probes without execution").dependOn(&b.addInstallArtifact(native_corruption_probe, .{}).step);
+    }
+
 
 }
 
