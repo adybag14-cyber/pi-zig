@@ -1,0 +1,28 @@
+{
+  "source_only": true,
+  "original_c_sha256": "793048A6A71DCED89B40668C75B0779CCEE76048E722A05E74CA980460392F9F",
+  "selected": [
+    {
+      "label": "runtime zero initialization",
+      "byte_offset": 103547,
+      "text": "JSRuntime *JS_NewRuntime2(const JSMallocFunctions *mf, void *opaque)\n{\n    JSRuntime *rt;\n    JSMallocState ms;\n    JSString *illegal_access;\n\n    memset(&ms, 0, sizeof(ms));\n    ms.opaque = opaque;\n    ms.malloc_limit = 0;\n\n    rt = mf->js_calloc(opaque, 1, sizeof(JSRuntime));\n    if (!rt)\n        return NULL;\n    rt->execution_context = JS_UNDEFINED;\n    rt->continuation_preserved_embedder_data = JS_UNDEFINED;\n    rt->pi_javascript_execution_allowed = true;\n    rt->pi_javascript_execution_error = JS_UNDEFINED;\n#ifdef CONFIG_ATOMICS\n    atomic_store(&rt->pi_termination_requested, false);\n#endif\n"
+    },
+    {
+      "label": "actual OOM reporting path",
+      "byte_offset": 340732,
+      "text": "JSValue JS_ThrowOutOfMemory(JSContext *ctx)\n{\n    JSRuntime *rt = ctx->rt;\n    if (ctx->pi_compiler_diagnostic && JS_HasException(ctx))\n        return JS_EXCEPTION;\n    if (ctx->pi_compiler_diagnostic)\n        ctx->pi_compiler_diagnostic->allocation_failed = true;\n    if (!rt->in_out_of_memory) {\n        rt->in_out_of_memory = true;\n        JS_ThrowInternalError(ctx, \"out of memory\");\n        rt->in_out_of_memory = false;\n    }\n    return JS_EXCEPTION;\n}\n"
+    },
+    {
+      "label": "string allocation reporter",
+      "byte_offset": 128414,
+      "text": "static JSString *js_alloc_string(JSContext *ctx, int max_len, int is_wide_char)\n{\n    JSString *p;\n    p = js_alloc_string_rt(ctx->rt, max_len, is_wide_char);\n    if (unlikely(!p)) {\n        JS_ThrowOutOfMemory(ctx);\n        return NULL;\n    }\n    return p;\n}\n"
+    },
+    {
+      "label": "ordinary UTF16 length rejection before buffer read",
+      "byte_offset": 195039,
+      "text": "JSValue JS_NewStringUTF16(JSContext *ctx, const uint16_t *buf, size_t len)\n{\n    JSString *str;\n\n    if (unlikely(!len))\n        return js_empty_string(ctx->rt);\n    if (unlikely(len > JS_STRING_LEN_MAX))\n        return JS_ThrowRangeError(ctx, \"invalid string length\");\n\n    str = js_alloc_string(ctx, len, 1);\n    if (unlikely(!str))\n        return JS_EXCEPTION;\n    memcpy(str16(str), buf, len * sizeof(*buf));\n    return JS_MKPTR(JS_TAG_STRING, str);\n}\n"
+    }
+  ],
+  "counter_semantics": "Count explicit report entries, not physical malloc attempts; ordinary failed results may have no occurrence; nested reporting may advance more than once.",
+  "execution": false
+}

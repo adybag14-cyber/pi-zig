@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "status": "reviewed_source_only_intake",
+  "utc": "2026-10-20T13:10:12.562579+00:00",
+  "main_parent": "02336c725d07cc752bdaa1aa2b870bb417ac3a06",
+  "donor_commit": "c2eec1e2875eb0ed6954b154fd22c749e8cf8c6e",
+  "manifest_sha256": "5315C4A401572F0F76CEDA1E11136E5F8B754DDC8FEA5CF7DA367CCDA3FC5EEC",
+  "production_packet_sha256": "443DF72983C200CB15DFB1DE1322ED264E1A085E203478CED9BC292EFB054199",
+  "source_only": true,
+  "native_execution": false,
+  "qualification": false,
+  "production_files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "edits": [
+        {
+          "label": "runtime actual report occurrence, zero initialized by original calloc",
+          "offset": 13726,
+          "before_sha256": "6134F4523A1EDECB4EDE82FEAB084E389E7E1F798A84BBED25612BC6FABD5126",
+          "after_sha256": "71D6377E8F9CA10D4CD5849261EE8D0B4BBC6183908F6164422D766881423024"
+        },
+        {
+          "label": "allocation-free owner-thread occurrence observation",
+          "offset": 340851,
+          "before_sha256": "B6C92A428C66031824AE84E774997086B1EFE1C04FC1346ED6E6CCDA44FF2094",
+          "after_sha256": "DB17BFA5E24B11DEE4E54CC47AEA46028BBFE41D107990015C6E472EBA58A327"
+        },
+        {
+          "label": "record actual report invocation before unchanged diagnostic and recursion guards",
+          "offset": 340951,
+          "before_sha256": "BA777CDC683A8417A54DF7E5652FEC1DB641BD5BD6EC40D97B50BD6866294A77",
+          "after_sha256": "0004B5025491A6B4C85EC3777FDF9C164A96D5E43E55B6250AB04C09D74F9F49"
+        }
+      ],
+      "before_sha256": "3FD1D75CE5331D4938A65DF3CB0FC1182A9AB39CC557F6E58C74CA04753EE3CD",
+      "after_sha256": "86EE97602BAD77F3CD094F0EF326919E2E7A5E8FEBE4247486A2B86851C670C2"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "edits": [
+        {
+          "label": "narrow actual report observation ABI",
+          "offset": 52409,
+          "before_sha256": "53B59FC86BB5E7C8F183DAF6E5F3A6BDCEEE24FF094DD4A39BCF07B240FE200D",
+          "after_sha256": "3D13BC9818F133B99C84003A3FD37F4A2280AA720D3DADBE1AA372FF7A90AFB6"
+        }
+      ],
+      "before_sha256": "8CEC97C3D562550425747E8AA7848F3A4DFE45AFC5FF4D9E89283A4120289591",
+      "after_sha256": "7DD0189F0143D448CD3678FB1B415D200BFA36610371EF87A16B84BBA4871DC3"
+    }
+  ],
+  "build_edits": [
+    {
+      "label": null,
+      "offset": 194812,
+      "before_sha256": "1ABFF3DDE34FACFE7529F48BC2B245B1854C0EC886F9AB6C775FD361635464E7",
+      "after_sha256": "71443B5355F92157A26404776F2B5A0B71EAD6A65AC60DA2ECE0908C6F5FF8E8"
+    }
+  ],
+  "build_added_lines": 6,
+  "declared_tests": 13,
+  "shared_main_deltas_preserved": "Exact three C plus one H additions preserve all Main bytes outside these occurrence observations, including private setter, lazy prototype, execution termination, property/consuming retirement. Native allocation or exception/fatal behavior is unchanged.",
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2366135,
+      "sha256": "86EE97602BAD77F3CD094F0EF326919E2E7A5E8FEBE4247486A2B86851C670C2",
+      "before_sha256": "3FD1D75CE5331D4938A65DF3CB0FC1182A9AB39CC557F6E58C74CA04753EE3CD"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 105469,
+      "sha256": "7DD0189F0143D448CD3678FB1B415D200BFA36610371EF87A16B84BBA4871DC3",
+      "before_sha256": "8CEC97C3D562550425747E8AA7848F3A4DFE45AFC5FF4D9E89283A4120289591"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 485724,
+      "sha256": "7C14FCEC4B022922E4AFF4D8724C549344E641A33D906F789B06D16B3970CA0D",
+      "before_sha256": "09F971E1CEFC1D608C4513970958BA46D2446A5066A9C2EE97D83393EDBF0D11"
+    },
+    {
+      "path": "src/native_vm_oom_occurrence_test.zig",
+      "bytes": 14091,
+      "sha256": "938FE472EDDD5D53FC5E19BEF9558F4BE831526A30F9A5AF3B447920BAD0AA5E",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-oom-occurrence-sourceonly-20261020/README.md",
+      "bytes": 2790,
+      "sha256": "80EE484C71705DC882C47F3E631488E3F240B3D4CB357170742D013F813B33EC",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-oom-occurrence-sourceonly-20261020/build-intake.json",
+      "bytes": 1092,
+      "sha256": "2A18CF11D2F170134E283093A71CF49F0C2D7757A3F9E50366EE443075228705",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-oom-occurrence-sourceonly-20261020/declared-names.json",
+      "bytes": 1243,
+      "sha256": "C123325B132D482A4F42C7812488F15D07699F354E53B64950B642D6F8787B64",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-oom-occurrence-sourceonly-20261020/manifest.json",
+      "bytes": 2278,
+      "sha256": "5315C4A401572F0F76CEDA1E11136E5F8B754DDC8FEA5CF7DA367CCDA3FC5EEC",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-oom-occurrence-sourceonly-20261020/peer-closure.json",
+      "bytes": 1074,
+      "sha256": "FD16B7F595F3299F84E109F85E54F892B5B73343114823D801933F11D9AD7A21",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-oom-occurrence-sourceonly-20261020/production-delta.json",
+      "bytes": 3222,
+      "sha256": "443DF72983C200CB15DFB1DE1322ED264E1A085E203478CED9BC292EFB054199",
+      "before_sha256": null
+    },
+    {
+      "path": "verification/native-oom-occurrence-sourceonly-20261020/selected-source.json",
+      "bytes": 2620,
+      "sha256": "DD1E86FFEA8A510C12FFD4F78983F2DC0471718001754C8C4E1D76355986DB29",
+      "before_sha256": null
+    }
+  ]
+}

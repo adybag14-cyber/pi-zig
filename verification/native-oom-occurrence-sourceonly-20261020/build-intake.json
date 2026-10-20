@@ -1,0 +1,17 @@
+{
+  "source_only": true,
+  "before_sha256": "F4077C59CC40812415EB597F38DA987F75445E81A47700DAA1F693ED14F7BE3B",
+  "after_sha256": "EB0A0E172FF6BA091C59816A136DCBD08679C60B064AD1D09F691004E4A99BB1",
+  "added_lines": 6,
+  "edits": [
+    {
+      "before": "    const consuming_operand_tests = b.addTest(.{",
+      "after": "    const oom_occurrence_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_oom_occurrence_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM OOM occurrence\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, oom_occurrence_tests.root_module, quickjs, sqlite_lib_dir);\n    b.step(\"build-native-vm-oom-occurrence\", \"Install actual VM OOM occurrence controls without execution\").dependOn(&b.addInstallArtifact(oom_occurrence_tests, .{}).step);\n    const consuming_operand_tests = b.addTest(.{",
+      "count": 1
+    }
+  ],
+  "root": "src/native_vm_oom_occurrence_test.zig",
+  "filter": "VM OOM occurrence",
+  "target": "build-native-vm-oom-occurrence",
+  "execution": false
+}

@@ -1134,6 +1134,13 @@ JS_EXTERN JSValue JS_PRINTF_FORMAT_ATTR(2, 3) JS_ThrowReferenceError(JSContext *
 JS_EXTERN JSValue JS_PRINTF_FORMAT_ATTR(2, 3) JS_ThrowSyntaxError(JSContext *ctx, JS_PRINTF_FORMAT const char *fmt, ...);
 JS_EXTERN JSValue JS_PRINTF_FORMAT_ATTR(2, 3) JS_ThrowTypeError(JSContext *ctx, JS_PRINTF_FORMAT const char *fmt, ...);
 JS_EXTERN JSValue JS_PRINTF_FORMAT_ATTR(3, 4) JS_ThrowDOMException(JSContext *ctx, const char *name, JS_PRINTF_FORMAT const char *fmt, ...);
+/* VM-owner-thread observation of actual JS_ThrowOutOfMemory entries, modulo
+ * 2^64, including recursive reporting failure. It allocates nothing and does
+ * not read or change the pending reason, Error flags, or native fatal policy.
+ * A caller may compare immediately around a known non-guest intrinsic and
+ * require that intrinsic's actual failure. Historical Error values and raw
+ * allocator failures that never report OOM do not establish an occurrence. */
+JS_EXTERN uint64_t JS_PiOutOfMemoryOccurrence(JSRuntime *rt);
 JS_EXTERN JSValue JS_ThrowOutOfMemory(JSContext *ctx);
 JS_EXTERN void JS_FreeValue(JSContext *ctx, JSValue v);
 JS_EXTERN void JS_FreeValueRT(JSRuntime *rt, JSValue v);

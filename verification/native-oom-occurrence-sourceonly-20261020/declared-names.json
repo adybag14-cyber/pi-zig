@@ -1,0 +1,20 @@
+{
+  "source_only": true,
+  "count": 13,
+  "names": [
+    "VM OOM occurrence starts at zero and successful intrinsic allocations do not advance it",
+    "VM OOM occurrence records explicit actual report without changing its ordinary reason",
+    "VM OOM occurrence includes the real recursive reporting allocation failure",
+    "VM OOM occurrence brackets an actual failed string allocation",
+    "VM OOM occurrence brackets an actual failed intrinsic object allocation",
+    "VM OOM occurrence array failure consumes its actual input owner exactly once",
+    "VM OOM occurrence failed new atom uses the actual reporting path",
+    "VM OOM occurrence shared-shape insertion failure consumes its value and leaves no property",
+    "VM OOM occurrence raw runtime allocation failure without a report does not advance",
+    "VM OOM occurrence actual intrinsic overlength RangeError leaves the occurrence unchanged",
+    "VM OOM occurrence observation preserves actual ordinary and fatal pending owners without allocation",
+    "VM OOM occurrence is runtime-wide while separate runtime histories stay independent",
+    "VM OOM occurrence retained historical reason and private termination add no new occurrence"
+  ],
+  "metadata_execution": false
+}

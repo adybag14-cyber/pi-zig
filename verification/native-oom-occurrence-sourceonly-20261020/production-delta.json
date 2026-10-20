@@ -1,0 +1,59 @@
+{
+  "source_only": true,
+  "base_commit": "f8a73a046683aab610c8a3b77c45938d2aaf5294",
+  "scope": "Only runtime occurrence observation at actual JS_ThrowOutOfMemory; no allocation/retry/exception/pending/fatal policy change.",
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "runtime actual report occurrence, zero initialized by original calloc",
+      "before": "    /* true if inside an out of memory error, to avoid recursing */\n    bool in_out_of_memory;",
+      "after": "    /* Number of actual OOM report entries, including recursive fallback. */\n    uint64_t pi_out_of_memory_occurrence;\n    /* true if inside an out of memory error, to avoid recursing */\n    bool in_out_of_memory;",
+      "count": 1,
+      "before_byte_offset": 13726,
+      "after_byte_offset": 13726
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "allocation-free owner-thread occurrence observation",
+      "before": "JSValue JS_ThrowOutOfMemory(JSContext *ctx)\n{",
+      "after": "uint64_t JS_PiOutOfMemoryOccurrence(JSRuntime *rt)\n{\n    return rt->pi_out_of_memory_occurrence;\n}\n\nJSValue JS_ThrowOutOfMemory(JSContext *ctx)\n{",
+      "count": 1,
+      "before_byte_offset": 340851,
+      "after_byte_offset": 340851
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "record actual report invocation before unchanged diagnostic and recursion guards",
+      "before": "JSValue JS_ThrowOutOfMemory(JSContext *ctx)\n{\n    JSRuntime *rt = ctx->rt;\n",
+      "after": "JSValue JS_ThrowOutOfMemory(JSContext *ctx)\n{\n    JSRuntime *rt = ctx->rt;\n    rt->pi_out_of_memory_occurrence++;\n",
+      "count": 1,
+      "before_byte_offset": 340951,
+      "after_byte_offset": 340951
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "narrow actual report observation ABI",
+      "before": "JS_EXTERN JSValue JS_ThrowOutOfMemory(JSContext *ctx);\n",
+      "after": "/* VM-owner-thread observation of actual JS_ThrowOutOfMemory entries, modulo\n * 2^64, including recursive reporting failure. It allocates nothing and does\n * not read or change the pending reason, Error flags, or native fatal policy.\n * A caller may compare immediately around a known non-guest intrinsic and\n * require that intrinsic's actual failure. Historical Error values and raw\n * allocator failures that never report OOM do not establish an occurrence. */\nJS_EXTERN uint64_t JS_PiOutOfMemoryOccurrence(JSRuntime *rt);\nJS_EXTERN JSValue JS_ThrowOutOfMemory(JSContext *ctx);\n",
+      "count": 1,
+      "before_byte_offset": 52409,
+      "after_byte_offset": 52409
+    }
+  ],
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before_sha256": "793048A6A71DCED89B40668C75B0779CCEE76048E722A05E74CA980460392F9F",
+      "after_sha256": "6758D2A5E4F3BBBFBB784D049581C621A246ED08F20C039E93D1F3FF87438731",
+      "after_bytes": 2362794
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before_sha256": "840A2BD84BE0A32046BF09F047C1C646114523343353D7EF6B7DF3003433DB1A",
+      "after_sha256": "E408EBB5D24313F29EE05BAB8A93B7AF379D1166A94E0E9A0093193A6143CA82",
+      "after_bytes": 104758
+    }
+  ],
+  "exact_inverse": true,
+  "execution": false
+}

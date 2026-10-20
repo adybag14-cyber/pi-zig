@@ -1,0 +1,16 @@
+{
+  "source_only": true,
+  "production_c_sha256": "6758D2A5E4F3BBBFBB784D049581C621A246ED08F20C039E93D1F3FF87438731",
+  "production_h_sha256": "E408EBB5D24313F29EE05BAB8A93B7AF379D1166A94E0E9A0093193A6143CA82",
+  "production_packet_sha256": "443DF72983C200CB15DFB1DE1322ED264E1A085E203478CED9BC292EFB054199",
+  "root_sha256": "938FE472EDDD5D53FC5E19BEF9558F4BE831526A30F9A5AF3B447920BAD0AA5E",
+  "sdk": {
+    "status": "CLOSED",
+    "scope": "Actual runtime calloc/report/recursive guard and failed intrinsic paths; exact three C plus one H inverse to793048A6/840A2BD8; controls1-5/7/9-10 at938FE472. Getter has no allocation/pending/flag side effect; raw no-report malloc and actual UTF16 overlength RangeError remain distinct."
+  },
+  "modules": {
+    "status": "CLOSED",
+    "scope": "Fixture/Probe/native retirement and controls6/8/11-13 at938FE472; actual ArrayFrom and DefinePropertyValue consumption, shared-shape clone, pending identity, independent runtimes and historical DATA/private distinction; six-line install-only build2A18CF11."
+  },
+  "execution": false
+}

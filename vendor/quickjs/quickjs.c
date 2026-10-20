@@ -384,6 +384,8 @@ struct JSRuntime {
 #endif
     bool pi_termination_in_flight;
     uint64_t pi_termination_generation;
+    /* Number of actual OOM report entries, including recursive fallback. */
+    uint64_t pi_out_of_memory_occurrence;
     /* true if inside an out of memory error, to avoid recursing */
     bool in_out_of_memory;
     /* true if inside build_backtrace, to avoid recursing */
@@ -9944,9 +9946,15 @@ uint64_t pi_js_native_allocation_error_generation(JSValueConst value)
     return 0;
 }
 
+uint64_t JS_PiOutOfMemoryOccurrence(JSRuntime *rt)
+{
+    return rt->pi_out_of_memory_occurrence;
+}
+
 JSValue JS_ThrowOutOfMemory(JSContext *ctx)
 {
     JSRuntime *rt = ctx->rt;
+    rt->pi_out_of_memory_occurrence++;
     if (ctx->pi_compiler_diagnostic && JS_HasException(ctx))
         return JS_EXCEPTION;
     if (ctx->pi_compiler_diagnostic)

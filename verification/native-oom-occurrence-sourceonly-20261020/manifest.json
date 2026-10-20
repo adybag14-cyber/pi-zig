@@ -1,0 +1,64 @@
+{
+  "source_only": true,
+  "base_commit": "f8a73a046683aab610c8a3b77c45938d2aaf5294",
+  "production_packet": "production-delta.json",
+  "root": "src/native_vm_oom_occurrence_test.zig",
+  "declared_count": 13,
+  "filter": "VM OOM occurrence",
+  "target": "build-native-vm-oom-occurrence",
+  "exact_inverse_verified": true,
+  "metadata_execution": false,
+  "execution": false,
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2362794,
+      "sha256": "6758D2A5E4F3BBBFBB784D049581C621A246ED08F20C039E93D1F3FF87438731"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 104758,
+      "sha256": "E408EBB5D24313F29EE05BAB8A93B7AF379D1166A94E0E9A0093193A6143CA82"
+    },
+    {
+      "path": "src/native_vm_oom_occurrence_test.zig",
+      "bytes": 14091,
+      "sha256": "938FE472EDDD5D53FC5E19BEF9558F4BE831526A30F9A5AF3B447920BAD0AA5E"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 419390,
+      "sha256": "EB0A0E172FF6BA091C59816A136DCBD08679C60B064AD1D09F691004E4A99BB1"
+    },
+    {
+      "path": "verification/native-oom-occurrence-sourceonly-20261020/build-intake.json",
+      "bytes": 1092,
+      "sha256": "2A18CF11D2F170134E283093A71CF49F0C2D7757A3F9E50366EE443075228705"
+    },
+    {
+      "path": "verification/native-oom-occurrence-sourceonly-20261020/declared-names.json",
+      "bytes": 1243,
+      "sha256": "C123325B132D482A4F42C7812488F15D07699F354E53B64950B642D6F8787B64"
+    },
+    {
+      "path": "verification/native-oom-occurrence-sourceonly-20261020/peer-closure.json",
+      "bytes": 1074,
+      "sha256": "FD16B7F595F3299F84E109F85E54F892B5B73343114823D801933F11D9AD7A21"
+    },
+    {
+      "path": "verification/native-oom-occurrence-sourceonly-20261020/production-delta.json",
+      "bytes": 3222,
+      "sha256": "443DF72983C200CB15DFB1DE1322ED264E1A085E203478CED9BC292EFB054199"
+    },
+    {
+      "path": "verification/native-oom-occurrence-sourceonly-20261020/README.md",
+      "bytes": 2790,
+      "sha256": "80EE484C71705DC882C47F3E631488E3F240B3D4CB357170742D013F813B33EC"
+    },
+    {
+      "path": "verification/native-oom-occurrence-sourceonly-20261020/selected-source.json",
+      "bytes": 2620,
+      "sha256": "DD1E86FFEA8A510C12FFD4F78983F2DC0471718001754C8C4E1D76355986DB29"
+    }
+  ]
+}

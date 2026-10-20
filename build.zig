@@ -1989,6 +1989,12 @@ pub fn build(b: *std.Build) void {
         linkQuickJs(b, vm_array_buffer_view_length_tests.root_module, quickjs, sqlite_lib_dir);
         b.step("build-native-vm-array-buffer-view-length", "Install intrinsic ArrayBufferView byteLength controls without execution").dependOn(&b.addInstallArtifact(vm_array_buffer_view_length_tests, .{}).step);
     }
+    const oom_occurrence_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_oom_occurrence_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"VM OOM occurrence"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, oom_occurrence_tests.root_module, quickjs, sqlite_lib_dir);
+    b.step("build-native-vm-oom-occurrence", "Install actual VM OOM occurrence controls without execution").dependOn(&b.addInstallArtifact(oom_occurrence_tests, .{}).step);
     const consuming_operand_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_consuming_operand_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"VM consuming operand"}, .use_llvm = use_llvm,
