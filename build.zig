@@ -4759,6 +4759,22 @@ pub fn build(b: *std.Build) void {
         b.step("build-native-node-callback-scope", "Install actual Node callback state and MakeCallback controls without execution").dependOn(&b.addInstallArtifact(node_callbacks, .{ .dest_sub_path = b.fmt("native-node-callback-scope{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
     }
 
+    if (native_node_network != null) {
+        const experimental_warning = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_experimental_warning_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native actual experimental warning"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, experimental_warning.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, experimental_warning.root_module, typescript_parser);
+        linkSqlite(experimental_warning.root_module, sqlite_lib_dir, sqlite_library);
+        experimental_warning.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            experimental_warning.root_module.linkSystemLibrary("advapi32", .{});
+            experimental_warning.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-experimental-warning", "Install seventeen actual Node experimental warning controls without execution").dependOn(&b.addInstallArtifact(experimental_warning, .{ .dest_sub_path = b.fmt("native-node-experimental-warning{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    }
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {
