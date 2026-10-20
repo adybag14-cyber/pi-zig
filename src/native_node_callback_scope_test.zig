@@ -132,7 +132,7 @@ const Fixture = struct {
         errdefer if (scope.initialized and !scope.deinitialized) {
             scope.markFailed();
             scope.deinit() catch {};
-        }
+        };
         try scope.init(self.env(), resource, id, flags, frame);
     }
     fn value(self: *Fixture, source: []const u8) !c.JSValue {

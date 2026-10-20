@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "status": "source_only_fix_of_original_negative_compile",
+  "observed_utc": "2026-10-20T11:08:54.876214+00:00",
+  "original_head": "aa0434239af73460fb09bbebc626e6add1ec14f5",
+  "original_result_sha256": "D0B851502F2F124330FA91074993AFEDBE316CB616C0BEB6636670B9CA0F51CA",
+  "original_stderr_sha256": "7C7A72CED8C85CFEC5989F4396D043D36446A50F04B517D8E55E52F1B4148839",
+  "independent_closure_sha256": "FF2A2EFE62301381B69CFD2FFEBB91CDD1A83BC41D7A00A4C63D8B271DA16477",
+  "source": {
+    "path": "src/native_node_callback_scope_test.zig",
+    "before_sha256": "A1C0DE0F1B8DF17C4B86E9FD48EDEC0D24D5E9DDF41A0E07A5CC73D82B9A7895",
+    "after_sha256": "EED61191CC4A1C81B8DE7196D8137D7F198A3F217A652661D34097AFAF2B8E21",
+    "bytes_added": 1
+  },
+  "fix": "Add required semicolon after the conditional expression used by errdefer in Fixture.initScope; existing cleanup body, test declarations and assertions unchanged.",
+  "declared_control_count": 28,
+  "native_execution": false,
+  "runtime_qualification": false
+}
