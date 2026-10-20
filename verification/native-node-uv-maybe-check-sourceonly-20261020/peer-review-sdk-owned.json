@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "recorded_by": "Root from sdk_owners delivered finite source-peer message",
+  "status": "finite source peer closed; no execution",
+  "reviewer": "sdk_owners",
+  "uv_probe_sha256": "79BC1820098411E92A1BF6A1C28314FFF4F2DF946C494F70BC62231EE3B1821A",
+  "corruption_probe_sha256": "679D8B94BAB6DFAA4C2A32C566D248A522CA254EFF2763A8FA628F3668D483B8",
+  "build_sha256": "C6B55B142918BC9C238E2CB4A802318585FA85ACABACE664AE3C9534EC597881",
+  "finding": "Removing only getchar declaration and pre-setup EOF gate exactly reproduces reviewed D277 and actual Main027F. Reversing cached name and explicit installation destination reproduces both prior build blocks. Gate precedes Engine/Environment allocation and rejects nonempty input; all original bodies/cases byte-identical. Separate compiled artifacts keep named installation paths and unchanged dependencies/install-only graph. Actual CI607 retained/live identity precedes its stdin close. This closes finite source and build; runtime/controller acceptance remains separate.",
+  "execution": false,
+  "qualification": false
+}

@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "status": "source_only_build_intake_not_execution_actual_native_process_dependencies",
+  "anchor_after": "        b.step(\"build-native-node-uv-exception\", \"Install actual native UVException controls without execution\").dependOn(&b.addInstallArtifact(native_node_uv_exception_tests, .{}).step);\n",
+  "addition": "        const native_node_process_warning_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_process_warning_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native process warning\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_node_process_warning_tests.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, native_node_process_warning_tests.root_module, typescript_parser);\n        linkSqlite(native_node_process_warning_tests.root_module, sqlite_lib_dir, sqlite_library);\n        native_node_process_warning_tests.root_module.addImport(\"catalog_tool\", catalog_tool);\n        if (target.result.os.tag == .windows) {\n            native_node_process_warning_tests.root_module.linkSystemLibrary(\"advapi32\", .{});\n            native_node_process_warning_tests.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        native_node_process_warning_tests.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        native_node_process_warning_tests.root_module.linkLibrary(network);\n        b.step(\"build-native-node-process-warning\", \"Install actual native process warning and ThrowUVException controls without execution\").dependOn(&b.addInstallArtifact(native_node_process_warning_tests, .{}).step);\n",
+  "target": "build-native-node-process-warning",
+  "artifact": "test",
+  "declared_count": 18,
+  "native_execution": false
+}

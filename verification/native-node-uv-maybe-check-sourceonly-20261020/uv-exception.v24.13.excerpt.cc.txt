@@ -1,0 +1,133 @@
+> context = env->context();
+  Local<Object> obj = e.As<Object>();
+  obj->Set(context,
+           env->errno_string(),
+           Integer::New(isolate, errorno)).Check();
+  obj->Set(context, env->code_string(), estring).Check();
+
+  if (path_string.IsEmpty() == false) {
+    obj->Set(context, env->path_string(), path_string).Check();
+  }
+
+  if (syscall != nullptr) {
+    obj->Set(context,
+             env->syscall_string(),
+             OneByteString(isolate, syscall)).Check();
+  }
+
+  return e;
+}
+
+static Local<String> StringFromPath(Isolate* isolate, const char* path) {
+#ifdef _WIN32
+  if (strncmp(path, "\\\\?\\UNC\\", 8) == 0) {
+    return String::Concat(
+        isolate,
+        FIXED_ONE_BYTE_STRING(isolate, "\\\\"),
+        String::NewFromUtf8(isolate, path + 8).ToLocalChecked());
+  } else if (strncmp(path, "\\\\?\\", 4) == 0) {
+    return String::NewFromUtf8(isolate, path + 4).ToLocalChecked();
+  }
+#endif
+
+  return String::NewFromUtf8(isolate, path).ToLocalChecked();
+}
+
+
+Local<Value> UVException(Isolate* isolate,
+                         int errorno,
+                         const char* syscall,
+                         const char* msg,
+                         const char* path,
+                         const char* dest) {
+  Environment* env = Environment::GetCurrent(isolate);
+  CHECK_NOT_NULL(env);
+
+  if (!msg || !msg[0])
+    msg = uv_strerror(errorno);
+
+  Local<String> js_code = OneByteString(isolate, uv_err_name(errorno));
+  Local<String> js_syscall = OneByteString(isolate, syscall);
+  Local<String> js_path;
+  Local<String> js_dest;
+
+  Local<String> js_msg = js_code;
+  js_msg =
+      String::Concat(isolate, js_msg, FIXED_ONE_BYTE_STRING(isolate, ": "));
+  js_msg = String::Concat(isolate, js_msg, OneByteString(isolate, msg));
+  js_msg =
+      String::Concat(isolate, js_msg, FIXED_ONE_BYTE_STRING(isolate, ", "));
+  js_msg = String::Concat(isolate, js_msg, js_syscall);
+
+  if (path != nullptr) {
+    js_path = StringFromPath(isolate, path);
+
+    js_msg =
+        String::Concat(isolate, js_msg, FIXED_ONE_BYTE_STRING(isolate, " '"));
+    js_msg = String::Concat(isolate, js_msg, js_path);
+    js_msg =
+        String::Concat(isolate, js_msg, FIXED_ONE_BYTE_STRING(isolate, "'"));
+  }
+
+  if (dest != nullptr) {
+    js_dest = StringFromPath(isolate, dest);
+
+    js_msg = String::Concat(
+        isolate, js_msg, FIXED_ONE_BYTE_STRING(isolate, " -> '"));
+    js_msg = String::Concat(isolate, js_msg, js_dest);
+    js_msg =
+        String::Concat(isolate, js_msg, FIXED_ONE_BYTE_STRING(isolate, "'"));
+  }
+
+  Local<Object> e =
+    Exception::Error(js_msg)->ToObject(isolate->GetCurrentContext())
+      .ToLocalChecked();
+
+  Local<Context> context = env->context();
+  e->Set(context,
+         env->errno_string(),
+         Integer::New(isolate, errorno)).Check();
+  e->Set(context, env->code_string(), js_code).Check();
+  e->Set(context, env->syscall_string(), js_syscall).Check();
+  if (!js_path.IsEmpty())
+    e->Set(context, env->path_string(), js_path).Check();
+  if (!js_dest.IsEmpty())
+    e->Set(context, env->dest_string(), js_dest).Check();
+
+  return e;
+}
+
+#ifdef _WIN32
+// Does about the same as strerror(),
+// but supports all windows error messages
+static const char* winapi_strerror(const int errorno, bool* must_free) {
+  char* errmsg = nullptr;
+
+  FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+                     FORMAT_MESSAGE_IGNORE_INSERTS,
+                 nullptr,
+                 errorno,
+                 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                 reinterpret_cast<LPSTR>(&errmsg),
+                 0,
+                 nullptr);
+
+  if (errmsg) {
+    *must_free = true;
+
+    // Remove trailing newlines
+    for (int i = strlen(errmsg) - 1;
+         i >= 0 && (errmsg[i] == '\n' || errmsg[i] == '\r');
+         i--) {
+      errmsg[i] = '\0';
+    }
+
+    return errmsg;
+  } else {
+    // FormatMessage failed
+    *must_free = false;
+    return "Unknown error";
+  }
+}
+
+Local<Value> WinapiErrnoException(I

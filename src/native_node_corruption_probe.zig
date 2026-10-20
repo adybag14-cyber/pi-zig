@@ -3,6 +3,7 @@
 //! Environment. Unselected queue/fatal-hook operations fail explicitly; this
 //! fixture makes no claim that the complete Node bootstrap is installed.
 const std = @import("std");
+extern fn getchar() c_int;
 const a = @import("extensions/native_node_argument_values.zig");
 const em = a.v.em;
 const c = em.c;
@@ -110,6 +111,9 @@ fn initialize(s: *a.Scope, output: *?*callbacks.Environment, selected: Selected)
     return c.pi_js_undefined();
 }
 pub fn main(init: std.process.Init) !void {
+    // Original CI607 records its retained handle/live identity before closing
+    // redirected stdin. Even a fast control waits for that actual owner.
+    if (getchar() != -1) return error.UnexpectedNativeProbeInput;
     const args = try init.minimal.args.toSlice(init.arena.allocator());
     if (args.len != 2) return error.ExpectedOneNativeCorruptionProbe;
     const selected = try select(args[1]);

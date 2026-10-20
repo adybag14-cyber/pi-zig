@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "status": "source_only_install_targets_separate_process_grants_required",
+  "existing_corruption_block_before": "    if (native_node_network != null) {\n        const native_corruption_probe = b.addExecutable(.{\n            .name = \"native-node-corruption-probe\",\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_corruption_probe.zig\"), .target = target, .optimize = optimize }),\n            .use_llvm = use_llvm,\n        });\n        native_corruption_probe.stack_size = 16 * 1024 * 1024;\n        linkQuickJs(b, native_corruption_probe.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, native_corruption_probe.root_module, typescript_parser);\n        linkSqlite(native_corruption_probe.root_module, sqlite_lib_dir, sqlite_library);\n        native_corruption_probe.root_module.addImport(\"catalog_tool\", catalog_tool);\n        if (target.result.os.tag == .windows) {\n            native_corruption_probe.root_module.linkSystemLibrary(\"advapi32\", .{});\n            native_corruption_probe.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-corruption-probe\", \"Install isolated native corrupted-stack expected-exit probes without execution\").dependOn(&b.addInstallArtifact(native_corruption_probe, .{}).step);\n    }\n\n",
+  "existing_corruption_block_after": "    if (native_node_network != null) {\n        const native_corruption_probe = b.addExecutable(.{\n            .name = \"test\",\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_corruption_probe.zig\"), .target = target, .optimize = optimize }),\n            .use_llvm = use_llvm,\n        });\n        native_corruption_probe.stack_size = 16 * 1024 * 1024;\n        linkQuickJs(b, native_corruption_probe.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, native_corruption_probe.root_module, typescript_parser);\n        linkSqlite(native_corruption_probe.root_module, sqlite_lib_dir, sqlite_library);\n        native_corruption_probe.root_module.addImport(\"catalog_tool\", catalog_tool);\n        if (target.result.os.tag == .windows) {\n            native_corruption_probe.root_module.linkSystemLibrary(\"advapi32\", .{});\n            native_corruption_probe.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-corruption-probe\", \"Install isolated native corrupted-stack expected-exit probes without execution\").dependOn(&b.addInstallArtifact(native_corruption_probe, .{ .dest_sub_path = b.fmt(\"native-node-corruption-probe{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n    }\n\n",
+  "addition": "    if (native_node_network != null) {\n        const native_uv_exception_probe = b.addExecutable(.{\n            .name = \"test\",\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_uv_exception_probe.zig\"), .target = target, .optimize = optimize }),\n            .use_llvm = use_llvm,\n        });\n        native_uv_exception_probe.stack_size = 16 * 1024 * 1024;\n        linkQuickJs(b, native_uv_exception_probe.root_module, quickjs, sqlite_lib_dir);\n        native_uv_exception_probe.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        linkTypeScriptParser(b, native_uv_exception_probe.root_module, typescript_parser);\n        linkSqlite(native_uv_exception_probe.root_module, sqlite_lib_dir, sqlite_library);\n        native_uv_exception_probe.root_module.addImport(\"catalog_tool\", catalog_tool);\n        if (target.result.os.tag == .windows) {\n            native_uv_exception_probe.root_module.linkSystemLibrary(\"advapi32\", .{});\n            native_uv_exception_probe.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-uv-exception-probe\", \"Install isolated actual UVException Maybe.Check expected-exit probes without execution\").dependOn(&b.addInstallArtifact(native_uv_exception_probe, .{ .dest_sub_path = b.fmt(\"native-node-uv-exception-probe{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n    }\n\n",
+  "target": "build-native-node-uv-exception-probe",
+  "cached_executable_basename": "test.exe",
+  "installed_artifact": "native-node-uv-exception-probe.exe",
+  "uv_cases": [
+    "control-setters",
+    "control-readonly",
+    "throw-errno",
+    "throw-code",
+    "throw-syscall",
+    "throw-path",
+    "throw-dest"
+  ],
+  "uv_controls": 2,
+  "uv_expected_fatal": 5,
+  "source_owner_gate": "Original CI607 captures original retained/live identity then closes stdin; getchar waits for EOF before setup. Unexpected input fails explicitly.",
+  "ordinary_zig_protocol_group": false,
+  "execution_authorized": false
+}

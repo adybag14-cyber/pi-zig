@@ -1,0 +1,19 @@
+{
+  "reviewer": "/root/sdk_owners",
+  "basis": "Actual delivered source-only review messages at38E71A96/DADD28F6/A56E8128",
+  "status": "closed",
+  "production_warning_sha256": "38E71A96D2908029731232F927C9DA6171249E002F7480B9C0AF1373BECAC771",
+  "production_throw_sha256": "DADD28F6DDE2D2B8782597479D5C6F30582758D9819C237CA5390E4ACD26FFCC",
+  "control_root_sha256": "A56E81282CB4CF966BFCEE61A0492A6258CE7AD04096AB3A6FC4B596C2C50769",
+  "control_scope": "Fixture and controls1\u201310",
+  "finding_closed": "Selected process duplicate now precedes live Get and remains through call/Scope retirement",
+  "observations": [
+    "Actual process/Environment setup and partial-failure teardown",
+    "Disabled/stopping branch precedes getter",
+    "Exact native receiver and1/2/3arity; nested type/code",
+    "Explicit UTF8 views vs postformat NUL truncation",
+    "Signed descriptor formatting and exact deprecation args",
+    "ThrowUVException adopts factory then actual throw with no canCall guard"
+  ],
+  "runtime_qualified": false
+}
