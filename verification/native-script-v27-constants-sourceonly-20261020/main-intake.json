@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "source_only_two_constant_compile_correction",
+  "recorded_utc": "2026-10-20T16:16:45.152295+00:00",
+  "prior_main_head": "7ead6591a0e4be1ce95249625b9552de2a1583bd",
+  "donor_commit": "ce28434cf977b75ed5e1fd1a26468e84c27189a5",
+  "prior_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v27-control-20261020-160113\\independent-compile-negative-closure.json",
+    "sha256": "49C18C8A16E312908DA471E3A002281D029071AC3BAC2A610C1BC6AF2D2342C7",
+    "bytes": 5869
+  },
+  "source": {
+    "path": "vendor/quickjs/quickjs.c",
+    "before_sha256": "3B24170B01A5FC07B3E9A193396300A35F5D84380116CC192E15B1516200A496",
+    "after_sha256": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+    "before_bytes": 2395528,
+    "after_bytes": 2395528,
+    "exact_edits": 2,
+    "whole_inverse_matches_prior_main": true
+  },
+  "proof": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-script-v27-constants-sourceonly-20261020\\source-delta.json",
+      "sha256": "F1E4705BC4624D43855E606788FD61A6E0BC09010B8B6E3D45CCC2825CBD1D12",
+      "bytes": 6266
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-script-v27-constants-sourceonly-20261020\\source.patch",
+      "sha256": "37A6E3F12A45FD16FA1B571DED2E64AF05A8409421B24BD86B6C929DCD12C6AD",
+      "bytes": 568
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-script-v27-constants-sourceonly-20261020\\peer-receipt.json",
+      "sha256": "9FF630CCA3D91DC2F40E1C25B779283FE07AC86AF9954BE181ED85668BC2ED06",
+      "bytes": 3157
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-script-v27-constants-sourceonly-20261020\\compile.stderr.log",
+      "sha256": "00853A0E5A8A60DE9C66A735A5638D9B8D85594F5CC18591C28EF45157811886",
+      "bytes": 17990
+    }
+  ],
+  "controls": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_vm_script_location_test.zig",
+    "sha256": "99A495F924700FDCFB64C479C61FEF6D2E5CE8532944615324079CBB17F17F55",
+    "bytes": 52063
+  },
+  "unchanged_control_declarations": 32,
+  "scope": "Relocate unchanged CP_LS/CP_PS definitions before first Script helper use; no algorithm, header, build graph or other production changes.",
+  "native_execution": false,
+  "runtime_qualification": false,
+  "next_gate": "Fresh strict same54/1089 foundation BuildQuery; no additional source units."
+}

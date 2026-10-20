@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "status": "finite_source_peer_closed",
+  "reviewer": "modules_io",
+  "execution": false,
+  "scope": "Only relocation of the original CP_LS/CP_PS definitions before Script's first use; no C algorithm or control change.",
+  "inputs": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-script-v27-constants-sourceonly-20261020/source-delta.json",
+      "sha256": "F1E4705BC4624D43855E606788FD61A6E0BC09010B8B6E3D45CCC2825CBD1D12",
+      "bytes": 6266
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-script-v27-constants-sourceonly-20261020/source.patch",
+      "sha256": "37A6E3F12A45FD16FA1B571DED2E64AF05A8409421B24BD86B6C929DCD12C6AD",
+      "bytes": 568
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/vendor/quickjs/quickjs.c",
+      "sha256": "DE3C05D6698F2D1AC5F3D7F92540F4775B374101A71EAE2C4925FD3F48FAFCAE",
+      "bytes": 2394786
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/src/native_vm_script_location_test.zig",
+      "sha256": "99A495F924700FDCFB64C479C61FEF6D2E5CE8532944615324079CBB17F17F55",
+      "bytes": 52063
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-script-v27-constants-sourceonly-20261020/compile.stderr.log",
+      "sha256": "00853A0E5A8A60DE9C66A735A5638D9B8D85594F5CC18591C28EF45157811886",
+      "bytes": 17990
+    }
+  ],
+  "checks": {
+    "exact_unique_reverse_edits": 2,
+    "independently_reconstructed_preimage_sha256": "8A5D1DC383F50454DEE372C2B9DF7B8CF95B70ED58C99E6A69D3167BB9787B18",
+    "preimage_bytes": 2394786,
+    "definition_values_unchanged": [
+      "CP_LS 0x2028",
+      "CP_PS 0x2029"
+    ],
+    "definition_preprocessor_scopes": [
+      {
+        "line": 7525,
+        "depth": 0,
+        "stack": []
+      },
+      {
+        "line": 7526,
+        "depth": 0,
+        "stack": []
+      }
+    ],
+    "first_script_use_line": 7549,
+    "each_definition_occurs_once": true,
+    "control_declarations": 32,
+    "control_names_identical_to_packet": true
+  },
+  "findings": [
+    "The retained original compiler stderr reports only the two unresolved identifiers at the actual Script position loop. Both definitions now precede that loop in the same translation unit.",
+    "The later parser definitions are removed rather than duplicated. All later parser uses retain exactly the original macro values.",
+    "Reversing only the two unique packet edits from the complete actual Message2a working C reproduces 8A5D1DC383F50454DEE372C2B9DF7B8CF95B70ED58C99E6A69D3167BB9787B18 byte-for-byte; no other source movement is present.",
+    "The complete Script32 root remains 99A495F9 and all 32 declaration names match."
+  ],
+  "limits": [
+    "This is a source-only correction, not a compiled result.",
+    "The packet's sealed-Script and frozen-Main variants are integration projections; this independent full-body inverse used the actual Message2a working C. Apply the same two exact edits rather than replacing the shared file."
+  ]
+}

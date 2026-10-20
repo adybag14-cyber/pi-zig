@@ -7519,6 +7519,9 @@ JSValue JS_PiScriptGetSourceMapURL(const JSNativeScript *script)
     return script ? js_dup(script->source_map_url) : JS_UNDEFINED;
 }
 
+#define CP_LS   0x2028
+#define CP_PS   0x2029
+
 static int js_pi_script_code_unit(JSString *source, int position)
 {
     return source->is_wide_char ? str16(source)[position] : str8(source)[position];
@@ -25565,9 +25568,6 @@ enum {
 /* unicode code points */
 #define CP_NBSP 0x00a0
 #define CP_BOM  0xfeff
-
-#define CP_LS   0x2028
-#define CP_PS   0x2029
 
 typedef struct BlockEnv {
     struct BlockEnv *prev;

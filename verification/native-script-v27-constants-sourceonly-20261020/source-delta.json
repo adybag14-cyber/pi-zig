@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "status": "source-only compiler correction; no execution",
+  "parent": "bc518be926f55ae6af0b5e5ceb54989dd11174a5",
+  "steps": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Make the original line-terminator definitions available to Script locations",
+      "before": "static int js_pi_script_code_unit(JSString *source, int position)\n{",
+      "after": "#define CP_LS   0x2028\n#define CP_PS   0x2029\n\nstatic int js_pi_script_code_unit(JSString *source, int position)\n{",
+      "before_character_offset": 253015,
+      "after_character_offset": 253015
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Remove the unchanged definitions from their later parser location",
+      "before": "#define CP_NBSP 0x00a0\n#define CP_BOM  0xfeff\n\n#define CP_LS   0x2028\n#define CP_PS   0x2029\n",
+      "after": "#define CP_NBSP 0x00a0\n#define CP_BOM  0xfeff\n",
+      "before_character_offset": 861478,
+      "after_character_offset": 861478
+    }
+  ],
+  "variants": [
+    {
+      "label": "sealed_script32",
+      "before_sha256": "8407EA70CAC10FD41EFADBF31B8C043F86B322EA1A1D09DCB1EA00176761C241",
+      "after_sha256": "1202748142E8E549F917F446C4BA027718D555A73444F40AA7ADDCFE126D416D",
+      "bytes": 2392187,
+      "after_bytes": 2392187,
+      "exact_inverse": true
+    },
+    {
+      "label": "message2a_working",
+      "before_sha256": "8A5D1DC383F50454DEE372C2B9DF7B8CF95B70ED58C99E6A69D3167BB9787B18",
+      "after_sha256": "DE3C05D6698F2D1AC5F3D7F92540F4775B374101A71EAE2C4925FD3F48FAFCAE",
+      "bytes": 2394786,
+      "after_bytes": 2394786,
+      "exact_inverse": true
+    },
+    {
+      "label": "frozen_main",
+      "before_sha256": "3B24170B01A5FC07B3E9A193396300A35F5D84380116CC192E15B1516200A496",
+      "after_sha256": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "bytes": 2395528,
+      "after_bytes": 2395528,
+      "exact_inverse": true
+    }
+  ],
+  "failure": {
+    "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v27-buildquery-20261020-160113\\groups\\native-node-environment-map\\compile.stderr.log",
+    "copy": "compile.stderr.log",
+    "sha256": "00853A0E5A8A60DE9C66A735A5638D9B8D85594F5CC18591C28EF45157811886",
+    "bytes": 17990
+  },
+  "controls": {
+    "path": "src/native_vm_script_location_test.zig",
+    "sha256": "99A495F924700FDCFB64C479C61FEF6D2E5CE8532944615324079CBB17F17F55",
+    "bytes": 52063,
+    "declarations": [
+      "test \"VM Script complete input and UTF16 length are independent of function presentation source\" {",
+      "test \"VM Script root nested and sibling bytecode retain one actual native source identity\" {",
+      "test \"VM Script separate compilations of identical input have distinct owners\" {",
+      "test \"VM Script duplicate native entitlement outlives function and originating context\" {",
+      "test \"VM Script brand projection excludes native bound and proxy functions without guest access\" {",
+      "test \"VM Script source URL and map come from actual lexer comments with last-event semantics\" {",
+      "test \"VM Script empty later metadata clears earlier recognized lexer metadata\" {",
+      "test \"VM Script genuine module frames retain complete host module source\" {",
+      "test \"VM Script direct and indirect eval preserve their actual separate input\" {",
+      "test \"VM Script all four dynamic constructors retain actual generated eval input\" {",
+      "test \"VM Script genuine CJS compiler keeps original body without presentation wrapper\" {",
+      "test \"VM Script UTF16 line table handles CRLF lone CR LS PS negative and EOF positions\" {",
+      "test \"VM Script empty source and actual initial line offset retain canonical EOF behavior\" {",
+      "test \"VM Script captured positions use actual token bytes in both compiler modes\" {",
+      "test \"VM Script source positions survive real backward and long forward branch rewriting\" {",
+      "test \"VM Script cloned captured frame owns source after original frames retire\" {",
+      "test \"VM Script native synthetic and proxy frames have no fabricated source owner\" {",
+      "test \"VM Script raw projections allocate nothing and preserve actual ordinary fatal and private pending\" {",
+      "test \"VM Script position failure leaves outputs unchanged and source line enforces runtime ownership\" {",
+      "test \"VM Script native source owner retains no receiver or function graph after frame retirement\" {",
+      "test \"VM Script serialized siblings keep one source identity without object reference mode under every strip flag\" {",
+      "test \"VM Script serialized actual token positions survive source and debug stripping in both compilers\" {",
+      "test \"VM Script ordinary lexer resource and map metadata survive serialization independently of display stripping\" {",
+      "test \"VM Script serialized module retains complete source module origin and nested identity\" {",
+      "test \"VM Script real reader rejects invalid owner tags references origin and module bits\" {",
+      "test \"VM Script reader validates actual PC and source-byte bounds before publication\" {",
+      "test \"VM Script partial reader failure retires source records position arrays and table entitlements\" {",
+      "test \"VM Script version31 rejects actual version30 bytes at the unchanged version gate\" {",
+      "test \"VM Script real compiler and reader heap failure cleanly retire all native source owners\" {",
+      "test \"VM Script prior actual pending wins before allocating source line while raw getters remain available\" {",
+      "test \"VM Script existing private logical URL serialization restriction is preserved\" {",
+      "test \"VM Script failed parsing releases native source without fabricating synthetic-frame provenance\" {"
+    ],
+    "unchanged": true
+  },
+  "scope": "Relocate only the existing CP_LS/CP_PS definitions before their first new Script use. Values, Script line algorithm, parser uses, all controls and every other source byte stay unchanged.",
+  "integration": "Apply these two exact edits independently on Main or either donor state; do not replace the complete shared C. Message2a nine-edit packet commutes with this move."
+}
