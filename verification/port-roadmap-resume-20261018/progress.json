@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "985d6ebd95732c4134c4a9521aacfc2ef9f3a87b",
+  "current_source_head_at_record": "a30e6a920c8b9a5f01478a5aff42db06e71a0bf9",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -36,8 +36,8 @@
   "application_qualification": false,
   "production_bridge_removed": false,
   "published_release": false,
-  "updated_utc": "2026-10-19T23:03:40.943635+00:00",
-  "record_note": "Cleanup445 complete and unchanged. V17 fresh BuildQuery24/raw521 accepted, strict runtime33 tests negative and separate diagnostic all24/raw521 completed490 flags0/31 nonzero with no panic; independent closure81D29511 rehashed32793 current-at-closure inputs and closed all actual process instances. All new source units below are source-only; no V17 runtime transfers to them. Main now includes genuine VM disallow/continuation/pending-promise/Global/copy, Engine zero-work handling, callback28/AsyncWrap/request-state, actual inspect colors/formatter37, writer failure ownership, native CHECK registration and options26. Genuine VM logging origin is the remaining next-build dependency. Actual callback Operations/FSReq shared-loop/FileHandle/Module/SDK/HTTP/whole app/platform/bridge-removal/release remain open.",
+  "updated_utc": "2026-10-20T12:42:33.374820+00:00",
+  "record_note": "Cleanup445 complete and unchanged. V24 fresh BuildQuery37/790 accepted at1129cc97; strict runtime45 and separate diagnostic691 started/690 completed remain negative, the latter660 flags0/30 nonzero/one options fixture panic/99 unstarted. Independent complete current33067-file and original-process closure521B1F4A released Main source hold. Main now integrates termination30/TypeBox15/host16/checkpoint20/privateFS25/parser23/StreamResource8/registry and source corrections; reviewed Windows physical path ownership, Module/inspect/template/argv fixtures, actual Config initialization, lazy ordinary prototypes and property receiver retirement20 are committed. These are source-only successors; no earlier runtime qualification transfers. Boolean/drop/key and options actual intrinsic OOM fatal boundary remain in progress. Actual module binding/permissions/env_vars, callback bootstrap reporter, StreamBase/FileHandle/full loader/SDK/HTTP/whole app/platform/production-bridge-removal/fresh-install/release remain open.",
   "integrated_source_units": [
     "Reviewed VM union, Agent/Node/SDK guest operation guards, CJS compiler and source metadata bodies, Engine ownership, genuine Agent/session/auth owners, real Exec live waiter, Git/Chalk/Ignore/Semver consumers, actual InitialModel guest boundaries, genuine Anthropic auth, genuine PKCE body and ten declared controls, genuine RemoteCatalog bodies and nine declared controls.",
     "Actual public CLI parser10 controls, truncation9, Theme10 and extension helpers8; child dependency and11 real frontend/spawn/waiter controls; shared stdio lease assertion; genuine six-export output guard dependency; genuine DeviceCode12 controls including linked-VM loop-slot lifetime; RemoteCatalog now11 controls; PKCE actual host job checkpoints; optional CommonJS host-error correction and explicit component filters.",
@@ -1570,35 +1570,77 @@
     "sha256": "3E25928B76288B1B186E0A502C914DC10FA1AF2C7CCA7FDCB7B282DE4F92BE3B"
   },
   "current_execution_checkpoint": {
-    "status": "no_active_native_lease_or_source_hold",
-    "last_frozen_runtime_head": "31bcf8182543a4ebde583297660aec89d8423876",
-    "build_query": {
-      "groups": 24,
-      "actual_metadata": 521,
-      "metadata_acceptance": "31120BCE20FDF7D5AAEC126639B48B50D2FBA6C544B598300A2F18667EF08A0E",
-      "full_closure": "1ECA6B8D077592A66FA443C5E721E73A649243D08EB5C8A0887962C87F945624"
+    "recorded_utc": "2026-10-20T12:42:33.374820+00:00",
+    "status": "source_fixes_integrated_fresh_validation_pending",
+    "source_head": "a30e6a920c8b9a5f01478a5aff42db06e71a0bf9",
+    "v24_build": {
+      "head": "1129cc97e4e3367fc553e33d3091bc4fb7635d65",
+      "groups": 37,
+      "actual_metadata_count": 790,
+      "metadata_acceptance_sha256": "A2E217BD35CE16F0911A15F344B8367FE8F32FAE09320A38B0B94F6DC3113697",
+      "complete_current_closure_sha256": "A93EE0285029CC0C1CEC27DCAD612580EB9348386249F7DE10C4321EE733E597",
+      "runtime_qualification": false
     },
-    "strict_runtime": {
-      "completed": 33,
-      "passed": 32,
-      "failed": 1,
-      "not_started": 488,
-      "closure": "91BA5F8167F0202CAEA5D1245ACC7A66D90EAA6B3AB155497F3B2DD752BB1CEC"
+    "v24_strict_runtime": {
+      "status": "failed",
+      "started": 45,
+      "completed": 45,
+      "flags_zero": 43,
+      "flags_nonzero": 2,
+      "not_started": 745,
+      "independent_negative_closure_sha256": "3AF9F7F773102F6317EA0C7F933C79CC63BD2C163D3EA0A8666A0825C5B46317"
     },
-    "diagnostic_runtime": {
-      "groups": 24,
-      "actual_tests": 521,
-      "flags_zero": 490,
-      "nonzero": 31,
-      "no_panic": true,
-      "qualification": false,
-      "closure": "evidence/root-vm-io-oauth-options-v17-diagnostic-runtime-control-20261019-215552/independent-negative-diagnostic-runtime-closure.json",
-      "closure_sha256": "81D2951174D9DA0EE8DF71CF575CC44AC5CE65205A213E48972AE24EE82C426F",
-      "distinct_current_files_at_closure": 32793,
-      "source_hold_released": true,
-      "all_actual_process_instances_absent_at_closure": true
+    "v24_diagnostic_runtime": {
+      "status": "partial_negative_preserved",
+      "started_groups": 31,
+      "completed_groups": 30,
+      "started": 691,
+      "completed": 690,
+      "flags_zero": 660,
+      "flags_nonzero": 30,
+      "incomplete": 1,
+      "not_started": 99,
+      "panic": "options fixture dereferenced absent node_options at actual index29",
+      "independent_closure": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-oauth-options-v24-diagnostic-runtime-control-20261020-121245\\independent-partial-diagnostic-runtime-closure.json",
+        "bytes": 257551,
+        "sha256": "521B1F4A85375A82C9753ED291C71D06C6166080FFF48AE3D8DC6DE818DB48D5"
+      },
+      "distinct_current_files_rehashed": 33067,
+      "all_original_actual_process_instances_absent": true,
+      "qualification": false
     },
-    "current_successor_has_runtime_evidence": false
+    "source_intakes": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\coherent-native-source-intake-20261020\\receipt.json",
+        "bytes": 254825,
+        "sha256": "F353629B51C10CD9DF002417407DD97B5A4A3BDA547651F767F3587F6A1E3E2D"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\v24-reviewed-corrections-intake-20261020\\receipt.json",
+        "bytes": 21117,
+        "sha256": "0929782D4079BE96CB75A57FED7E37FAFF47AE355A754063C520BF4035CB9DCB"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-ordinary-function-prototype-sourceonly-20261020\\main-intake.json",
+        "bytes": 7246,
+        "sha256": "D196B3FDBA4CC019CE8EBC827C1C03F8072A6EA87033A37B8AE56484044A330B"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-property-read-retirement-sourceonly-20261020\\main-intake.json",
+        "bytes": 12216,
+        "sha256": "0E61B91CA15A9D3A92EBC2A3068BA4E1404CF60CD54DCE2617EB1114F201A5B5"
+      }
+    ],
+    "source_only": true,
+    "native_executions_on_successor": 0,
+    "remaining_next_gate": [
+      "Reviewed pending Boolean/property-key/drop C cutpoints and options intrinsic allocation fatal boundary",
+      "Fresh complete source/compiler/control BuildQuery with new install-only roots and raw actual metadata acceptance",
+      "Separate strict runtime with complete current input and exact original-process closure",
+      "Isolated native corruption/UV/option-heap fatal probes under separate grants"
+    ],
+    "application_qualification": false
   },
   "retained_recent_native_negatives": [
     {
@@ -2235,6 +2277,37 @@
       },
       "record_note": "Port active. Cleanup445 complete and unchanged. V11/V12 first-compile negatives, V13 diagnostic negatives, original V14 pre-native manifest rejection and V14b fresh partial BuildQuery are preserved with independent current-input/process-instance closures. V14b yielded45 raw metadata names (backing24/private9/TCP12), then options parser syntax failed; zero runtime accepted. Reviewed parser brace correction, actual UVException6 and native immediate owner are integrated. Next is unchanged strict4F fresh BuildQuery over24 groups/501 declared names before further vendor intakes. Original B053 seed admission excludes newly added .patch provenance, so no seed is reused or guard changed. Callback Environment, actual AsyncWrap/FileHandle, Module/SDK/HTTP/whole app/platform/bridge-removal/release remain open.",
       "source_head": "efc47915749eb004bfb85dd61b6204b2e31dee80"
+    },
+    {
+      "status": "no_active_native_lease_or_source_hold",
+      "last_frozen_runtime_head": "31bcf8182543a4ebde583297660aec89d8423876",
+      "build_query": {
+        "groups": 24,
+        "actual_metadata": 521,
+        "metadata_acceptance": "31120BCE20FDF7D5AAEC126639B48B50D2FBA6C544B598300A2F18667EF08A0E",
+        "full_closure": "1ECA6B8D077592A66FA443C5E721E73A649243D08EB5C8A0887962C87F945624"
+      },
+      "strict_runtime": {
+        "completed": 33,
+        "passed": 32,
+        "failed": 1,
+        "not_started": 488,
+        "closure": "91BA5F8167F0202CAEA5D1245ACC7A66D90EAA6B3AB155497F3B2DD752BB1CEC"
+      },
+      "diagnostic_runtime": {
+        "groups": 24,
+        "actual_tests": 521,
+        "flags_zero": 490,
+        "nonzero": 31,
+        "no_panic": true,
+        "qualification": false,
+        "closure": "evidence/root-vm-io-oauth-options-v17-diagnostic-runtime-control-20261019-215552/independent-negative-diagnostic-runtime-closure.json",
+        "closure_sha256": "81D2951174D9DA0EE8DF71CF575CC44AC5CE65205A213E48972AE24EE82C426F",
+        "distinct_current_files_at_closure": 32793,
+        "source_hold_released": true,
+        "all_actual_process_instances_absent_at_closure": true
+      },
+      "current_successor_has_runtime_evidence": false
     }
   ],
   "source_intake_v18": {
@@ -2265,5 +2338,78 @@
       "985d6ebd95732c4134c4a9521aacfc2ef9f3a87b Implement genuine Node formatter and Host error formatting"
     ],
     "runtime_authority": false
+  },
+  "v24_validation_and_successor": {
+    "recorded_utc": "2026-10-20T12:42:33.374820+00:00",
+    "status": "source_fixes_integrated_fresh_validation_pending",
+    "source_head": "a30e6a920c8b9a5f01478a5aff42db06e71a0bf9",
+    "v24_build": {
+      "head": "1129cc97e4e3367fc553e33d3091bc4fb7635d65",
+      "groups": 37,
+      "actual_metadata_count": 790,
+      "metadata_acceptance_sha256": "A2E217BD35CE16F0911A15F344B8367FE8F32FAE09320A38B0B94F6DC3113697",
+      "complete_current_closure_sha256": "A93EE0285029CC0C1CEC27DCAD612580EB9348386249F7DE10C4321EE733E597",
+      "runtime_qualification": false
+    },
+    "v24_strict_runtime": {
+      "status": "failed",
+      "started": 45,
+      "completed": 45,
+      "flags_zero": 43,
+      "flags_nonzero": 2,
+      "not_started": 745,
+      "independent_negative_closure_sha256": "3AF9F7F773102F6317EA0C7F933C79CC63BD2C163D3EA0A8666A0825C5B46317"
+    },
+    "v24_diagnostic_runtime": {
+      "status": "partial_negative_preserved",
+      "started_groups": 31,
+      "completed_groups": 30,
+      "started": 691,
+      "completed": 690,
+      "flags_zero": 660,
+      "flags_nonzero": 30,
+      "incomplete": 1,
+      "not_started": 99,
+      "panic": "options fixture dereferenced absent node_options at actual index29",
+      "independent_closure": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-oauth-options-v24-diagnostic-runtime-control-20261020-121245\\independent-partial-diagnostic-runtime-closure.json",
+        "bytes": 257551,
+        "sha256": "521B1F4A85375A82C9753ED291C71D06C6166080FFF48AE3D8DC6DE818DB48D5"
+      },
+      "distinct_current_files_rehashed": 33067,
+      "all_original_actual_process_instances_absent": true,
+      "qualification": false
+    },
+    "source_intakes": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\coherent-native-source-intake-20261020\\receipt.json",
+        "bytes": 254825,
+        "sha256": "F353629B51C10CD9DF002417407DD97B5A4A3BDA547651F767F3587F6A1E3E2D"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\v24-reviewed-corrections-intake-20261020\\receipt.json",
+        "bytes": 21117,
+        "sha256": "0929782D4079BE96CB75A57FED7E37FAFF47AE355A754063C520BF4035CB9DCB"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-ordinary-function-prototype-sourceonly-20261020\\main-intake.json",
+        "bytes": 7246,
+        "sha256": "D196B3FDBA4CC019CE8EBC827C1C03F8072A6EA87033A37B8AE56484044A330B"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-property-read-retirement-sourceonly-20261020\\main-intake.json",
+        "bytes": 12216,
+        "sha256": "0E61B91CA15A9D3A92EBC2A3068BA4E1404CF60CD54DCE2617EB1114F201A5B5"
+      }
+    ],
+    "source_only": true,
+    "native_executions_on_successor": 0,
+    "remaining_next_gate": [
+      "Reviewed pending Boolean/property-key/drop C cutpoints and options intrinsic allocation fatal boundary",
+      "Fresh complete source/compiler/control BuildQuery with new install-only roots and raw actual metadata acceptance",
+      "Separate strict runtime with complete current input and exact original-process closure",
+      "Isolated native corruption/UV/option-heap fatal probes under separate grants"
+    ],
+    "application_qualification": false
   }
 }
