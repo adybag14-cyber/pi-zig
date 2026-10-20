@@ -707,7 +707,7 @@ pub const Scope = struct {
         self.callTick() catch |err| {
             self.failed = true;
             s.boundary.escaping();
-            _ = self.stoppingCheck() catch {};
+            _ = self.stoppingCheck() catch false;
             return err;
         };
         _ = try self.stoppingCheck();

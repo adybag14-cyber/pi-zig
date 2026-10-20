@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "status": "source_only_original_negative_preserved",
+  "prior_head": "9f006bc54dda5befbd0cba0b9bd5d531573c6544",
+  "reviewed_utc": "2026-10-20T11:38:39.160541+00:00",
+  "negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-oauth-options-fresh-v22-control-20261020-112854\\independent-negative-buildquery-closure.json",
+    "bytes": 5622,
+    "sha256": "EB5FA48FDB8B565E1434C6B174667ACCC2F08EC32FE3CEA1CDE71B38A56CDB8D"
+  },
+  "original_compile_stderr": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-oauth-options-fresh-v22-buildquery-20261020-112854\\groups\\native-node-callback-scope\\compile.stderr.log",
+    "bytes": 19558,
+    "sha256": "6B5EB4A6FA89310C9F27D1688F10403B8B6D0F4F2184798B88A3CE7FA764AE9E"
+  },
+  "changes": [
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before_sha256": "DE34706EF1C09C584BB1878AA6CB68C69B517DEB9FEEA1FE4CF24CE0338138D5",
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_async_wrap_state.zig",
+        "bytes": 19937,
+        "sha256": "A5EF66E7B302998DB7C27E8EA2B7C1315F154286D3B284A5670358B6B5CF863A"
+      }
+    },
+    {
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "before_sha256": "FBD43D092911F08D7CCF5E051C62894747AD6BD42D13309EC1B6B7872B9BE00B",
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 37754,
+        "sha256": "8868C64C8B9DF78CC7EA43DE34E682B3ABB74285C6B47BA9D268C015FB9CAF1F"
+      }
+    }
+  ],
+  "peer": {
+    "agent": "/root/sdk_owners",
+    "scope": "Full AsyncWrapState, CallbackScope, MakeCallback, RequestState, NativeImmediate queue and integration, ChargedAllocator",
+    "finding": "Three misplaced container doc markers at AsyncWrapState24,25,52 must be declaration docs; CallbackScope710 ignored stoppingCheck !bool needs catch false instead of void catch block.",
+    "other_definite_blockers_found": false
+  },
+  "assertions_changed": false,
+  "api_changed": false,
+  "behavior": "The ignored !bool value remains ignored and its error remains suppressed after recording the original tick callback failure. Documentation only on State.",
+  "native_execution": false,
+  "runtime_qualification": false
+}

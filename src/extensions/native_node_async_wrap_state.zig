@@ -21,8 +21,8 @@ pub const Provider = struct {
 pub const Check = callbacks.Check;
 
 /// The functions are the compiled derived C++ destructor/mark equivalents.
-//! A concrete FSReq/handle embeds State and supplies its own real fields.
-//! retire must release all derived fields before State releases its frame.
+/// A concrete FSReq/handle embeds State and supplies its own real fields.
+/// retire must release all derived fields before State releases its frame.
 pub const Derived = struct {
     mark: *const fn (?*c.JSRuntime, *State, ?*const c.JS_MarkFunc) void,
     retire: *const fn (*State, *LocalScope) anyerror!void,
@@ -49,7 +49,7 @@ pub const WeakBindingSlot = struct {
 
 /// Independently retained native owner. One realm cleanup registration covers
 /// the real intrusive list, and every attached State retains this allocation.
-//! Clearing a JS wrapper does not depend on the order of other GC finalizers.
+/// Clearing a JS wrapper does not depend on the order of other GC finalizers.
 pub const Registry = struct {
     environment: *Environment,
     references: usize = 1,
