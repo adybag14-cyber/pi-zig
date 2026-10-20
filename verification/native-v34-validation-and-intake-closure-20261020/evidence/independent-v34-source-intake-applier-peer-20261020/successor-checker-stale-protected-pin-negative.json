@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "status": "retained_static_peer_checker_stale_literal_rejection",
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntakeSuccessor.py",
+    "bytes": 11915,
+    "sha256": "CF2082667D4966445A173049853FB1F75D5EF9FBAB265A46DE37F142A7B7EF6D"
+  },
+  "tool_result": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntakeSuccessor.py\", line 36, in <module>\r\n    protected=pin(MAIN/\"src/extensions/native_node_async_wrap.zig\",\"972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2\")\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntakeSuccessor.py\", line 15, in pin\r\n    assert sha(b)==h,(str(p),sha(b),h)\r\n           ^^^^^^^^^\r\nAssertionError: ('C:\\\\Users\\\\adyba\\\\pi-zig\\\\main\\\\src\\\\extensions\\\\native_node_async_wrap.zig', '7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0', '972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2')",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntakeSuccessor.py\", line 36, in <module>\r\n    protected=pin(MAIN/\"src/extensions/native_node_async_wrap.zig\",\"972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2\")\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntakeSuccessor.py\", line 15, in pin\r\n    assert sha(b)==h,(str(p),sha(b),h)\r\n           ^^^^^^^^^\r\nAssertionError: ('C:\\\\Users\\\\adyba\\\\pi-zig\\\\main\\\\src\\\\extensions\\\\native_node_async_wrap.zig', '7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0', '972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2')\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "main_mutated": false,
+  "candidate_executor_executed": false,
+  "source_release": false
+}

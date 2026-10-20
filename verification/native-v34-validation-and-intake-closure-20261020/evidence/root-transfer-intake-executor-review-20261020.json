@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "status": "root_complete_exact_transfer_intake_review",
+  "utc": "2026-10-20T21:46:55.804722+00:00",
+  "executor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactReviewedTransferSourceIntake-20261020.py",
+    "bytes": 9697,
+    "sha256": "DF7290181F00B28CA0F602358AA2DB78F15D5C67E89A3134C99D829DA99FB9D5"
+  },
+  "adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\transfer-intake-executor-finite-adaptation-20261020.json",
+    "bytes": 4950,
+    "sha256": "E5046B328C8C9CF6BFE429E9BE90C0BF48276452D9D0E5B9A0267DB070E9DDE0"
+  },
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-transfer-main-intake-20261020\\manifest.json",
+    "bytes": 54892,
+    "sha256": "94E02E52D90FB962ACBE82BE8E531E222E04F50B11DDA887F89C8B205FFD4ADE"
+  },
+  "full_candidate_source_read": true,
+  "all5_finite_intermediates_and_whole_inverse_verified": true,
+  "all77_donors_hash_and_size_verified": true,
+  "four_new_sources_and_one_install_only_build": true,
+  "unchanged_generic_byte_index_commit_gates": true,
+  "prior_three_receipts_and_parent_chain_verified": true,
+  "native_execution_authorized": false,
+  "source_execution_authorized": false,
+  "qualification": false
+}

@@ -1,0 +1,1537 @@
+{
+  "schema": 1,
+  "status": "independently_closed_negative_strict_runtime",
+  "candidate_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "reviewed_utc": "2026-10-20T21:11:40.463318+00:00",
+  "reviewer": "Independent complete current inventory/hash, original artifact, raw canonical wire and actual100ns process-instance audit",
+  "source_seal_scope": "whole_batch",
+  "whole_bookends_unchanged": true,
+  "current_all_sealed_inputs_rehashed": true,
+  "current_complete_directory_inventories_verified": true,
+  "distinct_current_files_rehashed": 33786,
+  "metadata_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\independent-metadata-acceptance.json",
+    "bytes": 242327,
+    "sha256": "80BCC5A73602A01AFFB9D66B3D1531D730D4B0FD79EFDC73CADAA7D246729D45"
+  },
+  "accepted_cohort": 1285,
+  "runtime_owner_count": 9,
+  "actual_process_intervals": [
+    {
+      "pid": 65676,
+      "created": 17925302365299161,
+      "completed": 17925302371931601,
+      "role": "runtime",
+      "group": "native-node-file-handle-read"
+    },
+    {
+      "pid": 65560,
+      "created": 17925302460983235,
+      "completed": 17925302465334353,
+      "role": "runtime",
+      "group": "native-node-fs-callback-template"
+    },
+    {
+      "pid": 63568,
+      "created": 17925302551790134,
+      "completed": 17925302557551885,
+      "role": "runtime",
+      "group": "native-vm-simple-stack-source"
+    },
+    {
+      "pid": 66788,
+      "created": 17925302642370320,
+      "completed": 17925302645060983,
+      "role": "runtime",
+      "group": "native-vm-exotic-operations"
+    },
+    {
+      "pid": 45060,
+      "created": 17925302729844777,
+      "completed": 17925302732072551,
+      "role": "runtime",
+      "group": "native-node-diagnostic-context"
+    },
+    {
+      "pid": 47760,
+      "created": 17925302815832829,
+      "completed": 17925302818349544,
+      "role": "runtime",
+      "group": "native-node-native-debug"
+    },
+    {
+      "pid": 53848,
+      "created": 17925302901274825,
+      "completed": 17925302904047603,
+      "role": "runtime",
+      "group": "native-node-permission"
+    },
+    {
+      "pid": 69100,
+      "created": 17925302987710276,
+      "completed": 17925302994071207,
+      "role": "runtime",
+      "group": "native-node-fs-readwrap-reuse"
+    },
+    {
+      "pid": 61080,
+      "created": 17925303077708676,
+      "completed": 17925303083317547,
+      "role": "runtime",
+      "group": "native-node-reqwrap-callback-routing"
+    },
+    {
+      "pid": 69600,
+      "created": 17925302077552969,
+      "completed": 17925303553788702,
+      "role": "outer"
+    },
+    {
+      "pid": 25368,
+      "created": 17925302073506587,
+      "completed": 17925303556380000,
+      "role": "runner"
+    },
+    {
+      "pid": 61132,
+      "created": 17925302073280000,
+      "completed": 17925303556380000,
+      "role": "launcher_job_lifetime_envelope"
+    }
+  ],
+  "observed_started": 164,
+  "observed_completed": 164,
+  "observed_failed": 1,
+  "observed_failed_tests": [
+    {
+      "group": "native-node-reqwrap-callback-routing",
+      "index": 6,
+      "flags": 1,
+      "name": "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing typed callback failure still retires the final native Wrapper pointer"
+    }
+  ],
+  "observed_groups": [
+    {
+      "group": "native-node-file-handle-read",
+      "started": 15,
+      "completed": 15,
+      "failed": 0,
+      "results": [
+        {
+          "index": 0,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_read_test.test.native FileHandle read closed and closing return EOF before read admission"
+        },
+        {
+          "index": 1,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_read_test.test.native FileHandle zero length emits actual stream EOF without allocating a request"
+        },
+        {
+          "index": 2,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_read_test.test.native FileHandle first read bypasses FSReqCallback construction and retains the real ReadWrap"
+        },
+        {
+          "index": 3,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_read_test.test.native FileHandle repeated start and ReadStop preserve the accepted completion"
+        },
+        {
+          "index": 4,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_read_test.test.native FileHandle bounded offset advances by emitted bytes before inline EOF"
+        },
+        {
+          "index": 5,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_read_test.test.native FileHandle completion uses the live length and preserves the raw trace result"
+        },
+        {
+          "index": 6,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_read_test.test.native FileHandle unbounded restart recycles the same native request through actual EOF"
+        },
+        {
+          "index": 7,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_read_test.test.native FileHandle reentrant onread restarts before old Wrapper and event retirement"
+        },
+        {
+          "index": 8,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_read_test.test.native FileHandle reuse creates a fresh resource and restores the default trigger"
+        },
+        {
+          "index": 9,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_read_test.test.native FileHandle ignored resource Set exception continues reset and real admission"
+        },
+        {
+          "index": 10,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_read_test.test.native FileHandle ordinary onread reason survives restart and the actual second completion"
+        },
+        {
+          "index": 11,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_read_test.test.native FileHandle full freelist releases the completed local after EmitRead"
+        },
+        {
+          "index": 12,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_read_test.test.native FileHandle joined service drains the accepted buffer after JavaScript is disabled"
+        },
+        {
+          "index": 13,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_read_test.test.native FileHandle AfterClose shares the actual flags and emits EOF through StreamBase"
+        },
+        {
+          "index": 14,
+          "flags": 0,
+          "passed": true,
+          "name": "extensions.native_durable_storage.test_0"
+        }
+      ],
+      "original_group_status": "partial_batch_not_admissible",
+      "canonical": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-file-handle-read\\runtime.results.json",
+        "bytes": 1723,
+        "sha256": "B9EF203C1D56BC07A35E8B3F986F2B95358906658DB5B19B915CB4AADFC6CBFD"
+      }
+    },
+    {
+      "group": "native-node-fs-callback-template",
+      "started": 12,
+      "completed": 12,
+      "failed": 0,
+      "results": [
+        {
+          "index": 0,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_callback_template_test.test.native FSReqCallback no argument initializes the actual selected FSReqBase defaults"
+        },
+        {
+          "index": 1,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_callback_template_test.test.native FSReqCallback IsTrue accepts only literal true and never coerces an argument"
+        },
+        {
+          "index": 2,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_callback_template_test.test.native FSReqCallback caller local owns a weak actual request and one BindingData pointer"
+        },
+        {
+          "index": 3,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_callback_template_test.test.native FSReqCallback weak finalization removes its actual Entry and releases BindingData"
+        },
+        {
+          "index": 4,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_callback_template_test.test.native FSReqCallback stored InstanceTemplate creates a real blank brand without calling its constructor"
+        },
+        {
+          "index": 5,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_callback_template_test.test.native FSReqCallback stored brand distinguishes the actual FileHandleReadWrap native allocation"
+        },
+        {
+          "index": 6,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_callback_template_test.test.native FSReqCallback inherits actual AsyncWrap methods and constructor descriptors"
+        },
+        {
+          "index": 7,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_callback_template_test.test.native FSReqCallback subclass prototype is selected before its genuine native constructor"
+        },
+        {
+          "index": 8,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_callback_template_test.test.native FSReqCallback throwing new target prototype preserves the reason before native allocation"
+        },
+        {
+          "index": 9,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_callback_template_test.test.native FSReqCallback configuration retains the actual shared Controller once and rejects retired Hub entry"
+        },
+        {
+          "index": 10,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_callback_template_test.test.native FSReqCallback generic storage admits the actual read and retires through the real Wrapper"
+        },
+        {
+          "index": 11,
+          "flags": 0,
+          "passed": true,
+          "name": "extensions.native_durable_storage.test_0"
+        }
+      ],
+      "original_group_status": "partial_batch_not_admissible",
+      "canonical": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-fs-callback-template\\runtime.results.json",
+        "bytes": 1499,
+        "sha256": "6EAAD2BA686108909A7D1C9C78AD60B9D863FF1D6738C0942FD07869EEA1CD09"
+      }
+    },
+    {
+      "group": "native-vm-simple-stack-source",
+      "started": 34,
+      "completed": 34,
+      "failed": 0,
+      "results": [
+        {
+          "index": 0,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source WeakMap intrinsic distinguishes absent and stored undefined"
+        },
+        {
+          "index": 1,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source WeakMap invalid brands and Proxy leave output untouched"
+        },
+        {
+          "index": 2,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source WeakMap read bypasses poisoned methods and heap and execution gates"
+        },
+        {
+          "index": 3,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source WeakMap raw read preserves actual ordinary fatal and private pending"
+        },
+        {
+          "index": 4,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source WeakMap returned value owns one root without keeping the key alive"
+        },
+        {
+          "index": 5,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source real Error selects its original complete Script and source position"
+        },
+        {
+          "index": 6,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source inherited holder remains visible through a never-captured native Error"
+        },
+        {
+          "index": 7,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source captured-disabled state blocks an inherited raw stack"
+        },
+        {
+          "index": 8,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source formatted undefined and other DATA block inheritance"
+        },
+        {
+          "index": 9,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source raw lookup stops at Proxy without invoking its traps"
+        },
+        {
+          "index": 10,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source raw lookup ignores guest fields and preserves actual pending at heap limit one"
+        },
+        {
+          "index": 11,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source native Script result retains no captured receiver graph"
+        },
+        {
+          "index": 12,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source raw projection skips native and synthetic records before a real Script"
+        },
+        {
+          "index": 13,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source raw projection rejects Proxy and accessor arrays without guest entry"
+        },
+        {
+          "index": 14,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source fallback presence distinguishes untouched Error and consuming transfer"
+        },
+        {
+          "index": 15,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source raw fallback read neither allocates nor adopts its C owner"
+        },
+        {
+          "index": 16,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source successful map adoption consumes fallback before formatter failure"
+        },
+        {
+          "index": 17,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source failed map adoption leaves the original C fallback intact"
+        },
+        {
+          "index": 18,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source present undefined fallback blocks inherited provenance and transfers once"
+        },
+        {
+          "index": 19,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source consuming fallback transfer preserves actual pending without allocation"
+        },
+        {
+          "index": 20,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source setter publishes formatted state before retiring captured receiver"
+        },
+        {
+          "index": 21,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source successful formatting retires simple frames after actual formatter returns"
+        },
+        {
+          "index": 22,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source formatter-local raw owner survives setter and success overwrites its DATA"
+        },
+        {
+          "index": 23,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source formatter throw preserves a reentrant setter and retires local frames"
+        },
+        {
+          "index": 24,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source FixedArray success replaces a record recaptured during formatting"
+        },
+        {
+          "index": 25,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source formatter failure preserves the new record and its actual recapture Script"
+        },
+        {
+          "index": 26,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source inherited formatting writes the selected holder without creating child state"
+        },
+        {
+          "index": 27,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source flagged formatter DATA remains a successful formatted value"
+        },
+        {
+          "index": 28,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source setter retirement preserves the actual ordinary cleanup reason"
+        },
+        {
+          "index": 29,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source actual fatal receiver retirement stops later guest catch and finally"
+        },
+        {
+          "index": 30,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source actual private receiver retirement keeps its native completion"
+        },
+        {
+          "index": 31,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source cancelled formatter unwind stays native and preserves unformatted state"
+        },
+        {
+          "index": 32,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_simple_stack_source_test.test.VM simple stack source formatter failure and final raw retirement reduce actual fatal owners"
+        },
+        {
+          "index": 33,
+          "flags": 0,
+          "passed": true,
+          "name": "extensions.native_durable_storage.test_0"
+        }
+      ],
+      "original_group_status": "partial_batch_not_admissible",
+      "canonical": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-vm-simple-stack-source\\runtime.results.json",
+        "bytes": 3168,
+        "sha256": "F6D465DBE98D6B4F41E37398646F3611AF6346372B4A3F916E5CAC83C7F2B30E"
+      }
+    },
+    {
+      "group": "native-vm-exotic-operations",
+      "started": 28,
+      "completed": 28,
+      "failed": 0,
+      "results": [
+        {
+          "index": 0,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations enumerable keys query flags without fetching values"
+        },
+        {
+          "index": 1,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations full descriptors still query then fetch an owned value"
+        },
+        {
+          "index": 2,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations existence requests retain their original descriptor callback"
+        },
+        {
+          "index": 3,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations unfiltered own keys enumerate without a descriptor query"
+        },
+        {
+          "index": 4,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations values filter each key before its actual Get"
+        },
+        {
+          "index": 5,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations missing flags hook retains temporary descriptor ownership"
+        },
+        {
+          "index": 6,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations physical own data precedes the optional query hook"
+        },
+        {
+          "index": 7,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations SET_ENUM queries both string and Symbol descriptors without Get"
+        },
+        {
+          "index": 8,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations ordinary Proxy descriptor traps retain their original order"
+        },
+        {
+          "index": 9,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations admitted query performs no VM allocation under heap limit"
+        },
+        {
+          "index": 10,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations descriptor getter may return flagged Error DATA successfully"
+        },
+        {
+          "index": 11,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations ordinary query failure remains the exact catchable reason"
+        },
+        {
+          "index": 12,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations actual fatal query stops later guest catch and finally"
+        },
+        {
+          "index": 13,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations active and cancelled private query completions stay native"
+        },
+        {
+          "index": 14,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations Reflect prevent rejection is normal and allocation free"
+        },
+        {
+          "index": 15,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations Object prevent keeps its actual throwing rejection path"
+        },
+        {
+          "index": 16,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations seal rejection uses SEALED before any enumeration"
+        },
+        {
+          "index": 17,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations freeze rejection uses FROZEN before any definition"
+        },
+        {
+          "index": 18,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations positive admission completes each real integrity mutation"
+        },
+        {
+          "index": 19,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations a missing admission hook preserves legacy extension mutation"
+        },
+        {
+          "index": 20,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations ordinary objects and Proxy refusal retain their old behavior"
+        },
+        {
+          "index": 21,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations a Proxy forwarding trap selects only its actual prevent call"
+        },
+        {
+          "index": 22,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations nonobject integrity requests keep existing public semantics"
+        },
+        {
+          "index": 23,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations ordinary integrity failure preserves its exact reason"
+        },
+        {
+          "index": 24,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations actual fatal integrity failure bypasses guest cleanup"
+        },
+        {
+          "index": 25,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations active and cancelled private integrity completion bypasses handlers"
+        },
+        {
+          "index": 26,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations normal native rejection preserves the actual prior pending owner"
+        },
+        {
+          "index": 27,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_exotic_operations_test.test.VM exotic operations borrowed receiver callbacks create no lasting object root"
+        }
+      ],
+      "original_group_status": "partial_batch_not_admissible",
+      "canonical": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-vm-exotic-operations\\runtime.results.json",
+        "bytes": 2710,
+        "sha256": "C3B50FE34C569234B051BA31143779184B70CDD8753C4B5F32E603E33B5E2259"
+      }
+    },
+    {
+      "group": "native-node-diagnostic-context",
+      "started": 10,
+      "completed": 10,
+      "failed": 0,
+      "results": [
+        {
+          "index": 0,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_diagnostic_context_test.test.Node diagnostic context actual VM creation does not admit an ambient context"
+        },
+        {
+          "index": 1,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_diagnostic_context_test.test.Node diagnostic context nested actual contexts restore their caller without retaining a VM"
+        },
+        {
+          "index": 2,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_diagnostic_context_test.test.Node diagnostic context explicit native-only admission masks and restores an entered caller"
+        },
+        {
+          "index": 3,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_diagnostic_context_test.test.Node diagnostic context same-context reentry leaves the outer borrowed admission live"
+        },
+        {
+          "index": 4,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_diagnostic_context_test.test.Node diagnostic context native projection works with an exhausted JS heap without allocating"
+        },
+        {
+          "index": 5,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_diagnostic_context_test.test.Node diagnostic context ordinary and fatal pending reasons remain the same actual owned value"
+        },
+        {
+          "index": 6,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_diagnostic_context_test.test.Node diagnostic context private termination lease and actual pending token survive admission"
+        },
+        {
+          "index": 7,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_diagnostic_context_test.test.Node diagnostic context C++ locals retire before nested and outer scopes restore"
+        },
+        {
+          "index": 8,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_diagnostic_context_test.test.Node diagnostic context C++ early return keeps each destructor in its real caller scope"
+        },
+        {
+          "index": 9,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_diagnostic_context_test.test.Node diagnostic context actual worker thread neither inherits nor overwrites its caller admission"
+        }
+      ],
+      "original_group_status": "partial_batch_not_admissible",
+      "canonical": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-diagnostic-context\\runtime.results.json",
+        "bytes": 1345,
+        "sha256": "6625830F34421461E8D9E630BEAF701C7C83D5D6EAFE05C8CA7E7893D57433C7"
+      }
+    },
+    {
+      "group": "native-node-native-debug",
+      "started": 20,
+      "completed": 20,
+      "failed": 0,
+      "results": [
+        {
+          "index": 0,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug constructs complete original category tables with every field disabled"
+        },
+        {
+          "index": 1,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug empty and unmatched input leave original enabled fields false"
+        },
+        {
+          "index": 2,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug uses original case-insensitive substring matching"
+        },
+        {
+          "index": 3,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug leading and internal empty tokens enable every category"
+        },
+        {
+          "index": 4,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug a trailing comma does not invent a final empty token"
+        },
+        {
+          "index": 5,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug includes the original literal terminal NUL in category matching"
+        },
+        {
+          "index": 6,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug parsing is one-way and separate native lists remain independent"
+        },
+        {
+          "index": 7,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug process selection returns one fixed-feature original list"
+        },
+        {
+          "index": 8,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug Parse Environment reads the live supplied Map through real SafeGetenv"
+        },
+        {
+          "index": 9,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug retains the SafeGetenv text before the actual trace callback mutates Map"
+        },
+        {
+          "index": 10,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug selected sized-string formatter preserves binary bytes and retires its native copies"
+        },
+        {
+          "index": 11,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug selected tree formatter observes C-string boundaries and UTF8 branch bytes"
+        },
+        {
+          "index": 12,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug actual FWrite file route preserves exact binary content"
+        },
+        {
+          "index": 13,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug Permission output callbacks use the original selected format and real stderr route"
+        },
+        {
+          "index": 14,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug actual Permission insertion reads the live enabled list before printing"
+        },
+        {
+          "index": 15,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug formatter and parser use real native new-handler retry without JS allocation"
+        },
+        {
+          "index": 16,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug native formatting preserves actual ordinary and generic pending under heap limit one"
+        },
+        {
+          "index": 17,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug native operations leave actual private termination pending and generation unchanged"
+        },
+        {
+          "index": 18,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug formatting retains a native allocation domain beyond VM and caller retirement"
+        },
+        {
+          "index": 19,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_native_debug_test.test.native Debug warmed static category Strings are reused while temporary parse Strings retire"
+        }
+      ],
+      "original_group_status": "partial_batch_not_admissible",
+      "canonical": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-native-debug\\runtime.results.json",
+        "bytes": 2099,
+        "sha256": "1F673ABE71A1749947A6DF437EC9B61878BC87C2B5EE783E6A28CC117329299F"
+      }
+    },
+    {
+      "group": "native-node-permission",
+      "started": 18,
+      "completed": 18,
+      "failed": 0,
+      "results": [
+        {
+          "index": 0,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission constructs actual policies and returns every native allocation at destruction"
+        },
+        {
+          "index": 1,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission enable selects initial policies and each simple Apply denies only its actual scope"
+        },
+        {
+          "index": 2,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission unknown Apply preserves the native policy map and existing decisions"
+        },
+        {
+          "index": 3,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission exact missing-file grant does not grant siblings descendants or writes"
+        },
+        {
+          "index": 4,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission resolves original dot and parent segments before radix lookup"
+        },
+        {
+          "index": 5,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission actual directory stat grants its original recursive wildcard"
+        },
+        {
+          "index": 6,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission actual regular file stat retains an exact grant"
+        },
+        {
+          "index": 7,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission standalone star returns before later grants and keeps the other direction denied"
+        },
+        {
+          "index": 8,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission aggregate filesystem grant requires both original all-direction flags"
+        },
+        {
+          "index": 9,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission real radix splits preserve exact sibling grants and duplicate insertion retains no allocation"
+        },
+        {
+          "index": 10,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission preserves the original nonterminal wildcard lookup decisions"
+        },
+        {
+          "index": 11,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission successful directory append branch releases its actual synchronous libuv path allocation"
+        },
+        {
+          "index": 12,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission filesystem-root trailing separator branch releases its actual synchronous libuv path allocation"
+        },
+        {
+          "index": 13,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission destruction recursively retires unique descendants below nonterminal wildcards"
+        },
+        {
+          "index": 14,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission actual native allocation failure retries before grant publication without a JS reason"
+        },
+        {
+          "index": 15,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission apply and query preserve actual ordinary generic and private pending under exhausted JS heap"
+        },
+        {
+          "index": 16,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission blocks and concrete shared policy destructors survive VM Environment and caller retirement"
+        },
+        {
+          "index": 17,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_permission_test.test.native Permission repeated mixed normal and wildcard retirement restores its exact native baseline"
+        }
+      ],
+      "original_group_status": "partial_batch_not_admissible",
+      "canonical": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-permission\\runtime.results.json",
+        "bytes": 1945,
+        "sha256": "84B3F3E4079875EFC2F11DFDE9893DD9B78ECCF3DC0F3869DF892CF93E6F200B"
+      }
+    },
+    {
+      "group": "native-node-fs-readwrap-reuse",
+      "started": 14,
+      "completed": 14,
+      "failed": 0,
+      "results": [
+        {
+          "index": 0,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_readwrap_reuse_test.test.native actual FS reuse initial Reset preserves unsubmitted storage and charge"
+        },
+        {
+          "index": 1,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_readwrap_reuse_test.test.native actual FS reuse raw span preserves offset sentinels and payload after cleanup"
+        },
+        {
+          "index": 2,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_readwrap_reuse_test.test.native actual FS reuse invalid raw spans leave the same request admissible"
+        },
+        {
+          "index": 3,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_readwrap_reuse_test.test.native actual FS reuse Reset rejects submitted and queued work until actual dequeue"
+        },
+        {
+          "index": 4,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_readwrap_reuse_test.test.native actual FS reuse dequeued result still requires actual cleanup before Reset"
+        },
+        {
+          "index": 5,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_readwrap_reuse_test.test.native actual FS reuse new completion queues before old event entitlement retires"
+        },
+        {
+          "index": 6,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_readwrap_reuse_test.test.native actual FS reuse old release preserves the reused embedded event FIFO next link"
+        },
+        {
+          "index": 7,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_readwrap_reuse_test.test.native actual FS reuse several event tickets may own one embedded address"
+        },
+        {
+          "index": 8,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_readwrap_reuse_test.test.native actual FS reuse completion owns request after old event and explicit owner retire"
+        },
+        {
+          "index": 9,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_readwrap_reuse_test.test.native actual FS reuse lease cleanup releases backing before later raw span"
+        },
+        {
+          "index": 10,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_readwrap_reuse_test.test.native actual FS reuse raw request can later acquire a genuine JS backing lease"
+        },
+        {
+          "index": 11,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_readwrap_reuse_test.test.native actual FS reuse null zero length and later EOF preserve real result zero"
+        },
+        {
+          "index": 12,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_readwrap_reuse_test.test.native actual FS reuse cancellation and stop retain exactly the reused completion"
+        },
+        {
+          "index": 13,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_readwrap_reuse_test.test.native actual FS reuse raw admission and Reset preserve actual pending without JS heap work"
+        }
+      ],
+      "original_group_status": "partial_batch_not_admissible",
+      "canonical": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-fs-readwrap-reuse\\runtime.results.json",
+        "bytes": 1648,
+        "sha256": "8E87C03BDF6958BDAEADE3EC436A67995C5439BF1F66588E3CB3D3EBF35A90DD"
+      }
+    },
+    {
+      "group": "native-node-reqwrap-callback-routing",
+      "started": 13,
+      "completed": 13,
+      "failed": 1,
+      "results": [
+        {
+          "index": 0,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing Reset clears the actual callback before reuse without counting admission"
+        },
+        {
+          "index": 1,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing selects the real callback after retain Detach and waiting decrement"
+        },
+        {
+          "index": 2,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing negative raw admission keeps callback but does not strengthen count or synthesize completion"
+        },
+        {
+          "index": 3,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing accepted bad descriptor preserves the real callback negative result"
+        },
+        {
+          "index": 4,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing reset and redispatch precede old Wrapper and event retirement"
+        },
+        {
+          "index": 5,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing callback error after redispatch preserves the new request pointer and event"
+        },
+        {
+          "index": 6,
+          "flags": 1,
+          "passed": false,
+          "name": "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing typed callback failure still retires the final native Wrapper pointer"
+        },
+        {
+          "index": 7,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing actual ordinary callback reason survives Entry destruction"
+        },
+        {
+          "index": 8,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing actual native fatal callback still completes native request retirement"
+        },
+        {
+          "index": 9,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing shared shutdown drains real callbacks after JavaScript is disabled"
+        },
+        {
+          "index": 10,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing stopped native service returns its real status without a callback or count"
+        },
+        {
+          "index": 11,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing retained Controller rejects a retired Hub before touching Entry inputs"
+        },
+        {
+          "index": 12,
+          "flags": 0,
+          "passed": true,
+          "name": "extensions.native_durable_storage.test_0"
+        }
+      ],
+      "original_group_status": "failed",
+      "canonical": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-reqwrap-callback-routing\\runtime.results.json",
+        "bytes": 1580,
+        "sha256": "78788E65634C2536AC24FEBB44EC58BBCD666F236FBF0221264AE8EF37FB063A"
+      }
+    }
+  ],
+  "not_started": 1121,
+  "current_absence": {
+    "owners": [],
+    "direct_children": [],
+    "native": [],
+    "observed_utc": "2026-10-20T21:11:40.4184377+00:00"
+  },
+  "current_actual_process_instances_absent": true,
+  "current_process_instance_reconciliations": [],
+  "original_receipts": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\result.json",
+      "bytes": 130202,
+      "sha256": "5C19A1B407FF582382AA84D83F4F1E176694D73F202B055EB5E3474465CC10A9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\before.json",
+      "bytes": 15394482,
+      "sha256": "FD3412DB1E671A6B5E923079AEF917FE292D79E8866A8602EDF4BD913D53BA59"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\final.json",
+      "bytes": 15394482,
+      "sha256": "FD3412DB1E671A6B5E923079AEF917FE292D79E8866A8602EDF4BD913D53BA59"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-control-20261020-210255\\outer.json",
+      "bytes": 1592,
+      "sha256": "46DBB7900454FB201624E58118002E0E0F66D4F5CA0F075C570239CD8E3FA1E9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-control-20261020-210255\\outer-absence.json",
+      "bytes": 183,
+      "sha256": "17F0A3E6D304914A7A3C7B8CD9A34240CEDAC21C25C77C616FCD8BC2055F2925"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-file-handle-read\\runtime.json",
+      "bytes": 1213,
+      "sha256": "B7922F5CE0462022B8C19670781A24B5C095DFA2C924F1960A8BA400CED47D03"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-file-handle-read\\runtime.results.json",
+      "bytes": 1723,
+      "sha256": "B9EF203C1D56BC07A35E8B3F986F2B95358906658DB5B19B915CB4AADFC6CBFD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-file-handle-read\\runtime.stdout.bin",
+      "bytes": 434,
+      "sha256": "4B9A9A80D81E89402A042A3A0C957E43838C4839D36104822A007BC34EE31971"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-file-handle-read\\runtime.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-file-handle-read\\runtime-absence.json",
+      "bytes": 4310,
+      "sha256": "142185397F47386BA8DB6EA8698AA371C7A81B44EE697CD28B7C56343967BA31"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-file-handle-read\\result.json",
+      "bytes": 7305,
+      "sha256": "C31900D8ED0D5C145701283EED2F9D48E8B4178070EBBF896F5E7F08E9DA1F1D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-fs-callback-template\\runtime.json",
+      "bytes": 1212,
+      "sha256": "E545B2A5CF0F3D1C1C9E321883A993499E58979CAE1CC4EECB26170C9CDDA235"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-fs-callback-template\\runtime.results.json",
+      "bytes": 1499,
+      "sha256": "6EAAD2BA686108909A7D1C9C78AD60B9D863FF1D6738C0942FD07869EEA1CD09"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-fs-callback-template\\runtime.stdout.bin",
+      "bytes": 350,
+      "sha256": "A6D5D17483B06112ABC45B475F0D9E03E2BD45B14471AB3CFD9BD25C2F44F1E8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-fs-callback-template\\runtime.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-fs-callback-template\\runtime-absence.json",
+      "bytes": 4033,
+      "sha256": "7F912779F4262B5FE2965A0E7B571F5BF0C4BE68FBB326689235BC4C7C5B1DBF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-fs-callback-template\\result.json",
+      "bytes": 6992,
+      "sha256": "81ACC48AEB3BF0DFEFE117377316A0E441922F53855E3EA99D86A6DCB525177F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-vm-simple-stack-source\\runtime.json",
+      "bytes": 1213,
+      "sha256": "BF365DEF9F30127F2CF448BD503D67FB9E1E5939CDF2D66F89D228C40DC5D650"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-vm-simple-stack-source\\runtime.results.json",
+      "bytes": 3168,
+      "sha256": "F6D465DBE98D6B4F41E37398646F3611AF6346372B4A3F916E5CAC83C7F2B30E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-vm-simple-stack-source\\runtime.stdout.bin",
+      "bytes": 966,
+      "sha256": "E0F1E1E55AD9122DE01CC9D10E59EE85C50E2C156E784ED8577714F7D1B15F09"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-vm-simple-stack-source\\runtime.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-vm-simple-stack-source\\runtime-absence.json",
+      "bytes": 6137,
+      "sha256": "2431E9AF268A5B680586D9FC3A6BABC91F1034F609CA4E2E742FDAB3BB2AC3A1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-vm-simple-stack-source\\result.json",
+      "bytes": 9493,
+      "sha256": "6253F34B76B0A747C66DDFA783F054F90C467816D0E7D0E89C566A3527E4056B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-vm-exotic-operations\\runtime.json",
+      "bytes": 1213,
+      "sha256": "D48FB9BA61580CCD10FC1B69EECAE7EF828E102ECD4CB96D1380F38440075829"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-vm-exotic-operations\\runtime.results.json",
+      "bytes": 2710,
+      "sha256": "C3B50FE34C569234B051BA31143779184B70CDD8753C4B5F32E603E33B5E2259"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-vm-exotic-operations\\runtime.stdout.bin",
+      "bytes": 798,
+      "sha256": "EB13420ECA4E1C0C5EA3AF6ECA1F1F62B2F5E99750C21E13FBBFED673F94B37A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-vm-exotic-operations\\runtime.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-vm-exotic-operations\\runtime-absence.json",
+      "bytes": 5553,
+      "sha256": "60392BDE710243A0B605FE6D2333E8ADC9F31A29DA685721E65093CF58065AA2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-vm-exotic-operations\\result.json",
+      "bytes": 8779,
+      "sha256": "28F835B7CE1127EC6432973AE703C4D789A820ABB8A28119C8AEF36A841D65B4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-diagnostic-context\\runtime.json",
+      "bytes": 1213,
+      "sha256": "E2A518E9691E5A5FD83F7136D268598C4076FF0BA9A3000FA02551F559489A2A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-diagnostic-context\\runtime.results.json",
+      "bytes": 1345,
+      "sha256": "6625830F34421461E8D9E630BEAF701C7C83D5D6EAFE05C8CA7E7893D57433C7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-diagnostic-context\\runtime.stdout.bin",
+      "bytes": 294,
+      "sha256": "C79EDA528504FA16D3674C1779F6DBF1A9F78B7EE29B76602E2331F6011CCA27"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-diagnostic-context\\runtime.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-diagnostic-context\\runtime-absence.json",
+      "bytes": 3836,
+      "sha256": "350E5FBC9EA6E2FE5D7F09221ADAB5A7EB9FF25EA51B87060AB3BAEF1DDA2E7D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-diagnostic-context\\result.json",
+      "bytes": 6717,
+      "sha256": "75218D8C78D25333ABF82972B09502ED06ABB4260EDB78C4DE54C579F4B12092"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-native-debug\\runtime.json",
+      "bytes": 1213,
+      "sha256": "BCE34CD7797F0652A7F837485A83EB03F6F98610AA0BEB25FE2AF93B80938DB8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-native-debug\\runtime.results.json",
+      "bytes": 2099,
+      "sha256": "1F673ABE71A1749947A6DF437EC9B61878BC87C2B5EE783E6A28CC117329299F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-native-debug\\runtime.stdout.bin",
+      "bytes": 574,
+      "sha256": "19E93005E2F82997FD68DE8EA69FDC9CB560F794CB2EB32FE274D2D91DB45F5D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-native-debug\\runtime.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-native-debug\\runtime-absence.json",
+      "bytes": 4778,
+      "sha256": "7F91F1C55BD4AC3C6D0F60C6F0AB63CCAF38E33AC14ACD34BEA276ED0F7AA328"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-native-debug\\result.json",
+      "bytes": 7829,
+      "sha256": "44733B307C0363831B7F8ADA00C62BBC08B5B66C5BD82BA591163473B76F3E78"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-permission\\runtime.json",
+      "bytes": 1213,
+      "sha256": "C18BF3F68E0CA6894BFF08BEC50FAC16DDC288B149D9AB2FB15DC1C2B2DB2BAF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-permission\\runtime.results.json",
+      "bytes": 1945,
+      "sha256": "84B3F3E4079875EFC2F11DFDE9893DD9B78ECCF3DC0F3869DF892CF93E6F200B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-permission\\runtime.stdout.bin",
+      "bytes": 518,
+      "sha256": "5E9753628545F7D38B25428A31F82B043F06E5FD5DAB652F64264BE9FDED33D3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-permission\\runtime.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-permission\\runtime-absence.json",
+      "bytes": 4580,
+      "sha256": "4E1D6053181D697EE0B0AA35A9704A41B92E900D56B19A09F11F878BFC90AAA8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-permission\\result.json",
+      "bytes": 7581,
+      "sha256": "8E068A18FB55D94B88152CC3252463655C94237BF0A6B82B74630858405BDABD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-fs-readwrap-reuse\\runtime.json",
+      "bytes": 1213,
+      "sha256": "BD90210620BC01919AF39397E8C74E67DDDCA94333D824CB490A533C0BE546FF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-fs-readwrap-reuse\\runtime.results.json",
+      "bytes": 1648,
+      "sha256": "8E87C03BDF6958BDAEADE3EC436A67995C5439BF1F66588E3CB3D3EBF35A90DD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-fs-readwrap-reuse\\runtime.stdout.bin",
+      "bytes": 406,
+      "sha256": "EFAC1262A88D804380F66F05B0DDCD24A22C574EE1344CE7360A5880AE054012"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-fs-readwrap-reuse\\runtime.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-fs-readwrap-reuse\\runtime-absence.json",
+      "bytes": 4217,
+      "sha256": "546C5E85E1D0201CCDC12499F3AA40EE729EDC5B925064B5019AD22A3C16EBFF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-fs-readwrap-reuse\\result.json",
+      "bytes": 7173,
+      "sha256": "92E6BDAC68907F6B9ADEC46E1C64356D4A9909EC341DFE60F4B42203EACDFEF5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-reqwrap-callback-routing\\runtime.json",
+      "bytes": 1213,
+      "sha256": "2BCCFF6DA458CA5FE3C82A4EC61EDE95394AB6124536E9E50F65EAAEB1103D91"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-reqwrap-callback-routing\\runtime.results.json",
+      "bytes": 1580,
+      "sha256": "78788E65634C2536AC24FEBB44EC58BBCD666F236FBF0221264AE8EF37FB063A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-reqwrap-callback-routing\\runtime.stdout.bin",
+      "bytes": 378,
+      "sha256": "B8FE03838F21FF98DCD73A5DFAE9F985F2D0DF78759A2239B1D70832CC35895D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-reqwrap-callback-routing\\runtime.stderr.log",
+      "bytes": 1947,
+      "sha256": "F0C617352AD63D4327D7CA2E03B4C89A22014FC4204277145E141719FCE5588C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-reqwrap-callback-routing\\runtime-absence.json",
+      "bytes": 4146,
+      "sha256": "852D5CAB0A29AD5AFA2EF325CE64AB28110DDACFA77724AAE995243D00F8093C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-reqwrap-callback-routing\\result.json",
+      "bytes": 7735,
+      "sha256": "222B443D78CA7C04980D43DE0FAF73019063B530145C0CE569A4E6F25BF99EDE"
+    }
+  ],
+  "controller_environment_restored": true,
+  "all_original_strict_empty_stderr_and_all_tests_passing_gates_passed": false,
+  "original_strict_failures_preserved": true,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "source_mutation_hold_released": false
+}

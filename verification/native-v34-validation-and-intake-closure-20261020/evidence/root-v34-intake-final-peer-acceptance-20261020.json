@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "status": "root_accepted_exact_v3_intake_source_peer",
+  "utc": "2026-10-20T21:41:51.861681+00:00",
+  "basis_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\successor-peer.json",
+    "bytes": 7331,
+    "sha256": "4B19037C401B2D663D8ECE2E9384E4EFC2FE553B50FF916936601A59BA027D82"
+  },
+  "peer_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\successor-source-audit.json",
+    "bytes": 227272,
+    "sha256": "922BBC8FF587EAF760049A14850C0002FFC3158234CC366C35D9120460EDD3E0"
+  },
+  "peer_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntakeSuccessor-v2.py",
+    "bytes": 12067,
+    "sha256": "8D3D8FF961346201E927432D2FF509416A63AFF35C14D5FA7315EB267B61D4CD"
+  },
+  "root_executor_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-three-phase-intake-executor-review-20261020.json",
+    "bytes": 3033,
+    "sha256": "095191C0E29BCBF15C72753F8FEED20596FF882F2F31974EACF6FE8254E4E7F3"
+  },
+  "root_complete_reads": [
+    "final successor peer",
+    "full v3 intake executor",
+    "full peer checker v2",
+    "retained stale checker negative",
+    "both finite raw-basis pin correction edits"
+  ],
+  "root_independent_checks": {
+    "all12_executor_intermediates_and_whole_inverse": true,
+    "all_three_manifest_semantic_and_byte_inverses": true,
+    "peer_checker_two_intermediates_and_whole_inverse": true,
+    "both_async_wrap_file_pins_equal_raw_c764": true,
+    "all_three_previously_accepted_closure_pins_and_outcomes_reverified": true
+  },
+  "peer_verified_phase_occurrences": 236,
+  "peer_verified_distinct_targets": 234,
+  "exact_commit_path_counts": [
+    192,
+    10,
+    34
+  ],
+  "limitations": "Source review only; all V34 native negatives remain valid. No new native runtime or metadata count is accepted.",
+  "main_mutated": false,
+  "source_execution_authorized": false,
+  "native_execution_authorized": false,
+  "application_qualified": false
+}

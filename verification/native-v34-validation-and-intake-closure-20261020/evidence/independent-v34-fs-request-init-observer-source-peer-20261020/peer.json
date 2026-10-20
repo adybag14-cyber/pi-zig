@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "status": "independently_reviewed_exact_v34_fs_init_observer_correction",
+  "reviewer": "handover_review",
+  "candidate_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\proposal.json",
+    "bytes": 16691,
+    "sha256": "E22848488C054D9B748CD6A7E078EFECF468D32804F8161842562250F4DBF454"
+  },
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-fs-request-init-observer-source-peer-20261020\\Verify-SourceOnlyFsInitObserver.py",
+    "bytes": 9466,
+    "sha256": "688BBDF4755193024BCD588446B257EAD81EECE79AE33F5601AACCE857688A0F"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-fs-request-init-observer-source-peer-20261020\\source-audit.json",
+    "bytes": 25174,
+    "sha256": "B56A46F9CAD547DB604F3B9F1573E8E4C5647F3B70A3D3E18C28FBCE6089D100"
+  },
+  "scope": "Independent source review of the three-file/four-hunk observer correction, exact c764 raw Git basis, unchanged completion contract and named tests, and both-order/full-inverse composition with all twelve C195 shared edits.",
+  "concrete_blockers": [],
+  "findings": [
+    {
+      "finding": "The original abort is explained by a phase mismatch in initProbeBody.",
+      "basis": "The real Controller.enter calls hub.assertOwner, then createReadRequest allocates typed native READ storage and invokes Request.initialize before dispatch. Request.initialize publishes native_request before AsyncWrap init, and only initializes the ReqWrap entry/BindingData/constructed flag after that hook. The old init probe calls the completed-result accessor while completed is zero.",
+      "references": [
+        {
+          "path": "main/src/extensions/native_node_fs_request_io.zig",
+          "lines": "46-72"
+        },
+        {
+          "path": "main/src/extensions/native_node_fs_request_promise.zig",
+          "lines": "118-154,320-376"
+        },
+        {
+          "path": "main/src/native_node_fs_request_owner_test.zig",
+          "lines": "52-73,778-810"
+        }
+      ]
+    },
+    {
+      "finding": "The new observer is safe for the stated retained, owner-thread, unsubmitted phase.",
+      "basis": "It asserts non-null/unsubmitted and reads only kind, accepted, and acquire-loaded cleaned/completed. The request was allocated with one reference, atomic state initialized to zero, and no command/admission has occurred at this call. No uv.result/path, allocation, cleanup, reset, admission, refcount or other request state is touched. The header accurately requires ownership/no concurrent admission, cleanup, reset or release; the non-atomic submitted assertion is not a thread-ownership check or concurrent snapshot guarantee.",
+      "references": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\projected\\src\\extensions\\native_uv_tcp.c",
+          "lines": "803-814"
+        },
+        {
+          "path": "main/src/extensions/native_uv_tcp.c",
+          "lines": "19-31,394-431"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\projected\\src\\extensions\\native_uv_fs.h"
+        }
+      ]
+    },
+    {
+      "finding": "The stated reset phase preserves the same ownership requirement.",
+      "basis": "Existing request_reset requires actual completed/cleaned state and no queued event before clearing submitted/accepted/completed/cleaned. The prior callback entitlement may still be alive, but it reads only stable retained storage/service fields, as the existing reset contract states. The observer itself neither authorizes reset nor claims synchronization with concurrent reset.",
+      "references": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\projected\\src\\extensions\\native_uv_tcp.c",
+          "lines": "856-881"
+        }
+      ]
+    },
+    {
+      "finding": "The completion-only accessor and original controls remain strict.",
+      "basis": "Its complete body is byte-identical with the completed acquire assertion retained, and the PiUvFsInfo and opaque request layouts are unchanged. The full source section beginning at the first named test is byte-identical, including all25 names and assertions. Only the init helper changes to the preparation observer and adds completed==0. The actual post-pump completion accessor remains in place.",
+      "references": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\projected\\src\\extensions\\native_uv_tcp.c",
+          "lines": "815-824"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\projected\\src\\native_node_fs_request_owner_test.zig",
+          "lines": "60-75,780-811"
+        }
+      ]
+    },
+    {
+      "finding": "The observer and C195 compose exactly in either order.",
+      "basis": "All four observer hunks and all twelve C195 hunks passed their own recorded offsets/intermediate hashes, full byte forward replay and inverse. Across the six-file union, C195\u2192observer and observer\u2192C195 produce the same pinned combined snapshots, and both complete reverse orders restore the exact originals. Eight distinct source baselines were independently compared to raw c764 Git blobs with no newline normalization."
+    }
+  ],
+  "verification": {
+    "distinct_pinned_files": 56,
+    "raw_git_basis_files": 8,
+    "observer_files": 3,
+    "observer_edits": 4,
+    "shared_files": 5,
+    "shared_edits": 12,
+    "combined_files": 6,
+    "composition_both_orders_exact": true,
+    "both_whole_inverse_orders_exact": true,
+    "triage_excerpt_pins_verified": 16,
+    "source_named_tests": 25,
+    "all_named_test_bodies_unchanged": true,
+    "main_clean_and_head_unchanged": true
+  },
+  "original_negative_preserved": {
+    "stderr_sha256": "6AE6E82B866AA07A01730451E487596C2B906D25E19A7ADF1CB976FF79F816A1",
+    "stderr_bytes": 157,
+    "original_process_sha256": "92351BACC20B56E9371668F7BF5ECA5D7976CAC3B158E05A57EAB7696BEC9E14",
+    "original_raw_observation_sha256": "A21C23AF07BF1AE805B257940D7FC2E43928F1C07CC66AE3F0A68783D8AC5B5B"
+  },
+  "limitations": [
+    "This source review addresses the concrete first group17 assertion abort only; it establishes no subsequent control result.",
+    "No compiler, runtime, metadata query, build or generator was executed. Future actual metadata and runtime outcomes require their own exact Root grants and closure.",
+    "Main, donor live sources, the original runtime evidence, prior proposals and all source snapshots were not modified."
+  ],
+  "source_only": true,
+  "main_mutated": false,
+  "donor_live_sources_mutated": false,
+  "compiler_runtime_executed": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "reviewed_utc": "2026-10-20T21:29:55.411534+00:00"
+}

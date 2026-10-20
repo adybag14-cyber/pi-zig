@@ -1,0 +1,3 @@
+Observe FS request preparation before native completion
+
+Source-reviewed intake only. Native runtime and full application qualification remain pending.

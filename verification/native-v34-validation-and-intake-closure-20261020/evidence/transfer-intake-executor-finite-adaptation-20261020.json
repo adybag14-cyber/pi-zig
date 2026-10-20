@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ReviewedSourceIntakes-v3-20261020.py",
+    "bytes": 11534,
+    "sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactReviewedTransferSourceIntake-20261020.py",
+    "bytes": 9697,
+    "sha256": "DF7290181F00B28CA0F602358AA2DB78F15D5C67E89A3134C99D829DA99FB9D5"
+  },
+  "edits": [
+    {
+      "before": "\"\"\"Exact three-phase Main source intake; no compiler, runtime, generator or push.\"\"\"",
+      "after": "\"\"\"Exact FileHandle transfer source intake; no compiler, runtime, generator or push.\"\"\"",
+      "occurrences": 1,
+      "before_sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4",
+      "after_sha256": "ACBE297F231A54092D7990A1D6376108EF3A3C6CD77C6CEC756FDA81CFDFE57E"
+    },
+    {
+      "before": "BASIS=\"c764130caf2f2c7c63728bec0f6d1e16ac5c59a4\"",
+      "after": "BASIS=\"2bdafdfa1e41032fcc4e1f0a378b1a97792b72c0\"",
+      "occurrences": 1,
+      "before_sha256": "ACBE297F231A54092D7990A1D6376108EF3A3C6CD77C6CEC756FDA81CFDFE57E",
+      "after_sha256": "3B480586BA1918C3ECDD21BD282215CD19455594A69547B2BDE9F51CFDFBB3EF"
+    },
+    {
+      "before": "MANIFESTS={\n \"owner-error\":(\"evidence/pending-file-handle-error-main-intake-20261020/manifest-v2.json\",\"5730CB5FA9F17FE33478C128E763287E59A37477B2AF2A0820BBCA002D0FADCF\",192,\"Port native FileHandle lifecycle and Error constructor provenance\"),\n \"reqwrap\":(\"evidence/pending-v34-reqwrap-fixture-main-intake-20261020/manifest-v2.json\",\"BA8482D0DA4837630E158C5F345C9D5F58D8AE2614F8F372E164EDB9894EEF73\",10,\"Correct ReqWrap fixture for the actual host error boundary\"),\n \"fs-init\":(\"evidence/pending-v34-fs-init-observer-main-intake-20261020/manifest-v2.json\",\"21093750D07017BCA35F42D958AA758B8B4BC030920190ADC003BDA1246371E8\",34,\"Observe FS request preparation before native completion\"),\n}\n",
+      "after": "MANIFESTS={\n \"transfer\":(\"evidence/pending-file-handle-transfer-main-intake-20261020/manifest.json\",\"94E02E52D90FB962ACBE82BE8E531E222E04F50B11DDA887F89C8B205FFD4ADE\",78,\"Port native FileHandle descriptor transfer ownership\"),\n}\n",
+      "occurrences": 1,
+      "before_sha256": "3B480586BA1918C3ECDD21BD282215CD19455594A69547B2BDE9F51CFDFBB3EF",
+      "after_sha256": "749A400652DA7966056D9058AB2ACD5932263BF0288F229C0204EFCEEBF750A9"
+    },
+    {
+      "before": "if phase==\"owner-error\":\n assert head==BASIS\nelif phase==\"reqwrap\":\n prior_raw=raw(proof/\"owner-error-receipt.json\"); prior=json.loads(prior_raw)\n assert prior[\"status\"]==\"exact_source_intake_committed\"\n assert prior[\"executor_sha256\"]==self_sha and prior[\"release_sha256\"]==release_sha\n assert prior[\"manifest_sha256\"]==MANIFESTS[\"owner-error\"][1]\n assert prior[\"before_head\"]==BASIS and prior[\"after_head\"]==head\n assert prior[\"path_count\"]==192 and prior[\"staged_and_committed_bytes_match\"] is True\n assert gout(\"rev-parse\",head+\"^\")==BASIS\nelse:\n assert phase==\"fs-init\"\n owner=json.loads(raw(proof/\"owner-error-receipt.json\"))\n prior=json.loads(raw(proof/\"reqwrap-receipt.json\"))\n for name,receipt in ((\"owner-error\",owner),(\"reqwrap\",prior)):\n  assert receipt[\"status\"]==\"exact_source_intake_committed\"\n  assert receipt[\"executor_sha256\"]==self_sha and receipt[\"release_sha256\"]==release_sha\n  assert receipt[\"manifest_sha256\"]==MANIFESTS[name][1]\n  assert receipt[\"path_count\"]==MANIFESTS[name][2] and receipt[\"staged_and_committed_bytes_match\"] is True\n assert owner[\"before_head\"]==BASIS and prior[\"before_head\"]==owner[\"after_head\"]\n assert prior[\"after_head\"]==head and gout(\"rev-parse\",head+\"^\")==owner[\"after_head\"]\n assert gout(\"rev-parse\",owner[\"after_head\"]+\"^\")==BASIS\n assert manifest[\"required_predecessor_manifests\"]==[MANIFESTS[\"owner-error\"][1],MANIFESTS[\"reqwrap\"][1]]\n",
+      "after": "assert phase==\"transfer\" and head==BASIS\n",
+      "occurrences": 1,
+      "before_sha256": "749A400652DA7966056D9058AB2ACD5932263BF0288F229C0204EFCEEBF750A9",
+      "after_sha256": "95DC6799DA348F8B151CAD851C13010368347165A8104460F16AAC28938C0756"
+    },
+    {
+      "before": "preimage_reference=head if phase==\"fs-init\" else BASIS",
+      "after": "preimage_reference=BASIS",
+      "occurrences": 1,
+      "before_sha256": "95DC6799DA348F8B151CAD851C13010368347165A8104460F16AAC28938C0756",
+      "after_sha256": "DF7290181F00B28CA0F602358AA2DB78F15D5C67E89A3134C99D829DA99FB9D5"
+    }
+  ],
+  "all_intermediate_and_whole_inverse": true,
+  "scope": "Exact current basis and single transfer78 manifest replace the previously completed three-phase routing. All actual byte/filter/index/commit containment gates remain inherited unchanged.",
+  "native_execution_authorized": false,
+  "source_execution_authorized": false
+}

@@ -1,0 +1,115 @@
+{
+  "schema": 1,
+  "status": "independently_reviewed_exact_v34_three_phase_source_intake_executor_and_manifests",
+  "candidate_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "branch": "work/pi-zig-consolidated-20261016",
+  "executor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ReviewedSourceIntakes-v3-20261020.py",
+    "bytes": 11534,
+    "sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4"
+  },
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntakeSuccessor-v2.py",
+    "bytes": 12067,
+    "sha256": "8D3D8FF961346201E927432D2FF509416A63AFF35C14D5FA7315EB267B61D4CD"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\successor-source-audit.json",
+    "bytes": 227272,
+    "sha256": "922BBC8FF587EAF760049A14850C0002FFC3158234CC366C35D9120460EDD3E0"
+  },
+  "phases": [
+    {
+      "phase": "owner-error",
+      "manifest": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-error-main-intake-20261020\\manifest-v2.json",
+      "bytes": 107917,
+      "sha256": "5730CB5FA9F17FE33478C128E763287E59A37477B2AF2A0820BBCA002D0FADCF",
+      "explicit_rows": 191,
+      "commit_paths": 192,
+      "source_build_paths": 17
+    },
+    {
+      "phase": "reqwrap",
+      "manifest": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-reqwrap-fixture-main-intake-20261020\\manifest-v2.json",
+      "bytes": 5515,
+      "sha256": "BA8482D0DA4837630E158C5F345C9D5F58D8AE2614F8F372E164EDB9894EEF73",
+      "explicit_rows": 9,
+      "commit_paths": 10,
+      "source_build_paths": 1
+    },
+    {
+      "phase": "fs-init",
+      "manifest": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-fs-init-observer-main-intake-20261020\\manifest-v2.json",
+      "bytes": 19257,
+      "sha256": "21093750D07017BCA35F42D958AA758B8B4BC030920190ADC003BDA1246371E8",
+      "explicit_rows": 33,
+      "commit_paths": 34,
+      "source_build_paths": 3
+    }
+  ],
+  "review": {
+    "complete_executor_source_read": true,
+    "finite_adaptation": {
+      "baseline_sha256": "2DBB8B373038AD54095AB7E1EADB09594C593F923321F461000CEFBCE2283F1A",
+      "intermediate_sha256": "B60099300A49E9281270B6E85048F86D61F3823BEFA8D25317916CFBEBF9D66E",
+      "edits": [
+        5,
+        7
+      ],
+      "all_intermediate_hashes_verified": true,
+      "whole_forward_and_inverse_verified": true
+    },
+    "manifest_inverse": "All three successors reconstructed and inverted byte exactly. Owner row72 alone appends .raw to the archived operation-scope target; its 7087-byte donor and92 CRLF pairs are untouched. Other owner rows are identical. ReqWrap rows and FS rows are identical; only their exact predecessor bindings and additive provenance change.",
+    "git_byte_preservation": "Independently ran actual Git hash-object --path --stdin without -w for all236 phase targets, including allthree manifests, after proving filter,working-tree-encoding andident unset/unspecified. Every filtered blob equals the independently computed raw blob. Renamed archive has text=unset/eol=unspecified and raw blob9fdbf65f8b27b24c5804c5785dc37609257ffd6a. No attributes changes are proposed.",
+    "preimage_chain": "Virtual owner-error then ReqWrap then FS composition verifies every donor and preimage. Eleven distinct baseline preimages equal both current Main and raw c764 Git bytes. Only native_uv_fs.h/native_uv_tcp.c overlap phases: FS expects exactly C195 owner-intake outputs D5BB021D/85E49522 and produces previously peered combined23B85BBB/8BFEFBB5. No other target aliases or phase collisions.",
+    "release_and_commit_gates": "Executor requires separately pinned Root release with exact self/head/branch/manifests and current pins, clean Main, absent executable hooks, autocrlf=false, allowed relative paths, canonical containment and unchanged donor/preimage bytes. Phase2 requires exact phase1 receipt and parent. Phase3 requires both receipts and the exact two-commit chain, then verifies raw current predecessor preimages. Actual Git conversion preflight precedes every Main/index write. Only explicit NUL-separated paths stage; every index and committed blob is byte-compared; exact changed-path sets/counts, parent and clean worktree are required.",
+    "mutation_scope": "Review executed only the independent static checker. The candidate executor was parsed/read, never executed. No compiler, test runtime, Node, source generator, Main/index/object-store writes, commit or push. Captured index and .gitattributes hashes were unchanged.",
+    "protected_source": "native_node_async_wrap.zig is excluded from all234 distinct targets. Its actual19741-byte current and raw c764 bytes both hash7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0. The inherited972B protected-file note was stale for this path; its checker-only rejection and explicit stronger raw-basis correction are separately retained."
+  },
+  "counts": {
+    "all_phase_targets": 236,
+    "distinct_targets": 234,
+    "distinct_source_build_targets": 19,
+    "verified_pinned_files": 226,
+    "raw_basis_preimages": 11,
+    "git_conversions": 0,
+    "canonical_aliases": 0
+  },
+  "retained_negatives": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\source-review-preflight-negative.json",
+      "bytes": 6169,
+      "sha256": "5942BF34E68E5CFE5B6A9738DF55E992111D26EC038F21C96FF334D79AF69AFB",
+      "reason": "Original explicit .zig archive target would normalize CRLF."
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\successor-checker-stale-protected-pin-negative.json",
+      "bytes": 2356,
+      "sha256": "7FEF7D75EE04AC977B300866680E5F97C2AAE0BE1EC1EF09C49A3248A7ED3671",
+      "reason": "New static peer checker inherited a stale protected-file literal; raw c764 equality independently resolves it."
+    }
+  ],
+  "checker_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\successor-checker-raw-basis-pin-correction.json",
+    "bytes": 2609,
+    "sha256": "D4AFF7AB35E22323B177ED1E7AB7A8626147B0A167655C2049863DF407091130"
+  },
+  "fs_semantic_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-fs-request-init-observer-source-peer-20261020\\peer.json",
+    "bytes": 7387,
+    "sha256": "01BB78974EAF63864A20ACD1FE17A49E8EF57A1F718D70EC11C1ACABA6E13841"
+  },
+  "findings": [],
+  "concrete_blocker": false,
+  "limitations": "Source-only peer of the exact manifests, finite executor changes and byte-preserving integration gates. Earlier source semantic peers retain their individual scopes. No native behavior or future metadata count is accepted here; all original strict and diagnostic negatives remain valid. Root must independently release the source hold and execute any intake.",
+  "source_only": true,
+  "executor_executed": false,
+  "main_mutated": false,
+  "git_index_changed": false,
+  "commits_created": false,
+  "native_execution_authorized": false,
+  "source_intake_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "reviewed_utc": "2026-10-20T21:40:07.308529+00:00"
+}

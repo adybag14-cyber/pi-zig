@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "status": "exact_future_reqwrap_fixture_main_intake_unissued",
+  "comparison_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "path_count_including_manifest": 10,
+  "rows": [
+    {
+      "target": "verification/native-reqwrap-host-error-fixture-20261020/projection/before/src/native_node_reqwrap_callback_routing_test.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-reqwrap-host-error-fixture-sourceonly-20261020\\before\\src\\native_node_reqwrap_callback_routing_test.zig",
+      "bytes": 31452,
+      "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7",
+      "before": null,
+      "role": "immutable_evidence"
+    },
+    {
+      "target": "verification/native-reqwrap-host-error-fixture-20261020/projection/projected/src/native_node_reqwrap_callback_routing_test.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-reqwrap-host-error-fixture-sourceonly-20261020\\projected\\src\\native_node_reqwrap_callback_routing_test.zig",
+      "bytes": 32833,
+      "sha256": "47D2CFC945D48041119904392CE0BC677E46CAA012FA9A32215C521EB2D4E16E",
+      "before": null,
+      "role": "immutable_evidence"
+    },
+    {
+      "target": "verification/native-reqwrap-host-error-fixture-20261020/projection/proposal.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-reqwrap-host-error-fixture-sourceonly-20261020\\proposal.json",
+      "bytes": 23146,
+      "sha256": "A81ACE7F278882F45C8C56C3F4C18AEE6244F1B0D1FCB287FFBB24EF311FB34C",
+      "before": null,
+      "role": "immutable_evidence"
+    },
+    {
+      "target": "verification/native-reqwrap-host-error-fixture-20261020/projection/retained-source-count-preflight-negative.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-reqwrap-host-error-fixture-sourceonly-20261020\\retained-source-count-preflight-negative.json",
+      "bytes": 470,
+      "sha256": "93A7379C92C35DA8383C789E1487E3207604A30E1AAE3CD7138C13DECC9B0046",
+      "before": null,
+      "role": "immutable_evidence"
+    },
+    {
+      "target": "verification/native-reqwrap-host-error-fixture-20261020/peer/peer.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-reqwrap-host-error-fixture-source-peer-20261020\\peer.json",
+      "bytes": 4993,
+      "sha256": "83B9E6ADCC9F3F1A40F37A82092A8D0B55E398108E767E1E9FD4DA6165D200C6",
+      "before": null,
+      "role": "immutable_evidence"
+    },
+    {
+      "target": "verification/native-reqwrap-host-error-fixture-20261020/peer/source-audit.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-reqwrap-host-error-fixture-source-peer-20261020\\source-audit.json",
+      "bytes": 19006,
+      "sha256": "828A216CC6D7447BE13EBD41512037561796E25C5768B316632541A8BA1523CA",
+      "before": null,
+      "role": "immutable_evidence"
+    },
+    {
+      "target": "verification/native-reqwrap-host-error-fixture-20261020/peer/source-audit.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-reqwrap-host-error-fixture-source-peer-20261020\\source-audit.py",
+      "bytes": 5868,
+      "sha256": "95CD1ACAC6F962740B6ACE4D12820F5131BE08E771B001225BCC1E6F176FE9EE",
+      "before": null,
+      "role": "immutable_evidence"
+    },
+    {
+      "target": "verification/native-reqwrap-host-error-fixture-20261020/root-review.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reqwrap-host-error-fixture-review-20261020.json",
+      "bytes": 1930,
+      "sha256": "C7847BB9FAF6BB5335B4F4589388F944997A2061BD2FF89AF37FDE1E8AAF229E",
+      "before": null,
+      "role": "immutable_evidence"
+    },
+    {
+      "target": "src/native_node_reqwrap_callback_routing_test.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-reqwrap-host-error-fixture-sourceonly-20261020\\projected\\src\\native_node_reqwrap_callback_routing_test.zig",
+      "bytes": 32833,
+      "sha256": "47D2CFC945D48041119904392CE0BC677E46CAA012FA9A32215C521EB2D4E16E",
+      "before": {
+        "bytes": 31452,
+        "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7"
+      },
+      "role": "fixture_source"
+    }
+  ],
+  "manifest_target": "verification/native-reqwrap-host-error-fixture-20261020/manifest.json",
+  "preceding_separate_owner_error_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-error-main-intake-20261020\\manifest.json",
+    "bytes": 106210,
+    "sha256": "A905E15D794738ADDED8DE272771545D72380B085750175804E82139B78869C4"
+  },
+  "scope": "This distinct10-path fixture commit may follow the exact192-path FileHandle/Error intake only after Root source release names both. Require unchanged fixture preimage and raw comparison-head blob, exact authorized predecessor receipt and clean staging. No source mutation or native execution is authorized by this manifest.",
+  "source_mutation_hold_released": false,
+  "main_applied": false,
+  "qualification": false
+}

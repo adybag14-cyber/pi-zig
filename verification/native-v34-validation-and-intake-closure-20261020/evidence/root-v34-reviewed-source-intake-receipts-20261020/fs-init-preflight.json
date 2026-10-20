@@ -1,0 +1,264 @@
+{
+  "phase": "fs-init",
+  "utc": "2026-10-20T21:42:52.990853+00:00",
+  "before_head": "842c76a89909627e589f50e7043852b68fd80f00",
+  "basis_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "release": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-exact-three-phase-source-release-20261020.json",
+  "release_sha256": "B4648B29C5CBCC3CE9695A49B76F69055782D075180EE6D8C69CD0C7A1D3FE03",
+  "executor_sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4",
+  "manifest": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-fs-init-observer-main-intake-20261020\\manifest-v2.json",
+  "manifest_sha256": "21093750D07017BCA35F42D958AA758B8B4BC030920190ADC003BDA1246371E8",
+  "path_count": 34,
+  "all_donors_live_preimages_and_committed_basis_verified": true,
+  "rows": [
+    {
+      "target": "src/extensions/native_uv_fs.h",
+      "role": "source_or_fixture",
+      "bytes": 6334,
+      "sha256": "23B85BBB1BD8395D1D5085BE0797F06CE2C323DAACF366F5CF3B587D06EACA6D",
+      "before": {
+        "bytes": 5573,
+        "sha256": "D5BB021DFECD726A7FBB6860616753957C1B25B11C4776BAFD24F2C935589D34"
+      }
+    },
+    {
+      "target": "src/extensions/native_uv_tcp.c",
+      "role": "source_or_fixture",
+      "bytes": 46648,
+      "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+      "before": {
+        "bytes": 46191,
+        "sha256": "85E49522C7C05764957ADACF6B80F2745D5C06E0A361D33531A8BAF9FEA49F87"
+      }
+    },
+    {
+      "target": "src/native_node_fs_request_owner_test.zig",
+      "role": "source_or_fixture",
+      "bytes": 57263,
+      "sha256": "402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81",
+      "before": {
+        "bytes": 57142,
+        "sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4"
+      }
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/audit-sourceonly.py",
+      "role": "immutable_source_evidence",
+      "bytes": 4322,
+      "sha256": "B582D9925615FE30574F15A9553CA82A263A796A1E15AEA13EDDA11DAE9C6353",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/combined-after-C195/src/extensions/native_node_async_wrap_state.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 28133,
+      "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/combined-after-C195/src/extensions/native_node_callback_scope.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/combined-after-C195/src/extensions/native_node_fs_request_io.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 15469,
+      "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/combined-after-C195/src/extensions/native_uv_fs.h",
+      "role": "immutable_source_evidence",
+      "bytes": 6334,
+      "sha256": "23B85BBB1BD8395D1D5085BE0797F06CE2C323DAACF366F5CF3B587D06EACA6D",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/combined-after-C195/src/extensions/native_uv_tcp.c",
+      "role": "immutable_source_evidence",
+      "bytes": 46648,
+      "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/combined-after-C195/src/native_node_fs_request_owner_test.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 57263,
+      "sha256": "402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/original/src/extensions/native_uv_fs.h",
+      "role": "immutable_source_evidence",
+      "bytes": 4931,
+      "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/original/src/extensions/native_uv_tcp.c",
+      "role": "immutable_source_evidence",
+      "bytes": 45730,
+      "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/original/src/native_node_fs_request_owner_test.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 57142,
+      "sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/projected/src/extensions/native_uv_fs.h",
+      "role": "immutable_source_evidence",
+      "bytes": 5692,
+      "sha256": "783791F2AE41793E18EC620DFB1D5C4D0B2984AB5E1FF34D6F93204D21C23051",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/projected/src/extensions/native_uv_tcp.c",
+      "role": "immutable_source_evidence",
+      "bytes": 46187,
+      "sha256": "40501DC986978EB041E3D80965CCB29B30D5A099067C97959DD9FF360113A7F8",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/projected/src/native_node_fs_request_owner_test.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 57263,
+      "sha256": "402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/proposal.json",
+      "role": "immutable_source_evidence",
+      "bytes": 16691,
+      "sha256": "E22848488C054D9B748CD6A7E078EFECF468D32804F8161842562250F4DBF454",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-correction/static-replay-result.json",
+      "role": "immutable_source_evidence",
+      "bytes": 571,
+      "sha256": "5F4BD313E75EE0CB50EF9537502EB1AF5BE36DFC2518AB53AC5CE6256AD95FD4",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/original/src/extensions/native_node_file_handle_read_binding.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 9556,
+      "sha256": "A620FEDB2C50D46A17947845B5FE2D7EE1AE4603F10BFA3F55FB44A588DD4375",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/original/src/extensions/native_node_fs_request_io.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 14502,
+      "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/original/src/extensions/native_node_fs_request_promise.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 18834,
+      "sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/original/src/extensions/native_uv_fs.h",
+      "role": "immutable_source_evidence",
+      "bytes": 4931,
+      "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/original/src/extensions/native_uv_tcp.c",
+      "role": "immutable_source_evidence",
+      "bytes": 45730,
+      "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/original/src/native_node_fs_request_owner_test.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 57142,
+      "sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/runtime/runtime-raw-frame-observation.json",
+      "role": "immutable_source_evidence",
+      "bytes": 2572,
+      "sha256": "A21C23AF07BF1AE805B257940D7FC2E43928F1C07CC66AE3F0A68783D8AC5B5B",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/runtime/runtime.json",
+      "role": "immutable_source_evidence",
+      "bytes": 1411,
+      "sha256": "92351BACC20B56E9371668F7BF5ECA5D7976CAC3B158E05A57EAB7696BEC9E14",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/runtime/runtime.stderr.log",
+      "role": "immutable_source_evidence",
+      "bytes": 157,
+      "sha256": "6AE6E82B866AA07A01730451E487596C2B906D25E19A7ADF1CB976FF79F816A1",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/sdk-triage/triage.json",
+      "role": "immutable_source_evidence",
+      "bytes": 39007,
+      "sha256": "313163DB8C2280C03D9C8FEC5689A94B6E4C216136B1AB72BE1EEA510FE97328",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/independent-peer/peer.json",
+      "role": "immutable_source_evidence",
+      "bytes": 7387,
+      "sha256": "01BB78974EAF63864A20ACD1FE17A49E8EF57A1F718D70EC11C1ACABA6E13841",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/independent-peer/source-audit.json",
+      "role": "immutable_source_evidence",
+      "bytes": 25174,
+      "sha256": "B56A46F9CAD547DB604F3B9F1573E8E4C5647F3B70A3D3E18C28FBCE6089D100",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/independent-peer/Verify-SourceOnlyFsInitObserver.py",
+      "role": "immutable_source_evidence",
+      "bytes": 9466,
+      "sha256": "688BBDF4755193024BCD588446B257EAD81EECE79AE33F5601AACCE857688A0F",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/root/root-v34-fs-init-observer-source-review-20261020.json",
+      "role": "root_source_review",
+      "bytes": 2404,
+      "sha256": "7F86896E6895ADA3E9DC5E0920E14460063B195F417C1A2865F731E1A852A110",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/root/root-v34-fs-init-observer-peer-acceptance-20261020.json",
+      "role": "root_source_review",
+      "bytes": 1052,
+      "sha256": "1BF72157A797F8FCF0C9B20F39F8616B215C2592BAC8E9C7DEC1339449403113",
+      "before": null
+    },
+    {
+      "target": "verification/native-fs-init-observer-correction-20261020/manifest.json",
+      "role": "exact_intake_manifest",
+      "bytes": 19257,
+      "sha256": "21093750D07017BCA35F42D958AA758B8B4BC030920190ADC003BDA1246371E8",
+      "before": null
+    }
+  ],
+  "native_execution_authorized": false,
+  "qualification": false
+}

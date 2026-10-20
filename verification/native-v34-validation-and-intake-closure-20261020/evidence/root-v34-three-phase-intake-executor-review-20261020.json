@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "status": "root_complete_source_review_of_exact_three_phase_intake",
+  "utc": "2026-10-20T21:35:14.155992+00:00",
+  "candidate_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "executor_sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4",
+  "executor_bytes": 11534,
+  "root_complete_source_read": true,
+  "all12_finite_edits_intermediate_hashes_and_whole_inverse": true,
+  "manifest_successor_checks": [
+    {
+      "phase": "owner_error",
+      "new_sha256": "5730CB5FA9F17FE33478C128E763287E59A37477B2AF2A0820BBCA002D0FADCF",
+      "old_sha256": "A905E15D794738ADDED8DE272771545D72380B085750175804E82139B78869C4",
+      "complete_semantic_and_byte_inverse": true,
+      "rows": 191
+    },
+    {
+      "phase": "reqwrap",
+      "new_sha256": "BA8482D0DA4837630E158C5F345C9D5F58D8AE2614F8F372E164EDB9894EEF73",
+      "old_sha256": "068136AC825829162A45AB03D9A1F60633EF8AF2D83061BAEC7CD7082FDE60E1",
+      "complete_semantic_and_byte_inverse": true,
+      "rows": 9
+    },
+    {
+      "phase": "fs_init",
+      "new_sha256": "21093750D07017BCA35F42D958AA758B8B4BC030920190ADC003BDA1246371E8",
+      "old_sha256": "8CCF654B605C496E1E188E12EFD8CAFA6BF54B84CEBD58731A3219196DCA6D70",
+      "complete_semantic_and_byte_inverse": true,
+      "rows": 33
+    }
+  ],
+  "exact_counts": [
+    192,
+    10,
+    34
+  ],
+  "only_evidence_target_change": {
+    "before": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig",
+    "after": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig.raw",
+    "source_sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+    "raw_git_blob": "9fdbf65f8b27b24c5804c5785dc37609257ffd6a"
+  },
+  "checks": [
+    "Pinned release and exact phase manifests; no compiler/runtime/generator/push",
+    "Clean exact branch and c764 first head",
+    "No executable Git hooks or external filters/encoding/ident",
+    "Every donor/current preimage plus raw committed preimage checked before writes",
+    "Actual read-only Git clean-filter blob equals raw bytes for every target before writes",
+    "Only explicit paths are staged through exact NUL pathspec",
+    "Every index and committed blob byte-compared to its pinned donor",
+    "Second phase requires exact first receipt/parent chain; third phase requires both prior receipt/commit links",
+    "No failed-precondition cleanup, reset, forced push or unrelated mutation"
+  ],
+  "original_conversion_negative_sha256": "5942BF34E68E5CFE5B6A9738DF55E992111D26EC038F21C96FF334D79AF69AFB",
+  "all_original202_target_conversion_observation_sha256": "BFE8403E3AAB65092954842E3B809F523BC124BEBFE1AFFD741EF94174971E04",
+  "source_execution_authorized": false,
+  "native_execution_authorized": false,
+  "main_mutated": false,
+  "qualification": false
+}

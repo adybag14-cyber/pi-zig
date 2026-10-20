@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "status": "new_static_checker_raw_basis_pin_correction",
+  "old": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntakeSuccessor.py",
+    "bytes": 11915,
+    "sha256": "CF2082667D4966445A173049853FB1F75D5EF9FBAB265A46DE37F142A7B7EF6D"
+  },
+  "new": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntakeSuccessor-v2.py",
+    "bytes": 12067,
+    "sha256": "8D3D8FF961346201E927432D2FF509416A63AFF35C14D5FA7315EB267B61D4CD"
+  },
+  "retained_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\successor-checker-stale-protected-pin-negative.json",
+    "bytes": 2356,
+    "sha256": "7FEF7D75EE04AC977B300866680E5F97C2AAE0BE1EC1EF09C49A3248A7ED3671"
+  },
+  "edits": [
+    {
+      "before": "protected=pin(MAIN/\"src/extensions/native_node_async_wrap.zig\",\"972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2\")",
+      "after": "protected=pin(MAIN/\"src/extensions/native_node_async_wrap.zig\",\"7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0\")\nassert g(\"show\",BASIS+\":src/extensions/native_node_async_wrap.zig\").stdout==protected",
+      "before_sha256": "CF2082667D4966445A173049853FB1F75D5EF9FBAB265A46DE37F142A7B7EF6D",
+      "after_sha256": "271C0FECC2F4FA87FB06F10CCA355D0C9B07D57F820B78A33285E1FF0D29D37A",
+      "occurrences": 1
+    },
+    {
+      "before": "assert oldtarget not in virtual and newtarget in virtual",
+      "after": "assert oldtarget not in virtual and newtarget in virtual\nassert \"src/extensions/native_node_async_wrap.zig\" not in virtual",
+      "before_sha256": "271C0FECC2F4FA87FB06F10CCA355D0C9B07D57F820B78A33285E1FF0D29D37A",
+      "after_sha256": "8D3D8FF961346201E927432D2FF509416A63AFF35C14D5FA7315EB267B61D4CD",
+      "occurrences": 1
+    }
+  ],
+  "complete_forward_inverse": true,
+  "basis": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "raw_basis_protected_sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0",
+  "raw_basis_protected_bytes": 19741,
+  "reason": "Inherited checkpoint pin972B was incorrectly associated with native_node_async_wrap.zig. Current clean c764 worktree and exact raw Git blob both independently hash7E970. New checker also requires whole raw Git equality and excludes the protected path from all manifests. No applier gate is changed.",
+  "main_mutated": false,
+  "executor_execution_authorized": false,
+  "native_execution_authorized": false
+}

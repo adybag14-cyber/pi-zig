@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "status": "root_complete_source_review_and_exact_independent_audit_authority",
+  "utc": "2026-10-20T21:28:04.881151+00:00",
+  "candidate_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\Audit-PartialV34DiagnosticRuntime-v2.py",
+    "bytes": 29756,
+    "sha256": "6842784CBD09B8A9D300F0E69C8256FF22401E5A6423A912D2173E6B68960855"
+  },
+  "accepted_original_auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-diagnostic-runtime-control-20261020-181658\\Audit-PartialV31DiagnosticRuntime.py",
+    "bytes": 29568,
+    "sha256": "6BCE1364609AC0A1E3D466518715544A9B257287B70B6E7E1ADA7FF45FA24EC9"
+  },
+  "accepted_original_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-diagnostic-runtime-control-20261020-181658\\independent-partial-diagnostic-runtime-closure.json",
+    "bytes": 51849,
+    "sha256": "36D4EAB4F1D7A1E9632C847220F8CD6FE03DDF1FEC422C3F431F96B8519B71BD"
+  },
+  "adaptation_sha256": "3C7870E0C53E451D28111B1DDBAE966C9EC3A469BF27D4D5D8F699F77D70CF2E",
+  "crlf_successor_sha256": "20C0A4C69AAD704F1136B0863984C2C47CDEBA41DD01BB3735086AB0211FA219",
+  "all54_finite_edits_and_intermediate_hashes_replayed": true,
+  "complete_whole_inverse_to_accepted_original": true,
+  "root_read_complete_candidate_source_and_all_edits": true,
+  "actual157_byte_crlf_stderr_literal_independently_verified": true,
+  "retained_preflight_negative_sha256": "9D3BF6B4A352E5ABEEA6CBA17FEC901258148C20F83B908B256EA9960FF0F439",
+  "preserved_controls": [
+    "Complete source/tree/vendor/compiler/control inventories and current hashes",
+    "All63 exact accepted artifacts and raw metadata",
+    "All17 exact original retained owners with raw312 starts311 results310 flags0 one flags1 and one incomplete",
+    "973 accepted indices never started",
+    "Exact100ns timestamp and current original-instance/PID-reuse checks",
+    "Native assertion abort and strict negatives remain unqualified",
+    "Output cannot authorize source mutation"
+  ],
+  "audit_execution_authorized": true,
+  "audit_timeout_seconds": 240,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

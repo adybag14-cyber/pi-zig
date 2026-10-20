@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_finite_fs_init_observer_correction_source_only",
+  "utc": "2026-10-20T21:29:22.902814+00:00",
+  "basis_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v34-fs-request-init-observer-correction-sourceonly-20261020\\proposal.json",
+    "bytes": 16691,
+    "sha256": "E22848488C054D9B748CD6A7E078EFECF468D32804F8161842562250F4DBF454"
+  },
+  "triage_sha256": "313163DB8C2280C03D9C8FEC5689A94B6E4C216136B1AB72BE1EEA510FE97328",
+  "read_only_audit_sha256": "B582D9925615FE30574F15A9553CA82A263A796A1E15AEA13EDDA11DAE9C6353",
+  "root_complete_read": [
+    "All4 finite hunks and new4-int C ABI",
+    "All16 actual causal source excerpts",
+    "Canonical fs_io.uv/shared_service cImport",
+    "Controller.enter actual Hub.assertOwner and retained construction scope",
+    "All25 unchanged test names and identical complete declaration section"
+  ],
+  "root_read_only_audit_executed": true,
+  "all4_own_and12_C195_intermediate_replays": true,
+  "both6_file_composition_orders_and_complete_inverses": true,
+  "all3_main_preimages_and_raw_c764_blobs_verified": true,
+  "findings": [
+    "Initialization is before Entry queue insertion, dispatch and completion; native storage is already owned and published.",
+    "New preparation observer requires retained owner-thread unsubmitted phase and does not claim its non-atomic guard establishes thread ownership.",
+    "Only actual kind/accepted/atomic cleaned/completed are read; no uv.result/path read, write, allocation, guest operation or entitlement change.",
+    "The completed-only info contract, full implementation and completed assertion remain byte-identical.",
+    "Fixture preserves all original predicates, adds completed==0 and leaves all25 test bodies byte-identical.",
+    "Exact physical I/O result and cleanup assertions still run only after pumpPending."
+  ],
+  "diagnostic_closure_sha256": "148F05BF9EA92133B21C88508D035CC7C1A983CC1B7F4E829DBE216280011456",
+  "diagnostic_failure_preserved": true,
+  "prior_actual_group_metadata_count": 26,
+  "future_actual_group_metadata_count": null,
+  "independent_peer_pending": true,
+  "no_concrete_source_blocker": true,
+  "source_mutation_hold_released": false,
+  "main_applied": false,
+  "native_execution_authorized": false,
+  "qualification": false
+}

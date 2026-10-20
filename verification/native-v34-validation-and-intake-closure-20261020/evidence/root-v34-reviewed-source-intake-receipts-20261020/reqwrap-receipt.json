@@ -1,0 +1,21 @@
+{
+  "status": "exact_source_intake_committed",
+  "phase": "reqwrap",
+  "utc": "2026-10-20T21:42:43.061335+00:00",
+  "before_head": "67e2ae2fa78dea304b667f634a40ade3a209581a",
+  "after_head": "842c76a89909627e589f50e7043852b68fd80f00",
+  "basis_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "branch": "work/pi-zig-consolidated-20261016",
+  "manifest": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-reqwrap-fixture-main-intake-20261020\\manifest-v2.json",
+  "manifest_sha256": "BA8482D0DA4837630E158C5F345C9D5F58D8AE2614F8F372E164EDB9894EEF73",
+  "executor_sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4",
+  "release_sha256": "B4648B29C5CBCC3CE9695A49B76F69055782D075180EE6D8C69CD0C7A1D3FE03",
+  "path_count": 10,
+  "staged_and_committed_bytes_match": true,
+  "clean_worktree": true,
+  "commit_stdout": "[work/pi-zig-consolidated-20261016 842c76a8] Correct ReqWrap fixture for the actual host error boundary\n 10 files changed, 2161 insertions(+), 1 deletion(-)\n create mode 100644 verification/native-reqwrap-host-error-fixture-20261020/manifest.json\n create mode 100644 verification/native-reqwrap-host-error-fixture-20261020/peer/peer.json\n create mode 100644 verification/native-reqwrap-host-error-fixture-20261020/peer/source-audit.json\n create mode 100644 verification/native-reqwrap-host-error-fixture-20261020/peer/source-audit.py\n create mode 100644 verification/native-reqwrap-host-error-fixture-20261020/projection/before/src/native_node_reqwrap_callback_routing_test.zig\n create mode 100644 verification/native-reqwrap-host-error-fixture-20261020/projection/projected/src/native_node_reqwrap_callback_routing_test.zig\n create mode 100644 verification/native-reqwrap-host-error-fixture-20261020/projection/proposal.json\n create mode 100644 verification/native-reqwrap-host-error-fixture-20261020/projection/retained-source-count-preflight-negative.json\n create mode 100644 verification/native-reqwrap-host-error-fixture-20261020/root-review.json\n",
+  "commit_stderr": "",
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "production_bridge_removed": false
+}

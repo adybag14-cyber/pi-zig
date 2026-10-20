@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "status": "root_accepted_independent_transfer_source_peer",
+  "utc": "2026-10-20T21:45:38.696747+00:00",
+  "root_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-transfer-source-review-20261020.json",
+    "bytes": 5082,
+    "sha256": "5FCD9066B81EE284AA1034552009C5A5999E0B3B85BC57BFA7208065CFF73904"
+  },
+  "peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-transfer-source-peer-20261020\\peer.json",
+    "bytes": 18642,
+    "sha256": "7DFCAB11908312CBCC39EF2181F550DA2368A8E957B45697FBC7FAAB68E8EFF7"
+  },
+  "reproduction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-transfer-source-peer-20261020\\read-only-reproduction-result.json",
+    "bytes": 6226,
+    "sha256": "B44CBC7E833D13A5B23600C23C44326A113A18BC7CDD7E2BEE705B2A34B7D7BC"
+  },
+  "fixture_lifetime_supplement": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-transfer-source-peer-20261020\\fixture-lifetime-supplement.json",
+    "bytes": 7396,
+    "sha256": "A3083F5B33CE5850C8AF143D9AEE1B233FCE8AB3283C9D7D50E460727C401530"
+  },
+  "root_complete_final_peer_and_supplement_read": true,
+  "root_three_supplement_ranges_reproduced": true,
+  "committed_fixture_support_byte_equal": true,
+  "root_prior_entire1071301_inventory_and248196_source_proof_reproduced": true,
+  "selected_source_paths": 4,
+  "new_named_declarations": 13,
+  "future_actual_metadata_count": null,
+  "limitations": "The bounded native descriptor packet and same-thread StrongHandle source are reviewed. Full template/deserialization, global tracing, worker broker and bootstrap remain open.",
+  "main_applied": false,
+  "source_execution_authorized": false,
+  "native_execution_authorized": false,
+  "application_qualified": false
+}

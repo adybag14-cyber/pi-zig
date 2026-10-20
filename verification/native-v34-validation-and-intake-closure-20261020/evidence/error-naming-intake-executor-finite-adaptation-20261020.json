@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactReviewedTransferSourceIntake-20261020.py",
+    "bytes": 9697,
+    "sha256": "DF7290181F00B28CA0F602358AA2DB78F15D5C67E89A3134C99D829DA99FB9D5"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactReviewedErrorNamingIntake-20261020.py",
+    "bytes": 9692,
+    "sha256": "F653FDE67CFA1E201615EE5A49451DF1D9B7044D427CED7041F2327A67C891DB"
+  },
+  "edits": [
+    {
+      "before": "\"\"\"Exact FileHandle transfer source intake; no compiler, runtime, generator or push.\"\"\"",
+      "after": "\"\"\"Exact Error build naming intake; no compiler, runtime, generator or push.\"\"\"",
+      "occurrences": 1,
+      "before_sha256": "DF7290181F00B28CA0F602358AA2DB78F15D5C67E89A3134C99D829DA99FB9D5",
+      "after_sha256": "368DBBABDBDE08DA68EA9D70686EB14FCB1A6E356FEF65C41A33B80EBC70BFFE"
+    },
+    {
+      "before": "BASIS=\"2bdafdfa1e41032fcc4e1f0a378b1a97792b72c0\"",
+      "after": "BASIS=\"160b4e0562f0eb1139bf2e4e9c00f4c10ab6aa64\"",
+      "occurrences": 1,
+      "before_sha256": "368DBBABDBDE08DA68EA9D70686EB14FCB1A6E356FEF65C41A33B80EBC70BFFE",
+      "after_sha256": "D1153926900C48B0CF4280304B3B80F1F1C878FDF87FA5738C5A31D76275FE96"
+    },
+    {
+      "before": "MANIFESTS={\n \"transfer\":(\"evidence/pending-file-handle-transfer-main-intake-20261020/manifest.json\",\"94E02E52D90FB962ACBE82BE8E531E222E04F50B11DDA887F89C8B205FFD4ADE\",78,\"Port native FileHandle descriptor transfer ownership\"),\n}\n",
+      "after": "MANIFESTS={\n \"error-naming\":(\"evidence/pending-error-build-naming-main-intake-20261020/manifest.json\",\"8C09208FC115AC525CCCB4B64A2A921D2FE95FA58179A02D12A8F6CCA1D30617\",19,\"Preserve strict native Error test artifact naming\"),\n}\n",
+      "occurrences": 1,
+      "before_sha256": "D1153926900C48B0CF4280304B3B80F1F1C878FDF87FA5738C5A31D76275FE96",
+      "after_sha256": "5419AAEE5B63205C2E838BA48348D3D571FC54DC49A1D12F09B16C7234704E93"
+    },
+    {
+      "before": "assert phase==\"transfer\" and head==BASIS",
+      "after": "assert phase==\"error-naming\" and head==BASIS",
+      "occurrences": 1,
+      "before_sha256": "5419AAEE5B63205C2E838BA48348D3D571FC54DC49A1D12F09B16C7234704E93",
+      "after_sha256": "F653FDE67CFA1E201615EE5A49451DF1D9B7044D427CED7041F2327A67C891DB"
+    }
+  ],
+  "whole_forward_inverse": true,
+  "inherited_byte_index_commit_gates_unchanged": true,
+  "native_execution_authorized": false,
+  "source_execution_authorized": false
+}

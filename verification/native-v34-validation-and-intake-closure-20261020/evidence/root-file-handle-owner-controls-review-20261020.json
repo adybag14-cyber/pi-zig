@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_exact_pending_filehandle_controls_source_composition",
+  "reviewed_utc": "2026-10-20T20:31:34.401155+00:00",
+  "current_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "source_only": true,
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-controls-sourceonly-20261020\\handoff.json",
+    "bytes": 14557,
+    "sha256": "A9D4A4D0BAC91764B52A9EE87BE7C555C2C8C61FCEB9FC87E7282A169700AD73"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-owner-controls-source-peer-20261020\\peer.json",
+    "bytes": 16273,
+    "sha256": "1DBE9B36132197B23B7E502CBBB73A89B5D1DC33C706E924172F74EC57CF2DD2"
+  },
+  "audit_script": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-owner-controls-source-peer-20261020\\source-audit.py",
+    "bytes": 12282,
+    "sha256": "A94B4400FC70D98AF6CBEAC05C518C179F0960D2C7CA95D148F01DD0210C3B04"
+  },
+  "audit_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-owner-controls-source-peer-20261020\\source-audit.json",
+    "bytes": 252361,
+    "sha256": "556446A9B0E1ED3C630DCE686996D00BA10419360C9EF34B670FF5AEED1BC217"
+  },
+  "root_complete_control_fixture_and_build_hunk_read": true,
+  "root_prior_selected_owner_and_continuation_source_read": true,
+  "root_readonly_audit_prefix_executed": true,
+  "whole_reproduced_audit_bytes_identical": true,
+  "input_paths_rehashed": 1068,
+  "module_union": 711,
+  "embeds": 243,
+  "literal_edges": 3335,
+  "source_edits_replayed": 14,
+  "build_insert_bytes": 2834,
+  "all_projection_whole_forward_and_inverse": true,
+  "new_named_declarations": 21,
+  "new_roots": 2,
+  "future_actual_metadata": null,
+  "fixture_lifetime_clarification": "Actual Fixture values are stable stack locals in the selected tests; the marker borrows that address until deinit. The independent peer phrase 'stable heap Fixture' is a documentation imprecision, not the source allocation or a qualification premise.",
+  "remaining": [
+    "Complete public FileHandle template, StreamBase methods, ShutdownWrap and transfer owners.",
+    "Production stack-overflow/fatal hook classifier, native Message/reporting and Environment exit.",
+    "Actual tracing/backing retry/native immediate bootstrap.",
+    "Native compiler, metadata and runtime acceptance after a separate Root grant."
+  ],
+  "main_applied": false,
+  "native_execution": false,
+  "metadata_acceptance": false,
+  "runtime_acceptance": false,
+  "qualification": false
+}

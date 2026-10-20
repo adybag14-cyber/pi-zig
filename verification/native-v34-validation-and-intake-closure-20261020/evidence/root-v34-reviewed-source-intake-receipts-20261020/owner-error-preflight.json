@@ -1,0 +1,1397 @@
+{
+  "phase": "owner-error",
+  "utc": "2026-10-20T21:42:25.791038+00:00",
+  "before_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "basis_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "release": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-exact-three-phase-source-release-20261020.json",
+  "release_sha256": "B4648B29C5CBCC3CE9695A49B76F69055782D075180EE6D8C69CD0C7A1D3FE03",
+  "executor_sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4",
+  "manifest": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-error-main-intake-20261020\\manifest-v2.json",
+  "manifest_sha256": "5730CB5FA9F17FE33478C128E763287E59A37477B2AF2A0820BBCA002D0FADCF",
+  "path_count": 192,
+  "all_donors_live_preimages_and_committed_basis_verified": true,
+  "rows": [
+    {
+      "target": "src/extensions/native_node_file_handle_owner.zig",
+      "role": "source_or_build",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D",
+      "before": null
+    },
+    {
+      "target": "src/extensions/native_node_file_handle_gc_close.zig",
+      "role": "source_or_build",
+      "bytes": 6402,
+      "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4",
+      "before": null
+    },
+    {
+      "target": "src/extensions/native_node_async_wrap_state.zig",
+      "role": "source_or_build",
+      "bytes": 28133,
+      "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_async_wrap_state.zig",
+        "bytes": 26761,
+        "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_callback_scope.zig",
+      "role": "source_or_build",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 39890,
+        "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_fs_request_io.zig",
+      "role": "source_or_build",
+      "bytes": 15469,
+      "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_request_io.zig",
+        "bytes": 14502,
+        "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393"
+      }
+    },
+    {
+      "target": "src/extensions/native_uv_fs.h",
+      "role": "source_or_build",
+      "bytes": 5573,
+      "sha256": "D5BB021DFECD726A7FBB6860616753957C1B25B11C4776BAFD24F2C935589D34",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_fs.h",
+        "bytes": 4931,
+        "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE"
+      }
+    },
+    {
+      "target": "src/extensions/native_uv_tcp.c",
+      "role": "source_or_build",
+      "bytes": 46191,
+      "sha256": "85E49522C7C05764957ADACF6B80F2745D5C06E0A361D33531A8BAF9FEA49F87",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 45730,
+        "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_file_handle_close_request.zig",
+      "role": "source_or_build",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A",
+      "before": null
+    },
+    {
+      "target": "src/extensions/native_node_fs_request_promise.zig",
+      "role": "source_or_build",
+      "bytes": 19385,
+      "sha256": "8EFC2D58C1B1BD5069777FE1D06618F4572F54EEDAC09265EAD26BE8E675A4DF",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_request_promise.zig",
+        "bytes": 18834,
+        "sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721"
+      }
+    },
+    {
+      "target": "src/native_node_file_handle_owner_test_support.zig",
+      "role": "source_or_build",
+      "bytes": 32558,
+      "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "before": null
+    },
+    {
+      "target": "src/native_node_file_handle_owner_test.zig",
+      "role": "source_or_build",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "before": null
+    },
+    {
+      "target": "src/native_node_fs_before_hook_continuation_test.zig",
+      "role": "source_or_build",
+      "bytes": 6578,
+      "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92",
+      "before": null
+    },
+    {
+      "target": "build.zig",
+      "role": "source_or_build",
+      "bytes": 506940,
+      "sha256": "399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 503440,
+        "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+      }
+    },
+    {
+      "target": "vendor/quickjs/quickjs.c",
+      "role": "source_or_build",
+      "bytes": 2403205,
+      "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      }
+    },
+    {
+      "target": "vendor/quickjs/quickjs.h",
+      "role": "source_or_build",
+      "bytes": 114656,
+      "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+        "bytes": 113474,
+        "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+      }
+    },
+    {
+      "target": "src/extensions/native_vm_error_constructor_name.c.inc",
+      "role": "source_or_build",
+      "bytes": 8944,
+      "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843",
+      "before": null
+    },
+    {
+      "target": "src/native_vm_error_constructor_name_test.zig",
+      "role": "source_or_build",
+      "bytes": 28931,
+      "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/authority/acquisition.json",
+      "role": "immutable_source_evidence",
+      "bytes": 2112,
+      "sha256": "F010FD236466796FF71C2810D0E4A21771474E3C5011194921BC6D6B02134F03",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/authority/env-inl.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 28109,
+      "sha256": "41949D4DFA01B04174B0E881B1DB3DD12BF51B9428B89946504603700FCF3E5E",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/authority/env-properties.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 40628,
+      "sha256": "EF24E17E3234F2763986225F222370B6F7B7B069309B9FAE9F3C83D6A304AB91",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/authority/env.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 45315,
+      "sha256": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/authority/libuv/include/uv.h",
+      "role": "immutable_source_evidence",
+      "bytes": 72810,
+      "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/authority/libuv/src/unix/fs.c",
+      "role": "immutable_source_evidence",
+      "bytes": 59847,
+      "sha256": "FFE2CD709C894083D4E470BCE5248EEE71C5E5594418BE3D7A6D80E44D723A61",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/authority/libuv/src/uv-common.h",
+      "role": "immutable_source_evidence",
+      "bytes": 18411,
+      "sha256": "7524F791D5648F3E135340AC61BCB242028947A81A5B8B32042F8561848A5397",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/authority/libuv/src/win/fs-fd-hash-inl.h",
+      "role": "immutable_source_evidence",
+      "bytes": 6886,
+      "sha256": "1365F18D01C4117B0F42CFB2E0065F37AD62E4F5214B150CBF660F986955BB2D",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/authority/libuv/src/win/fs.c",
+      "role": "immutable_source_evidence",
+      "bytes": 105366,
+      "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/authority/lifetime-acquisition.json",
+      "role": "immutable_source_evidence",
+      "bytes": 1468,
+      "sha256": "7A785F35C40330C6D541283D49D4E6A7129FA1EF5377283E825B632DDDBE3D4F",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/authority/lifetime-web-metadata.json",
+      "role": "immutable_source_evidence",
+      "bytes": 13005,
+      "sha256": "CEDD252132DFE0E59A490B5573E54AD4066DFD5F980BE39D9542F2330C22D556",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/authority/req_wrap-inl.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 5640,
+      "sha256": "27C770D8756B626C80210F96F9DB1CF31BFBF09AAB1DA53DC35B382314883E67",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/authority/v8-api.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/authority/v8-conversions-inl.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 12043,
+      "sha256": "9EEE8FDFB6DCC22486A8398DDD9EA1E031208DE0BEF8778F465CCFC22A2B1062",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/dependency-inventory.json",
+      "role": "immutable_source_evidence",
+      "bytes": 476088,
+      "sha256": "25D66DA29B724A3BA4D4FB68D6C8952D06C6FAFC83A73E39CE3581860FFF6B3D",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/production/src/extensions/native_node_file_handle_close_request.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 15294,
+      "sha256": "9EB383CED295E354BD91A5F1FA9E471B70182C3D554D190148AEB4BA93386FEC",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/production/src/extensions/native_node_file_handle_gc_close.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 6402,
+      "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/production/src/extensions/native_node_file_handle_owner.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/production-proposal.json",
+      "role": "immutable_source_evidence",
+      "bytes": 14361,
+      "sha256": "061258BF1085004B82EA8D1A9C237402F7D4075A4DE837F9C25B7D39D0D3A804",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/shared/original/src/extensions/native_node_async_wrap_state.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 26761,
+      "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/shared/original/src/extensions/native_node_callback_scope.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 39890,
+      "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/shared/original/src/extensions/native_node_fs_request_io.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 14502,
+      "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/shared/original/src/extensions/native_uv_fs.h",
+      "role": "immutable_source_evidence",
+      "bytes": 4931,
+      "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/shared/original/src/extensions/native_uv_tcp.c",
+      "role": "immutable_source_evidence",
+      "bytes": 45730,
+      "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/shared/projected/src/extensions/native_node_async_wrap_state.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 28133,
+      "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/shared/projected/src/extensions/native_node_callback_scope.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/shared/projected/src/extensions/native_node_fs_request_io.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 15469,
+      "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/shared/projected/src/extensions/native_uv_fs.h",
+      "role": "immutable_source_evidence",
+      "bytes": 5573,
+      "sha256": "D5BB021DFECD726A7FBB6860616753957C1B25B11C4776BAFD24F2C935589D34",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/shared/projected/src/extensions/native_uv_tcp.c",
+      "role": "immutable_source_evidence",
+      "bytes": 46191,
+      "sha256": "85E49522C7C05764957ADACF6B80F2745D5C06E0A361D33531A8BAF9FEA49F87",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/shared/proposal.json",
+      "role": "immutable_source_evidence",
+      "bytes": 18499,
+      "sha256": "C195AE5D402ED457AF651D6BEB37B2BB8DBD3DF36CD74106EB172F00B64618FC",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-sourceonly-20261020/shared/shared.patch",
+      "role": "immutable_source_evidence",
+      "bytes": 8341,
+      "sha256": "2B26FA7BC20F20197677CD17B77BE247E6D2E878D007A6A978652FEC8C5C6E46",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/authority/acquisition.json",
+      "role": "immutable_source_evidence",
+      "bytes": 1873,
+      "sha256": "431A28008F6F7D66FEBFD499DAE4A7612B819CF3FD4CFD4185CDC03D279569AE",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/authority/api-depth-acquisition.json",
+      "role": "immutable_source_evidence",
+      "bytes": 956,
+      "sha256": "916951D480D0E8764B94F0C96B205947D8CEC34B4521A55E720A94C789CE5E44",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/authority/api-depth-web-metadata.json",
+      "role": "immutable_source_evidence",
+      "bytes": 8937,
+      "sha256": "91D1E5CF9A6A0683370E39BF371DC7E52801B84FB3D910FEB090920BF7F708EC",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/authority/async_wrap.cc.v24.13.txt",
+      "role": "immutable_source_evidence",
+      "bytes": 27043,
+      "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/authority/native-callback-and-exception-source.json",
+      "role": "immutable_source_evidence",
+      "bytes": 20217,
+      "sha256": "008EEC523290C9547E6F4D2BA2AA108E62FCC57BCB8E5ECB730F1548E7F1977C",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/authority/node-api-callback.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 13682,
+      "sha256": "0A4C8ECF051F995F9669826DC9D85560ADD6ECD6FB2E28CE6B2F3DD309947DE2",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/authority/node-errors.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 43095,
+      "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/authority/node-errors.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 23394,
+      "sha256": "396CC9AE4323EC0E9FB8E4B5E6912C0603E86410D5588802B5B1F2C0F7048CC4",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/authority/node_file.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/authority/v8-api-inl.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 14583,
+      "sha256": "F72A89EADA3FF47D5F2D368BF088CD5ECE424BBE3209A9CC5D42B83398E4BA05",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/authority/v8-api-macros.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 5190,
+      "sha256": "0E027969A031D88B0E139D143ACBACBE2734F648D11BC960D52603AAADC0E6F7",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/authority/v8-api.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/authority/v8-api.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 22131,
+      "sha256": "A16BF05E03F2AE915B0600C10847A053A511D2855640358CC653A2655338A9CA",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/authority/v8-objects.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 272859,
+      "sha256": "81E1D4EDFCE90BC1409DDF1B16966F2931E8DC947BF7429DFED6959708211BFC",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/authority/web-metadata.json",
+      "role": "immutable_source_evidence",
+      "bytes": 17185,
+      "sha256": "69E415384A2AB082CFD393B55E263947273B1312331C0E7B5BB4AABEAC7DC2ED",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/close-settlement.patch",
+      "role": "immutable_source_evidence",
+      "bytes": 1351,
+      "sha256": "8FB28FD3A97FF66ADE8CE69C21D65A253C283A91461A524DA76D4A4FB10B1F28",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/original/src/extensions/native_node_file_handle_close_request.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 15294,
+      "sha256": "9EB383CED295E354BD91A5F1FA9E471B70182C3D554D190148AEB4BA93386FEC",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/projected/src/extensions/native_node_file_handle_close_request.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/proposal.json",
+      "role": "immutable_source_evidence",
+      "bytes": 14602,
+      "sha256": "BA6543E47B33A5D994AD097FBF0CBC58A6E35F262DF42FFE5909D9A736118319",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/source-line-correction.json",
+      "role": "immutable_source_evidence",
+      "bytes": 1114,
+      "sha256": "47A67114D92040748D9DA95DF434A02E72B91AD301282CADADD88C24A886E647",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_callback_scope.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 39890,
+      "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_check_failure.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 2857,
+      "sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_commonjs_owned_boundary.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 9934,
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_fs_request_promise.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 18834,
+      "sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig.raw",
+      "role": "immutable_source_evidence",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_weak_global.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 2477,
+      "sha256": "2B776E789CCBB8626B928C0EA44896BE843B11C379C42B30D298E19A49AE6C8A",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/vendor/quickjs/quickjs.c",
+      "role": "immutable_source_evidence",
+      "bytes": 2399340,
+      "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support-main-provenance.json",
+      "role": "immutable_source_evidence",
+      "bytes": 4613,
+      "sha256": "EC644E04F8B897473874DF78B77F3F28D6AD882AA7ABF7A8C130C38448D1C455",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-fsreqpromise-before-hook-followup-sourceonly-20261020/authority/async_wrap.cc.v24.13.txt",
+      "role": "immutable_source_evidence",
+      "bytes": 27043,
+      "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-fsreqpromise-before-hook-followup-sourceonly-20261020/authority/node-api-callback.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 13682,
+      "sha256": "0A4C8ECF051F995F9669826DC9D85560ADD6ECD6FB2E28CE6B2F3DD309947DE2",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-fsreqpromise-before-hook-followup-sourceonly-20261020/authority/node-errors.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 43095,
+      "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-fsreqpromise-before-hook-followup-sourceonly-20261020/authority/node_file-inl.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 14756,
+      "sha256": "2E96C28CB0BBB4520D8E0C0997188922C3DDE28853D14A3E19D7D559BC9493D5",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-fsreqpromise-before-hook-followup-sourceonly-20261020/authority/node_file.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 17193,
+      "sha256": "A63A31D1BCAEB7AF416B19ABEAFAB880DB7D424378DC27050F9FC2EE4921E16F",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-fsreqpromise-before-hook-followup-sourceonly-20261020/authority/v8-api-inl.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 14583,
+      "sha256": "F72A89EADA3FF47D5F2D368BF088CD5ECE424BBE3209A9CC5D42B83398E4BA05",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-fsreqpromise-before-hook-followup-sourceonly-20261020/authority/v8-api-macros.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 5190,
+      "sha256": "0E027969A031D88B0E139D143ACBACBE2734F648D11BC960D52603AAADC0E6F7",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-fsreqpromise-before-hook-followup-sourceonly-20261020/authority/v8-api.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-fsreqpromise-before-hook-followup-sourceonly-20261020/authority/v8-objects.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 272859,
+      "sha256": "81E1D4EDFCE90BC1409DDF1B16966F2931E8DC947BF7429DFED6959708211BFC",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-fsreqpromise-before-hook-followup-sourceonly-20261020/before-hook.patch",
+      "role": "immutable_source_evidence",
+      "bytes": 1306,
+      "sha256": "BAA07F1FD5DB32B408F4CDDF111DB37E94C4D42E29120C7EE102265603616A16",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-fsreqpromise-before-hook-followup-sourceonly-20261020/existing-control/native_node_fs_request_owner_test.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 57142,
+      "sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-fsreqpromise-before-hook-followup-sourceonly-20261020/original/src/extensions/native_node_fs_request_promise.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 18834,
+      "sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-fsreqpromise-before-hook-followup-sourceonly-20261020/projected/src/extensions/native_node_fs_request_promise.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 19385,
+      "sha256": "8EFC2D58C1B1BD5069777FE1D06618F4572F54EEDAC09265EAD26BE8E675A4DF",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-fsreqpromise-before-hook-followup-sourceonly-20261020/proposal.json",
+      "role": "immutable_source_evidence",
+      "bytes": 12997,
+      "sha256": "08F45EF3D26E4D2CBB8A5FA3A144E635AB6DA9B64B486871F7B1D102F6488B56",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-controls-sourceonly-20261020/build/install-only-block.zig.txt",
+      "role": "immutable_source_evidence",
+      "bytes": 2834,
+      "sha256": "02270985F1EBF3D3800389BE94F91576EA4E969A55235D6A4F5CDEDB46DB2B0F",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-controls-sourceonly-20261020/build/original-build.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 503440,
+      "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-controls-sourceonly-20261020/build/projected-build.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 506274,
+      "sha256": "81E6F358E576639D76554F9F46766B350EA950A496C4DCE65F3A048A8E0D409C",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-controls-sourceonly-20261020/build/proposal.json",
+      "role": "immutable_source_evidence",
+      "bytes": 4451,
+      "sha256": "8DFCA25C7674D319464CE7E411BF6834E516F75418B2381AFF8026D4F13A16D3",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-controls-sourceonly-20261020/dependency-inventory.json",
+      "role": "immutable_source_evidence",
+      "bytes": 567445,
+      "sha256": "56BFF251AD680CE3B5B4E7D4D979CFDA2FA41345BC958432273007DAFD2330D1",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-controls-sourceonly-20261020/handoff.json",
+      "role": "immutable_source_evidence",
+      "bytes": 14557,
+      "sha256": "A9D4A4D0BAC91764B52A9EE87BE7C555C2C8C61FCEB9FC87E7282A169700AD73",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-controls-sourceonly-20261020/source/src/native_node_file_handle_owner_test.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-controls-sourceonly-20261020/source/src/native_node_file_handle_owner_test_support.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 32558,
+      "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-controls-sourceonly-20261020/source/src/native_node_fs_before_hook_continuation_test.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 6578,
+      "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-owner-controls-sourceonly-20261020/source-map.json",
+      "role": "immutable_source_evidence",
+      "bytes": 21972,
+      "sha256": "5E36100728A32C4ACC09F1D53BF11BC90102E506B581C8496DA9F1185749EBCA",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/additional-acquisition.json",
+      "role": "immutable_source_evidence",
+      "bytes": 7429,
+      "sha256": "36EE21F71B774DB2D18009AAD655930E77000C28F406FDAB754D2CF2C59865CE",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/bootstrapper-acquisition.json",
+      "role": "immutable_source_evidence",
+      "bytes": 2942,
+      "sha256": "4E2B5D4B8063D66C9DF33ACFB9FDFCA7C5206D566A2C5B566CFC153F52B0DA3D",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/consumer-source-binding.json",
+      "role": "immutable_source_evidence",
+      "bytes": 786,
+      "sha256": "4976C1F2E3CE74B182B5B32E9249C13A6E0857B2961584CA2385847E88E64E18",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/copied-authority-bindings.json",
+      "role": "immutable_source_evidence",
+      "bytes": 3388,
+      "sha256": "8220E3ED1E37277EEB3FDB0F1D7827BC8C6D9C8F316416768CBFF55B17DB5325",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/factory-acquisition.json",
+      "role": "immutable_source_evidence",
+      "bytes": 2940,
+      "sha256": "52A85376CF15D41F999318FC515625A5B06C48B82F7087F427DEC3F029E32D8A",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/map-acquisition.json",
+      "role": "immutable_source_evidence",
+      "bytes": 2937,
+      "sha256": "82BBF6A3BD42C73B5E01F9B8A21B03809E640AA26F033C37D17AA29A073CCA1C",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/node-errors.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 43095,
+      "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/node-errors.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 23394,
+      "sha256": "396CC9AE4323EC0E9FB8E4B5E6912C0603E86410D5588802B5B1F2C0F7048CC4",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/v8-api.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/v8-bootstrapper.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 336314,
+      "sha256": "0991594530BB8FAF3836C747E547F43BB091D0AFA74E16B4B1814F68458D172A",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/v8-builtins-error.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 2763,
+      "sha256": "8D1447C8E744A17440C36FAE548F876F44B6F219FCD0E22B0E8EB43C8E7DEFE3",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/v8-contexts.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 49684,
+      "sha256": "4B94B0DEC61C1A68779C5D56CAA746158DC172F0402B6EFA803AE1F1A1B7C629",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/v8-factory.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 203216,
+      "sha256": "895D8A6E8BEDE5FF80EA97DE37F765EE54F13D20E449968841C288596B851FC6",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/v8-js-function.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 64812,
+      "sha256": "BD7C962A95DFD157FAFC7933D4C1D1571EE44D02FB71F0FF8592723379B88C47",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/v8-js-objects.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 234488,
+      "sha256": "22916A40E97D1F8E19A01ED43820DAE9240781AFE01143FE6AEDA90C766F4480",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/v8-map.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 99099,
+      "sha256": "F94513B765EE2DD421C1D5DB3E919BF8D5765776E985DECA594F9110F9E592FE",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/v8-messages.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 49726,
+      "sha256": "A00739D8A0D7DC796BB10D50B495DF9B417B9125C6B86B8333F37224A2BCE59E",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/v8-prototype-inl.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 5121,
+      "sha256": "A7E44D86EC7CDB6DC55912629FD7B09FBFEB7FF6E3F15DAA16851AA0EADA500C",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/v8-prototype.v24.13.h",
+      "role": "immutable_source_evidence",
+      "bytes": 3041,
+      "sha256": "0EB94F950E31EC05CA827AECF9A82CF9A76D86EF92E544143A354919C70CCC70",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/authority/v8-shared-function-info.v24.13.cc",
+      "role": "immutable_source_evidence",
+      "bytes": 34727,
+      "sha256": "97E61FDB8DFD572CE0BF17F2346636F123842815BB28FD118D0AD0773748CCEB",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/build/original.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 503440,
+      "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/build/projected.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 504106,
+      "sha256": "28C315EFAD669387B315CA24C39FB4942FD7FF26BD6D679DAA59A110ED2E97D5",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/build/proposal.json",
+      "role": "immutable_source_evidence",
+      "bytes": 2212,
+      "sha256": "54760A19321B0DC5C2B3C036B7942EF2F8F212565C0A1B691E324E94D6F7CD8A",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/closure-and-preservation.json",
+      "role": "immutable_source_evidence",
+      "bytes": 45378,
+      "sha256": "DBF5C664507C2BBB12157CDD6B73A2C0AA125C40B7AF6C752E18C5E97C76727B",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/control-stack-limit-source-choice.json",
+      "role": "immutable_source_evidence",
+      "bytes": 717,
+      "sha256": "D0FA22D7E0898F4071A96F60B545BC1528328F579D3ACCC0E9388ED7E79722FB",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/drafts/control-before-intrinsic-replacement.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 27591,
+      "sha256": "5F067EBF59EA77F999FF9CA62E05F53AEDC7FDF18FBB343909494EF479190F6A",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/drafts/control-before-native-data-observation.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 28557,
+      "sha256": "B5CCA351CF4C3717FA083D97D80E010156924D0180DAD9D77B6884DCFEF8A212",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/drafts/control-before-nontail-stack.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 28404,
+      "sha256": "BF1A85313A3E9284B22C545B68D27173BBBDDA52CF69D79E0175E0450F3226FE",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/drafts/control-initial.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 27257,
+      "sha256": "5940604DD67ACE34646284BEC990E4845444BD1102D1B5A20FE312D6FE815718",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/original/vendor/quickjs/quickjs.c",
+      "role": "immutable_source_evidence",
+      "bytes": 2399340,
+      "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/original/vendor/quickjs/quickjs.h",
+      "role": "immutable_source_evidence",
+      "bytes": 113474,
+      "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/production-proposal.json",
+      "role": "immutable_source_evidence",
+      "bytes": 14336,
+      "sha256": "B1C179FE0FE38E0F6FC1FB1BF351FE62ED4D85E90FBEED1DDDF995C1345E863C",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/projected/vendor/quickjs/quickjs.c",
+      "role": "immutable_source_evidence",
+      "bytes": 2402888,
+      "sha256": "4384A31CAC4667A8038B12BBBDC2B25ABF894E37E09922625D2C8B1EEF289D3D",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/projected/vendor/quickjs/quickjs.h",
+      "role": "immutable_source_evidence",
+      "bytes": 114656,
+      "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/source/src/extensions/native_vm_error_constructor_name.c.inc",
+      "role": "immutable_source_evidence",
+      "bytes": 8944,
+      "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/source/src/native_vm_error_constructor_name_test.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 28930,
+      "sha256": "A6BEC5B75AA64E097D7709300389DC1F49395879A1A46CB8911536217DE41E6D",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/source-map.json",
+      "role": "immutable_source_evidence",
+      "bytes": 168366,
+      "sha256": "472E2044C5C441563124CC53A1AAAE2394A5E75A9D53577B453F5F795333BC54",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/successor/projected/vendor/quickjs/quickjs.c",
+      "role": "immutable_source_evidence",
+      "bytes": 2403205,
+      "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/successor/source/src/native_vm_error_constructor_name_test.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 28931,
+      "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/support/src/extensions/engine_abi.c",
+      "role": "immutable_source_evidence",
+      "bytes": 18016,
+      "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/support/src/extensions/engine_abi.h",
+      "role": "immutable_source_evidence",
+      "bytes": 2003,
+      "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/support-bindings.json",
+      "role": "immutable_source_evidence",
+      "bytes": 848,
+      "sha256": "D0DF66CE2B2409B3EE19A2A146AA9DC83A419B95B0DBCAA0FA6139D5D5E55002",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/vm-projection-successor.json",
+      "role": "immutable_source_evidence",
+      "bytes": 24862,
+      "sha256": "64DB11E161C4AF40DBE7ABC1D981D07F4E6BD74B69B806353EDBA86F5F6A6702",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/sdk/native-vm-error-constructor-name-sourceonly-20261020/vm-projection.json",
+      "role": "immutable_source_evidence",
+      "bytes": 22593,
+      "sha256": "1FECF1633A87477251D22EB47AD3F8DE1D33451E968B4FE4A5474F41CFD9A933",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/module_peer/native-file-handle-sync-close-source-peer-20261020/peer.json",
+      "role": "immutable_source_evidence",
+      "bytes": 7899,
+      "sha256": "090FA7C8485CA0DB4763BBFBA91BC2E2D481E76936BF26B9F9CBF2EE1237504C",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/module_peer/native-file-handle-sync-close-source-peer-20261020/source-audit.json",
+      "role": "immutable_source_evidence",
+      "bytes": 40694,
+      "sha256": "79FB56CF7C7F41512EA059BDB16B0EF21DDFF0C14DE7171C0C94A9DEF01E00AB",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/module_peer/native-file-handle-sync-close-source-peer-20261020/source-audit.py",
+      "role": "immutable_source_evidence",
+      "bytes": 7926,
+      "sha256": "6C977B86D765AC765C3DE8EAD22950994FD73ACC49DD020A81B99EF9FDF930A8",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/module_peer/native-file-handle-owner-controls-source-peer-20261020/fixture-storage-clarification.json",
+      "role": "immutable_source_evidence",
+      "bytes": 7244,
+      "sha256": "A698C2FE95E134BACFCDE504A14492FCF038A7936C17339F7FBB6632B2CC2194",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/module_peer/native-file-handle-owner-controls-source-peer-20261020/peer.json",
+      "role": "immutable_source_evidence",
+      "bytes": 16273,
+      "sha256": "1DBE9B36132197B23B7E502CBBB73A89B5D1DC33C706E924172F74EC57CF2DD2",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/module_peer/native-file-handle-owner-controls-source-peer-20261020/source-audit.json",
+      "role": "immutable_source_evidence",
+      "bytes": 252361,
+      "sha256": "556446A9B0E1ED3C630DCE686996D00BA10419360C9EF34B670FF5AEED1BC217",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/module_peer/native-file-handle-owner-controls-source-peer-20261020/source-audit.py",
+      "role": "immutable_source_evidence",
+      "bytes": 12282,
+      "sha256": "A94B4400FC70D98AF6CBEAC05C518C179F0960D2C7CA95D148F01DD0210C3B04",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/module_peer/native-vm-error-constructor-name-source-peer-20261020/final-binding-audit.json",
+      "role": "immutable_source_evidence",
+      "bytes": 74424,
+      "sha256": "86D6EE694E4FE48AFD076E3F287D3CA9FB34143628DFFDA991A8B40CDCEFE2E3",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/module_peer/native-vm-error-constructor-name-source-peer-20261020/final-binding-audit.py",
+      "role": "immutable_source_evidence",
+      "bytes": 9358,
+      "sha256": "0E0CEB0A4A69AD2FF88081428BC4A3E9A85C65AAFD97861DF352984290BBA4A3",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/module_peer/native-vm-error-constructor-name-source-peer-20261020/peer.json",
+      "role": "immutable_source_evidence",
+      "bytes": 10982,
+      "sha256": "2E4164DCA07EE67018D3F0B733408D9CC7E26A80835DCCC6D2D9742624B1A271",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/module_peer/native-vm-error-constructor-name-source-peer-20261020/source-audit.json",
+      "role": "immutable_source_evidence",
+      "bytes": 21985,
+      "sha256": "B1253548E211E8E7BCE2484A39C70819471D6F6DB4D64D1672F2A2471C1D4817",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/module_peer/native-vm-error-constructor-name-source-peer-20261020/source-audit.py",
+      "role": "immutable_source_evidence",
+      "bytes": 6764,
+      "sha256": "DFFC8934AF4AF2B3FD16A9C2C0F5F072560239C2E4003E87856A29DEDAA6E5EA",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/module_peer/native-vm-error-constructor-name-source-peer-20261020/source-findings.json",
+      "role": "immutable_source_evidence",
+      "bytes": 9301,
+      "sha256": "5F6724D4DD338CDE7AF6C54A49C1D41DC6FDC8427C063A6FACE01F2E20A6B2B5",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/module_peer/combined-file-handle-error-intake-source-peer-20261020/peer.json",
+      "role": "immutable_source_evidence",
+      "bytes": 31766,
+      "sha256": "567DB23A8AE9F536D3B9093495BB6F4E43D780068C4A7E7780CDBBF799F87D13",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/module_peer/combined-file-handle-error-intake-source-peer-20261020/source-audit.py",
+      "role": "immutable_source_evidence",
+      "bytes": 6702,
+      "sha256": "0C44AC3A8C1BF43A7DA00D4484F911818D0D7BDFED1B3920F5CC6D733FBC6FF1",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/root_peer/independent-file-handle-owner-source-peer-20261020/byte-replay-and-provenance.json",
+      "role": "immutable_source_evidence",
+      "bytes": 25469,
+      "sha256": "DC0FA32242A91C08C051791F99F917653A766733DE2B7C198AB01DC8FAC84E1A",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/root_peer/independent-file-handle-owner-source-peer-20261020/peer.json",
+      "role": "immutable_source_evidence",
+      "bytes": 13435,
+      "sha256": "27B01670A2F361328619A1F487093FEA183BFC12CA4A99471F9504CC7A2E6747",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/original/build.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 503440,
+      "sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/original/src/extensions/native_node_async_wrap_state.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 26761,
+      "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/original/src/extensions/native_node_callback_scope.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 39890,
+      "sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/original/src/extensions/native_node_fs_request_io.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 14502,
+      "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/original/src/extensions/native_node_fs_request_promise.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 18834,
+      "sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/original/src/extensions/native_uv_fs.h",
+      "role": "immutable_source_evidence",
+      "bytes": 4931,
+      "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/original/src/extensions/native_uv_tcp.c",
+      "role": "immutable_source_evidence",
+      "bytes": 45730,
+      "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/original/vendor/quickjs/quickjs.c",
+      "role": "immutable_source_evidence",
+      "bytes": 2399340,
+      "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/original/vendor/quickjs/quickjs.h",
+      "role": "immutable_source_evidence",
+      "bytes": 113474,
+      "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/build.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 506940,
+      "sha256": "399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/src/extensions/native_node_async_wrap_state.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 28133,
+      "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/src/extensions/native_node_callback_scope.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/src/extensions/native_node_file_handle_close_request.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/src/extensions/native_node_file_handle_gc_close.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 6402,
+      "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/src/extensions/native_node_file_handle_owner.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/src/extensions/native_node_fs_request_io.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 15469,
+      "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/src/extensions/native_node_fs_request_promise.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 19385,
+      "sha256": "8EFC2D58C1B1BD5069777FE1D06618F4572F54EEDAC09265EAD26BE8E675A4DF",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/src/extensions/native_uv_fs.h",
+      "role": "immutable_source_evidence",
+      "bytes": 5573,
+      "sha256": "D5BB021DFECD726A7FBB6860616753957C1B25B11C4776BAFD24F2C935589D34",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/src/extensions/native_uv_tcp.c",
+      "role": "immutable_source_evidence",
+      "bytes": 46191,
+      "sha256": "85E49522C7C05764957ADACF6B80F2745D5C06E0A361D33531A8BAF9FEA49F87",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/src/extensions/native_vm_error_constructor_name.c.inc",
+      "role": "immutable_source_evidence",
+      "bytes": 8944,
+      "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/src/native_node_file_handle_owner_test.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/src/native_node_file_handle_owner_test_support.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 32558,
+      "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/src/native_node_fs_before_hook_continuation_test.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 6578,
+      "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/src/native_vm_error_constructor_name_test.zig",
+      "role": "immutable_source_evidence",
+      "bytes": 28931,
+      "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/vendor/quickjs/quickjs.c",
+      "role": "immutable_source_evidence",
+      "bytes": 2403205,
+      "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projected/vendor/quickjs/quickjs.h",
+      "role": "immutable_source_evidence",
+      "bytes": 114656,
+      "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/composition/pending-file-handle-and-error-intake-20261020/projection.json",
+      "role": "immutable_source_evidence",
+      "bytes": 25832,
+      "sha256": "E1C3AE19CE38CF7FB6B21043F9B154B4DC4AE0952A9B149BD6BE792AFAC7C3B3",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/root_reviews/root-file-handle-owner-controls-review-20261020.json",
+      "role": "root_source_review",
+      "bytes": 2726,
+      "sha256": "626F84EFE41C3E7D2D35C61C4DEB1953FDCC1BD16A18B90BAFF2BF632717BCF1",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/root_reviews/root-native-error-constructor-source-review-20261020.json",
+      "role": "root_source_review",
+      "bytes": 3789,
+      "sha256": "E7002286BC0ACCBDF13BC6D404503B2442D83FB8407D97383452FB49F03D82FC",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/root_reviews/pending-file-handle-owner-intake-20261020-projection.json",
+      "role": "root_source_review",
+      "bytes": 16894,
+      "sha256": "7DB6E93CF2DD7B74EA9BC98610DFF2DDBDA09424C4215CB7522AD4AA1B7BF690",
+      "before": null
+    },
+    {
+      "target": "verification/native-file-handle-error-intake-20261020/manifest.json",
+      "role": "exact_intake_manifest",
+      "bytes": 107917,
+      "sha256": "5730CB5FA9F17FE33478C128E763287E59A37477B2AF2A0820BBCA002D0FADCF",
+      "before": null
+    }
+  ],
+  "native_execution_authorized": false,
+  "qualification": false
+}

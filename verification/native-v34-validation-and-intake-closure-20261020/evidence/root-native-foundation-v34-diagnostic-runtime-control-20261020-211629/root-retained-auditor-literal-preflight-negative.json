@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "status": "source_preflight_negative_before_auditor_execution",
+  "utc": "2026-10-20T21:27:29.371011+00:00",
+  "auditor_sha256": "C66FDE863016A5A9B29BCEE4A93E0A371AE1E70E01773756F5FF9686841FDDDD",
+  "reason": "Original C66F exact assertion bytes literal used LF156; actual original retained native stderr is CRLF157. Root independently checked raw bytes before executing auditor.",
+  "all53_forward_intermediate_hashes_and_whole_inverse_passed": true,
+  "original_stderr_bytes": 157,
+  "original_stderr_sha256": "6AE6E82B866AA07A01730451E487596C2B906D25E19A7ADF1CB976FF79F816A1",
+  "original_stderr_repr": "b'Assertion failed: atomic_load_explicit(&request->completed, memory_order_acquire), file C:\\\\Users\\\\adyba\\\\pi-zig\\\\main\\\\src\\\\extensions\\\\native_uv_tcp.c, line 804\\r\\n'",
+  "auditor_executed": false,
+  "native_execution": false,
+  "main_mutated": false,
+  "source_release": false,
+  "qualification": false
+}

@@ -1,0 +1,663 @@
+{
+  "schema": 1,
+  "status": "unissued_finite_outcome_specific_v34_partial_diagnostic_runtime_auditor_for_root_review",
+  "prepared_utc": "2026-10-20T21:25:50.213032+00:00",
+  "candidate_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "accepted_baseline_auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-diagnostic-runtime-control-20261020-181658\\Audit-PartialV31DiagnosticRuntime.py",
+    "bytes": 29568,
+    "sha256": "6BCE1364609AC0A1E3D466518715544A9B257287B70B6E7E1ADA7FF45FA24EC9"
+  },
+  "accepted_baseline_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-diagnostic-runtime-control-20261020-181658\\independent-partial-diagnostic-runtime-closure.json",
+    "bytes": 51849,
+    "sha256": "36D4EAB4F1D7A1E9632C847220F8CD6FE03DDF1FEC422C3F431F96B8519B71BD"
+  },
+  "exact_inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\independent-diagnostic-runtime-audit-inputs.json",
+    "bytes": 13585,
+    "sha256": "7A913995E512F587262BB1A64D82438EC27CB72C706D578741E10004AB55F301"
+  },
+  "terminal_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\independent-terminal-diagnostic-runtime-observation.json",
+    "bytes": 73035,
+    "sha256": "0919BC9FF5516FD8A83E0C668B71555B69595E405328A6368CB9CA1CAA15712D"
+  },
+  "terminal_job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\independent-observed-job-status.json",
+    "bytes": 1645,
+    "sha256": "E1A0446F81C1C4BB20E02489D38AA372DC6452233366202FE7A0188E1AE0A703"
+  },
+  "current_build_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\independent-current-seals-and-owners.json",
+    "bytes": 479501,
+    "sha256": "28AB425BC5C149E1642C0839CC6FBD590C0F98BD2DB5D844CE4C79BB5748BFF3"
+  },
+  "original_strict_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-control-20261020-210255\\independent-negative-runtime-closure.json",
+    "bytes": 64836,
+    "sha256": "038180C2284FB568EEB9368F033BC894A4E4AD8D6CCB3615B0C438AF336BCEDA"
+  },
+  "actual_original_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\result.json",
+      "bytes": 249862,
+      "sha256": "4ABC6968DFF09B0075791279076C8F8F4891A80B7E5448BD1E83BA681A7E961D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\before.json",
+      "bytes": 15394939,
+      "sha256": "119AE157A7BF3B81A0D08C0B58DCF17B680E3C178BA185F058201344CDF8242B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\final.json",
+      "bytes": 15394939,
+      "sha256": "119AE157A7BF3B81A0D08C0B58DCF17B680E3C178BA185F058201344CDF8242B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\root-grant.json",
+      "bytes": 10005,
+      "sha256": "B9A91A955663A8489ADF9DF99DCB723874863063351ED62D2F2420016A5ECD8F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\launch.ps1",
+      "bytes": 1795,
+      "sha256": "FE66BA4B5C8434CAD46FA30ADE9250991D86B3413FB6C082D1D6264E51D3111F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\outer.json",
+      "bytes": 1660,
+      "sha256": "CC43C64B9BB83BFF02272CB8929C7CFF328969A5AB0B3A8B766ED52172563E75"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\outer-absence.json",
+      "bytes": 183,
+      "sha256": "F901A879AD25EBEDA774000ADECFCE6E7AE2D0EE79AA053CFAA7DBD77C98C520"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\independent-metadata-acceptance.json",
+      "bytes": 242327,
+      "sha256": "80BCC5A73602A01AFFB9D66B3D1531D730D4B0FD79EFDC73CADAA7D246729D45"
+    }
+  ],
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\Audit-PartialV34DiagnosticRuntime.py",
+    "bytes": 29754,
+    "sha256": "C66FDE863016A5A9B29BCEE4A93E0A371AE1E70E01773756F5FF9686841FDDDD"
+  },
+  "edits": [
+    {
+      "label": "current-v34-paths",
+      "before": "v31",
+      "after": "v34",
+      "occurrences_before": 8,
+      "occurrences_after": 8,
+      "number": 1,
+      "before_sha256": "6BCE1364609AC0A1E3D466518715544A9B257287B70B6E7E1ADA7FF45FA24EC9",
+      "after_sha256": "56948EBC0730A4C5AACFF3D9B4E98013D743ECFEE1F26BD567563187DD631F60"
+    },
+    {
+      "label": "current-v34-prose",
+      "before": "V31",
+      "after": "V34",
+      "occurrences_before": 4,
+      "occurrences_after": 4,
+      "number": 2,
+      "before_sha256": "56948EBC0730A4C5AACFF3D9B4E98013D743ECFEE1F26BD567563187DD631F60",
+      "after_sha256": "B269D8988371E38DDE2D33B357906C5C361DE3B94A99B018A394F6AB86C2C03F"
+    },
+    {
+      "label": "exact-original-diagnostic-control-proof",
+      "before": "20261020-181658",
+      "after": "20261020-211629",
+      "occurrences_before": 2,
+      "occurrences_after": 2,
+      "number": 3,
+      "before_sha256": "B269D8988371E38DDE2D33B357906C5C361DE3B94A99B018A394F6AB86C2C03F",
+      "after_sha256": "DD6E513D071BBCBDA2EA7BF3304172AC1FBAA33CA70E25211B0D8C125D5B0795"
+    },
+    {
+      "label": "current-build-control-proof",
+      "before": "20261020-171134",
+      "after": "20261020-202924",
+      "occurrences_before": 2,
+      "occurrences_after": 2,
+      "number": 4,
+      "before_sha256": "DD6E513D071BBCBDA2EA7BF3304172AC1FBAA33CA70E25211B0D8C125D5B0795",
+      "after_sha256": "D36374025269BEC2A743B24506F1033D6D4F64A2B7247744FE4F8E08E2C64756"
+    },
+    {
+      "label": "current-strict-negative-control-proof",
+      "before": "20261020-175939",
+      "after": "20261020-210255",
+      "occurrences_before": 2,
+      "occurrences_after": 2,
+      "number": 5,
+      "before_sha256": "D36374025269BEC2A743B24506F1033D6D4F64A2B7247744FE4F8E08E2C64756",
+      "after_sha256": "014C8918F91DC6F134C68B94ACEFE930DC15AD44A334B2EB36EF5FBC64424D52"
+    },
+    {
+      "label": "current-frozen-head",
+      "before": "14615dfc179f9e7e2044591a2d8aa9592b9d883b",
+      "after": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 6,
+      "before_sha256": "014C8918F91DC6F134C68B94ACEFE930DC15AD44A334B2EB36EF5FBC64424D52",
+      "after_sha256": "B908AA0E629EA3DB4F9E32C5A37DAB941C105E43834B6C336A3928882D4502F7"
+    },
+    {
+      "label": "actual-exact-terminal-inputs",
+      "before": "4ED7EA416DE0FB98C37596D15CB4EA0EA4B4C6C5A565CDE7D0E42263096B866F",
+      "after": "7A913995E512F587262BB1A64D82438EC27CB72C706D578741E10004AB55F301",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 7,
+      "before_sha256": "B908AA0E629EA3DB4F9E32C5A37DAB941C105E43834B6C336A3928882D4502F7",
+      "after_sha256": "698D51D9387BD8660D762CF4FA3ABE24D8AB415C50D9F278BCAF710927A2B214"
+    },
+    {
+      "label": "exact-original-launcher",
+      "before": "73472719F98F1B3FFA6213A5095E9CB10EE8F1C65578253F7D35F3B509105347",
+      "after": "FE66BA4B5C8434CAD46FA30ADE9250991D86B3413FB6C082D1D6264E51D3111F",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 8,
+      "before_sha256": "698D51D9387BD8660D762CF4FA3ABE24D8AB415C50D9F278BCAF710927A2B214",
+      "after_sha256": "FBF9E906CE0EA6D87BB1DFC14589F17DE549C1D784DF2BE3B998D6A7DFC51573"
+    },
+    {
+      "label": "current-independent-metadata",
+      "before": "5C951AAC2128A2C67A92C6E347CE5B4D1E744816975E725B91C293C650A41392",
+      "after": "80BCC5A73602A01AFFB9D66B3D1531D730D4B0FD79EFDC73CADAA7D246729D45",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 9,
+      "before_sha256": "FBF9E906CE0EA6D87BB1DFC14589F17DE549C1D784DF2BE3B998D6A7DFC51573",
+      "after_sha256": "FBCE7D035877F649C41E8679E7686B33FC51ACB8A1EEA7D151AD3851A5997E28"
+    },
+    {
+      "label": "current-independent-build-closure",
+      "before": "A7750EE7463D338AE5CB77E8D13FD7098C52941FE4EC3319252B2A1B8B6D8367",
+      "after": "28AB425BC5C149E1642C0839CC6FBD590C0F98BD2DB5D844CE4C79BB5748BFF3",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 10,
+      "before_sha256": "FBCE7D035877F649C41E8679E7686B33FC51ACB8A1EEA7D151AD3851A5997E28",
+      "after_sha256": "0AA18A67FBBD296634CA62C1210E23CC596BD9AF19805E9B8CB874B643EF0B32"
+    },
+    {
+      "label": "actual-exact-diagnostic-result",
+      "before": "E03BF62D1FCE0FF7B176AA1473E41D016927046B260EC68B22CAEFF3E58EE293",
+      "after": "4ABC6968DFF09B0075791279076C8F8F4891A80B7E5448BD1E83BA681A7E961D",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 11,
+      "before_sha256": "0AA18A67FBBD296634CA62C1210E23CC596BD9AF19805E9B8CB874B643EF0B32",
+      "after_sha256": "455B9588116BDB635CD6C7268F8E90236D49A2DB50707A89923FD662DA6642FF"
+    },
+    {
+      "label": "exact-original-diagnostic-grant",
+      "before": "362C0E4392691F92181D95AE50A27433B0C51AFC8D739A834A03041BC2233D11",
+      "after": "B9A91A955663A8489ADF9DF99DCB723874863063351ED62D2F2420016A5ECD8F",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 12,
+      "before_sha256": "455B9588116BDB635CD6C7268F8E90236D49A2DB50707A89923FD662DA6642FF",
+      "after_sha256": "DF8FA465E7A29A3CED813EF8D87D13B9BD2EE3733801272384A365A2ACAE2296"
+    },
+    {
+      "label": "current-diagnostic-controller",
+      "before": "411D6112EB390B17097888A26AC4F912BF741AB33A17E9B9F49ED1CC6BCC2453",
+      "after": "9BE0956AD35C6DF1BA88BCA6CC030D2D96F3560585D8B0EF0670EB43565431C1",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 13,
+      "before_sha256": "DF8FA465E7A29A3CED813EF8D87D13B9BD2EE3733801272384A365A2ACAE2296",
+      "after_sha256": "A47766DEF0E87740A93120C2620B9027AAAEDA3F1D0BD3C82BCCD4A3A976419B"
+    },
+    {
+      "label": "current-matrix",
+      "before": "844E42808F020C6773129CA9FBD4A1A16B28D779CAD55ADD7DE636B6B2D6644A",
+      "after": "6781CFD769B70925293C6C7B0D7AEECFC0DB87A8790FB5D61379A20A78C6443F",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 14,
+      "before_sha256": "A47766DEF0E87740A93120C2620B9027AAAEDA3F1D0BD3C82BCCD4A3A976419B",
+      "after_sha256": "0662100BF775EB03EEE4B9507AD2E3ED664ACC4F41C2D97D313B3D3F8FE819D0"
+    },
+    {
+      "label": "current-accepted1285",
+      "before": "1121",
+      "after": "1285",
+      "occurrences_before": 3,
+      "occurrences_after": 3,
+      "number": 15,
+      "before_sha256": "0662100BF775EB03EEE4B9507AD2E3ED664ACC4F41C2D97D313B3D3F8FE819D0",
+      "after_sha256": "99F44AFB427D381362AFF53F5479F04F6BC58C980E49B92965C883D2DBEE36BD"
+    },
+    {
+      "label": "current-granted63",
+      "before": "len(grant[\"groups\"])==54",
+      "after": "len(grant[\"groups\"])==63",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 16,
+      "before_sha256": "99F44AFB427D381362AFF53F5479F04F6BC58C980E49B92965C883D2DBEE36BD",
+      "after_sha256": "D2266A1E109FC9B3366BB3776028E88CCABAA1645F113404C92AF5AE48BA7787"
+    },
+    {
+      "label": "current-source14088",
+      "before": "len(final[\"source\"])==13878",
+      "after": "len(final[\"source\"])==14088",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 17,
+      "before_sha256": "D2266A1E109FC9B3366BB3776028E88CCABAA1645F113404C92AF5AE48BA7787",
+      "after_sha256": "0C1DCA72A10BB6E3B7ABE6C6ACB968E9EE179728C30646A8943A82E5F216DE29"
+    },
+    {
+      "label": "current-tree14101",
+      "before": "len(final[\"tree\"])==13891",
+      "after": "len(final[\"tree\"])==14101",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 18,
+      "before_sha256": "0C1DCA72A10BB6E3B7ABE6C6ACB968E9EE179728C30646A8943A82E5F216DE29",
+      "after_sha256": "67003C1C3E3986D3084D3A92B82A56C8AB9FFD9D4CAC4304EC434D84BA430150"
+    },
+    {
+      "label": "current-diagnostic144-controls",
+      "before": "len(final[\"controls\"])==126",
+      "after": "len(final[\"controls\"])==144",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 19,
+      "before_sha256": "67003C1C3E3986D3084D3A92B82A56C8AB9FFD9D4CAC4304EC434D84BA430150",
+      "after_sha256": "0F96FFCD15560B40AEE17D2979567843D9FF9FAFA758351EDB7EA0038A8055F1"
+    },
+    {
+      "label": "current-accepted-build-result",
+      "before": "B4EF5C9687891EB25C026F8F5AFE5180E8B22325D74D79D155D770A1DCE751B0",
+      "after": "21069292FA7D9B724A81EAFAF8F8D16D9BDB3FA8F42A5B579B23D42AF1BB572A",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 20,
+      "before_sha256": "0F96FFCD15560B40AEE17D2979567843D9FF9FAFA758351EDB7EA0038A8055F1",
+      "after_sha256": "197168C7372F4523153A069275479C9AB2265E3EA7A4AEE190B0B08177B5EF35"
+    },
+    {
+      "label": "current-accepted-build-final",
+      "before": "95DB4132096F49E291190DDC87055FD9F31059281AEC76372A02F7C23CEE13F9",
+      "after": "DBBA4C36736487C477B95EC8745AAF1BFBEDBB7B47C74FAC275B09A7589D193B",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 21,
+      "before_sha256": "197168C7372F4523153A069275479C9AB2265E3EA7A4AEE190B0B08177B5EF35",
+      "after_sha256": "E40C9E5E76CA5EEC2F223385E364FD0FCE9F03A4B7AB8A56FB0D7764A94E20C0"
+    },
+    {
+      "label": "actual-exact-diagnostic-final",
+      "before": "DF54F2AE7A79B519AC2D80FAD2CD133A377C9A9E0A06904C902DF0BA700C84D9",
+      "after": "119AE157A7BF3B81A0D08C0B58DCF17B680E3C178BA185F058201344CDF8242B",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 22,
+      "before_sha256": "E40C9E5E76CA5EEC2F223385E364FD0FCE9F03A4B7AB8A56FB0D7764A94E20C0",
+      "after_sha256": "AC8A1297ADF705C120A6CBE2F62B611F6A599D9DF238D92AA3875E8A129A5A77"
+    },
+    {
+      "label": "current-original-strict-negative-closure",
+      "before": "8F55C557EC227EE9803F7C7D9969B4202C5C539BA482F18790C2694B5C356BEA",
+      "after": "038180C2284FB568EEB9368F033BC894A4E4AD8D6CCB3615B0C438AF336BCEDA",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 23,
+      "before_sha256": "AC8A1297ADF705C120A6CBE2F62B611F6A599D9DF238D92AA3875E8A129A5A77",
+      "after_sha256": "F41B34C91455C171CB12BFF09F15CDDB5D132DAFA0D48CCACA1E2F68B5B6EC98"
+    },
+    {
+      "label": "current-original-strict-negative-result",
+      "before": "532F2452A9547136F496FCAAF62F6C155051DDCBA00E231AC231A0FC02D2E624",
+      "after": "5C19A1B407FF582382AA84D83F4F1E176694D73F202B055EB5E3474465CC10A9",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 24,
+      "before_sha256": "F41B34C91455C171CB12BFF09F15CDDB5D132DAFA0D48CCACA1E2F68B5B6EC98",
+      "after_sha256": "82D4E0929945334099624062F79B6E90E69C6471B23385DD4EAD1F54F50BF7CB"
+    },
+    {
+      "label": "current-original-strict-negative-final",
+      "before": "7839C4F7C744DA7C6FFAAFC4BA8C6311DCA9059D6C020019942FCF672D981B36",
+      "after": "FD3412DB1E671A6B5E923079AEF917FE292D79E8866A8602EDF4BD913D53BA59",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 25,
+      "before_sha256": "82D4E0929945334099624062F79B6E90E69C6471B23385DD4EAD1F54F50BF7CB",
+      "after_sha256": "096706C3FC393033EE80279A10EDA181D9A3A1C1B0EE7C45CA7E43C8D8934E0C"
+    },
+    {
+      "label": "actual-terminal-input-filename",
+      "before": "independent-partial-diagnostic-runtime-audit-inputs.json",
+      "after": "independent-diagnostic-runtime-audit-inputs.json",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 26,
+      "before_sha256": "096706C3FC393033EE80279A10EDA181D9A3A1C1B0EE7C45CA7E43C8D8934E0C",
+      "after_sha256": "D2EB18F36B1EC3B9A1078C1CFF71F19A82764401000F5AB32316765C87F706A0"
+    },
+    {
+      "label": "assertion-abort-description",
+      "before": "preserved native panic and all strict negatives",
+      "after": "preserved native assertion abort and all strict negatives",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 27,
+      "before_sha256": "D2EB18F36B1EC3B9A1078C1CFF71F19A82764401000F5AB32316765C87F706A0",
+      "after_sha256": "151462A677D4095CB65993F20D85558491E6A126AE76F604E7115898977FEC3B"
+    },
+    {
+      "label": "only-actual17-runtime-prefix-and46-unstarted-groups",
+      "before": "require([g[\"group\"]for g in r[\"groups\"]]==grant[\"groups\"][:7] and len(r[\"absence\"][\"owners\"])==7,\"Only original first seven native runtimes started\")\nrequire({p.name for p in (proof/\"groups\").iterdir()if p.is_dir()}==set(grant[\"groups\"][:7]),\"Other forty-seven runtime group owners never started\")",
+      "after": "require([g[\"group\"]for g in r[\"groups\"]]==grant[\"groups\"][:17] and len(r[\"absence\"][\"owners\"])==17,\"Only original first seventeen native runtimes started\")\nrequire({p.name for p in (proof/\"groups\").iterdir()if p.is_dir()}==set(grant[\"groups\"][:17]),\"Other forty-six runtime group owners never started\")",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 28,
+      "before_sha256": "151462A677D4095CB65993F20D85558491E6A126AE76F604E7115898977FEC3B",
+      "after_sha256": "820B575222B1DED1842EE357204D429ECC2A6F3B1347623598D418CAB1057C45"
+    },
+    {
+      "label": "exact-actual17-start-complete-flag-vectors",
+      "before": "require(len(selected)==7 and [g[\"group\"]for g in selected]==grant[\"groups\"][:7] and [g[\"started\"]for g in selected]==[22,20,32,15,11,12,6] and [g[\"completed\"]for g in selected]==[22,20,32,15,11,12,5] and [g[\"flags\"]for g in selected]==[{}, {}, {\"17\":1}, {}, {}, {}, {}],\"Exact actual original V34 starts completions and flags\")",
+      "after": "require(len(selected)==17 and [g[\"group\"]for g in selected]==grant[\"groups\"][:17] and [g[\"started\"]for g in selected]==[15,12,34,28,10,20,18,14,13,32,19,22,20,15,11,12,17] and [g[\"completed\"]for g in selected]==[15,12,34,28,10,20,18,14,13,32,19,22,20,15,11,12,16] and [g[\"flags\"]for g in selected]==[{},{},{},{},{},{},{},{},{\"6\":1},{},{},{},{},{},{},{},{}],\"Exact actual original V34 starts completions and flags\")",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 29,
+      "before_sha256": "820B575222B1DED1842EE357204D429ECC2A6F3B1347623598D418CAB1057C45",
+      "after_sha256": "DF2F8925BE40E03CFDEA222594A33F99FDC43CBE3729D1D705301F73CA868796"
+    },
+    {
+      "label": "actual-partial-group-zero-index16",
+      "before": "partial=number==6",
+      "after": "partial=number==16",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 30,
+      "before_sha256": "DF2F8925BE40E03CFDEA222594A33F99FDC43CBE3729D1D705301F73CA868796",
+      "after_sha256": "C9E088FF6B1AED3064B2F1259935763E4B0AC7EE4125018CCE56202FB87DE209"
+    },
+    {
+      "label": "canonical-incomplete-assertion-abort-prose",
+      "before": "Canonical completeness is never invented for panic",
+      "after": "Canonical completeness is never invented for assertion abort",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 31,
+      "before_sha256": "C9E088FF6B1AED3064B2F1259935763E4B0AC7EE4125018CCE56202FB87DE209",
+      "after_sha256": "336EF25A5BDDFC1F96105BC41D93E5D22ACDAA6629C811208CD9A339968FA93B"
+    },
+    {
+      "label": "actual-incomplete-fs-owner26-17-16-gate",
+      "before": "  require(g[\"group\"]==\"native-node-stream-read\" and accepted[\"actual_count\"]==19 and g[\"native_selected_tests_started\"] is None and want[\"started\"]==6 and want[\"completed\"]==5,\"Actual incomplete StreamRead group remains unqualified\")",
+      "after": "  require(g[\"group\"]==\"native-node-fs-request-owner\" and accepted[\"actual_count\"]==26 and g[\"native_selected_tests_started\"] is None and want[\"started\"]==17 and want[\"completed\"]==16,\"Actual incomplete FS request owner group remains unqualified\")",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 32,
+      "before_sha256": "336EF25A5BDDFC1F96105BC41D93E5D22ACDAA6629C811208CD9A339968FA93B",
+      "after_sha256": "BAA8E83784BF903278994782EBF69064DEEA6988B19AD3299E98411002AB8D72"
+    },
+    {
+      "label": "actual-native-assertion-abort-exit-minus1073740791",
+      "before": "==(3 if partial else 0)",
+      "after": "==(-1073740791 if partial else 0)",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 33,
+      "before_sha256": "BAA8E83784BF903278994782EBF69064DEEA6988B19AD3299E98411002AB8D72",
+      "after_sha256": "E8AB251BC267E764B9DA57E987A0535D2B8075B5E728202A3D0AF7F057A86977"
+    },
+    {
+      "label": "native-assertion-terminal-negative-prose",
+      "before": "panic is not terminal0",
+      "after": "assertion abort is not terminal0",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 34,
+      "before_sha256": "E8AB251BC267E764B9DA57E987A0535D2B8075B5E728202A3D0AF7F057A86977",
+      "after_sha256": "DF6D69B392FB871FD418A6A84D44D07F8925981EF1E3A649D270491DA49A9ADF"
+    },
+    {
+      "label": "diagnostic-incomplete-rejection-prose",
+      "before": "rejects panic",
+      "after": "rejects assertion abort",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 35,
+      "before_sha256": "DF6D69B392FB871FD418A6A84D44D07F8925981EF1E3A649D270491DA49A9ADF",
+      "after_sha256": "7B1B0DAF9D911BC7060405B5D489D4132FBF05EAEEBC833BDEF38DE7B800759F"
+    },
+    {
+      "label": "raw-incomplete-frame-prose",
+      "before": "single uncompleted panic test",
+      "after": "single uncompleted assertion-abort test",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 36,
+      "before_sha256": "7B1B0DAF9D911BC7060405B5D489D4132FBF05EAEEBC833BDEF38DE7B800759F",
+      "after_sha256": "11ACF11CF44180019CE9D1EF6B7A91535187D39F86FD0A745DDFEC3A3ACA0106"
+    },
+    {
+      "label": "actual-incomplete-test-index16",
+      "before": "incomplete_test=accepted[\"tests\"][5]",
+      "after": "incomplete_test=accepted[\"tests\"][16]",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 37,
+      "before_sha256": "11ACF11CF44180019CE9D1EF6B7A91535187D39F86FD0A745DDFEC3A3ACA0106",
+      "after_sha256": "CEFB66E3788406A951134190155C640A9EAADBA11A95FE18D9E4592C6A5AF0A8"
+    },
+    {
+      "label": "actual-exact312-311-1-1-totals",
+      "before": "require(sum(g[\"started\"]for g in observations)==118 and sum(g[\"completed\"]for g in observations)==117 and sum(g[\"flagged\"]for g in observations)==1 and sum(g[\"incomplete\"]for g in observations)==1,\"Exact118 started117 completed1 flagged and one incomplete\")",
+      "after": "require(sum(g[\"started\"]for g in observations)==312 and sum(g[\"completed\"]for g in observations)==311 and sum(g[\"flagged\"]for g in observations)==1 and sum(g[\"incomplete\"]for g in observations)==1,\"Exact312 started311 completed1 flagged and one incomplete\")",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 38,
+      "before_sha256": "CEFB66E3788406A951134190155C640A9EAADBA11A95FE18D9E4592C6A5AF0A8",
+      "after_sha256": "E7A46B211C2C1EE404D72B638FE7B69BEA53EE55B5BEB919110BB681E6189ED3"
+    },
+    {
+      "label": "exact-repeated-routing-failure-index6-name",
+      "before": "require(failed_names==[dict(group=\"native-vm-script-location\",index=17,flags=1,name=\"native_vm_script_location_test.test.VM Script raw projections allocate nothing and preserve actual ordinary fatal and private pending\")],\"Exact repeated Script raw-projection negative and accepted metadata name\")",
+      "after": "require(failed_names==[dict(group=\"native-node-reqwrap-callback-routing\",index=6,flags=1,name=\"native_node_reqwrap_callback_routing_test.test.native ReqWrap routing typed callback failure still retires the final native Wrapper pointer\")],\"Exact repeated ReqWrap callback routing negative and accepted metadata name\")",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 39,
+      "before_sha256": "E7A46B211C2C1EE404D72B638FE7B69BEA53EE55B5BEB919110BB681E6189ED3",
+      "after_sha256": "1F1E90CE3D8E825D622C13284B91906C318965BEAB2049722A4FCAA475C412CC"
+    },
+    {
+      "label": "exact-fs-physical-read-incomplete-name-and973-unstarted",
+      "before": "require(observations[-1][\"incomplete_test\"]==\"native_node_stream_read_test.test.Node StreamBase read full extent adopts the same native bytes and advances the counter before callback\" and sum(g[\"actual_count\"]for g in accept[\"groups\"][7:])+19-6==1003,\"Exact StreamRead incomplete name and1003 unstarted accepted tests\")",
+      "after": "require(observations[-1][\"incomplete_test\"]==\"native_node_fs_request_owner_test.test.native FS request owner physical Read constructs native storage before init and dispatches the actual view span\" and sum(g[\"actual_count\"]for g in accept[\"groups\"][17:])+26-17==973,\"Exact FS request owner incomplete name and973 unstarted accepted tests\")",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 40,
+      "before_sha256": "1F1E90CE3D8E825D622C13284B91906C318965BEAB2049722A4FCAA475C412CC",
+      "after_sha256": "FAB571A539A89C43B158CBBA4BAF708598114EE4DD11F3EF6BB27C803BAF03C8"
+    },
+    {
+      "label": "actual17-distinct-serial-native-intervals",
+      "before": "require(len({v[\"pid\"]for v in runtime_bounds})==7 and all(runtime_bounds[i][\"completed\"]<runtime_bounds[i+1][\"created\"]for i in range(6))",
+      "after": "require(len({v[\"pid\"]for v in runtime_bounds})==17 and all(runtime_bounds[i][\"completed\"]<runtime_bounds[i+1][\"created\"]for i in range(16))",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 41,
+      "before_sha256": "FAB571A539A89C43B158CBBA4BAF708598114EE4DD11F3EF6BB27C803BAF03C8",
+      "after_sha256": "5F121FD27F83780BF54638BB688137D007BD1C655D56BE2255FCD8AD11768F64"
+    },
+    {
+      "label": "exact157-byte-native-completed-assertion",
+      "before": "panic_stderr=(proof/\"groups/native-node-stream-read/runtime.stderr.log\").read_text(encoding=\"utf-8\")\nrequire(\"panic: reached unreachable code\" in panic_stderr and \"native_node_stream_read_test.zig:337:25\" in panic_stderr and \"std.debug.assert(bytes.len <= buffer.len);\" in panic_stderr and \"native_node_stream_read_test.zig:527:17\" in panic_stderr,\"Original actual StreamRead fixture panic retained\")\n",
+      "after": "assertion_stderr=(proof/\"groups/native-node-fs-request-owner/runtime.stderr.log\").read_bytes()\nrequire(assertion_stderr==b\"Assertion failed: atomic_load_explicit(&request->completed, memory_order_acquire), file C:\\\\Users\\\\adyba\\\\pi-zig\\\\main\\\\src\\\\extensions\\\\native_uv_tcp.c, line 804\\n\",\"Original exact157-byte actual FS request owner native completed assertion retained\")\n",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 42,
+      "before_sha256": "5F121FD27F83780BF54638BB688137D007BD1C655D56BE2255FCD8AD11768F64",
+      "after_sha256": "0DE689908B08760C4981128DDCADD86420A891C8E258581007AE0FF27A2C01DE"
+    },
+    {
+      "label": "all17-exact-original-instance-count",
+      "before": "require(len(runtime_bounds)==7 and len({(row[\"pid\"],row[\"created\"])for row in runtime_bounds})==7",
+      "after": "require(len(runtime_bounds)==17 and len({(row[\"pid\"],row[\"created\"])for row in runtime_bounds})==17",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 43,
+      "before_sha256": "0DE689908B08760C4981128DDCADD86420A891C8E258581007AE0FF27A2C01DE",
+      "after_sha256": "BEE2712D6B3874E1FDBD04B90583DEA46E209FC7F10F13885C16D5DFD361E4E5"
+    },
+    {
+      "label": "certificate-native-owner-count",
+      "before": "runtime_owner_count=7",
+      "after": "runtime_owner_count=17",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 44,
+      "before_sha256": "BEE2712D6B3874E1FDBD04B90583DEA46E209FC7F10F13885C16D5DFD361E4E5",
+      "after_sha256": "05A09705AE90A9191DB31D8E78CFA9319985DB5FCBFE767A6E3C442FEE251F6D"
+    },
+    {
+      "label": "certificate-started312",
+      "before": "observed_started=118",
+      "after": "observed_started=312",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 45,
+      "before_sha256": "05A09705AE90A9191DB31D8E78CFA9319985DB5FCBFE767A6E3C442FEE251F6D",
+      "after_sha256": "56BA05D13452AED4D1EC7B8CB3FA7CB78EA66D7AD964EE254D00D3060123A19F"
+    },
+    {
+      "label": "certificate-completed311",
+      "before": "observed_completed=117",
+      "after": "observed_completed=311",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 46,
+      "before_sha256": "56BA05D13452AED4D1EC7B8CB3FA7CB78EA66D7AD964EE254D00D3060123A19F",
+      "after_sha256": "1BF007EC1B09CA8E9DED7CF18981321B9416E651EFA13BD7D7029A19F5A768EB"
+    },
+    {
+      "label": "certificate-passed310",
+      "before": "observed_passed=116",
+      "after": "observed_passed=310",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 47,
+      "before_sha256": "1BF007EC1B09CA8E9DED7CF18981321B9416E651EFA13BD7D7029A19F5A768EB",
+      "after_sha256": "D77F27FEF99A5CE1AFE1327CF8BB72C6998DF8FF1B05348BD939585B801E84C1"
+    },
+    {
+      "label": "certificate-and-summary-unstarted973",
+      "before": "not_started=1003",
+      "after": "not_started=973",
+      "occurrences_before": 2,
+      "occurrences_after": 2,
+      "number": 48,
+      "before_sha256": "D77F27FEF99A5CE1AFE1327CF8BB72C6998DF8FF1B05348BD939585B801E84C1",
+      "after_sha256": "580633266391BB3BC013B8F203E6C292B8B95488BCCF384E8A8ADECBEDCB5F51"
+    },
+    {
+      "label": "certificate-preserved-original-assertion-abort",
+      "before": "diagnostic_continuation_rejected_original_panic=True",
+      "after": "diagnostic_continuation_rejected_original_assertion_abort=True",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 49,
+      "before_sha256": "580633266391BB3BC013B8F203E6C292B8B95488BCCF384E8A8ADECBEDCB5F51",
+      "after_sha256": "89B6533B5DF93F3D8D266177238DC7AADF14C1C6052AB8A74E664333917B624A"
+    },
+    {
+      "label": "summary-native-owner-count",
+      "before": "runtime_owners=7",
+      "after": "runtime_owners=17",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 50,
+      "before_sha256": "89B6533B5DF93F3D8D266177238DC7AADF14C1C6052AB8A74E664333917B624A",
+      "after_sha256": "83F8476EAFBB5497C3D2D1549B4837FAF360CEAE45900E64774A4C9D41A09830"
+    },
+    {
+      "label": "summary-started312",
+      "before": "actual_started=118",
+      "after": "actual_started=312",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 51,
+      "before_sha256": "83F8476EAFBB5497C3D2D1549B4837FAF360CEAE45900E64774A4C9D41A09830",
+      "after_sha256": "355203F16200D76895AEB03D2089C7A4B342CC3251589FAFF8A98C916E65131A"
+    },
+    {
+      "label": "summary-completed311",
+      "before": "actual_completed=117",
+      "after": "actual_completed=311",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 52,
+      "before_sha256": "355203F16200D76895AEB03D2089C7A4B342CC3251589FAFF8A98C916E65131A",
+      "after_sha256": "2464721299629AB1AFDFA82F84006409570627847C76DE171EE0D5BBA4608A75"
+    },
+    {
+      "label": "summary-passed310",
+      "before": ",flagged=1,passed=116,incomplete=1,",
+      "after": ",flagged=1,passed=310,incomplete=1,",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "number": 53,
+      "before_sha256": "2464721299629AB1AFDFA82F84006409570627847C76DE171EE0D5BBA4608A75",
+      "after_sha256": "C66FDE863016A5A9B29BCEE4A93E0A371AE1E70E01773756F5FF9686841FDDDD"
+    }
+  ],
+  "complete_forward_replay_verified": true,
+  "complete_byte_inverse_verified": true,
+  "syntax_ast_parse_only": true,
+  "byte_identical_core": {
+    "full_utc100ns_parser": {
+      "byte_identical": true,
+      "bytes": 577,
+      "sha256": "CB7F7A354C5F07874EE1BE3B59C01269F4E04C61DBA77B706B829B27EEE9C934"
+    },
+    "nested_exact_owner_timestamp_normalization": {
+      "byte_identical": true,
+      "bytes": 424,
+      "sha256": "3416292F2935C196F68491D27DCF9A0E130C1A6A6BC509BB8C9372F19B6FAC43"
+    },
+    "raw_runtime_frame_decoder": {
+      "byte_identical": true,
+      "bytes": 1112,
+      "sha256": "8F233467D7B4B8801F79CCFE38EB5123360496108BA0867F89556DC6105923D8"
+    },
+    "current_original_instance_absence_and_later_pid_reuse": {
+      "byte_identical": true,
+      "bytes": 806,
+      "sha256": "A2BC6318169BD16B3D09C8AA2438A014416901A4535DA33AB5DCFF94331A07E4"
+    }
+  },
+  "observed_counts": {
+    "granted_groups": 63,
+    "observed_groups": 17,
+    "original_native_owners": 17,
+    "raw_protocol_groups": 17,
+    "actual_started": 312,
+    "actual_completed": 311,
+    "actual_flagged": 1,
+    "incomplete_tests": 1,
+    "accepted_metadata_count": 1285,
+    "unstarted_accepted_indices": 973
+  },
+  "scope": "Exact same accepted63 artifacts; actual17 runtime owners, 16 complete protocols and one incomplete native assertion abort. All historical negatives immutable.",
+  "strict_negatives_preserved": true,
+  "no_qualification": true,
+  "source_mutation_hold_released": false,
+  "auditor_executed": false,
+  "root_source_review_and_execution_required": true
+}

@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "status": "unexecuted_three_phase_source_intake_successor",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ReviewedSourceIntakes-20261020.py",
+    "bytes": 9547,
+    "sha256": "2DBB8B373038AD54095AB7E1EADB09594C593F923321F461000CEFBCE2283F1A"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ReviewedSourceIntakes-v2-20261020.py",
+    "bytes": 10699,
+    "sha256": "B60099300A49E9281270B6E85048F86D61F3823BEFA8D25317916CFBEBF9D66E"
+  },
+  "edits": [
+    {
+      "label": "three_exact_source_intakes_description",
+      "before": "Exact two-phase Main source intake",
+      "after": "Exact three-phase Main source intake",
+      "occurrences": 1,
+      "before_sha256": "2DBB8B373038AD54095AB7E1EADB09594C593F923321F461000CEFBCE2283F1A",
+      "after_sha256": "BAC97C567169B5D6ECAE70C8B0D82CC37A3F95E52F20B9E9C16691690AE16DBD"
+    },
+    {
+      "label": "exact_reviewed34_path_fs_manifest",
+      "before": " \"reqwrap\":(\"evidence/pending-v34-reqwrap-fixture-main-intake-20261020/manifest.json\",\"068136AC825829162A45AB03D9A1F60633EF8AF2D83061BAEC7CD7082FDE60E1\",10,\"Correct ReqWrap fixture for the actual host error boundary\"),",
+      "after": " \"reqwrap\":(\"evidence/pending-v34-reqwrap-fixture-main-intake-20261020/manifest.json\",\"068136AC825829162A45AB03D9A1F60633EF8AF2D83061BAEC7CD7082FDE60E1\",10,\"Correct ReqWrap fixture for the actual host error boundary\"),\n \"fs-init\":(\"evidence/pending-v34-fs-init-observer-main-intake-20261020/manifest.json\",\"8CCF654B605C496E1E188E12EFD8CAFA6BF54B84CEBD58731A3219196DCA6D70\",34,\"Observe FS request preparation before native completion\"),",
+      "occurrences": 1,
+      "before_sha256": "BAC97C567169B5D6ECAE70C8B0D82CC37A3F95E52F20B9E9C16691690AE16DBD",
+      "after_sha256": "FC2439C9B329560C2C86827E76A8A3A18735D0D032F3A4F1FCB5BFCB0CC3A453"
+    },
+    {
+      "label": "preserve_exact_second_phase_predecessor",
+      "before": "else:\n prior_raw=raw(proof/\"owner-error-receipt.json\"); prior=json.loads(prior_raw)",
+      "after": "elif phase==\"reqwrap\":\n prior_raw=raw(proof/\"owner-error-receipt.json\"); prior=json.loads(prior_raw)",
+      "occurrences": 1,
+      "before_sha256": "FC2439C9B329560C2C86827E76A8A3A18735D0D032F3A4F1FCB5BFCB0CC3A453",
+      "after_sha256": "81B13B4BFA33CF90ADE522848825F2C1456063399E59D1668A08A8A5E9B92F78"
+    },
+    {
+      "label": "third_phase_requires_both_authorized_prior_commits",
+      "before": " assert gout(\"rev-parse\",head+\"^\")==BASIS\nrows=manifest[\"rows\"]",
+      "after": " assert gout(\"rev-parse\",head+\"^\")==BASIS\nelse:\n assert phase==\"fs-init\"\n owner=json.loads(raw(proof/\"owner-error-receipt.json\"))\n prior=json.loads(raw(proof/\"reqwrap-receipt.json\"))\n for name,receipt in ((\"owner-error\",owner),(\"reqwrap\",prior)):\n  assert receipt[\"status\"]==\"exact_source_intake_committed\"\n  assert receipt[\"executor_sha256\"]==self_sha and receipt[\"release_sha256\"]==release_sha\n  assert receipt[\"manifest_sha256\"]==MANIFESTS[name][1]\n  assert receipt[\"path_count\"]==MANIFESTS[name][2] and receipt[\"staged_and_committed_bytes_match\"] is True\n assert owner[\"before_head\"]==BASIS and prior[\"before_head\"]==owner[\"after_head\"]\n assert prior[\"after_head\"]==head and gout(\"rev-parse\",head+\"^\")==owner[\"after_head\"]\n assert gout(\"rev-parse\",owner[\"after_head\"]+\"^\")==BASIS\n assert manifest[\"required_predecessor_manifests\"]==[MANIFESTS[\"owner-error\"][1],MANIFESTS[\"reqwrap\"][1]]\nrows=manifest[\"rows\"]",
+      "occurrences": 1,
+      "before_sha256": "81B13B4BFA33CF90ADE522848825F2C1456063399E59D1668A08A8A5E9B92F78",
+      "after_sha256": "DF6634EAFE64A7664B9A5DE73D72FEA63434EBC5A4997E609A3A1930ECC11ED0"
+    },
+    {
+      "label": "third_phase_raw_preimages_are_the_proven_predecessor",
+      "before": "for (row,old),blob in zip(preimages,blob_many([BASIS+\":\"+row[\"target\"] for row,_ in preimages])):",
+      "after": "preimage_reference=head if phase==\"fs-init\" else BASIS\nfor (row,old),blob in zip(preimages,blob_many([preimage_reference+\":\"+row[\"target\"] for row,_ in preimages])):",
+      "occurrences": 1,
+      "before_sha256": "DF6634EAFE64A7664B9A5DE73D72FEA63434EBC5A4997E609A3A1930ECC11ED0",
+      "after_sha256": "B60099300A49E9281270B6E85048F86D61F3823BEFA8D25317916CFBEBF9D66E"
+    }
+  ],
+  "complete_inverse_to_baseline": true,
+  "source_execution_authorized": false,
+  "native_execution_authorized": false,
+  "qualification": false
+}

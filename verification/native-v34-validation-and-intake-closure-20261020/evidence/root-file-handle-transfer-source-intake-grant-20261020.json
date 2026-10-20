@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "status": "root_issued_exact_transfer_source_intake",
+  "issued_utc": "2026-10-20T21:46:55.806213+00:00",
+  "basis_main_head": "2bdafdfa1e41032fcc4e1f0a378b1a97792b72c0",
+  "branch": "work/pi-zig-consolidated-20261016",
+  "executor_sha256": "DF7290181F00B28CA0F602358AA2DB78F15D5C67E89A3134C99D829DA99FB9D5",
+  "source_intake_authorized": true,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "authorized_phases": {
+    "transfer": {
+      "manifest_sha256": "94E02E52D90FB962ACBE82BE8E531E222E04F50B11DDA887F89C8B205FFD4ADE",
+      "total_commit_paths": 78
+    }
+  },
+  "required_current_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-transfer-main-intake-20261020\\manifest.json",
+      "bytes": 54892,
+      "sha256": "94E02E52D90FB962ACBE82BE8E531E222E04F50B11DDA887F89C8B205FFD4ADE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactReviewedTransferSourceIntake-20261020.py",
+      "bytes": 9697,
+      "sha256": "DF7290181F00B28CA0F602358AA2DB78F15D5C67E89A3134C99D829DA99FB9D5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\transfer-intake-executor-finite-adaptation-20261020.json",
+      "bytes": 4950,
+      "sha256": "E5046B328C8C9CF6BFE429E9BE90C0BF48276452D9D0E5B9A0267DB070E9DDE0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-transfer-source-review-20261020.json",
+      "bytes": 5082,
+      "sha256": "5FCD9066B81EE284AA1034552009C5A5999E0B3B85BC57BFA7208065CFF73904"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-transfer-peer-acceptance-20261020.json",
+      "bytes": 1811,
+      "sha256": "0BD6192135BEA1C212A8578A447961431D6F1591F6DE33CA4E3ED652762FA831"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-transfer-source-peer-20261020\\peer.json",
+      "bytes": 18642,
+      "sha256": "7DFCAB11908312CBCC39EF2181F550DA2368A8E957B45697FBC7FAAB68E8EFF7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\owner-error-receipt.json",
+      "bytes": 31527,
+      "sha256": "F62CC7E334D9F4199BBA7E2DAA679F7D6DA80704426A20EFFE676C3C129A5F73"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\reqwrap-receipt.json",
+      "bytes": 2147,
+      "sha256": "AFA5D51604AC23480AC5D0212776EE16D4F6515E3C7CB0B8186CE76B647A41B1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\fs-init-receipt.json",
+      "bytes": 5240,
+      "sha256": "17C2FC135C1E4DDB4334F5A0425F9B771A27F0F513BB016A974DF1196D8A7C90"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-transfer-intake-executor-review-20261020.json",
+      "bytes": 1235,
+      "sha256": "DC8F049B9DEE069529C3BC3D540A788C81317B0EBFE92FDE14104569BD76F14F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\independent-current-seals-and-owners.json",
+      "bytes": 479501,
+      "sha256": "28AB425BC5C149E1642C0839CC6FBD590C0F98BD2DB5D844CE4C79BB5748BFF3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-control-20261020-210255\\independent-negative-runtime-closure.json",
+      "bytes": 64836,
+      "sha256": "038180C2284FB568EEB9368F033BC894A4E4AD8D6CCB3615B0C438AF336BCEDA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\independent-partial-diagnostic-runtime-closure.json",
+      "bytes": 125745,
+      "sha256": "148F05BF9EA92133B21C88508D035CC7C1A983CC1B7F4E829DBE216280011456"
+    }
+  ],
+  "receipt_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-transfer-intake-receipts-20261020",
+  "scope": "One reviewed source-only transfer intake after exact three-phase predecessor chain. No compiler/runtime/generator/push/cleanup authority. Original V34 negatives remain valid; future full metadata unknown.",
+  "known_next_build_correction": "Error constructor custom artifact naming is being projected separately for compatibility with unchanged strict runner; this transfer intake does not change that frozen Error block.",
+  "production_bridge_removed": false
+}

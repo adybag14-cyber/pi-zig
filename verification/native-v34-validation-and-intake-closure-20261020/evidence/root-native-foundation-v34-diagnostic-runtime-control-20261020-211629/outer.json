@@ -1,0 +1,32 @@
+{
+  "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+  "executable_sha256": "FA2C8BB1E35CDD62AD15CD06A1D8F2C5961E9725A9BFA1E7CFD2C322F49E9619",
+  "arguments": [
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-File",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-runtime-diagnostic-v34-prepared-20261020\\Run-CombinedNativeBatch.ps1",
+    "-RootGrant",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\root-grant.json",
+    "-Mode",
+    "DiagnosticRuntimeOnly"
+  ],
+  "working_directory": "C:\\Users\\adyba\\pi-zig",
+  "pid": 66144,
+  "retained_handle": 2112,
+  "created_utc": "2026-10-20T21:16:41.5156827Z",
+  "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+  "timeout_seconds": 1800,
+  "status": "failed",
+  "live_identity": {
+    "created_utc": "2026-10-20T21:16:41.5156827Z",
+    "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-runtime-diagnostic-v34-prepared-20261020\\Run-CombinedNativeBatch.ps1 -RootGrant C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\root-grant.json -Mode DiagnosticRuntimeOnly",
+    "command_line_method": "Win32_Process.CommandLine",
+    "pid": 66144
+  },
+  "exit_code": 1,
+  "completed_utc": "2026-10-20T21:20:37.1714094+00:00",
+  "error": "Owned terminal failed: C:\\Program Files\\PowerShell\\7\\pwsh.exe"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\Audit-PartialV34DiagnosticRuntime.py",
+    "bytes": 29754,
+    "sha256": "C66FDE863016A5A9B29BCEE4A93E0A371AE1E70E01773756F5FF9686841FDDDD"
+  },
+  "baseline_adaptation_sha256": "3C7870E0C53E451D28111B1DDBAE966C9EC3A469BF27D4D5D8F699F77D70CF2E",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\Audit-PartialV34DiagnosticRuntime-v2.py",
+    "bytes": 29756,
+    "sha256": "6842784CBD09B8A9D300F0E69C8256FF22401E5A6423A912D2173E6B68960855"
+  },
+  "retained_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\root-retained-auditor-literal-preflight-negative.json",
+    "bytes": 951,
+    "sha256": "9D3BF6B4A352E5ABEEA6CBA17FEC901258148C20F83B908B256EA9960FF0F439"
+  },
+  "edits": [
+    {
+      "before": "line 804\\n\",\"Original exact157-byte actual FS request owner native completed assertion retained\"",
+      "after": "line 804\\r\\n\",\"Original exact157-byte actual FS request owner native completed assertion retained\"",
+      "occurrences": 1,
+      "before_sha256": "C66FDE863016A5A9B29BCEE4A93E0A371AE1E70E01773756F5FF9686841FDDDD",
+      "after_sha256": "6842784CBD09B8A9D300F0E69C8256FF22401E5A6423A912D2173E6B68960855"
+    }
+  ],
+  "all_other_bytes_unchanged": true,
+  "complete_inverse": true,
+  "exact_original_stderr_literal_verified": true,
+  "source_review_required": true,
+  "executed": false,
+  "source_release": false,
+  "qualification": false
+}

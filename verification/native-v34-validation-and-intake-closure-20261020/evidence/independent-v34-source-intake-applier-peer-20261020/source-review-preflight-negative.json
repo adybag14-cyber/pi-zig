@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "status": "preserved_source_review_preflight_negative_exact_evidence_bytes_would_normalize",
+  "observed_utc": "2026-10-20T21:32:19.456581+00:00",
+  "candidate_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "original_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntake.py",
+    "sha256": "1FFE2B0F8CEE2A96181A630CBAD74932611DA62C1A064AD7C3945C91630602C3"
+  },
+  "original_checker_execution": {
+    "exitCode": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntake.py\", line 82, in <module>\r\n    assert not newlines,(\"possible explicit text normalization\",newlines)\r\n           ^^^^^^^^^^^^\r\nAssertionError: ('possible explicit text normalization', [{'path': 'verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig', 'bytes': 7087, 'text': 'set', 'eol': 'lf'}])\r\n",
+    "summary": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntake.py\", line 82, in <module>\r\n    assert not newlines,(\"possible explicit text normalization\",newlines)\r\n           ^^^^^^^^^^^^\r\nAssertionError: ('possible explicit text normalization', [{'path': 'verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig', 'bytes': 7087, 'text': 'set', 'eol': 'lf'}])"
+  },
+  "applier": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ReviewedSourceIntakes-20261020.py",
+    "sha256": "2DBB8B373038AD54095AB7E1EADB09594C593F923321F461000CEFBCE2283F1A"
+  },
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-error-main-intake-20261020\\manifest.json",
+    "sha256": "A905E15D794738ADDED8DE272771545D72380B085750175804E82139B78869C4"
+  },
+  "selected_row": {
+    "target": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig",
+    "role": "immutable_source_evidence",
+    "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\support\\src\\extensions\\native_node_operation_scope.zig",
+    "bytes": 7087,
+    "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+    "before": null
+  },
+  "donor_crlf_count": 92,
+  "donor_lone_cr_count": 0,
+  "raw_bytes": 7087,
+  "raw_sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+  "read_only_git_raw_blob": "9fdbf65f8b27b24c5804c5785dc37609257ffd6a",
+  "read_only_git_filtered_blob": "0ec261c7e32bb7e3997a7efa455cf4fd8b56790c",
+  "normalized_bytes": 6995,
+  "normalized_sha256": "0663228C40E2982D7809A7D0B143C3E6E96EE803B6FFAA384054CCCF19878F8C",
+  "filtered_matches_exact_crlf_to_lf_conversion": true,
+  "attributes": [
+    {
+      "path": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "path": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "path": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "path": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig",
+      "attribute": "text",
+      "value": "set"
+    },
+    {
+      "path": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig",
+      "attribute": "eol",
+      "value": "lf"
+    },
+    {
+      "path": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "path": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "path": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "path": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig.raw",
+      "attribute": "text",
+      "value": "unset"
+    },
+    {
+      "path": "verification/native-file-handle-error-intake-20261020/sdk/native-file-handle-close-settlement-followup-sourceonly-20261020/support/src/extensions/native_node_operation_scope.zig.raw",
+      "attribute": "eol",
+      "value": "unspecified"
+    }
+  ],
+  "git_object_store_write_requested": false,
+  "main_mutated": false,
+  "index_mutated": false,
+  "executor_executed": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

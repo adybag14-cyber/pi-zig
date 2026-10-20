@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "status": "unissued_v34_partial_diagnostic_auditor_source_packet",
+  "candidate_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\Audit-PartialV34DiagnosticRuntime.py",
+    "bytes": 29754,
+    "sha256": "C66FDE863016A5A9B29BCEE4A93E0A371AE1E70E01773756F5FF9686841FDDDD"
+  },
+  "adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\partial-diagnostic-runtime-auditor-adaptation.json",
+    "bytes": 33897,
+    "sha256": "3C7870E0C53E451D28111B1DDBAE966C9EC3A469BF27D4D5D8F699F77D70CF2E"
+  },
+  "accepted_baseline_auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-diagnostic-runtime-control-20261020-181658\\Audit-PartialV31DiagnosticRuntime.py",
+    "bytes": 29568,
+    "sha256": "6BCE1364609AC0A1E3D466518715544A9B257287B70B6E7E1ADA7FF45FA24EC9"
+  },
+  "accepted_baseline_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-diagnostic-runtime-control-20261020-181658\\independent-partial-diagnostic-runtime-closure.json",
+    "bytes": 51849,
+    "sha256": "36D4EAB4F1D7A1E9632C847220F8CD6FE03DDF1FEC422C3F431F96B8519B71BD"
+  },
+  "exact_inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\independent-diagnostic-runtime-audit-inputs.json",
+    "bytes": 13585,
+    "sha256": "7A913995E512F587262BB1A64D82438EC27CB72C706D578741E10004AB55F301"
+  },
+  "terminal_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\independent-terminal-diagnostic-runtime-observation.json",
+    "bytes": 73035,
+    "sha256": "0919BC9FF5516FD8A83E0C668B71555B69595E405328A6368CB9CA1CAA15712D"
+  },
+  "counts": {
+    "granted_groups": 63,
+    "observed_groups": 17,
+    "original_native_owners": 17,
+    "raw_protocol_groups": 17,
+    "actual_started": 312,
+    "actual_completed": 311,
+    "actual_flagged": 1,
+    "incomplete_tests": 1,
+    "accepted_metadata_count": 1285,
+    "unstarted_accepted_indices": 973
+  },
+  "count_semantics": "Counts are original observation until the unchanged independent raw-frame decoder verifies all original bytes; flags0=310, flags1=1, one incomplete,973 unstarted.",
+  "proposed_original_exit": -1073740791,
+  "proposed_partial_group": "native-node-fs-request-owner",
+  "proposed_partial_index": 16,
+  "original_strict_flagged_group": "native-node-reqwrap-callback-routing",
+  "original_strict_flagged_index": 6,
+  "complete_forward_replay_verified": true,
+  "complete_byte_inverse_verified": true,
+  "byte_identical_core": {
+    "full_utc100ns_parser": {
+      "byte_identical": true,
+      "bytes": 577,
+      "sha256": "CB7F7A354C5F07874EE1BE3B59C01269F4E04C61DBA77B706B829B27EEE9C934"
+    },
+    "nested_exact_owner_timestamp_normalization": {
+      "byte_identical": true,
+      "bytes": 424,
+      "sha256": "3416292F2935C196F68491D27DCF9A0E130C1A6A6BC509BB8C9372F19B6FAC43"
+    },
+    "raw_runtime_frame_decoder": {
+      "byte_identical": true,
+      "bytes": 1112,
+      "sha256": "8F233467D7B4B8801F79CCFE38EB5123360496108BA0867F89556DC6105923D8"
+    },
+    "current_original_instance_absence_and_later_pid_reuse": {
+      "byte_identical": true,
+      "bytes": 806,
+      "sha256": "A2BC6318169BD16B3D09C8AA2438A014416901A4535DA33AB5DCFF94331A07E4"
+    }
+  },
+  "auditor_executed": false,
+  "audit_acceptance": false,
+  "qualification": false,
+  "source_mutation_hold_released": false,
+  "root_source_review_and_execution_required": true
+}

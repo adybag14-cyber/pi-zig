@@ -1,0 +1,183 @@
+{
+  "schema": 1,
+  "status": "root_issued_exact_three_phase_source_hold_release",
+  "issued_utc": "2026-10-20T21:41:51.862211+00:00",
+  "issuer": "Root",
+  "basis_main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "branch": "work/pi-zig-consolidated-20261016",
+  "executor_sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4",
+  "source_intake_authorized": true,
+  "source_mutation_hold_released_for_exact_phases_only": true,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "production_bridge_removed": false,
+  "authorized_phases": {
+    "owner-error": {
+      "manifest_sha256": "5730CB5FA9F17FE33478C128E763287E59A37477B2AF2A0820BBCA002D0FADCF",
+      "total_commit_paths": 192
+    },
+    "reqwrap": {
+      "manifest_sha256": "BA8482D0DA4837630E158C5F345C9D5F58D8AE2614F8F372E164EDB9894EEF73",
+      "total_commit_paths": 10
+    },
+    "fs-init": {
+      "manifest_sha256": "21093750D07017BCA35F42D958AA758B8B4BC030920190ADC003BDA1246371E8",
+      "total_commit_paths": 34
+    }
+  },
+  "required_current_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\independent-current-seals-and-owners.json",
+      "bytes": 479501,
+      "sha256": "28AB425BC5C149E1642C0839CC6FBD590C0F98BD2DB5D844CE4C79BB5748BFF3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-control-20261020-210255\\independent-negative-runtime-closure.json",
+      "bytes": 64836,
+      "sha256": "038180C2284FB568EEB9368F033BC894A4E4AD8D6CCB3615B0C438AF336BCEDA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\independent-partial-diagnostic-runtime-closure.json",
+      "bytes": 125745,
+      "sha256": "148F05BF9EA92133B21C88508D035CC7C1A983CC1B7F4E829DBE216280011456"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\successor-peer.json",
+      "bytes": 7331,
+      "sha256": "4B19037C401B2D663D8ECE2E9384E4EFC2FE553B50FF916936601A59BA027D82"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\successor-source-audit.json",
+      "bytes": 227272,
+      "sha256": "922BBC8FF587EAF760049A14850C0002FFC3158234CC366C35D9120460EDD3E0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntakeSuccessor-v2.py",
+      "bytes": 12067,
+      "sha256": "8D3D8FF961346201E927432D2FF509416A63AFF35C14D5FA7315EB267B61D4CD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\successor-checker-raw-basis-pin-correction.json",
+      "bytes": 2609,
+      "sha256": "D4AFF7AB35E22323B177ED1E7AB7A8626147B0A167655C2049863DF407091130"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\successor-checker-stale-protected-pin-negative.json",
+      "bytes": 2356,
+      "sha256": "7FEF7D75EE04AC977B300866680E5F97C2AAE0BE1EC1EF09C49A3248A7ED3671"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\source-review-preflight-negative.json",
+      "bytes": 6169,
+      "sha256": "5942BF34E68E5CFE5B6A9738DF55E992111D26EC038F21C96FF334D79AF69AFB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-three-phase-intake-executor-review-20261020.json",
+      "bytes": 3033,
+      "sha256": "095191C0E29BCBF15C72753F8FEED20596FF882F2F31974EACF6FE8254E4E7F3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-owner-controls-review-20261020.json",
+      "bytes": 2726,
+      "sha256": "626F84EFE41C3E7D2D35C61C4DEB1953FDCC1BD16A18B90BAFF2BF632717BCF1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-error-constructor-source-review-20261020.json",
+      "bytes": 3789,
+      "sha256": "E7002286BC0ACCBDF13BC6D404503B2442D83FB8407D97383452FB49F03D82FC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reqwrap-host-error-fixture-review-20261020.json",
+      "bytes": 1930,
+      "sha256": "C7847BB9FAF6BB5335B4F4589388F944997A2061BD2FF89AF37FDE1E8AAF229E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-fs-init-observer-source-review-20261020.json",
+      "bytes": 2404,
+      "sha256": "7F86896E6895ADA3E9DC5E0920E14460063B195F417C1A2865F731E1A852A110"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-fs-init-observer-peer-acceptance-20261020.json",
+      "bytes": 1052,
+      "sha256": "1BF72157A797F8FCF0C9B20F39F8616B215C2592BAC8E9C7DEC1339449403113"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-fs-request-init-observer-source-peer-20261020\\peer.json",
+      "bytes": 7387,
+      "sha256": "01BB78974EAF63864A20ACD1FE17A49E8EF57A1F718D70EC11C1ACABA6E13841"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-error-main-intake-20261020\\manifest-v2.json",
+      "bytes": 107917,
+      "sha256": "5730CB5FA9F17FE33478C128E763287E59A37477B2AF2A0820BBCA002D0FADCF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-reqwrap-fixture-main-intake-20261020\\manifest-v2.json",
+      "bytes": 5515,
+      "sha256": "BA8482D0DA4837630E158C5F345C9D5F58D8AE2614F8F372E164EDB9894EEF73"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-fs-init-observer-main-intake-20261020\\manifest-v2.json",
+      "bytes": 19257,
+      "sha256": "21093750D07017BCA35F42D958AA758B8B4BC030920190ADC003BDA1246371E8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ReviewedSourceIntakes-v3-20261020.py",
+      "bytes": 11534,
+      "sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-three-phase-intake-executor-successor.json",
+      "bytes": 4538,
+      "sha256": "EA06B70FD1264C46866B5C98CFBD00F4EF38F8A985E66D952BCB0F7C432F0B63"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-intake-executor-exact-blob-successor.json",
+      "bytes": 4629,
+      "sha256": "511C9AA1362EEDE9000197415D25EC08E72438B566D23B2DFAF313D4D4220798"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-intake-final-peer-acceptance-20261020.json",
+      "bytes": 2171,
+      "sha256": "B7BF464498424ED1E9D122F6912477DE6CAE63DD30C16434B8C2890AE07543E5"
+    }
+  ],
+  "receipt_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020",
+  "basis_closures": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\independent-current-seals-and-owners.json",
+      "bytes": 479501,
+      "sha256": "28AB425BC5C149E1642C0839CC6FBD590C0F98BD2DB5D844CE4C79BB5748BFF3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-control-20261020-210255\\independent-negative-runtime-closure.json",
+      "bytes": 64836,
+      "sha256": "038180C2284FB568EEB9368F033BC894A4E4AD8D6CCB3615B0C438AF336BCEDA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\independent-partial-diagnostic-runtime-closure.json",
+      "bytes": 125745,
+      "sha256": "148F05BF9EA92133B21C88508D035CC7C1A983CC1B7F4E829DBE216280011456"
+    }
+  ],
+  "retained_runtime_findings": {
+    "strict": {
+      "started": 164,
+      "completed": 164,
+      "passed": 163,
+      "flagged": 1,
+      "unstarted": 1121
+    },
+    "diagnostic": {
+      "started": 312,
+      "completed": 311,
+      "passed": 310,
+      "flagged": 1,
+      "incomplete": 1,
+      "unstarted": 973
+    }
+  },
+  "scope": "Root alone may execute the exact reviewed phases sequentially, verifying each immutable receipt and parent before the next phase. Main source mutation is limited to the exact manifests. No compiler, runtime, Node reference, source generator, cleanup, unrelated source mutation or push is authorized by this release.",
+  "future_validation": "Fresh source seals, complete reviewed batches within the unchanged64-group cap, fresh16GiB admission and separate native grants are required. Prior63/1285 metadata is not metadata acceptance for changed source.",
+  "negative_evidence_preserved": true
+}

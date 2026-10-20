@@ -1,0 +1,3 @@
+Port native FileHandle descriptor transfer ownership
+
+Source-reviewed intake only. Native runtime and full application qualification remain pending.

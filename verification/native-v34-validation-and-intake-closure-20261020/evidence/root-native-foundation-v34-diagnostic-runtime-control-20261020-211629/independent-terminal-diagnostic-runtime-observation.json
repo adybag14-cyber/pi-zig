@@ -1,0 +1,1451 @@
+{
+  "schema": 1,
+  "status": "independently_observed_terminal_v34_diagnostic_not_audit_acceptance",
+  "observed_utc": "2026-10-20T21:23:24.962536+00:00",
+  "candidate_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "job": {
+    "id": "job-op-69275f9b65d491b62dfdece0a5a2c7029393aebd0c3875970d8c2fdb8ef558a4",
+    "status": "failed",
+    "mode": "program",
+    "createdAtUtc": "2026-10-20T21:16:41.113Z",
+    "startedAtUtc": "2026-10-20T21:16:41.187Z",
+    "completedAtUtc": "2026-10-20T21:20:37.512Z",
+    "runnerPid": 63896,
+    "exitCode": 1,
+    "readOnly": false,
+    "resourceClass": "heavy",
+    "runtimeMode": "host",
+    "queuedAtUtc": "2026-10-20T21:16:41.161Z",
+    "runnerProcessInstance": "134370046011325594",
+    "queueWaitMs": 10,
+    "executionSlot": 4,
+    "executionSlots": [
+      4,
+      3
+    ],
+    "executionPool": "execution",
+    "executionWeight": 2,
+    "childPid": 61588,
+    "error": "Owned terminal failed: C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "logs": {
+      "stdout": {
+        "maxBytes": 33554432,
+        "rotations": 2,
+        "rotationsPerformed": 0,
+        "totalBytes": 0,
+        "currentBytes": 0,
+        "truncated": false,
+        "failed": false,
+        "error": null
+      },
+      "stderr": {
+        "maxBytes": 33554432,
+        "rotations": 2,
+        "rotationsPerformed": 0,
+        "totalBytes": 63,
+        "currentBytes": 63,
+        "truncated": false,
+        "failed": false,
+        "error": null
+      },
+      "truncated": false
+    },
+    "runnerAlive": false,
+    "jobDir": "C:\\Users\\adyba\\docker-chatgpt-devbox\\run\\jobs\\job-op-69275f9b65d491b62dfdece0a5a2c7029393aebd0c3875970d8c2fdb8ef558a4"
+  },
+  "batch_status": "failed",
+  "batch_errors": [
+    "Diagnostic native-node-reqwrap-callback-routing: Native test protocol did not report every selected test passing without logs/leaks",
+    "Diagnostic native-node-fs-request-owner: Owned terminal failed: C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\028c3b17b69bd36ff132234c1978e1b2\\test.exe",
+    "Diagnostic cannot continue an incomplete or unclosed runtime failure"
+  ],
+  "counts": {
+    "granted_groups": 63,
+    "observed_groups": 17,
+    "original_native_owners": 17,
+    "raw_protocol_groups": 17,
+    "actual_started": 312,
+    "actual_completed": 311,
+    "actual_flagged": 1,
+    "incomplete_tests": 1,
+    "accepted_metadata_count": 1285,
+    "unstarted_accepted_indices": 973
+  },
+  "batch_flags": {
+    "postseal": true,
+    "controller_environment_restored": true,
+    "all_groups_closed": false,
+    "diagnostic_closed": false,
+    "qualification_requested": false,
+    "runtime_diagnostic": true,
+    "product_qualified": false
+  },
+  "seal_counts": {
+    "source": 14088,
+    "tree": 14101,
+    "vendor": 1489,
+    "compiler": 19546,
+    "controls": 144
+  },
+  "original_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\result.json",
+      "bytes": 249862,
+      "sha256": "4ABC6968DFF09B0075791279076C8F8F4891A80B7E5448BD1E83BA681A7E961D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\before.json",
+      "bytes": 15394939,
+      "sha256": "119AE157A7BF3B81A0D08C0B58DCF17B680E3C178BA185F058201344CDF8242B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\final.json",
+      "bytes": 15394939,
+      "sha256": "119AE157A7BF3B81A0D08C0B58DCF17B680E3C178BA185F058201344CDF8242B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\root-grant.json",
+      "bytes": 10005,
+      "sha256": "B9A91A955663A8489ADF9DF99DCB723874863063351ED62D2F2420016A5ECD8F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\launch.ps1",
+      "bytes": 1795,
+      "sha256": "FE66BA4B5C8434CAD46FA30ADE9250991D86B3413FB6C082D1D6264E51D3111F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\outer.json",
+      "bytes": 1660,
+      "sha256": "CC43C64B9BB83BFF02272CB8929C7CFF328969A5AB0B3A8B766ED52172563E75"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\outer-absence.json",
+      "bytes": 183,
+      "sha256": "F901A879AD25EBEDA774000ADECFCE6E7AE2D0EE79AA053CFAA7DBD77C98C520"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\independent-metadata-acceptance.json",
+      "bytes": 242327,
+      "sha256": "80BCC5A73602A01AFFB9D66B3D1531D730D4B0FD79EFDC73CADAA7D246729D45"
+    }
+  ],
+  "groups": [
+    {
+      "group": "native-node-file-handle-read",
+      "status": "diagnostic_tests_passed_unqualified",
+      "errors": [],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-file-handle-read\\result.json",
+        "bytes": 7485,
+        "sha256": "7ADB077E1B1B17A373C15FFE293AE9759986A8F02B4C32EE2FF315C71DC1C0AC"
+      },
+      "accepted_count": 15,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-file-handle-read\\runtime.json",
+        "bytes": 1213,
+        "sha256": "ADC9C937CAE8FEE7BBCC1BCD696DBD9063362CAF0B6F18AF678BF9EEC0655821"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\e48be53ad4263fe24a56f5aef286ba41\\test.exe",
+        "executable_sha256": "113EACE14C3C36046158A1A28158F7D355C45FA4A25966F70CE0AEC9D7B3562E",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 41980,
+        "retained_handle": 2380,
+        "created_utc": "2026-10-20T21:17:08.7891887Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 41980,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\e48be53ad4263fe24a56f5aef286ba41\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\e48be53ad4263fe24a56f5aef286ba41\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:17:08.7891887Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:17:09.4081951+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-file-handle-read\\runtime-raw-frame-observation.json",
+        "bytes": 2379,
+        "sha256": "BF1AA05799396BC0219FB3F90BACA6DC462587709E5DC72D1067AD926C751BC1"
+      },
+      "started": 15,
+      "completed": 15,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-file-handle-read\\runtime.stdout.bin",
+        "bytes": 434,
+        "sha256": "4B9A9A80D81E89402A042A3A0C957E43838C4839D36104822A007BC34EE31971"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-file-handle-read\\runtime.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-file-handle-read\\runtime.results.json",
+        "bytes": 1734,
+        "sha256": "9999A2DD369E4E0FA568739B91389A22EDA5857CA3806E27C95470EAA0E40C98"
+      },
+      "canonical_counts": {
+        "expected": 15,
+        "started": 15,
+        "completed": 15,
+        "failed_or_skipped_or_logged_or_leaked": 0,
+        "status": "passed"
+      }
+    },
+    {
+      "group": "native-node-fs-callback-template",
+      "status": "diagnostic_tests_passed_unqualified",
+      "errors": [],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-callback-template\\result.json",
+        "bytes": 7173,
+        "sha256": "DDF004F3206F8238CC7BF2915014325E4005613C0198E77D2F3CB9244504CE5C"
+      },
+      "accepted_count": 12,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-callback-template\\runtime.json",
+        "bytes": 1213,
+        "sha256": "5C046D56B154F7C7CC38985AEDC7EEFBE0A77B534661541F8DB0C2F033848F41"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\22715546eb19b889a242b88ad8768d3a\\test.exe",
+        "executable_sha256": "B209B683B35D22EE880A18379D75F058A0E41B6745531030563FB89F289F2805",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 53600,
+        "retained_handle": 2372,
+        "created_utc": "2026-10-20T21:17:17.8090275Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 53600,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\22715546eb19b889a242b88ad8768d3a\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\22715546eb19b889a242b88ad8768d3a\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:17:17.8090275Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:17:18.1829617+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-callback-template\\runtime-raw-frame-observation.json",
+        "bytes": 1953,
+        "sha256": "BFA07AF0AB47E87B3C5D2EBBAF39F0B81C93B7D4823C08AAD90154F326CAE943"
+      },
+      "started": 12,
+      "completed": 12,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-callback-template\\runtime.stdout.bin",
+        "bytes": 350,
+        "sha256": "A6D5D17483B06112ABC45B475F0D9E03E2BD45B14471AB3CFD9BD25C2F44F1E8"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-callback-template\\runtime.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-callback-template\\runtime.results.json",
+        "bytes": 1510,
+        "sha256": "78F1EFABDA1BEC7024FDC70C3138012434799EF16E17AF824A53E66299059675"
+      },
+      "canonical_counts": {
+        "expected": 12,
+        "started": 12,
+        "completed": 12,
+        "failed_or_skipped_or_logged_or_leaked": 0,
+        "status": "passed"
+      }
+    },
+    {
+      "group": "native-vm-simple-stack-source",
+      "status": "diagnostic_tests_passed_unqualified",
+      "errors": [],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-simple-stack-source\\result.json",
+        "bytes": 9673,
+        "sha256": "A899F1B14813905885D2CAB4DA62D2BAF3D6B1FB3DDFA08EC985177892C39807"
+      },
+      "accepted_count": 34,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-simple-stack-source\\runtime.json",
+        "bytes": 1213,
+        "sha256": "CF47E8812BC8575224DFDFC35DE4E09C2E149B05640DB63BF1FDCF41A9E7A721"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\bb16472bf2fb8f5e770f0c98efb804c8\\test.exe",
+        "executable_sha256": "CE398977E97750651AA7961982886D967DF54185529C983CA100E71CC6860282",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 59544,
+        "retained_handle": 2380,
+        "created_utc": "2026-10-20T21:17:26.5042655Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 59544,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\bb16472bf2fb8f5e770f0c98efb804c8\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\bb16472bf2fb8f5e770f0c98efb804c8\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:17:26.5042655Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:17:27.0272425+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-simple-stack-source\\runtime-raw-frame-observation.json",
+        "bytes": 5077,
+        "sha256": "6C986D43F44914B9D74F093DC5AB4B1E17CF54AC11C64CFEB003EDDFE898B009"
+      },
+      "started": 34,
+      "completed": 34,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-simple-stack-source\\runtime.stdout.bin",
+        "bytes": 966,
+        "sha256": "E0F1E1E55AD9122DE01CC9D10E59EE85C50E2C156E784ED8577714F7D1B15F09"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-simple-stack-source\\runtime.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-simple-stack-source\\runtime.results.json",
+        "bytes": 3179,
+        "sha256": "1AD03845DE4D761CD1B449ACEC2CC249192509FA11BCDA94C0C9EA1148CF409A"
+      },
+      "canonical_counts": {
+        "expected": 34,
+        "started": 34,
+        "completed": 34,
+        "failed_or_skipped_or_logged_or_leaked": 0,
+        "status": "passed"
+      }
+    },
+    {
+      "group": "native-vm-exotic-operations",
+      "status": "diagnostic_tests_passed_unqualified",
+      "errors": [],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-exotic-operations\\result.json",
+        "bytes": 8961,
+        "sha256": "DDB9A3858F0083D8300AFC196A4C80B4910C56F7E5BBBE869E1C24CE4988F2F3"
+      },
+      "accepted_count": 28,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-exotic-operations\\runtime.json",
+        "bytes": 1213,
+        "sha256": "DC37B504EBFA63FB5745CFA481095CE6BCA83B41F65DC2B4F2D21FC0952B7538"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\bb89df0cb6c6c28cff9418f7152538db\\test.exe",
+        "executable_sha256": "C71F63F6071AC470D407CF03E9F0952F441D96A2B43B83DC9EDD2732182A8865",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 50128,
+        "retained_handle": 2380,
+        "created_utc": "2026-10-20T21:17:35.2746789Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 50128,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\bb89df0cb6c6c28cff9418f7152538db\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\bb89df0cb6c6c28cff9418f7152538db\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:17:35.2746789Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:17:35.5204585+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-exotic-operations\\runtime-raw-frame-observation.json",
+        "bytes": 4225,
+        "sha256": "A113A15F57F13DFFBC2FD6EB0F575F144336A71F6AE57066170C9EBA0CDE1A15"
+      },
+      "started": 28,
+      "completed": 28,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-exotic-operations\\runtime.stdout.bin",
+        "bytes": 798,
+        "sha256": "EB13420ECA4E1C0C5EA3AF6ECA1F1F62B2F5E99750C21E13FBBFED673F94B37A"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-exotic-operations\\runtime.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-exotic-operations\\runtime.results.json",
+        "bytes": 2721,
+        "sha256": "9F018A754310A4FCE691C1592DA8E8FF85CF64100DE1FB1DED6232DEB3E51D74"
+      },
+      "canonical_counts": {
+        "expected": 28,
+        "started": 28,
+        "completed": 28,
+        "failed_or_skipped_or_logged_or_leaked": 0,
+        "status": "passed"
+      }
+    },
+    {
+      "group": "native-node-diagnostic-context",
+      "status": "diagnostic_tests_passed_unqualified",
+      "errors": [],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-diagnostic-context\\result.json",
+        "bytes": 6897,
+        "sha256": "49BC59946ABBB494BE1C21B46FB5170302C44B59F0B6365B3B1B508707F855BC"
+      },
+      "accepted_count": 10,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-diagnostic-context\\runtime.json",
+        "bytes": 1213,
+        "sha256": "90893846EF031E0E0E9B91D4F52DD7B740AF25F00D34E9EF3DCE492993418D19"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\8d516ff95cfd7067416df093fd0c8996\\test.exe",
+        "executable_sha256": "416F6824EDC697383D84B1C447D65789AA81034FFF791946E5798F7265C5ECCE",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 56076,
+        "retained_handle": 2440,
+        "created_utc": "2026-10-20T21:17:43.7503717Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 56076,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\8d516ff95cfd7067416df093fd0c8996\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\8d516ff95cfd7067416df093fd0c8996\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:17:43.7503717Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:17:43.9699141+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-diagnostic-context\\runtime-raw-frame-observation.json",
+        "bytes": 1669,
+        "sha256": "746EE0D10AE2CA23752D0A413E9FD419E672F782CC2E8E05A688569A24FDE7D5"
+      },
+      "started": 10,
+      "completed": 10,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-diagnostic-context\\runtime.stdout.bin",
+        "bytes": 294,
+        "sha256": "C79EDA528504FA16D3674C1779F6DBF1A9F78B7EE29B76602E2331F6011CCA27"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-diagnostic-context\\runtime.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-diagnostic-context\\runtime.results.json",
+        "bytes": 1356,
+        "sha256": "2E6777A123B4CB968F2FA01567C4A6D1FE1EE1F023CDF97EA321FAD00F8B99EE"
+      },
+      "canonical_counts": {
+        "expected": 10,
+        "started": 10,
+        "completed": 10,
+        "failed_or_skipped_or_logged_or_leaked": 0,
+        "status": "passed"
+      }
+    },
+    {
+      "group": "native-node-native-debug",
+      "status": "diagnostic_tests_passed_unqualified",
+      "errors": [],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-native-debug\\result.json",
+        "bytes": 8006,
+        "sha256": "F4DDECFBD0D856D5D81489EFCB2DA801EBED94C968BF4DAC951F0C4B528A7FC1"
+      },
+      "accepted_count": 20,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-native-debug\\runtime.json",
+        "bytes": 1212,
+        "sha256": "2BF6926575298AE1BF20579E9539E4B2283C6521D63D0A872F963B30F4825B7D"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\0eb05008d21ae9b0c5d4491c01f90437\\test.exe",
+        "executable_sha256": "FFB9585AA7408C161C07AEF97939B53A24F637342617F027CC122FF2EE7D0F11",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 58868,
+        "retained_handle": 804,
+        "created_utc": "2026-10-20T21:17:52.3146810Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 58868,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\0eb05008d21ae9b0c5d4491c01f90437\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\0eb05008d21ae9b0c5d4491c01f90437\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:17:52.3146810Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:17:52.5782579+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-native-debug\\runtime-raw-frame-observation.json",
+        "bytes": 3089,
+        "sha256": "0D7839755D9CD2C62155937B9B1DB14DB2D239E5B479EDD46B2E3E1264C3D5CA"
+      },
+      "started": 20,
+      "completed": 20,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-native-debug\\runtime.stdout.bin",
+        "bytes": 574,
+        "sha256": "19E93005E2F82997FD68DE8EA69FDC9CB560F794CB2EB32FE274D2D91DB45F5D"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-native-debug\\runtime.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-native-debug\\runtime.results.json",
+        "bytes": 2110,
+        "sha256": "F7CD32279CA7AB5F97A380DFE02DB0A85423408530AEF46295FA4B3874E99B6F"
+      },
+      "canonical_counts": {
+        "expected": 20,
+        "started": 20,
+        "completed": 20,
+        "failed_or_skipped_or_logged_or_leaked": 0,
+        "status": "passed"
+      }
+    },
+    {
+      "group": "native-node-permission",
+      "status": "diagnostic_tests_passed_unqualified",
+      "errors": [],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-permission\\result.json",
+        "bytes": 7761,
+        "sha256": "1B8A9A79AB3CAB134394D55D2871D19761B45E0BEF90FAD194B9A1F39F0A6724"
+      },
+      "accepted_count": 18,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-permission\\runtime.json",
+        "bytes": 1213,
+        "sha256": "34FF020BA2B975D53B14613759146ED057DC5AE096B854837B8F5A9EFF87AC63"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\91597985c34495eabf099784278f8472\\test.exe",
+        "executable_sha256": "72FFD6747FD70B8410B57F0E0180CB4A1B11E1BD2D7B2A9BA2A28491518A7C26",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 56788,
+        "retained_handle": 2332,
+        "created_utc": "2026-10-20T21:18:00.8026047Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 56788,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\91597985c34495eabf099784278f8472\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\91597985c34495eabf099784278f8472\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:18:00.8026047Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:18:01.0831754+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-permission\\runtime-raw-frame-observation.json",
+        "bytes": 2805,
+        "sha256": "2CBA0C21EF61B6F883B67E32ACDA6A719D057A8A90B5A0CADA8F68F10213E682"
+      },
+      "started": 18,
+      "completed": 18,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-permission\\runtime.stdout.bin",
+        "bytes": 518,
+        "sha256": "5E9753628545F7D38B25428A31F82B043F06E5FD5DAB652F64264BE9FDED33D3"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-permission\\runtime.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-permission\\runtime.results.json",
+        "bytes": 1956,
+        "sha256": "03743607EA714D81602415E7C7F16B4C52942A06A282CA38BBB44CFB4D3F2F4C"
+      },
+      "canonical_counts": {
+        "expected": 18,
+        "started": 18,
+        "completed": 18,
+        "failed_or_skipped_or_logged_or_leaked": 0,
+        "status": "passed"
+      }
+    },
+    {
+      "group": "native-node-fs-readwrap-reuse",
+      "status": "diagnostic_tests_passed_unqualified",
+      "errors": [],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-readwrap-reuse\\result.json",
+        "bytes": 7353,
+        "sha256": "3D99E72A9E60E5F208F80DE341924A7ED004E5BD8124A1DA71F430B6E26E0BF4"
+      },
+      "accepted_count": 14,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-readwrap-reuse\\runtime.json",
+        "bytes": 1213,
+        "sha256": "97AC32A4A063E744CDE00D9DA33BEC64B6CD3677CEABC2E4B0DF76016F97A3A4"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\273777ee7948828bcad40346f6529372\\test.exe",
+        "executable_sha256": "529E02EE329D1AD145DCC7DA1B572AD001B04E4C2DB72BA12804B9728A213EE3",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 59740,
+        "retained_handle": 2436,
+        "created_utc": "2026-10-20T21:18:09.3415426Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 59740,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\273777ee7948828bcad40346f6529372\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\273777ee7948828bcad40346f6529372\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:18:09.3415426Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:18:09.9687867+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-readwrap-reuse\\runtime-raw-frame-observation.json",
+        "bytes": 2237,
+        "sha256": "313F0EBFCACCF54485F0B432B14DDFA121D2E67779ED9CC38BAD94ECC3C209D4"
+      },
+      "started": 14,
+      "completed": 14,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-readwrap-reuse\\runtime.stdout.bin",
+        "bytes": 406,
+        "sha256": "EFAC1262A88D804380F66F05B0DDCD24A22C574EE1344CE7360A5880AE054012"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-readwrap-reuse\\runtime.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-readwrap-reuse\\runtime.results.json",
+        "bytes": 1659,
+        "sha256": "AAAA27A2D8F01BB84F12CBE2F0D6B62E91F3FB2D5FB26E66CF55BE74313DC8EC"
+      },
+      "canonical_counts": {
+        "expected": 14,
+        "started": 14,
+        "completed": 14,
+        "failed_or_skipped_or_logged_or_leaked": 0,
+        "status": "passed"
+      }
+    },
+    {
+      "group": "native-node-reqwrap-callback-routing",
+      "status": "failed",
+      "errors": [
+        "Actual terminal owner binding failed: Actual metadata/new API or ordinary retained runtime stderr must be empty",
+        "Native test protocol did not report every selected test passing without logs/leaks"
+      ],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-reqwrap-callback-routing\\result.json",
+        "bytes": 8446,
+        "sha256": "F7605B9F5D07FE676D572BD4B17668E1BB82488540446A3AF76E5A4195E6B3AB"
+      },
+      "accepted_count": 13,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-reqwrap-callback-routing\\runtime.json",
+        "bytes": 1213,
+        "sha256": "BFEF611C24868C968E0C33B0A45DF58C63EAA68A342DA780EB448835B4F3A402"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\4cd45df90670ac0a6b88fcb85a27ec3b\\test.exe",
+        "executable_sha256": "B83F5DC238967A48483141F3972616046CFE27E58801A633A095DAB2F364A30B",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 61968,
+        "retained_handle": 1768,
+        "created_utc": "2026-10-20T21:18:18.2896062Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 61968,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\4cd45df90670ac0a6b88fcb85a27ec3b\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\4cd45df90670ac0a6b88fcb85a27ec3b\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:18:18.2896062Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:18:18.8553715+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-reqwrap-callback-routing\\runtime-raw-frame-observation.json",
+        "bytes": 2095,
+        "sha256": "65BF4BAC06429911B49A69605E112282573C9300355E2FB7069E42EC6012C569"
+      },
+      "started": 13,
+      "completed": 13,
+      "flags": {
+        "6": 1
+      },
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [
+        {
+          "index": 6,
+          "flags": 1,
+          "name": "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing typed callback failure still retires the final native Wrapper pointer"
+        }
+      ],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-reqwrap-callback-routing\\runtime.stdout.bin",
+        "bytes": 378,
+        "sha256": "B8FE03838F21FF98DCD73A5DFAE9F985F2D0DF78759A2239B1D70832CC35895D"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-reqwrap-callback-routing\\runtime.stderr.log",
+        "bytes": 1947,
+        "sha256": "F0C617352AD63D4327D7CA2E03B4C89A22014FC4204277145E141719FCE5588C"
+      },
+      "stderr_text": "expected error.ActualReqWrapSelectedCallbackFailure, found error.JavaScriptException\nC:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig:1258:9: 0x7ff78873d832 in captureValue (test_zcu.obj)\n        return error.JavaScriptException;\n        ^\nC:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig:1200:9: 0x7ff78873c948 in captureException (test_zcu.obj)\n        return self.captureValue(context, exception, true);\n        ^\nC:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig:736:13: 0x7ff7885c70b1 in checked (test_zcu.obj)\n            return self.captureException(self.context);\n            ^\nC:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig:225:39: 0x7ff788632232 in finishVoid (test_zcu.obj)\n            .thrown => |reason| { _ = try self.owner.engine.checked(c.JS_Throw(self.owner.engine.context, reason)); unreachable; },\n                                      ^\nC:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_uv_service.zig:72:9: 0x7ff7886308f1 in poll (test_zcu.obj)\n        try completion.finishVoid();\n        ^\nC:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_env_io.zig:115:27: 0x7ff788636097 in pump (test_zcu.obj)\n                worked = (try poll(resource.raw)) or worked;\n                          ^\nC:\\Users\\adyba\\pi-zig\\main\\src\\native_node_reqwrap_callback_routing_test.zig:321:17: 0x7ff78874a604 in pump (test_zcu.obj)\n            _ = try pump_native(self.engine);\n                ^\nC:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\testing.zig:72:13: 0x7ff78874a7b7 in expectError__anon_95783 (test_zcu.obj)\n            return error.TestUnexpectedError;\n            ^\nC:\\Users\\adyba\\pi-zig\\main\\src\\native_node_reqwrap_callback_routing_test.zig:541:5: 0x7ff78874ec80 in test.native ReqWrap routing typed callback failure still retires the final native Wrapper pointer (test_zcu.obj)\n    try std.testing.expectError(error.ActualReqWrapSelectedCallbackFailure, f.pump());\n    ^\n",
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-reqwrap-callback-routing\\runtime.results.json",
+        "bytes": 1591,
+        "sha256": "D3129BF1E3AAF0E79AC6E2BB879A6C0D88FC8DC8FF91F407F72590F8136B2A5D"
+      },
+      "canonical_counts": {
+        "expected": 13,
+        "started": 13,
+        "completed": 13,
+        "failed_or_skipped_or_logged_or_leaked": 1,
+        "status": "failed"
+      }
+    },
+    {
+      "group": "native-vm-script-location",
+      "status": "diagnostic_tests_passed_unqualified",
+      "errors": [],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-script-location\\result.json",
+        "bytes": 9409,
+        "sha256": "D52600C2BB3448BD631522A5F5F7EE19E68AA471E354407C8A736BAA59B30B42"
+      },
+      "accepted_count": 32,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-script-location\\runtime.json",
+        "bytes": 1213,
+        "sha256": "1BDF8139F74A91E8B3DD181C0C59058AF6517CB2ADDA2BEA7207D100D91D4485"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\6a67ae040dadf5582757f2e2e157472a\\test.exe",
+        "executable_sha256": "35A1CD41A85BC3E3644614FAA69D5C48F544D9E83BD9C61B478F283DE984A55A",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 50628,
+        "retained_handle": 1792,
+        "created_utc": "2026-10-20T21:18:27.1163064Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 50628,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\6a67ae040dadf5582757f2e2e157472a\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\6a67ae040dadf5582757f2e2e157472a\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:18:27.1163064Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:18:27.3469987+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-script-location\\runtime-raw-frame-observation.json",
+        "bytes": 4793,
+        "sha256": "C6EAB16625C891AD72B32EC5D7A28683D6573040C3A537A684D4E65C1128EEC3"
+      },
+      "started": 32,
+      "completed": 32,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-script-location\\runtime.stdout.bin",
+        "bytes": 910,
+        "sha256": "7B5A880FC3CFE42AACF41370D5CBE8B13DB9A6FAA82F2BB607CA52355C20F756"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-script-location\\runtime.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-script-location\\runtime.results.json",
+        "bytes": 3023,
+        "sha256": "A6DC539E3FD6FBDCF53E0453303B0FDC3765E7C15EDFDAD3E61D8734FC6D7FC8"
+      },
+      "canonical_counts": {
+        "expected": 32,
+        "started": 32,
+        "completed": 32,
+        "failed_or_skipped_or_logged_or_leaked": 0,
+        "status": "passed"
+      }
+    },
+    {
+      "group": "native-node-stream-read",
+      "status": "diagnostic_tests_passed_unqualified",
+      "errors": [],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-stream-read\\result.json",
+        "bytes": 7903,
+        "sha256": "14B8E6EB059E46683DB52DF23AFD4C07FA254DF1C21EF651F44F0CB67E8EF9E7"
+      },
+      "accepted_count": 19,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-stream-read\\runtime.json",
+        "bytes": 1213,
+        "sha256": "B5DF0E9E3220F7E4AA4038D8032473471E363D0FA65754AEAA8B78474067455A"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\85c3ee472c3207536db60cb3de199568\\test.exe",
+        "executable_sha256": "C22415C79D6BA8368571EE8E3539127115849FCF69F47789E4B32DFB3922F1DB",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 68984,
+        "retained_handle": 2208,
+        "created_utc": "2026-10-20T21:18:35.6614421Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 68984,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\85c3ee472c3207536db60cb3de199568\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\85c3ee472c3207536db60cb3de199568\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:18:35.6614421Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:18:36.0544910+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-stream-read\\runtime-raw-frame-observation.json",
+        "bytes": 2947,
+        "sha256": "FAE8689A593586B0A22ADF38B835779B98C7E7A34C8A941FEDFFB9F744010BB3"
+      },
+      "started": 19,
+      "completed": 19,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-stream-read\\runtime.stdout.bin",
+        "bytes": 546,
+        "sha256": "136FCB278196BA0C61F737899375B0E7E36AED09697212D11295B7702ECCFA7D"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-stream-read\\runtime.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-stream-read\\runtime.results.json",
+        "bytes": 2033,
+        "sha256": "4B36E5862D0628B859C24E0B79D8C9B34DB1F44B1799D9DB7F0F11E6D18842B6"
+      },
+      "canonical_counts": {
+        "expected": 19,
+        "started": 19,
+        "completed": 19,
+        "failed_or_skipped_or_logged_or_leaked": 0,
+        "status": "passed"
+      }
+    },
+    {
+      "group": "native-node-environment-map",
+      "status": "diagnostic_tests_passed_unqualified",
+      "errors": [],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-environment-map\\result.json",
+        "bytes": 8265,
+        "sha256": "443C9AFF9EFDEBB4791C71E9667EFE85184E640048DB5CD3418F2BE9A9804129"
+      },
+      "accepted_count": 22,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-environment-map\\runtime.json",
+        "bytes": 1213,
+        "sha256": "27A8BC0945292AD1EA53A3806DCC8447F958E15A373D4772C529109B3D4A5A1B"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\01c3047889d3184431dd08dc5495be37\\test.exe",
+        "executable_sha256": "818A3F24E5210CA09BB569308501101F198A28FB47DC8FFEF180A4116FB3533E",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 63932,
+        "retained_handle": 2516,
+        "created_utc": "2026-10-20T21:18:44.4257002Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 63932,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\01c3047889d3184431dd08dc5495be37\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\01c3047889d3184431dd08dc5495be37\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:18:44.4257002Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:18:44.6646504+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-environment-map\\runtime-raw-frame-observation.json",
+        "bytes": 3373,
+        "sha256": "6070671C5BCB456DD183D54772B01F11C6C2F553F76AC40EA74F278628BBB496"
+      },
+      "started": 22,
+      "completed": 22,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-environment-map\\runtime.stdout.bin",
+        "bytes": 630,
+        "sha256": "6130D09F28C3D07BBB43C1343688B68066709ADAB4BEF084E39D20C1E48FBA58"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-environment-map\\runtime.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-environment-map\\runtime.results.json",
+        "bytes": 2265,
+        "sha256": "923ABF3A1830FA6D51147C4A480D19B62E2BFDC3C32BEC06B4417A9DD4366222"
+      },
+      "canonical_counts": {
+        "expected": 22,
+        "started": 22,
+        "completed": 22,
+        "failed_or_skipped_or_logged_or_leaked": 0,
+        "status": "passed"
+      }
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "status": "diagnostic_tests_passed_unqualified",
+      "errors": [],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-backing-store-adoption\\result.json",
+        "bytes": 8072,
+        "sha256": "F307B5A2332C78557EA180FE10CE833C300E97F28F0DCE92764158258196FF63"
+      },
+      "accepted_count": 20,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-backing-store-adoption\\runtime.json",
+        "bytes": 1212,
+        "sha256": "D61E6595016B7847183C0F6A02A17E13A170032B770A5A08C729095EC0C2502C"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\032e8780f552255122f475632d66b1b4\\test.exe",
+        "executable_sha256": "2F78170FF746CBB117B18A98184D2AC0731FDDBB0A13680D111A0DD99251378C",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 62404,
+        "retained_handle": 612,
+        "created_utc": "2026-10-20T21:18:52.9121933Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 62404,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\032e8780f552255122f475632d66b1b4\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\032e8780f552255122f475632d66b1b4\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:18:52.9121933Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:18:53.1357399+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-backing-store-adoption\\runtime-raw-frame-observation.json",
+        "bytes": 3089,
+        "sha256": "0D7839755D9CD2C62155937B9B1DB14DB2D239E5B479EDD46B2E3E1264C3D5CA"
+      },
+      "started": 20,
+      "completed": 20,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-backing-store-adoption\\runtime.stdout.bin",
+        "bytes": 574,
+        "sha256": "19E93005E2F82997FD68DE8EA69FDC9CB560F794CB2EB32FE274D2D91DB45F5D"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-backing-store-adoption\\runtime.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-vm-backing-store-adoption\\runtime.results.json",
+        "bytes": 2118,
+        "sha256": "2795923F5A9D0A068F44B998D9296B69938350BC46EF2146A31C9AE1B1CBFE16"
+      },
+      "canonical_counts": {
+        "expected": 20,
+        "started": 20,
+        "completed": 20,
+        "failed_or_skipped_or_logged_or_leaked": 0,
+        "status": "passed"
+      }
+    },
+    {
+      "group": "native-node-environment-paths",
+      "status": "diagnostic_tests_passed_unqualified",
+      "errors": [],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-environment-paths\\result.json",
+        "bytes": 7468,
+        "sha256": "C047147167F3DBECFB4A5100CE6A0223E70B2EC16325E4833FC1D46B7BFCF85E"
+      },
+      "accepted_count": 15,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-environment-paths\\runtime.json",
+        "bytes": 1212,
+        "sha256": "F064332128FF6C71677E5ABDF59345CB6B7937ED98489482792BF8BC89B4D47A"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\0d74af91a4d52edf0af7178c5f098b0c\\test.exe",
+        "executable_sha256": "E4D067B1017ADE80E9D1A8795913C3D24668B3CBC2B8910C38FB48CFB7B7609F",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 63108,
+        "retained_handle": 732,
+        "created_utc": "2026-10-20T21:19:01.3039606Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 63108,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\0d74af91a4d52edf0af7178c5f098b0c\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\0d74af91a4d52edf0af7178c5f098b0c\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:19:01.3039606Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:19:01.5428998+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-environment-paths\\runtime-raw-frame-observation.json",
+        "bytes": 2379,
+        "sha256": "BF1AA05799396BC0219FB3F90BACA6DC462587709E5DC72D1067AD926C751BC1"
+      },
+      "started": 15,
+      "completed": 15,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-environment-paths\\runtime.stdout.bin",
+        "bytes": 434,
+        "sha256": "4B9A9A80D81E89402A042A3A0C957E43838C4839D36104822A007BC34EE31971"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-environment-paths\\runtime.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-environment-paths\\runtime.results.json",
+        "bytes": 1735,
+        "sha256": "D861196F62CEB56FDB6ABEF1FDEA444089740FD8DD1436ED5F8683E35C2E396E"
+      },
+      "canonical_counts": {
+        "expected": 15,
+        "started": 15,
+        "completed": 15,
+        "failed_or_skipped_or_logged_or_leaked": 0,
+        "status": "passed"
+      }
+    },
+    {
+      "group": "native-node-stream-fields",
+      "status": "diagnostic_tests_passed_unqualified",
+      "errors": [],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-stream-fields\\result.json",
+        "bytes": 6994,
+        "sha256": "F47828661CB5794C877A05A8E2393092F5480552D4D88F2E5894B9F3F1E21DFE"
+      },
+      "accepted_count": 11,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-stream-fields\\runtime.json",
+        "bytes": 1213,
+        "sha256": "DC47DDFD96E8A32F1B24701143FAD95D6AE5FC2EA5325C412E0FED087086C40A"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\6a5ec4196059b56a3aeca7672d703eff\\test.exe",
+        "executable_sha256": "DCCF2FCEA4185BD3114FFA8729C2715506FA6664832AE22294AA68A679DEA103",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 44360,
+        "retained_handle": 1792,
+        "created_utc": "2026-10-20T21:19:09.8245543Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 44360,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\6a5ec4196059b56a3aeca7672d703eff\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\6a5ec4196059b56a3aeca7672d703eff\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:19:09.8245543Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:19:10.2344743+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-stream-fields\\runtime-raw-frame-observation.json",
+        "bytes": 1811,
+        "sha256": "2C93BCC58BF4082A674C9B85C34FFF3F58F4C2845B740EF043D24361EC8476ED"
+      },
+      "started": 11,
+      "completed": 11,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-stream-fields\\runtime.stdout.bin",
+        "bytes": 322,
+        "sha256": "A5C5E0A326D572167BDB7E8A7957C52A7F6D47937304343C14C063DB09BD0652"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-stream-fields\\runtime.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-stream-fields\\runtime.results.json",
+        "bytes": 1427,
+        "sha256": "BDFBBBD2940A049C81DD2D00A29C14005F8F75A00859D4A23C12B80B49B52DA2"
+      },
+      "canonical_counts": {
+        "expected": 11,
+        "started": 11,
+        "completed": 11,
+        "failed_or_skipped_or_logged_or_leaked": 0,
+        "status": "passed"
+      }
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "status": "diagnostic_tests_passed_unqualified",
+      "errors": [],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-managed-buffers\\result.json",
+        "bytes": 7105,
+        "sha256": "1E7A237036D10BE325826B5C25063CAAFAF47026761C91AE9470DF951EC74718"
+      },
+      "accepted_count": 12,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-managed-buffers\\runtime.json",
+        "bytes": 1213,
+        "sha256": "99DE7CB0A168C99802868CDE9B6B4BBA927A48D5C460DFAB46D06943A6543F1F"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\af6671cc44125d60eebcf5127f81b477\\test.exe",
+        "executable_sha256": "7641F21794756FA0D3271824E20B02C8D70D749799DA555B805AE420A47D0DAA",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 66848,
+        "retained_handle": 2452,
+        "created_utc": "2026-10-20T21:19:18.4880071Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "live_identity": {
+          "pid": 66848,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\af6671cc44125d60eebcf5127f81b477\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\af6671cc44125d60eebcf5127f81b477\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:19:18.4880071Z"
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-20T21:19:18.7758361+00:00"
+      },
+      "canonical_present": true,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-managed-buffers\\runtime-raw-frame-observation.json",
+        "bytes": 1953,
+        "sha256": "BFA07AF0AB47E87B3C5D2EBBAF39F0B81C93B7D4823C08AAD90154F326CAE943"
+      },
+      "started": 12,
+      "completed": 12,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": null,
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-managed-buffers\\runtime.stdout.bin",
+        "bytes": 350,
+        "sha256": "A6D5D17483B06112ABC45B475F0D9E03E2BD45B14471AB3CFD9BD25C2F44F1E8"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-managed-buffers\\runtime.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "canonical_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-managed-buffers\\runtime.results.json",
+        "bytes": 1505,
+        "sha256": "19F861D5A58E629E31E7349D455FE1972899FFF6047508F606EC62563A1D0BC8"
+      },
+      "canonical_counts": {
+        "expected": 12,
+        "started": 12,
+        "completed": 12,
+        "failed_or_skipped_or_logged_or_leaked": 0,
+        "status": "passed"
+      }
+    },
+    {
+      "group": "native-node-fs-request-owner",
+      "status": "failed",
+      "errors": [
+        "Actual terminal owner binding failed: Exact actual terminal0 owner/deadline required on positive and negative protocol paths",
+        "Owned terminal failed: C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\028c3b17b69bd36ff132234c1978e1b2\\test.exe"
+      ],
+      "phases": [
+        "runtime"
+      ],
+      "original_result": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-request-owner\\result.json",
+        "bytes": 6520,
+        "sha256": "79CAF3B1F145790CC7BBB74A6D24C7161AC8758DF41B696847D12C12094C3CDB"
+      },
+      "accepted_count": 26,
+      "owner_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-request-owner\\runtime.json",
+        "bytes": 1411,
+        "sha256": "92351BACC20B56E9371668F7BF5ECA5D7976CAC3B158E05A57EAB7696BEC9E14"
+      },
+      "owner": {
+        "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\028c3b17b69bd36ff132234c1978e1b2\\test.exe",
+        "executable_sha256": "DAE4B452CB0F875C88E58BC7A1ACA62B727D94884314D750FB9BCB08D17CAC81",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+        "pid": 13228,
+        "retained_handle": 2548,
+        "created_utc": "2026-10-20T21:19:27.1017753Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 120,
+        "status": "failed",
+        "live_identity": {
+          "pid": 13228,
+          "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\028c3b17b69bd36ff132234c1978e1b2\\test.exe\" --listen=-",
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\028c3b17b69bd36ff132234c1978e1b2\\test.exe",
+          "command_line_method": "Win32_Process.CommandLine",
+          "created_utc": "2026-10-20T21:19:27.1017753Z"
+        },
+        "exit_code": -1073740791,
+        "completed_utc": "2026-10-20T21:19:27.6347439+00:00",
+        "error": "Owned terminal failed: C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\cache\\o\\028c3b17b69bd36ff132234c1978e1b2\\test.exe"
+      },
+      "canonical_present": false,
+      "raw_observation_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-request-owner\\runtime-raw-frame-observation.json",
+        "bytes": 2572,
+        "sha256": "A21C23AF07BF1AE805B257940D7FC2E43928F1C07CC66AE3F0A68783D8AC5B5B"
+      },
+      "started": 17,
+      "completed": 16,
+      "flags": {},
+      "parse_error": null,
+      "trailing_bytes": 0,
+      "failed_tests": [],
+      "incomplete_test": "native_node_fs_request_owner_test.test.native FS request owner physical Read constructs native storage before init and dispatches the actual view span",
+      "stdout": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-request-owner\\runtime.stdout.bin",
+        "bytes": 470,
+        "sha256": "809EDDBF643440059079B70B96FE18FD14D42DB88BAD3CB8A2FA126BEE3CA7E0"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-20261020-211629\\groups\\native-node-fs-request-owner\\runtime.stderr.log",
+        "bytes": 157,
+        "sha256": "6AE6E82B866AA07A01730451E487596C2B906D25E19A7ADF1CB976FF79F816A1"
+      },
+      "stderr_text": "Assertion failed: atomic_load_explicit(&request->completed, memory_order_acquire), file C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c, line 804\n"
+    }
+  ],
+  "audit_acceptance": false,
+  "qualification": false,
+  "source_mutation_hold_released": false
+}

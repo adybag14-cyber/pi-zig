@@ -1,0 +1,20 @@
+{
+  "peer": "4B19037C401B2D663D8ECE2E9384E4EFC2FE553B50FF916936601A59BA027D82",
+  "candidate_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "paths": [
+    {
+      "relative": "src/extensions/native_node_async_wrap.zig",
+      "bytes": 19741,
+      "sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0",
+      "current_raw_git_basis_equal": true
+    },
+    {
+      "relative": "src/extensions/native_node_async_wrap_make_callback.zig",
+      "bytes": 3361,
+      "sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2",
+      "current_raw_git_basis_equal": true
+    }
+  ],
+  "status": "additive_exact_async_wrap_filename_mapping",
+  "previous_negative_and_peer_unchanged": true
+}

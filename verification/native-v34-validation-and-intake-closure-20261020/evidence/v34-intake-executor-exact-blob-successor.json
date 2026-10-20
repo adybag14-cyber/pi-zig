@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "status": "unexecuted_exact_source_intake_with_filter_preflight",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ReviewedSourceIntakes-v2-20261020.py",
+    "bytes": 10699,
+    "sha256": "B60099300A49E9281270B6E85048F86D61F3823BEFA8D25317916CFBEBF9D66E"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ReviewedSourceIntakes-v3-20261020.py",
+    "bytes": 11534,
+    "sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4"
+  },
+  "edits": [
+    {
+      "label": "owner_successor_path",
+      "before": "evidence/pending-file-handle-error-main-intake-20261020/manifest.json",
+      "after": "evidence/pending-file-handle-error-main-intake-20261020/manifest-v2.json",
+      "occurrences": 1,
+      "before_sha256": "B60099300A49E9281270B6E85048F86D61F3823BEFA8D25317916CFBEBF9D66E",
+      "after_sha256": "D01F7DDFAF75006450ADD9E28622D79F1B0A57CF283BBB641661A327D2DA9A33"
+    },
+    {
+      "label": "owner_successor_hash",
+      "before": "A905E15D794738ADDED8DE272771545D72380B085750175804E82139B78869C4",
+      "after": "5730CB5FA9F17FE33478C128E763287E59A37477B2AF2A0820BBCA002D0FADCF",
+      "occurrences": 1,
+      "before_sha256": "D01F7DDFAF75006450ADD9E28622D79F1B0A57CF283BBB641661A327D2DA9A33",
+      "after_sha256": "A1E80474D8C36E9D7F6856DE75AF82DBAB03D7938A1B62277612C6A4ED99EA20"
+    },
+    {
+      "label": "reqwrap_successor_path",
+      "before": "evidence/pending-v34-reqwrap-fixture-main-intake-20261020/manifest.json",
+      "after": "evidence/pending-v34-reqwrap-fixture-main-intake-20261020/manifest-v2.json",
+      "occurrences": 1,
+      "before_sha256": "A1E80474D8C36E9D7F6856DE75AF82DBAB03D7938A1B62277612C6A4ED99EA20",
+      "after_sha256": "E98421FE37FEEB961A27A1E09627EACC363BEF3DF8F20387B963575EA83566A8"
+    },
+    {
+      "label": "reqwrap_successor_hash",
+      "before": "068136AC825829162A45AB03D9A1F60633EF8AF2D83061BAEC7CD7082FDE60E1",
+      "after": "BA8482D0DA4837630E158C5F345C9D5F58D8AE2614F8F372E164EDB9894EEF73",
+      "occurrences": 1,
+      "before_sha256": "E98421FE37FEEB961A27A1E09627EACC363BEF3DF8F20387B963575EA83566A8",
+      "after_sha256": "EA88AB93539AB0E012F56F141F6F9CE03E3EA87EE34F7A598DEA5851E3FC4AF8"
+    },
+    {
+      "label": "fs_init_successor_path",
+      "before": "evidence/pending-v34-fs-init-observer-main-intake-20261020/manifest.json",
+      "after": "evidence/pending-v34-fs-init-observer-main-intake-20261020/manifest-v2.json",
+      "occurrences": 1,
+      "before_sha256": "EA88AB93539AB0E012F56F141F6F9CE03E3EA87EE34F7A598DEA5851E3FC4AF8",
+      "after_sha256": "2F51DF7FED1D860FFC7599987E83F74530E46FE6219F4FD4D51D32F5566D2609"
+    },
+    {
+      "label": "fs_init_successor_hash",
+      "before": "8CCF654B605C496E1E188E12EFD8CAFA6BF54B84CEBD58731A3219196DCA6D70",
+      "after": "21093750D07017BCA35F42D958AA758B8B4BC030920190ADC003BDA1246371E8",
+      "occurrences": 1,
+      "before_sha256": "2F51DF7FED1D860FFC7599987E83F74530E46FE6219F4FD4D51D32F5566D2609",
+      "after_sha256": "EA0CCB543B2E4F868F8542583DB223EC701F58A5D47B02618F7B037CD4C5FBF1"
+    },
+    {
+      "label": "preflight_every_actual_filtered_git_blob_before_any_main_or_index_write",
+      "before": "for rel in names:\n parts=PurePosixPath(rel).parts",
+      "after": "attribute_output=git(\"check-attr\",\"-z\",\"--stdin\",\"filter\",\"working-tree-encoding\",\"ident\",input=b\"\\0\".join(x.encode(\"utf-8\") for x in names)+b\"\\0\").stdout.split(b\"\\0\")[:-1]\nassert len(attribute_output)==9*count\nfor index in range(0,len(attribute_output),3):\n assert attribute_output[index].decode(\"utf-8\") in names\n assert attribute_output[index+1].decode(\"utf-8\") in (\"filter\",\"working-tree-encoding\",\"ident\")\n assert attribute_output[index+2] in (b\"unspecified\",b\"unset\"),attribute_output[index:index+3]\nfor rel,b in zip(names,contents):\n expected_blob=hashlib.sha1(b\"blob \"+str(len(b)).encode(\"ascii\")+b\"\\0\"+b).hexdigest()\n actual_blob=git(\"hash-object\",\"--path=\"+rel,\"--stdin\",input=b).stdout.decode(\"ascii\").strip()\n assert actual_blob==expected_blob,(\"git_filter_would_change_exact_bytes\",rel,expected_blob,actual_blob)\nfor rel in names:\n parts=PurePosixPath(rel).parts",
+      "occurrences": 1,
+      "before_sha256": "EA0CCB543B2E4F868F8542583DB223EC701F58A5D47B02618F7B037CD4C5FBF1",
+      "after_sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4"
+    }
+  ],
+  "complete_inverse_to_baseline": true,
+  "source_execution_authorized": false,
+  "native_execution_authorized": false,
+  "qualification": false
+}
