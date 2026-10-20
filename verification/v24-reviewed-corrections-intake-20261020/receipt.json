@@ -1,0 +1,377 @@
+{
+  "status": "integrated_source_only_pending_native_validation",
+  "base_head": "19b6c0320b56a1e8c260ea74bf30b2a998fa5517",
+  "units": [
+    {
+      "unit": "module_warning",
+      "donor_commit": "6503ad4bb66a2f5313532b7524570c6d0cacc4d6",
+      "packet": "verification/node-module-warning-v24-fixture-correction-sourceonly-20261020/receipt.json",
+      "packet_sha256": "A5DF7A4C436BD027575E105E582DB00C2D0507AE3B01B8D97FB3801A71DB997C",
+      "exact_committed_paths": [
+        "src/native_node_module_creation_test.zig",
+        "verification/node-module-warning-v24-fixture-correction-sourceonly-20261020/native_node_module_creation_test.before.zig.txt",
+        "verification/node-module-warning-v24-fixture-correction-sourceonly-20261020/receipt.json"
+      ],
+      "source_paths": [
+        "src/native_node_module_creation_test.zig"
+      ]
+    },
+    {
+      "unit": "classic_windows",
+      "donor_commit": "b3a53f89befa24c0f44fb454887e9e719aaf8b95",
+      "packet": "verification/node-classic-v24-namespacing-correction-sourceonly-20261020/receipt.json",
+      "packet_sha256": "39AE708C61B1F16419F1C9F817FFFF735C2265C69811C5A68911A228ADF6AA93",
+      "exact_committed_paths": [
+        "src/extensions/native_file_stat.zig",
+        "src/extensions/native_node_fs_stat_windows.zig",
+        "verification/node-classic-v24-namespacing-correction-sourceonly-20261020/caller-inventory.txt",
+        "verification/node-classic-v24-namespacing-correction-sourceonly-20261020/native_file_stat.zig.before.txt",
+        "verification/node-classic-v24-namespacing-correction-sourceonly-20261020/native_node_fs_stat_windows.zig.before.txt",
+        "verification/node-classic-v24-namespacing-correction-sourceonly-20261020/owned-caller-inventory.txt",
+        "verification/node-classic-v24-namespacing-correction-sourceonly-20261020/receipt.json",
+        "verification/node-classic-v24-namespacing-correction-sourceonly-20261020/source-authority.json"
+      ],
+      "source_paths": [
+        "src/extensions/native_node_fs_stat_windows.zig",
+        "src/extensions/native_file_stat.zig"
+      ]
+    },
+    {
+      "unit": "classic_argv",
+      "donor_commit": "7b54f8f4298b3d19d2f5963f6b8851b42095e7e1",
+      "packet": "verification/node-classic-v24-argument-fixture-correction-sourceonly-20261020/receipt.json",
+      "packet_sha256": "EBBDC39F6C5596B29BF7BD97E732BD829A62928A7DC7A4B4C9BB232A959A39DE",
+      "exact_committed_paths": [
+        "src/native_node_fs_realpath_classic_test.zig",
+        "verification/node-classic-v24-argument-fixture-correction-sourceonly-20261020/native_node_fs_realpath_classic_test.before.zig.txt",
+        "verification/node-classic-v24-argument-fixture-correction-sourceonly-20261020/receipt.json"
+      ],
+      "source_paths": [
+        "src/native_node_fs_realpath_classic_test.zig"
+      ]
+    },
+    {
+      "unit": "template_version",
+      "donor_commit": "3af8911182c7777ff7ec862a9e84e8692cc6e632",
+      "packet": "verification/native-template-bytecode-v24-sourceonly-20261020/source-delta.json",
+      "packet_sha256": "382BC0AEB8A921BDD096B572B7FBAC3981DA77CD6C4AE8F790ED39B28B755312",
+      "exact_committed_paths": [
+        "src/native_template_literal_test.zig",
+        "verification/native-template-bytecode-v24-sourceonly-20261020/README.md",
+        "verification/native-template-bytecode-v24-sourceonly-20261020/base-native_template_literal_test.zig.txt",
+        "verification/native-template-bytecode-v24-sourceonly-20261020/manifest.json",
+        "verification/native-template-bytecode-v24-sourceonly-20261020/source-delta.json",
+        "verification/native-template-bytecode-v24-sourceonly-20261020/v24-runtime.stderr.log"
+      ],
+      "source_paths": [
+        "src/native_template_literal_test.zig"
+      ]
+    },
+    {
+      "unit": "inspect_fatal",
+      "donor_commit": "e65bc6ee24019ce7fb4c32ce6ceaf28fa3b4b741",
+      "packet": "verification/native-inspect-entry-v24-correction-sourceonly-20261020/source-delta.json",
+      "packet_sha256": "EDB6D3FC3BCB7F2EBD9D6D72B2AA4FD031D6CD39AF5C8ED0697E2770C8C515A7",
+      "exact_committed_paths": [
+        "src/native_node_inspect_entry_test.zig",
+        "verification/native-inspect-entry-v24-correction-sourceonly-20261020/README.md",
+        "verification/native-inspect-entry-v24-correction-sourceonly-20261020/base-native_node_inspect_entry_test.zig.txt",
+        "verification/native-inspect-entry-v24-correction-sourceonly-20261020/original-runtime.stderr.log",
+        "verification/native-inspect-entry-v24-correction-sourceonly-20261020/source-closure.json",
+        "verification/native-inspect-entry-v24-correction-sourceonly-20261020/source-delta.json"
+      ],
+      "source_paths": [
+        "src/native_node_inspect_entry_test.zig"
+      ]
+    }
+  ],
+  "changes": {
+    "src/native_node_module_creation_test.zig": {
+      "before_sha256": "9D3172E58BB2F697032640E778DD7B12561A6943D49E991759C1232FBFD4CB6F",
+      "after_sha256": "C7A6956FE9FF1FBE53FE91F532C5AF421EA84DF3869225BF792D4C33E629C9A3",
+      "bytes": 33683
+    },
+    "verification/node-module-warning-v24-fixture-correction-sourceonly-20261020/native_node_module_creation_test.before.zig.txt": {
+      "before_sha256": null,
+      "after_sha256": "9D3172E58BB2F697032640E778DD7B12561A6943D49E991759C1232FBFD4CB6F",
+      "bytes": 33660
+    },
+    "verification/node-module-warning-v24-fixture-correction-sourceonly-20261020/receipt.json": {
+      "before_sha256": null,
+      "after_sha256": "A5DF7A4C436BD027575E105E582DB00C2D0507AE3B01B8D97FB3801A71DB997C",
+      "bytes": 7197
+    },
+    "src/extensions/native_node_fs_stat_windows.zig": {
+      "before_sha256": "BBE2F8BA942CE81D890C97F30A48BC9A3E021C8601CB35F8402E7F3826AE97AD",
+      "after_sha256": "35A7FDE1F45831D8B754E31F7FB3293BB16A2B06BEC59D9CF86B6EF6BCDC35EE",
+      "bytes": 12606
+    },
+    "src/extensions/native_file_stat.zig": {
+      "before_sha256": "19F01E58B2E75115578A95F5040307D2F8425F5AAC2B404F1642D2B091BB7893",
+      "after_sha256": "276D8C8427CBE28E933E7E45405DC6EE9B3EE79EAEB136A59EB5C818132FD855",
+      "bytes": 26498
+    },
+    "verification/node-classic-v24-namespacing-correction-sourceonly-20261020/caller-inventory.txt": {
+      "before_sha256": null,
+      "after_sha256": "9156BDCE38DE3D7AD599A09B7AB7C1386E9E7CFDA17E22BF39B80EAB2142A1C2",
+      "bytes": 1109
+    },
+    "verification/node-classic-v24-namespacing-correction-sourceonly-20261020/native_file_stat.zig.before.txt": {
+      "before_sha256": null,
+      "after_sha256": "19F01E58B2E75115578A95F5040307D2F8425F5AAC2B404F1642D2B091BB7893",
+      "bytes": 26423
+    },
+    "verification/node-classic-v24-namespacing-correction-sourceonly-20261020/native_node_fs_stat_windows.zig.before.txt": {
+      "before_sha256": null,
+      "after_sha256": "BBE2F8BA942CE81D890C97F30A48BC9A3E021C8601CB35F8402E7F3826AE97AD",
+      "bytes": 12569
+    },
+    "verification/node-classic-v24-namespacing-correction-sourceonly-20261020/owned-caller-inventory.txt": {
+      "before_sha256": null,
+      "after_sha256": "C5B11166E048C2D90D9C1D5FD2166AC56CB63D2C6FBC969EEC244AC62C37A40D",
+      "bytes": 1239
+    },
+    "verification/node-classic-v24-namespacing-correction-sourceonly-20261020/receipt.json": {
+      "before_sha256": null,
+      "after_sha256": "39AE708C61B1F16419F1C9F817FFFF735C2265C69811C5A68911A228ADF6AA93",
+      "bytes": 12207
+    },
+    "verification/node-classic-v24-namespacing-correction-sourceonly-20261020/source-authority.json": {
+      "before_sha256": null,
+      "after_sha256": "3AAC9B4792E1CC300346A4CF1B9CA02F67F7CDF358D9CB8F633D0054E9C70E50",
+      "bytes": 41181
+    },
+    "src/native_node_fs_realpath_classic_test.zig": {
+      "before_sha256": "9B78EE0B5E6FB666181B1BD2C6D8357F9C70456CC66BB3417118842A32E42F6E",
+      "after_sha256": "9D84B5255E7F33802E27CDC78D79E52232F0A855DA18E4FB9E63DEB825DDC712",
+      "bytes": 19974
+    },
+    "verification/node-classic-v24-argument-fixture-correction-sourceonly-20261020/native_node_fs_realpath_classic_test.before.zig.txt": {
+      "before_sha256": null,
+      "after_sha256": "9B78EE0B5E6FB666181B1BD2C6D8357F9C70456CC66BB3417118842A32E42F6E",
+      "bytes": 19952
+    },
+    "verification/node-classic-v24-argument-fixture-correction-sourceonly-20261020/receipt.json": {
+      "before_sha256": null,
+      "after_sha256": "EBBDC39F6C5596B29BF7BD97E732BD829A62928A7DC7A4B4C9BB232A959A39DE",
+      "bytes": 10070
+    },
+    "src/native_template_literal_test.zig": {
+      "before_sha256": "33BDBA49F4335C84382C19DB80C5DFEE4E1E14223A2E117BFAED0978A44E169A",
+      "after_sha256": "F4EE1C46248DDFB5B7981264E95BE6FF7FEDB338EB81AB7A751CDA2889BD217F",
+      "bytes": 19897
+    },
+    "verification/native-template-bytecode-v24-sourceonly-20261020/README.md": {
+      "before_sha256": null,
+      "after_sha256": "1A19ABE8AD37F60E1D52080CBC6E57344FA3B0BFBDFBF8BCE5C8A96A29A847A4",
+      "bytes": 997
+    },
+    "verification/native-template-bytecode-v24-sourceonly-20261020/base-native_template_literal_test.zig.txt": {
+      "before_sha256": null,
+      "after_sha256": "33BDBA49F4335C84382C19DB80C5DFEE4E1E14223A2E117BFAED0978A44E169A",
+      "bytes": 19897
+    },
+    "verification/native-template-bytecode-v24-sourceonly-20261020/manifest.json": {
+      "before_sha256": null,
+      "after_sha256": "2C5607D8D2A23FEC6D6CF2CF9A05BC1047756DA0AFB1EE13CF7A6D17B3B46821",
+      "bytes": 1271
+    },
+    "verification/native-template-bytecode-v24-sourceonly-20261020/source-delta.json": {
+      "before_sha256": null,
+      "after_sha256": "382BC0AEB8A921BDD096B572B7FBAC3981DA77CD6C4AE8F790ED39B28B755312",
+      "bytes": 1665
+    },
+    "verification/native-template-bytecode-v24-sourceonly-20261020/v24-runtime.stderr.log": {
+      "before_sha256": null,
+      "after_sha256": "E0F9A1F4EC05FDD2C322793516FA9DD704B2591D306A1B469B873526BDC0A973",
+      "bytes": 6680
+    },
+    "src/native_node_inspect_entry_test.zig": {
+      "before_sha256": "A465E66D54F4D74F7B171C951D6F7BA71EC4B8CAE4F80DAF7CD4BFEFDA145EA6",
+      "after_sha256": "690B098C15A514A1DAAB959E35FDC1EF25AF04022770F19458B066A2BE485A78",
+      "bytes": 29889
+    },
+    "verification/native-inspect-entry-v24-correction-sourceonly-20261020/README.md": {
+      "before_sha256": null,
+      "after_sha256": "FD45E8E6BDD4889DCA937D7E86302C0F4DB393130394A17C9150F6594772E8AD",
+      "bytes": 1724
+    },
+    "verification/native-inspect-entry-v24-correction-sourceonly-20261020/base-native_node_inspect_entry_test.zig.txt": {
+      "before_sha256": null,
+      "after_sha256": "A465E66D54F4D74F7B171C951D6F7BA71EC4B8CAE4F80DAF7CD4BFEFDA145EA6",
+      "bytes": 29743
+    },
+    "verification/native-inspect-entry-v24-correction-sourceonly-20261020/original-runtime.stderr.log": {
+      "before_sha256": null,
+      "after_sha256": "E2DCA7D14128BF264F507E1EE861D9001236CE808598BD5A193C96C571E8BEB9",
+      "bytes": 1255
+    },
+    "verification/native-inspect-entry-v24-correction-sourceonly-20261020/source-closure.json": {
+      "before_sha256": null,
+      "after_sha256": "85BA56F5F21CC873814CB572EBEABF960CE041A05DD76F4CF3089703FB1E818C",
+      "bytes": 1820
+    },
+    "verification/native-inspect-entry-v24-correction-sourceonly-20261020/source-delta.json": {
+      "before_sha256": null,
+      "after_sha256": "EDB6D3FC3BCB7F2EBD9D6D72B2AA4FD031D6CD39AF5C8ED0697E2770C8C515A7",
+      "bytes": 6451
+    }
+  },
+  "exact_edit_steps": [
+    {
+      "unit": "module_warning",
+      "path": "src/native_node_module_creation_test.zig",
+      "before": "            .values = .{ .pending_deprecation = pending_deprecation },",
+      "after": "            .exec_arguments = if (pending_deprecation) &.{\"--pending-deprecation\"} else &.{},",
+      "matches": 1,
+      "actual_after_offsets": [
+        3766
+      ],
+      "before_sha256": "9D3172E58BB2F697032640E778DD7B12561A6943D49E991759C1232FBFD4CB6F",
+      "after_sha256": "C7A6956FE9FF1FBE53FE91F532C5AF421EA84DF3869225BF792D4C33E629C9A3"
+    },
+    {
+      "unit": "classic_windows",
+      "path": "src/extensions/native_node_fs_stat_windows.zig",
+      "before": "const paths = @import(\"native_node_package_path.zig\");\n",
+      "after": "",
+      "matches": 1,
+      "actual_after_offsets": [
+        416
+      ],
+      "before_sha256": "BBE2F8BA942CE81D890C97F30A48BC9A3E021C8601CB35F8402E7F3826AE97AD",
+      "after_sha256": "421EE9C3AEF141450FBFAB848E6AE9118CD070C76C6561EC542635B85D9FB63B"
+    },
+    {
+      "unit": "classic_windows",
+      "path": "src/extensions/native_node_fs_stat_windows.zig",
+      "before": "/// Separate real stat/lstat result with the exact one follow retry for an\n/// unsupported/non-reparse link. The first owner closes before that retry.\npub fn read(gpa: std.mem.Allocator, path: []const u8, follow: bool) !Result {\n    if (std.mem.indexOfScalar(u8, path, 0) != null) return error.InvalidFileStatPath;\n    const namespaced = try paths.namespaced(gpa, path);\n    defer gpa.free(namespaced);\n    const wide = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, namespaced);",
+      "after": "/// The binding has already applied ToNamespacedPath exactly once. This\n/// physical leaf consumes those same bytes for stat/lstat and the exact one\n/// follow retry for an unsupported/non-reparse link. The first owner closes\n/// before that retry; applying path resolution here again would alter roots.\npub fn read(gpa: std.mem.Allocator, namespaced_path: []const u8, follow: bool) !Result {\n    if (std.mem.indexOfScalar(u8, namespaced_path, 0) != null) return error.InvalidFileStatPath;\n    const wide = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, namespaced_path);",
+      "matches": 1,
+      "actual_after_offsets": [
+        11497
+      ],
+      "before_sha256": "421EE9C3AEF141450FBFAB848E6AE9118CD070C76C6561EC542635B85D9FB63B",
+      "after_sha256": "35A7FDE1F45831D8B754E31F7FB3293BB16A2B06BEC59D9CF86B6EF6BCDC35EE"
+    },
+    {
+      "unit": "classic_windows",
+      "path": "src/extensions/native_file_stat.zig",
+      "before": "/// Actual FOLLOWED metadata or the owned system failure, before any handle or\n/// path cleanup can replace thread-local error state. This byte-only producer\n",
+      "after": "/// Actual FOLLOWED metadata for a binding-prepared path, or its owned system\n/// failure, before any handle or path cleanup can replace thread-local error\n/// state. Windows input is already namespaced. This byte-only producer\n",
+      "matches": 1,
+      "actual_after_offsets": [
+        692
+      ],
+      "before_sha256": "19F01E58B2E75115578A95F5040307D2F8425F5AAC2B404F1642D2B091BB7893",
+      "after_sha256": "64031D7875B2430C7E615E200FF582CA5FC76DB9E644735766DC163251D07E92"
+    },
+    {
+      "unit": "classic_windows",
+      "path": "src/extensions/native_file_stat.zig",
+      "before": "/// Separate no-follow status; it cannot be passed as a FollowResult by mistake.\n",
+      "after": "/// Separate no-follow status for a binding-prepared path; it cannot be passed\n/// as a FollowResult by mistake. Windows input is already namespaced.\n",
+      "matches": 1,
+      "actual_after_offsets": [
+        2005
+      ],
+      "before_sha256": "64031D7875B2430C7E615E200FF582CA5FC76DB9E644735766DC163251D07E92",
+      "after_sha256": "C3BF094D07253240994355F17CCC98E856865D37C333800BC16AC12BB603A8AD"
+    },
+    {
+      "unit": "classic_windows",
+      "path": "src/extensions/native_file_stat.zig",
+      "before": "/// Actual readlink operation with owned target storage and latched raw status.\n/// Handles never escape the synchronous native owner.\n",
+      "after": "/// Actual readlink operation with owned target storage and latched raw status.\n/// Input is the binding-prepared path (already namespaced on Windows). Handles\n/// never escape the synchronous native owner.\n",
+      "matches": 1,
+      "actual_after_offsets": [
+        3396
+      ],
+      "before_sha256": "C3BF094D07253240994355F17CCC98E856865D37C333800BC16AC12BB603A8AD",
+      "after_sha256": "A27ED5C4D646017A24F0D20A8B0D3E203810E65B950D34416A093188A8C7D3B1"
+    },
+    {
+      "unit": "classic_windows",
+      "path": "src/extensions/native_file_stat.zig",
+      "before": "        const namespaced = try @import(\"native_node_package_path.zig\").namespaced(gpa, path);\n        defer gpa.free(namespaced);\n        const wide = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, namespaced);",
+      "after": "        const wide = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, path);",
+      "matches": 1,
+      "actual_after_offsets": [
+        4180
+      ],
+      "before_sha256": "A27ED5C4D646017A24F0D20A8B0D3E203810E65B950D34416A093188A8C7D3B1",
+      "after_sha256": "276D8C8427CBE28E933E7E45405DC6EE9B3EE79EAEB136A59EB5C818132FD855"
+    },
+    {
+      "unit": "classic_argv",
+      "path": "src/native_node_fs_realpath_classic_test.zig",
+      "before": "        \\\\    [Symbol.toPrimitive]: function(hint){ converted++; classicAssert(hint === \"default\",\"actual p += empty-string default hint\"); return file; }\n        \\\\  });",
+      "after": "        \\\\    [Symbol.toPrimitive]: function(hint){ converted++; classicAssert(hint === \"default\",\"actual p += empty-string default hint\"); return file; }\n        \\\\  }, undefined);",
+      "matches": 1,
+      "actual_after_offsets": [
+        17122
+      ],
+      "before_sha256": "9B78EE0B5E6FB666181B1BD2C6D8357F9C70456CC66BB3417118842A32E42F6E",
+      "after_sha256": "F84DE8D7271205F844CD579FEE6434D48CCF9EAFA5872B921A2211DD7B3560AD"
+    },
+    {
+      "unit": "classic_argv",
+      "path": "src/native_node_fs_realpath_classic_test.zig",
+      "before": "        \\\\    [Symbol.toPrimitive]: function(hint){ actualClassicArgumentProgress.convert++; return file; }\n        \\\\  });",
+      "after": "        \\\\    [Symbol.toPrimitive]: function(hint){ actualClassicArgumentProgress.convert++; return file; }\n        \\\\  }, undefined);",
+      "matches": 1,
+      "actual_after_offsets": [
+        18549
+      ],
+      "before_sha256": "F84DE8D7271205F844CD579FEE6434D48CCF9EAFA5872B921A2211DD7B3560AD",
+      "after_sha256": "9D84B5255E7F33802E27CDC78D79E52232F0A855DA18E4FB9E63DEB825DDC712"
+    },
+    {
+      "unit": "template_version",
+      "path": "src/native_template_literal_test.zig",
+      "before": "try std.testing.expectEqual(@as(u8, 29), bytes[0]);",
+      "after": "try std.testing.expectEqual(@as(u8, 30), bytes[0]);",
+      "matches": 2,
+      "actual_after_offsets": [
+        17971,
+        19155
+      ],
+      "before_sha256": "33BDBA49F4335C84382C19DB80C5DFEE4E1E14223A2E117BFAED0978A44E169A",
+      "after_sha256": "FAE01C28101D0688707EE37CDB60502318DFBA7EDBD5BA9E647CDE9ABDED238E"
+    },
+    {
+      "unit": "template_version",
+      "path": "src/native_template_literal_test.zig",
+      "before": "\"invalid version (28 expected=29)\"",
+      "after": "\"invalid version (28 expected=30)\"",
+      "matches": 1,
+      "actual_after_offsets": [
+        19740
+      ],
+      "before_sha256": "FAE01C28101D0688707EE37CDB60502318DFBA7EDBD5BA9E647CDE9ABDED238E",
+      "after_sha256": "F4EE1C46248DDFB5B7981264E95BE6FF7FEDB338EB81AB7A751CDA2889BD217F"
+    },
+    {
+      "unit": "inspect_fatal",
+      "path": "src/native_node_inspect_entry_test.zig",
+      "before": "fn fatalCleared(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const engine = v.em.Engine.fromContext(context.?);\n    _ = engine.throwNativeOutOfMemoryFatal();\n    engine.freeValue(c.JS_GetException(context));\n    return c.pi_js_undefined();\n}",
+      "after": "fn fatalCleared(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const engine = v.em.Engine.fromContext(context.?);\n    var invocation: v.em.Engine.NativeInvocation = .{};\n    engine.enterNativeInvocation(&invocation);\n    _ = engine.throwNativeOutOfMemoryFatal();\n    engine.freeValue(c.JS_GetException(context));\n    return engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());\n}",
+      "matches": 1,
+      "actual_after_offsets": [
+        982
+      ],
+      "before_sha256": "A465E66D54F4D74F7B171C951D6F7BA71EC4B8CAE4F80DAF7CD4BFEFDA145EA6",
+      "after_sha256": "690B098C15A514A1DAAB959E35FDC1EF25AF04022770F19458B066A2BE485A78"
+    }
+  ],
+  "all_original_declaration_names_preserved": true,
+  "prior_negative_closure_sha256": "521B1F4A85375A82C9753ED291C71D06C6166080FFF48AE3D8DC6DE818DB48D5",
+  "native_execution": false,
+  "qualification": false,
+  "limits": [
+    "Original V24 negative outcomes are retained.",
+    "Source and fixture corrections require fresh BuildQuery and RuntimeOnly gates.",
+    "Pending C cutpoint and options OOM corrections are separate."
+  ],
+  "integrated_utc": "2026-10-20T12:38:21.621159+00:00"
+}

@@ -1,0 +1,39 @@
+{
+  "source_only": true,
+  "unit": "V24 inspect-entry actual raw fatal producer ownership correction",
+  "production": {
+    "sha256": "690B098C15A514A1DAAB959E35FDC1EF25AF04022770F19458B066A2BE485A78",
+    "bytes": 29889
+  },
+  "packet_sha256": "EDB6D3FC3BCB7F2EBD9D6D72B2AA4FD031D6CD39AF5C8ED0697E2770C8C515A7",
+  "base": {
+    "source": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_inspect_entry_test.zig",
+    "sha256": "A465E66D54F4D74F7B171C951D6F7BA71EC4B8CAE4F80DAF7CD4BFEFDA145EA6",
+    "bytes": 29743,
+    "retained": "base-native_node_inspect_entry_test.zig.txt"
+  },
+  "peer": {
+    "owner": "VM Foundation",
+    "status": "CLOSED",
+    "scope": "Single producer-local NativeInvocation; exact inverse to Main A465E66D; all 37 declaration names, oracles and pending-consumption challenge unchanged",
+    "finding": "Actual event remains recorded through GetException/free, then actual leave result is returned before guest toJSON continues."
+  },
+  "intake_paths": [
+    "src/native_node_inspect_entry_test.zig",
+    "verification/native-inspect-entry-v24-correction-sourceonly-20261020/base-native_node_inspect_entry_test.zig.txt",
+    "verification/native-inspect-entry-v24-correction-sourceonly-20261020/original-runtime.stderr.log",
+    "verification/native-inspect-entry-v24-correction-sourceonly-20261020/source-delta.json",
+    "verification/native-inspect-entry-v24-correction-sourceonly-20261020/source-closure.json",
+    "verification/native-inspect-entry-v24-correction-sourceonly-20261020/README.md"
+  ],
+  "validation": {
+    "exact_reverse": true,
+    "declarations": 37,
+    "native_execution": false
+  },
+  "limits": [
+    "Fixture source only; formatter production unchanged.",
+    "Separate receiver-retirement C/control correction remains independent.",
+    "Main not modified."
+  ]
+}

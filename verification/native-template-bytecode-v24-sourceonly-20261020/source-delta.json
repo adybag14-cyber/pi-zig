@@ -1,0 +1,29 @@
+{
+  "source_only": true,
+  "parent_commit": "0446a7d0af04001882e2b556911ff6c90e6e02a7",
+  "path": "src/native_template_literal_test.zig",
+  "before_sha256": "33BDBA49F4335C84382C19DB80C5DFEE4E1E14223A2E117BFAED0978A44E169A",
+  "after_sha256": "F4EE1C46248DDFB5B7981264E95BE6FF7FEDB338EB81AB7A751CDA2889BD217F",
+  "retained_base": "base-native_template_literal_test.zig.txt",
+  "edits": [
+    {
+      "label": "current writer version in both serialization controls",
+      "before": "try std.testing.expectEqual(@as(u8, 29), bytes[0]);",
+      "after": "try std.testing.expectEqual(@as(u8, 30), bytes[0]);",
+      "count": 2
+    },
+    {
+      "label": "literal original version-rejection message reports current writer version",
+      "before": "\"invalid version (28 expected=29)\"",
+      "after": "\"invalid version (28 expected=30)\"",
+      "count": 1
+    }
+  ],
+  "unchanged": "All18 source declarations, actual writer/read/evaluate operations and obsolete28 rejection input; V24 reported19 completed tests including imported metadata.",
+  "actual_c": {
+    "sha256": "96843FA1E0527ECFE70FA2CC6F47C8C3A6A056932456F88A93F981D2297657DE",
+    "version": "#define BC_VERSION 30",
+    "reader_excerpt": "JSString *p;\n    uint32_t h;\n    int i;\n    JSAtom atom;\n\n    if (bc_get_u8(s, &v8))\n        return -1;\n    if (v8 != BC_VERSION) {\n        JS_ThrowSyntaxError(s->ctx, \"invalid version (%d expected=%d)\",\n                            v8, BC_VERSION);\n        return -1;\n    }\n    if (bc_get_u32(s, &h))\n        return -1;\n    // allow UINT32_MAX as an escape hat"
+  },
+  "validation": "Source/readback/reversal only; no native/Node execution."
+}

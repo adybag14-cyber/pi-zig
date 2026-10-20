@@ -1,0 +1,18 @@
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:737:13: 0x7ff687796ff4 in checked (test_zcu.obj)
+            return error.JavaScriptException;
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:650:27: 0x7ff6877c53c1 in evalModule (test_zcu.obj)
+        const evaluated = try self.checked(c.JS_EvalFunction(self.context, compiled));
+                          ^
+C:\Users\adyba\pi-zig\main\src\native_node_inspect_entry_test.zig:58:24: 0x7ff6877c57ee in run (test_zcu.obj)
+        const result = try self.engine.evalModule(source, "actual-node-inspect-observer.mjs");
+                       ^
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:615:14: 0x7ff6877c59af in expect (test_zcu.obj)
+    if (!ok) return error.TestUnexpectedResult;
+             ^
+C:\Users\adyba\pi-zig\main\src\native_node_inspect_entry_test.zig:189:5: 0x7ff6877c5fff in typedOwnFalse (test_zcu.obj)
+    try std.testing.expect(c.JS_ToBool(engine.context, value) == 0);
+    ^
+C:\Users\adyba\pi-zig\main\src\native_node_inspect_entry_test.zig:429:5: 0x7ff6878aa808 in test.native actual inspect format JSON actual fatal bypasses calibration and guest catch (test_zcu.obj)
+    try typedOwnFalse(fixture.engine, progress, "later");
+    ^

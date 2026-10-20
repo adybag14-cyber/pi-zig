@@ -301,7 +301,7 @@ test "VM template literal current bytecode serializes and executes eager intrins
     if (bytes == null) return error.TemplateBytecodeWriteFailed;
     defer c.js_free(engine.context, bytes);
     try std.testing.expect(length > 5);
-    try std.testing.expectEqual(@as(u8, 29), bytes[0]);
+    try std.testing.expectEqual(@as(u8, 30), bytes[0]);
     const restored = try engine.checked(c.JS_ReadObject(engine.context, bytes, length, c.JS_READ_OBJ_BYTECODE)); defer engine.freeValue(restored);
     c.JS_RunGC(engine.runtime);
     const result = try engine.checked(c.JS_EvalFunction(engine.context, c.JS_DupValue(engine.context, restored))); defer engine.freeValue(result);
@@ -316,13 +316,13 @@ test "VM template literal old opcode version is rejected before bytecode consump
     if (bytes == null) return error.TemplateBytecodeWriteFailed;
     defer c.js_free(engine.context, bytes);
     try std.testing.expect(length > 5);
-    try std.testing.expectEqual(@as(u8, 29), bytes[0]);
+    try std.testing.expectEqual(@as(u8, 30), bytes[0]);
     // Actual writer output, changing only its obsolete version discriminator.
     bytes[0] = 28;
     const rejected = c.JS_ReadObject(engine.context, bytes, length, c.JS_READ_OBJ_BYTECODE);
     try std.testing.expect(c.JS_IsException(rejected));
     const reason = c.JS_GetException(engine.context); defer engine.freeValue(reason);
     const message = try engine.checked(c.JS_GetPropertyStr(engine.context, reason, "message")); defer engine.freeValue(message);
-    const expected = try engine.checked(c.JS_NewString(engine.context, "invalid version (28 expected=29)")); defer engine.freeValue(expected);
+    const expected = try engine.checked(c.JS_NewString(engine.context, "invalid version (28 expected=30)")); defer engine.freeValue(expected);
     try std.testing.expect(c.JS_IsStrictEqual(engine.context, message, expected));
 }

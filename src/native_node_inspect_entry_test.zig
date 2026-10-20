@@ -18,9 +18,11 @@ fn flaggedData(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [
 }
 fn fatalCleared(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = v.em.Engine.fromContext(context.?);
+    var invocation: v.em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
     _ = engine.throwNativeOutOfMemoryFatal();
     engine.freeValue(c.JS_GetException(context));
-    return c.pi_js_undefined();
+    return engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());
 }
 fn publish(engine: *v.em.Engine, name: [:0]const u8, value: c.JSValue) !void {
     const global = try engine.checked(c.JS_GetGlobalObject(engine.context));

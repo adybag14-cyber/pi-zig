@@ -1,0 +1,89 @@
+{
+  "source_only": true,
+  "path": "src/native_node_inspect_entry_test.zig",
+  "base": {
+    "source": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_inspect_entry_test.zig",
+    "sha256": "A465E66D54F4D74F7B171C951D6F7BA71EC4B8CAE4F80DAF7CD4BFEFDA145EA6",
+    "bytes": 29743,
+    "retained": "base-native_node_inspect_entry_test.zig.txt"
+  },
+  "successor": {
+    "sha256": "690B098C15A514A1DAAB959E35FDC1EF25AF04022770F19458B066A2BE485A78",
+    "bytes": 29889
+  },
+  "edits": [
+    {
+      "label": "Own the genuine raw producer event before deliberate pending consumption; return its actual invocation leave result",
+      "count": 1,
+      "before": "fn fatalCleared(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const engine = v.em.Engine.fromContext(context.?);\n    _ = engine.throwNativeOutOfMemoryFatal();\n    engine.freeValue(c.JS_GetException(context));\n    return c.pi_js_undefined();\n}",
+      "after": "fn fatalCleared(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {\n    const engine = v.em.Engine.fromContext(context.?);\n    var invocation: v.em.Engine.NativeInvocation = .{};\n    engine.enterNativeInvocation(&invocation);\n    _ = engine.throwNativeOutOfMemoryFatal();\n    engine.freeValue(c.JS_GetException(context));\n    return engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());\n}"
+    }
+  ],
+  "evidence": {
+    "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-oauth-options-v24-diagnostic-runtime-20261020-121245\\groups\\native-node-inspect-entry\\runtime.stderr.log",
+    "sha256": "E2DCA7D14128BF264F507E1EE861D9001236CE808598BD5A193C96C571E8BEB9",
+    "bytes": 1255,
+    "retained": "original-runtime.stderr.log"
+  },
+  "actual_dependencies": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "5B3B91B0053508AAC9D4C9951CEF3F4B74D1A154342CD33FE21BE25E03EE3B0F"
+    },
+    {
+      "path": "src/extensions/native_node_inspect_format.zig",
+      "sha256": "F40A4D0C75D8474485C33A5C43117D4090E230C1813DD081BCE32802883AB535",
+      "changed": false
+    }
+  ],
+  "diagnosis": "The raw probe created an actual fatal event, deliberately took and freed the pending reason, then returned successful undefined. Its caller could continue guest work before an enclosing native owner eventually restored that event. A producer-local NativeInvocation owns the genuine event at the producer and returns the selected abrupt result before the guest caller continues. Retained diagnostic allocation DATA is not used as authority.",
+  "unchanged": {
+    "source_declarations": 37,
+    "names": [
+      "native actual inspect ordinary callable shape and retained original defaults",
+      "native actual inspect primitive UTF16 negative zero Symbol and BigInt",
+      "native actual inspect numeric separators and actual string truncation",
+      "native actual inspect captured primordial ignores late global replacement",
+      "native actual inspect custom callback receiver arguments and same inspector",
+      "native actual inspect custom ordinary throw keeps exact reason",
+      "native actual inspect actual toStringTag getter ordinary catch",
+      "native actual inspect actual instance operator ordinary catch",
+      "native actual inspect genuine proxy unwrap and revoked status",
+      "native actual inspect default assignment descriptor and getter order",
+      "native actual inspect same tag getter private DATA throw stays ordinary",
+      "native actual inspect successful flagged private tag value remains DATA",
+      "native actual inspect retained allocator B1 bypasses ordinary tag catch",
+      "native actual inspect typed numeric and BigInt arrays use actual element formatting",
+      "native actual inspect typed limits depth and exact Array range validation",
+      "native actual inspect null-prototype typed arrays retain original constructors and getters",
+      "native actual inspect typed size and repeated live lengths are separate",
+      "native actual inspect typed prefix performs the live String method lookup",
+      "native actual inspect typed formatter publishes each actual output Array index",
+      "native actual inspect typed strict length temporary retires before the next length getter",
+      "native actual inspect typed length retirement fatal stops before another getter and guest catch",
+      "native actual inspect typed repeated length ordinary private DATA keeps exact identity",
+      "native actual inspect typed prefix second receiver and callee retire before the equality operand",
+      "native actual inspect typed output receiver retires before its length value is added",
+      "native actual inspect format ordinary shape and empty or single arguments",
+      "native actual inspect format Host template percent scan and trailing arguments",
+      "native actual inspect format conversion hints numeric defaults Symbol and BigInt",
+      "native actual inspect format shared inspector and actual placeholder option literals",
+      "native actual inspect format real rest Array inherited first index and skipped style value",
+      "native actual inspect format retains genuine string numeric and JSON primordials",
+      "native actual inspect format JSON lazy circular and ordinary catch identity",
+      "native actual inspect format circular calibration uses actual assignment and first error line",
+      "native actual inspect format JSON ordinary private DATA throw retains exact identity",
+      "native actual inspect format JSON successful flagged return remains DATA",
+      "native actual inspect format JSON actual fatal bypasses calibration and guest catch",
+      "native actual inspect format matching case local retires before its next index getter",
+      "native actual inspect format matching case retirement fatal stops next getter and catch"
+    ],
+    "assertions_and_other_bytes": "Exact inverse of the single function replacement reproduces the complete Main base. The GetException/free challenge, generation, exact reason identity, no-later-guest/no-guest-catch assertions, DATA producers and typed-holder finalizer are unchanged."
+  },
+  "limits": [
+    "No production formatter or VM modification.",
+    "Separate VM receiver-retirement correction remains independently owned.",
+    "No native build, runtime, Node, generator or formatter execution.",
+    "Source peer is required before commit."
+  ]
+}
