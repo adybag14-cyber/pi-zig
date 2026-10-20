@@ -11,7 +11,7 @@ const callbacks = @import("extensions/native_node_callback_scope.zig");
 const checks = @import("extensions/native_node_callback_checks.zig");
 const providers = @import("extensions/native_node_async_providers.zig");
 const binding = @import("extensions/native_node_options_binding.zig");
-const callable = @import("extensions/native_node_function.zig");
+const callable = @import("extensions/native_node_module_callable.zig");
 
 const Selected = struct {
     arguments: []const []const u8 = &.{},

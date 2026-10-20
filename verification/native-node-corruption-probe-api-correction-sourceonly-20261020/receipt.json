@@ -1,0 +1,18 @@
+{
+  "status": "source_only_pending_native_build_and_isolated_runtime",
+  "base_head": "8ada9a2c09a4f3e5aff281f2bf9dcb9396ea4b9c",
+  "path": "src/native_node_corruption_probe.zig",
+  "before_sha256": "679D8B94BAB6DFAA4C2A32C566D248A522CA254EFF2763A8FA628F3668D483B8",
+  "after_sha256": "197C1C55CAA5254E058226131E8F8CD3FDF5D2F616B6D811C45B90E86D79279C",
+  "before": "const callable = @import(\"extensions/native_node_function.zig\");",
+  "after": "const callable = @import(\"extensions/native_node_module_callable.zig\");",
+  "count": 1,
+  "complete_inverse": true,
+  "peer": {
+    "owner": "/root/sdk_owners",
+    "status": "CLOSED",
+    "scope": "Alias only used by three failure(engine, err, 0) calls; actual module_callable exports the established owner-aware API. Original node_function has no such public API. Ten cases, EOF gate, Operations and all assertions preserved."
+  },
+  "native_execution": false,
+  "qualification": false
+}
