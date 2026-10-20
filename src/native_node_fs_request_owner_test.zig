@@ -181,22 +181,22 @@ const Fixture = struct {
         return self.engine.eval(source, "native-fs-request-owner.js", c.JS_EVAL_TYPE_GLOBAL);
     }
     fn evaluate(self: *Fixture, source: []const u8) !void {
-        const value = try self.value(source);
-        self.engine.freeValue(value);
+        const evaluated = try self.value(source);
+        self.engine.freeValue(evaluated);
     }
     fn expect(self: *Fixture, source: []const u8) !void {
-        const value = try self.value(source);
-        defer self.engine.freeValue(value);
-        try std.testing.expect(c.JS_ToBool(self.engine.context, value) == 1);
+        const observed = try self.value(source);
+        defer self.engine.freeValue(observed);
+        try std.testing.expect(c.JS_ToBool(self.engine.context, observed) == 1);
     }
-    fn expose(self: *Fixture, name: [*:0]const u8, value: c.JSValue) !void {
+    fn expose(self: *Fixture, name: [*:0]const u8, exposed: c.JSValue) !void {
         const ignored = try a.expression(self.engine, struct {
             fn run(s: *a.Scope, key: [*:0]const u8, item: c.JSValue) !c.JSValue {
                 const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));
                 try s.define(global, key, item, c.JS_PROP_C_W_E);
                 return c.pi_js_undefined();
             }
-        }.run, .{name, value});
+        }.run, .{name, exposed});
         self.engine.freeValue(ignored);
     }
     fn request(self: *Fixture, bigint: bool) !*requests.Request {
@@ -216,14 +216,14 @@ const Fixture = struct {
         try scope.init(self.env(), resource, .{ .async_id = 0, .trigger_async_id = 0 },
             .{ .skip_async_hooks = true, .skip_task_queues = true }, c.pi_js_undefined());
     }
-    fn settle(self: *Fixture, request: *requests.Request, value: c.JSValue, rejecting: bool) !void {
+    fn settle(self: *Fixture, request_value: *requests.Request, settled_value: c.JSValue, rejecting: bool) !void {
         var outer_scope: callbacks.Scope = undefined;
-        try self.outer(&outer_scope, try request.object());
+        try self.outer(&outer_scope, try request_value.object());
         defer if (!outer_scope.deinitialized) {
             outer_scope.markFailed();
             outer_scope.deinit() catch {};
         };
-        if (rejecting) try request.reject(value) else try request.resolve(value);
+        if (rejecting) try request_value.reject(settled_value) else try request_value.resolve(settled_value);
         try outer_scope.deinit();
     }
     fn takeCaught(self: *Fixture) !c.JSValue {
@@ -234,7 +234,7 @@ const Fixture = struct {
     }
     fn installPhysical(self: *Fixture) !void {
         self.controller = switch (try fs_io.acquire(self.engine, self.env())) {
-            .ready => |value| value,
+            .ready => |ready_controller| ready_controller,
             .failed => return error.ActualFSReadServiceAdmissionFailed,
         };
         const ignored = try a.expression(self.engine, physicalBody, .{self});
@@ -261,9 +261,9 @@ const Fixture = struct {
     }
     fn retainNativeRequest(self: *Fixture) !*uv.PiUvFsRequest {
         const req = try self.firstRequest();
-        const value = req.native_request orelse return error.ActualFSReadNativeStorageRequired;
-        uv.pi_uv_fs_request_retain(value);
-        return value;
+        const native_request_value = req.native_request orelse return error.ActualFSReadNativeStorageRequired;
+        uv.pi_uv_fs_request_retain(native_request_value);
+        return native_request_value;
     }
     fn pumpPending(self: *Fixture) !void {
         var outer_scope: callbacks.Scope = undefined;

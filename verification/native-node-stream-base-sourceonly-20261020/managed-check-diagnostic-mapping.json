@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "status": "Explicit source diagnostic mapping qualification; production E2083CD5 unchanged",
+  "execution": false,
+  "production": {
+    "path": "src/extensions/native_node_managed_buffers.cpp",
+    "sha256": "E2083CD514D8CDB24839763513DD764A789EF628DCB2A1AB455B3A864312949D"
+  },
+  "authority": {
+    "packet_path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-check-failure-sourceonly-20261019/authority/default-fatal-check-chain.json",
+    "packet_sha256": "9D71987A8445F007A1B51E076B59E76BECAF7EBB2B42A247683CD92972C73DB3",
+    "original_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/util.h",
+    "original_full_sha256": "29bd133b9fb9000b2a624abddfb42fbd538cfa33d3bb00377ad8f1122c74af52",
+    "original_macro_excerpt": "te <typename T>\ninline T MultiplyWithOverflowCheck(T a, T b);\n\nnamespace per_process {\n// Tells whether the per-process V8::Initialize() is called and\n// if it is safe to call v8::Isolate::TryGetCurrent().\nextern bool v8_initialized;\n}  // namespace per_process\n\n// Used by the allocation functions when allocation fails.\n// Thin wrapper around v8::Isolate::LowMemoryNotification() that checks\n// whether V8 is initialized.\nvoid LowMemoryNotification();\n\n// The reason that Assert() takes a struct argument instead of individual\n// const char*s is to ease instruction cache pressure in calls from CHECK.\nstruct AssertionInfo {\n  const char* file_line;  // filename:line\n  const char* message;\n  const char* function;\n};\n\n// This indirectly calls backtrace so it can not be marked as [[noreturn]].\nvoid NODE_EXTERN_PRIVATE Assert(const AssertionInfo& info);\nvoid DumpNativeBacktrace(FILE* fp);\nvoid DumpJavaScriptBacktrace(FILE* fp);\n\n// Windows 8+ does not like abort() in Release mode\n#ifdef _WIN32\n#define ABORT_NO_BACKTRACE() _exit(static_cast<int>(node::ExitCode::kAbort))\n#else\n#define ABORT_NO_BACKTRACE() abort()\n#endif\n\n// Caller of this macro must not be marked as [[noreturn]]. Printing of\n// backtraces may not work correctly in [[noreturn]] functions because\n// when generating code for them the compiler can choose not to\n// maintain the frame pointers or link registers that are necessary for\n// correct backtracing.\n// `ABORT` must be a macro and not a [[noreturn]] function to make sure the\n// backtrace is correct.\n#define ABORT()                                                                \\\n  do {                                                                         \\\n    node::DumpNativeBacktrace(stderr);                                         \\\n    node::DumpJavaScriptBacktrace(stderr);                                     \\\n    fflush(stderr);                                                            \\\n    ABORT_NO_BACKTRACE();                                                      \\\n  } while (0)\n\n#define ERROR_AND_ABORT(expr)                                                  \\\n  do {                                                                         \\\n    /* Make sure that this struct does not end up in inline code, but      */  \\\n    /* rather in a read-only data section when modifying this code.        */  \\\n    static const node::AssertionInfo error_and_abort_args = {                  \\\n        __FILE__ \":\" STRINGIFY(__LINE__), #expr, PRETTY_FUNCTION_NAME};        \\\n    node::Assert(error_and_abort_args);                                        \\\n    /* `node::Assert` doesn't return. Add an [[noreturn]] abort() here to  */  \\\n    /* make the compiler happy about no return value in the caller         */  \\\n    /* function when calling ERROR_AND_ABORT.                              */  \\\n    ABORT_NO_BACKTRACE();                                                      \\\n  } while (0)\n\n#ifdef __GNUC__\n#define PRETTY_FUNCTION_NAME __PRETTY_FUNCTION__\n#else\n#if defined(_MSC_VER)\n#define PRETTY_FUNCTION_NAME __FUNCSIG__\n#else\n#define PRETTY_FUNCTION_NAME \"\"\n#endif\n#endif\n\n#define STRINGIFY_(x) #x\n#define STRINGIFY(x) STRINGIFY_(x)\n\n#define CHECK(expr)                                                            \\\n  do {                                                                         \\\n    if (!(expr)) [[unlikely]] {                                                \\\n      ERROR_AND_ABORT(expr);                                                   \\\n    }                                                                          \\\n  } while (0)\n\n#define CHECK_EQ(a, b) CHECK((a) == (b))\n#define CHECK_GE(a, b) CHECK((a) >= (b))\n#define CHECK_GT(a, b) CHECK((a) > (b))\n#define CHECK_LE(a, b) CHECK((a) <= (b))\n#define CHECK_LT(a, b) CHECK((a) < (b))\n#define CHECK_NE(a, b) CHECK((a) != (b))\n#define CHECK_NULL(val) CHECK((val) == nullptr)\n#define CHECK_NOT_NULL(val) CHECK((val) != nullptr)\n#define CHECK_IMPLIES(a, b) CHECK(!(a) || (b))\n\n#"
+  },
+  "mapping": [
+    {
+      "field": "condition/expression",
+      "original": "CHECK_NE(it, released_allocated_buffers_.end()) expands through CHECK((a) != (b)) and ERROR_AND_ABORT(expr)",
+      "port": "(it) != (released_allocated_buffers_.end())",
+      "qualification": "Same selected lookup failure and stringified comparison expression."
+    },
+    {
+      "field": "file/line",
+      "original": "__FILE__ \":\" STRINGIFY(__LINE__)",
+      "port": "../src/env.cc:749",
+      "qualification": "Retained original source-site label. It is not a claim that every native compiler's __FILE__ prefix is identical."
+    },
+    {
+      "field": "function",
+      "original": "PRETTY_FUNCTION_NAME: __PRETTY_FUNCTION__ under __GNUC__; otherwise __FUNCSIG__ under _MSC_VER; otherwise empty string",
+      "port": "node::Environment::release_managed_buffer",
+      "qualification": "Explicit simplified port diagnostic label, not the original compiler-generated full function signature. The original return type, parameter types, calling convention and compiler spelling are not reproduced by this literal."
+    }
+  ],
+  "limits": [
+    "The native assertion/abort operation and failing condition remain actual; byte-exact original diagnostic function text is not claimed.",
+    "No native compilation or diagnostic output was executed or inferred.",
+    "Original missing-entry negative subprocess qualification is separate from raw managed12 positive ownership controls."
+  ],
+  "production_edits": []
+}

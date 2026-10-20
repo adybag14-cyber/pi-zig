@@ -1,0 +1,42 @@
+{
+  "status": "C/H whole-store allocation/adoption finite peer closed; source-only",
+  "packet": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-backing-store-adoption-sourceonly-20261020\\production-delta.json",
+    "sha256": "D94BDE94024B6CD523FCC2AE8DA4ED27249B440BF0444746E7C55EACE024EC65"
+  },
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "6758D2A5E4F3BBBFBB784D049581C621A246ED08F20C039E93D1F3FF87438731",
+      "after": "E61EF49E44E22C2B327F229B0285D801598773B8BFE90A9B0D175071439AD98A",
+      "inverse_exact": true
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "E408EBB5D24313F29EE05BAB8A93B7AF379D1166A94E0E9A0093193A6143CA82",
+      "after": "B1BC3EF2E9E5DCD3EDC915231AD7EAA1C4ED4F1DBEA49BFBCF57425D528C343D",
+      "inverse_exact": true
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "before": "940CAAAE81B2A4098BE60DDD42D44B3CC3D1347341ED2D9557E0D34AFA9E928C",
+      "after": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC",
+      "inverse_exact": true
+    }
+  ],
+  "assigned_scope": "Native record/New/Data/ByteLength/Dup/Release/provider-domain match, consuming constructor4 path and prior-pending/failure ownership; physical uninitialized allocation is Modules' separate slice.",
+  "findings": [
+    "One native allocation attempt creates no JS wrapper or event and copies actual native provider callbacks/domain only.",
+    "Zero length preserves a real owner with logical Data null; empty records remain distinct.",
+    "Dup retains exactly once; Release clears record before its callback and requires no VM.",
+    "Adoption clears caller record before pending admission; every rejection releases its entitlement; matches actual provider callbacks/domain before constructor4 transfer.",
+    "Actual unchanged constructor4 takes owned storage, makes only the later wrapper, and releases the entitlement on wrapper/length/state failures; selected source fixed/nonshared mode cannot hit the unrelated early external-resize guard.",
+    "Existing JS-created zero initialization, view-lease behavior and VM size limit remain unchanged."
+  ],
+  "excluded": [
+    "Original V8 GC/retry and default fatal policy (explicitly separate)",
+    "Cross-runtime adoption as a selected consumer",
+    "New controls and execution",
+    "Complete StreamBase/FileHandle/public namespace/bootstrap"
+  ]
+}

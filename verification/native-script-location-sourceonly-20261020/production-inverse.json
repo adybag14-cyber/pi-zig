@@ -1,0 +1,1194 @@
+{
+  "packet_sha256": "5CE6502330E09C9ED1F2E0D21BAF7EDE38B9185E90F778D347388D36CB5AEC18",
+  "steps": [
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "public native Script and position ABI",
+      "before_offsets": [
+        82999
+      ],
+      "after_offsets": [
+        82999
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "runtime Script owner inventory",
+      "before_offsets": [
+        12650
+      ],
+      "after_offsets": [
+        12650
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "initialize native Script inventory",
+      "before_offsets": [
+        104792
+      ],
+      "after_offsets": [
+        104792
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "require native Script release before runtime disposal",
+      "before_offsets": [
+        132512
+      ],
+      "after_offsets": [
+        132512
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "native Script and byte-position types",
+      "before_offsets": [
+        33936
+      ],
+      "after_offsets": [
+        33936
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "bytecode retains actual Script and independent positions",
+      "before_offsets": [
+        36079
+      ],
+      "after_offsets": [
+        36079
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "captured frame owns Script and native position",
+      "before_offsets": [
+        51826
+      ],
+      "after_offsets": [
+        51826
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "native Script primitive ownership and position projection",
+      "before_offsets": [
+        248782
+      ],
+      "after_offsets": [
+        248782
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "FD inherits native Script and independent position storage",
+      "before_offsets": [
+        862855
+      ],
+      "after_offsets": [
+        862855
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "inherit Script only after initialized FD",
+      "before_offsets": [
+        1250638
+      ],
+      "after_offsets": [
+        1250638
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "release inherited Script on filename failure",
+      "before_offsets": [
+        1252576
+      ],
+      "after_offsets": [
+        1252576
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "FD cleanup owns Script and unfinished position array",
+      "before_offsets": [
+        1255429
+      ],
+      "after_offsets": [
+        1255429
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "publish finalized primitive Script before children",
+      "before_offsets": [
+        1405252
+      ],
+      "after_offsets": [
+        1405252
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "move Script and position array to initialized bytecode",
+      "before_offsets": [
+        1412236
+      ],
+      "after_offsets": [
+        1412236
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "bytecode retirement releases native metadata",
+      "before_offsets": [
+        1415471
+      ],
+      "after_offsets": [
+        1415471
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "root compiler creates complete actual input before children",
+      "before_offsets": [
+        1453659
+      ],
+      "after_offsets": [
+        1453659
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+      "label": "CJS attaches actual body before private wrapper definition",
+      "before_offsets": [
+        4553
+      ],
+      "after_offsets": [
+        4553
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "lexer metadata available in both compiler modes",
+      "before_offsets": [
+        870187
+      ],
+      "after_offsets": [
+        870187
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "ordinary lexer uses same actual magic-comment state",
+      "before_offsets": [
+        870462
+      ],
+      "after_offsets": [
+        870462
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "retain source URL lexer offsets",
+      "before_offsets": [
+        872966
+      ],
+      "after_offsets": [
+        872966
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "retain source map lexer offsets",
+      "before_offsets": [
+        873357
+      ],
+      "after_offsets": [
+        873357
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "count native source position allocation",
+      "before_offsets": [
+        291366
+      ],
+      "after_offsets": [
+        291366
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "count each native Script and primitive source root once",
+      "before_offsets": [
+        292421
+      ],
+      "after_offsets": [
+        292421
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs-opcode.h",
+      "label": "temporary source location carries raw byte offset",
+      "before_offsets": [
+        1438
+      ],
+      "after_offsets": [
+        1438
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs-opcode.h",
+      "label": "source location temporary instruction width",
+      "before_offsets": [
+        12949
+      ],
+      "after_offsets": [
+        12949
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "actual token byte-offset helper and emitter parameter",
+      "before_offsets": [
+        926433
+      ],
+      "after_offsets": [
+        926433
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "emit all source coordinates together",
+      "before_offsets": [
+        926986
+      ],
+      "after_offsets": [
+        926986
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "array destructuring retains original token offset",
+      "before_offsets": [
+        1025852
+      ],
+      "after_offsets": [
+        1025852
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "array destructuring captures byte position",
+      "before_offsets": [
+        1025939
+      ],
+      "after_offsets": [
+        1025939
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "delayed iterator source emission uses captured offset",
+      "before_offsets": [
+        1030613,
+        1117168
+      ],
+      "after_offsets": [
+        1030613,
+        1117181
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "postfix expression captures actual identifier/new offsets",
+      "before_offsets": [
+        1032916
+      ],
+      "after_offsets": [
+        1032916
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "identifier access retains token offset",
+      "before_offsets": [
+        1037371
+      ],
+      "after_offsets": [
+        1037371
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "identifier source tuple",
+      "before_offsets": [
+        1039347
+      ],
+      "after_offsets": [
+        1039347
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "new expression captures token offset",
+      "before_offsets": [
+        1040564
+      ],
+      "after_offsets": [
+        1040564
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "delayed constructor source tuple",
+      "before_offsets": [
+        1041650,
+        1053956,
+        1056435
+      ],
+      "after_offsets": [
+        1041650,
+        1053974,
+        1056471
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "delayed private identifier source tuple",
+      "before_offsets": [
+        1054256,
+        1056753
+      ],
+      "after_offsets": [
+        1054256,
+        1056778
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "for-in/of receives original token position",
+      "before_offsets": [
+        1106390
+      ],
+      "after_offsets": [
+        1106390
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "for statement keeps source position",
+      "before_offsets": [
+        1125588
+      ],
+      "after_offsets": [
+        1125588
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "for statement captures token offset",
+      "before_offsets": [
+        1125678
+      ],
+      "after_offsets": [
+        1125678
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "for-in/of passes captured offset",
+      "before_offsets": [
+        1126719
+      ],
+      "after_offsets": [
+        1126719
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "temporary-source opcode dump knows its width",
+      "before_offsets": [
+        1263558
+      ],
+      "after_offsets": [
+        1263558
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "source-location slot records actual byte offset",
+      "before_offsets": [
+        862351
+      ],
+      "after_offsets": [
+        862351
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "FD tracks independent last byte position",
+      "before_offsets": [
+        867926
+      ],
+      "after_offsets": [
+        867926
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "peephole matcher retains byte position",
+      "before_offsets": [
+        1318639
+      ],
+      "after_offsets": [
+        1318639
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "code matcher byte position local",
+      "before_offsets": [
+        1319342
+      ],
+      "after_offsets": [
+        1319342
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "code matcher initial unknown position",
+      "before_offsets": [
+        1319500
+      ],
+      "after_offsets": [
+        1319500
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "code matcher publishes position",
+      "before_offsets": [
+        1319715
+      ],
+      "after_offsets": [
+        1319715
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "code matcher reads complete source tuple",
+      "before_offsets": [
+        1320180
+      ],
+      "after_offsets": [
+        1320180
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "dead-code scan receives byte position owner",
+      "before_offsets": [
+        1327677
+      ],
+      "after_offsets": [
+        1327677
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "dead-code scan preserves later byte position",
+      "before_offsets": [
+        1328081
+      ],
+      "after_offsets": [
+        1328081
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "label scan uses actual temporary opcode size",
+      "before_offsets": [
+        1330389
+      ],
+      "after_offsets": [
+        1330389
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "second label scan uses actual temporary opcode size",
+      "before_offsets": [
+        1351561
+      ],
+      "after_offsets": [
+        1351561
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable pass tracks byte position",
+      "before_offsets": [
+        1330983
+      ],
+      "after_offsets": [
+        1330983
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable pass initializes position",
+      "before_offsets": [
+        1333062
+      ],
+      "after_offsets": [
+        1333062
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "both passes read byte offset",
+      "before_offsets": [
+        1333441,
+        1360070
+      ],
+      "after_offsets": [
+        1333441,
+        1360123
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable peephole compares complete tuple",
+      "before_offsets": [
+        1337397
+      ],
+      "after_offsets": [
+        1337397
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable dead-code position local",
+      "before_offsets": [
+        1338689
+      ],
+      "after_offsets": [
+        1338689
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable dead-code position output",
+      "before_offsets": [
+        1338997
+      ],
+      "after_offsets": [
+        1338997
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable dead-code tuple propagation",
+      "before_offsets": [
+        1339163
+      ],
+      "after_offsets": [
+        1339163
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "branch threading saves matched tuple",
+      "before_offsets": [
+        1345442
+      ],
+      "after_offsets": [
+        1345442
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "branch threading captures position before later matches",
+      "before_offsets": [
+        1345673
+      ],
+      "after_offsets": [
+        1345673
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "branch threading writes complete tuple",
+      "before_offsets": [
+        1346334
+      ],
+      "after_offsets": [
+        1346334
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "all regenerated temporary tuples include byte offset",
+      "before_offsets": [
+        1337808,
+        1339510
+      ],
+      "after_offsets": [
+        1337808,
+        1339566
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "threaded temporary tuple includes byte offset",
+      "before_offsets": [
+        1346827
+      ],
+      "after_offsets": [
+        1346827
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "source-location recorder accepts byte offset",
+      "before_offsets": [
+        1349400
+      ],
+      "after_offsets": [
+        1349400
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "deduplicate only identical source tuples",
+      "before_offsets": [
+        1349648
+      ],
+      "after_offsets": [
+        1349648
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "store actual source byte position",
+      "before_offsets": [
+        1349904
+      ],
+      "after_offsets": [
+        1349904
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "remember current source byte position",
+      "before_offsets": [
+        1350136
+      ],
+      "after_offsets": [
+        1350136
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "label pass owns current byte position",
+      "before_offsets": [
+        1356377
+      ],
+      "after_offsets": [
+        1356377
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "label pass initializes position recorder",
+      "before_offsets": [
+        1357334
+      ],
+      "after_offsets": [
+        1357334
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "label pass dead-code scans retain byte offsets",
+      "before_offsets": [
+        1362951,
+        1363445,
+        1364480,
+        1366443
+      ],
+      "after_offsets": [
+        1362951,
+        1363459,
+        1364508,
+        1366485
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "matched final-pass byte position 20",
+      "before_offsets": [
+        1362636,
+        1373026,
+        1374331,
+        1376153,
+        1380235,
+        1382451,
+        1383167,
+        1384152,
+        1385086,
+        1385686,
+        1386777,
+        1387801,
+        1388707,
+        1389257
+      ],
+      "after_offsets": [
+        1362636,
+        1373101,
+        1374481,
+        1376378,
+        1380535,
+        1382826,
+        1383617,
+        1384677,
+        1385686,
+        1386361,
+        1387527,
+        1388626,
+        1389607,
+        1390232
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "matched final-pass byte position 16",
+      "before_offsets": [
+        1370330,
+        1370658,
+        1371150,
+        1371790,
+        1372916,
+        1373663,
+        1377693,
+        1378011,
+        1378689,
+        1379196,
+        1379838,
+        1381874,
+        1390939,
+        1392745
+      ],
+      "after_offsets": [
+        1370330,
+        1370729,
+        1371292,
+        1372003,
+        1373200,
+        1374018,
+        1378119,
+        1378508,
+        1379257,
+        1379835,
+        1380548,
+        1382655,
+        1391791,
+        1393668
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "matched final-pass byte position 24",
+      "before_offsets": [
+        1375179,
+        1381686,
+        1389861,
+        1393017
+      ],
+      "after_offsets": [
+        1375179,
+        1381765,
+        1390019,
+        1393254
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "final branch matcher saves actual offset",
+      "before_offsets": [
+        1365923
+      ],
+      "after_offsets": [
+        1365923
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "final branch matcher publishes saved offset",
+      "before_offsets": [
+        1366118
+      ],
+      "after_offsets": [
+        1366118
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "delayed matched source owns byte position",
+      "before_offsets": [
+        1381236
+      ],
+      "after_offsets": [
+        1381236
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "delay raw offset with same original line",
+      "before_offsets": [
+        1382212
+      ],
+      "after_offsets": [
+        1382212
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "publish delayed raw offset after selected operation",
+      "before_offsets": [
+        1382648
+      ],
+      "after_offsets": [
+        1382648
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "all final bytecode recording sites receive raw position",
+      "before_offsets": [
+        1362795,
+        1363123,
+        1364364,
+        1366468,
+        1369536,
+        1370983,
+        1371546,
+        1373747,
+        1374582,
+        1375486,
+        1375979,
+        1376450,
+        1377329,
+        1378841,
+        1379590,
+        1380168,
+        1380881,
+        1382537,
+        1384231,
+        1385022,
+        1386082,
+        1387091,
+        1387766,
+        1387977,
+        1388271,
+        1388932,
+        1389143,
+        1390559,
+        1391091,
+        1391716,
+        1392986,
+        1393661,
+        1394367,
+        1394690
+      ],
+      "after_offsets": [
+        1362795,
+        1363136,
+        1364390,
+        1366507,
+        1369588,
+        1371048,
+        1371624,
+        1373838,
+        1374686,
+        1375603,
+        1376109,
+        1376593,
+        1377485,
+        1379010,
+        1379772,
+        1380363,
+        1381089,
+        1382758,
+        1384465,
+        1385269,
+        1386342,
+        1387364,
+        1388052,
+        1388276,
+        1388583,
+        1389257,
+        1389481,
+        1390910,
+        1391455,
+        1392093,
+        1393376,
+        1394064,
+        1394783,
+        1395119
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "compile independent final PC to byte-position array",
+      "before_offsets": [
+        1351838
+      ],
+      "after_offsets": [
+        1351838
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "compile metadata before source-location slots retire",
+      "before_offsets": [
+        1400201
+      ],
+      "after_offsets": [
+        1400201
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "frame retirement releases its independent Script root",
+      "before_offsets": [
+        2327895
+      ],
+      "after_offsets": [
+        2327895
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "frame publication moves Script ownership",
+      "before_offsets": [
+        2329135
+      ],
+      "after_offsets": [
+        2329135
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "initialize actual-frame Script provenance",
+      "before_offsets": [
+        2329555
+      ],
+      "after_offsets": [
+        2329555
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "capture actual bytecode Script and token position",
+      "before_offsets": [
+        2330127
+      ],
+      "after_offsets": [
+        2330127
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "filename-only synthetic frames have no Script",
+      "before_offsets": [
+        2332544
+      ],
+      "after_offsets": [
+        2332544
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "raw missing-PC capture retains real Script without a guessed position",
+      "before_offsets": [
+        2336358
+      ],
+      "after_offsets": [
+        2336358
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "capture temporary cleanup releases owned Script",
+      "before_offsets": [
+        2334568,
+        2337531
+      ],
+      "after_offsets": [
+        2334568,
+        2337576
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "capture publication cleanup retires only unmoved Script",
+      "before_offsets": [
+        2334905,
+        2337913
+      ],
+      "after_offsets": [
+        2334905,
+        2337954
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "frame clone independently duplicates Script",
+      "before_offsets": [
+        2338817
+      ],
+      "after_offsets": [
+        2338817
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "failed or moved frame clone cleanup",
+      "before_offsets": [
+        2339113
+      ],
+      "after_offsets": [
+        2339113
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "legacy prepared-stack temporary cleanup releases Script",
+      "before_offsets": [
+        329699
+      ],
+      "after_offsets": [
+        329699
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "metadata-failure temporary cleanup releases primitive Script",
+      "before_offsets": [
+        332334
+      ],
+      "after_offsets": [
+        332334
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "raw captured Script projection",
+      "before_offsets": [
+        2340017
+      ],
+      "after_offsets": [
+        2340017
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "versioned complete Script provenance envelope",
+      "before_offsets": [
+        1476959
+      ],
+      "after_offsets": [
+        1476959
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "writer retains Script identities independently of object reference mode",
+      "before_offsets": [
+        1477388
+      ],
+      "after_offsets": [
+        1477388
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "write real Script and raw position metadata",
+      "before_offsets": [
+        1483607
+      ],
+      "after_offsets": [
+        1483607
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "metadata precedes child functions for shared identity",
+      "before_offsets": [
+        1488817
+      ],
+      "after_offsets": [
+        1488817
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "writer success and failure release every retained Script",
+      "before_offsets": [
+        1503256,
+        1503721
+      ],
+      "after_offsets": [
+        1503256,
+        1503755
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "reader retains independent Script identity table",
+      "before_offsets": [
+        1504519
+      ],
+      "after_offsets": [
+        1504519
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "read bounded native Script provenance before function constants",
+      "before_offsets": [
+        1513733
+      ],
+      "after_offsets": [
+        1513733
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "reader attaches metadata before recursive constant pool",
+      "before_offsets": [
+        1524149
+      ],
+      "after_offsets": [
+        1524149
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "reader cleanup retires native Script table",
+      "before_offsets": [
+        1546102
+      ],
+      "after_offsets": [
+        1546102
+      ]
+    }
+  ],
+  "full_forward_and_reverse_exact": true
+}

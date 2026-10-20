@@ -1,0 +1,178 @@
+{
+  "status": "source-only concrete native table and proposed Environment embedding; no production Environment mutation or execution",
+  "files": [
+    {
+      "path": "src/extensions/native_node_managed_buffers.h",
+      "sha256": "976A8C7263BB4A3B870FB341A832BA6692EB7639E9EAD5FDC0C9C9B35D0D9E57",
+      "bytes": 2166
+    },
+    {
+      "path": "src/extensions/native_node_managed_buffers.cpp",
+      "sha256": "E2083CD514D8CDB24839763513DD764A789EF628DCB2A1AB455B3A864312949D",
+      "bytes": 3795
+    },
+    {
+      "path": "src/extensions/native_node_managed_buffers.zig",
+      "sha256": "BE567B795D5129373EEFCF2A7C95E9017C481E020F17472E2C35838689F22B88",
+      "bytes": 2875
+    }
+  ],
+  "environment": {
+    "base_path": "src/extensions/native_node_callback_scope.zig",
+    "base_sha256": "E267756ECEFDFA7577E68A18BB2D04EA5392579E837385BA437808DD75F6E397",
+    "base_bytes": 38246,
+    "proposal_path": "proposal/environment-with-managed-buffers.zig.txt",
+    "proposal_sha256": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+    "proposal_bytes": 39860,
+    "edits": [
+      {
+        "label": "actual native managed table owner import",
+        "before": "const RequestState = @import(\"native_node_request_state.zig\");",
+        "after": "const RequestState = @import(\"native_node_request_state.zig\");\nconst ManagedBuffers = @import(\"native_node_managed_buffers.zig\");"
+      },
+      {
+        "label": "single Environment allocation layout",
+        "before": "pub const Environment = struct {\n    memory_owner: *anyopaque,",
+        "after": "pub const Environment = struct {\n    memory_owner: *anyopaque,\n    allocation_size: usize,\n    allocation_alignment: std.mem.Alignment,"
+      },
+      {
+        "label": "in-place native map member",
+        "before": "    stream_base_state: StreamBaseState = .{},",
+        "after": "    stream_base_state: StreamBaseState = .{},\n    managed_buffers: ManagedBuffers.Store = .{},"
+      },
+      {
+        "label": "one charged parent-and-map block",
+        "before": "        if (c.pi_js_native_memory_reserve(memory_owner, @sizeOf(Environment)) == 0) return error.OutOfMemory;\n        errdefer c.pi_js_native_memory_release(memory_owner, @sizeOf(Environment));\n        const self = try std.heap.c_allocator.create(Environment);",
+        "after": "        const storage_layout = try ManagedBuffers.layout(Environment);\n        if (c.pi_js_native_memory_reserve(memory_owner, storage_layout.bytes) == 0) return error.OutOfMemory;\n        errdefer c.pi_js_native_memory_release(memory_owner, storage_layout.bytes);\n        const allocation = std.heap.c_allocator.rawAlloc(storage_layout.bytes,\n            storage_layout.alignment, @returnAddress()) orelse return error.OutOfMemory;\n        const self: *Environment = @ptrCast(@alignCast(allocation));"
+      },
+      {
+        "label": "retain exact raw allocation metadata",
+        "before": "            .memory_owner = memory_owner,\n            .charged = ChargedAllocator.init(s.engine),",
+        "after": "            .memory_owner = memory_owner,\n            .allocation_size = storage_layout.bytes,\n            .allocation_alignment = storage_layout.alignment,\n            .charged = ChargedAllocator.init(s.engine),"
+      },
+      {
+        "label": "partial construction releases same block",
+        "before": "            self.charged.deinit();\n            std.heap.c_allocator.destroy(self);",
+        "after": "            self.charged.deinit();\n            std.heap.c_allocator.rawFree(allocation[0..storage_layout.bytes],\n                storage_layout.alignment, @returnAddress());"
+      },
+      {
+        "label": "allocation-free map construction after stream alias",
+        "before": "        self.stream_base_state = try StreamBaseState.create(s, 4);",
+        "after": "        self.stream_base_state = try StreamBaseState.create(s, 4);\n        self.managed_buffers.init(@ptrCast(allocation + storage_layout.offset));"
+      },
+      {
+        "label": "last Environment entitlement releases exact native block",
+        "before": "        const owner = self.memory_owner;\n        self.charged.deinit();\n        std.heap.c_allocator.destroy(self);\n        c.pi_js_native_memory_release(owner, @sizeOf(Environment));\n        c.pi_js_release_memory_owner(owner);",
+        "after": "        const owner = self.memory_owner;\n        const allocation_size = self.allocation_size;\n        const allocation_alignment = self.allocation_alignment;\n        self.charged.deinit();\n        const allocation: [*]u8 = @ptrCast(self);\n        std.heap.c_allocator.rawFree(allocation[0..allocation_size],\n            allocation_alignment, @returnAddress());\n        c.pi_js_native_memory_release(owner, allocation_size);\n        c.pi_js_release_memory_owner(owner);"
+      },
+      {
+        "label": "actual selected managed-buffer tail operations",
+        "before": "    pub fn allocator(self: *Environment) std.mem.Allocator { return self.charged.allocator(); }",
+        "after": "    /// Selected tail after the genuine NewBackingStore operation has returned.\n    /// The original allocation/retry policy remains a separate caller owner.\n    pub fn adoptManagedBuffer(self: *Environment, owned: *ManagedBuffers.Token) !ManagedBuffers.uv.uv_buf_t {\n        _ = try self.requireEngine();\n        return self.managed_buffers.adopt(self.memory_owner, owned);\n    }\n    pub fn releaseManagedBuffer(self: *Environment, buffer: ManagedBuffers.uv.uv_buf_t) !ManagedBuffers.Token {\n        const engine = try self.requireEngine();\n        return self.managed_buffers.release(engine.context, buffer);\n    }\n    pub fn allocator(self: *Environment) std.mem.Allocator { return self.charged.allocator(); }"
+      },
+      {
+        "label": "actual later map member retires before stream alias",
+        "before": "    fn retireRoots(self: *Environment, s: *LocalScope) void {\n        self.stream_base_state.release(s);",
+        "after": "    fn retireRoots(self: *Environment, s: *LocalScope) void {\n        self.managed_buffers.deinit();\n        self.stream_base_state.release(s);"
+      }
+    ],
+    "forward_inverse_exact": true
+  },
+  "authority_packet": {
+    "path": "managed-backing-source-and-abi-proposal.json",
+    "sha256": "C5076FE7E108CDC3B777EBFA4F9FB77B8DEA91B45951CFEE8023535E97115D9D",
+    "selected": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-callback-scope-sourceonly-20261019\\authority\\src_env.cc.txt",
+        "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9",
+        "bytes": 84987,
+        "excerpts": [
+          {
+            "start_line": 733,
+            "end_line": 755,
+            "start_byte": 29271,
+            "end_byte": 30036,
+            "text": "\nuv_buf_t Environment::allocate_managed_buffer(const size_t suggested_size) {\n  std::unique_ptr<BackingStore> bs = ArrayBuffer::NewBackingStore(\n      isolate(),\n      suggested_size,\n      BackingStoreInitializationMode::kUninitialized);\n  uv_buf_t buf = uv_buf_init(static_cast<char*>(bs->Data()), bs->ByteLength());\n  released_allocated_buffers_.emplace(buf.base, std::move(bs));\n  return buf;\n}\n\nstd::unique_ptr<BackingStore> Environment::release_managed_buffer(\n    const uv_buf_t& buf) {\n  std::unique_ptr<BackingStore> bs;\n  if (buf.base != nullptr) {\n    auto it = released_allocated_buffers_.find(buf.base);\n    CHECK_NE(it, released_allocated_buffers_.end());\n    bs = std::move(it->second);\n    released_allocated_buffers_.erase(it);\n  }\n  return bs;\n}\n\n"
+          },
+          {
+            "start_line": 782,
+            "end_line": 816,
+            "start_byte": 30801,
+            "end_byte": 32576,
+            "text": "Environment::Environment(IsolateData* isolate_data,\n                         Isolate* isolate,\n                         const std::vector<std::string>& args,\n                         const std::vector<std::string>& exec_args,\n                         const EnvSerializeInfo* env_info,\n                         EnvironmentFlags::Flags flags,\n                         ThreadId thread_id,\n                         std::string_view thread_name)\n    : isolate_(isolate),\n      external_memory_accounter_(new ExternalMemoryAccounter()),\n      isolate_data_(isolate_data),\n      async_hooks_(isolate, MAYBE_FIELD_PTR(env_info, async_hooks)),\n      immediate_info_(isolate, MAYBE_FIELD_PTR(env_info, immediate_info)),\n      timeout_info_(isolate_, 1, MAYBE_FIELD_PTR(env_info, timeout_info)),\n      tick_info_(isolate, MAYBE_FIELD_PTR(env_info, tick_info)),\n      timer_base_(uv_now(isolate_data->event_loop())),\n      exec_argv_(exec_args),\n      argv_(args),\n      exec_path_(Environment::GetExecPath(args)),\n      exit_info_(\n          isolate_, kExitInfoFieldCount, MAYBE_FIELD_PTR(env_info, exit_info)),\n      should_abort_on_uncaught_toggle_(\n          isolate_,\n          1,\n          MAYBE_FIELD_PTR(env_info, should_abort_on_uncaught_toggle)),\n      stream_base_state_(isolate_,\n                         StreamBase::kNumStreamBaseStateFields,\n                         MAYBE_FIELD_PTR(env_info, stream_base_state)),\n      time_origin_(performance::performance_process_start),\n      time_origin_timestamp_(performance::performance_process_start_timestamp),\n      environment_start_(PERFORMANCE_NOW()),\n      flags_(flags),\n      thread_id_(thread_id.id == static_cast<uint64_t>(-1)\n                     ? AllocateEnvironmentThreadId().id\n                     : thread_id.id),\n"
+          },
+          {
+            "start_line": 993,
+            "end_line": 1071,
+            "start_byte": 39379,
+            "end_byte": 41980,
+            "text": "Environment::~Environment() {\n  HandleScope handle_scope(isolate());\n  Local<Context> ctx = context();\n\n  if (Environment** interrupt_data = interrupt_data_.load()) {\n    // There are pending RequestInterrupt() callbacks. Tell them not to run,\n    // then force V8 to run interrupts by compiling and running an empty script\n    // so as not to leak memory.\n    *interrupt_data = nullptr;\n\n    Isolate::AllowJavascriptExecutionScope allow_js_here(isolate());\n    TryCatch try_catch(isolate());\n    Context::Scope context_scope(ctx);\n\n#ifdef DEBUG\n    bool consistency_check = false;\n    isolate()->RequestInterrupt([](Isolate*, void* data) {\n      *static_cast<bool*>(data) = true;\n    }, &consistency_check);\n#endif\n\n    Local<Script> script;\n    if (Script::Compile(ctx, String::Empty(isolate())).ToLocal(&script))\n      USE(script->Run(ctx));\n\n    DCHECK(consistency_check);\n  }\n\n  // FreeEnvironment() should have set this.\n  CHECK(is_stopping());\n\n  if (heapsnapshot_near_heap_limit_callback_added_) {\n    RemoveHeapSnapshotNearHeapLimitCallback(0);\n  }\n\n  isolate()->GetHeapProfiler()->RemoveBuildEmbedderGraphCallback(\n      BuildEmbedderGraph, this);\n\n#if HAVE_INSPECTOR\n  // Destroy inspector agent before erasing the context. The inspector\n  // destructor depends on the context still being accessible.\n  inspector_agent_.reset();\n#endif\n\n  // Sub-realms should have been cleared with Environment's cleanup.\n  DCHECK_EQ(shadow_realms_.size(), 0);\n  principal_realm_.reset();\n\n  if (trace_state_observer_) {\n    tracing::AgentWriterHandle* writer = GetTracingAgentWriter();\n    CHECK_NOT_NULL(writer);\n    if (TracingController* tracing_controller = writer->GetTracingController())\n      tracing_controller->RemoveTraceStateObserver(trace_state_observer_.get());\n  }\n\n  TRACE_EVENT_NESTABLE_ASYNC_END0(\n    TRACING_CATEGORY_NODE1(environment), \"Environment\", this);\n\n  // Do not unload addons on the main thread. Some addons need to retain memory\n  // beyond the Environment's lifetime, and unloading them early would break\n  // them; with Worker threads, we have the opportunity to be stricter.\n  // Also, since the main thread usually stops just before the process exits,\n  // this is far less relevant here.\n  if (!is_main_thread()) {\n    // Dereference all addons that were loaded into this environment.\n    for (binding::DLib& addon : loaded_addons_) {\n      addon.Close();\n    }\n  }\n\n  delete external_memory_accounter_;\n  if (cpu_profiler_) {\n    for (auto& it : pending_profiles_) {\n      cpu_profiler_->Stop(it);\n    }\n    cpu_profiler_->Dispose();\n    cpu_profiler_ = nullptr;\n  }\n}\n"
+          }
+        ]
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-callback-scope-sourceonly-20261019\\authority\\src_env.h.txt",
+        "sha256": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0",
+        "bytes": 45315,
+        "excerpts": [
+          {
+            "start_line": 1096,
+            "end_line": 1107,
+            "start_byte": 39230,
+            "end_byte": 39646,
+            "text": "  // These may be read by ctors and should be listed before complex fields.\n  std::atomic_bool is_stopping_{false};\n  std::atomic_bool can_call_into_js_{true};\n\n  AsyncHooks async_hooks_;\n  ImmediateInfo immediate_info_;\n  AliasedInt32Array timeout_info_;\n  TickInfo tick_info_;\n  permission::Permission permission_;\n  const uint64_t timer_base_;\n  std::shared_ptr<KVStore> env_vars_;\n  bool printed_error_ = false;\n"
+          },
+          {
+            "start_line": 1154,
+            "end_line": 1163,
+            "start_byte": 41529,
+            "end_byte": 41773,
+            "text": "\n  AliasedInt32Array exit_info_;\n\n  AliasedUint32Array should_abort_on_uncaught_toggle_;\n  int should_not_abort_scope_counter_ = 0;\n\n  std::unique_ptr<TrackingTraceStateObserver> trace_state_observer_;\n\n  AliasedInt32Array stream_base_state_;\n\n"
+          },
+          {
+            "start_line": 1243,
+            "end_line": 1251,
+            "start_byte": 44793,
+            "end_byte": 45110,
+            "text": "\n  builtins::BuiltinLoader builtin_loader_;\n  EmbedderPreloadCallback embedder_preload_;\n\n  // Used by allocate_managed_buffer() and release_managed_buffer() to keep\n  // track of the BackingStore for a given pointer.\n  std::unordered_map<char*, std::unique_ptr<v8::BackingStore>>\n      released_allocated_buffers_;\n\n"
+          }
+        ]
+      }
+    ]
+  },
+  "dependencies": [
+    {
+      "owner": "VM native backing allocation/adoption",
+      "commit": "eb4ec1d69c8d21dbd1079f29882654a37b485f24",
+      "packet": "D94BDE94024B6CD523FCC2AE8DA4ED27249B440BF0444746E7C55EACE024EC65"
+    },
+    {
+      "owner": "single actual standard allocator",
+      "header_sha256": "16D82D2C2143DFAF3861B722BD2E9775FB0BD7D6C9BE400D0ECE37E0674E709B",
+      "memory_header_sha256": "7554ED1DDCA28FAE7B11E025BD9D7EEF560DB657086A40029E5D95DBEFAE5291",
+      "shared_build_packet": "0427BE866F23AFF75EC6083F823C4A1A9EE1A29A033EB71A9092E651C3507C80"
+    },
+    {
+      "owner": "exact prior stream Int32 alias",
+      "packet": "8C91B140A3E7D6422668B9085D1514AD15B0867826D2804633014954317AF638"
+    }
+  ],
+  "properties": [
+    "Original real std::unordered_map with char* keys, actual native hash/allocator/emplace/find/erase and native destruction; no substitute Zig map.",
+    "The map is constructed at a native offset inside the same charged Environment block. Its actual C++ size/alignment determines that offset and total allocation. No second empty-map or token-box allocation is introduced.",
+    "Each mapped move-only token holds its provider-owned native storage and copied callbacks/domain. Relative to V8's unique_ptr this is a larger mapped representation; the port does not claim native node-size or byte-charge parity.",
+    "Backing allocation has already happened when adopt consumes the token. uv_buf_init preserves its actual unsigned length conversion before emplace. A duplicate insertion has the same local ownership retirement.",
+    "Release bypasses null base, otherwise performs actual find then native CHECK, moves token before erasing node, and returns a complete owned native token. No JavaScript wrapper exists yet.",
+    "Environment destruction clears the native table before the earlier stream alias; partial initialization and final allocation retirement use the actual same single raw block.",
+    "No JS/Engine/context pointer is stored in the native table or backing token. Context is a borrowed argument only at the genuine missing-entry native CHECK."
+  ],
+  "open": [
+    "Root Environment embedding and source CHECK mapping peer",
+    "Modules native container/order peer",
+    "VM token/native lifetime peer",
+    "Actual native table controls/build proposal",
+    "Original NewBackingStore GC/retry/default-fatal composition",
+    "Public StreamBase callback/trace/template and complete FileHandle lifecycle"
+  ],
+  "execution": false
+}

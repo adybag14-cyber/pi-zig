@@ -322,6 +322,22 @@ void pi_node_heap_out_of_memory(JSContext *context,
     pi_node_abort(context);
 }
 
+/* Selected ArrayBuffer::NewBackingStore process OOM terminal callback.
+ * The caller completes its actual native allocation/retry policy first.
+ * kNoOOMDetails selects process memory and has no optional Reason string. */
+void pi_node_backing_store_out_of_memory(JSContext *context,
+                                         const PiNodeFatalDiagnostics *diagnostics) {
+    static const char message[] =
+        "Allocation failed - process out of memory";
+    atomic_store(&pi_node_in_oom, 1);
+    fprintf(stderr, "FATAL ERROR: v8::ArrayBuffer::NewBackingStore %s\n", message);
+    if (diagnostics && diagnostics->report)
+        diagnostics->report(diagnostics->report_opaque, context,
+                            message, "OOMError", "");
+    fflush(stderr);
+    pi_node_abort(context);
+}
+
 void pi_node_maybe_check_failure(JSContext *context,
                                  const PiNodeFatalDiagnostics *diagnostics) {
     pi_node_default_fatal_error(context, "v8::FromJust",

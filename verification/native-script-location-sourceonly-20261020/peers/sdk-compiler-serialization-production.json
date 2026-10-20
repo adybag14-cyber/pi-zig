@@ -1,0 +1,58 @@
+{
+  "status": "CLOSED: finite compiler/token-position and serialization source peer only; no execution",
+  "peer": "sdk_owners",
+  "packet": "5CE6502330E09C9ED1F2E0D21BAF7EDE38B9185E90F778D347388D36CB5AEC18",
+  "successor_memory_accounting": "B4CADFF9 (outside this assigned algorithm slice; assigned bytes unchanged)",
+  "scope": [
+    "root/CJS Script attachment before child definitions",
+    "actual token byte-offset capture and delayed parser emission",
+    "source_loc width, code matching, dead-code scans, both compiler passes and final jump-width adjustment",
+    "independent PC/byte-offset metadata before source slots retire",
+    "version 31 writer/reader Script identity and position envelope"
+  ],
+  "verification": {
+    "full_forward_and_inverse": true,
+    "steps": 104,
+    "files": [
+      {
+        "path": "vendor/quickjs/quickjs.c",
+        "base": "E61EF49E44E22C2B327F229B0285D801598773B8BFE90A9B0D175071439AD98A",
+        "current": "8407EA70CAC10FD41EFADBF31B8C043F86B322EA1A1D09DCB1EA00176761C241",
+        "bytes": 2392187
+      },
+      {
+        "path": "vendor/quickjs/quickjs.h",
+        "base": "B1BC3EF2E9E5DCD3EDC915231AD7EAA1C4ED4F1DBEA49BFBCF57425D528C343D",
+        "current": "08230E99EB7AB2AC38C94ED3810D81DEE850CB5A067902634E0C2CC5D112F966",
+        "bytes": 110090
+      },
+      {
+        "path": "vendor/quickjs/quickjs-opcode.h",
+        "base": "55122ADB07E3F9FB91C4779A2C7ECF721294593035D3880B005B769F31B7485D",
+        "current": "194F1AE899FF525FEAE54265369720E767494130A9CE31E4E3ABC00E9C1E9181",
+        "bytes": 15841
+      },
+      {
+        "path": "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+        "base": "87A771EB6291F195C7DEB63DA8B29F20805AEA0F07B6320985E10C090348B639",
+        "current": "4FBF487CC09627A2176815995AF3246E88274A7D1AD1A952802AC01AF478BCE5",
+        "bytes": 17263
+      }
+    ]
+  },
+  "findings": [
+    "No concrete blocker in the assigned source slice.",
+    "The actual input byte offset is captured while the relevant token still exists, including delayed constructor, identifier, iterator and for-in/of emissions. It is transported as the third source_loc coordinate, independently of display columns.",
+    "Both passes carry the full tuple through original peephole, branch-threading and dead-code paths. All source_loc walkers use the new opcode size; the final position array is created only after actual jump shrinkage has adjusted the SourceLocSlot PCs.",
+    "Position recording remains present independent of writer strip flags; display pc2line construction is preserved. The native table records actual offsets and its projection does not reconstruct positions from display lines/columns.",
+    "Writer identity is independent from the optional ordinary object-reference mode. Metadata is written before recursive constants; success and failure retire all retained Script table entries.",
+    "Reader validates tag/index/origin/module/length/position-count bounds, ordered PCs and source-byte range, then attaches actual metadata before recursive constants. Its independently retained identity table is released through the existing reader cleanup.",
+    "Source UTF-16 and line-end/origin interpretation is supported by unchanged SDK proof 6584973AC9EF4F20CB1CD9284AD501AADA5AF14A97FC546783465A4A043FE342."
+  ],
+  "limits": [
+    "Native Script/frame owner lifetime is Modules' separate slice.",
+    "No control/root/build or execution closure.",
+    "No Message/reporter/catcher or failed-parse exception-origin claim.",
+    "No arbitrary object-valued ScriptOrigin or whole-V8-instruction-position-equivalence claim."
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "status": "CLOSED: finite StreamBase read controls and install-only build seam",
+  "reviewer": "modules_io",
+  "date": "2026-10-20",
+  "execution": false,
+  "scope": {
+    "declarations": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      12,
+      17,
+      18
+    ],
+    "helpers": [
+      "readCallback/readCallbackBody",
+      "firstSuccessfulAllocation",
+      "Trace callbacks and selected marker observations",
+      "Forwarder"
+    ],
+    "build": "15 additive install-only lines; exact API-only three-site successor"
+  },
+  "inputs": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/native_node_stream_read_test.zig",
+      "bytes": 33640,
+      "sha256": "e82bd953c752df948c679617f2ca8fa2b5a08c9a00b0f83a02f08a7c1d45feb3"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_stream_base.zig",
+      "bytes": 10864,
+      "sha256": "0a3f4eb5133bc9543d5ad77dc33f4753abec866eb721bce0a8f08c16becd5abf"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/stream-read-build-intake.json",
+      "bytes": 2516,
+      "sha256": "4c98e0de997cb2e1b1515f8222f436c5b334dc40ab949f28293f93570342ce09"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/stream-read-control-api-successor.json",
+      "bytes": 972,
+      "sha256": "98a84687812021a622fffef9eb52aa31a60475b175d3836426745d666ce7c7d6"
+    }
+  ],
+  "prerequisite_receipt": "0061094EF4C006942198FB8FC0DFAF33FB841709CB36EE18C2A6FAB3C570247B",
+  "source_checks": {
+    "declaration_count": 18,
+    "all_names_match_actual_filter": true,
+    "api_successor_inverse": "CB3263C5E13DA3872FE7BE5D057AF3A6A6FC5FB189479F90EB557BDD0E67B9AD",
+    "api_successor_preserves_all_names_and_oracles": true,
+    "actual_header": "C:/Users/adyba/pi-zig/main/vendor/quickjs/quickjs.h",
+    "header_sha256": "7DD0189F0143D448CD3678FB1B415D200BFA36610371EF87A16B84BBA4871DC3",
+    "header_read": {
+      "offset_bytes": 45000,
+      "bytes": 60469,
+      "sha256": "6E1E9BD873C725DB4E7ADD20231EFD93B66233B8B9DA353C0E4899BC03A6B46B"
+    },
+    "build_before_sha256": "30348C988F824617E52EE47ECF64099D537582F8255E1B47C994820AA7814A62",
+    "build_after_sha256": "1C489EB61D4A2FC5B97DF85EE0DA955DEC6ADEF3A794457106C946B07A8FA861",
+    "build_added_lines": 15,
+    "build_inverse_exact": true
+  },
+  "observations": [
+    "The actual Environment aliases, Registry wrapper internal field, managed native table, backing token and CallbackScope are used. The read callback checks the real receiver and captured context frame, observes aliases/counter before returning, and owns the ArrayBuffer observation without reinterpreting a callback return as a native failure.",
+    "Declarations 1-2 distinguish the real default listener/native wrapper from an own public onread shadow. The internal callable is selected and both aliases are written before the real callback.",
+    "Declaration 3 sets the actual JS heap limit to one only after setup, allocates native backing through the real VM API, observes no JS exception or OOM occurrence and restores the limit before zero-read cleanup.",
+    "Declarations 4-6 and 18 separately observe zero consumption without tracing/callback, negative undefined publication without a positive byte-count increment, full-buffer identity and bytes with the counter already advanced, and a null negative path that does not enter the native table or allocate.",
+    "Declaration 8 poisons the live global ArrayBuffer constructor while the actual backing adoption still produces the real buffer. It retains the original control assertion.",
+    "Declaration 12 replaces the live internal callback during the selected callback. The selected callable remains owned through the static after trace; its marker retires at the caller scope boundary, before the next read selects the replacement.",
+    "Declaration 17 installs an actual native Forwarder at the live head. It observes the already-advanced counter, unlinks itself and forwards to the real previous listener. No artificial list or substitute backing is used.",
+    "The three API corrections exactly match the actual VM header: IsUncatchableError takes only the value and SetUncatchableError takes context/value. The latter is now conditional on fatal for the newly ordinary Error. All 18 declaration names and control oracles remain unchanged.",
+    "The build insertion applies exactly once before the existing FS request-owner target and reverses to complete Main build 30348C98. It uses the same network Compile pointer, QuickJS, TypeScript parser, SQLite, catalog import, UV include and Windows links; it introduces no C membership or run action."
+  ],
+  "limits": [
+    "Fixture/Node teardown and declarations 7, 9-11, 13-16 are VM's assigned review; this receipt does not replace that slice.",
+    "The allocator fixture admits only an actual first successful native backing allocation. It does not implement or qualify the original retry, GC or terminal allocation policy.",
+    "Trace callbacks observe real delegation and order. The actual tracing category/controller/output owner remains a separate required dependency.",
+    "Build review is for the admitted Windows/Linux 64-bit graph with the shared native-memory and managed-buffer CPP prerequisites present. No additional platform, linking or execution result is claimed.",
+    "No public StreamBase/FileHandle bootstrap completeness, compiler/AST execution or runtime qualification."
+  ]
+}

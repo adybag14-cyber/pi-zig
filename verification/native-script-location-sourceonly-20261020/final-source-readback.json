@@ -1,0 +1,96 @@
+{
+  "status": "source-only exact forward/reverse and declaration readback",
+  "production_steps": 104,
+  "accounting_successor_steps": 1,
+  "all_four_exact_forward": true,
+  "inverse_by_recorded_offsets_exact": true,
+  "build_added_lines": 6,
+  "existing_versions": [
+    {
+      "path": "src/native_template_literal_test.zig",
+      "declarations": 18,
+      "sha256": "051049879DDD4411B858F2BC33327A17A5F7C1DA4977B72BE6837AD8E71B9789"
+    },
+    {
+      "path": "src/native_vm_captured_frame_logging_test.zig",
+      "declarations": 19,
+      "sha256": "050EBD5900D38D6FDDAAE0690C62D72217E4A073978F7A18BD89B962E734EFA1"
+    }
+  ],
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "8407EA70CAC10FD41EFADBF31B8C043F86B322EA1A1D09DCB1EA00176761C241",
+      "bytes": 2392187
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "08230E99EB7AB2AC38C94ED3810D81DEE850CB5A067902634E0C2CC5D112F966",
+      "bytes": 110090
+    },
+    {
+      "path": "vendor/quickjs/quickjs-opcode.h",
+      "sha256": "194F1AE899FF525FEAE54265369720E767494130A9CE31E4E3ABC00E9C1E9181",
+      "bytes": 15841
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+      "sha256": "4FBF487CC09627A2176815995AF3246E88274A7D1AD1A952802AC01AF478BCE5",
+      "bytes": 17263
+    },
+    {
+      "path": "src/native_vm_script_location_test.zig",
+      "sha256": "99A495F924700FDCFB64C479C61FEF6D2E5CE8532944615324079CBB17F17F55",
+      "bytes": 52063
+    },
+    {
+      "path": "build.zig",
+      "sha256": "35AD68E15D17BEAE0820B1EE1AB57EB0DB8B7F71885B95306AAF676B36581686",
+      "bytes": 420622
+    },
+    {
+      "path": "src/native_template_literal_test.zig",
+      "sha256": "051049879DDD4411B858F2BC33327A17A5F7C1DA4977B72BE6837AD8E71B9789",
+      "bytes": 19897
+    },
+    {
+      "path": "src/native_vm_captured_frame_logging_test.zig",
+      "sha256": "050EBD5900D38D6FDDAAE0690C62D72217E4A073978F7A18BD89B962E734EFA1",
+      "bytes": 27966
+    }
+  ],
+  "declarations": [
+    "VM Script complete input and UTF16 length are independent of function presentation source",
+    "VM Script root nested and sibling bytecode retain one actual native source identity",
+    "VM Script separate compilations of identical input have distinct owners",
+    "VM Script duplicate native entitlement outlives function and originating context",
+    "VM Script brand projection excludes native bound and proxy functions without guest access",
+    "VM Script source URL and map come from actual lexer comments with last-event semantics",
+    "VM Script empty later metadata clears earlier recognized lexer metadata",
+    "VM Script genuine module frames retain complete host module source",
+    "VM Script direct and indirect eval preserve their actual separate input",
+    "VM Script all four dynamic constructors retain actual generated eval input",
+    "VM Script genuine CJS compiler keeps original body without presentation wrapper",
+    "VM Script UTF16 line table handles CRLF lone CR LS PS negative and EOF positions",
+    "VM Script empty source and actual initial line offset retain canonical EOF behavior",
+    "VM Script captured positions use actual token bytes in both compiler modes",
+    "VM Script source positions survive real backward and long forward branch rewriting",
+    "VM Script cloned captured frame owns source after original frames retire",
+    "VM Script native synthetic and proxy frames have no fabricated source owner",
+    "VM Script raw projections allocate nothing and preserve actual ordinary fatal and private pending",
+    "VM Script position failure leaves outputs unchanged and source line enforces runtime ownership",
+    "VM Script native source owner retains no receiver or function graph after frame retirement",
+    "VM Script serialized siblings keep one source identity without object reference mode under every strip flag",
+    "VM Script serialized actual token positions survive source and debug stripping in both compilers",
+    "VM Script ordinary lexer resource and map metadata survive serialization independently of display stripping",
+    "VM Script serialized module retains complete source module origin and nested identity",
+    "VM Script real reader rejects invalid owner tags references origin and module bits",
+    "VM Script reader validates actual PC and source-byte bounds before publication",
+    "VM Script partial reader failure retires source records position arrays and table entitlements",
+    "VM Script version31 rejects actual version30 bytes at the unchanged version gate",
+    "VM Script real compiler and reader heap failure cleanly retire all native source owners",
+    "VM Script prior actual pending wins before allocating source line while raw getters remain available",
+    "VM Script existing private logical URL serialization restriction is preserved",
+    "VM Script failed parsing releases native source without fabricating synthetic-frame provenance"
+  ]
+}

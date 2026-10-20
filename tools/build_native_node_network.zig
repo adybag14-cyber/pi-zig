@@ -4,11 +4,12 @@ const std = @import("std");
 const uv_root = "vendor/node-v24.13.0/uv";
 const llhttp_root = "vendor/node-v24.13.0/llhttp";
 
-pub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode) *std.Build.Step.Compile {
+pub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode,
+    native_memory: ?*std.Build.Step.Compile) *std.Build.Step.Compile {
     const library = b.addLibrary(.{
         .name = "pi-node-network",
         .linkage = .static,
-        .root_module = b.createModule(.{ .target = target, .optimize = optimize, .link_libc = true }),
+        .root_module = b.createModule(.{ .target = target, .optimize = optimize, .link_libc = true, .link_libcpp = native_memory != null }),
     });
     const module = library.root_module;
     module.addIncludePath(b.path(uv_root ++ "/include"));
@@ -45,6 +46,21 @@ pub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builti
     module.addCSourceFile(.{ .file = b.path("src/extensions/native_uv_fs_write.c"), .flags = flags });
     module.addCSourceFile(.{ .file = b.path("src/extensions/native_node_options_environment.c"), .flags = flags });
     module.addCSourceFile(.{ .file = b.path("src/extensions/native_node_check_failure.c"), .flags = flags });
+    if (native_memory) |memory| {
+        module.linkLibrary(memory);
+        module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_environment_map.cpp"),
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+        module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_managed_buffers.cpp"),
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+        module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_environment_paths.cpp"),
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+    }
     return library;
 }
 

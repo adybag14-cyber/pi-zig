@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "status": "root_finite_source_peer_closed",
+  "reviewed_utc": "2026-10-20 15:47:22 UTC",
+  "reviewer": "Root",
+  "execution": false,
+  "runtime_authority": false,
+  "qualification": false,
+  "scope": "AsyncWrap before/snapshot/InternalMakeCallback/after order and post-callback native lifetime",
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_async_wrap_make_callback.zig",
+    "sha256": "AE550CB8190EB284B576C3F9210EBAF4D9B5CB65589C35EAF38B7FF3274EA188",
+    "bytes": 3357
+  },
+  "packet": {
+    "sha256": "12F6E80DC97B806388E5EC9FDA404486BB3F216777BE4206D8862E9FDA666ECB"
+  },
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\async_wrap.cc.v24.13.txt",
+    "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC",
+    "bytes": 27043,
+    "excerpts_verified": [
+      {
+        "start": 125,
+        "end_exclusive": 161
+      },
+      {
+        "start": 657,
+        "end_exclusive": 680
+      }
+    ]
+  },
+  "review": [
+    "Trace.before receives the actual live State and runs before provider/context snapshots; the native trace implementation remains responsible for gating before async-ID read.",
+    "The call retains its existing Environment through InternalMakeCallback, native after emission and result handoff. No guest callback is introduced by trace or lifetime admission.",
+    "Provider and async context are saved before InternalMakeCallback. Static after receives only the saved provider/id and never dereferences State, which guest callback teardown may destroy.",
+    "After runs for ordinary return, empty MaybeLocal and failed native/guest completion. Failure is recorded in the same caller boundary before the native after operation.",
+    "Caller Scope owns the actual resource/receiver/context-frame handles. InternalMakeCallback's owned return is admitted to that same Scope only after after emission; Scope admission has its existing failure release path.",
+    "Trace operations are mandatory and have no default-disabled substitute; native category admission/controller/writer installation remains separate."
+  ],
+  "dependencies": [
+    "Existing genuine InternalMakeCallback and native boundary/Scope owners; StreamFields State4912FF07.",
+    "Native trace source-chain ADEDAEE761E5A7FDE425073E64CE9C22C6D6424D37DE85EEE18A7C3BDC37FAC5."
+  ],
+  "limits": [
+    "No trace output/category admission/controller/writer or full original allocation/retry qualification.",
+    "Source-only review; StreamBase18 controls qualify their selected callback composition after separate native execution."
+  ]
+}

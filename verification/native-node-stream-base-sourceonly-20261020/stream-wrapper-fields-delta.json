@@ -1,0 +1,55 @@
+{
+  "source_only": true,
+  "status": "draft_pending_finite_lifetime_peer",
+  "path": "src/extensions/native_node_async_wrap_state.zig",
+  "base_sha256": "B53C4D0C1412BA496A267C03F58F8AB88CDA0288336098180D986C9D9FC0A04F",
+  "successor_sha256": "25971BD94ADE152C7F419C20D76C5EE4A2001D57997290DE2FCD5D5008E8B277",
+  "base_bytes": 20128,
+  "successor_bytes": 26688,
+  "changes": [
+    {
+      "before": "/// Independently retained native owner. One realm cleanup registration covers\n",
+      "after": "/// FileHandle's actual internal fields belong to the JavaScript wrapper.\n/// BaseObject deletion clears only the native State pointer. The onread edge\n/// remains traced until the wrapper itself is collected, even after detach.\nconst StreamFields = struct {\n    registry: *Registry,\n    state: ?*State = null,\n    stream: ?*anyopaque = null,\n    onread: c.JSValue,\n};\n\n/// Independently retained native owner. One realm cleanup registration covers\n"
+    },
+    {
+      "before": "                .class_name = name, .finalizer = wrapperFinalizer, .gc_mark = wrapperMark,\n",
+      "after": "                .class_name = name,\n                .finalizer = if (index == @intFromEnum(Kind.filehandle)) streamWrapperFinalizer else wrapperFinalizer,\n                .gc_mark = if (index == @intFromEnum(Kind.filehandle)) streamWrapperMark else wrapperMark,\n"
+    },
+    {
+      "before": "        const raw = c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return null;\n        const state: *State = @ptrCast(@alignCast(raw));\n        return if (state.registry == self) state else null;\n    }\n    /// Caller has already selected the genuine template's instance prototype.\n",
+      "after": "        if (c.JS_GetClassID(value) == self.classId(.filehandle)) {\n            const fields = self.streamFields(value) orelse return null;\n            return fields.state;\n        }\n        const raw = c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return null;\n        const state: *State = @ptrCast(@alignCast(raw));\n        return if (state.registry == self) state else null;\n    }\n    fn streamFields(self: *const Registry, wrapper: c.JSValue) ?*StreamFields {\n        if (c.JS_GetClassID(wrapper) != self.classId(.filehandle)) return null;\n        const raw = c.JS_GetOpaque(wrapper, self.classId(.filehandle)) orelse return null;\n        const fields: *StreamFields = @ptrCast(@alignCast(raw));\n        return if (fields.registry == self) fields else null;\n    }\n    fn nativePointerIsEmpty(self: *const Registry, wrapper: c.JSValue) bool {\n        if (c.JS_GetClassID(wrapper) == self.classId(.filehandle)) {\n            const fields = self.streamFields(wrapper) orelse return false;\n            return fields.state == null;\n        }\n        return c.JS_GetOpaque(wrapper, c.JS_GetClassID(wrapper)) == null;\n    }\n    fn attachNativePointer(self: *Registry, wrapper: c.JSValue, state: *State) void {\n        if (c.JS_GetClassID(wrapper) == self.classId(.filehandle)) {\n            const fields = self.streamFields(wrapper).?;\n            std.debug.assert(fields.state == null);\n            fields.state = state;\n        } else {\n            _ = c.JS_SetOpaque(wrapper, state);\n        }\n    }\n    fn clearNativePointer(self: *Registry, wrapper: c.JSValue, state: *State) void {\n        if (c.JS_GetClassID(wrapper) == self.classId(.filehandle)) {\n            const fields = self.streamFields(wrapper).?;\n            std.debug.assert(fields.state == state);\n            fields.state = null;\n        } else {\n            _ = c.JS_SetOpaque(wrapper, null);\n        }\n    }\n    /// StreamBase's native constructor installs its actual pointer separately\n    /// from BaseObject's pointer. No guest property or substitute key is used.\n    pub fn setStreamPointer(self: *Registry, wrapper: c.JSValue, stream: *anyopaque) !void {\n        const fields = self.streamFields(wrapper) orelse return self.check(.invalid_wrap_brand);\n        if (fields.state == null) return self.check(.invalid_wrap_brand);\n        fields.stream = stream;\n    }\n    /// FromObject first requires the live BaseObject slot. A stale stream slot\n    /// after native deletion is therefore never dereferenced.\n    pub fn streamPointer(self: *const Registry, wrapper: c.JSValue) ?*anyopaque {\n        const fields = self.streamFields(wrapper) orelse return null;\n        if (fields.state == null) return null;\n        return fields.stream;\n    }\n    /// The actual getter works on a retained template instance after native\n    /// deletion too. The value is an internal wrapper edge, not a native Global.\n    pub fn streamOnRead(self: *Registry, s: *LocalScope, wrapper: c.JSValue) !c.JSValue {\n        const fields = self.streamFields(wrapper) orelse return self.check(.invalid_wrap_brand);\n        return s.own(a.duplicate(s.engine, fields.onread));\n    }\n    /// The public InternalFieldSet callback supplies its original IsFunction\n    /// CHECK before this native store. Publish the new edge before old cleanup.\n    pub fn setStreamOnRead(self: *Registry, s: *LocalScope, wrapper: c.JSValue, value: c.JSValue) !void {\n        const fields = self.streamFields(wrapper) orelse return self.check(.invalid_wrap_brand);\n        var previous = fields.onread;\n        fields.onread = a.duplicate(s.engine, value);\n        s.boundary.release(&previous);\n    }\n    /// Caller has already selected the genuine template's instance prototype.\n"
+    },
+    {
+      "before": "        const generation = try s.beforeAllocation();\n        return s.checkedAllocation(c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind)), generation);\n    }\n    pub fn append",
+      "after": "        // These native bytes are the FileHandle wrapper's internal fields.\n        // Attach them before checkedAllocation can retire a failed raw result.\n        var fields: ?*StreamFields = null;\n        if (kind == .filehandle) {\n            const created = try self.environment.allocator().create(StreamFields);\n            created.* = .{ .registry = self.retain(), .onread = c.pi_js_undefined() };\n            fields = created;\n        }\n        errdefer if (fields) |unattached| {\n            self.environment.allocator().destroy(unattached);\n            self.release();\n        };\n        const generation = try s.beforeAllocation();\n        const result = c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind));\n        if (!c.JS_IsException(result)) if (fields) |attached| {\n            _ = c.JS_SetOpaque(result, attached);\n            fields = null;\n        };\n        return s.checkedAllocation(result, generation);\n    }\n    pub fn append"
+    },
+    {
+      "before": "        if (c.JS_GetOpaque(wrapper, c.JS_GetClassID(wrapper)) != null)\n            return registry.check(.invalid_wrap_brand);\n",
+      "after": "        if (!registry.nativePointerIsEmpty(wrapper))\n            return registry.check(.invalid_wrap_brand);\n"
+    },
+    {
+      "before": "        _ = c.JS_SetOpaque(wrapper, self);\n        registry.append(&self.base_entry);\n",
+      "after": "        registry.attachNativePointer(wrapper, self);\n        registry.append(&self.base_entry);\n"
+    },
+    {
+      "before": "            if (self.wrapper) |wrapper| _ = c.JS_SetOpaque(wrapper, null);\n            self.wrapper = null;\n",
+      "after": "            if (self.wrapper) |wrapper| registry.clearNativePointer(wrapper, self);\n            self.wrapper = null;\n"
+    },
+    {
+      "before": "        if (self.wrapper) |wrapper| _ = c.JS_SetOpaque(wrapper, null);\n        self.wrapper = null;\n",
+      "after": "        if (self.wrapper) |wrapper| registry.clearNativePointer(wrapper, self);\n        self.wrapper = null;\n"
+    },
+    {
+      "before": "fn wrapperFinalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {\n",
+      "after": "fn streamWrapperFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {\n    const fields: *StreamFields = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));\n    const registry = fields.registry;\n    if (registry.environment.engine) |engine| {\n        var scope = LocalScope.init(engine);\n        var failure: ?anyerror = null;\n        if (fields.state) |state| state.retire(true) catch |err| {\n            scope.boundary.escaping();\n            failure = err;\n        };\n        std.debug.assert(fields.state == null);\n        _ = c.JS_SetOpaque(value, null);\n        scope.boundary.release(&fields.onread);\n        registry.environment.allocator().destroy(fields);\n        defer registry.release();\n        const ignored = scope.finish(if (failure) |err| @as(anyerror!c.JSValue, err) else c.pi_js_undefined()) catch |err| {\n            _ = callable.failure(engine, err, 0);\n            return;\n        };\n        engine.freeValue(ignored);\n    } else {\n        // Realm cleanup already deleted every actual native object. A retained\n        // JS wrapper may still retire during VM teardown after Env.disarm.\n        std.debug.assert(fields.state == null);\n        _ = c.JS_SetOpaque(value, null);\n        const onread = fields.onread;\n        fields.onread = c.pi_js_undefined();\n        c.JS_FreeValueRT(runtime, onread);\n        registry.environment.allocator().destroy(fields);\n        registry.release();\n    }\n}\nfn streamWrapperMark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {\n    const fields: *StreamFields = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));\n    c.JS_MarkValue(runtime, fields.onread, marker);\n    if (fields.state) |state| state.mark(runtime, marker);\n}\n\nfn wrapperFinalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {\n"
+    }
+  ],
+  "forward_and_inverse_exact": true,
+  "scope": "FileHandle wrapper internal fields only; existing three AsyncWrap classes and public template algorithms preserved; no constructor, trace, Read or runtime qualification.",
+  "remaining": [
+    "Actual StreamBase accessor signature and IsFunction CHECK composition",
+    "Actual native StreamBase pointer constructor and FileHandle callback template",
+    "Whole lifecycle supplies realm cleanup before Environment disarm and VM destruction",
+    "Source peer and controls; no execution"
+  ]
+}

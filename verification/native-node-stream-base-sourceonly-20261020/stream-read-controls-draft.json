@@ -1,0 +1,51 @@
+{
+  "status": "Source-written, assigned peer review pending; no compilation/execution",
+  "root": {
+    "path": "src/native_node_stream_read_test.zig",
+    "sha256": "E82BD953C752DF948C679617F2CA8FA2B5A08C9A00B0F83A02F08A7C1D45FEB3",
+    "bytes": 33640,
+    "declarations": 18,
+    "names": [
+      "Node StreamBase read initializes the real default listener and native wrapper pointer",
+      "Node StreamBase read selects internal onread beneath an ordinary own property and writes aliases first",
+      "Node StreamBase read allocates actual native backing without a JS wrapper under an exhausted JS heap",
+      "Node StreamBase read zero bytes consumes the managed token without a callback or trace",
+      "Node StreamBase read negative status publishes undefined and leaves the positive byte counter unchanged",
+      "Node StreamBase read full extent adopts the same native bytes and advances the counter before callback",
+      "Node StreamBase read short extent performs the real exact native reallocation and copies before adoption",
+      "Node StreamBase read later ArrayBuffer adoption bypasses the live global constructor",
+      "Node StreamBase read a returned flagged Error stays successful DATA",
+      "Node StreamBase read actual ordinary callback failure retains its exact reason through native cleanup",
+      "Node StreamBase read actual fatal callback reason remains owned while static after trace still runs",
+      "Node StreamBase read retains the selected callback across live replacement until caller scope retirement",
+      "Node StreamBase read ignored callback return retires only after the static after operation",
+      "Node StreamBase read can delete its actual native State before static after uses cached identifiers",
+      "Node StreamBase read enters the real captured frame and restores the enclosing native callback scope",
+      "Node StreamBase read disabled JS returns the actual empty callback while native buffer cleanup completes",
+      "Node StreamBase read uses the live listener head and advances bytes before a real forwarding method",
+      "Node StreamBase read null buffer negative status bypasses the managed map without an allocation"
+    ]
+  },
+  "production_packet": {
+    "path": "stream-read-composition-draft.json",
+    "sha256": "12F6E80DC97B806388E5EC9FDA404486BB3F216777BE4206D8862E9FDA666ECB"
+  },
+  "actual_path": "Each control calls real StreamBase/StreamResource, Environment, managed buffer table, VM native backing API, wrapper State, and InternalMakeCallback where selected.",
+  "limits": [
+    "The allocation fixture calls the actual native TryNew operation and accepts only its successful first attempt. Unexpected allocation failure terminates the fixture with an explicit panic; it neither fabricates a token nor substitutes a retry or default-fatal policy.",
+    "Trace before/after callbacks are native observers of actual delegation and cached snapshots, not category/controller/writer implementations.",
+    "Actual outer callback Scope uses skip_task_queues. Unselected hook-fatal/checkpoint/scheduling operations return explicit errors; their complete bootstrap is not qualified.",
+    "Native CHECK and intrinsic heap fatal negative cases are not exercised in this in-process root."
+  ],
+  "peer_assignment": {
+    "vm": "Fixture/Probe/Node/native allocation/Scope helpers and declarations7,9–11,13–16",
+    "modules": "Callback/read/Forwarder helpers and declarations1–6,8,12,17–18"
+  },
+  "build": {
+    "path": "stream-read-build-intake.json",
+    "added_lines": 15,
+    "install_only": true
+  },
+  "execution": false,
+  "api_successor": "stream-read-control-api-successor.json"
+}

@@ -1,0 +1,107 @@
+{
+  "status": "source-only; no native execution",
+  "original_revision": "nodejs/node@def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "copied_evidence": [
+    {
+      "path": "verification/native-backing-store-adoption-sourceonly-20261020/authority/managed-backing-source-and-abi-proposal.json",
+      "sha256": "C5076FE7E108CDC3B777EBFA4F9FB77B8DEA91B45951CFEE8023535E97115D9D",
+      "bytes": 34166
+    },
+    {
+      "path": "verification/native-backing-store-adoption-sourceonly-20261020/authority/backing-retry-and-fatal-source.json",
+      "sha256": "809EBC40DC749067E0DAD8375577815F4A7CCEDB8D7AE803E639638BF4888C24",
+      "bytes": 18065
+    },
+    {
+      "path": "verification/native-backing-store-adoption-sourceonly-20261020/backing-api-peer.json",
+      "sha256": "0036E96B5409E5DC006853859BA14A0D0B5C0A0A8CE52CE6F6B70CDB519F6F4F",
+      "bytes": 2450
+    }
+  ],
+  "verified_full_originals_and_exact_proposal_excerpts": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.cc.v24.13.txt",
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4",
+      "bytes": 28310,
+      "exact_excerpts": 3
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.h.v24.13.txt",
+      "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334",
+      "bytes": 18488,
+      "exact_excerpts": 2
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base-inl.h.v24.13.txt",
+      "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6",
+      "bytes": 5052,
+      "exact_excerpts": 1
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-callback-scope-sourceonly-20261019\\authority\\src_env.cc.txt",
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9",
+      "bytes": 84987,
+      "exact_excerpts": 3
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-callback-scope-sourceonly-20261019\\authority\\src_env.h.txt",
+      "sha256": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0",
+      "bytes": 45315,
+      "exact_excerpts": 3
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-callback-scope-sourceonly-20261019\\authority\\src_env-inl.h.txt",
+      "sha256": "41949D4DFA01B04174B0E881B1DB3DD12BF51B9428B89946504603700FCF3E5E",
+      "bytes": 28109,
+      "exact_excerpts": 1
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\node_file.v24.13.cc",
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F",
+      "bytes": 139386,
+      "exact_excerpts": 1
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\v8-array-buffer.v24.13.h",
+      "sha256": "5AB664C31420DB10083DB3EFB9712666EB0FA1C14C71F4BBBF9C11F9E3AE991E",
+      "bytes": 22006,
+      "exact_excerpts": 1
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\v8-backing-store.v24.13.cc",
+      "sha256": "62D58402ACEB6B07C6A245DD2810A78F6B3BA6495661CCD3B67A0DA83142F069",
+      "bytes": 37081,
+      "exact_excerpts": 1
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-existing-promise-settlement-sourceonly-20261019\\authority\\v8-api.v24.13.cc",
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "bytes": 489340,
+      "exact_excerpts": 2
+    }
+  ],
+  "heap_retry": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-captured-frame-logging-sourceonly-20261019\\authority\\heap.v24.13.cc",
+    "sha256": "F33FAAC1BE676AB4A381E9B3DF34C42BD15F4C9D0B3A57EB321E7C538B8EC3C2",
+    "bytes": 277029,
+    "start_line": 3089,
+    "end_line": 3122,
+    "start_byte": 114213,
+    "end_byte": 115578,
+    "text": "void* Heap::AllocateExternalBackingStore(\n    const std::function<void*(size_t)>& allocate, size_t byte_length) {\n  size_t max = isolate()->array_buffer_allocator()->MaxAllocationSize();\n  DCHECK(max <= JSArrayBuffer::kMaxByteLength);\n  if (byte_length > max) {\n    return nullptr;\n  }\n  if (!always_allocate() && new_space()) {\n    size_t new_space_backing_store_bytes =\n        new_space()->ExternalBackingStoreOverallBytes();\n    if ((!v8_flags.separate_gc_phases ||\n         !incremental_marking()->IsMajorMarking()) &&\n        new_space_backing_store_bytes >= 2 * DefaultMaxSemiSpaceSize() &&\n        new_space_backing_store_bytes >= byte_length) {\n      // Performing a young generation GC amortizes over the allocated backing\n      // store bytes and may free enough external bytes for this allocation.\n      CollectGarbage(NEW_SPACE,\n                     GarbageCollectionReason::kExternalMemoryPressure);\n    }\n  }\n  void* result = allocate(byte_length);\n  if (result) return result;\n  if (!always_allocate()) {\n    for (int i = 0; i < 2; i++) {\n      CollectGarbage(OLD_SPACE,\n                     GarbageCollectionReason::kExternalMemoryPressure);\n      result = allocate(byte_length);\n      if (result) return result;\n    }\n    CollectAllAvailableGarbage(\n        GarbageCollectionReason::kExternalMemoryPressure);\n  }\n  return allocate(byte_length);\n}\n"
+  },
+  "implemented_scope": [
+    "Actual installed fixed non-shared native allocation, with a separate uninitialized mode; no earlier JS wrapper.",
+    "Copied provider callbacks/native-domain identity, actual independent owner entitlement, logical null Data for genuine zero-length store.",
+    "Native Get/Dup/clear-before-Release valid without originating runtime; only distinct records may be used concurrently.",
+    "Consuming later intrinsic adoption with same-provider/domain admission, actual pending guard and unchanged constructor4 success/failure transfer.",
+    "Existing JS zero initialization, RAB/GSAB allocator, throwing view leases and ArrayBuffer length bound unchanged."
+  ],
+  "explicit_limits": [
+    "TryNew is exactly one native attempt; no claim to implement Heap::AllocateExternalBackingStore GC/retry/default fatal policy.",
+    "Native zero logical Data is null while the provider retains its private one-byte empty sentinel required by existing QuickJS internals.",
+    "Only Windows and Linux currently install the admitted managed provider; controls are guarded accordingly.",
+    "Cross-domain adoption is rejected; the selected consumer allocates/adopts in one Environment.",
+    "No StreamBase Environment map, callback/bootstrap/namespace integration or execution acceptance."
+  ]
+}

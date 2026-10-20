@@ -1,0 +1,66 @@
+{
+  "status": "source-only; no execution",
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "whole native backing allocation and consuming intrinsic adoption",
+      "byte_offset_before": 2252564,
+      "before": "int JS_PiAcquireArrayBufferView(JSContext *ctx, JSValueConst view,\n",
+      "after": "/* A whole fixed native store is distinct from a view lease.  Its provider\n   record contains only native callbacks and an independently retained native\n   allocation domain; it never owns a JS wrapper or a runtime pointer. */\nint JS_PiTryNewArrayBufferBackingStore(JSRuntime *rt, size_t byte_length,\n                                      bool zero_initialized,\n                                      JSPiArrayBufferBackingStore *out)\n{\n    JSPiArrayBufferBackingStore result = {0};\n    const JSPiArrayBufferStorageFunctions *functions =\n        &rt->array_buffer_storage_funcs;\n\n    assert(out != NULL);\n    assert(out->owner == NULL);\n    memset(out, 0, sizeof(*out));\n    if (!functions->allocate)\n        return 0;\n    result.owner = functions->allocate(functions->opaque, byte_length,\n                                       byte_length, zero_initialized ? 0 :\n                                       JS_PI_BACKING_UNINITIALIZED);\n    if (!result.owner)\n        return -1;\n    result.byte_length = byte_length;\n    result.functions = *functions;\n    *out = result;\n    return 1;\n}\n\nuint8_t *JS_PiArrayBufferBackingStoreData(\n    const JSPiArrayBufferBackingStore *store)\n{\n    assert(store != NULL);\n    /* The native BackingStore contract has a null logical Data for length 0.\n       The provider may keep a private empty-buffer sentinel for VM internals. */\n    if (!store->owner || !store->byte_length)\n        return NULL;\n    return store->functions.data(store->owner);\n}\n\nsize_t JS_PiArrayBufferBackingStoreByteLength(\n    const JSPiArrayBufferBackingStore *store)\n{\n    assert(store != NULL);\n    return store->owner ? store->byte_length : 0;\n}\n\nvoid JS_PiDupArrayBufferBackingStore(JSPiArrayBufferBackingStore *out,\n                                    const JSPiArrayBufferBackingStore *source)\n{\n    assert(out != NULL && source != NULL && out != source);\n    assert(out->owner == NULL);\n    *out = *source;\n    if (out->owner)\n        out->functions.retain(out->owner);\n}\n\nvoid JS_PiReleaseArrayBufferBackingStore(JSPiArrayBufferBackingStore *store)\n{\n    void *owner;\n    void (*release)(void *);\n\n    assert(store != NULL);\n    owner = store->owner;\n    release = store->functions.release;\n    memset(store, 0, sizeof(*store));\n    if (owner)\n        release(owner);\n}\n\nstatic bool js_pi_backing_store_provider_matches(\n    const JSPiArrayBufferStorageFunctions *a,\n    const JSPiArrayBufferStorageFunctions *b)\n{\n    return a->allocate == b->allocate &&\n           a->shared_owner == b->shared_owner &&\n           a->data == b->data &&\n           a->byte_length == b->byte_length &&\n           a->resize == b->resize &&\n           a->retain == b->retain &&\n           a->release == b->release &&\n           a->opaque == b->opaque;\n}\n\nJSValue JS_PiAdoptArrayBufferBackingStore(JSContext *ctx,\n                                         JSPiArrayBufferBackingStore *store)\n{\n    JSPiArrayBufferBackingStore owned;\n    void *storage;\n\n    assert(store != NULL);\n    owned = *store;\n    memset(store, 0, sizeof(*store));\n    /* This native entry consumes its input even when an earlier actual event\n       prevents wrapper allocation.  Native release cannot execute guest code. */\n    if (JS_HasException(ctx)) {\n        JS_PiReleaseArrayBufferBackingStore(&owned);\n        return JS_EXCEPTION;\n    }\n    if (!owned.owner)\n        return JS_ThrowTypeError(ctx, \"empty native ArrayBuffer backing store\");\n    if (!js_pi_backing_store_provider_matches(\n            &owned.functions, &ctx->rt->array_buffer_storage_funcs)) {\n        JS_PiReleaseArrayBufferBackingStore(&owned);\n        return JS_ThrowTypeError(ctx, \"native ArrayBuffer backing provider mismatch\");\n    }\n    storage = owned.owner;\n    owned.owner = NULL;\n    /* constructor4 consumes this entitlement on both success and failure.\n       The validated runtime table remains alive for the resulting wrapper. */\n    return js_array_buffer_constructor4(\n        ctx, JS_UNDEFINED, owned.byte_length, NULL, JS_CLASS_ARRAY_BUFFER,\n        NULL, NULL, NULL, false, storage, false);\n}\n\nint JS_PiAcquireArrayBufferView(JSContext *ctx, JSValueConst view,\n"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "explicit native fixed uninitialized storage flag",
+      "byte_offset_before": 71309,
+      "before": "#define JS_PI_BACKING_RESIZABLE 2u\n",
+      "after": "#define JS_PI_BACKING_RESIZABLE 2u\n/* Only fixed non-shared native stores request this mode. JS buffers stay zeroed. */\n#define JS_PI_BACKING_UNINITIALIZED 4u\n"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "whole native store ABI",
+      "byte_offset_before": 72436,
+      "before": "/* An owned native entitlement and the intrinsic view span at acquisition.\n",
+      "after": "/* A fixed, non-shared WHOLE native allocation, never an arbitrary view span.\n   Initialize records to zero; only the functions below may create/copy them.\n   The copied provider contains native callbacks and a native allocation-domain\n   pointer, not a JS value, Engine, context or runtime.  Native Data is NULL for\n   a zero-length store, whose non-NULL owner still represents an entitlement.\n   Dup/Get/Release need no live VM; distinct owned records can be used on native\n   workers.  Concurrent mutation of the same record is not supported. */\ntypedef struct JSPiArrayBufferBackingStore {\n    void *owner;\n    size_t byte_length;\n    JSPiArrayBufferStorageFunctions functions;\n} JSPiArrayBufferBackingStore;\n/* One native allocation attempt: 1 success; 0 no installed provider; -1 native\n   allocation failure.  out must be empty and remains empty on failure.\n   This performs no JS allocation, collection, pending change or OOM report.\n   Original embedding GC/retry and terminal allocation-failure policy are the\n   caller's separate responsibility.  Allocation runs on the runtime thread. */\nJS_EXTERN int JS_PiTryNewArrayBufferBackingStore(\n    JSRuntime *rt, size_t byte_length, bool zero_initialized,\n    JSPiArrayBufferBackingStore *out);\nJS_EXTERN uint8_t *JS_PiArrayBufferBackingStoreData(\n    const JSPiArrayBufferBackingStore *store);\nJS_EXTERN size_t JS_PiArrayBufferBackingStoreByteLength(\n    const JSPiArrayBufferBackingStore *store);\nJS_EXTERN void JS_PiDupArrayBufferBackingStore(\n    JSPiArrayBufferBackingStore *out,\n    const JSPiArrayBufferBackingStore *source);\nJS_EXTERN void JS_PiReleaseArrayBufferBackingStore(\n    JSPiArrayBufferBackingStore *store);\n/* Consume and clear store on EVERY outcome; create the intrinsic fixed\n   ArrayBuffer only here, without a copy or a guest constructor call.  Existing\n   actual pending wins before allocation.  The installed provider and native\n   allocation domain must match; cross-domain adoption is not supported.\n   Existing VM ArrayBuffer length limits and wrapper allocation failures apply.\n   The owned result is an ArrayBuffer or JS_EXCEPTION with actual pending. */\nJS_EXTERN JSValue JS_PiAdoptArrayBufferBackingStore(\n    JSContext *ctx, JSPiArrayBufferBackingStore *store);\n\n/* An owned native entitlement and the intrinsic view span at acquisition.\n"
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "label": "only selected fixed non-shared mode accepts uninitialized allocation",
+      "byte_offset_before": 6965,
+      "before": "    if (length > maximum) return NULL;\n    if (resizable) {\n",
+      "after": "    if (length > maximum) return NULL;\n    if ((flags & JS_PI_BACKING_UNINITIALIZED) &&\n        (flags & (JS_PI_BACKING_SHARED | JS_PI_BACKING_RESIZABLE)))\n        return NULL;\n    if (resizable) {\n"
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "label": "actual malloc for native uninitialized fixed storage",
+      "byte_offset_before": 8528,
+      "before": "        allocation = calloc(1, allocation_size);\n        if (!allocation) goto fail;\n",
+      "after": "        allocation = (flags & JS_PI_BACKING_UNINITIALIZED) ?\n            malloc(allocation_size) : calloc(1, allocation_size);\n        if (!allocation) goto fail;\n"
+    }
+  ],
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before_sha256": "6758D2A5E4F3BBBFBB784D049581C621A246ED08F20C039E93D1F3FF87438731",
+      "before_bytes": 2362794,
+      "after_sha256": "E61EF49E44E22C2B327F229B0285D801598773B8BFE90A9B0D175071439AD98A",
+      "after_bytes": 2366845,
+      "preserved": "verification/native-backing-store-adoption-sourceonly-20261020/preserved/vendor__quickjs__quickjs.c.txt"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before_sha256": "E408EBB5D24313F29EE05BAB8A93B7AF379D1166A94E0E9A0093193A6143CA82",
+      "before_bytes": 104758,
+      "after_sha256": "B1BC3EF2E9E5DCD3EDC915231AD7EAA1C4ED4F1DBEA49BFBCF57425D528C343D",
+      "after_bytes": 107135,
+      "preserved": "verification/native-backing-store-adoption-sourceonly-20261020/preserved/vendor__quickjs__quickjs.h.txt"
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "before_sha256": "940CAAAE81B2A4098BE60DDD42D44B3CC3D1347341ED2D9557E0D34AFA9E928C",
+      "before_bytes": 17800,
+      "after_sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC",
+      "after_bytes": 18016,
+      "preserved": "verification/native-backing-store-adoption-sourceonly-20261020/preserved/src__extensions__engine_abi.c.txt"
+    }
+  ]
+}

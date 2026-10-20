@@ -1456,6 +1456,8 @@ JS_EXTERN void JS_SetSharedArrayBufferFunctions(JSRuntime *rt, const JSSharedArr
    storage must remain valid after the originating JSRuntime is destroyed. */
 #define JS_PI_BACKING_SHARED    1u
 #define JS_PI_BACKING_RESIZABLE 2u
+/* Only fixed non-shared native stores request this mode. JS buffers stay zeroed. */
+#define JS_PI_BACKING_UNINITIALIZED 4u
 typedef struct JSPiArrayBufferStorageFunctions {
     void *(*allocate)(void *opaque, size_t byte_length, size_t max_byte_length,
                       unsigned flags);
@@ -1474,6 +1476,44 @@ typedef struct JSPiArrayBufferStorageFunctions {
 } JSPiArrayBufferStorageFunctions;
 JS_EXTERN void JS_PiSetArrayBufferStorageFunctions(
     JSRuntime *rt, const JSPiArrayBufferStorageFunctions *functions);
+
+/* A fixed, non-shared WHOLE native allocation, never an arbitrary view span.
+   Initialize records to zero; only the functions below may create/copy them.
+   The copied provider contains native callbacks and a native allocation-domain
+   pointer, not a JS value, Engine, context or runtime.  Native Data is NULL for
+   a zero-length store, whose non-NULL owner still represents an entitlement.
+   Dup/Get/Release need no live VM; distinct owned records can be used on native
+   workers.  Concurrent mutation of the same record is not supported. */
+typedef struct JSPiArrayBufferBackingStore {
+    void *owner;
+    size_t byte_length;
+    JSPiArrayBufferStorageFunctions functions;
+} JSPiArrayBufferBackingStore;
+/* One native allocation attempt: 1 success; 0 no installed provider; -1 native
+   allocation failure.  out must be empty and remains empty on failure.
+   This performs no JS allocation, collection, pending change or OOM report.
+   Original embedding GC/retry and terminal allocation-failure policy are the
+   caller's separate responsibility.  Allocation runs on the runtime thread. */
+JS_EXTERN int JS_PiTryNewArrayBufferBackingStore(
+    JSRuntime *rt, size_t byte_length, bool zero_initialized,
+    JSPiArrayBufferBackingStore *out);
+JS_EXTERN uint8_t *JS_PiArrayBufferBackingStoreData(
+    const JSPiArrayBufferBackingStore *store);
+JS_EXTERN size_t JS_PiArrayBufferBackingStoreByteLength(
+    const JSPiArrayBufferBackingStore *store);
+JS_EXTERN void JS_PiDupArrayBufferBackingStore(
+    JSPiArrayBufferBackingStore *out,
+    const JSPiArrayBufferBackingStore *source);
+JS_EXTERN void JS_PiReleaseArrayBufferBackingStore(
+    JSPiArrayBufferBackingStore *store);
+/* Consume and clear store on EVERY outcome; create the intrinsic fixed
+   ArrayBuffer only here, without a copy or a guest constructor call.  Existing
+   actual pending wins before allocation.  The installed provider and native
+   allocation domain must match; cross-domain adoption is not supported.
+   Existing VM ArrayBuffer length limits and wrapper allocation failures apply.
+   The owned result is an ArrayBuffer or JS_EXCEPTION with actual pending. */
+JS_EXTERN JSValue JS_PiAdoptArrayBufferBackingStore(
+    JSContext *ctx, JSPiArrayBufferBackingStore *store);
 
 /* An owned native entitlement and the intrinsic view span at acquisition.
    Neither this record nor its callbacks contain a JS/Engine/runtime pointer.
@@ -1613,6 +1653,54 @@ JS_EXTERN int JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx,
    transfers one owned value; failure leaves the output untouched. */
 JS_EXTERN int JS_ReadCapturedStackFrameSourceName(JSContext *ctx,
     JSValueConst frame, JSValue *source_name);
+/* Native Script/location provenance. These owners are immutable after compile
+   publication and contain only the actual complete source and primitive origin
+   values admitted by this VM's compiler. All operations use the runtime's owner
+   thread; every externally retained Script must be freed before FreeRuntime.
+   Neither acquisition nor primitive projections observe guest properties. */
+typedef struct JSNativeScript JSNativeScript;
+typedef struct JSPiScriptInfo {
+    int source_length;             /* UTF-16 code units */
+    int source_byte_length;        /* actual parser input bytes */
+    int64_t line_offset;           /* actual input starting line minus one */
+    int column_offset;
+    bool is_eval;
+    bool is_module;
+} JSPiScriptInfo;
+typedef struct JSPiScriptPositionInfo {
+    int64_t line;                   /* zero based, with optional origin offset */
+    int64_t column;
+    int line_start;                 /* UTF-16 source indices, no origin offset */
+    int line_end;
+} JSPiScriptPositionInfo;
+/* Borrowed genuine bytecode/function or captured frame -> owned Script/NULL.
+   Native/Proxy/bound functions and filename-only frames have no Script.
+   Frame failure leaves the position output unchanged; success writes the
+   actual selected UTF-16 position, or -1 when no bytecode PC is available. */
+JS_EXTERN JSNativeScript *JS_PiGetCompiledScript(JSValueConst value);
+JS_EXTERN JSNativeScript *JS_PiGetCapturedStackFrameScript(JSValueConst frame,
+                                                         int *position);
+JS_EXTERN JSNativeScript *JS_PiDupScript(JSNativeScript *script);
+JS_EXTERN void JS_PiFreeScript(JSNativeScript *script);
+JS_EXTERN int JS_PiScriptReadInfo(const JSNativeScript *script,
+                                JSPiScriptInfo *info);
+/* Owned primitive values; NULL Script returns undefined. No allocation,
+   pending-state operation, or guest conversion. ResourceName implements the
+   actual sourceURL-over-filename projection. SourceMapURL may be undefined. */
+JS_EXTERN JSValue JS_PiScriptGetSource(const JSNativeScript *script);
+JS_EXTERN JSValue JS_PiScriptGetResourceName(const JSNativeScript *script);
+JS_EXTERN JSValue JS_PiScriptGetSourceMapURL(const JSNativeScript *script);
+/* Allocation-free projection of the initialized line-end algorithm: LF,
+   lone CR, LS/PS, CRLF at LF, and an EOF sentinel including empty source.
+   Negative position clamps to zero. Beyond EOF/invalid outputs return -1
+   without writes. This is not V8's separate uninitialized LF-only fallback. */
+JS_EXTERN int JS_PiScriptGetPositionInfo(const JSNativeScript *script,
+    int position, bool with_offset, JSPiScriptPositionInfo *info);
+/* Actual source substring. Requires the Script's runtime; prior pending wins.
+   Invalid position returns undefined. Intrinsic substring allocation can fail. */
+JS_EXTERN JSValue JS_PiScriptGetSourceLine(JSContext *ctx,
+    const JSNativeScript *script, int position);
+
 /* return != 0 if the JS code needs to be interrupted */
 typedef int JSInterruptHandler(JSRuntime *rt, void *opaque);
 JS_EXTERN void JS_SetInterruptHandler(JSRuntime *rt, JSInterruptHandler *cb, void *opaque);

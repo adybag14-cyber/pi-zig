@@ -1,0 +1,42 @@
+{
+  "status": "CLOSED finite source-only controls peer",
+  "root": {
+    "path": "src/native_node_environment_map_test.zig",
+    "sha256": "7E58CB891ECF37A215A4D637B64A3F1B062FB3763552DEBC6C775ADDA603F15E",
+    "bytes": 23495
+  },
+  "assigned": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    19,
+    21,
+    22
+  ],
+  "support": {
+    "cpp": "DB9AF1D3006DD342E70BF83BC93FAD02936802E12504702E44017E083BB5BB89",
+    "header": "08242520A8862FB89BAC5815337F35D8E628302DC0676377D75881F14EB3B049"
+  },
+  "findings": [
+    "Actual full native reservation and temporary std::new_handler force long temporary-key allocation on replacement/Get/Query/Delete. Handler observes the full quota, releases its reservation, and the adapter restores the previous handler before returning.",
+    "Short String Get/JS Get uses the real SSO path under the same exhausted quota with zero handler calls, so controls distinguish genuine allocations from imposed charges.",
+    "Get callback reenters real mutation only after the native mutex unlock and consumes the still-owned original value. Separate native and JS-facing Get observations establish the second original long-string copy and complete retirement.",
+    "Original C-string prefixes versus full spans, caller-buffer mutation, case-sensitive keys, empty-key exclusion and empty values are tested through the actual C owner.",
+    "A separate default-allocator std::unordered_map executes the exact insertion/deletion history as the unsorted native iteration oracle. Clone is independently mutated after the real map copy."
+  ],
+  "limits": [
+    "Fixture/Worker controls14–18/20 and allocator/guard lifetime belong to VM's separate peer.",
+    "Native test adapter is serial-process-only because std::new_handler is process-global.",
+    "No build, execution, JS environment interceptor, permission or public bootstrap qualification."
+  ]
+}

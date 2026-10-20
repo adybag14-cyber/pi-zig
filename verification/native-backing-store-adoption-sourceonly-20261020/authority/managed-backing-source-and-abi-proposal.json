@@ -1,0 +1,227 @@
+{
+  "status": "exact original source for the next private StreamBase native ownership unit; no implementation or execution qualification",
+  "documents": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.cc.v24.13.txt",
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4",
+      "bytes": 28310,
+      "excerpts": [
+        {
+          "start_line": 175,
+          "end_line": 179,
+          "start_byte": 4731,
+          "end_byte": 4915,
+          "text": "void StreamBase::SetWriteResult(const StreamWriteResult& res) {\n  env_->stream_base_state()[kBytesWritten] = res.bytes;\n  env_->stream_base_state()[kLastWriteWasAsync] = res.async;\n}\n\n"
+        },
+        {
+          "start_line": 447,
+          "end_line": 479,
+          "start_byte": 13253,
+          "end_byte": 14384,
+          "text": "MaybeLocal<Value> StreamBase::CallJSOnreadMethod(ssize_t nread,\n                                                 Local<ArrayBuffer> ab,\n                                                 size_t offset,\n                                                 StreamBaseJSChecks checks) {\n  Environment* env = env_;\n\n  DCHECK_EQ(static_cast<int32_t>(nread), nread);\n  DCHECK_LE(offset, INT32_MAX);\n\n  if (checks == DONT_SKIP_NREAD_CHECKS) {\n    if (ab.IsEmpty()) {\n      DCHECK_EQ(offset, 0);\n      DCHECK_LE(nread, 0);\n    } else {\n      DCHECK_GE(nread, 0);\n    }\n  }\n\n  env->stream_base_state()[kReadBytesOrError] = static_cast<int32_t>(nread);\n  env->stream_base_state()[kArrayBufferOffset] = offset;\n\n  Local<Value> argv[] = {\n    ab.IsEmpty() ? Undefined(env->isolate()).As<Value>() : ab.As<Value>()\n  };\n\n  AsyncWrap* wrap = GetAsyncWrap();\n  CHECK_NOT_NULL(wrap);\n  Local<Value> onread = wrap->object()\n                            ->GetInternalField(StreamBase::kOnReadFunctionField)\n                            .As<Value>();\n  CHECK(onread->IsFunction());\n  return wrap->MakeCallback(onread.As<Function>(), arraysize(argv), argv);\n}\n"
+        },
+        {
+          "start_line": 687,
+          "end_line": 717,
+          "start_byte": 22122,
+          "end_byte": 23290,
+          "text": "uv_buf_t EmitToJSStreamListener::OnStreamAlloc(size_t suggested_size) {\n  CHECK_NOT_NULL(stream_);\n  Environment* env = static_cast<StreamBase*>(stream_)->stream_env();\n  return env->allocate_managed_buffer(suggested_size);\n}\n\nvoid EmitToJSStreamListener::OnStreamRead(ssize_t nread, const uv_buf_t& buf_) {\n  CHECK_NOT_NULL(stream_);\n  StreamBase* stream = static_cast<StreamBase*>(stream_);\n  Environment* env = stream->stream_env();\n  Isolate* isolate = env->isolate();\n  HandleScope handle_scope(isolate);\n  Context::Scope context_scope(env->context());\n  std::unique_ptr<BackingStore> bs = env->release_managed_buffer(buf_);\n\n  if (nread <= 0)  {\n    if (nread < 0)\n      stream->CallJSOnreadMethod(nread, Local<ArrayBuffer>());\n    return;\n  }\n\n  CHECK_LE(static_cast<size_t>(nread), bs->ByteLength());\n  if (static_cast<size_t>(nread) != bs->ByteLength()) {\n    std::unique_ptr<BackingStore> old_bs = std::move(bs);\n    bs = ArrayBuffer::NewBackingStore(\n        isolate, nread, BackingStoreInitializationMode::kUninitialized);\n    memcpy(bs->Data(), old_bs->Data(), nread);\n  }\n\n  stream->CallJSOnreadMethod(nread, ArrayBuffer::New(isolate, std::move(bs)));\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.h.v24.13.txt",
+      "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334",
+      "bytes": 18488,
+      "excerpts": [
+        {
+          "start_line": 118,
+          "end_line": 142,
+          "start_byte": 3374,
+          "end_byte": 4777,
+          "text": "  virtual ~StreamListener();\n\n  // This is called when a stream wants to allocate memory before\n  // reading data into the freshly allocated buffer (i.e. it is always followed\n  // by a `OnStreamRead()` call).\n  // This memory may be statically or dynamically allocated; for example,\n  // a protocol parser may want to read data into a static buffer if it knows\n  // that all data is going to be fully handled during the next\n  // `OnStreamRead()` call.\n  // The returned buffer does not need to contain `suggested_size` bytes.\n  // The default implementation of this method returns a buffer that has exactly\n  // the suggested size and is allocated using malloc().\n  // It is not valid to return a zero-length buffer from this method.\n  // It is not guaranteed that the corresponding `OnStreamRead()` call\n  // happens in the same event loop turn as this call.\n  virtual uv_buf_t OnStreamAlloc(size_t suggested_size) = 0;\n\n  // `OnStreamRead()` is called when data is available on the socket and has\n  // been read into the buffer provided by `OnStreamAlloc()`.\n  // The `buf` argument is the return value of `uv_buf_t`, or may be a buffer\n  // with base nullptr in case of an error.\n  // `nread` is the number of read bytes (which is at most the buffer length),\n  // or, if negative, a libuv error code.\n  virtual void OnStreamRead(ssize_t nread,\n                            const uv_buf_t& buf) = 0;\n"
+        },
+        {
+          "start_line": 403,
+          "end_line": 415,
+          "start_byte": 16021,
+          "end_byte": 16307,
+          "text": "  enum StreamBaseStateFields {\n    kReadBytesOrError,\n    kArrayBufferOffset,\n    kBytesWritten,\n    kLastWriteWasAsync,\n    kNumStreamBaseStateFields\n  };\n\n private:\n  Environment* env_;\n  EmitToJSStreamListener default_listener_;\n\n  void SetWriteResult(const StreamWriteResult& res);\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base-inl.h.v24.13.txt",
+      "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6",
+      "bytes": 5052,
+      "excerpts": [
+        {
+          "start_line": 70,
+          "end_line": 99,
+          "start_byte": 1844,
+          "end_byte": 2787,
+          "text": "uv_buf_t StreamResource::EmitAlloc(size_t suggested_size) {\n  DebugSealHandleScope seal_handle_scope;\n  return listener_->OnStreamAlloc(suggested_size);\n}\n\nvoid StreamResource::EmitRead(ssize_t nread, const uv_buf_t& buf) {\n  DebugSealHandleScope seal_handle_scope;\n  if (nread > 0)\n    bytes_read_ += static_cast<uint64_t>(nread);\n  listener_->OnStreamRead(nread, buf);\n}\n\nvoid StreamResource::EmitAfterWrite(WriteWrap* w, int status) {\n  DebugSealHandleScope seal_handle_scope;\n  listener_->OnStreamAfterWrite(w, status);\n}\n\nvoid StreamResource::EmitAfterShutdown(ShutdownWrap* w, int status) {\n  DebugSealHandleScope seal_handle_scope;\n  listener_->OnStreamAfterShutdown(w, status);\n}\n\nvoid StreamResource::EmitWantsWrite(size_t suggested_size) {\n  DebugSealHandleScope seal_handle_scope;\n  listener_->OnStreamWantsWrite(suggested_size);\n}\n\nStreamBase::StreamBase(Environment* env) : env_(env) {\n  PushStreamListener(&default_listener_);\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-callback-scope-sourceonly-20261019\\authority\\src_env.cc.txt",
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9",
+      "bytes": 84987,
+      "excerpts": [
+        {
+          "start_line": 733,
+          "end_line": 755,
+          "start_byte": 29271,
+          "end_byte": 30036,
+          "text": "\nuv_buf_t Environment::allocate_managed_buffer(const size_t suggested_size) {\n  std::unique_ptr<BackingStore> bs = ArrayBuffer::NewBackingStore(\n      isolate(),\n      suggested_size,\n      BackingStoreInitializationMode::kUninitialized);\n  uv_buf_t buf = uv_buf_init(static_cast<char*>(bs->Data()), bs->ByteLength());\n  released_allocated_buffers_.emplace(buf.base, std::move(bs));\n  return buf;\n}\n\nstd::unique_ptr<BackingStore> Environment::release_managed_buffer(\n    const uv_buf_t& buf) {\n  std::unique_ptr<BackingStore> bs;\n  if (buf.base != nullptr) {\n    auto it = released_allocated_buffers_.find(buf.base);\n    CHECK_NE(it, released_allocated_buffers_.end());\n    bs = std::move(it->second);\n    released_allocated_buffers_.erase(it);\n  }\n  return bs;\n}\n\n"
+        },
+        {
+          "start_line": 782,
+          "end_line": 816,
+          "start_byte": 30801,
+          "end_byte": 32576,
+          "text": "Environment::Environment(IsolateData* isolate_data,\n                         Isolate* isolate,\n                         const std::vector<std::string>& args,\n                         const std::vector<std::string>& exec_args,\n                         const EnvSerializeInfo* env_info,\n                         EnvironmentFlags::Flags flags,\n                         ThreadId thread_id,\n                         std::string_view thread_name)\n    : isolate_(isolate),\n      external_memory_accounter_(new ExternalMemoryAccounter()),\n      isolate_data_(isolate_data),\n      async_hooks_(isolate, MAYBE_FIELD_PTR(env_info, async_hooks)),\n      immediate_info_(isolate, MAYBE_FIELD_PTR(env_info, immediate_info)),\n      timeout_info_(isolate_, 1, MAYBE_FIELD_PTR(env_info, timeout_info)),\n      tick_info_(isolate, MAYBE_FIELD_PTR(env_info, tick_info)),\n      timer_base_(uv_now(isolate_data->event_loop())),\n      exec_argv_(exec_args),\n      argv_(args),\n      exec_path_(Environment::GetExecPath(args)),\n      exit_info_(\n          isolate_, kExitInfoFieldCount, MAYBE_FIELD_PTR(env_info, exit_info)),\n      should_abort_on_uncaught_toggle_(\n          isolate_,\n          1,\n          MAYBE_FIELD_PTR(env_info, should_abort_on_uncaught_toggle)),\n      stream_base_state_(isolate_,\n                         StreamBase::kNumStreamBaseStateFields,\n                         MAYBE_FIELD_PTR(env_info, stream_base_state)),\n      time_origin_(performance::performance_process_start),\n      time_origin_timestamp_(performance::performance_process_start_timestamp),\n      environment_start_(PERFORMANCE_NOW()),\n      flags_(flags),\n      thread_id_(thread_id.id == static_cast<uint64_t>(-1)\n                     ? AllocateEnvironmentThreadId().id\n                     : thread_id.id),\n"
+        },
+        {
+          "start_line": 993,
+          "end_line": 1071,
+          "start_byte": 39379,
+          "end_byte": 41980,
+          "text": "Environment::~Environment() {\n  HandleScope handle_scope(isolate());\n  Local<Context> ctx = context();\n\n  if (Environment** interrupt_data = interrupt_data_.load()) {\n    // There are pending RequestInterrupt() callbacks. Tell them not to run,\n    // then force V8 to run interrupts by compiling and running an empty script\n    // so as not to leak memory.\n    *interrupt_data = nullptr;\n\n    Isolate::AllowJavascriptExecutionScope allow_js_here(isolate());\n    TryCatch try_catch(isolate());\n    Context::Scope context_scope(ctx);\n\n#ifdef DEBUG\n    bool consistency_check = false;\n    isolate()->RequestInterrupt([](Isolate*, void* data) {\n      *static_cast<bool*>(data) = true;\n    }, &consistency_check);\n#endif\n\n    Local<Script> script;\n    if (Script::Compile(ctx, String::Empty(isolate())).ToLocal(&script))\n      USE(script->Run(ctx));\n\n    DCHECK(consistency_check);\n  }\n\n  // FreeEnvironment() should have set this.\n  CHECK(is_stopping());\n\n  if (heapsnapshot_near_heap_limit_callback_added_) {\n    RemoveHeapSnapshotNearHeapLimitCallback(0);\n  }\n\n  isolate()->GetHeapProfiler()->RemoveBuildEmbedderGraphCallback(\n      BuildEmbedderGraph, this);\n\n#if HAVE_INSPECTOR\n  // Destroy inspector agent before erasing the context. The inspector\n  // destructor depends on the context still being accessible.\n  inspector_agent_.reset();\n#endif\n\n  // Sub-realms should have been cleared with Environment's cleanup.\n  DCHECK_EQ(shadow_realms_.size(), 0);\n  principal_realm_.reset();\n\n  if (trace_state_observer_) {\n    tracing::AgentWriterHandle* writer = GetTracingAgentWriter();\n    CHECK_NOT_NULL(writer);\n    if (TracingController* tracing_controller = writer->GetTracingController())\n      tracing_controller->RemoveTraceStateObserver(trace_state_observer_.get());\n  }\n\n  TRACE_EVENT_NESTABLE_ASYNC_END0(\n    TRACING_CATEGORY_NODE1(environment), \"Environment\", this);\n\n  // Do not unload addons on the main thread. Some addons need to retain memory\n  // beyond the Environment's lifetime, and unloading them early would break\n  // them; with Worker threads, we have the opportunity to be stricter.\n  // Also, since the main thread usually stops just before the process exits,\n  // this is far less relevant here.\n  if (!is_main_thread()) {\n    // Dereference all addons that were loaded into this environment.\n    for (binding::DLib& addon : loaded_addons_) {\n      addon.Close();\n    }\n  }\n\n  delete external_memory_accounter_;\n  if (cpu_profiler_) {\n    for (auto& it : pending_profiles_) {\n      cpu_profiler_->Stop(it);\n    }\n    cpu_profiler_->Dispose();\n    cpu_profiler_ = nullptr;\n  }\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-callback-scope-sourceonly-20261019\\authority\\src_env.h.txt",
+      "sha256": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0",
+      "bytes": 45315,
+      "excerpts": [
+        {
+          "start_line": 1096,
+          "end_line": 1107,
+          "start_byte": 39230,
+          "end_byte": 39646,
+          "text": "  // These may be read by ctors and should be listed before complex fields.\n  std::atomic_bool is_stopping_{false};\n  std::atomic_bool can_call_into_js_{true};\n\n  AsyncHooks async_hooks_;\n  ImmediateInfo immediate_info_;\n  AliasedInt32Array timeout_info_;\n  TickInfo tick_info_;\n  permission::Permission permission_;\n  const uint64_t timer_base_;\n  std::shared_ptr<KVStore> env_vars_;\n  bool printed_error_ = false;\n"
+        },
+        {
+          "start_line": 1154,
+          "end_line": 1163,
+          "start_byte": 41529,
+          "end_byte": 41773,
+          "text": "\n  AliasedInt32Array exit_info_;\n\n  AliasedUint32Array should_abort_on_uncaught_toggle_;\n  int should_not_abort_scope_counter_ = 0;\n\n  std::unique_ptr<TrackingTraceStateObserver> trace_state_observer_;\n\n  AliasedInt32Array stream_base_state_;\n\n"
+        },
+        {
+          "start_line": 1243,
+          "end_line": 1251,
+          "start_byte": 44793,
+          "end_byte": 45110,
+          "text": "\n  builtins::BuiltinLoader builtin_loader_;\n  EmbedderPreloadCallback embedder_preload_;\n\n  // Used by allocate_managed_buffer() and release_managed_buffer() to keep\n  // track of the BackingStore for a given pointer.\n  std::unordered_map<char*, std::unique_ptr<v8::BackingStore>>\n      released_allocated_buffers_;\n\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-callback-scope-sourceonly-20261019\\authority\\src_env-inl.h.txt",
+      "sha256": "41949D4DFA01B04174B0E881B1DB3DD12BF51B9428B89946504603700FCF3E5E",
+      "bytes": 28109,
+      "excerpts": [
+        {
+          "start_line": 370,
+          "end_line": 375,
+          "start_byte": 10216,
+          "end_byte": 10312,
+          "text": "}\n\ninline AliasedInt32Array& Environment::stream_base_state() {\n  return stream_base_state_;\n}\n\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\node_file.v24.13.cc",
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F",
+      "bytes": 139386,
+      "excerpts": [
+        {
+          "start_line": 545,
+          "end_line": 665,
+          "start_byte": 19384,
+          "end_byte": 23309,
+          "text": "int FileHandle::ReadStart() {\n  if (!IsAlive() || IsClosing())\n    return UV_EOF;\n\n  reading_ = true;\n\n  if (current_read_)\n    return 0;\n\n  BaseObjectPtr<FileHandleReadWrap> read_wrap;\n\n  if (read_length_ == 0) {\n    EmitRead(UV_EOF);\n    return 0;\n  }\n\n  {\n    // Create a new FileHandleReadWrap or re-use one.\n    // Either way, we need these two scopes for AsyncReset() or otherwise\n    // for creating the new instance.\n    HandleScope handle_scope(env()->isolate());\n    AsyncHooks::DefaultTriggerAsyncIdScope trigger_scope(this);\n\n    auto& freelist = binding_data_->file_handle_read_wrap_freelist;\n    if (freelist.size() > 0) {\n      read_wrap = std::move(freelist.back());\n      freelist.pop_back();\n      // Use a fresh async resource.\n      // Lifetime is ensured via AsyncWrap::resource_.\n      Local<Object> resource = Object::New(env()->isolate());\n      USE(resource->Set(\n          env()->context(), env()->handle_string(), read_wrap->object()));\n      read_wrap->AsyncReset(resource);\n      read_wrap->file_handle_ = this;\n    } else {\n      Local<Object> wrap_obj;\n      if (!env()\n               ->filehandlereadwrap_template()\n               ->NewInstance(env()->context())\n               .ToLocal(&wrap_obj)) {\n        return UV_EBUSY;\n      }\n      read_wrap = MakeDetachedBaseObject<FileHandleReadWrap>(this, wrap_obj);\n    }\n  }\n  int64_t recommended_read = 65536;\n  if (read_length_ >= 0 && read_length_ <= recommended_read)\n    recommended_read = read_length_;\n\n  read_wrap->buffer_ = EmitAlloc(recommended_read);\n\n  current_read_ = std::move(read_wrap);\n  FS_ASYNC_TRACE_BEGIN0(UV_FS_READ, current_read_.get())\n  current_read_->Dispatch(uv_fs_read,\n                          fd_,\n                          &current_read_->buffer_,\n                          1,\n                          read_offset_,\n                          uv_fs_callback_t{[](uv_fs_t* req) {\n    FileHandle* handle;\n    {\n      FileHandleReadWrap* req_wrap = FileHandleReadWrap::from_req(req);\n      FS_ASYNC_TRACE_END1(\n          req->fs_type, req_wrap, \"result\", static_cast<int>(req->result))\n      handle = req_wrap->file_handle_;\n      CHECK_EQ(handle->current_read_.get(), req_wrap);\n    }\n\n    // ReadStart() checks whether current_read_ is set to determine whether\n    // a read is in progress. Moving it into a local variable makes sure that\n    // the ReadStart() call below doesn't think we're still actively reading.\n    BaseObjectPtr<FileHandleReadWrap> read_wrap =\n        std::move(handle->current_read_);\n\n    ssize_t result = req->result;\n    uv_buf_t buffer = read_wrap->buffer_;\n\n    uv_fs_req_cleanup(req);\n\n    // Push the read wrap back to the freelist, or let it be destroyed\n    // once we\u2019re exiting the current scope.\n    constexpr size_t kWantedFreelistFill = 100;\n    auto& freelist = handle->binding_data_->file_handle_read_wrap_freelist;\n    if (freelist.size() < kWantedFreelistFill) {\n      read_wrap->Reset();\n      freelist.emplace_back(std::move(read_wrap));\n    }\n\n    if (result >= 0) {\n      // Read at most as many bytes as we originally planned to.\n      if (handle->read_length_ >= 0 && handle->read_length_ < result)\n        result = handle->read_length_;\n\n      // If we read data and we have an expected length, decrease it by\n      // how much we have read.\n      if (handle->read_length_ >= 0)\n        handle->read_length_ -= result;\n\n      // If we have an offset, increase it by how much we have read.\n      if (handle->read_offset_ >= 0)\n        handle->read_offset_ += result;\n    }\n\n    // Reading 0 bytes from a file always means EOF, or that we reached\n    // the end of the requested range.\n    if (result == 0)\n      result = UV_EOF;\n\n    handle->EmitRead(result, buffer);\n\n    // Start over, if EmitRead() didn\u2019t tell us to stop.\n    if (handle->reading_)\n      handle->ReadStart();\n  }});\n\n  return 0;\n}\n\nint FileHandle::ReadStop() {\n  reading_ = false;\n  return 0;\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\v8-array-buffer.v24.13.h",
+      "sha256": "5AB664C31420DB10083DB3EFB9712666EB0FA1C14C71F4BBBF9C11F9E3AE991E",
+      "bytes": 22006,
+      "excerpts": [
+        {
+          "start_line": 252,
+          "end_line": 292,
+          "start_byte": 8889,
+          "end_byte": 10856,
+          "text": "  static Local<ArrayBuffer> New(\n      Isolate* isolate, size_t byte_length,\n      BackingStoreInitializationMode initialization_mode =\n          BackingStoreInitializationMode::kZeroInitialized);\n\n  /**\n   * Create a new ArrayBuffer with an existing backing store.\n   * The created array keeps a reference to the backing store until the array\n   * is garbage collected. Note that the IsExternal bit does not affect this\n   * reference from the array to the backing store.\n   *\n   * In future IsExternal bit will be removed. Until then the bit is set as\n   * follows. If the backing store does not own the underlying buffer, then\n   * the array is created in externalized state. Otherwise, the array is created\n   * in internalized state. In the latter case the array can be transitioned\n   * to the externalized state using Externalize(backing_store).\n   */\n  static Local<ArrayBuffer> New(Isolate* isolate,\n                                std::shared_ptr<BackingStore> backing_store);\n\n  /**\n   * Returns a new standalone BackingStore that is allocated using the array\n   * buffer allocator of the isolate. The allocation can either be zero\n   * initialized, or uninitialized. The result can be later passed to\n   * ArrayBuffer::New.\n   *\n   * If the allocator returns nullptr, then the function may cause GCs in the\n   * given isolate and re-try the allocation.\n   *\n   * If GCs do not help and on_failure is kOutOfMemory, then the\n   * function will crash with an out-of-memory error.\n   *\n   * Otherwise if GCs do not help (or the allocation is too large for GCs to\n   * help) and on_failure is kReturnNull, then a null result is returned.\n   */\n  static std::unique_ptr<BackingStore> NewBackingStore(\n      Isolate* isolate, size_t byte_length,\n      BackingStoreInitializationMode initialization_mode =\n          BackingStoreInitializationMode::kZeroInitialized,\n      BackingStoreOnFailureMode on_failure =\n          BackingStoreOnFailureMode::kOutOfMemory);\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\v8-backing-store.v24.13.cc",
+      "sha256": "62D58402ACEB6B07C6A245DD2810A78F6B3BA6495661CCD3B67A0DA83142F069",
+      "bytes": 37081,
+      "excerpts": [
+        {
+          "start_line": 200,
+          "end_line": 279,
+          "start_byte": 7197,
+          "end_byte": 10878,
+          "text": "// Allocate a backing store using the array buffer allocator from the embedder.\nstd::unique_ptr<BackingStore> BackingStore::Allocate(\n    Isolate* isolate, size_t byte_length, SharedFlag shared,\n    InitializedFlag initialized) {\n  void* buffer_start = nullptr;\n  auto allocator = isolate->array_buffer_allocator();\n  CHECK_NOT_NULL(allocator);\n  if (byte_length > allocator->MaxAllocationSize()) return {};\n  if (byte_length != 0) {\n    auto counters = isolate->counters();\n    int mb_length = static_cast<int>(byte_length / MB);\n    if (mb_length > 0) {\n      counters->array_buffer_big_allocations()->AddSample(mb_length);\n    }\n    if (shared == SharedFlag::kShared) {\n      counters->shared_array_allocations()->AddSample(mb_length);\n    }\n    auto allocate_buffer = [allocator, initialized](size_t byte_length) {\n      if (initialized == InitializedFlag::kUninitialized) {\n        return allocator->AllocateUninitialized(byte_length);\n      }\n      return allocator->Allocate(byte_length);\n    };\n\n    buffer_start = isolate->heap()->AllocateExternalBackingStore(\n        allocate_buffer, byte_length);\n\n    if (buffer_start == nullptr) {\n      // Allocation failed.\n      counters->array_buffer_new_size_failures()->AddSample(mb_length);\n      return {};\n    }\n#ifdef V8_ENABLE_SANDBOX\n    // Check to catch use of a non-sandbox-compatible ArrayBufferAllocator.\n    CHECK_WITH_MSG(isolate->isolate_group()->sandbox()->Contains(buffer_start),\n                   \"When the V8 Sandbox is enabled, ArrayBuffer backing stores \"\n                   \"must be allocated inside the sandbox address space. Please \"\n                   \"use an appropriate ArrayBuffer::Allocator to allocate \"\n                   \"these buffers, or disable the sandbox.\");\n#endif\n  }\n\n  PageAllocator* page_allocator =\n      isolate->isolate_group()->GetBackingStorePageAllocator();\n  auto result = new BackingStore(page_allocator,\n                                 buffer_start,                  // start\n                                 byte_length,                   // length\n                                 byte_length,                   // max length\n                                 byte_length,                   // capacity\n                                 shared,                        // shared\n                                 ResizableFlag::kNotResizable,  // resizable\n                                 false,   // is_wasm_memory\n                                 false,   // is_wasm_memory64\n                                 false,   // has_guard_regions\n                                 false,   // custom_deleter\n                                 false);  // empty_deleter\n\n  TRACE_BS(\"BS:alloc  bs=%p mem=%p (length=%zu)\\n\", result,\n           result->buffer_start(), byte_length);\n  result->SetAllocatorFromIsolate(isolate);\n  return std::unique_ptr<BackingStore>(result);\n}\n\nvoid BackingStore::SetAllocatorFromIsolate(Isolate* isolate) {\n  if (auto allocator_shared = isolate->array_buffer_allocator_shared()) {\n    set_flag(kHoldsSharedPtrToAllocater);\n    new (&type_specific_data_.v8_api_array_buffer_allocator_shared)\n        std::shared_ptr<v8::ArrayBuffer::Allocator>(\n            std::move(allocator_shared));\n  } else {\n    type_specific_data_.v8_api_array_buffer_allocator =\n        isolate->array_buffer_allocator();\n  }\n}\n\nstd::unique_ptr<BackingStore> BackingStore::TryAllocateAndPartiallyCommitMemory(\n    Isolate* isolate, size_t byte_length, size_t max_byte_length,\n    size_t page_size, size_t initial_pages, size_t maximum_pages,\n    WasmMemoryFlag wasm_memory, SharedFlag shared, bool has_guard_regions) {\n  // Enforce engine limitation on the maximum number of pages.\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-existing-promise-settlement-sourceonly-20261019\\authority\\v8-api.v24.13.cc",
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "bytes": 489340,
+      "excerpts": [
+        {
+          "start_byte": 358372,
+          "end_byte": 359150,
+          "text": "Local<ArrayBuffer> v8::ArrayBuffer::New(\n    Isolate* v8_isolate, std::shared_ptr<BackingStore> backing_store) {\n  CHECK_IMPLIES(backing_store->ByteLength() != 0,\n                backing_store->Data() != nullptr);\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(v8_isolate);\n  API_RCS_SCOPE(i_isolate, ArrayBuffer, New);\n  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);\n  std::shared_ptr<i::BackingStore> i_backing_store(\n      ToInternal(std::move(backing_store)));\n  Utils::ApiCheck(\n      !i_backing_store->is_shared(), \"v8_ArrayBuffer_New\",\n      \"Cannot construct ArrayBuffer with a BackingStore of SharedArrayBuffer\");\n  i::DirectHandle<i::JSArrayBuffer> obj =\n      i_isolate->factory()->NewJSArrayBuffer(std::move(i_backing_store));\n  return Utils::ToLocal(obj);\n}\n"
+        },
+        {
+          "start_byte": 359151,
+          "end_byte": 360482,
+          "text": "std::unique_ptr<v8::BackingStore> v8::ArrayBuffer::NewBackingStore(\n    Isolate* v8_isolate, size_t byte_length,\n    BackingStoreInitializationMode initialization_mode,\n    BackingStoreOnFailureMode on_failure) {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(v8_isolate);\n  API_RCS_SCOPE(i_isolate, ArrayBuffer, NewBackingStore);\n  if (on_failure == BackingStoreOnFailureMode::kOutOfMemory) {\n    CHECK_LE(byte_length, i::JSArrayBuffer::kMaxByteLength);\n  } else if (byte_length > i::JSArrayBuffer::kMaxByteLength) {\n    DCHECK(on_failure == BackingStoreOnFailureMode::kReturnNull);\n    return {};\n  }\n  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);\n  std::unique_ptr<i::BackingStoreBase> backing_store =\n      i::BackingStore::Allocate(i_isolate, byte_length,\n                                i::SharedFlag::kNotShared,\n                                GetInitializedFlag(initialization_mode));\n  if (!backing_store) {\n    if (on_failure == BackingStoreOnFailureMode::kOutOfMemory) {\n      i::V8::FatalProcessOutOfMemory(i_isolate,\n                                     \"v8::ArrayBuffer::NewBackingStore\");\n    } else {\n      DCHECK(on_failure == BackingStoreOnFailureMode::kReturnNull);\n      return {};\n    }\n  }\n  return std::unique_ptr<v8::BackingStore>(\n      static_cast<v8::BackingStore*>(backing_store.release()));\n}\n"
+        }
+      ]
+    }
+  ],
+  "actual_order": [
+    "Environment constructs one actual AliasedInt32Array with four entries. Native field reads/writes address that same storage.",
+    "allocate_managed_buffer first creates an uninitialized standalone BackingStore, then builds uv_buf_t from its actual Data/ByteLength, then emplaces the unique owner in the native pointer-key unordered_map.",
+    "release_managed_buffer returns an empty unique owner for null base. Otherwise it checks membership, moves the exact owner out, then erases that native map node. It does not allocate or manufacture a JS ArrayBuffer.",
+    "OnStreamRead establishes HandleScope/Context before releasing the map entry. nread zero returns; negative calls onread with an empty ArrayBuffer Local and then destroys any local backing.",
+    "Positive short read retains old_bs while allocating a new uninitialized exact-length store and copying nread bytes. old_bs is destroyed at the end of that if-block before the ArrayBuffer wrapper is created.",
+    "ArrayBuffer::New consumes the native owner only at the later wrapper stage. CallJSOnreadMethod writes read_bytes_or_error then array_buffer_offset, selects the actual internal onread function, then calls the real AsyncWrap MakeCallback.",
+    "Environment destructor body completes before native members retire. The map is declared after stream_base_state, which is after async/tick members; map retirement must precede the stream alias and earlier alias owners.",
+    "Selected FileHandle ReadStart returns before allocation for zero length; otherwise its suggested extent is at most 65536."
+  ],
+  "abi_requirements": [
+    "Create a distinct fixed, non-shared, whole native BackingStore entitlement without allocating a JS wrapper or invoking a guest constructor/getter.",
+    "Preserve the uninitialized allocation mode. No additional zero fill is required for this selected Source path; only the actual read/copy extent becomes exposed.",
+    "An empty store has logical byte_length zero and Data null in the original BackingStore::Allocate. Do not conflate a zero-length whole store with a missing owner.",
+    "Native allocation uses the installed original memory/storage provider and retains its native owner independently of Engine/Context/JS wrapper lifetime. Native duplicate/release operations clear the owned token before destruction and do not require a live VM.",
+    "The later intrinsic ArrayBuffer adoption consumes the actual whole native owner on all outcomes. It must not copy the bytes or allocate an earlier wrapper. Its failure/partial-adoption cleanup must release exactly the consumed entitlement.",
+    "Adoption must not accept an arbitrary view subspan or unmanaged external buffer as a whole managed store. Do not silently use the existing throwing view-acquisition path.",
+    "Preserve existing JS-created ArrayBuffer zero initialization, RAB/GSAB rules and throwing view lease behavior. The new bridge is additive.",
+    "Backing allocation failure is the original default kOutOfMemory path at the literal site v8::ArrayBuffer::NewBackingStore. It is distinct from the CALL_AND_RETRY_LAST heap-intrinsic owner; exact native fatal details and retry mapping remain a separate explicit seam.",
+    "The native map preserves original std::unordered_map operations/iteration and uses the shared real standard-container allocator domain. A pointer-key lookup itself needs no copied string key.",
+    "An empty out-of-line map must not introduce a new allocation cutpoint. Proposed placement is aligned tail storage in the existing one native Environment allocation, with runtime native sizeof/alignment accessors and exact combined charge/retirement extent.",
+    "VM owns final backing C/H API names, implementation and controls. Modules owns the shared standard allocator/new_handler policy. SDK owns the StreamBase/store/Environment composition and controls."
+  ],
+  "open_prerequisites": [
+    "VM concrete fixed backing allocation/adoption ABI and native lifetime controls",
+    "Original native backing allocation retry/fatal diagnostics mapping",
+    "Modules standard allocator with exact new_handler/bad_alloc failure policy and one shared linked allocation implementation",
+    "Actual StreamBase internal onread field/template and derived AsyncWrap connection",
+    "Root actual MakeCallback Operations/MessageHandler/lifecycle installation; no placeholder success hook"
+  ]
+}

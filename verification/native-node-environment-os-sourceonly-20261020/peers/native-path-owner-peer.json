@@ -1,0 +1,58 @@
+{
+  "status": "CLOSED: finite native Environment path ownership peer; source-only",
+  "reviewer": "vm_foundation",
+  "source_tree": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018",
+  "files": [
+    {
+      "path": "src/extensions/native_node_environment_paths.cpp",
+      "sha256": "B2E838D216E858D7F3DF31347A71C0AFACD0C4AC507CBE5E5E1191460572A395",
+      "bytes": 15087
+    },
+    {
+      "path": "src/extensions/native_node_environment_paths.h",
+      "sha256": "E504065537C5D669EF793D3F8F65BC9FB31DFB211F96091DC20EA87F42373B31",
+      "bytes": 3358
+    },
+    {
+      "path": "src/extensions/native_node_environment_paths_internal.hpp",
+      "sha256": "1B56668AF3BBF9A165CF384AE8D3CA7EE4ECE466E832D781C124B2691B580DC6",
+      "bytes": 1285
+    },
+    {
+      "path": "src/extensions/native_node_environment_map.cpp",
+      "sha256": "A5709621EABDA15F79A6367A21E013B24439F4131E23B493A897384B0196F0E6",
+      "bytes": 8330
+    },
+    {
+      "path": "src/extensions/native_node_environment_map_internal.hpp",
+      "sha256": "AFC9532E200F0B37EA894635EF8BA4B75A201ACE1B13E8FCAC2369E59B45E16C",
+      "bytes": 874
+    }
+  ],
+  "packet": {
+    "path": "verification/native-node-environment-os-sourceonly-20261020/native-path-source-draft.json",
+    "sha256": "139252C1201433C1D357E9EEDE817AC42D3D9DB5DBB16FBAAA795C0540E28491"
+  },
+  "inverse": {
+    "map_three_edits": "Independently reversed each unique after body; complete A5709621 returned to D5ECC5EEA1DA575125D39DCF9EA9AF646CB3584CA1D2471EEE9E7DAA2EB701E1.",
+    "trace_snapshot": "The sole const-reference to const-value replacement reverses current B2E838D2 exactly to the previously fully read 498B4617."
+  },
+  "scope": [
+    "Placement argv/exec-path Strings, C ABI borrowed input/output lifetime, native domain scopes and destruction.",
+    "The optional Map accessor's retained lifetime/domain only; existing Map algorithms and native allocator were previously peer-closed."
+  ],
+  "findings": [
+    "Incoming spans are materialized in the explicitly disclosed temporary native vector before placement construction. Original argv copy precedes GetExecPath; actual Node env.cc lines 799-800 were independently read. Temporary input retires after the completed placement result, and owned argv/exec-path blocks retain their actual native allocation domains.",
+    "Storage size/alignment match the actual C++ type. Destroy retires only its native members, with no stored JSContext, Engine or JSValue. The caller owns stable placement storage and borrowed lifetime through every C ABI call.",
+    "Cwd and resolve results own real Strings through synchronous visitor return. The resolve input vector owns only borrowed string_views and retires before the result visitor. The allocation domain scope outlives every temporary/result retirement.",
+    "SafeGetenv acquires its real Map entitlement after credential admission and retains it through the optional result, assignment and native trace. The optional String copy is allocated under the Map's own domain and independently owns its native blocks; it retires before the retained Map.",
+    "The three Map edits preserve the exact String specialization and use the existing locked get operation. No intermediate String, JS access or permanent Map pointer is introduced.",
+    "Trace options/callback operands are copied before the ordered native outputs. Required native/JS stack operations remain explicit borrowed callbacks, with no default no-op."
+  ],
+  "limits": [
+    "No path resolution, credential algorithm, tracing policy, full native State/Engine/process assembly, RealEnvStore, permission or complete startup closure.",
+    "Root must supply the genuine nonterminal stack callbacks. No controls, compiler/build, Node or native execution was performed.",
+    "No allocation-layout parity is claimed for the explicit embedding input materialization."
+  ],
+  "execution": false
+}

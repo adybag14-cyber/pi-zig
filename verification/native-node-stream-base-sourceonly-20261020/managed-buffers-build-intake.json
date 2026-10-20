@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "source-only proposed build registration; Main and build helpers untouched",
+  "prerequisite_commit": "78b8ddf58c9b101a2afd4948ff2ed8f1ded7de63",
+  "shared_memory_packet": "0427BE866F23AFF75EC6083F823C4A1A9EE1A29A033EB71A9092E651C3507C80",
+  "map_build_packet": "8BEFCB2A9D057907FE20B8C20640A98E61AED38BD80FE0392E8DB8D09B726B6B",
+  "files": [
+    {
+      "path": "tools/build_native_node_network.zig",
+      "before_sha256": "FBDF5BCCA7F09238B9A2FE3C599092AE74AC76E44EA6E2256109EA407F743412",
+      "before_bytes": 5023,
+      "after_sha256": "CB2E3EF8767102A024DCC9E103585337E9B1E5F13B7A50BB0EC43851B1B1BD93",
+      "after_bytes": 5245,
+      "edits": [
+        {
+          "before": "        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n",
+          "after": "        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_managed_buffers.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n"
+        }
+      ],
+      "inverse_exact": true
+    },
+    {
+      "path": "build.zig",
+      "before_sha256": "2106ACFC515CB043AA2C4A721856293203C7549B98BA1C7ABC33BFC87CAFC67D",
+      "before_bytes": 488052,
+      "after_sha256": "028C3FCFDAFDA7D8455465151F8A1321BEE19F58BED2ED60DC23D2C52B86F792",
+      "after_bytes": 489026,
+      "edits": [
+        {
+          "before": "        b.step(\"build-native-node-environment-map\", \"Install native MapKVStore allocation and lifetime controls without execution\").dependOn(&b.addInstallArtifact(native_environment_map_tests, .{}).step);\n",
+          "after": "        b.step(\"build-native-node-environment-map\", \"Install native MapKVStore allocation and lifetime controls without execution\").dependOn(&b.addInstallArtifact(native_environment_map_tests, .{}).step);\n        const native_managed_buffer_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_managed_buffers_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"Node managed buffers\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_managed_buffer_tests.root_module, quickjs, sqlite_lib_dir);\n        native_managed_buffer_tests.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        native_managed_buffer_tests.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map_test_support.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        b.step(\"build-native-node-managed-buffers\", \"Install twelve native managed-buffer map and backing controls without execution\").dependOn(&b.addInstallArtifact(native_managed_buffer_tests, .{}).step);\n"
+        }
+      ],
+      "inverse_exact": true
+    }
+  ],
+  "root": {
+    "path": "src/native_node_managed_buffers_test.zig",
+    "sha256": "8A51CE5C6B80D318DBB368A735F1BBBEB9CAAD51EE5B825D1D3FFAC18B5374CA",
+    "bytes": 14499,
+    "declarations": 12,
+    "filter": "Node managed buffers"
+  },
+  "target": "build-native-node-managed-buffers",
+  "properties": [
+    "One actual pi-node-network library and the same native-memory Compile/TLS owner; no extra allocator translation unit.",
+    "The existing 64-bit Windows/Linux native-memory guard admits the C++ map source. All prior TCP/UV membership remains unchanged.",
+    "Only the existing native reference/retry adapter is compiled in the raw test target; no second production map.",
+    "Eleven install-only test lines inside the actual native parser guard, plus four C++ member lines in the existing shared network helper.",
+    "Native NewBackingStore allocation/GC/retry, Environment field integration, public StreamBase and native execution are not qualified by these raw controls."
+  ],
+  "native_execution": false
+}

@@ -9,6 +9,7 @@ const LocalScope = a.Scope;
 const Completion = @import("native_sdk_owned_completion.zig").Completion;
 const ChargedAllocator = @import("native_env_charged_allocator.zig").ChargedAllocator;
 const RequestState = @import("native_node_request_state.zig");
+const ManagedBuffers = @import("native_node_managed_buffers.zig");
 const c = em.c;
 
 pub const Field = enum(u32) {
@@ -17,6 +18,9 @@ pub const Field = enum(u32) {
 };
 pub const Uid = enum(u32) { execution, trigger, counter, default_trigger };
 pub const Tick = enum(u32) { has_tick_scheduled, has_rejection_to_warn };
+pub const StreamBaseField = enum(u32) {
+    read_bytes_or_error, array_buffer_offset, bytes_written, last_write_was_async,
+};
 pub const AsyncContext = struct { async_id: f64, trigger_async_id: f64 };
 pub const Flags = struct { skip_async_hooks: bool = false, skip_task_queues: bool = false };
 pub const Check = enum {
@@ -102,6 +106,7 @@ const Fields = Alias(u32, c.JS_TYPED_ARRAY_UINT32);
 const Uids = Alias(f64, c.JS_TYPED_ARRAY_FLOAT64);
 const Ticks = Alias(u8, c.JS_TYPED_ARRAY_UINT8);
 const IdStack = Alias(f64, c.JS_TYPED_ARRAY_FLOAT64);
+const StreamBaseState = Alias(i32, c.JS_TYPED_ARRAY_INT32);
 
 /// Caller-owned, intrusive realm cleanup slot. The owning native wrap list
 /// unregisters it before retiring the slot. Cleanup runs after actual I/O join,
@@ -116,6 +121,8 @@ pub const RealmCleanup = struct {
 
 pub const Environment = struct {
     memory_owner: *anyopaque,
+    allocation_size: usize,
+    allocation_alignment: std.mem.Alignment,
     references: std.atomic.Value(usize) = .init(1),
     charged: ChargedAllocator,
     owner_thread: std.Thread.Id,
@@ -127,6 +134,8 @@ pub const Environment = struct {
     uid: Uids = .{},
     ticks: Ticks = .{},
     ids: IdStack = .{},
+    stream_base_state: StreamBaseState = .{},
+    managed_buffers: ManagedBuffers.Store = .{},
     native_resources: std.ArrayList(?*const c.JSValue) = .empty,
     js_resources: ?c.JSValue = null,
     async_hooks_binding: ?c.JSValue = null,
@@ -162,11 +171,16 @@ pub const Environment = struct {
         const memory_owner = s.engine.native_memory_owner;
         c.pi_js_retain_memory_owner(memory_owner);
         errdefer c.pi_js_release_memory_owner(memory_owner);
-        if (c.pi_js_native_memory_reserve(memory_owner, @sizeOf(Environment)) == 0) return error.OutOfMemory;
-        errdefer c.pi_js_native_memory_release(memory_owner, @sizeOf(Environment));
-        const self = try std.heap.c_allocator.create(Environment);
+        const storage_layout = try ManagedBuffers.layout(Environment);
+        if (c.pi_js_native_memory_reserve(memory_owner, storage_layout.bytes) == 0) return error.OutOfMemory;
+        errdefer c.pi_js_native_memory_release(memory_owner, storage_layout.bytes);
+        const allocation = std.heap.c_allocator.rawAlloc(storage_layout.bytes,
+            storage_layout.alignment, @returnAddress()) orelse return error.OutOfMemory;
+        const self: *Environment = @ptrCast(@alignCast(allocation));
         self.* = .{
             .memory_owner = memory_owner,
+            .allocation_size = storage_layout.bytes,
+            .allocation_alignment = storage_layout.alignment,
             .charged = ChargedAllocator.init(s.engine),
             .owner_thread = std.Thread.getCurrentId(),
             .engine = s.engine,
@@ -177,7 +191,8 @@ pub const Environment = struct {
             self.retireRoots(s);
             self.retireNative();
             self.charged.deinit();
-            std.heap.c_allocator.destroy(self);
+            std.heap.c_allocator.rawFree(allocation[0..storage_layout.bytes],
+                storage_layout.alignment, @returnAddress());
         }
         // Exact no-snapshot constructor ordering: 16 pairs, zero fields/UIDs,
         // clear, check=1, default=-1 and counter=1. All views share these bytes.
@@ -188,6 +203,8 @@ pub const Environment = struct {
         self.field(.check).* = 1;
         self.uidField(.default_trigger).* = -1;
         self.uidField(.counter).* = 1;
+        self.stream_base_state = try StreamBaseState.create(s, 4);
+        self.managed_buffers.init(@ptrCast(allocation + storage_layout.offset));
         self.resource_symbol = a.duplicate(s.engine, input.resource_symbol);
         self.process_object = a.duplicate(s.engine, input.process_object);
         self.provider_strings = try self.allocator().alloc(c.JSValue, input.provider_names.len);
@@ -196,6 +213,16 @@ pub const Environment = struct {
             value.* = a.duplicate(s.engine, try s.text(name));
         output.* = self;
         return c.pi_js_undefined();
+    }
+    /// Selected tail after the genuine NewBackingStore operation has returned.
+    /// The original allocation/retry policy remains a separate caller owner.
+    pub fn adoptManagedBuffer(self: *Environment, owned: *ManagedBuffers.Token) !ManagedBuffers.uv.uv_buf_t {
+        _ = try self.requireEngine();
+        return self.managed_buffers.adopt(self.memory_owner, owned);
+    }
+    pub fn releaseManagedBuffer(self: *Environment, buffer: ManagedBuffers.uv.uv_buf_t) !ManagedBuffers.Token {
+        const engine = try self.requireEngine();
+        return self.managed_buffers.release(engine.context, buffer);
     }
     pub fn allocator(self: *Environment) std.mem.Allocator { return self.charged.allocator(); }
     pub fn retain(self: *Environment) *Environment {
@@ -209,9 +236,13 @@ pub const Environment = struct {
         if (count != 1) return;
         std.debug.assert(self.disarmed and self.engine == null and self.callback_depth == 0 and self.cleanup_head == null);
         const owner = self.memory_owner;
+        const allocation_size = self.allocation_size;
+        const allocation_alignment = self.allocation_alignment;
         self.charged.deinit();
-        std.heap.c_allocator.destroy(self);
-        c.pi_js_native_memory_release(owner, @sizeOf(Environment));
+        const allocation: [*]u8 = @ptrCast(self);
+        std.heap.c_allocator.rawFree(allocation[0..allocation_size],
+            allocation_alignment, @returnAddress());
+        c.pi_js_native_memory_release(owner, allocation_size);
         c.pi_js_release_memory_owner(owner);
     }
     pub fn requireEngine(self: *Environment) !*em.Engine {
@@ -229,6 +260,9 @@ pub const Environment = struct {
     pub fn field(self: *Environment, index: Field) *u32 { return &self.fields.data[@intFromEnum(index)]; }
     pub fn uidField(self: *Environment, index: Uid) *f64 { return &self.uid.data[@intFromEnum(index)]; }
     pub fn tickField(self: *Environment, index: Tick) *u8 { return &self.ticks.data[@intFromEnum(index)]; }
+    pub fn streamBaseField(self: *Environment, index: StreamBaseField) *i32 {
+        return &self.stream_base_state.data[@intFromEnum(index)];
+    }
     pub fn newAsyncId(self: *Environment) f64 {
         self.assertOwner();
         self.uidField(.counter).* += 1;
@@ -567,6 +601,8 @@ pub const Environment = struct {
         return c.pi_js_undefined();
     }
     fn retireRoots(self: *Environment, s: *LocalScope) void {
+        self.managed_buffers.deinit();
+        self.stream_base_state.release(s);
         self.ids.release(s);
         self.fields.release(s);
         self.uid.release(s);

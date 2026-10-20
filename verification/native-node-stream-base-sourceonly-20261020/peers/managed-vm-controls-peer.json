@@ -1,0 +1,40 @@
+{
+  "status": "CLOSED source-only finite native control peer",
+  "reviewer": "vm_foundation",
+  "root": {
+    "path": "src/native_node_managed_buffers_test.zig",
+    "sha256": "8A51CE5C6B80D318DBB368A735F1BBBEB9CAAD51EE5B825D1D3FFAC18B5374CA",
+    "bytes": 14499,
+    "declarations": 12
+  },
+  "assigned": [
+    1,
+    2,
+    3,
+    8,
+    9,
+    10,
+    12
+  ],
+  "helpers": [
+    "Fixture init/openContext/destroyTable/closeVm/deinit/make/adopt/take/count/used",
+    "empty and contents"
+  ],
+  "production": {
+    "cpp": "E2083CD514D8CDB24839763513DD764A789EF628DCB2A1AB455B3A864312949D",
+    "header": "976A8C7263BB4A3B870FB341A832BA6692EB7639E9EAD5FDC0C9C9B35D0D9E57",
+    "token_packet": "D94BDE94024B6CD523FCC2AE8DA4ED27249B440BF0444746E7C55EACE024EC65"
+  },
+  "observations": [
+    "Actual C++ size/alignment determine the separately charged raw test storage; partial init cleanup distinguishes reservation, storage and constructed table.",
+    "Each newly owned token has unconditional release before fallible assertions. Actual map insertion consumes it without a JS wrapper and real VM obj_count stays unchanged.",
+    "The exhausted JS heap path performs only native map operations and restores its heap limit before assertions and cleanup.",
+    "Move-out data remains usable after table destruction and the genuine later intrinsic adoption retains the identical data pointer; resulting JS values are owned before assertions.",
+    "Actual pending Error identity survives native insertion/release with no guest metadata observation.",
+    "All 24 real backings and native nodes remain available after complete originating context/runtime teardown; explicit table destruction then proves shared native memory_used zero while the memory owner stays alive."
+  ],
+  "limits": [
+    "Declarations 4-7/11 and retry adapter are Modules scope.",
+    "Full Environment placement, retry/default-fatal policy, public StreamBase and runtime execution remain separate."
+  ]
+}

@@ -1,0 +1,189 @@
+{
+  "status": "sealed source-only implementation and controls; all assigned finite peers closed; no execution",
+  "base_commit": "f1bc03542f804b675f87f3c1572f5fbd09a37ec5",
+  "selected_original": "nodejs/node@def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "source_paths": [
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "src/extensions/engine_abi.c",
+    "src/native_vm_backing_store_adoption_test.zig",
+    "build.zig"
+  ],
+  "files": [
+    {
+      "path": "build.zig",
+      "sha256": "27AC8FC48ADF782DA11BA98F4D3887D02F7AF85D5264CF07C2F2A9BFF27313B5",
+      "bytes": 420084
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC",
+      "bytes": 18016
+    },
+    {
+      "path": "src/native_vm_backing_store_adoption_test.zig",
+      "sha256": "43E01F6D9C0714E77458F0417E7EBDA026D5EB6E38642923155800739FCB8ABF",
+      "bytes": 31150
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "E61EF49E44E22C2B327F229B0285D801598773B8BFE90A9B0D175071439AD98A",
+      "bytes": 2366845
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "B1BC3EF2E9E5DCD3EDC915231AD7EAA1C4ED4F1DBEA49BFBCF57425D528C343D",
+      "bytes": 107135
+    },
+    {
+      "path": "verification/native-backing-store-adoption-sourceonly-20261020/authority/backing-retry-and-fatal-source.json",
+      "sha256": "809EBC40DC749067E0DAD8375577815F4A7CCEDB8D7AE803E639638BF4888C24",
+      "bytes": 18065
+    },
+    {
+      "path": "verification/native-backing-store-adoption-sourceonly-20261020/authority/managed-backing-source-and-abi-proposal.json",
+      "sha256": "C5076FE7E108CDC3B777EBFA4F9FB77B8DEA91B45951CFEE8023535E97115D9D",
+      "bytes": 34166
+    },
+    {
+      "path": "verification/native-backing-store-adoption-sourceonly-20261020/backing-api-peer.json",
+      "sha256": "0036E96B5409E5DC006853859BA14A0D0B5C0A0A8CE52CE6F6B70CDB519F6F4F",
+      "bytes": 2450
+    },
+    {
+      "path": "verification/native-backing-store-adoption-sourceonly-20261020/build-intake.json",
+      "sha256": "3D833981F633D34A6F375FBC1F61462A6885B71F602F1F5462356A752C340578",
+      "bytes": 1308
+    },
+    {
+      "path": "verification/native-backing-store-adoption-sourceonly-20261020/modules-physical-controls-peer.json",
+      "sha256": "A7A0134BEE42196D933C999222BD16638D3E479BFF33CE0DD26A237654700B76",
+      "bytes": 6824
+    },
+    {
+      "path": "verification/native-backing-store-adoption-sourceonly-20261020/peer-receipts.json",
+      "sha256": "374019F7BCF5AE01BE0198F909D555EBEF4BDFBC57171B42866FEAF0F5057462",
+      "bytes": 4966
+    },
+    {
+      "path": "verification/native-backing-store-adoption-sourceonly-20261020/preserved/src__extensions__engine_abi.c.txt",
+      "sha256": "940CAAAE81B2A4098BE60DDD42D44B3CC3D1347341ED2D9557E0D34AFA9E928C",
+      "bytes": 17800
+    },
+    {
+      "path": "verification/native-backing-store-adoption-sourceonly-20261020/preserved/vendor__quickjs__quickjs.c.txt",
+      "sha256": "6758D2A5E4F3BBBFBB784D049581C621A246ED08F20C039E93D1F3FF87438731",
+      "bytes": 2362794
+    },
+    {
+      "path": "verification/native-backing-store-adoption-sourceonly-20261020/preserved/vendor__quickjs__quickjs.h.txt",
+      "sha256": "E408EBB5D24313F29EE05BAB8A93B7AF379D1166A94E0E9A0093193A6143CA82",
+      "bytes": 104758
+    },
+    {
+      "path": "verification/native-backing-store-adoption-sourceonly-20261020/production-delta.json",
+      "sha256": "D94BDE94024B6CD523FCC2AE8DA4ED27249B440BF0444746E7C55EACE024EC65",
+      "bytes": 9802
+    },
+    {
+      "path": "verification/native-backing-store-adoption-sourceonly-20261020/README.md",
+      "sha256": "45BD21D29ADC0601FE968547C3C38FD6A1907FC5260BEAAAC424670E50281A06",
+      "bytes": 6264
+    },
+    {
+      "path": "verification/native-backing-store-adoption-sourceonly-20261020/source-proof.json",
+      "sha256": "195B6C782DF2F38A907C8BB015911D8EE8C18033244F387495230DD90A2D8056",
+      "bytes": 7270
+    }
+  ],
+  "complete_commit_paths": [
+    "build.zig",
+    "src/extensions/engine_abi.c",
+    "src/native_vm_backing_store_adoption_test.zig",
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "verification/native-backing-store-adoption-sourceonly-20261020/README.md",
+    "verification/native-backing-store-adoption-sourceonly-20261020/authority/backing-retry-and-fatal-source.json",
+    "verification/native-backing-store-adoption-sourceonly-20261020/authority/managed-backing-source-and-abi-proposal.json",
+    "verification/native-backing-store-adoption-sourceonly-20261020/backing-api-peer.json",
+    "verification/native-backing-store-adoption-sourceonly-20261020/build-intake.json",
+    "verification/native-backing-store-adoption-sourceonly-20261020/manifest.json",
+    "verification/native-backing-store-adoption-sourceonly-20261020/modules-physical-controls-peer.json",
+    "verification/native-backing-store-adoption-sourceonly-20261020/peer-receipts.json",
+    "verification/native-backing-store-adoption-sourceonly-20261020/preserved/src__extensions__engine_abi.c.txt",
+    "verification/native-backing-store-adoption-sourceonly-20261020/preserved/vendor__quickjs__quickjs.c.txt",
+    "verification/native-backing-store-adoption-sourceonly-20261020/preserved/vendor__quickjs__quickjs.h.txt",
+    "verification/native-backing-store-adoption-sourceonly-20261020/production-delta.json",
+    "verification/native-backing-store-adoption-sourceonly-20261020/source-proof.json"
+  ],
+  "intake": [
+    {
+      "step": 1,
+      "operation": "Apply exactly the five reversible production steps by unique before/after snippets; preserve every independent Main addition",
+      "packet": "verification/native-backing-store-adoption-sourceonly-20261020/production-delta.json",
+      "sha256": "D94BDE94024B6CD523FCC2AE8DA4ED27249B440BF0444746E7C55EACE024EC65"
+    },
+    {
+      "step": 2,
+      "operation": "Apply only the exact eight-line guarded install-only insertion to Main build",
+      "packet": "verification/native-backing-store-adoption-sourceonly-20261020/build-intake.json",
+      "sha256": "3D833981F633D34A6F375FBC1F61462A6885B71F602F1F5462356A752C340578"
+    },
+    {
+      "step": 3,
+      "operation": "Add the genuine control root and this evidence directory; preserved complete bases are evidence, never replacements for Main"
+    }
+  ],
+  "target": {
+    "root": "src/native_vm_backing_store_adoption_test.zig",
+    "filter": "VM native backing store",
+    "target": "build-native-vm-backing-store-adoption",
+    "declarations": 20,
+    "added_build_lines": 8,
+    "platforms": [
+      "windows",
+      "linux"
+    ],
+    "install_only": true,
+    "names": [
+      "VM native backing store allocates before a context with no JS wrapper or heap allocation",
+      "VM native backing store exposes real writable bytes before consuming adoption without a copy",
+      "VM native backing store zero initialization is a separate actual allocation mode",
+      "VM native backing store zero length retains a real owner with null logical data",
+      "VM native backing store duplicates and releases independent entitlements with exact charge retirement",
+      "VM native backing store adoption uses the intrinsic realm despite poisoned public constructors",
+      "VM native backing store wrapper allocation failure consumes exactly its native entitlement",
+      "VM native backing store prior ordinary pending consumes the store before any wrapper allocation",
+      "VM native backing store prior generic fatal is preserved without an allocation report",
+      "VM native backing store prior native termination remains the actual published event",
+      "VM native backing store native quota and overflow failure leave pending and OOM history unchanged",
+      "VM native backing store absence of a provider returns empty without inventing a JS failure",
+      "VM native backing store adoption rejects another native allocation domain and consumes the original owner",
+      "VM native backing store missing owner is distinct from an owned zero-length store",
+      "VM native backing store workers retain and retire storage after its runtime and caller domain retire",
+      "VM native backing store short-copy ordering retires the old allocation before wrapper adoption",
+      "VM native backing store adopted wrapper and actual view lease retain independent detach owners",
+      "VM native backing store explicit duplicate can back two intrinsic wrappers without copying",
+      "VM native backing store adopted buffers preserve actual equal and changed transfer ownership",
+      "VM native backing store uninitialized mode leaves JS fixed resizable and shared initialization intact"
+    ]
+  },
+  "unchanged_direct_dependency": {
+    "path": "src/extensions/engine_abi.h",
+    "sha256": "8495431AC482B8D59D115DEA7A7D01F86E67D9E8CCA988C7F394C7D347FB51C5",
+    "bytes": 2003
+  },
+  "review": {
+    "peer_receipts": "verification/native-backing-store-adoption-sourceonly-20261020/peer-receipts.json",
+    "sha256": "374019F7BCF5AE01BE0198F909D555EBEF4BDFBC57171B42866FEAF0F5057462",
+    "source_proof": "verification/native-backing-store-adoption-sourceonly-20261020/source-proof.json",
+    "production_inverse_exact": true,
+    "build_inverse_exact": true
+  },
+  "limits": [
+    "Original embedding GC/retry and default terminal OOM policy remain required separate owners.",
+    "No complete StreamBase Environment/onread/namespace/bootstrap admission.",
+    "Windows/Linux managed provider only; selected caller uses one Environment/runtime.",
+    "No build, metadata query, test, Node, formatter or generator execution."
+  ]
+}

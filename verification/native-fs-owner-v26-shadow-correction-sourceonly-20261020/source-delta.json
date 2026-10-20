@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "status": "source-only exact lexical corrections; peer pending",
+  "execution": false,
+  "compiler_evidence": {
+    "path": "C:/Users/adyba/pi-zig/evidence/root-vm-io-options-diagnostic-v26-buildquery-20261020-153533/groups/native-node-fs-request-owner/compile.stderr.log",
+    "sha256": "6067DC07A148BB9F9E5B64C7D03FD14CA4EDA1E5283C419EB299732B5BAB69FB",
+    "bytes": 22907,
+    "retained": "original/compile.stderr.log"
+  },
+  "files": [
+    {
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before_sha256": "FF468B5F806AFB07188B2B5CC5BCE8CF826BFD44C7588A8A0B19C4AB7D03D44F",
+      "after_sha256": "540F5D468DA75E474FDD8731E06C55A48BB2E20470A0BE1DEDC1C6BCF61B0D15",
+      "before_bytes": 16721,
+      "after_bytes": 16733,
+      "original": "original/native_node_async_wrap.zig"
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_promise.zig",
+      "before_sha256": "0ED6B910579E96E38A897C60BFE77F6DF8A42613676FA0BBCAA0453A90092158",
+      "after_sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721",
+      "before_bytes": 18818,
+      "after_bytes": 18834,
+      "original": "original/native_node_fs_request_promise.zig"
+    },
+    {
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "before_sha256": "66D6FCF1646FE123C5DC80B5BE53AB3FF397E1F1C4469B19480077D2CCAC08AA",
+      "after_sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4",
+      "before_bytes": 57006,
+      "after_bytes": 57142,
+      "original": "original/native_node_fs_request_owner_test.zig"
+    }
+  ],
+  "edits": [
+    {
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "reason": "Local constructor_value avoids the public constructor declaration; same borrowed function and prototype operation.",
+      "before": "    const constructor = try ensureConstructor(s, owner, owner_value, kind);\n    const prototype = try s.checked(c.JS_PiGetObjectPrototypeFromConstructor(s.engine.context, constructor));",
+      "after": "    const constructor_value = try ensureConstructor(s, owner, owner_value, kind);\n    const prototype = try s.checked(c.JS_PiGetObjectPrototypeFromConstructor(s.engine.context, constructor_value));"
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_promise.zig",
+      "reason": "Local request_environment avoids Request.environment while preserving destructor admission.",
+      "before": "        const environment = wrap.registry.environment;\n        // A failed C++ construction does not invoke the derived destructor.\n        if (self.constructed and !self.finished and environment.canCallIntoJs())",
+      "after": "        const request_environment = wrap.registry.environment;\n        // A failed C++ construction does not invoke the derived destructor.\n        if (self.constructed and !self.finished and request_environment.canCallIntoJs())"
+    },
+    {
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "reason": "Evaluation result local avoids Fixture.value.",
+      "before": "    fn evaluate(self: *Fixture, source: []const u8) !void {\n        const value = try self.value(source);\n        self.engine.freeValue(value);\n    }",
+      "after": "    fn evaluate(self: *Fixture, source: []const u8) !void {\n        const evaluated = try self.value(source);\n        self.engine.freeValue(evaluated);\n    }"
+    },
+    {
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "reason": "Observed assertion result local avoids Fixture.value; conversion/assertion unchanged.",
+      "before": "    fn expect(self: *Fixture, source: []const u8) !void {\n        const value = try self.value(source);\n        defer self.engine.freeValue(value);\n        try std.testing.expect(c.JS_ToBool(self.engine.context, value) == 1);\n    }",
+      "after": "    fn expect(self: *Fixture, source: []const u8) !void {\n        const observed = try self.value(source);\n        defer self.engine.freeValue(observed);\n        try std.testing.expect(c.JS_ToBool(self.engine.context, observed) == 1);\n    }"
+    },
+    {
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "reason": "Expose argument avoids Fixture.value without changing the forwarded JSValue.",
+      "before": "    fn expose(self: *Fixture, name: [*:0]const u8, value: c.JSValue) !void {\n        const ignored = try a.expression(self.engine, struct {\n            fn run(s: *a.Scope, key: [*:0]const u8, item: c.JSValue) !c.JSValue {\n                const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));\n                try s.define(global, key, item, c.JS_PROP_C_W_E);\n                return c.pi_js_undefined();\n            }\n        }.run, .{name, value});\n        self.engine.freeValue(ignored);\n    }",
+      "after": "    fn expose(self: *Fixture, name: [*:0]const u8, exposed: c.JSValue) !void {\n        const ignored = try a.expression(self.engine, struct {\n            fn run(s: *a.Scope, key: [*:0]const u8, item: c.JSValue) !c.JSValue {\n                const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));\n                try s.define(global, key, item, c.JS_PROP_C_W_E);\n                return c.pi_js_undefined();\n            }\n        }.run, .{name, exposed});\n        self.engine.freeValue(ignored);\n    }"
+    },
+    {
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "reason": "Both settle parameters avoid Fixture.request/value; the compiler initially reported the first collision. Exact pointer/value and all scope operations remain.",
+      "before": "    fn settle(self: *Fixture, request: *requests.Request, value: c.JSValue, rejecting: bool) !void {\n        var outer_scope: callbacks.Scope = undefined;\n        try self.outer(&outer_scope, try request.object());\n        defer if (!outer_scope.deinitialized) {\n            outer_scope.markFailed();\n            outer_scope.deinit() catch {};\n        };\n        if (rejecting) try request.reject(value) else try request.resolve(value);\n        try outer_scope.deinit();\n    }",
+      "after": "    fn settle(self: *Fixture, request_value: *requests.Request, settled_value: c.JSValue, rejecting: bool) !void {\n        var outer_scope: callbacks.Scope = undefined;\n        try self.outer(&outer_scope, try request_value.object());\n        defer if (!outer_scope.deinitialized) {\n            outer_scope.markFailed();\n            outer_scope.deinit() catch {};\n        };\n        if (rejecting) try request_value.reject(settled_value) else try request_value.resolve(settled_value);\n        try outer_scope.deinit();\n    }"
+    },
+    {
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "reason": "Ready-controller capture avoids Fixture.value.",
+      "before": "            .ready => |value| value,",
+      "after": "            .ready => |ready_controller| ready_controller,"
+    },
+    {
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "reason": "Native request local avoids Fixture.value; retain and return the identical pointer.",
+      "before": "        const value = req.native_request orelse return error.ActualFSReadNativeStorageRequired;\n        uv.pi_uv_fs_request_retain(value);\n        return value;",
+      "after": "        const native_request_value = req.native_request orelse return error.ActualFSReadNativeStorageRequired;\n        uv.pi_uv_fs_request_retain(native_request_value);\n        return native_request_value;"
+    }
+  ],
+  "test_count": 25,
+  "test_names": [
+    "native FS request owner exposes real no-handler templates and converted receiver returns",
+    "native FS request owner preserves actual template cache and subclass prototype selection",
+    "native FS request owner enforces the genuine signature and preserves a cleared template brand",
+    "native FS request owner initializes the real provider IDs frame queue and derived aliases",
+    "native FS request owner keeps general reset resource and explicit ID ordering",
+    "native FS request owner publishes all four original BindingData views without AsyncWrap init",
+    "native FS request owner accepts normal false native alias Set and weakens the unreferenced view",
+    "native FS request owner retains native BindingData through each real derived request",
+    "native FS request owner returns the original one pending Promise and reads its live property",
+    "native FS request owner settles the live replacement Promise without replacing the earlier return",
+    "native FS request owner uses the captured request frame through before Get after and restores the parent",
+    "native FS request owner preserves ordinary Error data in both fulfill and reject settlement",
+    "native FS request owner completes its callback destructor after an ordinary live Promise Get throw",
+    "native FS request owner settled Promise bypasses incoming then lookup through the actual native resolver",
+    "native FS request owner realm cleanup follows the actual BindingData then request FIFO and clears native slots",
+    "native FS request owner retained factory observes the real empty Realm weak slot after cleanup",
+    "native FS request owner physical Read constructs native storage before init and dispatches the actual view span",
+    "native FS request owner physical Read uses DataView and wider typed-array byte spans",
+    "native FS request owner physical Read preserves BigInt wrapping safe minus zero and zero length",
+    "native FS request owner physical Read retains backing storage before the real init hook transfers its buffer",
+    "native FS request owner physical Read still dispatches after the ordinary void return-Promise Get fails",
+    "native FS request owner physical Read rejects accepted bad descriptors through actual UVException",
+    "native FS request owner physical completion preserves live Promise getter failure and still retires the request",
+    "native FS request owner disabled Hub shutdown drains genuine queued reads without Promise or guest callbacks",
+    "native FS request owner retained Read controller refuses admission after the real Hub is retired"
+  ],
+  "verification": {
+    "all_preimages_match_current_main": true,
+    "unique_forward_inverse_exact": true,
+    "all_25_declarations_and_assertions_preserved": true,
+    "fixture_same_scope_method_name_collisions_remaining": []
+  },
+  "scope": "Eight exact source blocks rename nine local/parameter/capture bindings. No type, API, operation, result ownership, assertion, build or execution change. The second settle argument also shadowed Fixture.value; it is corrected in the same reported signature."
+}

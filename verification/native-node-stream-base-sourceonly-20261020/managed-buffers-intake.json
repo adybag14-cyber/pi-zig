@@ -1,0 +1,179 @@
+{
+  "schema": "sdk-source-unit-intake-v1",
+  "unit": "native managed-buffer table and twelve raw controls",
+  "date": "2026-10-20",
+  "status": "Native table/adapter/control/build finite peers closed. Environment integration remains an exact separate proposal pending Root review. No compile/runtime qualification.",
+  "production_paths": [
+    "src/extensions/native_node_managed_buffers.cpp",
+    "src/extensions/native_node_managed_buffers.h",
+    "src/extensions/native_node_managed_buffers.zig"
+  ],
+  "control_root": "src/native_node_managed_buffers_test.zig",
+  "declarations": [
+    "Node managed buffers constructs the actual empty native map without a context",
+    "Node managed buffers consumes the actual token before any JS wrapper exists",
+    "Node managed buffers insertion does not enter the exhausted JS heap",
+    "Node managed buffers release keys on actual base and ignores the copied length",
+    "Node managed buffers null base bypasses lookup while retaining other entries",
+    "Node managed buffers preserves the real zero owner until map destruction",
+    "Node managed buffers duplicate insertion retires only the unselected native owner",
+    "Node managed buffers moves out before erase and survives native table destruction",
+    "Node managed buffers release then adopts the same real backing into a later ArrayBuffer",
+    "Node managed buffers native map operations preserve an actual pending reason",
+    "Node managed buffers real node allocation retries through the actual native new handler",
+    "Node managed buffers all native backing and table charges retire after the originating runtime"
+  ],
+  "build": {
+    "packet": "verification/native-node-stream-base-sourceonly-20261020/managed-buffers-build-intake.json",
+    "sha256": "F16F414743921E377C5FE6EC0868E0025B0C6571702B3B8EE6F9BB9BC2A9ADC1",
+    "network_added_lines": 4,
+    "target_added_lines": 11,
+    "target": "build-native-node-managed-buffers",
+    "install_only": true,
+    "actual_build_modified": false
+  },
+  "prerequisites": [
+    {
+      "unit": "VM complete native backing-store token",
+      "commit": "eb4ec1d69c8d21dbd1079f29882654a37b485f24",
+      "packet_sha256": "D94BDE94024B6CD523FCC2AE8DA4ED27249B440BF0444746E7C55EACE024EC65"
+    },
+    {
+      "unit": "actual standard allocator and one shared native-memory Compile/TLS owner",
+      "commit": "78b8ddf58c9b101a2afd4948ff2ed8f1ded7de63",
+      "build_packet_sha256": "0427BE866F23AFF75EC6083F823C4A1A9EE1A29A033EB71A9092E651C3507C80"
+    }
+  ],
+  "representation": "Complete native token is inline and move-only. This makes the native unordered_map node larger than V8's unique_ptr representation; no identical node-size/charge-peak claim or extra token box.",
+  "environment_proposal": {
+    "path": "proposal/environment-with-managed-buffers.zig.txt",
+    "sha256": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+    "bytes": 39860,
+    "base_sha256": "E267756ECEFDFA7577E68A18BB2D04EA5392579E837385BA437808DD75F6E397",
+    "edits": 10,
+    "complete_forward_inverse_exact": true,
+    "production_environment_modified": false,
+    "status": "Root finite Environment allocation/lifetime/CHECK review pending; apply only the ten exact edits after separately reviewed Int32 stream alias six-edit packet8C91."
+  },
+  "validation": {
+    "control_filter_count": 12,
+    "all_raw_production_and_control_peers_closed": true,
+    "build_peer_closed": true,
+    "environment_proposal_forward_inverse_exact": true,
+    "native_execution": false
+  },
+  "peers": [
+    {
+      "owner": "modules_io",
+      "receipt": "peers/managed-modules-production-peer.json",
+      "sha256": "C709F72911383CA9CA4E8E8A654FCEED1F44979CA667DDC188DF19819C3E2E43",
+      "scope": "Original pointer-key container/order and shared allocator selection"
+    },
+    {
+      "owner": "vm_foundation",
+      "receipt": "peers/managed-vm-production-peer.json",
+      "sha256": "ED84F31C85F16C62AFDF4CD316C36AC5536DD75F4D5AC5CFFC151C9A5F93B249",
+      "scope": "Complete move-only token/native lifetime and table/store destruction"
+    },
+    {
+      "owner": "vm_foundation",
+      "receipt": "peers/managed-vm-controls-peer.json",
+      "sha256": "E23D55F565ECAA87FD44A1604C577E4030ABF0C5A39AEFE012979AA37EB789AA",
+      "scope": "Fixture/helpers and controls1–3/8–10/12"
+    },
+    {
+      "owner": "modules_io",
+      "receipt": "peers/managed-modules-controls-build-peer.json",
+      "sha256": "673F5A4069BFB16C7747454C74F74C02CE9A76BC4C208CAEE1BA2E2626213E9B",
+      "scope": "Controls4–7/11, native retry helper and exact network/target build"
+    }
+  ],
+  "intake_rules": [
+    "Add only the stated native source/root plus proof pathset. Never copy this worktree's production Environment dependency file.",
+    "The full Environment proposal is reviewable source only; retain it as a proposal until Root closes and composes the exact ten edits.",
+    "The four network additions follow the Map22 native-memory graph. Compose other later path-source additions without duplicating native_simdjson_memory.cpp.",
+    "Original backing retry/GC/default-fatal sequence, trace/category installation, selected StreamBase callbacks and full public FileHandle graph are separate."
+  ],
+  "files": [
+    {
+      "path": "src/extensions/native_node_managed_buffers.cpp",
+      "sha256": "E2083CD514D8CDB24839763513DD764A789EF628DCB2A1AB455B3A864312949D",
+      "bytes": 3795
+    },
+    {
+      "path": "src/extensions/native_node_managed_buffers.h",
+      "sha256": "976A8C7263BB4A3B870FB341A832BA6692EB7639E9EAD5FDC0C9C9B35D0D9E57",
+      "bytes": 2166
+    },
+    {
+      "path": "src/extensions/native_node_managed_buffers.zig",
+      "sha256": "BE567B795D5129373EEFCF2A7C95E9017C481E020F17472E2C35838689F22B88",
+      "bytes": 2875
+    },
+    {
+      "path": "src/native_node_managed_buffers_test.zig",
+      "sha256": "8A51CE5C6B80D318DBB368A735F1BBBEB9CAAD51EE5B825D1D3FFAC18B5374CA",
+      "bytes": 14499
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/managed-buffers-README.md",
+      "sha256": "160118D528C530C52432F5F3E5E55190D88C26A02964FD136D1B99B4C5A2B035",
+      "bytes": 3815
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/managed-buffers-build-intake.json",
+      "sha256": "F16F414743921E377C5FE6EC0868E0025B0C6571702B3B8EE6F9BB9BC2A9ADC1",
+      "bytes": 4351
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/managed-table-and-environment-delta.json",
+      "sha256": "0DE6C717995767B3EB21F0BFEC38E22E342CD49FAF385F269E59D4C7810A6631",
+      "bytes": 16914
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/managed-backing-source-and-abi-proposal.json",
+      "sha256": "C5076FE7E108CDC3B777EBFA4F9FB77B8DEA91B45951CFEE8023535E97115D9D",
+      "bytes": 34166
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/original/environment-before-managed-buffers.zig.txt",
+      "sha256": "E267756ECEFDFA7577E68A18BB2D04EA5392579E837385BA437808DD75F6E397",
+      "bytes": 38246
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/proposal/environment-with-managed-buffers.zig.txt",
+      "sha256": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "bytes": 39860
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/stream-state-environment-delta.json",
+      "sha256": "8C91B140A3E7D6422668B9085D1514AD15B0867826D2804633014954317AF638",
+      "bytes": 2984
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/peers/stream-state-root-peer.json",
+      "sha256": "66116CB7ABF15FA87D82CCD02B80118AF69EB61840B4EE020AA046D25C1338C0",
+      "bytes": 1626
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/peers/managed-vm-production-peer.json",
+      "sha256": "ED84F31C85F16C62AFDF4CD316C36AC5536DD75F4D5AC5CFFC151C9A5F93B249",
+      "bytes": 2603
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/peers/managed-vm-controls-peer.json",
+      "sha256": "E23D55F565ECAA87FD44A1604C577E4030ABF0C5A39AEFE012979AA37EB789AA",
+      "bytes": 1976
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/peers/managed-modules-production-peer.json",
+      "sha256": "C709F72911383CA9CA4E8E8A654FCEED1F44979CA667DDC188DF19819C3E2E43",
+      "bytes": 2884
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/peers/managed-modules-controls-build-peer.json",
+      "sha256": "673F5A4069BFB16C7747454C74F74C02CE9A76BC4C208CAEE1BA2E2626213E9B",
+      "bytes": 3312
+    }
+  ]
+}

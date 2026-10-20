@@ -1,0 +1,147 @@
+{
+  "status": "exact original source only; no runtime or GC-policy equivalence claim",
+  "node_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "documents": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-existing-promise-settlement-sourceonly-20261019\\authority\\v8-api.v24.13.cc",
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "bytes": 489340,
+      "excerpts": [
+        {
+          "label": "Selected native BackingStore constructor",
+          "offset_bytes": 359151,
+          "length_bytes": 1332,
+          "start_line": 9107,
+          "end_line": 9137,
+          "sha256": "A1F240D4B9FD21A6CDF8202C35A59D2452DD6C920899518851053D64545011C2",
+          "text": "std::unique_ptr<v8::BackingStore> v8::ArrayBuffer::NewBackingStore(\n    Isolate* v8_isolate, size_t byte_length,\n    BackingStoreInitializationMode initialization_mode,\n    BackingStoreOnFailureMode on_failure) {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(v8_isolate);\n  API_RCS_SCOPE(i_isolate, ArrayBuffer, NewBackingStore);\n  if (on_failure == BackingStoreOnFailureMode::kOutOfMemory) {\n    CHECK_LE(byte_length, i::JSArrayBuffer::kMaxByteLength);\n  } else if (byte_length > i::JSArrayBuffer::kMaxByteLength) {\n    DCHECK(on_failure == BackingStoreOnFailureMode::kReturnNull);\n    return {};\n  }\n  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);\n  std::unique_ptr<i::BackingStoreBase> backing_store =\n      i::BackingStore::Allocate(i_isolate, byte_length,\n                                i::SharedFlag::kNotShared,\n                                GetInitializedFlag(initialization_mode));\n  if (!backing_store) {\n    if (on_failure == BackingStoreOnFailureMode::kOutOfMemory) {\n      i::V8::FatalProcessOutOfMemory(i_isolate,\n                                     \"v8::ArrayBuffer::NewBackingStore\");\n    } else {\n      DCHECK(on_failure == BackingStoreOnFailureMode::kReturnNull);\n      return {};\n    }\n  }\n  return std::unique_ptr<v8::BackingStore>(\n      static_cast<v8::BackingStore*>(backing_store.release()));\n}\n\n"
+        },
+        {
+          "label": "Actual fatal process OOM and native callback dispatch",
+          "offset_bytes": 7680,
+          "length_bytes": 3204,
+          "start_line": 212,
+          "end_line": 295,
+          "sha256": "47067F0BC8D299AA51EEEE9D9C472FCCEB0C884EE56EF0E490DC086752A1D4DA",
+          "text": "void i::V8::FatalProcessOutOfMemory(i::Isolate* i_isolate, const char* location,\n                                    const OOMDetails& details) {\n  i::HeapStats heap_stats;\n\n  if (i_isolate == nullptr) {\n    i_isolate = Isolate::TryGetCurrent();\n  }\n\n  if (i_isolate == nullptr) {\n    // If the Isolate is not available for the current thread we cannot retrieve\n    // memory information from the Isolate. Write easy-to-recognize values on\n    // the stack.\n    memset(&heap_stats, 0xBADC0DE, sizeof(heap_stats));\n    // Give the embedder a chance to handle the condition. If it doesn't,\n    // just crash.\n    if (g_oom_error_callback) g_oom_error_callback(location, details);\n    base::FatalOOM(base::OOMType::kProcess, location);\n    UNREACHABLE();\n  }\n\n  memset(heap_stats.last_few_messages, 0, Heap::kTraceRingBufferSize + 1);\n\n  if (i_isolate->heap()->HasBeenSetUp()) {\n    i_isolate->heap()->RecordStats(&heap_stats);\n    if (!v8_flags.correctness_fuzzer_suppressions) {\n      char* first_newline = strchr(heap_stats.last_few_messages, '\\n');\n      if (first_newline == nullptr || first_newline[1] == '\\0')\n        first_newline = heap_stats.last_few_messages;\n      base::OS::PrintError(\"\\n<--- Last few GCs --->\\n%s\\n\", first_newline);\n    }\n  }\n  Utils::ReportOOMFailure(i_isolate, location, details);\n  if (g_oom_error_callback) g_oom_error_callback(location, details);\n  // If the fatal error handler returns, we stop execution.\n  FATAL(\"API fatal error handler returned after process out of memory\");\n}\n\nvoid i::V8::FatalProcessOutOfMemory(i::Isolate* i_isolate, const char* location,\n                                    const char* detail) {\n  OOMDetails details;\n  details.detail = detail;\n  FatalProcessOutOfMemory(i_isolate, location, details);\n}\n\nvoid Utils::ReportApiFailure(const char* location, const char* message) {\n  i::Isolate* i_isolate = i::Isolate::TryGetCurrent();\n  FatalErrorCallback callback = nullptr;\n  if (i_isolate != nullptr) {\n    callback = i_isolate->exception_behavior();\n  }\n  if (callback == nullptr) {\n    base::OS::PrintError(\"\\n#\\n# Fatal error in %s\\n# %s\\n#\\n\\n\", location,\n                         message);\n    base::OS::Abort();\n  } else {\n    callback(location, message);\n  }\n  i_isolate->SignalFatalError();\n}\n\nvoid Utils::ReportOOMFailure(i::Isolate* i_isolate, const char* location,\n                             const OOMDetails& details) {\n  if (auto oom_callback = i_isolate->oom_behavior()) {\n    oom_callback(location, details);\n  } else {\n    // TODO(wfh): Remove this fallback once Blink is setting OOM handler. See\n    // crbug.com/614440.\n    FatalErrorCallback fatal_callback = i_isolate->exception_behavior();\n    if (fatal_callback == nullptr) {\n      base::OOMType type = details.is_heap_oom ? base::OOMType::kJavaScript\n                                               : base::OOMType::kProcess;\n      base::FatalOOM(type, location);\n      UNREACHABLE();\n    } else {\n      fatal_callback(location,\n                     details.is_heap_oom\n                         ? \"Allocation failed - JavaScript heap out of memory\"\n                         : \"Allocation failed - process out of memory\");\n    }\n  }\n  i_isolate->SignalFatalError();\n}\n\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\deps__v8__src__init__v8.h.txt",
+      "sha256": "8A5E68C6D12C1BB6720EBD1CA04FE2241EAD5100C26374AB71BF0EA298496A83",
+      "bytes": 2115,
+      "excerpts": [
+        {
+          "label": "Default details are kNoOOMDetails",
+          "offset_bytes": 759,
+          "length_bytes": 405,
+          "start_line": 30,
+          "end_line": 39,
+          "sha256": "3B7A9F345425147483D0677600EE32EA1E492430CB3524D057F2C30AE6B41B24",
+          "text": "  [[noreturn]] V8_EXPORT_PRIVATE static void FatalProcessOutOfMemory(\n      Isolate* isolate, const char* location,\n      const OOMDetails& details = kNoOOMDetails);\n\n  // Constants to be used for V8::FatalProcessOutOfMemory. They avoid having\n  // to include v8-callbacks.h in all callers.\n  V8_EXPORT_PRIVATE static const OOMDetails kNoOOMDetails;\n  V8_EXPORT_PRIVATE static const OOMDetails kHeapOOM;\n\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\deps__v8__src__init__v8.cc.txt",
+      "sha256": "1504589BFF02FC3AAF16C88D7D965A9D08F129651056CE1FA6D4D1D61C8892E4",
+      "bytes": 10759,
+      "excerpts": [
+        {
+          "label": "Exact default and heap detail values",
+          "offset_bytes": 1525,
+          "length_bytes": 99,
+          "start_line": 51,
+          "end_line": 54,
+          "sha256": "A883269C3EF33FCDBE9DC7B2E94CCD63E44D6CC70AF95D7CE1569FB6AE14DEF3",
+          "text": "const OOMDetails V8::kNoOOMDetails{false, nullptr};\nconst OOMDetails V8::kHeapOOM{true, nullptr};\n\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\v8-array-buffer.v24.13.h",
+      "sha256": "5AB664C31420DB10083DB3EFB9712666EB0FA1C14C71F4BBBF9C11F9E3AE991E",
+      "bytes": 22006,
+      "excerpts": [
+        {
+          "label": "Public default failure mode",
+          "offset_bytes": 10540,
+          "length_bytes": 317,
+          "start_line": 287,
+          "end_line": 294,
+          "sha256": "D17E114A7C831B3A9F8DD1C3ADC5A2165FFC4CFB6BB44C7F52BB7100FD1497E5",
+          "text": "  static std::unique_ptr<BackingStore> NewBackingStore(\n      Isolate* isolate, size_t byte_length,\n      BackingStoreInitializationMode initialization_mode =\n          BackingStoreInitializationMode::kZeroInitialized,\n      BackingStoreOnFailureMode on_failure =\n          BackingStoreOnFailureMode::kOutOfMemory);\n\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\v8-backing-store.v24.13.cc",
+      "sha256": "62D58402ACEB6B07C6A245DD2810A78F6B3BA6495661CCD3B67A0DA83142F069",
+      "bytes": 37081,
+      "excerpts": [
+        {
+          "label": "Native allocate/max/zero/allocator lifetime",
+          "offset_bytes": 7277,
+          "length_bytes": 2788,
+          "start_line": 201,
+          "end_line": 262,
+          "sha256": "F49348D317A47D20EAB144FD79E8E6F3A31522B66D12501158E44F80ED417859",
+          "text": "std::unique_ptr<BackingStore> BackingStore::Allocate(\n    Isolate* isolate, size_t byte_length, SharedFlag shared,\n    InitializedFlag initialized) {\n  void* buffer_start = nullptr;\n  auto allocator = isolate->array_buffer_allocator();\n  CHECK_NOT_NULL(allocator);\n  if (byte_length > allocator->MaxAllocationSize()) return {};\n  if (byte_length != 0) {\n    auto counters = isolate->counters();\n    int mb_length = static_cast<int>(byte_length / MB);\n    if (mb_length > 0) {\n      counters->array_buffer_big_allocations()->AddSample(mb_length);\n    }\n    if (shared == SharedFlag::kShared) {\n      counters->shared_array_allocations()->AddSample(mb_length);\n    }\n    auto allocate_buffer = [allocator, initialized](size_t byte_length) {\n      if (initialized == InitializedFlag::kUninitialized) {\n        return allocator->AllocateUninitialized(byte_length);\n      }\n      return allocator->Allocate(byte_length);\n    };\n\n    buffer_start = isolate->heap()->AllocateExternalBackingStore(\n        allocate_buffer, byte_length);\n\n    if (buffer_start == nullptr) {\n      // Allocation failed.\n      counters->array_buffer_new_size_failures()->AddSample(mb_length);\n      return {};\n    }\n#ifdef V8_ENABLE_SANDBOX\n    // Check to catch use of a non-sandbox-compatible ArrayBufferAllocator.\n    CHECK_WITH_MSG(isolate->isolate_group()->sandbox()->Contains(buffer_start),\n                   \"When the V8 Sandbox is enabled, ArrayBuffer backing stores \"\n                   \"must be allocated inside the sandbox address space. Please \"\n                   \"use an appropriate ArrayBuffer::Allocator to allocate \"\n                   \"these buffers, or disable the sandbox.\");\n#endif\n  }\n\n  PageAllocator* page_allocator =\n      isolate->isolate_group()->GetBackingStorePageAllocator();\n  auto result = new BackingStore(page_allocator,\n                                 buffer_start,                  // start\n                                 byte_length,                   // length\n                                 byte_length,                   // max length\n                                 byte_length,                   // capacity\n                                 shared,                        // shared\n                                 ResizableFlag::kNotResizable,  // resizable\n                                 false,   // is_wasm_memory\n                                 false,   // is_wasm_memory64\n                                 false,   // has_guard_regions\n                                 false,   // custom_deleter\n                                 false);  // empty_deleter\n\n  TRACE_BS(\"BS:alloc  bs=%p mem=%p (length=%zu)\\n\", result,\n           result->buffer_start(), byte_length);\n  result->SetAllocatorFromIsolate(isolate);\n  return std::unique_ptr<BackingStore>(result);\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-captured-frame-logging-sourceonly-20261019\\authority\\heap.v24.13.cc",
+      "sha256": "F33FAAC1BE676AB4A381E9B3DF34C42BD15F4C9D0B3A57EB321E7C538B8EC3C2",
+      "bytes": 277029,
+      "excerpts": [
+        {
+          "label": "Original conditional GC and retry policy",
+          "offset_bytes": 114213,
+          "length_bytes": 1366,
+          "start_line": 3089,
+          "end_line": 3124,
+          "sha256": "632E713903513EF8DB2C6B8064D7F0393D0E80D6034F6DF93FC4CCB09350938A",
+          "text": "void* Heap::AllocateExternalBackingStore(\n    const std::function<void*(size_t)>& allocate, size_t byte_length) {\n  size_t max = isolate()->array_buffer_allocator()->MaxAllocationSize();\n  DCHECK(max <= JSArrayBuffer::kMaxByteLength);\n  if (byte_length > max) {\n    return nullptr;\n  }\n  if (!always_allocate() && new_space()) {\n    size_t new_space_backing_store_bytes =\n        new_space()->ExternalBackingStoreOverallBytes();\n    if ((!v8_flags.separate_gc_phases ||\n         !incremental_marking()->IsMajorMarking()) &&\n        new_space_backing_store_bytes >= 2 * DefaultMaxSemiSpaceSize() &&\n        new_space_backing_store_bytes >= byte_length) {\n      // Performing a young generation GC amortizes over the allocated backing\n      // store bytes and may free enough external bytes for this allocation.\n      CollectGarbage(NEW_SPACE,\n                     GarbageCollectionReason::kExternalMemoryPressure);\n    }\n  }\n  void* result = allocate(byte_length);\n  if (result) return result;\n  if (!always_allocate()) {\n    for (int i = 0; i < 2; i++) {\n      CollectGarbage(OLD_SPACE,\n                     GarbageCollectionReason::kExternalMemoryPressure);\n      result = allocate(byte_length);\n      if (result) return result;\n    }\n    CollectAllAvailableGarbage(\n        GarbageCollectionReason::kExternalMemoryPressure);\n  }\n  return allocate(byte_length);\n}\n\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\src__node_errors.cc.txt",
+      "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9",
+      "bytes": 43095,
+      "excerpts": [
+        {
+          "label": "Installed Node OOM terminal owner",
+          "offset_bytes": 20257,
+          "length_bytes": 1278,
+          "start_line": 594,
+          "end_line": 630,
+          "sha256": "7C400DB19C47324299FD98214B7C3E2CE87A7B043151B00F8313283730D58C98",
+          "text": "void OOMErrorHandler(const char* location, const v8::OOMDetails& details) {\n  // We should never recover from this handler so once it's true it's always\n  // true.\n  is_in_oom.store(true);\n  const char* message =\n      details.is_heap_oom ? \"Allocation failed - JavaScript heap out of memory\"\n                          : \"Allocation failed - process out of memory\";\n  if (location) {\n    FPrintF(stderr, \"FATAL ERROR: %s %s\\n\", location, message);\n  } else {\n    FPrintF(stderr, \"FATAL ERROR: %s\\n\", message);\n  }\n  if (details.detail != nullptr) {\n    FPrintF(stderr, \"Reason: %s\\n\", details.detail);\n  }\n\n  Isolate* isolate = Isolate::TryGetCurrent();\n  bool report_on_fatalerror;\n  {\n    Mutex::ScopedLock lock(node::per_process::cli_options_mutex);\n    report_on_fatalerror = per_process::cli_options->report_on_fatalerror;\n  }\n\n  if (report_on_fatalerror) {\n    // Trigger report with the isolate. Environment::GetCurrent may return\n    // nullptr here:\n    // - If the OOM is reported by a young generation space allocation,\n    //   Isolate::GetCurrentContext returns an empty handle.\n    // - Otherwise, Isolate::GetCurrentContext returns a non-empty handle.\n    TriggerNodeReport(isolate, message, \"OOMError\", \"\", Local<Object>());\n  }\n\n  fflush(stderr);\n  ABORT();\n}\n\n"
+        }
+      ]
+    }
+  ],
+  "conclusions": [
+    "StreamBase explicitly requests kUninitialized and accepts the public default kOutOfMemory.",
+    "The selected API performs CHECK_LE(byte_length,kMaxByteLength) before allocation; that invalid native-size assertion is not an OOM outcome.",
+    "Actual BackingStore::Allocate checks the installed allocator maximum; a zero-length whole store has null data but a real native record.",
+    "The normal nonzero allocate path delegates to Heap::AllocateExternalBackingStore. Its conditional young GC, two old-space retry GCs and final all-available GC remain explicit original prerequisites; a single JS_RunGC is not asserted equivalent.",
+    "After allocation returns empty, the API calls FatalProcessOutOfMemory with literal site v8::ArrayBuffer::NewBackingStore and default kNoOOMDetails={false,nullptr}.",
+    "Node's OOMErrorHandler therefore selects Allocation failed - process out of memory, publishes permanent is_in_oom, emits no Reason line for null detail, invokes the actual optional OOMError report, flushes then ABORT.",
+    "The existing heap CALL_AND_RETRY_LAST/kHeapOOM entry is a distinct source operation and remains unchanged.",
+    "VM's TryNew native primitive is one attempt with no JS allocation/GC/pending/event; the embedding retry and terminal owner must be composed separately."
+  ],
+  "existing_installed_handler_and_abort_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-options-v24-heap-diagnosis-sourceonly-20261020\\authority\\native-oom-chain.json",
+    "sha256": "DB865FBF135E5FBDDBD11FE1AE25D6191A8181772C7E7576FE1F0AEBD5C492D8"
+  },
+  "ownership": {
+    "native_check_failure": "Root owns the next additive c/h/zig terminal delta; SDK does not edit these files",
+    "native_backing_C_H": "VM owns",
+    "consumer": "SDK StreamBase",
+    "selected_adoption_domain": "same Environment/runtime; native destruction must remain valid after originating runtime; no selected cross-runtime adoption"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "status": "finite_source_peer_closed",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-20T13:28:07.344642+00:00",
+  "packet_sha256": "8C91B140A3E7D6422668B9085D1514AD15B0867826D2804633014954317AF638",
+  "proposal_sha256": "C5076FE7E108CDC3B777EBFA4F9FB77B8DEA91B45951CFEE8023535E97115D9D",
+  "base_sha256": "8868C64C8B9DF78CC7EA43DE34E682B3ABB74285C6B47BA9D268C015FB9CAF1F",
+  "successor_sha256": "E267756ECEFDFA7577E68A18BB2D04EA5392579E837385BA437808DD75F6E397",
+  "exact_six_forward_inverse": true,
+  "actual_original_documents_verified": 10,
+  "findings": [
+    "Four indices preserve exact StreamBaseStateFields source order and actual signed Int32 storage.",
+    "Existing Alias.create publishes its duplicate intrinsic view with zero-initialized backing; native access addresses that same four-entry storage.",
+    "The new alias initializes after existing AsyncHooks/Tick members and retires before those aliases. Partial constructor failure enters existing retireRoots and clears the data pointer before last-view release.",
+    "All existing constructor/callback/cleanup algorithm bytes survive exact inverse; only the six disclosed additive edits apply."
+  ],
+  "limits": [
+    "This closes only the stream-state alias slice; managed map/tail allocation/backing/StreamBase MakeCallback owners remain separate concrete prerequisites.",
+    "A future map must retire after joined I/O/realm cleanup and before the stream alias; do not introduce earlier map reset.",
+    "No Main mutation, compilation, metadata, runtime or application qualification."
+  ],
+  "source_only": true,
+  "execution_authorized": false
+}

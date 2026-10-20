@@ -1,0 +1,2575 @@
+{
+  "schema": 1,
+  "status": "exact reviewed source composition",
+  "parent": "306445c9174a118bd0f3f54dab51665559a95266",
+  "patches": [
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_check_failure.c",
+      "label": "selected backing process OOM terminal",
+      "origin": "verification/native-node-backing-oom-sourceonly-20261020/production-delta.json",
+      "before": "void pi_node_maybe_check_failure(JSContext *context,\n",
+      "after": "/* Selected ArrayBuffer::NewBackingStore process OOM terminal callback.\n * The caller completes its actual native allocation/retry policy first.\n * kNoOOMDetails selects process memory and has no optional Reason string. */\nvoid pi_node_backing_store_out_of_memory(JSContext *context,\n                                         const PiNodeFatalDiagnostics *diagnostics) {\n    static const char message[] =\n        \"Allocation failed - process out of memory\";\n    atomic_store(&pi_node_in_oom, 1);\n    fprintf(stderr, \"FATAL ERROR: v8::ArrayBuffer::NewBackingStore %s\\n\", message);\n    if (diagnostics && diagnostics->report)\n        diagnostics->report(diagnostics->report_opaque, context,\n                            message, \"OOMError\", \"\");\n    fflush(stderr);\n    pi_node_abort(context);\n}\n\nvoid pi_node_maybe_check_failure(JSContext *context,\n",
+      "count": 1,
+      "positions_after": [
+        12967
+      ],
+      "before_sha256": "1D051F4154AA80DF217E5EB7E06D6173F60EA367EAABCA664E3AB8185143EE37",
+      "after_sha256": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_check_failure.h",
+      "label": "selected backing process OOM terminal",
+      "origin": "verification/native-node-backing-oom-sourceonly-20261020/production-delta.json",
+      "before": "void pi_node_maybe_check_failure(JSContext *context,\n",
+      "after": "/* Terminal callback for actual external BackingStore allocation failure after\n * the embedding's native retry policy. This entry does not perform retries. */\nvoid pi_node_backing_store_out_of_memory(JSContext *context,\n                                         const PiNodeFatalDiagnostics *diagnostics);\nvoid pi_node_maybe_check_failure(JSContext *context,\n",
+      "count": 1,
+      "positions_after": [
+        1355
+      ],
+      "before_sha256": "A618BB6C25DA7E3B9C87BA6A15D97B81EDE8E2B103C242C0AADC4C52BE08A446",
+      "after_sha256": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_check_failure.zig",
+      "label": "selected backing process OOM terminal",
+      "origin": "verification/native-node-backing-oom-sourceonly-20261020/production-delta.json",
+      "before": "extern fn pi_node_maybe_check_failure(?*c.JSContext, ?*const Diagnostics) void;\n",
+      "after": "extern fn pi_node_backing_store_out_of_memory(?*c.JSContext, ?*const Diagnostics) void;\nextern fn pi_node_maybe_check_failure(?*c.JSContext, ?*const Diagnostics) void;\n",
+      "count": 1,
+      "positions_after": [
+        670
+      ],
+      "before_sha256": "CC49A9A415C8A1729465FB9AC71690F61FB031E3FAF79D4CACAE442A588E0C7C",
+      "after_sha256": "B4CCBC2394FCD60A031007BC2BD0FEED081E00300EC20E68AEB5EB70102B8627"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_check_failure.zig",
+      "label": "selected backing process OOM terminal",
+      "origin": "verification/native-node-backing-oom-sourceonly-20261020/production-delta.json",
+      "before": "pub fn maybeCheck(engine: *em.Engine, diagnostics: ?*const Diagnostics) noreturn {\n",
+      "after": "/// The caller completes the actual external backing-store allocation policy.\n/// An empty result selects the original process OOM handler with null details.\npub fn backingStoreOutOfMemory(engine: *em.Engine, diagnostics: ?*const Diagnostics) noreturn {\n    pi_node_backing_store_out_of_memory(engine.context, diagnostics);\n    unreachable;\n}\npub fn maybeCheck(engine: *em.Engine, diagnostics: ?*const Diagnostics) noreturn {\n",
+      "count": 1,
+      "positions_after": [
+        1424
+      ],
+      "before_sha256": "B4CCBC2394FCD60A031007BC2BD0FEED081E00300EC20E68AEB5EB70102B8627",
+      "after_sha256": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "whole native backing allocation and consuming intrinsic adoption",
+      "origin": "verification/native-backing-store-adoption-sourceonly-20261020/production-delta.json",
+      "before": "int JS_PiAcquireArrayBufferView(JSContext *ctx, JSValueConst view,\n",
+      "after": "/* A whole fixed native store is distinct from a view lease.  Its provider\n   record contains only native callbacks and an independently retained native\n   allocation domain; it never owns a JS wrapper or a runtime pointer. */\nint JS_PiTryNewArrayBufferBackingStore(JSRuntime *rt, size_t byte_length,\n                                      bool zero_initialized,\n                                      JSPiArrayBufferBackingStore *out)\n{\n    JSPiArrayBufferBackingStore result = {0};\n    const JSPiArrayBufferStorageFunctions *functions =\n        &rt->array_buffer_storage_funcs;\n\n    assert(out != NULL);\n    assert(out->owner == NULL);\n    memset(out, 0, sizeof(*out));\n    if (!functions->allocate)\n        return 0;\n    result.owner = functions->allocate(functions->opaque, byte_length,\n                                       byte_length, zero_initialized ? 0 :\n                                       JS_PI_BACKING_UNINITIALIZED);\n    if (!result.owner)\n        return -1;\n    result.byte_length = byte_length;\n    result.functions = *functions;\n    *out = result;\n    return 1;\n}\n\nuint8_t *JS_PiArrayBufferBackingStoreData(\n    const JSPiArrayBufferBackingStore *store)\n{\n    assert(store != NULL);\n    /* The native BackingStore contract has a null logical Data for length 0.\n       The provider may keep a private empty-buffer sentinel for VM internals. */\n    if (!store->owner || !store->byte_length)\n        return NULL;\n    return store->functions.data(store->owner);\n}\n\nsize_t JS_PiArrayBufferBackingStoreByteLength(\n    const JSPiArrayBufferBackingStore *store)\n{\n    assert(store != NULL);\n    return store->owner ? store->byte_length : 0;\n}\n\nvoid JS_PiDupArrayBufferBackingStore(JSPiArrayBufferBackingStore *out,\n                                    const JSPiArrayBufferBackingStore *source)\n{\n    assert(out != NULL && source != NULL && out != source);\n    assert(out->owner == NULL);\n    *out = *source;\n    if (out->owner)\n        out->functions.retain(out->owner);\n}\n\nvoid JS_PiReleaseArrayBufferBackingStore(JSPiArrayBufferBackingStore *store)\n{\n    void *owner;\n    void (*release)(void *);\n\n    assert(store != NULL);\n    owner = store->owner;\n    release = store->functions.release;\n    memset(store, 0, sizeof(*store));\n    if (owner)\n        release(owner);\n}\n\nstatic bool js_pi_backing_store_provider_matches(\n    const JSPiArrayBufferStorageFunctions *a,\n    const JSPiArrayBufferStorageFunctions *b)\n{\n    return a->allocate == b->allocate &&\n           a->shared_owner == b->shared_owner &&\n           a->data == b->data &&\n           a->byte_length == b->byte_length &&\n           a->resize == b->resize &&\n           a->retain == b->retain &&\n           a->release == b->release &&\n           a->opaque == b->opaque;\n}\n\nJSValue JS_PiAdoptArrayBufferBackingStore(JSContext *ctx,\n                                         JSPiArrayBufferBackingStore *store)\n{\n    JSPiArrayBufferBackingStore owned;\n    void *storage;\n\n    assert(store != NULL);\n    owned = *store;\n    memset(store, 0, sizeof(*store));\n    /* This native entry consumes its input even when an earlier actual event\n       prevents wrapper allocation.  Native release cannot execute guest code. */\n    if (JS_HasException(ctx)) {\n        JS_PiReleaseArrayBufferBackingStore(&owned);\n        return JS_EXCEPTION;\n    }\n    if (!owned.owner)\n        return JS_ThrowTypeError(ctx, \"empty native ArrayBuffer backing store\");\n    if (!js_pi_backing_store_provider_matches(\n            &owned.functions, &ctx->rt->array_buffer_storage_funcs)) {\n        JS_PiReleaseArrayBufferBackingStore(&owned);\n        return JS_ThrowTypeError(ctx, \"native ArrayBuffer backing provider mismatch\");\n    }\n    storage = owned.owner;\n    owned.owner = NULL;\n    /* constructor4 consumes this entitlement on both success and failure.\n       The validated runtime table remains alive for the resulting wrapper. */\n    return js_array_buffer_constructor4(\n        ctx, JS_UNDEFINED, owned.byte_length, NULL, JS_CLASS_ARRAY_BUFFER,\n        NULL, NULL, NULL, false, storage, false);\n}\n\nint JS_PiAcquireArrayBufferView(JSContext *ctx, JSValueConst view,\n",
+      "count": 1,
+      "positions_after": [
+        2255905
+      ],
+      "before_sha256": "86EE97602BAD77F3CD094F0EF326919E2E7A5E8FEBE4247486A2B86851C670C2",
+      "after_sha256": "332FAD1CFA31B502E9FB8CF8F84059473001DD8CAAC2B357A75EDEC98116CFE2"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "explicit native fixed uninitialized storage flag",
+      "origin": "verification/native-backing-store-adoption-sourceonly-20261020/production-delta.json",
+      "before": "#define JS_PI_BACKING_RESIZABLE 2u\n",
+      "after": "#define JS_PI_BACKING_RESIZABLE 2u\n/* Only fixed non-shared native stores request this mode. JS buffers stay zeroed. */\n#define JS_PI_BACKING_UNINITIALIZED 4u\n",
+      "count": 1,
+      "positions_after": [
+        71481
+      ],
+      "before_sha256": "7DD0189F0143D448CD3678FB1B415D200BFA36610371EF87A16B84BBA4871DC3",
+      "after_sha256": "E9411CB672BCEDCC62213C7D93DB30F7B511CF341410FA20E376080CB24A7A4B"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "whole native store ABI",
+      "origin": "verification/native-backing-store-adoption-sourceonly-20261020/production-delta.json",
+      "before": "/* An owned native entitlement and the intrinsic view span at acquisition.\n",
+      "after": "/* A fixed, non-shared WHOLE native allocation, never an arbitrary view span.\n   Initialize records to zero; only the functions below may create/copy them.\n   The copied provider contains native callbacks and a native allocation-domain\n   pointer, not a JS value, Engine, context or runtime.  Native Data is NULL for\n   a zero-length store, whose non-NULL owner still represents an entitlement.\n   Dup/Get/Release need no live VM; distinct owned records can be used on native\n   workers.  Concurrent mutation of the same record is not supported. */\ntypedef struct JSPiArrayBufferBackingStore {\n    void *owner;\n    size_t byte_length;\n    JSPiArrayBufferStorageFunctions functions;\n} JSPiArrayBufferBackingStore;\n/* One native allocation attempt: 1 success; 0 no installed provider; -1 native\n   allocation failure.  out must be empty and remains empty on failure.\n   This performs no JS allocation, collection, pending change or OOM report.\n   Original embedding GC/retry and terminal allocation-failure policy are the\n   caller's separate responsibility.  Allocation runs on the runtime thread. */\nJS_EXTERN int JS_PiTryNewArrayBufferBackingStore(\n    JSRuntime *rt, size_t byte_length, bool zero_initialized,\n    JSPiArrayBufferBackingStore *out);\nJS_EXTERN uint8_t *JS_PiArrayBufferBackingStoreData(\n    const JSPiArrayBufferBackingStore *store);\nJS_EXTERN size_t JS_PiArrayBufferBackingStoreByteLength(\n    const JSPiArrayBufferBackingStore *store);\nJS_EXTERN void JS_PiDupArrayBufferBackingStore(\n    JSPiArrayBufferBackingStore *out,\n    const JSPiArrayBufferBackingStore *source);\nJS_EXTERN void JS_PiReleaseArrayBufferBackingStore(\n    JSPiArrayBufferBackingStore *store);\n/* Consume and clear store on EVERY outcome; create the intrinsic fixed\n   ArrayBuffer only here, without a copy or a guest constructor call.  Existing\n   actual pending wins before allocation.  The installed provider and native\n   allocation domain must match; cross-domain adoption is not supported.\n   Existing VM ArrayBuffer length limits and wrapper allocation failures apply.\n   The owned result is an ArrayBuffer or JS_EXCEPTION with actual pending. */\nJS_EXTERN JSValue JS_PiAdoptArrayBufferBackingStore(\n    JSContext *ctx, JSPiArrayBufferBackingStore *store);\n\n/* An owned native entitlement and the intrinsic view span at acquisition.\n",
+      "count": 1,
+      "positions_after": [
+        72608
+      ],
+      "before_sha256": "E9411CB672BCEDCC62213C7D93DB30F7B511CF341410FA20E376080CB24A7A4B",
+      "after_sha256": "D11D7D85650CB4B29C39282BF5EA3CDF38C76DEA4271961E489C990FF25EF908"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/engine_abi.c",
+      "label": "only selected fixed non-shared mode accepts uninitialized allocation",
+      "origin": "verification/native-backing-store-adoption-sourceonly-20261020/production-delta.json",
+      "before": "    if (length > maximum) return NULL;\n    if (resizable) {\n",
+      "after": "    if (length > maximum) return NULL;\n    if ((flags & JS_PI_BACKING_UNINITIALIZED) &&\n        (flags & (JS_PI_BACKING_SHARED | JS_PI_BACKING_RESIZABLE)))\n        return NULL;\n    if (resizable) {\n",
+      "count": 1,
+      "positions_after": [
+        6965
+      ],
+      "before_sha256": "940CAAAE81B2A4098BE60DDD42D44B3CC3D1347341ED2D9557E0D34AFA9E928C",
+      "after_sha256": "36DEA0C1EDF5309E1B5247769BA4642D43AD3A3A73F4D0B9CD3CF8829B685844"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/engine_abi.c",
+      "label": "actual malloc for native uninitialized fixed storage",
+      "origin": "verification/native-backing-store-adoption-sourceonly-20261020/production-delta.json",
+      "before": "        allocation = calloc(1, allocation_size);\n        if (!allocation) goto fail;\n",
+      "after": "        allocation = (flags & JS_PI_BACKING_UNINITIALIZED) ?\n            malloc(allocation_size) : calloc(1, allocation_size);\n        if (!allocation) goto fail;\n",
+      "count": 1,
+      "positions_after": [
+        8528
+      ],
+      "before_sha256": "36DEA0C1EDF5309E1B5247769BA4642D43AD3A3A73F4D0B9CD3CF8829B685844",
+      "after_sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+    },
+    {
+      "kind": "patch",
+      "path": "build.zig",
+      "label": "Backing20 install-only target",
+      "origin": "verification/native-backing-store-adoption-sourceonly-20261020/build-intake.json",
+      "before": "    const oom_occurrence_tests = b.addTest(.{\n",
+      "after": "    if (target.result.os.tag == .windows or target.result.os.tag == .linux) {\n        const native_backing_store_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_backing_store_adoption_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"VM native backing store\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_backing_store_tests.root_module, quickjs, sqlite_lib_dir);\n        b.step(\"build-native-vm-backing-store-adoption\", \"Install actual native backing allocation and adoption controls without execution\").dependOn(&b.addInstallArtifact(native_backing_store_tests, .{}).step);\n    }\n    const oom_occurrence_tests = b.addTest(.{\n",
+      "count": 1,
+      "positions_after": [
+        194812
+      ],
+      "before_sha256": "30348C988F824617E52EE47ECF64099D537582F8255E1B47C994820AA7814A62",
+      "after_sha256": "ED842287C8A7691196DABBBD9F6B1867F9D81F4680FEB988347229144DF0073D"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "public native Script and position ABI",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "/* return != 0 if the JS code needs to be interrupted */",
+      "after": "/* Native Script/location provenance. These owners are immutable after compile\n   publication and contain only the actual complete source and primitive origin\n   values admitted by this VM's compiler. All operations use the runtime's owner\n   thread; every externally retained Script must be freed before FreeRuntime.\n   Neither acquisition nor primitive projections observe guest properties. */\ntypedef struct JSNativeScript JSNativeScript;\ntypedef struct JSPiScriptInfo {\n    int source_length;             /* UTF-16 code units */\n    int source_byte_length;        /* actual parser input bytes */\n    int64_t line_offset;           /* actual input starting line minus one */\n    int column_offset;\n    bool is_eval;\n    bool is_module;\n} JSPiScriptInfo;\ntypedef struct JSPiScriptPositionInfo {\n    int64_t line;                   /* zero based, with optional origin offset */\n    int64_t column;\n    int line_start;                 /* UTF-16 source indices, no origin offset */\n    int line_end;\n} JSPiScriptPositionInfo;\n/* Borrowed genuine bytecode/function or captured frame -> owned Script/NULL.\n   Native/Proxy/bound functions and filename-only frames have no Script.\n   Frame failure leaves the position output unchanged; success writes the\n   actual selected UTF-16 position, or -1 when no bytecode PC is available. */\nJS_EXTERN JSNativeScript *JS_PiGetCompiledScript(JSValueConst value);\nJS_EXTERN JSNativeScript *JS_PiGetCapturedStackFrameScript(JSValueConst frame,\n                                                         int *position);\nJS_EXTERN JSNativeScript *JS_PiDupScript(JSNativeScript *script);\nJS_EXTERN void JS_PiFreeScript(JSNativeScript *script);\nJS_EXTERN int JS_PiScriptReadInfo(const JSNativeScript *script,\n                                JSPiScriptInfo *info);\n/* Owned primitive values; NULL Script returns undefined. No allocation,\n   pending-state operation, or guest conversion. ResourceName implements the\n   actual sourceURL-over-filename projection. SourceMapURL may be undefined. */\nJS_EXTERN JSValue JS_PiScriptGetSource(const JSNativeScript *script);\nJS_EXTERN JSValue JS_PiScriptGetResourceName(const JSNativeScript *script);\nJS_EXTERN JSValue JS_PiScriptGetSourceMapURL(const JSNativeScript *script);\n/* Allocation-free projection of the initialized line-end algorithm: LF,\n   lone CR, LS/PS, CRLF at LF, and an EOF sentinel including empty source.\n   Negative position clamps to zero. Beyond EOF/invalid outputs return -1\n   without writes. This is not V8's separate uninitialized LF-only fallback. */\nJS_EXTERN int JS_PiScriptGetPositionInfo(const JSNativeScript *script,\n    int position, bool with_offset, JSPiScriptPositionInfo *info);\n/* Actual source substring. Requires the Script's runtime; prior pending wins.\n   Invalid position returns undefined. Intrinsic substring allocation can fail. */\nJS_EXTERN JSValue JS_PiScriptGetSourceLine(JSContext *ctx,\n    const JSNativeScript *script, int position);\n\n/* return != 0 if the JS code needs to be interrupted */",
+      "count": 1,
+      "positions_after": [
+        83710
+      ],
+      "before_sha256": "D11D7D85650CB4B29C39282BF5EA3CDF38C76DEA4271961E489C990FF25EF908",
+      "after_sha256": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "runtime Script owner inventory",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    struct list_head context_list; /* list of JSContext.link */",
+      "after": "    struct list_head context_list; /* list of JSContext.link */\n    struct list_head pi_script_list; /* native primitive-only Script owners */",
+      "count": 1,
+      "positions_after": [
+        12650
+      ],
+      "before_sha256": "332FAD1CFA31B502E9FB8CF8F84059473001DD8CAAC2B357A75EDEC98116CFE2",
+      "after_sha256": "CE7D5CE9AD9843D69F824848606E692B45D46264E450C5433D9221C851FBA798"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "initialize native Script inventory",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    init_list_head(&rt->context_list);\n    init_list_head(&rt->gc_obj_list);",
+      "after": "    init_list_head(&rt->context_list);\n    init_list_head(&rt->pi_script_list);\n    init_list_head(&rt->gc_obj_list);",
+      "count": 1,
+      "positions_after": [
+        104792
+      ],
+      "before_sha256": "CE7D5CE9AD9843D69F824848606E692B45D46264E450C5433D9221C851FBA798",
+      "after_sha256": "C7D6BA5DE4984A588CD1A5881F51D44C1FE363AB7498B1202CFECD028139CE14"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "require native Script release before runtime disposal",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    assert(list_empty(&rt->gc_obj_list));",
+      "after": "    assert(list_empty(&rt->gc_obj_list));\n    assert(list_empty(&rt->pi_script_list));",
+      "count": 1,
+      "positions_after": [
+        132512
+      ],
+      "before_sha256": "C7D6BA5DE4984A588CD1A5881F51D44C1FE363AB7498B1202CFECD028139CE14",
+      "after_sha256": "2005FA264E5BD4FE67E4854BC2B768996C2195AC86FC2B0560358D12E67B3815"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "native Script and byte-position types",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "typedef struct JSFunctionBytecode {",
+      "after": "/* A Script owns complete immutable compiler input, independently of each\n   function's presentation string. It has no object/GC edges: every JSValue\n   below is a primitive string or undefined. */\nstruct JSNativeScript {\n    struct list_head link;\n    JSRuntime *rt;\n    int ref_count;\n    JSValue source;\n    JSValue resource_name;\n    JSValue source_url;\n    JSValue source_map_url;\n    uint8_t *input;\n    int input_length;\n    int initial_line;\n    uint8_t origin;\n    bool is_module;\n    bool metadata_finalized;\n    bool url_seen, map_seen;\n    int url_event, url_start, url_length;\n    int map_event, map_start, map_length;\n};\n\ntypedef struct JSPiSourcePosition {\n    uint32_t pc;\n    int byte_offset;\n} JSPiSourcePosition;\n\ntypedef struct JSFunctionBytecode {",
+      "count": 1,
+      "positions_after": [
+        33936
+      ],
+      "before_sha256": "2005FA264E5BD4FE67E4854BC2B768996C2195AC86FC2B0560358D12E67B3815",
+      "after_sha256": "6BD5EF63B537CC784778AE8A4874066F2F449DCEA6E9DF899E81DDFCC4680CE5"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "bytecode retains actual Script and independent positions",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    JSAtom pi_source_url; /* optional owned logical name; filename stays physical */",
+      "after": "    JSAtom pi_source_url; /* optional owned logical name; filename stays physical */\n    JSNativeScript *pi_script;\n    JSPiSourcePosition *pi_source_positions;\n    int pi_source_position_count;",
+      "count": 1,
+      "positions_after": [
+        36079
+      ],
+      "before_sha256": "6BD5EF63B537CC784778AE8A4874066F2F449DCEA6E9DF899E81DDFCC4680CE5",
+      "after_sha256": "5558F8687B9CA2126D05FF8B223C5B8805C9CE4AA8273B885939485B02A4DEB9"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "captured frame owns Script and native position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    uint8_t pi_script_origin; /* captured from the actual compiled owner */",
+      "after": "    uint8_t pi_script_origin; /* captured from the actual compiled owner */\n    JSNativeScript *pi_script;\n    int pi_source_position;",
+      "count": 1,
+      "positions_after": [
+        51826
+      ],
+      "before_sha256": "5558F8687B9CA2126D05FF8B223C5B8805C9CE4AA8273B885939485B02A4DEB9",
+      "after_sha256": "1450AA40783708AC92A8C5F34FB03511346C96CD4D62302A8D408B69982AF8E1"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "native Script primitive ownership and position projection",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "static void js_method_set_home_object(JSContext *ctx, JSValue func_obj,",
+      "after": "JSNativeScript *JS_PiDupScript(JSNativeScript *script)\n{\n    if (script)\n        script->ref_count++;\n    return script;\n}\n\nvoid JS_PiFreeScript(JSNativeScript *script)\n{\n    JSRuntime *rt;\n    if (!script || --script->ref_count)\n        return;\n    rt = script->rt;\n    list_del(&script->link);\n    JS_FreeValueRT(rt, script->source);\n    JS_FreeValueRT(rt, script->resource_name);\n    JS_FreeValueRT(rt, script->source_url);\n    JS_FreeValueRT(rt, script->source_map_url);\n    js_free_rt(rt, script->input);\n    js_free_rt(rt, script);\n}\n\nstatic JSNativeScript *js_pi_new_script(JSContext *ctx, const char *input,\n    size_t length, const char *filename, int initial_line,\n    uint8_t origin, bool is_module)\n{\n    JSNativeScript *script;\n    if (length > INT_MAX) {\n        JS_ThrowRangeError(ctx, \"Script input exceeds native position capacity\");\n        return NULL;\n    }\n    script = js_mallocz(ctx, sizeof(*script));\n    if (!script)\n        return NULL;\n    script->rt = ctx->rt;\n    script->ref_count = 1;\n    script->source = JS_UNDEFINED;\n    script->resource_name = JS_UNDEFINED;\n    script->source_url = JS_UNDEFINED;\n    script->source_map_url = JS_UNDEFINED;\n    script->initial_line = initial_line;\n    script->origin = origin;\n    script->is_module = is_module;\n    list_add_tail(&script->link, &ctx->rt->pi_script_list);\n    script->input = js_malloc(ctx, length + 1);\n    if (!script->input)\n        goto fail;\n    memcpy(script->input, input, length);\n    script->input[length] = 0;\n    script->input_length = length;\n    script->source = JS_NewStringLen(ctx, input, length);\n    if (JS_IsException(script->source))\n        goto fail;\n    script->resource_name = JS_NewString(ctx, filename);\n    if (JS_IsException(script->resource_name))\n        goto fail;\n    return script;\n fail:\n    JS_PiFreeScript(script);\n    return NULL;\n}\n\n/* Complete the primitive metadata once, after the actual lexer has finished.\n   The event offsets address our retained input, never a borrowed parser buffer. */\nstatic int js_pi_script_finalize(JSContext *ctx, JSNativeScript *script)\n{\n    JSValue value;\n    if (!script || script->metadata_finalized)\n        return 0;\n    if (script->url_length) {\n        value = JS_NewStringLen(ctx, (const char *)script->input + script->url_start,\n                               script->url_length);\n        if (JS_IsException(value))\n            return -1;\n        script->source_url = value;\n    }\n    if (script->map_length) {\n        value = JS_NewStringLen(ctx, (const char *)script->input + script->map_start,\n                               script->map_length);\n        if (JS_IsException(value))\n            return -1;\n        script->source_map_url = value;\n    }\n    script->metadata_finalized = true;\n    return 0;\n}\n\nJSNativeScript *JS_PiGetCompiledScript(JSValueConst value)\n{\n    JSFunctionBytecode *b;\n    if (JS_VALUE_GET_TAG(value) == JS_TAG_FUNCTION_BYTECODE)\n        b = JS_VALUE_GET_PTR(value);\n    else\n        b = JS_GetFunctionBytecode(value);\n    return b && !b->native_async_body ? JS_PiDupScript(b->pi_script) : NULL;\n}\n\nint JS_PiScriptReadInfo(const JSNativeScript *script, JSPiScriptInfo *info)\n{\n    JSPiScriptInfo result;\n    if (!script || !info)\n        return -1;\n    result.source_length = JS_VALUE_GET_STRING(script->source)->len;\n    result.source_byte_length = script->input_length;\n    result.line_offset = (int64_t)script->initial_line - 1;\n    result.column_offset = 0;\n    result.is_eval = script->origin == JS_PI_SCRIPT_ORIGIN_EVAL;\n    result.is_module = script->is_module;\n    *info = result;\n    return 0;\n}\n\nJSValue JS_PiScriptGetSource(const JSNativeScript *script)\n{\n    return script ? js_dup(script->source) : JS_UNDEFINED;\n}\n\nJSValue JS_PiScriptGetResourceName(const JSNativeScript *script)\n{\n    return script ? js_dup(JS_IsUndefined(script->source_url)\n        ? script->resource_name : script->source_url) : JS_UNDEFINED;\n}\n\nJSValue JS_PiScriptGetSourceMapURL(const JSNativeScript *script)\n{\n    return script ? js_dup(script->source_map_url) : JS_UNDEFINED;\n}\n\nstatic int js_pi_script_code_unit(JSString *source, int position)\n{\n    return source->is_wide_char ? str16(source)[position] : str8(source)[position];\n}\n\nint JS_PiScriptGetPositionInfo(const JSNativeScript *script, int position,\n    bool with_offset, JSPiScriptPositionInfo *info)\n{\n    JSPiScriptPositionInfo result;\n    JSString *source;\n    int i, start = 0, line = 0, length, c;\n    if (!script || !info)\n        return -1;\n    source = JS_VALUE_GET_STRING(script->source);\n    length = source->len;\n    if (position < 0)\n        position = 0;\n    if (position > length)\n        return -1;\n    for (i = 0; i <= length; i++) {\n        c = i < length ? js_pi_script_code_unit(source, i) : 0;\n        if (i != length && c != '\\n' && c != CP_LS && c != CP_PS &&\n            !(c == '\\r' && (i + 1 == length ||\n              js_pi_script_code_unit(source, i + 1) != '\\n')))\n            continue;\n        if (position <= i) {\n            result.line = line;\n            result.column = position - start;\n            result.line_start = start;\n            result.line_end = i;\n            if (i > 0 && js_pi_script_code_unit(source, i - 1) == '\\r')\n                result.line_end--;\n            if (with_offset)\n                result.line += (int64_t)script->initial_line - 1;\n            *info = result;\n            return 0;\n        }\n        line++;\n        start = i + 1;\n    }\n    return -1;\n}\n\nJSValue JS_PiScriptGetSourceLine(JSContext *ctx,\n    const JSNativeScript *script, int position)\n{\n    JSPiScriptPositionInfo info;\n    if (JS_HasException(ctx))\n        return JS_EXCEPTION;\n    if (!script)\n        return JS_UNDEFINED;\n    if (script->rt != ctx->rt)\n        return JS_ThrowTypeError(ctx, \"Script belongs to a different runtime\");\n    if (JS_PiScriptGetPositionInfo(script, position, false, &info))\n        return JS_UNDEFINED;\n    return js_sub_string(ctx, JS_VALUE_GET_STRING(script->source),\n                         info.line_start, info.line_end);\n}\n\n/* Convert only an actual input byte boundary. No displayed line or column\n   participates. Supplementary scalar values occupy two UTF-16 positions. */\nstatic int js_pi_script_utf16_position(const JSNativeScript *script, int offset)\n{\n    const uint8_t *p, *end, *next;\n    int units = 0, c;\n    if (!script || offset < 0 || offset > script->input_length)\n        return -1;\n    p = script->input;\n    end = p + offset;\n    while (p < end) {\n        c = utf8_decode_len(p, end - p, &next);\n        if (c < 0 || next <= p || next > end)\n            return -1;\n        units += c > 0xffff ? 2 : 1;\n        p = next;\n    }\n    return units;\n}\n\nstatic int js_pi_bytecode_source_position(JSFunctionBytecode *b, uint32_t pc)\n{\n    int low = 0, high = b->pi_source_position_count;\n    while (low < high) {\n        int mid = low + (high - low) / 2;\n        if (b->pi_source_positions[mid].pc <= pc)\n            low = mid + 1;\n        else\n            high = mid;\n    }\n    return low ? js_pi_script_utf16_position(b->pi_script,\n        b->pi_source_positions[low - 1].byte_offset) : -1;\n}\n\nstatic void js_method_set_home_object(JSContext *ctx, JSValue func_obj,",
+      "count": 1,
+      "positions_after": [
+        248782
+      ],
+      "before_sha256": "1450AA40783708AC92A8C5F34FB03511346C96CD4D62302A8D408B69982AF8E1",
+      "after_sha256": "01B48194AD6232E1F289D7FA30E81BD1B97F216535F7A0051CDF4FB63DFC37AA"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "FD inherits native Script and independent position storage",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    uint8_t pi_script_origin; /* inherited from this compilation's root */",
+      "after": "    uint8_t pi_script_origin; /* inherited from this compilation's root */\n    JSNativeScript *pi_script;\n    JSPiSourcePosition *pi_source_positions;\n    int pi_source_position_count;",
+      "count": 1,
+      "positions_after": [
+        866196
+      ],
+      "before_sha256": "01B48194AD6232E1F289D7FA30E81BD1B97F216535F7A0051CDF4FB63DFC37AA",
+      "after_sha256": "F7782F465D42C35208486FBA1E2930C7979FFB60E82AE00B45858E00AAA3D111"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "inherit Script only after initialized FD",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    fd->pi_script_origin = parent ? parent->pi_script_origin : JS_PI_SCRIPT_ORIGIN_HOST;",
+      "after": "    fd->pi_script_origin = parent ? parent->pi_script_origin : JS_PI_SCRIPT_ORIGIN_HOST;\n    fd->pi_script = parent ? JS_PiDupScript(parent->pi_script) : NULL;",
+      "count": 1,
+      "positions_after": [
+        1253979
+      ],
+      "before_sha256": "F7782F465D42C35208486FBA1E2930C7979FFB60E82AE00B45858E00AAA3D111",
+      "after_sha256": "1C86F978ACF4451F14464F7C6949B5B253F28E0E4A88F82BF81D947BFDF751A4"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "release inherited Script on filename failure",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "        JS_FreeAtom(ctx, fd->pi_source_url);\n        js_free(ctx, fd);",
+      "after": "        JS_FreeAtom(ctx, fd->pi_source_url);\n        JS_PiFreeScript(fd->pi_script);\n        js_free(ctx, fd);",
+      "count": 1,
+      "positions_after": [
+        1255917
+      ],
+      "before_sha256": "1C86F978ACF4451F14464F7C6949B5B253F28E0E4A88F82BF81D947BFDF751A4",
+      "after_sha256": "5FA5EB0280C7490B4E46EF5802727D867E5BC40706E89F2459406F622F611A5C"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "FD cleanup owns Script and unfinished position array",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    JS_FreeAtom(ctx, fd->pi_source_url);\n    dbuf_free(&fd->pc2line);",
+      "after": "    JS_FreeAtom(ctx, fd->pi_source_url);\n    JS_PiFreeScript(fd->pi_script);\n    js_free(ctx, fd->pi_source_positions);\n    dbuf_free(&fd->pc2line);",
+      "count": 1,
+      "positions_after": [
+        1258770
+      ],
+      "before_sha256": "5FA5EB0280C7490B4E46EF5802727D867E5BC40706E89F2459406F622F611A5C",
+      "after_sha256": "C79389AFCEBDCA7A89774617DBF8D6ECCB83F86CBEBA4264EC0596E4D0EA8BF4"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "publish finalized primitive Script before children",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    /* recompute scope linkage */\n    for (scope = 0; scope < fd->scope_count; scope++) {",
+      "after": "    if (js_pi_script_finalize(ctx, fd->pi_script))\n        goto fail;\n    /* recompute scope linkage */\n    for (scope = 0; scope < fd->scope_count; scope++) {",
+      "count": 1,
+      "positions_after": [
+        1408593
+      ],
+      "before_sha256": "C79389AFCEBDCA7A89774617DBF8D6ECCB83F86CBEBA4264EC0596E4D0EA8BF4",
+      "after_sha256": "3C9A94D69D082E466027FC08795491CE004AAB15F9259DE00E09B37FCB6395F7"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "move Script and position array to initialized bytecode",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    fd->pi_source_url = JS_ATOM_NULL; /* ownership transferred to bytecode */",
+      "after": "    fd->pi_source_url = JS_ATOM_NULL; /* ownership transferred to bytecode */\n    b->pi_script = fd->pi_script;\n    fd->pi_script = NULL;\n    b->pi_source_positions = fd->pi_source_positions;\n    b->pi_source_position_count = fd->pi_source_position_count;\n    fd->pi_source_positions = NULL;",
+      "count": 1,
+      "positions_after": [
+        1415577
+      ],
+      "before_sha256": "3C9A94D69D082E466027FC08795491CE004AAB15F9259DE00E09B37FCB6395F7",
+      "after_sha256": "26DEADF98F9F8206087D33B50F63BA1A5DBBD83250DFC9873D660CDD134DBBD3"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "bytecode retirement releases native metadata",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    JS_FreeAtomRT(rt, b->pi_source_url);\n    js_free_rt(rt, b->pc2line_buf);",
+      "after": "    JS_FreeAtomRT(rt, b->pi_source_url);\n    JS_PiFreeScript(b->pi_script);\n    js_free_rt(rt, b->pi_source_positions);\n    js_free_rt(rt, b->pc2line_buf);",
+      "count": 1,
+      "positions_after": [
+        1418812
+      ],
+      "before_sha256": "26DEADF98F9F8206087D33B50F63BA1A5DBBD83250DFC9873D660CDD134DBBD3",
+      "after_sha256": "2A8A4F184DF65941CE6C6AF213B354D93F68C25FB545213717EF9B9ECB1178FD"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "root compiler creates complete actual input before children",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "        ? JS_PI_SCRIPT_ORIGIN_EVAL : JS_PI_SCRIPT_ORIGIN_HOST;\n    fd->has_this_binding",
+      "after": "        ? JS_PI_SCRIPT_ORIGIN_EVAL : JS_PI_SCRIPT_ORIGIN_HOST;\n    fd->pi_script = js_pi_new_script(ctx, input, input_len, filename, line,\n                                    fd->pi_script_origin, m != NULL);\n    if (!fd->pi_script)\n        goto fail;\n    fd->has_this_binding",
+      "count": 1,
+      "positions_after": [
+        1457000
+      ],
+      "before_sha256": "2A8A4F184DF65941CE6C6AF213B354D93F68C25FB545213717EF9B9ECB1178FD",
+      "after_sha256": "826408112C3F9A0D5E4672EF64A027CF616C2099719A6AA544720DFE211681E4"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+      "label": "CJS attaches actual body before private wrapper definition",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    parent->eval_type = JS_EVAL_TYPE_GLOBAL;",
+      "after": "    parent->pi_script = js_pi_new_script(ctx, body, body_length, filename, 1,\n                                         JS_PI_SCRIPT_ORIGIN_HOST, false);\n    if (!parent->pi_script)\n        goto fail;\n    parent->eval_type = JS_EVAL_TYPE_GLOBAL;",
+      "count": 1,
+      "positions_after": [
+        4553
+      ],
+      "before_sha256": "87A771EB6291F195C7DEB63DA8B29F20805AEA0F07B6320985E10C090348B639",
+      "after_sha256": "4FBF487CC09627A2176815995AF3246E88274A7D1AD1A952802AC01AF478BCE5"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "lexer metadata available in both compiler modes",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    JSPiCompilerDiagnostic *d = s->pi_diagnostic;\n    const uint8_t *p, *next, *name, *value, *value_end;",
+      "after": "    JSPiCompilerDiagnostic local = { 0 }, *d = s->pi_diagnostic;\n    JSNativeScript *script = s->cur_func ? s->cur_func->pi_script : NULL;\n    const uint8_t *p, *next, *name, *value, *value_end;",
+      "count": 1,
+      "positions_after": [
+        873528
+      ],
+      "before_sha256": "826408112C3F9A0D5E4672EF64A027CF616C2099719A6AA544720DFE211681E4",
+      "after_sha256": "27413ADD4238194EEC856F6696F91B34D8DAD94A64943A9D332CB7AB13691985"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "ordinary lexer uses same actual magic-comment state",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    if (!d || !d->collect_source_metadata)\n        return 0;\n    p = comment + 2;",
+      "after": "    if (!d || !d->collect_source_metadata) {\n        if (!script)\n            return 0;\n        d = &local;\n        d->source_url_seen = script->url_seen;\n        d->source_url_position = script->url_event;\n        d->source_map_url_seen = script->map_seen;\n        d->source_map_url_position = script->map_event;\n    }\n    p = comment + 2;",
+      "count": 1,
+      "positions_after": [
+        873803
+      ],
+      "before_sha256": "27413ADD4238194EEC856F6696F91B34D8DAD94A64943A9D332CB7AB13691985",
+      "after_sha256": "02B8FEB14FC310DA21C1A7CA2556D2513EADC27E34A82DC1FD49B07A11345E32"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "retain source URL lexer offsets",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "        d->source_url_seen = true;\n    } else {",
+      "after": "        d->source_url_seen = true;\n        if (script) {\n            script->url_seen = true;\n            script->url_event = position;\n            script->url_start = value - s->buf_start;\n            script->url_length = value_length;\n        }\n    } else {",
+      "count": 1,
+      "positions_after": [
+        876307
+      ],
+      "before_sha256": "02B8FEB14FC310DA21C1A7CA2556D2513EADC27E34A82DC1FD49B07A11345E32",
+      "after_sha256": "4C61770E9A2EB5E58DA99CCE2FA5ADE937FE3B2CCDDB5DF914C04119E22914C6"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "retain source map lexer offsets",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "        d->source_map_url_seen = true;\n    }\n    return 0;",
+      "after": "        d->source_map_url_seen = true;\n        if (script) {\n            script->map_seen = true;\n            script->map_event = position;\n            script->map_start = value - s->buf_start;\n            script->map_length = value_length;\n        }\n    }\n    return 0;",
+      "count": 1,
+      "positions_after": [
+        876698
+      ],
+      "before_sha256": "4C61770E9A2EB5E58DA99CCE2FA5ADE937FE3B2CCDDB5DF914C04119E22914C6",
+      "after_sha256": "C638FFEC086F5C5E3979E4D7F167E5FA7AE1D968CFD140CD5290742494062D44"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "count native source position allocation",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    hp->js_func_size += js_func_size;",
+      "after": "    if (b->pi_source_positions) {\n        memory_used_count++;\n        js_func_size += b->pi_source_position_count * sizeof(*b->pi_source_positions);\n    }\n    hp->js_func_size += js_func_size;",
+      "count": 1,
+      "positions_after": [
+        291366
+      ],
+      "before_sha256": "C638FFEC086F5C5E3979E4D7F167E5FA7AE1D968CFD140CD5290742494062D44",
+      "after_sha256": "AB86612731BB2C469B71A584CC37FFE832F25C88CAAA3A5B2B5EA053092EC2A6"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "count each native Script and primitive source root once",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    list_for_each(el, &rt->context_list) {\n        JSContext *ctx = list_entry(el, JSContext, link);\n        JSShape *sh = ctx->array_shape;",
+      "after": "    list_for_each(el, &rt->pi_script_list) {\n        JSNativeScript *script = list_entry(el, JSNativeScript, link);\n        s->memory_used_count += 2;\n        s->memory_used_size += sizeof(*script) + script->input_length + 1;\n        compute_value_size(script->source, hp);\n        compute_value_size(script->resource_name, hp);\n        compute_value_size(script->source_url, hp);\n        compute_value_size(script->source_map_url, hp);\n    }\n    list_for_each(el, &rt->context_list) {\n        JSContext *ctx = list_entry(el, JSContext, link);\n        JSShape *sh = ctx->array_shape;",
+      "count": 1,
+      "positions_after": [
+        292421
+      ],
+      "before_sha256": "AB86612731BB2C469B71A584CC37FFE832F25C88CAAA3A5B2B5EA053092EC2A6",
+      "after_sha256": "8B6FD7E2E5BA47C8138EA56E99A489E43B3D7C264B95CD76BC504764B3E81224"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs-opcode.h",
+      "label": "temporary source location carries raw byte offset",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "FMT(u32x2)",
+      "after": "FMT(u32x2)\nFMT(u32x3)",
+      "count": 1,
+      "positions_after": [
+        1438
+      ],
+      "before_sha256": "55122ADB07E3F9FB91C4779A2C7ECF721294593035D3880B005B769F31B7485D",
+      "after_sha256": "5E729A3E4ACCBDD30D7D76F68CDB23A982A2E7F8C4E5423C6576E4A8EA2A4E8B"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs-opcode.h",
+      "label": "source location temporary instruction width",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "def(     source_loc, 9, 0, 0, u32x2) /* emitted in phase 1, removed in phase 3 */",
+      "after": "def(     source_loc, 13, 0, 0, u32x3) /* emitted in phase 1, removed in phase 3 */",
+      "count": 1,
+      "positions_after": [
+        12949
+      ],
+      "before_sha256": "5E729A3E4ACCBDD30D7D76F68CDB23A982A2E7F8C4E5423C6576E4A8EA2A4E8B",
+      "after_sha256": "194F1AE899FF525FEAE54265369720E767494130A9CE31E4E3ABC00E9C1E9181"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "actual token byte-offset helper and emitter parameter",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "static void emit_source_loc_at(JSParseState *s, int line_num, int col_num)",
+      "after": "static int js_pi_token_byte_position(JSParseState *s)\n{\n    if (!s->token.ptr || s->token.ptr < s->buf_start || s->token.ptr > s->buf_end)\n        return -1;\n    return s->token.ptr - s->buf_start;\n}\n\nstatic void emit_source_loc_at(JSParseState *s, int line_num, int col_num,\n                               int source_byte)",
+      "count": 1,
+      "positions_after": [
+        929774
+      ],
+      "before_sha256": "8B6FD7E2E5BA47C8138EA56E99A489E43B3D7C264B95CD76BC504764B3E81224",
+      "after_sha256": "46C4A4675451D5B0CA4CDBE59B4E81797314E256D141B78E9C4159F03B03E0E9"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "emit all source coordinates together",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    dbuf_put_u32(bc, col_num);\n}\n\nstatic void emit_source_loc(JSParseState *s)\n{\n    emit_source_loc_at(s, s->token.line_num, s->token.col_num);",
+      "after": "    dbuf_put_u32(bc, col_num);\n    dbuf_put_u32(bc, source_byte);\n}\n\nstatic void emit_source_loc(JSParseState *s)\n{\n    emit_source_loc_at(s, s->token.line_num, s->token.col_num,\n                       js_pi_token_byte_position(s));",
+      "count": 1,
+      "positions_after": [
+        930327
+      ],
+      "before_sha256": "46C4A4675451D5B0CA4CDBE59B4E81797314E256D141B78E9C4159F03B03E0E9",
+      "after_sha256": "9BF0B6D4F5C48747CA6D85E6E038AE0C4D8EB32BBE0F79213369019B6BC9A9C0"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "array destructuring retains original token offset",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "        int source_line_num, source_col_num;\n        BlockEnv block_env;",
+      "after": "        int source_line_num, source_col_num, source_byte;\n        BlockEnv block_env;",
+      "count": 1,
+      "positions_after": [
+        1029193
+      ],
+      "before_sha256": "9BF0B6D4F5C48747CA6D85E6E038AE0C4D8EB32BBE0F79213369019B6BC9A9C0",
+      "after_sha256": "66367790C40D07F28AD5D29B776A63E21821A920EDF7340E0094E5DEBFD379E8"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "array destructuring captures byte position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "        source_line_num = s->token.line_num;\n        source_col_num = s->token.col_num;\n        if (next_token(s))\n            return -1;\n        /* the block environment",
+      "after": "        source_line_num = s->token.line_num;\n        source_col_num = s->token.col_num;\n        source_byte = js_pi_token_byte_position(s);\n        if (next_token(s))\n            return -1;\n        /* the block environment",
+      "count": 1,
+      "positions_after": [
+        1029280
+      ],
+      "before_sha256": "66367790C40D07F28AD5D29B776A63E21821A920EDF7340E0094E5DEBFD379E8",
+      "after_sha256": "2E0E14F79EFE0E85B8069FA0577DA4EABDA1AC42E8CFEF3860861CBC4ED40D49"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "delayed iterator source emission uses captured offset",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "emit_source_loc_at(s, source_line_num, source_col_num);",
+      "after": "emit_source_loc_at(s, source_line_num, source_col_num, source_byte);",
+      "count": 2,
+      "positions_after": [
+        1033954,
+        1120522
+      ],
+      "before_sha256": "2E0E14F79EFE0E85B8069FA0577DA4EABDA1AC42E8CFEF3860861CBC4ED40D49",
+      "after_sha256": "C7A1A53A3E6E7506C0FE702EBE364FB0B8E7ACFD7814EB458B78CB1B3F1FB66C"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "postfix expression captures actual identifier/new offsets",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    int constructor_line_num = 0, constructor_col_num = 0;\n    int private_identifier_line = s->token.val == TOK_IDENT ? s->token.line_num : 0;\n    int private_identifier_column = s->token.col_num;",
+      "after": "    int constructor_line_num = 0, constructor_col_num = 0, constructor_byte = -1;\n    int private_identifier_line = s->token.val == TOK_IDENT ? s->token.line_num : 0;\n    int private_identifier_column = s->token.col_num;\n    int private_identifier_byte = js_pi_token_byte_position(s);",
+      "count": 1,
+      "positions_after": [
+        1036257
+      ],
+      "before_sha256": "C7A1A53A3E6E7506C0FE702EBE364FB0B8E7ACFD7814EB458B78CB1B3F1FB66C",
+      "after_sha256": "43666E36F99EC7F4CF248F7224810C00883AB8EE5183EEE1635569E2DDDD3E62"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "identifier access retains token offset",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "            int identifier_line_num = s->token.line_num;\n            int identifier_col_num =",
+      "after": "            int identifier_line_num = s->token.line_num;\n            int identifier_byte = js_pi_token_byte_position(s);\n            int identifier_col_num =",
+      "count": 1,
+      "positions_after": [
+        1040712
+      ],
+      "before_sha256": "43666E36F99EC7F4CF248F7224810C00883AB8EE5183EEE1635569E2DDDD3E62",
+      "after_sha256": "75BC665F6E8CDD6BBBA21AA5179266A515C2E2D0D6D6339850B4599D7153AB03"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "identifier source tuple",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "emit_source_loc_at(s, identifier_line_num, identifier_col_num);",
+      "after": "emit_source_loc_at(s, identifier_line_num, identifier_col_num, identifier_byte);",
+      "count": 1,
+      "positions_after": [
+        1042688
+      ],
+      "before_sha256": "75BC665F6E8CDD6BBBA21AA5179266A515C2E2D0D6D6339850B4599D7153AB03",
+      "after_sha256": "BB426878F476274AAADDD6C825EB3A6601C14BFBF9DBA888EB34169DD09B5F4B"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "new expression captures token offset",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "        constructor_line_num = s->token.line_num;\n        constructor_col_num = s->token.col_num;",
+      "after": "        constructor_line_num = s->token.line_num;\n        constructor_col_num = s->token.col_num;\n        constructor_byte = js_pi_token_byte_position(s);",
+      "count": 1,
+      "positions_after": [
+        1043905
+      ],
+      "before_sha256": "BB426878F476274AAADDD6C825EB3A6601C14BFBF9DBA888EB34169DD09B5F4B",
+      "after_sha256": "2C2737E79E5A8AECA16C1C670C33CB437708EB3352C72FFF89DD610A09A74AB9"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "delayed constructor source tuple",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "emit_source_loc_at(s, constructor_line_num, constructor_col_num);",
+      "after": "emit_source_loc_at(s, constructor_line_num, constructor_col_num, constructor_byte);",
+      "count": 3,
+      "positions_after": [
+        1044991,
+        1057315,
+        1059812
+      ],
+      "before_sha256": "2C2737E79E5A8AECA16C1C670C33CB437708EB3352C72FFF89DD610A09A74AB9",
+      "after_sha256": "9BBCFEEFD2C699E69E8800C5129707A8FFB2A8F133887EF3027AC450B92D8525"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "delayed private identifier source tuple",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "emit_source_loc_at(s, private_identifier_line, private_identifier_column);",
+      "after": "emit_source_loc_at(s, private_identifier_line, private_identifier_column, private_identifier_byte);",
+      "count": 2,
+      "positions_after": [
+        1057597,
+        1060119
+      ],
+      "before_sha256": "9BBCFEEFD2C699E69E8800C5129707A8FFB2A8F133887EF3027AC450B92D8525",
+      "after_sha256": "BC57A1B020842AE040F19340478B778BD766AD80AB07C3F7323D689744047112"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "for-in/of receives original token position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                                          int source_col_num)\n{\n    JSContext *ctx = s->ctx;",
+      "after": "                                          int source_col_num,\n                                          int source_byte)\n{\n    JSContext *ctx = s->ctx;",
+      "count": 1,
+      "positions_after": [
+        1109731
+      ],
+      "before_sha256": "BC57A1B020842AE040F19340478B778BD766AD80AB07C3F7323D689744047112",
+      "after_sha256": "CB56E147EF3E607186F318025ADEE7FC04FA3A168F5EB104A088C57E71022D9A"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "for statement keeps source position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "            int source_line_num, source_col_num;\n            bool is_async;",
+      "after": "            int source_line_num, source_col_num, source_byte;\n            bool is_async;",
+      "count": 1,
+      "positions_after": [
+        1128929
+      ],
+      "before_sha256": "CB56E147EF3E607186F318025ADEE7FC04FA3A168F5EB104A088C57E71022D9A",
+      "after_sha256": "144EC172CAD81D31FC67D656DC9F6CB0665E474FE2B6C8030C198D40A68A7786"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "for statement captures token offset",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "            source_line_num = s->token.line_num;\n            source_col_num = s->token.col_num;\n            if (next_token(s))\n                goto fail;",
+      "after": "            source_line_num = s->token.line_num;\n            source_col_num = s->token.col_num;\n            source_byte = js_pi_token_byte_position(s);\n            if (next_token(s))\n                goto fail;",
+      "count": 1,
+      "positions_after": [
+        1129019
+      ],
+      "before_sha256": "144EC172CAD81D31FC67D656DC9F6CB0665E474FE2B6C8030C198D40A68A7786",
+      "after_sha256": "FD7F90D788F97EC0CC1D2926B97B4BDFE54F469A915D663354A684CE5AB25CC2"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "for-in/of passes captured offset",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                                       source_line_num, source_col_num))",
+      "after": "                                       source_line_num, source_col_num, source_byte))",
+      "count": 1,
+      "positions_after": [
+        1130060
+      ],
+      "before_sha256": "FD7F90D788F97EC0CC1D2926B97B4BDFE54F469A915D663354A684CE5AB25CC2",
+      "after_sha256": "1E965E66E8543034A1AF9DB299F9D10195A288CFBCC0CC946962AD732D700EF1"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "temporary-source opcode dump knows its width",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "        case OP_FMT_u32x2:\n            printf(\" %u:%u\", get_u32(tab + pos), get_u32(tab + pos + 4));\n            break;",
+      "after": "        case OP_FMT_u32x2:\n            printf(\" %u:%u\", get_u32(tab + pos), get_u32(tab + pos + 4));\n            break;\n        case OP_FMT_u32x3:\n            printf(\" %u:%u@%d\", get_u32(tab + pos), get_u32(tab + pos + 4),\n                   get_i32(tab + pos + 8));\n            break;",
+      "count": 1,
+      "positions_after": [
+        1266899
+      ],
+      "before_sha256": "1E965E66E8543034A1AF9DB299F9D10195A288CFBCC0CC946962AD732D700EF1",
+      "after_sha256": "552701CB5A8ADD1C065EF2CE12CC5D1829AA7F37472FA08DB2C57C501C1E2221"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "source-location slot records actual byte offset",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "typedef struct SourceLocSlot {\n    uint32_t pc;\n    int line_num;\n    int col_num;\n} SourceLocSlot;",
+      "after": "typedef struct SourceLocSlot {\n    uint32_t pc;\n    int line_num;\n    int col_num;\n    int source_byte;\n} SourceLocSlot;",
+      "count": 1,
+      "positions_after": [
+        865692
+      ],
+      "before_sha256": "552701CB5A8ADD1C065EF2CE12CC5D1829AA7F37472FA08DB2C57C501C1E2221",
+      "after_sha256": "28ED6CBDC3AA653415CE70A009023A47E8F5D708E5A7730B993F6033DFE9D33D"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "FD tracks independent last byte position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    int col_number_last;\n\n    /* pc2line table */",
+      "after": "    int col_number_last;\n    int source_byte_last;\n\n    /* pc2line table */",
+      "count": 1,
+      "positions_after": [
+        871267
+      ],
+      "before_sha256": "28ED6CBDC3AA653415CE70A009023A47E8F5D708E5A7730B993F6033DFE9D33D",
+      "after_sha256": "E4220847B52DC70EAFAFBF2B98CF56CBAE3637D9805DCD272C1248A41A962EFC"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "peephole matcher retains byte position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    int col_num;  /* last visited OP_source_loc parameter or -1 */",
+      "after": "    int col_num;  /* last visited OP_source_loc parameter or -1 */\n    int source_byte; /* actual input offset from the same instruction */",
+      "count": 1,
+      "positions_after": [
+        1321980
+      ],
+      "before_sha256": "E4220847B52DC70EAFAFBF2B98CF56CBAE3637D9805DCD272C1248A41A962EFC",
+      "after_sha256": "D6A6A4849A663626DCF263858452A0ACAB0B54DBBFFA8ABC46AFEF605562733A"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "code matcher byte position local",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    int op, len, op1, line_num, col_num, pos_next;",
+      "after": "    int op, len, op1, line_num, col_num, source_byte, pos_next;",
+      "count": 1,
+      "positions_after": [
+        1322683
+      ],
+      "before_sha256": "D6A6A4849A663626DCF263858452A0ACAB0B54DBBFFA8ABC46AFEF605562733A",
+      "after_sha256": "177DE8D8800CFDB57C82584C2A151DA0069E25517606F9B3FF694D48AB314C21"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "code matcher initial unknown position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    line_num = -1;\n    col_num = -1;\n    va_start(ap, pos);",
+      "after": "    line_num = -1;\n    col_num = -1;\n    source_byte = -1;\n    va_start(ap, pos);",
+      "count": 1,
+      "positions_after": [
+        1322841
+      ],
+      "before_sha256": "177DE8D8800CFDB57C82584C2A151DA0069E25517606F9B3FF694D48AB314C21",
+      "after_sha256": "9AF21A30BF08CEBA548F3391AA185DB82399060D6F14DF26A3D38E872A0D5E76"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "code matcher publishes position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "            s->col_num = col_num;\n            ret = true;",
+      "after": "            s->col_num = col_num;\n            s->source_byte = source_byte;\n            ret = true;",
+      "count": 1,
+      "positions_after": [
+        1323056
+      ],
+      "before_sha256": "9AF21A30BF08CEBA548F3391AA185DB82399060D6F14DF26A3D38E872A0D5E76",
+      "after_sha256": "19C0AE2D984A469525874BA85712FE5829B77E8E6B5E0F41E9DA20CA70A698D1"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "code matcher reads complete source tuple",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                col_num = get_u32(tab + pos + 5);\n                pos = pos_next;",
+      "after": "                col_num = get_u32(tab + pos + 5);\n                source_byte = get_i32(tab + pos + 9);\n                pos = pos_next;",
+      "count": 1,
+      "positions_after": [
+        1323521
+      ],
+      "before_sha256": "19C0AE2D984A469525874BA85712FE5829B77E8E6B5E0F41E9DA20CA70A698D1",
+      "after_sha256": "BCD1339B7537B5271DFB91F02B35119716BBA8B233BCA12C4BDFCCF247D237AD"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "dead-code scan receives byte position owner",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                          int pos, int *linep, int *colp)",
+      "after": "                          int pos, int *linep, int *colp, int *sourcep)",
+      "count": 1,
+      "positions_after": [
+        1331018
+      ],
+      "before_sha256": "BCD1339B7537B5271DFB91F02B35119716BBA8B233BCA12C4BDFCCF247D237AD",
+      "after_sha256": "561F9A73A1A2C54ECB23B8619EABBD900692841C5FFAE4E78A65BE8FC4DACABC"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "dead-code scan preserves later byte position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "            *colp = get_u32(bc_buf + pos + 5);",
+      "after": "            *colp = get_u32(bc_buf + pos + 5);\n            *sourcep = get_i32(bc_buf + pos + 9);",
+      "count": 1,
+      "positions_after": [
+        1331422
+      ],
+      "before_sha256": "561F9A73A1A2C54ECB23B8619EABBD900692841C5FFAE4E78A65BE8FC4DACABC",
+      "after_sha256": "2230E1131088F7063C285CBCE90B3DA88EF027F5FC4330F8B5D7BB2F5A2F8EA0"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "label scan uses actual temporary opcode size",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "            case OP_source_loc:\n                pos += 9;",
+      "after": "            case OP_source_loc:\n                pos += opcode_info[OP_source_loc].size;",
+      "count": 1,
+      "positions_after": [
+        1333730
+      ],
+      "before_sha256": "2230E1131088F7063C285CBCE90B3DA88EF027F5FC4330F8B5D7BB2F5A2F8EA0",
+      "after_sha256": "C661FA0397F9353FE70A78B49577A500CFD8EA3EDF4A79FD99032933AE5BD8E9"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "second label scan uses actual temporary opcode size",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "        if (op == OP_source_loc) {\n            pos += 9;",
+      "after": "        if (op == OP_source_loc) {\n            pos += opcode_info[OP_source_loc].size;",
+      "count": 1,
+      "positions_after": [
+        1354902
+      ],
+      "before_sha256": "C661FA0397F9353FE70A78B49577A500CFD8EA3EDF4A79FD99032933AE5BD8E9",
+      "after_sha256": "A8C7F6CF154E6B01C7E57A16ABA7A4A6D062EAF0DB4699983115F92A75078EA7"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable pass tracks byte position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    int pos, pos_next, bc_len, op, len, i, idx, line_num, col_num;",
+      "after": "    int pos, pos_next, bc_len, op, len, i, idx, line_num, col_num, source_byte;",
+      "count": 1,
+      "positions_after": [
+        1334324
+      ],
+      "before_sha256": "A8C7F6CF154E6B01C7E57A16ABA7A4A6D062EAF0DB4699983115F92A75078EA7",
+      "after_sha256": "549E1BD524C7FF2EA4A0B69019D48430C5F76C03FD62142A89212839C6CCE781"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable pass initializes position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    line_num = 0; /* avoid warning */\n    col_num = 0;",
+      "after": "    line_num = 0; /* avoid warning */\n    col_num = 0;\n    source_byte = -1;",
+      "count": 1,
+      "positions_after": [
+        1336403
+      ],
+      "before_sha256": "549E1BD524C7FF2EA4A0B69019D48430C5F76C03FD62142A89212839C6CCE781",
+      "after_sha256": "6DF77064FF38C583E6ED1A34AFA28508AD9ED42045DB02DF6F03A51A10C280A2"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "both passes read byte offset",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "            col_num = get_u32(bc_buf + pos + 5);",
+      "after": "            col_num = get_u32(bc_buf + pos + 5);\n            source_byte = get_i32(bc_buf + pos + 9);",
+      "count": 2,
+      "positions_after": [
+        1336782,
+        1363464
+      ],
+      "before_sha256": "6DF77064FF38C583E6ED1A34AFA28508AD9ED42045DB02DF6F03A51A10C280A2",
+      "after_sha256": "E38914EC5B350D6E43C37E3937806DF02EB0505F2F7CA76DD18CB583CD6DC936"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable peephole compares complete tuple",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                if (cc.line_num != line_num || cc.col_num != col_num) {\n                    line_num = cc.line_num;\n                    col_num = cc.col_num;",
+      "after": "                if (cc.line_num != line_num || cc.col_num != col_num ||\n                    cc.source_byte != source_byte) {\n                    line_num = cc.line_num;\n                    col_num = cc.col_num;\n                    source_byte = cc.source_byte;",
+      "count": 1,
+      "positions_after": [
+        1340738
+      ],
+      "before_sha256": "E38914EC5B350D6E43C37E3937806DF02EB0505F2F7CA76DD18CB583CD6DC936",
+      "after_sha256": "CEAE8362032EDAC6A1A792D7474DF2F78F47F31FBE25FF587C4D0D4C2A1C3A39"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable dead-code position local",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                int line = -1;\n                int col = -1;",
+      "after": "                int line = -1;\n                int col = -1;\n                int source = -1;",
+      "count": 1,
+      "positions_after": [
+        1342030
+      ],
+      "before_sha256": "CEAE8362032EDAC6A1A792D7474DF2F78F47F31FBE25FF587C4D0D4C2A1C3A39",
+      "after_sha256": "AD319623CC62808D7305DB3F07F0EB081BEA978DA7882FF39CFD38CC5AD84ED3"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable dead-code position output",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                                     &line, &col);",
+      "after": "                                     &line, &col, &source);",
+      "count": 1,
+      "positions_after": [
+        1342338
+      ],
+      "before_sha256": "AD319623CC62808D7305DB3F07F0EB081BEA978DA7882FF39CFD38CC5AD84ED3",
+      "after_sha256": "02C33EB416E70EE92A98355EAC966FD32EE0746FCB333E9421E5FC2B4C94197B"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable dead-code tuple propagation",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                if (line_num != line || col_num != col) {\n                    line_num = line;\n                    col_num = col;",
+      "after": "                if (line_num != line || col_num != col || source_byte != source) {\n                    line_num = line;\n                    col_num = col;\n                    source_byte = source;",
+      "count": 1,
+      "positions_after": [
+        1342504
+      ],
+      "before_sha256": "02C33EB416E70EE92A98355EAC966FD32EE0746FCB333E9421E5FC2B4C94197B",
+      "after_sha256": "94420C5C1465D0E052DEDF8A152C9DCA967E1F6141ECD9BB9FA23D7B01AE3D78"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "branch threading saves matched tuple",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                int lab0, lab1, op1, pos1, line1, col1, pos2;",
+      "after": "                int lab0, lab1, op1, pos1, line1, col1, source1, pos2;",
+      "count": 1,
+      "positions_after": [
+        1348783
+      ],
+      "before_sha256": "94420C5C1465D0E052DEDF8A152C9DCA967E1F6141ECD9BB9FA23D7B01AE3D78",
+      "after_sha256": "679B17A9E71378AAF7197763DB05E27920E183F7989E8E39B4A80BACAF0BF63E"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "branch threading captures position before later matches",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                line1 = cc.line_num;\n                col1 = cc.col_num;",
+      "after": "                line1 = cc.line_num;\n                col1 = cc.col_num;\n                source1 = cc.source_byte;",
+      "count": 1,
+      "positions_after": [
+        1349014
+      ],
+      "before_sha256": "679B17A9E71378AAF7197763DB05E27920E183F7989E8E39B4A80BACAF0BF63E",
+      "after_sha256": "4BE9C12D04038AD25AE13269C5884903B82A932BC05F7479FB888E29F99D8073"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "branch threading writes complete tuple",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                    if (line1 != line_num || col1 != col_num) {\n                        line_num = line1;\n                        col_num = col1;",
+      "after": "                    if (line1 != line_num || col1 != col_num || source1 != source_byte) {\n                        line_num = line1;\n                        col_num = col1;\n                        source_byte = source1;",
+      "count": 1,
+      "positions_after": [
+        1349675
+      ],
+      "before_sha256": "4BE9C12D04038AD25AE13269C5884903B82A932BC05F7479FB888E29F99D8073",
+      "after_sha256": "4818AE8B6A39B0A09F34CB5D0A1D2DF218DD97694105108C3EB4CD28BAEE28B1"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "all regenerated temporary tuples include byte offset",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                    dbuf_put_u32(&bc_out, col_num);\n                }",
+      "after": "                    dbuf_put_u32(&bc_out, col_num);\n                    dbuf_put_u32(&bc_out, source_byte);\n                }",
+      "count": 2,
+      "positions_after": [
+        1341149,
+        1342907
+      ],
+      "before_sha256": "4818AE8B6A39B0A09F34CB5D0A1D2DF218DD97694105108C3EB4CD28BAEE28B1",
+      "after_sha256": "0CEB32F444D88AFF5D72B7A893DBD6B459D1931822F40CFB6D8CA8834ED5C01B"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "threaded temporary tuple includes byte offset",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                        dbuf_put_u32(&bc_out, col_num);",
+      "after": "                        dbuf_put_u32(&bc_out, col_num);\n                        dbuf_put_u32(&bc_out, source_byte);",
+      "count": 1,
+      "positions_after": [
+        1350168
+      ],
+      "before_sha256": "0CEB32F444D88AFF5D72B7A893DBD6B459D1931822F40CFB6D8CA8834ED5C01B",
+      "after_sha256": "3159118E408134C5095037B10AB357C022A0050F9BEF8D65590465C6BC6BBE66"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "source-location recorder accepts byte offset",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                             int line_num, int col_num)\n{\n    if (s->source_loc_slots",
+      "after": "                             int line_num, int col_num, int source_byte)\n{\n    if (s->source_loc_slots",
+      "count": 1,
+      "positions_after": [
+        1352741
+      ],
+      "before_sha256": "3159118E408134C5095037B10AB357C022A0050F9BEF8D65590465C6BC6BBE66",
+      "after_sha256": "8DBCED834913999A9A737EC5039246C9EF0623F27268C4FEDEBD9729627B8BEC"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "deduplicate only identical source tuples",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    if (line_num == s->line_number_last)\n        if (col_num == s->col_number_last)\n            return;",
+      "after": "    if (line_num == s->line_number_last && col_num == s->col_number_last &&\n        source_byte == s->source_byte_last)\n        return;",
+      "count": 1,
+      "positions_after": [
+        1352989
+      ],
+      "before_sha256": "8DBCED834913999A9A737EC5039246C9EF0623F27268C4FEDEBD9729627B8BEC",
+      "after_sha256": "5D4D7BF0A0825388F9C9D732278A826E424923DA7FC6B16766ABB800E29AB3AD"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "store actual source byte position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    s->source_loc_slots[s->source_loc_count].col_num = col_num;",
+      "after": "    s->source_loc_slots[s->source_loc_count].col_num = col_num;\n    s->source_loc_slots[s->source_loc_count].source_byte = source_byte;",
+      "count": 1,
+      "positions_after": [
+        1353245
+      ],
+      "before_sha256": "5D4D7BF0A0825388F9C9D732278A826E424923DA7FC6B16766ABB800E29AB3AD",
+      "after_sha256": "6A28E6A3444EA5335BDC27BDFC1112D595AC9EC1327338065EC7296009977645"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "remember current source byte position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    s->col_number_last = col_num;\n}",
+      "after": "    s->col_number_last = col_num;\n    s->source_byte_last = source_byte;\n}",
+      "count": 1,
+      "positions_after": [
+        1353477
+      ],
+      "before_sha256": "6A28E6A3444EA5335BDC27BDFC1112D595AC9EC1327338065EC7296009977645",
+      "after_sha256": "01161EA3F751E99BB4CCA06C216447A073812CA320389232A2CEC83238006232"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "label pass owns current byte position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    int pos, pos_next, bc_len, op, op1, len, i, line_num, col_num, patch_offsets;",
+      "after": "    int pos, pos_next, bc_len, op, op1, len, i, line_num, col_num, patch_offsets;\n    int source_byte = -1;",
+      "count": 1,
+      "positions_after": [
+        1359718
+      ],
+      "before_sha256": "01161EA3F751E99BB4CCA06C216447A073812CA320389232A2CEC83238006232",
+      "after_sha256": "1074631522CFDAF7FF955FB22B5279A7EED8A6AA328E8D1A0E5B6B5B5F902F37"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "label pass initializes position recorder",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "        s->col_number_last = s->col_num;\n        s->line_number_last_pc = 0;",
+      "after": "        s->col_number_last = s->col_num;\n        s->source_byte_last = -1;\n        s->line_number_last_pc = 0;",
+      "count": 1,
+      "positions_after": [
+        1360675
+      ],
+      "before_sha256": "1074631522CFDAF7FF955FB22B5279A7EED8A6AA328E8D1A0E5B6B5B5F902F37",
+      "after_sha256": "5B0894ADAE4489DCF441A5300B3A798FB53B2FCD0F976813C0DC6883B556A029"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "label pass dead-code scans retain byte offsets",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "&line_num, &col_num);",
+      "after": "&line_num, &col_num, &source_byte);",
+      "count": 4,
+      "positions_after": [
+        1366292,
+        1366800,
+        1367849,
+        1369826
+      ],
+      "before_sha256": "5B0894ADAE4489DCF441A5300B3A798FB53B2FCD0F976813C0DC6883B556A029",
+      "after_sha256": "AAF8C9CC6F458AC1DFEE725B47AE794C4BA513455D6E0323CD943D4448276E9B"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "matched final-pass byte position 20",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "\n                    if (cc.col_num >= 0) col_num = cc.col_num;\n",
+      "after": "\n                    if (cc.col_num >= 0) col_num = cc.col_num;\n                    if (cc.source_byte >= 0) source_byte = cc.source_byte;\n",
+      "count": 14,
+      "positions_after": [
+        1365977,
+        1376442,
+        1377822,
+        1379719,
+        1383876,
+        1386167,
+        1386958,
+        1388018,
+        1389027,
+        1389702,
+        1390868,
+        1391967,
+        1392948,
+        1393573
+      ],
+      "before_sha256": "AAF8C9CC6F458AC1DFEE725B47AE794C4BA513455D6E0323CD943D4448276E9B",
+      "after_sha256": "88850A18DE07EF814FA55E5F557EDC9E3946D3EE42ADD9766CEFA3B3EFC4D70A"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "matched final-pass byte position 16",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "\n                if (cc.col_num >= 0) col_num = cc.col_num;\n",
+      "after": "\n                if (cc.col_num >= 0) col_num = cc.col_num;\n                if (cc.source_byte >= 0) source_byte = cc.source_byte;\n",
+      "count": 14,
+      "positions_after": [
+        1373671,
+        1374070,
+        1374633,
+        1375344,
+        1376541,
+        1377359,
+        1381460,
+        1381849,
+        1382598,
+        1383176,
+        1383889,
+        1385996,
+        1395132,
+        1397009
+      ],
+      "before_sha256": "88850A18DE07EF814FA55E5F557EDC9E3946D3EE42ADD9766CEFA3B3EFC4D70A",
+      "after_sha256": "62D082880C27676D42D95A8FF83AA8FA77D3FB50468BD6FCCA81E1E3D5926FA6"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "matched final-pass byte position 24",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "\n                        if (cc.col_num >= 0) col_num = cc.col_num;\n",
+      "after": "\n                        if (cc.col_num >= 0) col_num = cc.col_num;\n                        if (cc.source_byte >= 0) source_byte = cc.source_byte;\n",
+      "count": 4,
+      "positions_after": [
+        1378520,
+        1385106,
+        1393360,
+        1396595
+      ],
+      "before_sha256": "62D082880C27676D42D95A8FF83AA8FA77D3FB50468BD6FCCA81E1E3D5926FA6",
+      "after_sha256": "0445CA78A6BA907F37F1C0B47AFF1FEC09A4ACADFF8B2591BE7DD2AB9158C549"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "final branch matcher saves actual offset",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                int col1 = cc.col_num;",
+      "after": "                int col1 = cc.col_num;\n                int source1 = cc.source_byte;",
+      "count": 1,
+      "positions_after": [
+        1369264
+      ],
+      "before_sha256": "0445CA78A6BA907F37F1C0B47AFF1FEC09A4ACADFF8B2591BE7DD2AB9158C549",
+      "after_sha256": "222653B20A322B9D810E53DD7808BEED997992B7CF452DC92DD9C4E4F78372E2"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "final branch matcher publishes saved offset",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                    if (col1 >= 0) col_num = col1;",
+      "after": "                    if (col1 >= 0) col_num = col1;\n                    if (source1 >= 0) source_byte = source1;",
+      "count": 1,
+      "positions_after": [
+        1369459
+      ],
+      "before_sha256": "222653B20A322B9D810E53DD7808BEED997992B7CF452DC92DD9C4E4F78372E2",
+      "after_sha256": "3780460FE5B830457A7725AEBDF3EAD9576F47087E975613DAD381FF525600C0"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "delayed matched source owns byte position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                int op1, line2 = -1;",
+      "after": "                int op1, line2 = -1, source2 = -1;",
+      "count": 1,
+      "positions_after": [
+        1384577
+      ],
+      "before_sha256": "3780460FE5B830457A7725AEBDF3EAD9576F47087E975613DAD381FF525600C0",
+      "after_sha256": "89DB7004EC441C67D9C8EB09FA7735F527ACB1098064A6A013FF4EDE0C0D21CC"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "delay raw offset with same original line",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                            line2 = cc.line_num; /* delay line number update */",
+      "after": "                            line2 = cc.line_num; /* delay line number update */\n                            source2 = cc.source_byte;",
+      "count": 1,
+      "positions_after": [
+        1385553
+      ],
+      "before_sha256": "89DB7004EC441C67D9C8EB09FA7735F527ACB1098064A6A013FF4EDE0C0D21CC",
+      "after_sha256": "557D983CF315056CFC433960BE85FE72352D5B33BB208DE544C66DBDC8FC5FCF"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "publish delayed raw offset after selected operation",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "                    if (line2 >= 0) line_num = line2;",
+      "after": "                    if (line2 >= 0) line_num = line2;\n                    if (source2 >= 0) source_byte = source2;",
+      "count": 1,
+      "positions_after": [
+        1385989
+      ],
+      "before_sha256": "557D983CF315056CFC433960BE85FE72352D5B33BB208DE544C66DBDC8FC5FCF",
+      "after_sha256": "CC56F5515B57817E56218FA3068679282712E11F03BCBEAAEABFBC5323F3D24E"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "all final bytecode recording sites receive raw position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "add_pc2line_info(s, bc_out.size, line_num, col_num);",
+      "after": "add_pc2line_info(s, bc_out.size, line_num, col_num, source_byte);",
+      "count": 34,
+      "positions_after": [
+        1366136,
+        1366477,
+        1367731,
+        1369848,
+        1372929,
+        1374389,
+        1374965,
+        1377179,
+        1378027,
+        1378944,
+        1379450,
+        1379934,
+        1380826,
+        1382351,
+        1383113,
+        1383704,
+        1384430,
+        1386099,
+        1387806,
+        1388610,
+        1389683,
+        1390705,
+        1391393,
+        1391617,
+        1391924,
+        1392598,
+        1392822,
+        1394251,
+        1394796,
+        1395434,
+        1396717,
+        1397405,
+        1398124,
+        1398460
+      ],
+      "before_sha256": "CC56F5515B57817E56218FA3068679282712E11F03BCBEAAEABFBC5323F3D24E",
+      "after_sha256": "C50593229C2C69476227218E2AC17A38131CC023D6EBA17A8D8400D2506A9594"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "compile independent final PC to byte-position array",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "static RelocEntry *add_reloc(JSContext *ctx, LabelSlot *ls, uint32_t addr, int size)",
+      "after": "/* Preserve actual token positions independently of debug/presentation data.\n   SourceLocSlot PCs already include the final jump-width adjustments. */\nstatic int js_pi_compute_source_positions(JSFunctionDef *s)\n{\n    int i, count = 0;\n    JSPiSourcePosition *positions;\n    if (!s->pi_script)\n        return 0;\n    for (i = 0; i < s->source_loc_count; i++) {\n        int offset = s->source_loc_slots[i].source_byte;\n        if (js_pi_compiler_poll(s->ctx))\n            return -1;\n        if (offset >= 0) {\n            if (offset > s->pi_script->input_length) {\n                JS_ThrowInternalError(s->ctx, \"invalid compiler source position\");\n                return -1;\n            }\n            count++;\n        }\n    }\n    if (!count)\n        return 0;\n    if ((size_t)count > SIZE_MAX / sizeof(*positions)) {\n        JS_ThrowOutOfMemory(s->ctx);\n        return -1;\n    }\n    positions = js_malloc(s->ctx, (size_t)count * sizeof(*positions));\n    if (!positions)\n        return -1;\n    s->pi_source_positions = positions;\n    for (i = 0; i < s->source_loc_count; i++) {\n        SourceLocSlot *slot = &s->source_loc_slots[i];\n        if (slot->source_byte >= 0) {\n            positions[s->pi_source_position_count].pc = slot->pc;\n            positions[s->pi_source_position_count].byte_offset = slot->source_byte;\n            s->pi_source_position_count++;\n        }\n    }\n    return 0;\n}\n\nstatic RelocEntry *add_reloc(JSContext *ctx, LabelSlot *ls, uint32_t addr, int size)",
+      "count": 1,
+      "positions_after": [
+        1355179
+      ],
+      "before_sha256": "C50593229C2C69476227218E2AC17A38131CC023D6EBA17A8D8400D2506A9594",
+      "after_sha256": "AC1AE7BED70E6D798FF8BB2E3A2B9B9D27289103C44423BC8E6F579E6EA5B8F0"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "compile metadata before source-location slots retire",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    if (compute_pc2line_info(s) && ctx->pi_compiler_diagnostic)\n        goto fail;\n    js_free(ctx, s->source_loc_slots);",
+      "after": "    if (compute_pc2line_info(s) && ctx->pi_compiler_diagnostic)\n        goto fail;\n    if (js_pi_compute_source_positions(s))\n        goto fail;\n    js_free(ctx, s->source_loc_slots);",
+      "count": 1,
+      "positions_after": [
+        1403542
+      ],
+      "before_sha256": "AC1AE7BED70E6D798FF8BB2E3A2B9B9D27289103C44423BC8E6F579E6EA5B8F0",
+      "after_sha256": "F42EC4E4980327BDE445F1DA00EFCD4C76257C197C2EA7D7793E10FCD522803B"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "frame retirement releases its independent Script root",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "        JS_FreeValueRT(rt, csd->receiver);\n        js_free_rt(rt, csd);",
+      "after": "        JS_FreeValueRT(rt, csd->receiver);\n        JS_PiFreeScript(csd->pi_script);\n        js_free_rt(rt, csd);",
+      "count": 1,
+      "positions_after": [
+        2331236
+      ],
+      "before_sha256": "F42EC4E4980327BDE445F1DA00EFCD4C76257C197C2EA7D7793E10FCD522803B",
+      "after_sha256": "33D34888D325D09E7D580AFF177EF56745DC3CE8E57D9BF3954603F19674C6F4"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "frame publication moves Script ownership",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    csd->receiver = JS_UNDEFINED;\n\n    JS_SetOpaqueInternal(obj, csd1);",
+      "after": "    csd->receiver = JS_UNDEFINED;\n    csd->pi_script = NULL;\n\n    JS_SetOpaqueInternal(obj, csd1);",
+      "count": 1,
+      "positions_after": [
+        2332476
+      ],
+      "before_sha256": "33D34888D325D09E7D580AFF177EF56745DC3CE8E57D9BF3954603F19674C6F4",
+      "after_sha256": "5C9834EC7707B099689C89216667DD7F6371E356BC98CCD98760ED17B0DCA2DF"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "initialize actual-frame Script provenance",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    csd->pi_script_origin = JS_PI_SCRIPT_ORIGIN_NONE;\n    csd->native = false;",
+      "after": "    csd->pi_script_origin = JS_PI_SCRIPT_ORIGIN_NONE;\n    csd->pi_script = NULL;\n    csd->pi_source_position = -1;\n    csd->native = false;",
+      "count": 1,
+      "positions_after": [
+        2332896
+      ],
+      "before_sha256": "5C9834EC7707B099689C89216667DD7F6371E356BC98CCD98760ED17B0DCA2DF",
+      "after_sha256": "09FE3BCE6ED97BD305C38A1EC5D8A4750757A350D9175AF655DD93A6B1E6273E"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "capture actual bytecode Script and token position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "        csd->pi_script_origin = bytecode->pi_script_origin;\n        pi_metadata |=",
+      "after": "        csd->pi_script_origin = bytecode->pi_script_origin;\n        csd->pi_script = JS_PiDupScript(bytecode->pi_script);\n        if (sf->cur_pc)\n            csd->pi_source_position = js_pi_bytecode_source_position(bytecode,\n                sf->cur_pc - bytecode->byte_code_buf - 1);\n        pi_metadata |=",
+      "count": 1,
+      "positions_after": [
+        2333468
+      ],
+      "before_sha256": "09FE3BCE6ED97BD305C38A1EC5D8A4750757A350D9175AF655DD93A6B1E6273E",
+      "after_sha256": "CA1A32FE5E273610529F87309166ECBD618BB35F801EEB3136642E57DB3BFAC8"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "filename-only synthetic frames have no Script",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    /* A caller-supplied filename has no compiled Script owner. */\n    csd->pi_script_origin = JS_PI_SCRIPT_ORIGIN_NONE;",
+      "after": "    /* A caller-supplied filename has no compiled Script owner. */\n    csd->pi_script_origin = JS_PI_SCRIPT_ORIGIN_NONE;\n    csd->pi_script = NULL;\n    csd->pi_source_position = -1;",
+      "count": 1,
+      "positions_after": [
+        2335885
+      ],
+      "before_sha256": "CA1A32FE5E273610529F87309166ECBD618BB35F801EEB3136642E57DB3BFAC8",
+      "after_sha256": "9CF9388E0740C0C5C489D0333E963B0FAE2017B8D55FAA21936609A659F28AEA"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "raw missing-PC capture retains real Script without a guessed position",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "            data.top_level = function->u.func.is_top_level;\n            data.filename =",
+      "after": "            data.top_level = function->u.func.is_top_level;\n            data.pi_script = JS_PiDupScript(bytecode->pi_script);\n            data.pi_source_position = -1;\n            data.filename =",
+      "count": 1,
+      "positions_after": [
+        2339699
+      ],
+      "before_sha256": "9CF9388E0740C0C5C489D0333E963B0FAE2017B8D55FAA21936609A659F28AEA",
+      "after_sha256": "F74E28DD4AFDEA44857DE75779D8F096F861D1E25BF9F027824B65346E7B5DAF"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "capture temporary cleanup releases owned Script",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "            JS_FreeValue(ctx, data.receiver);\n            goto fail;",
+      "after": "            JS_FreeValue(ctx, data.receiver);\n            JS_PiFreeScript(data.pi_script);\n            goto fail;",
+      "count": 2,
+      "positions_after": [
+        2337909,
+        2340917
+      ],
+      "before_sha256": "F74E28DD4AFDEA44857DE75779D8F096F861D1E25BF9F027824B65346E7B5DAF",
+      "after_sha256": "7607FA22F197DE5D42A04A480A017CE33651B8987C623BEDEF3ACF390CCA9EB7"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "capture publication cleanup retires only unmoved Script",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "        JS_FreeValue(ctx, data.receiver);\n        if (JS_IsException(frame)",
+      "after": "        JS_FreeValue(ctx, data.receiver);\n        JS_PiFreeScript(data.pi_script);\n        if (JS_IsException(frame)",
+      "count": 2,
+      "positions_after": [
+        2338246,
+        2341295
+      ],
+      "before_sha256": "7607FA22F197DE5D42A04A480A017CE33651B8987C623BEDEF3ACF390CCA9EB7",
+      "after_sha256": "62CFF66653C37AEA5EF76261C3FA010DF2C3F61E5DDE60368743A98B841C4C1C"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "frame clone independently duplicates Script",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    copy.receiver = js_dup(source->receiver);\n    result =",
+      "after": "    copy.receiver = js_dup(source->receiver);\n    copy.pi_script = JS_PiDupScript(source->pi_script);\n    result =",
+      "count": 1,
+      "positions_after": [
+        2342158
+      ],
+      "before_sha256": "62CFF66653C37AEA5EF76261C3FA010DF2C3F61E5DDE60368743A98B841C4C1C",
+      "after_sha256": "0825D4AB2157CAEBA49A7CB9C6FB5FBC7D8D7FC295972B28CBDCEF3193AF7690"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "failed or moved frame clone cleanup",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    JS_FreeValue(ctx, copy.receiver);\n    return result;",
+      "after": "    JS_FreeValue(ctx, copy.receiver);\n    JS_PiFreeScript(copy.pi_script);\n    return result;",
+      "count": 1,
+      "positions_after": [
+        2342454
+      ],
+      "before_sha256": "0825D4AB2157CAEBA49A7CB9C6FB5FBC7D8D7FC295972B28CBDCEF3193AF7690",
+      "after_sha256": "B0760E74A733353DC39049274368D5F59C003D2007E5CE46EC98EEA4022E6A75"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "legacy prepared-stack temporary cleanup releases Script",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "            JS_FreeValue(ctx, csd[k].receiver);\n        }",
+      "after": "            JS_FreeValue(ctx, csd[k].receiver);\n            JS_PiFreeScript(csd[k].pi_script);\n        }",
+      "count": 1,
+      "positions_after": [
+        329699
+      ],
+      "before_sha256": "B0760E74A733353DC39049274368D5F59C003D2007E5CE46EC98EEA4022E6A75",
+      "after_sha256": "F9EB94F53EC301F6CB113B295CA31E545E360CDB9A7EFBEF520688BF2F173AE9"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "metadata-failure temporary cleanup releases primitive Script",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "            js_pi_metadata_release(ctx, &csd[k].receiver, &owned);\n        }",
+      "after": "            js_pi_metadata_release(ctx, &csd[k].receiver, &owned);\n            JS_PiFreeScript(csd[k].pi_script);\n        }",
+      "count": 1,
+      "positions_after": [
+        332334
+      ],
+      "before_sha256": "F9EB94F53EC301F6CB113B295CA31E545E360CDB9A7EFBEF520688BF2F173AE9",
+      "after_sha256": "981D8A47A6B21781A7A193691CD9D9F9BDFDD95A6B716B1E1B954ECDB9EF5017"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "raw captured Script projection",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "int JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx, JSValueConst frame,",
+      "after": "JSNativeScript *JS_PiGetCapturedStackFrameScript(JSValueConst frame, int *position)\n{\n    JSCallSiteData *data = JS_GetOpaque(frame, JS_CLASS_CALL_SITE);\n    if (!data || !position || !data->pi_script)\n        return NULL;\n    *position = data->pi_source_position;\n    return JS_PiDupScript(data->pi_script);\n}\n\nint JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx, JSValueConst frame,",
+      "count": 1,
+      "positions_after": [
+        2343358
+      ],
+      "before_sha256": "981D8A47A6B21781A7A193691CD9D9F9BDFDD95A6B716B1E1B954ECDB9EF5017",
+      "after_sha256": "6A842D04DBD5FCAE28BADEB80125DC98CD082DDDC4C8A8B20847F11BC17E8E6A"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "versioned complete Script provenance envelope",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "#define BC_VERSION 30",
+      "after": "#define BC_VERSION 31",
+      "count": 1,
+      "positions_after": [
+        1480300
+      ],
+      "before_sha256": "6A842D04DBD5FCAE28BADEB80125DC98CD082DDDC4C8A8B20847F11BC17E8E6A",
+      "after_sha256": "0A4FB2DA2BE1715112E151FF85B36A6EDE360AD48C68913EF7FC83E774B178C7"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "writer retains Script identities independently of object reference mode",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    /* list of referenced objects (used if allow_reference = true) */\n    JSObjectList object_list;",
+      "after": "    /* Script identity is preserved even without object-reference mode. */\n    JSNativeScript **pi_scripts;\n    int pi_script_count, pi_script_size;\n    /* list of referenced objects (used if allow_reference = true) */\n    JSObjectList object_list;",
+      "count": 1,
+      "positions_after": [
+        1480729
+      ],
+      "before_sha256": "0A4FB2DA2BE1715112E151FF85B36A6EDE360AD48C68913EF7FC83E774B178C7",
+      "after_sha256": "32EEC9E895574F6C2945BB2A280B2A60EF96968E32B1FD5F0396393D1BEC810E"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "write real Script and raw position metadata",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "static int JS_WriteFunctionTag(BCWriterState *s, JSValueConst obj)",
+      "after": "static void js_pi_write_script_value(BCWriterState *s, JSValueConst value,\n                                     bool optional)\n{\n    if (optional) {\n        bc_put_u8(s, !JS_IsUndefined(value));\n        if (JS_IsUndefined(value))\n            return;\n    }\n    assert(JS_IsString(value));\n    JS_WriteString(s, JS_VALUE_GET_STRING(value));\n}\n\nstatic int js_pi_write_script_metadata(BCWriterState *s, JSFunctionBytecode *b)\n{\n    JSNativeScript *script = b->pi_script;\n    int i;\n    if (!script) {\n        bc_put_u8(s, 0);\n    } else {\n        for (i = 0; i < s->pi_script_count; i++)\n            if (s->pi_scripts[i] == script)\n                break;\n        if (i < s->pi_script_count) {\n            bc_put_u8(s, 1);\n            bc_put_leb128(s, i);\n        } else {\n            if (s->pi_script_count == INT_MAX) {\n                JS_ThrowOutOfMemory(s->ctx);\n                return -1;\n            }\n            if (js_resize_array(s->ctx, (void **)&s->pi_scripts,\n                                sizeof(*s->pi_scripts), &s->pi_script_size,\n                                s->pi_script_count + 1))\n                return -1;\n            s->pi_scripts[s->pi_script_count++] = JS_PiDupScript(script);\n            bc_put_u8(s, 2);\n            bc_put_u8(s, script->origin);\n            bc_put_u8(s, script->is_module);\n            bc_put_sleb128(s, script->initial_line);\n            bc_put_leb128(s, script->input_length);\n            dbuf_put(&s->dbuf, script->input, script->input_length);\n            js_pi_write_script_value(s, script->resource_name, false);\n            js_pi_write_script_value(s, script->source_url, true);\n            js_pi_write_script_value(s, script->source_map_url, true);\n        }\n    }\n    bc_put_leb128(s, b->pi_source_position_count);\n    for (i = 0; i < b->pi_source_position_count; i++) {\n        bc_put_leb128(s, b->pi_source_positions[i].pc);\n        bc_put_leb128(s, b->pi_source_positions[i].byte_offset);\n    }\n    if (dbuf_error(&s->dbuf)) {\n        JS_ThrowOutOfMemory(s->ctx);\n        return -1;\n    }\n    return 0;\n}\n\nstatic void js_pi_writer_free_scripts(BCWriterState *s)\n{\n    int i;\n    for (i = 0; i < s->pi_script_count; i++)\n        JS_PiFreeScript(s->pi_scripts[i]);\n    js_free(s->ctx, s->pi_scripts);\n}\n\nstatic int JS_WriteFunctionTag(BCWriterState *s, JSValueConst obj)",
+      "count": 1,
+      "positions_after": [
+        1486948
+      ],
+      "before_sha256": "32EEC9E895574F6C2945BB2A280B2A60EF96968E32B1FD5F0396393D1BEC810E",
+      "after_sha256": "A7C1B7E6DC3CEB454C8F5307B0C064E73D01AE3684C8231949BBF513FD1FB23C"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "metadata precedes child functions for shared identity",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    // write constant pool before code so code can be disassembled",
+      "after": "    if (js_pi_write_script_metadata(s, b))\n        goto fail;\n\n    // write constant pool before code so code can be disassembled",
+      "count": 1,
+      "positions_after": [
+        1492158
+      ],
+      "before_sha256": "A7C1B7E6DC3CEB454C8F5307B0C064E73D01AE3684C8231949BBF513FD1FB23C",
+      "after_sha256": "C2FC8B04F4E9BD05B35C3AEFDB85D7F43EC4ED8DD178F53FF2F067593BB2F679"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "writer success and failure release every retained Script",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    js_object_list_end(ctx, &s->object_list);\n    js_free(ctx, s->atom_to_idx);",
+      "after": "    js_object_list_end(ctx, &s->object_list);\n    js_pi_writer_free_scripts(s);\n    js_free(ctx, s->atom_to_idx);",
+      "count": 2,
+      "positions_after": [
+        1506597,
+        1507096
+      ],
+      "before_sha256": "C2FC8B04F4E9BD05B35C3AEFDB85D7F43EC4ED8DD178F53FF2F067593BB2F679",
+      "after_sha256": "C2E05976DD6CCB3B55C5A281D90018CC921568B23F26DC683B0DAD6306503A36"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "reader retains independent Script identity table",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    /* object references */\n    JSObject **objects;",
+      "after": "    /* Native Script references; each table entry owns one entitlement. */\n    JSNativeScript **pi_scripts;\n    int pi_script_count, pi_script_size;\n    /* object references */\n    JSObject **objects;",
+      "count": 1,
+      "positions_after": [
+        1507860
+      ],
+      "before_sha256": "C2E05976DD6CCB3B55C5A281D90018CC921568B23F26DC683B0DAD6306503A36",
+      "after_sha256": "83E261EA6265B18AD3DA150249ED7D74EE3F37685EA0D2CA645F437AA1E8FD0F"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "read bounded native Script provenance before function constants",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "static JSValue JS_ReadFunctionTag(BCReaderState *s)",
+      "after": "static int js_pi_read_script_value(BCReaderState *s, JSValue *out, bool optional)\n{\n    JSString *value;\n    uint8_t present;\n    if (optional) {\n        if (bc_get_u8(s, &present))\n            return -1;\n        if (present > 1) {\n            JS_ThrowSyntaxError(s->ctx, \"invalid Script primitive metadata\");\n            return -1;\n        }\n        if (!present) {\n            *out = JS_UNDEFINED;\n            return 0;\n        }\n    }\n    value = JS_ReadString(s);\n    if (!value)\n        return -1;\n    *out = JS_MKPTR(JS_TAG_STRING, value);\n    return 0;\n}\n\nstatic int js_pi_read_script_metadata(BCReaderState *s, JSFunctionBytecode *b)\n{\n    JSNativeScript *script = NULL;\n    uint8_t tag, origin, is_module;\n    uint32_t index, length, count, i, pc, offset, last_pc = 0;\n    int32_t initial_line;\n    if (bc_get_u8(s, &tag))\n        return -1;\n    if (tag == 1) {\n        if (bc_get_leb128(s, &index))\n            return -1;\n        if (index >= (uint32_t)s->pi_script_count)\n            goto invalid;\n        b->pi_script = JS_PiDupScript(s->pi_scripts[index]);\n    } else if (tag == 2) {\n        if (bc_get_u8(s, &origin) || bc_get_u8(s, &is_module) ||\n            bc_get_sleb128(s, &initial_line) || bc_get_leb128(s, &length))\n            return -1;\n        if (origin < JS_PI_SCRIPT_ORIGIN_HOST || origin > JS_PI_SCRIPT_ORIGIN_EVAL ||\n            is_module > 1 || length > INT_MAX)\n            goto invalid;\n        if ((size_t)(s->buf_end - s->ptr) < length)\n            return bc_read_error_end(s);\n        script = js_pi_new_script(s->ctx, (const char *)s->ptr, length, \"\",\n                                  initial_line, origin, is_module);\n        if (!script)\n            return -1;\n        s->ptr += length;\n        JS_FreeValue(s->ctx, script->resource_name);\n        script->resource_name = JS_UNDEFINED;\n        if (js_pi_read_script_value(s, &script->resource_name, false) ||\n            js_pi_read_script_value(s, &script->source_url, true) ||\n            js_pi_read_script_value(s, &script->source_map_url, true))\n            goto fail;\n        script->metadata_finalized = true;\n        if (s->pi_script_count == INT_MAX) {\n            JS_ThrowOutOfMemory(s->ctx);\n            goto fail;\n        }\n        if (js_resize_array(s->ctx, (void **)&s->pi_scripts,\n                            sizeof(*s->pi_scripts), &s->pi_script_size,\n                            s->pi_script_count + 1))\n            goto fail;\n        s->pi_scripts[s->pi_script_count++] = script;\n        b->pi_script = JS_PiDupScript(script);\n        script = NULL; /* the table owns the construction entitlement */\n    } else if (tag != 0) {\n        goto invalid;\n    }\n    if (b->pi_script ? b->pi_script->origin != b->pi_script_origin\n                     : b->pi_script_origin != JS_PI_SCRIPT_ORIGIN_NONE)\n        goto invalid;\n    if (bc_get_leb128(s, &count))\n        return -1;\n    if (count > INT_MAX || (size_t)count > SIZE_MAX / sizeof(*b->pi_source_positions) ||\n        (size_t)count > (size_t)(s->buf_end - s->ptr) / 2 ||\n        (count && !b->pi_script))\n        goto invalid;\n    if (count) {\n        b->pi_source_positions = js_malloc(s->ctx,\n            (size_t)count * sizeof(*b->pi_source_positions));\n        if (!b->pi_source_positions)\n            return -1;\n        for (i = 0; i < count; i++) {\n            if (bc_get_leb128(s, &pc) || bc_get_leb128(s, &offset))\n                return -1;\n            if (pc > (uint32_t)b->byte_code_len || (i && pc < last_pc) ||\n                offset > (uint32_t)b->pi_script->input_length)\n                goto invalid;\n            b->pi_source_positions[i].pc = pc;\n            b->pi_source_positions[i].byte_offset = offset;\n            b->pi_source_position_count++;\n            last_pc = pc;\n        }\n    }\n    return 0;\n invalid:\n    JS_ThrowSyntaxError(s->ctx, \"invalid bytecode Script provenance\");\n fail:\n    JS_PiFreeScript(script);\n    return -1;\n}\n\nstatic JSValue JS_ReadFunctionTag(BCReaderState *s)",
+      "count": 1,
+      "positions_after": [
+        1517074
+      ],
+      "before_sha256": "83E261EA6265B18AD3DA150249ED7D74EE3F37685EA0D2CA645F437AA1E8FD0F",
+      "after_sha256": "83996A0DE82679FFF9EC1BC08648FB16686159C024B2D420D4679982434C483B"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "reader attaches metadata before recursive constant pool",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    if (b->cpool_count != 0) {\n        bc_read_trace(s, \"cpool {\\n\");",
+      "after": "    if (js_pi_read_script_metadata(s, b))\n        goto fail;\n    if (b->cpool_count != 0) {\n        bc_read_trace(s, \"cpool {\\n\");",
+      "count": 1,
+      "positions_after": [
+        1527490
+      ],
+      "before_sha256": "83996A0DE82679FFF9EC1BC08648FB16686159C024B2D420D4679982434C483B",
+      "after_sha256": "A13115C988403A98E2444B19F9E8A7BEE028BC7773EFBD8BB8449A5A8A49A695"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "reader cleanup retires native Script table",
+      "origin": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "before": "    js_free(s->ctx, s->objects);\n}",
+      "after": "    js_free(s->ctx, s->objects);\n    for (i = 0; i < s->pi_script_count; i++)\n        JS_PiFreeScript(s->pi_scripts[i]);\n    js_free(s->ctx, s->pi_scripts);\n}",
+      "count": 1,
+      "positions_after": [
+        1549443
+      ],
+      "before_sha256": "A13115C988403A98E2444B19F9E8A7BEE028BC7773EFBD8BB8449A5A8A49A695",
+      "after_sha256": "D72F1B78536826A9FC73EC578F4789BF17AF86D25299DD0C8300D7C84AE0AD4C"
+    },
+    {
+      "kind": "patch",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "Only count the complete input block when actual input allocation succeeded; Script is linked before input allocation and OOM can reenter native memory observation through GC/finalizers.",
+      "origin": "verification/native-script-location-sourceonly-20261020/memory-accounting-successor.json",
+      "before": "        s->memory_used_count += 2;\n        s->memory_used_size += sizeof(*script) + script->input_length + 1;",
+      "after": "        s->memory_used_count++;\n        s->memory_used_size += sizeof(*script);\n        if (script->input) {\n            s->memory_used_count++;\n            s->memory_used_size += script->input_length + 1;\n        }",
+      "count": 1,
+      "positions_after": [
+        292537
+      ],
+      "before_sha256": "D72F1B78536826A9FC73EC578F4789BF17AF86D25299DD0C8300D7C84AE0AD4C",
+      "after_sha256": "3B24170B01A5FC07B3E9A193396300A35F5D84380116CC192E15B1516200A496"
+    },
+    {
+      "kind": "patch",
+      "path": "src/native_template_literal_test.zig",
+      "label": "",
+      "origin": "verification/native-script-location-sourceonly-20261020/existing-version-controls-successor.json",
+      "before": "@as(u8, 30)",
+      "after": "@as(u8, 31)",
+      "count": 2,
+      "positions_after": [
+        17999,
+        19183
+      ],
+      "before_sha256": "F4EE1C46248DDFB5B7981264E95BE6FF7FEDB338EB81AB7A751CDA2889BD217F",
+      "after_sha256": "886678721D7E547D9B73080F66A973080FF34D03029DEABD6919AA1288C58CE3"
+    },
+    {
+      "kind": "patch",
+      "path": "src/native_template_literal_test.zig",
+      "label": "",
+      "origin": "verification/native-script-location-sourceonly-20261020/existing-version-controls-successor.json",
+      "before": "expected=30)",
+      "after": "expected=31)",
+      "count": 1,
+      "positions_after": [
+        19761
+      ],
+      "before_sha256": "886678721D7E547D9B73080F66A973080FF34D03029DEABD6919AA1288C58CE3",
+      "after_sha256": "051049879DDD4411B858F2BC33327A17A5F7C1DA4977B72BE6837AD8E71B9789"
+    },
+    {
+      "kind": "patch",
+      "path": "src/native_vm_captured_frame_logging_test.zig",
+      "label": "",
+      "origin": "verification/native-script-location-sourceonly-20261020/existing-version-controls-successor.json",
+      "before": "@as(u8, 30)",
+      "after": "@as(u8, 31)",
+      "count": 2,
+      "positions_after": [
+        22554,
+        24040
+      ],
+      "before_sha256": "AABCD7BCDAC97DEC4934F10BBD1E866AFC6849DA62393D103A0FEF8E6AD647CC",
+      "after_sha256": "60BF0F11567D0F0AA0A5458032D46ADA592CA76745BF72E99BEE027FA0E78B41"
+    },
+    {
+      "kind": "patch",
+      "path": "src/native_vm_captured_frame_logging_test.zig",
+      "label": "",
+      "origin": "verification/native-script-location-sourceonly-20261020/existing-version-controls-successor.json",
+      "before": "expected=30)",
+      "after": "expected=31)",
+      "count": 1,
+      "positions_after": [
+        24269
+      ],
+      "before_sha256": "60BF0F11567D0F0AA0A5458032D46ADA592CA76745BF72E99BEE027FA0E78B41",
+      "after_sha256": "050EBD5900D38D6FDDAAE0690C62D72217E4A073978F7A18BD89B962E734EFA1"
+    },
+    {
+      "kind": "patch",
+      "path": "build.zig",
+      "label": "Script32 install-only target",
+      "origin": "verification/native-script-location-sourceonly-20261020/build-intake.json",
+      "before": "    const oom_occurrence_tests = b.addTest(.{\n",
+      "after": "    const script_location_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_script_location_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM Script\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, script_location_tests.root_module, quickjs, sqlite_lib_dir);\n    b.step(\"build-native-vm-script-location\", \"Install actual native Script and source-position controls without execution\").dependOn(&b.addInstallArtifact(script_location_tests, .{}).step);\n    const oom_occurrence_tests = b.addTest(.{\n",
+      "count": 1,
+      "positions_after": [
+        195506
+      ],
+      "before_sha256": "ED842287C8A7691196DABBBD9F6B1867F9D81F4680FEB988347229144DF0073D",
+      "after_sha256": "E0C491C6CA2A8252E9BEC19ACA037C397130FD1915F844546748A4DBE75D3D8E"
+    },
+    {
+      "kind": "patch",
+      "path": "build.zig",
+      "label": "",
+      "origin": "verification/native-node-environment-os-sourceonly-20261020/shared-native-memory-build-proposal.json",
+      "before": "    // One unchanged libuv/llhttp graph is shared by native TCP and file I/O owners.\n    const native_node_network = switch (target.result.os.tag) {\n        .windows, .linux => @import(\"tools/build_native_node_network.zig\").add(b, target, optimize),\n        else => null,\n    };\n    // The real filesystem is reachable from every VM; share one static owner.\n    if (native_node_network) |network| quickjs.root_module.linkLibrary(network);\n    const native_package_json = @import(\"tools/build_native_package_json.zig\").add(b, target, optimize);\n",
+      "after": "    // One allocator/TLS domain is shared by native C++ parser and containers.\n    const native_node_memory = @import(\"tools/build_native_node_memory.zig\").add(b, target, optimize);\n    // One unchanged libuv/llhttp graph is shared by native TCP and file I/O owners.\n    const native_node_network = switch (target.result.os.tag) {\n        .windows, .linux => @import(\"tools/build_native_node_network.zig\").add(b, target, optimize, native_node_memory),\n        else => null,\n    };\n    // The real filesystem is reachable from every VM; share one static owner.\n    if (native_node_network) |network| quickjs.root_module.linkLibrary(network);\n    const native_package_json = @import(\"tools/build_native_package_json.zig\").add(b, target, optimize, native_node_memory);\n",
+      "count": 1,
+      "positions_after": [
+        7135
+      ],
+      "before_sha256": "E0C491C6CA2A8252E9BEC19ACA037C397130FD1915F844546748A4DBE75D3D8E",
+      "after_sha256": "49F048F62ECC55DD881FAAFC0DDD8ABB2A83B4F260FD2B135B059131D63A2433"
+    },
+    {
+      "kind": "patch",
+      "path": "tools/build_native_node_network.zig",
+      "label": "",
+      "origin": "verification/native-node-environment-os-sourceonly-20261020/shared-native-memory-build-proposal.json",
+      "before": "pub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode) *std.Build.Step.Compile {",
+      "after": "pub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode,\n    native_memory: ?*std.Build.Step.Compile) *std.Build.Step.Compile {",
+      "count": 1,
+      "positions_after": [
+        281
+      ],
+      "before_sha256": "CAECF005866364925F79959C8BAC3534DA051894FB841A1C2CC594C9C15BA499",
+      "after_sha256": "4D04934B2C9B07CF92506B5168011CAD4CDCBDD8B5AD2EF9481A34148ECCC516"
+    },
+    {
+      "kind": "patch",
+      "path": "tools/build_native_node_network.zig",
+      "label": "",
+      "origin": "verification/native-node-environment-os-sourceonly-20261020/shared-native-memory-build-proposal.json",
+      "before": ".root_module = b.createModule(.{ .target = target, .optimize = optimize, .link_libc = true }),",
+      "after": ".root_module = b.createModule(.{ .target = target, .optimize = optimize, .link_libc = true, .link_libcpp = native_memory != null }),",
+      "count": 1,
+      "positions_after": [
+        555
+      ],
+      "before_sha256": "4D04934B2C9B07CF92506B5168011CAD4CDCBDD8B5AD2EF9481A34148ECCC516",
+      "after_sha256": "9BC6AE7F3E24E373C75F8B5F1590BEA724A7E49CF8DB3563E1424F8FE70B0E4E"
+    },
+    {
+      "kind": "patch",
+      "path": "tools/build_native_node_network.zig",
+      "label": "",
+      "origin": "verification/native-node-environment-os-sourceonly-20261020/shared-native-memory-build-proposal.json",
+      "before": "    return library;\n}",
+      "after": "    if (native_memory) |memory| {\n        module.linkLibrary(memory);\n        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n    }\n    return library;\n}",
+      "count": 1,
+      "positions_after": [
+        3018
+      ],
+      "before_sha256": "9BC6AE7F3E24E373C75F8B5F1590BEA724A7E49CF8DB3563E1424F8FE70B0E4E",
+      "after_sha256": "FBDF5BCCA7F09238B9A2FE3C599092AE74AC76E44EA6E2256109EA407F743412"
+    },
+    {
+      "kind": "patch",
+      "path": "tools/build_native_package_json.zig",
+      "label": "",
+      "origin": "verification/native-node-environment-os-sourceonly-20261020/shared-native-memory-build-proposal.json",
+      "before": "pub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode) ?*std.Build.Step.Compile {",
+      "after": "pub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode,\n    native_memory: ?*std.Build.Step.Compile) ?*std.Build.Step.Compile {",
+      "count": 1,
+      "positions_after": [
+        261
+      ],
+      "before_sha256": "52BC1D9F41324EA6EDFA1A594D36F5344163E21C0146F4CFC3F9932432464031",
+      "after_sha256": "EB81BC587C07EB256A7E322C1CB89B12F4BA4069CC7E8980E9FA970ED5A58D8B"
+    },
+    {
+      "kind": "patch",
+      "path": "tools/build_native_package_json.zig",
+      "label": "",
+      "origin": "verification/native-node-environment-os-sourceonly-20261020/shared-native-memory-build-proposal.json",
+      "before": "    const library = b.addLibrary(.{",
+      "after": "    const memory = native_memory orelse return null;\n    const library = b.addLibrary(.{",
+      "count": 1,
+      "positions_after": [
+        746
+      ],
+      "before_sha256": "EB81BC587C07EB256A7E322C1CB89B12F4BA4069CC7E8980E9FA970ED5A58D8B",
+      "after_sha256": "80C80B84B876C36AC6D5E457C372E65770195A6829AD7220C8DF24B8E031A3DA"
+    },
+    {
+      "kind": "patch",
+      "path": "tools/build_native_package_json.zig",
+      "label": "",
+      "origin": "verification/native-node-environment-os-sourceonly-20261020/shared-native-memory-build-proposal.json",
+      "before": "    library.root_module.addIncludePath(b.path(\"src/extensions\"));",
+      "after": "    library.root_module.linkLibrary(memory);\n    library.root_module.addIncludePath(b.path(\"src/extensions\"));",
+      "count": 1,
+      "positions_after": [
+        1068
+      ],
+      "before_sha256": "80C80B84B876C36AC6D5E457C372E65770195A6829AD7220C8DF24B8E031A3DA",
+      "after_sha256": "6F8511B318D16F8030348B68213E21C07745FD7BF9515DC91E8C4550674E8518"
+    },
+    {
+      "kind": "patch",
+      "path": "tools/build_native_package_json.zig",
+      "label": "",
+      "origin": "verification/native-node-environment-os-sourceonly-20261020/shared-native-memory-build-proposal.json",
+      "before": "            \"src/extensions/native_simdjson_memory.cpp\",\n",
+      "after": "",
+      "count": 1,
+      "positions_after": [
+        1394
+      ],
+      "before_sha256": "6F8511B318D16F8030348B68213E21C07745FD7BF9515DC91E8C4550674E8518",
+      "after_sha256": "517AC416D7CE82BC2AED11B34038187EE456B3C599B6DFBE058D303873A2EC73"
+    },
+    {
+      "kind": "patch",
+      "path": "build.zig",
+      "label": "Map22 install-only target",
+      "origin": "verification/native-node-environment-os-sourceonly-20261020/map-controls-build-intake.json",
+      "before": "        b.step(\"build-native-node-package-json-parser\", \"Install actual package JSON parser and native allocation controls without execution\").dependOn(&b.addInstallArtifact(native_package_json_tests, .{}).step);\n",
+      "after": "        b.step(\"build-native-node-package-json-parser\", \"Install actual package JSON parser and native allocation controls without execution\").dependOn(&b.addInstallArtifact(native_package_json_tests, .{}).step);\n        const native_environment_map_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_environment_map_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native environment map\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_environment_map_tests.root_module, quickjs, sqlite_lib_dir);\n        native_environment_map_tests.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map_test_support.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        b.step(\"build-native-node-environment-map\", \"Install native MapKVStore allocation and lifetime controls without execution\").dependOn(&b.addInstallArtifact(native_environment_map_tests, .{}).step);\n",
+      "count": 1,
+      "positions_after": [
+        485396
+      ],
+      "before_sha256": "49F048F62ECC55DD881FAAFC0DDD8ABB2A83B4F260FD2B135B059131D63A2433",
+      "after_sha256": "8A9482586315D76D7020E1E721E7F044677D8C4FB00437E680066275B3FA2C66"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_environment_map.cpp",
+      "label": "same real String type shared with native SafeGetenv",
+      "origin": "verification/native-node-environment-os-sourceonly-20261020/map-optional-native-successor.json",
+      "before": "#include \"native_node_standard_allocator.hpp\"",
+      "after": "#include \"native_node_environment_map_internal.hpp\"",
+      "count": 1,
+      "positions_after": [
+        282
+      ],
+      "before_sha256": "D5ECC5EEA1DA575125D39DCF9EA9AF646CB3584CA1D2471EEE9E7DAA2EB701E1",
+      "after_sha256": "D7B023CDB861042977FA78ACD8C2C59DD13D79B663F2EBABA97079E205D278D3"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_environment_map.cpp",
+      "label": "same exact String specialization under the internal declaration",
+      "origin": "verification/native-node-environment-os-sourceonly-20261020/map-optional-native-successor.json",
+      "before": "using String = std::basic_string<char, std::char_traits<char>,\n                                 pi_node::Allocator<char>>;",
+      "after": "using String = pi_node::EnvironmentString;",
+      "count": 1,
+      "positions_after": [
+        521
+      ],
+      "before_sha256": "D7B023CDB861042977FA78ACD8C2C59DD13D79B663F2EBABA97079E205D278D3",
+      "after_sha256": "46E05822B7C07491FB29DE864D7AAD3FA0EE2C5BB3E9998980D49A3135688781"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_environment_map.cpp",
+      "label": "actual optional result without an intermediate String",
+      "origin": "verification/native-node-environment-os-sourceonly-20261020/map-optional-native-successor.json",
+      "before": "};\nnamespace {\nclass Retained {",
+      "after": "};\nstd::optional<pi_node::EnvironmentString> pi_node::environmentMapGet(\n    PiNodeEnvironmentMap* map, const char* key) {\n  AllocationScope scope(map->memory_owner);\n  return map->get(key);\n}\nnamespace {\nclass Retained {",
+      "count": 1,
+      "positions_after": [
+        2931
+      ],
+      "before_sha256": "46E05822B7C07491FB29DE864D7AAD3FA0EE2C5BB3E9998980D49A3135688781",
+      "after_sha256": "A5709621EABDA15F79A6367A21E013B24439F4131E23B493A897384B0196F0E6"
+    },
+    {
+      "kind": "patch",
+      "path": "tools/build_native_node_network.zig",
+      "label": "",
+      "origin": "verification/native-node-environment-os-sourceonly-20261020/native-path-build-intake.json",
+      "before": "        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n",
+      "after": "        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_paths.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n",
+      "count": 1,
+      "positions_after": [
+        3088
+      ],
+      "before_sha256": "FBDF5BCCA7F09238B9A2FE3C599092AE74AC76E44EA6E2256109EA407F743412",
+      "after_sha256": "8BC887989E8A704530046614F8270160BDF280E4F5BD8131FC1ED163C7C791FF"
+    },
+    {
+      "kind": "patch",
+      "path": "build.zig",
+      "label": "",
+      "origin": "verification/native-node-environment-os-sourceonly-20261020/native-path-build-intake.json",
+      "before": "        b.step(\"build-native-node-environment-map\", \"Install native MapKVStore allocation and lifetime controls without execution\").dependOn(&b.addInstallArtifact(native_environment_map_tests, .{}).step);\n",
+      "after": "        b.step(\"build-native-node-environment-map\", \"Install native MapKVStore allocation and lifetime controls without execution\").dependOn(&b.addInstallArtifact(native_environment_map_tests, .{}).step);\n        const native_environment_paths_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_environment_paths_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native environment paths\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_environment_paths_tests.root_module, quickjs, sqlite_lib_dir);\n        native_environment_paths_tests.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        native_environment_paths_tests.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map_test_support.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        b.step(\"build-native-node-environment-paths\", \"Install native Environment path and SafeGetenv controls without execution\").dependOn(&b.addInstallArtifact(native_environment_paths_tests, .{}).step);\n",
+      "count": 1,
+      "positions_after": [
+        486274
+      ],
+      "before_sha256": "8A9482586315D76D7020E1E721E7F044677D8C4FB00437E680066275B3FA2C66",
+      "after_sha256": "936B003F424B07A4784E712378127814F3257F29F69DF8477244A544DA4499E6"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-wrapper-fields-delta.json",
+      "before": "/// Independently retained native owner. One realm cleanup registration covers\n",
+      "after": "/// FileHandle's actual internal fields belong to the JavaScript wrapper.\n/// BaseObject deletion clears only the native State pointer. The onread edge\n/// remains traced until the wrapper itself is collected, even after detach.\nconst StreamFields = struct {\n    registry: *Registry,\n    state: ?*State = null,\n    stream: ?*anyopaque = null,\n    onread: c.JSValue,\n};\n\n/// Independently retained native owner. One realm cleanup registration covers\n",
+      "count": 1,
+      "positions_after": [
+        2034
+      ],
+      "before_sha256": "B53C4D0C1412BA496A267C03F58F8AB88CDA0288336098180D986C9D9FC0A04F",
+      "after_sha256": "B0F509CD8540D734E4B4B51FE7100C4DA0147DDE94BF80C83667D128CABDCC7B"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-wrapper-fields-delta.json",
+      "before": "                .class_name = name, .finalizer = wrapperFinalizer, .gc_mark = wrapperMark,\n",
+      "after": "                .class_name = name,\n                .finalizer = if (index == @intFromEnum(Kind.filehandle)) streamWrapperFinalizer else wrapperFinalizer,\n                .gc_mark = if (index == @intFromEnum(Kind.filehandle)) streamWrapperMark else wrapperMark,\n",
+      "count": 1,
+      "positions_after": [
+        4267
+      ],
+      "before_sha256": "B0F509CD8540D734E4B4B51FE7100C4DA0147DDE94BF80C83667D128CABDCC7B",
+      "after_sha256": "06F4DC74B43256BE88E98F7C9E6AF82E03FED7D9EF9644C9E3A6A4539E878BA7"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-wrapper-fields-delta.json",
+      "before": "        const raw = c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return null;\n        const state: *State = @ptrCast(@alignCast(raw));\n        return if (state.registry == self) state else null;\n    }\n    /// Caller has already selected the genuine template's instance prototype.\n",
+      "after": "        if (c.JS_GetClassID(value) == self.classId(.filehandle)) {\n            const fields = self.streamFields(value) orelse return null;\n            return fields.state;\n        }\n        const raw = c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return null;\n        const state: *State = @ptrCast(@alignCast(raw));\n        return if (state.registry == self) state else null;\n    }\n    fn streamFields(self: *const Registry, wrapper: c.JSValue) ?*StreamFields {\n        if (c.JS_GetClassID(wrapper) != self.classId(.filehandle)) return null;\n        const raw = c.JS_GetOpaque(wrapper, self.classId(.filehandle)) orelse return null;\n        const fields: *StreamFields = @ptrCast(@alignCast(raw));\n        return if (fields.registry == self) fields else null;\n    }\n    fn nativePointerIsEmpty(self: *const Registry, wrapper: c.JSValue) bool {\n        if (c.JS_GetClassID(wrapper) == self.classId(.filehandle)) {\n            const fields = self.streamFields(wrapper) orelse return false;\n            return fields.state == null;\n        }\n        return c.JS_GetOpaque(wrapper, c.JS_GetClassID(wrapper)) == null;\n    }\n    fn attachNativePointer(self: *Registry, wrapper: c.JSValue, state: *State) void {\n        if (c.JS_GetClassID(wrapper) == self.classId(.filehandle)) {\n            const fields = self.streamFields(wrapper).?;\n            std.debug.assert(fields.state == null);\n            fields.state = state;\n        } else {\n            _ = c.JS_SetOpaque(wrapper, state);\n        }\n    }\n    fn clearNativePointer(self: *Registry, wrapper: c.JSValue, state: *State) void {\n        if (c.JS_GetClassID(wrapper) == self.classId(.filehandle)) {\n            const fields = self.streamFields(wrapper).?;\n            std.debug.assert(fields.state == state);\n            fields.state = null;\n        } else {\n            _ = c.JS_SetOpaque(wrapper, null);\n        }\n    }\n    /// StreamBase's native constructor installs its actual pointer separately\n    /// from BaseObject's pointer. No guest property or substitute key is used.\n    pub fn setStreamPointer(self: *Registry, wrapper: c.JSValue, stream: *anyopaque) !void {\n        const fields = self.streamFields(wrapper) orelse return self.check(.invalid_wrap_brand);\n        if (fields.state == null) return self.check(.invalid_wrap_brand);\n        fields.stream = stream;\n    }\n    /// FromObject first requires the live BaseObject slot. A stale stream slot\n    /// after native deletion is therefore never dereferenced.\n    pub fn streamPointer(self: *const Registry, wrapper: c.JSValue) ?*anyopaque {\n        const fields = self.streamFields(wrapper) orelse return null;\n        if (fields.state == null) return null;\n        return fields.stream;\n    }\n    /// The actual getter works on a retained template instance after native\n    /// deletion too. The value is an internal wrapper edge, not a native Global.\n    pub fn streamOnRead(self: *Registry, s: *LocalScope, wrapper: c.JSValue) !c.JSValue {\n        const fields = self.streamFields(wrapper) orelse return self.check(.invalid_wrap_brand);\n        return s.own(a.duplicate(s.engine, fields.onread));\n    }\n    /// The public InternalFieldSet callback supplies its original IsFunction\n    /// CHECK before this native store. Publish the new edge before old cleanup.\n    pub fn setStreamOnRead(self: *Registry, s: *LocalScope, wrapper: c.JSValue, value: c.JSValue) !void {\n        const fields = self.streamFields(wrapper) orelse return self.check(.invalid_wrap_brand);\n        var previous = fields.onread;\n        fields.onread = a.duplicate(s.engine, value);\n        s.boundary.release(&previous);\n    }\n    /// Caller has already selected the genuine template's instance prototype.\n",
+      "count": 1,
+      "positions_after": [
+        6525
+      ],
+      "before_sha256": "06F4DC74B43256BE88E98F7C9E6AF82E03FED7D9EF9644C9E3A6A4539E878BA7",
+      "after_sha256": "DE6A59A9AB828BF1E0414E02D812290B29F61295ED904F708BF71A45A736E15F"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-wrapper-fields-delta.json",
+      "before": "        const generation = try s.beforeAllocation();\n        return s.checkedAllocation(c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind)), generation);\n    }\n    pub fn append",
+      "after": "        // These native bytes are the FileHandle wrapper's internal fields.\n        // Attach them before checkedAllocation can retire a failed raw result.\n        var fields: ?*StreamFields = null;\n        if (kind == .filehandle) {\n            const created = try self.environment.allocator().create(StreamFields);\n            created.* = .{ .registry = self.retain(), .onread = c.pi_js_undefined() };\n            fields = created;\n        }\n        errdefer if (fields) |unattached| {\n            self.environment.allocator().destroy(unattached);\n            self.release();\n        };\n        const generation = try s.beforeAllocation();\n        const result = c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind));\n        if (!c.JS_IsException(result)) if (fields) |attached| {\n            _ = c.JS_SetOpaque(result, attached);\n            fields = null;\n        };\n        return s.checkedAllocation(result, generation);\n    }\n    pub fn append",
+      "count": 1,
+      "positions_after": [
+        10535
+      ],
+      "before_sha256": "DE6A59A9AB828BF1E0414E02D812290B29F61295ED904F708BF71A45A736E15F",
+      "after_sha256": "D04F9C6F3EAA501D595B5DA264716B865E7E78204207616B4013C6241E8C60E1"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-wrapper-fields-delta.json",
+      "before": "        if (c.JS_GetOpaque(wrapper, c.JS_GetClassID(wrapper)) != null)\n            return registry.check(.invalid_wrap_brand);\n",
+      "after": "        if (!registry.nativePointerIsEmpty(wrapper))\n            return registry.check(.invalid_wrap_brand);\n",
+      "count": 1,
+      "positions_after": [
+        14760
+      ],
+      "before_sha256": "D04F9C6F3EAA501D595B5DA264716B865E7E78204207616B4013C6241E8C60E1",
+      "after_sha256": "364B31FB40B113B8608E131FB48B2EDEDD56712173E133A1F398450E134A59E5"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-wrapper-fields-delta.json",
+      "before": "        _ = c.JS_SetOpaque(wrapper, self);\n        registry.append(&self.base_entry);\n",
+      "after": "        registry.attachNativePointer(wrapper, self);\n        registry.append(&self.base_entry);\n",
+      "count": 1,
+      "positions_after": [
+        15169
+      ],
+      "before_sha256": "364B31FB40B113B8608E131FB48B2EDEDD56712173E133A1F398450E134A59E5",
+      "after_sha256": "A89FC7822AF98BEBBF456A797499209C0981CE375AF03DDED15822A1FB13CC56"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-wrapper-fields-delta.json",
+      "before": "            if (self.wrapper) |wrapper| _ = c.JS_SetOpaque(wrapper, null);\n            self.wrapper = null;\n",
+      "after": "            if (self.wrapper) |wrapper| registry.clearNativePointer(wrapper, self);\n            self.wrapper = null;\n",
+      "count": 1,
+      "positions_after": [
+        22385
+      ],
+      "before_sha256": "A89FC7822AF98BEBBF456A797499209C0981CE375AF03DDED15822A1FB13CC56",
+      "after_sha256": "3CD37673105F46828A01E39F424A09324C12435586E7E7C426216D321607C0EC"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-wrapper-fields-delta.json",
+      "before": "        if (self.wrapper) |wrapper| _ = c.JS_SetOpaque(wrapper, null);\n        self.wrapper = null;\n",
+      "after": "        if (self.wrapper) |wrapper| registry.clearNativePointer(wrapper, self);\n        self.wrapper = null;\n",
+      "count": 1,
+      "positions_after": [
+        23012
+      ],
+      "before_sha256": "3CD37673105F46828A01E39F424A09324C12435586E7E7C426216D321607C0EC",
+      "after_sha256": "20D6984DA4F073C1E7FF302D070F82B0957EB7BC6653D04C1914949C4E7D847D"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-wrapper-fields-delta.json",
+      "before": "fn wrapperFinalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {\n",
+      "after": "fn streamWrapperFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {\n    const fields: *StreamFields = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));\n    const registry = fields.registry;\n    if (registry.environment.engine) |engine| {\n        var scope = LocalScope.init(engine);\n        var failure: ?anyerror = null;\n        if (fields.state) |state| state.retire(true) catch |err| {\n            scope.boundary.escaping();\n            failure = err;\n        };\n        std.debug.assert(fields.state == null);\n        _ = c.JS_SetOpaque(value, null);\n        scope.boundary.release(&fields.onread);\n        registry.environment.allocator().destroy(fields);\n        defer registry.release();\n        const ignored = scope.finish(if (failure) |err| @as(anyerror!c.JSValue, err) else c.pi_js_undefined()) catch |err| {\n            _ = callable.failure(engine, err, 0);\n            return;\n        };\n        engine.freeValue(ignored);\n    } else {\n        // Realm cleanup already deleted every actual native object. A retained\n        // JS wrapper may still retire during VM teardown after Env.disarm.\n        std.debug.assert(fields.state == null);\n        _ = c.JS_SetOpaque(value, null);\n        const onread = fields.onread;\n        fields.onread = c.pi_js_undefined();\n        c.JS_FreeValueRT(runtime, onread);\n        registry.environment.allocator().destroy(fields);\n        registry.release();\n    }\n}\nfn streamWrapperMark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {\n    const fields: *StreamFields = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));\n    c.JS_MarkValue(runtime, fields.onread, marker);\n    if (fields.state) |state| state.mark(runtime, marker);\n}\n\nfn wrapperFinalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {\n",
+      "count": 1,
+      "positions_after": [
+        23529
+      ],
+      "before_sha256": "20D6984DA4F073C1E7FF302D070F82B0957EB7BC6653D04C1914949C4E7D847D",
+      "after_sha256": "25971BD94ADE152C7F419C20D76C5EE4A2001D57997290DE2FCD5D5008E8B277"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-wrapper-admission-successor.json",
+      "before": "        // These native bytes are the FileHandle wrapper's internal fields.\n",
+      "after": "        const generation = try s.beforeAllocation();\n        // These native bytes are the FileHandle wrapper's internal fields.\n",
+      "count": 1,
+      "positions_after": [
+        10535
+      ],
+      "before_sha256": "25971BD94ADE152C7F419C20D76C5EE4A2001D57997290DE2FCD5D5008E8B277",
+      "after_sha256": "DCA4D053100488B88F7ABED9D809114AC5279610D6584E93E9B43F5E66A6EF4E"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-wrapper-admission-successor.json",
+      "before": "        const generation = try s.beforeAllocation();\n        const result = c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind));\n",
+      "after": "        const result = c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind));\n",
+      "count": 1,
+      "positions_after": [
+        11177
+      ],
+      "before_sha256": "DCA4D053100488B88F7ABED9D809114AC5279610D6584E93E9B43F5E66A6EF4E",
+      "after_sha256": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25"
+    },
+    {
+      "kind": "patch",
+      "path": "build.zig",
+      "label": "StreamFields10 install-only target",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-fields-build-intake.json",
+      "before": "        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "after": "        const node_stream_fields = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_stream_wrapper_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"Node StreamFields\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_stream_fields.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_stream_fields.root_module, typescript_parser);\n        linkSqlite(node_stream_fields.root_module, sqlite_lib_dir, sqlite_library);\n        node_stream_fields.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_stream_fields.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_stream_fields.root_module.linkLibrary(network);\n        if (target.result.os.tag == .windows) {\n            node_stream_fields.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_stream_fields.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-stream-fields\", \"Install ten actual StreamBase internal-field owner controls without execution\").dependOn(&b.addInstallArtifact(node_stream_fields, .{ .dest_sub_path = b.fmt(\"native-node-stream-fields{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "count": 1,
+      "positions_after": [
+        204882
+      ],
+      "before_sha256": "936B003F424B07A4784E712378127814F3257F29F69DF8477244A544DA4499E6",
+      "after_sha256": "F0D4A471AB18D5FB18C5FA8C6B1226F56435E97D0200428C95348ECE428F57B1"
+    },
+    {
+      "kind": "patch",
+      "path": "tools/build_native_node_network.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/managed-buffers-build-intake.json",
+      "before": "        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n",
+      "after": "        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_managed_buffers.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n",
+      "count": 1,
+      "positions_after": [
+        3088
+      ],
+      "before_sha256": "8BC887989E8A704530046614F8270160BDF280E4F5BD8131FC1ED163C7C791FF",
+      "after_sha256": "64ADAD93DE12560EB7B14DE6759176876CED7F1E212D2CDBF85A251773EE2091"
+    },
+    {
+      "kind": "patch",
+      "path": "build.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/managed-buffers-build-intake.json",
+      "before": "        b.step(\"build-native-node-environment-map\", \"Install native MapKVStore allocation and lifetime controls without execution\").dependOn(&b.addInstallArtifact(native_environment_map_tests, .{}).step);\n",
+      "after": "        b.step(\"build-native-node-environment-map\", \"Install native MapKVStore allocation and lifetime controls without execution\").dependOn(&b.addInstallArtifact(native_environment_map_tests, .{}).step);\n        const native_managed_buffer_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_managed_buffers_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"Node managed buffers\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_managed_buffer_tests.root_module, quickjs, sqlite_lib_dir);\n        native_managed_buffer_tests.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        native_managed_buffer_tests.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map_test_support.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        b.step(\"build-native-node-managed-buffers\", \"Install twelve native managed-buffer map and backing controls without execution\").dependOn(&b.addInstallArtifact(native_managed_buffer_tests, .{}).step);\n",
+      "count": 1,
+      "positions_after": [
+        487573
+      ],
+      "before_sha256": "F0D4A471AB18D5FB18C5FA8C6B1226F56435E97D0200428C95348ECE428F57B1",
+      "after_sha256": "904627E91E32FFB02BF28C8146F58672C11957B00EF2889FF256010D23DB4818"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "stream field indices",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-state-environment-delta.json",
+      "before": "pub const Tick = enum(u32) { has_tick_scheduled, has_rejection_to_warn };\n",
+      "after": "pub const Tick = enum(u32) { has_tick_scheduled, has_rejection_to_warn };\npub const StreamBaseField = enum(u32) {\n    read_bytes_or_error, array_buffer_offset, bytes_written, last_write_was_async,\n};\n",
+      "count": 1,
+      "positions_after": [
+        932
+      ],
+      "before_sha256": "8868C64C8B9DF78CC7EA43DE34E682B3ABB74285C6B47BA9D268C015FB9CAF1F",
+      "after_sha256": "706B831F75AFA1F18577DFE2D5561A0128F913F10C5F0776C2EADF31A7010EC4"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "actual signed alias type",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-state-environment-delta.json",
+      "before": "const IdStack = Alias(f64, c.JS_TYPED_ARRAY_FLOAT64);\n",
+      "after": "const IdStack = Alias(f64, c.JS_TYPED_ARRAY_FLOAT64);\nconst StreamBaseState = Alias(i32, c.JS_TYPED_ARRAY_INT32);\n",
+      "count": 1,
+      "positions_after": [
+        5287
+      ],
+      "before_sha256": "706B831F75AFA1F18577DFE2D5561A0128F913F10C5F0776C2EADF31A7010EC4",
+      "after_sha256": "A0B9C3513C5C177CAA94548DDD62F3C3160DD741D899F0B643925289175D3C6B"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "one Environment member",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-state-environment-delta.json",
+      "before": "    ids: IdStack = .{},\n",
+      "after": "    ids: IdStack = .{},\n    stream_base_state: StreamBaseState = .{},\n",
+      "count": 1,
+      "positions_after": [
+        6254
+      ],
+      "before_sha256": "A0B9C3513C5C177CAA94548DDD62F3C3160DD741D899F0B643925289175D3C6B",
+      "after_sha256": "6F9BA2F7A3CDFA98FF35E0DB50473A0AD7B9AD1048711CA655ACCD472EBB402E"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "constructor after earlier member initialization",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-state-environment-delta.json",
+      "before": "        self.uidField(.counter).* = 1;\n        self.resource_symbol",
+      "after": "        self.uidField(.counter).* = 1;\n        self.stream_base_state = try StreamBaseState.create(s, 4);\n        self.resource_symbol",
+      "count": 1,
+      "positions_after": [
+        9070
+      ],
+      "before_sha256": "6F9BA2F7A3CDFA98FF35E0DB50473A0AD7B9AD1048711CA655ACCD472EBB402E",
+      "after_sha256": "492A37C21A8AC533C48528A4417089DB1B87298BD57D684C7EEA3CC0AF19E5F5"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "typed native field accessor",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-state-environment-delta.json",
+      "before": "    pub fn tickField(self: *Environment, index: Tick) *u8 { return &self.ticks.data[@intFromEnum(index)]; }\n",
+      "after": "    pub fn tickField(self: *Environment, index: Tick) *u8 { return &self.ticks.data[@intFromEnum(index)]; }\n    pub fn streamBaseField(self: *Environment, index: StreamBaseField) *i32 {\n        return &self.stream_base_state.data[@intFromEnum(index)];\n    }\n",
+      "count": 1,
+      "positions_after": [
+        11230
+      ],
+      "before_sha256": "492A37C21A8AC533C48528A4417089DB1B87298BD57D684C7EEA3CC0AF19E5F5",
+      "after_sha256": "DF8E67C0C9139BC73E430FCD7ABB70D1F0D9DBF96AD0E4BA15A11E8698B324CB"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "later declared alias retires before existing aliases",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-state-environment-delta.json",
+      "before": "    fn retireRoots(self: *Environment, s: *LocalScope) void {\n        self.ids.release(s);",
+      "after": "    fn retireRoots(self: *Environment, s: *LocalScope) void {\n        self.stream_base_state.release(s);\n        self.ids.release(s);",
+      "count": 1,
+      "positions_after": [
+        29734
+      ],
+      "before_sha256": "DF8E67C0C9139BC73E430FCD7ABB70D1F0D9DBF96AD0E4BA15A11E8698B324CB",
+      "after_sha256": "E267756ECEFDFA7577E68A18BB2D04EA5392579E837385BA437808DD75F6E397"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "actual native managed table owner import",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/managed-table-and-environment-delta.json",
+      "before": "const RequestState = @import(\"native_node_request_state.zig\");",
+      "after": "const RequestState = @import(\"native_node_request_state.zig\");\nconst ManagedBuffers = @import(\"native_node_managed_buffers.zig\");",
+      "count": 1,
+      "positions_after": [
+        628
+      ],
+      "before_sha256": "E267756ECEFDFA7577E68A18BB2D04EA5392579E837385BA437808DD75F6E397",
+      "after_sha256": "FA3FFAC13452209BE5C3C3ADF047C7781602587C1256E8F6FA43C0B31CCE8788"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "single Environment allocation layout",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/managed-table-and-environment-delta.json",
+      "before": "pub const Environment = struct {\n    memory_owner: *anyopaque,",
+      "after": "pub const Environment = struct {\n    memory_owner: *anyopaque,\n    allocation_size: usize,\n    allocation_alignment: std.mem.Alignment,",
+      "count": 1,
+      "positions_after": [
+        5929
+      ],
+      "before_sha256": "FA3FFAC13452209BE5C3C3ADF047C7781602587C1256E8F6FA43C0B31CCE8788",
+      "after_sha256": "27CA6E01F3B07B23C4E1544EC43BEA5C5199D933194C2989D4EF5DEC8F2C9210"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "in-place native map member",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/managed-table-and-environment-delta.json",
+      "before": "    stream_base_state: StreamBaseState = .{},",
+      "after": "    stream_base_state: StreamBaseState = .{},\n    managed_buffers: ManagedBuffers.Store = .{},",
+      "count": 1,
+      "positions_after": [
+        6418
+      ],
+      "before_sha256": "27CA6E01F3B07B23C4E1544EC43BEA5C5199D933194C2989D4EF5DEC8F2C9210",
+      "after_sha256": "5064A41B753EEEA0722939A690AD058F637705A3EEF18A0BBBE6D47CB4B7717B"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "one charged parent-and-map block",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/managed-table-and-environment-delta.json",
+      "before": "        if (c.pi_js_native_memory_reserve(memory_owner, @sizeOf(Environment)) == 0) return error.OutOfMemory;\n        errdefer c.pi_js_native_memory_release(memory_owner, @sizeOf(Environment));\n        const self = try std.heap.c_allocator.create(Environment);",
+      "after": "        const storage_layout = try ManagedBuffers.layout(Environment);\n        if (c.pi_js_native_memory_reserve(memory_owner, storage_layout.bytes) == 0) return error.OutOfMemory;\n        errdefer c.pi_js_native_memory_release(memory_owner, storage_layout.bytes);\n        const allocation = std.heap.c_allocator.rawAlloc(storage_layout.bytes,\n            storage_layout.alignment, @returnAddress()) orelse return error.OutOfMemory;\n        const self: *Environment = @ptrCast(@alignCast(allocation));",
+      "count": 1,
+      "positions_after": [
+        8071
+      ],
+      "before_sha256": "5064A41B753EEEA0722939A690AD058F637705A3EEF18A0BBBE6D47CB4B7717B",
+      "after_sha256": "A8114F61C89C37D4A4A99545A5ECBCB32D9B5FD81D6E9F834553CD8417F42483"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "retain exact raw allocation metadata",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/managed-table-and-environment-delta.json",
+      "before": "            .memory_owner = memory_owner,\n            .charged = ChargedAllocator.init(s.engine),",
+      "after": "            .memory_owner = memory_owner,\n            .allocation_size = storage_layout.bytes,\n            .allocation_alignment = storage_layout.alignment,\n            .charged = ChargedAllocator.init(s.engine),",
+      "count": 1,
+      "positions_after": [
+        8593
+      ],
+      "before_sha256": "A8114F61C89C37D4A4A99545A5ECBCB32D9B5FD81D6E9F834553CD8417F42483",
+      "after_sha256": "74115637B613074DC9FF95671745E22A378CED44134D32AB5E3CE1297FCEFD5B"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "partial construction releases same block",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/managed-table-and-environment-delta.json",
+      "before": "            self.charged.deinit();\n            std.heap.c_allocator.destroy(self);",
+      "after": "            self.charged.deinit();\n            std.heap.c_allocator.rawFree(allocation[0..storage_layout.bytes],\n                storage_layout.alignment, @returnAddress());",
+      "count": 1,
+      "positions_after": [
+        9095
+      ],
+      "before_sha256": "74115637B613074DC9FF95671745E22A378CED44134D32AB5E3CE1297FCEFD5B",
+      "after_sha256": "1943B7B21F54107A115482668D8B801A27EC52E84620979CBD444D1740973571"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "allocation-free map construction after stream alias",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/managed-table-and-environment-delta.json",
+      "before": "        self.stream_base_state = try StreamBaseState.create(s, 4);",
+      "after": "        self.stream_base_state = try StreamBaseState.create(s, 4);\n        self.managed_buffers.init(@ptrCast(allocation + storage_layout.offset));",
+      "count": 1,
+      "positions_after": [
+        9745
+      ],
+      "before_sha256": "1943B7B21F54107A115482668D8B801A27EC52E84620979CBD444D1740973571",
+      "after_sha256": "F8F897F269BACC4622037FDBC1B375A22EBD2B1F813AD46FE0433DA72DFB3151"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "last Environment entitlement releases exact native block",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/managed-table-and-environment-delta.json",
+      "before": "        const owner = self.memory_owner;\n        self.charged.deinit();\n        std.heap.c_allocator.destroy(self);\n        c.pi_js_native_memory_release(owner, @sizeOf(Environment));\n        c.pi_js_release_memory_owner(owner);",
+      "after": "        const owner = self.memory_owner;\n        const allocation_size = self.allocation_size;\n        const allocation_alignment = self.allocation_alignment;\n        self.charged.deinit();\n        const allocation: [*]u8 = @ptrCast(self);\n        std.heap.c_allocator.rawFree(allocation[0..allocation_size],\n            allocation_alignment, @returnAddress());\n        c.pi_js_native_memory_release(owner, allocation_size);\n        c.pi_js_release_memory_owner(owner);",
+      "count": 1,
+      "positions_after": [
+        10984
+      ],
+      "before_sha256": "F8F897F269BACC4622037FDBC1B375A22EBD2B1F813AD46FE0433DA72DFB3151",
+      "after_sha256": "6D67AEE4A78AA23C4A5C2FF07D9AC71A4FFFC4105248246A604ED7223A1B5B13"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "actual selected managed-buffer tail operations",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/managed-table-and-environment-delta.json",
+      "before": "    pub fn allocator(self: *Environment) std.mem.Allocator { return self.charged.allocator(); }",
+      "after": "    /// Selected tail after the genuine NewBackingStore operation has returned.\n    /// The original allocation/retry policy remains a separate caller owner.\n    pub fn adoptManagedBuffer(self: *Environment, owned: *ManagedBuffers.Token) !ManagedBuffers.uv.uv_buf_t {\n        _ = try self.requireEngine();\n        return self.managed_buffers.adopt(self.memory_owner, owned);\n    }\n    pub fn releaseManagedBuffer(self: *Environment, buffer: ManagedBuffers.uv.uv_buf_t) !ManagedBuffers.Token {\n        const engine = try self.requireEngine();\n        return self.managed_buffers.release(engine.context, buffer);\n    }\n    pub fn allocator(self: *Environment) std.mem.Allocator { return self.charged.allocator(); }",
+      "count": 1,
+      "positions_after": [
+        10406
+      ],
+      "before_sha256": "6D67AEE4A78AA23C4A5C2FF07D9AC71A4FFFC4105248246A604ED7223A1B5B13",
+      "after_sha256": "8C4C7296E3DE2EC75C5756620F8D406BB60808B5A58021F920D68918AD5D11F6"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "label": "actual later map member retires before stream alias",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/managed-table-and-environment-delta.json",
+      "before": "    fn retireRoots(self: *Environment, s: *LocalScope) void {\n        self.stream_base_state.release(s);",
+      "after": "    fn retireRoots(self: *Environment, s: *LocalScope) void {\n        self.managed_buffers.deinit();\n        self.stream_base_state.release(s);",
+      "count": 1,
+      "positions_after": [
+        31309
+      ],
+      "before_sha256": "8C4C7296E3DE2EC75C5756620F8D406BB60808B5A58021F920D68918AD5D11F6",
+      "after_sha256": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_stream_resource.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-read-composition-draft.json",
+      "before": "//! listeners. Read/write virtual operations and the JS prototype are separate.\n",
+      "after": "//! listeners. The selected read vtable is native and borrowed; write operations\n//! and the JS prototype remain separate.\n",
+      "count": 1,
+      "positions_after": [
+        473
+      ],
+      "before_sha256": "97D16E84BE24B636F1926ED50A800252D90F9D147169EB96FE85E94025754ABC",
+      "after_sha256": "AE2E79D033A56E6DCBB7A8FAB38331907E5C77D49F4EE907C6931F8CF862533D"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_stream_resource.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-read-composition-draft.json",
+      "before": "const check = @import(\"native_node_check_failure.zig\");\n\npub const Listener",
+      "after": "const check = @import(\"native_node_check_failure.zig\");\nconst std = @import(\"std\");\npub const uv = @import(\"native_node_managed_buffers.zig\").uv;\n\n/// Original pure virtual read operations. A listener used by EmitAlloc/EmitRead\n/// must supply its actual compiled implementation; lifecycle-only listeners do\n/// not install a passing placeholder for these operations.\npub const ReadMethods = struct {\n    allocate: *const fn (*Listener, usize) anyerror!uv.uv_buf_t,\n    read: *const fn (*Listener, isize, uv.uv_buf_t) anyerror!void,\n};\n\npub const Listener",
+      "count": 1,
+      "positions_after": [
+        630
+      ],
+      "before_sha256": "AE2E79D033A56E6DCBB7A8FAB38331907E5C77D49F4EE907C6931F8CF862533D",
+      "after_sha256": "A7C5B3566D5E6C4CE926C9519230A5ED948115BEE7366660BDCF53B80820C741"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_stream_resource.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-read-composition-draft.json",
+      "before": "    on_destroy: *const fn (*Listener) void = defaultOnDestroy,\n",
+      "after": "    on_destroy: *const fn (*Listener) void = defaultOnDestroy,\n    read_methods: ?*const ReadMethods = null,\n",
+      "count": 1,
+      "positions_after": [
+        1270
+      ],
+      "before_sha256": "A7C5B3566D5E6C4CE926C9519230A5ED948115BEE7366660BDCF53B80820C741",
+      "after_sha256": "D2A5651811806D6418280D324E218AD7FCEE83F1A3D8C759BC8AA7E545E1206F"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_stream_resource.zig",
+      "label": "",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-read-composition-draft.json",
+      "before": "    /// Actual StreamResource::~StreamResource. OnStreamDestroy may unlink and\n",
+      "after": "    /// StreamResource::EmitAlloc selects the live head. The native abstract\n    /// interface requires the head and its real read vtable to exist.\n    pub fn emitAlloc(self: *Resource, suggested_size: usize) !uv.uv_buf_t {\n        const selected = self.listener.?;\n        std.debug.assert(selected.read_methods != null);\n        return selected.read_methods.?.allocate(selected, suggested_size);\n    }\n\n    /// The original unsigned counter advances before the selected read method.\n    /// This call may delete the native stream; do not access self after it.\n    pub fn emitRead(self: *Resource, nread: isize, buffer: uv.uv_buf_t) !void {\n        if (nread > 0) self.bytes_read +%= @intCast(nread);\n        const selected = self.listener.?;\n        std.debug.assert(selected.read_methods != null);\n        return selected.read_methods.?.read(selected, nread, buffer);\n    }\n\n    /// Actual StreamResource::~StreamResource. OnStreamDestroy may unlink and\n",
+      "count": 1,
+      "positions_after": [
+        4353
+      ],
+      "before_sha256": "D2A5651811806D6418280D324E218AD7FCEE83F1A3D8C759BC8AA7E545E1206F",
+      "after_sha256": "6CA4CF5CD5E71EAD8C9E6F4FCF0D0075190C853E26978B497389F7D29EBE0AC6"
+    },
+    {
+      "kind": "patch",
+      "path": "build.zig",
+      "label": "unchanged Resource8 uv type include",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-read-composition-draft.json",
+      "before": "        linkQuickJs(b, node_stream_resource.root_module, quickjs, sqlite_lib_dir);\n",
+      "after": "        linkQuickJs(b, node_stream_resource.root_module, quickjs, sqlite_lib_dir);\n        node_stream_resource.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n",
+      "count": 1,
+      "positions_after": [
+        477899
+      ],
+      "before_sha256": "904627E91E32FFB02BF28C8146F58672C11957B00EF2889FF256010D23DB4818",
+      "after_sha256": "7DABC8B362FE21C5D636427AD12BA53D15B3B9AF01AF8CB27F605C81AC0CAF30"
+    },
+    {
+      "kind": "patch",
+      "path": "build.zig",
+      "label": "StreamBase18 install-only target",
+      "origin": "verification/native-node-stream-base-sourceonly-20261020/stream-read-build-intake.json",
+      "before": "        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "after": "        const node_stream_read = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_stream_read_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"Node StreamBase read\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_stream_read.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_stream_read.root_module, typescript_parser);\n        linkSqlite(node_stream_read.root_module, sqlite_lib_dir, sqlite_library);\n        node_stream_read.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_stream_read.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_stream_read.root_module.linkLibrary(network);\n        if (target.result.os.tag == .windows) {\n            node_stream_read.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_stream_read.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-stream-read\", \"Install eighteen actual StreamBase read-composition controls without execution\").dependOn(&b.addInstallArtifact(node_stream_read, .{ .dest_sub_path = b.fmt(\"native-node-stream-read{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+      "count": 1,
+      "positions_after": [
+        206181
+      ],
+      "before_sha256": "7DABC8B362FE21C5D636427AD12BA53D15B3B9AF01AF8CB27F605C81AC0CAF30",
+      "after_sha256": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "label": "Local constructor_value avoids the public constructor declaration; same borrowed function and prototype operation.",
+      "origin": "verification/native-fs-owner-v26-shadow-correction-sourceonly-20261020/source-delta.json",
+      "before": "    const constructor = try ensureConstructor(s, owner, owner_value, kind);\n    const prototype = try s.checked(c.JS_PiGetObjectPrototypeFromConstructor(s.engine.context, constructor));",
+      "after": "    const constructor_value = try ensureConstructor(s, owner, owner_value, kind);\n    const prototype = try s.checked(c.JS_PiGetObjectPrototypeFromConstructor(s.engine.context, constructor_value));",
+      "count": 1,
+      "positions_after": [
+        12386
+      ],
+      "before_sha256": "FF468B5F806AFB07188B2B5CC5BCE8CF826BFD44C7588A8A0B19C4AB7D03D44F",
+      "after_sha256": "540F5D468DA75E474FDD8731E06C55A48BB2E20470A0BE1DEDC1C6BCF61B0D15"
+    },
+    {
+      "kind": "patch",
+      "path": "src/extensions/native_node_fs_request_promise.zig",
+      "label": "Local request_environment avoids Request.environment while preserving destructor admission.",
+      "origin": "verification/native-fs-owner-v26-shadow-correction-sourceonly-20261020/source-delta.json",
+      "before": "        const environment = wrap.registry.environment;\n        // A failed C++ construction does not invoke the derived destructor.\n        if (self.constructed and !self.finished and environment.canCallIntoJs())",
+      "after": "        const request_environment = wrap.registry.environment;\n        // A failed C++ construction does not invoke the derived destructor.\n        if (self.constructed and !self.finished and request_environment.canCallIntoJs())",
+      "count": 1,
+      "positions_after": [
+        3565
+      ],
+      "before_sha256": "0ED6B910579E96E38A897C60BFE77F6DF8A42613676FA0BBCAA0453A90092158",
+      "after_sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721"
+    },
+    {
+      "kind": "patch",
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "label": "Evaluation result local avoids Fixture.value.",
+      "origin": "verification/native-fs-owner-v26-shadow-correction-sourceonly-20261020/source-delta.json",
+      "before": "    fn evaluate(self: *Fixture, source: []const u8) !void {\n        const value = try self.value(source);\n        self.engine.freeValue(value);\n    }",
+      "after": "    fn evaluate(self: *Fixture, source: []const u8) !void {\n        const evaluated = try self.value(source);\n        self.engine.freeValue(evaluated);\n    }",
+      "count": 1,
+      "positions_after": [
+        9681
+      ],
+      "before_sha256": "66D6FCF1646FE123C5DC80B5BE53AB3FF397E1F1C4469B19480077D2CCAC08AA",
+      "after_sha256": "5101008DA42EB3CD9DDF330AC333978112AE625C477FF9D0203DC413BAEA228B"
+    },
+    {
+      "kind": "patch",
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "label": "Observed assertion result local avoids Fixture.value; conversion/assertion unchanged.",
+      "origin": "verification/native-fs-owner-v26-shadow-correction-sourceonly-20261020/source-delta.json",
+      "before": "    fn expect(self: *Fixture, source: []const u8) !void {\n        const value = try self.value(source);\n        defer self.engine.freeValue(value);\n        try std.testing.expect(c.JS_ToBool(self.engine.context, value) == 1);\n    }",
+      "after": "    fn expect(self: *Fixture, source: []const u8) !void {\n        const observed = try self.value(source);\n        defer self.engine.freeValue(observed);\n        try std.testing.expect(c.JS_ToBool(self.engine.context, observed) == 1);\n    }",
+      "count": 1,
+      "positions_after": [
+        9839
+      ],
+      "before_sha256": "5101008DA42EB3CD9DDF330AC333978112AE625C477FF9D0203DC413BAEA228B",
+      "after_sha256": "2D8C0B08CCB189BF7BAD8AE8245E1A0807B2B107A69A4EC19F8E6C2CFFAA6788"
+    },
+    {
+      "kind": "patch",
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "label": "Expose argument avoids Fixture.value without changing the forwarded JSValue.",
+      "origin": "verification/native-fs-owner-v26-shadow-correction-sourceonly-20261020/source-delta.json",
+      "before": "    fn expose(self: *Fixture, name: [*:0]const u8, value: c.JSValue) !void {\n        const ignored = try a.expression(self.engine, struct {\n            fn run(s: *a.Scope, key: [*:0]const u8, item: c.JSValue) !c.JSValue {\n                const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));\n                try s.define(global, key, item, c.JS_PROP_C_W_E);\n                return c.pi_js_undefined();\n            }\n        }.run, .{name, value});\n        self.engine.freeValue(ignored);\n    }",
+      "after": "    fn expose(self: *Fixture, name: [*:0]const u8, exposed: c.JSValue) !void {\n        const ignored = try a.expression(self.engine, struct {\n            fn run(s: *a.Scope, key: [*:0]const u8, item: c.JSValue) !c.JSValue {\n                const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));\n                try s.define(global, key, item, c.JS_PROP_C_W_E);\n                return c.pi_js_undefined();\n            }\n        }.run, .{name, exposed});\n        self.engine.freeValue(ignored);\n    }",
+      "count": 1,
+      "positions_after": [
+        10080
+      ],
+      "before_sha256": "2D8C0B08CCB189BF7BAD8AE8245E1A0807B2B107A69A4EC19F8E6C2CFFAA6788",
+      "after_sha256": "E59F5CA4370283A1CFD158472163078547062804179B9A76320BEB8688DB704C"
+    },
+    {
+      "kind": "patch",
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "label": "Both settle parameters avoid Fixture.request/value; the compiler initially reported the first collision. Exact pointer/value and all scope operations remain.",
+      "origin": "verification/native-fs-owner-v26-shadow-correction-sourceonly-20261020/source-delta.json",
+      "before": "    fn settle(self: *Fixture, request: *requests.Request, value: c.JSValue, rejecting: bool) !void {\n        var outer_scope: callbacks.Scope = undefined;\n        try self.outer(&outer_scope, try request.object());\n        defer if (!outer_scope.deinitialized) {\n            outer_scope.markFailed();\n            outer_scope.deinit() catch {};\n        };\n        if (rejecting) try request.reject(value) else try request.resolve(value);\n        try outer_scope.deinit();\n    }",
+      "after": "    fn settle(self: *Fixture, request_value: *requests.Request, settled_value: c.JSValue, rejecting: bool) !void {\n        var outer_scope: callbacks.Scope = undefined;\n        try self.outer(&outer_scope, try request_value.object());\n        defer if (!outer_scope.deinitialized) {\n            outer_scope.markFailed();\n            outer_scope.deinit() catch {};\n        };\n        if (rejecting) try request_value.reject(settled_value) else try request_value.resolve(settled_value);\n        try outer_scope.deinit();\n    }",
+      "count": 1,
+      "positions_after": [
+        11486
+      ],
+      "before_sha256": "E59F5CA4370283A1CFD158472163078547062804179B9A76320BEB8688DB704C",
+      "after_sha256": "AFDE66056B841CD61EC755F8EBFFB73D30A6BCE776A4F43AEC8CA84F232BF8A4"
+    },
+    {
+      "kind": "patch",
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "label": "Ready-controller capture avoids Fixture.value.",
+      "origin": "verification/native-fs-owner-v26-shadow-correction-sourceonly-20261020/source-delta.json",
+      "before": "            .ready => |value| value,",
+      "after": "            .ready => |ready_controller| ready_controller,",
+      "count": 1,
+      "positions_after": [
+        12386
+      ],
+      "before_sha256": "AFDE66056B841CD61EC755F8EBFFB73D30A6BCE776A4F43AEC8CA84F232BF8A4",
+      "after_sha256": "3E60ED7E8577F5722AF80712D3875EBFF1D92A13D22BA9DD6C9E8720E5EF63D6"
+    },
+    {
+      "kind": "patch",
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "label": "Native request local avoids Fixture.value; retain and return the identical pointer.",
+      "origin": "verification/native-fs-owner-v26-shadow-correction-sourceonly-20261020/source-delta.json",
+      "before": "        const value = req.native_request orelse return error.ActualFSReadNativeStorageRequired;\n        uv.pi_uv_fs_request_retain(value);\n        return value;",
+      "after": "        const native_request_value = req.native_request orelse return error.ActualFSReadNativeStorageRequired;\n        uv.pi_uv_fs_request_retain(native_request_value);\n        return native_request_value;",
+      "count": 1,
+      "positions_after": [
+        13796
+      ],
+      "before_sha256": "3E60ED7E8577F5722AF80712D3875EBFF1D92A13D22BA9DD6C9E8720E5EF63D6",
+      "after_sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4"
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "status": "finite source controls peer closed",
+  "reviewer": "vm_foundation",
+  "execution": false,
+  "root": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/native_node_stream_read_test.zig",
+    "sha256": "E82BD953C752DF948C679617F2CA8FA2B5A08C9A00B0F83A02F08A7C1D45FEB3",
+    "bytes": 33640,
+    "declarations": 18
+  },
+  "api_successor": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/stream-read-control-api-successor.json",
+    "sha256": "98A84687812021A622FFFEF9EB52AA31A60475B175D3836426745D666CE7C7D6",
+    "bytes": 972,
+    "inverse": {
+      "current": "E82BD953C752DF948C679617F2CA8FA2B5A08C9A00B0F83A02F08A7C1D45FEB3",
+      "bytes": 33640,
+      "inverse": "CB3263C5E13DA3872FE7BE5D057AF3A6A6FC5FB189479F90EB557BDD0E67B9AD",
+      "edits": 3,
+      "names": [
+        "Node StreamBase read initializes the real default listener and native wrapper pointer",
+        "Node StreamBase read selects internal onread beneath an ordinary own property and writes aliases first",
+        "Node StreamBase read allocates actual native backing without a JS wrapper under an exhausted JS heap",
+        "Node StreamBase read zero bytes consumes the managed token without a callback or trace",
+        "Node StreamBase read negative status publishes undefined and leaves the positive byte counter unchanged",
+        "Node StreamBase read full extent adopts the same native bytes and advances the counter before callback",
+        "Node StreamBase read short extent performs the real exact native reallocation and copies before adoption",
+        "Node StreamBase read later ArrayBuffer adoption bypasses the live global constructor",
+        "Node StreamBase read a returned flagged Error stays successful DATA",
+        "Node StreamBase read actual ordinary callback failure retains its exact reason through native cleanup",
+        "Node StreamBase read actual fatal callback reason remains owned while static after trace still runs",
+        "Node StreamBase read retains the selected callback across live replacement until caller scope retirement",
+        "Node StreamBase read ignored callback return retires only after the static after operation",
+        "Node StreamBase read can delete its actual native State before static after uses cached identifiers",
+        "Node StreamBase read enters the real captured frame and restores the enclosing native callback scope",
+        "Node StreamBase read disabled JS returns the actual empty callback while native buffer cleanup completes",
+        "Node StreamBase read uses the live listener head and advances bytes before a real forwarding method",
+        "Node StreamBase read null buffer negative status bypasses the managed map without an allocation"
+      ]
+    }
+  },
+  "assigned_declarations": [
+    7,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    16
+  ],
+  "helpers": [
+    "Fixture bootstrap/partial failure/outer CallbackScope/deinit",
+    "Probe/markerFinalizer",
+    "Node initialization/native retire/destroy",
+    "firstSuccessfulAllocation",
+    "readCallback/readCallbackBody",
+    "traceBefore/traceAfter",
+    "allocate/fill/read/direct/directBody",
+    "setReason/takeCaught/expectThrown"
+  ],
+  "production_dependencies": {
+    "stream": "0A3F4EB5133BC9543D5AD77DC33F4753ABEC866EB721BCE0A8F08C16BECD5ABF",
+    "async_callback": "AE550CB8190EB284B576C3F9210EBAF4D9B5CB65589C35EAF38B7FF3274EA188",
+    "state": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25",
+    "proposed_environment": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+    "scope": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+    "boundary": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA"
+  },
+  "findings": [
+    "Native fixture allocation invokes the real TryNew backing operation and admits only first success. A lower failure fails the fixture; it is not claimed as the original retry/GC policy.",
+    "Fixture owns the real Environment, Registry, wrapper and captured frame. Partial initialization routes published State through real Registry cleanup, and native Probe/trace storage remains live until after Engine teardown.",
+    "Declaration7 performs the genuine 32-to-10 shrink while the old allocation is live, proves distinct native storage, exact copied bytes and adopted replacement pointer, and observes the actual table empty.",
+    "Declarations9-11 distinguish returned flagged DATA from actual ordinary or flagged JS_Throw. Actual drained reasons have immediate defer ownership, no guest observation follows failure, and static after trace runs in every selected callback outcome.",
+    "Declaration13 uses a real sole native-finalizable result marker; after trace sees zero retirements and caller HandleScope completion retires it exactly once.",
+    "Declaration14 invokes actual State.deleteMe during the callback. Native retirement/destroy precedes static after, and only cached provider/async-ID fields are observed after deletion.",
+    "Declaration15 uses the actual captured child continuation and nested callback scope; the parent frame/async-ID/depth are restored after the call.",
+    "Declaration16 disables actual JS admission while retaining real native wrapper/adoption and callback-scope operations. It proves no user callback, table retirement, state alias write and static before/after without invented task-queue behavior.",
+    "The three API-only expected signatures reverse exactly to the retained CB3263C5 root; all18 names remain unchanged. Actual header signatures match the successor."
+  ],
+  "limits": [
+    "Source-only; no native/Node/compiler/formatter/generator execution.",
+    "Complementary controls and build remain Modules' separate slice.",
+    "Trace callbacks observe delegation only. Full native allocator retry/GC, public FunctionTemplate/onread installation, actual reporter/checkpoint and bootstrap are separate dependencies.",
+    "Environment EEF21C90 is still a proposed dependency, not an installed-owner claim."
+  ]
+}

@@ -1,0 +1,233 @@
+{
+  "status": "CLOSED finite source-only native Script/compiler/frame ownership peer; no execution",
+  "reviewer": "modules_io",
+  "date": "2026-10-20",
+  "production": {
+    "original_packet": {
+      "path": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "sha256": "5CE6502330E09C9ED1F2E0D21BAF7EDE38B9185E90F778D347388D36CB5AEC18",
+      "edits": 104
+    },
+    "original_c": "0D8B6ED831E0FF09600C3E5B8A25027D3821E6E29067D6C860CEF1ED2FC21991",
+    "current_c": "8407EA70CAC10FD41EFADBF31B8C043F86B322EA1A1D09DCB1EA00176761C241",
+    "header": "08230E99EB7AB2AC38C94ED3810D81DEE850CB5A067902634E0C2CC5D112F966",
+    "cjs": "4FBF487CC09627A2176815995AF3246E88274A7D1AD1A952802AC01AF478BCE5",
+    "opcodes": "194F1AE899FF525FEAE54265369720E767494130A9CE31E4E3ABC00E9C1E9181",
+    "accounting_successor": "B4CADFF98D512786157494067C746D88C53AB8B69C89D9546002626C21DF006E"
+  },
+  "assigned_groups": [
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "public native Script and position ABI"
+    },
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "runtime Script owner inventory"
+    },
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "initialize native Script inventory"
+    },
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "require native Script release before runtime disposal"
+    },
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "native Script and byte-position types"
+    },
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "bytecode retains actual Script and independent positions"
+    },
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "captured frame owns Script and native position"
+    },
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "native Script primitive ownership and position projection"
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "FD inherits native Script and independent position storage"
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "inherit Script only after initialized FD"
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "release inherited Script on filename failure"
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "FD cleanup owns Script and unfinished position array"
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "publish finalized primitive Script before children"
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "move Script and position array to initialized bytecode"
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "bytecode retirement releases native metadata"
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "root compiler creates complete actual input before children"
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+      "label": "CJS attaches actual body before private wrapper definition"
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "lexer metadata available in both compiler modes"
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "ordinary lexer uses same actual magic-comment state"
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "retain source URL lexer offsets"
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "retain source map lexer offsets"
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "count native source position allocation"
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "count each native Script and primitive source root once"
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "frame retirement releases its independent Script root"
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "frame publication moves Script ownership"
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "initialize actual-frame Script provenance"
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "capture actual bytecode Script and token position"
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "filename-only synthetic frames have no Script"
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "raw missing-PC capture retains real Script without a guessed position"
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "capture temporary cleanup releases owned Script"
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "capture publication cleanup retires only unmoved Script"
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "frame clone independently duplicates Script"
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "failed or moved frame clone cleanup"
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "legacy prepared-stack temporary cleanup releases Script"
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "metadata-failure temporary cleanup releases primitive Script"
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "raw captured Script projection"
+    }
+  ],
+  "inverse_verification": {
+    "all_104_edits_reversed": true,
+    "base_c": "E61EF49E44E22C2B327F229B0285D801598773B8BFE90A9B0D175071439AD98A",
+    "base_h": "B1BC3EF2E9E5DCD3EDC915231AD7EAA1C4ED4F1DBEA49BFBCF57425D528C343D",
+    "base_cjs": "87A771EB6291F195C7DEB63DA8B29F20805AEA0F07B6320985E10C090348B639",
+    "base_opcodes": "55122ADB07E3F9FB91C4779A2C7ECF721294593035D3880B005B769F31B7485D",
+    "accounting_successor_single_edit_reversed": true,
+    "actual_current_complete_c_digest_verified": true
+  },
+  "authority": {
+    "packet": "6584973AC9EF4F20CB1CD9284AD501AADA5AF14A97FC546783465A4A043FE342",
+    "independent_full_v8_objects": {
+      "path": "verification/native-existing-promise-settlement-sourceonly-20261019/authority/v8-objects.v24.13.cc",
+      "sha256": "81E1D4EDFCE90BC1409DDF1B16966F2931E8DC947BF7429DFED6959708211BFC",
+      "bytes": 272859
+    },
+    "selected_objects_excerpts_verified": 12,
+    "source_basis": "Node v24.13.0 immutable def0bdf8abee441cfcbf793a8dc24a6f3b899573"
+  },
+  "findings": [
+    "Native Script retains only primitive strings plus owned input bytes. Runtime inventory/refcount lifetime, initialized partial construction, and last-release unlink/free are coherent; external Script references must retire before runtime destruction.",
+    "Root FD creates the actual complete input; children inherit only after FD initialization. Filename/compile failure releases inherited owners once. Bytecode takes Script and position storage only after successful object allocation, clearing FD ownership.",
+    "Actual CJS bookkeeping root holds the original body Script; presentation text does not substitute for source provenance. Compiler metadata finalizes after the lexer and before child bytecode construction.",
+    "Captured actual frames, no-PC frames, synthetic frames and native frames initialize provenance explicitly. Actual bytecode captures and clones take independent Script references; every publication/failure/legacy temporary cleanup either moves or retires that one reference.",
+    "Raw native getters perform no public property lookup or guest conversion. Invalid outputs remain untouched. Source-line allocation respects existing pending entry; UTF-16 line/column, CR/LF/LS/PS and sourceURL precedence were read against exact V8 bodies.",
+    "Script primitive roots require no new object GC mark edge; existing captured-frame object roots remain marked. Native and serialized bytecode initialization keep new fields null until their owning producer publishes them.",
+    "Partial-construction accounting finding is corrected: Script block is always counted; input block/bytes are counted only after actual input allocation. The exact one-edit successor reverses to the reviewed original and matches the current complete C digest."
+  ],
+  "limits": [
+    "Parser token/offset propagation, compiler passes and serialization algorithms are SDK's separate scope.",
+    "No Message, reporter, failed-parse exception-origin, complete V8 allocation-layout or public Node bootstrap claim.",
+    "Controls, compilation, runtime and native process qualification remain separate; no commands executing target code were run."
+  ]
+}

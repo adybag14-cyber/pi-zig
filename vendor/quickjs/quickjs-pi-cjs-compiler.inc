@@ -97,6 +97,10 @@ static JSValue js_pi_compile_cjs_function(JSContext *ctx, JSValueConst source,
     parent = js_new_function_def(ctx, NULL, true, false, filename, 1, 1);
     if (!parent || JS_HasException(ctx))
         goto fail;
+    parent->pi_script = js_pi_new_script(ctx, body, body_length, filename, 1,
+                                         JS_PI_SCRIPT_ORIGIN_HOST, false);
+    if (!parent->pi_script)
+        goto fail;
     parent->eval_type = JS_EVAL_TYPE_GLOBAL;
     parent->is_global_var = true;
     parent->has_this_binding = true;

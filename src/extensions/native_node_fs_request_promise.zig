@@ -81,9 +81,9 @@ pub const Request = struct {
     }
     fn retire(wrap: *native.State, s: *Scope) !void {
         const self = fromWrap(wrap);
-        const environment = wrap.registry.environment;
+        const request_environment = wrap.registry.environment;
         // A failed C++ construction does not invoke the derived destructor.
-        if (self.constructed and !self.finished and environment.canCallIntoJs())
+        if (self.constructed and !self.finished and request_environment.canCallIntoJs())
             return wrap.registry.check(.unfinished_live_fs_request);
         // Actual derived member destruction is reverse declaration order.
         self.statfs_field_array.release(s);

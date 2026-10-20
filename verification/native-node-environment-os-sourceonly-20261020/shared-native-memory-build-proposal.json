@@ -1,0 +1,102 @@
+{
+  "status": "source proposal only; existing build helpers and Main are not modified",
+  "purpose": "Compile unchanged native_simdjson_memory.cpp exactly once and link that one native allocation/TLS owner transitively from both parser and Environment Map consumers",
+  "files": [
+    {
+      "path": "build.zig",
+      "before_sha256": "30348C988F824617E52EE47ECF64099D537582F8255E1B47C994820AA7814A62",
+      "before_bytes": 486960,
+      "after_sha256": "EBBD29CA7C933E9C06E51F1761D55AE2FB28B71F40FDBE512CA82F5C2411AA6C",
+      "after_bytes": 487182,
+      "edits": [
+        {
+          "before": "    // One unchanged libuv/llhttp graph is shared by native TCP and file I/O owners.\n    const native_node_network = switch (target.result.os.tag) {\n        .windows, .linux => @import(\"tools/build_native_node_network.zig\").add(b, target, optimize),\n        else => null,\n    };\n    // The real filesystem is reachable from every VM; share one static owner.\n    if (native_node_network) |network| quickjs.root_module.linkLibrary(network);\n    const native_package_json = @import(\"tools/build_native_package_json.zig\").add(b, target, optimize);\n",
+          "after": "    // One allocator/TLS domain is shared by native C++ parser and containers.\n    const native_node_memory = @import(\"tools/build_native_node_memory.zig\").add(b, target, optimize);\n    // One unchanged libuv/llhttp graph is shared by native TCP and file I/O owners.\n    const native_node_network = switch (target.result.os.tag) {\n        .windows, .linux => @import(\"tools/build_native_node_network.zig\").add(b, target, optimize, native_node_memory),\n        else => null,\n    };\n    // The real filesystem is reachable from every VM; share one static owner.\n    if (native_node_network) |network| quickjs.root_module.linkLibrary(network);\n    const native_package_json = @import(\"tools/build_native_package_json.zig\").add(b, target, optimize, native_node_memory);\n"
+        }
+      ],
+      "inverse_exact": true
+    },
+    {
+      "path": "tools/build_native_node_network.zig",
+      "before_sha256": "CAECF005866364925F79959C8BAC3534DA051894FB841A1C2CC594C9C15BA499",
+      "before_bytes": 4642,
+      "after_sha256": "FBDF5BCCA7F09238B9A2FE3C599092AE74AC76E44EA6E2256109EA407F743412",
+      "after_bytes": 5023,
+      "edits": [
+        {
+          "before": "pub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode) *std.Build.Step.Compile {",
+          "after": "pub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode,\n    native_memory: ?*std.Build.Step.Compile) *std.Build.Step.Compile {"
+        },
+        {
+          "before": ".root_module = b.createModule(.{ .target = target, .optimize = optimize, .link_libc = true }),",
+          "after": ".root_module = b.createModule(.{ .target = target, .optimize = optimize, .link_libc = true, .link_libcpp = native_memory != null }),"
+        },
+        {
+          "before": "    return library;\n}",
+          "after": "    if (native_memory) |memory| {\n        module.linkLibrary(memory);\n        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n    }\n    return library;\n}"
+        }
+      ],
+      "inverse_exact": true
+    },
+    {
+      "path": "tools/build_native_package_json.zig",
+      "before_sha256": "52BC1D9F41324EA6EDFA1A594D36F5344163E21C0146F4CFC3F9932432464031",
+      "before_bytes": 1510,
+      "after_sha256": "517AC416D7CE82BC2AED11B34038187EE456B3C599B6DFBE058D303873A2EC73",
+      "after_bytes": 1596,
+      "edits": [
+        {
+          "before": "pub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode) ?*std.Build.Step.Compile {",
+          "after": "pub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode,\n    native_memory: ?*std.Build.Step.Compile) ?*std.Build.Step.Compile {"
+        },
+        {
+          "before": "    const library = b.addLibrary(.{",
+          "after": "    const memory = native_memory orelse return null;\n    const library = b.addLibrary(.{"
+        },
+        {
+          "before": "    library.root_module.addIncludePath(b.path(\"src/extensions\"));",
+          "after": "    library.root_module.linkLibrary(memory);\n    library.root_module.addIncludePath(b.path(\"src/extensions\"));"
+        },
+        {
+          "before": "            \"src/extensions/native_simdjson_memory.cpp\",\n",
+          "after": ""
+        }
+      ],
+      "inverse_exact": true
+    }
+  ],
+  "new_file": {
+    "path": "tools/build_native_node_memory.zig",
+    "sha256": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17",
+    "bytes": 1030,
+    "content": "//! One native C++ per-allocation owner and one TLS domain for all consumers.\n//! Build/install wiring never executes a source generator or target.\nconst std = @import(\"std\");\npub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode) ?*std.Build.Step.Compile {\n    if (target.result.ptrBitWidth() != 64) return null;\n    switch (target.result.os.tag) {\n        .windows, .linux => {},\n        else => return null,\n    }\n    const library = b.addLibrary(.{\n        .name = \"pi-node-native-memory\",\n        .linkage = .static,\n        .root_module = b.createModule(.{\n            .target = target, .optimize = optimize,\n            .link_libc = true, .link_libcpp = true,\n        }),\n    });\n    library.root_module.addIncludePath(b.path(\"src/extensions\"));\n    library.root_module.addCSourceFile(.{\n        .file = b.path(\"src/extensions/native_simdjson_memory.cpp\"),\n        .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n    });\n    return library;\n}\n"
+  },
+  "caller_inventory": {
+    "ok": true,
+    "summary": "Searched C:/Users/adyba/pi-zig/main for \"build_native_node_network\\.zig|build_native_package_json\\.zig|native_simdjson_memory\\.cpp\" inside the Windows host devbox.",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 2,
+        "slot": 1
+      },
+      "output": {
+        "mode": "tail",
+        "max_chars": 65536,
+        "max_lines": 0,
+        "stdout_original_chars": 411,
+        "stderr_original_chars": 70
+      }
+    },
+    "stdout": "C:/Users/adyba/pi-zig/main\\build.zig:103:        .windows, .linux => @import(\"tools/build_native_node_network.zig\").add(b, target, optimize),\nC:/Users/adyba/pi-zig/main\\build.zig:108:    const native_package_json = @import(\"tools/build_native_package_json.zig\").add(b, target, optimize);\nC:/Users/adyba/pi-zig/main\\tools\\build_native_package_json.zig:26:            \"src/extensions/native_simdjson_memory.cpp\",\n",
+    "stderr": "search backend ripgrep; excluded 7 directory names; candidate files 2\n",
+    "exitCode": 0,
+    "truncated": false
+  },
+  "properties": [
+    "The memory library is created once in the existing Main build graph and the same Compile pointer is passed to both helpers.",
+    "The parser removes exactly its old native_simdjson_memory.cpp membership and links the supplied shared library; actual parser/vendor sources and flags remain unchanged.",
+    "The network helper retains every original C source, flag and platform library. Only admitted 64-bit Windows/Linux receive the C++ Map and shared memory library; preexisting 32-bit network membership is unchanged.",
+    "No second libuv graph, second parser, new TLS instance, run action, compiler execution or source-generation step.",
+    "Root-only Main intake. This proposal does not claim compiled or runtime acceptance."
+  ]
+}

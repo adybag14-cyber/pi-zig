@@ -1,0 +1,763 @@
+// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
+//! Selected Node24.13 Environment/AsyncHooks state and InternalCallbackScope.
+//! The private bootstrap supplies actual hook functions and native operations.
+//! This file does not install a partial node:async_hooks or invent task queues.
+const std = @import("std");
+const em = @import("engine.zig");
+const a = @import("native_node_argument_values.zig");
+const LocalScope = a.Scope;
+const Completion = @import("native_sdk_owned_completion.zig").Completion;
+const ChargedAllocator = @import("native_env_charged_allocator.zig").ChargedAllocator;
+const RequestState = @import("native_node_request_state.zig");
+const c = em.c;
+
+pub const Field = enum(u32) {
+    init, before, after, destroy, promise_resolve, totals, check,
+    stack_length, uses_execution_async_resource,
+};
+pub const Uid = enum(u32) { execution, trigger, counter, default_trigger };
+pub const Tick = enum(u32) { has_tick_scheduled, has_rejection_to_warn };
+pub const StreamBaseField = enum(u32) {
+    read_bytes_or_error, array_buffer_offset, bytes_written, last_write_was_async,
+};
+pub const AsyncContext = struct { async_id: f64, trigger_async_id: f64 };
+pub const Flags = struct { skip_async_hooks: bool = false, skip_task_queues: bool = false };
+pub const Check = enum {
+    invalid_resource, invalid_async_id,
+    async_stack_binding_set, missing_hook_function, missing_tick_callback,
+    outer_execution_id, outer_trigger_id, callback_scope_order,
+    invalid_provider, invalid_wrap_brand, unfinished_live_fs_request,
+    promise_property_settle,
+    request_before_bootstrap, negative_waiting_requests,
+    waiting_requests_after_io_join, request_queue_during_disarm,
+    callback_argument_count, callback_argument_buffer,
+    binding_data_property_set, binding_data_slot_occupied,
+    fs_read_argument_count, fs_read_fd, fs_read_buffer,
+    fs_read_offset_integer, fs_read_offset_nonnegative, fs_read_offset_bounds,
+    fs_read_length, fs_read_range, fs_read_position, fs_read_request,
+};
+
+/// Required real embedding operations. In particular on_hook_exception is the
+/// native TryCatchScope kFatalRethrowStackOverflow owner, not process.emit() and
+/// not a rule classifying a returned Error as a native fatal event. Scheduling
+/// consumes one actual native callback carrying this retained Environment.
+pub const Operations = struct {
+    on_hook_exception: *const fn (*Environment) anyerror!void,
+    native_check_failure: *const fn (*Environment, Check) anyerror,
+    /// Original corrupted-stack diagnostics carry the live and expected IDs;
+    /// the abort-on-uncaught option selects native exit1 or abort134.
+    fail_corrupted_async_stack: *const fn (*Environment, f64) anyerror,
+    perform_checkpoint: *const fn (*Environment) anyerror!void,
+    schedule_destroy_immediate: *const fn (*Environment) anyerror!void,
+    request_destroy_interrupt: *const fn (*Environment) anyerror!void,
+};
+
+/// The caller's node bootstrap selects the real compile-feature provider table
+/// and shared resource_symbol. No private native pointer is a guest property.
+pub const Input = struct {
+    provider_names: []const []const u8,
+    resource_symbol: c.JSValue,
+    process_object: c.JSValue,
+    async_context_frame: bool,
+    operations: Operations,
+};
+pub const HookFunctions = struct {
+    init: c.JSValue,
+    before: c.JSValue,
+    after: c.JSValue,
+    destroy: c.JSValue,
+    promise_resolve: c.JSValue,
+};
+
+/// Native storage is the actual intrinsic ArrayBuffer's allocation. Retained
+/// old views remain snapshots after reserve; Source does not detach them.
+pub fn Alias(comptime T: type, comptime kind: c.JSTypedArrayEnum) type {
+    return struct {
+        data: []T = &.{},
+        view: ?c.JSValue = null,
+        const Self = @This();
+        pub fn create(s: *LocalScope, count: usize) !Self {
+            const bytes = std.math.mul(usize, count, @sizeOf(T)) catch return error.OutOfMemory;
+            const allocation = try s.beforeAllocation();
+            const buffer = try s.checkedAllocation(c.JS_NewArrayBufferCopy(s.engine.context, null, bytes), allocation);
+            var actual_bytes: usize = 0;
+            try s.pending();
+            const raw = c.JS_GetArrayBuffer(s.engine.context, &actual_bytes, buffer);
+            try s.pending();
+            if (raw == null or actual_bytes != bytes) return error.ActualNodeAliasedBufferRequired;
+            var args = [_]c.JSValue{buffer};
+            const view_allocation = try s.beforeAllocation();
+            const view = try s.checkedAllocation(c.JS_NewTypedArray(s.engine.context, 1, &args, kind), view_allocation);
+            return .{ .data = @as([*]T, @ptrCast(@alignCast(raw)))[0..count], .view = a.duplicate(s.engine, view) };
+        }
+        pub fn release(self: *Self, s: *LocalScope) void {
+            // Clear the native pointer before the last JS owner can retire.
+            self.data = &.{};
+            if (self.view) |value| {
+                self.view = null;
+                var retiring = value;
+                s.boundary.release(&retiring);
+            }
+        }
+    };
+}
+const Fields = Alias(u32, c.JS_TYPED_ARRAY_UINT32);
+const Uids = Alias(f64, c.JS_TYPED_ARRAY_FLOAT64);
+const Ticks = Alias(u8, c.JS_TYPED_ARRAY_UINT8);
+const IdStack = Alias(f64, c.JS_TYPED_ARRAY_FLOAT64);
+const StreamBaseState = Alias(i32, c.JS_TYPED_ARRAY_INT32);
+
+/// Caller-owned, intrusive realm cleanup slot. The owning native wrap list
+/// unregisters it before retiring the slot. Cleanup runs after actual I/O join,
+/// with canCallIntoJs false, while the Environment and VM still exist.
+pub const RealmCleanup = struct {
+    previous: ?*RealmCleanup = null,
+    next: ?*RealmCleanup = null,
+    environment: ?*Environment = null,
+    raw: ?*anyopaque,
+    run: *const fn (*Environment, ?*anyopaque) anyerror!void,
+};
+
+pub const Environment = struct {
+    memory_owner: *anyopaque,
+    references: std.atomic.Value(usize) = .init(1),
+    charged: ChargedAllocator,
+    owner_thread: std.Thread.Id,
+    engine: ?*em.Engine,
+    operations: Operations,
+    requests: RequestState.Registry = .{},
+    has_run_bootstrapping_code: bool = false,
+    fields: Fields = .{},
+    uid: Uids = .{},
+    ticks: Ticks = .{},
+    ids: IdStack = .{},
+    stream_base_state: StreamBaseState = .{},
+    native_resources: std.ArrayList(?*const c.JSValue) = .empty,
+    js_resources: ?c.JSValue = null,
+    async_hooks_binding: ?c.JSValue = null,
+    provider_strings: []c.JSValue = &.{},
+    resource_symbol: ?c.JSValue = null,
+    process_object: ?c.JSValue = null,
+    hooks: ?HookFunctions = null,
+    tick_callback: ?c.JSValue = null,
+    trampoline: ?c.JSValue = null,
+    destroy_ids: std.ArrayList(f64) = .empty,
+    cleanup_head: ?*RealmCleanup = null,
+    callback_scope: ?*Scope = null,
+    callback_depth: usize = 0,
+    can_call_into_js: bool = true,
+    stopping: bool = false,
+    idle: bool = true,
+    async_context_frame: bool,
+    realm_cleanup_started: bool = false,
+    disarmed: bool = false,
+
+    pub fn create(engine: *em.Engine, input: Input) !*Environment {
+        var s = LocalScope.init(engine);
+        var result: ?*Environment = null;
+        const outcome: anyerror!c.JSValue = createBody(&s, input, &result);
+        const ignored = try s.finish(outcome);
+        engine.freeValue(ignored);
+        return result orelse return error.ActualNodeEnvironmentConstructionRequired;
+    }
+    fn createBody(s: *LocalScope, input: Input, output: *?*Environment) !c.JSValue {
+        try s.pending();
+        if (!c.JS_IsSymbol(input.resource_symbol) or !c.JS_IsObject(input.process_object))
+            return error.ActualNodeEnvironmentBootstrapInputsRequired;
+        const memory_owner = s.engine.native_memory_owner;
+        c.pi_js_retain_memory_owner(memory_owner);
+        errdefer c.pi_js_release_memory_owner(memory_owner);
+        if (c.pi_js_native_memory_reserve(memory_owner, @sizeOf(Environment)) == 0) return error.OutOfMemory;
+        errdefer c.pi_js_native_memory_release(memory_owner, @sizeOf(Environment));
+        const self = try std.heap.c_allocator.create(Environment);
+        self.* = .{
+            .memory_owner = memory_owner,
+            .charged = ChargedAllocator.init(s.engine),
+            .owner_thread = std.Thread.getCurrentId(),
+            .engine = s.engine,
+            .operations = input.operations,
+            .async_context_frame = input.async_context_frame,
+        };
+        errdefer {
+            self.retireRoots(s);
+            self.retireNative();
+            self.charged.deinit();
+            std.heap.c_allocator.destroy(self);
+        }
+        // Exact no-snapshot constructor ordering: 16 pairs, zero fields/UIDs,
+        // clear, check=1, default=-1 and counter=1. All views share these bytes.
+        self.ids = try IdStack.create(s, 16 * 2);
+        self.fields = try Fields.create(s, 9);
+        self.uid = try Uids.create(s, 4);
+        self.ticks = try Ticks.create(s, 2);
+        self.field(.check).* = 1;
+        self.uidField(.default_trigger).* = -1;
+        self.uidField(.counter).* = 1;
+        self.stream_base_state = try StreamBaseState.create(s, 4);
+        self.resource_symbol = a.duplicate(s.engine, input.resource_symbol);
+        self.process_object = a.duplicate(s.engine, input.process_object);
+        self.provider_strings = try self.allocator().alloc(c.JSValue, input.provider_names.len);
+        @memset(self.provider_strings, c.pi_js_undefined());
+        for (input.provider_names, self.provider_strings) |name, *value|
+            value.* = a.duplicate(s.engine, try s.text(name));
+        output.* = self;
+        return c.pi_js_undefined();
+    }
+    pub fn allocator(self: *Environment) std.mem.Allocator { return self.charged.allocator(); }
+    pub fn retain(self: *Environment) *Environment {
+        const count = self.references.fetchAdd(1, .monotonic);
+        std.debug.assert(count != 0);
+        return self;
+    }
+    pub fn release(self: *Environment) void {
+        const count = self.references.fetchSub(1, .acq_rel);
+        std.debug.assert(count != 0);
+        if (count != 1) return;
+        std.debug.assert(self.disarmed and self.engine == null and self.callback_depth == 0 and self.cleanup_head == null);
+        const owner = self.memory_owner;
+        self.charged.deinit();
+        std.heap.c_allocator.destroy(self);
+        c.pi_js_native_memory_release(owner, @sizeOf(Environment));
+        c.pi_js_release_memory_owner(owner);
+    }
+    pub fn requireEngine(self: *Environment) !*em.Engine {
+        self.assertOwner();
+        return self.engine orelse return error.NativeNodeEnvironmentClosed;
+    }
+    fn assertOwner(self: *const Environment) void {
+        std.debug.assert(self.owner_thread == std.Thread.getCurrentId());
+    }
+    /// Called by the genuine bootstrap only after its final completion.
+    pub fn markBootstrapComplete(self: *Environment) void {
+        self.assertOwner();
+        self.has_run_bootstrapping_code = true;
+    }
+    pub fn field(self: *Environment, index: Field) *u32 { return &self.fields.data[@intFromEnum(index)]; }
+    pub fn uidField(self: *Environment, index: Uid) *f64 { return &self.uid.data[@intFromEnum(index)]; }
+    pub fn tickField(self: *Environment, index: Tick) *u8 { return &self.ticks.data[@intFromEnum(index)]; }
+    pub fn streamBaseField(self: *Environment, index: StreamBaseField) *i32 {
+        return &self.stream_base_state.data[@intFromEnum(index)];
+    }
+    pub fn newAsyncId(self: *Environment) f64 {
+        self.assertOwner();
+        self.uidField(.counter).* += 1;
+        return self.uidField(.counter).*;
+    }
+    pub fn getDefaultTriggerAsyncId(self: *Environment) f64 {
+        const id = self.uidField(.default_trigger).*;
+        return if (id < 0) self.uidField(.execution).* else id;
+    }
+    pub fn executionAsyncId(self: *Environment) f64 { return self.uidField(.execution).*; }
+    pub fn triggerAsyncId(self: *Environment) f64 { return self.uidField(.trigger).*; }
+    pub fn canCallIntoJs(self: *const Environment) bool {
+        return self.engine != null and self.can_call_into_js and !self.stopping;
+    }
+    pub fn hasTickScheduled(self: *Environment) bool { return self.tickField(.has_tick_scheduled).* == 1; }
+    pub fn hasRejectionToWarn(self: *Environment) bool { return self.tickField(.has_rejection_to_warn).* == 1; }
+    /// Owned VM root, separate from native_async_scope capability propagation.
+    pub fn currentContextFrame(self: *Environment) !c.JSValue {
+        const engine = try self.requireEngine();
+        return c.JS_PiGetContinuationPreservedEmbedderData(engine.runtime);
+    }
+    pub fn setContextFrame(self: *Environment, frame: c.JSValue) !void {
+        const engine = try self.requireEngine();
+        if (self.async_context_frame) c.JS_PiSetContinuationPreservedEmbedderData(engine.runtime, frame);
+    }
+    pub fn exchangeContextFrame(self: *Environment, frame: c.JSValue) !c.JSValue {
+        const previous = try self.currentContextFrame();
+        try self.setContextFrame(frame);
+        return previous;
+    }
+    /// Borrowed cached provider string and the actual shared resource symbol.
+    pub fn providerString(self: *Environment, provider: u32) !c.JSValue {
+        _ = try self.requireEngine();
+        if (provider >= self.provider_strings.len) return error.ActualNodeProviderTableEntryRequired;
+        return self.provider_strings[provider];
+    }
+    pub fn resourceSymbol(self: *Environment) !c.JSValue {
+        _ = try self.requireEngine();
+        return self.resource_symbol orelse return error.ActualNodeResourceSymbolRequired;
+    }
+    pub fn registerRealmCleanup(self: *Environment, slot: *RealmCleanup) !void {
+        _ = try self.requireEngine();
+        if (self.realm_cleanup_started) return error.NativeNodeRealmCleanupAlreadyStarted;
+        if (slot.environment != null or slot.previous != null or slot.next != null)
+            return error.NativeNodeRealmCleanupAlreadyRegistered;
+        slot.environment = self.retain();
+        slot.next = self.cleanup_head;
+        if (self.cleanup_head) |first| first.previous = slot;
+        self.cleanup_head = slot;
+    }
+    pub fn unregisterRealmCleanup(self: *Environment, slot: *RealmCleanup) void {
+        self.assertOwner();
+        std.debug.assert(slot.environment == self);
+        if (slot.previous) |previous| previous.next = slot.next else self.cleanup_head = slot.next;
+        if (slot.next) |next| next.previous = slot.previous;
+        slot.environment = null;
+        slot.previous = null;
+        slot.next = null;
+        self.release();
+    }
+    /// The lifecycle caller has already joined all physical I/O owners.
+    /// The slot is unlinked before invoking it, so its owner may retire itself.
+    pub fn cleanupRealmAfterIoJoin(self: *Environment) !void {
+        const engine = try self.requireEngine();
+        if (self.realm_cleanup_started) return;
+        self.realm_cleanup_started = true;
+        self.can_call_into_js = false;
+        try self.requests.requireNoWaiting(self);
+        _ = self.retain();
+        defer self.release();
+        var result: ?anyerror = null;
+        var s = LocalScope.init(engine);
+        while (self.cleanup_head) |slot| {
+            const run = slot.run;
+            const raw = slot.raw;
+            self.unregisterRealmCleanup(slot);
+            run(self, raw) catch |err| {
+                s.boundary.escaping();
+                if (result == null) result = err;
+            };
+        }
+        self.requests.requireEmpty(self) catch |err| {
+            s.boundary.escaping();
+            if (result == null) result = err;
+        };
+        const ignored = try s.finish(if (result) |err| @as(anyerror!c.JSValue, err) else c.pi_js_undefined());
+        engine.freeValue(ignored);
+    }
+    pub fn installHooks(self: *Environment, values: HookFunctions, binding: c.JSValue) !void {
+        const engine = try self.requireEngine();
+        var s = LocalScope.init(engine);
+        const result: anyerror!c.JSValue = installHooksBody(&s, self, values, binding);
+        const ignored = try s.finish(result);
+        engine.freeValue(ignored);
+    }
+    fn installHooksBody(s: *LocalScope, self: *Environment, values: HookFunctions, binding: c.JSValue) !c.JSValue {
+        try s.pending();
+        if (self.hooks != null or self.async_hooks_binding != null) return error.ActualNodeAsyncHooksAlreadyInstalled;
+        if (!c.JS_IsObject(binding)) return error.ActualNodeAsyncHooksBindingRequired;
+        inline for (std.meta.fields(HookFunctions)) |entry|
+            if (!c.JS_IsFunction(s.engine.context, @field(values, entry.name)))
+                return self.operations.native_check_failure(self, .missing_hook_function);
+        var roots = values;
+        inline for (std.meta.fields(HookFunctions)) |entry|
+            @field(roots, entry.name) = a.duplicate(s.engine, @field(values, entry.name));
+        self.hooks = roots;
+        self.async_hooks_binding = a.duplicate(s.engine, binding);
+        return c.pi_js_undefined();
+    }
+    pub fn setTickCallback(self: *Environment, callback: c.JSValue) !void {
+        const engine = try self.requireEngine();
+        var s = LocalScope.init(engine);
+        const outcome: anyerror!c.JSValue = setTickCallbackBody(&s, self, callback);
+        const ignored = try s.finish(outcome);
+        engine.freeValue(ignored);
+    }
+    fn setTickCallbackBody(s: *LocalScope, self: *Environment, callback: c.JSValue) !c.JSValue {
+        try s.pending();
+        if (!c.JS_IsFunction(s.engine.context, callback))
+            return self.operations.native_check_failure(self, .missing_tick_callback);
+        const next = a.duplicate(s.engine, callback);
+        if (self.tick_callback) |value| {
+            var old = value;
+            self.tick_callback = null;
+            s.boundary.release(&old);
+        }
+        self.tick_callback = next;
+        return c.pi_js_undefined();
+    }
+    /// Original AsyncWrap::SetCallbackTrampoline: any non-function clears it.
+    pub fn setCallbackTrampoline(self: *Environment, value: c.JSValue) !void {
+        const engine = try self.requireEngine();
+        var s = LocalScope.init(engine);
+        const ignored = try s.finish(setCallbackTrampolineBody(&s, self, value));
+        engine.freeValue(ignored);
+    }
+    fn setCallbackTrampolineBody(s: *LocalScope, self: *Environment, value: c.JSValue) !c.JSValue {
+        try s.pending();
+        const next: ?c.JSValue = if (c.JS_IsFunction(s.engine.context, value))
+            a.duplicate(s.engine, value) else null;
+        const previous = self.trampoline;
+        self.trampoline = next;
+        if (previous) |old_value| {
+            var old = old_value;
+            s.boundary.release(&old);
+        }
+        return c.pi_js_undefined();
+    }
+    fn jsResources(self: *Environment, s: *LocalScope) !c.JSValue {
+        if (self.js_resources) |value| return value;
+        const value = try a.array(s);
+        self.js_resources = a.duplicate(s.engine, value);
+        return value;
+    }
+    fn setResourcesLength(self: *Environment, s: *LocalScope, array: c.JSValue, length: u32) !void {
+        _ = self;
+        try s.pending();
+        const key = try s.text("length");
+        const status = c.JS_SetPropertyValue(s.engine.context, array,
+            a.duplicate(s.engine, key), c.JS_NewUint32(s.engine.context, length), 0);
+        try s.pending();
+        if (status < 0) return error.ActualNodeAsyncResourceLengthSetFailed;
+        // Source USE ignores false; it does not convert a read-only Set to throw.
+    }
+    pub fn pushAsyncContext(self: *Environment, id: AsyncContext, resource: ?*const c.JSValue) !void {
+        const engine = try self.requireEngine();
+        var s = LocalScope.init(engine);
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+        engine.freeValue(ignored);
+    }
+    fn pushBody(s: *LocalScope, self: *Environment, id: AsyncContext, resource: ?*const c.JSValue) !c.JSValue {
+        if (resource) |value| if (!c.JS_IsObject(value.*))
+            return self.operations.native_check_failure(self, .invalid_resource);
+        if (self.field(.check).* > 0 and (!(id.async_id >= -1) or !(id.trigger_async_id >= -1)))
+            return self.operations.native_check_failure(self, .invalid_async_id);
+        const offset: usize = self.field(.stack_length).*;
+        if (offset * 2 >= self.ids.data.len) try self.growStack(s);
+        self.ids.data[2 * offset] = self.executionAsyncId();
+        self.ids.data[2 * offset + 1] = self.triggerAsyncId();
+        self.field(.stack_length).* += 1;
+        self.uidField(.execution).* = id.async_id;
+        self.uidField(.trigger).* = id.trigger_async_id;
+        if (resource) |value| {
+            // Original native IDs are committed before vector::resize.
+            if (self.native_resources.items.len <= offset)
+                try self.native_resources.ensureTotalCapacity(self.allocator(), offset + 1);
+            const previous_length = self.native_resources.items.len;
+            self.native_resources.items.len = offset + 1;
+            if (previous_length <= offset) @memset(self.native_resources.items[previous_length..], null);
+            self.native_resources.items[offset] = value;
+        }
+        return c.pi_js_undefined();
+    }
+    fn growStack(self: *Environment, s: *LocalScope) !void {
+        const count = std.math.mul(usize, self.ids.data.len, 3) catch return error.OutOfMemory;
+        var replacement = try IdStack.create(s, count);
+        errdefer replacement.release(s);
+        @memcpy(replacement.data[0..self.ids.data.len], self.ids.data);
+        var previous = self.ids;
+        self.ids = replacement;
+        replacement = .{};
+        previous.release(s);
+        const binding = self.async_hooks_binding orelse return error.ActualNodeAsyncHooksBindingRequired;
+        const key = try s.text("async_ids_stack");
+        try s.pending();
+        const status = c.JS_SetPropertyValue(s.engine.context, binding,
+            a.duplicate(s.engine, key), a.duplicate(s.engine, self.ids.view.?), 0);
+        // FromJustIsNothing is a native fatal callback, even when the Set
+        // left an ordinary guest exception pending. It is not a guest throw.
+        if (status < 0) return self.operations.native_check_failure(self, .async_stack_binding_set);
+        try s.pending();
+        // Maybe<bool>.Check() requires a value, not true: false is not a CHECK.
+    }
+    pub fn popAsyncContext(self: *Environment, expected_id: f64) !bool {
+        const engine = try self.requireEngine();
+        var s = LocalScope.init(engine);
+        const result = try s.finish(popBody(&s, self, expected_id));
+        return c.JS_ToBool(engine.context, result) == 1;
+    }
+    fn popBody(s: *LocalScope, self: *Environment, expected_id: f64) !c.JSValue {
+        if (self.field(.stack_length).* == 0) return c.pi_js_bool(s.engine.context, 0);
+        if (self.field(.check).* > 0 and self.executionAsyncId() != expected_id)
+            return self.operations.fail_corrupted_async_stack(self, expected_id);
+        const offset: usize = self.field(.stack_length).* - 1;
+        self.uidField(.execution).* = self.ids.data[2 * offset];
+        self.uidField(.trigger).* = self.ids.data[2 * offset + 1];
+        self.field(.stack_length).* = @intCast(offset);
+        if (offset < self.native_resources.items.len and self.native_resources.items[offset] != null) {
+            self.native_resources.shrinkAndFree(self.allocator(), offset);
+        }
+        // Exact Source lazy materialization occurs even on the first pop.
+        const resources = try self.jsResources(s);
+        const length = try s.get(resources, "length");
+        var count: u32 = 0;
+        if (c.JS_ToUint32(s.engine.context, &count, length) < 0) return error.JavaScriptException;
+        try s.pending();
+        if (count > offset) try self.setResourcesLength(s, resources, @intCast(offset));
+        return c.pi_js_bool(s.engine.context, @intFromBool(self.field(.stack_length).* > 0));
+    }
+    pub fn clearAsyncIdStack(self: *Environment) !void {
+        const engine = try self.requireEngine();
+        var s = LocalScope.init(engine);
+        const ignored = try s.finish(clearBody(&s, self));
+        engine.freeValue(ignored);
+    }
+    fn clearBody(s: *LocalScope, self: *Environment) !c.JSValue {
+        // Native clearing still runs if the optional actual JS length Set fails.
+        var failure: ?anyerror = null;
+        if (self.js_resources) |resources| if (self.canCallIntoJs())
+            self.setResourcesLength(s, resources, 0) catch |err| { failure = err; };
+        self.native_resources.clearAndFree(self.allocator());
+        self.uidField(.execution).* = 0;
+        self.uidField(.trigger).* = 0;
+        self.field(.stack_length).* = 0;
+        if (failure) |err| return err;
+        return c.pi_js_undefined();
+    }
+    pub fn emitInit(self: *Environment, async_id: f64, type_string: c.JSValue, trigger_id: f64, resource: c.JSValue) !void {
+        const engine = try self.requireEngine();
+        var s = LocalScope.init(engine);
+        const ignored = try s.finish(emitInitBody(&s, self, async_id, type_string, trigger_id, resource));
+        engine.freeValue(ignored);
+    }
+    fn emitInitBody(s: *LocalScope, self: *Environment, id: f64, type_string: c.JSValue, trigger: f64, resource: c.JSValue) !c.JSValue {
+        if (!c.JS_IsObject(resource) or !c.JS_IsString(type_string))
+            return self.operations.native_check_failure(self, .invalid_resource);
+        // Original EmitAsyncInit only checks kInit here; it has no additional
+        // can_call_into_js test. Call-site construction order remains visible.
+        if (self.field(.init).* == 0) return c.pi_js_undefined();
+        const hooks = self.hooks orelse return self.operations.native_check_failure(self, .missing_hook_function);
+        return self.callHook(s, hooks.init, resource, &.{
+            c.JS_NewFloat64(s.engine.context, id), type_string,
+            c.JS_NewFloat64(s.engine.context, trigger), resource,
+        });
+    }
+    fn callHook(self: *Environment, s: *LocalScope, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
+        try s.pending();
+        const result = c.JS_Call(s.engine.context, function, receiver, @intCast(args.len), @constCast(args.ptr));
+        if (c.JS_IsException(result)) {
+            // The policy sees the actual current pending reason before a local
+            // diagnostic or escrow takes it. It must implement native Source
+            // TryCatchScope, including ordinary stack-overflow rethrow.
+            try self.operations.on_hook_exception(self);
+        }
+        _ = try s.checked(result);
+        return c.pi_js_undefined();
+    }
+    fn emit(self: *Environment, id: f64, comptime kind: Field) !void {
+        const engine = try self.requireEngine();
+        var s = LocalScope.init(engine);
+        const ignored = try s.finish(emitBody(&s, self, id, kind));
+        engine.freeValue(ignored);
+    }
+    fn emitBody(s: *LocalScope, self: *Environment, id: f64, comptime kind: Field) !c.JSValue {
+        if (self.field(kind).* == 0 or !self.canCallIntoJs()) return c.pi_js_undefined();
+        const hooks = self.hooks orelse return self.operations.native_check_failure(self, .missing_hook_function);
+        return self.callHook(s, @field(hooks, @tagName(kind)), c.pi_js_undefined(), &.{c.JS_NewFloat64(s.engine.context, id)});
+    }
+    pub fn emitBefore(self: *Environment, id: f64) !void { return self.emit(id, .before); }
+    pub fn emitAfter(self: *Environment, id: f64) !void { return self.emit(id, .after); }
+    pub fn emitPromiseResolve(self: *Environment, id: f64) !void { return self.emit(id, .promise_resolve); }
+
+    pub fn emitDestroy(self: *Environment, id: f64) !void {
+        _ = try self.requireEngine();
+        if (self.field(.destroy).* == 0 or !self.canCallIntoJs()) return;
+        // Source schedules before append, and tests the pre-append size.
+        if (self.destroy_ids.items.len == 0) try self.operations.schedule_destroy_immediate(self);
+        if (self.destroy_ids.items.len == 16384) try self.operations.request_destroy_interrupt(self);
+        try self.destroy_ids.append(self.allocator(), id);
+    }
+    /// Actual DestroyAsyncIdsCallback body. Each swapped batch is native data;
+    /// newly emitted IDs are processed by the following batch of this same call.
+    pub fn destroyAsyncIds(self: *Environment) !void {
+        const engine = try self.requireEngine();
+        var s = LocalScope.init(engine);
+        const ignored = try s.finish(destroyBody(&s, self));
+        engine.freeValue(ignored);
+    }
+    fn destroyBody(s: *LocalScope, self: *Environment) !c.JSValue {
+        const hooks = self.hooks orelse return self.operations.native_check_failure(self, .missing_hook_function);
+        const function = try s.own(a.duplicate(s.engine, hooks.destroy));
+        while (true) {
+            var ids = self.destroy_ids;
+            self.destroy_ids = .empty;
+            defer ids.deinit(self.allocator());
+            if (!self.canCallIntoJs()) return c.pi_js_undefined();
+            for (ids.items) |id| {
+                // One temporary JS result lifetime per original HandleScope.
+                var call = LocalScope.init(s.engine);
+                const result = self.callHook(&call, function, c.pi_js_undefined(), &.{c.JS_NewFloat64(s.engine.context, id)});
+                const ignored = try call.finish(result);
+                s.engine.freeValue(ignored);
+            }
+            if (self.destroy_ids.items.len == 0) break;
+        }
+        return c.pi_js_undefined();
+    }
+    fn retireRoots(self: *Environment, s: *LocalScope) void {
+        self.stream_base_state.release(s);
+        self.ids.release(s);
+        self.fields.release(s);
+        self.uid.release(s);
+        self.ticks.release(s);
+        inline for (.{ "js_resources", "async_hooks_binding", "resource_symbol", "process_object", "tick_callback", "trampoline" }) |name| {
+            if (@field(self, name)) |value| {
+                @field(self, name) = null;
+                var old = value;
+                s.boundary.release(&old);
+            }
+        }
+        if (self.hooks) |hooks| {
+            self.hooks = null;
+            inline for (std.meta.fields(HookFunctions)) |entry| {
+                var value = @field(hooks, entry.name);
+                s.boundary.release(&value);
+            }
+        }
+        for (self.provider_strings) |*value| s.boundary.release(value);
+    }
+    fn retireNative(self: *Environment) void {
+        self.native_resources.deinit(self.allocator());
+        self.native_resources = .empty;
+        self.destroy_ids.deinit(self.allocator());
+        self.destroy_ids = .empty;
+        self.allocator().free(self.provider_strings);
+        self.provider_strings = &.{};
+    }
+    /// Final lifecycle step after I/O join, realm cleanup and native queue drain.
+    /// The caller retains its entitlement until VM-root retirement has finished.
+    pub fn disarm(self: *Environment) !void {
+        const engine = try self.requireEngine();
+        if (self.disarmed) return;
+        if (self.callback_depth != 0 or self.callback_scope != null or self.cleanup_head != null)
+            return error.NativeNodeEnvironmentHasLiveOwners;
+        try self.requests.requireEmpty(self);
+        self.can_call_into_js = false;
+        var s = LocalScope.init(engine);
+        self.retireRoots(&s);
+        self.retireNative();
+        self.engine = null;
+        self.disarmed = true;
+        const ignored = try s.finish(c.pi_js_undefined());
+        engine.freeValue(ignored);
+    }
+};
+
+/// A stable-address Source callback scope. Initialize in the caller's storage,
+/// and deinit before retiring request/resource JS roots or its Environment.
+pub const Scope = struct {
+    environment: *Environment,
+    previous_scope: ?*Scope = null,
+    resource: c.JSValue,
+    prior_frame: c.JSValue,
+    async_context: AsyncContext,
+    flags: Flags,
+    failed: bool = false,
+    closed: bool = false,
+    pushed_ids: bool = false,
+    initialized: bool = false,
+    deinitialized: bool = false,
+
+    pub fn init(self: *Scope, environment: *Environment, resource: c.JSValue, id: AsyncContext, flags: Flags, frame: c.JSValue) !void {
+        const engine = try environment.requireEngine();
+        self.* = .{
+            .environment = environment.retain(),
+            .resource = a.duplicate(engine, resource),
+            .prior_frame = c.pi_js_undefined(),
+            .async_context = id,
+            .flags = flags,
+            .previous_scope = environment.callback_scope,
+            .initialized = true,
+        };
+        // PushAsyncCallbackScope precedes can_call_into_js and frame exchange.
+        environment.callback_depth += 1;
+        environment.callback_scope = self;
+        if (!environment.canCallIntoJs()) { self.failed = true; return; }
+        environment.idle = false;
+        self.prior_frame = try environment.exchangeContextFrame(frame);
+        try environment.pushAsyncContext(id, &self.resource);
+        self.pushed_ids = true;
+        if (id.async_id != 0 and !flags.skip_async_hooks) try environment.emitBefore(id.async_id);
+    }
+    pub fn markFailed(self: *Scope) void { self.failed = true; }
+    fn stoppingCheck(self: *Scope) !bool {
+        if (!self.environment.stopping) return false;
+        self.failed = true;
+        try self.environment.clearAsyncIdStack();
+        return true;
+    }
+    pub fn close(self: *Scope) !void {
+        std.debug.assert(self.initialized and !self.deinitialized);
+        if (self.closed) return;
+        self.closed = true;
+        const env = self.environment;
+        const engine = try env.requireEngine();
+        var s = LocalScope.init(engine);
+        const ignored = try s.finish(self.closeBody(&s));
+        engine.freeValue(ignored);
+    }
+    fn closeBody(self: *Scope, s: *LocalScope) !c.JSValue {
+        const env = self.environment;
+        // Stopping clears IDs and returns before frame restoration or idle reset.
+        if (try self.stoppingCheck()) return c.pi_js_undefined();
+        defer env.idle = true;
+        var error_from_hook: ?anyerror = null;
+        if (!self.failed and self.async_context.async_id != 0 and !self.flags.skip_async_hooks)
+            env.emitAfter(self.async_context.async_id) catch |err| {
+                s.boundary.escaping();
+                error_from_hook = err;
+            };
+        if (self.pushed_ids) {
+            _ = env.popAsyncContext(self.async_context.async_id) catch |err| failed_pop: {
+                s.boundary.escaping();
+                if (error_from_hook == null) error_from_hook = err;
+                break :failed_pop false;
+            };
+            const displaced = try env.exchangeContextFrame(self.prior_frame);
+            var old = displaced;
+            s.boundary.release(&old);
+        }
+        if (error_from_hook) |err| return err;
+        if (self.failed or env.callback_depth > 1 or self.flags.skip_task_queues or !env.canCallIntoJs())
+            return c.pi_js_undefined();
+        // Original outer-scope WeakRef cleanup also runs on checkpoint/tick
+        // failure and is independent from the private capability-scope policy.
+        defer c.JS_ClearKeptObjects(s.engine.runtime);
+        if (!env.hasTickScheduled()) {
+            try env.operations.perform_checkpoint(env);
+            _ = try self.stoppingCheck();
+        }
+        if (env.field(.totals).* > 0) {
+            if (env.executionAsyncId() != 0) return env.operations.native_check_failure(env, .outer_execution_id);
+            if (env.triggerAsyncId() != 0) return env.operations.native_check_failure(env, .outer_trigger_id);
+        }
+        if (!env.hasTickScheduled() and !env.hasRejectionToWarn()) return c.pi_js_undefined();
+        if (!env.canCallIntoJs()) return c.pi_js_undefined();
+        self.callTick() catch |err| {
+            self.failed = true;
+            s.boundary.escaping();
+            _ = self.stoppingCheck() catch false;
+            return err;
+        };
+        _ = try self.stoppingCheck();
+        return c.pi_js_undefined();
+    }
+    fn callTick(self: *Scope) !void {
+        const engine = try self.environment.requireEngine();
+        // Source's HandleScope is declared after weakref_cleanup. Its callback
+        // result retires first, including on failure, before ClearKeptObjects.
+        var handles = LocalScope.init(engine);
+        const ignored = try handles.finish(tickBody(&handles, self.environment));
+        engine.freeValue(ignored);
+    }
+    fn tickBody(s: *LocalScope, env: *Environment) !c.JSValue {
+        // Local process handle is selected before the persistent callback.
+        // Both survive a callback replacing the shared tick function in Call.
+        const process = try s.own(a.duplicate(s.engine,
+            env.process_object orelse return error.ActualNodeProcessObjectRequired));
+        const callback = try s.own(a.duplicate(s.engine,
+            env.tick_callback orelse return env.operations.native_check_failure(env, .missing_tick_callback)));
+        _ = try s.call(callback, process, &.{});
+        return c.pi_js_undefined();
+    }
+    /// Close before PopAsyncCallbackScope, then retire owned local handles.
+    /// Returns actual completion; callers must not silently swallow it.
+    pub fn deinit(self: *Scope) !void {
+        std.debug.assert(self.initialized and !self.deinitialized);
+        const env = self.environment;
+        const engine = try env.requireEngine();
+        if (env.callback_scope != self or env.callback_depth == 0)
+            return env.operations.native_check_failure(env, .callback_scope_order);
+        var completion = Completion.initVoid(engine, self.close());
+        env.callback_scope = self.previous_scope;
+        env.callback_depth -= 1;
+        self.deinitialized = true;
+        completion.release(self.prior_frame);
+        completion.release(self.resource);
+        self.prior_frame = c.pi_js_undefined();
+        self.resource = c.pi_js_undefined();
+        env.release();
+        try completion.finishVoid();
+    }
+};

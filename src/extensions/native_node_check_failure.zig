@@ -14,6 +14,7 @@ pub const AssertionInfo = extern struct {
     function: ?[*:0]const u8,
 };
 extern fn pi_node_heap_out_of_memory(?*c.JSContext, ?*const Diagnostics) void;
+extern fn pi_node_backing_store_out_of_memory(?*c.JSContext, ?*const Diagnostics) void;
 extern fn pi_node_maybe_check_failure(?*c.JSContext, ?*const Diagnostics) void;
 extern fn pi_node_default_fatal_error(?*c.JSContext, ?[*:0]const u8,
     [*:0]const u8, ?*const Diagnostics) void;
@@ -24,6 +25,12 @@ extern fn pi_node_corrupted_async_stack(?*c.JSContext, f64, f64, c_int) void;
 /// selected original native heap OOM handler, before operand rollback.
 pub fn heapOutOfMemory(engine: *em.Engine, diagnostics: ?*const Diagnostics) noreturn {
     pi_node_heap_out_of_memory(engine.context, diagnostics);
+    unreachable;
+}
+/// The caller completes the actual external backing-store allocation policy.
+/// An empty result selects the original process OOM handler with null details.
+pub fn backingStoreOutOfMemory(engine: *em.Engine, diagnostics: ?*const Diagnostics) noreturn {
+    pi_node_backing_store_out_of_memory(engine.context, diagnostics);
     unreachable;
 }
 pub fn maybeCheck(engine: *em.Engine, diagnostics: ?*const Diagnostics) noreturn {

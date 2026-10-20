@@ -1,0 +1,222 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "status": "All assigned finite production, actual control, and install-only build source peers closed. Not compiled or executed. Required Environment composition remains a separate pending Root intake.",
+  "scope": "Selected StreamResource read dispatch, StreamBase default read/allocation, internal onread edge, and actual AsyncWrap/InternalMakeCallback native ownership; eighteen controls.",
+  "files": [
+    {
+      "path": "src/extensions/native_node_async_wrap_make_callback.zig",
+      "sha256": "AE550CB8190EB284B576C3F9210EBAF4D9B5CB65589C35EAF38B7FF3274EA188",
+      "bytes": 3357
+    },
+    {
+      "path": "src/extensions/native_node_stream_base.zig",
+      "sha256": "0A3F4EB5133BC9543D5AD77DC33F4753ABEC866EB721BCE0A8F08C16BECD5ABF",
+      "bytes": 10864
+    },
+    {
+      "path": "src/extensions/native_node_stream_resource.zig",
+      "sha256": "6CA4CF5CD5E71EAD8C9E6F4FCF0D0075190C853E26978B497389F7D29EBE0AC6",
+      "bytes": 5762
+    },
+    {
+      "path": "src/native_node_stream_read_test.zig",
+      "sha256": "E82BD953C752DF948C679617F2CA8FA2B5A08C9A00B0F83A02F08A7C1D45FEB3",
+      "bytes": 33640
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/stream-read-README.md",
+      "sha256": "E18B925B5E98CEED9CC6A6479E2B6CC612139ED383A398A2C83F48EBD6451285",
+      "bytes": 4922
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/stream-read-composition-draft.json",
+      "sha256": "12F6E80DC97B806388E5EC9FDA404486BB3F216777BE4206D8862E9FDA666ECB",
+      "bytes": 18206
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/stream-read-controls-draft.json",
+      "sha256": "8F89BC0AB380ED9684EB613B766F0C6519046E8CAE0ED6940E77F912899A8D97",
+      "bytes": 3680
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/stream-read-build-intake.json",
+      "sha256": "4C98E0DE997CB2E1B1515F8222F436C5B334DC40AB949F28293F93570342CE09",
+      "bytes": 2516
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/stream-read-control-api-successor.json",
+      "sha256": "98A84687812021A622FFFEF9EB52AA31A60475B175D3836426745D666CE7C7D6",
+      "bytes": 972
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/original/stream-resource.before-read-vtable.zig.txt",
+      "sha256": "97D16E84BE24B636F1926ED50A800252D90F9D147169EB96FE85E94025754ABC",
+      "bytes": 4315
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/original/stream-read-controls.before-api-correction.zig.txt",
+      "sha256": "CB3263C5E13DA3872FE7BE5D057AF3A6A6FC5FB189479F90EB557BDD0E67B9AD",
+      "bytes": 33672
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/peers/stream-read-vm-production-peer.json",
+      "sha256": "B189EF6246A867CA6C657B718A7564BB7095EA2FBCE3D767F5993902A3D39377",
+      "bytes": 6114
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/peers/stream-read-vm-controls-peer.json",
+      "sha256": "07DBC3FAC41F99781B94F50F54E600700A2DC4A3A5DF9C29705962C81DCC2D99",
+      "bytes": 6150
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/peers/stream-read-modules-production-peer.json",
+      "sha256": "0061094EF4C006942198FB8FC0DFAF33FB841709CB36EE18C2A6FAB3C570247B",
+      "bytes": 5490
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/peers/stream-read-modules-controls-build-peer.json",
+      "sha256": "BB37DB501FD85A96DA54D048E055884D40C659D5625C1BC7CED5DB4FEE65B438",
+      "bytes": 5694
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/lazy-accessor-source-prerequisite.json",
+      "sha256": "7F1A1B79EA8D494D2C5F1FEBF11A274DAF337EA03A1F12B8E7009841FCFB8284",
+      "bytes": 23502
+    }
+  ],
+  "source_pathset": [
+    "src/extensions/native_node_async_wrap_make_callback.zig",
+    "src/extensions/native_node_stream_base.zig",
+    "src/extensions/native_node_stream_resource.zig",
+    "src/native_node_stream_read_test.zig",
+    "verification/native-node-stream-base-sourceonly-20261020/stream-read-README.md",
+    "verification/native-node-stream-base-sourceonly-20261020/stream-read-composition-draft.json",
+    "verification/native-node-stream-base-sourceonly-20261020/stream-read-controls-draft.json",
+    "verification/native-node-stream-base-sourceonly-20261020/stream-read-build-intake.json",
+    "verification/native-node-stream-base-sourceonly-20261020/stream-read-control-api-successor.json",
+    "verification/native-node-stream-base-sourceonly-20261020/original/stream-resource.before-read-vtable.zig.txt",
+    "verification/native-node-stream-base-sourceonly-20261020/original/stream-read-controls.before-api-correction.zig.txt",
+    "verification/native-node-stream-base-sourceonly-20261020/peers/stream-read-vm-production-peer.json",
+    "verification/native-node-stream-base-sourceonly-20261020/peers/stream-read-vm-controls-peer.json",
+    "verification/native-node-stream-base-sourceonly-20261020/peers/stream-read-modules-production-peer.json",
+    "verification/native-node-stream-base-sourceonly-20261020/peers/stream-read-modules-controls-build-peer.json",
+    "verification/native-node-stream-base-sourceonly-20261020/lazy-accessor-source-prerequisite.json",
+    "verification/native-node-stream-base-sourceonly-20261020/stream-read-intake.json"
+  ],
+  "controls": {
+    "root": "src/native_node_stream_read_test.zig",
+    "declarations": 18,
+    "filter": "Node StreamBase read",
+    "names": [
+      "Node StreamBase read initializes the real default listener and native wrapper pointer",
+      "Node StreamBase read selects internal onread beneath an ordinary own property and writes aliases first",
+      "Node StreamBase read allocates actual native backing without a JS wrapper under an exhausted JS heap",
+      "Node StreamBase read zero bytes consumes the managed token without a callback or trace",
+      "Node StreamBase read negative status publishes undefined and leaves the positive byte counter unchanged",
+      "Node StreamBase read full extent adopts the same native bytes and advances the counter before callback",
+      "Node StreamBase read short extent performs the real exact native reallocation and copies before adoption",
+      "Node StreamBase read later ArrayBuffer adoption bypasses the live global constructor",
+      "Node StreamBase read a returned flagged Error stays successful DATA",
+      "Node StreamBase read actual ordinary callback failure retains its exact reason through native cleanup",
+      "Node StreamBase read actual fatal callback reason remains owned while static after trace still runs",
+      "Node StreamBase read retains the selected callback across live replacement until caller scope retirement",
+      "Node StreamBase read ignored callback return retires only after the static after operation",
+      "Node StreamBase read can delete its actual native State before static after uses cached identifiers",
+      "Node StreamBase read enters the real captured frame and restores the enclosing native callback scope",
+      "Node StreamBase read disabled JS returns the actual empty callback while native buffer cleanup completes",
+      "Node StreamBase read uses the live listener head and advances bytes before a real forwarding method",
+      "Node StreamBase read null buffer negative status bypasses the managed map without an allocation"
+    ],
+    "api_only_successor": "98A84687812021A622FFFEF9EB52AA31A60475B175D3836426745D666CE7C7D6",
+    "original_root": "CB3263C5E13DA3872FE7BE5D057AF3A6A6FC5FB189479F90EB557BDD0E67B9AD",
+    "current_root": "E82BD953C752DF948C679617F2CA8FA2B5A08C9A00B0F83A02F08A7C1D45FEB3"
+  },
+  "peers": [
+    {
+      "slice": "Read dispatch/default allocation/internal field CHECK and Source order",
+      "receipt": "peers/stream-read-modules-production-peer.json",
+      "sha256": "0061094EF4C006942198FB8FC0DFAF33FB841709CB36EE18C2A6FAB3C570247B"
+    },
+    {
+      "slice": "Native backing/Scope/result/Environment ownership",
+      "receipt": "peers/stream-read-vm-production-peer.json",
+      "sha256": "B189EF6246A867CA6C657B718A7564BB7095EA2FBCE3D767F5993902A3D39377"
+    },
+    {
+      "slice": "Controls 1–6,8,12,17–18 and exact build",
+      "receipt": "peers/stream-read-modules-controls-build-peer.json",
+      "sha256": "BB37DB501FD85A96DA54D048E055884D40C659D5625C1BC7CED5DB4FEE65B438"
+    },
+    {
+      "slice": "Fixture/Probe/Node, controls 7,9–11,13–16 and actual teardown",
+      "receipt": "peers/stream-read-vm-controls-peer.json",
+      "sha256": "07DBC3FAC41F99781B94F50F54E600700A2DC4A3A5DF9C29705962C81DCC2D99"
+    }
+  ],
+  "verification": {
+    "all_files_full_read_back": true,
+    "resource_four_edits_forward_and_inverse_exact": true,
+    "control_three_edits_forward_and_inverse_exact": true,
+    "control_names_unchanged": true,
+    "build_target_fifteen_lines_plus_existing_resource_include_one_line_unique_and_inverse_exact": true,
+    "build_reference_sha256": "30348C988F824617E52EE47ECF64099D537582F8255E1B47C994820AA7814A62",
+    "compiler_or_runtime_executed": false
+  },
+  "dependencies_before_compile": [
+    {
+      "owner": "StreamFields10",
+      "commit": "76081364210037e2a6c402938cd1c8be6db85d2d",
+      "state": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25"
+    },
+    {
+      "owner": "ManagedBuffers raw12 + Environment proposals",
+      "commit": "7c7e4f079f956d9954129e70a9179444850e2b5f",
+      "manifest": "0554CC32E636715615D57315B2D12E730F4A1D2FA8DC3E124030E91C06998D1D",
+      "condition": "Raw table is independent; selected read requires Root to apply the six stream alias edits followed by ten actual managed-table Environment edits. Do not copy the SDK Environment dependency file wholesale."
+    },
+    {
+      "owner": "Environment stream alias",
+      "packet": "8C91B140",
+      "successor": "E267756ECEFDFA7577E68A18BB2D04EA5392579E837385BA437808DD75F6E397",
+      "peer": "66116CB7ABF15FA87D82CCD02B80118AF69EB61840B4EE020AA046D25C1338C0"
+    },
+    {
+      "owner": "Environment managed table",
+      "packet": "0DE6C717995767B3EB21F0BFEC38E22E342CD49FAF385F269E59D4C7810A6631",
+      "successor": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "status": "Required Root source review/intake pending. This commit includes no Environment production replacement."
+    },
+    {
+      "owner": "VM native backing allocation/adoption",
+      "commit": "eb4ec1d69c8d21dbd1079f29882654a37b485f24",
+      "scope": "Single-attempt primitive and consuming later intrinsic wrapper; no full retry policy"
+    },
+    {
+      "owner": "Shared standard allocator and one native-memory Compile/TLS",
+      "commit": "78b8ddf58c9b101a2afd4948ff2ed8f1ded7de63",
+      "scope": "Use the actual managed CPP membership and existing one network graph; no duplicate memory.cpp"
+    },
+    {
+      "owner": "Existing CallbackScope, InternalMakeCallback, actual pending/OOM provenance and native terminal owner",
+      "scope": "7D5433BB, Scope CD8111EE/Boundary 29A3ED13, occurrence c2eec1e2, genuine heap failure entry"
+    }
+  ],
+  "build_intake": {
+    "proposal": "stream-read-build-intake.json",
+    "sha256": "4C98E0DE997CB2E1B1515F8222F436C5B334DC40AB949F28293F93570342CE09",
+    "target": "build-native-node-stream-read",
+    "artifact": "native-node-stream-read",
+    "added_target_lines": 15,
+    "existing_resource_include_lines": 1,
+    "install_only": true,
+    "main_or_build_mutated": false
+  },
+  "remaining_public_composition": [
+    "Actual full NewBackingStore allocation/GC/retry/default fatal policy must supply the required native allocation operation. Controls qualify first-attempt successful allocation only.",
+    "Actual native trace category/controller/writer must supply the required Trace operations. Controls observe ordering/ownership, not emitted trace output or category admission.",
+    "Public onread FunctionTemplate accessor requires original lazy invocation versus descriptor materialization. Source prerequisite 7F1A1B79 is retained; no eager accessor substitute is installed.",
+    "Full FileHandle constructor/ReadStart/ReadWrap/ReadStop, shutdown, warning scheduling and Node bootstrap remain separate.",
+    "Real checkpoint/hook/bootstrap paths remain explicit; controls use an actual outer skip_task_queues scope for their deliberately unselected Operations."
+  ]
+}

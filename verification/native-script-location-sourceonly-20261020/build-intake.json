@@ -1,0 +1,13 @@
+{
+  "path": "build.zig",
+  "before_sha256": "27AC8FC48ADF782DA11BA98F4D3887D02F7AF85D5264CF07C2F2A9BFF27313B5",
+  "after_sha256": "35AD68E15D17BEAE0820B1EE1AB57EB0DB8B7F71885B95306AAF676B36581686",
+  "anchor": "    const oom_occurrence_tests = b.addTest(.{\n",
+  "insert_before": "    const script_location_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_script_location_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM Script\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, script_location_tests.root_module, quickjs, sqlite_lib_dir);\n    b.step(\"build-native-vm-script-location\", \"Install actual native Script and source-position controls without execution\").dependOn(&b.addInstallArtifact(script_location_tests, .{}).step);\n",
+  "added_lines": 6,
+  "root": "src/native_vm_script_location_test.zig",
+  "filter": "VM Script",
+  "target": "build-native-vm-script-location",
+  "declarations": 32,
+  "mode": "install only; no execution"
+}

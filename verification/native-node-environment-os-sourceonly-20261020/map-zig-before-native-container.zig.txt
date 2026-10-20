@@ -1,0 +1,175 @@
+// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
+//! Native MapKVStore for the embedding host's explicitly supplied environment.
+//! Get/Query use the original C-string key; Set/Delete preserve full byte spans.
+//! No JS object, Engine pointer, or process-global environment is stored here.
+const std = @import("std");
+const js = @import("native_js_values.zig");
+const ChargedAllocator = @import("native_env_charged_allocator.zig").ChargedAllocator;
+const c = js.c;
+const Entries = std.StringHashMapUnmanaged([]u8);
+
+pub const Store = struct {
+    references: std.atomic.Value(usize) = .init(1),
+    io: std.Io,
+    gate: std.Io.Mutex = .init,
+    memory: ChargedAllocator,
+    entries: Entries = .empty,
+
+    /// Allocate the stable owner before exposing an allocator whose context
+    /// points into it. All payload allocations retain the actual memory domain.
+    pub fn create(engine: *js.Engine, io: std.Io) !*Store {
+        const owner = engine.native_memory_owner;
+        if (c.pi_js_native_memory_reserve(owner, @sizeOf(Store)) == 0)
+            return error.OutOfMemory;
+        errdefer c.pi_js_native_memory_release(owner, @sizeOf(Store));
+        const self = try std.heap.smp_allocator.create(Store);
+        self.* = .{ .io = io, .memory = ChargedAllocator.init(engine) };
+        return self;
+    }
+
+    /// This is the embedding host's explicit MapKVStore input. It is not the
+    /// default Node RealEnvStore and never reads or modifies the OS environment.
+    pub fn fromEnvironment(engine: *js.Engine, io: std.Io,
+        input: *const std.process.Environ.Map) !*Store
+    {
+        const self = try create(engine, io);
+        errdefer self.release();
+        var fields = input.iterator();
+        while (fields.next()) |field|
+            try self.set(field.key_ptr.*, field.value_ptr.*);
+        return self;
+    }
+
+    pub fn retain(self: *Store) *Store {
+        const previous = self.references.fetchAdd(1, .monotonic);
+        std.debug.assert(previous != 0 and previous != std.math.maxInt(usize));
+        return self;
+    }
+    pub fn release(self: *Store) void {
+        const previous = self.references.fetchSub(1, .acq_rel);
+        std.debug.assert(previous != 0);
+        if (previous != 1) return;
+        const allocator = self.memory.allocator();
+        var iterator = self.entries.iterator();
+        while (iterator.next()) |entry| {
+            allocator.free(entry.key_ptr.*);
+            allocator.free(entry.value_ptr.*);
+        }
+        self.entries.deinit(allocator);
+        // No payload allocator remains after entries.deinit. Move only the
+        // now-empty memory entitlement so the stable allocation is physically
+        // freed before its charge and final native owner reference are retired.
+        var memory = self.memory;
+        std.heap.smp_allocator.destroy(self);
+        c.pi_js_native_memory_release(memory.owner, @sizeOf(Store));
+        memory.deinit();
+    }
+
+    pub fn get(self: *Store, output: std.mem.Allocator,
+        key: [:0]const u8) !?[]u8
+    {
+        self.gate.lockUncancelable(self.io);
+        defer self.gate.unlock(self.io);
+        const value = self.entries.get(cString(key)) orelse return null;
+        // The original std::optional<std::string> result owns its bytes.
+        return try output.dupe(u8, value);
+    }
+    pub fn query(self: *Store, key: [:0]const u8) i32 {
+        self.gate.lockUncancelable(self.io);
+        defer self.gate.unlock(self.io);
+        return if (self.entries.contains(cString(key))) 0 else -1;
+    }
+
+    /// Host input already consists of UTF-8 byte spans. The JS adapter instead
+    /// obtains mutation() before its two intrinsic Utf8Value conversions, as
+    /// MapKVStore::Set holds the mutex across those native allocations.
+    pub fn set(self: *Store, key: []const u8, value: []const u8) !void {
+        var selected = self.mutation();
+        defer selected.deinit();
+        try selected.set(key, value);
+    }
+    pub fn delete(self: *Store, key: []const u8) void {
+        var selected = self.mutation();
+        defer selected.deinit();
+        selected.delete(key);
+    }
+    pub fn mutation(self: *Store) Mutation {
+        const retained = self.retain();
+        retained.gate.lockUncancelable(retained.io);
+        return .{ .store = retained };
+    }
+
+    /// MapKVStore::Enumerate holds the native mutex across vector reservation,
+    /// every intrinsic string, and the final intrinsic array construction.
+    /// The JS adapter uses this guard for that whole operation; it must never
+    /// invoke guest code while the guard is held. No detached key snapshot is
+    /// created, so enumeration consumes the actual current native map.
+    pub fn keys(self: *Store) Keys {
+        const retained = self.retain();
+        retained.gate.lockUncancelable(retained.io);
+        return .{ .store = retained, .iterator = retained.entries.iterator() };
+    }
+};
+
+/// Native MapKVStore mutation guard. The original JS setter performs its
+/// potentially guest-capable ToString operations before this guard, then both
+/// native UTF-8 conversions while held. Delete likewise holds it before UTF-8.
+pub const Mutation = struct {
+    store: ?*Store,
+    pub fn set(self: *Mutation, key: []const u8, value: []const u8) !void {
+        const store = self.store.?;
+        if (key.len == 0) return;
+        const allocator = store.memory.allocator();
+        const copied_value = try allocator.dupe(u8, value);
+        errdefer allocator.free(copied_value);
+        // The original full expression constructs its temporary key even when
+        // operator[] finds an existing entry. Keep that fallible allocation.
+        const copied_key = try allocator.dupe(u8, key);
+        errdefer allocator.free(copied_key);
+        if (store.entries.getPtr(copied_key)) |selected| {
+            const previous = selected.*;
+            selected.* = copied_value;
+            allocator.free(previous);
+            allocator.free(copied_key);
+            return;
+        }
+        try store.entries.put(allocator, copied_key, copied_value);
+    }
+    pub fn delete(self: *Mutation, key: []const u8) void {
+        const store = self.store.?;
+        if (store.entries.fetchRemove(key)) |removed| {
+            const allocator = store.memory.allocator();
+            allocator.free(removed.key);
+            allocator.free(removed.value);
+        }
+    }
+    pub fn deinit(self: *Mutation) void {
+        const store = self.store orelse return;
+        self.store = null;
+        store.gate.unlock(store.io);
+        store.release();
+    }
+};
+
+pub const Keys = struct {
+    store: ?*Store,
+    iterator: Entries.Iterator,
+
+    pub fn count(self: *const Keys) usize {
+        return self.store.?.entries.count();
+    }
+    pub fn next(self: *Keys) ?[]const u8 {
+        const entry = self.iterator.next() orelse return null;
+        return entry.key_ptr.*;
+    }
+    pub fn deinit(self: *Keys) void {
+        const store = self.store orelse return;
+        self.store = null;
+        store.gate.unlock(store.io);
+        store.release();
+    }
+};
+
+fn cString(value: [:0]const u8) []const u8 {
+    return value[0 .. std.mem.indexOfScalar(u8, value, 0) orelse value.len];
+}

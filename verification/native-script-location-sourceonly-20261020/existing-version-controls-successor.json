@@ -1,0 +1,41 @@
+{
+  "status": "source-only expected-version literal successor; all original declarations and obsolete input bytes unchanged",
+  "files": [
+    {
+      "path": "src/native_template_literal_test.zig",
+      "before_sha256": "F4EE1C46248DDFB5B7981264E95BE6FF7FEDB338EB81AB7A751CDA2889BD217F",
+      "after_sha256": "051049879DDD4411B858F2BC33327A17A5F7C1DA4977B72BE6837AD8E71B9789",
+      "edits": [
+        {
+          "before": "@as(u8, 30)",
+          "after": "@as(u8, 31)",
+          "count": 2
+        },
+        {
+          "before": "expected=30)",
+          "after": "expected=31)",
+          "count": 1
+        }
+      ],
+      "obsolete_input_unchanged": 28
+    },
+    {
+      "path": "src/native_vm_captured_frame_logging_test.zig",
+      "before_sha256": "AABCD7BCDAC97DEC4934F10BBD1E866AFC6849DA62393D103A0FEF8E6AD647CC",
+      "after_sha256": "050EBD5900D38D6FDDAAE0690C62D72217E4A073978F7A18BD89B962E734EFA1",
+      "edits": [
+        {
+          "before": "@as(u8, 30)",
+          "after": "@as(u8, 31)",
+          "count": 2
+        },
+        {
+          "before": "expected=30)",
+          "after": "expected=31)",
+          "count": 1
+        }
+      ],
+      "obsolete_input_unchanged": 29
+    }
+  ]
+}

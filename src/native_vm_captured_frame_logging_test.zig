@@ -418,7 +418,7 @@ fn functionFlagsOffset(bytes: []const u8) !usize {
     // Parse the real version/checksum/atom envelope to locate this compiled
     // top-level function. No hard-coded offset depends on its actual names.
     if (bytes.len < 6) return error.LoggingControlInvalidBytecodeEnvelope;
-    try std.testing.expectEqual(@as(u8, 30), bytes[0]);
+    try std.testing.expectEqual(@as(u8, 31), bytes[0]);
     var cursor: usize = 5;
     const count = try readLeb(bytes, &cursor);
     for (0..count) |_| {
@@ -446,11 +446,11 @@ test "VM logging origin prior bytecode version is rejected by the actual version
     const data = c.JS_WriteObject(f.context.?, &size, compiled, c.JS_WRITE_OBJ_BYTECODE) orelse return error.OutOfMemory;
     defer c.js_free(f.context.?, data);
     try std.testing.expect(size > 5);
-    try std.testing.expectEqual(@as(u8, 30), data[0]);
+    try std.testing.expectEqual(@as(u8, 31), data[0]);
     data[0] = 29;
     const result = c.JS_ReadObject(f.context.?, data, size, c.JS_READ_OBJ_BYTECODE);
     defer c.JS_FreeValue(f.context.?, result);
-    try f.exceptionMessage(result, "invalid version (29 expected=30)");
+    try f.exceptionMessage(result, "invalid version (29 expected=31)");
 }
 
 test "VM logging origin malformed serialized origin reaches its exact validation error" {

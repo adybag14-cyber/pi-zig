@@ -1,0 +1,40 @@
+{
+  "status": "CLOSED source-only finite native ownership peer",
+  "reviewer": "vm_foundation",
+  "files": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_managed_buffers.cpp",
+      "sha256": "E2083CD514D8CDB24839763513DD764A789EF628DCB2A1AB455B3A864312949D",
+      "bytes": 3795
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_managed_buffers.h",
+      "sha256": "976A8C7263BB4A3B870FB341A832BA6692EB7639E9EAD5FDC0C9C9B35D0D9E57",
+      "bytes": 2166
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_managed_buffers.zig",
+      "sha256": "BE567B795D5129373EEFCF2A7C95E9017C481E020F17472E2C35838689F22B88",
+      "bytes": 2875
+    }
+  ],
+  "packet": "0DE6C717995767B3EB21F0BFEC38E22E342CD49FAF385F269E59D4C7810A6631",
+  "scope": [
+    "move-only backing token construction/move/move assignment/retirement",
+    "consuming emplace ownership on successful or duplicate insertion",
+    "take-before-erase, moved-from node destructor and returned complete entitlement",
+    "native table placement lifetime, clear-before-destroy Zig owner and VM-independent backing releases"
+  ],
+  "facts": [
+    "Every move exchanges the source token with zero storage. Native Release clears the destination record before provider retirement; mapped destruction therefore retires only the still-owned entitlement.",
+    "Adopt consumes into a local BackingStore before the actual emplace. A duplicate path releases exactly one entitlement whether the library constructs a rejected node or leaves the local unmoved.",
+    "Release moves the actual mapped token before erase, then moves it into the empty output. Null base performs the original no-lookup branch; a zero-length mapped native owner remains owned by the table until destruction.",
+    "No Engine, JSValue or context is retained by the table; a context is borrowed only for the original missing-entry CHECK. Native allocation blocks and backing providers retain their own domains beyond runtime retirement.",
+    "The inline token enlarges the mapped representation relative to unique_ptr; that required representation difference is explicitly documented. No boxed token allocation is introduced."
+  ],
+  "limits": [
+    "Environment ten-edit embedding and full lifecycle are Root scope.",
+    "Container algorithm/layout and controls/build are separate peers.",
+    "Original allocation retry/default fatal, public StreamBase and execution are not qualified."
+  ]
+}

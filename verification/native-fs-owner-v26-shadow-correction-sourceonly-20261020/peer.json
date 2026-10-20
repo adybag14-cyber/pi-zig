@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "status": "finite source peer closed",
+  "execution": false,
+  "source_packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-fs-owner-v26-shadow-correction-sourceonly-20261020/source-delta.json",
+    "sha256": "79E16122B63F4710C01CE851F5C39DE52147EC5E6A1554428BD926969776137F"
+  },
+  "files": [
+    {
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "FF468B5F806AFB07188B2B5CC5BCE8CF826BFD44C7588A8A0B19C4AB7D03D44F",
+      "after": "540F5D468DA75E474FDD8731E06C55A48BB2E20470A0BE1DEDC1C6BCF61B0D15",
+      "exact_forward_inverse": true,
+      "declared_tests": 0
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_promise.zig",
+      "before": "0ED6B910579E96E38A897C60BFE77F6DF8A42613676FA0BBCAA0453A90092158",
+      "after": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721",
+      "exact_forward_inverse": true,
+      "declared_tests": 0
+    },
+    {
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "before": "66D6FCF1646FE123C5DC80B5BE53AB3FF397E1F1C4469B19480077D2CCAC08AA",
+      "after": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4",
+      "exact_forward_inverse": true,
+      "declared_tests": 25
+    }
+  ],
+  "original_evidence": {
+    "sha256": "6067DC07A148BB9F9E5B64C7D03FD14CA4EDA1E5283C419EB299732B5BAB69FB",
+    "reported_errors": 8
+  },
+  "findings": [
+    "Independently read all eight exact edited blocks and original compiler diagnostics. Each declaration/reference pair retains the same expression, receiver, pointer/value and operation order.",
+    "All three retained originals match the actual read-only Main preimages. Unique forward application and full inverse reproduce the complete physical successors and original files byte-for-byte.",
+    "The second settle parameter also shadows Fixture.value in the original signature; its paired reference rename is included without changing callback scope cleanup or Resolve/Reject selection.",
+    "All 25 test names and every guest body/assertion are preserved by the exact full-file inverse. No API, type, allocation, owner, build or behavior change is present in this finite delta."
+  ],
+  "limits": [
+    "Source-only lexical correction; no compile, metadata query, runtime or full FileHandle qualification performed."
+  ]
+}

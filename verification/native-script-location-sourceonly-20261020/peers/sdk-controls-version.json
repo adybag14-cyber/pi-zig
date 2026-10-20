@@ -1,0 +1,76 @@
+{
+  "status": "finite source-only peer CLOSED; no compiler or runtime execution",
+  "root": {
+    "path": "src/native_vm_script_location_test.zig",
+    "sha256": "99A495F924700FDCFB64C479C61FEF6D2E5CE8532944615324079CBB17F17F55",
+    "bytes": 52063,
+    "declared_tests": 32,
+    "prior_root": "58E2675DA2ECBA1D4B5C7F9B7B2D144A09D266ECB9D2BEA062FDA382F24E01B8",
+    "only_successor_change": "Modules-owned declaration32; exact inverse verified"
+  },
+  "assigned_declarations": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    14,
+    15,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28
+  ],
+  "helpers": [
+    "script/info/utf16Length/callPosition",
+    "write/load, Cursor/metadata, readRejected and necessary Fixture call/compile/frame ownership"
+  ],
+  "production": {
+    "C": "8407EA70CAC10FD41EFADBF31B8C043F86B322EA1A1D09DCB1EA00176761C241",
+    "compiler_serialization_receipt": "8165C55349187A5B1C16F86BED6F9CA3A5F83EEFEA2AAF1CDB95ABA86353B086",
+    "source_proof": "6584973AC9EF4F20CB1CD9284AD501AADA5AF14A97FC546783465A4A043FE342"
+  },
+  "findings": [
+    "Actual complete source identity and UTF16 lengths are observed on original compile/function/frame operations, with independent Script ownership before assertions and explicit retirement.",
+    "Host/module/direct/indirect/dynamic/CJS roots use genuine selected compiler paths; brand exclusions do not invoke Proxy getters.",
+    "Default zero-argument closing-paren and diagnostic saved-identifier expectations follow the actual parser byte-token cutpoints, including non-ASCII source and branch relocation. No universal V8 instruction-position equivalence is inferred.",
+    "Fresh writer/reader runtimes test identity sharing without JS_WRITE_OBJ_REFERENCE and each actual strip flag; ordinary lexer metadata and module roots retain independent source provenance.",
+    "Cursor matches actual writer version/checksum/atom table/function flags/eight count fields/local and closure definitions and Script envelope; it only locates the genuine bytes passed to the actual reader.",
+    "Invalid tags/references/origin/module/PC/source offsets and truncated fields reach real reader failures; actual pending reasons/raw results retire before runtime and retained native-memory used0 assertions.",
+    "Version successor edits are exactly two expected constants and one expected message per root; all declarations and deliberate obsolete discriminator bytes remain unchanged."
+  ],
+  "existing_version_packet": "0F23D257B555B578AFADD6CA3F229B113CD9368DE43C6F543CE2E2FD5CDCC0E8",
+  "version_controls": [
+    {
+      "path": "src/native_template_literal_test.zig",
+      "before_sha256": "F4EE1C46248DDFB5B7981264E95BE6FF7FEDB338EB81AB7A751CDA2889BD217F",
+      "after_sha256": "051049879DDD4411B858F2BC33327A17A5F7C1DA4977B72BE6837AD8E71B9789",
+      "inverse_exact": true,
+      "test_names_unchanged": 18,
+      "obsolete_input_unchanged": 28
+    },
+    {
+      "path": "src/native_vm_captured_frame_logging_test.zig",
+      "before_sha256": "AABCD7BCDAC97DEC4934F10BBD1E866AFC6849DA62393D103A0FEF8E6AD647CC",
+      "after_sha256": "050EBD5900D38D6FDDAAE0690C62D72217E4A073978F7A18BD89B962E734EFA1",
+      "inverse_exact": true,
+      "test_names_unchanged": 19,
+      "obsolete_input_unchanged": 29
+    }
+  ],
+  "limits": [
+    "Modules owns native Script/frame/Fixture and other control slices.",
+    "No Message/reporter/failed-parse Script-origin attachment/full bootstrap qualification.",
+    "No compiler/test execution or source change in VM/Main."
+  ]
+}

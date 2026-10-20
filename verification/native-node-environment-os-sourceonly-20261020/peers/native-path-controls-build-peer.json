@@ -1,0 +1,75 @@
+{
+  "status": "CLOSED: finite native Environment path controls and additive build peer",
+  "reviewer": "vm_foundation",
+  "source_only": true,
+  "execution": false,
+  "root": {
+    "path": "src/native_node_environment_paths_test.zig",
+    "sha256": "08D46CDD94AB720F6C37C3E8FEBF6E2BAB685D41521508FBE22E9E5EEAE1C48E",
+    "bytes": 20422,
+    "all_declarations": 15,
+    "assigned_declarations": [
+      11,
+      12,
+      13,
+      14,
+      15
+    ]
+  },
+  "production_dependency": {
+    "paths_cpp": "B2E838D216E858D7F3DF31347A71C0AFACD0C4AC507CBE5E5E1191460572A395",
+    "owner_receipt": "B99125066EBC22A6B1173E0DC073BDA05959CC577A36F516803740B169786ADB"
+  },
+  "helper_scope": [
+    "Fixture placement-storage/native-charge/partial-init teardown",
+    "Capture synchronous copy and native-memory observation",
+    "TraceProbe clear-before-release and actual callback borrowing",
+    "ResolveOperation/native retry adapter lifetime"
+  ],
+  "observations": [
+    "Fixture separately owns runtime, caller memory, retained placement memory, charged storage, constructed Paths and Map. Every successful publication is attached before later failures; flags/pointers clear before retirement.",
+    "Control11 observes the two actual long native String copies during trace, one during the result visitor, and zero retained temporary charge after return; it does not estimate a fictional capacity owner.",
+    "Control12 invokes the real native retry adapter around PathResolve, owns operation/output through return and verifies exactly one handler invocation plus unchanged actual VM OOM occurrence and pending slot.",
+    "Control13 restores the VM heap limit before assertions, owns both expected and drained actual reasons, and preserves exact ordinary/flagged pending identity without any guest evaluation.",
+    "Control14 closes Map, context/runtime and caller entitlement before accessing the genuine retained native exec-path String; actual owner count returns to baseline only after Paths/storage/domain retirement.",
+    "Control15 moves the sole caller Map reference out of Fixture before the actual native trace callback. The callback clears its field before release; SafeGetenv's retained Map and independent text copy complete safely, and native charge returns to the pre-Map baseline."
+  ],
+  "build": {
+    "packet": "verification/native-node-environment-os-sourceonly-20261020/native-path-build-intake.json",
+    "sha256": "F645681279407EFE72B15FFCE90393F2BADAAA8CF273BF87FAAD31169034DB5F",
+    "validation": {
+      "main_read_only": true,
+      "rows": [
+        {
+          "path": "tools/build_native_node_network.zig",
+          "source_main_sha256": "CAECF005866364925F79959C8BAC3534DA051894FB841A1C2CC594C9C15BA499",
+          "composed_before": "FBDF5BCCA7F09238B9A2FE3C599092AE74AC76E44EA6E2256109EA407F743412",
+          "composed_after": "8BC887989E8A704530046614F8270160BDF280E4F5BD8131FC1ED163C7C791FF",
+          "reverse_exact": true,
+          "added_lines": 4
+        },
+        {
+          "path": "build.zig",
+          "source_main_sha256": "30348C988F824617E52EE47ECF64099D537582F8255E1B47C994820AA7814A62",
+          "composed_before": "2106ACFC515CB043AA2C4A721856293203C7549B98BA1C7ABC33BFC87CAFC67D",
+          "composed_after": "A08F00A3E7D93D3C8F3366959DB294EA6DC39783722BC81BE953462086DE2B99",
+          "reverse_exact": true,
+          "added_lines": 11
+        }
+      ],
+      "root": {
+        "path": "src/native_node_environment_paths_test.zig",
+        "sha256": "08D46CDD94AB720F6C37C3E8FEBF6E2BAB685D41521508FBE22E9E5EEAE1C48E",
+        "declarations": 15,
+        "filter": "native environment paths",
+        "target": "build-native-node-environment-paths"
+      }
+    },
+    "conclusion": "Four production source-membership lines share the existing guarded network/native-memory owner. Eleven target lines add the genuine 15-control root/filter, existing retry adapter and uv include, one shared linkQuickJs, installation only; no duplicate native library or run edge."
+  },
+  "limits": [
+    "Other controls and path/SafeGetenv algorithms remain SDK's separate slice.",
+    "Native stack callbacks are explicit test observations of delegation, not production stack output owners.",
+    "No State/process/bootstrap/permission/RealEnvStore or runtime qualification."
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "status": "CLOSED finite source-only managed-buffer controls and build peer",
+  "reviewer": "modules_io",
+  "date": "2026-10-20",
+  "root": {
+    "path": "src/native_node_managed_buffers_test.zig",
+    "sha256": "8A51CE5C6B80D318DBB368A735F1BBBEB9CAAD51EE5B825D1D3FFAC18B5374CA",
+    "bytes": 14499,
+    "declarations": 12
+  },
+  "assigned": [
+    "declarations 4-7 and 11",
+    "Insert callback and required real backing/table helpers",
+    "four C++ library-membership lines and eleven install-only test lines"
+  ],
+  "production": {
+    "cpp": "E2083CD514D8CDB24839763513DD764A789EF628DCB2A1AB455B3A864312949D",
+    "header": "976A8C7263BB4A3B870FB341A832BA6692EB7639E9EAD5FDC0C9C9B35D0D9E57",
+    "container_peer": "C709F72911383CA9CA4E8E8A654FCEED1F44979CA667DDC188DF19819C3E2E43"
+  },
+  "findings": [
+    "The base-only lookup control changes only the copied uv_buf length and observes the same actual backing owner and original byte length after move/erase.",
+    "Null-base release bypasses lookup without touching existing nonnull entries. A genuine zero-length token has a null data pointer but a real owner; it remains in the map until native table destruction, restoring the exact charged storage accounting.",
+    "Duplicate null-key insertion consumes and retires only the second native token. The first map entry persists and the actual native charge returns to the post-first-insertion value.",
+    "Control 11 creates the real backing before exhausting the native quota, then the actual unordered_map node allocation invokes the existing std::new_handler retry adapter. It checks one call, exact full-budget first_used, nonzero reserved bytes, token consumption and recovered exact owner. The adapter restores the previous handler and unspent reservation; no guest OOM or mocked allocator is introduced.",
+    "Unexpected raw owned tokens are protected by defers before assertions. The table retains consumed tokens through later assertion failure. No concrete blocker in the assigned slice."
+  ],
+  "build": {
+    "packet": "verification/native-node-stream-base-sourceonly-20261020/managed-buffers-build-intake.json",
+    "sha256": "F16F414743921E377C5FE6EC0868E0025B0C6571702B3B8EE6F9BB9BC2A9ADC1",
+    "prerequisite": "78b8ddf58c9b101a2afd4948ff2ed8f1ded7de63",
+    "network_before": "FBDF5BCCA7F09238B9A2FE3C599092AE74AC76E44EA6E2256109EA407F743412",
+    "network_after": "CB2E3EF8767102A024DCC9E103585337E9B1E5F13B7A50BB0EC43851B1B1BD93",
+    "build_before": "2106ACFC515CB043AA2C4A721856293203C7549B98BA1C7ABC33BFC87CAFC67D",
+    "build_after": "028C3FCFDAFDA7D8455465151F8A1321BEE19F58BED2ED60DC23D2C52B86F792",
+    "unique_forward_inverse_verified": true,
+    "all_12_names_match_filter": true,
+    "shared_graph": "The same native-memory Compile is passed to network/parser; QuickJS transitively links the same network library. Only managed_buffers.cpp joins production membership and the existing retry adapter is compiled in the raw test target.",
+    "install_only": true
+  },
+  "limits": [
+    "Fixture and remaining seven controls are VM's separate slice.",
+    "Root Environment tail embedding, backing allocation/GC/retry, public StreamBase and complete FileHandle semantics remain separate.",
+    "No native compilation, test, Node, formatter or generator execution."
+  ]
+}

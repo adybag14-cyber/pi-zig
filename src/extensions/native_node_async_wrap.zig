@@ -234,8 +234,8 @@ fn instantiate(s: *Scope, owner: *Bundle, owner_value: c.JSValue,
         const prototype = try s.prototype(cached);
         return owner.registry.newInstance(s, kind, prototype);
     }
-    const constructor = try ensureConstructor(s, owner, owner_value, kind);
-    const prototype = try s.checked(c.JS_PiGetObjectPrototypeFromConstructor(s.engine.context, constructor));
+    const constructor_value = try ensureConstructor(s, owner, owner_value, kind);
+    const prototype = try s.checked(c.JS_PiGetObjectPrototypeFromConstructor(s.engine.context, constructor_value));
     // These selected instance templates have only zeroed internal native
     // fields, with no own JS properties/interceptors. CacheTemplateInstantiation
     // retains the first actual object, then CopyJSObject returns another with

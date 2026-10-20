@@ -1,0 +1,237 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "node_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "documents": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-existing-promise-settlement-sourceonly-20261019/authority/v8-objects.v24.13.cc",
+      "sha256": "81E1D4EDFCE90BC1409DDF1B16966F2931E8DC947BF7429DFED6959708211BFC",
+      "bytes": 272859,
+      "excerpts": [
+        {
+          "label": "No mutation GetLineEnds uses full String calculation",
+          "offset_bytes": 170425,
+          "length_bytes": 411,
+          "text": "String::LineEndsVector Script::GetLineEnds(Isolate* isolate,\n                                           DirectHandle<Script> script) {\n  DCHECK(!script->has_line_ends());\n  Tagged<Object> src_obj = script->source();\n  if (IsString(src_obj)) {\n    DirectHandle<String> src(Cast<String>(src_obj), isolate);\n    return String::CalculateLineEndsVector(isolate, src, true);\n  }\n\n  return String::LineEndsVector();\n}\n"
+        },
+        {
+          "label": "Actual lazy line-end initialization",
+          "offset_bytes": 170876,
+          "length_bytes": 695,
+          "text": "void Script::InitLineEndsInternal(IsolateT* isolate,\n                                  DirectHandle<Script> script) {\n  DCHECK(!script->has_line_ends());\n  DCHECK(script->CanHaveLineEnds());\n  Tagged<Object> src_obj = script->source();\n  if (!IsString(src_obj)) {\n    DCHECK(IsUndefined(src_obj, isolate));\n    script->set_line_ends(ReadOnlyRoots(isolate).empty_fixed_array());\n  } else {\n    DCHECK(IsString(src_obj));\n    DirectHandle<String> src(Cast<String>(src_obj), isolate);\n    DirectHandle<FixedArray> array =\n        String::CalculateLineEnds(isolate, src, true);\n    script->set_line_ends(*array);\n  }\n  DCHECK(IsFixedArray(script->line_ends()));\n  DCHECK(script->has_line_ends());\n}\n"
+        },
+        {
+          "label": "Static position API initializes line ends",
+          "offset_bytes": 172254,
+          "length_bytes": 595,
+          "text": "bool Script::GetPositionInfo(DirectHandle<Script> script, int position,\n                             PositionInfo* info, OffsetFlag offset_flag) {\n#if V8_ENABLE_WEBASSEMBLY\n  // For wasm, we do not create an artificial line_ends array, but do the\n  // translation directly.\n#ifdef DEBUG\n  if (script->type() == Type::kWasm) {\n    DCHECK(script->has_line_ends());\n    DCHECK_EQ(Cast<FixedArray>(script->line_ends())->length(), 0);\n  }\n#endif  // DEBUG\n#endif  // V8_ENABLE_WEBASSEMBLY\n  InitLineEnds(script->GetIsolate(), script);\n  return script->GetPositionInfo(position, info, offset_flag);\n}\n"
+        },
+        {
+          "label": "Distinct uninitialized slow fallback",
+          "offset_bytes": 176648,
+          "length_bytes": 782,
+          "text": "bool GetPositionInfoSlowImpl(base::Vector<Char> source, int position,\n                             Script::PositionInfo* info) {\n  DCHECK(DisallowPositionInfoSlow::IsAllowed());\n  if (position < 0) {\n    position = 0;\n  }\n  int line = 0;\n  const auto begin = std::cbegin(source);\n  const auto end = std::cend(source);\n  for (auto line_begin = begin; line_begin < end;) {\n    const auto line_end = std::find(line_begin, end, '\\n');\n    if (position <= (line_end - begin)) {\n      info->line = line;\n      info->column = static_cast<int>((begin + position) - line_begin);\n      info->line_start = static_cast<int>(line_begin - begin);\n      info->line_end = static_cast<int>(line_end - begin);\n      return true;\n    }\n    ++line;\n    line_begin = line_end + 1;\n  }\n  return false;\n}\n"
+        },
+        {
+          "label": "One-byte versus UTF-16 slow storage",
+          "offset_bytes": 177430,
+          "length_bytes": 530,
+          "text": "bool GetPositionInfoSlow(const Tagged<Script> script, int position,\n                         const DisallowGarbageCollection& no_gc,\n                         Script::PositionInfo* info) {\n  if (!IsString(script->source())) {\n    return false;\n  }\n  auto source = Cast<String>(script->source());\n  const auto flat = source->GetFlatContent(no_gc);\n  return flat.IsOneByte()\n             ? GetPositionInfoSlowImpl(flat.ToOneByteVector(), position, info)\n             : GetPositionInfoSlowImpl(flat.ToUC16Vector(), position, info);\n}\n"
+        },
+        {
+          "label": "Cached line/column and exact bounds",
+          "offset_bytes": 178367,
+          "length_bytes": 1400,
+          "text": "bool GetLineEndsContainerPositionInfo(const LineEndsContainer& ends,\n                                      int position, Script::PositionInfo* info,\n                                      const DisallowGarbageCollection& no_gc) {\n  const int ends_len = GetLength(ends);\n  if (ends_len == 0) return false;\n\n  // Return early on invalid positions. Negative positions behave as if 0 was\n  // passed, and positions beyond the end of the script return as failure.\n  if (position < 0) {\n    position = 0;\n  } else if (position > GetLineEnd(ends, ends_len - 1)) {\n    return false;\n  }\n\n  // Determine line number by doing a binary search on the line ends array.\n  if (GetLineEnd(ends, 0) >= position) {\n    info->line = 0;\n    info->line_start = 0;\n    info->column = position;\n  } else {\n    int left = 0;\n    int right = ends_len - 1;\n\n    while (right > 0) {\n      DCHECK_LE(left, right);\n      const int mid = left + (right - left) / 2;\n      if (position > GetLineEnd(ends, mid)) {\n        left = mid + 1;\n      } else if (position <= GetLineEnd(ends, mid - 1)) {\n        right = mid - 1;\n      } else {\n        info->line = mid;\n        break;\n      }\n    }\n    DCHECK(GetLineEnd(ends, info->line) >= position &&\n           GetLineEnd(ends, info->line - 1) < position);\n    info->line_start = GetLineEnd(ends, info->line - 1) + 1;\n    info->column = position - info->line_start;\n  }\n\n  return true;\n}\n"
+        },
+        {
+          "label": "Origin offsets: column only for first line, then line",
+          "offset_bytes": 179785,
+          "length_bytes": 374,
+          "text": "void Script::AddPositionInfoOffset(PositionInfo* info,\n                                   OffsetFlag offset_flag) const {\n  // Add offsets if requested.\n  if (offset_flag == OffsetFlag::kWithOffset) {\n    if (info->line == 0) {\n      info->column += column_offset();\n    }\n    info->line += line_offset();\n  } else {\n    DCHECK_EQ(offset_flag, OffsetFlag::kNoOffset);\n  }\n}\n"
+        },
+        {
+          "label": "Source-line end removes preceding CR",
+          "offset_bytes": 180198,
+          "length_bytes": 634,
+          "text": "bool Script::GetPositionInfoInternal(\n    const LineEndsContainer& ends, int position, Script::PositionInfo* info,\n    const DisallowGarbageCollection& no_gc) const {\n  if (!GetLineEndsContainerPositionInfo(ends, position, info, no_gc))\n    return false;\n\n  // Line end is position of the linebreak character.\n  info->line_end = GetLineEnd(ends, info->line);\n  if (info->line_end > 0) {\n    DCHECK(IsString(source()));\n    Tagged<String> src = Cast<String>(source());\n    if (src->length() >= static_cast<uint32_t>(info->line_end) &&\n        src->Get(info->line_end - 1) == '\\r') {\n      info->line_end--;\n    }\n  }\n\n  return true;\n}\n"
+        },
+        {
+          "label": "Non-static path selects slow versus actual cached data",
+          "offset_bytes": 181234,
+          "length_bytes": 1146,
+          "text": "bool Script::GetPositionInfo(int position, PositionInfo* info,\n                             OffsetFlag offset_flag) const {\n  DisallowGarbageCollection no_gc;\n\n#if V8_ENABLE_WEBASSEMBLY\n  // For wasm, we use the byte offset as the column.\n  if (type() == Script::Type::kWasm) {\n    DCHECK_LE(0, position);\n    wasm::NativeModule* native_module = wasm_native_module();\n    const wasm::WasmModule* module = native_module->module();\n    if (module->functions.empty()) return false;\n    info->line = 0;\n    info->column = position;\n    info->line_start = module->functions[0].code.offset();\n    info->line_end = module->functions.back().code.end_offset();\n    return true;\n  }\n#endif  // V8_ENABLE_WEBASSEMBLY\n\n  if (!has_line_ends()) {\n    // Slow mode: we do not have line_ends. We have to iterate through source.\n    if (!GetPositionInfoSlow(*this, position, no_gc, info)) {\n      return false;\n    }\n  } else {\n    DCHECK(has_line_ends());\n    Tagged<FixedArray> ends = Cast<FixedArray>(line_ends());\n\n    if (!GetPositionInfoInternal(ends, position, info, no_gc)) return false;\n  }\n\n  AddPositionInfoOffset(info, offset_flag);\n\n  return true;\n}\n"
+        },
+        {
+          "label": "Explicit supplied line ends",
+          "offset_bytes": 182381,
+          "length_bytes": 335,
+          "text": "bool Script::GetPositionInfoWithLineEnds(\n    int position, PositionInfo* info, const String::LineEndsVector& line_ends,\n    OffsetFlag offset_flag) const {\n  DisallowGarbageCollection no_gc;\n  if (!GetPositionInfoInternal(line_ends, position, info, no_gc)) return false;\n\n  AddPositionInfoOffset(info, offset_flag);\n\n  return true;\n}\n"
+        },
+        {
+          "label": "Native zero-based results",
+          "offset_bytes": 182717,
+          "length_bytes": 380,
+          "text": "bool Script::GetLineColumnWithLineEnds(\n    int position, int& line, int& column,\n    const String::LineEndsVector& line_ends) {\n  DisallowGarbageCollection no_gc;\n  PositionInfo info;\n  if (!GetLineEndsContainerPositionInfo(line_ends, position, &info, no_gc)) {\n    line = -1;\n    column = -1;\n    return false;\n  }\n\n  line = info.line;\n  column = info.column;\n\n  return true;\n}\n"
+        },
+        {
+          "label": "Resource source URL precedence",
+          "offset_bytes": 183680,
+          "length_bytes": 181,
+          "text": "Tagged<Object> Script::GetNameOrSourceURL() {\n  // Keep in sync with ScriptNameOrSourceURL in messages.js.\n  if (!IsUndefined(source_url())) return source_url();\n  return name();\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-captured-frame-logging-sourceonly-20261019/authority/script.v24.13.h",
+      "sha256": "9AF5D7FE3398A4ED3CA3B280734EA1E7DF5D02F73BEB638240023008695846A2",
+      "bytes": 11413,
+      "excerpts": [
+        {
+          "label": "Actual Script type and compilation enums",
+          "offset_bytes": 1195,
+          "length_bytes": 374,
+          "text": "  // Script types.\n  enum class Type {\n    kNative = 0,\n    kExtension = 1,\n    kNormal = 2,\n#if V8_ENABLE_WEBASSEMBLY\n    kWasm = 3,\n#endif  // V8_ENABLE_WEBASSEMBLY\n    kInspector = 4\n  };\n\n  // Script compilation types.\n  enum class CompilationType { kHost = 0, kEval = 1 };\n\n  // Script compilation state.\n  enum class CompilationState { kInitial = 0, kCompiled = 1 };\n\n"
+        },
+        {
+          "label": "Position coordinate contract and defaults",
+          "offset_bytes": 7365,
+          "length_bytes": 1731,
+          "text": "  // Carries information about a source position.\n  struct PositionInfo {\n    PositionInfo() : line(-1), column(-1), line_start(-1), line_end(-1) {}\n\n    int line;        // Zero-based line number.\n    int column;      // Zero-based column number.\n    int line_start;  // Position of first character in line.\n    int line_end;    // Position of final linebreak character in line.\n  };\n\n  // Specifies whether to add offsets to position infos.\n  enum class OffsetFlag { kNoOffset, kWithOffset };\n\n  // Retrieves information about the given position, optionally with an offset.\n  // Returns false on failure, and otherwise writes into the given info object\n  // on success.\n  // The static method should is preferable for handlified callsites because it\n  // initializes the line ends array, avoiding expensive recomputations.\n  // The non-static version is not allocating and safe for unhandlified\n  // callsites.\n  static bool GetPositionInfo(DirectHandle<Script> script, int position,\n                              PositionInfo* info,\n                              OffsetFlag offset_flag = OffsetFlag::kWithOffset);\n  static bool GetLineColumnWithLineEnds(\n      int position, int& line, int& column,\n      const String::LineEndsVector& line_ends);\n  V8_EXPORT_PRIVATE bool GetPositionInfo(\n      int position, PositionInfo* info,\n      OffsetFlag offset_flag = OffsetFlag::kWithOffset) const;\n  V8_EXPORT_PRIVATE bool GetPositionInfoWithLineEnds(\n      int position, PositionInfo* info, const String::LineEndsVector& line_ends,\n      OffsetFlag offset_flag = OffsetFlag::kWithOffset) const;\n  V8_EXPORT_PRIVATE void AddPositionInfoOffset(\n      PositionInfo* info,\n      OffsetFlag offset_flag = OffsetFlag::kWithOffset) const;\n\n"
+        }
+      ]
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-existing-promise-settlement-sourceonly-20261019/authority/v8-api.v24.13.cc",
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "bytes": 489340,
+      "excerpts": [
+        {
+          "label": "ScriptOrigin projection from actual native record",
+          "offset_bytes": 6532,
+          "length_bytes": 961,
+          "text": "ScriptOrigin GetScriptOriginForScript(\n    i::Isolate* i_isolate, i::DirectHandle<i::Script> script) {\n  i::DirectHandle<i::Object> scriptName(script->GetNameOrSourceURL(),\n                                        i_isolate);\n  i::DirectHandle<i::Object> source_map_url(script->source_mapping_url(),\n                                            i_isolate);\n  i::DirectHandle<i::Object> host_defined_options(\n      script->host_defined_options(), i_isolate);\n  ScriptOriginOptions options(script->origin_options());\n  bool is_wasm = false;\n#if V8_ENABLE_WEBASSEMBLY\n  is_wasm = script->type() == i::Script::Type::kWasm;\n#endif  // V8_ENABLE_WEBASSEMBLY\n  v8::ScriptOrigin origin(\n      Utils::ToLocal(scriptName), script->line_offset(),\n      script->column_offset(), options.IsSharedCrossOrigin(), script->id(),\n      Utils::ToLocal(source_map_url), options.IsOpaque(), is_wasm,\n      options.IsModule(), Utils::ToLocal(host_defined_options));\n  return origin;\n}\n"
+        },
+        {
+          "label": "Message origin uses its actual Script",
+          "offset_bytes": 117427,
+          "length_bytes": 305,
+          "text": "ScriptOrigin Message::GetScriptOrigin() const {\n  auto self = Utils::OpenDirectHandle(this);\n  i::Isolate* i_isolate = self->GetIsolate();\n  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);\n  i::DirectHandle<i::Script> script(self->script(), i_isolate);\n  return GetScriptOriginForScript(i_isolate, script);\n}\n"
+        },
+        {
+          "label": "Message end-column uses the retained source span",
+          "offset_bytes": 121590,
+          "length_bytes": 532,
+          "text": "int Message::GetEndColumn() const {\n  auto self = Utils::OpenDirectHandle(this);\n  i::Isolate* i_isolate = self->GetIsolate();\n  ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);\n  HandleScope handle_scope(reinterpret_cast<Isolate*>(i_isolate));\n  i::JSMessageObject::EnsureSourcePositionsAvailable(i_isolate, self);\n  const int column_number = self->GetColumnNumber();\n  if (column_number == -1) return -1;\n  const int start = self->GetStartPosition();\n  const int end = self->GetEndPosition();\n  return column_number + (end - start);\n}\n"
+        },
+        {
+          "label": "Actual UnboundScript line API",
+          "offset_bytes": 72021,
+          "length_bytes": 654,
+          "text": "int UnboundScript::GetLineNumber(int code_pos) {\n  auto obj = Utils::OpenDirectHandle(this);\n  if (i::IsScript(obj->script())) {\n    // TODO(jgruber): Remove this DCHECK once Function::GetUnboundScript is\n    // gone.\n    DCHECK(!i::HeapLayout::InReadOnlySpace(*obj));\n    i::Isolate* i_isolate = i::GetIsolateFromWritableObject(*obj);\n    ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);\n    API_RCS_SCOPE(i_isolate, UnboundScript, GetLineNumber);\n    i::DirectHandle<i::Script> script(i::Cast<i::Script>(obj->script()),\n                                      i_isolate);\n    return i::Script::GetLineNumber(script, code_pos);\n  } else {\n    return -1;\n  }\n}\n"
+        },
+        {
+          "label": "Actual UnboundScript column API",
+          "offset_bytes": 72676,
+          "length_bytes": 660,
+          "text": "int UnboundScript::GetColumnNumber(int code_pos) {\n  auto obj = Utils::OpenDirectHandle(this);\n  if (i::IsScript(obj->script())) {\n    // TODO(jgruber): Remove this DCHECK once Function::GetUnboundScript is\n    // gone.\n    DCHECK(!i::HeapLayout::InReadOnlySpace(*obj));\n    i::Isolate* i_isolate = i::GetIsolateFromWritableObject(*obj);\n    ENTER_V8_NO_SCRIPT_NO_EXCEPTION(i_isolate);\n    API_RCS_SCOPE(i_isolate, UnboundScript, GetColumnNumber);\n    i::DirectHandle<i::Script> script(i::Cast<i::Script>(obj->script()),\n                                      i_isolate);\n    return i::Script::GetColumnNumber(script, code_pos);\n  } else {\n    return -1;\n  }\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-captured-frame-logging-sourceonly-20261019/authority/factory-base.v24.13.cc",
+      "sha256": "0C2DDDA59DE61A98C249BC00B60ECB3B11ECDD8B2559D83A4C5E22CB17145E83",
+      "bytes": 57199,
+      "excerpts": [
+        {
+          "label": "Actual Script ID allocation",
+          "offset_bytes": 15388,
+          "length_bytes": 249,
+          "text": "Handle<Script> FactoryBase<Impl>::NewScript(\n    DirectHandle<UnionOf<String, Undefined>> source,\n    ScriptEventType script_event_type) {\n  return NewScriptWithId(source, isolate()->GetNextScriptId(),\n                         script_event_type);\n}\n"
+        },
+        {
+          "label": "New Script native defaults before compiler setup",
+          "offset_bytes": 15663,
+          "length_bytes": 1608,
+          "text": "Handle<Script> FactoryBase<Impl>::NewScriptWithId(\n    DirectHandle<UnionOf<String, Undefined>> source, int script_id,\n    ScriptEventType script_event_type) {\n  DCHECK(IsString(*source) || IsUndefined(*source));\n  // Create and initialize script object.\n  ReadOnlyRoots roots = read_only_roots();\n  Handle<Script> script = handle(\n      NewStructInternal<Script>(SCRIPT_TYPE, AllocationType::kOld), isolate());\n  {\n    DisallowGarbageCollection no_gc;\n    Tagged<Script> raw = *script;\n    raw->set_source(*source);\n    raw->set_name(roots.undefined_value(), SKIP_WRITE_BARRIER);\n    raw->set_id(script_id);\n    raw->set_line_offset(0);\n    raw->set_column_offset(0);\n    raw->set_context_data(roots.undefined_value(), SKIP_WRITE_BARRIER);\n    raw->set_type(Script::Type::kNormal);\n    raw->set_line_ends(Smi::zero());\n    raw->set_eval_from_shared_or_wrapped_arguments(roots.undefined_value(),\n                                                   SKIP_WRITE_BARRIER);\n    raw->set_eval_from_position(0);\n    raw->set_infos(roots.empty_weak_fixed_array(), SKIP_WRITE_BARRIER);\n    raw->set_flags(0);\n    raw->set_host_defined_options(roots.empty_fixed_array(),\n                                  SKIP_WRITE_BARRIER);\n    raw->set_source_hash(roots.undefined_value(), SKIP_WRITE_BARRIER);\n    raw->set_compiled_lazy_function_positions(roots.undefined_value(),\n                                              SKIP_WRITE_BARRIER);\n#ifdef V8_SCRIPTORMODULE_LEGACY_LIFETIME\n    raw->set_script_or_modules(roots.empty_array_list());\n#endif\n  }\n  impl()->ProcessNewScript(script, script_event_type);\n  return script;\n}\n"
+        }
+      ]
+    },
+    {
+      "acquisition_path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-v8-script-position-source-peer-20261020/authority/source-acquisition.json",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/objects/string.cc",
+      "full_raw_sha256": "F8EB81FC6401C7BF4A1C8DD4A76FC65B792A944757712A3EFA80C3DC31416403",
+      "stored_extracted_sha256": "3E1F3577D714368E9BE0BA899B3E7E7F0B991C3043596B4231A884B6DF06D510",
+      "full_raw_bytes": 84287,
+      "excerpt_only": true,
+      "excerpts": [
+        {
+          "label": "Full source index is one-byte or UTF-16 code-unit index",
+          "offset_bytes": 44437,
+          "length_bytes": 737,
+          "text": "static void CalculateLineEndsImpl(String::LineEndsVector* line_ends,\n                                  base::Vector<const SourceChar> src,\n                                  bool include_ending_line) {\n  const int src_len = src.length();\n  for (int i = 0; i < src_len - 1; i++) {\n    SourceChar current = src[i];\n    SourceChar next = src[i + 1];\n    if (IsLineTerminatorSequence(current, next)) line_ends->push_back(i);\n  }\n\n  if (src_len > 0 && IsLineTerminatorSequence(src[src_len - 1], 0)) {\n    line_ends->push_back(src_len - 1);\n  }\n  if (include_ending_line) {\n    // Include one character beyond the end of script. The rewriter uses that\n    // position for the implicit return statement.\n    line_ends->push_back(src_len);\n  }\n}\n"
+        },
+        {
+          "label": "Flatten then choose 8-bit or UTF-16 view",
+          "offset_bytes": 45204,
+          "length_bytes": 894,
+          "text": "String::LineEndsVector String::CalculateLineEndsVector(\n    IsolateT* isolate, DirectHandle<String> src, bool include_ending_line) {\n  src = Flatten(isolate, src);\n  // Rough estimate of line count based on a roughly estimated average\n  // length of packed code. Most scripts have < 32 lines.\n  int line_count_estimate = (src->length() >> 6) + 16;\n  LineEndsVector line_ends;\n  line_ends.reserve(line_count_estimate);\n  {\n    DisallowGarbageCollection no_gc;\n    // Dispatch on type of strings.\n    String::FlatContent content = src->GetFlatContent(no_gc);\n    DCHECK(content.IsFlat());\n    if (content.IsOneByte()) {\n      CalculateLineEndsImpl(&line_ends, content.ToOneByteVector(),\n                            include_ending_line);\n    } else {\n      CalculateLineEndsImpl(&line_ends, content.ToUC16Vector(),\n                            include_ending_line);\n    }\n  }\n  return line_ends;\n}\n"
+        },
+        {
+          "label": "Line-end fixed array preserves vector entries",
+          "offset_bytes": 46414,
+          "length_bytes": 670,
+          "text": "Handle<FixedArray> String::CalculateLineEnds(IsolateT* isolate,\n                                             DirectHandle<String> src,\n                                             bool include_ending_line) {\n  LineEndsVector line_ends =\n      CalculateLineEndsVector(isolate, src, include_ending_line);\n  int line_count = static_cast<int>(line_ends.size());\n  Handle<FixedArray> array =\n      isolate->factory()->NewFixedArray(line_count, AllocationType::kOld);\n  {\n    DisallowGarbageCollection no_gc;\n    Tagged<FixedArray> raw_array = *array;\n    for (int i = 0; i < line_count; i++) {\n      raw_array->set(i, Smi::FromInt(line_ends[i]));\n    }\n  }\n  return array;\n}\n"
+        }
+      ]
+    },
+    {
+      "acquisition_path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-v8-script-position-source-peer-20261020/authority/source-acquisition.json",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/strings/char-predicates-inl.h",
+      "full_raw_sha256": "478E76CD708831B7BE2BC32D488D799F47F43156C8B8825C4BC3526E141325A2",
+      "stored_extracted_sha256": "478E76CD708831B7BE2BC32D488D799F47F43156C8B8825C4BC3526E141325A2",
+      "full_raw_bytes": 5960,
+      "excerpt_only": true,
+      "excerpts": [
+        {
+          "label": "CRLF versus lone CR and all supported terminators",
+          "offset_bytes": 5567,
+          "length_bytes": 301,
+          "text": "bool IsLineTerminatorSequence(base::uc32 c, base::uc32 next) {\n  if (kOneByteCharFlags[static_cast<uint8_t>(c)] & kMaybeLineEnd) {\n    if (c == '\\n') return true;\n    if (c == '\\r') return next != '\\n';\n    return base::IsInRange(static_cast<unsigned int>(c), 0x2028u, 0x2029u);\n  }\n  return false;\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-v8-script-position-source-peer-20261020/authority/v8-message.v24.13.h",
+      "sha256": "CE6FCFEEAFA8D6528E7BE5C5B9D58F09927B88A110A0BFACB5FBB0DC9AD0AA96",
+      "bytes": 6685,
+      "excerpts": [
+        {
+          "label": "Actual ScriptOrigin fields, flags and default values",
+          "offset_bytes": 745,
+          "length_bytes": 2689,
+          "text": "class ScriptOriginOptions {\n public:\n  V8_INLINE ScriptOriginOptions(bool is_shared_cross_origin = false,\n                                bool is_opaque = false, bool is_wasm = false,\n                                bool is_module = false)\n      : flags_((is_shared_cross_origin ? kIsSharedCrossOrigin : 0) |\n               (is_wasm ? kIsWasm : 0) | (is_opaque ? kIsOpaque : 0) |\n               (is_module ? kIsModule : 0)) {}\n  V8_INLINE ScriptOriginOptions(int flags)\n      : flags_(flags &\n               (kIsSharedCrossOrigin | kIsOpaque | kIsWasm | kIsModule)) {}\n\n  bool IsSharedCrossOrigin() const {\n    return (flags_ & kIsSharedCrossOrigin) != 0;\n  }\n  bool IsOpaque() const { return (flags_ & kIsOpaque) != 0; }\n  bool IsWasm() const { return (flags_ & kIsWasm) != 0; }\n  bool IsModule() const { return (flags_ & kIsModule) != 0; }\n\n  int Flags() const { return flags_; }\n\n private:\n  enum {\n    kIsSharedCrossOrigin = 1,\n    kIsOpaque = 1 << 1,\n    kIsWasm = 1 << 2,\n    kIsModule = 1 << 3\n  };\n  const int flags_;\n};\n\n/**\n * The origin, within a file, of a script.\n */\nclass V8_EXPORT ScriptOrigin {\n public:\n  V8_INLINE ScriptOrigin(Local<Value> resource_name,\n                         int resource_line_offset = 0,\n                         int resource_column_offset = 0,\n                         bool resource_is_shared_cross_origin = false,\n                         int script_id = -1,\n                         Local<Value> source_map_url = Local<Value>(),\n                         bool resource_is_opaque = false, bool is_wasm = false,\n                         bool is_module = false,\n                         Local<Data> host_defined_options = Local<Data>())\n      : resource_name_(resource_name),\n        resource_line_offset_(resource_line_offset),\n        resource_column_offset_(resource_column_offset),\n        options_(resource_is_shared_cross_origin, resource_is_opaque, is_wasm,\n                 is_module),\n        script_id_(script_id),\n        source_map_url_(source_map_url),\n        host_defined_options_(host_defined_options) {\n    VerifyHostDefinedOptions();\n  }\n\n  V8_INLINE Local<Value> ResourceName() const;\n  V8_INLINE int LineOffset() const;\n  V8_INLINE int ColumnOffset() const;\n  V8_INLINE int ScriptId() const;\n  V8_INLINE Local<Value> SourceMapUrl() const;\n  V8_INLINE Local<Data> GetHostDefinedOptions() const;\n  V8_INLINE ScriptOriginOptions Options() const { return options_; }\n\n private:\n  void VerifyHostDefinedOptions() const;\n  Local<Value> resource_name_;\n  int resource_line_offset_;\n  int resource_column_offset_;\n  ScriptOriginOptions options_;\n  int script_id_;\n  Local<Value> source_map_url_;\n  Local<Data> host_defined_options_;\n};\n\n"
+        }
+      ]
+    }
+  ],
+  "conclusions": [
+    "Source positions and columns for ordinary JavaScript are indices in the actual V8 string: Latin-1/one-byte entries or UTF-16 code units. A supplementary character occupies two positions; display UTF-8 byte counts do not establish these positions.",
+    "Line-end calculation recognizes LF, lone CR, U+2028 and U+2029. CR immediately before LF is not recorded separately: the LF is the line-end entry.",
+    "include_ending_line=true appends source.length, including for empty source and after a trailing terminator. Thus initialized cached lookup accepts EOF and yields an empty trailing line after a final terminator.",
+    "Initialized cached lookup clamps negative position to zero and rejects only positions greater than the final sentinel. It finds the first line-end >= position, with subsequent line_start=prior_end+1.",
+    "Native Script line and column are zero-based. Origin column_offset is added only on the original first line; origin line_offset is then added on every line.",
+    "Source PositionInfo.line_end is the linebreak index (or final sentinel), then decremented when the immediately preceding code unit is CR. This affects returned line content, not the already calculated column.",
+    "The non-static path without initialized line_ends deliberately uses a separate LF-only scan; empty strings fail there, and it does not share cached CR/Unicode-terminator behavior. Static GetPositionInfo initializes line ends first. The consumer must select the actual original route.",
+    "Native origin projection uses GetNameOrSourceURL, exact line/column offsets, ID, source_mapping_url, host_defined_options and actual shared/opaque/module bits. Source URL takes precedence whenever it is not undefined.",
+    "Actual Script types are native0, extension1, normal2, optional wasm3, inspector4; CompilationType is host0/eval1. These are separate from ScriptOrigin option bits shared1/opaque2/wasm4/module8.",
+    "Public ScriptOrigin defaults offsets0, ID-1, option bitsfalse and absent optional handles. Factory NewScript uses the real next Script ID and initially normal type, zero offsets/flags, name undefined, line_ends Smi0 (not computed), and empty native host-defined-options array.",
+    "Message::GetEndColumn is start_column+(end_position-start_position), preserving the actual span; it does not re-derive the end from a displayed line/column."
+  ],
+  "limits": [
+    "No compiler or VM source edits or execution.",
+    "No choice of new QuickJS metadata representation is qualified here.",
+    "Message creation/catch/report policy remains outside this position/origin proof.",
+    "New String/char predicate originals are preserved as immutable source excerpts with explicit full raw and stored-extraction hashes; no full-file read is claimed for those excerpts."
+  ]
+}

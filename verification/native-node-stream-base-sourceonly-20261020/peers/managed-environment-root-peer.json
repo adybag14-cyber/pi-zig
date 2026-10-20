@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "status": "root_finite_source_peer_closed",
+  "reviewed_utc": "2026-10-20 15:47:22 UTC",
+  "reviewer": "Root",
+  "execution": false,
+  "runtime_authority": false,
+  "qualification": false,
+  "scope": "Exactly ten Environment managed-map storage/ownership changes on the already reviewed stream alias base",
+  "packet": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\managed-table-and-environment-delta.json",
+    "sha256": "0DE6C717995767B3EB21F0BFEC38E22E342CD49FAF385F269E59D4C7810A6631"
+  },
+  "base": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_callback_scope.zig",
+    "sha256": "E267756ECEFDFA7577E68A18BB2D04EA5392579E837385BA437808DD75F6E397",
+    "bytes": 38246
+  },
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\proposal\\environment-with-managed-buffers.zig.txt",
+    "sha256": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+    "bytes": 39860
+  },
+  "ordered_edits": 10,
+  "full_forward_equals_proposal": true,
+  "full_reverse_equals_base": true,
+  "review": [
+    "Native map size/alignment are read from the actual C++ owner. One aligned parent-and-map allocation is reserved and allocated, with no separate token/object box.",
+    "Exact allocation size/alignment survive until final Environment entitlement retirement. Native memory-owner retain and reservation each have one error unwind and one final release.",
+    "The Store starts with a null native pointer; partial initialization before the stream alias/map construction is safely retired. Successful construction placement-news the real empty unordered_map.",
+    "Managed map retirement clears the Store pointer before native destruction and occurs before shared stream alias JS retirement. Backing tokens retain only native callback/allocator entitlements.",
+    "Disarm remains after actual I/O join, realm cleanup and empty request registry; Engine detaches only after JS/native retirement. Final retained Environment release frees the exact original block.",
+    "Adopt and release require the genuine live Engine/owner thread. Adopt consumes a complete native backing token; release passes the actual JSContext to the terminating assertion.",
+    "All existing callback scope, continuation, cleanup ordering and request registry bytes outside the ten edits remain identical."
+  ],
+  "dependencies": [
+    "Apply six stream alias edits 8C91B140 before these ten edits.",
+    "VM backing-store primitive eb4ec1d69c8d21dbd1079f29882654a37b485f24, real shared standard allocator 16D82D2C, and single native memory Compile/TLS owner.",
+    "Managed raw table E2083CD5/H976A8C72/ZigBE567B79. Existing peers cover its production and12 raw controls."
+  ],
+  "diagnostic_mapping": {
+    "packet": "06339C95FEC558EBE28F46083E879E1C46038403D9C6B4C7938B581928009C20",
+    "scope": "Simplified port function/source-site labels; not byte-exact compiler-generated original __PRETTY_FUNCTION__/__FUNCSIG__ or universal __FILE__ text."
+  },
+  "limits": [
+    "No native allocation-byte parity with V8's unique_ptr map representation.",
+    "No full retry/GC/fatal allocation policy, FileHandle bootstrap, runtime or application qualification."
+  ]
+}

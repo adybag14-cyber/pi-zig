@@ -1,0 +1,25 @@
+{
+  "status": "Source-only correction against actual VM header: no algorithm, declaration or assertion change",
+  "before_sha256": "CB3263C5E13DA3872FE7BE5D057AF3A6A6FC5FB189479F90EB557BDD0E67B9AD",
+  "after_sha256": "E82BD953C752DF948C679617F2CA8FA2B5A08C9A00B0F83A02F08A7C1D45FEB3",
+  "bytes": 33640,
+  "actual_declarations": [
+    "bool JS_IsUncatchableError(JSValueConst val)",
+    "void JS_SetUncatchableError(JSContext *ctx, JSValueConst val)"
+  ],
+  "edits": [
+    {
+      "before": "        c.JS_SetUncatchableError(self.engine.context, self.reason.?, fatal);",
+      "after": "        if (fatal) c.JS_SetUncatchableError(self.engine.context, self.reason.?);"
+    },
+    {
+      "before": "c.JS_IsUncatchableError(f.engine.context, result)",
+      "after": "c.JS_IsUncatchableError(result)"
+    },
+    {
+      "before": "c.JS_IsUncatchableError(f.engine.context, f.reason.?)",
+      "after": "c.JS_IsUncatchableError(f.reason.?)"
+    }
+  ],
+  "execution": false
+}

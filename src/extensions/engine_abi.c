@@ -196,6 +196,9 @@ static void *pi_backing_allocate(void *opaque, size_t length, size_t maximum,
     void *allocation = NULL;
     uint8_t *data;
     if (length > maximum) return NULL;
+    if ((flags & JS_PI_BACKING_UNINITIALIZED) &&
+        (flags & (JS_PI_BACKING_SHARED | JS_PI_BACKING_RESIZABLE)))
+        return NULL;
     if (resizable) {
         page = pi_backing_page_size();
         if (!pi_backing_round_pages(maximum, page, &capacity) ||
@@ -227,7 +230,8 @@ static void *pi_backing_allocate(void *opaque, size_t length, size_t maximum,
         if (!pi_backing_permissions(allocation, page + committed, 1)) goto fail;
         data = (uint8_t *)allocation + page;
     } else {
-        allocation = calloc(1, allocation_size);
+        allocation = (flags & JS_PI_BACKING_UNINITIALIZED) ?
+            malloc(allocation_size) : calloc(1, allocation_size);
         if (!allocation) goto fail;
         data = (uint8_t *)allocation + sizeof(PiBackingPrefix);
     }

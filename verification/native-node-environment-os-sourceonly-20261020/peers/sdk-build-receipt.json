@@ -1,0 +1,30 @@
+{
+  "status": "CLOSED finite source-only build/link peer",
+  "shared_packet": "0427BE866F23AFF75EC6083F823C4A1A9EE1A29A033EB71A9092E651C3507C80",
+  "target_packet": "8BEFCB2A9D057907FE20B8C20640A98E61AED38BD80FE0392E8DB8D09B726B6B",
+  "verification": {
+    "files": [
+      {
+        "path": "build.zig",
+        "forward_inverse_exact": true
+      },
+      {
+        "path": "tools/build_native_node_network.zig",
+        "forward_inverse_exact": true
+      },
+      {
+        "path": "tools/build_native_package_json.zig",
+        "forward_inverse_exact": true
+      }
+    ],
+    "map_target_forward_inverse": true,
+    "single_memory_translation_unit": true,
+    "new_helper_sha": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17"
+  },
+  "caller_inventory": "C:/Users/adyba/pi-zig/main\\build.zig:103:        .windows, .linux => @import(\"tools/build_native_node_network.zig\").add(b, target, optimize),\nC:/Users/adyba/pi-zig/main\\build.zig:108:    const native_package_json = @import(\"tools/build_native_package_json.zig\").add(b, target, optimize);\nC:/Users/adyba/pi-zig/main\\tools\\build_native_package_json.zig:26:            \"src/extensions/native_simdjson_memory.cpp\",\n",
+  "conclusion": "One native-memory Compile pointer is created in the actual Main graph and passed to both network and parser helpers. The parser removes its former memory.cpp membership, retaining all other files/flags; the network retains every old C member/platform library and adds Map only on the same admitted 64-bit Windows/Linux memory branch. Raw Map22 adds only the genuine test support translation unit and an installation target under the actual parser guard. The real linkQuickJs includes QuickJS/extension headers, libc/libc++ and the single transitive network/memory graph. No run edge or source-generation action.",
+  "limits": [
+    "No compiled or runtime acceptance.",
+    "Native allocator/Map production and controls are separately reviewed units."
+  ]
+}

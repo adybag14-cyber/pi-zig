@@ -26,6 +26,10 @@ typedef struct PiNodeAssertionInfo {
  * established by the caller. No Error value or historical flag is accepted. */
 void pi_node_heap_out_of_memory(JSContext *context,
                                 const PiNodeFatalDiagnostics *diagnostics);
+/* Terminal callback for actual external BackingStore allocation failure after
+ * the embedding's native retry policy. This entry does not perform retries. */
+void pi_node_backing_store_out_of_memory(JSContext *context,
+                                         const PiNodeFatalDiagnostics *diagnostics);
 void pi_node_maybe_check_failure(JSContext *context,
                                  const PiNodeFatalDiagnostics *diagnostics);
 void pi_node_assert_failure(JSContext *context,

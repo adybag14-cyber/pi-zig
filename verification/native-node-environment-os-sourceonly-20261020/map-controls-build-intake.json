@@ -1,0 +1,17 @@
+{
+  "status": "source-only install wiring proposal; no build file has been edited",
+  "path": "build.zig",
+  "prerequisite": "shared-native-memory-build-proposal.json0427BE86",
+  "before_sha256": "EBBD29CA7C933E9C06E51F1761D55AE2FB28B71F40FDBE512CA82F5C2411AA6C",
+  "after_sha256": "2106ACFC515CB043AA2C4A721856293203C7549B98BA1C7ABC33BFC87CAFC67D",
+  "before": "        b.step(\"build-native-node-package-json-parser\", \"Install actual package JSON parser and native allocation controls without execution\").dependOn(&b.addInstallArtifact(native_package_json_tests, .{}).step);\n",
+  "after": "        b.step(\"build-native-node-package-json-parser\", \"Install actual package JSON parser and native allocation controls without execution\").dependOn(&b.addInstallArtifact(native_package_json_tests, .{}).step);\n        const native_environment_map_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_environment_map_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native environment map\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_environment_map_tests.root_module, quickjs, sqlite_lib_dir);\n        native_environment_map_tests.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map_test_support.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        b.step(\"build-native-node-environment-map\", \"Install native MapKVStore allocation and lifetime controls without execution\").dependOn(&b.addInstallArtifact(native_environment_map_tests, .{}).step);\n",
+  "added_lines": 10,
+  "scope": "Existing native_package_json != null guard inherits the actual 64-bit Windows/Linux memory/parser admission. Shared QuickJS transitively links the single network/map and memory libraries; only the test reference/retry adapter is compiled additionally in this target.",
+  "root": "src/native_node_environment_map_test.zig",
+  "root_sha256": "7E58CB891ECF37A215A4D637B64A3F1B062FB3763552DEBC6C775ADDA603F15E",
+  "declarations": 22,
+  "filter": "native environment map",
+  "target": "build-native-node-environment-map",
+  "native_execution": false
+}

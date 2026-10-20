@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "status": "CLOSED: finite StreamResource/default allocation/CallJSOnread source slice",
+  "reviewer": "modules_io",
+  "execution": false,
+  "production": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_stream_base.zig",
+      "sha256": "0a3f4eb5133bc9543d5ad77dc33f4753abec866eb721bce0a8f08c16becd5abf",
+      "bytes": 10864
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_stream_resource.zig",
+      "sha256": "6ca4cf5cd5e71ead8c9e6f4fcf0d0075190c853e26978b497389f7d29ebe0ac6",
+      "bytes": 5762
+    }
+  ],
+  "packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/stream-read-composition-draft.json",
+    "sha256": "12f6e80dc97b806388e5ec9fda404486bb3f216777be4206d8862e9fda666ecb"
+  },
+  "scope": [
+    "Four exact Resource read-vtable edits, defaultAllocate, Base init/member-before-base destruction, callJSOnread, and existing Resource8 uv/include seam."
+  ],
+  "authority": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/authority/stream_base.cc.v24.13.txt",
+      "sha256": "b5420659cb816f074f9a8c3a5d96c2fe52c90253a08392e5306b657512c2a9b4",
+      "bytes": 28310
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/authority/stream_base-inl.h.v24.13.txt",
+      "sha256": "ce08e90a41bbfca00996eb2cf14e228472246f0b8a91d91c17ec7d2f0d4bf2c6",
+      "bytes": 5052
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/authority/stream_base.h.v24.13.txt",
+      "sha256": "e89c31a78f138dee6fba5ebf9795bf3a59569d041b9955ae8183b09633103334",
+      "bytes": 18488
+    }
+  ],
+  "verification": {
+    "resource_inverse": "97D16E84BE24B636F1926ED50A800252D90F9D147169EB96FE85E94025754ABC",
+    "excerpts": [
+      {
+        "file": "stream_base-inl.h.v24.13.txt",
+        "line": 70,
+        "exact": true
+      },
+      {
+        "file": "stream_base-inl.h.v24.13.txt",
+        "line": 97,
+        "exact": true
+      },
+      {
+        "file": "stream_base-inl.h.v24.13.txt",
+        "line": 121,
+        "exact": true
+      },
+      {
+        "file": "stream_base.cc.v24.13.txt",
+        "line": 447,
+        "exact": true
+      },
+      {
+        "file": "stream_base.cc.v24.13.txt",
+        "line": 687,
+        "exact": true
+      },
+      {
+        "file": "stream_base.h.v24.13.txt",
+        "line": 113,
+        "exact": true
+      },
+      {
+        "file": "stream_base.h.v24.13.txt",
+        "line": 306,
+        "exact": true
+      }
+    ],
+    "build_unique": true,
+    "build_inverse": true,
+    "proposed_base_sha": "2106ACFC515CB043AA2C4A721856293203C7549B98BA1C7ABC33BFC87CAFC67D",
+    "proposed_after_sha": "B02108EFB017F9D2C64B90E4544305CA27CD6DB06F31CFA206D832E31214C6FA"
+  },
+  "observations": [
+    "The four Resource edits reverse exactly to the previously closed 97D16E84. Actual EmitAlloc selects the live head; EmitRead advances the unsigned bytes_read counter only for positive nread, with modular addition before selecting and invoking the real read method.",
+    "ReadMethods is an explicit native interface; lifecycle-only listeners receive no fabricated passing read callback. Valid EmitAlloc/EmitRead callers must install the original real read implementation and live head.",
+    "Base initialization constructs the actual Resource, borrowed Environment and embedded default listener before PushStreamListener. Deinit unlinks that native member before the Resource destructor traverses remaining listeners, preserving the prior closed destruction algorithm.",
+    "defaultAllocate obtains Environment and the required allocation operation before invoking native NewBackingStore with the actual uninitialized flag; it transfers the owned token into the real managed table and retires the consumed local. No Base member is read after the potentially collecting allocation.",
+    "callJSOnread writes both real Environment int32 aliases before the virtual GetAsyncWrap. Its absent/real ArrayBuffer argument, source CHECK order, genuine wrapper internal onread field and IsFunction check match the full B542 body.",
+    "The wrapper and selected onread remain in the caller Scope, corresponding to Source Local handles. Trace operations are copied before AsyncWrap callback entry and neither Base nor State is accessed after that call.",
+    "The existing Resource8 target needs uv/include because the actual read-vtable ABI imports uv_buf_t. Its sole added include line applies uniquely and reverses against the already reviewed Map22 projection; it creates no new production library or run edge."
+  ],
+  "limits": [
+    "ReadBody/defaultRead native token and enclosing Scope lifetime are VM's separate slice; actual AsyncWrap trace order is Root's slice.",
+    "Native NewBackingStore GC/retry/fatal implementation and real tracing category/controller remain required, uninstalled operations.",
+    "Public StreamBase/FunctionTemplate/FileHandle lifecycle, invalid native abstract-interface use and debug-only HandleScope sealing are outside this finite selected slice.",
+    "No controls, compiler, AST, native execution or runtime qualification."
+  ]
+}

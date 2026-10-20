@@ -1,0 +1,24 @@
+{
+  "scope": "Source-only StreamFields newInstance prior-pending admission correction",
+  "original": {
+    "path": "async-wrap-state.before-stream-admission.zig.txt",
+    "sha256": "25971BD94ADE152C7F419C20D76C5EE4A2001D57997290DE2FCD5D5008E8B277",
+    "bytes": 26688
+  },
+  "successor": {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "sha256": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25",
+    "bytes": 26688
+  },
+  "edits": [
+    {
+      "before": "        // These native bytes are the FileHandle wrapper's internal fields.\n",
+      "after": "        const generation = try s.beforeAllocation();\n        // These native bytes are the FileHandle wrapper's internal fields.\n"
+    },
+    {
+      "before": "        const generation = try s.beforeAllocation();\n        const result = c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind));\n",
+      "after": "        const result = c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind));\n"
+    }
+  ],
+  "validation": "Each edit occurs once; exact forward and reverse string readback. Moving generation acquisition before native StreamFields allocation retains the old local beforeAllocation pending gate. The wrapper still receives fields before checkedAllocation owns/retires its raw result. No other production bytes changed; no execution."
+}

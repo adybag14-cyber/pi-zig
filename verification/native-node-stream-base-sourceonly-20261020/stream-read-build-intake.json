@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "path": "build.zig",
+  "base_sha256": "30348C988F824617E52EE47ECF64099D537582F8255E1B47C994820AA7814A62",
+  "base_bytes": 486960,
+  "before": "        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+  "after": "        const node_stream_read = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_stream_read_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"Node StreamBase read\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_stream_read.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_stream_read.root_module, typescript_parser);\n        linkSqlite(node_stream_read.root_module, sqlite_lib_dir, sqlite_library);\n        node_stream_read.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_stream_read.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_stream_read.root_module.linkLibrary(network);\n        if (target.result.os.tag == .windows) {\n            node_stream_read.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_stream_read.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-stream-read\", \"Install eighteen actual StreamBase read-composition controls without execution\").dependOn(&b.addInstallArtifact(node_stream_read, .{ .dest_sub_path = b.fmt(\"native-node-stream-read{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const native_node_fs_request_owner_tests = b.addTest(.{\n",
+  "added_lines": 15,
+  "target": "build-native-node-stream-read",
+  "artifact": "native-node-stream-read",
+  "root": "src/native_node_stream_read_test.zig",
+  "filter": "Node StreamBase read",
+  "declarations": 18,
+  "scope": "Install-only insertion before the actual FS request-owner target inside its existing native network guard; reuses one network library, shared QuickJS/TypeScript/SQLite/catalog and Windows links. No Main/build.zig mutation or execution.",
+  "dependencies": [
+    "StreamFields10 actual State4912, source peer closures",
+    "Managed table/raw12 plus same Environment EEF21 reviewed proposal",
+    "One shared native-memory Compile and network library, including managed CPP membership",
+    "Backing allocation/adoption ABI eb4ec1d6 and actual OOM occurrence API",
+    "Actual MakeCallback7D54 and callback Environment; full retry/trace owners remain excluded"
+  ]
+}

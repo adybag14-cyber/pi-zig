@@ -1,0 +1,49 @@
+{
+  "status": "All assigned finite source-only peer slices CLOSED; no native execution",
+  "date": "2026-10-20",
+  "production": {
+    "path": "production-delta.json",
+    "sha256": "5CE6502330E09C9ED1F2E0D21BAF7EDE38B9185E90F778D347388D36CB5AEC18",
+    "steps": 104,
+    "accounting_successor": "B4CADFF98D512786157494067C746D88C53AB8B69C89D9546002626C21DF006E",
+    "current_C": "8407EA70CAC10FD41EFADBF31B8C043F86B322EA1A1D09DCB1EA00176761C241"
+  },
+  "root": {
+    "path": "src/native_vm_script_location_test.zig",
+    "sha256": "99A495F924700FDCFB64C479C61FEF6D2E5CE8532944615324079CBB17F17F55",
+    "bytes": 52063,
+    "declarations": 32
+  },
+  "receipts": [
+    {
+      "path": "peers/modules-owner-production.json",
+      "sha256": "EDEFE96CB8F3696243C61D74AEBC7AB04D7760D89E79A04143F7150DCA68F5E8",
+      "scope": "native Script, compiler and captured-frame ownership/raw projections; accounting successor"
+    },
+    {
+      "path": "peers/sdk-compiler-serialization-production.json",
+      "sha256": "8165C55349187A5B1C16F86BED6F9CA3A5F83EEFEA2AAF1CDB95ABA86353B086",
+      "scope": "token offsets, compiler passes/rewriting and complete reader/writer/version 31"
+    },
+    {
+      "path": "peers/modules-controls-build.json",
+      "sha256": "A3EF8591C561A37FB9BAC939973363004957BA8E3E282BF7E2027BCB7FAC60AB",
+      "scope": "Fixture/capture/Receiver and 12-13/16-20/29-32 plus six-line build"
+    },
+    {
+      "path": "peers/sdk-controls-version.json",
+      "sha256": "9417F0A2634FAE74AB0B0563E9306D4B7B547A1AC675EAE83A0F6F677BA614C8",
+      "scope": "1-11/14-15/21-28, functional/serialization helpers and existing version assertions"
+    }
+  ],
+  "corrected_findings": [
+    "Script input allocation memory accounting is conditional on actual input pointer publication.",
+    "Declaration32 now observes the actual failed-parse Error's captured synthetic frame and absence of Script provenance."
+  ],
+  "independent_exact_source_readback": "90C61F3C0863CD9687ECE0C2B63F62CC6CD7AFAF223A00F50EA44C7543E71028",
+  "execution": false,
+  "limits": [
+    "Message construction, failed-parse Error-to-Script attachment, reporting catcher and Node listener remain separate.",
+    "Fresh compiler, metadata and runtime acceptance belongs to the Root-controlled native process."
+  ]
+}

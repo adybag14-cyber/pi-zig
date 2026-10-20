@@ -1,0 +1,45 @@
+{
+  "status": "CLOSED finite source-only managed-buffer container/order peer",
+  "source_only": true,
+  "execution": false,
+  "production": {
+    "cpp": "E2083CD514D8CDB24839763513DD764A789EF628DCB2A1AB455B3A864312949D",
+    "header": "976A8C7263BB4A3B870FB341A832BA6692EB7639E9EAD5FDC0C9C9B35D0D9E57",
+    "zig": "BE567B795D5129373EEFCF2A7C95E9017C481E020F17472E2C35838689F22B88",
+    "packet": "0DE6C717995767B3EB21F0BFEC38E22E342CD49FAF385F269E59D4C7810A6631"
+  },
+  "authority": {
+    "environment_cc": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9",
+    "environment_h": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0",
+    "actual_method_range": {
+      "start": 29271,
+      "end": 30036,
+      "sha256": "B457A082E7751B7323AB1DB69BB263BE063CC6F7412FA6B3F6B28B9AFF3184B1"
+    },
+    "actual_member_range": {
+      "start": 44793,
+      "end": 45110,
+      "sha256": "C179510DB8366ED3C04C6F261CA061B518812CB66F67D3067F7DC0536D8C4AE5"
+    },
+    "complete_original_hashes_verified": true
+  },
+  "assigned_scope": [
+    "Actual pointer-key unordered_map selection and empty construction",
+    "Allocation-before-uv_buf_init-before-emplace selected tail",
+    "Find/native-CHECK/move/erase selected release order",
+    "Native container destruction and shared allocator selection"
+  ],
+  "findings": [
+    "Entries instantiates actual std::unordered_map<char*, ...> with the original pointer hash/equality and the closed empty standard allocator16D82. It introduces no alternate key representation, ordering, lock or snapshot.",
+    "adopt takes the already-owned native backing token into a move-only local, produces the original uv_buf_init unsigned length view, then enters the genuine allocation domain before emplace. Native insertion, duplicate-key ownership and local retirement use the real container.",
+    "release keeps the original null-base bypass. For nonnull bases it performs the actual lookup, reaches the explicit native CHECK on a missing entry, moves the found backing before erasing the node, then transfers the complete native token to the empty caller output.",
+    "Container destruction follows actual native container destruction; allocation prefixes retire through their original domains, independent of a current TLS scope. Empty construction has no added box allocation.",
+    "The mapped inline token is larger than V8 unique_ptr and therefore changes actual map-node size. The source packet states that representation/charge difference explicitly; no byte-size parity is asserted."
+  ],
+  "limits": [
+    "VM owns backing token move/release ABI and lifetime.",
+    "Root owns Environment tail layout, partial initialization and CHECK diagnostic mapping.",
+    "Backing allocation/GC/retry/fatal policy, table controls/build and complete public StreamBase/FileHandle remain separate.",
+    "No execution."
+  ]
+}

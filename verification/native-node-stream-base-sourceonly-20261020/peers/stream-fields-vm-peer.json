@@ -1,0 +1,20 @@
+{
+  "status": "finite source peer CLOSED; no execution",
+  "production": "4912FF07",
+  "root": "8DBFA1F6946ACFBDC32186EFFC440A8F6CDD47A16838DCE40C7BED73D034C8B9",
+  "scope": [
+    "Fixture, Probe, Node finalizers/lifetime",
+    "controls 5-8"
+  ],
+  "findings": [
+    "The real external native strong wrapper root keeps the onread cycle alive until DeleteMe; internal gc_mark does not subtract that root.",
+    "Weak wrapper retirement calls native retire/destroy before releasing the sole callback marker.",
+    "Realm cleanup clears State while wrapper/onread remain; late disarmed finalizer uses runtime-only release.",
+    "Fixture host storage outlives Registry/Environment/Engine teardown; explicit deinit is idempotent."
+  ],
+  "limits": [
+    "No public FileHandle constructor/bootstrap/StreamBase integration qualification.",
+    "No runtime execution.",
+    "Other controls and create/get/set source remain Modules' peer."
+  ]
+}

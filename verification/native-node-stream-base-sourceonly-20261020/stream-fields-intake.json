@@ -1,0 +1,150 @@
+{
+  "schema": "sdk-source-unit-intake-v1",
+  "unit": "native StreamFields wrapper owner and ten controls",
+  "date": "2026-10-20",
+  "status": "All finite production/control/build peers closed; source-only. No compile or runtime qualification.",
+  "production_paths": [
+    "src/extensions/native_node_async_wrap_state.zig"
+  ],
+  "control_root": "src/native_node_stream_wrapper_test.zig",
+  "declarations": [
+    "Node StreamFields initial internal value is undefined and wrapper brand precedes native attachment",
+    "Node StreamFields real callback edge is internal and survives collection while wrapper remains rooted",
+    "Node StreamFields replacement is published before the previous sole callback edge retires",
+    "Node StreamFields native deletion clears only the State slot and leaves the actual onread value",
+    "Node StreamFields native strong wrapper root retains a real callback cycle until DeleteMe",
+    "Node StreamFields real weak wrapper retirement destroys native state before its callback edge",
+    "Node StreamFields realm cleanup detaches native state while late wrapper releases after disarm",
+    "Node StreamFields VM teardown retires detached onread after Fixture registry and Environment entitlements",
+    "Node StreamFields existing pending reason wins before native fields allocation at exhausted quota",
+    "Node StreamFields failed intrinsic wrapper allocation retires unattached native field storage"
+  ],
+  "build": {
+    "packet": "verification/native-node-stream-base-sourceonly-20261020/stream-fields-build-intake.json",
+    "sha256": "1FCC74E5FD1C1BD393E3AA6479EDD6E364E382F06B8734FB443363A78EDB54AC",
+    "target": "build-native-node-stream-fields",
+    "artifact": "native-node-stream-fields",
+    "install_only": true,
+    "actual_build_modified": false
+  },
+  "preimage": {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "sha256": "B53C4D0C1412BA496A267C03F58F8AB88CDA0288336098180D986C9D9FC0A04F",
+    "bytes": 20128
+  },
+  "validation": {
+    "production_original_nine_edits_exact": true,
+    "admission_successor_two_edits_exact": true,
+    "complete_reverse_to_preimage": true,
+    "control_filter_count": 10,
+    "build_unique_forward_reverse": true,
+    "native_execution": false
+  },
+  "peers": [
+    {
+      "owner": "vm_foundation",
+      "receipt": "peers/stream-fields-vm-peer.json",
+      "sha256": "86DC7F12D897B4B21F65D3EC1149F4562B2A848AD88492AB3348655211D2CF22",
+      "scope": "StreamFields mark/finalizer/native detach; Fixture/Probe/Node and controls5–8"
+    },
+    {
+      "owner": "modules_io",
+      "receipt": "peers/stream-fields-modules-peer.json",
+      "sha256": "A6722195156F9353DDB9FA32E86D1BC6E63C7BD8D00CC83CBB1877665B347963",
+      "scope": "Registry class/brand/slot/store and newInstance prior-pending admission; controls1–4/9–10"
+    },
+    {
+      "owner": "modules_io",
+      "receipt": "peers/stream-fields-modules-build-peer.json",
+      "sha256": "D3C78B3785E738743730DF837A75BAA52A1880C16AD719C0428BBDB3D6484F6B",
+      "scope": "Exact fifteen-line install-only target, complete original build application/reversal and ten selected names"
+    }
+  ],
+  "intake_rules": [
+    "Apply the two exact production packets to the actual State owner, preserving unrelated later Main changes; do not import the worktree's separate Environment dependency copy.",
+    "Add only the stated root/build proposal and complete proof pathset. This unit does not import unfinished FileHandle, StreamBase read or managed-buffer source.",
+    "The public lazy native accessor and actual FileHandle callback constructor remain separate dependencies; the control fixture exposes neither."
+  ],
+  "files": [
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "sha256": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25",
+      "bytes": 26688
+    },
+    {
+      "path": "src/native_node_stream_wrapper_test.zig",
+      "sha256": "8DBFA1F6946ACFBDC32186EFFC440A8F6CDD47A16838DCE40C7BED73D034C8B9",
+      "bytes": 20985
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/stream-wrapper-fields-source.json",
+      "sha256": "18952109831553B6ABAF4F4E075F1AFF813D35A78C3A1BF8F554F6B65E5F786A",
+      "bytes": 18541
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/stream-wrapper-fields-delta.json",
+      "sha256": "9A236B7606D2BF2B280810BE46E31097756DE9F6B09D299282D133353614EE25",
+      "bytes": 10473
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/stream-wrapper-admission-successor.json",
+      "sha256": "A4BA62BF9BF26BB680E3AB453773EAC653561A0F388015E24F75DEC29662FA40",
+      "bytes": 1383
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/async-wrap-state.before-stream-fields.zig.txt",
+      "sha256": "B53C4D0C1412BA496A267C03F58F8AB88CDA0288336098180D986C9D9FC0A04F",
+      "bytes": 20128
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/async-wrap-state.before-stream-admission.zig.txt",
+      "sha256": "25971BD94ADE152C7F419C20D76C5EE4A2001D57997290DE2FCD5D5008E8B277",
+      "bytes": 26688
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/stream-fields-build-intake.json",
+      "sha256": "1FCC74E5FD1C1BD393E3AA6479EDD6E364E382F06B8734FB443363A78EDB54AC",
+      "bytes": 2116
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/stream-fields-README.md",
+      "sha256": "9647D42F1A52200ACFDD0C0A599E4BFB8B9F2664061E0AEDDE85CF96CB9E0F5E",
+      "bytes": 3353
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/peers/stream-fields-vm-peer.json",
+      "sha256": "86DC7F12D897B4B21F65D3EC1149F4562B2A848AD88492AB3348655211D2CF22",
+      "bytes": 939
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/peers/stream-fields-modules-peer.json",
+      "sha256": "A6722195156F9353DDB9FA32E86D1BC6E63C7BD8D00CC83CBB1877665B347963",
+      "bytes": 2213
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/peers/stream-fields-modules-build-peer.json",
+      "sha256": "D3C78B3785E738743730DF837A75BAA52A1880C16AD719C0428BBDB3D6484F6B",
+      "bytes": 3172
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/authority/src__heap__factory.cc.txt",
+      "sha256": "895D8A6E8BEDE5FF80EA97DE37F765EE54F13D20E449968841C288596B851FC6",
+      "bytes": 203216
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/authority/src__objects__js-objects-inl.h.txt",
+      "sha256": "3BFA48AB518E91A4B3FBE26DBB25FAB76AF50634BA38662F7AB7355BED2EF8CF",
+      "bytes": 41795
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/authority/src__objects__embedder-data-slot-inl.h.txt",
+      "sha256": "0C5534973AAF9DA4B545B4D6FDBEB5FCF3762F841113055A8CD882D9B5E0BDAA",
+      "bytes": 9656
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/authority/wrapper-internal-fields-acquisition.json",
+      "sha256": "C4856EA165B9345563DFA433D27065286F657D25D5974D45730568CB6DFCC3D3",
+      "bytes": 18235
+    }
+  ]
+}

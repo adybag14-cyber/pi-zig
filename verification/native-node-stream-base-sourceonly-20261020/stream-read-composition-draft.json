@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "status": "Source-only initial actual StreamBase read composition, not installed or executed.",
+  "files": [
+    {
+      "path": "src/extensions/native_node_async_wrap_make_callback.zig",
+      "sha256": "AE550CB8190EB284B576C3F9210EBAF4D9B5CB65589C35EAF38B7FF3274EA188",
+      "bytes": 3357
+    },
+    {
+      "path": "src/extensions/native_node_stream_base.zig",
+      "sha256": "0A3F4EB5133BC9543D5AD77DC33F4753ABEC866EB721BCE0A8F08C16BECD5ABF",
+      "bytes": 10864
+    },
+    {
+      "path": "src/extensions/native_node_stream_resource.zig",
+      "sha256": "6CA4CF5CD5E71EAD8C9E6F4FCF0D0075190C853E26978B497389F7D29EBE0AC6",
+      "bytes": 5762
+    }
+  ],
+  "resource_delta": {
+    "base_sha256": "97D16E84BE24B636F1926ED50A800252D90F9D147169EB96FE85E94025754ABC",
+    "original": "original/stream-resource.before-read-vtable.zig.txt",
+    "edits": [
+      {
+        "before": "//! listeners. Read/write virtual operations and the JS prototype are separate.\n",
+        "after": "//! listeners. The selected read vtable is native and borrowed; write operations\n//! and the JS prototype remain separate.\n"
+      },
+      {
+        "before": "const check = @import(\"native_node_check_failure.zig\");\n\npub const Listener",
+        "after": "const check = @import(\"native_node_check_failure.zig\");\nconst std = @import(\"std\");\npub const uv = @import(\"native_node_managed_buffers.zig\").uv;\n\n/// Original pure virtual read operations. A listener used by EmitAlloc/EmitRead\n/// must supply its actual compiled implementation; lifecycle-only listeners do\n/// not install a passing placeholder for these operations.\npub const ReadMethods = struct {\n    allocate: *const fn (*Listener, usize) anyerror!uv.uv_buf_t,\n    read: *const fn (*Listener, isize, uv.uv_buf_t) anyerror!void,\n};\n\npub const Listener"
+      },
+      {
+        "before": "    on_destroy: *const fn (*Listener) void = defaultOnDestroy,\n",
+        "after": "    on_destroy: *const fn (*Listener) void = defaultOnDestroy,\n    read_methods: ?*const ReadMethods = null,\n"
+      },
+      {
+        "before": "    /// Actual StreamResource::~StreamResource. OnStreamDestroy may unlink and\n",
+        "after": "    /// StreamResource::EmitAlloc selects the live head. The native abstract\n    /// interface requires the head and its real read vtable to exist.\n    pub fn emitAlloc(self: *Resource, suggested_size: usize) !uv.uv_buf_t {\n        const selected = self.listener.?;\n        std.debug.assert(selected.read_methods != null);\n        return selected.read_methods.?.allocate(selected, suggested_size);\n    }\n\n    /// The original unsigned counter advances before the selected read method.\n    /// This call may delete the native stream; do not access self after it.\n    pub fn emitRead(self: *Resource, nread: isize, buffer: uv.uv_buf_t) !void {\n        if (nread > 0) self.bytes_read +%= @intCast(nread);\n        const selected = self.listener.?;\n        std.debug.assert(selected.read_methods != null);\n        return selected.read_methods.?.read(selected, nread, buffer);\n    }\n\n    /// Actual StreamResource::~StreamResource. OnStreamDestroy may unlink and\n"
+      }
+    ]
+  },
+  "resource_existing_control_build": {
+    "path": "build.zig",
+    "base_sha256": "30348c988f824617e52ee47ecf64099d537582f8255e1b47c994820aa7814a62",
+    "before": "        linkQuickJs(b, node_stream_resource.root_module, quickjs, sqlite_lib_dir);\n",
+    "after": "        linkQuickJs(b, node_stream_resource.root_module, quickjs, sqlite_lib_dir);\n        node_stream_resource.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n",
+    "added_lines": 1,
+    "reason": "Real uv_buf_t now belongs to the selected native read vtable. Existing eight control names and assertions are unchanged; no new library or execution edge."
+  },
+  "documents": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/authority/stream_base-inl.h.v24.13.txt",
+      "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6",
+      "bytes": 5052,
+      "excerpts": [
+        {
+          "start_line": 70,
+          "end_line_exclusive": 81,
+          "text": "uv_buf_t StreamResource::EmitAlloc(size_t suggested_size) {\n  DebugSealHandleScope seal_handle_scope;\n  return listener_->OnStreamAlloc(suggested_size);\n}\n\nvoid StreamResource::EmitRead(ssize_t nread, const uv_buf_t& buf) {\n  DebugSealHandleScope seal_handle_scope;\n  if (nread > 0)\n    bytes_read_ += static_cast<uint64_t>(nread);\n  listener_->OnStreamRead(nread, buf);\n}\n"
+        },
+        {
+          "start_line": 97,
+          "end_line_exclusive": 101,
+          "text": "StreamBase::StreamBase(Environment* env) : env_(env) {\n  PushStreamListener(&default_listener_);\n}\n\n"
+        },
+        {
+          "start_line": 121,
+          "end_line_exclusive": 134,
+          "text": "void StreamBase::AttachToObject(v8::Local<v8::Object> obj) {\n  obj->SetAlignedPointerInInternalField(\n      StreamBase::kStreamBaseField, this);\n}\n\nStreamBase* StreamBase::FromObject(v8::Local<v8::Object> obj) {\n  if (obj->GetAlignedPointerFromInternalField(StreamBase::kSlot) == nullptr)\n    return nullptr;\n\n  return static_cast<StreamBase*>(\n      obj->GetAlignedPointerFromInternalField(\n          StreamBase::kStreamBaseField));\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/authority/stream_base.cc.v24.13.txt",
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4",
+      "bytes": 28310,
+      "excerpts": [
+        {
+          "start_line": 447,
+          "end_line_exclusive": 480,
+          "text": "MaybeLocal<Value> StreamBase::CallJSOnreadMethod(ssize_t nread,\n                                                 Local<ArrayBuffer> ab,\n                                                 size_t offset,\n                                                 StreamBaseJSChecks checks) {\n  Environment* env = env_;\n\n  DCHECK_EQ(static_cast<int32_t>(nread), nread);\n  DCHECK_LE(offset, INT32_MAX);\n\n  if (checks == DONT_SKIP_NREAD_CHECKS) {\n    if (ab.IsEmpty()) {\n      DCHECK_EQ(offset, 0);\n      DCHECK_LE(nread, 0);\n    } else {\n      DCHECK_GE(nread, 0);\n    }\n  }\n\n  env->stream_base_state()[kReadBytesOrError] = static_cast<int32_t>(nread);\n  env->stream_base_state()[kArrayBufferOffset] = offset;\n\n  Local<Value> argv[] = {\n    ab.IsEmpty() ? Undefined(env->isolate()).As<Value>() : ab.As<Value>()\n  };\n\n  AsyncWrap* wrap = GetAsyncWrap();\n  CHECK_NOT_NULL(wrap);\n  Local<Value> onread = wrap->object()\n                            ->GetInternalField(StreamBase::kOnReadFunctionField)\n                            .As<Value>();\n  CHECK(onread->IsFunction());\n  return wrap->MakeCallback(onread.As<Function>(), arraysize(argv), argv);\n}\n"
+        },
+        {
+          "start_line": 687,
+          "end_line_exclusive": 718,
+          "text": "uv_buf_t EmitToJSStreamListener::OnStreamAlloc(size_t suggested_size) {\n  CHECK_NOT_NULL(stream_);\n  Environment* env = static_cast<StreamBase*>(stream_)->stream_env();\n  return env->allocate_managed_buffer(suggested_size);\n}\n\nvoid EmitToJSStreamListener::OnStreamRead(ssize_t nread, const uv_buf_t& buf_) {\n  CHECK_NOT_NULL(stream_);\n  StreamBase* stream = static_cast<StreamBase*>(stream_);\n  Environment* env = stream->stream_env();\n  Isolate* isolate = env->isolate();\n  HandleScope handle_scope(isolate);\n  Context::Scope context_scope(env->context());\n  std::unique_ptr<BackingStore> bs = env->release_managed_buffer(buf_);\n\n  if (nread <= 0)  {\n    if (nread < 0)\n      stream->CallJSOnreadMethod(nread, Local<ArrayBuffer>());\n    return;\n  }\n\n  CHECK_LE(static_cast<size_t>(nread), bs->ByteLength());\n  if (static_cast<size_t>(nread) != bs->ByteLength()) {\n    std::unique_ptr<BackingStore> old_bs = std::move(bs);\n    bs = ArrayBuffer::NewBackingStore(\n        isolate, nread, BackingStoreInitializationMode::kUninitialized);\n    memcpy(bs->Data(), old_bs->Data(), nread);\n  }\n\n  stream->CallJSOnreadMethod(nread, ArrayBuffer::New(isolate, std::move(bs)));\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/authority/stream_base.h.v24.13.txt",
+      "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334",
+      "bytes": 18488,
+      "excerpts": [
+        {
+          "start_line": 113,
+          "end_line_exclusive": 175,
+          "text": "// This is the generic interface for objects that control Node.js' C++ streams.\n// For example, the default `EmitToJSStreamListener` emits a stream's data\n// as Buffers in JS, or `TLSWrap` reads and decrypts data from a stream.\nclass StreamListener {\n public:\n  virtual ~StreamListener();\n\n  // This is called when a stream wants to allocate memory before\n  // reading data into the freshly allocated buffer (i.e. it is always followed\n  // by a `OnStreamRead()` call).\n  // This memory may be statically or dynamically allocated; for example,\n  // a protocol parser may want to read data into a static buffer if it knows\n  // that all data is going to be fully handled during the next\n  // `OnStreamRead()` call.\n  // The returned buffer does not need to contain `suggested_size` bytes.\n  // The default implementation of this method returns a buffer that has exactly\n  // the suggested size and is allocated using malloc().\n  // It is not valid to return a zero-length buffer from this method.\n  // It is not guaranteed that the corresponding `OnStreamRead()` call\n  // happens in the same event loop turn as this call.\n  virtual uv_buf_t OnStreamAlloc(size_t suggested_size) = 0;\n\n  // `OnStreamRead()` is called when data is available on the socket and has\n  // been read into the buffer provided by `OnStreamAlloc()`.\n  // The `buf` argument is the return value of `uv_buf_t`, or may be a buffer\n  // with base nullptr in case of an error.\n  // `nread` is the number of read bytes (which is at most the buffer length),\n  // or, if negative, a libuv error code.\n  virtual void OnStreamRead(ssize_t nread,\n                            const uv_buf_t& buf) = 0;\n\n  // This is called once a write has finished. `status` may be 0 or,\n  // if negative, a libuv error code.\n  // By default, this is simply passed on to the previous listener\n  // (and raises an assertion if there is none).\n  virtual void OnStreamAfterWrite(WriteWrap* w, int status);\n\n  // This is called once a shutdown has finished. `status` may be 0 or,\n  // if negative, a libuv error code.\n  // By default, this is simply passed on to the previous listener\n  // (and raises an assertion if there is none).\n  virtual void OnStreamAfterShutdown(ShutdownWrap* w, int status);\n\n  // This is called by the stream if it determines that it wants more data\n  // to be written to it. Not all streams support this.\n  // This callback will not be called as long as there are active writes.\n  // It is not supported by all streams; `stream->HasWantsWrite()` returns\n  // true if it is supported by a stream.\n  virtual void OnStreamWantsWrite(size_t suggested_size) {}\n\n  // This is called immediately before the stream is destroyed.\n  virtual void OnStreamDestroy() {}\n\n  // The stream this is currently associated with, or nullptr if there is none.\n  StreamResource* stream() const { return stream_; }\n\n protected:\n  // Pass along a read error to the `StreamListener` instance that was active\n  // before this one. For example, a protocol parser does not care about read\n  // errors and may instead want to let the original handler\n  // (e.g. the JS handler) take care of the situation.\n  inline void PassReadErrorToPreviousListener(ssize_t nread);\n"
+        },
+        {
+          "start_line": 306,
+          "end_line_exclusive": 335,
+          "text": "class StreamBase : public StreamResource {\n public:\n  // The kSlot field here mirrors that of BaseObject::InternalFields::kSlot\n  // because instances deriving from StreamBase generally also derived from\n  // BaseObject (it's possible for it not to, however).\n  enum InternalFields {\n    kSlot = BaseObject::kSlot,\n    kStreamBaseField = BaseObject::kInternalFieldCount,\n    kOnReadFunctionField,\n    kInternalFieldCount\n  };\n\n  static void AddMethods(IsolateData* isolate_data,\n                         v8::Local<v8::FunctionTemplate> target);\n  static void AddMethods(Environment* env,\n                         v8::Local<v8::FunctionTemplate> target);\n  static void RegisterExternalReferences(ExternalReferenceRegistry* registry);\n  virtual bool IsAlive() = 0;\n  virtual bool IsClosing() = 0;\n  virtual bool IsIPCPipe();\n  virtual int GetFD();\n\n  enum StreamBaseJSChecks { DONT_SKIP_NREAD_CHECKS, SKIP_NREAD_CHECKS };\n\n  v8::MaybeLocal<v8::Value> CallJSOnreadMethod(\n      ssize_t nread,\n      v8::Local<v8::ArrayBuffer> ab,\n      size_t offset = 0,\n      StreamBaseJSChecks checks = DONT_SKIP_NREAD_CHECKS);\n"
+        }
+      ]
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-file-handle-sourceonly-20261019/authority/async_wrap.cc.v24.13.txt",
+      "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC",
+      "bytes": 27043,
+      "excerpts": [
+        {
+          "start_line": 125,
+          "end_line_exclusive": 161,
+          "text": "void AsyncWrap::EmitTraceEventBefore() {\n  switch (provider_type()) {\n#define V(PROVIDER)                                                           \\\n    case PROVIDER_ ## PROVIDER:                                               \\\n      TRACE_EVENT_NESTABLE_ASYNC_BEGIN0(                                      \\\n        TRACING_CATEGORY_NODE1(async_hooks),                                  \\\n        #PROVIDER \"_CALLBACK\", static_cast<int64_t>(get_async_id()));         \\\n      break;\n    NODE_ASYNC_PROVIDER_TYPES(V)\n#undef V\n    default:\n      UNREACHABLE();\n  }\n}\n\n\nvoid AsyncWrap::EmitBefore(Environment* env, double async_id) {\n  Emit(env, async_id, AsyncHooks::kBefore,\n       env->async_hooks_before_function());\n}\n\n\nvoid AsyncWrap::EmitTraceEventAfter(ProviderType type, double async_id) {\n  switch (type) {\n#define V(PROVIDER)                                                           \\\n    case PROVIDER_ ## PROVIDER:                                               \\\n      TRACE_EVENT_NESTABLE_ASYNC_END0(                                        \\\n        TRACING_CATEGORY_NODE1(async_hooks),                                  \\\n        #PROVIDER \"_CALLBACK\", static_cast<int64_t>(async_id));               \\\n      break;\n    NODE_ASYNC_PROVIDER_TYPES(V)\n#undef V\n    default:\n      UNREACHABLE();\n  }\n}\n"
+        },
+        {
+          "start_line": 657,
+          "end_line_exclusive": 680,
+          "text": "MaybeLocal<Value> AsyncWrap::MakeCallback(const Local<Function> cb,\n                                          int argc,\n                                          Local<Value>* argv) {\n  EmitTraceEventBefore();\n\n  ProviderType provider = provider_type();\n  async_context context { get_async_id(), get_trigger_async_id() };\n  MaybeLocal<Value> ret =\n      InternalMakeCallback(env(),\n                           object(),\n                           object(),\n                           cb,\n                           argc,\n                           argv,\n                           context,\n                           context_frame_.Get(env()->isolate()));\n\n  // This is a static call with cached values because the `this` object may\n  // no longer be alive at this point.\n  EmitTraceEventAfter(provider, context.async_id);\n\n  return ret;\n}\n"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    "StreamFields 4912FF07 / 9A236B76 + A4BA62BF, controls 8DBFA1F6; original wrapper fields proof 18952109.",
+    "Managed map E2083CD5 / 976A8C72 / BE567B79, exact 0DE6C717; Environment successor EEF21C90 remains proposed, not applied.",
+    "Existing real InternalMakeCallback 7D5433BB and Scope CD8111EE / Boundary 29A3ED13.",
+    "Sealed VM native backing eb4ec1d69c8d21dbd1079f29882654a37b485f24; occurrence c2eec1e2875eb0ed6954b154fd22c749e8cf8c6e; existing native heap fatal CC49A9A4.",
+    "Native category/controller input required; trace authority ADEDAEE7. No default disabled callback.",
+    "Original full native NewBackingStore allocator input required; retry/fatal source 809EBC40. No replacement with one TryNew attempt."
+  ],
+  "ownership_notes": [
+    "The native derived stream owns its actual Environment and stable embedded Base/Resource/listener; Base does not add a JS root.",
+    "OnStreamRead retains Environment through caller HandleScope and backing retirement; no Base/State access follows MakeCallback.",
+    "Original before trace precedes provider/context snapshots. Static after receives only snapshots and runs after empty or failed InternalMakeCallback.",
+    "Original zero/negative, shrink-copy-old-release, intrinsic ArrayBuffer and internal onread order retained.",
+    "The complete native backing operand retains an extra native entitlement while the VM consumes its duplicate. Fresh actual intrinsic OOM reaches the terminal owner before that original entitlement retires. No token box or JS allocation is added.",
+    "Source Local handles, including ignored return, stay in the caller Scope. Actual errors are selected before native backing destruction and final Scope retirement."
+  ],
+  "open_scope": [
+    "No original backing allocator GC/retry owner installation or category/controller implementation supplied by this source unit.",
+    "No public FunctionTemplate lazy accessor/template creation, FileHandle read-start/read-stop/destructor composition, new controls or execution qualification.",
+    "Environment ten-edit managed-storage projection is a separately pending Root peer."
+  ]
+}

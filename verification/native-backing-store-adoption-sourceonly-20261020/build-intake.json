@@ -1,0 +1,14 @@
+{
+  "status": "source-only; install-only; no execution",
+  "path": "build.zig",
+  "before_sha256": "EB0A0E172FF6BA091C59816A136DCBD08679C60B064AD1D09F691004E4A99BB1",
+  "after_sha256": "27AC8FC48ADF782DA11BA98F4D3887D02F7AF85D5264CF07C2F2A9BFF27313B5",
+  "before": "    const oom_occurrence_tests = b.addTest(.{\n",
+  "after": "    if (target.result.os.tag == .windows or target.result.os.tag == .linux) {\n        const native_backing_store_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_backing_store_adoption_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"VM native backing store\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_backing_store_tests.root_module, quickjs, sqlite_lib_dir);\n        b.step(\"build-native-vm-backing-store-adoption\", \"Install actual native backing allocation and adoption controls without execution\").dependOn(&b.addInstallArtifact(native_backing_store_tests, .{}).step);\n    }\n    const oom_occurrence_tests = b.addTest(.{\n",
+  "added_lines": 8,
+  "root": "src/native_vm_backing_store_adoption_test.zig",
+  "filter": "VM native backing store",
+  "target": "build-native-vm-backing-store-adoption",
+  "declarations": 20,
+  "inverse_exact": true
+}

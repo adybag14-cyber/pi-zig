@@ -5,14 +5,26 @@
 //!
 //! StreamBase's default_listener_ is a member: its StreamListener destructor
 //! unlinks it BEFORE the StreamResource base destructor processes the remaining
-//! listeners. Read/write virtual operations and the JS prototype are separate.
+//! listeners. The selected read vtable is native and borrowed; write operations
+//! and the JS prototype remain separate.
 const em = @import("engine.zig");
 const check = @import("native_node_check_failure.zig");
+const std = @import("std");
+pub const uv = @import("native_node_managed_buffers.zig").uv;
+
+/// Original pure virtual read operations. A listener used by EmitAlloc/EmitRead
+/// must supply its actual compiled implementation; lifecycle-only listeners do
+/// not install a passing placeholder for these operations.
+pub const ReadMethods = struct {
+    allocate: *const fn (*Listener, usize) anyerror!uv.uv_buf_t,
+    read: *const fn (*Listener, isize, uv.uv_buf_t) anyerror!void,
+};
 
 pub const Listener = struct {
     stream: ?*Resource = null,
     previous_listener: ?*Listener = null,
     on_destroy: *const fn (*Listener) void = defaultOnDestroy,
+    read_methods: ?*const ReadMethods = null,
 
     // The original virtual default OnStreamDestroy() has an empty body.
     fn defaultOnDestroy(_: *Listener) void {}
@@ -83,6 +95,23 @@ pub const Resource = struct {
         }
         selected.stream = null;
         selected.previous_listener = null;
+    }
+
+    /// StreamResource::EmitAlloc selects the live head. The native abstract
+    /// interface requires the head and its real read vtable to exist.
+    pub fn emitAlloc(self: *Resource, suggested_size: usize) !uv.uv_buf_t {
+        const selected = self.listener.?;
+        std.debug.assert(selected.read_methods != null);
+        return selected.read_methods.?.allocate(selected, suggested_size);
+    }
+
+    /// The original unsigned counter advances before the selected read method.
+    /// This call may delete the native stream; do not access self after it.
+    pub fn emitRead(self: *Resource, nread: isize, buffer: uv.uv_buf_t) !void {
+        if (nread > 0) self.bytes_read +%= @intCast(nread);
+        const selected = self.listener.?;
+        std.debug.assert(selected.read_methods != null);
+        return selected.read_methods.?.read(selected, nread, buffer);
     }
 
     /// Actual StreamResource::~StreamResource. OnStreamDestroy may unlink and

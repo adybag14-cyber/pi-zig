@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "CLOSED: finite StreamFields10 install-only build seam",
+  "reviewer": "modules_io",
+  "date": "2026-10-20",
+  "execution": false,
+  "inputs": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/stream-fields-build-intake.json",
+      "bytes": 2116,
+      "sha256": "1fcc74e5fd1c1bd393e3aa6479edd6e364e382f06b8734fb443363a78edb54ac"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/native_node_stream_wrapper_test.zig",
+      "bytes": 20985,
+      "sha256": "8dbfa1f6946acfbdc32186effc440a8f6cdd47a16838dce40c7bed73d034c8b9"
+    }
+  ],
+  "build": {
+    "base_sha256": "30348C988F824617E52EE47ECF64099D537582F8255E1B47C994820AA7814A62",
+    "base_bytes": 486960,
+    "after_sha256": "C9E1AC661DDFA1FB12FF03A0F7ECA94F474E41B0D2327ED8F9269E116B8DAE78",
+    "added_lines": 15,
+    "unique_anchor": true,
+    "exact_inverse": true,
+    "target": "build-native-node-stream-fields",
+    "artifact": "native-node-stream-fields",
+    "root": "src/native_node_stream_wrapper_test.zig",
+    "filter": "Node StreamFields",
+    "declarations": [
+      "Node StreamFields initial internal value is undefined and wrapper brand precedes native attachment",
+      "Node StreamFields real callback edge is internal and survives collection while wrapper remains rooted",
+      "Node StreamFields replacement is published before the previous sole callback edge retires",
+      "Node StreamFields native deletion clears only the State slot and leaves the actual onread value",
+      "Node StreamFields native strong wrapper root retains a real callback cycle until DeleteMe",
+      "Node StreamFields real weak wrapper retirement destroys native state before its callback edge",
+      "Node StreamFields realm cleanup detaches native state while late wrapper releases after disarm",
+      "Node StreamFields VM teardown retires detached onread after Fixture registry and Environment entitlements",
+      "Node StreamFields existing pending reason wins before native fields allocation at exhausted quota",
+      "Node StreamFields failed intrinsic wrapper allocation retires unattached native field storage"
+    ]
+  },
+  "observations": [
+    "The exact fifteen added lines use the same existing native network guard and Compile pointer as the FS request-owner anchor and previously reviewed StreamBase read target.",
+    "QuickJS/TypeScript parser/SQLite/catalog, UV headers and Windows advapi32/userenv links match that genuine Engine import graph. No native CPP membership, duplicate library or run edge is added.",
+    "The actual root has ten declaration names; every name matches the literal filter. Target and artifact are unique against the complete Main30348 build bytes.",
+    "Application/reversal was performed in memory only. The shared build file and Main were not mutated."
+  ],
+  "limits": [
+    "This is build-source review, not a typecheck, compile, link or runtime result.",
+    "Production4912/A4BA and the split StreamFields control peers remain separate receipts; their prior closure is not broadened here."
+  ]
+}

@@ -47,6 +47,16 @@ pub const WeakBindingSlot = struct {
     release: *const fn (*anyopaque) void,
 };
 
+/// FileHandle's actual internal fields belong to the JavaScript wrapper.
+/// BaseObject deletion clears only the native State pointer. The onread edge
+/// remains traced until the wrapper itself is collected, even after detach.
+const StreamFields = struct {
+    registry: *Registry,
+    state: ?*State = null,
+    stream: ?*anyopaque = null,
+    onread: c.JSValue,
+};
+
 /// Independently retained native owner. One realm cleanup registration covers
 /// the real intrusive list, and every attached State retains this allocation.
 /// Clearing a JS wrapper does not depend on the order of other GC finalizers.
@@ -87,7 +97,9 @@ pub const Registry = struct {
             if (c.JS_NewClassID(s.engine.runtime, &self.class_ids[index]) == 0)
                 return error.OutOfMemory;
             const definition: c.JSClassDef = .{
-                .class_name = name, .finalizer = wrapperFinalizer, .gc_mark = wrapperMark,
+                .class_name = name,
+                .finalizer = if (index == @intFromEnum(Kind.filehandle)) streamWrapperFinalizer else wrapperFinalizer,
+                .gc_mark = if (index == @intFromEnum(Kind.filehandle)) streamWrapperMark else wrapperMark,
             };
             const status = c.JS_NewClass(s.engine.runtime, self.class_ids[index], &definition);
             try s.boundary.checkPendingSince(generation);
@@ -135,16 +147,96 @@ pub const Registry = struct {
     /// template instance after its BaseObject has been deleted.
     pub fn unwrap(self: *const Registry, value: c.JSValue) ?*State {
         if (!self.hasTemplateBrand(value)) return null;
+        if (c.JS_GetClassID(value) == self.classId(.filehandle)) {
+            const fields = self.streamFields(value) orelse return null;
+            return fields.state;
+        }
         const raw = c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return null;
         const state: *State = @ptrCast(@alignCast(raw));
         return if (state.registry == self) state else null;
+    }
+    fn streamFields(self: *const Registry, wrapper: c.JSValue) ?*StreamFields {
+        if (c.JS_GetClassID(wrapper) != self.classId(.filehandle)) return null;
+        const raw = c.JS_GetOpaque(wrapper, self.classId(.filehandle)) orelse return null;
+        const fields: *StreamFields = @ptrCast(@alignCast(raw));
+        return if (fields.registry == self) fields else null;
+    }
+    fn nativePointerIsEmpty(self: *const Registry, wrapper: c.JSValue) bool {
+        if (c.JS_GetClassID(wrapper) == self.classId(.filehandle)) {
+            const fields = self.streamFields(wrapper) orelse return false;
+            return fields.state == null;
+        }
+        return c.JS_GetOpaque(wrapper, c.JS_GetClassID(wrapper)) == null;
+    }
+    fn attachNativePointer(self: *Registry, wrapper: c.JSValue, state: *State) void {
+        if (c.JS_GetClassID(wrapper) == self.classId(.filehandle)) {
+            const fields = self.streamFields(wrapper).?;
+            std.debug.assert(fields.state == null);
+            fields.state = state;
+        } else {
+            _ = c.JS_SetOpaque(wrapper, state);
+        }
+    }
+    fn clearNativePointer(self: *Registry, wrapper: c.JSValue, state: *State) void {
+        if (c.JS_GetClassID(wrapper) == self.classId(.filehandle)) {
+            const fields = self.streamFields(wrapper).?;
+            std.debug.assert(fields.state == state);
+            fields.state = null;
+        } else {
+            _ = c.JS_SetOpaque(wrapper, null);
+        }
+    }
+    /// StreamBase's native constructor installs its actual pointer separately
+    /// from BaseObject's pointer. No guest property or substitute key is used.
+    pub fn setStreamPointer(self: *Registry, wrapper: c.JSValue, stream: *anyopaque) !void {
+        const fields = self.streamFields(wrapper) orelse return self.check(.invalid_wrap_brand);
+        if (fields.state == null) return self.check(.invalid_wrap_brand);
+        fields.stream = stream;
+    }
+    /// FromObject first requires the live BaseObject slot. A stale stream slot
+    /// after native deletion is therefore never dereferenced.
+    pub fn streamPointer(self: *const Registry, wrapper: c.JSValue) ?*anyopaque {
+        const fields = self.streamFields(wrapper) orelse return null;
+        if (fields.state == null) return null;
+        return fields.stream;
+    }
+    /// The actual getter works on a retained template instance after native
+    /// deletion too. The value is an internal wrapper edge, not a native Global.
+    pub fn streamOnRead(self: *Registry, s: *LocalScope, wrapper: c.JSValue) !c.JSValue {
+        const fields = self.streamFields(wrapper) orelse return self.check(.invalid_wrap_brand);
+        return s.own(a.duplicate(s.engine, fields.onread));
+    }
+    /// The public InternalFieldSet callback supplies its original IsFunction
+    /// CHECK before this native store. Publish the new edge before old cleanup.
+    pub fn setStreamOnRead(self: *Registry, s: *LocalScope, wrapper: c.JSValue, value: c.JSValue) !void {
+        const fields = self.streamFields(wrapper) orelse return self.check(.invalid_wrap_brand);
+        var previous = fields.onread;
+        fields.onread = a.duplicate(s.engine, value);
+        s.boundary.release(&previous);
     }
     /// Caller has already selected the genuine template's instance prototype.
     /// This is the actual object allocation, with no constructor-body callback.
     pub fn newInstance(self: *Registry, s: *LocalScope, kind: Kind, prototype: c.JSValue) !c.JSValue {
         if ((try self.environment.requireEngine()) != s.engine) return error.ActualAsyncWrapEnvironmentMismatch;
         const generation = try s.beforeAllocation();
-        return s.checkedAllocation(c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind)), generation);
+        // These native bytes are the FileHandle wrapper's internal fields.
+        // Attach them before checkedAllocation can retire a failed raw result.
+        var fields: ?*StreamFields = null;
+        if (kind == .filehandle) {
+            const created = try self.environment.allocator().create(StreamFields);
+            created.* = .{ .registry = self.retain(), .onread = c.pi_js_undefined() };
+            fields = created;
+        }
+        errdefer if (fields) |unattached| {
+            self.environment.allocator().destroy(unattached);
+            self.release();
+        };
+        const result = c.JS_NewObjectProtoClass(s.engine.context, prototype, self.classId(kind));
+        if (!c.JS_IsException(result)) if (fields) |attached| {
+            _ = c.JS_SetOpaque(result, attached);
+            fields = null;
+        };
+        return s.checkedAllocation(result, generation);
     }
     pub fn append(self: *Registry, state: *BaseEntry) void {
         std.debug.assert(!state.linked and state.previous == null and state.next == null);
@@ -217,7 +309,7 @@ pub const State = struct {
         try s.pending();
         if (!registry.hasTemplateBrand(wrapper))
             return registry.check(.invalid_wrap_brand);
-        if (c.JS_GetOpaque(wrapper, c.JS_GetClassID(wrapper)) != null)
+        if (!registry.nativePointerIsEmpty(wrapper))
             return registry.check(.invalid_wrap_brand);
         self.* = .{
             .registry = registry.retain(), .wrapper = wrapper,
@@ -225,7 +317,7 @@ pub const State = struct {
             .base_entry = .{ .raw = self, .delete_me = deleteBaseEntry },
             .context_frame = c.pi_js_undefined(),
         };
-        _ = c.JS_SetOpaque(wrapper, self);
+        registry.attachNativePointer(wrapper, self);
         registry.append(&self.base_entry);
         const environment = registry.environment;
         self.context_frame = try environment.currentContextFrame();
@@ -362,7 +454,7 @@ pub const State = struct {
         const engine = try environment.requireEngine();
         if (from_gc) {
             std.debug.assert(self.strong_wrapper == null);
-            if (self.wrapper) |wrapper| _ = c.JS_SetOpaque(wrapper, null);
+            if (self.wrapper) |wrapper| registry.clearNativePointer(wrapper, self);
             self.wrapper = null;
         }
         var scope = LocalScope.init(engine);
@@ -378,7 +470,7 @@ pub const State = struct {
         self.async_id = -1;
         scope.boundary.release(&self.context_frame);
         registry.unlink(&self.base_entry);
-        if (self.wrapper) |wrapper| _ = c.JS_SetOpaque(wrapper, null);
+        if (self.wrapper) |wrapper| registry.clearNativePointer(wrapper, self);
         self.wrapper = null;
         if (self.strong_wrapper) |value| {
             self.strong_wrapper = null;
@@ -391,6 +483,44 @@ pub const State = struct {
         engine.freeValue(ignored);
     }
 };
+fn streamWrapperFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
+    const fields: *StreamFields = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
+    const registry = fields.registry;
+    if (registry.environment.engine) |engine| {
+        var scope = LocalScope.init(engine);
+        var failure: ?anyerror = null;
+        if (fields.state) |state| state.retire(true) catch |err| {
+            scope.boundary.escaping();
+            failure = err;
+        };
+        std.debug.assert(fields.state == null);
+        _ = c.JS_SetOpaque(value, null);
+        scope.boundary.release(&fields.onread);
+        registry.environment.allocator().destroy(fields);
+        defer registry.release();
+        const ignored = scope.finish(if (failure) |err| @as(anyerror!c.JSValue, err) else c.pi_js_undefined()) catch |err| {
+            _ = callable.failure(engine, err, 0);
+            return;
+        };
+        engine.freeValue(ignored);
+    } else {
+        // Realm cleanup already deleted every actual native object. A retained
+        // JS wrapper may still retire during VM teardown after Env.disarm.
+        std.debug.assert(fields.state == null);
+        _ = c.JS_SetOpaque(value, null);
+        const onread = fields.onread;
+        fields.onread = c.pi_js_undefined();
+        c.JS_FreeValueRT(runtime, onread);
+        registry.environment.allocator().destroy(fields);
+        registry.release();
+    }
+}
+fn streamWrapperMark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
+    const fields: *StreamFields = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
+    c.JS_MarkValue(runtime, fields.onread, marker);
+    if (fields.state) |state| state.mark(runtime, marker);
+}
+
 fn wrapperFinalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
     const engine = state.registry.environment.requireEngine() catch return;

@@ -1,0 +1,34 @@
+{
+  "base_commit": "eb4ec1d69c8d21dbd1079f29882654a37b485f24",
+  "steps": 104,
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before_sha256": "E61EF49E44E22C2B327F229B0285D801598773B8BFE90A9B0D175071439AD98A",
+      "before_bytes": 2366845,
+      "sha256": "0D8B6ED831E0FF09600C3E5B8A25027D3821E6E29067D6C860CEF1ED2FC21991",
+      "bytes": 2392081
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before_sha256": "B1BC3EF2E9E5DCD3EDC915231AD7EAA1C4ED4F1DBEA49BFBCF57425D528C343D",
+      "before_bytes": 107135,
+      "sha256": "08230E99EB7AB2AC38C94ED3810D81DEE850CB5A067902634E0C2CC5D112F966",
+      "bytes": 110090
+    },
+    {
+      "path": "vendor/quickjs/quickjs-opcode.h",
+      "before_sha256": "55122ADB07E3F9FB91C4779A2C7ECF721294593035D3880B005B769F31B7485D",
+      "before_bytes": 15829,
+      "sha256": "194F1AE899FF525FEAE54265369720E767494130A9CE31E4E3ABC00E9C1E9181",
+      "bytes": 15841
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+      "before_sha256": "87A771EB6291F195C7DEB63DA8B29F20805AEA0F07B6320985E10C090348B639",
+      "before_bytes": 17063,
+      "sha256": "4FBF487CC09627A2176815995AF3246E88274A7D1AD1A952802AC01AF478BCE5",
+      "bytes": 17263
+    }
+  ]
+}

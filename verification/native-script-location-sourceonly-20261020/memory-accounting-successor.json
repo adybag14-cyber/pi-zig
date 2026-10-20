@@ -1,0 +1,10 @@
+{
+  "status": "source-only exact partial-construction accounting successor",
+  "before_sha256": "0D8B6ED831E0FF09600C3E5B8A25027D3821E6E29067D6C860CEF1ED2FC21991",
+  "after_sha256": "8407EA70CAC10FD41EFADBF31B8C043F86B322EA1A1D09DCB1EA00176761C241",
+  "path": "vendor/quickjs/quickjs.c",
+  "before": "        s->memory_used_count += 2;\n        s->memory_used_size += sizeof(*script) + script->input_length + 1;",
+  "after": "        s->memory_used_count++;\n        s->memory_used_size += sizeof(*script);\n        if (script->input) {\n            s->memory_used_count++;\n            s->memory_used_size += script->input_length + 1;\n        }",
+  "count": 1,
+  "reason": "Only count the complete input block when actual input allocation succeeded; Script is linked before input allocation and OOM can reenter native memory observation through GC/finalizers."
+}

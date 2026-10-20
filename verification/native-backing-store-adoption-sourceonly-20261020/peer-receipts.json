@@ -1,0 +1,79 @@
+{
+  "status": "all assigned finite source peers closed; no execution",
+  "production_packet": {
+    "path": "verification/native-backing-store-adoption-sourceonly-20261020/production-delta.json",
+    "sha256": "D94BDE94024B6CD523FCC2AE8DA4ED27249B440BF0444746E7C55EACE024EC65"
+  },
+  "control_root": {
+    "path": "src/native_vm_backing_store_adoption_test.zig",
+    "sha256": "43E01F6D9C0714E77458F0417E7EBDA026D5EB6E38642923155800739FCB8ABF",
+    "bytes": 31150,
+    "names": [
+      "VM native backing store allocates before a context with no JS wrapper or heap allocation",
+      "VM native backing store exposes real writable bytes before consuming adoption without a copy",
+      "VM native backing store zero initialization is a separate actual allocation mode",
+      "VM native backing store zero length retains a real owner with null logical data",
+      "VM native backing store duplicates and releases independent entitlements with exact charge retirement",
+      "VM native backing store adoption uses the intrinsic realm despite poisoned public constructors",
+      "VM native backing store wrapper allocation failure consumes exactly its native entitlement",
+      "VM native backing store prior ordinary pending consumes the store before any wrapper allocation",
+      "VM native backing store prior generic fatal is preserved without an allocation report",
+      "VM native backing store prior native termination remains the actual published event",
+      "VM native backing store native quota and overflow failure leave pending and OOM history unchanged",
+      "VM native backing store absence of a provider returns empty without inventing a JS failure",
+      "VM native backing store adoption rejects another native allocation domain and consumes the original owner",
+      "VM native backing store missing owner is distinct from an owned zero-length store",
+      "VM native backing store workers retain and retire storage after its runtime and caller domain retire",
+      "VM native backing store short-copy ordering retires the old allocation before wrapper adoption",
+      "VM native backing store adopted wrapper and actual view lease retain independent detach owners",
+      "VM native backing store explicit duplicate can back two intrinsic wrappers without copying",
+      "VM native backing store adopted buffers preserve actual equal and changed transfer ownership",
+      "VM native backing store uninitialized mode leaves JS fixed resizable and shared initialization intact"
+    ]
+  },
+  "sdk_production": {
+    "receipt": "verification/native-backing-store-adoption-sourceonly-20261020/backing-api-peer.json",
+    "sha256": "0036E96B5409E5DC006853859BA14A0D0B5C0A0A8CE52CE6F6B70CDB519F6F4F",
+    "scope": "Native store record/New/Data/Length/Dup/clear-before-Release, actual provider/domain match, consuming constructor4 and pending/failure ownership",
+    "closed": true
+  },
+  "sdk_controls": {
+    "closed": true,
+    "root_sha256": "43E01F6D9C0714E77458F0417E7EBDA026D5EB6E38642923155800739FCB8ABF",
+    "declarations": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9,
+      10,
+      12,
+      13,
+      14
+    ],
+    "helpers": "Fixture allocate/checked/exception/view/lease",
+    "receipt_kind": "direct peer message from sdk_owners, retained verbatim below",
+    "receipt": "Backing20 assigned controls finite peer CLOSED on 43E01F6D: declarations1–4,6–10,12–14 plus Fixture allocate/checked/exception/view/lease helpers. Actual pre-context/no-VM-heap allocation, same-byte adoption, zero native owner, intrinsic constructor bypass, wrapper limit failure, exact ordinary/generic/private pending and provider/domain/empty contracts are causal. Raw outcomes and reasons are owned before assertions; heap limits restore before checks; failure teardown retains native stores/runtime correctly. No blocker in this bounded source slice. Physical worker/transfer controls remain Modules' slice; original retry/fatal/full StreamBase and execution excluded."
+  },
+  "modules_physical_controls_build": {
+    "closed": true,
+    "receipt": "verification/native-backing-store-adoption-sourceonly-20261020/modules-physical-controls-peer.json",
+    "sha256": "A7A0134BEE42196D933C999222BD16638D3E479BFF33CE0DD26A237654700B76",
+    "scope": "Two physical allocator edits; Fixture/Budget/NativeWorker, declarations5/11/15–20 and exact eight-line guarded install-only build"
+  },
+  "verification": {
+    "all_production_inverse": true,
+    "all_build_inverse": true,
+    "source_hash_readback": true,
+    "no_native_execution": true
+  },
+  "limits": [
+    "Original embedding GC/retry and default terminal OOM policy remain required separate owners.",
+    "No complete StreamBase Environment/onread/namespace/bootstrap admission.",
+    "Windows/Linux managed provider only; selected caller uses one Environment/runtime.",
+    "No build, metadata query, test, Node, formatter or generator execution."
+  ]
+}

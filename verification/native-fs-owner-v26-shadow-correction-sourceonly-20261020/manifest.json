@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "unit": "FS request-owner V26 exact lexical correction",
+  "status": "source peer closed; no execution",
+  "parent_commit": "9c1d897a596a1adeb1498ac0099612f6f527dfb7",
+  "production_paths": [
+    "src/extensions/native_node_async_wrap.zig",
+    "src/extensions/native_node_fs_request_promise.zig",
+    "src/native_node_fs_request_owner_test.zig"
+  ],
+  "packet": {
+    "path": "source-delta.json",
+    "sha256": "79E16122B63F4710C01CE851F5C39DE52147EC5E6A1554428BD926969776137F",
+    "edits": 8,
+    "bindings_renamed": 9
+  },
+  "original_compiler": {
+    "path": "original/compile.stderr.log",
+    "sha256": "6067DC07A148BB9F9E5B64C7D03FD14CA4EDA1E5283C419EB299732B5BAB69FB",
+    "bytes": 22907,
+    "reported_errors": 8
+  },
+  "peer": {
+    "path": "peer.json",
+    "sha256": "C1A19CFB00C9549B5521CC611A33345804345E0785F77575D801BDC5F32B9460",
+    "owner": "modules_io",
+    "status": "closed"
+  },
+  "files": [
+    {
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before_sha256": "FF468B5F806AFB07188B2B5CC5BCE8CF826BFD44C7588A8A0B19C4AB7D03D44F",
+      "after_sha256": "540F5D468DA75E474FDD8731E06C55A48BB2E20470A0BE1DEDC1C6BCF61B0D15",
+      "before_bytes": 16721,
+      "after_bytes": 16733,
+      "original": "original/native_node_async_wrap.zig"
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_promise.zig",
+      "before_sha256": "0ED6B910579E96E38A897C60BFE77F6DF8A42613676FA0BBCAA0453A90092158",
+      "after_sha256": "7D68D223682A95E960533E0F5DF3FE48F6E08CE6D7BF5F279C46AFF0B95F2721",
+      "before_bytes": 18818,
+      "after_bytes": 18834,
+      "original": "original/native_node_fs_request_promise.zig"
+    },
+    {
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "before_sha256": "66D6FCF1646FE123C5DC80B5BE53AB3FF397E1F1C4469B19480077D2CCAC08AA",
+      "after_sha256": "D726B039EE47B9768AC87FE66635B3D4D2CA4336915E12EA8C733C2ED2B09AA4",
+      "before_bytes": 57006,
+      "after_bytes": 57142,
+      "original": "original/native_node_fs_request_owner_test.zig"
+    }
+  ],
+  "validation": {
+    "full_preimages_match_Main": true,
+    "all_unique_forward_inverse": true,
+    "unchanged_control_names": 25,
+    "all_assertions_retained": true,
+    "lexical_inventory_note": "The reported settle request parameter and the adjacent value parameter both shadow Fixture methods; both are renamed in the same block. The full Fixture declaration set was checked for further same-name bindings; none remains.",
+    "native_execution": false
+  },
+  "intake": "Apply only these three source files and retained proof paths. No C/H, Environment, build, shared controls or actual algorithm changes."
+}

@@ -45,6 +45,7 @@ FMT(arg)
 FMT(var_ref)
 FMT(u32)
 FMT(u32x2)
+FMT(u32x3)
 FMT(i32)
 FMT(const)
 FMT(label)
@@ -296,7 +297,7 @@ def( set_class_name, 5, 1, 1, u32) /* emitted in phase 1, removed in phase 2 */
 
 def( dispose_scope, 3, 0, 0, u16) /* emitted in phase 1, removed in phase 2 */
 
-def(     source_loc, 9, 0, 0, u32x2) /* emitted in phase 1, removed in phase 3 */
+def(     source_loc, 13, 0, 0, u32x3) /* emitted in phase 1, removed in phase 3 */
 
 DEF(    push_minus1, 1, 0, 1, none_int)
 DEF(         push_0, 1, 0, 1, none_int)

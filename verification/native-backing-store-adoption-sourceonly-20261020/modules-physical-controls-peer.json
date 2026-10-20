@@ -1,0 +1,93 @@
+{
+  "status": "closed finite source peer; no execution",
+  "reviewer": "modules_io",
+  "scope": "engine_abi.c physical two-edit successor; Fixture, Budget, NativeWorker and declarations 5, 11, 15-20; eight-line guarded install-only build seam",
+  "inputs": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/src/extensions/engine_abi.c",
+      "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC",
+      "bytes": 18016
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/main/src/extensions/engine_abi.c",
+      "sha256": "940CAAAE81B2A4098BE60DDD42D44B3CC3D1347341ED2D9557E0D34AFA9E928C",
+      "bytes": 17800
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-backing-store-adoption-sourceonly-20261020/production-delta.json",
+      "sha256": "D94BDE94024B6CD523FCC2AE8DA4ED27249B440BF0444746E7C55EACE024EC65",
+      "bytes": 9802
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/src/native_vm_backing_store_adoption_test.zig",
+      "sha256": "43E01F6D9C0714E77458F0417E7EBDA026D5EB6E38642923155800739FCB8ABF",
+      "bytes": 31150
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-backing-store-adoption-sourceonly-20261020/build-intake.json",
+      "sha256": "3D833981F633D34A6F375FBC1F61462A6885B71F602F1F5462356A752C340578",
+      "bytes": 1308
+    }
+  ],
+  "physical_inverse": {
+    "counts": [
+      {
+        "label": "actual malloc for native uninitialized fixed storage",
+        "count": 1
+      },
+      {
+        "label": "only selected fixed non-shared mode accepts uninitialized allocation",
+        "count": 1
+      }
+    ],
+    "inverse_exact": true,
+    "names": [
+      "VM native backing store allocates before a context with no JS wrapper or heap allocation",
+      "VM native backing store exposes real writable bytes before consuming adoption without a copy",
+      "VM native backing store zero initialization is a separate actual allocation mode",
+      "VM native backing store zero length retains a real owner with null logical data",
+      "VM native backing store duplicates and releases independent entitlements with exact charge retirement",
+      "VM native backing store adoption uses the intrinsic realm despite poisoned public constructors",
+      "VM native backing store wrapper allocation failure consumes exactly its native entitlement",
+      "VM native backing store prior ordinary pending consumes the store before any wrapper allocation",
+      "VM native backing store prior generic fatal is preserved without an allocation report",
+      "VM native backing store prior native termination remains the actual published event",
+      "VM native backing store native quota and overflow failure leave pending and OOM history unchanged",
+      "VM native backing store absence of a provider returns empty without inventing a JS failure",
+      "VM native backing store adoption rejects another native allocation domain and consumes the original owner",
+      "VM native backing store missing owner is distinct from an owned zero-length store",
+      "VM native backing store workers retain and retire storage after its runtime and caller domain retire",
+      "VM native backing store short-copy ordering retires the old allocation before wrapper adoption",
+      "VM native backing store adopted wrapper and actual view lease retain independent detach owners",
+      "VM native backing store explicit duplicate can back two intrinsic wrappers without copying",
+      "VM native backing store adopted buffers preserve actual equal and changed transfer ownership",
+      "VM native backing store uninitialized mode leaves JS fixed resizable and shared initialization intact"
+    ],
+    "declarations": 20
+  },
+  "build_inverse": {
+    "actual_build_sha256": "27AC8FC48ADF782DA11BA98F4D3887D02F7AF85D5264CF07C2F2A9BFF27313B5",
+    "actual_build_matches": true,
+    "inverse_sha256": "EB0A0E172FF6BA091C59816A136DCBD08679C60B064AD1D09F691004E4A99BB1",
+    "inverse_matches": true,
+    "added_lines": 8,
+    "install_only": true,
+    "root_matches": true
+  },
+  "findings": [
+    "Reversing the two exact ABI edits reproduces the full original 940CAAAE body. Incompatible UNINITIALIZED+SHARED/RESIZABLE flags return before reservation. Fixed native uninitialized mode calls malloc; all existing zero-initialized fixed calls remain calloc.",
+    "The owner and every live prefix/control field are explicitly initialized before publication. Overflow checks, pre-allocation charge, malloc-failure rollback, atomic references, native allocation-domain retention and final physical/charge retirement are unchanged. Internal empty-storage sentinel remains separate from the new API's null logical zero-length Data.",
+    "Fixture retires actual pending values before context/runtime/native-owner teardown; per-value and per-store cleanup is installed before assertions. Budget release is idempotent and precedes quota-sensitive observations.",
+    "Control 5 observes separate native entitlements and exact final charge retirement; control 11 exercises native quota and overflow failures while preserving the existing pending reason and actual OOM occurrence count.",
+    "Control 15 duplicates owned native records before worker startup and installs unblock/join cleanup before any later failure. Workers retain no VM/Engine pointer, only their own native store. Both workers join before shared observations or record cleanup, including spawn-failure paths.",
+    "Controls 16-19 distinguish native allocation, intrinsic wrapper, view lease, detach and transfer ownership. Short copy retires the old allocation before adoption; surviving native entitlements preserve data independently of wrapper detach and transfer.",
+    "Control 20 retains initialized native bytes while actual JS fixed/resizable/shared allocation and growth retain zero-initialization behavior.",
+    "Full actual build 27AC8FC4 was read and hashed. Removing the unique eight added lines reproduces EB0A0E17 exactly. The Windows/Linux guard, actual root, shared QuickJS link and install-only target are consistent; all 20 declarations match the filter."
+  ],
+  "limits": [
+    "No C, Zig, Node, generator, build, test or controller execution.",
+    "The separate QuickJS native-record/provider-match/adoption algorithm and controls 1-4, 6-10, 12-14 remain SDK's assigned peer scope.",
+    "The embedding GC/retry/terminal allocation-failure policy remains a separate required consumer boundary; native allocation here returns status without inventing a JS failure.",
+    "This peer does not infer that fresh malloc payload is nonzero; the source call itself establishes uninitialized allocation mode."
+  ]
+}

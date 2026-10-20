@@ -1,0 +1,286 @@
+{
+  "schema_version": 1,
+  "status": "sealed source-only Script/location unit; all finite peers closed; no native execution",
+  "base_commit": "eb4ec1d69c8d21dbd1079f29882654a37b485f24",
+  "unit": "native-script-location",
+  "source_paths": [
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "vendor/quickjs/quickjs-opcode.h",
+    "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+    "src/native_vm_script_location_test.zig",
+    "src/native_template_literal_test.zig",
+    "src/native_vm_captured_frame_logging_test.zig",
+    "build.zig"
+  ],
+  "evidence_paths": [
+    "verification/native-script-location-sourceonly-20261020/README.md",
+    "verification/native-script-location-sourceonly-20261020/authority/script-position-and-origin-source.json",
+    "verification/native-script-location-sourceonly-20261020/build-intake.json",
+    "verification/native-script-location-sourceonly-20261020/existing-version-controls-successor.json",
+    "verification/native-script-location-sourceonly-20261020/failed-parse-control-successor.json",
+    "verification/native-script-location-sourceonly-20261020/final-source-readback.json",
+    "verification/native-script-location-sourceonly-20261020/memory-accounting-successor.json",
+    "verification/native-script-location-sourceonly-20261020/peer-closure.json",
+    "verification/native-script-location-sourceonly-20261020/peers/modules-controls-build.json",
+    "verification/native-script-location-sourceonly-20261020/peers/modules-owner-production.json",
+    "verification/native-script-location-sourceonly-20261020/peers/sdk-compiler-serialization-production.json",
+    "verification/native-script-location-sourceonly-20261020/peers/sdk-controls-version.json",
+    "verification/native-script-location-sourceonly-20261020/preserved/build.zig.txt",
+    "verification/native-script-location-sourceonly-20261020/preserved/script-controls-before-failed-parse-successor.zig.txt",
+    "verification/native-script-location-sourceonly-20261020/preserved/src__native_template_literal_test.zig",
+    "verification/native-script-location-sourceonly-20261020/preserved/src__native_vm_captured_frame_logging_test.zig",
+    "verification/native-script-location-sourceonly-20261020/preserved/vendor__quickjs__quickjs-opcode.h.txt",
+    "verification/native-script-location-sourceonly-20261020/preserved/vendor__quickjs__quickjs-pi-cjs-compiler.inc.txt",
+    "verification/native-script-location-sourceonly-20261020/preserved/vendor__quickjs__quickjs.c.txt",
+    "verification/native-script-location-sourceonly-20261020/preserved/vendor__quickjs__quickjs.h.txt",
+    "verification/native-script-location-sourceonly-20261020/production-delta.json",
+    "verification/native-script-location-sourceonly-20261020/production-inverse.json",
+    "verification/native-script-location-sourceonly-20261020/production-pins.json",
+    "verification/native-script-location-sourceonly-20261020/manifest.json"
+  ],
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "8407EA70CAC10FD41EFADBF31B8C043F86B322EA1A1D09DCB1EA00176761C241",
+      "bytes": 2392187
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "08230E99EB7AB2AC38C94ED3810D81DEE850CB5A067902634E0C2CC5D112F966",
+      "bytes": 110090
+    },
+    {
+      "path": "vendor/quickjs/quickjs-opcode.h",
+      "sha256": "194F1AE899FF525FEAE54265369720E767494130A9CE31E4E3ABC00E9C1E9181",
+      "bytes": 15841
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+      "sha256": "4FBF487CC09627A2176815995AF3246E88274A7D1AD1A952802AC01AF478BCE5",
+      "bytes": 17263
+    },
+    {
+      "path": "src/native_vm_script_location_test.zig",
+      "sha256": "99A495F924700FDCFB64C479C61FEF6D2E5CE8532944615324079CBB17F17F55",
+      "bytes": 52063
+    },
+    {
+      "path": "src/native_template_literal_test.zig",
+      "sha256": "051049879DDD4411B858F2BC33327A17A5F7C1DA4977B72BE6837AD8E71B9789",
+      "bytes": 19897
+    },
+    {
+      "path": "src/native_vm_captured_frame_logging_test.zig",
+      "sha256": "050EBD5900D38D6FDDAAE0690C62D72217E4A073978F7A18BD89B962E734EFA1",
+      "bytes": 27966
+    },
+    {
+      "path": "build.zig",
+      "sha256": "35AD68E15D17BEAE0820B1EE1AB57EB0DB8B7F71885B95306AAF676B36581686",
+      "bytes": 420622
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/README.md",
+      "sha256": "2EE1A8B4A6DBDA794B9B6B52305AE787D677011755810403420D3A460A52088D",
+      "bytes": 8384
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/authority/script-position-and-origin-source.json",
+      "sha256": "6584973AC9EF4F20CB1CD9284AD501AADA5AF14A97FC546783465A4A043FE342",
+      "bytes": 30537
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/build-intake.json",
+      "sha256": "5FE50D08FE10A81357495EEB5DAF1B98C46A1642B0172B54347057D8044A9A62",
+      "bytes": 1043
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/existing-version-controls-successor.json",
+      "sha256": "0F23D257B555B578AFADD6CA3F229B113CD9368DE43C6F543CE2E2FD5CDCC0E8",
+      "bytes": 1221
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/failed-parse-control-successor.json",
+      "sha256": "0EA3EB9B1D5189DB6E30F65D71A1A18688DEFC175F2A2D5C6347A89A656B94DF",
+      "bytes": 5818
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/final-source-readback.json",
+      "sha256": "90C61F3C0863CD9687ECE0C2B63F62CC6CD7AFAF223A00F50EA44C7543E71028",
+      "bytes": 4965
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/memory-accounting-successor.json",
+      "sha256": "B4CADFF98D512786157494067C746D88C53AB8B69C89D9546002626C21DF006E",
+      "bytes": 865
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/peer-closure.json",
+      "sha256": "7284F9F70189C037FA10618541E07C64923B31E18D95300ABB3D51771426C916",
+      "bytes": 2293
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/peers/modules-controls-build.json",
+      "sha256": "A3EF8591C561A37FB9BAC939973363004957BA8E3E282BF7E2027BCB7FAC60AB",
+      "bytes": 3178
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/peers/modules-owner-production.json",
+      "sha256": "EDEFE96CB8F3696243C61D74AEBC7AB04D7760D89E79A04143F7150DCA68F5E8",
+      "bytes": 9648
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/peers/sdk-compiler-serialization-production.json",
+      "sha256": "8165C55349187A5B1C16F86BED6F9CA3A5F83EEFEA2AAF1CDB95ABA86353B086",
+      "bytes": 3620
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/peers/sdk-controls-version.json",
+      "sha256": "9417F0A2634FAE74AB0B0563E9306D4B7B547A1AC675EAE83A0F6F677BA614C8",
+      "bytes": 3578
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/preserved/build.zig.txt",
+      "sha256": "27AC8FC48ADF782DA11BA98F4D3887D02F7AF85D5264CF07C2F2A9BFF27313B5",
+      "bytes": 420084
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/preserved/script-controls-before-failed-parse-successor.zig.txt",
+      "sha256": "58E2675DA2ECBA1D4B5C7F9B7B2D144A09D266ECB9D2BEA062FDA382F24E01B8",
+      "bytes": 48751
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/preserved/src__native_template_literal_test.zig",
+      "sha256": "F4EE1C46248DDFB5B7981264E95BE6FF7FEDB338EB81AB7A751CDA2889BD217F",
+      "bytes": 19897
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/preserved/src__native_vm_captured_frame_logging_test.zig",
+      "sha256": "AABCD7BCDAC97DEC4934F10BBD1E866AFC6849DA62393D103A0FEF8E6AD647CC",
+      "bytes": 27966
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/preserved/vendor__quickjs__quickjs-opcode.h.txt",
+      "sha256": "55122ADB07E3F9FB91C4779A2C7ECF721294593035D3880B005B769F31B7485D",
+      "bytes": 15829
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/preserved/vendor__quickjs__quickjs-pi-cjs-compiler.inc.txt",
+      "sha256": "87A771EB6291F195C7DEB63DA8B29F20805AEA0F07B6320985E10C090348B639",
+      "bytes": 17063
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/preserved/vendor__quickjs__quickjs.c.txt",
+      "sha256": "E61EF49E44E22C2B327F229B0285D801598773B8BFE90A9B0D175071439AD98A",
+      "bytes": 2366845
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/preserved/vendor__quickjs__quickjs.h.txt",
+      "sha256": "B1BC3EF2E9E5DCD3EDC915231AD7EAA1C4ED4F1DBEA49BFBCF57425D528C343D",
+      "bytes": 107135
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+      "sha256": "5CE6502330E09C9ED1F2E0D21BAF7EDE38B9185E90F778D347388D36CB5AEC18",
+      "bytes": 64124
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/production-inverse.json",
+      "sha256": "8351E3FF9E173D2DB922A5AFFB26583F06BC6E16D6007BF927709FF79D42F8B1",
+      "bytes": 25292
+    },
+    {
+      "path": "verification/native-script-location-sourceonly-20261020/production-pins.json",
+      "sha256": "63F01A522C495AC1D8577B10729EA26D501D1FBB3B70C17D65C3F95D9AFD8061",
+      "bytes": 1248
+    }
+  ],
+  "intake": {
+    "mode": "Apply exact ordered edits to composed Main; preserve separately reviewed Main additions.",
+    "production": "verification/native-script-location-sourceonly-20261020/production-delta.json",
+    "production_steps": 104,
+    "accounting_successor": "verification/native-script-location-sourceonly-20261020/memory-accounting-successor.json",
+    "new_control": "src/native_vm_script_location_test.zig",
+    "existing_version_updates": "verification/native-script-location-sourceonly-20261020/existing-version-controls-successor.json",
+    "build": "verification/native-script-location-sourceonly-20261020/build-intake.json",
+    "requires_native_backing_parent": "eb4ec1d69c8d21dbd1079f29882654a37b485f24"
+  },
+  "build": {
+    "root": "src/native_vm_script_location_test.zig",
+    "filter": "VM Script",
+    "target": "build-native-vm-script-location",
+    "declared_controls": 32,
+    "added_lines": 6,
+    "install_only": true,
+    "shared_linkQuickJs": true
+  },
+  "declarations": [
+    "VM Script complete input and UTF16 length are independent of function presentation source",
+    "VM Script root nested and sibling bytecode retain one actual native source identity",
+    "VM Script separate compilations of identical input have distinct owners",
+    "VM Script duplicate native entitlement outlives function and originating context",
+    "VM Script brand projection excludes native bound and proxy functions without guest access",
+    "VM Script source URL and map come from actual lexer comments with last-event semantics",
+    "VM Script empty later metadata clears earlier recognized lexer metadata",
+    "VM Script genuine module frames retain complete host module source",
+    "VM Script direct and indirect eval preserve their actual separate input",
+    "VM Script all four dynamic constructors retain actual generated eval input",
+    "VM Script genuine CJS compiler keeps original body without presentation wrapper",
+    "VM Script UTF16 line table handles CRLF lone CR LS PS negative and EOF positions",
+    "VM Script empty source and actual initial line offset retain canonical EOF behavior",
+    "VM Script captured positions use actual token bytes in both compiler modes",
+    "VM Script source positions survive real backward and long forward branch rewriting",
+    "VM Script cloned captured frame owns source after original frames retire",
+    "VM Script native synthetic and proxy frames have no fabricated source owner",
+    "VM Script raw projections allocate nothing and preserve actual ordinary fatal and private pending",
+    "VM Script position failure leaves outputs unchanged and source line enforces runtime ownership",
+    "VM Script native source owner retains no receiver or function graph after frame retirement",
+    "VM Script serialized siblings keep one source identity without object reference mode under every strip flag",
+    "VM Script serialized actual token positions survive source and debug stripping in both compilers",
+    "VM Script ordinary lexer resource and map metadata survive serialization independently of display stripping",
+    "VM Script serialized module retains complete source module origin and nested identity",
+    "VM Script real reader rejects invalid owner tags references origin and module bits",
+    "VM Script reader validates actual PC and source-byte bounds before publication",
+    "VM Script partial reader failure retires source records position arrays and table entitlements",
+    "VM Script version31 rejects actual version30 bytes at the unchanged version gate",
+    "VM Script real compiler and reader heap failure cleanly retire all native source owners",
+    "VM Script prior actual pending wins before allocating source line while raw getters remain available",
+    "VM Script existing private logical URL serialization restriction is preserved",
+    "VM Script failed parsing releases native source without fabricating synthetic-frame provenance"
+  ],
+  "peers": {
+    "aggregate": "7284F9F70189C037FA10618541E07C64923B31E18D95300ABB3D51771426C916",
+    "modules_production": "EDEFE96CB8F3696243C61D74AEBC7AB04D7760D89E79A04143F7150DCA68F5E8",
+    "sdk_production": "8165C55349187A5B1C16F86BED6F9CA3A5F83EEFEA2AAF1CDB95ABA86353B086",
+    "modules_controls_build": "A3EF8591C561A37FB9BAC939973363004957BA8E3E282BF7E2027BCB7FAC60AB",
+    "sdk_controls_versions": "9417F0A2634FAE74AB0B0563E9306D4B7B547A1AC675EAE83A0F6F677BA614C8"
+  },
+  "validation": {
+    "ordered_source_forward_and_offset_inverse": true,
+    "build_inverse": true,
+    "version_inverse": true,
+    "all_declared_names_retained": true,
+    "actual_source_diff_check_clean": true,
+    "execution": false,
+    "full_staged_diff_check": {
+      "source_paths_clean": true,
+      "literal_preserved_evidence_only": [
+        {
+          "path": "verification/native-script-location-sourceonly-20261020/preserved/vendor__quickjs__quickjs.c.txt",
+          "lines": [
+            4670,
+            4672,
+            22671
+          ],
+          "finding": "Existing trailing whitespace in the exact admitted original C. Preserved byte-for-byte for reversal; actual source/control/build diff is clean."
+        }
+      ]
+    }
+  },
+  "limits": [
+    "No Message construction/reporting/catcher/Node listener or bootstrap implementation.",
+    "Failed-parse Errors retain the existing filename-only synthetic-frame behavior; an Error-to-Script attachment is a separate prerequisite.",
+    "No native/compiler/test/Node/formatter/generator execution or runtime qualification."
+  ]
+}

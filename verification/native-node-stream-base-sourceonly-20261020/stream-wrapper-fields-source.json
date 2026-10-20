@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "node_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "documents": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/authority/src__heap__factory.cc.txt",
+      "sha256": "895D8A6E8BEDE5FF80EA97DE37F765EE54F13D20E449968841C288596B851FC6",
+      "bytes": 203216,
+      "read_range_sha256": "EF5A2A85EBB05B5C42443BE1CF1926B84237AAE0695B5E21E60AFDB3F5928E51",
+      "read_offset": 128456,
+      "read_bytes": 4500,
+      "excerpts": [
+        {
+          "label": "Object allocation initializes its internal fields",
+          "offset_bytes": 128456,
+          "length_bytes": 1323,
+          "text": "void Factory::InitializeJSObjectFromMap(Tagged<JSObject> obj,\n                                        Tagged<Object> properties,\n                                        Tagged<Map> map,\n                                        NewJSObjectType new_js_object_type) {\n  DisallowGarbageCollection no_gc;\n  obj->set_raw_properties_or_hash(properties, kRelaxedStore);\n  obj->initialize_elements();\n  // TODO(1240798): Initialize the object's body using valid initial values\n  // according to the object's initial map.  For example, if the map's\n  // instance type is JS_ARRAY_TYPE, the length field should be initialized\n  // to a number (e.g. Smi::zero()) and the elements initialized to a\n  // fixed array (e.g. Heap::empty_fixed_array()).  Currently, the object\n  // verification code has to cope with (temporarily) invalid objects.  See\n  // for example, JSArray::JSArrayVerify).\n  DCHECK_EQ(IsJSApiWrapperObject(map),\n            new_js_object_type == NewJSObjectType::kAPIWrapper);\n  InitializeJSObjectBody(obj, map,\n                         new_js_object_type == NewJSObjectType::kNoAPIWrapper\n                             ? JSObject::kHeaderSize\n                             : JSAPIObjectWithEmbedderSlots::kHeaderSize);\n  if (new_js_object_type == NewJSObjectType::kAPIWrapper) {\n    InitializeCppHeapWrapper(obj);\n  }\n}\n"
+        },
+        {
+          "label": "The supplied initial field value is undefined",
+          "offset_bytes": 129780,
+          "length_bytes": 1128,
+          "text": "void Factory::InitializeJSObjectBody(Tagged<JSObject> obj, Tagged<Map> map,\n                                     int start_offset) {\n  DisallowGarbageCollection no_gc;\n  if (start_offset == map->instance_size()) return;\n  DCHECK_LT(start_offset, map->instance_size());\n\n  // We cannot always fill with one_pointer_filler_map because objects\n  // created from API functions expect their embedder fields to be initialized\n  // with undefined_value.\n  // Pre-allocated fields need to be initialized with undefined_value as well\n  // so that object accesses before the constructor completes (e.g. in the\n  // debugger) will not cause a crash.\n\n  // In case of Array subclassing the |map| could already be transitioned\n  // to different elements kind from the initial map on which we track slack.\n  bool in_progress = map->IsInobjectSlackTrackingInProgress();\n  obj->InitializeBody(map, start_offset, in_progress,\n                      ReadOnlyRoots(isolate()).one_pointer_filler_map_word(),\n                      *undefined_value());\n  if (in_progress) {\n    map->FindRootMap(isolate())->InobjectSlackTrackingStep(isolate());\n  }\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/authority/src__objects__js-objects-inl.h.txt",
+      "sha256": "3BFA48AB518E91A4B3FBE26DBB25FAB76AF50634BA38662F7AB7355BED2EF8CF",
+      "bytes": 41795,
+      "excerpts": [
+        {
+          "label": "Each embedder field receives the supplied undefined value",
+          "offset_bytes": 22862,
+          "length_bytes": 2105,
+          "text": "void JSObject::InitializeBody(Tagged<Map> map, int start_offset,\n                              bool is_slack_tracking_in_progress,\n                              MapWord filler_map,\n                              Tagged<Object> undefined_filler) {\n  int size = map->instance_size();\n  int offset = start_offset;\n\n  // embedder data slots need to be initialized separately\n  if (MayHaveEmbedderFields(map)) {\n    int embedder_field_start = GetEmbedderFieldsStartOffset(map);\n    int embedder_field_count = GetEmbedderFieldCount(map);\n\n    // fill start with references to the undefined value object\n    DCHECK_LE(offset, embedder_field_start);\n    while (offset < embedder_field_start) {\n      WRITE_FIELD(*this, offset, undefined_filler);\n      offset += kTaggedSize;\n    }\n\n    // initialize embedder data slots\n    DCHECK_EQ(offset, embedder_field_start);\n    for (int i = 0; i < embedder_field_count; i++) {\n      // TODO(v8): consider initializing embedded data slots with Smi::zero().\n      EmbedderDataSlot(Tagged<JSObject>(*this), i).Initialize(undefined_filler);\n      offset += kEmbedderDataSlotSize;\n    }\n  } else {\n    DCHECK_EQ(0, GetEmbedderFieldCount(map));\n  }\n\n  DCHECK_LE(offset, size);\n  if (is_slack_tracking_in_progress) {\n    int end_of_pre_allocated_offset =\n        size - (map->UnusedPropertyFields() * kTaggedSize);\n    DCHECK_LE(kHeaderSize, end_of_pre_allocated_offset);\n    DCHECK_LE(offset, end_of_pre_allocated_offset);\n    // fill pre allocated slots with references to the undefined value object\n    while (offset < end_of_pre_allocated_offset) {\n      WRITE_FIELD(*this, offset, undefined_filler);\n      offset += kTaggedSize;\n    }\n    // fill the remainder with one word filler objects (ie just a map word)\n    while (offset < size) {\n      Tagged<Object> fm = Tagged<Object>(filler_map.ptr());\n      WRITE_FIELD(*this, offset, fm);\n      offset += kTaggedSize;\n    }\n  } else {\n    while (offset < size) {\n      // fill everything with references to the undefined value object\n      WRITE_FIELD(*this, offset, undefined_filler);\n      offset += kTaggedSize;\n    }\n  }\n}\n"
+        },
+        {
+          "label": "Direct internal getter",
+          "offset_bytes": 13789,
+          "length_bytes": 120,
+          "text": "Tagged<Object> JSObject::GetEmbedderField(int index) {\n  return EmbedderDataSlot(Tagged(*this), index).load_tagged();\n}\n"
+        },
+        {
+          "label": "Direct internal tagged store",
+          "offset_bytes": 13910,
+          "length_bytes": 132,
+          "text": "void JSObject::SetEmbedderField(int index, Tagged<Object> value) {\n  EmbedderDataSlot::store_tagged(Tagged(*this), index, value);\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/authority/src__objects__embedder-data-slot-inl.h.txt",
+      "sha256": "0C5534973AAF9DA4B545B4D6FDBEB5FCF3762F841113055A8CD882D9B5E0BDAA",
+      "bytes": 9656,
+      "excerpts": [
+        {
+          "label": "Initial tagged value and native payload",
+          "offset_bytes": 1272,
+          "length_bytes": 476,
+          "text": "void EmbedderDataSlot::Initialize(Tagged<Object> initial_value) {\n  // TODO(v8) initialize the slot with Smi::zero() instead. This'll also\n  // guarantee that we don't need a write barrier.\n  DCHECK(IsSmi(initial_value) ||\n         ReadOnlyHeap::Contains(Cast<HeapObject>(initial_value)));\n  ObjectSlot(address() + kTaggedPayloadOffset).Relaxed_Store(initial_value);\n#ifdef V8_COMPRESS_POINTERS\n  ObjectSlot(address() + kRawPayloadOffset).Relaxed_Store(Smi::zero());\n#endif\n}\n"
+        }
+      ]
+    },
+    {
+      "packet": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-file-handle-sourceonly-20261019/authority/async-wrap-base-object-template-source.json",
+      "packet_sha256": "4EF8C9356EB012AD209827473494E9A00D848AE8F184B10E4A89F0784F96870B",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/base_object.cc",
+      "full_body_sha256": "FC04404FDD6ED54136A0989E2E782499CD50683AEBBBC4FB119580EB2566B8DA",
+      "excerpts": [
+        {
+          "label": "Native attach and tracking",
+          "offset_bytes": 446,
+          "length_bytes": 351,
+          "text": "BaseObject::BaseObject(Realm* realm, Local<Object> object)\n    : persistent_handle_(realm->isolate(), object), realm_(realm) {\n  CHECK_EQ(false, object.IsEmpty());\n  CHECK_GE(object->InternalFieldCount(), BaseObject::kInternalFieldCount);\n  SetInternalFields(realm->isolate_data(), object, static_cast<void*>(this));\n  realm->TrackBaseObject(this);\n}\n"
+        },
+        {
+          "label": "Native destruction clears only kSlot",
+          "offset_bytes": 798,
+          "length_bytes": 554,
+          "text": "BaseObject::~BaseObject() {\n  realm()->UntrackBaseObject(this);\n\n  if (has_pointer_data()) [[unlikely]] {\n    PointerData* metadata = pointer_data();\n    CHECK_EQ(metadata->strong_ptr_count, 0);\n    metadata->self = nullptr;\n    if (metadata->weak_ptr_count == 0) delete metadata;\n  }\n\n  if (persistent_handle_.IsEmpty()) {\n    // This most likely happened because the weak callback below cleared it.\n    return;\n  }\n\n  {\n    HandleScope handle_scope(realm()->isolate());\n    object()->SetAlignedPointerInInternalField(BaseObject::kSlot, nullptr);\n  }\n}\n"
+        },
+        {
+          "label": "Weak collection resets the native Global before destruction",
+          "offset_bytes": 1353,
+          "length_bytes": 790,
+          "text": "void BaseObject::MakeWeak() {\n  if (has_pointer_data()) {\n    pointer_data()->wants_weak_jsobj = true;\n    if (pointer_data()->strong_ptr_count > 0) return;\n  }\n\n  persistent_handle_.SetWeak(\n      this,\n      [](const WeakCallbackInfo<BaseObject>& data) {\n        BaseObject* obj = data.GetParameter();\n        // Clear the persistent handle so that ~BaseObject() doesn't attempt\n        // to mess with internal fields, since the JS object may have\n        // transitioned into an invalid state.\n        // Refs: https://github.com/nodejs/node/issues/18897\n        obj->persistent_handle_.Reset();\n        CHECK_IMPLIES(obj->has_pointer_data(),\n                      obj->pointer_data()->strong_ptr_count == 0);\n        obj->OnGCCollect();\n      },\n      WeakCallbackType::kParameter);\n}\n"
+        }
+      ]
+    },
+    {
+      "packet": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-file-handle-sourceonly-20261019/authority/async-wrap-base-object-template-source.json",
+      "packet_sha256": "4EF8C9356EB012AD209827473494E9A00D848AE8F184B10E4A89F0784F96870B",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/base_object-inl.h",
+      "full_body_sha256": "AFC8EFE0A4562F49FD7B543CA82A855511345177466D0B8F0E4CF8188FA4CEC6",
+      "excerpts": [
+        {
+          "label": "Actual wrapper internal field getter",
+          "offset_bytes": 4197,
+          "length_bytes": 203,
+          "text": "template <int Field>\nvoid BaseObject::InternalFieldGet(\n    const v8::FunctionCallbackInfo<v8::Value>& args) {\n  args.GetReturnValue().Set(\n      args.This()->GetInternalField(Field).As<v8::Value>());\n}\n"
+        },
+        {
+          "label": "Actual native type CHECK before store",
+          "offset_bytes": 4401,
+          "length_bytes": 318,
+          "text": "template <int Field, bool (v8::Value::*typecheck)() const>\nvoid BaseObject::InternalFieldSet(\n    const v8::FunctionCallbackInfo<v8::Value>& args) {\n  v8::Local<v8::Value> value = args[0];\n  // This could be e.g. value->IsFunction().\n  CHECK(((*value)->*typecheck)());\n  args.This()->SetInternalField(Field, value);\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/authority/stream_base.h.v24.13.txt",
+      "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334",
+      "bytes": 18488,
+      "excerpts": [
+        {
+          "label": "Actual StreamBase wrapper field layout",
+          "offset_bytes": 11845,
+          "length_bytes": 143,
+          "text": "\n    kSlot = BaseObject::kSlot,\n    kStreamBaseField = BaseObject::kInternalFieldCount,\n    kOnReadFunctionField,\n    kInternalFieldCount\n  };\n"
+        }
+      ]
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/authority/stream_base.cc.v24.13.txt",
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4",
+      "bytes": 28310,
+      "excerpts": [
+        {
+          "label": "Live internal onread after ordered stream state writes",
+          "offset_bytes": 13253,
+          "length_bytes": 1131,
+          "text": "MaybeLocal<Value> StreamBase::CallJSOnreadMethod(ssize_t nread,\n                                                 Local<ArrayBuffer> ab,\n                                                 size_t offset,\n                                                 StreamBaseJSChecks checks) {\n  Environment* env = env_;\n\n  DCHECK_EQ(static_cast<int32_t>(nread), nread);\n  DCHECK_LE(offset, INT32_MAX);\n\n  if (checks == DONT_SKIP_NREAD_CHECKS) {\n    if (ab.IsEmpty()) {\n      DCHECK_EQ(offset, 0);\n      DCHECK_LE(nread, 0);\n    } else {\n      DCHECK_GE(nread, 0);\n    }\n  }\n\n  env->stream_base_state()[kReadBytesOrError] = static_cast<int32_t>(nread);\n  env->stream_base_state()[kArrayBufferOffset] = offset;\n\n  Local<Value> argv[] = {\n    ab.IsEmpty() ? Undefined(env->isolate()).As<Value>() : ab.As<Value>()\n  };\n\n  AsyncWrap* wrap = GetAsyncWrap();\n  CHECK_NOT_NULL(wrap);\n  Local<Value> onread = wrap->object()\n                            ->GetInternalField(StreamBase::kOnReadFunctionField)\n                            .As<Value>();\n  CHECK(onread->IsFunction());\n  return wrap->MakeCallback(onread.As<Function>(), arraysize(argv), argv);\n}\n"
+        },
+        {
+          "label": "Actual native accessor signature and descriptor attributes",
+          "offset_bytes": 16423,
+          "length_bytes": 2383,
+          "text": "void StreamBase::AddMethods(IsolateData* isolate_data,\n                            Local<FunctionTemplate> t) {\n  Isolate* isolate = isolate_data->isolate();\n  HandleScope scope(isolate);\n\n  enum PropertyAttribute attributes =\n      static_cast<PropertyAttribute>(ReadOnly | DontDelete | DontEnum);\n  Local<Signature> sig = Signature::New(isolate, t);\n\n  AddMethod(isolate, sig, attributes, t, GetFD, isolate_data->fd_string());\n  AddMethod(isolate,\n            sig,\n            attributes,\n            t,\n            GetExternal,\n            isolate_data->external_stream_string());\n  AddMethod(isolate,\n            sig,\n            attributes,\n            t,\n            GetBytesRead,\n            isolate_data->bytes_read_string());\n  AddMethod(isolate,\n            sig,\n            attributes,\n            t,\n            GetBytesWritten,\n            isolate_data->bytes_written_string());\n  SetProtoMethod(isolate, t, \"readStart\", JSMethod<&StreamBase::ReadStartJS>);\n  SetProtoMethod(isolate, t, \"readStop\", JSMethod<&StreamBase::ReadStopJS>);\n  SetProtoMethod(isolate, t, \"shutdown\", JSMethod<&StreamBase::Shutdown>);\n  SetProtoMethod(\n      isolate, t, \"useUserBuffer\", JSMethod<&StreamBase::UseUserBuffer>);\n  SetProtoMethod(isolate, t, \"writev\", JSMethod<&StreamBase::Writev>);\n  SetProtoMethod(isolate, t, \"writeBuffer\", JSMethod<&StreamBase::WriteBuffer>);\n  SetProtoMethod(isolate,\n                 t,\n                 \"writeAsciiString\",\n                 JSMethod<&StreamBase::WriteString<ASCII>>);\n  SetProtoMethod(\n      isolate, t, \"writeUtf8String\", JSMethod<&StreamBase::WriteString<UTF8>>);\n  SetProtoMethod(\n      isolate, t, \"writeUcs2String\", JSMethod<&StreamBase::WriteString<UCS2>>);\n  SetProtoMethod(isolate,\n                 t,\n                 \"writeLatin1String\",\n                 JSMethod<&StreamBase::WriteString<LATIN1>>);\n  t->PrototypeTemplate()->Set(FIXED_ONE_BYTE_STRING(isolate, \"isStreamBase\"),\n                              True(isolate));\n  AddAccessor(isolate,\n              sig,\n              static_cast<PropertyAttribute>(DontDelete | DontEnum),\n              t,\n              BaseObject::InternalFieldGet<StreamBase::kOnReadFunctionField>,\n              BaseObject::InternalFieldSet<StreamBase::kOnReadFunctionField,\n                                           &Value::IsFunction>,\n              FIXED_ONE_BYTE_STRING(isolate, \"onread\"));\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-stream-base-sourceonly-20261020/authority/stream_base-inl.h.v24.13.txt",
+      "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6",
+      "bytes": 5052,
+      "excerpts": [
+        {
+          "label": "Native StreamBase attachment",
+          "offset_bytes": 3380,
+          "length_bytes": 147,
+          "text": "void StreamBase::AttachToObject(v8::Local<v8::Object> obj) {\n  obj->SetAlignedPointerInInternalField(\n      StreamBase::kStreamBaseField, this);\n}\n"
+        },
+        {
+          "label": "Native pointer admission precedes stream pointer access",
+          "offset_bytes": 3528,
+          "length_bytes": 288,
+          "text": "StreamBase* StreamBase::FromObject(v8::Local<v8::Object> obj) {\n  if (obj->GetAlignedPointerFromInternalField(StreamBase::kSlot) == nullptr)\n    return nullptr;\n\n  return static_cast<StreamBase*>(\n      obj->GetAlignedPointerFromInternalField(\n          StreamBase::kStreamBaseField));\n}\n"
+        }
+      ]
+    }
+  ],
+  "conclusions": [
+    "The actual onread internal field starts as undefined; the Smi-zero language is only an unimplemented V8 TODO.",
+    "BaseObject destruction clears its pointer slot while the retained JavaScript wrapper's other internal fields survive.",
+    "The actual onread value is a traced wrapper edge, distinct from the native Global wrapper and context-frame entitlements.",
+    "Native FromObject refuses a null BaseObject slot before reading a possibly stale StreamBase pointer.",
+    "Selected FileHandle wrapper-field storage, tracing and native detach are independent of the separately pending public callback template/accessor and complete lifecycle."
+  ],
+  "native_execution": false
+}

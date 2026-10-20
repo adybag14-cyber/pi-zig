@@ -1,0 +1,18 @@
+{
+  "schema": "received-finite-peer-closure-v1",
+  "reviewer": "/root/modules_io",
+  "execution": "Source only; no execution.",
+  "production": {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "sha256": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25"
+  },
+  "controls": {
+    "path": "src/native_node_stream_wrapper_test.zig",
+    "sha256": "8DBFA1F6946ACFBDC32186EFFC440A8F6CDD47A16838DCE40C7BED73D034C8B9"
+  },
+  "received_closures": [
+    "StreamFields assigned peer CLOSED on4912FF07/A4BA62BF over25971/9A236. Independently reversed original9 edits→B53C; exact successor only moves beforeAllocation ahead of native fields allocation while attachment still precedes checkedAllocation. Readback actual Factory4500-byte range EF5A and all five retained original field/StreamBase source files matches189521 excerpts and full pins. No remaining blocker in Registry class dispatch, exact brand, attach/clear only native slot, live-state-before-stream access, initial undefined and get/set internal onread ownership. Store publishes duplicate before old-value retirement; detached wrapper retains onread. VM finalizer/mark, public signature/IsFunction CHECK, complete callback template and controls remain separate. No execution.",
+    "StreamFields controls finite peer CLOSED on exact root 8DBFA1F6 with production 4912FF07, limited to declarations 1–4/9–10 and their getter/store/callback helpers. The temporary getter root in 2 retires before the real GC; 3 observes the published second callback during sole old-edge finalization; 4 checks both cleared native lookup and the retained actual onread identity. Control 9 restores native quota before finish, preserves exact pending identity and native allocation generation/reference/charge counts; 10 lets real VM allocation fail after native fields creation and checks their complete rollback. No concrete blocker in this slice. Fixture/5–8/finalizers remain VM’s scope; no execution."
+  ],
+  "receipt_provenance": "Reviewer confirmed no separate written StreamFields receipt exists and requested retention of the received closure messages. These messages are retained as review evidence, not original Source."
+}

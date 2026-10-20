@@ -1,0 +1,53 @@
+{
+  "status": "CLOSED finite source-only Script control and build peer; no execution",
+  "reviewer": "modules_io",
+  "date": "2026-10-20",
+  "root": {
+    "path": "src/native_vm_script_location_test.zig",
+    "sha256": "99A495F924700FDCFB64C479C61FEF6D2E5CE8532944615324079CBB17F17F55",
+    "bytes": 52063,
+    "declarations": 32
+  },
+  "predecessor": {
+    "sha256": "58E2675DA2ECBA1D4B5C7F9B7B2D144A09D266ECB9D2BEA062FDA382F24E01B8",
+    "bytes": 48751
+  },
+  "assigned": [
+    "Fixture/capture/errorCapture/Receiver",
+    "declarations 12-13",
+    "declarations 16-20",
+    "declarations 29-32",
+    "six-line install-only build seam"
+  ],
+  "successor": {
+    "packet": "failed-parse-control-successor.json",
+    "sha256": "0EA3EB9B1D5189DB6E30F65D71A1A18688DEFC175F2A2D5C6347A89A656B94DF",
+    "single_replacement_reverses_exactly": true,
+    "all_32_names_unchanged": true
+  },
+  "findings": [
+    "UTF-16 CR/LF/CRLF/LS/PS and EOF position controls use the actual compiler input and independent initial-line offset; native and invalid-frame outputs remain distinct.",
+    "Fixture owns raw values before assertions and restores quotas before teardown. Prior ordinary, actual flagged fatal and private termination are observed through actual APIs without later guest evaluation.",
+    "Clone and retained Script controls observe independent native source ownership after original frames/functions/receiver graph retire. Receiver native storage outlives VM teardown and producer callbacks are disabled first.",
+    "Compiler/reader failure cleanup and runtime native-memory zero are observed at the actual selected failure points. The controls do not assert that every possible partial allocation point is covered.",
+    "Declaration 32 now captures the actual failed-parse Error through the installed native hook. The genuine native_error_stack_hook temporarily holds the pending reason while ParseCapture forwards the original filename/line/column/flags to JS_CaptureCurrentStackFrames. Error identity, actual frame brand/filename/primitive fields, null Script and unchanged output sentinel are all asserted.",
+    "The hook and all Error/frame roots retire before the original closeRuntime/native-memory-zero assertion. The exact successor changes only declaration 32; its inverse reproduces the fully read predecessor byte-for-byte."
+  ],
+  "build": {
+    "packet": "verification/native-script-location-sourceonly-20261020/build-intake.json",
+    "sha256": "5FE50D08FE10A81357495EEB5DAF1B98C46A1642B0172B54347057D8044A9A62",
+    "before": "27AC8FC48ADF782DA11BA98F4D3887D02F7AF85D5264CF07C2F2A9BFF27313B5",
+    "after": "35AD68E15D17BEAE0820B1EE1AB57EB0DB8B7F71885B95306AAF676B36581686",
+    "added_lines": 6,
+    "exact_inverse_verified": true,
+    "target": "build-native-vm-script-location",
+    "filter": "VM Script",
+    "shared_linkQuickJs": true,
+    "install_only": true
+  },
+  "limits": [
+    "SDK's compiler offset/serialization and remaining controls are separate.",
+    "No Message/reporter, failed-parse Script provenance, full Node bootstrap or V8 allocation-layout claim.",
+    "No compilation, native test, Node, generator or formatter execution."
+  ]
+}

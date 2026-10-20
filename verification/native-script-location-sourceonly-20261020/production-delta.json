@@ -1,0 +1,852 @@
+{
+  "schema": 1,
+  "status": "source-only draft; native owner/compiler/frame/serialization peer pending",
+  "base_commit": "eb4ec1d69c8d21dbd1079f29882654a37b485f24",
+  "files": [
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "vendor/quickjs/quickjs-opcode.h",
+    "vendor/quickjs/quickjs-pi-cjs-compiler.inc"
+  ],
+  "steps": [
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "public native Script and position ABI",
+      "before": "/* return != 0 if the JS code needs to be interrupted */",
+      "after": "/* Native Script/location provenance. These owners are immutable after compile\n   publication and contain only the actual complete source and primitive origin\n   values admitted by this VM's compiler. All operations use the runtime's owner\n   thread; every externally retained Script must be freed before FreeRuntime.\n   Neither acquisition nor primitive projections observe guest properties. */\ntypedef struct JSNativeScript JSNativeScript;\ntypedef struct JSPiScriptInfo {\n    int source_length;             /* UTF-16 code units */\n    int source_byte_length;        /* actual parser input bytes */\n    int64_t line_offset;           /* actual input starting line minus one */\n    int column_offset;\n    bool is_eval;\n    bool is_module;\n} JSPiScriptInfo;\ntypedef struct JSPiScriptPositionInfo {\n    int64_t line;                   /* zero based, with optional origin offset */\n    int64_t column;\n    int line_start;                 /* UTF-16 source indices, no origin offset */\n    int line_end;\n} JSPiScriptPositionInfo;\n/* Borrowed genuine bytecode/function or captured frame -> owned Script/NULL.\n   Native/Proxy/bound functions and filename-only frames have no Script.\n   Frame failure leaves the position output unchanged; success writes the\n   actual selected UTF-16 position, or -1 when no bytecode PC is available. */\nJS_EXTERN JSNativeScript *JS_PiGetCompiledScript(JSValueConst value);\nJS_EXTERN JSNativeScript *JS_PiGetCapturedStackFrameScript(JSValueConst frame,\n                                                         int *position);\nJS_EXTERN JSNativeScript *JS_PiDupScript(JSNativeScript *script);\nJS_EXTERN void JS_PiFreeScript(JSNativeScript *script);\nJS_EXTERN int JS_PiScriptReadInfo(const JSNativeScript *script,\n                                JSPiScriptInfo *info);\n/* Owned primitive values; NULL Script returns undefined. No allocation,\n   pending-state operation, or guest conversion. ResourceName implements the\n   actual sourceURL-over-filename projection. SourceMapURL may be undefined. */\nJS_EXTERN JSValue JS_PiScriptGetSource(const JSNativeScript *script);\nJS_EXTERN JSValue JS_PiScriptGetResourceName(const JSNativeScript *script);\nJS_EXTERN JSValue JS_PiScriptGetSourceMapURL(const JSNativeScript *script);\n/* Allocation-free projection of the initialized line-end algorithm: LF,\n   lone CR, LS/PS, CRLF at LF, and an EOF sentinel including empty source.\n   Negative position clamps to zero. Beyond EOF/invalid outputs return -1\n   without writes. This is not V8's separate uninitialized LF-only fallback. */\nJS_EXTERN int JS_PiScriptGetPositionInfo(const JSNativeScript *script,\n    int position, bool with_offset, JSPiScriptPositionInfo *info);\n/* Actual source substring. Requires the Script's runtime; prior pending wins.\n   Invalid position returns undefined. Intrinsic substring allocation can fail. */\nJS_EXTERN JSValue JS_PiScriptGetSourceLine(JSContext *ctx,\n    const JSNativeScript *script, int position);\n\n/* return != 0 if the JS code needs to be interrupted */",
+      "count": 1
+    },
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "runtime Script owner inventory",
+      "before": "    struct list_head context_list; /* list of JSContext.link */",
+      "after": "    struct list_head context_list; /* list of JSContext.link */\n    struct list_head pi_script_list; /* native primitive-only Script owners */",
+      "count": 1
+    },
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "initialize native Script inventory",
+      "before": "    init_list_head(&rt->context_list);\n    init_list_head(&rt->gc_obj_list);",
+      "after": "    init_list_head(&rt->context_list);\n    init_list_head(&rt->pi_script_list);\n    init_list_head(&rt->gc_obj_list);",
+      "count": 1
+    },
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "require native Script release before runtime disposal",
+      "before": "    assert(list_empty(&rt->gc_obj_list));",
+      "after": "    assert(list_empty(&rt->gc_obj_list));\n    assert(list_empty(&rt->pi_script_list));",
+      "count": 1
+    },
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "native Script and byte-position types",
+      "before": "typedef struct JSFunctionBytecode {",
+      "after": "/* A Script owns complete immutable compiler input, independently of each\n   function's presentation string. It has no object/GC edges: every JSValue\n   below is a primitive string or undefined. */\nstruct JSNativeScript {\n    struct list_head link;\n    JSRuntime *rt;\n    int ref_count;\n    JSValue source;\n    JSValue resource_name;\n    JSValue source_url;\n    JSValue source_map_url;\n    uint8_t *input;\n    int input_length;\n    int initial_line;\n    uint8_t origin;\n    bool is_module;\n    bool metadata_finalized;\n    bool url_seen, map_seen;\n    int url_event, url_start, url_length;\n    int map_event, map_start, map_length;\n};\n\ntypedef struct JSPiSourcePosition {\n    uint32_t pc;\n    int byte_offset;\n} JSPiSourcePosition;\n\ntypedef struct JSFunctionBytecode {",
+      "count": 1
+    },
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "bytecode retains actual Script and independent positions",
+      "before": "    JSAtom pi_source_url; /* optional owned logical name; filename stays physical */",
+      "after": "    JSAtom pi_source_url; /* optional owned logical name; filename stays physical */\n    JSNativeScript *pi_script;\n    JSPiSourcePosition *pi_source_positions;\n    int pi_source_position_count;",
+      "count": 1
+    },
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "captured frame owns Script and native position",
+      "before": "    uint8_t pi_script_origin; /* captured from the actual compiled owner */",
+      "after": "    uint8_t pi_script_origin; /* captured from the actual compiled owner */\n    JSNativeScript *pi_script;\n    int pi_source_position;",
+      "count": 1
+    },
+    {
+      "group": "native-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "native Script primitive ownership and position projection",
+      "before": "static void js_method_set_home_object(JSContext *ctx, JSValue func_obj,",
+      "after": "JSNativeScript *JS_PiDupScript(JSNativeScript *script)\n{\n    if (script)\n        script->ref_count++;\n    return script;\n}\n\nvoid JS_PiFreeScript(JSNativeScript *script)\n{\n    JSRuntime *rt;\n    if (!script || --script->ref_count)\n        return;\n    rt = script->rt;\n    list_del(&script->link);\n    JS_FreeValueRT(rt, script->source);\n    JS_FreeValueRT(rt, script->resource_name);\n    JS_FreeValueRT(rt, script->source_url);\n    JS_FreeValueRT(rt, script->source_map_url);\n    js_free_rt(rt, script->input);\n    js_free_rt(rt, script);\n}\n\nstatic JSNativeScript *js_pi_new_script(JSContext *ctx, const char *input,\n    size_t length, const char *filename, int initial_line,\n    uint8_t origin, bool is_module)\n{\n    JSNativeScript *script;\n    if (length > INT_MAX) {\n        JS_ThrowRangeError(ctx, \"Script input exceeds native position capacity\");\n        return NULL;\n    }\n    script = js_mallocz(ctx, sizeof(*script));\n    if (!script)\n        return NULL;\n    script->rt = ctx->rt;\n    script->ref_count = 1;\n    script->source = JS_UNDEFINED;\n    script->resource_name = JS_UNDEFINED;\n    script->source_url = JS_UNDEFINED;\n    script->source_map_url = JS_UNDEFINED;\n    script->initial_line = initial_line;\n    script->origin = origin;\n    script->is_module = is_module;\n    list_add_tail(&script->link, &ctx->rt->pi_script_list);\n    script->input = js_malloc(ctx, length + 1);\n    if (!script->input)\n        goto fail;\n    memcpy(script->input, input, length);\n    script->input[length] = 0;\n    script->input_length = length;\n    script->source = JS_NewStringLen(ctx, input, length);\n    if (JS_IsException(script->source))\n        goto fail;\n    script->resource_name = JS_NewString(ctx, filename);\n    if (JS_IsException(script->resource_name))\n        goto fail;\n    return script;\n fail:\n    JS_PiFreeScript(script);\n    return NULL;\n}\n\n/* Complete the primitive metadata once, after the actual lexer has finished.\n   The event offsets address our retained input, never a borrowed parser buffer. */\nstatic int js_pi_script_finalize(JSContext *ctx, JSNativeScript *script)\n{\n    JSValue value;\n    if (!script || script->metadata_finalized)\n        return 0;\n    if (script->url_length) {\n        value = JS_NewStringLen(ctx, (const char *)script->input + script->url_start,\n                               script->url_length);\n        if (JS_IsException(value))\n            return -1;\n        script->source_url = value;\n    }\n    if (script->map_length) {\n        value = JS_NewStringLen(ctx, (const char *)script->input + script->map_start,\n                               script->map_length);\n        if (JS_IsException(value))\n            return -1;\n        script->source_map_url = value;\n    }\n    script->metadata_finalized = true;\n    return 0;\n}\n\nJSNativeScript *JS_PiGetCompiledScript(JSValueConst value)\n{\n    JSFunctionBytecode *b;\n    if (JS_VALUE_GET_TAG(value) == JS_TAG_FUNCTION_BYTECODE)\n        b = JS_VALUE_GET_PTR(value);\n    else\n        b = JS_GetFunctionBytecode(value);\n    return b && !b->native_async_body ? JS_PiDupScript(b->pi_script) : NULL;\n}\n\nint JS_PiScriptReadInfo(const JSNativeScript *script, JSPiScriptInfo *info)\n{\n    JSPiScriptInfo result;\n    if (!script || !info)\n        return -1;\n    result.source_length = JS_VALUE_GET_STRING(script->source)->len;\n    result.source_byte_length = script->input_length;\n    result.line_offset = (int64_t)script->initial_line - 1;\n    result.column_offset = 0;\n    result.is_eval = script->origin == JS_PI_SCRIPT_ORIGIN_EVAL;\n    result.is_module = script->is_module;\n    *info = result;\n    return 0;\n}\n\nJSValue JS_PiScriptGetSource(const JSNativeScript *script)\n{\n    return script ? js_dup(script->source) : JS_UNDEFINED;\n}\n\nJSValue JS_PiScriptGetResourceName(const JSNativeScript *script)\n{\n    return script ? js_dup(JS_IsUndefined(script->source_url)\n        ? script->resource_name : script->source_url) : JS_UNDEFINED;\n}\n\nJSValue JS_PiScriptGetSourceMapURL(const JSNativeScript *script)\n{\n    return script ? js_dup(script->source_map_url) : JS_UNDEFINED;\n}\n\nstatic int js_pi_script_code_unit(JSString *source, int position)\n{\n    return source->is_wide_char ? str16(source)[position] : str8(source)[position];\n}\n\nint JS_PiScriptGetPositionInfo(const JSNativeScript *script, int position,\n    bool with_offset, JSPiScriptPositionInfo *info)\n{\n    JSPiScriptPositionInfo result;\n    JSString *source;\n    int i, start = 0, line = 0, length, c;\n    if (!script || !info)\n        return -1;\n    source = JS_VALUE_GET_STRING(script->source);\n    length = source->len;\n    if (position < 0)\n        position = 0;\n    if (position > length)\n        return -1;\n    for (i = 0; i <= length; i++) {\n        c = i < length ? js_pi_script_code_unit(source, i) : 0;\n        if (i != length && c != '\\n' && c != CP_LS && c != CP_PS &&\n            !(c == '\\r' && (i + 1 == length ||\n              js_pi_script_code_unit(source, i + 1) != '\\n')))\n            continue;\n        if (position <= i) {\n            result.line = line;\n            result.column = position - start;\n            result.line_start = start;\n            result.line_end = i;\n            if (i > 0 && js_pi_script_code_unit(source, i - 1) == '\\r')\n                result.line_end--;\n            if (with_offset)\n                result.line += (int64_t)script->initial_line - 1;\n            *info = result;\n            return 0;\n        }\n        line++;\n        start = i + 1;\n    }\n    return -1;\n}\n\nJSValue JS_PiScriptGetSourceLine(JSContext *ctx,\n    const JSNativeScript *script, int position)\n{\n    JSPiScriptPositionInfo info;\n    if (JS_HasException(ctx))\n        return JS_EXCEPTION;\n    if (!script)\n        return JS_UNDEFINED;\n    if (script->rt != ctx->rt)\n        return JS_ThrowTypeError(ctx, \"Script belongs to a different runtime\");\n    if (JS_PiScriptGetPositionInfo(script, position, false, &info))\n        return JS_UNDEFINED;\n    return js_sub_string(ctx, JS_VALUE_GET_STRING(script->source),\n                         info.line_start, info.line_end);\n}\n\n/* Convert only an actual input byte boundary. No displayed line or column\n   participates. Supplementary scalar values occupy two UTF-16 positions. */\nstatic int js_pi_script_utf16_position(const JSNativeScript *script, int offset)\n{\n    const uint8_t *p, *end, *next;\n    int units = 0, c;\n    if (!script || offset < 0 || offset > script->input_length)\n        return -1;\n    p = script->input;\n    end = p + offset;\n    while (p < end) {\n        c = utf8_decode_len(p, end - p, &next);\n        if (c < 0 || next <= p || next > end)\n            return -1;\n        units += c > 0xffff ? 2 : 1;\n        p = next;\n    }\n    return units;\n}\n\nstatic int js_pi_bytecode_source_position(JSFunctionBytecode *b, uint32_t pc)\n{\n    int low = 0, high = b->pi_source_position_count;\n    while (low < high) {\n        int mid = low + (high - low) / 2;\n        if (b->pi_source_positions[mid].pc <= pc)\n            low = mid + 1;\n        else\n            high = mid;\n    }\n    return low ? js_pi_script_utf16_position(b->pi_script,\n        b->pi_source_positions[low - 1].byte_offset) : -1;\n}\n\nstatic void js_method_set_home_object(JSContext *ctx, JSValue func_obj,",
+      "count": 1
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "FD inherits native Script and independent position storage",
+      "before": "    uint8_t pi_script_origin; /* inherited from this compilation's root */",
+      "after": "    uint8_t pi_script_origin; /* inherited from this compilation's root */\n    JSNativeScript *pi_script;\n    JSPiSourcePosition *pi_source_positions;\n    int pi_source_position_count;",
+      "count": 1
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "inherit Script only after initialized FD",
+      "before": "    fd->pi_script_origin = parent ? parent->pi_script_origin : JS_PI_SCRIPT_ORIGIN_HOST;",
+      "after": "    fd->pi_script_origin = parent ? parent->pi_script_origin : JS_PI_SCRIPT_ORIGIN_HOST;\n    fd->pi_script = parent ? JS_PiDupScript(parent->pi_script) : NULL;",
+      "count": 1
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "release inherited Script on filename failure",
+      "before": "        JS_FreeAtom(ctx, fd->pi_source_url);\n        js_free(ctx, fd);",
+      "after": "        JS_FreeAtom(ctx, fd->pi_source_url);\n        JS_PiFreeScript(fd->pi_script);\n        js_free(ctx, fd);",
+      "count": 1
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "FD cleanup owns Script and unfinished position array",
+      "before": "    JS_FreeAtom(ctx, fd->pi_source_url);\n    dbuf_free(&fd->pc2line);",
+      "after": "    JS_FreeAtom(ctx, fd->pi_source_url);\n    JS_PiFreeScript(fd->pi_script);\n    js_free(ctx, fd->pi_source_positions);\n    dbuf_free(&fd->pc2line);",
+      "count": 1
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "publish finalized primitive Script before children",
+      "before": "    /* recompute scope linkage */\n    for (scope = 0; scope < fd->scope_count; scope++) {",
+      "after": "    if (js_pi_script_finalize(ctx, fd->pi_script))\n        goto fail;\n    /* recompute scope linkage */\n    for (scope = 0; scope < fd->scope_count; scope++) {",
+      "count": 1
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "move Script and position array to initialized bytecode",
+      "before": "    fd->pi_source_url = JS_ATOM_NULL; /* ownership transferred to bytecode */",
+      "after": "    fd->pi_source_url = JS_ATOM_NULL; /* ownership transferred to bytecode */\n    b->pi_script = fd->pi_script;\n    fd->pi_script = NULL;\n    b->pi_source_positions = fd->pi_source_positions;\n    b->pi_source_position_count = fd->pi_source_position_count;\n    fd->pi_source_positions = NULL;",
+      "count": 1
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "bytecode retirement releases native metadata",
+      "before": "    JS_FreeAtomRT(rt, b->pi_source_url);\n    js_free_rt(rt, b->pc2line_buf);",
+      "after": "    JS_FreeAtomRT(rt, b->pi_source_url);\n    JS_PiFreeScript(b->pi_script);\n    js_free_rt(rt, b->pi_source_positions);\n    js_free_rt(rt, b->pc2line_buf);",
+      "count": 1
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "root compiler creates complete actual input before children",
+      "before": "        ? JS_PI_SCRIPT_ORIGIN_EVAL : JS_PI_SCRIPT_ORIGIN_HOST;\n    fd->has_this_binding",
+      "after": "        ? JS_PI_SCRIPT_ORIGIN_EVAL : JS_PI_SCRIPT_ORIGIN_HOST;\n    fd->pi_script = js_pi_new_script(ctx, input, input_len, filename, line,\n                                    fd->pi_script_origin, m != NULL);\n    if (!fd->pi_script)\n        goto fail;\n    fd->has_this_binding",
+      "count": 1
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+      "label": "CJS attaches actual body before private wrapper definition",
+      "before": "    parent->eval_type = JS_EVAL_TYPE_GLOBAL;",
+      "after": "    parent->pi_script = js_pi_new_script(ctx, body, body_length, filename, 1,\n                                         JS_PI_SCRIPT_ORIGIN_HOST, false);\n    if (!parent->pi_script)\n        goto fail;\n    parent->eval_type = JS_EVAL_TYPE_GLOBAL;",
+      "count": 1
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "lexer metadata available in both compiler modes",
+      "before": "    JSPiCompilerDiagnostic *d = s->pi_diagnostic;\n    const uint8_t *p, *next, *name, *value, *value_end;",
+      "after": "    JSPiCompilerDiagnostic local = { 0 }, *d = s->pi_diagnostic;\n    JSNativeScript *script = s->cur_func ? s->cur_func->pi_script : NULL;\n    const uint8_t *p, *next, *name, *value, *value_end;",
+      "count": 1
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "ordinary lexer uses same actual magic-comment state",
+      "before": "    if (!d || !d->collect_source_metadata)\n        return 0;\n    p = comment + 2;",
+      "after": "    if (!d || !d->collect_source_metadata) {\n        if (!script)\n            return 0;\n        d = &local;\n        d->source_url_seen = script->url_seen;\n        d->source_url_position = script->url_event;\n        d->source_map_url_seen = script->map_seen;\n        d->source_map_url_position = script->map_event;\n    }\n    p = comment + 2;",
+      "count": 1
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "retain source URL lexer offsets",
+      "before": "        d->source_url_seen = true;\n    } else {",
+      "after": "        d->source_url_seen = true;\n        if (script) {\n            script->url_seen = true;\n            script->url_event = position;\n            script->url_start = value - s->buf_start;\n            script->url_length = value_length;\n        }\n    } else {",
+      "count": 1
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "retain source map lexer offsets",
+      "before": "        d->source_map_url_seen = true;\n    }\n    return 0;",
+      "after": "        d->source_map_url_seen = true;\n        if (script) {\n            script->map_seen = true;\n            script->map_event = position;\n            script->map_start = value - s->buf_start;\n            script->map_length = value_length;\n        }\n    }\n    return 0;",
+      "count": 1
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "count native source position allocation",
+      "before": "    hp->js_func_size += js_func_size;",
+      "after": "    if (b->pi_source_positions) {\n        memory_used_count++;\n        js_func_size += b->pi_source_position_count * sizeof(*b->pi_source_positions);\n    }\n    hp->js_func_size += js_func_size;",
+      "count": 1
+    },
+    {
+      "group": "compiler-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "count each native Script and primitive source root once",
+      "before": "    list_for_each(el, &rt->context_list) {\n        JSContext *ctx = list_entry(el, JSContext, link);\n        JSShape *sh = ctx->array_shape;",
+      "after": "    list_for_each(el, &rt->pi_script_list) {\n        JSNativeScript *script = list_entry(el, JSNativeScript, link);\n        s->memory_used_count += 2;\n        s->memory_used_size += sizeof(*script) + script->input_length + 1;\n        compute_value_size(script->source, hp);\n        compute_value_size(script->resource_name, hp);\n        compute_value_size(script->source_url, hp);\n        compute_value_size(script->source_map_url, hp);\n    }\n    list_for_each(el, &rt->context_list) {\n        JSContext *ctx = list_entry(el, JSContext, link);\n        JSShape *sh = ctx->array_shape;",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs-opcode.h",
+      "label": "temporary source location carries raw byte offset",
+      "before": "FMT(u32x2)",
+      "after": "FMT(u32x2)\nFMT(u32x3)",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs-opcode.h",
+      "label": "source location temporary instruction width",
+      "before": "def(     source_loc, 9, 0, 0, u32x2) /* emitted in phase 1, removed in phase 3 */",
+      "after": "def(     source_loc, 13, 0, 0, u32x3) /* emitted in phase 1, removed in phase 3 */",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "actual token byte-offset helper and emitter parameter",
+      "before": "static void emit_source_loc_at(JSParseState *s, int line_num, int col_num)",
+      "after": "static int js_pi_token_byte_position(JSParseState *s)\n{\n    if (!s->token.ptr || s->token.ptr < s->buf_start || s->token.ptr > s->buf_end)\n        return -1;\n    return s->token.ptr - s->buf_start;\n}\n\nstatic void emit_source_loc_at(JSParseState *s, int line_num, int col_num,\n                               int source_byte)",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "emit all source coordinates together",
+      "before": "    dbuf_put_u32(bc, col_num);\n}\n\nstatic void emit_source_loc(JSParseState *s)\n{\n    emit_source_loc_at(s, s->token.line_num, s->token.col_num);",
+      "after": "    dbuf_put_u32(bc, col_num);\n    dbuf_put_u32(bc, source_byte);\n}\n\nstatic void emit_source_loc(JSParseState *s)\n{\n    emit_source_loc_at(s, s->token.line_num, s->token.col_num,\n                       js_pi_token_byte_position(s));",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "array destructuring retains original token offset",
+      "before": "        int source_line_num, source_col_num;\n        BlockEnv block_env;",
+      "after": "        int source_line_num, source_col_num, source_byte;\n        BlockEnv block_env;",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "array destructuring captures byte position",
+      "before": "        source_line_num = s->token.line_num;\n        source_col_num = s->token.col_num;\n        if (next_token(s))\n            return -1;\n        /* the block environment",
+      "after": "        source_line_num = s->token.line_num;\n        source_col_num = s->token.col_num;\n        source_byte = js_pi_token_byte_position(s);\n        if (next_token(s))\n            return -1;\n        /* the block environment",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "delayed iterator source emission uses captured offset",
+      "before": "emit_source_loc_at(s, source_line_num, source_col_num);",
+      "after": "emit_source_loc_at(s, source_line_num, source_col_num, source_byte);",
+      "count": 2
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "postfix expression captures actual identifier/new offsets",
+      "before": "    int constructor_line_num = 0, constructor_col_num = 0;\n    int private_identifier_line = s->token.val == TOK_IDENT ? s->token.line_num : 0;\n    int private_identifier_column = s->token.col_num;",
+      "after": "    int constructor_line_num = 0, constructor_col_num = 0, constructor_byte = -1;\n    int private_identifier_line = s->token.val == TOK_IDENT ? s->token.line_num : 0;\n    int private_identifier_column = s->token.col_num;\n    int private_identifier_byte = js_pi_token_byte_position(s);",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "identifier access retains token offset",
+      "before": "            int identifier_line_num = s->token.line_num;\n            int identifier_col_num =",
+      "after": "            int identifier_line_num = s->token.line_num;\n            int identifier_byte = js_pi_token_byte_position(s);\n            int identifier_col_num =",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "identifier source tuple",
+      "before": "emit_source_loc_at(s, identifier_line_num, identifier_col_num);",
+      "after": "emit_source_loc_at(s, identifier_line_num, identifier_col_num, identifier_byte);",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "new expression captures token offset",
+      "before": "        constructor_line_num = s->token.line_num;\n        constructor_col_num = s->token.col_num;",
+      "after": "        constructor_line_num = s->token.line_num;\n        constructor_col_num = s->token.col_num;\n        constructor_byte = js_pi_token_byte_position(s);",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "delayed constructor source tuple",
+      "before": "emit_source_loc_at(s, constructor_line_num, constructor_col_num);",
+      "after": "emit_source_loc_at(s, constructor_line_num, constructor_col_num, constructor_byte);",
+      "count": 3
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "delayed private identifier source tuple",
+      "before": "emit_source_loc_at(s, private_identifier_line, private_identifier_column);",
+      "after": "emit_source_loc_at(s, private_identifier_line, private_identifier_column, private_identifier_byte);",
+      "count": 2
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "for-in/of receives original token position",
+      "before": "                                          int source_col_num)\n{\n    JSContext *ctx = s->ctx;",
+      "after": "                                          int source_col_num,\n                                          int source_byte)\n{\n    JSContext *ctx = s->ctx;",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "for statement keeps source position",
+      "before": "            int source_line_num, source_col_num;\n            bool is_async;",
+      "after": "            int source_line_num, source_col_num, source_byte;\n            bool is_async;",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "for statement captures token offset",
+      "before": "            source_line_num = s->token.line_num;\n            source_col_num = s->token.col_num;\n            if (next_token(s))\n                goto fail;",
+      "after": "            source_line_num = s->token.line_num;\n            source_col_num = s->token.col_num;\n            source_byte = js_pi_token_byte_position(s);\n            if (next_token(s))\n                goto fail;",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "for-in/of passes captured offset",
+      "before": "                                       source_line_num, source_col_num))",
+      "after": "                                       source_line_num, source_col_num, source_byte))",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "temporary-source opcode dump knows its width",
+      "before": "        case OP_FMT_u32x2:\n            printf(\" %u:%u\", get_u32(tab + pos), get_u32(tab + pos + 4));\n            break;",
+      "after": "        case OP_FMT_u32x2:\n            printf(\" %u:%u\", get_u32(tab + pos), get_u32(tab + pos + 4));\n            break;\n        case OP_FMT_u32x3:\n            printf(\" %u:%u@%d\", get_u32(tab + pos), get_u32(tab + pos + 4),\n                   get_i32(tab + pos + 8));\n            break;",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "source-location slot records actual byte offset",
+      "before": "typedef struct SourceLocSlot {\n    uint32_t pc;\n    int line_num;\n    int col_num;\n} SourceLocSlot;",
+      "after": "typedef struct SourceLocSlot {\n    uint32_t pc;\n    int line_num;\n    int col_num;\n    int source_byte;\n} SourceLocSlot;",
+      "count": 1
+    },
+    {
+      "group": "parser-position",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "FD tracks independent last byte position",
+      "before": "    int col_number_last;\n\n    /* pc2line table */",
+      "after": "    int col_number_last;\n    int source_byte_last;\n\n    /* pc2line table */",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "peephole matcher retains byte position",
+      "before": "    int col_num;  /* last visited OP_source_loc parameter or -1 */",
+      "after": "    int col_num;  /* last visited OP_source_loc parameter or -1 */\n    int source_byte; /* actual input offset from the same instruction */",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "code matcher byte position local",
+      "before": "    int op, len, op1, line_num, col_num, pos_next;",
+      "after": "    int op, len, op1, line_num, col_num, source_byte, pos_next;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "code matcher initial unknown position",
+      "before": "    line_num = -1;\n    col_num = -1;\n    va_start(ap, pos);",
+      "after": "    line_num = -1;\n    col_num = -1;\n    source_byte = -1;\n    va_start(ap, pos);",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "code matcher publishes position",
+      "before": "            s->col_num = col_num;\n            ret = true;",
+      "after": "            s->col_num = col_num;\n            s->source_byte = source_byte;\n            ret = true;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "code matcher reads complete source tuple",
+      "before": "                col_num = get_u32(tab + pos + 5);\n                pos = pos_next;",
+      "after": "                col_num = get_u32(tab + pos + 5);\n                source_byte = get_i32(tab + pos + 9);\n                pos = pos_next;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "dead-code scan receives byte position owner",
+      "before": "                          int pos, int *linep, int *colp)",
+      "after": "                          int pos, int *linep, int *colp, int *sourcep)",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "dead-code scan preserves later byte position",
+      "before": "            *colp = get_u32(bc_buf + pos + 5);",
+      "after": "            *colp = get_u32(bc_buf + pos + 5);\n            *sourcep = get_i32(bc_buf + pos + 9);",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "label scan uses actual temporary opcode size",
+      "before": "            case OP_source_loc:\n                pos += 9;",
+      "after": "            case OP_source_loc:\n                pos += opcode_info[OP_source_loc].size;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "second label scan uses actual temporary opcode size",
+      "before": "        if (op == OP_source_loc) {\n            pos += 9;",
+      "after": "        if (op == OP_source_loc) {\n            pos += opcode_info[OP_source_loc].size;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable pass tracks byte position",
+      "before": "    int pos, pos_next, bc_len, op, len, i, idx, line_num, col_num;",
+      "after": "    int pos, pos_next, bc_len, op, len, i, idx, line_num, col_num, source_byte;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable pass initializes position",
+      "before": "    line_num = 0; /* avoid warning */\n    col_num = 0;",
+      "after": "    line_num = 0; /* avoid warning */\n    col_num = 0;\n    source_byte = -1;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "both passes read byte offset",
+      "before": "            col_num = get_u32(bc_buf + pos + 5);",
+      "after": "            col_num = get_u32(bc_buf + pos + 5);\n            source_byte = get_i32(bc_buf + pos + 9);",
+      "count": 2
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable peephole compares complete tuple",
+      "before": "                if (cc.line_num != line_num || cc.col_num != col_num) {\n                    line_num = cc.line_num;\n                    col_num = cc.col_num;",
+      "after": "                if (cc.line_num != line_num || cc.col_num != col_num ||\n                    cc.source_byte != source_byte) {\n                    line_num = cc.line_num;\n                    col_num = cc.col_num;\n                    source_byte = cc.source_byte;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable dead-code position local",
+      "before": "                int line = -1;\n                int col = -1;",
+      "after": "                int line = -1;\n                int col = -1;\n                int source = -1;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable dead-code position output",
+      "before": "                                     &line, &col);",
+      "after": "                                     &line, &col, &source);",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "variable dead-code tuple propagation",
+      "before": "                if (line_num != line || col_num != col) {\n                    line_num = line;\n                    col_num = col;",
+      "after": "                if (line_num != line || col_num != col || source_byte != source) {\n                    line_num = line;\n                    col_num = col;\n                    source_byte = source;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "branch threading saves matched tuple",
+      "before": "                int lab0, lab1, op1, pos1, line1, col1, pos2;",
+      "after": "                int lab0, lab1, op1, pos1, line1, col1, source1, pos2;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "branch threading captures position before later matches",
+      "before": "                line1 = cc.line_num;\n                col1 = cc.col_num;",
+      "after": "                line1 = cc.line_num;\n                col1 = cc.col_num;\n                source1 = cc.source_byte;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "branch threading writes complete tuple",
+      "before": "                    if (line1 != line_num || col1 != col_num) {\n                        line_num = line1;\n                        col_num = col1;",
+      "after": "                    if (line1 != line_num || col1 != col_num || source1 != source_byte) {\n                        line_num = line1;\n                        col_num = col1;\n                        source_byte = source1;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "all regenerated temporary tuples include byte offset",
+      "before": "                    dbuf_put_u32(&bc_out, col_num);\n                }",
+      "after": "                    dbuf_put_u32(&bc_out, col_num);\n                    dbuf_put_u32(&bc_out, source_byte);\n                }",
+      "count": 2
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "threaded temporary tuple includes byte offset",
+      "before": "                        dbuf_put_u32(&bc_out, col_num);",
+      "after": "                        dbuf_put_u32(&bc_out, col_num);\n                        dbuf_put_u32(&bc_out, source_byte);",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "source-location recorder accepts byte offset",
+      "before": "                             int line_num, int col_num)\n{\n    if (s->source_loc_slots",
+      "after": "                             int line_num, int col_num, int source_byte)\n{\n    if (s->source_loc_slots",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "deduplicate only identical source tuples",
+      "before": "    if (line_num == s->line_number_last)\n        if (col_num == s->col_number_last)\n            return;",
+      "after": "    if (line_num == s->line_number_last && col_num == s->col_number_last &&\n        source_byte == s->source_byte_last)\n        return;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "store actual source byte position",
+      "before": "    s->source_loc_slots[s->source_loc_count].col_num = col_num;",
+      "after": "    s->source_loc_slots[s->source_loc_count].col_num = col_num;\n    s->source_loc_slots[s->source_loc_count].source_byte = source_byte;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "remember current source byte position",
+      "before": "    s->col_number_last = col_num;\n}",
+      "after": "    s->col_number_last = col_num;\n    s->source_byte_last = source_byte;\n}",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "label pass owns current byte position",
+      "before": "    int pos, pos_next, bc_len, op, op1, len, i, line_num, col_num, patch_offsets;",
+      "after": "    int pos, pos_next, bc_len, op, op1, len, i, line_num, col_num, patch_offsets;\n    int source_byte = -1;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "label pass initializes position recorder",
+      "before": "        s->col_number_last = s->col_num;\n        s->line_number_last_pc = 0;",
+      "after": "        s->col_number_last = s->col_num;\n        s->source_byte_last = -1;\n        s->line_number_last_pc = 0;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "label pass dead-code scans retain byte offsets",
+      "before": "&line_num, &col_num);",
+      "after": "&line_num, &col_num, &source_byte);",
+      "count": 4
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "matched final-pass byte position 20",
+      "before": "\n                    if (cc.col_num >= 0) col_num = cc.col_num;\n",
+      "after": "\n                    if (cc.col_num >= 0) col_num = cc.col_num;\n                    if (cc.source_byte >= 0) source_byte = cc.source_byte;\n",
+      "count": 14
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "matched final-pass byte position 16",
+      "before": "\n                if (cc.col_num >= 0) col_num = cc.col_num;\n",
+      "after": "\n                if (cc.col_num >= 0) col_num = cc.col_num;\n                if (cc.source_byte >= 0) source_byte = cc.source_byte;\n",
+      "count": 14
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "matched final-pass byte position 24",
+      "before": "\n                        if (cc.col_num >= 0) col_num = cc.col_num;\n",
+      "after": "\n                        if (cc.col_num >= 0) col_num = cc.col_num;\n                        if (cc.source_byte >= 0) source_byte = cc.source_byte;\n",
+      "count": 4
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "final branch matcher saves actual offset",
+      "before": "                int col1 = cc.col_num;",
+      "after": "                int col1 = cc.col_num;\n                int source1 = cc.source_byte;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "final branch matcher publishes saved offset",
+      "before": "                    if (col1 >= 0) col_num = col1;",
+      "after": "                    if (col1 >= 0) col_num = col1;\n                    if (source1 >= 0) source_byte = source1;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "delayed matched source owns byte position",
+      "before": "                int op1, line2 = -1;",
+      "after": "                int op1, line2 = -1, source2 = -1;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "delay raw offset with same original line",
+      "before": "                            line2 = cc.line_num; /* delay line number update */",
+      "after": "                            line2 = cc.line_num; /* delay line number update */\n                            source2 = cc.source_byte;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "publish delayed raw offset after selected operation",
+      "before": "                    if (line2 >= 0) line_num = line2;",
+      "after": "                    if (line2 >= 0) line_num = line2;\n                    if (source2 >= 0) source_byte = source2;",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "all final bytecode recording sites receive raw position",
+      "before": "add_pc2line_info(s, bc_out.size, line_num, col_num);",
+      "after": "add_pc2line_info(s, bc_out.size, line_num, col_num, source_byte);",
+      "count": 34
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "compile independent final PC to byte-position array",
+      "before": "static RelocEntry *add_reloc(JSContext *ctx, LabelSlot *ls, uint32_t addr, int size)",
+      "after": "/* Preserve actual token positions independently of debug/presentation data.\n   SourceLocSlot PCs already include the final jump-width adjustments. */\nstatic int js_pi_compute_source_positions(JSFunctionDef *s)\n{\n    int i, count = 0;\n    JSPiSourcePosition *positions;\n    if (!s->pi_script)\n        return 0;\n    for (i = 0; i < s->source_loc_count; i++) {\n        int offset = s->source_loc_slots[i].source_byte;\n        if (js_pi_compiler_poll(s->ctx))\n            return -1;\n        if (offset >= 0) {\n            if (offset > s->pi_script->input_length) {\n                JS_ThrowInternalError(s->ctx, \"invalid compiler source position\");\n                return -1;\n            }\n            count++;\n        }\n    }\n    if (!count)\n        return 0;\n    if ((size_t)count > SIZE_MAX / sizeof(*positions)) {\n        JS_ThrowOutOfMemory(s->ctx);\n        return -1;\n    }\n    positions = js_malloc(s->ctx, (size_t)count * sizeof(*positions));\n    if (!positions)\n        return -1;\n    s->pi_source_positions = positions;\n    for (i = 0; i < s->source_loc_count; i++) {\n        SourceLocSlot *slot = &s->source_loc_slots[i];\n        if (slot->source_byte >= 0) {\n            positions[s->pi_source_position_count].pc = slot->pc;\n            positions[s->pi_source_position_count].byte_offset = slot->source_byte;\n            s->pi_source_position_count++;\n        }\n    }\n    return 0;\n}\n\nstatic RelocEntry *add_reloc(JSContext *ctx, LabelSlot *ls, uint32_t addr, int size)",
+      "count": 1
+    },
+    {
+      "group": "compiler-passes",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "compile metadata before source-location slots retire",
+      "before": "    if (compute_pc2line_info(s) && ctx->pi_compiler_diagnostic)\n        goto fail;\n    js_free(ctx, s->source_loc_slots);",
+      "after": "    if (compute_pc2line_info(s) && ctx->pi_compiler_diagnostic)\n        goto fail;\n    if (js_pi_compute_source_positions(s))\n        goto fail;\n    js_free(ctx, s->source_loc_slots);",
+      "count": 1
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "frame retirement releases its independent Script root",
+      "before": "        JS_FreeValueRT(rt, csd->receiver);\n        js_free_rt(rt, csd);",
+      "after": "        JS_FreeValueRT(rt, csd->receiver);\n        JS_PiFreeScript(csd->pi_script);\n        js_free_rt(rt, csd);",
+      "count": 1
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "frame publication moves Script ownership",
+      "before": "    csd->receiver = JS_UNDEFINED;\n\n    JS_SetOpaqueInternal(obj, csd1);",
+      "after": "    csd->receiver = JS_UNDEFINED;\n    csd->pi_script = NULL;\n\n    JS_SetOpaqueInternal(obj, csd1);",
+      "count": 1
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "initialize actual-frame Script provenance",
+      "before": "    csd->pi_script_origin = JS_PI_SCRIPT_ORIGIN_NONE;\n    csd->native = false;",
+      "after": "    csd->pi_script_origin = JS_PI_SCRIPT_ORIGIN_NONE;\n    csd->pi_script = NULL;\n    csd->pi_source_position = -1;\n    csd->native = false;",
+      "count": 1
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "capture actual bytecode Script and token position",
+      "before": "        csd->pi_script_origin = bytecode->pi_script_origin;\n        pi_metadata |=",
+      "after": "        csd->pi_script_origin = bytecode->pi_script_origin;\n        csd->pi_script = JS_PiDupScript(bytecode->pi_script);\n        if (sf->cur_pc)\n            csd->pi_source_position = js_pi_bytecode_source_position(bytecode,\n                sf->cur_pc - bytecode->byte_code_buf - 1);\n        pi_metadata |=",
+      "count": 1
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "filename-only synthetic frames have no Script",
+      "before": "    /* A caller-supplied filename has no compiled Script owner. */\n    csd->pi_script_origin = JS_PI_SCRIPT_ORIGIN_NONE;",
+      "after": "    /* A caller-supplied filename has no compiled Script owner. */\n    csd->pi_script_origin = JS_PI_SCRIPT_ORIGIN_NONE;\n    csd->pi_script = NULL;\n    csd->pi_source_position = -1;",
+      "count": 1
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "raw missing-PC capture retains real Script without a guessed position",
+      "before": "            data.top_level = function->u.func.is_top_level;\n            data.filename =",
+      "after": "            data.top_level = function->u.func.is_top_level;\n            data.pi_script = JS_PiDupScript(bytecode->pi_script);\n            data.pi_source_position = -1;\n            data.filename =",
+      "count": 1
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "capture temporary cleanup releases owned Script",
+      "before": "            JS_FreeValue(ctx, data.receiver);\n            goto fail;",
+      "after": "            JS_FreeValue(ctx, data.receiver);\n            JS_PiFreeScript(data.pi_script);\n            goto fail;",
+      "count": 2
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "capture publication cleanup retires only unmoved Script",
+      "before": "        JS_FreeValue(ctx, data.receiver);\n        if (JS_IsException(frame)",
+      "after": "        JS_FreeValue(ctx, data.receiver);\n        JS_PiFreeScript(data.pi_script);\n        if (JS_IsException(frame)",
+      "count": 2
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "frame clone independently duplicates Script",
+      "before": "    copy.receiver = js_dup(source->receiver);\n    result =",
+      "after": "    copy.receiver = js_dup(source->receiver);\n    copy.pi_script = JS_PiDupScript(source->pi_script);\n    result =",
+      "count": 1
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "failed or moved frame clone cleanup",
+      "before": "    JS_FreeValue(ctx, copy.receiver);\n    return result;",
+      "after": "    JS_FreeValue(ctx, copy.receiver);\n    JS_PiFreeScript(copy.pi_script);\n    return result;",
+      "count": 1
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "legacy prepared-stack temporary cleanup releases Script",
+      "before": "            JS_FreeValue(ctx, csd[k].receiver);\n        }",
+      "after": "            JS_FreeValue(ctx, csd[k].receiver);\n            JS_PiFreeScript(csd[k].pi_script);\n        }",
+      "count": 1
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "metadata-failure temporary cleanup releases primitive Script",
+      "before": "            js_pi_metadata_release(ctx, &csd[k].receiver, &owned);\n        }",
+      "after": "            js_pi_metadata_release(ctx, &csd[k].receiver, &owned);\n            JS_PiFreeScript(csd[k].pi_script);\n        }",
+      "count": 1
+    },
+    {
+      "group": "captured-frames",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "raw captured Script projection",
+      "before": "int JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx, JSValueConst frame,",
+      "after": "JSNativeScript *JS_PiGetCapturedStackFrameScript(JSValueConst frame, int *position)\n{\n    JSCallSiteData *data = JS_GetOpaque(frame, JS_CLASS_CALL_SITE);\n    if (!data || !position || !data->pi_script)\n        return NULL;\n    *position = data->pi_source_position;\n    return JS_PiDupScript(data->pi_script);\n}\n\nint JS_ReadCapturedStackFrameLoggingInfo(JSContext *ctx, JSValueConst frame,",
+      "count": 1
+    },
+    {
+      "group": "serialization",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "versioned complete Script provenance envelope",
+      "before": "#define BC_VERSION 30",
+      "after": "#define BC_VERSION 31",
+      "count": 1
+    },
+    {
+      "group": "serialization",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "writer retains Script identities independently of object reference mode",
+      "before": "    /* list of referenced objects (used if allow_reference = true) */\n    JSObjectList object_list;",
+      "after": "    /* Script identity is preserved even without object-reference mode. */\n    JSNativeScript **pi_scripts;\n    int pi_script_count, pi_script_size;\n    /* list of referenced objects (used if allow_reference = true) */\n    JSObjectList object_list;",
+      "count": 1
+    },
+    {
+      "group": "serialization",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "write real Script and raw position metadata",
+      "before": "static int JS_WriteFunctionTag(BCWriterState *s, JSValueConst obj)",
+      "after": "static void js_pi_write_script_value(BCWriterState *s, JSValueConst value,\n                                     bool optional)\n{\n    if (optional) {\n        bc_put_u8(s, !JS_IsUndefined(value));\n        if (JS_IsUndefined(value))\n            return;\n    }\n    assert(JS_IsString(value));\n    JS_WriteString(s, JS_VALUE_GET_STRING(value));\n}\n\nstatic int js_pi_write_script_metadata(BCWriterState *s, JSFunctionBytecode *b)\n{\n    JSNativeScript *script = b->pi_script;\n    int i;\n    if (!script) {\n        bc_put_u8(s, 0);\n    } else {\n        for (i = 0; i < s->pi_script_count; i++)\n            if (s->pi_scripts[i] == script)\n                break;\n        if (i < s->pi_script_count) {\n            bc_put_u8(s, 1);\n            bc_put_leb128(s, i);\n        } else {\n            if (s->pi_script_count == INT_MAX) {\n                JS_ThrowOutOfMemory(s->ctx);\n                return -1;\n            }\n            if (js_resize_array(s->ctx, (void **)&s->pi_scripts,\n                                sizeof(*s->pi_scripts), &s->pi_script_size,\n                                s->pi_script_count + 1))\n                return -1;\n            s->pi_scripts[s->pi_script_count++] = JS_PiDupScript(script);\n            bc_put_u8(s, 2);\n            bc_put_u8(s, script->origin);\n            bc_put_u8(s, script->is_module);\n            bc_put_sleb128(s, script->initial_line);\n            bc_put_leb128(s, script->input_length);\n            dbuf_put(&s->dbuf, script->input, script->input_length);\n            js_pi_write_script_value(s, script->resource_name, false);\n            js_pi_write_script_value(s, script->source_url, true);\n            js_pi_write_script_value(s, script->source_map_url, true);\n        }\n    }\n    bc_put_leb128(s, b->pi_source_position_count);\n    for (i = 0; i < b->pi_source_position_count; i++) {\n        bc_put_leb128(s, b->pi_source_positions[i].pc);\n        bc_put_leb128(s, b->pi_source_positions[i].byte_offset);\n    }\n    if (dbuf_error(&s->dbuf)) {\n        JS_ThrowOutOfMemory(s->ctx);\n        return -1;\n    }\n    return 0;\n}\n\nstatic void js_pi_writer_free_scripts(BCWriterState *s)\n{\n    int i;\n    for (i = 0; i < s->pi_script_count; i++)\n        JS_PiFreeScript(s->pi_scripts[i]);\n    js_free(s->ctx, s->pi_scripts);\n}\n\nstatic int JS_WriteFunctionTag(BCWriterState *s, JSValueConst obj)",
+      "count": 1
+    },
+    {
+      "group": "serialization",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "metadata precedes child functions for shared identity",
+      "before": "    // write constant pool before code so code can be disassembled",
+      "after": "    if (js_pi_write_script_metadata(s, b))\n        goto fail;\n\n    // write constant pool before code so code can be disassembled",
+      "count": 1
+    },
+    {
+      "group": "serialization",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "writer success and failure release every retained Script",
+      "before": "    js_object_list_end(ctx, &s->object_list);\n    js_free(ctx, s->atom_to_idx);",
+      "after": "    js_object_list_end(ctx, &s->object_list);\n    js_pi_writer_free_scripts(s);\n    js_free(ctx, s->atom_to_idx);",
+      "count": 2
+    },
+    {
+      "group": "serialization",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "reader retains independent Script identity table",
+      "before": "    /* object references */\n    JSObject **objects;",
+      "after": "    /* Native Script references; each table entry owns one entitlement. */\n    JSNativeScript **pi_scripts;\n    int pi_script_count, pi_script_size;\n    /* object references */\n    JSObject **objects;",
+      "count": 1
+    },
+    {
+      "group": "serialization",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "read bounded native Script provenance before function constants",
+      "before": "static JSValue JS_ReadFunctionTag(BCReaderState *s)",
+      "after": "static int js_pi_read_script_value(BCReaderState *s, JSValue *out, bool optional)\n{\n    JSString *value;\n    uint8_t present;\n    if (optional) {\n        if (bc_get_u8(s, &present))\n            return -1;\n        if (present > 1) {\n            JS_ThrowSyntaxError(s->ctx, \"invalid Script primitive metadata\");\n            return -1;\n        }\n        if (!present) {\n            *out = JS_UNDEFINED;\n            return 0;\n        }\n    }\n    value = JS_ReadString(s);\n    if (!value)\n        return -1;\n    *out = JS_MKPTR(JS_TAG_STRING, value);\n    return 0;\n}\n\nstatic int js_pi_read_script_metadata(BCReaderState *s, JSFunctionBytecode *b)\n{\n    JSNativeScript *script = NULL;\n    uint8_t tag, origin, is_module;\n    uint32_t index, length, count, i, pc, offset, last_pc = 0;\n    int32_t initial_line;\n    if (bc_get_u8(s, &tag))\n        return -1;\n    if (tag == 1) {\n        if (bc_get_leb128(s, &index))\n            return -1;\n        if (index >= (uint32_t)s->pi_script_count)\n            goto invalid;\n        b->pi_script = JS_PiDupScript(s->pi_scripts[index]);\n    } else if (tag == 2) {\n        if (bc_get_u8(s, &origin) || bc_get_u8(s, &is_module) ||\n            bc_get_sleb128(s, &initial_line) || bc_get_leb128(s, &length))\n            return -1;\n        if (origin < JS_PI_SCRIPT_ORIGIN_HOST || origin > JS_PI_SCRIPT_ORIGIN_EVAL ||\n            is_module > 1 || length > INT_MAX)\n            goto invalid;\n        if ((size_t)(s->buf_end - s->ptr) < length)\n            return bc_read_error_end(s);\n        script = js_pi_new_script(s->ctx, (const char *)s->ptr, length, \"\",\n                                  initial_line, origin, is_module);\n        if (!script)\n            return -1;\n        s->ptr += length;\n        JS_FreeValue(s->ctx, script->resource_name);\n        script->resource_name = JS_UNDEFINED;\n        if (js_pi_read_script_value(s, &script->resource_name, false) ||\n            js_pi_read_script_value(s, &script->source_url, true) ||\n            js_pi_read_script_value(s, &script->source_map_url, true))\n            goto fail;\n        script->metadata_finalized = true;\n        if (s->pi_script_count == INT_MAX) {\n            JS_ThrowOutOfMemory(s->ctx);\n            goto fail;\n        }\n        if (js_resize_array(s->ctx, (void **)&s->pi_scripts,\n                            sizeof(*s->pi_scripts), &s->pi_script_size,\n                            s->pi_script_count + 1))\n            goto fail;\n        s->pi_scripts[s->pi_script_count++] = script;\n        b->pi_script = JS_PiDupScript(script);\n        script = NULL; /* the table owns the construction entitlement */\n    } else if (tag != 0) {\n        goto invalid;\n    }\n    if (b->pi_script ? b->pi_script->origin != b->pi_script_origin\n                     : b->pi_script_origin != JS_PI_SCRIPT_ORIGIN_NONE)\n        goto invalid;\n    if (bc_get_leb128(s, &count))\n        return -1;\n    if (count > INT_MAX || (size_t)count > SIZE_MAX / sizeof(*b->pi_source_positions) ||\n        (size_t)count > (size_t)(s->buf_end - s->ptr) / 2 ||\n        (count && !b->pi_script))\n        goto invalid;\n    if (count) {\n        b->pi_source_positions = js_malloc(s->ctx,\n            (size_t)count * sizeof(*b->pi_source_positions));\n        if (!b->pi_source_positions)\n            return -1;\n        for (i = 0; i < count; i++) {\n            if (bc_get_leb128(s, &pc) || bc_get_leb128(s, &offset))\n                return -1;\n            if (pc > (uint32_t)b->byte_code_len || (i && pc < last_pc) ||\n                offset > (uint32_t)b->pi_script->input_length)\n                goto invalid;\n            b->pi_source_positions[i].pc = pc;\n            b->pi_source_positions[i].byte_offset = offset;\n            b->pi_source_position_count++;\n            last_pc = pc;\n        }\n    }\n    return 0;\n invalid:\n    JS_ThrowSyntaxError(s->ctx, \"invalid bytecode Script provenance\");\n fail:\n    JS_PiFreeScript(script);\n    return -1;\n}\n\nstatic JSValue JS_ReadFunctionTag(BCReaderState *s)",
+      "count": 1
+    },
+    {
+      "group": "serialization",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "reader attaches metadata before recursive constant pool",
+      "before": "    if (b->cpool_count != 0) {\n        bc_read_trace(s, \"cpool {\\n\");",
+      "after": "    if (js_pi_read_script_metadata(s, b))\n        goto fail;\n    if (b->cpool_count != 0) {\n        bc_read_trace(s, \"cpool {\\n\");",
+      "count": 1
+    },
+    {
+      "group": "serialization",
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "reader cleanup retires native Script table",
+      "before": "    js_free(s->ctx, s->objects);\n}",
+      "after": "    js_free(s->ctx, s->objects);\n    for (i = 0; i < s->pi_script_count; i++)\n        JS_PiFreeScript(s->pi_scripts[i]);\n    js_free(s->ctx, s->pi_scripts);\n}",
+      "count": 1
+    }
+  ],
+  "limits": [
+    "No build/Node/runtime/formatter/generator execution.",
+    "No Message creation/report/catcher or Node listener implementation.",
+    "No failed-parse exception Script attachment; filename-only synthetic frames remain explicitly absent.",
+    "Only existing primitive compiler origins; no object-valued ScriptOrigin input added.",
+    "Independent private position table survives all strip flags; existing display pc2line retained."
+  ]
+}

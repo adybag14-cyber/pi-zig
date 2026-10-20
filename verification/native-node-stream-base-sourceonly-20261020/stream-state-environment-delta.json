@@ -1,0 +1,53 @@
+{
+  "status": "source-only proposed six-edit StreamBase alias owner; not applied to Main or Root; peer pending",
+  "path": "src/extensions/native_node_callback_scope.zig",
+  "base_sha256": "8868C64C8B9DF78CC7EA43DE34E682B3ABB74285C6B47BA9D268C015FB9CAF1F",
+  "base_bytes": 37754,
+  "successor_sha256": "E267756ECEFDFA7577E68A18BB2D04EA5392579E837385BA437808DD75F6E397",
+  "successor_bytes": 38246,
+  "edits": [
+    {
+      "name": "stream field indices",
+      "before": "pub const Tick = enum(u32) { has_tick_scheduled, has_rejection_to_warn };\n",
+      "after": "pub const Tick = enum(u32) { has_tick_scheduled, has_rejection_to_warn };\npub const StreamBaseField = enum(u32) {\n    read_bytes_or_error, array_buffer_offset, bytes_written, last_write_was_async,\n};\n",
+      "count": 1
+    },
+    {
+      "name": "actual signed alias type",
+      "before": "const IdStack = Alias(f64, c.JS_TYPED_ARRAY_FLOAT64);\n",
+      "after": "const IdStack = Alias(f64, c.JS_TYPED_ARRAY_FLOAT64);\nconst StreamBaseState = Alias(i32, c.JS_TYPED_ARRAY_INT32);\n",
+      "count": 1
+    },
+    {
+      "name": "one Environment member",
+      "before": "    ids: IdStack = .{},\n",
+      "after": "    ids: IdStack = .{},\n    stream_base_state: StreamBaseState = .{},\n",
+      "count": 1
+    },
+    {
+      "name": "constructor after earlier member initialization",
+      "before": "        self.uidField(.counter).* = 1;\n        self.resource_symbol",
+      "after": "        self.uidField(.counter).* = 1;\n        self.stream_base_state = try StreamBaseState.create(s, 4);\n        self.resource_symbol",
+      "count": 1
+    },
+    {
+      "name": "typed native field accessor",
+      "before": "    pub fn tickField(self: *Environment, index: Tick) *u8 { return &self.ticks.data[@intFromEnum(index)]; }\n",
+      "after": "    pub fn tickField(self: *Environment, index: Tick) *u8 { return &self.ticks.data[@intFromEnum(index)]; }\n    pub fn streamBaseField(self: *Environment, index: StreamBaseField) *i32 {\n        return &self.stream_base_state.data[@intFromEnum(index)];\n    }\n",
+      "count": 1
+    },
+    {
+      "name": "later declared alias retires before existing aliases",
+      "before": "    fn retireRoots(self: *Environment, s: *LocalScope) void {\n        self.ids.release(s);",
+      "after": "    fn retireRoots(self: *Environment, s: *LocalScope) void {\n        self.stream_base_state.release(s);\n        self.ids.release(s);",
+      "count": 1
+    }
+  ],
+  "exact_inverse_verified": true,
+  "limits": [
+    "No managed-buffer store, native backing API, StreamBase callback or public binding is supplied by this alias-only proposal.",
+    "Original existing Environment algorithms and cleanup-body order are unchanged. The new later-declared alias is released before those existing aliases.",
+    "Future actual managed-buffer map retirement must precede this alias, after joined I/O and realm cleanup; no early shutdown reset.",
+    "No native execution."
+  ]
+}
