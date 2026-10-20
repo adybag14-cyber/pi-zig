@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "status": "reviewed_source_only_intake",
+  "recorded_utc": "2026-10-20T13:26:01.648957+00:00",
+  "base_head": "cfc03448a97fb05a06a5324d2d2b809ecc1d33e7",
+  "donor_commit": "3c2ae20f2608b48071c3212cb78ae9930bfad219",
+  "integrated_commit": "8f976f0b9925e283b194b7a893de573fd703e036",
+  "source_only": true,
+  "prior_compile_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-oauth-options-fresh-v25-control-20261020-131300\\independent-compile-negative-closure.json",
+    "bytes": 4088,
+    "sha256": "47ACD79764F80ED95C430C5174D38598A23F6D00343E508FD1E32BE3B71AFF41"
+  },
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-termination-v25-hook-types-sourceonly-20261020\\manifest.json",
+    "bytes": 1589,
+    "sha256": "9BDAF98A28A559C138C25459A21456C417B4EEA9AA9EC0CEF2117CFE685B8442"
+  },
+  "exact_forward_inverse": true,
+  "observed_field_type": "JSPromiseHookType",
+  "changed_expected_operands": 4,
+  "changed_observations": 0,
+  "declared_names_preserved": 30,
+  "production_changes": 0,
+  "build_changes": 0,
+  "all_intaken_paths": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_vm_execution_termination_test.zig",
+      "bytes": 59183,
+      "sha256": "379906C65E6A21B0419CB93D68CE7DE57B33367969E6EB96766954CD1625D93E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-termination-v25-hook-types-sourceonly-20261020\\original-compile.stderr.log",
+      "bytes": 20515,
+      "sha256": "D6EEDB0E13F25F3DFEDF4ECF6E60EB56181C5C50E69DAA4B8EF92111AED73516"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-termination-v25-hook-types-sourceonly-20261020\\original-test.zig.txt",
+      "bytes": 59079,
+      "sha256": "164F8DCA345A71FA43D2894E8F07173A04304FDB6E0BED5FCA9EC3277E304EA8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-termination-v25-hook-types-sourceonly-20261020\\peer-closure.json",
+      "bytes": 536,
+      "sha256": "8E3CB070DD400EF73B669D4B22C0245BDCCB96B279E103D23F58B6637363CAD4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-termination-v25-hook-types-sourceonly-20261020\\README.md",
+      "bytes": 1365,
+      "sha256": "EC93AC40128D38A2AFB947949E122038A1299106B38D4DF101C4478616E847E4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-termination-v25-hook-types-sourceonly-20261020\\source-delta.json",
+      "bytes": 6935,
+      "sha256": "0AC06E997FE81C471B1DC864FBEBB7419106F106AFB31C1024880B4EBBBD417A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-termination-v25-hook-types-sourceonly-20261020\\manifest.json",
+      "bytes": 1589,
+      "sha256": "9BDAF98A28A559C138C25459A21456C417B4EEA9AA9EC0CEF2117CFE685B8442"
+    }
+  ],
+  "current_header_contains_exact_reviewed_enum": true,
+  "peer_static_scan": "SDK: TypeBox15/host16/StreamResource8/FS25 clear; FS JSPromiseStateEnum includes -1 and remains signed. Modules: parser23 C API returns int and expected statuses already c_int.",
+  "runtime_authority": false,
+  "qualification": false
+}

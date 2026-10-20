@@ -2411,5 +2411,41 @@
       "Isolated native corruption/UV/option-heap fatal probes under separate grants"
     ],
     "application_qualification": false
+  },
+  "v25_compile_negative_and_successor": {
+    "recorded_utc": "2026-10-20T13:26:01.648957+00:00",
+    "source_head": "8f976f0b9925e283b194b7a893de573fd703e036",
+    "status": "compile_negative_closed_four_fixture_casts_integrated",
+    "v25_head": "cfc03448a97fb05a06a5324d2d2b809ecc1d33e7",
+    "selected_groups": 47,
+    "declared_controls": 960,
+    "attempted_groups": 1,
+    "unstarted_groups": 46,
+    "actual_metadata_count": 0,
+    "tests_started": 0,
+    "compile_errors": [
+      "expected c_int, actual c_uint at VM termination hook assertions276 and789"
+    ],
+    "independent_negative_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-oauth-options-fresh-v25-control-20261020-131300\\independent-compile-negative-closure.json",
+      "bytes": 4088,
+      "sha256": "47ACD79764F80ED95C430C5174D38598A23F6D00343E508FD1E32BE3B71AFF41"
+    },
+    "all_current_inventories_verified": true,
+    "distinct_current_files_rehashed": 33245,
+    "all_original_actual_process_instances_absent": true,
+    "source_hold_released": true,
+    "successor_intake": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-termination-v25-hook-types-sourceonly-20261020\\main-intake.json",
+      "bytes": 3166,
+      "sha256": "9575671CE5B6A2982D1A8473613D448C58135AC4C24DCDA32D827C927692345B"
+    },
+    "source_only": true,
+    "remaining_next_gate": [
+      "Fresh strict BuildQuery on one frozen corrected head; actual raw metadata/artifact and complete current source/compiler/control/process acceptance",
+      "Separate strict RuntimeOnly after independent complete BuildQuery acceptance",
+      "Separate isolated corruption/UV/options OOM build and expected-exit runtime"
+    ],
+    "application_qualification": false
   }
 }
