@@ -1,0 +1,166 @@
+{
+  "status": "source-only finite-reviewed unit; no compile, metadata, Source/native execution or qualification",
+  "source_parent": "b6de7d3880927a36df3d2a27e9301b66a30cfe03",
+  "scope": "Actual selected Node v24.14 experimental-warning declaration and one private lexical SafeSet, for genuine CJS composition.",
+  "files": [
+    {
+      "path": "src/extensions/native_node_experimental_warning.zig",
+      "sha256": "A844AEA7D081E5871545EB8EECB786D50A80EE077FA2C3E14A9F297DA2287E12",
+      "bytes": 4683
+    },
+    {
+      "path": "src/native_node_experimental_warning_test.zig",
+      "sha256": "EF22E0E1ED2BD136BCFC6B2BA8E7713BEDE4B9742BA9D379F12ED34A5BA1F0E9",
+      "bytes": 16535
+    },
+    {
+      "path": "src/extensions/fixtures/native-node-experimental-warning-source.mjs",
+      "sha256": "DE9AF554A48B3AF332E009ED4E3183873B6334DADE14CF66A623B76601EC7EC2",
+      "bytes": 762
+    },
+    {
+      "path": "src/extensions/fixtures/native-node-experimental-warning-observer.mjs",
+      "sha256": "67244F6B1290F04517A6959A0EEFDD64C06B2D1B0E589C9EDD03F997CDB65413",
+      "bytes": 12394
+    },
+    {
+      "path": "verification/node-experimental-warning-sourceonly-20261019/build-intake.json",
+      "sha256": "F41250E3AA38EF6048CAFC2EE6FEAD57665CDDBF9762120E4CEB5D40C9ECB202",
+      "bytes": 3861
+    }
+  ],
+  "authority": {
+    "source_projection": {
+      "path": "verification/node-experimental-warning-sourceonly-20261019/authority/source-projection.json",
+      "sha256": "DACEE6F5EC22750F1FADAE5CD094EB68AFE093BC4F62078A0F6EFE1F7B319F9A",
+      "bytes": 2745
+    },
+    "original_util_sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429",
+    "wrapper_sha256": "B0E77FD5CC7E5241A1DA444A41867E47CE99A0997B99C11C74777211FBC855D1"
+  },
+  "controls": {
+    "declaration_count": 17,
+    "filter": "native actual experimental warning",
+    "names": [
+      "native actual experimental warning ordinary function and constructor shape",
+      "native actual experimental warning eager feature and ordinary prefix coercion precede live callee selection",
+      "native actual experimental warning private SafeSet preserves SameValueZero and original object identity",
+      "native actual experimental warning membership survives actual feature and Symbol conversion failures",
+      "native actual experimental warning prefix predicate and failed default-hint addition follow original order",
+      "native actual experimental warning membership precedes both live warning getter and callback failure",
+      "native actual experimental warning same-feature reentry observes the already published membership",
+      "native actual experimental warning completed primordial owner survives late public Set poisoning",
+      "native actual experimental warning retained builtin process survives late global getter and object replacement",
+      "native actual experimental warning retains process through a real global lexical TDZ",
+      "native actual experimental warning selected callee and discarded result retire before caller continuation",
+      "native actual experimental warning ordinary private DATA preserves identity in four fresh routes",
+      "native actual experimental warning successful flagged callback result remains discarded DATA",
+      "native actual experimental warning getter fatal stops callback continuation and guest catch",
+      "native actual experimental warning real callee retirement fatal stops caller continuation and catch",
+      "native actual experimental warning already current fatal prevents original callable entry",
+      "native actual experimental warning one completed owner retains actual feature keys until teardown"
+    ],
+    "executed": false,
+    "reference_captured": false
+  },
+  "build": {
+    "install_step": "build-native-node-experimental-warning",
+    "run_step_added": false,
+    "added_lines": 16,
+    "owned_baseline_sha256": "646600BF22584D0DCCE5858E11C914A1581A56418329515576ABEA41DCC443FA",
+    "owned_successor_sha256": "895B96E35110A223A76288401A6AC2F18D00D2156E3250B855B2E4620A0E0DBB",
+    "main_context_sha256": "33716E586563A9AF03AEE8374A2349F7D3243900D4E10AC1FE3B7AFBC12BA08A",
+    "patch_sha256": "31A1D0EC7F909EEE9CDCF73117BD089B70D50DD18CBC63AF7E138410524D80E9",
+    "structured_intake_sha256": "F41250E3AA38EF6048CAFC2EE6FEAD57665CDDBF9762120E4CEB5D40C9ECB202"
+  },
+  "unchanged_prerequisites": [
+    {
+      "path": "src/extensions/native_node_module_callable.zig",
+      "sha256": "D54499FAEAF3FFB935EA45CC427223972C5FA6CC78C85932A83F161CF7E97F65",
+      "bytes": 12697,
+      "role": "unchanged actual shared source prerequisite",
+      "verified_at": "owned worktree"
+    },
+    {
+      "path": "src/extensions/native_node_argument_values.zig",
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9",
+      "bytes": 3512,
+      "role": "unchanged actual shared source prerequisite",
+      "verified_at": "owned worktree"
+    },
+    {
+      "path": "src/extensions/native_node_fs_collections.zig",
+      "sha256": "EBC0FE29F1EFE23C34F7EB2A3181597197C07E31A6BB9C5681B3EB53213C007F",
+      "bytes": 16225,
+      "role": "unchanged actual shared source prerequisite",
+      "verified_at": "owned worktree"
+    },
+    {
+      "path": "src/extensions/native_node_operation_scope.zig",
+      "sha256": "28808680485687FCFE1481EA40E9F459C13F6966452FC3C63BC602CEC5F50CE3",
+      "bytes": 6967,
+      "role": "unchanged actual shared source prerequisite",
+      "verified_at": "owned worktree"
+    },
+    {
+      "path": "src/extensions/native_node_fs_private_publication.zig",
+      "sha256": "F118D857DB722708344B87083608FEFEB769183BC0DB0F09C05D1CDCF87AB307",
+      "bytes": 1033,
+      "role": "unchanged actual shared source prerequisite",
+      "verified_at": "owned worktree"
+    },
+    {
+      "path": "src/extensions/native_public_lexical_frame.zig",
+      "sha256": "98643165E38E5875F491BCB5DED96E383C60F2C4C1AD90244CBC0AB77DA7784E",
+      "bytes": 17136,
+      "role": "unchanged actual shared source prerequisite",
+      "verified_at": "Root Main"
+    },
+    {
+      "path": "src/extensions/native_sync_arguments.zig",
+      "sha256": "3AC7413F4C367E6C4F8FE75C963F2ABDA2522EB5A9652152E0EE6D25F0F4F3F6",
+      "bytes": 9162,
+      "role": "unchanged actual shared source prerequisite",
+      "verified_at": "Root Main"
+    }
+  ],
+  "peers": [
+    {
+      "owner": "sdk_owners",
+      "status": "closed source-only",
+      "pins": [
+        "A844AEA7",
+        "EF22E0E1",
+        "67244F6B",
+        "DE9AF554"
+      ],
+      "scope": "production algorithm and controls 1–9 against full util A6A3FED1"
+    },
+    {
+      "owner": "vm_foundation",
+      "status": "closed source-only",
+      "pins": [
+        "A844AEA7",
+        "EF22E0E1",
+        "67244F6B",
+        "DE9AF554"
+      ],
+      "scope": "create/acquire, Fixture/Probe and controls 10–17"
+    },
+    {
+      "owner": "root",
+      "status": "closed source/build only",
+      "pins": [
+        "31A1D0EC",
+        "EF22E0E1"
+      ],
+      "scope": "exact 16 install-only lines and 17 declaration filter matches"
+    }
+  ],
+  "remaining": [
+    "Fresh Root-authorized build, raw metadata/artifacts and exact runtime with independent closure",
+    "Actual process.emitWarning production composition",
+    "Whole internal/util and full CJS module graph publication",
+    "A separately executed original Node reference where required by the authority contract"
+  ]
+}

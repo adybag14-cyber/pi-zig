@@ -1,0 +1,44 @@
+{
+  "status": "source-only exact selected Node v24.14 declaration projection; no Source or native execution",
+  "original": {
+    "path": "verification/node-module-constructor-sourceonly-20261016/authority/lib__internal__util.js.txt",
+    "full_sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429",
+    "bytes": 28980,
+    "version": "Node v24.14.0, intentionally distinct from the pinned Node v24.13 FS and physical-libuv owners"
+  },
+  "selections": [
+    {
+      "name": "experimentalWarnings",
+      "start_byte": 2002,
+      "end_byte": 2045,
+      "text": "const experimentalWarnings = new SafeSet();"
+    },
+    {
+      "name": "emitExperimentalWarning",
+      "start_byte": 9236,
+      "end_byte": 9597,
+      "text": "function emitExperimentalWarning(feature, messagePrefix, code, ctor) {\n  if (experimentalWarnings.has(feature)) return;\n  experimentalWarnings.add(feature);\n  let msg = `${feature} is an experimental feature and might change at any time`;\n  if (messagePrefix) {\n    msg = messagePrefix + msg;\n  }\n  process.emitWarning(msg, 'ExperimentalWarning', code, ctor);\n}"
+    }
+  ],
+  "projection": {
+    "path": "src/extensions/fixtures/native-node-experimental-warning-source.mjs",
+    "sha256": "DE9AF554A48B3AF332E009ED4E3183873B6334DADE14CF66A623B76601EC7EC2",
+    "bytes": 762,
+    "unchanged_selected_body": true,
+    "wrapper": "createExperimentalWarningSource(SafeSet, process)",
+    "original_safe_set": "The existing genuine collections owner supplies the completed retained SafeSet constructor to both Source and native fixtures.",
+    "original_process": "The existing registered node:process default is the original BuiltinLoader wrapper parameter in both realms, with live emitWarning property access.",
+    "return": "Returns only the selected original function; it does not publish an internal/util namespace."
+  },
+  "wrapper_authority": {
+    "path": "verification/node-options-native-tail-sourceonly-20261019/authority/builtin-process-wrapper.json",
+    "sha256": "B0E77FD5CC7E5241A1DA444A41867E47CE99A0997B99C11C74777211FBC855D1",
+    "source_commit": "6bfa8da2b7acc7a87f0a01aa46e823863e4c959f",
+    "meaning": "Original BuiltinLoader and realm wrapper argument metadata, independently reviewed for the actual process parameter."
+  },
+  "limits": [
+    "The selected original declaration and private lexical SafeSet are complete in this source projection; whole internal/util/public Node namespace assembly is separate.",
+    "A controlled emitWarning property is an explicit observer boundary over the genuine process owner. Production must compose the actual process warning declaration.",
+    "No declaration was executed to generate reference output in this unit."
+  ]
+}
