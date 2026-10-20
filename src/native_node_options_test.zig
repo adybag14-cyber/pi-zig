@@ -716,7 +716,7 @@ test "native actual Node options abort V8 Boolean values and disallowed environm
         var environment: std.process.Environ.Map = .init(std.testing.allocator);
         defer environment.deinit();
         try environment.put("NODE_OPTIONS", case[0]);
-        const engine = try a.v.em.Engine.init(std.testing.allocator, .{});
+        const engine = try a.v.em.Engine.init(std.testing.allocator, .{ .node_options = .{} });
         defer engine.deinit();
         try std.testing.expectError(case[1], engine.node_options.?.captureEnvironment(&environment));
         try std.testing.expect(!engine.node_options.?.environment_ready);

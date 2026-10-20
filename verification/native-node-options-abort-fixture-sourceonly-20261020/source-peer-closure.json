@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "status": "source_peer_closed",
+  "reviewed_utc": "2026-10-20T12:24:36.793831+00:00",
+  "peer": "sdk_owners",
+  "source": {
+    "bytes": 43397,
+    "sha256": "5D1414243D98B3850538DEF6D72BF44B029509480F739B1783EF994D199DA50B"
+  },
+  "packet": {
+    "bytes": 2220,
+    "sha256": "A66623303631251FFAA42C582A9B9F71BB71E1987A8F2CDB666D1787C7EC914C"
+  },
+  "conclusion": "Exact one replacement returns CCD1447A; all30 names, four invalid inputs, expected errors and prepublication assertions are unchanged. Actual Main Engine Options.node_options default is null; its init306 Config.create branch constructs and owns the required configuration when explicitly requested.",
+  "execution": false,
+  "limits": [
+    "No native execution or runtime qualification.",
+    "Receiver-retirement and intrinsic native serializer-tail failures remain separate observed V24 negatives."
+  ]
+}

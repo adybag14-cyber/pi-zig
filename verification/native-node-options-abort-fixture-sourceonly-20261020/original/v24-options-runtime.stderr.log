@@ -1,0 +1,157 @@
+expected 0, found 1
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:737:13: 0x7ff741946ff4 in checked (test_zcu.obj)
+            return error.JavaScriptException;
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:650:27: 0x7ff741ab5261 in evalModule (test_zcu.obj)
+        const evaluated = try self.checked(c.JS_EvalFunction(self.context, compiled));
+                          ^
+C:\Users\adyba\pi-zig\main\src\native_node_options_test.zig:142:24: 0x7ff741ab6d17 in run (test_zcu.obj)
+        const result = try self.engine.evalModule(source, "actual-node-options-observer.mjs");
+                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:737:13: 0x7ff741946ff4 in checked (test_zcu.obj)
+            return error.JavaScriptException;
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:650:27: 0x7ff741ab5261 in evalModule (test_zcu.obj)
+        const evaluated = try self.checked(c.JS_EvalFunction(self.context, compiled));
+                          ^
+C:\Users\adyba\pi-zig\main\src\native_node_options_test.zig:142:24: 0x7ff741ab6d17 in run (test_zcu.obj)
+        const result = try self.engine.evalModule(source, "actual-node-options-observer.mjs");
+                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:737:13: 0x7ff741946ff4 in checked (test_zcu.obj)
+            return error.JavaScriptException;
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:650:27: 0x7ff741ab5261 in evalModule (test_zcu.obj)
+        const evaluated = try self.checked(c.JS_EvalFunction(self.context, compiled));
+                          ^
+C:\Users\adyba\pi-zig\main\src\native_node_options_test.zig:142:24: 0x7ff741ab6d17 in run (test_zcu.obj)
+        const result = try self.engine.evalModule(source, "actual-node-options-observer.mjs");
+                       ^
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:118:17: 0x7ff741ac2ab7 in expectEqualInner__anon_91274 (test_zcu.obj)
+                return error.TestExpectedEqual;
+                ^
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff741ac730f in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\main\src\native_node_options_test.zig:396:9: 0x7ff741ac7389 in verifyFatal (test_zcu.obj)
+        try std.testing.expectEqual(expected[index], count);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_options_test.zig:421:9: 0x7ff741ac90b4 in test.native actual Node options environment receiver retirement fatal prevents the warning getter (test_zcu.obj)
+        try verifyFatal(&fixture, result, record, .{ 0, 1, 1, 0, 0, 0 });
+        ^
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:615:14: 0x7ff7419597bf in expect (test_zcu.obj)
+    if (!ok) return error.TestUnexpectedResult;
+             ^
+C:\Users\adyba\pi-zig\main\src\native_node_options_test.zig:551:9: 0x7ff741ac2f86 in expectNewFatal (test_zcu.obj)
+        try std.testing.expect(c.JS_IsUncatchableError(reason));
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_options_test.zig:583:9: 0x7ff741ac4bc6 in test.native actual Node options intrinsic serialization failure supersedes the ordinary bootstrap reason (test_zcu.obj)
+        try fixture.expectNewFatal(reason);
+        ^
+thread 4252 panic: attempt to use null value
+C:\Users\adyba\pi-zig\main\src\native_node_options_test.zig:721:65: 0x7ff741959aac in test.native actual Node options abort V8 Boolean values and disallowed environment aliases reject before publication (test_zcu.obj)
+        try std.testing.expectError(case[1], engine.node_options.?.captureEnvironment(&environment));
+                                                                ^
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\compiler\test_runner.zig:140:68: 0x7ff7417e2d25 in mainServer (test_zcu.obj)
+                const status: TestResults.Status = if (test_fn.func()) |v| s: {
+                                                                   ^
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\compiler\test_runner.zig:71:26: 0x7ff7417e3404 in main (test_zcu.obj)
+        return mainServer(init) catch |err| panic("internal test runner failure: {t}", .{err});
+                         ^
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\start.zig:699: 0x7ff7417e1151 in callMain (test_zcu.obj)
+    if (fn_info.params[0].type.? == std.process.Init.Minimal) return wrapMain(root.main(.{
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\start.zig:658:28: 0x7ff7417e1151 in main (test_zcu.obj)
+            return callMain(std.os.windows.peb().ProcessParameters.CommandLine.slice(), .global);
+                           ^
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\libc\mingw\crt\crtexe.c:259: 0x7ff741adc5fb in __tmainCRTStartup (crt2.obj)
+    mainret = _tmain (argc, argv, envp);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\libc\mingw\crt\crtexe.c:179: 0x7ff741adc65b in mainCRTStartup (crt2.obj)
+  ret = __tmainCRTStartup ();
+
+???:?:?: 0x7ff97ddadda6 in ??? (KERNEL32.DLL)
+???:?:?: 0x7ff97df9ee4b in ??? (ntdll.dll)
