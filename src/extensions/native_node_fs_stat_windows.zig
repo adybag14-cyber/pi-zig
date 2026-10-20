@@ -5,7 +5,6 @@
 const std = @import("std");
 const w = std.os.windows;
 const raw = @import("native_file_stat.zig");
-const paths = @import("native_node_package_path.zig");
 pub const Result = union(enum) { metadata: raw.Stat, windows_error: u32 };
 
 const Basic = extern struct { creation: i64, access: i64, modification: i64, change: i64, attributes: u32 };
@@ -218,13 +217,13 @@ fn once(path: [:0]u16, follow: bool) !Result {
     defer w.CloseHandle(handle);
     return handleMetadata(handle, follow);
 }
-/// Separate real stat/lstat result with the exact one follow retry for an
-/// unsupported/non-reparse link. The first owner closes before that retry.
-pub fn read(gpa: std.mem.Allocator, path: []const u8, follow: bool) !Result {
-    if (std.mem.indexOfScalar(u8, path, 0) != null) return error.InvalidFileStatPath;
-    const namespaced = try paths.namespaced(gpa, path);
-    defer gpa.free(namespaced);
-    const wide = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, namespaced);
+/// The binding has already applied ToNamespacedPath exactly once. This
+/// physical leaf consumes those same bytes for stat/lstat and the exact one
+/// follow retry for an unsupported/non-reparse link. The first owner closes
+/// before that retry; applying path resolution here again would alter roots.
+pub fn read(gpa: std.mem.Allocator, namespaced_path: []const u8, follow: bool) !Result {
+    if (std.mem.indexOfScalar(u8, namespaced_path, 0) != null) return error.InvalidFileStatPath;
+    const wide = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, namespaced_path);
     defer gpa.free(wide);
     var length = wide.len;
     if (length > 1 and wide[length - 2] != ':' and (wide[length - 1] == '\\' or wide[length - 1] == '/')) {

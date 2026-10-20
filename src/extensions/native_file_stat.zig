@@ -25,8 +25,9 @@ pub fn read(gpa: std.mem.Allocator, path: []const u8) !Stat {
     return readMode(gpa, path, true);
 }
 
-/// Actual FOLLOWED metadata or the owned system failure, before any handle or
-/// path cleanup can replace thread-local error state. This byte-only producer
+/// Actual FOLLOWED metadata for a binding-prepared path, or its owned system
+/// failure, before any handle or path cleanup can replace thread-local error
+/// state. Windows input is already namespaced. This byte-only producer
 /// adds no public filesystem/permission authority. Allocation/encoding/unsupported
 /// metadata failures remain native errors, never invented OS errno numbers.
 pub const FollowResult = union(enum) {
@@ -49,7 +50,8 @@ pub fn readWithStatus(gpa: std.mem.Allocator, path: []const u8) !FollowResult {
     return .{ .metadata = info };
 }
 pub const LinkStatusResult = union(enum) { metadata: Stat, windows_error: u32, posix_error: u32 };
-/// Separate no-follow status; it cannot be passed as a FollowResult by mistake.
+/// Separate no-follow status for a binding-prepared path; it cannot be passed
+/// as a FollowResult by mistake. Windows input is already namespaced.
 pub fn readLinkWithStatus(gpa: std.mem.Allocator, path: []const u8) !LinkStatusResult {
     if (std.mem.indexOfScalar(u8, path, 0) != null) return error.InvalidFileStatPath;
     if (builtin.os.tag == .windows) return switch (try @import("native_node_fs_stat_windows.zig").read(gpa, path, false)) {
@@ -74,7 +76,8 @@ pub const LinkBytes = struct {
 };
 pub const ReadLinkBytesResult = union(enum) { bytes: LinkBytes, windows_error: u32, posix_error: u32 };
 /// Actual readlink operation with owned target storage and latched raw status.
-/// Handles never escape the synchronous native owner.
+/// Input is the binding-prepared path (already namespaced on Windows). Handles
+/// never escape the synchronous native owner.
 pub fn readLinkBytesWithStatus(gpa: std.mem.Allocator, path: []const u8) !ReadLinkBytesResult {
     if (std.mem.indexOfScalar(u8, path, 0) != null) return error.InvalidFileStatPath;
     if (builtin.os.tag == .windows) {
@@ -83,9 +86,7 @@ pub fn readLinkBytesWithStatus(gpa: std.mem.Allocator, path: []const u8) !ReadLi
             extern "kernel32" fn CreateFileW([*:0]const u16, u32, u32, ?*const anyopaque, u32, u32, ?w.HANDLE) callconv(.winapi) w.HANDLE;
             extern "kernel32" fn DeviceIoControl(w.HANDLE, u32, ?*anyopaque, u32, *anyopaque, u32, *u32, ?*anyopaque) callconv(.winapi) i32;
         };
-        const namespaced = try @import("native_node_package_path.zig").namespaced(gpa, path);
-        defer gpa.free(namespaced);
-        const wide = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, namespaced);
+        const wide = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, path);
         defer gpa.free(wide);
         // fs__readlink uses access=0/share=0, OPEN_REPARSE_POINT|BACKUP_SEMANTICS.
         const handle = Native.CreateFileW(wide.ptr, 0, 0, null, 3, 0x00200000 | 0x02000000, null);

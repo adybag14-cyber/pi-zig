@@ -1,0 +1,155 @@
+{
+  "schema": "source-only-correction-v1",
+  "created_utc": "2026-10-20",
+  "unit": "Windows physical stat and readlink consume the single binding namespace conversion",
+  "baseline_main": "1129cc97e4e3367fc553e33d3091bc4fb7635d65",
+  "changes": [
+    {
+      "path": "src/extensions/native_node_fs_stat_windows.zig",
+      "before": {
+        "sha256": "bbe2f8ba942ce81d890c97f30a48bc9a3e021c8601cb35f8402e7f3826ae97ad",
+        "bytes": 12569,
+        "preserved_file": "native_node_fs_stat_windows.zig.before.txt"
+      },
+      "after": {
+        "sha256": "35a7fde1f45831d8b754e31f7fb3293bb16a2b06bec59d9cf86b6ef6bcdc35ee",
+        "bytes": 12606
+      },
+      "edits": [
+        {
+          "before": "const paths = @import(\"native_node_package_path.zig\");\n",
+          "after": ""
+        },
+        {
+          "before": "/// Separate real stat/lstat result with the exact one follow retry for an\n/// unsupported/non-reparse link. The first owner closes before that retry.\npub fn read(gpa: std.mem.Allocator, path: []const u8, follow: bool) !Result {\n    if (std.mem.indexOfScalar(u8, path, 0) != null) return error.InvalidFileStatPath;\n    const namespaced = try paths.namespaced(gpa, path);\n    defer gpa.free(namespaced);\n    const wide = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, namespaced);",
+          "after": "/// The binding has already applied ToNamespacedPath exactly once. This\n/// physical leaf consumes those same bytes for stat/lstat and the exact one\n/// follow retry for an unsupported/non-reparse link. The first owner closes\n/// before that retry; applying path resolution here again would alter roots.\npub fn read(gpa: std.mem.Allocator, namespaced_path: []const u8, follow: bool) !Result {\n    if (std.mem.indexOfScalar(u8, namespaced_path, 0) != null) return error.InvalidFileStatPath;\n    const wide = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, namespaced_path);"
+        }
+      ]
+    },
+    {
+      "path": "src/extensions/native_file_stat.zig",
+      "before": {
+        "sha256": "19f01e58b2e75115578a95f5040307d2f8425f5aac2b404f1642d2b091bb7893",
+        "bytes": 26423,
+        "preserved_file": "native_file_stat.zig.before.txt"
+      },
+      "after": {
+        "sha256": "276d8c8427cbe28e933e7e45405dc6ee9b3ee79eaeb136a59eb5c818132fd855",
+        "bytes": 26498
+      },
+      "edits": [
+        {
+          "before": "/// Actual FOLLOWED metadata or the owned system failure, before any handle or\n/// path cleanup can replace thread-local error state. This byte-only producer\n",
+          "after": "/// Actual FOLLOWED metadata for a binding-prepared path, or its owned system\n/// failure, before any handle or path cleanup can replace thread-local error\n/// state. Windows input is already namespaced. This byte-only producer\n"
+        },
+        {
+          "before": "/// Separate no-follow status; it cannot be passed as a FollowResult by mistake.\n",
+          "after": "/// Separate no-follow status for a binding-prepared path; it cannot be passed\n/// as a FollowResult by mistake. Windows input is already namespaced.\n"
+        },
+        {
+          "before": "/// Actual readlink operation with owned target storage and latched raw status.\n/// Handles never escape the synchronous native owner.\n",
+          "after": "/// Actual readlink operation with owned target storage and latched raw status.\n/// Input is the binding-prepared path (already namespaced on Windows). Handles\n/// never escape the synchronous native owner.\n"
+        },
+        {
+          "before": "        const namespaced = try @import(\"native_node_package_path.zig\").namespaced(gpa, path);\n        defer gpa.free(namespaced);\n        const wide = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, namespaced);",
+          "after": "        const wide = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, path);"
+        }
+      ]
+    }
+  ],
+  "cause": {
+    "observed": "V24 classic physical paths fail during lstat of C:\\ with EISDIR; CommonJS helper control 18 fails in the same real native filesystem path.",
+    "source_inference": "The actual binding already applies ToNamespacedPath once. Both physical leaves applied it again. For an already namespaced drive-root path, the second native path resolution removes the root's final separator and selects the volume path. The physical stat fallback then reaches the retained INVALID_FUNCTION-to-EISDIR mapping.",
+    "correction": "The physical status APIs explicitly accept binding-prepared Windows input. They now convert those same bytes to UTF-16 directly; the single original binding conversion remains before the OS request and error construction."
+  },
+  "caller_inventory": {
+    "scope": "Complete Main src tree, literal status API names and direct Windows leaf import",
+    "file": "caller-inventory.txt",
+    "sha256": "9156bdce38de3d7ad599a09b7ab7c1386e9e7cfda17e22bf39b80eab2142a1c2",
+    "bytes": 1109,
+    "matched_status_calls": 3,
+    "all_calls_use_binding_prepared_input": true,
+    "owner": {
+      "path": "C:/Users/adyba/pi-zig/main/src/extensions/native_node_fs_realpath_cache.zig",
+      "sha256": "993aa17b126b2c2c71a47454e70fad47873b1a36ba634cc3368ba6b959c5791e",
+      "bytes": 23967,
+      "excerpt": "fn readMetadata(s: *Scope, path: []const u8, follow: bool) !stat.Stat {\n    try s.pending();\n    // The binding's actual ToNamespacedPath runs before its OS request. Keep\n    // those same bytes for UVException after the native owner has closed.\n    const native_path = try @import(\"native_node_package_path.zig\").namespaced(s.engine.gpa, path);\n    defer s.engine.gpa.free(native_path);\n    if (follow) return switch (try stat.readWithStatus(s.engine.gpa, native_path)) {\n        .metadata => |value| value,\n        .windows_error => |raw| metadataFailure(s, true, raw, \"stat\", native_path),\n        .posix_error => |raw| metadataFailure(s, false, raw, \"stat\", native_path),\n    };\n    return switch (try stat.readLinkWithStatus(s.engine.gpa, native_path)) {\n        .metadata => |value| value,\n        .windows_error => |raw| metadataFailure(s, true, raw, \"lstat\", native_path),\n        .posix_error => |raw| metadataFailure(s, false, raw, \"lstat\", native_path),\n    };\n}\nfn bindingStatBody(s: *Scope, imports: Imports, path_value: c.JSValue, use_bigint: bool, follow: bool) !c.JSValue {\n    const path = try pathBytes(s, path_value); defer s.engine.gpa.free(path);\n    const info = try readMetadata(s, path, follow);\n    try s.pending();\n    return stat_values.record(s.engine, imports.stat_owner, use_bigint, info, false);\n}\nfn bindingStat(engine: *v.em.Engine, imports: Imports, path: c.JSValue, use_bigint: bool, follow: bool) !c.JSValue {\n    var s = Scope.init(engine); return s.finish(bindingStatBody(&s, imports, path, use_bigint, follow));\n}\nfn discardStatBody(s: *Scope, imports: Imports, path: c.JSValue) !c.JSValue {\n    _ = try s.own(try bindingStat(s.engine, imports, path, false, true));\n    return c.pi_js_undefined();\n}\nfn discardStat(engine: *v.em.Engine, imports: Imports, path: c.JSValue) !void {\n    var s = Scope.init(engine); _ = try s.finish(discardStatBody(&s, imports, path));\n}\nfn readlinkBody(s: *Scope, path_value: c.JSValue) !c.JSValue {\n    const supplied = try pathBytes(s, path_value); defer s.engine.gpa.free(supplied);\n    const path = try @import(\"native_node_package_path.zig\").namespaced(s.engine.gpa, supplied);\n    defer s.engine.gpa.free(path);\n    try s.pending();\n    const bytes = switch (try stat.readLinkBytesWithStatus(s.engine.gpa, path)) {\n        .bytes => |value| value,\n        .windows_error => |raw| { _ = try errors.throw(s, errors.windowsCode(raw, true), \"readlink\", path); unreachable; },\n        .posix_error => |raw| { _ = try errors.throw(s, try errors.posixCode(raw), \"readlink\", path); unreachable; },\n    };\n    defer bytes.deinit(s.engine.gpa);\n    return duplicate(s.engine, try s.text(bytes.slice()));\n}\nfn readlink(engine: *v.em.Engine, path: c.JSValue) !c.JSValue {\n    var s = Scope.init(engine); return s.finish(readlinkBody(&s, path));\n}\n"
+    },
+    "owned_tree": {
+      "scope": "Complete current owned src tree, including the uncommitted CJS stat draft",
+      "file": "owned-caller-inventory.txt",
+      "sha256": "c5b11166e048c2d90d9c1d5fd2166ac56cb63d2c6fbc969eec244ac62c37a40d",
+      "bytes": 1239,
+      "matched_status_calls": 4,
+      "all_calls_use_binding_prepared_input": true,
+      "additional_caller": {
+        "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/src/extensions/native_node_commonjs_stat.zig",
+        "sha256": "9a0129dc3e1acd7035cff0ef340b47e404032b6fa8f57b081b5a3d499864c70f",
+        "bytes": 8759,
+        "excerpt": "fn internalStat(s: *Scope, filename: c.JSValue) !c.JSValue {\n    try s.pending();\n    if (!c.JS_IsString(filename)) return error.ActualInternalModuleStatRequiresString;\n    const bytes = try s.engine.toString(filename);\n    defer s.engine.gpa.free(bytes);\n    try s.pending();\n    const namespaced = try @import(\"native_node_package_path.zig\").namespaced(s.engine.gpa, bytes);\n    defer s.engine.gpa.free(namespaced);\n    // BufferValue is passed to uv_fs_stat as a NUL-terminated native path.\n    // No public path validator is inserted into this private C++ boundary.\n    const end = std.mem.indexOfScalar(u8, namespaced, 0) orelse namespaced.len;\n    const result = try physical.readWithStatus(s.engine.gpa, namespaced[0..end]);\n    const code: i32 = switch (result) {\n        .metadata => |info| @intFromBool((info.mode & 0o170000) == 0o040000),\n        .windows_error => |raw| errors.windowsCode(raw, false),\n        .posix_error => |raw| try errors.posixCode(raw),\n    };\n    try s.pending();\n    return c.JS_NewInt32(s.engine.context, code);\n}\n"
+      },
+      "draft_not_included_in_this_commit": true
+    }
+  },
+  "authority": {
+    "file": "source-authority.json",
+    "sha256": "3aac9b4792e1cc300346a4cf1b9ca02f67f7cdf358d9cb8f633d0054e9c70e50",
+    "bytes": 41181,
+    "node_version": "v24.13.0",
+    "node_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+    "libuv_full_file": {
+      "path": "C:/Users/adyba/pi-zig/main/vendor/node-v24.13.0/uv/src/win/fs.c",
+      "exists": true,
+      "bytes": 105366,
+      "sha256": "60c76976514f427fa0be21c1c7986c2ab1d9e2e77b9d5bcf8c7ab99ed36b0693"
+    }
+  },
+  "preserved_negative": {
+    "directory": "C:/Users/adyba/pi-zig/evidence/root-vm-io-oauth-options-v24-diagnostic-runtime-20261020-121245/groups",
+    "classic_stderr_sha256": "54B685FC05A434BE26E2187C2BC0E5F07210D6B3FDD236E1D02F73E0EB38B8E2",
+    "helpers_stderr_sha256": "427714F2824E4A5997F42401952FA5224042C7B3F3B1AC63C904D452126EF7CA",
+    "classic_affected_physical_indices": [
+      1,
+      2,
+      3,
+      4,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+    ],
+    "helpers_affected_physical_indices": [
+      18
+    ]
+  },
+  "static_checks": {
+    "exact_forward_and_inverse": true,
+    "all_other_bytes_identical": true,
+    "all_test_sources_unchanged": true,
+    "existing_public_names_signatures_preserved_except_descriptive_parameter_name": true,
+    "error_status_mapping_and_order_unchanged": true,
+    "native_handle_flags_queries_retry_and_cleanup_unchanged": true,
+    "posix_behavior_unchanged": true
+  },
+  "native_execution": false,
+  "node_execution": false,
+  "qualification": false,
+  "remaining": "This source correction does not establish runtime success. The distinct classic original-argument fixture failures and Helpers Source opcode retirement failures have separate correction owners.",
+  "finite_peer": {
+    "reviewer": "/root/sdk_owners",
+    "status": "closed",
+    "pins": [
+      "35A7FDE1F45831D8B754E31F7FB3293BB16A2B06BEC59D9CF86B6EF6BCDC35EE",
+      "276D8C8427CBE28E933E7E45405DC6EE9B3EE79EAEB136A59EB5C818132FD855"
+    ],
+    "scope": "Exact two physical deltas against complete Main preimages; actual Node Stat/LStat/ReadLink, PathResolve/ToNamespacedPath and libuv stat preparation; all four current owned callers already provide prepared paths; unchanged handle/status/retry/readlink cleanup.",
+    "execution": false
+  }
+}
