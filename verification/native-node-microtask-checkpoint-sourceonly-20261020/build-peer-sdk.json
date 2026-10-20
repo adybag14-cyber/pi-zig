@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "status": "finite_build_source_peer_closed_no_execution",
+  "reviewer": "/root/sdk_owners",
+  "proposal_sha256": "0A710FA4934B32F4A86F097380F5815AD7045922D5678A2CA40DFA74EC47BFE1",
+  "baseline_build_sha256": "B6F18B479B12F510D65DD83672E06AC2B0BADC395B050CC0C3A16FD399954D2A",
+  "review": "All2195 bytes read; proposal independently applied/reversed in memory against B6F18. All20 actual current3B31 declarations match unique filter, same guarded callback Engine dependencies, one installed artifact, no run edge or duplicated libraries.",
+  "execution": false,
+  "main_mutated": false
+}

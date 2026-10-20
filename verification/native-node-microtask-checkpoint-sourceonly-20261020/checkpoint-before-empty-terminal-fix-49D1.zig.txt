@@ -1,0 +1,274 @@
+// Copyright 2018 the V8 project authors. BSD; retained V8-LICENSE.
+//! The selected Node24.13 explicit microtask checkpoint on the actual C job queue.
+//! Completion callbacks are native function/data pairs. The real message-report
+//! operation is required from the embedding; it is never process.emit or guest
+//! code substituted for the VM's ordinary failed-microtask reporting operation.
+const std = @import("std");
+const em = @import("engine.zig");
+const owned = @import("native_sdk_owned_completion.zig");
+const ChargedAllocator = @import("native_env_charged_allocator.zig").ChargedAllocator;
+const c = em.c;
+
+pub const Callback = struct {
+    run: *const fn (*em.Engine, ?*anyopaque) void,
+    data: ?*anyopaque,
+    fn eql(self: Callback, other: Callback) bool {
+        return self.run == other.run and self.data == other.data;
+    }
+};
+pub const Operations = struct {
+    /// The genuine Runtime_ReportMessageFromMicrotask/MessageHandler operation.
+    /// Entry has an ordinary actual pending reason on this runtime. It reports
+    /// and clears that reason, preserving a newly selected native abrupt event.
+    /// The failed job's continuation remains current until the checkpoint ends.
+    report_message_from_microtask: *const fn (*em.Engine, ?*c.JSContext) anyerror!void,
+};
+
+pub const Queue = struct {
+    memory_owner: *anyopaque,
+    charged: ChargedAllocator,
+    owner_thread: std.Thread.Id,
+    engine: ?*em.Engine,
+    operations: Operations,
+    callbacks: std.ArrayList(Callback) = .empty,
+    callbacks_cow: ?std.ArrayList(Callback) = null,
+    running: bool = false,
+    running_completed: bool = false,
+    scope_depth: usize = 0,
+    suppressions: usize = 0,
+
+    /// The bootstrap creates exactly one selected explicit queue for its actual
+    /// Engine/runtime, then closes it before that VM is destroyed. Callback data
+    /// is borrowed native storage; registering a callback does not own a JS root.
+    pub fn create(engine: *em.Engine, operations: Operations) !*Queue {
+        const memory_owner = engine.native_memory_owner;
+        c.pi_js_retain_memory_owner(memory_owner);
+        errdefer c.pi_js_release_memory_owner(memory_owner);
+        if (c.pi_js_native_memory_reserve(memory_owner, @sizeOf(Queue)) == 0)
+            return error.OutOfMemory;
+        errdefer c.pi_js_native_memory_release(memory_owner, @sizeOf(Queue));
+        const self = try std.heap.c_allocator.create(Queue);
+        self.* = .{
+            .memory_owner = memory_owner,
+            .charged = ChargedAllocator.init(engine),
+            .owner_thread = std.Thread.getCurrentId(),
+            .engine = engine,
+            .operations = operations,
+        };
+        return self;
+    }
+    fn assertOwner(self: *const Queue) void {
+        std.debug.assert(self.owner_thread == std.Thread.getCurrentId());
+    }
+    fn requireEngine(self: *Queue) !*em.Engine {
+        self.assertOwner();
+        return self.engine orelse error.NativeMicrotaskQueueClosed;
+    }
+    pub fn shouldPerformCheckpoint(self: *const Queue) bool {
+        self.assertOwner();
+        return self.engine != null and !self.running and
+            self.scope_depth == 0 and self.suppressions == 0;
+    }
+    /// These are the actual native scope/suppression counters. The selected
+    /// Node policy is explicit: decrementing a scope does not run a checkpoint.
+    pub fn enterScope(self: *Queue) !void {
+        _ = try self.requireEngine();
+        self.scope_depth += 1;
+    }
+    pub fn leaveScope(self: *Queue) void {
+        self.assertOwner();
+        std.debug.assert(self.scope_depth != 0);
+        self.scope_depth -= 1;
+    }
+    pub fn suppress(self: *Queue) !void {
+        _ = try self.requireEngine();
+        self.suppressions += 1;
+    }
+    pub fn unsuppress(self: *Queue) void {
+        self.assertOwner();
+        std.debug.assert(self.suppressions != 0);
+        self.suppressions -= 1;
+    }
+    fn mutableCallbacks(self: *Queue) !*std.ArrayList(Callback) {
+        _ = try self.requireEngine();
+        if (!self.running_completed) return &self.callbacks;
+        // Source creates the COW vector BEFORE duplicate/member lookup, even
+        // for adding an existing pair or removing an absent one.
+        if (self.callbacks_cow == null) {
+            var next: std.ArrayList(Callback) = .empty;
+            errdefer next.deinit(self.charged.allocator());
+            try next.appendSlice(self.charged.allocator(), self.callbacks.items);
+            self.callbacks_cow = next;
+        }
+        return &self.callbacks_cow.?;
+    }
+    pub fn addCompletedCallback(self: *Queue, callback: Callback) !void {
+        const values = try self.mutableCallbacks();
+        for (values.items) |existing| if (existing.eql(callback)) return;
+        try values.append(self.charged.allocator(), callback);
+    }
+    pub fn removeCompletedCallback(self: *Queue, callback: Callback) !void {
+        const values = try self.mutableCallbacks();
+        for (values.items, 0..) |existing, index| {
+            if (!existing.eql(callback)) continue;
+            _ = values.orderedRemove(index);
+            return;
+        }
+    }
+    fn onCompleted(self: *Queue, engine: *em.Engine) void {
+        std.debug.assert(self.running and !self.running_completed);
+        self.running_completed = true;
+        // Every pair in the ORIGINAL vector runs. Mutations affect the next
+        // checkpoint. Keep the actual selected exception published throughout;
+        // no Completion/Boundary escrow may surround this native iteration.
+        for (self.callbacks.items) |callback| callback.run(engine, callback.data);
+        self.running_completed = false;
+        if (self.callbacks_cow) |replacement| {
+            self.callbacks.deinit(self.charged.allocator());
+            self.callbacks = replacement;
+            self.callbacks_cow = null;
+        }
+    }
+    fn acknowledgeCancelledUnwind(engine: *em.Engine) void {
+        // Only the genuine stopped TryRunMicrotasks boundary acknowledges a
+        // cancelled native unwind. An active published event must stay visible.
+        if (c.JS_PiIsExecutionTerminating(engine.runtime) or
+            !c.JS_HasException(engine.context)) return;
+        const reason = c.JS_GetException(engine.context);
+        if (c.JS_PiIsExecutionTermination(reason)) {
+            c.JS_FreeValueRT(engine.runtime, reason);
+        } else {
+            // A later ordinary/generic event is an actual surviving owner.
+            // Republish immediately, with no allocation or callback in between.
+            _ = c.JS_Throw(engine.context, reason);
+        }
+    }
+    fn runMicrotasks(self: *Queue, engine: *em.Engine) !isize {
+        std.debug.assert(!self.running);
+        self.running = true;
+        defer self.running = false;
+        self.suppressions += 1;
+        defer self.suppressions -= 1;
+        if (!c.JS_IsJobPending(engine.runtime)) {
+            // Empty checkpoints still invoke completed callbacks and leave the
+            // actual outer continuation untouched.
+            self.onCompleted(engine);
+            return 0;
+        }
+        const outer = c.JS_PiGetContinuationPreservedEmbedderData(engine.runtime);
+        c.JS_PiSetContinuationPreservedEmbedderData(engine.runtime, c.pi_js_undefined());
+        var processed: isize = 0;
+        var failed: ?anyerror = null;
+        var native_unwind = false;
+        while (c.JS_IsJobPending(engine.runtime)) {
+            var context: ?*c.JSContext = null;
+            const status = c.JS_ExecutePendingJob(engine.runtime, &context);
+            if (status == c.JS_PI_JOB_TERMINATED) {
+                native_unwind = true;
+                break;
+            }
+            if (status == 0) break;
+            if (status < 0) {
+                const active_context = context orelse engine.context;
+                if (!c.JS_HasException(active_context)) {
+                    failed = error.MissingActualMicrotaskException;
+                    break;
+                }
+                // Inspect the PROVEN actual pending event, then immediately
+                // republish the same owner into the empty runtime slot. There
+                // is no allocation, free, guest entry or callback between.
+                const reason = c.JS_GetException(active_context);
+                const private = c.JS_PiIsExecutionTermination(reason);
+                const fatal = c.JS_IsUncatchableError(reason);
+                _ = c.JS_Throw(active_context, reason);
+                if (private) {
+                    native_unwind = true;
+                    break;
+                }
+                if (fatal) {
+                    // Preserve the observed generic classification in the
+                    // genuine enclosing native invocation before callbacks.
+                    _ = engine.nativeCallbackResult(c.pi_js_exception());
+                    break;
+                }
+                processed += 1;
+                self.operations.report_message_from_microtask(engine, active_context) catch |err| {
+                    failed = err;
+                    break;
+                };
+                if (c.JS_PiIsExecutionTerminating(engine.runtime)) {
+                    native_unwind = true;
+                    break;
+                }
+                if (c.JS_HasException(active_context)) {
+                    failed = error.ActualMicrotaskReportLeftPending;
+                    break;
+                }
+                continue;
+            }
+            std.debug.assert(status == 1);
+            processed += 1;
+        }
+        if (native_unwind) acknowledgeCancelledUnwind(engine);
+        // Source restores the caller's continuation BEFORE queue termination
+        // cleanup, deferred native Promise AFTER, or completion callbacks.
+        c.JS_PiSetContinuationPreservedEmbedderData(engine.runtime, outer);
+        c.JS_FreeValueRT(engine.runtime, outer);
+        var terminated = false;
+        if (native_unwind or c.JS_PiIsExecutionTerminating(engine.runtime)) {
+            terminated = c.JS_PiFinishTerminatedMicrotasks(engine.runtime) == 1;
+            // Finish0 after a real Cancel retires only held aborted-job owners.
+            // It neither clears the live queue nor invents a deferred AFTER.
+        }
+        if (native_unwind or terminated) acknowledgeCancelledUnwind(engine);
+        self.onCompleted(engine);
+        if (failed) |err| return err;
+        return if (terminated) -1 else processed;
+    }
+    fn performBody(self: *Queue, engine: *em.Engine) !void {
+        const outcome = self.runMicrotasks(engine);
+        // PerformCheckpointInternal clears kept objects after RunMicrotasks,
+        // including its termination branch and callbacks. Preserve the actual
+        // runtime event through this native retirement as well.
+        c.JS_ClearKeptObjects(engine.runtime);
+        _ = try outcome;
+        if (c.JS_PiIsExecutionTerminating(engine.runtime))
+            return error.ExecutionTerminated;
+        if (c.JS_HasException(engine.context))
+            return error.JavaScriptException;
+    }
+    pub fn performCheckpoint(self: *Queue) !void {
+        const engine = try self.requireEngine();
+        if (!self.shouldPerformCheckpoint()) return;
+        var invocation: em.Engine.NativeInvocation = .{};
+        engine.enterNativeInvocation(&invocation);
+        const outcome: anyerror!void = self.performBody(engine);
+        // All native callbacks and kept-object cleanup are already finished.
+        // Only now may the ordinary typed completion boundary own the event.
+        var completion = owned.Completion.initVoid(engine, outcome);
+        _ = engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());
+        try completion.finishVoid();
+    }
+    pub fn close(self: *Queue) !void {
+        self.assertOwner();
+        if (self.engine == null) return;
+        if (self.running or self.running_completed or self.scope_depth != 0 or self.suppressions != 0)
+            return error.NativeMicrotaskQueueHasLiveScope;
+        std.debug.assert(self.callbacks_cow == null);
+        self.engine = null;
+        self.callbacks.deinit(self.charged.allocator());
+        self.callbacks = .empty;
+    }
+    pub fn destroy(self: *Queue) void {
+        self.assertOwner();
+        std.debug.assert(self.engine == null and !self.running and
+            !self.running_completed and self.callbacks_cow == null and
+            self.callbacks.items.len == 0 and self.scope_depth == 0 and
+            self.suppressions == 0);
+        const memory_owner = self.memory_owner;
+        self.charged.deinit();
+        std.heap.c_allocator.destroy(self);
+        c.pi_js_native_memory_release(memory_owner, @sizeOf(Queue));
+        c.pi_js_release_memory_owner(memory_owner);
+    }
+};

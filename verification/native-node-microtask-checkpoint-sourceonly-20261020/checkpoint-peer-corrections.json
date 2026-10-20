@@ -1,0 +1,26 @@
+{
+  "status": "source_only_peer_corrections_not_executed",
+  "created_utc": "2026-10-20T11:57:00.443906+00:00",
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_node_microtask_checkpoint.zig",
+    "before_sha256": "49D1BD650ADE9031EABE36A51D3B9A0E4BC20FC2ADD02BB787FA0ACCA20A5347",
+    "after_sha256": "530066FCB850A701610D822400675DE985AFE250AA4E7F299A5F6DAB3F1039D1",
+    "bytes": 12861
+  },
+  "controls": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\native_node_microtask_checkpoint_test.zig",
+    "before_sha256": "C532AC50987DC978D1973275CF1DF80DE84CE9638AD5E124F955E6013FAA0372",
+    "after_sha256": "D943903B269FED58F0EC1387DF099F04AFA5CB998E5F88164C2C697F6E941D10",
+    "bytes": 21983,
+    "declarations": 20,
+    "declaration_names_unchanged": true
+  },
+  "corrections": [
+    "Checkpoint terminal leaves/reduces actual native invocation owners and checks only an actual returned JS_EXCEPTION; no successful-empty Completion polling.",
+    "Control6 immediately defers suppression and scope release in separate blocks.",
+    "Control18 forces actual collection and actual WeakRef observation inside completed callback, before kept-object clearing."
+  ],
+  "no_main_mutation": true,
+  "runtime_validation": false,
+  "required_actual_message_report_owner": "not implemented or installed by this checkpoint packet"
+}

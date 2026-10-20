@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "status": "source_only_install_target_proposal",
+  "baseline_build_sha256": "B6F18B479B12F510D65DD83672E06AC2B0BADC395B050CC0C3A16FD399954D2A",
+  "path": "build.zig",
+  "anchor": "        const node_callbacks = b.addTest(.{",
+  "insertion_before": "        const node_microtask_checkpoint = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_microtask_checkpoint_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native Node microtask checkpoint\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_microtask_checkpoint.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_microtask_checkpoint.root_module, typescript_parser);\n        linkSqlite(node_microtask_checkpoint.root_module, sqlite_lib_dir, sqlite_library);\n        node_microtask_checkpoint.root_module.addImport(\"catalog_tool\", catalog_tool);\n        if (target.result.os.tag == .windows) {\n            node_microtask_checkpoint.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_microtask_checkpoint.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-microtask-checkpoint\", \"Install actual Node microtask checkpoint controls without execution\").dependOn(&b.addInstallArtifact(node_microtask_checkpoint, .{ .dest_sub_path = b.fmt(\"native-node-microtask-checkpoint{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n",
+  "group": "native-node-microtask-checkpoint",
+  "target": "build-native-node-microtask-checkpoint",
+  "artifact": "native-node-microtask-checkpoint",
+  "root": "src/native_node_microtask_checkpoint_test.zig",
+  "filter": "native Node microtask checkpoint",
+  "declarations": 20,
+  "dependencies": "Exact existing callback Engine dependencies and enclosing native_node_network guard copied; no runtime step.",
+  "source_fragment_sha256": "2A57DB370017DFFB16C373069D6A3C44A538DAFD031E4F4A1692FE0FF0089605",
+  "prospective_build_sha256": "9CE33FA149BC7A9233D8FF0D560CF3F713C1FC59690337A86065DCBDB9A4983A",
+  "main_mutated": false,
+  "executed": false
+}

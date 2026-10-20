@@ -1,0 +1,445 @@
+//! Actual C job-queue controls for the selected native Node checkpoint.
+//! The report callback below observes and retires a real ordinary pending
+//! reason. These controls qualify checkpoint ownership/order only; they do not
+//! stand in for the separately required native MessageHandler/Node listener.
+const std = @import("std");
+const em = @import("extensions/engine.zig");
+const checkpoint = @import("extensions/native_node_microtask_checkpoint.zig");
+const c = em.c;
+
+const Action = enum { observe, mutate, add_duplicate, remove_absent, reenter, cancel, throw_ordinary };
+const CallbackState = struct {
+    fixture: *Fixture,
+    id: u8,
+    action: Action = .observe,
+};
+var active_fixture: ?*Fixture = null;
+
+const Fixture = struct {
+    engine: *em.Engine,
+    queue: *checkpoint.Queue,
+    reason: c.JSValue,
+    states: [4]CallbackState,
+    trace: [64]u8 = undefined,
+    trace_len: usize = 0,
+    callback_error: ?anyerror = null,
+    reports: usize = 0,
+    reported_reason: ?c.JSValue = null,
+    reported_frame: ?c.JSValue = null,
+    completed_frame: ?c.JSValue = null,
+    completed_active: [4]bool = .{ false, false, false, false },
+    completed_cow: bool = false,
+    reentered_without_work: bool = false,
+    report_enqueues: bool = false,
+
+    fn init(self: *Fixture) !void {
+        const engine = try em.Engine.init(std.testing.allocator, .{});
+        errdefer engine.deinit();
+        const queue = try checkpoint.Queue.create(engine, .{ .report_message_from_microtask = report });
+        errdefer { queue.close() catch {}; queue.destroy(); }
+        const reason = try engine.eval("new Error('actual checkpoint reason')", "actual-native-checkpoint.js", c.JS_EVAL_TYPE_GLOBAL);
+        self.* = .{ .engine = engine, .queue = queue, .reason = reason, .states = undefined };
+        for (&self.states, 0..) |*state, index| state.* = .{ .fixture = self, .id = @intCast(index) };
+        active_fixture = self;
+    }
+    fn deinit(self: *Fixture) void {
+        c.JS_PiCancelExecutionTermination(self.engine.runtime);
+        if (c.JS_HasException(self.engine.context)) self.engine.freeValue(c.JS_GetException(self.engine.context));
+        if (self.engine.captured_exception) |reason| {
+            self.engine.captured_exception = null;
+            self.engine.freeValue(reason);
+        }
+        self.queue.close() catch @panic("actual checkpoint owner did not close");
+        self.queue.destroy();
+        if (self.reported_reason) |value| self.engine.freeValue(value);
+        if (self.reported_frame) |value| self.engine.freeValue(value);
+        if (self.completed_frame) |value| self.engine.freeValue(value);
+        self.engine.freeValue(self.reason);
+        self.engine.deinit();
+        active_fixture = null;
+    }
+    fn record(self: *Fixture, id: u8) void {
+        std.debug.assert(self.trace_len < self.trace.len);
+        self.trace[self.trace_len] = id;
+        self.trace_len += 1;
+    }
+    fn expectTrace(self: *Fixture, expected: []const u8) !void {
+        try std.testing.expectEqualSlices(u8, expected, self.trace[0..self.trace_len]);
+    }
+    fn clearTrace(self: *Fixture) void { self.trace_len = 0; }
+    fn callback(self: *Fixture, index: usize) checkpoint.Callback {
+        return .{ .run = completed, .data = &self.states[index] };
+    }
+    fn add(self: *Fixture, index: usize) !void {
+        try self.queue.addCompletedCallback(self.callback(index));
+    }
+    fn enqueue(self: *Fixture, id: i32) !void {
+        var args = [_]c.JSValue{c.JS_NewInt32(self.engine.context, id)};
+        if (c.JS_EnqueueJob(self.engine.context, job, 1, &args) < 0)
+            return error.ActualCheckpointJobEnqueueFailed;
+    }
+    fn frame(self: *Fixture, text: []const u8) !c.JSValue {
+        const value = try self.engine.checked(c.JS_NewStringLen(self.engine.context, text.ptr, text.len));
+        c.JS_PiSetContinuationPreservedEmbedderData(self.engine.runtime, value);
+        return value;
+    }
+    fn expectFrame(self: *Fixture, actual: ?c.JSValue, expected: c.JSValue) !void {
+        try std.testing.expect(actual != null);
+        try std.testing.expect(c.JS_IsStrictEqual(self.engine.context, actual.?, expected));
+    }
+    fn expectCurrentFrame(self: *Fixture, expected: c.JSValue) !void {
+        const actual = c.JS_PiGetContinuationPreservedEmbedderData(self.engine.runtime);
+        defer self.engine.freeValue(actual);
+        try std.testing.expect(c.JS_IsStrictEqual(self.engine.context, actual, expected));
+    }
+    fn expectClean(self: *Fixture) !void {
+        try std.testing.expect(self.callback_error == null);
+        try std.testing.expect(!c.JS_HasException(self.engine.context));
+        try std.testing.expect(self.engine.captured_exception == null);
+        try std.testing.expect(!c.JS_PiIsExecutionTerminating(self.engine.runtime));
+        try std.testing.expect(!self.queue.running and !self.queue.running_completed);
+        try std.testing.expect(self.queue.callbacks_cow == null);
+        try std.testing.expectEqual(@as(usize, 0), self.queue.suppressions);
+    }
+};
+fn completed(engine: *em.Engine, raw: ?*anyopaque) void {
+    const state: *CallbackState = @ptrCast(@alignCast(raw.?));
+    const f = state.fixture;
+    std.debug.assert(engine == f.engine);
+    f.record(100 + state.id);
+    f.completed_active[state.id] = c.JS_PiIsExecutionTerminating(engine.runtime);
+    if (f.completed_frame) |old| engine.freeValue(old);
+    f.completed_frame = c.JS_PiGetContinuationPreservedEmbedderData(engine.runtime);
+    switch (state.action) {
+        .observe => {},
+        .mutate => {
+            f.queue.removeCompletedCallback(f.callback(1)) catch |err| { f.callback_error = err; };
+            f.queue.addCompletedCallback(f.callback(2)) catch |err| { f.callback_error = err; };
+        },
+        .add_duplicate => {
+            f.queue.addCompletedCallback(f.callback(0)) catch |err| { f.callback_error = err; };
+            f.completed_cow = f.queue.callbacks_cow != null;
+        },
+        .remove_absent => {
+            f.queue.removeCompletedCallback(f.callback(3)) catch |err| { f.callback_error = err; };
+            f.completed_cow = f.queue.callbacks_cow != null;
+        },
+        .reenter => {
+            const before = f.trace_len;
+            f.queue.performCheckpoint() catch |err| { f.callback_error = err; };
+            f.reentered_without_work = before == f.trace_len;
+            f.queue.close() catch |err| {
+                if (err != error.NativeMicrotaskQueueHasLiveScope) f.callback_error = err;
+                return;
+            };
+            f.callback_error = error.ActualCompletedCallbackUnexpectedlyClosedQueue;
+        },
+        .cancel => c.JS_PiCancelExecutionTermination(engine.runtime),
+        .throw_ordinary => {
+            _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, f.reason));
+        },
+    }
+}
+fn report(engine: *em.Engine, context: ?*c.JSContext) !void {
+    const f = active_fixture.?;
+    std.debug.assert(engine == f.engine);
+    const ctx = context orelse return error.ActualJobContextRequired;
+    if (!c.JS_HasException(ctx)) return error.ActualOrdinaryJobReasonRequired;
+    const reason = c.JS_GetException(ctx);
+    if (c.JS_PiIsExecutionTermination(reason) or c.JS_IsUncatchableError(reason)) {
+        _ = c.JS_Throw(ctx, reason);
+        return error.ActualFatalCannotReachOrdinaryReportObserver;
+    }
+    f.reports += 1;
+    f.record(50);
+    if (f.reported_reason) |old| engine.freeValue(old);
+    f.reported_reason = reason;
+    if (f.reported_frame) |old| engine.freeValue(old);
+    f.reported_frame = c.JS_PiGetContinuationPreservedEmbedderData(engine.runtime);
+    if (f.report_enqueues) try f.enqueue(0);
+}
+fn job(context: ?*c.JSContext, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const f = active_fixture.?;
+    if (argc != 1) return c.JS_ThrowInternalError(context, "Actual checkpoint job argument missing");
+    var id: i32 = 0;
+    if (c.JS_ToInt32(context, &id, argv[0]) < 0) return c.pi_js_exception();
+    f.record(@intCast(id));
+    switch (id) {
+        0 => return c.pi_js_undefined(),
+        1 => return c.JS_Throw(context, c.JS_DupValue(context, f.reason)),
+        2 => {
+            f.enqueue(0) catch |err| {
+                f.callback_error = err;
+                return c.JS_ThrowInternalError(context, "Actual job enqueue failed");
+            };
+            return c.pi_js_undefined();
+        },
+        3, 4 => {
+            c.JS_PiRequestExecutionTermination(f.engine.runtime);
+            if (c.JS_PiCheckExecutionTermination(context) >= 0)
+                return c.JS_ThrowInternalError(context, "Actual termination was not serviced");
+            if (id == 4) {
+                c.JS_PiCancelExecutionTermination(f.engine.runtime);
+                return c.JS_PiNativeTerminationResult();
+            }
+            return c.pi_js_exception();
+        },
+        5 => {
+            const reason = c.JS_DupValue(context, f.reason);
+            c.JS_SetUncatchableError(context, reason);
+            return c.JS_Throw(context, reason);
+        },
+        6 => {
+            const value = c.JS_DupValue(context, f.reason);
+            c.JS_SetUncatchableError(context, value);
+            return value; // successful DATA, never an actual pending event
+        },
+        else => return c.JS_ThrowInternalError(context, "Unselected actual checkpoint job"),
+    }
+}
+
+test "native Node microtask checkpoint empty queue runs completed callbacks with the outer frame" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    const outer = try f.frame("outer"); defer f.engine.freeValue(outer);
+    try f.add(0);
+    try f.queue.performCheckpoint();
+    try f.expectTrace(&.{100});
+    try f.expectFrame(f.completed_frame, outer);
+    try f.expectCurrentFrame(outer);
+    try f.expectClean();
+}
+test "native Node microtask checkpoint preserves pair order and deduplicates only identical pairs" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    try f.add(0); try f.add(1); try f.add(0);
+    try f.queue.performCheckpoint();
+    try f.expectTrace(&.{100, 101});
+    try std.testing.expectEqual(@as(usize, 2), f.queue.callbacks.items.len);
+    try f.expectClean();
+}
+test "native Node microtask checkpoint callback mutations take effect after every original callback" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    f.states[0].action = .mutate;
+    try f.add(0); try f.add(1);
+    try f.queue.performCheckpoint();
+    try f.expectTrace(&.{100, 101});
+    f.clearTrace();
+    f.states[0].action = .observe;
+    try f.queue.performCheckpoint();
+    try f.expectTrace(&.{100, 102});
+    try f.expectClean();
+}
+test "native Node microtask checkpoint duplicate add during iteration still creates the COW owner" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    f.states[0].action = .add_duplicate;
+    try f.add(0);
+    try f.queue.performCheckpoint();
+    try std.testing.expect(f.completed_cow);
+    try f.expectTrace(&.{100});
+    try std.testing.expectEqual(@as(usize, 1), f.queue.callbacks.items.len);
+    try f.expectClean();
+}
+test "native Node microtask checkpoint absent remove during iteration still creates the COW owner" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    f.states[0].action = .remove_absent;
+    try f.add(0);
+    try f.queue.performCheckpoint();
+    try std.testing.expect(f.completed_cow);
+    try f.expectTrace(&.{100});
+    try f.expectClean();
+}
+test "native Node microtask checkpoint suppression and actual scope depth postpone all work" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    try f.add(0); try f.enqueue(0);
+    try f.queue.suppress();
+    try f.queue.performCheckpoint();
+    try f.expectTrace(&.{});
+    f.queue.unsuppress();
+    try f.queue.enterScope();
+    try f.queue.performCheckpoint();
+    try f.expectTrace(&.{});
+    f.queue.leaveScope();
+    try std.testing.expect(c.JS_IsJobPending(f.engine.runtime));
+    try f.queue.performCheckpoint();
+    try f.expectTrace(&.{0, 100});
+    try f.expectClean();
+}
+test "native Node microtask checkpoint reentry and close during completed callbacks preserve the live owner" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    f.states[0].action = .reenter;
+    try f.add(0); try f.add(1);
+    try f.queue.performCheckpoint();
+    try std.testing.expect(f.reentered_without_work);
+    try f.expectTrace(&.{100, 101});
+    try f.expectClean();
+}
+
+test "native Node microtask checkpoint drains the actual FIFO including jobs enqueued by a running job" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    try f.add(0); try f.enqueue(2); try f.enqueue(0);
+    try f.queue.performCheckpoint();
+    try f.expectTrace(&.{2, 0, 0, 100});
+    try std.testing.expect(!c.JS_IsJobPending(f.engine.runtime));
+    try f.expectClean();
+}
+test "native Node microtask checkpoint reports the actual ordinary reason and failed job frame then continues" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    const failed_frame = try f.frame("failed-job-frame"); defer f.engine.freeValue(failed_frame);
+    try f.enqueue(1);
+    const next_frame = try f.frame("next-job-frame"); defer f.engine.freeValue(next_frame);
+    try f.enqueue(0);
+    const outer = try f.frame("outer-frame"); defer f.engine.freeValue(outer);
+    try f.add(0);
+    try f.queue.performCheckpoint();
+    try f.expectTrace(&.{1, 50, 0, 100});
+    try std.testing.expectEqual(@as(usize, 1), f.reports);
+    try f.expectFrame(f.reported_reason, f.reason);
+    try f.expectFrame(f.reported_frame, failed_frame);
+    try f.expectFrame(f.completed_frame, outer);
+    try f.expectCurrentFrame(outer);
+    try f.expectClean();
+}
+test "native Node microtask checkpoint retains actual FIFO work enqueued by the ordinary report operation" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    f.report_enqueues = true;
+    try f.add(0); try f.enqueue(1); try f.enqueue(0);
+    try f.queue.performCheckpoint();
+    try f.expectTrace(&.{1, 50, 0, 0, 100});
+    try std.testing.expectEqual(@as(usize, 1), f.reports);
+    try f.expectClean();
+}
+test "native Node microtask checkpoint preserves a generic actual fatal and leaves later queued work" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    try f.add(0); try f.enqueue(5); try f.enqueue(0);
+    try std.testing.expectError(error.JavaScriptException, f.queue.performCheckpoint());
+    try f.expectTrace(&.{5, 100});
+    try std.testing.expectEqual(@as(usize, 0), f.reports);
+    try std.testing.expect(c.JS_IsJobPending(f.engine.runtime));
+    try f.expectFrame(f.engine.captured_exception, f.reason);
+    const actual = f.engine.captured_exception.?;
+    f.engine.captured_exception = null;
+    f.engine.freeValue(actual);
+    try f.expectClean();
+}
+test "native Node microtask checkpoint a flagged Error returned as DATA is not a failed job" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    try f.add(0); try f.enqueue(6); try f.enqueue(0);
+    try f.queue.performCheckpoint();
+    try f.expectTrace(&.{6, 0, 100});
+    try std.testing.expectEqual(@as(usize, 0), f.reports);
+    try std.testing.expect(c.JS_IsUncatchableError(f.reason));
+    try f.expectClean();
+}
+test "native Node microtask checkpoint active termination clears the live queue before completed callbacks" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    const outer = try f.frame("termination-outer"); defer f.engine.freeValue(outer);
+    try f.add(0); try f.enqueue(3); try f.enqueue(0);
+    try std.testing.expectError(error.ExecutionTerminated, f.queue.performCheckpoint());
+    try f.expectTrace(&.{3, 100});
+    try std.testing.expectEqual(@as(usize, 0), f.reports);
+    try std.testing.expect(f.completed_active[0]);
+    try std.testing.expect(c.JS_PiIsExecutionTerminating(f.engine.runtime));
+    try std.testing.expect(!c.JS_IsJobPending(f.engine.runtime));
+    try f.expectFrame(f.completed_frame, outer);
+    try f.expectCurrentFrame(outer);
+    try std.testing.expect(f.engine.captured_exception == null);
+    c.JS_PiCancelExecutionTermination(f.engine.runtime);
+    try f.expectClean();
+}
+test "native Node microtask checkpoint cancelled native unwind stops one round and retains the live queue" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    const outer = try f.frame("cancelled-outer"); defer f.engine.freeValue(outer);
+    try f.add(0); try f.enqueue(4); try f.enqueue(0);
+    try f.queue.performCheckpoint();
+    try f.expectTrace(&.{4, 100});
+    try std.testing.expect(!f.completed_active[0]);
+    try std.testing.expect(c.JS_IsJobPending(f.engine.runtime));
+    try f.expectFrame(f.completed_frame, outer);
+    try f.expectCurrentFrame(outer);
+    try f.expectClean();
+    f.clearTrace();
+    try f.queue.performCheckpoint();
+    try f.expectTrace(&.{0, 100});
+    try std.testing.expect(!c.JS_IsJobPending(f.engine.runtime));
+    try f.expectClean();
+}
+
+test "native Node microtask checkpoint cancellation in a completed callback consumes the actual active event" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    f.states[0].action = .cancel;
+    try f.add(0); try f.add(1); try f.enqueue(3); try f.enqueue(0);
+    try f.queue.performCheckpoint();
+    try f.expectTrace(&.{3, 100, 101});
+    try std.testing.expect(f.completed_active[0]);
+    try std.testing.expect(!f.completed_active[1]);
+    try std.testing.expect(!c.JS_IsJobPending(f.engine.runtime));
+    try f.expectClean();
+}
+test "native Node microtask checkpoint all native completed callbacks see an earlier selected termination" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    f.states[0].action = .throw_ordinary;
+    try f.add(0); try f.add(1); try f.enqueue(3);
+    try std.testing.expectError(error.ExecutionTerminated, f.queue.performCheckpoint());
+    try f.expectTrace(&.{3, 100, 101});
+    try std.testing.expect(f.completed_active[0] and f.completed_active[1]);
+    try std.testing.expect(c.JS_PiIsExecutionTerminating(f.engine.runtime));
+    try std.testing.expect(f.engine.captured_exception == null);
+    c.JS_PiCancelExecutionTermination(f.engine.runtime);
+    try f.expectClean();
+}
+test "native Node microtask checkpoint an empty queue does not service a request-only termination" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    try f.add(0);
+    c.JS_PiRequestExecutionTermination(f.engine.runtime);
+    try std.testing.expect(!c.JS_PiIsExecutionTerminating(f.engine.runtime));
+    try f.queue.performCheckpoint();
+    try f.expectTrace(&.{100});
+    try std.testing.expect(!f.completed_active[0]);
+    try std.testing.expect(!c.JS_HasException(f.engine.context));
+    c.JS_PiCancelExecutionTermination(f.engine.runtime);
+    try f.expectClean();
+}
+test "native Node microtask checkpoint clears actual kept WeakRef targets after the completed phase" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    const initialized = try f.engine.eval(
+        "globalThis.actualWeak = new WeakRef({marker:1});",
+        "actual-native-checkpoint-weakref.js", c.JS_EVAL_TYPE_GLOBAL);
+    f.engine.freeValue(initialized);
+    c.JS_RunGC(f.engine.runtime);
+    const before = try f.engine.eval("actualWeak.deref() !== undefined",
+        "actual-native-checkpoint-weakref.js", c.JS_EVAL_TYPE_GLOBAL);
+    try std.testing.expect(c.JS_ToBool(f.engine.context, before) == 1);
+    f.engine.freeValue(before);
+    try f.add(0);
+    try f.queue.performCheckpoint();
+    c.JS_RunGC(f.engine.runtime);
+    const after = try f.engine.eval("actualWeak.deref() === undefined",
+        "actual-native-checkpoint-weakref.js", c.JS_EVAL_TYPE_GLOBAL);
+    try std.testing.expect(c.JS_ToBool(f.engine.context, after) == 1);
+    f.engine.freeValue(after);
+    try f.expectTrace(&.{100});
+    try f.expectClean();
+}
+test "native Node microtask checkpoint a completed callback ordinary throw survives later native callbacks" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    f.states[0].action = .throw_ordinary;
+    try f.add(0); try f.add(1);
+    try std.testing.expectError(error.JavaScriptException, f.queue.performCheckpoint());
+    try f.expectTrace(&.{100, 101});
+    try f.expectFrame(f.engine.captured_exception, f.reason);
+    try std.testing.expectEqual(@as(usize, 0), f.reports);
+    const actual = f.engine.captured_exception.?;
+    f.engine.captured_exception = null;
+    f.engine.freeValue(actual);
+    try f.expectClean();
+}
+test "native Node microtask checkpoint closed native owner rejects new entry and callback mutation" {
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+    try f.add(0);
+    try f.queue.close();
+    try std.testing.expectError(error.NativeMicrotaskQueueClosed, f.queue.performCheckpoint());
+    try std.testing.expectError(error.NativeMicrotaskQueueClosed, f.add(1));
+    try std.testing.expectError(error.NativeMicrotaskQueueClosed, f.queue.removeCompletedCallback(f.callback(0)));
+    try std.testing.expect(!f.queue.shouldPerformCheckpoint());
+    try f.expectTrace(&.{});
+    try f.expectClean();
+}

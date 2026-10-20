@@ -1,0 +1,12 @@
+{
+  "status": "source_only_distinct_fifo_controls_not_executed",
+  "created_utc": "2026-10-20T11:58:16.849676+00:00",
+  "before_sha256": "D943903B269FED58F0EC1387DF099F04AFA5CB998E5F88164C2C697F6E941D10",
+  "after_sha256": "3B31C013C0377FAAF264145A4BBB3D3197EB2DA6FD29AE0D9EF2A88611FA8C0E",
+  "bytes": 21986,
+  "declarations": 20,
+  "correction": "Controls8 and10 use real normal job id7 for preexisting work and preserve appended id0, so reversed FIFO order changes the asserted trace. The shared actual native job function returns undefined for both normal IDs.",
+  "exact_inverse_reproduces_predecessor": true,
+  "production_changed": false,
+  "executed": false
+}

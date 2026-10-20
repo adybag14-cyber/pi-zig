@@ -1,0 +1,218 @@
+ int counter = args.smi_value_at(0);
+  isolate->CountUsage(static_cast<v8::Isolate::UseCounterFeature>(counter));
+  return ReadOnlyRoots(isolate).undefined_value();
+}
+
+RUNTIME_FUNCTION(Runtime_GetAndResetTurboProfilingData) {
+  HandleScope scope(isolate);
+  DCHECK_LE(args.length(), 2);
+  if (!BasicBlockProfiler::Get()->HasData(isolate)) {
+    THROW_NEW_ERROR_RETURN_FAILURE(
+        isolate,
+        NewTypeError(
+            MessageTemplate::kInvalid,
+            isolate->factory()->NewStringFromAsciiChecked("Runtime Call"),
+            isolate->factory()->NewStringFromAsciiChecked(
+                "V8 was not built with v8_enable_builtins_profiling=true")));
+  }
+
+  std::stringstream stats_stream;
+  BasicBlockProfiler::Get()->Log(isolate, stats_stream);
+  DirectHandle<String> result =
+      isolate->factory()->NewStringFromAsciiChecked(stats_stream.str().c_str());
+  BasicBlockProfiler::Get()->ResetCounts(isolate);
+  return *result;
+}
+
+RUNTIME_FUNCTION(Runtime_GetAndResetRuntimeCallStats) {
+  HandleScope scope(isolate);
+  DCHECK_LE(args.length(), 2);
+#ifdef V8_RUNTIME_CALL_STATS
+  if (!v8_flags.runtime_call_stats) {
+    THROW_NEW_ERROR_RETURN_FAILURE(
+        isolate, NewTypeError(MessageTemplate::kInvalid,
+                              isolate->factory()->NewStringFromAsciiChecked(
+                                  "Runtime Call"),
+                              isolate->factory()->NewStringFromAsciiChecked(
+                                  "--runtime-call-stats is not set")));
+  }
+  // Append any worker thread runtime call stats to the main table before
+  // printing.
+  isolate->counters()->worker_thread_runtime_call_stats()->AddToMainTable(
+      isolate->counters()->runtime_call_stats());
+
+  if (args.length() == 0) {
+    // Without arguments, the result is returned as a string.
+    std::stringstream stats_stream;
+    isolate->counters()->runtime_call_stats()->Print(stats_stream);
+    DirectHandle<String> result = isolate->factory()->NewStringFromAsciiChecked(
+        stats_stream.str().c_str());
+    isolate->counters()->runtime_call_stats()->Reset();
+    return *result;
+  }
+
+  std::FILE* f;
+  if (IsString(args[0])) {
+    // With a string argument, the results are appended to that file.
+    DirectHandle<String> filename = args.at<String>(0);
+    f = std::fopen(filename->ToCString().get(), "a");
+    DCHECK_NOT_NULL(f);
+  } else {
+    // With an integer argument, the results are written to stdout/stderr.
+    int fd = args.smi_value_at(0);
+    DCHECK(fd == 1 || fd == 2);
+    f = fd == 1 ? stdout : stderr;
+  }
+  // The second argument (if any) is a message header to be printed.
+  if (args.length() >= 2) {
+    DirectHandle<String> message = args.at<String>(1);
+    message->PrintOn(f);
+    std::fputc('\n', f);
+    std::fflush(f);
+  }
+  OFStream stats_stream(f);
+  isolate->counters()->runtime_call_stats()->Print(stats_stream);
+  isolate->counters()->runtime_call_stats()->Reset();
+  if (IsString(args[0])) {
+    std::fclose(f);
+  } else {
+    std::fflush(f);
+  }
+  return ReadOnlyRoots(isolate).undefined_value();
+#else   // V8_RUNTIME_CALL_STATS
+  THROW_NEW_ERROR_RETURN_FAILURE(
+      isolate, NewTypeError(MessageTemplate::kInvalid,
+                            isolate->factory()->NewStringFromAsciiChecked(
+                                "Runtime Call"),
+                            isolate->factory()->NewStringFromAsciiChecked(
+                                "RCS was disabled at compile-time")));
+#endif  // V8_RUNTIME_CALL_STATS
+}
+
+RUNTIME_FUNCTION(Runtime_OrdinaryHasInstance) {
+  HandleScope scope(isolate);
+  DCHECK_EQ(2, args.length());
+  DirectHandle<JSAny> callable = args.at<JSAny>(0);
+  DirectHandle<JSAny> object = args.at<JSAny>(1);
+  RETURN_RESULT_OR_FAILURE(
+      isolate, Object::OrdinaryHasInstance(isolate, callable, object));
+}
+
+RUNTIME_FUNCTION(Runtime_Typeof) {
+  HandleScope scope(isolate);
+  DCHECK_EQ(1, args.length());
+  DirectHandle<Object> object = args.at(0);
+  return *Object::TypeOf(isolate, object);
+}
+
+RUNTIME_FUNCTION(Runtime_AllowDynamicFunction) {
+  HandleScope scope(isolate);
+  DCHECK_EQ(1, args.length());
+  DirectHandle<JSFunction> target = args.at<JSFunction>(0);
+  DirectHandle<JSObject> global_proxy(target->global_proxy(), isolate);
+  return *isolate->factory()->ToBoolean(
+      Builtins::AllowDynamicFunction(isolate, target, global_proxy));
+}
+
+RUNTIME_FUNCTION(Runtime_CreateAsyncFromSyncIterator) {
+  HandleScope scope(isolate);
+  DCHECK_EQ(1, args.length());
+
+  DirectHandle<JSAny> sync_iterator_any = args.at<JSAny>(0);
+  DirectHandle<JSReceiver> sync_iterator;
+  if (!TryCast<JSReceiver>(sync_iterator_any, &sync_iterator)) {
+    THROW_NEW_ERROR_RETURN_FAILURE(
+        isolate, NewTypeError(MessageTemplate::kSymbolIteratorInvalid));
+  }
+
+  DirectHandle<Object> next;
+  ASSIGN_RETURN_FAILURE_ON_EXCEPTION(
+      isolate, next,
+      Object::GetProperty(isolate, sync_iterator,
+                          isolate->factory()->next_string()));
+
+  return *isolate->factory()->NewJSAsyncFromSyncIterator(sync_iterator, next);
+}
+
+RUNTIME_FUNCTION(Runtime_GetTemplateObject) {
+  HandleScope scope(isolate);
+  DCHECK_EQ(3, args.length());
+  DirectHandle<TemplateObjectDescription> description =
+      args.at<TemplateObjectDescription>(0);
+  DirectHandle<SharedFunctionInfo> shared_info = args.at<SharedFunctionInfo>(1);
+  int slot_id = args.smi_value_at(2);
+
+  DirectHandle<NativeContext> native_context(
+      isolate->context()->native_context(), isolate);
+  return *TemplateObjectDescription::GetTemplateObject(
+      isolate, native_context, description, shared_info, slot_id);
+}
+
+RUNTIME_FUNCTION(Runtime_ReportMessageFromMicrotask) {
+  // Helper to report messages and continue JS execution. This is intended to
+  // behave similarly to reporting exceptions which reach the top-level, but
+  // allow the JS code to continue.
+  HandleScope scope(isolate);
+  DCHECK_EQ(1, args.length());
+
+  DirectHandle<Object> exception = args.at(0);
+
+  DCHECK(!isolate->has_exception());
+  isolate->set_exception(*exception);
+  MessageLocation* no_location = nullptr;
+  DirectHandle<JSMessageObject> message =
+      isolate->CreateMessageOrAbort(exception, no_location);
+  MessageHandler::ReportMessage(isolate, no_location, message);
+  isolate->clear_exception();
+  return ReadOnlyRoots(isolate).undefined_value();
+}
+
+RUNTIME_FUNCTION(Runtime_GetInitializerFunction) {
+  HandleScope scope(isolate);
+  DCHECK_EQ(1, args.length());
+
+  DirectHandle<JSReceiver> constructor = args.at<JSReceiver>(0);
+  DirectHandle<Symbol> key = isolate->factory()->class_fields_symbol();
+  DirectHandle<Object> initializer =
+      JSReceiver::GetDataProperty(isolate, constructor, key);
+  return *initializer;
+}
+
+RUNTIME_FUNCTION(Runtime_DoubleToStringWithRadix) {
+  HandleScope scope(isolate);
+  DCHECK_EQ(2, args.length());
+  double number = args.number_value_at(0);
+  int32_t radix = 0;
+  CHECK(Object::ToInt32(args[1], &radix));
+
+  char chars[kDoubleToRadixMaxChars];
+  base::Vector<char> buffer = base::ArrayVector(chars);
+  std::string_view str = DoubleToRadixStringView(number, radix, buffer);
+  DirectHandle<String> result =
+      isolate->factory()->NewStringFromAsciiChecked(str);
+  return *result;
+}
+
+RUNTIME_FUNCTION(Runtime_SharedValueBarrierSlow) {
+  HandleScope scope(isolate);
+  DCHECK_EQ(1, args.length());
+  Handle<HeapObject> value = args.at<HeapObject>(0);
+  DirectHandle<Object> shared_value;
+  ASSIGN_RETURN_FAILURE_ON_EXCEPTION(
+      isolate, shared_value, Object::ShareSlow(isolate, value, kThrowOnError));
+  return *shared_value;
+}
+
+RUNTIME_FUNCTION(Runtime_InvalidateDependentCodeForScriptContextSlot) {
+  HandleScope scope(isolate);
+  DCHECK_EQ(1, args.length());
+  auto const_tracking_let_cell =
+      Cast<ContextSidePropertyCell>(args.at<HeapObject>(0));
+  DependentCode::DeoptimizeDependencyGroups(
+      isolate, *const_tracking_let_cell,
+      DependentCode::kScriptContextSlotPropertyChangedGroup);
+  return ReadOnlyRoots(isolate).undefined_value();
+}
+
+}  // namespace internal
+}  // namespace v8
