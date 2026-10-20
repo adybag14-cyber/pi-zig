@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "status": "source_only_nonterminal_native_export_and_explicit_oom_guard_correction; v2 corrects reserved Zig parameter keyword before compilation",
+  "execution": false,
+  "source_basis_head": "e113573dbd09021e93e65dd0e43613e1aa6dba77",
+  "files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\src\\extensions\\native_node_check_failure.c",
+      "before_sha256": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F",
+      "before_bytes": 15237,
+      "edits": [
+        {
+          "before": " * Selected Node default fatal, CHECK, and corrupted async-stack native paths.\n",
+          "after": " * Selected Node fatal, CHECK, corrupted async-stack and native trace paths.\n"
+        },
+        {
+          "before": "static void pi_node_restore_diagnostic_exception(JSContext *context,\n",
+          "after": "/* TraceEnvVar's nonterminal native operation writes to stderr without an\n * additional flush. The native symbol/capture owner is shared unchanged. */\nvoid pi_node_trace_native_stack(void *opaque) {\n    (void)opaque;\n    pi_node_dump_native_backtrace(stderr);\n}\n\nstatic void pi_node_restore_diagnostic_exception(JSContext *context,\n"
+        },
+        {
+          "before": "    if (!context || pi_node_retrieving_js_stacktrace) return;\n",
+          "after": "    if (!context || pi_node_retrieving_js_stacktrace ||\n        atomic_load(&pi_node_in_oom)) return;\n"
+        }
+      ],
+      "inverse_exact": true,
+      "sha256": "33D2F0524B59E477707937D6589BF4A30C5D959B1EFE4779BE4BF02D39B39593",
+      "bytes": 15538
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/src/extensions/native_node_check_failure.h",
+      "before_sha256": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D",
+      "before_bytes": 2287,
+      "edits": [
+        {
+          "before": " * Native Node default failure path. These functions never dispatch guest events.\n * The exported declarations deliberately omit a noreturn attribute so that\n",
+          "after": " * Native Node failure paths and nonterminal stack output. No guest dispatch.\n * Fatal declarations deliberately omit a noreturn attribute so that\n"
+        },
+        {
+          "before": "/* Only for an actual failed intrinsic allocation whose current occurrence is\n",
+          "after": "/* Nonterminal TraceEnvVar callback. Uses the actual native stack owner and\n * stderr; opaque is unused. No extra flush or terminal operation is added. */\nvoid pi_node_trace_native_stack(void *opaque);\n/* Only for an actual failed intrinsic allocation whose current occurrence is\n"
+        }
+      ],
+      "inverse_exact": true,
+      "sha256": "5A4B14849140F79C5A3555EC2721914D6C4382FEEB94DA0DACAE07E78EAF1CBD",
+      "bytes": 2478
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/src/extensions/native_node_check_failure.zig",
+      "before_sha256": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC",
+      "before_bytes": 2614,
+      "edits": [
+        {
+          "before": "//! Zig calls into the actual native Node fatal/CHECK platform owner.\n//! These calls terminate the native process. They do not mark a guest value\n",
+          "after": "//! Zig calls into native Node fatal/CHECK and nonterminal stack owners.\n//! Fatal calls terminate the native process. They do not mark a guest value\n"
+        },
+        {
+          "before": "extern fn pi_node_heap_out_of_memory(?*c.JSContext, ?*const Diagnostics) void;\n",
+          "after": "extern fn pi_node_trace_native_stack(?*anyopaque) void;\nextern fn pi_node_heap_out_of_memory(?*c.JSContext, ?*const Diagnostics) void;\n"
+        },
+        {
+          "before": "/// The caller proves a new actual failed intrinsic allocation. This is the\n",
+          "after": "/// Actual nonterminal native-stack callback for Environment tracing.\npub fn traceNativeStack(raw_owner: ?*anyopaque) callconv(.c) void {\n    pi_node_trace_native_stack(raw_owner);\n}\n\n/// The caller proves a new actual failed intrinsic allocation. This is the\n"
+        }
+      ],
+      "inverse_exact": true,
+      "sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09",
+      "bytes": 2857
+    }
+  ],
+  "authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-environment-os-sourceonly-20261020\\trace-env-original-nonterminal-rules.json",
+    "sha256": "8C84E5CC132C637EFCA7E7CE162885C6614FF7658CB40A5376A7C39F85890F3C",
+    "selected_native_trace": "Actual 256 native frames, skip zero, original platform symbol/capture body unchanged, stderr output with no added fflush.",
+    "explicit_behavior_correction": "The existing terminal JS backtrace lacked the original is_in_oom guard despite actual heap/backing OOM handlers setting the native latch. Add atomic_load guard at entry, matching original GetCurrentStackTrace and avoiding further JS capture in native OOM."
+  },
+  "public_contract": {
+    "native": "void pi_node_trace_native_stack(void* opaque)",
+    "zig": "pub fn traceNativeStack(raw_owner: ?*anyopaque) callconv(.c) void",
+    "native_pending": "No JS or pending-state access",
+    "js": "Not exported yet: existing terminal capture consumes/restores pending, so a genuine no-script/no-exception VM diagnostic primitive is required before nonterminal JS output."
+  },
+  "scope": "Native nonterminal callback is concrete. Existing native trace body and all fatal/report/header/termination code are unchanged except the separately explicit missing OOM guard. Does not install full TraceEnvVar or qualify native Trace-controller/GC-retry/application behavior.",
+  "runtime_qualification": false,
+  "peer_review_pending": true,
+  "retained_v1_negative": {
+    "path": "production-delta.json",
+    "sha256": "9A899FF4979C7100F094756196002D8A436E95D0D88A0441D563766CEA9FE82F",
+    "finding": "Modules finite source peer identified opaque as a reserved Zig keyword in the new wrapper parameter; only that binding and use are renamed to raw_owner. C void* opaque is valid and unchanged.",
+    "actual_compile_attempted": false,
+    "before_zig_sha256": "1E9907FD1B0F5BB1C75391541C64A213E2EF64771681DC3FE228BEC52DDE3CD9"
+  }
+}

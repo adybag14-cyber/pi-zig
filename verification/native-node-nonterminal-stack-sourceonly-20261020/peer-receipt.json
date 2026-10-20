@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "status": "finite_source_peer_closed",
+  "reviewer": "modules_io",
+  "execution": false,
+  "production_packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/verification/native-node-nonterminal-stack-sourceonly-20261020/production-delta-v2.json",
+    "sha256": "C05686CCA619E5DEFEDB07EF853836A701511A80502C0F011D9447F150BB4E57"
+  },
+  "authority": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-node-environment-os-sourceonly-20261020/trace-env-original-nonterminal-rules.json",
+    "sha256": "8C84E5CC132C637EFCA7E7CE162885C6614FF7658CB40A5376A7C39F85890F3C"
+  },
+  "files": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/src/extensions/native_node_check_failure.c",
+      "sha256": "33D2F0524B59E477707937D6589BF4A30C5D959B1EFE4779BE4BF02D39B39593",
+      "bytes": 15538,
+      "edits": 3,
+      "preimage_sha256": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F",
+      "preimage_bytes": 15237
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/src/extensions/native_node_check_failure.h",
+      "sha256": "5A4B14849140F79C5A3555EC2721914D6C4382FEEB94DA0DACAE07E78EAF1CBD",
+      "bytes": 2478,
+      "edits": 2,
+      "preimage_sha256": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D",
+      "preimage_bytes": 2287
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/src/extensions/native_node_check_failure.zig",
+      "sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09",
+      "bytes": 2857,
+      "edits": 3,
+      "preimage_sha256": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC",
+      "preimage_bytes": 2614
+    }
+  ],
+  "checks": [
+    "All eight unique packet edits reverse to the three exact complete preimages. The existing native platform capture, symbol context, numbered output and release bodies remain byte-identical.",
+    "The new C export calls the existing native stack body with stderr, ignores only its native opaque argument, adds no fflush, and does not read or modify any JS pending state.",
+    "The public C declaration and Zig extern/callconv(.c) wrapper have matching void(void*) ABI. The corrected raw_owner binding and use are the only two-token differences from the retained v1 Zig draft.",
+    "The explicit atomic native-OOM guard is at entry to the terminal JS helper, before pending capture or any VM operation. Both real native OOM handlers already publish that latch before diagnostic reporting and abort.",
+    "Original TraceEnvVar selected native output has the same 256-frame collection, skipped zero index, native output order and absence of an additional flush. The wrapper leaves selection and flag snapshot to the actual caller."
+  ],
+  "resolved_finding": {
+    "original_packet_sha256": "9A899FF4979C7100F094756196002D8A436E95D0D88A0441D563766CEA9FE82F",
+    "original_zig_sha256": "1E9907FD1B0F5BB1C75391541C64A213E2EF64771681DC3FE228BEC52DDE3CD9",
+    "finding": "The original Zig parameter used reserved keyword opaque.",
+    "correction": "Exactly the parameter and use were renamed raw_owner; C/H are unchanged."
+  },
+  "limits": [
+    "No nonterminal JS trace export is supplied or qualified. Existing terminal JS capture consumes/restores pending and is not an implementation of the original no-script/no-exception trace operation.",
+    "No Environment installation, native backtrace runtime result, whole diagnostic owner equivalence or execution is claimed. The explicit terminal OOM guard is a separate correctness change, not an assertion that the earlier body already had this guard."
+  ]
+}

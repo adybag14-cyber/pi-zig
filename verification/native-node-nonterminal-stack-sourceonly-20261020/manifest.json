@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "status": "source_only_peer_closed",
+  "source_basis_head": "e113573dbd09021e93e65dd0e43613e1aa6dba77",
+  "recorded_utc": "2026-10-20T16:19:10.816487+00:00",
+  "files": [
+    {
+      "path": "src/extensions/native_node_check_failure.c",
+      "sha256": "33D2F0524B59E477707937D6589BF4A30C5D959B1EFE4779BE4BF02D39B39593",
+      "bytes": 15538
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.h",
+      "sha256": "5A4B14849140F79C5A3555EC2721914D6C4382FEEB94DA0DACAE07E78EAF1CBD",
+      "bytes": 2478
+    },
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09",
+      "bytes": 2857
+    },
+    {
+      "path": "verification/native-node-nonterminal-stack-sourceonly-20261020/production-delta.json",
+      "sha256": "9A899FF4979C7100F094756196002D8A436E95D0D88A0441D563766CEA9FE82F",
+      "bytes": 5751
+    },
+    {
+      "path": "verification/native-node-nonterminal-stack-sourceonly-20261020/production-delta-v2.json",
+      "sha256": "C05686CCA619E5DEFEDB07EF853836A701511A80502C0F011D9447F150BB4E57",
+      "bytes": 6316
+    },
+    {
+      "path": "verification/native-node-nonterminal-stack-sourceonly-20261020/peer-receipt.json",
+      "sha256": "19B1A22BEAD5B1CB7510427C696AD6A02A48A6AD13207EA23778FA9A1856FB54",
+      "bytes": 3742
+    },
+    {
+      "path": "verification/native-node-nonterminal-stack-sourceonly-20261020/trace-env-original-nonterminal-rules.json",
+      "sha256": "8C84E5CC132C637EFCA7E7CE162885C6614FF7658CB40A5376A7C39F85890F3C",
+      "bytes": 10065
+    }
+  ],
+  "production_file_count": 3,
+  "exact_edits": 8,
+  "whole_inverse_matches_parent": true,
+  "retained_negative": "v1 reserved Zig opaque parameter; v2 renames only parameter and use raw_owner before compilation.",
+  "scope": "Export actual shared native backtrace owner as nonterminal callback; explicitly add missing original native-OOM entry guard to terminal JS helper.",
+  "peer_status": "finite_source_peer_closed",
+  "next_intake": "Only v2 three-file exact edits; original native body and all other terminal paths are unchanged.",
+  "runtime_tests_started": 0,
+  "compiled": false,
+  "qualification": false,
+  "remaining": [
+    "Genuine VM no-script/no-exception nonterminal JS snapshot and native trace formatter.",
+    "Environment installation and actual trace selection/output validation.",
+    "Fresh granted expected-exit/runtime qualification."
+  ]
+}

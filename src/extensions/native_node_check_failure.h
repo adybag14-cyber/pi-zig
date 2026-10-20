@@ -1,6 +1,6 @@
 /* Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
- * Native Node default failure path. These functions never dispatch guest events.
- * The exported declarations deliberately omit a noreturn attribute so that
+ * Native Node failure paths and nonterminal stack output. No guest dispatch.
+ * Fatal declarations deliberately omit a noreturn attribute so that
  * native stack collection retains a real caller frame, as in Node util.h. */
 #ifndef PI_NATIVE_NODE_CHECK_FAILURE_H
 #define PI_NATIVE_NODE_CHECK_FAILURE_H
@@ -22,6 +22,9 @@ typedef struct PiNodeAssertionInfo {
     const char *message;
     const char *function;
 } PiNodeAssertionInfo;
+/* Nonterminal TraceEnvVar callback. Uses the actual native stack owner and
+ * stderr; opaque is unused. No extra flush or terminal operation is added. */
+void pi_node_trace_native_stack(void *opaque);
 /* Only for an actual failed intrinsic allocation whose current occurrence is
  * established by the caller. No Error value or historical flag is accepted. */
 void pi_node_heap_out_of_memory(JSContext *context,

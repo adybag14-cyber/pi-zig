@@ -1,5 +1,5 @@
 /* Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
- * Selected Node default fatal, CHECK, and corrupted async-stack native paths.
+ * Selected Node fatal, CHECK, corrupted async-stack and native trace paths.
  * Source authority is recorded under native-node-check-failure-sourceonly.
  * This is direct C platform termination, outside guest exception dispatch. */
 #include "native_node_check_failure.h"
@@ -194,6 +194,13 @@ static void pi_node_dump_native_backtrace(FILE *stream) {
 #endif
 }
 
+/* TraceEnvVar's nonterminal native operation writes to stderr without an
+ * additional flush. The native symbol/capture owner is shared unchanged. */
+void pi_node_trace_native_stack(void *opaque) {
+    (void)opaque;
+    pi_node_dump_native_backtrace(stderr);
+}
+
 static void pi_node_restore_diagnostic_exception(JSContext *context,
                                                 int had_exception,
                                                 JSValue saved) {
@@ -208,7 +215,8 @@ static void pi_node_restore_diagnostic_exception(JSContext *context,
 }
 
 static void pi_node_dump_javascript_backtrace(JSContext *context, FILE *stream) {
-    if (!context || pi_node_retrieving_js_stacktrace) return;
+    if (!context || pi_node_retrieving_js_stacktrace ||
+        atomic_load(&pi_node_in_oom)) return;
     int had_exception = JS_HasException(context);
     JSValue saved = had_exception ? JS_GetException(context) : JS_UNDEFINED;
     pi_node_retrieving_js_stacktrace = 1;
