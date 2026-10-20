@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "status": "root_accepted_finite_reqwrap_host_error_fixture_source_correction",
+  "reviewed_utc": "2026-10-20T21:18:30.593608+00:00",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-reqwrap-host-error-fixture-sourceonly-20261020\\proposal.json",
+    "bytes": 23146,
+    "sha256": "A81ACE7F278882F45C8C56C3F4C18AEE6244F1B0D1FCB287FFBB24EF311FB34C"
+  },
+  "peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-reqwrap-host-error-fixture-source-peer-20261020\\peer.json",
+    "bytes": 4993,
+    "sha256": "83B9E6ADCC9F3F1A40F37A82092A8D0B55E398108E767E1E9FD4DA6165D200C6"
+  },
+  "peer_complete_source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-reqwrap-host-error-fixture-source-peer-20261020\\source-audit.json",
+    "bytes": 19006,
+    "sha256": "828A216CC6D7447BE13EBD41512037561796E25C5768B316632541A8BA1523CA"
+  },
+  "root_entire_source_audit_byte_exact_reproduction": true,
+  "source_basis": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "one_hunk_forward_and_full_inverse": true,
+  "current_source_equals_raw_committed_blob": true,
+  "declared_names": 12,
+  "prior_actual_metadata_count": 13,
+  "future_actual_metadata_count": null,
+  "findings": "Actual shared Completion turns the selected native host error into a real catchable TypeError and Engine.checked captures it as JavaScriptException. The fixture now verifies this exact boundary and actual prototype/message, with six JS values and one GPA byte slice released by immediate defers. All original observation, destruction/retirement, zero waiting/empty intrusive queue, pending/captured assertions and every non-hunk byte remain. No production logic changes.",
+  "runtime_negative_preserved": true,
+  "native_execution_authorized": false,
+  "main_applied": false,
+  "source_mutation_hold_released": false
+}

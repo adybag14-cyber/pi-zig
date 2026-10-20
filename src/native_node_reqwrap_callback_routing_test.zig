@@ -538,7 +538,27 @@ test "native ReqWrap routing typed callback failure still retires the final nati
     node.failure = .host;
     try std.testing.expectEqual(@as(c_int, 0),
         try f.dispatch(node, file.descriptor, &node.buffer, 1, 0, firstCallback));
-    try std.testing.expectError(error.ActualReqWrapSelectedCallbackFailure, f.pump());
+    // The shared UV completion boundary converts native host errors into
+    // an owned JavaScript TypeError before reporting JavaScriptException.
+    try std.testing.expectError(error.JavaScriptException, f.pump());
+    const reason = try f.takeCaught(); defer f.engine.freeValue(reason);
+    try std.testing.expect(c.JS_IsError(reason));
+    try std.testing.expect(!c.JS_IsUncatchableError(reason));
+    const global = try f.engine.checked(c.JS_GetGlobalObject(f.engine.context));
+    defer f.engine.freeValue(global);
+    const constructor = try f.engine.checked(c.JS_GetPropertyStr(f.engine.context, global, "TypeError"));
+    defer f.engine.freeValue(constructor);
+    const expected_prototype = try f.engine.checked(c.JS_GetPropertyStr(f.engine.context, constructor, "prototype"));
+    defer f.engine.freeValue(expected_prototype);
+    const actual_prototype = try f.engine.checked(c.JS_GetPrototype(f.engine.context, reason));
+    defer f.engine.freeValue(actual_prototype);
+    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, actual_prototype, expected_prototype));
+    const message = try f.engine.checked(c.JS_GetPropertyStr(f.engine.context, reason, "message"));
+    defer f.engine.freeValue(message);
+    try std.testing.expect(c.JS_IsString(message));
+    const text = try f.engine.toString(message);
+    defer f.engine.gpa.free(text);
+    try std.testing.expectEqualStrings("Native coding SDK: ActualReqWrapSelectedCallbackFailure", text);
     try std.testing.expectEqual(@as(usize, 1), f.observation_count);
     try expectRetired(&f, 1);
     try std.testing.expect(!c.JS_HasException(f.engine.context) and f.engine.captured_exception == null);

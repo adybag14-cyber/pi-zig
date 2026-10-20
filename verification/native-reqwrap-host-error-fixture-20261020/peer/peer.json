@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "status": "independent_finite_source_review_no_concrete_blocker",
+  "reviewer": "module_io_port",
+  "subject": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-reqwrap-host-error-fixture-sourceonly-20261020\\proposal.json",
+    "bytes": 23146,
+    "sha256": "A81ACE7F278882F45C8C56C3F4C18AEE6244F1B0D1FCB287FFBB24EF311FB34C"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-reqwrap-host-error-fixture-source-peer-20261020\\source-audit.json",
+    "bytes": 19006,
+    "sha256": "828A216CC6D7447BE13EBD41512037561796E25C5768B316632541A8BA1523CA"
+  },
+  "source_audit_script": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-reqwrap-host-error-fixture-source-peer-20261020\\source-audit.py",
+    "bytes": 5868,
+    "sha256": "95CD1ACAC6F962740B6ACE4D12820F5131BE08E771B001225BCC1E6F176FE9EE"
+  },
+  "scope": "One immutable fixture hunk only, native typed-error completion chain, captured-value/read ownership, committed source basis, exact inverse and declaration preservation.",
+  "findings": [
+    {
+      "result": "pass",
+      "detail": "The production callback still returns error.ActualReqWrapSelectedCallbackFailure. Owner.poll initializes Completion from deliver, releases the actual UV event, and finishes it. Completion routes this typed host error to native_sdk.fail, whose selected branch calls real JS_ThrowTypeError with the native error name. Completion.finishVoid passes the owned reason through Engine.checked/JS_Throw; Engine captures the actual reason and returns error.JavaScriptException. The revised boundary expectation matches these existing bodies.",
+      "sources": [
+        "src/native_node_reqwrap_callback_routing_test.zig:165-175",
+        "src/extensions/native_node_uv_service.zig:54-73",
+        "src/extensions/native_sdk_owned_completion.zig:97-139,222-226",
+        "src/extensions/native_sdk.zig:237-242",
+        "src/extensions/engine.zig:729-739,1198-1258"
+      ]
+    },
+    {
+      "result": "pass",
+      "detail": "Fixture.takeCaught transfers the real captured reason out of Engine and clears that slot. The new assertions require actual Error branding, a catchable reason, strict identity of its real prototype with this fresh fixture realm TypeError.prototype, a string message, and the exact host error name. No synthetic reason or altered production hook policy is introduced. Fixture.init uses a fresh real Engine and its bootstrap does not replace TypeError.",
+      "sources": [
+        "src/native_node_reqwrap_callback_routing_test.zig:203-233,327-330",
+        "projected/src/native_node_reqwrap_callback_routing_test.zig:534-565"
+      ]
+    },
+    {
+      "result": "pass",
+      "detail": "All six successfully acquired JS values receive an immediate defer for freeValue; Engine.toString returns GPA-owned duplicate bytes and frees the VM CString internally, and the added defer releases that duplicate. Deferred fixture teardown was registered first, so these values are released before Engine teardown. Message kind is checked before conversion. The native event and request were already retired at the actual pump boundary.",
+      "sources": [
+        "projected/src/native_node_reqwrap_callback_routing_test.zig:535-564",
+        "src/extensions/engine.zig:962-964,1025-1033"
+      ]
+    },
+    {
+      "result": "pass",
+      "detail": "The full forward replacement and whole-file inverse independently reproduce the pinned 31,452-byte original and 32,833-byte projection. Original, current Main file and raw committed c764 blob are byte-identical. Every other byte, all 12 literal test declarations, the observation count, exact retire/destroy counts, zero waiting/empty intrusive queue and empty pending/captured assertions are preserved."
+    },
+    {
+      "result": "pass",
+      "detail": "The original source-count preflight negative is retained. Independently read accepted prior metadata contains these 12 declared controls plus extensions.native_durable_storage.test_0 for 13 actual entries. Future actual metadata remains unknown. Strict runtime negative evidence is hash-bound only; this review does not re-run or supersede that closure."
+    }
+  ],
+  "verification": {
+    "current_pins": 17,
+    "byte_bound_source_excerpts": 19,
+    "one_hunk_full_inverse": true,
+    "main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+    "main_head_status_unchanged": true
+  },
+  "limitations": [
+    "No compiler, preprocessor, native execution, tests or reference runtime were run.",
+    "The finite source correction is not runtime qualification and does not authorize Main mutation or release any build/runtime gate.",
+    "No broader completion-policy or application implementation review is claimed."
+  ],
+  "source_mutation": "Only this new peer directory was written. Main, the proposal, original negative, metadata and all production sources were untouched."
+}

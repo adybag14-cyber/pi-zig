@@ -1,0 +1,337 @@
+{
+  "schema": 1,
+  "status": "independent_source_only_fixture_projection_checks_passed",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-reqwrap-host-error-fixture-sourceonly-20261020\\proposal.json",
+    "bytes": 23146,
+    "sha256": "A81ACE7F278882F45C8C56C3F4C18AEE6244F1B0D1FCB287FFBB24EF311FB34C"
+  },
+  "main_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "main_status_before_and_after_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+  "main_head_and_status_unchanged": true,
+  "pin_count": 17,
+  "pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-reqwrap-host-error-fixture-sourceonly-20261020\\proposal.json",
+      "bytes": 23146,
+      "sha256": "A81ACE7F278882F45C8C56C3F4C18AEE6244F1B0D1FCB287FFBB24EF311FB34C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-reqwrap-host-error-fixture-sourceonly-20261020\\before\\src\\native_node_reqwrap_callback_routing_test.zig",
+      "bytes": 31452,
+      "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_reqwrap_callback_routing_test.zig",
+      "bytes": 31452,
+      "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-reqwrap-host-error-fixture-sourceonly-20261020\\projected\\src\\native_node_reqwrap_callback_routing_test.zig",
+      "bytes": 32833,
+      "sha256": "47D2CFC945D48041119904392CE0BC677E46CAA012FA9A32215C521EB2D4E16E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\independent-metadata-acceptance.json",
+      "bytes": 242327,
+      "sha256": "80BCC5A73602A01AFFB9D66B3D1531D730D4B0FD79EFDC73CADAA7D246729D45"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-reqwrap-host-error-fixture-sourceonly-20261020\\retained-source-count-preflight-negative.json",
+      "bytes": 470,
+      "sha256": "93A7379C92C35DA8383C789E1487E3207604A30E1AAE3CD7138C13DECC9B0046"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-reqwrap-callback-routing\\runtime.stderr.log",
+      "bytes": 1947,
+      "sha256": "F0C617352AD63D4327D7CA2E03B4C89A22014FC4204277145E141719FCE5588C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-reqwrap-callback-routing\\runtime.stdout.bin",
+      "bytes": 378,
+      "sha256": "B8FE03838F21FF98DCD73A5DFAE9F985F2D0DF78759A2239B1D70832CC35895D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-reqwrap-callback-routing\\runtime.results.json",
+      "bytes": 1580,
+      "sha256": "78788E65634C2536AC24FEBB44EC58BBCD666F236FBF0221264AE8EF37FB063A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-control-20261020-210255\\independent-negative-runtime-closure.json",
+      "bytes": 64836,
+      "sha256": "038180C2284FB568EEB9368F033BC894A4E4AD8D6CCB3615B0C438AF336BCEDA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk.zig",
+      "bytes": 164658,
+      "sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+      "bytes": 15176,
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_uv_service.zig",
+      "bytes": 8937,
+      "sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_env_io.zig",
+      "bytes": 8014,
+      "sha256": "4BC66694AB6B22FC9A51A0943192BDCD61F0213C6846B0A69E0B459C26EF120E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2399340,
+      "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 113474,
+      "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    }
+  ],
+  "one_hunk_forward_and_full_inverse_exact": true,
+  "before_current_and_committed_blob_exact": true,
+  "all_non_hunk_bytes_preserved": true,
+  "declared_names": [
+    "native ReqWrap routing Reset clears the actual callback before reuse without counting admission",
+    "native ReqWrap routing selects the real callback after retain Detach and waiting decrement",
+    "native ReqWrap routing negative raw admission keeps callback but does not strengthen count or synthesize completion",
+    "native ReqWrap routing accepted bad descriptor preserves the real callback negative result",
+    "native ReqWrap routing reset and redispatch precede old Wrapper and event retirement",
+    "native ReqWrap routing callback error after redispatch preserves the new request pointer and event",
+    "native ReqWrap routing typed callback failure still retires the final native Wrapper pointer",
+    "native ReqWrap routing actual ordinary callback reason survives Entry destruction",
+    "native ReqWrap routing actual native fatal callback still completes native request retirement",
+    "native ReqWrap routing shared shutdown drains real callbacks after JavaScript is disabled",
+    "native ReqWrap routing stopped native service returns its real status without a callback or count",
+    "native ReqWrap routing retained Controller rejects a retired Hub before touching Entry inputs"
+  ],
+  "declared_count": 12,
+  "prior_observed_metadata_count": 13,
+  "prior_extra_anonymous_name": "extensions.native_durable_storage.test_0",
+  "future_actual_metadata_count": null,
+  "prior_count_negative_preserved": true,
+  "source_excerpt_count": 19,
+  "source_excerpts": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk.zig",
+        "bytes": 164658,
+        "sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3"
+      },
+      "first_line": 237,
+      "last_line": 242,
+      "text_sha256": "71DD78BD1708AED561C6E07D03755DFE552E1F18FB0A78524A89C491C60D24B9"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+        "bytes": 15176,
+        "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+      },
+      "first_line": 92,
+      "last_line": 116,
+      "text_sha256": "FCB92215909AAB032B70EAF24CFD43963F4A9E0EA64344A9ECCE62BAE786E978"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+        "bytes": 15176,
+        "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+      },
+      "first_line": 218,
+      "last_line": 228,
+      "text_sha256": "5A58C400A879205D38CF5B00040BC82768F690190A539F350C147A515F34F6D2"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_uv_service.zig",
+        "bytes": 8937,
+        "sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5"
+      },
+      "first_line": 47,
+      "last_line": 73,
+      "text_sha256": "CF7EB595253AA3AC66D1DCCB80749A1CFC6AD8073E35B85BEE224A9125D12028"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_env_io.zig",
+        "bytes": 8014,
+        "sha256": "4BC66694AB6B22FC9A51A0943192BDCD61F0213C6846B0A69E0B459C26EF120E"
+      },
+      "first_line": 111,
+      "last_line": 122,
+      "text_sha256": "DC9975019AEE03DE419ED5BB0658248EFB100DFD7D42F34C5DAB00FA56322DC8"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      },
+      "first_line": 1198,
+      "last_line": 1258,
+      "text_sha256": "467CE0C2560C82E058B78A525E6D281BACEFDD1D0AE51CFB69DF064EB4969269"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_reqwrap_callback_routing_test.zig",
+        "bytes": 31452,
+        "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7"
+      },
+      "first_line": 152,
+      "last_line": 177,
+      "text_sha256": "742445E1A48922DD46D012598B2531D39168853D0D76D4147E7034671BE74B02"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_reqwrap_callback_routing_test.zig",
+        "bytes": 31452,
+        "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7"
+      },
+      "first_line": 316,
+      "last_line": 330,
+      "text_sha256": "56EF912A5651FA4D2CAB92F7061938DD05E15150BAF06CB6FBC9EB605D1D73C4"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_reqwrap_callback_routing_test.zig",
+        "bytes": 31452,
+        "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7"
+      },
+      "first_line": 402,
+      "last_line": 407,
+      "text_sha256": "4A8A060FE4C290E769A1B31A5BE585E00DD9D90AB337E27CE10D2D07F1AA42B4"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      },
+      "first_line": 729,
+      "last_line": 739,
+      "text": "    pub fn checked(self: *Engine, value: c.JSValue) !c.JSValue {\n        const result = self.nativeCallbackResult(value);\n        if (c.JS_IsException(result)) {\n            if (!c.JS_HasException(self.context)) {\n                if (c.JS_PiIsExecutionTermination(result)) _ = c.JS_Throw(self.context, result)\n                else _ = c.JS_ThrowInternalError(self.context, \"Native callback returned exception without a pending reason\");\n            }\n            return self.captureException(self.context);\n        }\n        return result;\n    }\n",
+      "text_sha256": "FC75B4EC28EA914F2AC02087E268CFE51A978A456F3445A97B8B22DAC5612273"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      },
+      "first_line": 962,
+      "last_line": 964,
+      "text": "    pub fn freeValue(self: *Engine, value: c.JSValue) void {\n        c.JS_FreeValue(self.context, value);\n    }\n",
+      "text_sha256": "2B9F86CA317D1A8ACC5A4615F2CA9C3B82618EB6D827B2623301CA4A2EB8630F"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      },
+      "first_line": 1025,
+      "last_line": 1033,
+      "text": "    pub fn toString(self: *Engine, value: c.JSValue) ![]u8 {\n        var length: usize = 0;\n        const bytes = c.JS_ToCStringLen(self.context, &length, value);\n        if (bytes == null) {\n            return self.captureException(self.context);\n        }\n        defer c.JS_FreeCString(self.context, bytes);\n        return self.gpa.dupe(u8, bytes[0..length]);\n    }\n",
+      "text_sha256": "15433AD84D0B9F6CCC44EEC3E77921C56BED75B25E1250B30225C9D4861C8737"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "first_line": 10026,
+      "last_line": 10035,
+      "text": "static JSValue JS_PRINTF_FORMAT_ATTR(5, 0)\nJS_MakeError(JSContext *ctx, JSErrorEnum error_num, bool add_backtrace,\n             bool *metadata_failed,\n             JS_PRINTF_FORMAT const char *fmt, va_list ap)\n{\n    char buf[256];\n\n    vsnprintf(buf, sizeof(buf), fmt, ap);\n    return js_make_error2_tracked(ctx, error_num, add_backtrace, buf, metadata_failed);\n}\n",
+      "text_sha256": "335D7D1C345CDC16A266A8C1E540E2484A44D36B0CB6B5E846E49FA9C5F9F51B"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "first_line": 10090,
+      "last_line": 10114,
+      "text": "JS_ThrowError2(JSContext *ctx, JSErrorEnum error_num, bool add_backtrace,\n               JS_PRINTF_FORMAT const char *fmt, va_list ap)\n{\n    JSValue obj;\n    bool metadata_failed = false;\n\n    if (ctx->pi_compiler_diagnostic && JS_HasException(ctx))\n        return JS_EXCEPTION;\n    if (ctx->pi_compiler_diagnostic && error_num == JS_SYNTAX_ERROR)\n        return js_pi_compiler_syntax_error(ctx, fmt, ap);\n    obj = JS_MakeError(ctx, error_num, add_backtrace, &metadata_failed, fmt, ap);\n    if (metadata_failed)\n        return js_pi_metadata_fail_owned(ctx, obj);\n    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx))) {\n        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;\n        JS_FreeValue(ctx, obj);\n        return JS_Throw(ctx, first);\n    }\n    if (ctx->pi_compiler_diagnostic && (JS_IsException(obj) || JS_HasException(ctx)))\n        return js_pi_compiler_fail_owned(ctx, obj);\n    if (unlikely(JS_IsException(obj))) {\n        /* out of memory: throw JS_NULL to avoid recursing */\n        obj = JS_NULL;\n    }\n    return JS_Throw(ctx, obj);\n",
+      "text_sha256": "D5193B08C30722480B5F7A79C2B2AA5018536FFF703084D3F510BEC224F3FAAB"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+        "bytes": 2399340,
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+      },
+      "first_line": 13923,
+      "last_line": 13935,
+      "text": "bool JS_IsError(JSValueConst val)\n{\n    return JS_CLASS_ERROR == JS_GetClassID(val);\n}\n\n/* used to avoid catching interrupt exceptions */\nbool JS_IsUncatchableError(JSValueConst val)\n{\n    JSObject *p;\n    if (JS_VALUE_GET_TAG(val) != JS_TAG_OBJECT)\n        return false;\n    p = JS_VALUE_GET_OBJ(val);\n    return p->class_id == JS_CLASS_ERROR && p->is_uncatchable_error;\n",
+      "text_sha256": "10E142ADAF6FF826595B29532A93B89058897F7402E7DD94A707C35416284717"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+        "bytes": 113474,
+        "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+      },
+      "first_line": 723,
+      "last_line": 723,
+      "text": "JS_EXTERN bool JS_IsStrictEqual(JSContext *ctx, JSValueConst op1, JSValueConst op2);\n",
+      "text_sha256": "E226AE6484A8E4AFE00D2D6C6FCDF35BEEB7E4F469D355F2B4CFCDAA411C78C2"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+        "bytes": 113474,
+        "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+      },
+      "first_line": 1135,
+      "last_line": 1135,
+      "text": "JS_EXTERN bool JS_IsError(JSValueConst val);\n",
+      "text_sha256": "DC16DCC8EF0C6AB661AA1ED77710105CF19AEF2F2563DADA41F49386DEEB30F7"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+        "bytes": 113474,
+        "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+      },
+      "first_line": 1156,
+      "last_line": 1156,
+      "text": "JS_EXTERN JSValue JS_PRINTF_FORMAT_ATTR(2, 3) JS_ThrowTypeError(JSContext *ctx, JS_PRINTF_FORMAT const char *fmt, ...);\n",
+      "text_sha256": "CBB13782FCD73E61738AB6EA3DA23D3A9CC5F0347BE641FF44696ADBEDE3884D"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_reqwrap_callback_routing_test.zig",
+        "bytes": 31452,
+        "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7"
+      },
+      "first_line": 203,
+      "last_line": 233,
+      "text": "    fn init(self: *Fixture) !void {\n        self.* = .{ .native_environment = .init(std.testing.allocator) };\n        errdefer self.deinit();\n        self.engine = try em.Engine.init(std.testing.allocator, .{});\n        self.engine_alive = true;\n        try @import(\"extensions/native_process.zig\").install(\n            self.engine, std.testing.io, &self.native_environment, &.{\"native-reqwrap-routing\"});\n        const ignored = try a.expression(self.engine, bootstrap, .{self});\n        self.engine.freeValue(ignored);\n        self.controller = switch (try fs_io.acquire(self.engine, self.env())) {\n            .ready => |actual| actual,\n            .failed => return error.ActualReqWrapServiceAdmissionFailed,\n        };\n    }\n    fn bootstrap(s: *a.Scope, self: *Fixture) !c.JSValue {\n        const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));\n        const process = try s.get(global, \"process\");\n        const generation = try s.beforeAllocation();\n        const symbol = try s.checkedAllocation(\n            c.JS_NewSymbol(s.engine.context, \"node:resource_symbol\", false), generation);\n        const environment = try callbacks.Environment.create(s.engine, .{\n            .provider_names = providers.names(false), .resource_symbol = symbol,\n            .process_object = process, .async_context_frame = true, .operations = operations,\n        });\n        self.environment = environment;\n        environment.markBootstrapComplete();\n        self.registry_owner = try native.Registry.create(s.engine, environment);\n        const object = try s.get(global, \"Object\");\n        self.prototype = a.duplicate(s.engine, try s.get(object, \"prototype\"));\n        self.reason = a.duplicate(s.engine, try s.object());\n        return c.pi_js_undefined();\n",
+      "text_sha256": "EF981828DE70595784726BF41411902FFEC1A496CDAA7664B634AB129A9E3A09"
+    }
+  ],
+  "owned_js_values_with_immediate_defer": [
+    "reason",
+    "global",
+    "constructor",
+    "expected_prototype",
+    "actual_prototype",
+    "message"
+  ],
+  "owned_message_bytes_with_defer": true,
+  "original_observation_retirement_and_empty_pending_assertions_preserved": true,
+  "no_main_or_production_write": true,
+  "no_compiler_native_or_test_execution": true
+}

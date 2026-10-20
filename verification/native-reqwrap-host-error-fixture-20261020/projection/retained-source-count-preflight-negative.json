@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "status": "retained_source_preflight_count_mismatch",
+  "first_attempt_assumption": 13,
+  "actual_root_declarations": 12,
+  "accepted_artifact_metadata": 13,
+  "extra_actual_metadata_name": "extensions.native_durable_storage.test_0",
+  "first_attempt_failed_before_any_file_write": true,
+  "no_native_execution": true,
+  "correction": "Separate source declarations from actual metadata; preserve all12 root names and all13 accepted artifact names."
+}

@@ -1,0 +1,217 @@
+{
+  "schema": 1,
+  "status": "source_only_finite_fixture_error_boundary_correction_for_peer_review",
+  "created_utc": "2026-10-20T21:13:29.415594+00:00",
+  "candidate_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "relative_path": "src/native_node_reqwrap_callback_routing_test.zig",
+  "current": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_reqwrap_callback_routing_test.zig",
+    "bytes": 31452,
+    "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7"
+  },
+  "before": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-reqwrap-host-error-fixture-sourceonly-20261020\\before\\src\\native_node_reqwrap_callback_routing_test.zig",
+    "bytes": 31452,
+    "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-reqwrap-host-error-fixture-sourceonly-20261020\\projected\\src\\native_node_reqwrap_callback_routing_test.zig",
+    "bytes": 32833,
+    "sha256": "47D2CFC945D48041119904392CE0BC677E46CAA012FA9A32215C521EB2D4E16E"
+  },
+  "hunks": [
+    {
+      "before": "    try std.testing.expectError(error.ActualReqWrapSelectedCallbackFailure, f.pump());\n",
+      "after": "    // The shared UV completion boundary converts native host errors into\n    // an owned JavaScript TypeError before reporting JavaScriptException.\n    try std.testing.expectError(error.JavaScriptException, f.pump());\n    const reason = try f.takeCaught(); defer f.engine.freeValue(reason);\n    try std.testing.expect(c.JS_IsError(reason));\n    try std.testing.expect(!c.JS_IsUncatchableError(reason));\n    const global = try f.engine.checked(c.JS_GetGlobalObject(f.engine.context));\n    defer f.engine.freeValue(global);\n    const constructor = try f.engine.checked(c.JS_GetPropertyStr(f.engine.context, global, \"TypeError\"));\n    defer f.engine.freeValue(constructor);\n    const expected_prototype = try f.engine.checked(c.JS_GetPropertyStr(f.engine.context, constructor, \"prototype\"));\n    defer f.engine.freeValue(expected_prototype);\n    const actual_prototype = try f.engine.checked(c.JS_GetPrototype(f.engine.context, reason));\n    defer f.engine.freeValue(actual_prototype);\n    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, actual_prototype, expected_prototype));\n    const message = try f.engine.checked(c.JS_GetPropertyStr(f.engine.context, reason, \"message\"));\n    defer f.engine.freeValue(message);\n    try std.testing.expect(c.JS_IsString(message));\n    const text = try f.engine.toString(message);\n    defer f.engine.gpa.free(text);\n    try std.testing.expectEqualStrings(\"Native coding SDK: ActualReqWrapSelectedCallbackFailure\", text);\n",
+      "occurrences_before": 1,
+      "occurrences_after": 1,
+      "before_sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7",
+      "after_sha256": "47D2CFC945D48041119904392CE0BC677E46CAA012FA9A32215C521EB2D4E16E"
+    }
+  ],
+  "full_forward_inverse": true,
+  "declared_names": [
+    "native ReqWrap routing Reset clears the actual callback before reuse without counting admission",
+    "native ReqWrap routing selects the real callback after retain Detach and waiting decrement",
+    "native ReqWrap routing negative raw admission keeps callback but does not strengthen count or synthesize completion",
+    "native ReqWrap routing accepted bad descriptor preserves the real callback negative result",
+    "native ReqWrap routing reset and redispatch precede old Wrapper and event retirement",
+    "native ReqWrap routing callback error after redispatch preserves the new request pointer and event",
+    "native ReqWrap routing typed callback failure still retires the final native Wrapper pointer",
+    "native ReqWrap routing actual ordinary callback reason survives Entry destruction",
+    "native ReqWrap routing actual native fatal callback still completes native request retirement",
+    "native ReqWrap routing shared shutdown drains real callbacks after JavaScript is disabled",
+    "native ReqWrap routing stopped native service returns its real status without a callback or count",
+    "native ReqWrap routing retained Controller rejects a retired Hub before touching Entry inputs"
+  ],
+  "declared_name_count": 12,
+  "prior_actual_metadata_count": 13,
+  "prior_actual_metadata_names": [
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing Reset clears the actual callback before reuse without counting admission",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing selects the real callback after retain Detach and waiting decrement",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing negative raw admission keeps callback but does not strengthen count or synthesize completion",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing accepted bad descriptor preserves the real callback negative result",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing reset and redispatch precede old Wrapper and event retirement",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing callback error after redispatch preserves the new request pointer and event",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing typed callback failure still retires the final native Wrapper pointer",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing actual ordinary callback reason survives Entry destruction",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing actual native fatal callback still completes native request retirement",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing shared shutdown drains real callbacks after JavaScript is disabled",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing stopped native service returns its real status without a callback or count",
+    "native_node_reqwrap_callback_routing_test.test.native ReqWrap routing retained Controller rejects a retired Hub before touching Entry inputs",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "future_actual_metadata_count": null,
+  "prior_metadata_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\independent-metadata-acceptance.json",
+    "bytes": 242327,
+    "sha256": "80BCC5A73602A01AFFB9D66B3D1531D730D4B0FD79EFDC73CADAA7D246729D45"
+  },
+  "retained_preflight": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-reqwrap-host-error-fixture-sourceonly-20261020\\retained-source-count-preflight-negative.json",
+    "bytes": 470,
+    "sha256": "93A7379C92C35DA8383C789E1487E3207604A30E1AAE3CD7138C13DECC9B0046"
+  },
+  "failure_evidence": {
+    "runtime.stderr.log": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-reqwrap-callback-routing\\runtime.stderr.log",
+      "bytes": 1947,
+      "sha256": "F0C617352AD63D4327D7CA2E03B4C89A22014FC4204277145E141719FCE5588C"
+    },
+    "runtime.stdout.bin": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-reqwrap-callback-routing\\runtime.stdout.bin",
+      "bytes": 378,
+      "sha256": "B8FE03838F21FF98DCD73A5DFAE9F985F2D0DF78759A2239B1D70832CC35895D"
+    },
+    "runtime.results.json": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-20261020-210255\\groups\\native-node-reqwrap-callback-routing\\runtime.results.json",
+      "bytes": 1580,
+      "sha256": "78788E65634C2536AC24FEBB44EC58BBCD666F236FBF0221264AE8EF37FB063A"
+    }
+  },
+  "negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-control-20261020-210255\\independent-negative-runtime-closure.json",
+    "bytes": 64836,
+    "sha256": "038180C2284FB568EEB9368F033BC894A4E4AD8D6CCB3615B0C438AF336BCEDA"
+  },
+  "source_excerpts": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk.zig",
+        "bytes": 164658,
+        "sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3"
+      },
+      "first_line": 237,
+      "last_line": 242,
+      "text": "pub fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {\n    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();\n    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();\n    return c.JS_ThrowTypeError(engine.context, \"Native coding SDK: %s\", @as([*:0]const u8, @errorName(err)));\n}\n",
+      "text_sha256": "71DD78BD1708AED561C6E07D03755DFE552E1F18FB0A78524A89C491C60D24B9"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+        "bytes": 15176,
+        "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+      },
+      "first_line": 92,
+      "last_line": 116,
+      "text": "    // A cancelled native call can still return this explicit abrupt error\n    // after its private pending slot has been cleared by the actual cancel.\n    native_aborted: bool = false,\n    finished: bool = false,\n\n    pub fn initAction(engine: *em.Engine, result: anyerror!p.af.Action) Completion {\n        var selected: ?p.af.Action = null;\n        var native_aborted = false;\n        if (result) |action| {\n            selected = action;\n        } else |err| {\n            // Surface actual pending/current invocation events independently\n            // BEFORE inspecting a failed-operation diagnostic ownership slot.\n            _ = engine.nativeCallbackResult(c.pi_js_undefined());\n            if (err == error.ExecutionTerminated) {\n                native_aborted = true;\n            } else if (err == error.JavaScriptException and !c.JS_HasException(engine.context) and engine.captured_exception != null) {\n                const reason = engine.captured_exception.?;\n                engine.captured_exception = null;\n                selected = .{ .thrown = reason }; // Owned DATA; never flag/tag infer.\n            } else {\n                // Direct trusted GPA and non-JS host failures become actual\n                // producer exits before any owned temporary is released.\n                _ = @import(\"native_sdk.zig\").fail(engine, err);\n            }\n",
+      "text_sha256": "FCB92215909AAB032B70EAF24CFD43963F4A9E0EA64344A9ECCE62BAE786E978"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+        "bytes": 15176,
+        "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+      },
+      "first_line": 218,
+      "last_line": 228,
+      "text": "            .thrown => |reason| self.owner.engine.checked(c.JS_Throw(self.owner.engine.context, reason)),\n            .awaited => unreachable,\n        };\n    }\n    pub fn finishVoid(self: *Completion) anyerror!void {\n        switch (try self.finishAction()) {\n            .returned => |value| self.owner.engine.freeValue(value),\n            .thrown => |reason| { _ = try self.owner.engine.checked(c.JS_Throw(self.owner.engine.context, reason)); unreachable; },\n            .awaited => unreachable,\n        }\n    }\n",
+      "text_sha256": "5A58C400A879205D38CF5B00040BC82768F690190A539F350C147A515F34F6D2"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_uv_service.zig",
+        "bytes": 8937,
+        "sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5"
+      },
+      "first_line": 47,
+      "last_line": 73,
+      "text": "    fn deliver(self: *Owner, event: *uv.PiUvEvent, abandoned: bool) !void {\n        if (uv.pi_uv_event_info(event).kind == uv.PI_UV_NATIVE_ALLOCATION_FAILURE)\n            return error.OutOfMemory;\n        const selected = try self.eventClient(event);\n        if (abandoned) return selected.abandon(selected.raw, event);\n        return selected.complete(selected.raw, event);\n    }\n    fn poll(raw: *anyopaque) !bool {\n        const self: *Owner = @ptrCast(@alignCast(raw));\n        try self.hub.assertOwner();\n        try self.hub.engine.checkNativeEntry();\n        if (self.stopping or self.hub.stopping) return error.NativeEnvClosed;\n        if (self.busy or c.JS_IsJobPending(self.hub.engine.runtime)) return false;\n        // Preserve the actual TCP construction/callback reentry gate before\n        // consuming any shared FIFO entry. FS uses its own same-owner gate.\n        for (self.clients) |optional| if (optional) |selected|\n            if (!selected.ready(selected.raw)) return false;\n        const event = uv.pi_uv_service_next(self.service) orelse return false;\n        self.busy = true;\n        defer self.busy = false;\n        const engine = self.hub.engine;\n        engine.native_exception_diagnostics_suppressed += 1;\n        defer engine.native_exception_diagnostics_suppressed -= 1;\n        var completion = Completion.initVoid(engine, self.deliver(event, false));\n        uv.pi_uv_event_release(event);\n        try completion.finishVoid();\n        return true; // The existing Hub owns the subsequent checkpoint.\n",
+      "text_sha256": "CF7EB595253AA3AC66D1DCCB80749A1CFC6AD8073E35B85BEE224A9125D12028"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_env_io.zig",
+        "bytes": 8014,
+        "sha256": "4BC66694AB6B22FC9A51A0943192BDCD61F0213C6846B0A69E0B459C26EF120E"
+      },
+      "first_line": 111,
+      "last_line": 122,
+      "text": "        var resource_index: usize = 0;\n        while (resource_index < self.resources.items.len) {\n            const resource = self.resources.items[resource_index];\n            if (resource.poll) |poll| {\n                worked = (try poll(resource.raw)) or worked;\n                if (c.JS_IsJobPending(engine.runtime)) return worked;\n            }\n            // Other native resources may retire during a callback. A scheduler\n            // controller itself stays registered until teardown.\n            if (resource_index < self.resources.items.len and self.resources.items[resource_index].raw == resource.raw) resource_index += 1;\n        }\n        return worked;\n",
+      "text_sha256": "DC9975019AEE03DE419ED5BB0658248EFB100DFD7D42F34C5DAB00FA56322DC8"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+        "bytes": 99337,
+        "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+      },
+      "first_line": 1198,
+      "last_line": 1258,
+      "text": "    fn captureException(self: *Engine, context: *c.JSContext) anyerror {\n        const exception = c.JS_GetException(context);\n        return self.captureValue(context, exception, true);\n    }\n\n    /// Consumes exception. actual_event is supplied only by JS_GetException;\n    /// settled Promise rejection DATA never gains fatal authority from its bit.\n    fn captureValue(self: *Engine, context: *c.JSContext, exception: c.JSValue, actual_event: bool) anyerror {\n        var owned: NativePending = .{\n            .reason = exception,\n            .fatal = actual_event and c.JS_PiNativePendingPriority(self.runtime, exception) > 0,\n            .actual_event = actual_event,\n        };\n        if (owned.isFatal(self.runtime)) self.recordNativeFatal(exception);\n        if (self.currentNativeFatal()) |first| {\n            if (actual_event) _ = c.JS_PiNativePendingReplaceClassified(self.runtime,\n                first, true, exception, owned.fatal);\n            owned = .{ .reason = c.JS_DupValue(context, first), .fatal = true };\n            self.releaseNativeOwned(exception, &owned);\n        }\n        self.takeNativePending(&owned);\n        // A native implementation may call guest functions whose exceptions\n        // are still inside a guest try/catch. Capturing their identity must\n        // not invoke user ToString code before that catch gets the exception.\n        var diagnostic_message: ?[]u8 = null;\n        if (self.native_exception_diagnostics_suppressed == 0 and\n            !owned.isFatal(self.runtime) and !c.JS_PiIsExecutionTermination(owned.reason.?)) {\n            const text = c.JS_ToCString(context, owned.reason.?);\n            self.takeNativePending(&owned);\n            if (text != null) {\n                if (!owned.isFatal(self.runtime) and !c.JS_PiIsExecutionTermination(owned.reason.?)) diagnostic_message = self.gpa.dupe(u8, std.mem.span(text)) catch null;\n                c.JS_FreeCString(context, text);\n                self.takeNativePending(&owned);\n            }\n        }\n        // String conversion can invoke user code and another native callback.\n        // Commit ownership only afterward, retaining the original thrown value.\n        while (c.JS_HasException(self.context) or self.captured_exception != null or self.last_error != null) {\n            self.takeNativePending(&owned);\n            if (self.captured_exception) |previous| {\n                self.captured_exception = null;\n                self.releaseNativeOwned(previous, &owned);\n            } else if (self.last_error) |message| {\n                // A released diagnostic may reenter checked()/captureValue\n                // and publish another owned message. Detach before freeing;\n                // drain all channels before committing this invocation's text.\n                self.last_error = null;\n                self.gpa.free(message);\n            }\n        }\n        if (c.JS_PiIsExecutionTermination(owned.reason.?)) {\n            if (diagnostic_message) |message| self.gpa.free(message);\n            _ = self.throwNativePending(&owned);\n            return error.ExecutionTerminated;\n        }\n        if (owned.isFatal(self.runtime)) {\n            if (diagnostic_message) |message| self.gpa.free(message);\n            c.JS_SetUncatchableError(context, owned.reason.?);\n        } else self.last_error = diagnostic_message;\n        self.captured_exception = owned.reason.?;\n        return error.JavaScriptException;\n",
+      "text_sha256": "467CE0C2560C82E058B78A525E6D281BACEFDD1D0AE51CFB69DF064EB4969269"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_reqwrap_callback_routing_test.zig",
+        "bytes": 31452,
+        "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7"
+      },
+      "first_line": 152,
+      "last_line": 177,
+      "text": "        f.queued_inside_callback = true;\n        if (self.fail_first) {\n            _ = c.JS_Throw(f.engine.context, a.duplicate(f.engine, f.reason.?));\n            return error.JavaScriptException;\n        }\n        return;\n    }\n    if (self.release_in_callback and self.held_native_pointer) {\n        self.held_native_pointer = false;\n        try self.state.releaseNative();\n        // The outer Wrapper remains the one live native pointer until return.\n        f.last_pointer_in_callback = self.state.native_references == 1;\n    }\n    switch (self.failure) {\n        .none => {},\n        .host => return error.ActualReqWrapSelectedCallbackFailure,\n        .ordinary => {\n            _ = c.JS_Throw(f.engine.context, a.duplicate(f.engine, f.reason.?));\n            return error.JavaScriptException;\n        },\n        .fatal => {\n            _ = f.engine.throwNativeOutOfMemoryFatal();\n            return error.JavaScriptException;\n        },\n    }\n}\n",
+      "text_sha256": "742445E1A48922DD46D012598B2531D39168853D0D76D4147E7034671BE74B02"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_reqwrap_callback_routing_test.zig",
+        "bytes": 31452,
+        "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7"
+      },
+      "first_line": 316,
+      "last_line": 330,
+      "text": "    fn pump(self: *Fixture) !void {\n        const until = physical.uv_hrtime() + 10 * std.time.ns_per_s;\n        while (self.env().requests.waiting != 0) {\n            if (c.JS_IsJobPending(self.engine.runtime)) return error.UnselectedReqWrapTaskQueue;\n            const pump_native = self.engine.native_env_pump orelse return error.ActualReqWrapHubRequired;\n            _ = try pump_native(self.engine);\n            if (self.env().requests.waiting == 0) break;\n            if (physical.uv_hrtime() >= until) return error.ActualReqWrapCompletionTimeout;\n            physical.uv_sleep(1);\n        }\n    }\n    fn takeCaught(self: *Fixture) !c.JSValue {\n        const actual = self.engine.captured_exception orelse return error.ActualReqWrapReasonRequired;\n        self.engine.captured_exception = null;\n        return actual;\n",
+      "text_sha256": "56EF912A5651FA4D2CAB92F7061938DD05E15150BAF06CB6FBC9EB605D1D73C4"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_reqwrap_callback_routing_test.zig",
+        "bytes": 31452,
+        "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7"
+      },
+      "first_line": 402,
+      "last_line": 407,
+      "text": "fn expectRetired(f: *Fixture, count: usize) !void {\n    try std.testing.expectEqual(count, f.retired);\n    try std.testing.expectEqual(count, f.destroyed);\n    try std.testing.expectEqual(@as(c_int, 0), f.env().requests.waiting);\n    try std.testing.expect(f.env().requests.head == null and f.env().requests.tail == null);\n}\n",
+      "text_sha256": "4A8A060FE4C290E769A1B31A5BE585E00DD9D90AB337E27CE10D2D07F1AA42B4"
+    }
+  ],
+  "reason": "The callback raises the deliberately selected typed native error, but the existing shared UV Completion.initVoid calls native_sdk.fail, creating a real catchable TypeError. finishVoid reports JavaScriptException while Engine owns the actual captured reason. The original assertion was at the wrong boundary.",
+  "new_assertions": [
+    "JavaScriptException at the real Environment/UV pump boundary",
+    "actual owned captured reason is an Error and catchable",
+    "actual reason prototype equals the unchanged intrinsic TypeError.prototype",
+    "message is a String with the exact typed native error name",
+    "all newly read JS values and message bytes are released on every test exit"
+  ],
+  "preserved": [
+    "production callback host error and all production sources",
+    "one observation, exact native retirement/destruction counts, zero waiting and empty intrusive request queue",
+    "empty pending/captured channels after taking the actual reason",
+    "all12 declared control names and every other source byte; prior13 metadata indices remain evidence only",
+    "strict negative evidence, metadata cohort, build and runtime gates"
+  ],
+  "qualification": false,
+  "native_execution": false,
+  "main_applied": false,
+  "source_mutation_hold_released": false
+}
