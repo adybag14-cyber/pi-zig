@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "reviewed_utc": "2026-10-20T10:27:26.106008+00:00",
+  "status": "finite source composition verified; no execution",
+  "main_baseline": "13b9e718d2039b891854118a0dc9e9a27bf055a4",
+  "source_delta_sha256": "1AC30A6863F096C7BEF96E87A62FD85A0420179DAE44C036ABBFB46CE993BA14",
+  "original_delta_sha256": "CCDF8CFE5D0B64AA32D632DD1B415C8343B545397D44C9FB58D516E390DDB37E",
+  "original_binding_snapshot_sha256": "433456087F74B1336C2E41A97E8858091190AC832BA69F4D3EA6831B5E436043",
+  "composed_binding_sha256": "E1E6B701FBE6690AA25A78B1FDD9330DEE937CCAC0A3D05E19564B6B80C6BAD0",
+  "exact_reverse_to_current_main": true,
+  "original_26_test_bytes_preserved": true,
+  "new_declared_tests": 4,
+  "modules_peer_sha256": "9133E2976F1C09C64291ACC6C343B18CDD9814A4C1059CCE7A2A5C9C10554BEA",
+  "sdk_peer_reports": [
+    {
+      "scope": "corruptedStack native adapter FFB8FDEC",
+      "status": "closed",
+      "detail": "Two-argument Operations signature, live execution/expected IDs, actual native Config latch read, explicit assertion for absent required owner; all prior FS CHECK mappings unchanged."
+    },
+    {
+      "scope": "typed allocation-error consumption D93898AB",
+      "status": "closed",
+      "detail": "SDK read actual D964A9 Boundary.rejectOwned/release and independently reversed the sole typed-consume edit to3E810EEC; actual pending/fatal escrow and following return err unchanged."
+    }
+  ],
+  "runtime_execution": false,
+  "qualification": false
+}

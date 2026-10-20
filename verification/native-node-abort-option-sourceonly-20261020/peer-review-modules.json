@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "status": "finite source peer closed; no execution",
+  "reviewer": "modules_io",
+  "scope": "Root selected abort option Config/parser/serializer and four appended controls; direct corrupted-stack field read checked as consumer context",
+  "source_packet": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/verification/native-node-abort-option-sourceonly-20261020/source-delta.json",
+    "sha256": "ccdf8cfe5d0b64aa32d632dd1b415c8343b545397d44c9fb58d516e390ddb37e"
+  },
+  "source_proof": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/verification/native-node-abort-option-sourceonly-20261020/source-proof.json",
+    "sha256": "2aa9c951ae9b79a98052690ac0459e92efc45dbbe86c39f35195d6a46c3c5e31"
+  },
+  "files": [
+    {
+      "path": "src/extensions/native_node_options_config.zig",
+      "before_sha256": "C6BAD1E2C2EED4D0679EB2E0C81AEF0A57E2DE7216E2F7BBE07A913430C07835",
+      "after_sha256": "1E00540ADCE1D3CE012578C64F582776E06FE6027F79D71BE8ED0EF5F91E076E",
+      "before_bytes": 17547,
+      "after_bytes": 20006
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "before_sha256": "3E810EEC16228E216A9A40F817C2B1E58D6B4AABFC923597FF9E3FCF16A2FD90",
+      "after_sha256": "433456087F74B1336C2E41A97E8858091190AC832BA69F4D3EA6831B5E436043",
+      "before_bytes": 11277,
+      "after_bytes": 11540
+    },
+    {
+      "path": "src/native_node_options_test.zig",
+      "before_sha256": "1312393887348561754E70B26DF2EC5C1B9E49BD8096B1AE2775501D272EEADA",
+      "after_sha256": "CCD1447AEF00A62D7127F6F361E49070982E34BB5F92132798EA2727BC3B6536",
+      "before_bytes": 38636,
+      "after_bytes": 43376
+    },
+    {
+      "path": "src/extensions/native_node_callback_checks.zig",
+      "before_sha256": "50E92DE60842E05D9921714C556F335EC2E9F246905642B0DF0524637B39E709",
+      "after_sha256": "FFB8FDEC742A0884DE9C1A4819012A172B6253E148505372E928134004335605",
+      "before_bytes": 6098,
+      "after_bytes": 6288
+    }
+  ],
+  "exact_delta_reversal": [
+    {
+      "path": "src/extensions/native_node_options_config.zig",
+      "exit": 0,
+      "exactReversal": true,
+      "baseLength": 17547,
+      "testNames": 0
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "exit": 0,
+      "exactReversal": true,
+      "baseLength": 11277,
+      "testNames": 0
+    },
+    {
+      "path": "src/native_node_options_test.zig",
+      "exit": 0,
+      "exactReversal": true,
+      "baseLength": 38636,
+      "testNames": 30
+    },
+    {
+      "path": "src/extensions/native_node_callback_checks.zig",
+      "exit": 0,
+      "exactReversal": true,
+      "baseLength": 6098,
+      "testNames": 0
+    }
+  ],
+  "authority": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/provider-af-resume-20261018/verification/native-node-abort-option-sourceonly-20261020/authority/node.v24.14.cc",
+      "sha256": "01d3ea16fd426f98a13c2bba6df787ee363b677291c21588274d78b50f28927e",
+      "bytes": 56236
+    },
+    {
+      "path": "verification/native-node-abort-option-sourceonly-20261020/authority/node.cc",
+      "sha256": "FE21FC104D4227511792F64781701FB2805CB27AD7483A2F7262349EA6A4707A",
+      "bytes": 55881
+    },
+    {
+      "path": "verification/native-node-abort-option-sourceonly-20261020/authority/v8-flags.cc",
+      "sha256": "90C8958E344F419A0BCBBE20BA75B8F7289D7D1A5653F29419286BC17271E6E6",
+      "bytes": 41355
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/node-commonjs-loader-chain-sourceonly-20261019/authority/options/v24.14-node_options-inl.h.txt",
+      "sha256": "35de28aa8fbd13992769003f4853684a3b276627c40d4ada5192d0a60713d134",
+      "bytes": 18455
+    },
+    {
+      "path": "verification/node-commonjs-loader-chain-sourceonly-20261019/authority/options/v24.14-node_options.cc.txt",
+      "sha256": "C9D94CF1AFD9258EC283D14071CE5E70D0833E23E93A16580CF1862266F5A6A4",
+      "bytes": 81852
+    }
+  ],
+  "findings": [],
+  "conclusions": [
+    "The Node parser applies underscore normalization and its environment allowlist before forwarding unchanged raw V8 option text; CLI-only single-dash and no-without-dash forms are kept distinct.",
+    "The native Environment field is latched only by either exact fully hyphenated or fully underscored positive double-dash token. Later negative tokens do not clear it. The actual 24.13 and 24.14 latch bodies match.",
+    "The selected V8 parser admits normalized positive/negative one- or two-dash forms and rejects any explicit Boolean value after an equals sign. The separate final VM flag follows argument order.",
+    "Config stages the selected fields in its existing environment arena and publishes only after successful parsing and validation; original supplied native true remains true.",
+    "GetCLIOptionsValues uses its original kV8Option special case: one native Boolean with no negated companion. Returned mutable dictionaries do not mutate the retained native field.",
+    "All original 26 declarations are byte-preserved. Four appended declarations exercise defaults, exact latching across later negation, raw spelling differences, rejected explicit values and environment aliases, and independent mutable result records.",
+    "The corrupted-stack adapter reads the retained native field directly; no guest options lookup is introduced."
+  ],
+  "limits": [
+    "The new linked-VM global uncaught-exception policy is explicitly not installed by this unit.",
+    "Full callback Operations installation and expected-exit subprocess behavior remain separate.",
+    "The independently committed V19 one-line typed OOM result-consumption repair is not part of this packet and is not requalified here.",
+    "No native compilation, Node reference run, generated output, metadata run, runtime qualification, or complete options-schema claim."
+  ]
+}

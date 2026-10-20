@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "status": "source-only exact selected option admission and native termination dispatch; no execution",
+  "reviewed_utc": "2026-10-20T10:10:13.257476+00:00",
+  "source": [
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-abort-option-sourceonly-20261020\\authority\\node.cc",
+        "bytes": 55881,
+        "sha256": "FE21FC104D4227511792F64781701FB2805CB27AD7483A2F7262349EA6A4707A"
+      },
+      "start_byte": 24776,
+      "text": "  auto env_opts = per_process::cli_options->per_isolate->per_env;\n  if (std::ranges::find(v8_args, \"--abort-on-uncaught-exception\") !=\n          v8_args.end() ||\n      std::ranges::find(v8_args, \"--abort_on_uncaught_exception\") !=\n          v8_args.end()) {\n    env_opts->abort_on_uncaught_exception = true;\n  }"
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-abort-option-sourceonly-20261020\\authority\\v8-flags.cc",
+        "bytes": 41355,
+        "sha256": "90C8958E344F419A0BCBBE20BA75B8F7289D7D1A5653F29419286BC17271E6E6"
+      },
+      "start_byte": 19045,
+      "text": "void SplitArgument(const char* arg, char* buffer, int buffer_size,\n                          const char** name, const char** value,\n                          bool* negated) {\n  *name = nullptr;\n  *value = nullptr;\n  *negated = false;\n\n  if (arg[0] != '-') return;\n\n  // Find the begin of the flag name.\n  arg++;  // remove 1st '-'\n  if (*arg == '-') {\n    arg++;                    // remove 2nd '-'\n    DCHECK_NE('\\0', arg[0]);  // '--' arguments are handled in the caller.\n  }\n  if (arg[0] == 'n' && arg[1] == 'o') {\n    arg += 2;  // remove \"no\"\n    if (FlagHelpers::NormalizeChar(arg[0]) == '-') {\n      arg++;  // remove dash after \"no\".\n    }\n    *negated = true;\n  }\n  *name = arg;\n\n  // Find the end of the flag name.\n  while (*arg != '\\0' && *arg != '=') arg++;\n\n  // Get the value if any.\n  if (*arg == '=') {\n    // Make a copy so we can NUL-terminate the flag name.\n    size_t n = arg - *name;\n    CHECK(n < static_cast<size_t>(buffer_size));  // buffer is too small\n    MemCopy(buffer, *name, n);\n    buffer[n] = '\\0';\n    *name = buffer;\n    *value = arg + 1;\n  }\n}\n\n"
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-abort-option-sourceonly-20261020\\authority\\v8-flags.cc",
+        "bytes": 41355,
+        "sha256": "90C8958E344F419A0BCBBE20BA75B8F7289D7D1A5653F29419286BC17271E6E6"
+      },
+      "start_byte": 24757,
+      "text": "    // Handle errors.\n    bool is_bool_type = flag->type() == Flag::TYPE_BOOL ||\n                        flag->type() == Flag::TYPE_MAYBE_BOOL;\n    if ((is_bool_type && value != nullptr) || (!is_bool_type && negated) ||\n        *endp != '\\0') {\n      // TODO(neis): TryParseUnsigned may return with {*endp == '\\0'} even in\n      // an error case.\n      PrintF(stderr, \"Error: illegal value for flag %s of type %s\\n\", arg,\n             Type2String(flag->type()));\n      if (is_bool_type) {\n        PrintF(stderr,\n               \"To set or unset a boolean flag, use --flag or --no-flag.\\n\");\n      }\n      return_code = j;\n      break;\n    }\n\n    // Remove the flag & value from the command.\n    if (remove_flags) {\n      while (j < i) {\n        argv[j++] = nullptr;\n      }\n    }\n  }\n\n  if (v8_flags.help) {\n    if (help_options.HasUsage()) {\n      PrintF(stdout, \"%s\", help_options.usage());\n    }\n    PrintHelp();\n    if (help_op"
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-commonjs-loader-chain-sourceonly-20261019\\authority\\options\\v24.13-node_options.cc.txt",
+        "bytes": 81775,
+        "sha256": "AB47DF11DDB8C7067C9ADCACEAC70B75C0E053CAEB0A8207B0ED7ED8D7423CC1"
+      },
+      "start_byte": 63601,
+      "text": "      case kV8Option:\n        // Special case for --abort-on-uncaught-exception which is also\n        // respected by Node.js internals\n        if (item.first == \"--abort-on-uncaught-exception\") {\n          value = Boolean::New(isolate,\n                               s.original_per_env->abort_on_uncaught_exception);\n        } else if (item.first == \"--stack-trace-limit\") {\n          value =\n              Number::New(isolate,\n                          static_cast<double>(\n                              *_ppop_instance.Lookup<int64_t>(field, opts)));\n        } else {\n          value = undefined_value;\n        }\n        break;\n      case kBoolean:"
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\node-commonjs-loader-chain-sourceonly-20261019\\authority\\options\\v24.14-node_options.cc.txt",
+        "bytes": 81852,
+        "sha256": "C9D94CF1AFD9258EC283D14071CE5E70D0833E23E93A16580CF1862266F5A6A4"
+      },
+      "start_byte": 63678,
+      "text": "      case kV8Option:\n        // Special case for --abort-on-uncaught-exception which is also\n        // respected by Node.js internals\n        if (item.first == \"--abort-on-uncaught-exception\") {\n          value = Boolean::New(isolate,\n                               s.original_per_env->abort_on_uncaught_exception);\n        } else if (item.first == \"--stack-trace-limit\") {\n          value =\n              Number::New(isolate,\n                          static_cast<double>(\n                              *_ppop_instance.Lookup<int64_t>(field, opts)));\n        } else {\n          value = undefined_value;\n        }\n        break;\n      case kBoolean:"
+    }
+  ],
+  "v24_14_same_latch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\provider-af-resume-20261018\\verification\\native-node-abort-option-sourceonly-20261020\\authority\\node.v24.14.cc",
+    "bytes": 56236,
+    "sha256": "01D3EA16FD426F98A13C2BBA6DF787EE363B677291C21588274D78B50F28927E"
+  },
+  "conclusions": [
+    "Native EnvironmentOptions field defaults false. Only the exact raw positive double-dash fully hyphenated or fully underscored token sets it true; Node does not clear it for a later negative V8 flag.",
+    "V8 separately parses normalized positive/negative single or double dash names; its final Boolean is separately retained in Config and not conflated with the native Environment latch.",
+    "Node applies its original normalized environment allowlist before forwarding raw V8 arguments; no-without-dash and single-dash forms therefore remain command-line only.",
+    "Any explicit = value is illegal for this V8 Boolean, including =true, =false and empty =.",
+    "The option serializer uses the actual native field at its kV8Option special case and does not manufacture a negated dictionary key.",
+    "Corrupted async-stack diagnostics read the native Environment option directly; public dictionary mutation does not affect native exit1 versus abort134."
+  ],
+  "boundaries": [
+    "The linked VM global uncaught-abort policy still needs to consume the separately retained final VM flag; this packet does not claim that policy is installed.",
+    "The complete callback Operations installation and real expected-exit subprocess controls remain open.",
+    "No native build, Node reference execution, metadata or runtime acceptance is claimed."
+  ]
+}
