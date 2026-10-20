@@ -1,0 +1,178 @@
+{
+  "scope": "Source-only original FS/ReqWrap/BindingData Check mapping; no termination or runtime qualification",
+  "projection_checks_sha256": "50E92DE60842E05D9921714C556F335EC2E9F246905642B0DF0524637B39E709",
+  "source_read": "static void Read(const FunctionCallbackInfo<Value>& args) {\n  Environment* env = Environment::GetCurrent(args);\n\n  const int argc = args.Length();\n  CHECK_GE(argc, 5);\n\n  CHECK(args[0]->IsInt32());\n  const int fd = args[0].As<Int32>()->Value();\n\n  CHECK(Buffer::HasInstance(args[1]));\n  Local<Object> buffer_obj = args[1].As<Object>();\n  char* buffer_data = Buffer::Data(buffer_obj);\n  size_t buffer_length = Buffer::Length(buffer_obj);\n\n  CHECK(IsSafeJsInt(args[2]));\n  const int64_t off_64 = args[2].As<Integer>()->Value();\n  CHECK_GE(off_64, 0);\n  CHECK_LT(static_cast<uint64_t>(off_64), buffer_length);\n  const size_t off = static_cast<size_t>(off_64);\n\n  CHECK(args[3]->IsInt32());\n  const size_t len = static_cast<size_t>(args[3].As<Int32>()->Value());\n  CHECK(Buffer::IsWithinBounds(off, len, buffer_length));\n\n  CHECK(IsSafeJsInt(args[4]) || args[4]->IsBigInt());\n  const int64_t pos = args[4]->IsNumber() ?\n                      args[4].As<Integer>()->Value() :\n                      args[4].As<BigInt>()->Int64Value();\n\n  char* buf = buffer_data + off;\n  uv_buf_t uvbuf = uv_buf_init(buf, len);\n\n  if (argc > 5) {  // read(fd, buffer, offset, len, pos, req)\n    FSReqBase* req_wrap_async = GetReqWrap(args, 5);\n    CHECK_NOT_NULL(req_wrap_async);\n    FS_ASYNC_TRACE_BEGIN0(UV_FS_READ, req_wrap_async)\n    AsyncCall(env, req_wrap_async, args, \"read\", UTF8, AfterInteger,\n              uv_fs_read, fd, &uvbuf, 1, pos);\n  } else {  // read(fd, buffer, offset, len, pos)\n    FSReqWrapSync req_wrap_sync(\"read\");\n    FS_SYNC_TRACE_BEGIN(read);\n    const int bytesRead = SyncCallAndThrowOnError(\n        env, &req_wrap_sync, uv_fs_read, fd, &uvbuf, 1, pos);\n    FS_SYNC_TRACE_END(read, \"bytesRead\", bytesRead);\n\n    if (is_uv_error(bytesRead)) {\n      return;\n    }\n\n    args.GetReturnValue().Set(bytesRead);\n  }\n}\n",
+  "checks": [
+    {
+      "tag": "fs_read_argument_count",
+      "kind": "original CHECK",
+      "file": "src/node_file.cc",
+      "function": "node::fs::Read",
+      "operation": "CHECK_GE(argc, 5)",
+      "authority": "node_file.v24.13.cc 19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F; Read starts byte88650"
+    },
+    {
+      "tag": "fs_read_fd",
+      "kind": "original CHECK",
+      "file": "src/node_file.cc",
+      "function": "node::fs::Read",
+      "operation": "CHECK(args[0]->IsInt32())",
+      "authority": "node_file.v24.13.cc 19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F; Read starts byte88650"
+    },
+    {
+      "tag": "fs_read_buffer",
+      "kind": "original CHECK",
+      "file": "src/node_file.cc",
+      "function": "node::fs::Read",
+      "operation": "CHECK(Buffer::HasInstance(args[1]))",
+      "authority": "node_file.v24.13.cc 19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F; Read starts byte88650"
+    },
+    {
+      "tag": "fs_read_offset_integer",
+      "kind": "original CHECK",
+      "file": "src/node_file.cc",
+      "function": "node::fs::Read",
+      "operation": "CHECK(IsSafeJsInt(args[2]))",
+      "authority": "node_file.v24.13.cc 19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F; Read starts byte88650"
+    },
+    {
+      "tag": "fs_read_offset_nonnegative",
+      "kind": "original CHECK",
+      "file": "src/node_file.cc",
+      "function": "node::fs::Read",
+      "operation": "CHECK_GE(off_64, 0)",
+      "authority": "node_file.v24.13.cc 19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F; Read starts byte88650"
+    },
+    {
+      "tag": "fs_read_offset_bounds",
+      "kind": "original CHECK",
+      "file": "src/node_file.cc",
+      "function": "node::fs::Read",
+      "operation": "CHECK_LT(static_cast<uint64_t>(off_64), buffer_length)",
+      "authority": "node_file.v24.13.cc 19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F; Read starts byte88650"
+    },
+    {
+      "tag": "fs_read_length",
+      "kind": "original CHECK",
+      "file": "src/node_file.cc",
+      "function": "node::fs::Read",
+      "operation": "CHECK(args[3]->IsInt32())",
+      "authority": "node_file.v24.13.cc 19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F; Read starts byte88650"
+    },
+    {
+      "tag": "fs_read_range",
+      "kind": "original CHECK",
+      "file": "src/node_file.cc",
+      "function": "node::fs::Read",
+      "operation": "CHECK(Buffer::IsWithinBounds(off, len, buffer_length))",
+      "authority": "node_file.v24.13.cc 19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F; Read starts byte88650"
+    },
+    {
+      "tag": "fs_read_position",
+      "kind": "original CHECK",
+      "file": "src/node_file.cc",
+      "function": "node::fs::Read",
+      "operation": "CHECK(IsSafeJsInt(args[4]) || args[4]->IsBigInt())",
+      "authority": "node_file.v24.13.cc 19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F; Read starts byte88650"
+    },
+    {
+      "tag": "fs_read_request",
+      "kind": "original CHECK",
+      "file": "src/node_file.cc",
+      "function": "node::fs::Read",
+      "operation": "CHECK_NOT_NULL(req_wrap_async)",
+      "authority": "node_file.v24.13.cc 19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F; Read starts byte88650"
+    },
+    {
+      "tag": "invalid_provider",
+      "kind": "aggregate port invariant",
+      "original": [
+        {
+          "function": "AsyncWrap::AsyncWrap",
+          "operation": "CHECK_NE(provider, PROVIDER_NONE)"
+        },
+        {
+          "function": "AsyncWrap::AsyncReset(Local<Object>, double)",
+          "operation": "CHECK_NE(provider_type(), PROVIDER_NONE)"
+        }
+      ],
+      "file": "src/async_wrap.cc",
+      "authority": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC",
+      "limit": "One aggregate tag does not identify the two distinct native assertion sites."
+    },
+    {
+      "tag": "invalid_wrap_brand",
+      "kind": "aggregate port identity/refcount invariant",
+      "limit": "No invented generic Node CHECK is attributed. One current consumer asyncResetBody also uses this for original CHECK(args[0]->IsObject()); split that tag for exact per-site Source diagnostics."
+    },
+    {
+      "tag": "unfinished_live_fs_request",
+      "kind": "original CHECK",
+      "function": "FSReqPromise<AliasedBufferT>::~FSReqPromise",
+      "file": "src/node_file-inl.h",
+      "operation": "CHECK_IMPLIES(!finished_, !env()->can_call_into_js())",
+      "authority": "native-fsreq-promise-source.json 933400DC; original node_file-inl.h 2E96C28C"
+    },
+    {
+      "tag": "promise_property_settle",
+      "kind": "original Maybe FromJust",
+      "function": "FSReqPromise<AliasedBufferT>::Resolve / Reject",
+      "file": "src/node_file-inl.h",
+      "operation": "USE(resolver->Resolve(env()->context(), value).FromJust()); USE(resolver->Reject(env()->context(), reject).FromJust())",
+      "authority": "native-fsreq-promise-source.json 933400DC"
+    },
+    {
+      "tag": "binding_data_property_set",
+      "kind": "original Maybe Check",
+      "function": "BindingData::BindingData",
+      "file": "src/node_file.cc",
+      "operation": "wrap->Set(context, FIXED_ONE_BYTE_STRING(isolate, name), alias.GetJSArray()).Check()",
+      "names": [
+        "statValues",
+        "bigintStatValues",
+        "statFsValues",
+        "bigintStatFsValues"
+      ],
+      "authority": "node_file.v24.13.cc 19C497BF at127490; selected range5300 hash6F22F763A97DEE8C946A67025BC9AE4DB396374B8B4D5D4B2352A4D23767E265"
+    },
+    {
+      "tag": "binding_data_slot_occupied",
+      "kind": "original CHECK",
+      "function": "Realm::AddBindingData",
+      "file": "src/node_realm-inl.h",
+      "operation": "CHECK(!binding_data_store_[binding_index])",
+      "authority": "binding-data-lifecycle-source.json 7479736B; original EDAEF1C54760111714DE1C027073732D9571E5903064B1C8B807DC3514FE19D5"
+    },
+    {
+      "tag": "request_before_bootstrap",
+      "kind": "original CHECK",
+      "function": "ReqWrapBase::ReqWrapBase",
+      "file": "src/req_wrap-inl.h",
+      "operation": "CHECK(env->has_run_bootstrapping_code())",
+      "authority": "async-wrap-base-object-template-source.json 4EF8C935; original 27C770D8756B626C80210F96F9DB1CF31BFBF09AAB1DA53DC35B382314883E67"
+    },
+    {
+      "tag": "negative_waiting_requests",
+      "kind": "original CHECK",
+      "function": "Environment::DecreaseWaitingRequestCounter",
+      "file": "src/env-inl.h",
+      "operation": "CHECK_GE(request_waiting_, 0)",
+      "authority": "Root callback authority src_env-inl.h.txt 41949D4DFA01B04174B0E881B1DB3DD12BF51B9428B89946504603700FCF3E5E"
+    },
+    {
+      "tag": "waiting_requests_after_io_join",
+      "kind": "port lifecycle invariant",
+      "function": "Registry.requireNoWaiting",
+      "file": "src/extensions/native_node_request_state.zig",
+      "limit": "Original CleanupHandles drains while request_waiting_ != 0; it does not spell this additional invariant CHECK."
+    },
+    {
+      "tag": "request_queue_during_disarm",
+      "kind": "port lifecycle invariant",
+      "function": "Registry.requireEmpty",
+      "file": "src/extensions/native_node_request_state.zig",
+      "limit": "This verifies the port's completed shutdown composition. Do not attribute a fabricated assertion to Node."
+    }
+  ],
+  "diagnostic_limit": "Original macro calls and selected function/file names are retained here; compiler-expanded file:line/PRETTY_FUNCTION text is not inferred."
+}

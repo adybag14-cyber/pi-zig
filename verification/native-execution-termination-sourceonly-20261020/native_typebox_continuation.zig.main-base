@@ -1,0 +1,517 @@
+//! Private synchronous heap activations for explicitly planned TypeBox closures.
+//! No guest source, AST, promises, jobs, threshold changes, or alternate VM.
+const std = @import("std");
+const js = @import("native_js_values.zig");
+const c = js.c;
+pub const Scope = @import("native_models_stream_scope.zig").Scope;
+
+pub const Plan = struct {
+    source_callback: *const fn (*js.Engine, c.JSValue, []const c.JSValue, []const c.JSValue) anyerror!c.JSValue,
+    slots: usize,
+    entry: usize,
+    steps: []const *const fn (*Activation) anyerror!Action,
+};
+pub const Provenance = struct {
+    state: *anyopaque,
+    callback: usize,
+    class: c.JSClassID,
+    roots: []const c.JSValue,
+    arrow: bool,
+};
+const Registration = struct { provenance: Provenance, plan: *const Plan };
+const Runtime = struct {
+    entries: std.AutoHashMapUnmanaged(usize, Registration) = .empty,
+    request: ?*Request = null,
+    machine: ?*Machine = null,
+    owner_thread: std.Thread.Id,
+};
+const Request = struct {
+    machine: *Machine,
+    function: c.JSValue,
+    registration: Registration,
+    receiver: c.JSValue,
+    args: []const c.JSValue,
+    consumed: bool = false,
+    prepared: ?*Activation = null,
+};
+pub const Call = struct {
+    function: c.JSValue,
+    receiver: c.JSValue,
+    args: []const c.JSValue,
+    result: usize,
+    next: usize,
+    construct: bool = false,
+};
+pub const Action = union(enum) {
+    next: usize,
+    call: Call,
+    returned: c.JSValue, // borrowed from the still-live activation Scope
+    thrown: c.JSValue, // borrowed; ordinary guest throws preserve identity
+    enter_finally: struct { handler: usize, next: usize },
+    leave_try: usize,
+    finish_finally,
+};
+const Reason = struct { value: c.JSValue, fatal: bool };
+const Completion = union(enum) {
+    @"resume": usize,
+    returned: c.JSValue, // owned, moved before Scope.own
+    thrown: Reason, // owned
+};
+pub const Activation = struct {
+    scope: Scope,
+    plan: *const Plan,
+    values: []c.JSValue,
+    roots: []const c.JSValue,
+    args: []const c.JSValue,
+    receiver: c.JSValue,
+    env: c.JSValue,
+    pc: usize,
+    parent: ?*Activation,
+    parent_result: usize,
+    logical_suppression: bool,
+    // The selected source has one non-nested try/finally. Admission rejects
+    // nesting before generation; this is an invariant check, not a JS limit.
+    finally_handler: ?usize,
+    pending: ?Completion,
+
+    pub fn engine(self: *Activation) *js.Engine { return self.scope.engine; }
+};
+
+fn runtime(engine: *js.Engine) !*Runtime {
+    if (engine.native_typebox_continuation) |opaque_runtime| {
+        const live: *Runtime = @ptrCast(@alignCast(opaque_runtime));
+        if (live.owner_thread != std.Thread.getCurrentId()) return error.TypeBoxContinuationForeignThread;
+        return live;
+    }
+    const live = try engine.gpa.create(Runtime);
+    live.* = .{ .owner_thread = std.Thread.getCurrentId() };
+    engine.native_typebox_continuation = live;
+    return live;
+}
+fn existingRuntime(engine: *js.Engine) ?*Runtime {
+    return if (engine.native_typebox_continuation) |ptr| @ptrCast(@alignCast(ptr)) else null;
+}
+fn identity(value: c.JSValue) ?usize {
+    // pi_js_object_identity itself has no tag check.
+    if (!c.JS_IsObject(value)) return null;
+    return @intFromPtr(c.pi_js_object_identity(value) orelse return null);
+}
+fn same(left: Provenance, right: Provenance) bool {
+    return left.state == right.state and left.callback == right.callback and
+        left.class == right.class and left.roots.ptr == right.roots.ptr and
+        left.roots.len == right.roots.len and left.arrow == right.arrow;
+}
+fn lookup(engine: *js.Engine, live: *Runtime, function: c.JSValue) ?Registration {
+    _ = engine;
+    const key = identity(function) orelse return null;
+    const found = live.entries.get(key) orelse return null;
+    // Check class before opaque lookup. Neither property access nor a guest
+    // equality operation participates in scheduling authority.
+    if (c.JS_GetClassID(function) != found.provenance.class) return null;
+    if (c.JS_GetOpaque(function, found.provenance.class) != found.provenance.state) return null;
+    return found;
+}
+pub fn register(engine: *js.Engine, function: c.JSValue, provenance: Provenance, plan: *const Plan) !void {
+    const live = try runtime(engine);
+    if (plan.steps.len == 0 or plan.entry >= plan.steps.len or @intFromPtr(plan.source_callback) != provenance.callback) return error.TypeBoxContinuationDescriptor;
+    const key = identity(function) orelse return error.TypeBoxContinuationDescriptor;
+    if (c.JS_GetClassID(function) != provenance.class or c.JS_GetOpaque(function, provenance.class) != provenance.state) return error.TypeBoxContinuationDescriptor;
+    const entry = try live.entries.getOrPut(engine.gpa, key);
+    if (entry.found_existing) return error.TypeBoxContinuationDuplicate;
+    entry.value_ptr.* = .{ .provenance = provenance, .plan = plan };
+}
+/// Called by the actual function finalizer before State storage is released.
+/// The map owns no guest values and removal never allocates.
+pub fn unregister(engine: *js.Engine, function: c.JSValue, state: *anyopaque) void {
+    const live = existingRuntime(engine) orelse return;
+    const key = identity(function) orelse return;
+    if (live.entries.get(key)) |found| {
+        std.debug.assert(found.provenance.state == state);
+        _ = live.entries.remove(key);
+    }
+}
+/// Must run AFTER JS_FreeRuntime, including Engine.init's error unwind.
+pub fn deinitAfterRuntime(engine: *js.Engine) void {
+    const live = existingRuntime(engine) orelse return;
+    std.debug.assert(live.request == null and live.machine == null);
+    std.debug.assert(live.entries.count() == 0);
+    live.entries.deinit(engine.gpa);
+    engine.native_typebox_continuation = null;
+    engine.gpa.destroy(live);
+}
+
+fn prepare(engine: *js.Engine, registration: Registration, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !*Activation {
+    // Only native allocations and non-fallible refcount increments before ack.
+    // In particular environment creation, defaults and parameter bindings are
+    // the first generated Step, after the real VM call has returned.
+    const frame = try engine.gpa.create(Activation);
+    errdefer engine.gpa.destroy(frame);
+    const slots = try engine.gpa.alloc(c.JSValue, registration.plan.slots);
+    for (slots) |*slot| slot.* = c.pi_js_undefined();
+    frame.scope.engine = engine;
+    frame.scope.inline_count = 0;
+    frame.scope.values = .empty;
+    frame.scope.inline_values[0] = c.JS_DupValue(engine.context, function);
+    frame.scope.inline_values[1] = c.JS_DupValue(engine.context, receiver);
+    frame.scope.inline_count = 2;
+    frame.plan = registration.plan;
+    frame.values = slots;
+    frame.roots = registration.provenance.roots;
+    frame.args = args;
+    frame.receiver = if (registration.provenance.arrow) c.pi_js_undefined() else receiver;
+    frame.env = c.pi_js_undefined();
+    frame.pc = registration.plan.entry;
+    frame.parent = null;
+    frame.parent_result = 0;
+    frame.logical_suppression = false;
+    frame.finally_handler = null;
+    frame.pending = null;
+    return frame;
+}
+fn freeCompletion(engine: *js.Engine, completion: Completion) void {
+    switch (completion) {
+        .@"resume" => {},
+        .returned => |value| engine.freeValue(value),
+        .thrown => |reason| engine.freeValue(reason.value),
+    }
+}
+fn destroy(frame: *Activation, completion: *Completion, boundary: u64) void {
+    const engine = frame.engine();
+    if (frame.pending) |pending| {
+        frame.pending = null;
+        freeCompletion(engine, pending);
+        completion.* = mergeCleanup(engine, completion.*, boundary);
+    }
+    // Namespace-local teardown deliberately does not batch Scope.deinit. Own
+    // pending state after EACH guest-value release before freeing another root.
+    // The shared Scope and Engine cleanup contracts remain unchanged.
+    for (frame.scope.inline_values[0..frame.scope.inline_count]) |value| {
+        engine.freeValue(value);
+        completion.* = mergeCleanup(engine, completion.*, boundary);
+    }
+    for (frame.scope.values.items) |value| {
+        engine.freeValue(value);
+        completion.* = mergeCleanup(engine, completion.*, boundary);
+    }
+    frame.scope.values.deinit(engine.gpa);
+    engine.gpa.free(frame.values);
+    completion.* = mergeCleanup(engine, completion.*, boundary);
+    if (frame.logical_suppression) {
+        std.debug.assert(engine.native_exception_diagnostics_suppressed > 0);
+        engine.native_exception_diagnostics_suppressed -= 1;
+    }
+    engine.gpa.destroy(frame);
+}
+
+/// Return a private ack only for the currently armed exact ordinary call.
+/// Null means the existing NativeNode invocation proceeds normally.
+pub fn intercept(engine: *js.Engine, function: c.JSValue, provenance: Provenance, target: c.JSValue, args: []const c.JSValue, constructing: bool) !?c.JSValue {
+    const live = existingRuntime(engine) orelse return null;
+    if (live.owner_thread != std.Thread.getCurrentId()) return error.TypeBoxContinuationForeignThread;
+    const request = live.request orelse return null;
+    if (request.machine.engine != engine or request.machine.runtime != live or live.machine != request.machine) return error.TypeBoxContinuationProvenance;
+    const found = lookup(engine, live, function) orelse return null;
+    if (constructing or identity(function) != identity(request.function) or !same(found.provenance, provenance) or
+        !same(found.provenance, request.registration.provenance) or found.plan != request.registration.plan or
+        !c.JS_IsSameValue(engine.context, target, request.receiver) or
+        args.len != request.args.len or (args.len != 0 and args.ptr != request.args.ptr)) return error.TypeBoxContinuationHandshake;
+    // Consume before preparation; no allocator/finalizer can consume it twice.
+    live.request = null;
+    request.consumed = true;
+    request.prepared = try prepare(engine, found, function, request.receiver, request.args);
+    return c.pi_js_undefined();
+}
+
+/// Private invokeBody hook receives the actual callable object, not a name or
+/// callback-pointer search. Constructor receiver/result rules stay in Node.
+pub fn invokeBody(engine: *js.Engine, function: c.JSValue, provenance: Provenance, receiver: c.JSValue, args: []const c.JSValue) !?c.JSValue {
+    const live = existingRuntime(engine) orelse return null;
+    if (live.owner_thread != std.Thread.getCurrentId()) return error.TypeBoxContinuationForeignThread;
+    const registration = lookup(engine, live, function) orelse return null;
+    if (!same(registration.provenance, provenance)) return error.TypeBoxContinuationProvenance;
+    var machine: Machine = .{ .engine = engine, .runtime = live, .top = null };
+    const previous_machine = live.machine;
+    live.machine = &machine;
+    defer live.machine = previous_machine;
+    machine.top = try prepare(engine, registration, function, receiver, args);
+    return machine.run() catch |err| {
+        const boundary = engine.native_allocation_generation;
+        var completion: Completion = .{ .thrown = failureReason(engine, err, boundary) };
+        while (machine.top) |frame| {
+            machine.top = frame.parent;
+            destroy(frame, &completion, boundary);
+        }
+        const captured = captureOwned(engine, completion.thrown, boundary);
+        _ = c.JS_Throw(engine.context, captured.value);
+        return error.JavaScriptException;
+    };
+}
+
+fn classify(engine: *js.Engine, reason: c.JSValue, boundary: u64) Reason {
+    const tag = c.pi_js_native_allocation_error_generation(reason);
+    const distance = tag -% boundary;
+    const fresh = tag != 0 and distance != 0 and distance <= engine.native_allocation_generation -% boundary;
+    if (fresh) c.JS_SetUncatchableError(engine.context, reason);
+    return .{ .value = reason, .fatal = fresh or c.JS_IsUncatchableError(reason) };
+}
+fn takePending(engine: *js.Engine, boundary: u64) ?Reason {
+    return if (c.JS_HasException(engine.context)) classify(engine, c.JS_GetException(engine.context), boundary) else null;
+}
+fn mergeCleanup(engine: *js.Engine, initial: Completion, boundary: u64) Completion {
+    var completion = initial;
+    // A native finalizer may publish a pending exception while releasing a
+    // captured value. Consume it before another cleanup operation. Keep the
+    // first trusted fatal; an ordinary completion cannot hide a new fatal.
+    while (takePending(engine, boundary)) |cleanup| {
+        const prior_fatal = switch (completion) { .thrown => |reason| reason.fatal, else => false };
+        if (prior_fatal) {
+            engine.freeValue(cleanup.value);
+        } else {
+            const prior = completion;
+            completion = .{ .thrown = cleanup };
+            freeCompletion(engine, prior);
+        }
+    }
+    return completion;
+}
+fn failureReason(engine: *js.Engine, err: anyerror, boundary: u64) Reason {
+    if (err != error.JavaScriptException) {
+        while (takePending(engine, boundary)) |pending| {
+            if (pending.fatal) return pending;
+            engine.freeValue(pending.value);
+        }
+    }
+    if (err == error.OutOfMemory) {
+        _ = engine.throwNativeOutOfMemoryFatal();
+        const reason = c.JS_GetException(engine.context);
+        c.JS_SetUncatchableError(engine.context, reason);
+        return .{ .value = reason, .fatal = true };
+    }
+    if (err != error.JavaScriptException) {
+        _ = c.JS_ThrowInternalError(engine.context, "TypeBox continuation: %s", @as([*:0]const u8, @errorName(err)));
+        return classify(engine, c.JS_GetException(engine.context), boundary);
+    }
+    const reason = if (c.JS_HasException(engine.context)) c.JS_GetException(engine.context) else if (engine.captured_exception) |captured| c.JS_DupValue(engine.context, captured) else missing: {
+        _ = c.JS_ThrowInternalError(engine.context, "TypeBox continuation missing exception");
+        break :missing c.JS_GetException(engine.context);
+    };
+    return classify(engine, reason, boundary);
+}
+fn captureThrown(engine: *js.Engine, value: c.JSValue, boundary: u64) Reason {
+    // Preserve the original rt.throwValue/Engine.checked captured-slot behavior
+    // before guest-capable finally operations; diagnostics remain suppressed.
+    return captureOwned(engine, classify(engine, c.JS_DupValue(engine.context, value), boundary), boundary);
+}
+/// Consumes and returns an owned reason. Engine.checked may free the previous
+/// captured slot. Keep the first reason rooted independently throughout that
+/// operation, so a native finalizer cannot replace a trusted fatal in transit.
+fn captureOwned(engine: *js.Engine, initial: Reason, boundary: u64) Reason {
+    var reason = initial;
+    while (true) {
+        captured: {
+            _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason.value))) catch |err| {
+                std.debug.assert(err == error.JavaScriptException);
+                break :captured;
+            };
+            unreachable;
+        }
+        const cleanup = takePending(engine, boundary) orelse return reason;
+        if (reason.fatal) {
+            engine.freeValue(cleanup.value);
+            // Drain further native cleanup while retaining first-fatal priority.
+            return mergeCleanup(engine, .{ .thrown = reason }, boundary).thrown;
+        }
+        const prior = reason;
+        reason = cleanup;
+        engine.freeValue(prior.value);
+        reason = mergeCleanup(engine, .{ .thrown = reason }, boundary).thrown;
+        // Capture the actual replacement reason, outside guest diagnostics.
+    }
+}
+/// Planned callbacks use the qualified fatal transport, not legacy Node.fail's
+/// catchable native OOM path. Never creates a second OOM for a captured reason.
+pub fn fail(engine: *js.Engine, err: anyerror) c.JSValue {
+    if (err == error.JavaScriptException) return engine.throwCaptured();
+    const reason = failureReason(engine, err, engine.native_allocation_generation);
+    return c.JS_Throw(engine.context, reason.value);
+}
+pub fn isPlanned(engine: *js.Engine, function: c.JSValue) bool {
+    const live = existingRuntime(engine) orelse return false;
+    if (live.owner_thread != std.Thread.getCurrentId()) return false;
+    return lookup(engine, live, function) != null;
+}
+
+const Machine = struct {
+    engine: *js.Engine,
+    runtime: *Runtime,
+    top: ?*Activation,
+
+    fn run(self: *Machine) !c.JSValue {
+        while (self.top) |frame| {
+            const boundary = self.engine.native_allocation_generation;
+            const action = self.step(frame) catch |err| {
+                if (try self.complete(.{ .thrown = failureReason(self.engine, err, boundary) })) |returned| return returned;
+                continue;
+            };
+            switch (action) {
+                .next => |pc| frame.pc = pc,
+                .call => |call_operation| self.call(frame, call_operation) catch |err| {
+                    if (try self.complete(.{ .thrown = failureReason(self.engine, err, boundary) })) |returned| return returned;
+                },
+                .returned => |borrowed| {
+                    if (try self.complete(.{ .returned = c.JS_DupValue(self.engine.context, borrowed) })) |returned| return returned;
+                },
+                .thrown => |borrowed| {
+                    if (try self.complete(.{ .thrown = captureThrown(self.engine, borrowed, boundary) })) |returned| return returned;
+                },
+                .enter_finally => |entry| {
+                    if (frame.finally_handler != null or frame.pending != null) return error.TypeBoxContinuationNestedFinally;
+                    frame.finally_handler = entry.handler;
+                    frame.pc = entry.next;
+                },
+                .leave_try => |pc| {
+                    if (try self.complete(.{ .@"resume" = pc })) |returned| return returned;
+                },
+                .finish_finally => {
+                    const saved = frame.pending orelse return error.TypeBoxContinuationFinally;
+                    frame.pending = null; // move; complete owns the value now
+                    if (try self.complete(saved)) |returned| return returned;
+                },
+            }
+        }
+        return error.TypeBoxContinuationEmpty;
+    }
+    noinline fn step(_: *Machine, frame: *Activation) !Action {
+        if (frame.pc >= frame.plan.steps.len) return error.TypeBoxContinuationPC;
+        return frame.plan.steps[frame.pc](frame);
+    }
+    fn call(self: *Machine, frame: *Activation, operation: Call) !void {
+        if (operation.result >= frame.values.len or operation.next >= frame.plan.steps.len) return error.TypeBoxContinuationOperand;
+        const eligible = if (!operation.construct) lookup(self.engine, self.runtime, operation.function) else null;
+        var request: Request = undefined;
+        const previous = self.runtime.request;
+        if (eligible) |registered| {
+            request = .{ .machine = self, .function = operation.function, .registration = registered, .receiver = operation.receiver, .args = operation.args };
+            self.runtime.request = &request;
+        }
+        // The existing VM still performs polls and its real dispatch. No guest
+        // work takes place between an ack return and the next dispatch step.
+        const boundary = self.engine.native_allocation_generation;
+        const returned = if (operation.construct)
+            c.JS_CallConstructor(self.engine.context, operation.function, @intCast(operation.args.len), @constCast(operation.args.ptr))
+        else
+            c.JS_Call(self.engine.context, operation.function, operation.receiver, @intCast(operation.args.len), @constCast(operation.args.ptr));
+        self.runtime.request = previous; // disarm on EVERY return, incl predispatch failure
+        if (c.JS_IsException(returned) or c.JS_HasException(self.engine.context)) {
+            // Own/clear the actual pending reason BEFORE freeing a successful
+            // value or an uncommitted child; finalizers cannot replace it.
+            const original = takePending(self.engine, boundary) orelse failureReason(self.engine, error.JavaScriptException, boundary);
+            var completion: Completion = .{ .thrown = original };
+            if (!c.JS_IsException(returned)) {
+                self.engine.freeValue(returned);
+                completion = mergeCleanup(self.engine, completion, boundary);
+            }
+            if (eligible != null) if (request.prepared) |child| destroy(child, &completion, boundary);
+            // Match rt.invoke: checked captures the SAME pending value before
+            // ordinary Source finally can run. Pre-dispatch failures are real
+            // VM failures even when the scheduling request was not consumed.
+            const captured = captureOwned(self.engine, completion.thrown, boundary);
+            _ = c.JS_Throw(self.engine.context, captured.value);
+            return error.JavaScriptException;
+        }
+        if (eligible != null) {
+            const child = request.prepared;
+            if (!request.consumed or child == null or !c.JS_IsUndefined(returned)) {
+                var cleanup: Completion = .{ .@"resume" = 0 };
+                self.engine.freeValue(returned);
+                cleanup = mergeCleanup(self.engine, cleanup, boundary);
+                if (child) |prepared| destroy(prepared, &cleanup, boundary);
+                try self.cleanupFailure(cleanup, boundary);
+                return error.TypeBoxContinuationHandshake;
+            }
+            self.engine.freeValue(returned); // immediate ack, not a rooted Source result
+            if (self.engine.native_exception_diagnostics_suppressed == std.math.maxInt(usize)) {
+                var cleanup: Completion = .{ .@"resume" = 0 };
+                destroy(child.?, &cleanup, boundary);
+                try self.cleanupFailure(cleanup, boundary);
+                return error.TypeBoxContinuationSuppression;
+            }
+            self.engine.native_exception_diagnostics_suppressed += 1;
+            child.?.logical_suppression = true;
+            child.?.parent = frame;
+            child.?.parent_result = operation.result;
+            frame.pc = operation.next;
+            self.top = child;
+            return;
+        }
+        frame.pc = operation.next;
+        frame.values[operation.result] = try frame.scope.own(returned);
+    }
+    fn cleanupFailure(self: *Machine, completion: Completion, boundary: u64) !void {
+        switch (completion) {
+            .@"resume" => {},
+            .returned => unreachable,
+            .thrown => |reason| {
+                const captured = captureOwned(self.engine, reason, boundary);
+                _ = c.JS_Throw(self.engine.context, captured.value);
+                return error.JavaScriptException;
+            },
+        }
+    }
+    /// Consumes completion on every path. Ordinary completion runs the real
+    /// Source finally. Trusted fatal skips guest catch/finally like the VM;
+    /// native frame teardown always runs, with no library counter shortcut.
+    fn complete(self: *Machine, initial: Completion) !?c.JSValue {
+        var completion = initial;
+        while (self.top) |frame| {
+            const boundary = self.engine.native_allocation_generation;
+            if (frame.pending) |previous| {
+                frame.pending = null;
+                freeCompletion(self.engine, previous); // ordinary finally override
+            }
+            completion = mergeCleanup(self.engine, completion, boundary);
+            const fatal = switch (completion) { .thrown => |reason| reason.fatal, else => false };
+            if (!fatal) if (frame.finally_handler) |handler| {
+                frame.finally_handler = null;
+                frame.pending = completion;
+                frame.pc = handler;
+                return null;
+            };
+            if (completion == .@"resume") {
+                frame.pc = completion.@"resume";
+                return null;
+            }
+            const parent = frame.parent;
+            const result_slot = frame.parent_result;
+            self.top = parent;
+            destroy(frame, &completion, boundary);
+            switch (completion) {
+                .returned => |owned| {
+                    if (parent) |caller| {
+                        // Scope.own consumes even on append failure. Clear the
+                        // completion BEFORE calling it; failure cannot retry/free.
+                        completion = .{ .@"resume" = 0 };
+                        const own_boundary = self.engine.native_allocation_generation;
+                        caller.values[result_slot] = caller.scope.own(owned) catch |err| {
+                            completion = .{ .thrown = failureReason(self.engine, err, own_boundary) };
+                            continue;
+                        };
+                        return null;
+                    }
+                    return owned;
+                },
+                .thrown => |reason| {
+                    if (parent == null) {
+                        // invokeBody's owned error unwind captures this same
+                        // pending reason before the NativeNode fail transport.
+                        _ = c.JS_Throw(self.engine.context, reason.value);
+                        return error.JavaScriptException;
+                    }
+                },
+                .@"resume" => unreachable,
+            }
+        }
+        freeCompletion(self.engine, completion);
+        return error.TypeBoxContinuationEmpty;
+    }
+};

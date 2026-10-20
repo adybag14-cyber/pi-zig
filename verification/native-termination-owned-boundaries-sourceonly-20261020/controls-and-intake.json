@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "status": "source_written_production_peer_closed_controls_peer_pending",
+  "execution": "No native build, compiler, Node, generator, formatter or test execution.",
+  "production_peer": {
+    "agent": "/root/vm_foundation",
+    "status": "closed",
+    "completion": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC",
+    "boundary": "787DE0E81A5CBEE9F1BF75491594DAF739A871DF848BB9B570BB996F50D7BC2C",
+    "packets": [
+      "A52D2D848A33D105FACBF80E8755D0AA6379EC41E6DCB0FEF362C9D35F224203",
+      "7CDAD56C49A441613A39163E0E24696665018B8D7A67166A90513096C1EF0EC0",
+      "63692282F6052641A84C634B236CA8CADBE0CA0E2F488B859FE0EEF3B5A392D7"
+    ]
+  },
+  "controls": {
+    "path": "src/native_host_termination_ownership_test.zig",
+    "sha256": "E3DF9B35490588A0FE19109A74B1679B4E302E3A9D8F5CEF2E19A89B9C861CE3",
+    "bytes": 30163,
+    "declarations": [
+      "native host termination normal owners retire roots before returning the actual result",
+      "native host termination actual entry event survives owned roots and result retirement",
+      "native host termination genuine cleanup event displaces the owned normal result",
+      "native host termination cancel during cleanup preserves only the native abrupt completion",
+      "native host termination cancellation allows a later actual ordinary cleanup reason",
+      "native host termination cancellation allows a later actual generic fatal cleanup",
+      "native host termination earlier generic fatal retires a losing cleanup event lease",
+      "native host termination cached ordinary owner remains ordinary after its flag is set",
+      "native host termination cached generic fatal survives later clearing of its public flag",
+      "native host termination flagged actual Promise DATA stays ordinary through ordinary cleanup",
+      "native host termination actual event overrides flagged DATA without publishing it as a native token",
+      "native host termination cancelled actual token remains native through repeated cleanup ownership",
+      "native host termination explicit error after Cancel survives without pending or diagnostic authority",
+      "native host termination later actual cleanup replaces an explicit already cancelled native error",
+      "native host termination real ModuleCallable preserves cancelled owner errors at the native return gateway",
+      "native host termination cancelled invocation record does not poison a later normal owned return"
+    ],
+    "peer_split": {
+      "vm": "Fixture/Owner/finalizers and declarations 1–8",
+      "modules": "Declarations 9–16; real callback gateway and cancelled native unwind"
+    }
+  },
+  "dependencies": {
+    "vm_directory": "../public-modes-resume-20261018/verification/native-execution-termination-sourceonly-20261020",
+    "engine_packet": "F42CE0C3F1F2548CC677EAF5CCE43752BB014653851D51C63898801BFF3F3018",
+    "engine_successor": "87DDDFAD",
+    "native_result_packet": "A0889F7AA18D7B8A1D39AA441EB39B4849871E54C53A719D01B9B8EA36B62464",
+    "gateways_packet": "37F9A682284DB03806AEF8D4E4ADED50EA8A0F2A46404E66AE6CA6659CF27D50",
+    "classified_pending_packet": "BDF052BB44E9447D3ABA2E6975DA2F7A4188A08A342610CD1BC4257F498CEBE4"
+  },
+  "narrow_intake": [
+    "src/extensions/native_sdk_owned_completion.zig",
+    "src/extensions/native_node_commonjs_owned_boundary.zig",
+    "src/extensions/native_node_uv_service.zig",
+    "src/native_host_termination_ownership_test.zig",
+    "verification/native-termination-owned-boundaries-sourceonly-20261020"
+  ],
+  "later_private_graph_consumers": [
+    "src/extensions/native_node_fs_after_scope.zig",
+    "src/extensions/native_node_fs_request_io.zig"
+  ],
+  "limits": [
+    "Controls are source authored, not compile or runtime qualified.",
+    "The Engine/C/gateway source unit remains a separately reviewed prerequisite.",
+    "The private FS request/read graph is not brought into this narrow intake.",
+    "No Action payload, Promise rejection, captured diagnostic or unrelated flagged value supplies actual pending provenance.",
+    "The planned TypeBox Machine internal owner is a separate VM task."
+  ]
+}

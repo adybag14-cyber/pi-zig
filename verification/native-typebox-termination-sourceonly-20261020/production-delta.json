@@ -1,0 +1,97 @@
+{
+  "source_only": true,
+  "base_sha256": "69286C144813B1369F303485E6831AE5103B630E006E9D936A7DC5DD7127708A",
+  "after_sha256": "C051372126243D68F0CE7EEA3AE7A5D4F161A6643BB58DEF533E183421FAB3AA",
+  "base_gateway_sha256": "521944FB6811DE25C2D84022B7B2DDE199381DEA47731E112AD79803030EF50C",
+  "edits": [
+    {
+      "label": "Reason distinguishes uncatchable native unwind from dynamic retirement priority",
+      "before": "const Reason = struct { value: c.JSValue, fatal: bool };",
+      "after": "const Reason = struct {\n    value: c.JSValue,\n    fatal: bool, // Established generic classification; private activity is dynamic.\n    fn isNative(self: Reason) bool { return c.JS_PiIsExecutionTermination(self.value); }\n    fn isFatal(self: Reason, engine: *js.Engine) bool {\n        return if (self.isNative())\n            c.JS_PiNativePendingPriority(engine.runtime, self.value) > 0\n        else self.fatal;\n    }\n    fn skipsGuest(self: Reason) bool {\n        // Cancel can retire event authority without turning an already-aborted\n        // native call back into a completion that may enter guest finally.\n        return self.fatal or self.isNative();\n    }\n};",
+      "count": 1
+    },
+    {
+      "label": "native-aware cleanup selection preserves the original later-ordinary policy",
+      "before": "fn mergeCleanup(engine: *js.Engine, initial: Completion, boundary: u64) Completion {",
+      "after": "fn retainBeforeCleanup(engine: *js.Engine, retained: Reason, incoming: Reason) bool {\n    if (retained.isNative() or incoming.isNative()) {\n        // Both values came from real pending ownership, including the explicit\n        // cancelled native completion published by failureReason. This reducer\n        // retires a losing private lease without erasing another request.\n        return !c.JS_PiNativePendingReplaceClassified(engine.runtime,\n            retained.value, retained.fatal, incoming.value, incoming.fatal);\n    }\n    // Keep this interpreter's existing ordinary-finally/cleanup policy:\n    // a later ordinary cleanup replaces an earlier ordinary completion.\n    return retained.fatal;\n}\nfn publishReason(engine: *js.Engine, reason: Reason) c.JSValue {\n    if (reason.fatal and !reason.isNative())\n        c.JS_SetUncatchableError(engine.context, reason.value);\n    return c.JS_Throw(engine.context, reason.value);\n}\nfn reasonError(reason: Reason) anyerror {\n    return if (reason.isNative()) error.ExecutionTerminated else error.JavaScriptException;\n}\nfn mergeCleanup(engine: *js.Engine, initial: Completion, boundary: u64) Completion {",
+      "count": 1
+    },
+    {
+      "label": "cleanup preserves dynamic private and cached generic actual owners",
+      "before": "        const prior_fatal = switch (completion) { .thrown => |reason| reason.fatal, else => false };\n        if (prior_fatal) {",
+      "after": "        const retain = switch (completion) {\n            .thrown => |reason| retainBeforeCleanup(engine, reason, cleanup),\n            else => false,\n        };\n        if (retain) {",
+      "count": 1
+    },
+    {
+      "label": "already-aborted native error never adopts diagnostic DATA or fabricates InternalError",
+      "before": "fn failureReason(engine: *js.Engine, err: anyerror, boundary: u64) Reason {\n    if (err != error.JavaScriptException) {",
+      "after": "fn failureReason(engine: *js.Engine, err: anyerror, boundary: u64) Reason {\n    if (err == error.ExecutionTerminated) {\n        if (takePending(engine, boundary)) |pending| return pending;\n        // Publish only the already-observed native abrupt result. This creates\n        // no event, request, generation or active lease after a genuine Cancel.\n        _ = c.JS_Throw(engine.context, c.JS_PiNativeTerminationResult());\n        return takePending(engine, boundary).?;\n    }\n    if (err != error.JavaScriptException) {",
+      "count": 1
+    },
+    {
+      "label": "native host failure preserves an earlier active private event",
+      "before": "            if (pending.fatal) return pending;",
+      "after": "            if (pending.isFatal(engine)) return pending;",
+      "count": 1
+    },
+    {
+      "label": "captured fallback acquires actual pending provenance before classification",
+      "before": "    const reason = if (c.JS_HasException(engine.context)) c.JS_GetException(engine.context) else if (engine.captured_exception) |captured| c.JS_DupValue(engine.context, captured) else missing: {\n        _ = c.JS_ThrowInternalError(engine.context, \"TypeBox continuation missing exception\");\n        break :missing c.JS_GetException(engine.context);\n    };\n    return classify(engine, reason, boundary);",
+      "after": "    if (takePending(engine, boundary)) |pending| return pending;\n    if (engine.captured_exception) |captured| {\n        // This is the actual failed operation's rethrow, not classification of\n        // a successful returned value. Acquire the real pending owner first.\n        _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, captured));\n    } else {\n        _ = c.JS_ThrowInternalError(engine.context, \"TypeBox continuation missing exception\");\n    }\n    return takePending(engine, boundary).?;",
+      "count": 1
+    },
+    {
+      "label": "explicit Source throw establishes actual pending before owning it",
+      "before": "    return captureOwned(engine, classify(engine, c.JS_DupValue(engine.context, value), boundary), boundary);",
+      "after": "    _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value));\n    return captureOwned(engine, takePending(engine, boundary).?, boundary);",
+      "count": 1
+    },
+    {
+      "label": "capture keeps private completion outside diagnostics and adopts actual native-abrupt result",
+      "before": "    while (true) {\n        captured: {\n            _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason.value))) catch |err| {\n                std.debug.assert(err == error.JavaScriptException);\n                break :captured;\n            };\n            unreachable;\n        }\n        const cleanup = takePending(engine, boundary) orelse return reason;\n        if (reason.fatal) {",
+      "after": "    while (true) {\n        if (reason.isNative())\n            return mergeCleanup(engine, .{ .thrown = reason }, boundary).thrown;\n        captured: {\n            _ = engine.checked(publishReason(engine, .{\n                .value = c.JS_DupValue(engine.context, reason.value), .fatal = reason.fatal,\n            })) catch |err| {\n                if (err == error.ExecutionTerminated) {\n                    // checked selected an actual native abrupt completion.\n                    // It may already be cancelled; do not revive the displaced\n                    // ordinary operation merely because its lease is inactive.\n                    const selected = failureReason(engine, err, boundary);\n                    engine.freeValue(reason.value);\n                    return mergeCleanup(engine, .{ .thrown = selected }, boundary).thrown;\n                }\n                std.debug.assert(err == error.JavaScriptException);\n                break :captured;\n            };\n            unreachable;\n        }\n        const cleanup = takePending(engine, boundary) orelse return reason;\n        if (retainBeforeCleanup(engine, reason, cleanup)) {",
+      "count": 1
+    },
+    {
+      "label": "outer native gateway preserves explicit cancellation unwind",
+      "before": "    if (err == error.JavaScriptException) return engine.throwCaptured();",
+      "after": "    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();",
+      "count": 1
+    },
+    {
+      "label": "outer owned Machine unwind keeps typed native completion",
+      "before": "        _ = c.JS_Throw(engine.context, captured.value);\n        return error.JavaScriptException;",
+      "after": "        _ = publishReason(engine, captured);\n        return reasonError(captured);",
+      "count": 1
+    },
+    {
+      "label": "planned child call owns the selected native abrupt completion",
+      "before": "            _ = c.JS_Throw(self.engine.context, captured.value);\n            return error.JavaScriptException;",
+      "after": "            _ = publishReason(self.engine, captured);\n            return reasonError(captured);",
+      "count": 1
+    },
+    {
+      "label": "handshake retirement preserves native abrupt completion",
+      "before": "                _ = c.JS_Throw(self.engine.context, captured.value);\n                return error.JavaScriptException;",
+      "after": "                _ = publishReason(self.engine, captured);\n                return reasonError(captured);",
+      "count": 1
+    },
+    {
+      "label": "cancelled private unwind still skips actual guest finally",
+      "before": "            const fatal = switch (completion) { .thrown => |reason| reason.fatal, else => false };\n            if (!fatal) if (frame.finally_handler) |handler| {",
+      "after": "            const skips_guest = switch (completion) { .thrown => |reason| reason.skipsGuest(), else => false };\n            if (!skips_guest) if (frame.finally_handler) |handler| {",
+      "count": 1
+    },
+    {
+      "label": "terminal planned frame publishes selected actual owner and typed native outcome",
+      "before": "                        _ = c.JS_Throw(self.engine.context, reason.value);\n                        return error.JavaScriptException;",
+      "after": "                        _ = publishReason(self.engine, reason);\n                        return reasonError(reason);",
+      "count": 1
+    }
+  ],
+  "notes": [
+    "One outer fail edit duplicates the already-closed37F9 intake. Apply only the remaining internal edits when that branch is already present.",
+    "Non-private ordinary cleanup continues to override ordinary completion.",
+    "Private completions remain actual pending owners or explicit native abrupt projections, never diagnostics."
+  ]
+}

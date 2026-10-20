@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "status": "source_only_pending_peer",
+  "predecessor_sha256": "f114bfaac16508c489fba7f5e8e071e5e97509c2429f2ee99b840a2590c4100a",
+  "edits": [
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "label": "retain explicit native abrupt result independently of current pending",
+      "before": "    recorded_throw: bool = false,\n    finished: bool = false,",
+      "after": "    recorded_throw: bool = false,\n    // A cancelled native call can still return this explicit abrupt error\n    // after its private pending slot has been cleared by the actual cancel.\n    native_aborted: bool = false,\n    finished: bool = false,",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "label": "initialize the explicit native error latch",
+      "before": "        var selected: ?p.af.Action = null;\n        if (result) |action| {",
+      "after": "        var selected: ?p.af.Action = null;\n        var native_aborted = false;\n        if (result) |action| {",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "label": "do not turn cancelled native unwind into generic failure or diagnostic DATA",
+      "before": "            if (err == error.JavaScriptException and !c.JS_HasException(engine.context) and engine.captured_exception != null) {",
+      "after": "            if (err == error.ExecutionTerminated) {\n                native_aborted = true;\n            } else if (err == error.JavaScriptException and !c.JS_HasException(engine.context) and engine.captured_exception != null) {",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "label": "carry the explicit native completion into caller-stable retirement",
+      "before": "        var self: Completion = .{ .owner = .{ .engine = engine }, .action = selected };",
+      "after": "        var self: Completion = .{ .owner = .{ .engine = engine }, .action = selected, .native_aborted = native_aborted };",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "label": "only later actual cleanup completion can supersede native-aborted outcome",
+      "before": "        const action = self.action orelse return error.MissingSdkScopeCompletion;",
+      "after": "        if (self.native_aborted) return error.ExecutionTerminated;\n        const action = self.action orelse return error.MissingSdkScopeCompletion;",
+      "count": 1
+    }
+  ],
+  "finding": "Actual Cancel can clear the private pending slot while error.ExecutionTerminated is still unwinding in native code. Preserve that explicit completion without consulting diagnostic DATA or invoking generic fail.",
+  "execution": false
+}

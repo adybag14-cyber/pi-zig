@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "status": "finite_source_peer_closed",
+  "reviewer": "modules_io",
+  "execution_performed": false,
+  "engine": {
+    "packet_sha256": "F42CE0C3F1F2548CC677EAF5CCE43752BB014653851D51C63898801BFF3F3018",
+    "before_sha256": "5B3B91B0053508AAC9D4C9951CEF3F4B74D1A154342CD33FE21BE25E03EE3B0F",
+    "after_sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417",
+    "exact_edit_replay": true,
+    "edit_records": 19,
+    "scope": [
+      "NativeInvocation/currentNativeFatal/recordNativeFatal/leaveNativeInvocation ownership",
+      "NativePending actual-event provenance and classified reduction",
+      "nativeCallbackResult/checkNativeEntry/checked and native-abrupt forwarding",
+      "captureValue/captureException private completion versus diagnostics",
+      "mechanical existing call-site propagation"
+    ]
+  },
+  "gateways": {
+    "packet_sha256": "37F9A682284DB03806AEF8D4E4ADED50EA8A0F2A46404E66AE6CA6659CF27D50",
+    "edits": [
+      {
+        "path": "src/extensions/native_sdk.zig",
+        "label": "explicit native-aborted completion survives cancellation without fabricated diagnostic Error",
+        "before": "    if (err == error.JavaScriptException) return engine.throwCaptured();",
+        "after": "    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();",
+        "count": 1
+      },
+      {
+        "path": "src/extensions/native_async_function.zig",
+        "label": "explicit native-aborted completion survives cancellation without fabricated diagnostic Error",
+        "before": "    if (err == error.JavaScriptException) return engine.throwCaptured();",
+        "after": "    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();",
+        "count": 1
+      },
+      {
+        "path": "src/extensions/native_node_module_callable.zig",
+        "label": "explicit native-aborted completion survives cancellation without fabricated diagnostic Error",
+        "before": "    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();",
+        "after": "    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();",
+        "count": 1
+      },
+      {
+        "path": "src/extensions/native_node_function.zig",
+        "label": "explicit native-aborted completion at ordinary Node and planned outer failure gateways",
+        "before": "    if (err == error.JavaScriptException) return engine.throwCaptured();",
+        "after": "    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();",
+        "count": 1
+      },
+      {
+        "path": "src/extensions/native_typebox_continuation.zig",
+        "label": "explicit native-aborted completion at ordinary Node and planned outer failure gateways",
+        "before": "    if (err == error.JavaScriptException) return engine.throwCaptured();",
+        "after": "    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();",
+        "count": 1
+      }
+    ],
+    "files": {
+      "src/extensions/native_sdk.zig": {
+        "before_sha256": "22EA10685F93FC7CB9D06C346978BE15DBB43A879042059DFBE9054687756907",
+        "after_sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3",
+        "before_bytes": 164574,
+        "after_bytes": 164658
+      },
+      "src/extensions/native_async_function.zig": {
+        "before_sha256": "A8F1F0BCCF185093A215AE753C12ADA6A4E54EA156F946A59612523D78086694",
+        "after_sha256": "841611400E3F5BF3D9190C60CAFC8A0365E9174CECC50EB1582EAF7AD2F206AC",
+        "before_bytes": 10475,
+        "after_bytes": 10559
+      },
+      "src/extensions/native_node_module_callable.zig": {
+        "before_sha256": "D54499FAEAF3FFB935EA45CC427223972C5FA6CC78C85932A83F161CF7E97F65",
+        "after_sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491",
+        "before_bytes": 12697,
+        "after_bytes": 12781
+      },
+      "src/extensions/native_node_function.zig": {
+        "before_sha256": "469B1CFE5B3C589881533EA38EA45163BE4282C29234B11EDAA82DA1F557B73B",
+        "after_sha256": "6683D5D3934E56DDA41200DD9AAF86474FDA901B5F5CD7033218EC0AC82CFE52",
+        "before_bytes": 14346,
+        "after_bytes": 14430
+      },
+      "src/extensions/native_typebox_continuation.zig": {
+        "before_sha256": "69286C144813B1369F303485E6831AE5103B630E006E9D936A7DC5DD7127708A",
+        "after_sha256": "521944FB6811DE25C2D84022B7B2DDE199381DEA47731E112AD79803030EF50C",
+        "before_bytes": 25609,
+        "after_bytes": 25693
+      }
+    },
+    "scope": "Only the five explicit outer failure-gateway branches; all original generic branches retained."
+  },
+  "findings_closed": [
+    "NodeFunction.fail lacked explicit ExecutionTerminated forwarding; successor37F9 adds the same no-new-event native completion path.",
+    "The outer planned heap.fail branch is included in37F9."
+  ],
+  "remaining_separate_finding": {
+    "path": "src/extensions/native_typebox_continuation.zig",
+    "base_sha256": "69286C144813B1369F303485E6831AE5103B630E006E9D936A7DC5DD7127708A",
+    "description": "The internal planned Machine still classifies private termination with public Error flag only, failureReason can fabricate InternalError for ExecutionTerminated, captureOwned asserts JavaScriptException only, and complete can enter finally. This algorithm is explicitly outside the outer-gateway closure and remains assigned to VM."
+  },
+  "limits": [
+    "No C production, control, build, runtime or complete termination qualification is implied.",
+    "Original generic completion/error precedence and all unrelated Engine behavior were not reopened.",
+    "The previously closed queue/current-job ownership peer is a separate receipt."
+  ]
+}

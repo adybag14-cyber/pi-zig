@@ -1,0 +1,47 @@
+{
+  "source_only": true,
+  "main_is_not_modified": true,
+  "edits": [
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "label": "explicit native-aborted completion survives cancellation without fabricated diagnostic Error",
+      "before": "    if (err == error.JavaScriptException) return engine.throwCaptured();",
+      "after": "    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "label": "explicit native-aborted completion survives cancellation without fabricated diagnostic Error",
+      "before": "    if (err == error.JavaScriptException) return engine.throwCaptured();",
+      "after": "    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_node_module_callable.zig",
+      "label": "explicit native-aborted completion survives cancellation without fabricated diagnostic Error",
+      "before": "    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();",
+      "after": "    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();",
+      "count": 1
+    }
+  ],
+  "files": {
+    "src/extensions/native_sdk.zig": {
+      "before_sha256": "22EA10685F93FC7CB9D06C346978BE15DBB43A879042059DFBE9054687756907",
+      "after_sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3",
+      "before_bytes": 164574,
+      "after_bytes": 164658
+    },
+    "src/extensions/native_async_function.zig": {
+      "before_sha256": "A8F1F0BCCF185093A215AE753C12ADA6A4E54EA156F946A59612523D78086694",
+      "after_sha256": "841611400E3F5BF3D9190C60CAFC8A0365E9174CECC50EB1582EAF7AD2F206AC",
+      "before_bytes": 10475,
+      "after_bytes": 10559
+    },
+    "src/extensions/native_node_module_callable.zig": {
+      "before_sha256": "D54499FAEAF3FFB935EA45CC427223972C5FA6CC78C85932A83F161CF7E97F65",
+      "after_sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491",
+      "before_bytes": 12697,
+      "after_bytes": 12781
+    }
+  }
+}

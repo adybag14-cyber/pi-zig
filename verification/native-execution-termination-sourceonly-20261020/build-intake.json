@@ -1,0 +1,13 @@
+{
+  "source_only": true,
+  "before_sha256": "3843AA95C1E8137F2ECA2CF459D67B2324CD658CEC594DD176EE305D52BD95AC",
+  "after_sha256": "E4ACD05A7442E19730668C6B37FEAF4707400D7740459D472BD882B4B64F6DE4",
+  "path": "build.zig",
+  "before": "    const existing_promise_settlement_tests = b.addTest(.{\n",
+  "after": "    const execution_termination_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_execution_termination_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM termination\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, execution_termination_tests.root_module, quickjs, sqlite_lib_dir);\n    b.step(\"build-native-vm-execution-termination\", \"Install native execution termination and Promise job ownership controls without execution\").dependOn(&b.addInstallArtifact(execution_termination_tests, .{}).step);\n    const existing_promise_settlement_tests = b.addTest(.{\n",
+  "added_lines": 6,
+  "target": "build-native-vm-execution-termination",
+  "root": "src/native_vm_execution_termination_test.zig",
+  "filter": "VM termination",
+  "install_only": true
+}

@@ -1,0 +1,27 @@
+{
+  "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/src/extensions/native_node_async_wrap.zig",
+  "expected_sha256": "DB21D878D7CE27C475FD16C8E1B7DF56E44D63E6CF5EA6C56F3E6B988B42AD52",
+  "packet": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-file-handle-sourceonly-20261019/async-wrap-method-receiver-successor.json",
+  "edits": [
+    {
+      "before": "    if (c.JS_IsObject(receiver_or_target)) return a.duplicate(s.engine, receiver_or_target);\n    if (c.JS_IsNull(receiver_or_target) or c.JS_IsUndefined(receiver_or_target)) {\n        const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));\n        return a.duplicate(s.engine, global);\n    }\n    const generation = try s.beforeAllocation();\n    const receiver = try s.checkedAllocation(c.JS_ToObject(s.engine.context, receiver_or_target), generation);\n    return a.duplicate(s.engine, receiver);\n}\nfn name(kind: Kind)",
+      "after": "    return a.duplicate(s.engine, try convertedReceiver(s, receiver_or_target));\n}\nfn convertedReceiver(s: *Scope, receiver: c.JSValue) !c.JSValue {\n    // InvokeApiFunction converts before signature admission. Keep any actual\n    // boxed receiver in this call scope through the native callback.\n    if (c.JS_IsObject(receiver)) return receiver;\n    if (c.JS_IsNull(receiver) or c.JS_IsUndefined(receiver))\n        return s.checked(c.JS_GetGlobalObject(s.engine.context));\n    const generation = try s.beforeAllocation();\n    return s.checkedAllocation(c.JS_ToObject(s.engine.context, receiver), generation);\n}\nfn name(kind: Kind)"
+    },
+    {
+      "before": "fn getAsyncIdBody(s: *Scope, receiver: c.JSValue, owner_value: c.JSValue) !c.JSValue {\n    const owner = try bundleOf(s.engine, owner_value);\n    const state = try signature(s, owner, receiver);",
+      "after": "fn getAsyncIdBody(s: *Scope, receiver: c.JSValue, owner_value: c.JSValue) !c.JSValue {\n    const converted_receiver = try convertedReceiver(s, receiver);\n    const owner = try bundleOf(s.engine, owner_value);\n    const state = try signature(s, owner, converted_receiver);"
+    },
+    {
+      "before": "fn getProviderTypeBody(s: *Scope, receiver: c.JSValue, owner_value: c.JSValue) !c.JSValue {\n    const owner = try bundleOf(s.engine, owner_value);\n    const state = try signature(s, owner, receiver);",
+      "after": "fn getProviderTypeBody(s: *Scope, receiver: c.JSValue, owner_value: c.JSValue) !c.JSValue {\n    const converted_receiver = try convertedReceiver(s, receiver);\n    const owner = try bundleOf(s.engine, owner_value);\n    const state = try signature(s, owner, converted_receiver);"
+    },
+    {
+      "before": "fn asyncResetBody(s: *Scope, receiver: c.JSValue, args: []const c.JSValue, owner_value: c.JSValue) !c.JSValue {\n    const owner = try bundleOf(s.engine, owner_value);\n    // The API signature check happens before the native callback's CHECK.\n    const state = try signature(s, owner, receiver);",
+      "after": "fn asyncResetBody(s: *Scope, receiver: c.JSValue, args: []const c.JSValue, owner_value: c.JSValue) !c.JSValue {\n    const converted_receiver = try convertedReceiver(s, receiver);\n    const owner = try bundleOf(s.engine, owner_value);\n    // The API signature check happens before the native callback's CHECK.\n    const state = try signature(s, owner, converted_receiver);"
+    }
+  ],
+  "actual_sha256": "FF468B5F806AFB07188B2B5CC5BCE8CF826BFD44C7588A8A0B19C4AB7D03D44F",
+  "bytes": 16721,
+  "source_only": true,
+  "scope": "Actual V8 InvokeApiFunction ConvertReceiver before signature; ordinary object receivers remain borrowed from the invocation; converted objects remain in the completed native call Scope."
+}

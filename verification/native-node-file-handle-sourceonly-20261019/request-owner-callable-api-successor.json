@@ -1,0 +1,17 @@
+{
+  "scope": "Source-only actual callback failure API correction; all 25 controls and assertions unchanged",
+  "path": "src/native_node_fs_request_owner_test.zig",
+  "before_sha256": "5e111b6d1b660d797d0fa75941b8f8309997c2508a141c067906735f3907a45e",
+  "before_bytes": 56999,
+  "retained_base": "base-request-owner-before-callable-correction.zig.txt",
+  "edits": [
+    {
+      "before": "const callable = @import(\"extensions/native_node_function.zig\");",
+      "after": "const callable = @import(\"extensions/native_node_module_callable.zig\");",
+      "count": 1
+    }
+  ],
+  "reason": "The callable alias is used only for three failure calls. NativeNodeFunction has no public failure; native_node_module_callable exports the actual failure(Engine,anyerror,u64) gateway. This matches Root's source-proved callback test repair without changing the three selected paths.",
+  "validation": "Static exact API/readback/reversal only; no execution",
+  "unchanged": "All declaration names, Source observers, native physical paths, and assertions."
+}

@@ -1,0 +1,12 @@
+{
+  "source_only": true,
+  "before_sha256": "A340E69DDA8262266CA758FEE014072DEB04C2E2DD28A67881757C9C29E0DE21",
+  "after_sha256": "164F8DCA345A71FA43D2894E8F07173A04304FDB6E0BED5FCA9EC3277E304EA8",
+  "edits": [
+    {
+      "label": "declaration19 owns actual failed-job reason before its fallible identity assertion",
+      "before": "    const reason = try f.pending();\n    try std.testing.expect(c.JS_IsStrictEqual(f.context.?, probe.reasons[0], reason));\n    c.JS_FreeValue(f.context.?, reason);",
+      "after": "    {\n        const reason = try f.pending(); defer c.JS_FreeValue(f.context.?, reason);\n        try std.testing.expect(c.JS_IsStrictEqual(f.context.?, probe.reasons[0], reason));\n    }"
+    }
+  ]
+}

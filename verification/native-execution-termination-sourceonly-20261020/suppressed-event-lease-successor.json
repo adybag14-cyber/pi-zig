@@ -1,0 +1,42 @@
+{
+  "base_c_sha256": "6B0F5A7B4914156B8459C754748CC2E1C680E16F2BAFC83BC49A5B5444E383F9",
+  "base_h_sha256": "AF2C8A5A5E9323714641CE171E51C999C20BE0E7C5FF66E5C853F97FA352D6C1",
+  "finding": "SDK confirmed earlier generic fatal suppresses a later termination token, whose in-flight lease must retire at the same native reducer decision.",
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "single actual pending decision retires a losing native event lease",
+      "before": "static void js_native_async_take_pending(JSContext *ctx, JSNativeAsyncPending *owned);\n",
+      "after": "/* Both operands are actual pending completions owned by a native reducer.\n   Releasing a losing private event is an owner decision, not public Cancel:\n   a detached event is eligible here and a later unserviced request stays set. */\nbool JS_PiNativePendingReplace(JSRuntime *rt, JSValueConst retained,\n                                JSValueConst incoming)\n{\n    bool replace = js_pi_pending_priority(rt, incoming) >\n                   js_pi_pending_priority(rt, retained);\n    JSValueConst selected = replace ? incoming : retained;\n    JSValueConst discarded = replace ? retained : incoming;\n    if (JS_PiIsExecutionTermination(discarded) &&\n        !JS_PiIsExecutionTermination(selected))\n        rt->pi_termination_in_flight = false;\n    return replace;\n}\n\nstatic void js_native_async_take_pending(JSContext *ctx, JSNativeAsyncPending *owned);\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "runtime pending owner uses native event-aware selection",
+      "before": "        } else if (js_pi_pending_priority(rt, next) >\n                   js_pi_pending_priority(rt, owned->reason)) {",
+      "after": "        } else if (JS_PiNativePendingReplace(rt, owned->reason, next)) {",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "context pending owners use same dynamic event-aware selection",
+      "before": "        } else if (js_pi_pending_priority(ctx->rt, next) >\n                   js_pi_pending_priority(ctx->rt, owned->reason)) {",
+      "after": "        } else if (JS_PiNativePendingReplace(ctx->rt, owned->reason, next)) {",
+      "count": 2
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "async iterator discards suppressed event with same lease decision",
+      "before": "        if (js_pi_pending_priority(ctx->rt, cleanup) >\n            js_pi_pending_priority(ctx->rt, reason)) {",
+      "after": "        if (JS_PiNativePendingReplace(ctx->rt, reason, cleanup)) {",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "native reducers share actual pending provenance and lease retirement",
+      "before": "JS_EXTERN uint64_t JS_PiExecutionTerminationGeneration(JSRuntime *rt);\n",
+      "after": "JS_EXTERN uint64_t JS_PiExecutionTerminationGeneration(JSRuntime *rt);\n/* Borrowed actual pending reasons only, never retained/returned DATA. Returns\n   whether incoming replaces retained under the existing first-fatal rule and\n   the cancelled native-completion precedence. If a private event loses, retires\n   its in-flight lease without clearing a later unserviced request. Neither\n   operand is freed; the caller retires the losing owned value. No allocation,\n   guest call, pending-slot mutation or public Error-flag inference is added. */\nJS_EXTERN bool JS_PiNativePendingReplace(JSRuntime *rt,\n                                         JSValueConst retained_pending,\n                                         JSValueConst incoming_pending);\n",
+      "count": 1
+    }
+  ]
+}

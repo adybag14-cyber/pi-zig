@@ -1,0 +1,72 @@
+{
+  "source_only": true,
+  "parent_commit": "ce0981538962d96c8d79f0e526ed024e538c305b",
+  "production": [
+    "src/extensions/native_typebox_continuation.zig",
+    "src/native_typebox_execution_termination_test.zig",
+    "build.zig"
+  ],
+  "target": "build-native-typebox-execution-termination",
+  "filter": "TypeBox native termination",
+  "declared_count": 15,
+  "original_control_root": {
+    "path": "src/native_typebox_continuation_test.zig",
+    "sha256": "24DA63453FE2FB5752E542DA65F53C20C7BFE9AD53F8867450F91C086B02B6C2",
+    "bytes": 21865,
+    "unchanged": true
+  },
+  "application": "Use13 internal edits after ce098 gateway37F9; Main private-setter C/H addition stays untouched.",
+  "files": [
+    {
+      "path": "src/extensions/native_typebox_continuation.zig",
+      "bytes": 28676,
+      "sha256": "C051372126243D68F0CE7EEA3AE7A5D4F161A6643BB58DEF533E183421FAB3AA"
+    },
+    {
+      "path": "src/native_typebox_execution_termination_test.zig",
+      "bytes": 23046,
+      "sha256": "077285CC19DBD42222897A7BCDC4EB56B76B1B190288B3F62C01171C7EE7C360"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 417753,
+      "sha256": "BE214D02354497862167C82BC4B382A5E47F6112B7A18961D3F9E12DB349D40A"
+    },
+    {
+      "path": "verification/native-typebox-termination-sourceonly-20261020/build-intake.json",
+      "bytes": 1321,
+      "sha256": "15FA9297A157AA454BE9C1967777CF5309C78992BD9D075E1BBC2D1953D046B8"
+    },
+    {
+      "path": "verification/native-typebox-termination-sourceonly-20261020/declared-names.json",
+      "bytes": 1552,
+      "sha256": "BF97168376C249754B7744049427BCA6D4DE7F9007D253A651B4746D8FC9263D"
+    },
+    {
+      "path": "verification/native-typebox-termination-sourceonly-20261020/internal-machine-intake.json",
+      "bytes": 9757,
+      "sha256": "E1EC905369C83E10A2141088BEF20912813D08F64B5F48253DD4D9F94DB9D71F"
+    },
+    {
+      "path": "verification/native-typebox-termination-sourceonly-20261020/native_typebox_continuation.before.zig",
+      "bytes": 25609,
+      "sha256": "69286C144813B1369F303485E6831AE5103B630E006E9D936A7DC5DD7127708A"
+    },
+    {
+      "path": "verification/native-typebox-termination-sourceonly-20261020/peer-closure.json",
+      "bytes": 1618,
+      "sha256": "641CA6EB78A07D030E29AFCA7250BAA6C9CF56A5E7C4C45A7B019B69A303DF21"
+    },
+    {
+      "path": "verification/native-typebox-termination-sourceonly-20261020/production-delta.json",
+      "bytes": 10115,
+      "sha256": "0BC6ABE06CCB023A55E584072095140E737B0A263A9EFFF2E5DA045D98ED0100"
+    },
+    {
+      "path": "verification/native-typebox-termination-sourceonly-20261020/README.md",
+      "bytes": 2780,
+      "sha256": "892EC66A9CF075FC15C7A11556BECC17B25250A2616DA000BD9CF0E809AC2872"
+    }
+  ],
+  "execution": false
+}

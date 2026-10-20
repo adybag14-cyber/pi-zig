@@ -37,6 +37,7 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) 
 }
 fn fail(engine: *em.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
     return c.JS_ThrowTypeError(engine.context, "Native async body: %s", @as([*:0]const u8, @errorName(err)));
 }

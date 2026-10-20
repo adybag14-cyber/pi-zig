@@ -1,0 +1,115 @@
+{
+  "pre_sha256": "7BC84963BD0FCB67431F4DA0F7DBB8A5D3E27AC2D4F4532A9FE7733EC25F2C89",
+  "post_sha256": "A154A207BEEC93ABB563BC0BED52C390825766AA5950777B55FF1D7815F6EC01",
+  "unwind_edit_file": "unwind-edits.json",
+  "priority_replacements": [
+    {
+      "before": "else if (!JS_IsUncatchableError(owned->reason) && JS_IsUncatchableError(next)) {",
+      "after": "else if (js_pi_pending_priority(ctx->rt, next) >\n                   js_pi_pending_priority(ctx->rt, owned->reason)) {",
+      "count": 2
+    },
+    {
+      "before": "else if (!JS_IsUncatchableError(owned->reason) &&\n                   JS_IsUncatchableError(next)) {",
+      "after": "else if (js_pi_pending_priority(rt, next) >\n                   js_pi_pending_priority(rt, owned->reason)) {",
+      "count": 1
+    }
+  ],
+  "internal_unwind_sites": [
+    {
+      "line": 22502,
+      "before": "    if (!JS_IsUncatchableError(rt->current_exception)) {\n",
+      "after": "    if (!js_pi_is_uncatchable_exception(rt->current_exception)) {\n"
+    },
+    {
+      "line": 23687,
+      "before": "    if (!JS_IsUncatchableError(owned.reason)) {\n",
+      "after": "    if (!js_pi_is_uncatchable_exception(owned.reason)) {\n"
+    },
+    {
+      "line": 23695,
+      "before": "    if (JS_IsUncatchableError(owned.reason)) {\n",
+      "after": "    if (js_pi_is_uncatchable_exception(owned.reason)) {\n"
+    },
+    {
+      "line": 23728,
+      "before": "        if (unlikely(JS_IsUncatchableError(ctx->rt->current_exception))) {\n",
+      "after": "        if (unlikely(js_pi_is_uncatchable_exception(ctx->rt->current_exception))) {\n"
+    },
+    {
+      "line": 23735,
+      "before": "                JS_IsUncatchableError(ctx->rt->current_exception)) {\n",
+      "after": "                js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n"
+    },
+    {
+      "line": 23747,
+      "before": "                if (module_fatal || JS_IsUncatchableError(ctx->rt->current_exception)) {\n",
+      "after": "                if (module_fatal || js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n"
+    },
+    {
+      "line": 23773,
+      "before": "                JS_IsUncatchableError(ctx->rt->current_exception)) {\n",
+      "after": "                js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n"
+    },
+    {
+      "line": 35396,
+      "before": "                if (JS_IsUncatchableError(error)) {\n",
+      "after": "                if (js_pi_is_uncatchable_exception(error)) {\n"
+    },
+    {
+      "line": 35416,
+      "before": "                if (JS_IsUncatchableError(error)) {\n",
+      "after": "                if (js_pi_is_uncatchable_exception(error)) {\n"
+    },
+    {
+      "line": 35659,
+      "before": "        fatal |= JS_IsUncatchableError(result);\n",
+      "after": "        fatal |= js_pi_is_uncatchable_exception(result);\n"
+    },
+    {
+      "line": 55214,
+      "before": "    if (!JS_IsObject(exception) || JS_IsUncatchableError(exception))\n",
+      "after": "    if (!JS_IsObject(exception) || js_pi_is_uncatchable_exception(exception))\n"
+    },
+    {
+      "line": 59673,
+      "before": "            if (unlikely(JS_IsUncatchableError(ctx->rt->current_exception)))\n",
+      "after": "            if (unlikely(js_pi_is_uncatchable_exception(ctx->rt->current_exception)))\n"
+    },
+    {
+      "line": 59802,
+      "before": "            JS_IsUncatchableError(ctx->rt->current_exception)) {\n",
+      "after": "            js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n"
+    },
+    {
+      "line": 59809,
+      "before": "        JS_IsUncatchableError(ctx->rt->current_exception)) {\n",
+      "after": "        js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n"
+    },
+    {
+      "line": 59821,
+      "before": "        JS_IsUncatchableError(ctx->rt->current_exception)) {\n",
+      "after": "        js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n"
+    },
+    {
+      "line": 59831,
+      "before": "            JS_IsUncatchableError(ctx->rt->current_exception)) {\n",
+      "after": "            js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n"
+    },
+    {
+      "line": 59939,
+      "before": "        JS_IsUncatchableError(ctx->rt->current_exception)) {\n",
+      "after": "        js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n"
+    },
+    {
+      "line": 59950,
+      "before": "            JS_IsUncatchableError(ctx->rt->current_exception)) {\n",
+      "after": "            js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n"
+    },
+    {
+      "line": 59961,
+      "before": "            JS_IsUncatchableError(ctx->rt->current_exception)) {\n",
+      "after": "            js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n"
+    }
+  ],
+  "public_predicate_unchanged": true
+}

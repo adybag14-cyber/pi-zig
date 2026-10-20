@@ -1,0 +1,64 @@
+{
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    if (unlikely(!ctx->rt->pi_javascript_execution_allowed) && JS_HasException(ctx))\n",
+      "after": "    if (JS_PiCheckExecutionTermination(ctx))\n        return JS_EXCEPTION;\n    if (unlikely(!ctx->rt->pi_javascript_execution_allowed) && JS_HasException(ctx))\n",
+      "label": "constructor entry before target/prototype observations"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "        return call_func(ctx, func_obj, new_target, argc,\n                         argv, flags);\n",
+      "after": "        {\n            uint64_t generation = ctx->rt->pi_termination_generation;\n            JSValue result = call_func(ctx, func_obj, new_target, argc, argv, flags);\n            js_pi_record_aborted_native_call(ctx, result, generation);\n            if (JS_PiCheckExecutionTermination(ctx)) {\n                JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n                js_native_async_release(ctx, result, &pending);\n                if (pending.present)\n                    JS_Throw(ctx, pending.reason);\n                return JS_EXCEPTION;\n            }\n            return result;\n        }\n",
+      "label": "native constructor result retirement and service"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    JSStackFrame frame = { 0 };\n    JSValue output;\n    if (js_pi_check_javascript_execution(ctx, NULL))\n",
+      "after": "    JSStackFrame frame = { 0 };\n    JSValue output;\n    uint64_t generation;\n    if (js_pi_check_javascript_execution(ctx, NULL))\n",
+      "label": "native AF records true event generation"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    output = s->native_body(ctx, b->cpool[0], s->native_this,\n        s->native_supplied_argc, vc(s->native_argv), completion, input,\n        &s->native_state, action);\n    js_callsite_release_receiver(ctx, &frame);\n",
+      "after": "    generation = ctx->rt->pi_termination_generation;\n    output = s->native_body(ctx, b->cpool[0], s->native_this,\n        s->native_supplied_argc, vc(s->native_argv), completion, input,\n        &s->native_state, action);\n    js_pi_record_aborted_native_call(ctx, output, generation);\n    if (JS_PiCheckExecutionTermination(ctx)) {\n        JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n        js_native_async_release(ctx, output, &pending);\n        output = JS_EXCEPTION;\n        if (pending.present)\n            JS_Throw(ctx, pending.reason);\n    }\n    js_callsite_release_receiver(ctx, &frame);\n",
+      "label": "native AF cannot return or Await an actual termination token"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    if (JS_IsException(result) && !JS_HasException(ctx) &&\n        ctx->rt->pi_termination_generation != entry_generation)\n        ctx->rt->current_exception = js_pi_termination_token();\n",
+      "after": "    if (JS_IsException(result) && !JS_HasException(ctx) &&\n        (JS_PiIsExecutionTermination(result) ||\n         ctx->rt->pi_termination_generation != entry_generation))\n        ctx->rt->current_exception = js_pi_termination_token();\n",
+      "label": "cancelled native abrupt return remains distinct from an empty ordinary failure"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    bool fatal;\n    if (JS_HasException(ctx))\n        return JS_EXCEPTION;\n    result = JS_GetIterator(ctx, obj, true);\n",
+      "after": "    if (JS_HasException(ctx))\n        return JS_EXCEPTION;\n    result = JS_GetIterator(ctx, obj, true);\n",
+      "label": "iterator reduction computes current cancellation-aware priority"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    fatal = JS_IsUncatchableError(reason);\n    JS_FreeValue(ctx, result);\n",
+      "after": "    JS_FreeValue(ctx, result);\n",
+      "label": "iterator does not cache a cancelled event classification"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "        if (!fatal && JS_IsUncatchableError(cleanup)) {\n            displaced = reason;\n            reason = cleanup;\n            fatal = true;\n",
+      "after": "        if (js_pi_pending_priority(ctx->rt, cleanup) >\n            js_pi_pending_priority(ctx->rt, reason)) {\n            displaced = reason;\n            reason = cleanup;\n",
+      "label": "later real iterator cleanup can replace a cancelled completion"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    if (!s || s->promise_state != JS_PROMISE_PENDING)\n        return; /* should never happen */\n    set_value(ctx, &s->promise_result, js_dup(value));\n",
+      "after": "    /* Private native completions are not values and cannot enter the\n       Promise state machine, including internal rejection-forwarding paths. */\n    if (JS_PiIsExecutionTermination(value)) {\n        JS_Throw(ctx, js_pi_termination_token());\n        return;\n    }\n    if (!s || s->promise_state != JS_PROMISE_PENDING)\n        return; /* should never happen */\n    set_value(ctx, &s->promise_result, js_dup(value));\n",
+      "label": "central Promise state never stores a private native token"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    JSValueConst args[3];\n    JSValue then;\n\n    if (is_reject || !JS_IsObject(resolution)) {\n",
+      "after": "    JSValueConst args[3];\n    JSValue then;\n\n    if (JS_PiIsExecutionTermination(resolution))\n        return JS_Throw(ctx, js_pi_termination_token());\n    if (is_reject || !JS_IsObject(resolution)) {\n",
+      "label": "direct settlement cannot adopt a private native completion"
+    }
+  ]
+}

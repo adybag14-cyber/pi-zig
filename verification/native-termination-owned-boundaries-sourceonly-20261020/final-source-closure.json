@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "status": "finite_source_peer_closed_no_execution",
+  "supersedes_status_only_of": {
+    "path": "controls-and-intake.json",
+    "sha256": "856C079919374FB1768A20BC98234DD1256104670106FCE0E389862CDB67F59A"
+  },
+  "scope": "Actual SDK Completion and Node Boundary termination ownership, three explicitly bounded producer predicates, and sixteen real host-owner source controls. Only the shared UV service predicate enters this narrow source commit; private FS consumers remain in their separate graph.",
+  "files": [
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "bytes": 15176,
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC",
+      "crlf": 0,
+      "canonical_lf_bytes": 15176,
+      "canonical_lf_sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC",
+      "line_content_equal": true
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+      "bytes": 10098,
+      "sha256": "787DE0E81A5CBEE9F1BF75491594DAF739A871DF848BB9B570BB996F50D7BC2C",
+      "crlf": 164,
+      "canonical_lf_bytes": 9934,
+      "canonical_lf_sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "line_content_equal": true
+    },
+    {
+      "path": "src/extensions/native_node_uv_service.zig",
+      "bytes": 8937,
+      "sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5",
+      "crlf": 0,
+      "canonical_lf_bytes": 8937,
+      "canonical_lf_sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5",
+      "line_content_equal": true
+    },
+    {
+      "path": "src/native_host_termination_ownership_test.zig",
+      "bytes": 30163,
+      "sha256": "E3DF9B35490588A0FE19109A74B1679B4E302E3A9D8F5CEF2E19A89B9C861CE3",
+      "crlf": 0,
+      "canonical_lf_bytes": 30163,
+      "canonical_lf_sha256": "E3DF9B35490588A0FE19109A74B1679B4E302E3A9D8F5CEF2E19A89B9C861CE3",
+      "line_content_equal": true
+    },
+    {
+      "path": "verification/native-termination-owned-boundaries-sourceonly-20261020/bases.json",
+      "bytes": 45764,
+      "sha256": "71849FDF478A8AD81D7D0E922F9653545A191CA75830C335AFA6A05AE7774E1B",
+      "crlf": 0,
+      "canonical_lf_bytes": 45764,
+      "canonical_lf_sha256": "71849FDF478A8AD81D7D0E922F9653545A191CA75830C335AFA6A05AE7774E1B",
+      "line_content_equal": true
+    },
+    {
+      "path": "verification/native-termination-owned-boundaries-sourceonly-20261020/production-delta.json",
+      "bytes": 11254,
+      "sha256": "A52D2D848A33D105FACBF80E8755D0AA6379EC41E6DCB0FEF362C9D35F224203",
+      "crlf": 0,
+      "canonical_lf_bytes": 11254,
+      "canonical_lf_sha256": "A52D2D848A33D105FACBF80E8755D0AA6379EC41E6DCB0FEF362C9D35F224203",
+      "line_content_equal": true
+    },
+    {
+      "path": "verification/native-termination-owned-boundaries-sourceonly-20261020/consumer-delta.json",
+      "bytes": 30165,
+      "sha256": "63692282F6052641A84C634B236CA8CADBE0CA0E2F488B859FE0EEF3B5A392D7",
+      "crlf": 0,
+      "canonical_lf_bytes": 30165,
+      "canonical_lf_sha256": "63692282F6052641A84C634B236CA8CADBE0CA0E2F488B859FE0EEF3B5A392D7",
+      "line_content_equal": true
+    },
+    {
+      "path": "verification/native-termination-owned-boundaries-sourceonly-20261020/native-abort-successor.json",
+      "bytes": 2793,
+      "sha256": "7CDAD56C49A441613A39163E0E24696665018B8D7A67166A90513096C1EF0EC0",
+      "crlf": 0,
+      "canonical_lf_bytes": 2793,
+      "canonical_lf_sha256": "7CDAD56C49A441613A39163E0E24696665018B8D7A67166A90513096C1EF0EC0",
+      "line_content_equal": true
+    },
+    {
+      "path": "verification/native-termination-owned-boundaries-sourceonly-20261020/build-intake.json",
+      "bytes": 2106,
+      "sha256": "9A8C002F30AC75964C380F83AC9159F50D3BFAF16370526A4C7D419A6DAA1CE5",
+      "crlf": 0,
+      "canonical_lf_bytes": 2106,
+      "canonical_lf_sha256": "9A8C002F30AC75964C380F83AC9159F50D3BFAF16370526A4C7D419A6DAA1CE5",
+      "line_content_equal": true
+    },
+    {
+      "path": "verification/native-termination-owned-boundaries-sourceonly-20261020/controls-and-intake.json",
+      "bytes": 4148,
+      "sha256": "856C079919374FB1768A20BC98234DD1256104670106FCE0E389862CDB67F59A",
+      "crlf": 0,
+      "canonical_lf_bytes": 4148,
+      "canonical_lf_sha256": "856C079919374FB1768A20BC98234DD1256104670106FCE0E389862CDB67F59A",
+      "line_content_equal": true
+    }
+  ],
+  "normalization": {
+    "path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+    "reviewed_working_bytes": 10098,
+    "reviewed_working_sha256": "787DE0E81A5CBEE9F1BF75491594DAF739A871DF848BB9B570BB996F50D7BC2C",
+    "git_lf_bytes": 9934,
+    "git_lf_sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+    "operation": "Remove exactly the 164 CR bytes immediately preceding LF. Every split line is identical; no source token or algorithm change."
+  },
+  "production_peer": {
+    "agent": "/root/vm_foundation",
+    "status": "closed",
+    "pins": [
+      "BED505F1",
+      "787DE0E8"
+    ],
+    "read_scope": "Complete owners and exact 13+5 edits, public query and three predicate consumers reversed to actual Main C435/D964 and F85E/3541/3D1D bases. Actual provenance, cached generic authority, dynamic private priority, explicit native-aborted fallback and terminal error route were read."
+  },
+  "controls_peer": [
+    {
+      "agent": "/root/vm_foundation",
+      "status": "closed",
+      "pin": "E3DF9B35",
+      "scope": "Fixture/Owner/finalizers and declarations 1–8",
+      "finding": "Both owners link records only at stable caller addresses. Actual owned outcomes, sole-holder finalizers, republish-before-Cancel, subsequent ordinary/fatal events, losing private lease and cached ordinary classification are causal. No event inferred from diagnostic DATA."
+    },
+    {
+      "agent": "/root/modules_io",
+      "status": "closed",
+      "pin": "E3DF9B35",
+      "scope": "Declarations 9–16",
+      "receipt": "../modules-io-resume-20261018/verification/native-host-termination-controls-source-peer-20261020/receipt.json",
+      "receipt_sha256_prefix": "839B52FF",
+      "finding": "Real cancelled error/no-slot, cached generic classification, Promise DATA/current event, ModuleCallable and NativeInvocation routes are causal."
+    }
+  ],
+  "build_peer": {
+    "agent": "/root/modules_io",
+    "status": "closed",
+    "packet_sha256": "9A8C002F30AC75964C380F83AC9159F50D3BFAF16370526A4C7D419A6DAA1CE5",
+    "scope": "Seven install-only lines applied and reversed in memory against full Main B6F18B47. Existing shared Engine/QuickJS/TypeScript/sqlite/catalog and Windows libraries; no run edge."
+  },
+  "dependencies": {
+    "vm_directory": "../public-modes-resume-20261018/verification/native-execution-termination-sourceonly-20261020",
+    "engine_packet": "F42CE0C3F1F2548CC677EAF5CCE43752BB014653851D51C63898801BFF3F3018",
+    "engine_successor": "87DDDFAD",
+    "native_result_packet": "A0889F7AA18D7B8A1D39AA441EB39B4849871E54C53A719D01B9B8EA36B62464",
+    "gateways_packet": "37F9A682284DB03806AEF8D4E4ADED50EA8A0F2A46404E66AE6CA6659CF27D50",
+    "classified_pending_packet": "BDF052BB44E9447D3ABA2E6975DA2F7A4188A08A342610CD1BC4257F498CEBE4"
+  },
+  "narrow_intake": [
+    "src/extensions/native_sdk_owned_completion.zig",
+    "src/extensions/native_node_commonjs_owned_boundary.zig",
+    "src/extensions/native_node_uv_service.zig",
+    "src/native_host_termination_ownership_test.zig",
+    "verification/native-termination-owned-boundaries-sourceonly-20261020"
+  ],
+  "later_private_graph_consumers": [
+    "src/extensions/native_node_fs_after_scope.zig",
+    "src/extensions/native_node_fs_request_io.zig"
+  ],
+  "execution": "No native build, compiler, Node, generator, formatter or test execution.",
+  "limits": [
+    "Controls are source authored, not compile or runtime qualified.",
+    "The Engine/C/gateway source unit remains a separately reviewed prerequisite.",
+    "The private FS request/read graph is not brought into this narrow intake.",
+    "No Action payload, Promise rejection, captured diagnostic or unrelated flagged value supplies actual pending provenance.",
+    "The planned TypeBox Machine internal owner is a separate VM task."
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "scope": "Source-only native request storage allocation and actual void-constructor continuation. No build or runtime claim.",
+  "path": "src/extensions/native_node_fs_request_promise.zig",
+  "before_sha256": "E67469F7EE4D6C9E97E60A5032986FF91947F1DA3964A409B32A11F2DBACE1D0",
+  "after_sha256": "0ed6b910579e96e38a897c60bfe77f6df8a42613676fa0bbcaa0453a90092158",
+  "bytes": 18818,
+  "dependencies": {
+    "state": "DE34706E",
+    "physical_c": "FF046966",
+    "fs_header": "A8E758C4",
+    "service": "3D1D632D",
+    "request_registry": "01DA46DC"
+  },
+  "authority": {
+    "fsreq": "authority/native-fsreq-promise-source.json 933400DC",
+    "base": "authority/async-wrap-base-object-template-source.json 4EF8C935"
+  },
+  "conditions": [
+    "Actual native uv_fs_t owner is allocated before AsyncWrap initialization, and no new wrapper allocation occurs during Dispatch.",
+    "Only an attached AsyncWrap that has completed init_hook_ran continues after an ordinary JavaScriptException; an actual fatal or host failure propagates.",
+    "Creation shares the caller's stable HandleScope, which owns the original ordinary reason while SetReturnValue and native Dispatch continue.",
+    "Existing unselected read-binding draft must be replaced with this caller-scope API before assembly."
+  ],
+  "edits": [
+    {
+      "before": "const publication = @import(\"native_node_fs_private_publication.zig\");\n",
+      "after": "const publication = @import(\"native_node_fs_private_publication.zig\");\nconst uv = @import(\"native_node_uv_service.zig\").uv;\n"
+    },
+    {
+      "before": "const cache_key = \"\\x00native.node.fs.FSReqPromise.actual.v24.13\";\n",
+      "after": "const cache_key = \"\\x00native.node.fs.FSReqPromise.actual.v24.13\";\n\n/// The real uv_fs_t storage is allocated with the native ReqWrap, before any\n/// AsyncWrap init hook. Admission later uses this same request without a new\n/// wrapper allocation. Only the private compiled I/O owner supplies this input.\npub const Physical = struct { service: *uv.PiUvService, kind: c_int };\n"
+    },
+    {
+      "before": "    statfs_field_array: Fields = .empty,\n",
+      "after": "    statfs_field_array: Fields = .empty,\n    native_request: ?*uv.PiUvFsRequest = null,\n"
+    },
+    {
+      "before": "        allocator.destroy(fromWrap(wrap));\n",
+      "after": "        const self = fromWrap(wrap);\n        if (self.native_request) |actual| {\n            self.native_request = null;\n            uv.pi_uv_fs_request_release(actual);\n        }\n        allocator.destroy(self);\n"
+    },
+    {
+      "before": "        wrapper: c.JSValue, use_bigint: bool, cancel_native: request_state.Cancel) !void\n",
+      "after": "        wrapper: c.JSValue, use_bigint: bool, cancel_native: request_state.Cancel,\n        native_request: ?*uv.PiUvFsRequest) !void\n"
+    },
+    {
+      "before": "            .use_bigint = use_bigint, .cancel_native = cancel_native,\n",
+      "after": "            .use_bigint = use_bigint, .cancel_native = cancel_native,\n            .native_request = native_request,\n"
+    },
+    {
+      "before": "    return a.expression(engine, createRequestBody, .{ known_factory, use_bigint, cancel_native });\n}\nfn createRequestBody(s: *Scope, known_factory: c.JSValue,\n    use_bigint: bool, cancel_native: request_state.Cancel) !c.JSValue\n",
+      "after": "    return a.expression(engine, createRequestBody, .{ known_factory, use_bigint, cancel_native, @as(?Physical, null) });\n}\npub fn createPhysicalRequest(engine: *Engine, known_factory: c.JSValue,\n    use_bigint: bool, cancel_native: request_state.Cancel, physical: Physical) !c.JSValue\n{\n    return a.expression(engine, createRequestBody, .{ known_factory, use_bigint, cancel_native, @as(?Physical, physical) });\n}\nfn createRequestBody(s: *Scope, known_factory: c.JSValue,\n    use_bigint: bool, cancel_native: request_state.Cancel, physical: ?Physical) !c.JSValue\n"
+    },
+    {
+      "before": "    const self = try data.environment.allocator().create(Request);\n    self.initialize(s, data, wrapper, use_bigint, cancel_native) catch |err| {\n",
+      "after": "    const self = try data.environment.allocator().create(Request);\n    var native_request: ?*uv.PiUvFsRequest = null;\n    if (physical) |input| {\n        // Only native charged storage is created here. The actual init hook\n        // remains in initialize(), outside this proven allocation producer.\n        const result = uv.pi_uv_fs_request_create(input.service, input.kind, 0, &native_request);\n        if (result.allocation_failed != 0 or result.status < 0) {\n            const failure: anyerror = if (result.allocation_failed != 0)\n                error.OutOfMemory else error.ActualFSReqPhysicalInputsRequired;\n            var completion = a.owned.Completion.initVoid(s.engine, failure);\n            data.environment.allocator().destroy(self);\n            try completion.finishVoid();\n            unreachable;\n        }\n        if (native_request == null) {\n            var completion = a.owned.Completion.initVoid(s.engine, error.ActualFSReqNativeStorageRequired);\n            data.environment.allocator().destroy(self);\n            try completion.finishVoid();\n            unreachable;\n        }\n    }\n    self.initialize(s, data, wrapper, use_bigint, cancel_native, native_request) catch |err| {\n"
+    },
+    {
+      "before": "        } else {\n            data.environment.allocator().destroy(self);\n        }\n",
+      "after": "        } else {\n            if (native_request) |actual| uv.pi_uv_fs_request_release(actual);\n            data.environment.allocator().destroy(self);\n        }\n"
+    },
+    {
+      "before": "            self.attached = c.JS_GetOpaque(wrapper, registry.classId(.fsreqpromise)) != null;\n            return err;",
+      "after": "            self.attached = c.JS_GetOpaque(wrapper, registry.classId(.fsreqpromise)) != null;\n            s.boundary.escaping();\n            // AsyncWrap construction calls void AsyncReset. An ordinary init\n            // rethrow does not skip the later native ReqWrap/derived members.\n            // The caller's HandleScope retains that completion through the\n            // subsequent SetReturnValue and actual Dispatch operations.\n            if (!self.attached or !self.wrap.init_hook_ran or\n                err != error.JavaScriptException or s.boundary.fatal) return err;"
+    },
+    {
+      "before": "pub fn createRequest(engine: *Engine, known_factory: c.JSValue,\n    use_bigint: bool, cancel_native: request_state.Cancel) !c.JSValue\n{\n    return a.expression(engine, createRequestBody, .{ known_factory, use_bigint, cancel_native, @as(?Physical, null) });\n}\npub fn createPhysicalRequest(engine: *Engine, known_factory: c.JSValue,\n    use_bigint: bool, cancel_native: request_state.Cancel, physical: Physical) !c.JSValue\n{\n    return a.expression(engine, createRequestBody, .{ known_factory, use_bigint, cancel_native, @as(?Physical, physical) });\n}",
+      "after": "/// These native constructors use the caller's actual HandleScope. In\n/// particular, an ordinary init-hook rethrow remains escrowed while the\n/// non-null native request proceeds to SetReturnValue and Dispatch.\n/// The returned owned wrapper must be retained in that same caller scope.\npub fn createRequest(s: *Scope, known_factory: c.JSValue,\n    use_bigint: bool, cancel_native: request_state.Cancel) !c.JSValue\n{\n    return createRequestBody(s, known_factory, use_bigint, cancel_native, null);\n}\npub fn createPhysicalRequest(s: *Scope, known_factory: c.JSValue,\n    use_bigint: bool, cancel_native: request_state.Cancel, physical: Physical) !c.JSValue\n{\n    return createRequestBody(s, known_factory, use_bigint, cancel_native, physical);\n}"
+    }
+  ]
+}

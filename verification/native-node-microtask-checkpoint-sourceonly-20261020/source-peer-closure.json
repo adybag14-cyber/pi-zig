@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "status": "finite_source_peer_closure_no_execution",
+  "created_utc": "2026-10-20T12:03:55.157134+00:00",
+  "production": {
+    "path": "src\\extensions\\native_node_microtask_checkpoint.zig",
+    "bytes": 12861,
+    "sha256": "530066FCB850A701610D822400675DE985AFE250AA4E7F299A5F6DAB3F1039D1"
+  },
+  "controls": {
+    "path": "src\\native_node_microtask_checkpoint_test.zig",
+    "bytes": 21986,
+    "sha256": "3B31C013C0377FAAF264145A4BBB3D3197EB2DA6FD29AE0D9EF2A88611FA8C0E"
+  },
+  "control_names": [
+    "native Node microtask checkpoint empty queue runs completed callbacks with the outer frame",
+    "native Node microtask checkpoint preserves pair order and deduplicates only identical pairs",
+    "native Node microtask checkpoint callback mutations take effect after every original callback",
+    "native Node microtask checkpoint duplicate add during iteration still creates the COW owner",
+    "native Node microtask checkpoint absent remove during iteration still creates the COW owner",
+    "native Node microtask checkpoint suppression and actual scope depth postpone all work",
+    "native Node microtask checkpoint reentry and close during completed callbacks preserve the live owner",
+    "native Node microtask checkpoint drains the actual FIFO including jobs enqueued by a running job",
+    "native Node microtask checkpoint reports the actual ordinary reason and failed job frame then continues",
+    "native Node microtask checkpoint retains actual FIFO work enqueued by the ordinary report operation",
+    "native Node microtask checkpoint preserves a generic actual fatal and leaves later queued work",
+    "native Node microtask checkpoint a flagged Error returned as DATA is not a failed job",
+    "native Node microtask checkpoint active termination clears the live queue before completed callbacks",
+    "native Node microtask checkpoint cancelled native unwind stops one round and retains the live queue",
+    "native Node microtask checkpoint cancellation in a completed callback consumes the actual active event",
+    "native Node microtask checkpoint all native completed callbacks see an earlier selected termination",
+    "native Node microtask checkpoint an empty queue does not service a request-only termination",
+    "native Node microtask checkpoint clears actual kept WeakRef targets after the completed phase",
+    "native Node microtask checkpoint a completed callback ordinary throw survives later native callbacks",
+    "native Node microtask checkpoint closed native owner rejects new entry and callback mutation"
+  ],
+  "peers": [
+    {
+      "reviewer": "/root/sdk_owners",
+      "scope": "Queue allocator/lifetime/gates/COW original DFC1; Fixture/controls1-7 and18-20 closed on3B31 after failure cleanup and actual in-completion GC/WeakRef observation.",
+      "closed": true
+    },
+    {
+      "reviewer": "/root/vm_foundation",
+      "scope": "Actual C job drain/continuation/termination/cancellation/OnCompleted ordering and terminal no-poll successor530066FC; controls12-17 unchanged from reviewedC532.",
+      "closed": true
+    },
+    {
+      "reviewer": "/root/modules_io",
+      "scope": "Controls8-11 plus selected actual Queue/Fixture/report/job call paths; distinct preexisting7/appended0 make FIFO assertions causal.",
+      "closed": true
+    }
+  ],
+  "production_before_terminal_correction": "49D1BD650ADE9031EABE36A51D3B9A0E4BC20FC2ADD02BB787FA0ACCA20A5347",
+  "test_predecessors": [
+    "C532AC50987DC978D1973275CF1DF80DE84CE9638AD5E124F955E6013FAA0372",
+    "D943903B269FED58F0EC1387DF099F04AFA5CB998E5F88164C2C697F6E941D10"
+  ],
+  "authority_revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "required_native_foundation": {
+    "quickjs_c": "96843FA1E0527ECFE70FA2CC6F47C8C3A6A056932456F88A93F981D2297657DE",
+    "quickjs_h": "840A2BD84BE0A32046BF09F047C1C646114523343353D7EF6B7DF3003433DB1A",
+    "engine": "VM reviewed actual NativeInvocation/checked termination successor, applied separately with exact Engine/gateway intake."
+  },
+  "limitations": [
+    "No compile or runtime execution yet.",
+    "Actual embedding report_message_from_microtask operation remains required and is not implemented or installed by this unit.",
+    "No public Node bootstrap installation or application qualification."
+  ],
+  "build_intake": {
+    "path": "verification\\native-node-microtask-checkpoint-sourceonly-20261020\\build-intake.json",
+    "bytes": 2195,
+    "sha256": "0A710FA4934B32F4A86F097380F5815AD7045922D5678A2CA40DFA74EC47BFE1"
+  }
+}

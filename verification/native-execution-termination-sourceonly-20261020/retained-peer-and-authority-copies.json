@@ -1,0 +1,47 @@
+{
+  "source_only": true,
+  "copies": [
+    {
+      "source": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-file-handle-sourceonly-20261019/authority/v8-termination-job-and-cancel-proof.json",
+      "saved": "verification/native-execution-termination-sourceonly-20261020/authority/v8-termination-job-and-cancel-proof.json",
+      "bytes": 28943,
+      "sha256": "F3CB7064BC7ADDF7438663A0BD593663A3DC77950A5FDC73211798533574A8B9"
+    },
+    {
+      "source": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-file-handle-sourceonly-20261019/authority/v8-normal-promise-hook-proof.json",
+      "saved": "verification/native-execution-termination-sourceonly-20261020/authority/v8-normal-promise-hook-proof.json",
+      "bytes": 1537,
+      "sha256": "8E16A8DE4C4D6A74F303E2135325CF1DAECDEF937EDDB44E1F171B0FCD67342D"
+    },
+    {
+      "source": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-file-handle-sourceonly-20261019/authority/v8-runtime-promise.v24.13.cc",
+      "saved": "verification/native-execution-termination-sourceonly-20261020/authority/v8-runtime-promise.v24.13.cc",
+      "bytes": 8083,
+      "sha256": "9F750D31091B37975B3F3F7A7CAE5136E97F3DA726631AE5F711FF98BBF1D7D6"
+    },
+    {
+      "source": "verification\\native-disallow-javascript-sourceonly-20261019\\authority\\src__execution__microtask-queue.cc",
+      "saved": "verification/native-execution-termination-sourceonly-20261020/authority/microtask-queue.v24.13.cc",
+      "bytes": 11313,
+      "sha256": "10755841F920DABD0B4174B60F14B17DC30E25EFB216B3B9B7EB0A025DA44209"
+    },
+    {
+      "source": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-termination-queue-source-peer-20261020/receipt.json",
+      "saved": "verification/native-execution-termination-sourceonly-20261020/peer-receipts/modules-queue-receipt.json",
+      "bytes": 1719,
+      "sha256": "29A322B483AE4713CE47547868F13B47FF35D0D208D7177CDF78FA97391DBD05"
+    },
+    {
+      "source": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-termination-queue-source-peer-20261020/raw30-controls-receipt.json",
+      "saved": "verification/native-execution-termination-sourceonly-20261020/peer-receipts/modules-raw30-controls-receipt.json",
+      "bytes": 3392,
+      "sha256": "74ED965F54915423AFA0F1C6E75E49825DD001714BD15A350041E374296BF305"
+    },
+    {
+      "source": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018/verification/native-termination-engine-source-peer-20261020/receipt.json",
+      "saved": "verification/native-execution-termination-sourceonly-20261020/peer-receipts/modules-engine-gateway-receipt.json",
+      "bytes": 6131,
+      "sha256": "7A08BE06C5702CADE32B795556DECAE12A13662CD376AD3943372B1CADE13D94"
+    }
+  ]
+}

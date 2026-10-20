@@ -1,0 +1,269 @@
+{
+  "schema": 1,
+  "unit": "native-package-json-parser20",
+  "status": "finite_source_peer_closed_uncompiled",
+  "date": "2026-10-20",
+  "owned_tree": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018",
+  "parent_commit": "b519c8d2c94ebc246103c33e025a131e823fd400",
+  "source_authority": {
+    "node_tag": "v24.13.0",
+    "node_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+    "node_modules_cpp_sha256": "26C1741820F992983DE87A5EDBE8274B9FFDFF348F988E4D44586B8809EAA414",
+    "vendor_originals_unchanged": true,
+    "acquisition_receipt": "authority/simdjson-acquisition.json",
+    "allocator_successor": "simdjson-allocation-successor.json"
+  },
+  "files": [
+    {
+      "path": "src/extensions/native_simdjson_memory.hpp",
+      "bytes": 2449,
+      "sha256": "7554ED1DDCA28FAE7B11E025BD9D7EEF560DB657086A40029E5D95DBEFAE5291"
+    },
+    {
+      "path": "src/extensions/native_simdjson_memory.cpp",
+      "bytes": 2714,
+      "sha256": "44794005D36BB3E1EC6B1A7DF3AA9A6B7DE7C02D6F12BBF38115F83E49C5E103"
+    },
+    {
+      "path": "src/extensions/native_node_package_json_parser.h",
+      "bytes": 2352,
+      "sha256": "37C9BD3BDF660069FBB322575FE84857CF8798D310DE44F49EE1DA9491832F14"
+    },
+    {
+      "path": "src/extensions/native_node_package_json_parser.cpp",
+      "bytes": 10825,
+      "sha256": "8ACF480084F24FB4C843475C6693BD68C4A871E33F36578D04C20E9CA110D347"
+    },
+    {
+      "path": "src/native_node_package_json_parser_test.zig",
+      "bytes": 19462,
+      "sha256": "565C532E7CF2E3C633D24F067EB069A0CC6F94E5BE384A645BC0BA5C3C6DDD8D"
+    },
+    {
+      "path": "tools/build_native_package_json.zig",
+      "bytes": 1510,
+      "sha256": "52BC1D9F41324EA6EDFA1A594D36F5344163E21C0146F4CFC3F9932432464031"
+    },
+    {
+      "path": "vendor/node-v24.13.0/simdjson/simdjson.h",
+      "bytes": 6221940,
+      "sha256": "2FC8120BB21A9FA887EB77DA5E1E80FD670FD281E7F183937C46C44105483D77"
+    },
+    {
+      "path": "vendor/node-v24.13.0/simdjson/simdjson.cpp",
+      "bytes": 2406896,
+      "sha256": "A13AF3C591ECA69708B4462AB0BE1EA5D744319872A59B99E4ED36E0BE103E49"
+    },
+    {
+      "path": "vendor/node-v24.13.0/simdjson/LICENSE",
+      "bytes": 11355,
+      "sha256": "5FA8894E890BD77958F93B165433E0FB0DFFA5BC982BFB147E4748E95BAD24E5"
+    },
+    {
+      "path": "vendor/node-v24.13.0/simdjson-owned/simdjson.h",
+      "bytes": 6223603,
+      "sha256": "0F0209091B41484A0995D3B83A5C352C782E5D7FE1A900D062B31E369D4300B7"
+    },
+    {
+      "path": "vendor/node-v24.13.0/simdjson-owned/simdjson.cpp",
+      "bytes": 2408591,
+      "sha256": "A379239F0D9DE9244DF7E61354DC1FD7283E318890C2A96B89D0B06EEFAD250D"
+    },
+    {
+      "path": "vendor/node-v24.13.0/simdjson-owned/README.md",
+      "bytes": 1271,
+      "sha256": "3D3802EA726F4D93DE658CC471ADA292062363A354CEEBA368E62F86A89940D4"
+    },
+    {
+      "path": "verification/native-package-json-binding-sourceonly-20261020/simdjson-allocation-successor.json",
+      "bytes": 28947,
+      "sha256": "2A0683036B1E295768E347CC7424DD834846BF21FFA3F523BB6F3543FC98AFAA"
+    },
+    {
+      "path": "verification/native-package-json-binding-sourceonly-20261020/native-parser-draft.json",
+      "bytes": 12390,
+      "sha256": "68DABA089F8DF874E18F3AF412D7CC267DC0008CF6F29C5B1BA457EB825D01FC"
+    },
+    {
+      "path": "verification/native-package-json-binding-sourceonly-20261020/build.main-base.zig.txt",
+      "bytes": 476918,
+      "sha256": "B6F18B479B12F510D65DD83672E06AC2B0BADC395B050CC0C3A16FD399954D2A"
+    },
+    {
+      "path": "verification/native-package-json-binding-sourceonly-20261020/build.successor.zig.txt",
+      "bytes": 477759,
+      "sha256": "E25E6523F4BB5661BE7BB31ED9782457168E0FD7741804158E30269FB8AF816D"
+    },
+    {
+      "path": "verification/native-package-json-binding-sourceonly-20261020/build-intake.json",
+      "bytes": 3035,
+      "sha256": "358DEF997B4FBBF14617F2C47EDF877696BA93DB92AC9435F709C93AA19CE4C3"
+    },
+    {
+      "path": "verification/native-package-json-binding-sourceonly-20261020/authority/simdjson.gyp",
+      "bytes": 354,
+      "sha256": "2DCDF50A5CDF3F3C24391CD9574BBACED5416732470459A0692DE96D0A8E5826"
+    },
+    {
+      "path": "verification/native-package-json-binding-sourceonly-20261020/authority/simdjson-build-source.json",
+      "bytes": 13922,
+      "sha256": "5BAA98BB9605CB5122AD660D622091722FE080CA4AA9918310303E081C7321E5"
+    },
+    {
+      "path": "verification/native-package-json-binding-sourceonly-20261020/authority/simdjson-acquisition.json",
+      "bytes": 2074,
+      "sha256": "7C00FB43576FE05393108634FD778E1C0FF412F4EC58BFA972DD6F8A0A1BB3A0"
+    }
+  ],
+  "controls": {
+    "declarations": 20,
+    "filter": "native package JSON parser",
+    "target": "build-native-node-package-json-parser",
+    "names": [
+      {
+        "declaration": 1,
+        "name": "native package JSON parser absent fields preserve none and exact raw padding"
+      },
+      {
+        "declaration": 2,
+        "name": "native package JSON parser selects actual strings and raw object array fields"
+      },
+      {
+        "declaration": 3,
+        "name": "native package JSON parser compares raw keys and retains last recognized duplicates"
+      },
+      {
+        "declaration": 4,
+        "name": "native package JSON parser actual name and type conversion errors remain invalid"
+      },
+      {
+        "declaration": 5,
+        "name": "native package JSON parser main ignores nonstring values without erasing the earlier value"
+      },
+      {
+        "declaration": 6,
+        "name": "native package JSON parser imports exports ignore scalars and preserve empty strings"
+      },
+      {
+        "declaration": 7,
+        "name": "native package JSON parser type changes only for the two actual accepted strings"
+      },
+      {
+        "declaration": 8,
+        "name": "native package JSON parser scripts accepts only raw objects and retains earlier object"
+      },
+      {
+        "declaration": 9,
+        "name": "native package JSON parser selected strings preserve Unicode and embedded NUL lengths"
+      },
+      {
+        "declaration": 10,
+        "name": "native package JSON parser padding counts original ASCII trailing whitespace only"
+      },
+      {
+        "declaration": 11,
+        "name": "native package JSON parser removes exactly one BOM for parsing and retains raw bytes"
+      },
+      {
+        "declaration": 12,
+        "name": "native package JSON parser actual grammar failures do not poison later valid parses"
+      },
+      {
+        "declaration": 13,
+        "name": "native package JSON parser capacity reuse leaves earlier copied configurations unchanged"
+      },
+      {
+        "declaration": 14,
+        "name": "native package JSON parser config retains its native memory owner after parser and runtime retirement"
+      },
+      {
+        "declaration": 15,
+        "name": "native package JSON parser real creation quota failure rolls back before later successful creation"
+      },
+      {
+        "declaration": 16,
+        "name": "native package JSON parser first allocation failure has no output and remains a terminal native result"
+      },
+      {
+        "declaration": 17,
+        "name": "native package JSON parser partial real allocation failure retires every retained parser block"
+      },
+      {
+        "declaration": 18,
+        "name": "native package JSON parser field-copy quota failure preserves prior config and exact retained parser charge"
+      },
+      {
+        "declaration": 19,
+        "name": "native package JSON parser native worker owns config bytes beyond runtime and caller retirement"
+      },
+      {
+        "declaration": 20,
+        "name": "native package JSON parser concurrent native scopes keep their actual allocator domains separate"
+      }
+    ]
+  },
+  "peers": [
+    {
+      "reviewer": "/root/sdk_owners",
+      "status": "closed",
+      "scope": "Exact vendor allocation-edit reversal and all eight implementation/factory variants; real padding/BOM/capacity admission and selected Node field loop; controls 1–12.",
+      "pins": {
+        "allocator_packet": "2A0683036B1E295768E347CC7424DD834846BF21FFA3F523BB6F3543FC98AFAA",
+        "owned_h": "0F0209091B41484A0995D3B83A5C352C782E5D7FE1A900D062B31E369D4300B7",
+        "owned_cpp": "A379239F0D9DE9244DF7E61354DC1FD7283E318890C2A96B89D0B06EEFAD250D",
+        "parser_cpp": "8ACF480084F24FB4C843475C6693BD68C4A871E33F36578D04C20E9CA110D347",
+        "root": "565C532E7CF2E3C633D24F067EB069A0CC6F94E5BE384A645BC0BA5C3C6DDD8D"
+      },
+      "finding": "No concrete blocker in the assigned source slice; actual new-before-old-release and all original error/null checks are retained."
+    },
+    {
+      "reviewer": "/root/vm_foundation",
+      "status": "closed",
+      "scope": "Native allocator TLS/prefix/rollback/lifetime; Parser/Config output ownership; Fixture/Budget/ConfigWorker/ParseWorker and controls 13–20; one-library build proposal.",
+      "pins": {
+        "allocator_h": "7554ED1DDCA28FAE7B11E025BD9D7EEF560DB657086A40029E5D95DBEFAE5291",
+        "allocator_cpp": "44794005D36BB3E1EC6B1A7DF3AA9A6B7DE7C02D6F12BBF38115F83E49C5E103",
+        "parser_h": "37C9BD3BDF660069FBB322575FE84857CF8798D310DE44F49EE1DA9491832F14",
+        "parser_cpp": "8ACF480084F24FB4C843475C6693BD68C4A871E33F36578D04C20E9CA110D347",
+        "root": "565C532E7CF2E3C633D24F067EB069A0CC6F94E5BE384A645BC0BA5C3C6DDD8D",
+        "helper": "52BC1D9F41324EA6EDFA1A594D36F5344163E21C0146F4CFC3F9932432464031",
+        "build_packet": "358DEF997B4FBBF14617F2C47EDF877696BA93DB92AC9435F709C93AA19CE4C3"
+      },
+      "finding": "No concrete blocker. Control 17 reaches actual retained partial implementation after larger allocation failure; control 18 warms parser capacity before field-copy failure. Native block entitlements survive parser/runtime release and thread cleanup joins before inspection."
+    }
+  ],
+  "ownership": [
+    "Every real admitted parser allocation is reserved through the native memory owner before allocation. Replacement allocation and old allocation overlap are charged independently; no capacity-derived estimate substitutes for allocations.",
+    "The original vendor source and license are preserved unchanged. The separate owned copy contains only the enumerated allocator substitutions and private include, with exact full-byte reversion recorded.",
+    "Each allocated block retains its native memory owner in an aligned prefix. Parser and Config are independently owned, and Config bytes survive parser or runtime retirement.",
+    "The current raw C entry always leaves Config output null on failure and retires its temporary Config. An actual allocation failure makes the parser unusable until it is retired; the outer native binding must publish the actual failure before cleanup."
+  ],
+  "build": {
+    "packet": "build-intake.json",
+    "main_modified": false,
+    "owned_build_zig_modified": false,
+    "additive_lines": 11,
+    "static_libraries": 1,
+    "compile_sources": 3,
+    "transitive_quickjs_link": true,
+    "install_only": true,
+    "admitted_targets": "64-bit Windows and Linux"
+  },
+  "verification": {
+    "file_states_read_back": true,
+    "exact_vendor_reversal_peer_closed": true,
+    "test_declarations_enumerated": true,
+    "compiler_execution": false,
+    "native_test_execution": false,
+    "node_reference_execution": false,
+    "ast_execution": false,
+    "formatter_execution": false,
+    "runtime_qualification": false
+  },
+  "remaining_required_work": [
+    "The actual Node GetPackageJSON invalid-config branch raises its native Error while the partial native Config is still alive. The next additive retained-invalid entry will preserve that lifetime for the JS binding, while retaining this raw entry's existing null-on-failure contract.",
+    "Physical ReadFileSync, actual native path and permission behavior, positive/negative cache publication, native error/JS serialization, and package-reader/Module assembly remain separate source units.",
+    "The ESM error-context Ada parse and native FileURLToPath dependency is not supplied by a legacy URL scanner.",
+    "No native compile, link, tests or original Node reference observations have been performed; this unit confers no complete loader or public namespace qualification."
+  ]
+}

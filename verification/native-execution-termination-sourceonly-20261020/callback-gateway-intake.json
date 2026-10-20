@@ -1,0 +1,76 @@
+{
+  "source_only": true,
+  "main_is_not_modified": true,
+  "edits": [
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "label": "explicit native-aborted completion survives cancellation without fabricated diagnostic Error",
+      "before": "    if (err == error.JavaScriptException) return engine.throwCaptured();",
+      "after": "    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "label": "explicit native-aborted completion survives cancellation without fabricated diagnostic Error",
+      "before": "    if (err == error.JavaScriptException) return engine.throwCaptured();",
+      "after": "    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_node_module_callable.zig",
+      "label": "explicit native-aborted completion survives cancellation without fabricated diagnostic Error",
+      "before": "    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();",
+      "after": "    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "label": "explicit native-aborted completion at ordinary Node and planned outer failure gateways",
+      "before": "    if (err == error.JavaScriptException) return engine.throwCaptured();",
+      "after": "    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_typebox_continuation.zig",
+      "label": "explicit native-aborted completion at ordinary Node and planned outer failure gateways",
+      "before": "    if (err == error.JavaScriptException) return engine.throwCaptured();",
+      "after": "    if (err == error.JavaScriptException) return engine.throwCaptured();\n    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();",
+      "count": 1
+    }
+  ],
+  "files": {
+    "src/extensions/native_sdk.zig": {
+      "before_sha256": "22EA10685F93FC7CB9D06C346978BE15DBB43A879042059DFBE9054687756907",
+      "after_sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3",
+      "before_bytes": 164574,
+      "after_bytes": 164658
+    },
+    "src/extensions/native_async_function.zig": {
+      "before_sha256": "A8F1F0BCCF185093A215AE753C12ADA6A4E54EA156F946A59612523D78086694",
+      "after_sha256": "841611400E3F5BF3D9190C60CAFC8A0365E9174CECC50EB1582EAF7AD2F206AC",
+      "before_bytes": 10475,
+      "after_bytes": 10559
+    },
+    "src/extensions/native_node_module_callable.zig": {
+      "before_sha256": "D54499FAEAF3FFB935EA45CC427223972C5FA6CC78C85932A83F161CF7E97F65",
+      "after_sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491",
+      "before_bytes": 12697,
+      "after_bytes": 12781
+    },
+    "src/extensions/native_node_function.zig": {
+      "before_sha256": "469B1CFE5B3C589881533EA38EA45163BE4282C29234B11EDAA82DA1F557B73B",
+      "after_sha256": "6683D5D3934E56DDA41200DD9AAF86474FDA901B5F5CD7033218EC0AC82CFE52",
+      "before_bytes": 14346,
+      "after_bytes": 14430
+    },
+    "src/extensions/native_typebox_continuation.zig": {
+      "before_sha256": "69286C144813B1369F303485E6831AE5103B630E006E9D936A7DC5DD7127708A",
+      "after_sha256": "521944FB6811DE25C2D84022B7B2DDE199381DEA47731E112AD79803030EF50C",
+      "before_bytes": 25609,
+      "after_bytes": 25693
+    }
+  },
+  "scope_limits": [
+    "The TypeBox Machine internal Reason/failureReason/mergeCleanup algorithm is a separate owner review; this edit covers only its outer fail gateway."
+  ]
+}

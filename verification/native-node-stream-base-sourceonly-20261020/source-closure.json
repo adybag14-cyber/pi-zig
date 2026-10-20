@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "status": "finite_source_peers_closed_no_execution",
+  "scope": "Actual native StreamResource/StreamListener linked-list lifetime only",
+  "files": [
+    {
+      "path": "src/extensions/native_node_stream_resource.zig",
+      "sha256": "97D16E84BE24B636F1926ED50A800252D90F9D147169EB96FE85E94025754ABC",
+      "bytes": 4315
+    },
+    {
+      "path": "src/native_node_stream_resource_test.zig",
+      "sha256": "9FFEC85C655A092A86CA084F8FDA81048A02168363569EAE89D8E08752116222",
+      "bytes": 7910
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/README.md",
+      "sha256": "3B85B2B14142523818B31CCEAB20505A8FD6C7FF27F063DA4203F23617D7AE8E",
+      "bytes": 2612
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/stream-resource-source.json",
+      "sha256": "E97F5882096A14A412FD3C849E7B7DC45AD788DC66454E115F92BECDF4E26866",
+      "bytes": 7133
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/stream-resource-build-intake.json",
+      "sha256": "DFB07288EADC511755A0E9D81A05D42986440876522E7D37B81C8542D38EF75A",
+      "bytes": 2001
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/authority/source-acquisition.json",
+      "sha256": "6D5256FA0DF2FFD534B04A7DD23307ECDB1F3911DFE18914BFB0BE573B26B2DF",
+      "bytes": 1882
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/authority/stream_base.cc.v24.13.txt",
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4",
+      "bytes": 28310
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/authority/stream_base.h.v24.13.txt",
+      "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334",
+      "bytes": 18488
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/authority/stream_base-inl.h.v24.13.txt",
+      "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6",
+      "bytes": 5052
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/authority/node_file.h.v24.13.txt",
+      "sha256": "A63A31D1BCAEB7AF416B19ABEAFAB880DB7D424378DC27050F9FC2EE4921E16F",
+      "bytes": 17193
+    },
+    {
+      "path": "verification/native-node-stream-base-sourceonly-20261020/authority/NODE-MIT-LICENSE.txt",
+      "sha256": "86D2D599E5ACA4CE609F66171863A5EB405C3A520B27EF869C5740EA12CC9887",
+      "bytes": 2437
+    }
+  ],
+  "selected_original_ranges_exact": 6,
+  "control_names": [
+    "native Node stream resource initializes the actual counters and publishes the native listener chain",
+    "native Node stream resource removes a middle listener and clears both of its actual links",
+    "native Node stream resource listener destruction unlinks once without invoking OnStreamDestroy",
+    "native Node stream resource destruction visits the original native head order and clears each link",
+    "native Node stream resource callback can unlink and free its actual charged native record",
+    "native Node stream resource destruction observes actual removal of a later listener",
+    "native Node stream resource destruction visits a newly pushed head before returning to its original listener",
+    "native Node stream resource preserves the embedded default listener member-before-base destruction"
+  ],
+  "peers": [
+    {
+      "owner": "modules_io",
+      "slice": "production push/remove/deinit and controls5-8",
+      "production_sha256": "97D16E84BE24B636F1926ED50A800252D90F9D147169EB96FE85E94025754ABC",
+      "root_sha256": "9FFEC85C655A092A86CA084F8FDA81048A02168363569EAE89D8E08752116222",
+      "status": "closed",
+      "findings": "No blocker. Actual callbacks can remove/free self, remove later listeners and insert a new head. Required default member-before-base consumer order remains explicit."
+    },
+    {
+      "owner": "root",
+      "slice": "Fixture and controls1-4",
+      "status": "closed",
+      "findings": "Stable native records, safe actual charged allocator placement and failure teardown, counters/head/middle unlink/ordinary listener and resource destruction."
+    },
+    {
+      "owner": "root",
+      "slice": "13-line install-only build seam",
+      "packet_sha256": "DFB07288EADC511755A0E9D81A05D42986440876522E7D37B81C8542D38EF75A",
+      "status": "closed"
+    }
+  ],
+  "build_reverse_exact": true,
+  "prospective_build_sha256": "0FB507B8813C22C90650162655D8C98799AB86CC4F89E446337932411B3EB2AE",
+  "dependencies": [
+    {
+      "path": "src/extensions/native_node_check_failure.zig",
+      "sha256": "E4C368A322B65340D70C7F48153CA898ECF0290A47696823AA557876775E114E",
+      "role": "Existing actual terminating native assertion owner"
+    },
+    {
+      "path": "src/extensions/native_env_charged_allocator.zig",
+      "sha256": "2BF55B71DB0AE7A0F2FA151F536D86329C0FC22532D6E6C487D7DFCE5C739E85",
+      "role": "Actual charged native allocation in controls"
+    }
+  ],
+  "limits": [
+    "Records are embedded at stable native addresses; their parent must keep the borrowed Engine diagnostic context alive.",
+    "No ownership of arbitrary callback data or JavaScript roots is introduced.",
+    "Native CHECK negative paths require separate expected-exit processes; no in-process catchable substitute.",
+    "Source-only, no native build/compiler/Node/generator/formatter execution.",
+    "Actual StreamBase caller must perform its default_listener_ member destruction before this base destructor.",
+    "StreamBase virtual I/O and JS prototype, FileHandle class and complete Environment lifecycle remain separate.",
+    "No native CHECK expected-exit behavior or compiler-specific function diagnostic text is qualified."
+  ],
+  "main_mutated": false,
+  "build_zig_mutated": false,
+  "native_execution": false
+}

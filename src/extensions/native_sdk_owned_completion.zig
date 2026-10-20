@@ -8,7 +8,18 @@ const c = em.c;
 const Retirement = struct {
     engine: *em.Engine,
     chosen: ?c.JSValue = null,
-    fatal: bool = false,
+    // Only actual pending owners may use the native termination reducer.
+    // A thrown Action or captured diagnostic remains DATA even when flagged.
+    chosen_pending: bool = false,
+    fatal: bool = false, // Established generic fatal authority, not a token bit.
+    fn isFatal(self: *const Retirement) bool {
+        if (self.fatal) return true;
+        if (self.chosen_pending) if (self.chosen) |reason| {
+            if (c.JS_PiIsExecutionTermination(reason))
+                return c.JS_PiNativePendingPriority(c.JS_GetRuntime(self.engine.context), reason) > 0;
+        };
+        return false;
+    }
     fn merge(self: *Retirement, reason: c.JSValue, boundary: ?u64) ?u64 {
         // Called ONLY for owned ACTUAL pending events, never a diagnostic or
         // PromiseResult. Recognize a private producer born in this exact free.
@@ -23,9 +34,17 @@ const Retirement = struct {
             }
         }
         const fatal = c.JS_IsUncatchableError(reason);
-        if (self.chosen == null or (!self.fatal and fatal)) {
+        var replace = self.chosen == null;
+        if (self.chosen) |previous| {
+            replace = if (self.chosen_pending)
+                c.JS_PiNativePendingReplaceClassified(c.JS_GetRuntime(self.engine.context),
+                    previous, self.fatal, reason, fatal)
+            else c.JS_PiNativePendingPriority(c.JS_GetRuntime(self.engine.context), reason) > 0;
+        }
+        if (replace) {
             const displaced = self.chosen;
             self.chosen = reason;
+            self.chosen_pending = true;
             self.fatal = fatal;
             if (displaced) |old| {
                 const generation = self.engine.native_allocation_generation;
@@ -53,7 +72,7 @@ const Retirement = struct {
                 // actual events can promote the completion.
                 generation = self.engine.native_allocation_generation;
                 self.engine.freeValue(reason);
-                if (!self.fatal) _ = self.engine.nativeCallbackResult(c.pi_js_undefined());
+                if (!self.isFatal()) _ = self.engine.nativeCallbackResult(c.pi_js_undefined());
             }
         }
     }
@@ -70,17 +89,23 @@ pub const Completion = struct {
     pending: ?c.JSValue = null,
     invocation: em.Engine.NativeInvocation = .{},
     recorded_throw: bool = false,
+    // A cancelled native call can still return this explicit abrupt error
+    // after its private pending slot has been cleared by the actual cancel.
+    native_aborted: bool = false,
     finished: bool = false,
 
     pub fn initAction(engine: *em.Engine, result: anyerror!p.af.Action) Completion {
         var selected: ?p.af.Action = null;
+        var native_aborted = false;
         if (result) |action| {
             selected = action;
         } else |err| {
             // Surface actual pending/current invocation events independently
             // BEFORE inspecting a failed-operation diagnostic ownership slot.
             _ = engine.nativeCallbackResult(c.pi_js_undefined());
-            if (err == error.JavaScriptException and !c.JS_HasException(engine.context) and engine.captured_exception != null) {
+            if (err == error.ExecutionTerminated) {
+                native_aborted = true;
+            } else if (err == error.JavaScriptException and !c.JS_HasException(engine.context) and engine.captured_exception != null) {
                 const reason = engine.captured_exception.?;
                 engine.captured_exception = null;
                 selected = .{ .thrown = reason }; // Owned DATA; never flag/tag infer.
@@ -90,7 +115,7 @@ pub const Completion = struct {
                 _ = @import("native_sdk.zig").fail(engine, err);
             }
         }
-        var self: Completion = .{ .owner = .{ .engine = engine }, .action = selected };
+        var self: Completion = .{ .owner = .{ .engine = engine }, .action = selected, .native_aborted = native_aborted };
         if (self.action) |action| switch (action) {
             // Even flagged/private Error payloads are DATA, not pending events.
             .thrown => |reason| { self.owner.chosen = reason; self.action = null; },
@@ -170,13 +195,19 @@ pub const Completion = struct {
         self.owner.events(null);
         self.finished = true;
         if (self.owner.chosen) |reason| {
+            const actual_pending = self.owner.chosen_pending;
             self.owner.chosen = null;
-            if (self.owner.fatal) {
+            self.owner.chosen_pending = false;
+            if (self.owner.fatal or (actual_pending and c.JS_PiIsExecutionTermination(reason))) {
+                // A private completion, including cancelled native unwind,
+                // reaches Engine's ExecutionTerminated path, never Action DATA.
+                if (self.owner.fatal) c.JS_SetUncatchableError(self.owner.engine.context, reason);
                 _ = try self.owner.engine.checked(c.JS_Throw(self.owner.engine.context, reason));
                 unreachable;
             }
             return .{ .thrown = reason };
         }
+        if (self.native_aborted) return error.ExecutionTerminated;
         const action = self.action orelse return error.MissingSdkScopeCompletion;
         self.action = null;
         return action;

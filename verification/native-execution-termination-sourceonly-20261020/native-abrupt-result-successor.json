@@ -1,0 +1,40 @@
+{
+  "source_only": true,
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "private native-abrupt result for explicit cancelled termination unwind",
+      "before": "bool JS_PiIsExecutionTermination(JSValueConst value)\n",
+      "after": "/* Native completion propagation only: this result does not establish a\n   pending event or lease. It carries an already-observed termination failure\n   across a callback even when Cancel cleared the actual pending event. */\nJSValue JS_PiNativeTerminationResult(void)\n{\n    return js_pi_termination_token();\n}\n\nbool JS_PiIsExecutionTermination(JSValueConst value)\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "private sentinel provenance includes native completion propagation",
+      "before": "   immediate is created only by native termination servicing; it carries no\n",
+      "after": "   immediate is created only by native termination servicing/propagation; it carries no\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "native aborted result has no event side effect and is never guest DATA",
+      "before": "JS_EXTERN bool JS_PiIsExecutionTermination(JSValueConst actual_pending_token);\n",
+      "after": "JS_EXTERN bool JS_PiIsExecutionTermination(JSValueConst actual_pending_token);\n/* Native callback result only, for an already-observed termination failure\n   still unwinding after cancellation. No request, pending event, lease or\n   generation is created. It is an exception result, never a guest value,\n   Action payload, Promise rejection or captured diagnostic. Existing later\n   actual pending reasons retain precedence when the callback boundary runs. */\nJS_EXTERN JSValue JS_PiNativeTerminationResult(void);\n",
+      "count": 1
+    }
+  ],
+  "files": {
+    "vendor/quickjs/quickjs.c": {
+      "before_sha256": "7A28CA31511E6BF1B4548A29F145A7D4F1AEC7D03A24C2C4231502F3643AF753",
+      "before_bytes": 2360936,
+      "after_sha256": "96843FA1E0527ECFE70FA2CC6F47C8C3A6A056932456F88A93F981D2297657DE",
+      "after_bytes": 2361259
+    },
+    "vendor/quickjs/quickjs.h": {
+      "before_sha256": "06CE44C96DC3B7174DEAF5FD487D9E6D403EB3FB93770790BB3239A35D821B66",
+      "before_bytes": 103797,
+      "after_sha256": "840A2BD84BE0A32046BF09F047C1C646114523343353D7EF6B7DF3003433DB1A",
+      "after_bytes": 104232
+    }
+  }
+}

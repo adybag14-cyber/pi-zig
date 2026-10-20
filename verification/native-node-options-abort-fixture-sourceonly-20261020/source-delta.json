@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "status": "source_written_finite_peer_pending",
+  "path": "src/native_node_options_test.zig",
+  "base": {
+    "bytes": 43376,
+    "sha256": "CCD1447AEF00A62D7127F6F361E49070982E34BB5F92132798EA2727BC3B6536"
+  },
+  "successor": {
+    "bytes": 43397,
+    "sha256": "5D1414243D98B3850538DEF6D72BF44B029509480F739B1783EF994D199DA50B"
+  },
+  "edits": [
+    {
+      "before": "        try environment.put(\"NODE_OPTIONS\", case[0]);\n        const engine = try a.v.em.Engine.init(std.testing.allocator, .{});\n        defer engine.deinit();\n        try std.testing.expectError(case[1], engine.node_options.?.captureEnvironment(&environment));",
+      "after": "        try environment.put(\"NODE_OPTIONS\", case[0]);\n        const engine = try a.v.em.Engine.init(std.testing.allocator, .{ .node_options = .{} });\n        defer engine.deinit();\n        try std.testing.expectError(case[1], engine.node_options.?.captureEnvironment(&environment));",
+      "count": 1
+    }
+  ],
+  "declared_controls": 30,
+  "exact_names_unchanged": true,
+  "diagnosis": "The abort-rejection control dereferenced Engine.node_options after Engine.init(.{}), whose optional node_options input is null. The actual native options Config must be explicitly created before captureEnvironment is tested. Existing Engine.init's options.node_options branch creates the real owned Config; no fake value or production policy is introduced.",
+  "scope": "Only initialize the real options configuration in the final abort-input rejection control. All four exact invalid input/error cases, prepublication state assertions, and prior 29 declarations are unchanged.",
+  "limits": [
+    "No native execution or runtime qualification.",
+    "Receiver-retirement and intrinsic native serializer-tail failures remain separate observed V24 negatives."
+  ],
+  "negative_stderr": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-io-oauth-options-v24-diagnostic-runtime-20261020-121245\\groups\\native-node-options\\runtime.stderr.log",
+    "bytes": 10193,
+    "sha256": "0E0F8DA92CF5776FE543AC83D2931D528678E097E41EBD65EDCA6500522432E4"
+  },
+  "root_head": "4e798605e8a5617f8a8ade5d199863fb7682ac85"
+}

@@ -1,0 +1,30 @@
+{
+  "status": "fixture ownership source peer closed; separate production receiver-retirement issue open; no execution",
+  "source": {
+    "path": "src/native_node_inspect_colors_test.zig",
+    "sha256": "DC8C7F14D874CDAE724889661FFDDEA4E018157C60E252437CCACE66211B77DB",
+    "bytes": 12547
+  },
+  "base": {
+    "sha256": "9AC177CE7A8ACC4A63C1039BCC1F40DF96C74EC89FDB0A582CE3E703E4A01AAD",
+    "bytes": 12200,
+    "retained": "base-native_node_inspect_colors_test.zig.txt"
+  },
+  "delta": {
+    "path": "source-delta.json",
+    "sha256": "51376FDF8A954DA549D0A19D2791B933B7280F8430B18A8DC422EBC13F1B5E9D",
+    "bytes": 42050,
+    "exact_edits": 2
+  },
+  "peer": {
+    "owner": "VM",
+    "status": "closed",
+    "scope": "Exact reversal, all15 assertions/names unchanged, producer-local stable invocation retained through deliberate pending consumption; leave republishes actual selected event before exit."
+  },
+  "separate_issue": "Main C007524CB receiver retirement in OP_get_array_el/OP_get_field lacks pending observation before the next guest operation. VM confirmed and owns a separate authorized production/control unit.",
+  "original_negative": {
+    "path": "original-runtime.stderr.log",
+    "sha256": "10906A1A3500D3C82955DB003A595640AE408E47E2366BE43BBC29E7D91476A5",
+    "bytes": 1825
+  }
+}

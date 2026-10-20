@@ -1,0 +1,272 @@
+{
+  "status": "SOURCE INVESTIGATION / PROPOSED IMPLEMENTATION; no C or Engine mutation and no execution",
+  "node_revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "main_commit": "098b0f565e38b1af6b970196424b3e4e4bdbd19e",
+  "conclusion": "No genuine native execution-termination event exists in current linked QuickJS. Generic uncatchable Error, Engine cancellation/budget, and NativeInvocation first-fatal are distinct and cannot implement V8 IsExecutionTerminating by classification.",
+  "sources": [
+    {
+      "label": "V8 API",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-existing-promise-settlement-sourceonly-20261019\\authority\\v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+    },
+    {
+      "label": "V8 isolate inline",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-captured-frame-logging-sourceonly-20261019\\authority\\isolate-inl.v24.13.h",
+      "bytes": 8668,
+      "sha256": "772D5CF1DD8E849E5D495D84DF6F6A122E41905808C7E3B5870B51335CC89ED2"
+    },
+    {
+      "label": "V8 isolate",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-execution-termination-sourceonly-20261020\\authority\\isolate.v24.13.cc",
+      "bytes": 296824,
+      "sha256": "EEA4CAC8477AE94429B28D2369BECC2DF00E0002A2664AC559435A802A40B2D0"
+    },
+    {
+      "label": "V8 stack guard",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-execution-termination-sourceonly-20261020\\authority\\stack-guard.cc",
+      "bytes": 14056,
+      "sha256": "0AC88E7E8292A349CB4AC01EE43E0556080DBFB6AE9471FDF0BF2A358290CE0C"
+    },
+    {
+      "label": "V8 stack guard header",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-execution-termination-sourceonly-20261020\\authority\\stack-guard.h",
+      "bytes": 11426,
+      "sha256": "0639E001BACDFBD37FC4D7DEDFAF637FA91D5130A9EEC01DBE199C835C17787D"
+    },
+    {
+      "label": "V8 microtask queue",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-disallow-javascript-sourceonly-20261019\\authority\\src__execution__microtask-queue.cc",
+      "bytes": 11313,
+      "sha256": "10755841F920DABD0B4174B60F14B17DC30E25EFB216B3B9B7EB0A025DA44209"
+    },
+    {
+      "label": "V8 execution",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-disallow-javascript-sourceonly-20261019\\authority\\src__execution__execution.cc",
+      "bytes": 26485,
+      "sha256": "AA6D8F3CD56CABCA61C6634BBBF899A363D49C25DC09F187E8CC7B3DAAADF1C0"
+    },
+    {
+      "label": "Current linked QuickJS",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2343892,
+      "sha256": "DF038A2F5D1D8D322615D5378205A2AC7656FED84779B778F5D404811A77B758"
+    },
+    {
+      "label": "Current Engine",
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+      "bytes": 96591,
+      "sha256": "5B3B91B0053508AAC9D4C9951CEF3F4B74D1A154342CD33FE21BE25E03EE3B0F"
+    }
+  ],
+  "excerpts": [
+    {
+      "source": "V8 API",
+      "line_start": 9916,
+      "line_end": 9930,
+      "purpose": "Request/query/cancel are separate native operations",
+      "text": "void Isolate::TerminateExecution() {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  i_isolate->stack_guard()->RequestTerminateExecution();\n}\n\nbool Isolate::IsExecutionTerminating() {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  return i_isolate->is_execution_terminating();\n}\n\nvoid Isolate::CancelTerminateExecution() {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  i_isolate->stack_guard()->ClearTerminateExecution();\n  i_isolate->CancelTerminateExecution();\n}"
+    },
+    {
+      "source": "V8 API",
+      "line_start": 2813,
+      "line_end": 2833,
+      "purpose": "HasTerminated and ordinary Exception projection",
+      "text": "bool v8::TryCatch::CanContinue() const { return can_continue_; }\n\nbool v8::TryCatch::HasTerminated() const {\n  return ToObject(exception_) ==\n         i::ReadOnlyRoots(i_isolate_).termination_exception();\n}\n\nv8::Local<v8::Value> v8::TryCatch::ReThrow() {\n  if (!HasCaught()) return v8::Local<v8::Value>();\n  rethrow_ = true;\n  return v8::Undefined(reinterpret_cast<v8::Isolate*>(i_isolate_));\n}\n\nv8::Local<Value> v8::TryCatch::Exception() const {\n  if (!HasCaught()) return v8::Local<Value>();\n  if (HasTerminated()) {\n    return v8::Utils::ToLocal(i_isolate_->factory()->null_value());\n  }\n  return v8::Utils::ToLocal(i::direct_handle(ToObject(exception_), i_isolate_));\n}\n"
+    },
+    {
+      "source": "V8 API",
+      "line_start": 2867,
+      "line_end": 2885,
+      "purpose": "Nested native catcher preserves actual termination",
+      "text": "void v8::TryCatch::Reset() {\n  if (rethrow_) return;\n  if (V8_UNLIKELY(i_isolate_->is_execution_terminating()) &&\n      !i_isolate_->thread_local_top()->CallDepthIsZero()) {\n    return;\n  }\n  i_isolate_->clear_internal_exception();\n  i_isolate_->clear_pending_message();\n  ResetInternal();\n}\n\nvoid v8::TryCatch::ResetInternal() {\n  i::Tagged<i::Object> the_hole = i::ReadOnlyRoots(i_isolate_).the_hole_value();\n  exception_ = reinterpret_cast<void*>(the_hole.ptr());\n  message_obj_ = reinterpret_cast<void*>(the_hole.ptr());\n}\n\nvoid v8::TryCatch::SetVerbose(bool value) { is_verbose_ = value; }\n"
+    },
+    {
+      "source": "V8 isolate inline",
+      "line_start": 125,
+      "line_end": 134,
+      "purpose": "Actual event is private termination root in live exception slot",
+      "text": "bool Isolate::has_exception() {\n  ThreadLocalTop* top = thread_local_top();\n  DCHECK(!IsException(top->exception_, this));\n  return !IsTheHole(top->exception_, this);\n}\n\nbool Isolate::is_execution_terminating() {\n  return thread_local_top()->exception_ ==\n         i::ReadOnlyRoots(this).termination_exception();\n}"
+    },
+    {
+      "source": "V8 isolate inline",
+      "line_start": 190,
+      "line_end": 193,
+      "purpose": "Catchability tests private identity",
+      "text": "bool Isolate::is_catchable_by_javascript(Tagged<Object> exception) {\n  return exception != ReadOnlyRoots(heap()).termination_exception();\n}\n"
+    },
+    {
+      "source": "V8 isolate",
+      "line_start": 1950,
+      "line_end": 1958,
+      "purpose": "Publish and cancel actual native termination",
+      "text": "Tagged<Object> Isolate::TerminateExecution() {\n  return Throw(ReadOnlyRoots(this).termination_exception());\n}\n\nvoid Isolate::CancelTerminateExecution() {\n  if (!is_execution_terminating()) return;\n  clear_internal_exception();\n  if (try_catch_handler()) try_catch_handler()->ResetInternal();\n}"
+    },
+    {
+      "source": "V8 isolate",
+      "line_start": 4799,
+      "line_end": 4829,
+      "purpose": "External native catcher termination flags",
+      "text": "void Isolate::SetTerminationOnExternalTryCatch() {\n  DCHECK_IMPLIES(v8_flags.strict_termination_checks,\n                 is_execution_terminating());\n  if (try_catch_handler() == nullptr) return;\n  try_catch_handler()->can_continue_ = false;\n  try_catch_handler()->exception_ = reinterpret_cast<void*>(\n      ReadOnlyRoots(heap()).termination_exception().ptr());\n}\n\nbool Isolate::PropagateExceptionToExternalTryCatch(\n    ExceptionHandlerType top_handler) {\n  Tagged<Object> exception = this->exception();\n\n  if (top_handler == ExceptionHandlerType::kJavaScriptHandler) return false;\n  if (top_handler == ExceptionHandlerType::kNone) return true;\n\n  DCHECK_EQ(ExceptionHandlerType::kExternalTryCatch, top_handler);\n  if (!is_catchable_by_javascript(exception)) {\n    SetTerminationOnExternalTryCatch();\n  } else {\n    v8::TryCatch* handler = try_catch_handler();\n    DCHECK(IsJSMessageObject(pending_message()) ||\n           IsTheHole(pending_message(), this));\n    handler->can_continue_ = true;\n    handler->exception_ = reinterpret_cast<void*>(exception.ptr());\n    // Propagate to the external try-catch only if we got an actual message.\n    if (!has_pending_message()) return true;\n    handler->message_obj_ = reinterpret_cast<void*>(pending_message().ptr());\n  }\n  return true;\n}"
+    },
+    {
+      "source": "V8 isolate",
+      "line_start": 6972,
+      "line_end": 7043,
+      "purpose": "Promise after and current microtask terminal cleanup",
+      "text": "void Isolate::OnPromiseBefore(DirectHandle<JSPromise> promise) {\n  RunPromiseHook(PromiseHookType::kBefore, promise,\n                 factory()->undefined_value());\n  if (HasAsyncEventDelegate()) {\n    if (promise->has_async_task_id()) {\n      async_event_delegate_->AsyncEventOccurred(\n          debug::kDebugWillHandle, promise->async_task_id(), false);\n    }\n  }\n}\n\nvoid Isolate::OnPromiseAfter(DirectHandle<JSPromise> promise) {\n  RunPromiseHook(PromiseHookType::kAfter, promise,\n                 factory()->undefined_value());\n  if (HasAsyncEventDelegate()) {\n    if (promise->has_async_task_id()) {\n      async_event_delegate_->AsyncEventOccurred(\n          debug::kDebugDidHandle, promise->async_task_id(), false);\n    }\n  }\n}\n\nvoid Isolate::OnStackTraceCaptured(DirectHandle<StackTraceInfo> stack_trace) {\n  if (HasAsyncEventDelegate()) {\n    async_event_delegate_->AsyncEventOccurred(debug::kDebugStackTraceCaptured,\n                                              stack_trace->id(), false);\n  }\n}\n\nvoid Isolate::OnTerminationDuringRunMicrotasks() {\n  DCHECK(is_execution_terminating());\n  // This performs cleanup for when RunMicrotasks (in\n  // builtins-microtask-queue-gen.cc) is aborted via a termination exception.\n  // This has to be kept in sync with the code in said file. Currently this\n  // includes:\n  //\n  //  (1) Resetting the |current_microtask| slot on the Isolate to avoid leaking\n  //      memory (and also to keep |current_microtask| not being undefined as an\n  //      indicator that we're currently pumping the microtask queue).\n  //  (2) Empty the promise stack to avoid leaking memory.\n  //  (3) If the |current_microtask| is a promise reaction or resolve thenable\n  //      job task, then signal the async event delegate and debugger that the\n  //      microtask finished running.\n  //\n\n  // Reset the |current_microtask| global slot.\n  DirectHandle<Microtask> current_microtask(\n      Cast<Microtask>(heap()->current_microtask()), this);\n  heap()->set_current_microtask(ReadOnlyRoots(this).undefined_value());\n\n  if (IsPromiseReactionJobTask(*current_microtask)) {\n    auto promise_reaction_job_task =\n        Cast<PromiseReactionJobTask>(current_microtask);\n    DirectHandle<HeapObject> promise_or_capability(\n        promise_reaction_job_task->promise_or_capability(), this);\n    if (IsPromiseCapability(*promise_or_capability)) {\n      promise_or_capability = direct_handle(\n          Cast<PromiseCapability>(promise_or_capability)->promise(), this);\n    }\n    if (IsJSPromise(*promise_or_capability)) {\n      OnPromiseAfter(Cast<JSPromise>(promise_or_capability));\n    }\n  } else if (IsPromiseResolveThenableJobTask(*current_microtask)) {\n    auto promise_resolve_thenable_job_task =\n        Cast<PromiseResolveThenableJobTask>(current_microtask);\n    DirectHandle<JSPromise> promise_to_resolve(\n        promise_resolve_thenable_job_task->promise_to_resolve(), this);\n    OnPromiseAfter(promise_to_resolve);\n  }\n\n  SetTerminationOnExternalTryCatch();\n}"
+    },
+    {
+      "source": "V8 stack guard",
+      "line_start": 169,
+      "line_end": 197,
+      "purpose": "Separate atomic/locked request admission and clearing",
+      "text": "void StackGuard::RequestInterrupt(InterruptFlag flag) {\n  ExecutionAccess access(isolate_);\n  // Check the chain of InterruptsScope for interception.\n  if (thread_local_.interrupt_scopes_ &&\n      thread_local_.interrupt_scopes_->Intercept(flag)) {\n    return;\n  }\n\n  // Not intercepted.  Set as active interrupt flag.\n  thread_local_.interrupt_flags_ |= flag;\n  update_interrupt_requests_and_stack_limits(access);\n\n  // If this isolate is waiting in a futex, notify it to wake up.\n  isolate_->futex_wait_list_node()->NotifyWake();\n}\n\nvoid StackGuard::ClearInterrupt(InterruptFlag flag) {\n  ExecutionAccess access(isolate_);\n  // Clear the interrupt flag from the chain of InterruptsScope.\n  for (InterruptsScope* current = thread_local_.interrupt_scopes_;\n       current != nullptr; current = current->prev_) {\n    current->intercepted_flags_ &= ~flag;\n  }\n\n  // Clear the interrupt flag from the active interrupt flags.\n  thread_local_.interrupt_flags_ &= ~flag;\n  update_interrupt_requests_and_stack_limits(access);\n}\n"
+    },
+    {
+      "source": "V8 stack guard",
+      "line_start": 198,
+      "line_end": 230,
+      "purpose": "Termination-only request and priority over other interrupts",
+      "text": "bool StackGuard::HasTerminationRequest() {\n  if (!thread_local_.has_interrupt_requested(InterruptLevel::kNoGC)) {\n    return false;\n  }\n  ExecutionAccess access(isolate_);\n  if ((thread_local_.interrupt_flags_ & TERMINATE_EXECUTION) != 0) {\n    thread_local_.interrupt_flags_ &= ~TERMINATE_EXECUTION;\n    update_interrupt_requests_and_stack_limits(access);\n    return true;\n  }\n  return false;\n}\n\nint StackGuard::FetchAndClearInterrupts(InterruptLevel level) {\n  ExecutionAccess access(isolate_);\n  InterruptFlag mask = InterruptLevelMask(level);\n  if ((thread_local_.interrupt_flags_ & TERMINATE_EXECUTION) != 0) {\n    // The TERMINATE_EXECUTION interrupt is special, since it terminates\n    // execution but should leave V8 in a resumable state. If it exists, we only\n    // fetch and clear that bit. On resume, V8 can continue processing other\n    // interrupts.\n    mask = TERMINATE_EXECUTION;\n  }\n\n  int result = static_cast<int>(thread_local_.interrupt_flags_ & mask);\n  thread_local_.interrupt_flags_ &= ~mask;\n  update_interrupt_requests_and_stack_limits(access);\n  return result;\n}\n\nchar* StackGuard::ArchiveStackGuard(char* to) {\n  ExecutionAccess access(isolate_);\n  MemCopy(to, reinterpret_cast<char*>(&thread_local_), sizeof(ThreadLocal));"
+    },
+    {
+      "source": "V8 stack guard",
+      "line_start": 298,
+      "line_end": 328,
+      "purpose": "Servicing the dedicated request publishes actual event",
+      "text": "Tagged<Object> StackGuard::HandleInterrupts(InterruptLevel level) {\n  TRACE_EVENT0(\"v8.execute\", \"V8.HandleInterrupts\");\n\n#if DEBUG\n  isolate_->heap()->VerifyNewSpaceTop();\n#endif\n\n  if (v8_flags.verify_predictable) {\n    // Advance synthetic time by making a time request.\n    isolate_->heap()->MonotonicallyIncreasingTimeInMs();\n  }\n\n  // Fetch and clear interrupt bits in one go. See comments inside the method\n  // for special handling of TERMINATE_EXECUTION.\n  int interrupt_flags = FetchAndClearInterrupts(level);\n\n  // All interrupts should be fully processed when returning from this method.\n  ShouldBeZeroOnReturnScope should_be_zero_on_return(&interrupt_flags);\n\n  if (TestAndClear(&interrupt_flags, TERMINATE_EXECUTION)) {\n    TRACE_EVENT0(\"v8.execute\", \"V8.TerminateExecution\");\n    return isolate_->TerminateExecution();\n  }\n\n  if (TestAndClear(&interrupt_flags, GC_REQUEST)) {\n    TRACE_EVENT0(TRACE_DISABLED_BY_DEFAULT(\"v8.gc\"), \"V8.GCHandleGCRequest\");\n    isolate_->heap()->HandleGCRequest();\n  }\n\n  if (TestAndClear(&interrupt_flags, START_INCREMENTAL_MARKING)) {\n    isolate_->heap()->StartIncrementalMarkingOnInterrupt();"
+    },
+    {
+      "source": "V8 stack guard header",
+      "line_start": 63,
+      "line_end": 110,
+      "purpose": "Distinct terminate and API interrupt flags",
+      "text": "  // enum. For example, a site that handles `kAnyEffect` will also handle the\n  // preceding levels.\n  enum class InterruptLevel { kNoGC, kNoHeapWrites, kAnyEffect };\n  static constexpr int kNumberOfInterruptLevels = 3;\n\n#define INTERRUPT_LIST(V)                                                      \\\n  V(TERMINATE_EXECUTION, TerminateExecution, 0, InterruptLevel::kNoGC)         \\\n  V(GC_REQUEST, GC, 1, InterruptLevel::kNoHeapWrites)                          \\\n  V(INSTALL_CODE, InstallCode, 2, InterruptLevel::kAnyEffect)                  \\\n  V(INSTALL_BASELINE_CODE, InstallBaselineCode, 3, InterruptLevel::kAnyEffect) \\\n  V(API_INTERRUPT, ApiInterrupt, 4, InterruptLevel::kNoHeapWrites)             \\\n  V(DEOPT_MARKED_ALLOCATION_SITES, DeoptMarkedAllocationSites, 5,              \\\n    InterruptLevel::kNoHeapWrites)                                             \\\n  V(GROW_SHARED_MEMORY, GrowSharedMemory, 6, InterruptLevel::kAnyEffect)       \\\n  V(LOG_WASM_CODE, LogWasmCode, 7, InterruptLevel::kAnyEffect)                 \\\n  V(WASM_CODE_GC, WasmCodeGC, 8, InterruptLevel::kNoHeapWrites)                \\\n  V(INSTALL_MAGLEV_CODE, InstallMaglevCode, 9, InterruptLevel::kAnyEffect)     \\\n  V(GLOBAL_SAFEPOINT, GlobalSafepoint, 10, InterruptLevel::kNoHeapWrites)      \\\n  V(START_INCREMENTAL_MARKING, StartIncrementalMarking, 11,                    \\\n    InterruptLevel::kNoHeapWrites)\n\n#define V(NAME, Name, id, interrupt_level)                   \\\n  inline bool Check##Name() { return CheckInterrupt(NAME); } \\\n  inline void Request##Name() { RequestInterrupt(NAME); }    \\\n  inline void Clear##Name() { ClearInterrupt(NAME); }\n  INTERRUPT_LIST(V)\n#undef V\n\n  // Flag used to set the interrupt causes.\n  enum InterruptFlag : uint32_t {\n#define V(NAME, Name, id, interrupt_level) NAME = (1 << id),\n    INTERRUPT_LIST(V)\n#undef V\n#define V(NAME, Name, id, interrupt_level) NAME |\n        ALL_INTERRUPTS = INTERRUPT_LIST(V) 0\n#undef V\n  };\n  static_assert(InterruptFlag::ALL_INTERRUPTS <\n                std::numeric_limits<uint32_t>::max());\n\n  static constexpr InterruptFlag InterruptLevelMask(InterruptLevel level) {\n#define V(NAME, Name, id, interrupt_level) \\\n  | (interrupt_level <= level ? NAME : 0)\n    return static_cast<InterruptFlag>(0 INTERRUPT_LIST(V));\n#undef V\n  }\n\n  uintptr_t climit() {"
+    },
+    {
+      "source": "V8 microtask queue",
+      "line_start": 153,
+      "line_end": 215,
+      "purpose": "Empty/nonempty frame policy then termination queue reset and callback order",
+      "text": "int MicrotaskQueue::RunMicrotasks(Isolate* isolate) {\n  SetIsRunningMicrotasks scope(&is_running_microtasks_);\n  v8::Isolate::SuppressMicrotaskExecutionScope suppress(\n      reinterpret_cast<v8::Isolate*>(isolate), this);\n\n  if (!size()) {\n    OnCompleted(isolate);\n    return 0;\n  }\n\n  // We should not enter V8 if it's marked for termination.\n  DCHECK_IMPLIES(v8_flags.strict_termination_checks,\n                 !isolate->is_execution_terminating());\n\n  intptr_t base_count = finished_microtask_count_;\n  HandleScope handle_scope(isolate);\n  MaybeDirectHandle<Object> maybe_result;\n\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n  DirectHandle<Object> continuation_preserved_embedder_data(\n      isolate->isolate_data()->continuation_preserved_embedder_data(), isolate);\n  isolate->isolate_data()->set_continuation_preserved_embedder_data(\n      ReadOnlyRoots(isolate).undefined_value());\n#endif  // V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n\n  int processed_microtask_count;\n  {\n    HandleScopeImplementer::EnteredContextRewindScope rewind_scope(\n        isolate->handle_scope_implementer());\n    TRACE_EVENT_BEGIN0(\"v8.execute\", \"RunMicrotasks\");\n    {\n      TRACE_EVENT_CALL_STATS_SCOPED(isolate, \"v8\", \"V8.RunMicrotasks\");\n      maybe_result = Execution::TryRunMicrotasks(isolate, this);\n      processed_microtask_count =\n          static_cast<int>(finished_microtask_count_ - base_count);\n    }\n    TRACE_EVENT_END1(\"v8.execute\", \"RunMicrotasks\", \"microtask_count\",\n                     processed_microtask_count);\n  }\n\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n  isolate->isolate_data()->set_continuation_preserved_embedder_data(\n      *continuation_preserved_embedder_data);\n#endif  // V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n\n  if (isolate->is_execution_terminating()) {\n    DCHECK(isolate->has_exception());\n    DCHECK(maybe_result.is_null());\n    delete[] ring_buffer_;\n    ring_buffer_ = nullptr;\n    capacity_ = 0;\n    size_ = 0;\n    start_ = 0;\n    isolate->OnTerminationDuringRunMicrotasks();\n    OnCompleted(isolate);\n    return -1;\n  }\n\n  DCHECK_EQ(0, size());\n  OnCompleted(isolate);\n\n  return processed_microtask_count;\n}"
+    },
+    {
+      "source": "V8 execution",
+      "line_start": 483,
+      "line_end": 520,
+      "purpose": "Termination bypasses ordinary exception-out result",
+      "text": "MaybeDirectHandle<Object> InvokeWithTryCatch(Isolate* isolate,\n                                             const InvokeParams& params) {\n  DCHECK_IMPLIES(v8_flags.strict_termination_checks,\n                 !isolate->is_execution_terminating());\n  MaybeDirectHandle<Object> maybe_result;\n  if (params.exception_out != nullptr) {\n    *params.exception_out = {};\n  }\n\n  // Enter a try-block while executing the JavaScript code. To avoid\n  // duplicate error printing it must be non-verbose.  Also, to avoid\n  // creating message objects during stack overflow we shouldn't\n  // capture messages.\n  v8::TryCatch catcher(reinterpret_cast<v8::Isolate*>(isolate));\n  catcher.SetVerbose(false);\n  catcher.SetCaptureMessage(false);\n\n  maybe_result = Invoke(isolate, params);\n\n  if (V8_LIKELY(!maybe_result.is_null())) {\n    DCHECK(!isolate->has_exception());\n    return maybe_result;\n  }\n\n  DCHECK(isolate->has_exception());\n  if (isolate->is_execution_terminating()) {\n    return maybe_result;\n  }\n\n  if (params.exception_out != nullptr) {\n    DCHECK(catcher.HasCaught());\n    *params.exception_out = v8::Utils::OpenDirectHandle(*catcher.Exception());\n  }\n\n  return maybe_result;\n}\n\n}  // namespace"
+    },
+    {
+      "source": "Current linked QuickJS",
+      "line_start": 2707,
+      "line_end": 2732,
+      "purpose": "Each pending native job owns contexts and argv roots",
+      "text": "int JS_EnqueueJob(JSContext *ctx, JSJobFunc *job_func,\n                  int argc, JSValueConst *argv)\n{\n    JSRuntime *rt = ctx->rt;\n    JSJobEntry *e;\n    int i;\n\n    assert(!rt->in_free);\n\n    e = js_malloc(ctx, sizeof(*e) + argc * sizeof(JSValue));\n    if (!e)\n        return -1;\n    e->ctx = ctx;\n    e->job_func = job_func;\n    e->execution_context = js_dup(rt->execution_context);\n    e->continuation_preserved_embedder_data =\n        js_dup(rt->continuation_preserved_embedder_data);\n    e->argc = argc;\n    for(i = 0; i < argc; i++) {\n        e->argv[i] = js_dup(argv[i]);\n    }\n    list_add_tail(&e->link, &rt->job_list);\n    return 0;\n}\n\n/* Only actual pending reasons participate in native root retirement. This"
+    },
+    {
+      "source": "Current linked QuickJS",
+      "line_start": 2813,
+      "line_end": 2910,
+      "purpose": "Current execution and retirement have no native active-job owner after return",
+      "text": "bool JS_IsJobPending(JSRuntime *rt)\n{\n    return !list_empty(&rt->job_list);\n}\n\nJSContext *JS_GetPendingJobContext(JSRuntime *rt)\n{\n    if (JS_IsJobPending(rt)) {\n        return list_entry(rt->job_list.next, JSJobEntry, link)->ctx;\n    }\n    return NULL;\n}\n\n/* return < 0 if exception, 0 if no job ran (empty or execution disallowed),\n   1 if a job was executed successfully. No-progress leaves '*pctx' NULL. */\nint JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)\n{\n    JSContext *ctx;\n    JSJobEntry *e;\n    JSValue res;\n    int i, ret;\n    JSExecutionContextHook *context_hook;\n    void *context_opaque;\n    JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n\n    if (list_empty(&rt->job_list)) {\n        *pctx = NULL;\n        return 0;\n    }\n\n    /* V8's nonverbose TryRunMicrotasks catches the ordinary disallow reason\n       before JSEntry: no entry is consumed and the checkpoint reports zero.\n       Preserve an already pending native failure instead of swallowing it. */\n    if (unlikely(!rt->pi_javascript_execution_allowed)) {\n        e = list_entry(rt->job_list.next, JSJobEntry, link);\n        if (JS_HasException(e->ctx)) {\n            *pctx = e->ctx;\n            return -1;\n        }\n        *pctx = NULL;\n        return 0;\n    }\n\n    /* get the first pending job and execute it */\n    e = list_entry(rt->job_list.next, JSJobEntry, link);\n    list_del(&e->link);\n    ctx = e->ctx;\n    /* V8 SetupContinuationPreservedEmbedderData deliberately skips undefined.\n       A preceding failed task can leave its data for such a following task. */\n    if (!JS_IsUndefined(e->continuation_preserved_embedder_data)) {\n        JS_PiSetContinuationPreservedEmbedderData(\n            rt, e->continuation_preserved_embedder_data);\n        if (JS_HasException(ctx)) {\n            res = JS_EXCEPTION;\n            goto completed;\n        }\n    }\n    context_hook = rt->execution_context_hook;\n    context_opaque = rt->execution_context_opaque;\n    if (context_hook)\n        context_hook(ctx, true, e->execution_context, context_opaque);\n    res = e->job_func(e->ctx, e->argc, vc(e->argv));\n    if (context_hook && context_hook == rt->execution_context_hook &&\n        context_opaque == rt->execution_context_opaque)\n        context_hook(ctx, false, e->execution_context, context_opaque);\n    /* Successful V8 tasks clear the slot; the exception branch deliberately\n       does not. The enclosing Node checkpoint saves/resets/restores its outer\n       value once for the whole nonempty batch, not around each task. */\n    if (!JS_IsException(res) && !JS_HasException(ctx))\n        JS_PiSetContinuationPreservedEmbedderData(rt, JS_UNDEFINED);\n completed:\n    ret = JS_IsException(res) ? -1 : 1;\n    js_native_async_take_pending(ctx, &pending);\n    js_native_async_release(ctx, e->execution_context, &pending);\n    js_native_async_release(ctx, e->continuation_preserved_embedder_data, &pending);\n    for(i = 0; i < e->argc; i++)\n        js_native_async_release(ctx, e->argv[i], &pending);\n    js_native_async_release(ctx, res, &pending);\n    js_free(ctx, e);\n    if (pending.present) {\n        /* Restore an already produced exception; do not manufacture a new\n           throw from a retained data root. */\n        rt->current_exception = pending.reason;\n        ret = -1;\n    }\n    *pctx = ctx;\n    return ret;\n}\n\nstatic inline uint32_t atom_get_free(const JSAtomStruct *p)\n{\n    return (uintptr_t)p >> 1;\n}\n\nstatic inline bool atom_is_free(const JSAtomStruct *p)\n{\n    return (uintptr_t)p & 1;\n}"
+    },
+    {
+      "source": "Current linked QuickJS",
+      "line_start": 2986,
+      "line_end": 3023,
+      "purpose": "Runtime teardown owns raw queued-value release",
+      "text": "void JS_FreeRuntime(JSRuntime *rt)\n{\n    struct list_head *el, *el1;\n    bool leak = false;\n    int i;\n\n    rt->in_free = true;\n    JS_FreeValueRT(rt, rt->pi_javascript_execution_error);\n    rt->pi_javascript_execution_error = JS_UNDEFINED;\n    {\n        JSValue data = rt->continuation_preserved_embedder_data;\n        rt->continuation_preserved_embedder_data = JS_UNDEFINED;\n        JS_FreeValueRT(rt, data);\n    }\n    JS_FreeValueRT(rt, rt->execution_context);\n    JS_ClearKeptObjects(rt);\n    js_free_rt(rt, rt->kept_objects);\n    rt->kept_objects = NULL;\n    rt->kept_objects_capacity = 0;\n    JS_FreeValueRT(rt, rt->current_exception);\n\n    list_for_each_safe(el, el1, &rt->job_list) {\n        JSJobEntry *e = list_entry(el, JSJobEntry, link);\n        JS_FreeValueRT(rt, e->execution_context);\n        JS_FreeValueRT(rt, e->continuation_preserved_embedder_data);\n        for(i = 0; i < e->argc; i++)\n            JS_FreeValueRT(rt, e->argv[i]);\n        js_free_rt(rt, e);\n    }\n    init_list_head(&rt->job_list);\n\n    JS_RunGC(rt);\n\n#ifdef ENABLE_DUMPS // JS_DUMP_LEAKS\n    /* leaking objects */\n    if (check_dump_flag(rt, JS_DUMP_LEAKS)) {\n        bool header_done;\n        JSGCObjectHeader *p;"
+    },
+    {
+      "source": "Current linked QuickJS",
+      "line_start": 8513,
+      "line_end": 8537,
+      "purpose": "Current exception take/replace API",
+      "text": "JSValue JS_Throw(JSContext *ctx, JSValue obj)\n{\n    JSRuntime *rt = ctx->rt;\n    JS_FreeValue(ctx, rt->current_exception);\n    rt->current_exception = obj;\n    return JS_EXCEPTION;\n}\n\n/* return the pending exception (cannot be called twice). */\nJSValue JS_GetException(JSContext *ctx)\n{\n    JSValue val;\n    JSRuntime *rt = ctx->rt;\n    val = rt->current_exception;\n    rt->current_exception = JS_UNINITIALIZED;\n    return val;\n}\n\nbool JS_HasException(JSContext *ctx)\n{\n    return !JS_IsUninitialized(ctx->rt->current_exception);\n}\n\nstatic void dbuf_put_leb128(DynBuf *s, uint32_t v)\n{"
+    },
+    {
+      "source": "Current linked QuickJS",
+      "line_start": 59519,
+      "line_end": 59561,
+      "purpose": "Reaction has five arguments, no retained direct current promise metadata",
+      "text": "static JSValue promise_reaction_job(JSContext *ctx, int argc,\n                                    JSValueConst *argv)\n{\n    JSValueConst handler, func;\n    JSValue res, res2;\n    JSValueConst arg;\n    bool is_reject;\n\n    assert(argc == 5);\n    handler = argv[2];\n    is_reject = JS_ToBool(ctx, argv[3]);\n    arg = argv[4];\n\n    promise_trace(ctx, \"promise_reaction_job: is_reject=%d\\n\", is_reject);\n\n    if (JS_IsUndefined(handler)) {\n        /* An absent handler forwards an already settled value. In particular,\n           a rejection reason is DATA, not a new exception from a handler: its\n           existing uncatchable bit must not prevent rejection forwarding. */\n        res = js_dup(arg);\n    } else {\n        res = JS_Call(ctx, handler, JS_UNDEFINED, 1, &arg);\n        is_reject = JS_IsException(res);\n        if (is_reject) {\n            if (unlikely(JS_IsUncatchableError(ctx->rt->current_exception)))\n                return JS_EXCEPTION;\n            res = JS_GetException(ctx);\n        }\n    }\n    func = argv[is_reject];\n    /* as an extension, we support undefined as value to avoid\n       creating a dummy promise in the 'await' implementation of async\n       functions */\n    if (!JS_IsUndefined(func)) {\n        res2 = JS_Call(ctx, func, JS_UNDEFINED, 1, vc(&res));\n    } else {\n        res2 = JS_UNDEFINED;\n    }\n    JS_FreeValue(ctx, res);\n\n    return res2;\n}\n"
+    },
+    {
+      "source": "Current linked QuickJS",
+      "line_start": 59644,
+      "line_end": 59710,
+      "purpose": "Thenable BEFORE/AFTER currently runs before returning",
+      "text": "static JSValue js_promise_resolve_thenable_job(JSContext *ctx,\n                                               int argc, JSValueConst *argv)\n{\n    JSValueConst promise, thenable, then;\n    JSValue args[2] = { JS_UNDEFINED, JS_UNDEFINED };\n    JSValue res = JS_UNDEFINED, fatal = JS_UNDEFINED;\n    bool has_fatal = false;\n    JSRuntime *rt;\n\n    promise_trace(ctx, \"js_promise_resolve_thenable_job\\n\");\n\n    assert(argc == 3);\n    promise = argv[0];\n    thenable = argv[1];\n    then = argv[2];\n    if (js_create_resolving_functions(ctx, args, promise) < 0)\n        return JS_EXCEPTION;\n    rt = ctx->rt;\n    if (rt->promise_hook) {\n        rt->promise_hook(ctx, JS_PROMISE_HOOK_BEFORE, promise, JS_UNDEFINED,\n                         rt->promise_hook_opaque);\n        if (JS_HasException(ctx) &&\n            JS_IsUncatchableError(ctx->rt->current_exception)) {\n            fatal = JS_GetException(ctx);\n            goto fatal_cleanup;\n        }\n    }\n    res = JS_Call(ctx, then, thenable, 2, vc(args));\n    if (JS_HasException(ctx) &&\n        JS_IsUncatchableError(ctx->rt->current_exception)) {\n        /* Preserve paired AFTER notification and its existing view of the\n           current exception, but retain the first fatal before that hook can\n           consume or replace it. This duplicate does not allocate. */\n        fatal = js_dup(ctx->rt->current_exception);\n        has_fatal = true;\n    }\n    if (rt->promise_hook) {\n        rt->promise_hook(ctx, JS_PROMISE_HOOK_AFTER, promise, JS_UNDEFINED,\n                         rt->promise_hook_opaque);\n    }\n    if (!has_fatal && JS_HasException(ctx) &&\n        JS_IsUncatchableError(ctx->rt->current_exception)) {\n        fatal = JS_GetException(ctx);\n        has_fatal = true;\n    }\n    if (has_fatal)\n        goto fatal_cleanup;\n    if (JS_IsException(res)) {\n        JSValue error = JS_GetException(ctx);\n        res = JS_Call(ctx, args[1], JS_UNDEFINED, 1, vc(&error));\n        if (JS_HasException(ctx) &&\n            JS_IsUncatchableError(ctx->rt->current_exception)) {\n            fatal = JS_GetException(ctx);\n            JS_FreeValue(ctx, error);\n            goto fatal_cleanup;\n        }\n        JS_FreeValue(ctx, error);\n    }\n    JS_FreeValue(ctx, args[0]);\n    JS_FreeValue(ctx, args[1]);\n    return res;\n fatal_cleanup:\n    JS_FreeValue(ctx, res);\n    JS_FreeValue(ctx, args[0]);\n    JS_FreeValue(ctx, args[1]);\n    return JS_Throw(ctx, fatal);\n}"
+    },
+    {
+      "source": "Current Engine",
+      "line_start": 430,
+      "line_end": 446,
+      "purpose": "Generic invocation cancellation lifecycle",
+      "text": "    pub fn beginInvocation(self: *Engine) void {\n        self.requireNoNativeAdmission();\n        self.finishJob();\n        self.interrupts = 0;\n        self.cancelled.store(false, .release);\n        if (self.last_error) |message| self.gpa.free(message);\n        self.last_error = null;\n        if (self.captured_exception) |exception| self.freeValue(exception);\n        self.captured_exception = null;\n    }\n\n    pub fn cancel(self: *Engine) void {\n        self.cancelled.store(true, .seq_cst);\n        if (builtin.os.tag == .linux) {\n            const publication = @import(\"native_child_process_cancel_publication_linux.zig\");\n            const token = self.native_sync_cancel_token.load(.seq_cst);\n            if (token != publication.retiring_token) publication.notify(token);"
+    },
+    {
+      "source": "Current Engine",
+      "line_start": 740,
+      "line_end": 794,
+      "purpose": "Native first-fatal invocation owner",
+      "text": "    }\n\n    /// Host factory entry: no guest conversion/allocation before preserving a\n    /// real already-pending event. A prior captured diagnostic is only DATA.\n    pub fn checkNativeEntry(self: *Engine) !void {\n        if (!c.JS_HasException(self.context) and self.currentNativeFatal() == null) return;\n        self.native_exception_diagnostics_suppressed += 1;\n        defer self.native_exception_diagnostics_suppressed -= 1;\n        _ = self.nativeCallbackResult(c.pi_js_undefined());\n        self.captureException(self.context);\n        return error.JavaScriptException;\n    }\n    /// Stack-only current-event retention. No guest value or diagnostic slot\n    /// can publish into this list; only actual fatal event producers record.\n    pub const NativeInvocation = struct { previous: ?*NativeInvocation = null, first: ?c.JSValue = null, active: bool = false };\n    pub fn enterNativeInvocation(self: *Engine, invocation: *NativeInvocation) void {\n        std.debug.assert(!invocation.active);\n        const inherited = self.currentNativeFatal();\n        invocation.* = .{ .previous = self.native_fatal_invocation, .first = if (inherited) |first| c.JS_DupValue(self.context, first) else null, .active = true };\n        self.native_fatal_invocation = invocation;\n    }\n    fn currentNativeFatal(self: *Engine) ?c.JSValue {\n        var cursor = self.native_fatal_invocation;\n        while (cursor) |invocation| : (cursor = invocation.previous) if (invocation.first) |first| return first;\n        return null;\n    }\n    fn recordNativeFatal(self: *Engine, reason: c.JSValue) void {\n        const first = self.currentNativeFatal() orelse reason;\n        var cursor = self.native_fatal_invocation;\n        while (cursor) |invocation| : (cursor = invocation.previous) {\n            std.debug.assert(invocation.active);\n            if (invocation.first == null) invocation.first = c.JS_DupValue(self.context, first);\n        }\n    }\n    /// Consumes result exactly once. Pop BEFORE holder cleanup/return so no\n    /// suspended AF or late finalizer can retain an escaping stack pointer.\n    pub fn leaveNativeInvocation(self: *Engine, invocation: *NativeInvocation, result: c.JSValue) c.JSValue {\n        if (!invocation.active) return result;\n        std.debug.assert(self.native_fatal_invocation == invocation);\n        var owned: NativePending = .{ .reason = if (invocation.first) |first| c.JS_DupValue(self.context, first) else null, .fatal = invocation.first != null };\n        self.takeNativePending(&owned);\n        if (owned.reason != null) self.releaseNativeOwned(result, &owned);\n        if (invocation.first) |first| if (!owned.fatal) {\n            const displaced = owned.reason;\n            owned = .{ .reason = c.JS_DupValue(self.context, first), .fatal = true };\n            if (displaced) |old| self.releaseNativeOwned(old, &owned);\n        };\n        self.native_fatal_invocation = invocation.previous;\n        invocation.active = false;\n        const retained = invocation.first;\n        invocation.first = null;\n        if (retained) |first| self.releaseNativeOwned(first, &owned);\n        if (owned.reason) |reason| {\n            if (owned.fatal) c.JS_SetUncatchableError(self.context, reason);\n            return c.JS_Throw(self.context, reason);"
+    },
+    {
+      "source": "Current Engine",
+      "line_start": 1064,
+      "line_end": 1080,
+      "purpose": "Job caller propagates a C failure through captured diagnostic",
+      "text": "    /// after the queue empties or execution is interrupted; a batch boundary\n    /// alone must not release kept WeakRef targets.\n    pub fn runReadyJobs(self: *Engine, limit: usize) !usize {\n        var jobs: usize = 0;\n        while (jobs < limit and c.JS_IsJobPending(self.runtime)) {\n            var context: ?*c.JSContext = null;\n            if (self.progress_probe) |probe| probe.job_attempts +%= 1;\n            const status = c.JS_ExecutePendingJob(self.runtime, &context);\n            if (status < 0) {\n                self.captureException(context orelse self.context);\n                return error.JavaScriptException;\n            }\n            if (status == 0) break;\n            jobs += 1;\n        }\n        return jobs;\n    }"
+    },
+    {
+      "source": "Current Engine",
+      "line_start": 1216,
+      "line_end": 1221,
+      "purpose": "Cancellation and interrupt-budget share one callback result",
+      "text": "    fn interrupt(_: ?*c.JSRuntime, context_data: ?*anyopaque) callconv(.c) c_int {\n        const self: *Engine = @ptrCast(@alignCast(context_data.?));\n        if (self.cancelled.load(.acquire)) return 1;\n        self.interrupts += 1;\n        return if (self.interrupts > self.options.interrupt_budget) 1 else 0;\n    }"
+    },
+    {
+      "source": "Current linked QuickJS",
+      "line_start": 9607,
+      "line_end": 9632,
+      "purpose": "Generic callback interrupt publishes only mutable uncatchable InternalError, no dedicated native termination provenance",
+      "text": "static void JS_ThrowInterrupted(JSContext *ctx)\n{\n    if (ctx->pi_compiler_diagnostic && JS_HasException(ctx))\n        return;\n    JS_ThrowInternalError(ctx, \"interrupted\");\n    JS_SetUncatchableError(ctx, ctx->rt->current_exception);\n}\n\nstatic no_inline __exception int __js_poll_interrupts(JSContext *ctx)\n{\n    JSRuntime *rt = ctx->rt;\n    ctx->interrupt_counter = JS_INTERRUPT_COUNTER_INIT;\n    if (rt->interrupt_handler) {\n        if (rt->interrupt_handler(rt, rt->interrupt_opaque)) {\n            if (ctx->pi_compiler_diagnostic)\n                ctx->pi_compiler_diagnostic->interrupted = true;\n            JS_ThrowInterrupted(ctx);\n            return -1;\n        }\n    }\n    return 0;\n}\n\nstatic inline __exception int js_poll_interrupts(JSContext *ctx)\n{\n    if (unlikely(--ctx->interrupt_counter <= 0)) {"
+    }
+  ],
+  "required_implementation": [
+    "Separate dedicated termination request from the actual published native termination event. A request alone is not IsExecutionTerminating. Existing generic interrupt callback and native allocation-fatal producers remain unchanged.",
+    "Use private VM provenance that guest values cannot synthesize; preserve the real noncatchable event through C cleanup. Native query/cancel/checkpoint operations must inspect that native event, never arbitrary captured_exception DATA or a mutable public Error flag.",
+    "Guard actual VM call/construct/resume/poll entries for the active event. Add the dedicated request to actual polling while preserving ordinary interrupt policy. Native Engine capture/Scope handling must propagate termination distinctly rather than turn its private marker into a diagnostic JS value.",
+    "Retain actual currently executing job metadata through a terminating return. Current generic entries own execution_context, continuation data and argv; the current reaction format does not retain its direct result Promise/capability. Add only the original needed native metadata at genuine Promise enqueue sites.",
+    "Defer the terminating task's Promise AFTER notification until outer continuation restore and pending queue logical removal, matching actual OnTerminationDuringRunMicrotasks. Ordinary successful/fatal existing paths keep their original order; no duplicate AFTER.",
+    "Detach the old queued list before retiring any values. Clear current native job pointer before its hook/retirement. Release execution-context, continuation and argument entitlements exactly once with actual pending-event preservation; no queued guest job or capability hook runs during discard. Keep newly enqueued work from native cleanup separate from the detached old queue.",
+    "The Node batch owner restores its exact outer continuation first, calls genuine termination cleanup, then actual completed callbacks, and returns the terminating native outcome. Empty queues retain the original OnCompleted-before-no-progress behavior.",
+    "Native TryCatch HasTerminated/can_continue state and actual cancellation must be represented by native owners. Generic error.JavascriptException or captured JS data cannot substitute for them."
+  ],
+  "proposed_separate_API_roles": [
+    {
+      "name": "JS_PiRequestExecutionTermination",
+      "role": "dedicated native request only; thread/lifetime admission explicitly defined"
+    },
+    {
+      "name": "JS_PiIsExecutionTerminating",
+      "role": "allocation-free native actual-event query"
+    },
+    {
+      "name": "JS_PiCancelExecutionTermination",
+      "role": "clear dedicated request and actual event only"
+    },
+    {
+      "name": "JS_PiFinishTerminatedMicrotasks",
+      "role": "owner-thread active-task/queue cleanup after outer continuation restoration; requires actual native terminating event"
+    }
+  ],
+  "remaining_before_freeze": [
+    "Agree exact native token/capture ABI with Root; no provisional consumer stub.",
+    "Read all actual pending/catch/callback entry and active-Promise enqueue cutpoints for chosen implementation.",
+    "Add causal controls distinguishing ordinary uncatchable DATA, actual native fatal, generic interrupt, request-only and serviced native termination, including queue/current job finalizer ownership and cancellation/restoration."
+  ]
+}

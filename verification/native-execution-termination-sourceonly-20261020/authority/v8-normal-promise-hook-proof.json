@@ -1,0 +1,19 @@
+{
+  "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/runtime/runtime-promise.cc",
+  "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\v8-runtime-promise.v24.13.cc",
+  "sha256": "9F750D31091B37975B3F3F7A7CAE5136E97F3DA726631AE5F711FF98BBF1D7D6",
+  "bytes": 8083,
+  "operations": [
+    {
+      "start_byte": 4009,
+      "line": 108,
+      "body": "RUNTIME_FUNCTION(Runtime_PromiseHookBefore) {\n  HandleScope scope(isolate);\n  DCHECK_EQ(1, args.length());\n  DirectHandle<JSReceiver> promise = args.at<JSReceiver>(0);\n  if (IsJSPromise(*promise)) {\n    isolate->OnPromiseBefore(Cast<JSPromise>(promise));\n    RETURN_FAILURE_IF_EXCEPTION(isolate);\n  }\n  return ReadOnlyRoots(isolate).undefined_value();\n}"
+    },
+    {
+      "start_byte": 4364,
+      "line": 119,
+      "body": "RUNTIME_FUNCTION(Runtime_PromiseHookAfter) {\n  HandleScope scope(isolate);\n  DCHECK_EQ(1, args.length());\n  DirectHandle<JSReceiver> promise = args.at<JSReceiver>(0);\n  if (IsJSPromise(*promise)) {\n    isolate->OnPromiseAfter(Cast<JSPromise>(promise));\n    RETURN_FAILURE_IF_EXCEPTION(isolate);\n  }\n  return ReadOnlyRoots(isolate).undefined_value();\n}"
+    }
+  ],
+  "conclusion": "Both normal native hook entry points test IsJSPromise after the assembler unwraps PromiseCapability. A custom capability.promise that is a non-Promise receiver returns undefined without OnPromiseBefore/After."
+}

@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "status": "source_only_pending_finite_peer_and_actual_Engine_integration",
+  "bases": "bases.json",
+  "base_main": {
+    "completion": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+    "boundary": "D964A9D90440F5679FDC109C95057DF4AE19E8ECD6B51CCCC84B5A4E91C39862"
+  },
+  "required_apis": {
+    "pending_priority": "JS_PiNativePendingPriority(JSRuntime *, actual_pending_reason)",
+    "classified_pending": "JS_PiNativePendingReplaceClassified(rt, retained_pending, retained_generic_fatal, incoming_pending, incoming_generic_fatal)",
+    "private_token": "JS_PiIsExecutionTermination(actual_pending_token)",
+    "engine": "checked/checkNativeEntry/captureException/native invocation preserve actual token and explicit error.ExecutionTerminated, never captured DATA; fail gateways preserve that error"
+  },
+  "api_peer": {
+    "classification": "E072CAB7AE1C96D6584A9B6BBD975D4607AA1730C5532BF44FC863D02BA27646",
+    "classified_reducer": "BDF052BB44E9447D3ABA2E6975DA2F7A4188A08A342610CD1BC4257F498CEBE4"
+  },
+  "edits": [
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "label": "preserve actual pending provenance and dynamic private-event priority",
+      "before": "    chosen: ?c.JSValue = null,\n    fatal: bool = false,\n    fn merge",
+      "after": "    chosen: ?c.JSValue = null,\n    // Only actual pending owners may use the native termination reducer.\n    // A thrown Action or captured diagnostic remains DATA even when flagged.\n    chosen_pending: bool = false,\n    fatal: bool = false, // Established generic fatal authority, not a token bit.\n    fn isFatal(self: *const Retirement) bool {\n        if (self.fatal) return true;\n        if (self.chosen_pending) if (self.chosen) |reason| {\n            if (c.JS_PiIsExecutionTermination(reason))\n                return c.JS_PiNativePendingPriority(c.JS_GetRuntime(self.engine.context), reason) > 0;\n        };\n        return false;\n    }\n    fn merge",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "label": "reduce actual owners without reclassifying DATA or mutating generic flags",
+      "before": "        const fatal = c.JS_IsUncatchableError(reason);\n        if (self.chosen == null or (!self.fatal and fatal)) {\n            const displaced = self.chosen;\n            self.chosen = reason;\n            self.fatal = fatal;\n",
+      "after": "        const fatal = c.JS_IsUncatchableError(reason);\n        var replace = self.chosen == null;\n        if (self.chosen) |previous| {\n            replace = if (self.chosen_pending)\n                c.JS_PiNativePendingReplaceClassified(c.JS_GetRuntime(self.engine.context),\n                    previous, self.fatal, reason, fatal)\n            else c.JS_PiNativePendingPriority(c.JS_GetRuntime(self.engine.context), reason) > 0;\n        }\n        if (replace) {\n            const displaced = self.chosen;\n            self.chosen = reason;\n            self.chosen_pending = true;\n            self.fatal = fatal;\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "label": "cancelled private owner no longer suppresses later actual cleanup events",
+      "before": "                if (!self.fatal) _ = self.engine.nativeCallbackResult(c.pi_js_undefined());",
+      "after": "                if (!self.isFatal()) _ = self.engine.nativeCallbackResult(c.pi_js_undefined());",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "label": "publish selected native termination without guest Action materialization",
+      "before": "        if (self.owner.chosen) |reason| {\n            self.owner.chosen = null;\n            if (self.owner.fatal) {\n                _ = try self.owner.engine.checked(c.JS_Throw(self.owner.engine.context, reason));\n                unreachable;\n            }\n            return .{ .thrown = reason };\n        }",
+      "after": "        if (self.owner.chosen) |reason| {\n            const actual_pending = self.owner.chosen_pending;\n            self.owner.chosen = null;\n            self.owner.chosen_pending = false;\n            if (self.owner.fatal or (actual_pending and c.JS_PiIsExecutionTermination(reason))) {\n                // A private completion, including cancelled native unwind,\n                // reaches Engine's ExecutionTerminated path, never Action DATA.\n                if (self.owner.fatal) c.JS_SetUncatchableError(self.owner.engine.context, reason);\n                _ = try self.owner.engine.checked(c.JS_Throw(self.owner.engine.context, reason));\n                unreachable;\n            }\n            return .{ .thrown = reason };\n        }",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+      "label": "record actual pending provenance separately from diagnostic DATA",
+      "before": "    reason: ?c.JSValue = null,\r\n    fatal: bool = false,\r\n",
+      "after": "    reason: ?c.JSValue = null,\r\n    reason_pending: bool = false,\r\n    fatal: bool = false, // Cached generic classification; private events are dynamic.\r\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+      "label": "return explicit private completion after observing actual pending",
+      "before": "            self.observe(generation);return error.JavaScriptException;\r\n",
+      "after": "            self.observe(generation);return self.completionError();\r\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+      "label": "classify only actual owners with cached generic authority and dynamic termination",
+      "before": "    fn select(self:*Boundary,value:c.JSValue,fatal:bool)void{\r\n        if(self.reason)|previous|{\r\n            if(!self.fatal and fatal){self.reason=value;self.fatal=true;var old=previous;self.release(&old);}\r\n            else {var old=value;self.release(&old);}\r\n        }else{self.reason=value;self.fatal=fatal;}\r\n    }\r\n",
+      "after": "    fn isTermination(self:*const Boundary)bool{\r\n        return self.reason_pending and self.reason!=null and c.JS_PiIsExecutionTermination(self.reason.?);\r\n    }\r\n    fn isFatal(self:*const Boundary)bool{\r\n        return self.fatal or (self.isTermination() and\r\n            c.JS_PiNativePendingPriority(c.JS_GetRuntime(self.engine.context),self.reason.?)>0);\r\n    }\r\n    fn completionError(self:*const Boundary)anyerror{\r\n        return if(self.isTermination()) error.ExecutionTerminated else error.JavaScriptException;\r\n    }\r\n    fn select(self:*Boundary,value:c.JSValue)void{\r\n        // This entry consumes an actual pending reason. Escaping diagnostics\r\n        // enter separately below and never supply native fatal authority.\r\n        const fatal=c.JS_IsUncatchableError(value);\r\n        if(self.reason)|previous|{\r\n            const replace=if(self.reason_pending)\r\n                c.JS_PiNativePendingReplaceClassified(c.JS_GetRuntime(self.engine.context),previous,self.fatal,value,fatal)\r\n            else c.JS_PiNativePendingPriority(c.JS_GetRuntime(self.engine.context),value)>0;\r\n            if(replace){self.reason=value;self.reason_pending=true;self.fatal=fatal;var old=previous;self.release(&old);}\r\n            else {var old=value;self.release(&old);}\r\n        }else{self.reason=value;self.reason_pending=true;self.fatal=fatal;}\r\n    }\r\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+      "label": "keep private cancellation dynamic at reentry",
+      "before": "        if(!self.fatal)_=self.engine.nativeCallbackResult(c.pi_js_undefined());",
+      "after": "        if(!self.isFatal())_=self.engine.nativeCallbackResult(c.pi_js_undefined());",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+      "label": "select actual pending through classified reducer",
+      "before": "            self.select(value,c.JS_IsUncatchableError(value));",
+      "after": "            self.select(value);",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+      "label": "retain diagnostic DATA provenance",
+      "before": "            self.engine.captured_exception=null;self.reason=value;self.fatal=false;",
+      "after": "            self.engine.captured_exception=null;self.reason=value;self.reason_pending=false;self.fatal=false;",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+      "label": "preserve native completion at rejected-root boundary",
+      "before": "    pub fn rejectOwned(self:*Boundary,value:c.JSValue)anyerror{var owned=value;self.release(&owned);return error.JavaScriptException;}",
+      "after": "    pub fn rejectOwned(self:*Boundary,value:c.JSValue)anyerror{var owned=value;self.release(&owned);return self.completionError();}",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+      "label": "permit later real allocator event to override only cancelled private completion",
+      "before": "        if(host_error) |err| { if(err==error.OutOfMemory and !self.fatal){_=self.engine.throwNativeOutOfMemoryFatal();self.observe(null);} }",
+      "after": "        if(host_error) |err| { if(err==error.OutOfMemory and !self.isFatal()){_=self.engine.throwNativeOutOfMemoryFatal();self.observe(null);} }",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+      "label": "publish native termination without any public Error flag or DATA conversion",
+      "before": "        if(self.reason)|value|{\r\n            self.reason=null;\r\n            if(self.fatal)c.JS_SetUncatchableError(self.engine.context,value)\r\n            else c.JS_ClearUncatchableError(self.engine.context,value);\r\n            _=self.engine.checked(c.JS_Throw(self.engine.context,value)) catch |err|return err;\r\n",
+      "after": "        if(self.reason)|value|{\r\n            const termination=self.isTermination();\r\n            self.reason=null;self.reason_pending=false;\r\n            if(!termination){\r\n                if(self.fatal)c.JS_SetUncatchableError(self.engine.context,value)\r\n                else c.JS_ClearUncatchableError(self.engine.context,value);\r\n            }\r\n            _=self.engine.checked(c.JS_Throw(self.engine.context,value)) catch |err|return err;\r\n",
+      "count": 1
+    }
+  ],
+  "scope": [
+    "Only actual pending provenance enters either native classifier/reducer.",
+    "Returned/awaited/rejected Action payloads and captured diagnostics remain DATA regardless of public flags.",
+    "Generic classification is cached and never rewritten for comparison; private lease priority remains dynamic.",
+    "Selected private completion including cancelled native unwind is republished only to Engine's ExecutionTerminated path, never Action.thrown.",
+    "Existing Source close/catch/finally precedence is not replaced by native retirement."
+  ],
+  "execution": false
+}

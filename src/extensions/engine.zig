@@ -511,8 +511,7 @@ pub const Engine = struct {
         var consumed = false;
         errdefer if (!consumed) self.freeValue(value);
         if (c.JS_ResolveModule(self.context, value) < 0) {
-            self.captureException(self.context);
-            return error.JavaScriptException;
+            return self.captureException(self.context);
         }
         consumed = true;
         const pending = try self.checked(c.JS_EvalFunction(self.context, value));
@@ -543,14 +542,12 @@ pub const Engine = struct {
         module_created = true;
         self.native_module_values.putAssumeCapacity(owned_name, c.JS_DupValue(self.context, exports));
         if (c.JS_SetModulePrivateValue(self.context, module, c.JS_DupValue(self.context, exports)) < 0) {
-            self.captureException(self.context);
-            return error.JavaScriptException;
+            return self.captureException(self.context);
         }
         var properties: [*c]c.JSPropertyEnum = null;
         var count: u32 = 0;
         if (c.JS_GetOwnPropertyNames(self.context, &properties, &count, exports, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) {
-            self.captureException(self.context);
-            return error.JavaScriptException;
+            return self.captureException(self.context);
         }
         defer c.JS_FreePropertyEnum(self.context, properties, count);
         for (0..count) |index| {
@@ -732,9 +729,11 @@ pub const Engine = struct {
     pub fn checked(self: *Engine, value: c.JSValue) !c.JSValue {
         const result = self.nativeCallbackResult(value);
         if (c.JS_IsException(result)) {
-            if (!c.JS_HasException(self.context)) _ = c.JS_ThrowInternalError(self.context, "Native callback returned exception without a pending reason");
-            self.captureException(self.context);
-            return error.JavaScriptException;
+            if (!c.JS_HasException(self.context)) {
+                if (c.JS_PiIsExecutionTermination(result)) _ = c.JS_Throw(self.context, result)
+                else _ = c.JS_ThrowInternalError(self.context, "Native callback returned exception without a pending reason");
+            }
+            return self.captureException(self.context);
         }
         return result;
     }
@@ -742,12 +741,10 @@ pub const Engine = struct {
     /// Host factory entry: no guest conversion/allocation before preserving a
     /// real already-pending event. A prior captured diagnostic is only DATA.
     pub fn checkNativeEntry(self: *Engine) !void {
-        if (!c.JS_HasException(self.context) and self.currentNativeFatal() == null) return;
         self.native_exception_diagnostics_suppressed += 1;
         defer self.native_exception_diagnostics_suppressed -= 1;
-        _ = self.nativeCallbackResult(c.pi_js_undefined());
-        self.captureException(self.context);
-        return error.JavaScriptException;
+        const result = self.nativeCallbackResult(c.pi_js_undefined());
+        if (c.JS_IsException(result)) return self.captureException(self.context);
     }
     /// Stack-only current-event retention. No guest value or diagnostic slot
     /// can publish into this list; only actual fatal event producers record.
@@ -760,7 +757,13 @@ pub const Engine = struct {
     }
     fn currentNativeFatal(self: *Engine) ?c.JSValue {
         var cursor = self.native_fatal_invocation;
-        while (cursor) |invocation| : (cursor = invocation.previous) if (invocation.first) |first| return first;
+        while (cursor) |invocation| : (cursor = invocation.previous) if (invocation.first) |first| {
+            // Generic first-fatal authority is historical. A private event is
+            // different: Cancel can invalidate its lease while this native
+            // record still owns the already-aborted completion.
+            if (!c.JS_PiIsExecutionTermination(first) or
+                c.JS_PiNativePendingPriority(self.runtime, first) > 0) return first;
+        };
         return null;
     }
     fn recordNativeFatal(self: *Engine, reason: c.JSValue) void {
@@ -768,7 +771,14 @@ pub const Engine = struct {
         var cursor = self.native_fatal_invocation;
         while (cursor) |invocation| : (cursor = invocation.previous) {
             std.debug.assert(invocation.active);
-            if (invocation.first == null) invocation.first = c.JS_DupValue(self.context, first);
+            if (invocation.first) |previous| {
+                if (!c.JS_PiIsExecutionTermination(previous) or
+                    c.JS_PiNativePendingPriority(self.runtime, previous) > 0) continue;
+                // The private immediate has no finalizer. Publish the new
+                // actual owner before retiring the cancelled completion.
+                invocation.first = c.JS_DupValue(self.context, first);
+                self.freeValue(previous);
+            } else invocation.first = c.JS_DupValue(self.context, first);
         }
     }
     /// Consumes result exactly once. Pop BEFORE holder cleanup/return so no
@@ -776,10 +786,12 @@ pub const Engine = struct {
     pub fn leaveNativeInvocation(self: *Engine, invocation: *NativeInvocation, result: c.JSValue) c.JSValue {
         if (!invocation.active) return result;
         std.debug.assert(self.native_fatal_invocation == invocation);
-        var owned: NativePending = .{ .reason = if (invocation.first) |first| c.JS_DupValue(self.context, first) else null, .fatal = invocation.first != null };
+        const entry_first = self.currentNativeFatal();
+        var owned: NativePending = .{ .reason = if (entry_first) |reason| c.JS_DupValue(self.context, reason) else null, .fatal = entry_first != null };
         self.takeNativePending(&owned);
         if (owned.reason != null) self.releaseNativeOwned(result, &owned);
-        if (invocation.first) |first| if (!owned.fatal) {
+        if (invocation.first) |first| if (!owned.isFatal(self.runtime) and
+            (!c.JS_PiIsExecutionTermination(first) or c.JS_PiNativePendingPriority(self.runtime, first) > 0)) {
             const displaced = owned.reason;
             owned = .{ .reason = c.JS_DupValue(self.context, first), .fatal = true };
             if (displaced) |old| self.releaseNativeOwned(old, &owned);
@@ -789,10 +801,7 @@ pub const Engine = struct {
         const retained = invocation.first;
         invocation.first = null;
         if (retained) |first| self.releaseNativeOwned(first, &owned);
-        if (owned.reason) |reason| {
-            if (owned.fatal) c.JS_SetUncatchableError(self.context, reason);
-            return c.JS_Throw(self.context, reason);
-        }
+        if (owned.reason != null) return self.throwNativePending(&owned);
         return result;
     }
     /// Consumes result. A native finalizer can publish an actual event while
@@ -801,15 +810,21 @@ pub const Engine = struct {
         const first = self.currentNativeFatal();
         var owned: NativePending = .{ .reason = if (first) |reason| c.JS_DupValue(self.context, reason) else null, .fatal = first != null };
         self.takeNativePending(&owned);
+        // An earlier owned actual event has the same pending-entry priority
+        // as one still in the VM slot. Do not service a request across it or
+        // reclassify its cached generic status by publishing and retaking it.
+        if (owned.reason == null) {
+            _ = c.JS_PiCheckExecutionTermination(self.context);
+            self.takeNativePending(&owned);
+        }
         if (owned.reason == null) return result;
         self.releaseNativeOwned(result, &owned);
-        if (self.currentNativeFatal()) |actual| if (!owned.fatal) {
+        if (self.currentNativeFatal()) |actual| if (!owned.isFatal(self.runtime)) {
             const displaced = owned.reason.?;
             owned = .{ .reason = c.JS_DupValue(self.context, actual), .fatal = true };
             self.releaseNativeOwned(displaced, &owned);
         };
-        if (owned.fatal) c.JS_SetUncatchableError(self.context, owned.reason.?);
-        return c.JS_Throw(self.context, owned.reason.?);
+        return self.throwNativePending(&owned);
     }
 
     /// Remember native allocator failures crossing a C callback by object
@@ -823,7 +838,31 @@ pub const Engine = struct {
     pub fn throwNativeOutOfMemoryFatal(self: *Engine) c.JSValue {
         return self.throwNativeOutOfMemoryMode(true);
     }
-    const NativePending = struct { reason: ?c.JSValue = null, fatal: bool = false };
+    const NativePending = struct {
+        reason: ?c.JSValue = null,
+        fatal: bool = false,
+        actual_event: bool = true,
+        fn isFatal(self: *const NativePending, runtime: *c.JSRuntime) bool {
+            const reason = self.reason orelse return false;
+            if (!self.actual_event) return false;
+            return if (c.JS_PiIsExecutionTermination(reason))
+                c.JS_PiNativePendingPriority(runtime, reason) > 0
+            else self.fatal;
+        }
+    };
+    fn nativePendingReplace(self: *Engine, owned: *const NativePending, incoming: c.JSValue, incoming_fatal: bool) bool {
+        const retained = owned.reason orelse return true;
+        if (!owned.actual_event) return incoming_fatal;
+        return c.JS_PiNativePendingReplaceClassified(self.runtime,
+            retained, owned.fatal, incoming, incoming_fatal);
+    }
+    fn throwNativePending(self: *Engine, owned: *NativePending) c.JSValue {
+        const reason = owned.reason.?;
+        owned.reason = null;
+        if (owned.fatal and !c.JS_PiIsExecutionTermination(reason))
+            c.JS_SetUncatchableError(self.context, reason);
+        return c.JS_Throw(self.context, reason);
+    }
     fn takeNativePending(self: *Engine, owned: *NativePending) void {
         self.takeNativePendingAfterRelease(owned, null);
     }
@@ -831,25 +870,22 @@ pub const Engine = struct {
         var release_generation = boundary;
         while (c.JS_HasException(self.context)) {
             const next = c.JS_GetException(self.context);
-            // This is an owned ACTUAL pending event, not captured diagnostics,
-            // a returned value or PromiseResult DATA. Qualify a private native
-            // producer only against the generation BEFORE this exact release.
+            // Only actual pending ownership enters this reducer. A captured
+            // diagnostic or rejected Promise value never supplies authority.
             if (release_generation) |generation| {
                 const tagged = c.pi_js_native_allocation_error_generation(next);
                 const distance = tagged -% generation;
                 if (tagged != 0 and distance != 0 and distance <= self.native_allocation_generation -% generation)
                     c.JS_SetUncatchableError(self.context, next);
             }
-            const fatal = c.JS_IsUncatchableError(next);
-            // Publish before retiring a displaced ordinary reason: its own
-            // finalizer may produce another actual fatal. First fatal wins.
+            const fatal = c.JS_PiNativePendingPriority(self.runtime, next) > 0;
             if (fatal) self.recordNativeFatal(next);
             if (owned.reason == null) {
                 owned.* = .{ .reason = next, .fatal = fatal };
                 release_generation = null;
-            } else if (!owned.fatal and fatal) {
+            } else if (self.nativePendingReplace(owned, next, fatal)) {
                 const displaced = owned.reason.?;
-                owned.* = .{ .reason = next, .fatal = true };
+                owned.* = .{ .reason = next, .fatal = fatal };
                 release_generation = self.native_allocation_generation;
                 self.freeValue(displaced);
             } else {
@@ -868,10 +904,7 @@ pub const Engine = struct {
         const first = self.currentNativeFatal();
         var owned: NativePending = .{ .reason = if (first) |reason| c.JS_DupValue(self.context, reason) else null, .fatal = first != null };
         self.takeNativePending(&owned);
-        if (owned.fatal) {
-            c.JS_SetUncatchableError(self.context, owned.reason.?);
-            return c.JS_Throw(self.context, owned.reason.?);
-        }
+        if (owned.isFatal(self.runtime)) return self.throwNativePending(&owned);
         const prior = owned.reason;
         _ = c.JS_ThrowOutOfMemory(self.context);
         const exception = c.JS_GetException(self.context);
@@ -890,8 +923,7 @@ pub const Engine = struct {
         if (prior) |old| self.releaseNativeOwned(old, &owned);
         if (previous) |old| self.releaseNativeOwned(old, &owned);
         self.takeNativePending(&owned);
-        if (owned.fatal) c.JS_SetUncatchableError(self.context, owned.reason.?);
-        return c.JS_Throw(self.context, owned.reason.?);
+        return self.throwNativePending(&owned);
     }
     pub fn nativeAllocationError(self: *Engine, err: anyerror, generation: u64) anyerror {
         if (err == error.JavaScriptException and generation != self.native_allocation_generation) {
@@ -915,9 +947,16 @@ pub const Engine = struct {
 
     /// Native callbacks preserve the user's exception object and identity.
     pub fn throwCaptured(self: *Engine) c.JSValue {
-        if (c.JS_HasException(self.context)) return c.JS_Throw(self.context, c.JS_GetException(self.context));
+        const pending = self.nativeCallbackResult(c.pi_js_undefined());
+        if (c.JS_IsException(pending)) return pending;
         if (self.captured_exception) |exception| return c.JS_Throw(self.context, c.JS_DupValue(self.context, exception));
         return c.JS_ThrowInternalError(self.context, "Native callback failed without an exception value");
+    }
+
+    /// Propagate an already-observed native termination failure without a
+    /// diagnostic or a new event, including after its actual event was cancelled.
+    pub fn throwExecutionTerminated(self: *Engine) c.JSValue {
+        return self.nativeCallbackResult(c.JS_PiNativeTerminationResult());
     }
 
     pub fn freeValue(self: *Engine, value: c.JSValue) void {
@@ -933,8 +972,7 @@ pub const Engine = struct {
         const native = try self.checked(c.JS_NewCFunction(self.context, function, name.ptr, arity));
         // SetProperty consumes native on both its success and failure paths.
         if (c.JS_SetPropertyStr(self.context, global, name.ptr, native) < 0) {
-            self.captureException(self.context);
-            return error.JavaScriptException;
+            return self.captureException(self.context);
         }
     }
 
@@ -988,8 +1026,7 @@ pub const Engine = struct {
         var length: usize = 0;
         const bytes = c.JS_ToCStringLen(self.context, &length, value);
         if (bytes == null) {
-            self.captureException(self.context);
-            return error.JavaScriptException;
+            return self.captureException(self.context);
         }
         defer c.JS_FreeCString(self.context, bytes);
         return self.gpa.dupe(u8, bytes[0..length]);
@@ -1069,10 +1106,8 @@ pub const Engine = struct {
             var context: ?*c.JSContext = null;
             if (self.progress_probe) |probe| probe.job_attempts +%= 1;
             const status = c.JS_ExecutePendingJob(self.runtime, &context);
-            if (status < 0) {
-                self.captureException(context orelse self.context);
-                return error.JavaScriptException;
-            }
+            if (status == c.JS_PI_JOB_TERMINATED) return error.ExecutionTerminated;
+            if (status < 0) return self.captureException(context orelse self.context);
             if (status == 0) break;
             jobs += 1;
         }
@@ -1118,10 +1153,8 @@ pub const Engine = struct {
             var context: ?*c.JSContext = null;
             if (self.progress_probe) |probe| probe.job_attempts +%= 1;
             const status = c.JS_ExecutePendingJob(self.runtime, &context);
-            if (status < 0) {
-                self.captureException(context orelse self.context);
-                return error.JavaScriptException;
-            }
+            if (status == c.JS_PI_JOB_TERMINATED) return error.ExecutionTerminated;
+            if (status < 0) return self.captureException(context orelse self.context);
             if (status == 0) {
                 if (self.progress_probe) |probe| probe.empty_job_polls +%= 1;
                 // The promise may span another timer/I/O turn. The current
@@ -1149,8 +1182,7 @@ pub const Engine = struct {
         return switch (c.JS_PromiseState(self.context, value)) {
             c.JS_PROMISE_REJECTED => blk: {
                 const reason = c.JS_PromiseResult(self.context, value);
-                self.captureValue(self.context, reason, false);
-                break :blk error.JavaScriptException;
+                break :blk self.captureValue(self.context, reason, false);
             },
             c.JS_PROMISE_FULFILLED => c.JS_PromiseResult(self.context, value),
             else => c.JS_DupValue(self.context, value),
@@ -1163,17 +1195,23 @@ pub const Engine = struct {
         if (!c.JS_IsJobPending(self.runtime) and !@import("native_async_scope.zig").isActive(self)) c.JS_ClearKeptObjects(self.runtime);
     }
 
-    fn captureException(self: *Engine, context: *c.JSContext) void {
+    fn captureException(self: *Engine, context: *c.JSContext) anyerror {
         const exception = c.JS_GetException(context);
-        self.captureValue(context, exception, true);
+        return self.captureValue(context, exception, true);
     }
 
     /// Consumes exception. actual_event is supplied only by JS_GetException;
     /// settled Promise rejection DATA never gains fatal authority from its bit.
-    fn captureValue(self: *Engine, context: *c.JSContext, exception: c.JSValue, actual_event: bool) void {
-        var owned: NativePending = .{ .reason = exception, .fatal = actual_event and c.JS_IsUncatchableError(exception) };
-        if (owned.fatal) self.recordNativeFatal(exception);
+    fn captureValue(self: *Engine, context: *c.JSContext, exception: c.JSValue, actual_event: bool) anyerror {
+        var owned: NativePending = .{
+            .reason = exception,
+            .fatal = actual_event and c.JS_PiNativePendingPriority(self.runtime, exception) > 0,
+            .actual_event = actual_event,
+        };
+        if (owned.isFatal(self.runtime)) self.recordNativeFatal(exception);
         if (self.currentNativeFatal()) |first| {
+            if (actual_event) _ = c.JS_PiNativePendingReplaceClassified(self.runtime,
+                first, true, exception, owned.fatal);
             owned = .{ .reason = c.JS_DupValue(context, first), .fatal = true };
             self.releaseNativeOwned(exception, &owned);
         }
@@ -1182,11 +1220,12 @@ pub const Engine = struct {
         // are still inside a guest try/catch. Capturing their identity must
         // not invoke user ToString code before that catch gets the exception.
         var diagnostic_message: ?[]u8 = null;
-        if (self.native_exception_diagnostics_suppressed == 0 and !owned.fatal) {
+        if (self.native_exception_diagnostics_suppressed == 0 and
+            !owned.isFatal(self.runtime) and !c.JS_PiIsExecutionTermination(owned.reason.?)) {
             const text = c.JS_ToCString(context, owned.reason.?);
             self.takeNativePending(&owned);
             if (text != null) {
-                if (!owned.fatal) diagnostic_message = self.gpa.dupe(u8, std.mem.span(text)) catch null;
+                if (!owned.isFatal(self.runtime) and !c.JS_PiIsExecutionTermination(owned.reason.?)) diagnostic_message = self.gpa.dupe(u8, std.mem.span(text)) catch null;
                 c.JS_FreeCString(context, text);
                 self.takeNativePending(&owned);
             }
@@ -1206,11 +1245,17 @@ pub const Engine = struct {
                 self.gpa.free(message);
             }
         }
-        if (owned.fatal) {
+        if (c.JS_PiIsExecutionTermination(owned.reason.?)) {
+            if (diagnostic_message) |message| self.gpa.free(message);
+            _ = self.throwNativePending(&owned);
+            return error.ExecutionTerminated;
+        }
+        if (owned.isFatal(self.runtime)) {
             if (diagnostic_message) |message| self.gpa.free(message);
             c.JS_SetUncatchableError(context, owned.reason.?);
         } else self.last_error = diagnostic_message;
         self.captured_exception = owned.reason.?;
+        return error.JavaScriptException;
     }
 
     fn interrupt(_: ?*c.JSRuntime, context_data: ?*anyopaque) callconv(.c) c_int {

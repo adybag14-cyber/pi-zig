@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "status": "source_only_peer_closed_uncompiled",
+  "base_commit": "09a0106056e477db7da7da903cae3c55f251410f",
+  "purpose": "Keep the actual partial native PackageConfig alive on the binding-only invalid-parse return so original Error creation and Set.Check can precede its retirement.",
+  "paths": [
+    {
+      "path": "src/extensions/native_node_package_json_parser.cpp",
+      "sha256": "0CFCC94234E4D77A98EBCA9A54B936AA7C7EE58BAC69564518C4E9C5F74CA982",
+      "bytes": 11571
+    },
+    {
+      "path": "src/extensions/native_node_package_json_parser.h",
+      "sha256": "48ABD313181A409DD521166D25C39E957FAD6FD0DA594E4CD1A666C45FE43EEE",
+      "bytes": 3025
+    },
+    {
+      "path": "src/native_node_package_json_parser_test.zig",
+      "sha256": "02BCE2014C86ADF79E6CC9053D0B4FC21E11BED30269949FB5084F2A889C800E",
+      "bytes": 23097
+    },
+    {
+      "path": "verification/native-package-json-binding-sourceonly-20261020/retained-invalid-successor.json",
+      "sha256": "6CB77D1993D16C4B4E9FD116592FB7389947E9BFCE9DB52F6E8C1CAF6820DEB4",
+      "bytes": 10572
+    }
+  ],
+  "interfaces": {
+    "raw_entry": "pi_node_package_json_parse",
+    "raw_contract": "Unchanged: invalid output is null and native Config is retired before return.",
+    "binding_entry": "pi_node_package_json_parse_retained",
+    "binding_contract": "OK and INVALID transfer one independently owned Config; MEMORY returns null, retires any partial transfer, and poisons parser reuse."
+  },
+  "controls": {
+    "root": "src/native_node_package_json_parser_test.zig",
+    "declarations": 23,
+    "old_twenty_byte_prefix_unchanged": true,
+    "new_controls": [
+      21,
+      22,
+      23
+    ],
+    "filter": "native package JSON parser",
+    "target": "build-native-node-package-json-parser",
+    "build_changes": 0,
+    "existing_build_intake": "build-intake.json"
+  },
+  "peers": [
+    {
+      "reviewer": "sdk_owners",
+      "scope": "All thirteen original invalid exits and control 21; exact C/H inverse; field loop/pad/BOM/capacity unchanged.",
+      "result": "closed",
+      "pins": "0CFCC942 / 48ABD313 / 02BCE201"
+    },
+    {
+      "reviewer": "vm_foundation",
+      "scope": "parseResult output initialization, actual sticky allocation failure reducer, native Config release/destroy, Fixture/Budget and controls 22–23.",
+      "result": "closed",
+      "pins": "0CFCC942 / 48ABD313 / 02BCE201 / 6CB77D19"
+    }
+  ],
+  "limits": [
+    "No native build, AST check, Node/reference run, test runtime, generator or formatter execution.",
+    "This unit does not implement or qualify the subsequent JavaScript Error, inherited code Set.Check, actual package binding, permissions, Ada URL conversion, physical cache or complete loader graph.",
+    "The committed parser20 manifest and original build proposal remain immutable; this successor adds three control declarations under the unchanged actual target/filter."
+  ],
+  "native_execution": false,
+  "qualification": false
+}

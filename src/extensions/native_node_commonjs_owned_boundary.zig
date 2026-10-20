@@ -6,7 +6,8 @@ pub const Boundary = struct {
     engine: *v.em.Engine,
     previous: ?c.JSValue,
     reason: ?c.JSValue = null,
-    fatal: bool = false,
+    reason_pending: bool = false,
+    fatal: bool = false, // Cached generic classification; private events are dynamic.
     invocation: v.em.Engine.NativeInvocation = .{},
     finished: bool = false,
     pub fn begin(engine: *v.em.Engine) Boundary {
@@ -29,20 +30,36 @@ pub const Boundary = struct {
     pub fn checkPendingSince(self:*Boundary,generation:?u64)!void{
         self.start();_=self.engine.nativeCallbackResult(c.pi_js_undefined());
         if(c.JS_HasException(self.engine.context)){
-            self.observe(generation);return error.JavaScriptException;
+            self.observe(generation);return self.completionError();
         }
     }
-    fn select(self:*Boundary,value:c.JSValue,fatal:bool)void{
+    fn isTermination(self:*const Boundary)bool{
+        return self.reason_pending and self.reason!=null and c.JS_PiIsExecutionTermination(self.reason.?);
+    }
+    pub fn isFatal(self:*const Boundary)bool{
+        return self.fatal or (self.isTermination() and
+            c.JS_PiNativePendingPriority(c.JS_GetRuntime(self.engine.context),self.reason.?)>0);
+    }
+    fn completionError(self:*const Boundary)anyerror{
+        return if(self.isTermination()) error.ExecutionTerminated else error.JavaScriptException;
+    }
+    fn select(self:*Boundary,value:c.JSValue)void{
+        // This entry consumes an actual pending reason. Escaping diagnostics
+        // enter separately below and never supply native fatal authority.
+        const fatal=c.JS_IsUncatchableError(value);
         if(self.reason)|previous|{
-            if(!self.fatal and fatal){self.reason=value;self.fatal=true;var old=previous;self.release(&old);}
+            const replace=if(self.reason_pending)
+                c.JS_PiNativePendingReplaceClassified(c.JS_GetRuntime(self.engine.context),previous,self.fatal,value,fatal)
+            else c.JS_PiNativePendingPriority(c.JS_GetRuntime(self.engine.context),value)>0;
+            if(replace){self.reason=value;self.reason_pending=true;self.fatal=fatal;var old=previous;self.release(&old);}
             else {var old=value;self.release(&old);}
-        }else{self.reason=value;self.fatal=fatal;}
+        }else{self.reason=value;self.reason_pending=true;self.fatal=fatal;}
     }
     fn observe(self:*Boundary,boundary:?u64)void{
         self.start();
         // This surfaces the independently recorded actual producer. A newly
         // captured PromiseResult cannot publish into NativeInvocation.first.
-        if(!self.fatal)_=self.engine.nativeCallbackResult(c.pi_js_undefined());
+        if(!self.isFatal())_=self.engine.nativeCallbackResult(c.pi_js_undefined());
         while(c.JS_HasException(self.engine.context)){
             const value=c.JS_GetException(self.engine.context);
             if(boundary)|generation|{
@@ -54,7 +71,7 @@ pub const Boundary = struct {
                     _=self.engine.checked(c.JS_Throw(self.engine.context,c.JS_DupValue(self.engine.context,value))) catch {};
                 }
             }
-            self.select(value,c.JS_IsUncatchableError(value));
+            self.select(value);
         }
     }
     /// Only an explicit escaping JS completion calls this. A diagnostic may
@@ -62,7 +79,7 @@ pub const Boundary = struct {
     pub fn escaping(self:*Boundary)void{
         self.observe(null);
         if(self.reason==null)if(self.engine.captured_exception)|value|{
-            self.engine.captured_exception=null;self.reason=value;self.fatal=false;
+            self.engine.captured_exception=null;self.reason=value;self.reason_pending=false;self.fatal=false;
         };
     }
     pub fn own(self:*Boundary,scope:*v.Scope,value:c.JSValue)!c.JSValue{
@@ -94,7 +111,7 @@ pub const Boundary = struct {
             self.engine.captured_exception=prior;
         }
     }
-    pub fn rejectOwned(self:*Boundary,value:c.JSValue)anyerror{var owned=value;self.release(&owned);return error.JavaScriptException;}
+    pub fn rejectOwned(self:*Boundary,value:c.JSValue)anyerror{var owned=value;self.release(&owned);return self.completionError();}
     fn failureRoots(self:*Boundary,values:[]c.JSValue)void{
         for(values)|*value|self.release(value);
         while(self.engine.captured_exception)|value|{self.engine.captured_exception=null;var old=value;self.release(&old);}
@@ -106,7 +123,7 @@ pub const Boundary = struct {
         self.start();self.observe(null);
         if(host_error) |err| { if(err==error.JavaScriptException and self.reason==null)self.escaping(); }
         // A trusted direct host allocation failure precedes root retirement.
-        if(host_error) |err| { if(err==error.OutOfMemory and !self.fatal){_=self.engine.throwNativeOutOfMemoryFatal();self.observe(null);} }
+        if(host_error) |err| { if(err==error.OutOfMemory and !self.isFatal()){_=self.engine.throwNativeOutOfMemoryFatal();self.observe(null);} }
         const count=scope.inline_count;scope.inline_count=0;for(scope.inline_values[0..count])|*value|self.release(value);
         const dynamic=scope.values.items;scope.values.items=dynamic[0..0];for(dynamic)|*value|self.release(value);
         const generation=self.engine.native_allocation_generation;scope.values.deinit(self.engine.gpa);self.observe(generation);
@@ -127,9 +144,12 @@ pub const Boundary = struct {
         self.observe(null); // finished prevents relinking the dead frame.
         if(host_error!=null or self.reason!=null)self.failureRoots(values);
         if(self.reason)|value|{
-            self.reason=null;
-            if(self.fatal)c.JS_SetUncatchableError(self.engine.context,value)
-            else c.JS_ClearUncatchableError(self.engine.context,value);
+            const termination=self.isTermination();
+            self.reason=null;self.reason_pending=false;
+            if(!termination){
+                if(self.fatal)c.JS_SetUncatchableError(self.engine.context,value)
+                else c.JS_ClearUncatchableError(self.engine.context,value);
+            }
             _=self.engine.checked(c.JS_Throw(self.engine.context,value)) catch |err|return err;
             return error.ActualCommonJSBoundaryThrowDidNotFail;
         }

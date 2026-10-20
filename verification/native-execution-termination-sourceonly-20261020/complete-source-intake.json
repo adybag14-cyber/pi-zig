@@ -1,0 +1,1254 @@
+{
+  "source_only": true,
+  "base_commit": "5ddf165d802280e22c3a1efd4c048b956bbbacf4",
+  "paths": {
+    "vendor/quickjs/quickjs.c": {
+      "before_sha256": "E77D2A6B22D294579A8F4063BB0E913AE3A291E83FD30330B108E88A747EB51B",
+      "after_sha256": "96843FA1E0527ECFE70FA2CC6F47C8C3A6A056932456F88A93F981D2297657DE",
+      "before_bytes": 2342500,
+      "after_bytes": 2361259
+    },
+    "vendor/quickjs/quickjs.h": {
+      "before_sha256": "F116BEC15280A6950711A8C27437E7A57B2D6034BE058494F0A8F83FE3E16C7F",
+      "after_sha256": "840A2BD84BE0A32046BF09F047C1C646114523343353D7EF6B7DF3003433DB1A",
+      "before_bytes": 99259,
+      "after_bytes": 104232
+    }
+  },
+  "exact_forward_and_reverse_verified": true,
+  "ordered_packets": [
+    "foundation-edits.json",
+    "unwind-edits.json",
+    "unwind-site-proof.json",
+    "job-metadata-edits.json",
+    "ordinary-hook-edits.json",
+    "queue-edits.json",
+    "suppressed-event-lease-successor.json",
+    "queue-pending-successor.json",
+    "pending-classification-successor.json",
+    "active-job-retirement-successor.json",
+    "classified-pending-successor.json",
+    "native-abrupt-result-successor.json"
+  ],
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    JSValue current_exception;\n",
+      "after": "    JSValue current_exception;\n    /* A request is not an event. The lease only blocks reentry while an\n       actual native termination is temporarily held by a cleanup owner. */\n#ifdef CONFIG_ATOMICS\n    _Atomic bool pi_termination_requested;\n#else\n    bool pi_termination_requested;\n#endif\n    bool pi_termination_in_flight;\n    uint64_t pi_termination_generation;\n",
+      "label": "native request and in-flight event ownership",
+      "packet": "foundation-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        13358
+      ],
+      "owned_base_after_offsets": [
+        13358
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "static void js_native_async_take_pending(JSContext *ctx, JSNativeAsyncPending *owned);\n",
+      "after": "/* No guest value can have an exception-sentinel payload. This private\n   immediate is created only by native termination servicing; it carries no\n   allocation or Error flag and is never a Promise value or diagnostic. */\nstatic JSValue js_pi_termination_token(void)\n{\n    return JS_MKVAL(JS_TAG_EXCEPTION, 1);\n}\n\nbool JS_PiIsExecutionTermination(JSValueConst value)\n{\n    return JS_VALUE_GET_TAG(value) == JS_TAG_EXCEPTION &&\n           JS_VALUE_GET_INT(value) == 1;\n}\n\nstatic bool js_pi_is_uncatchable_exception(JSValueConst value)\n{\n    return JS_PiIsExecutionTermination(value) || JS_IsUncatchableError(value);\n}\n\n/* A cancelled, already detached native completion still unwinds without\n   entering guest catch/finally, but a subsequent real cleanup event wins. */\nstatic int js_pi_pending_priority(JSRuntime *rt, JSValueConst reason)\n{\n    if (JS_PiIsExecutionTermination(reason) && !rt->pi_termination_in_flight)\n        return -1;\n    return js_pi_is_uncatchable_exception(reason) ? 1 : 0;\n}\n\nstatic void js_native_async_take_pending(JSContext *ctx, JSNativeAsyncPending *owned);\n",
+      "label": "private event token and native pending precedence",
+      "packet": "foundation-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        58729
+      ],
+      "owned_base_after_offsets": [
+        58729
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    rt->pi_javascript_execution_error = JS_UNDEFINED;\n    rt->mf = *mf;\n",
+      "after": "    rt->pi_javascript_execution_error = JS_UNDEFINED;\n#ifdef CONFIG_ATOMICS\n    atomic_store(&rt->pi_termination_requested, false);\n#endif\n    rt->mf = *mf;\n",
+      "label": "atomic request initialization",
+      "packet": "foundation-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        100670
+      ],
+      "owned_base_after_offsets": [
+        100670
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "void JS_ClearKeptObjects(JSRuntime *rt)\n",
+      "after": "static bool js_pi_termination_requested(JSRuntime *rt)\n{\n#ifdef CONFIG_ATOMICS\n    return atomic_load(&rt->pi_termination_requested);\n#else\n    return rt->pi_termination_requested;\n#endif\n}\n\nvoid JS_PiRequestExecutionTermination(JSRuntime *rt)\n{\n#ifdef CONFIG_ATOMICS\n    atomic_store(&rt->pi_termination_requested, true);\n#else\n    rt->pi_termination_requested = true;\n#endif\n}\n\nbool JS_PiIsExecutionTerminating(JSRuntime *rt)\n{\n    return rt->pi_termination_in_flight &&\n           JS_PiIsExecutionTermination(rt->current_exception);\n}\n\nuint64_t JS_PiExecutionTerminationGeneration(JSRuntime *rt)\n{\n    return rt->pi_termination_generation;\n}\n\nvoid JS_PiCancelExecutionTermination(JSRuntime *rt)\n{\n#ifdef CONFIG_ATOMICS\n    atomic_store(&rt->pi_termination_requested, false);\n#else\n    rt->pi_termination_requested = false;\n#endif\n    /* V8 clears the request even when no actual termination is pending.\n       Its event cancellation is conditional on the private pending event;\n       an event held only by a native cleanup owner is not that condition. */\n    if (!JS_PiIsExecutionTerminating(rt))\n        return;\n    rt->current_exception = JS_UNINITIALIZED;\n    rt->pi_termination_in_flight = false;\n}\n\nint JS_PiCheckExecutionTermination(JSContext *ctx)\n{\n    JSRuntime *rt = ctx->rt;\n    bool requested;\n\n    if (rt->pi_termination_in_flight) {\n        /* Reentry while the token is detached republishes the same event.\n           It does not create another generation or a replacement Error. */\n        JS_Throw(ctx, js_pi_termination_token());\n        return -1;\n    }\n    if (JS_PiIsExecutionTermination(rt->current_exception))\n        return -1; /* cancelled native abrupt completion, not a new event */\n    if (!js_pi_termination_requested(rt))\n        return 0;\n    /* Existing ordinary/fatal pending-entry policy is retained. A request\n       waits until the earlier real event has been handled by its owner. */\n    if (JS_HasException(ctx))\n        return -1;\n#ifdef CONFIG_ATOMICS\n    requested = atomic_exchange(&rt->pi_termination_requested, false);\n#else\n    requested = rt->pi_termination_requested;\n    rt->pi_termination_requested = false;\n#endif\n    if (!requested)\n        return 0;\n    rt->pi_termination_in_flight = true;\n    rt->pi_termination_generation++;\n    JS_Throw(ctx, js_pi_termination_token());\n    return -1;\n}\n\n/* A native callback can cancel an event while its failed call is unwinding.\n   Keep the failure native rather than inventing an ordinary undefined throw.\n   This does not reestablish the cancelled event lease. */\nstatic void js_pi_record_aborted_native_call(JSContext *ctx, JSValueConst result,\n                                              uint64_t entry_generation)\n{\n    if (JS_IsException(result) && !JS_HasException(ctx) &&\n        ctx->rt->pi_termination_generation != entry_generation)\n        ctx->rt->current_exception = js_pi_termination_token();\n}\n\nvoid JS_ClearKeptObjects(JSRuntime *rt)\n",
+      "label": "request service event query cancellation and native-abort provenance",
+      "packet": "foundation-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        105741
+      ],
+      "owned_base_after_offsets": [
+        105741
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "JSValue JS_Throw(JSContext *ctx, JSValue obj)\n{\n    JSRuntime *rt = ctx->rt;\n    JS_FreeValue(ctx, rt->current_exception);\n    rt->current_exception = obj;\n    return JS_EXCEPTION;\n}",
+      "after": "JSValue JS_Throw(JSContext *ctx, JSValue obj)\n{\n    JSRuntime *rt = ctx->rt;\n    if (JS_PiIsExecutionTermination(obj)) {\n        if (!rt->pi_termination_in_flight) {\n            /* A cancelled cleanup completion cannot revive the event or\n               displace a new real reason. It still cannot enter guest catch. */\n            if (JS_IsUninitialized(rt->current_exception))\n                rt->current_exception = obj;\n            return JS_EXCEPTION;\n        }\n        if (!JS_PiIsExecutionTermination(rt->current_exception)) {\n            JSValue displaced = rt->current_exception;\n            rt->current_exception = obj;\n            JS_FreeValue(ctx, displaced);\n        }\n        return JS_EXCEPTION;\n    }\n    if (JS_PiIsExecutionTerminating(rt)) {\n        /* Retire the supplied value with the native event still published.\n           Cancellation in that retirement is authoritative. */\n        JS_FreeValue(ctx, obj);\n        return JS_EXCEPTION;\n    }\n    JS_FreeValue(ctx, rt->current_exception);\n    rt->current_exception = obj;\n    return JS_EXCEPTION;\n}",
+      "label": "private event rethrow and cancellation-safe actual pending publication",
+      "packet": "foundation-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        290783
+      ],
+      "owned_base_after_offsets": [
+        290783
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    ctx->interrupt_counter = JS_INTERRUPT_COUNTER_INIT;\n    if (rt->interrupt_handler) {\n",
+      "after": "    ctx->interrupt_counter = JS_INTERRUPT_COUNTER_INIT;\n    if (JS_PiCheckExecutionTermination(ctx))\n        return -1;\n    if (rt->interrupt_handler) {\n",
+      "label": "dedicated request precedes generic interrupt without changing its producer",
+      "packet": "foundation-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        332685
+      ],
+      "owned_base_after_offsets": [
+        332685
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    JSRuntime *rt = ctx->rt;\n    if (likely(rt->pi_javascript_execution_allowed))\n        return 0;\n",
+      "after": "    JSRuntime *rt = ctx->rt;\n    if (JS_PiCheckExecutionTermination(ctx))\n        return -1;\n    if (likely(rt->pi_javascript_execution_allowed))\n        return 0;\n",
+      "label": "termination covers direct API and ordinary dispatch",
+      "packet": "foundation-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        643468
+      ],
+      "owned_base_after_offsets": [
+        643468
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "{\n    if (unlikely(!caller_ctx->rt->pi_javascript_execution_allowed) &&\n        JS_HasException(caller_ctx))\n",
+      "after": "{\n    if (JS_PiCheckExecutionTermination(caller_ctx))\n        return JS_EXCEPTION;\n    if (unlikely(!caller_ctx->rt->pi_javascript_execution_allowed) &&\n        JS_HasException(caller_ctx))\n",
+      "label": "raw call entry termination guard",
+      "packet": "foundation-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        644061
+      ],
+      "owned_base_after_offsets": [
+        644061
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "            return call_func(caller_ctx, func_obj, this_obj, argc, argv, flags);\n",
+      "after": "            {\n                uint64_t generation = caller_ctx->rt->pi_termination_generation;\n                JSValue result = call_func(caller_ctx, func_obj, this_obj,\n                                           argc, argv, flags);\n                js_pi_record_aborted_native_call(caller_ctx, result, generation);\n                if (JS_PiCheckExecutionTermination(caller_ctx)) {\n                    JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n                    js_native_async_release(caller_ctx, result, &pending);\n                    if (pending.present)\n                        JS_Throw(caller_ctx, pending.reason);\n                    return JS_EXCEPTION;\n                }\n                return result;\n            }\n",
+      "label": "native callback return services request and preserves result ownership",
+      "packet": "foundation-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        644801
+      ],
+      "owned_base_after_offsets": [
+        644801
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    if (needs_backtrace(rt->current_exception)\n    || JS_IsUndefined(ctx->error_back_trace)) {\n",
+      "after": "    if (!JS_PiIsExecutionTermination(rt->current_exception) &&\n        (needs_backtrace(rt->current_exception) ||\n         JS_IsUndefined(ctx->error_back_trace))) {\n",
+      "label": "private termination never allocates guest backtrace",
+      "packet": "foundation-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        751228
+      ],
+      "owned_base_after_offsets": [
+        751228
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "JS_EXTERN bool JS_HasException(JSContext *ctx);\n",
+      "after": "JS_EXTERN bool JS_HasException(JSContext *ctx);\n/* Native execution termination. A request alone is not a pending event.\n   Request may be made by another thread in CONFIG_ATOMICS builds; all other\n   operations require the owning VM thread. Runtime lifetime remains caller-owned.\n   Check services the dedicated request without allocating an Error. An earlier\n   actual pending reason is preserved; generic interrupt/cancel/budget/OOM\n   producers are unchanged. It returns -1 for a blocked entry, otherwise 0.\n   IsExecutionTerminating observes the actual private pending event, not a\n   requested bit or an event temporarily detached by native cleanup.\n   Cancel clears the request, and clears the event only when actually pending.\n   The private token returned by GetException is native unwind provenance only:\n   never a guest value, Promise rejection, diagnostic, or uncatchable Error bit.\n   After cancellation an already-owned token may carry a native abrupt result\n   but cannot reestablish the event or displace a later real cleanup reason.\n   The generation increments only on servicing a new dedicated request. */\nJS_EXTERN void JS_PiRequestExecutionTermination(JSRuntime *rt);\nJS_EXTERN int JS_PiCheckExecutionTermination(JSContext *ctx);\nJS_EXTERN bool JS_PiIsExecutionTerminating(JSRuntime *rt);\nJS_EXTERN bool JS_PiIsExecutionTermination(JSValueConst actual_pending_token);\nJS_EXTERN void JS_PiCancelExecutionTermination(JSRuntime *rt);\nJS_EXTERN uint64_t JS_PiExecutionTerminationGeneration(JSRuntime *rt);\n",
+      "label": "native termination ABI distinguishes request pending and escrow",
+      "packet": "foundation-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        46520
+      ],
+      "owned_base_after_offsets": [
+        46520
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    if (unlikely(!ctx->rt->pi_javascript_execution_allowed) && JS_HasException(ctx))\n",
+      "after": "    if (JS_PiCheckExecutionTermination(ctx))\n        return JS_EXCEPTION;\n    if (unlikely(!ctx->rt->pi_javascript_execution_allowed) && JS_HasException(ctx))\n",
+      "label": "constructor entry before target/prototype observations",
+      "packet": "unwind-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        758154
+      ],
+      "owned_base_after_offsets": [
+        758154
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "        return call_func(ctx, func_obj, new_target, argc,\n                         argv, flags);\n",
+      "after": "        {\n            uint64_t generation = ctx->rt->pi_termination_generation;\n            JSValue result = call_func(ctx, func_obj, new_target, argc, argv, flags);\n            js_pi_record_aborted_native_call(ctx, result, generation);\n            if (JS_PiCheckExecutionTermination(ctx)) {\n                JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n                js_native_async_release(ctx, result, &pending);\n                if (pending.present)\n                    JS_Throw(ctx, pending.reason);\n                return JS_EXCEPTION;\n            }\n            return result;\n        }\n",
+      "label": "native constructor result retirement and service",
+      "packet": "unwind-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        759022
+      ],
+      "owned_base_after_offsets": [
+        759022
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    JSStackFrame frame = { 0 };\n    JSValue output;\n    if (js_pi_check_javascript_execution(ctx, NULL))\n",
+      "after": "    JSStackFrame frame = { 0 };\n    JSValue output;\n    uint64_t generation;\n    if (js_pi_check_javascript_execution(ctx, NULL))\n",
+      "label": "native AF records true event generation",
+      "packet": "unwind-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        777334
+      ],
+      "owned_base_after_offsets": [
+        777334
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    output = s->native_body(ctx, b->cpool[0], s->native_this,\n        s->native_supplied_argc, vc(s->native_argv), completion, input,\n        &s->native_state, action);\n    js_callsite_release_receiver(ctx, &frame);\n",
+      "after": "    generation = ctx->rt->pi_termination_generation;\n    output = s->native_body(ctx, b->cpool[0], s->native_this,\n        s->native_supplied_argc, vc(s->native_argv), completion, input,\n        &s->native_state, action);\n    js_pi_record_aborted_native_call(ctx, output, generation);\n    if (JS_PiCheckExecutionTermination(ctx)) {\n        JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n        js_native_async_release(ctx, output, &pending);\n        output = JS_EXCEPTION;\n        if (pending.present)\n            JS_Throw(ctx, pending.reason);\n    }\n    js_callsite_release_receiver(ctx, &frame);\n",
+      "label": "native AF cannot return or Await an actual termination token",
+      "packet": "unwind-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        778004
+      ],
+      "owned_base_after_offsets": [
+        778004
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    if (JS_IsException(result) && !JS_HasException(ctx) &&\n        ctx->rt->pi_termination_generation != entry_generation)\n        ctx->rt->current_exception = js_pi_termination_token();\n",
+      "after": "    if (JS_IsException(result) && !JS_HasException(ctx) &&\n        (JS_PiIsExecutionTermination(result) ||\n         ctx->rt->pi_termination_generation != entry_generation))\n        ctx->rt->current_exception = js_pi_termination_token();\n",
+      "label": "cancelled native abrupt return remains distinct from an empty ordinary failure",
+      "packet": "unwind-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        108460
+      ],
+      "owned_base_after_offsets": [
+        108460
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    bool fatal;\n    if (JS_HasException(ctx))\n        return JS_EXCEPTION;\n    result = JS_GetIterator(ctx, obj, true);\n",
+      "after": "    if (JS_HasException(ctx))\n        return JS_EXCEPTION;\n    result = JS_GetIterator(ctx, obj, true);\n",
+      "label": "iterator reduction computes current cancellation-aware priority",
+      "packet": "unwind-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        604765
+      ],
+      "owned_base_after_offsets": [
+        604765
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    fatal = JS_IsUncatchableError(reason);\n    JS_FreeValue(ctx, result);\n",
+      "after": "    JS_FreeValue(ctx, result);\n",
+      "label": "iterator does not cache a cancelled event classification",
+      "packet": "unwind-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        604958
+      ],
+      "owned_base_after_offsets": [
+        604958
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "        if (!fatal && JS_IsUncatchableError(cleanup)) {\n            displaced = reason;\n            reason = cleanup;\n            fatal = true;\n",
+      "after": "        if (js_pi_pending_priority(ctx->rt, cleanup) >\n            js_pi_pending_priority(ctx->rt, reason)) {\n            displaced = reason;\n            reason = cleanup;\n",
+      "label": "later real iterator cleanup can replace a cancelled completion",
+      "packet": "unwind-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        605064
+      ],
+      "owned_base_after_offsets": [
+        605064
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    if (!s || s->promise_state != JS_PROMISE_PENDING)\n        return; /* should never happen */\n    set_value(ctx, &s->promise_result, js_dup(value));\n",
+      "after": "    /* Private native completions are not values and cannot enter the\n       Promise state machine, including internal rejection-forwarding paths. */\n    if (JS_PiIsExecutionTermination(value)) {\n        JS_Throw(ctx, js_pi_termination_token());\n        return;\n    }\n    if (!s || s->promise_state != JS_PROMISE_PENDING)\n        return; /* should never happen */\n    set_value(ctx, &s->promise_result, js_dup(value));\n",
+      "label": "central Promise state never stores a private native token",
+      "packet": "unwind-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        2004980
+      ],
+      "owned_base_after_offsets": [
+        2004980
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    JSValueConst args[3];\n    JSValue then;\n\n    if (is_reject || !JS_IsObject(resolution)) {\n",
+      "after": "    JSValueConst args[3];\n    JSValue then;\n\n    if (JS_PiIsExecutionTermination(resolution))\n        return JS_Throw(ctx, js_pi_termination_token());\n    if (is_reject || !JS_IsObject(resolution)) {\n",
+      "label": "direct settlement cannot adopt a private native completion",
+      "packet": "unwind-edits.json",
+      "count": 1,
+      "owned_base_before_offsets": [
+        2011746
+      ],
+      "owned_base_after_offsets": [
+        2011746
+      ]
+    },
+    {
+      "before": "else if (!JS_IsUncatchableError(owned->reason) && JS_IsUncatchableError(next)) {",
+      "after": "else if (js_pi_pending_priority(ctx->rt, next) >\n                   js_pi_pending_priority(ctx->rt, owned->reason)) {",
+      "count": 2,
+      "path": "vendor/quickjs/quickjs.c",
+      "packet": "unwind-site-proof.json",
+      "label": "actual pending priority",
+      "owned_base_before_offsets": [
+        300252,
+        778984
+      ],
+      "owned_base_after_offsets": [
+        300252,
+        779021
+      ]
+    },
+    {
+      "before": "else if (!JS_IsUncatchableError(owned->reason) &&\n                   JS_IsUncatchableError(next)) {",
+      "after": "else if (js_pi_pending_priority(rt, next) >\n                   js_pi_pending_priority(rt, owned->reason)) {",
+      "count": 1,
+      "path": "vendor/quickjs/quickjs.c",
+      "packet": "unwind-site-proof.json",
+      "label": "actual pending priority",
+      "owned_base_before_offsets": [
+        110581
+      ],
+      "owned_base_after_offsets": [
+        110581
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "packet": "unwind-site-proof.json",
+      "label": "actual private-aware internal unwind",
+      "before": "    if (!JS_IsUncatchableError(rt->current_exception)) {\n",
+      "after": "    if (!js_pi_is_uncatchable_exception(rt->current_exception)) {\n",
+      "count": 1,
+      "owned_base_before_offsets": [
+        751594
+      ],
+      "owned_base_after_offsets": [
+        751594
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "packet": "unwind-site-proof.json",
+      "label": "actual private-aware internal unwind",
+      "before": "    if (!JS_IsUncatchableError(owned.reason)) {\n",
+      "after": "    if (!js_pi_is_uncatchable_exception(owned.reason)) {\n",
+      "count": 1,
+      "owned_base_before_offsets": [
+        793920
+      ],
+      "owned_base_after_offsets": [
+        793920
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "packet": "unwind-site-proof.json",
+      "label": "actual private-aware internal unwind",
+      "before": "    if (JS_IsUncatchableError(owned.reason)) {\n",
+      "after": "    if (js_pi_is_uncatchable_exception(owned.reason)) {\n",
+      "count": 1,
+      "owned_base_before_offsets": [
+        794201
+      ],
+      "owned_base_after_offsets": [
+        794201
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "packet": "unwind-site-proof.json",
+      "label": "actual private-aware internal unwind",
+      "before": "        if (unlikely(JS_IsUncatchableError(ctx->rt->current_exception))) {\n",
+      "after": "        if (unlikely(js_pi_is_uncatchable_exception(ctx->rt->current_exception))) {\n",
+      "count": 1,
+      "owned_base_before_offsets": [
+        795396
+      ],
+      "owned_base_after_offsets": [
+        795396
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "packet": "unwind-site-proof.json",
+      "label": "actual private-aware internal unwind",
+      "before": "                JS_IsUncatchableError(ctx->rt->current_exception)) {\n",
+      "after": "                js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n",
+      "count": 2,
+      "owned_base_before_offsets": [
+        795730,
+        797330
+      ],
+      "owned_base_after_offsets": [
+        795730,
+        797339
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "packet": "unwind-site-proof.json",
+      "label": "actual private-aware internal unwind",
+      "before": "                if (module_fatal || JS_IsUncatchableError(ctx->rt->current_exception)) {\n",
+      "after": "                if (module_fatal || js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n",
+      "count": 1,
+      "owned_base_before_offsets": [
+        796313
+      ],
+      "owned_base_after_offsets": [
+        796313
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "packet": "unwind-site-proof.json",
+      "label": "actual private-aware internal unwind",
+      "before": "                if (JS_IsUncatchableError(error)) {\n",
+      "after": "                if (js_pi_is_uncatchable_exception(error)) {\n",
+      "count": 2,
+      "owned_base_before_offsets": [
+        1198681,
+        1199568
+      ],
+      "owned_base_after_offsets": [
+        1198681,
+        1199577
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "packet": "unwind-site-proof.json",
+      "label": "actual private-aware internal unwind",
+      "before": "        fatal |= JS_IsUncatchableError(result);\n",
+      "after": "        fatal |= js_pi_is_uncatchable_exception(result);\n",
+      "count": 1,
+      "owned_base_before_offsets": [
+        1208776
+      ],
+      "owned_base_after_offsets": [
+        1208776
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "packet": "unwind-site-proof.json",
+      "label": "actual private-aware internal unwind",
+      "before": "    if (!JS_IsObject(exception) || JS_IsUncatchableError(exception))\n",
+      "after": "    if (!JS_IsObject(exception) || js_pi_is_uncatchable_exception(exception))\n",
+      "count": 1,
+      "owned_base_before_offsets": [
+        1855469
+      ],
+      "owned_base_after_offsets": [
+        1855469
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "packet": "unwind-site-proof.json",
+      "label": "actual private-aware internal unwind",
+      "before": "            if (unlikely(JS_IsUncatchableError(ctx->rt->current_exception)))\n",
+      "after": "            if (unlikely(js_pi_is_uncatchable_exception(ctx->rt->current_exception)))\n",
+      "count": 1,
+      "owned_base_before_offsets": [
+        2003028
+      ],
+      "owned_base_after_offsets": [
+        2003028
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "packet": "unwind-site-proof.json",
+      "label": "actual private-aware internal unwind",
+      "before": "            JS_IsUncatchableError(ctx->rt->current_exception)) {\n",
+      "after": "            js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n",
+      "count": 4,
+      "owned_base_before_offsets": [
+        2007652,
+        2008825,
+        2012785,
+        2013218
+      ],
+      "owned_base_after_offsets": [
+        2007652,
+        2008834,
+        2012803,
+        2013245
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "packet": "unwind-site-proof.json",
+      "label": "actual private-aware internal unwind",
+      "before": "        JS_IsUncatchableError(ctx->rt->current_exception)) {\n",
+      "after": "        js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n",
+      "count": 3,
+      "owned_base_before_offsets": [
+        2007901,
+        2008477,
+        2012412
+      ],
+      "owned_base_after_offsets": [
+        2007901,
+        2008486,
+        2012430
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "job retains actual Promise metadata",
+      "before": "    JSValue continuation_preserved_embedder_data;\n    int argc;\n    JSValue argv[];\n} JSJobEntry;",
+      "after": "    JSValue continuation_preserved_embedder_data;\n    /* The actual reaction capability result or thenable target, never\n       inferred from a resolving function or guest property. */\n    JSValue promise;\n    int argc;\n    JSValue argv[];\n} JSJobEntry;",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        42442
+      ],
+      "owned_base_after_offsets": [
+        42442
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "private enqueue accepts borrowed Promise metadata",
+      "before": "int JS_EnqueueJob(JSContext *ctx, JSJobFunc *job_func,\n                  int argc, JSValueConst *argv)\n",
+      "after": "static int js_pi_enqueue_job(JSContext *ctx, JSJobFunc *job_func,\n                              int argc, JSValueConst *argv,\n                              JSValueConst promise)\n",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        109449
+      ],
+      "owned_base_after_offsets": [
+        109449
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "job metadata owns one real value",
+      "before": "    e->argc = argc;\n    for(i = 0; i < argc; i++) {\n        e->argv[i] = js_dup(argv[i]);\n",
+      "after": "    e->promise = js_dup(promise);\n    e->argc = argc;\n    for(i = 0; i < argc; i++) {\n        e->argv[i] = js_dup(argv[i]);\n",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        110016
+      ],
+      "owned_base_after_offsets": [
+        110016
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "public generic enqueue has no Promise metadata",
+      "before": "    list_add_tail(&e->link, &rt->job_list);\n    return 0;\n}\n\n/* Only actual pending reasons participate",
+      "after": "    list_add_tail(&e->link, &rt->job_list);\n    return 0;\n}\n\nint JS_EnqueueJob(JSContext *ctx, JSJobFunc *job_func,\n                  int argc, JSValueConst *argv)\n{\n    return js_pi_enqueue_job(ctx, job_func, argc, argv, JS_UNDEFINED);\n}\n\n/* Only actual pending reasons participate",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        110146
+      ],
+      "owned_base_after_offsets": [
+        110146
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "selected-context enqueue accepts actual Promise",
+      "before": "                                  JSValueConst execution_context,\n                                  JSValueConst continuation_data)\n",
+      "after": "                                  JSValueConst execution_context,\n                                  JSValueConst continuation_data,\n                                  JSValueConst promise)\n",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        112820
+      ],
+      "owned_base_after_offsets": [
+        112820
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "selected-context enqueue forwards metadata",
+      "before": "    result = JS_EnqueueJob(ctx, job_func, argc, argv);\n",
+      "after": "    result = js_pi_enqueue_job(ctx, job_func, argc, argv, promise);\n",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        113439
+      ],
+      "owned_base_after_offsets": [
+        113439
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "existing executed-job cleanup releases new metadata",
+      "before": "    js_native_async_release(ctx, res, &pending);\n    js_free(ctx, e);\n",
+      "after": "    js_native_async_release(ctx, res, &pending);\n    js_native_async_release(ctx, e->promise, &pending);\n    js_free(ctx, e);\n",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        116623
+      ],
+      "owned_base_after_offsets": [
+        116623
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "runtime teardown releases queued metadata",
+      "before": "        for(i = 0; i < e->argc; i++)\n            JS_FreeValueRT(rt, e->argv[i]);\n        js_free_rt(rt, e);\n",
+      "after": "        for(i = 0; i < e->argc; i++)\n            JS_FreeValueRT(rt, e->argv[i]);\n        JS_FreeValueRT(rt, e->promise);\n        js_free_rt(rt, e);\n",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        120013
+      ],
+      "owned_base_after_offsets": [
+        120013
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "reaction retains genuine capability Promise",
+      "before": "    JSValue continuation_preserved_embedder_data;\n} JSPromiseReactionData;",
+      "after": "    JSValue continuation_preserved_embedder_data;\n    JSValue promise;\n} JSPromiseReactionData;",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        1999701
+      ],
+      "owned_base_after_offsets": [
+        1999701
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "new reaction root retires through actual pending reducer",
+      "before": "        JS_FreeValueRT(rt, rd->continuation_preserved_embedder_data);\n        js_pi_continuation_take_pending_rt(rt, &pending);\n        if (pending.present)\n",
+      "after": "        JS_FreeValueRT(rt, rd->continuation_preserved_embedder_data);\n        js_pi_continuation_take_pending_rt(rt, &pending);\n        {\n            JSValue promise = rd->promise;\n            rd->promise = JS_UNDEFINED;\n            JS_FreeValueRT(rt, promise);\n        }\n        js_pi_continuation_take_pending_rt(rt, &pending);\n        if (pending.present)\n",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        2002355
+      ],
+      "owned_base_after_offsets": [
+        2002355
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "reaction metadata is a real graph edge",
+      "before": "            JS_MarkValue(rt, rd->continuation_preserved_embedder_data, mark_func);\n",
+      "after": "            JS_MarkValue(rt, rd->continuation_preserved_embedder_data, mark_func);\n            JS_MarkValue(rt, rd->promise, mark_func);\n",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        2017977
+      ],
+      "owned_base_after_offsets": [
+        2017977
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "perform then declaration takes actual result",
+      "before": "                                            JSValueConst *cap_resolving_funcs);",
+      "after": "                                            JSValueConst *cap_resolving_funcs,\n                                            JSValueConst cap_promise);",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        68714
+      ],
+      "owned_base_after_offsets": [
+        68714
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "perform then definition takes actual result",
+      "before": "                                            JSValueConst *cap_resolving_funcs)\n{",
+      "after": "                                            JSValueConst *cap_resolving_funcs,\n                                            JSValueConst cap_promise)\n{",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        2040253
+      ],
+      "owned_base_after_offsets": [
+        2040253
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "reaction captures actual result at registration",
+      "before": "        rd->continuation_preserved_embedder_data =\n            js_dup(ctx->rt->continuation_preserved_embedder_data);\n        rd_array[i] = rd;\n",
+      "after": "        rd->continuation_preserved_embedder_data =\n            js_dup(ctx->rt->continuation_preserved_embedder_data);\n        rd->promise = js_dup(cap_promise);\n        rd_array[i] = rd;\n",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        2041142
+      ],
+      "owned_base_after_offsets": [
+        2041142
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "pending and settled reactions forward captured result",
+      "before": "                               rd->execution_context,\n                               rd->continuation_preserved_embedder_data);",
+      "after": "                               rd->execution_context,\n                               rd->continuation_preserved_embedder_data,\n                               rd->promise);",
+      "count": 2,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        2007330,
+        2041921
+      ],
+      "owned_base_after_offsets": [
+        2007330,
+        2041965
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "thenable job selects actual resolution target",
+      "before": "        JS_EnqueueJob(ctx, js_promise_resolve_thenable_job, 3, args);",
+      "after": "        js_pi_enqueue_job(ctx, js_promise_resolve_thenable_job, 3, args, promise);",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        2014487
+      ],
+      "owned_base_after_offsets": [
+        2014487
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "native Await ignored capability has no result Promise",
+      "before": "    status = perform_promise_then(ctx, promise, vc(resolving_funcs), vc(ignored_funcs));",
+      "after": "    status = perform_promise_then(ctx, promise, vc(resolving_funcs),\n                                  vc(ignored_funcs), JS_UNDEFINED);",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        794127
+      ],
+      "owned_base_after_offsets": [
+        794127
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "source Await ignored capability has no result Promise",
+      "before": "            res = perform_promise_then(ctx, promise,\n                                       vc(resolving_funcs),\n                                       vc(resolving_funcs1));",
+      "after": "            res = perform_promise_then(ctx, promise,\n                                       vc(resolving_funcs),\n                                       vc(resolving_funcs1), JS_UNDEFINED);",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        799843
+      ],
+      "owned_base_after_offsets": [
+        799843
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "generator Await ignored capability has no result Promise",
+      "before": "    res = perform_promise_then(ctx, promise,\n                               vc(resolving_funcs),\n                               vc(resolving_funcs1));",
+      "after": "    res = perform_promise_then(ctx, promise,\n                               vc(resolving_funcs),\n                               vc(resolving_funcs1), JS_UNDEFINED);",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        816916
+      ],
+      "owned_base_after_offsets": [
+        816916
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "generator result Await ignored capability has no result Promise",
+      "before": "    res = perform_promise_then(ctx, promise,\n                               vc(resolving_funcs1),\n                               vc(resolving_funcs));",
+      "after": "    res = perform_promise_then(ctx, promise,\n                               vc(resolving_funcs1),\n                               vc(resolving_funcs), JS_UNDEFINED);",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        821280
+      ],
+      "owned_base_after_offsets": [
+        821280
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "intrinsic then selects actual new Promise",
+      "before": "    ret = perform_promise_then(ctx, promise, handlers, vc(resolving_funcs));",
+      "after": "    ret = perform_promise_then(ctx, promise, handlers, vc(resolving_funcs),\n                               result_promise);",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        2024778
+      ],
+      "owned_base_after_offsets": [
+        2024778
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "species then selects actual capability result",
+      "before": "    ret = perform_promise_then(ctx, this_val, argv, vc(resolving_funcs));",
+      "after": "    ret = perform_promise_then(ctx, this_val, argv, vc(resolving_funcs),\n                               result_promise);",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        2043457
+      ],
+      "owned_base_after_offsets": [
+        2043457
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "async from sync selects actual capability Promise",
+      "before": "        res = perform_promise_then(ctx, value_wrapper_promise,\n                                   vc(resolve_reject),\n                                   vc(resolving_funcs));",
+      "after": "        res = perform_promise_then(ctx, value_wrapper_promise,\n                                   vc(resolve_reject),\n                                   vc(resolving_funcs), promise);",
+      "count": 1,
+      "packet": "job-metadata-edits.json",
+      "owned_base_before_offsets": [
+        2053908
+      ],
+      "owned_base_after_offsets": [
+        2053908
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "complete thenable builtin precedes job AFTER",
+      "before": "static JSValue js_promise_resolve_thenable_job(JSContext *ctx,\n                                               int argc, JSValueConst *argv)\n{\n    JSValueConst promise, thenable, then;\n    JSValue args[2] = { JS_UNDEFINED, JS_UNDEFINED };\n    JSValue res = JS_UNDEFINED, fatal = JS_UNDEFINED;\n    bool has_fatal = false;\n    JSRuntime *rt;\n\n    promise_trace(ctx, \"js_promise_resolve_thenable_job\\n\");\n\n    assert(argc == 3);\n    promise = argv[0];\n    thenable = argv[1];\n    then = argv[2];\n    if (js_create_resolving_functions(ctx, args, promise) < 0)\n        return JS_EXCEPTION;\n    rt = ctx->rt;\n    if (rt->promise_hook) {\n        rt->promise_hook(ctx, JS_PROMISE_HOOK_BEFORE, promise, JS_UNDEFINED,\n                         rt->promise_hook_opaque);\n        if (JS_HasException(ctx) &&\n            js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n            fatal = JS_GetException(ctx);\n            goto fatal_cleanup;\n        }\n    }\n    res = JS_Call(ctx, then, thenable, 2, vc(args));\n    if (JS_HasException(ctx) &&\n        js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n        /* Preserve paired AFTER notification and its existing view of the\n           current exception, but retain the first fatal before that hook can\n           consume or replace it. This duplicate does not allocate. */\n        fatal = js_dup(ctx->rt->current_exception);\n        has_fatal = true;\n    }\n    if (rt->promise_hook) {\n        rt->promise_hook(ctx, JS_PROMISE_HOOK_AFTER, promise, JS_UNDEFINED,\n                         rt->promise_hook_opaque);\n    }\n    if (!has_fatal && JS_HasException(ctx) &&\n        js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n        fatal = JS_GetException(ctx);\n        has_fatal = true;\n    }\n    if (has_fatal)\n        goto fatal_cleanup;\n    if (JS_IsException(res)) {\n        JSValue error = JS_GetException(ctx);\n        res = JS_Call(ctx, args[1], JS_UNDEFINED, 1, vc(&error));\n        if (JS_HasException(ctx) &&\n            js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {\n            fatal = JS_GetException(ctx);\n            JS_FreeValue(ctx, error);\n            goto fatal_cleanup;\n        }\n        JS_FreeValue(ctx, error);\n    }\n    JS_FreeValue(ctx, args[0]);\n    JS_FreeValue(ctx, args[1]);\n    return res;\n fatal_cleanup:\n    JS_FreeValue(ctx, res);\n    JS_FreeValue(ctx, args[0]);\n    JS_FreeValue(ctx, args[1]);\n    return JS_Throw(ctx, fatal);\n}\n\n",
+      "after": "static JSValue js_promise_resolve_thenable_job(JSContext *ctx,\n                                               int argc, JSValueConst *argv)\n{\n    JSValueConst promise, thenable, then;\n    JSValue args[2] = { JS_UNDEFINED, JS_UNDEFINED };\n    JSValue res = JS_UNDEFINED;\n    JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n\n    promise_trace(ctx, \"js_promise_resolve_thenable_job\\n\");\n\n    assert(argc == 3);\n    promise = argv[0];\n    thenable = argv[1];\n    then = argv[2];\n    if (js_create_resolving_functions(ctx, args, promise) < 0)\n        return JS_EXCEPTION;\n    res = JS_Call(ctx, then, thenable, 2, vc(args));\n    if (JS_HasException(ctx) &&\n        js_pi_is_uncatchable_exception(ctx->rt->current_exception))\n        goto done;\n    if (JS_IsException(res)) {\n        JSValue error = JS_GetException(ctx);\n        res = JS_Call(ctx, args[1], JS_UNDEFINED, 1, vc(&error));\n        js_native_async_release(ctx, error, &pending);\n    }\n done:\n    /* BEFORE/AFTER belong to the complete job, including the real resolving\n       pair and ordinary rejection handling. Never reject with a native event. */\n    js_native_async_take_pending(ctx, &pending);\n    js_native_async_release(ctx, args[0], &pending);\n    js_native_async_release(ctx, args[1], &pending);\n    if (pending.present) {\n        js_native_async_release(ctx, res, &pending);\n        return JS_Throw(ctx, pending.reason);\n    }\n    return res;\n}\n\n",
+      "count": 1,
+      "packet": "ordinary-hook-edits.json",
+      "owned_base_before_offsets": [
+        2007894
+      ],
+      "owned_base_after_offsets": [
+        2007894
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "native Promise hooks use genuine job metadata and complete job boundary",
+      "before": "/* return < 0 if exception, 0 if no job ran (empty or execution disallowed),\n   1 if a job was executed successfully. No-progress leaves '*pctx' NULL. */\nint JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)\n{\n    JSContext *ctx;\n    JSJobEntry *e;\n    JSValue res;\n    int i, ret;\n    JSExecutionContextHook *context_hook;\n    void *context_opaque;\n    JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n\n    if (list_empty(&rt->job_list)) {\n        *pctx = NULL;\n        return 0;\n    }\n\n    /* V8's nonverbose TryRunMicrotasks catches the ordinary disallow reason\n       before JSEntry: no entry is consumed and the checkpoint reports zero.\n       Preserve an already pending native failure instead of swallowing it. */\n    if (unlikely(!rt->pi_javascript_execution_allowed)) {\n        e = list_entry(rt->job_list.next, JSJobEntry, link);\n        if (JS_HasException(e->ctx)) {\n            *pctx = e->ctx;\n            return -1;\n        }\n        *pctx = NULL;\n        return 0;\n    }\n\n    /* get the first pending job and execute it */\n    e = list_entry(rt->job_list.next, JSJobEntry, link);\n    list_del(&e->link);\n    ctx = e->ctx;\n    /* V8 SetupContinuationPreservedEmbedderData deliberately skips undefined.\n       A preceding failed task can leave its data for such a following task. */\n    if (!JS_IsUndefined(e->continuation_preserved_embedder_data)) {\n        JS_PiSetContinuationPreservedEmbedderData(\n            rt, e->continuation_preserved_embedder_data);\n        if (JS_HasException(ctx)) {\n            res = JS_EXCEPTION;\n            goto completed;\n        }\n    }\n    context_hook = rt->execution_context_hook;\n    context_opaque = rt->execution_context_opaque;\n    if (context_hook)\n        context_hook(ctx, true, e->execution_context, context_opaque);\n    res = e->job_func(e->ctx, e->argc, vc(e->argv));\n    if (context_hook && context_hook == rt->execution_context_hook &&\n        context_opaque == rt->execution_context_opaque)\n        context_hook(ctx, false, e->execution_context, context_opaque);\n    /* Successful V8 tasks clear the slot; the exception branch deliberately\n       does not. The enclosing Node checkpoint saves/resets/restores its outer\n       value once for the whole nonempty batch, not around each task. */\n    if (!JS_IsException(res) && !JS_HasException(ctx))\n        JS_PiSetContinuationPreservedEmbedderData(rt, JS_UNDEFINED);\n completed:\n    ret = JS_IsException(res) ? -1 : 1;\n    js_native_async_take_pending(ctx, &pending);\n    js_native_async_release(ctx, e->execution_context, &pending);\n    js_native_async_release(ctx, e->continuation_preserved_embedder_data, &pending);\n    for(i = 0; i < e->argc; i++)\n        js_native_async_release(ctx, e->argv[i], &pending);\n    js_native_async_release(ctx, res, &pending);\n    js_native_async_release(ctx, e->promise, &pending);\n    js_free(ctx, e);\n    if (pending.present) {\n        /* Restore an already produced exception; do not manufacture a new\n           throw from a retained data root. */\n        rt->current_exception = pending.reason;\n        ret = -1;\n    }\n    *pctx = ctx;\n    return ret;\n}\n\n",
+      "after": "/* Only the actual Promise selected by the job participates. Generic native\n   jobs, ignored Await capabilities, and custom non-Promise species do not. */\nstatic void js_pi_job_promise_hook(JSContext *ctx, JSJobEntry *e,\n                                    JSPromiseHookType type)\n{\n    JSRuntime *rt = ctx->rt;\n    JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n\n    if (!rt->promise_hook || !JS_IsPromise(e->promise))\n        return;\n    /* A native hook sees the original pending event. Keep an independent\n       entitlement so consuming it cannot accidentally erase the first event.\n       Actual cancellation still changes the private event's precedence. */\n    if (JS_HasException(ctx)) {\n        pending.present = true;\n        pending.reason = js_dup(rt->current_exception);\n    }\n    rt->promise_hook(ctx, type, e->promise, JS_UNDEFINED,\n                     rt->promise_hook_opaque);\n    JS_PiCheckExecutionTermination(ctx);\n    js_native_async_take_pending(ctx, &pending);\n    if (pending.present)\n        rt->current_exception = pending.reason;\n}\n\n/* return < 0 if exception, 0 if no job ran (empty or execution disallowed),\n   1 if a job was executed successfully. No-progress leaves '*pctx' NULL. */\nint JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)\n{\n    JSContext *ctx;\n    JSJobEntry *e;\n    JSValue res;\n    int i, ret;\n    bool body_started = false;\n    JSExecutionContextHook *context_hook;\n    void *context_opaque;\n    JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n\n    if (list_empty(&rt->job_list)) {\n        *pctx = NULL;\n        return 0;\n    }\n\n    /* V8's nonverbose TryRunMicrotasks catches the ordinary disallow reason\n       before JSEntry: no entry is consumed and the checkpoint reports zero.\n       Preserve an already pending native failure instead of swallowing it. */\n    if (unlikely(!rt->pi_javascript_execution_allowed)) {\n        e = list_entry(rt->job_list.next, JSJobEntry, link);\n        if (JS_HasException(e->ctx)) {\n            *pctx = e->ctx;\n            return -1;\n        }\n        *pctx = NULL;\n        return 0;\n    }\n\n    /* get the first pending job and execute it */\n    e = list_entry(rt->job_list.next, JSJobEntry, link);\n    list_del(&e->link);\n    ctx = e->ctx;\n    /* V8 SetupContinuationPreservedEmbedderData deliberately skips undefined.\n       A preceding failed task can leave its data for such a following task. */\n    if (!JS_IsUndefined(e->continuation_preserved_embedder_data)) {\n        JS_PiSetContinuationPreservedEmbedderData(\n            rt, e->continuation_preserved_embedder_data);\n        if (JS_HasException(ctx)) {\n            res = JS_EXCEPTION;\n            goto completed;\n        }\n    }\n    context_hook = rt->execution_context_hook;\n    context_opaque = rt->execution_context_opaque;\n    if (context_hook)\n        context_hook(ctx, true, e->execution_context, context_opaque);\n    js_pi_job_promise_hook(ctx, e, JS_PROMISE_HOOK_BEFORE);\n    if (JS_HasException(ctx)) {\n        res = JS_EXCEPTION;\n    } else {\n        body_started = true;\n        res = e->job_func(e->ctx, e->argc, vc(e->argv));\n        JS_PiCheckExecutionTermination(ctx);\n    }\n    /* V8's normal task path calls AFTER only after the complete builtin.\n       Preserve the existing paired native thenable notification for generic\n       host-fatal Error events; only native execution termination is deferred. */\n    if (body_started &&\n        !JS_PiIsExecutionTermination(rt->current_exception) &&\n        ((!JS_IsException(res) && !JS_HasException(ctx)) ||\n         (e->job_func == js_promise_resolve_thenable_job &&\n          JS_HasException(ctx) && JS_IsUncatchableError(rt->current_exception))))\n        js_pi_job_promise_hook(ctx, e, JS_PROMISE_HOOK_AFTER);\n    if (context_hook && context_hook == rt->execution_context_hook &&\n        context_opaque == rt->execution_context_opaque)\n        context_hook(ctx, false, e->execution_context, context_opaque);\n    /* Successful V8 tasks clear the slot; the exception branch deliberately\n       does not. The enclosing Node checkpoint saves/resets/restores its outer\n       value once for the whole nonempty batch, not around each task. */\n    if (!JS_IsException(res) && !JS_HasException(ctx))\n        JS_PiSetContinuationPreservedEmbedderData(rt, JS_UNDEFINED);\n completed:\n    ret = JS_IsException(res) ? -1 : 1;\n    js_native_async_take_pending(ctx, &pending);\n    js_native_async_release(ctx, e->execution_context, &pending);\n    js_native_async_release(ctx, e->continuation_preserved_embedder_data, &pending);\n    for(i = 0; i < e->argc; i++)\n        js_native_async_release(ctx, e->argv[i], &pending);\n    js_native_async_release(ctx, res, &pending);\n    js_native_async_release(ctx, e->promise, &pending);\n    js_free(ctx, e);\n    if (pending.present) {\n        /* Restore an already produced exception; do not manufacture a new\n           throw from a retained data root. */\n        rt->current_exception = pending.reason;\n        ret = -1;\n    }\n    *pctx = ctx;\n    return ret;\n}\n\n",
+      "count": 1,
+      "packet": "ordinary-hook-edits.json",
+      "owned_base_before_offsets": [
+        113957
+      ],
+      "owned_base_after_offsets": [
+        113957
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "runtime owns current and deferred-aborted jobs",
+      "before": "    struct list_head job_list; /* list of JSJobEntry.link */\n",
+      "after": "    struct list_head job_list; /* list of JSJobEntry.link */\n    struct JSJobEntry *pi_current_job; /* active borrowed native owner */\n    struct JSJobEntry *pi_terminated_job; /* selected owner in aborted list */\n    struct list_head pi_aborted_job_list;\n    bool pi_finishing_terminated_jobs;\n",
+      "count": 1,
+      "packet": "queue-edits.json",
+      "owned_base_before_offsets": [
+        15111
+      ],
+      "owned_base_after_offsets": [
+        15111
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "job stores result and context retention state",
+      "before": "    JSValue promise;\n    int argc;\n    JSValue argv[];\n} JSJobEntry;",
+      "after": "    JSValue promise;\n    JSValue result;\n    bool ctx_owned;\n    bool after_boundary_crossed;\n    int argc;\n    JSValue argv[];\n} JSJobEntry;",
+      "count": 1,
+      "packet": "queue-edits.json",
+      "owned_base_before_offsets": [
+        42861
+      ],
+      "owned_base_after_offsets": [
+        42861
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "initialize aborted job owner list",
+      "before": "    init_list_head(&rt->job_list);\n\n    if (JS_InitAtoms(rt))",
+      "after": "    init_list_head(&rt->job_list);\n    init_list_head(&rt->pi_aborted_job_list);\n\n    if (JS_InitAtoms(rt))",
+      "count": 1,
+      "packet": "queue-edits.json",
+      "owned_base_before_offsets": [
+        102032
+      ],
+      "owned_base_after_offsets": [
+        102032
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "initialize complete enqueue storage",
+      "before": "    e->promise = js_dup(promise);\n    e->argc = argc;",
+      "after": "    e->promise = js_dup(promise);\n    e->result = JS_UNDEFINED;\n    e->ctx_owned = false;\n    e->after_boundary_crossed = false;\n    e->argc = argc;",
+      "count": 1,
+      "packet": "queue-edits.json",
+      "owned_base_before_offsets": [
+        110439
+      ],
+      "owned_base_after_offsets": [
+        110439
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "actual queue boundary and deferred termination owner",
+      "before": "/* Only the actual Promise selected by the job participates. Generic native\n   jobs, ignored Await capabilities, and custom non-Promise species do not. */\nstatic void js_pi_job_promise_hook(JSContext *ctx, JSJobEntry *e,\n                                    JSPromiseHookType type)\n{\n    JSRuntime *rt = ctx->rt;\n    JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n\n    if (!rt->promise_hook || !JS_IsPromise(e->promise))\n        return;\n    /* A native hook sees the original pending event. Keep an independent\n       entitlement so consuming it cannot accidentally erase the first event.\n       Actual cancellation still changes the private event's precedence. */\n    if (JS_HasException(ctx)) {\n        pending.present = true;\n        pending.reason = js_dup(rt->current_exception);\n    }\n    rt->promise_hook(ctx, type, e->promise, JS_UNDEFINED,\n                     rt->promise_hook_opaque);\n    JS_PiCheckExecutionTermination(ctx);\n    js_native_async_take_pending(ctx, &pending);\n    if (pending.present)\n        rt->current_exception = pending.reason;\n}\n\n/* return < 0 if exception, 0 if no job ran (empty or execution disallowed),\n   1 if a job was executed successfully. No-progress leaves '*pctx' NULL. */\nint JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)\n{\n    JSContext *ctx;\n    JSJobEntry *e;\n    JSValue res;\n    int i, ret;\n    bool body_started = false;\n    JSExecutionContextHook *context_hook;\n    void *context_opaque;\n    JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n\n    if (list_empty(&rt->job_list)) {\n        *pctx = NULL;\n        return 0;\n    }\n\n    /* V8's nonverbose TryRunMicrotasks catches the ordinary disallow reason\n       before JSEntry: no entry is consumed and the checkpoint reports zero.\n       Preserve an already pending native failure instead of swallowing it. */\n    if (unlikely(!rt->pi_javascript_execution_allowed)) {\n        e = list_entry(rt->job_list.next, JSJobEntry, link);\n        if (JS_HasException(e->ctx)) {\n            *pctx = e->ctx;\n            return -1;\n        }\n        *pctx = NULL;\n        return 0;\n    }\n\n    /* get the first pending job and execute it */\n    e = list_entry(rt->job_list.next, JSJobEntry, link);\n    list_del(&e->link);\n    ctx = e->ctx;\n    /* V8 SetupContinuationPreservedEmbedderData deliberately skips undefined.\n       A preceding failed task can leave its data for such a following task. */\n    if (!JS_IsUndefined(e->continuation_preserved_embedder_data)) {\n        JS_PiSetContinuationPreservedEmbedderData(\n            rt, e->continuation_preserved_embedder_data);\n        if (JS_HasException(ctx)) {\n            res = JS_EXCEPTION;\n            goto completed;\n        }\n    }\n    context_hook = rt->execution_context_hook;\n    context_opaque = rt->execution_context_opaque;\n    if (context_hook)\n        context_hook(ctx, true, e->execution_context, context_opaque);\n    js_pi_job_promise_hook(ctx, e, JS_PROMISE_HOOK_BEFORE);\n    if (JS_HasException(ctx)) {\n        res = JS_EXCEPTION;\n    } else {\n        body_started = true;\n        res = e->job_func(e->ctx, e->argc, vc(e->argv));\n        JS_PiCheckExecutionTermination(ctx);\n    }\n    /* V8's normal task path calls AFTER only after the complete builtin.\n       Preserve the existing paired native thenable notification for generic\n       host-fatal Error events; only native execution termination is deferred. */\n    if (body_started &&\n        !JS_PiIsExecutionTermination(rt->current_exception) &&\n        ((!JS_IsException(res) && !JS_HasException(ctx)) ||\n         (e->job_func == js_promise_resolve_thenable_job &&\n          JS_HasException(ctx) && JS_IsUncatchableError(rt->current_exception))))\n        js_pi_job_promise_hook(ctx, e, JS_PROMISE_HOOK_AFTER);\n    if (context_hook && context_hook == rt->execution_context_hook &&\n        context_opaque == rt->execution_context_opaque)\n        context_hook(ctx, false, e->execution_context, context_opaque);\n    /* Successful V8 tasks clear the slot; the exception branch deliberately\n       does not. The enclosing Node checkpoint saves/resets/restores its outer\n       value once for the whole nonempty batch, not around each task. */\n    if (!JS_IsException(res) && !JS_HasException(ctx))\n        JS_PiSetContinuationPreservedEmbedderData(rt, JS_UNDEFINED);\n completed:\n    ret = JS_IsException(res) ? -1 : 1;\n    js_native_async_take_pending(ctx, &pending);\n    js_native_async_release(ctx, e->execution_context, &pending);\n    js_native_async_release(ctx, e->continuation_preserved_embedder_data, &pending);\n    for(i = 0; i < e->argc; i++)\n        js_native_async_release(ctx, e->argv[i], &pending);\n    js_native_async_release(ctx, res, &pending);\n    js_native_async_release(ctx, e->promise, &pending);\n    js_free(ctx, e);\n    if (pending.present) {\n        /* Restore an already produced exception; do not manufacture a new\n           throw from a retained data root. */\n        rt->current_exception = pending.reason;\n        ret = -1;\n    }\n    *pctx = ctx;\n    return ret;\n}\n\n",
+      "after": "/* Only the actual Promise selected by the job participates. Generic native\n   jobs, ignored Await capabilities, and custom non-Promise species do not. */\nstatic void js_pi_job_promise_hook(JSContext *ctx, JSJobEntry *e,\n                                    JSPromiseHookType type)\n{\n    JSRuntime *rt = ctx->rt;\n    JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n\n    if (!rt->promise_hook || !JS_IsPromise(e->promise))\n        return;\n    /* A native hook sees the original pending event. Keep an independent\n       entitlement so consuming it cannot accidentally erase the first event.\n       Actual cancellation still changes the private event's precedence. */\n    if (JS_HasException(ctx)) {\n        pending.present = true;\n        pending.reason = js_dup(rt->current_exception);\n    }\n    rt->promise_hook(ctx, type, e->promise, JS_UNDEFINED,\n                     rt->promise_hook_opaque);\n    JS_PiCheckExecutionTermination(ctx);\n    js_native_async_take_pending(ctx, &pending);\n    if (pending.present)\n        rt->current_exception = pending.reason;\n}\n\n/* Queue entries are native owners. Detach a complete queue before any root\n   retirement so a finalizer can enqueue only into the new live queue. */\nstatic void js_pi_move_job_list(struct list_head *to, struct list_head *from)\n{\n    init_list_head(to);\n    if (list_empty(from))\n        return;\n    to->next = from->next;\n    to->prev = from->prev;\n    to->next->prev = to;\n    to->prev->next = to;\n    init_list_head(from);\n}\n\nstatic void js_pi_job_release_value(JSRuntime *rt, JSValue *slot,\n                                     JSNativeAsyncPending *pending)\n{\n    JSValue value = *slot;\n    *slot = JS_UNDEFINED;\n    js_pi_continuation_take_pending_rt(rt, pending);\n    JS_FreeValueRT(rt, value);\n    js_pi_continuation_take_pending_rt(rt, pending);\n}\n\nstatic void js_pi_job_release_payload(JSRuntime *rt, JSJobEntry *e,\n                                       JSNativeAsyncPending *pending)\n{\n    int i;\n    js_pi_job_release_value(rt, &e->execution_context, pending);\n    js_pi_job_release_value(rt, &e->continuation_preserved_embedder_data, pending);\n    for (i = 0; i < e->argc; i++)\n        js_pi_job_release_value(rt, &e->argv[i], pending);\n    js_pi_job_release_value(rt, &e->result, pending);\n}\n\nstatic void js_pi_job_retire(JSRuntime *rt, JSJobEntry *e,\n                              JSNativeAsyncPending *pending)\n{\n    JSContext *ctx = e->ctx_owned ? e->ctx : NULL;\n    e->ctx_owned = false;\n    e->ctx = NULL;\n    js_pi_job_release_payload(rt, e, pending);\n    js_pi_job_release_value(rt, &e->promise, pending);\n    if (ctx) {\n        JS_FreeContext(ctx);\n        js_pi_continuation_take_pending_rt(rt, pending);\n    }\n    js_free_rt(rt, e);\n}\n\nstatic void js_pi_job_list_retire(JSRuntime *rt, struct list_head *list,\n                                   JSNativeAsyncPending *pending)\n{\n    while (!list_empty(list)) {\n        JSJobEntry *e = list_entry(list->next, JSJobEntry, link);\n        list_del(&e->link);\n        js_pi_job_retire(rt, e, pending);\n    }\n}\n\nstatic void js_pi_hold_terminated_job(JSRuntime *rt, JSJobEntry *e)\n{\n    /* Native embedders may nest ordinary job pumps. Retain every aborted\n       native owner, but the innermost actual task supplies current-microtask\n       metadata. The Node checkpoint itself must not be reentered. */\n    list_add_tail(&e->link, &rt->pi_aborted_job_list);\n    if (!rt->pi_terminated_job)\n        rt->pi_terminated_job = e;\n}\n\n/* The caller restores its saved batch continuation before this operation and\n   invokes completed callbacks afterwards. Neither action is synthesized here. */\nint JS_PiFinishTerminatedMicrotasks(JSRuntime *rt)\n{\n    struct list_head queued, aborted;\n    JSJobEntry *current;\n    JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n    bool terminating;\n\n    /* Finalizer reentry cannot consume the new queue or retire an active\n       caller's job. The owning outer checkpoint completes this operation. */\n    if (rt->pi_finishing_terminated_jobs || rt->pi_current_job)\n        return 0;\n    terminating = JS_PiIsExecutionTerminating(rt);\n    if (!terminating && list_empty(&rt->pi_aborted_job_list))\n        return 0;\n\n    rt->pi_finishing_terminated_jobs = true;\n    init_list_head(&queued);\n    if (terminating)\n        js_pi_move_job_list(&queued, &rt->job_list);\n    js_pi_move_job_list(&aborted, &rt->pi_aborted_job_list);\n    current = rt->pi_terminated_job;\n    rt->pi_terminated_job = NULL;\n    /* The queue is already logically empty and the current-task slot is\n       cleared before any cleanup or deferred native AFTER can reenter. */\n    js_pi_continuation_take_pending_rt(rt, &pending);\n    js_pi_job_list_retire(rt, &queued, &pending);\n    if (pending.present) {\n        rt->current_exception = pending.reason;\n        pending.present = false;\n        pending.reason = JS_UNDEFINED;\n    }\n    if (terminating && current && !current->after_boundary_crossed) {\n        current->after_boundary_crossed = true;\n        /* V8 OnTermination calls only the isolate/native hook, after the\n           outer continuation was restored. A custom species object is skipped. */\n        js_pi_job_promise_hook(current->ctx, current, JS_PROMISE_HOOK_AFTER);\n    }\n    js_pi_continuation_take_pending_rt(rt, &pending);\n    js_pi_job_list_retire(rt, &aborted, &pending);\n    if (pending.present)\n        rt->current_exception = pending.reason;\n    rt->pi_finishing_terminated_jobs = false;\n    return terminating ? 1 : 0;\n}\n\n/* 1 = executed successfully, 0 = no progress, -1 = ordinary/host-fatal error,\n   JS_PI_JOB_TERMINATED = native termination completion, possibly cancelled\n   while unwinding. No-progress leaves '*pctx' NULL. */\nint JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)\n{\n    JSContext *ctx;\n    JSJobEntry *e, *previous_job;\n    int ret;\n    bool body_started = false;\n    JSExecutionContextHook *context_hook;\n    void *context_opaque;\n    JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n\n    if (rt->pi_finishing_terminated_jobs) {\n        *pctx = NULL;\n        return 0;\n    }\n    if (rt->pi_terminated_job) {\n        *pctx = rt->pi_terminated_job->ctx;\n        return JS_PI_JOB_TERMINATED;\n    }\n    if (list_empty(&rt->job_list)) {\n        *pctx = NULL;\n        return 0;\n    }\n\n    e = list_entry(rt->job_list.next, JSJobEntry, link);\n    if (JS_PiCheckExecutionTermination(e->ctx)) {\n        *pctx = e->ctx;\n        return JS_PiIsExecutionTermination(rt->current_exception) ?\n            JS_PI_JOB_TERMINATED : -1;\n    }\n    /* The disallow checkpoint consumes no entry and does not run a hook. */\n    if (unlikely(!rt->pi_javascript_execution_allowed)) {\n        if (JS_HasException(e->ctx)) {\n            *pctx = e->ctx;\n            return -1;\n        }\n        *pctx = NULL;\n        return 0;\n    }\n\n    list_del(&e->link);\n    ctx = JS_DupContext(e->ctx);\n    e->ctx_owned = true;\n    previous_job = rt->pi_current_job;\n    rt->pi_current_job = e;\n    if (!JS_IsUndefined(e->continuation_preserved_embedder_data)) {\n        JS_PiSetContinuationPreservedEmbedderData(\n            rt, e->continuation_preserved_embedder_data);\n        if (JS_HasException(ctx)) {\n            e->result = JS_EXCEPTION;\n            goto completed;\n        }\n    }\n    context_hook = rt->execution_context_hook;\n    context_opaque = rt->execution_context_opaque;\n    if (context_hook)\n        context_hook(ctx, true, e->execution_context, context_opaque);\n    JS_PiCheckExecutionTermination(ctx);\n    if (!JS_HasException(ctx))\n        js_pi_job_promise_hook(ctx, e, JS_PROMISE_HOOK_BEFORE);\n    if (JS_HasException(ctx)) {\n        e->result = JS_EXCEPTION;\n    } else {\n        uint64_t generation = rt->pi_termination_generation;\n        body_started = true;\n        e->result = e->job_func(ctx, e->argc, vc(e->argv));\n        js_pi_record_aborted_native_call(ctx, e->result, generation);\n        JS_PiCheckExecutionTermination(ctx);\n    }\n    if (body_started &&\n        !JS_PiIsExecutionTermination(rt->current_exception) &&\n        ((!JS_IsException(e->result) && !JS_HasException(ctx)) ||\n         (e->job_func == js_promise_resolve_thenable_job &&\n          JS_HasException(ctx) && JS_IsUncatchableError(rt->current_exception)))) {\n        e->after_boundary_crossed = true;\n        js_pi_job_promise_hook(ctx, e, JS_PROMISE_HOOK_AFTER);\n    }\n    if (context_hook && context_hook == rt->execution_context_hook &&\n        context_opaque == rt->execution_context_opaque)\n        context_hook(ctx, false, e->execution_context, context_opaque);\n    JS_PiCheckExecutionTermination(ctx);\n    if (!JS_IsException(e->result) && !JS_HasException(ctx))\n        JS_PiSetContinuationPreservedEmbedderData(rt, JS_UNDEFINED);\n completed:\n    rt->pi_current_job = previous_job;\n    ret = JS_IsException(e->result) ? -1 : 1;\n    if (JS_PiIsExecutionTerminating(rt)) {\n        js_pi_hold_terminated_job(rt, e);\n        *pctx = ctx;\n        return JS_PI_JOB_TERMINATED;\n    }\n    /* Keep the actual Promise metadata until payload retirement is complete:\n       a native cleanup producer can itself start termination. */\n    js_pi_continuation_take_pending_rt(rt, &pending);\n    js_pi_job_release_payload(rt, e, &pending);\n    JS_PiCheckExecutionTermination(ctx);\n    js_pi_continuation_take_pending_rt(rt, &pending);\n    if (pending.present &&\n        JS_PiIsExecutionTermination(pending.reason) &&\n        rt->pi_termination_in_flight) {\n        rt->current_exception = pending.reason;\n        js_pi_hold_terminated_job(rt, e);\n        *pctx = ctx;\n        return JS_PI_JOB_TERMINATED;\n    }\n    js_pi_job_retire(rt, e, &pending);\n    if (pending.present) {\n        rt->current_exception = pending.reason;\n        ret = JS_PiIsExecutionTermination(pending.reason) ?\n            JS_PI_JOB_TERMINATED : -1;\n    }\n    *pctx = ctx;\n    return ret;\n}\n\n",
+      "count": 1,
+      "packet": "queue-edits.json",
+      "owned_base_before_offsets": [
+        114405
+      ],
+      "owned_base_after_offsets": [
+        114405
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "runtime teardown detaches queued and aborted jobs without hooks",
+      "before": "    list_for_each_safe(el, el1, &rt->job_list) {\n        JSJobEntry *e = list_entry(el, JSJobEntry, link);\n        JS_FreeValueRT(rt, e->execution_context);\n        JS_FreeValueRT(rt, e->continuation_preserved_embedder_data);\n        for(i = 0; i < e->argc; i++)\n            JS_FreeValueRT(rt, e->argv[i]);\n        JS_FreeValueRT(rt, e->promise);\n        js_free_rt(rt, e);\n    }\n    init_list_head(&rt->job_list);\n\n",
+      "after": "    {\n        struct list_head queued, aborted;\n        JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n        assert(!rt->pi_current_job);\n        js_pi_move_job_list(&queued, &rt->job_list);\n        js_pi_move_job_list(&aborted, &rt->pi_aborted_job_list);\n        rt->pi_terminated_job = NULL;\n        js_pi_job_list_retire(rt, &queued, &pending);\n        js_pi_job_list_retire(rt, &aborted, &pending);\n        if (pending.present)\n            JS_FreeValueRT(rt, pending.reason);\n    }\n\n",
+      "count": 1,
+      "packet": "queue-edits.json",
+      "owned_base_before_offsets": [
+        127014
+      ],
+      "owned_base_after_offsets": [
+        127014
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "invalidate runtime pending owner before teardown release",
+      "before": "    JS_FreeValueRT(rt, rt->current_exception);\n\n    {\n        struct list_head queued, aborted;",
+      "after": "    {\n        JSValue exception = rt->current_exception;\n        rt->current_exception = JS_UNINITIALIZED;\n        JS_FreeValueRT(rt, exception);\n    }\n\n    {\n        struct list_head queued, aborted;",
+      "count": 1,
+      "packet": "queue-edits.json",
+      "owned_base_before_offsets": [
+        126966
+      ],
+      "owned_base_after_offsets": [
+        126966
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "explicit native job completion and checkpoint retirement contract",
+      "before": "JS_EXTERN int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx);",
+      "after": "/* Native termination has a distinct completion status, even if it was\n   cancelled while native frames were unwinding. It must not be converted to a\n   guest rejection or captured diagnostic. Ordinary errors remain -1. */\n#define JS_PI_JOB_TERMINATED (-2)\nJS_EXTERN int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx);\n/* Owner-thread outer-checkpoint operation. Restore the saved outer continuation\n   before calling; invoke completed callbacks afterwards. When an actual native\n   termination is pending, detaches the old queue before any retirement and\n   clears current-task metadata before the deferred genuine native Promise AFTER.\n   New jobs enqueued by cleanup remain in the new queue. Pending reasons use the\n   same first-actual-fatal owner, and cancellation cannot revive an old event.\n   Retained aborted jobs are also released after cancellation, without clearing\n   the live queue or manufacturing AFTER. Returns 1 if the actual-termination\n   branch was selected, otherwise 0 (including nested/finalizer no-progress).\n   This does not provide a V8 external TryCatch object or completed-callback owner.\n   Runtime teardown releases these native owners without invoking Promise hooks. */\nJS_EXTERN int JS_PiFinishTerminatedMicrotasks(JSRuntime *rt);",
+      "count": 1,
+      "packet": "queue-edits.json",
+      "owned_base_before_offsets": [
+        84855
+      ],
+      "owned_base_after_offsets": [
+        84855
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "single actual pending decision retires a losing native event lease",
+      "before": "static void js_native_async_take_pending(JSContext *ctx, JSNativeAsyncPending *owned);\n",
+      "after": "/* Both operands are actual pending completions owned by a native reducer.\n   Releasing a losing private event is an owner decision, not public Cancel:\n   a detached event is eligible here and a later unserviced request stays set. */\nbool JS_PiNativePendingReplace(JSRuntime *rt, JSValueConst retained,\n                                JSValueConst incoming)\n{\n    bool replace = js_pi_pending_priority(rt, incoming) >\n                   js_pi_pending_priority(rt, retained);\n    JSValueConst selected = replace ? incoming : retained;\n    JSValueConst discarded = replace ? retained : incoming;\n    if (JS_PiIsExecutionTermination(discarded) &&\n        !JS_PiIsExecutionTermination(selected))\n        rt->pi_termination_in_flight = false;\n    return replace;\n}\n\nstatic void js_native_async_take_pending(JSContext *ctx, JSNativeAsyncPending *owned);\n",
+      "count": 1,
+      "packet": "suppressed-event-lease-successor.json",
+      "owned_base_before_offsets": [
+        60192
+      ],
+      "owned_base_after_offsets": [
+        60192
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "runtime pending owner uses native event-aware selection",
+      "before": "        } else if (js_pi_pending_priority(rt, next) >\n                   js_pi_pending_priority(rt, owned->reason)) {",
+      "after": "        } else if (JS_PiNativePendingReplace(rt, owned->reason, next)) {",
+      "count": 1,
+      "packet": "suppressed-event-lease-successor.json",
+      "owned_base_before_offsets": [
+        112294
+      ],
+      "owned_base_after_offsets": [
+        112294
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "context pending owners use same dynamic event-aware selection",
+      "before": "        } else if (js_pi_pending_priority(ctx->rt, next) >\n                   js_pi_pending_priority(ctx->rt, owned->reason)) {",
+      "after": "        } else if (JS_PiNativePendingReplace(ctx->rt, owned->reason, next)) {",
+      "count": 2,
+      "packet": "suppressed-event-lease-successor.json",
+      "owned_base_before_offsets": [
+        308989,
+        787767
+      ],
+      "owned_base_after_offsets": [
+        308989,
+        787717
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "async iterator discards suppressed event with same lease decision",
+      "before": "        if (js_pi_pending_priority(ctx->rt, cleanup) >\n            js_pi_pending_priority(ctx->rt, reason)) {",
+      "after": "        if (JS_PiNativePendingReplace(ctx->rt, reason, cleanup)) {",
+      "count": 1,
+      "packet": "suppressed-event-lease-successor.json",
+      "owned_base_before_offsets": [
+        613798
+      ],
+      "owned_base_after_offsets": [
+        613798
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "native reducers share actual pending provenance and lease retirement",
+      "before": "JS_EXTERN uint64_t JS_PiExecutionTerminationGeneration(JSRuntime *rt);\n",
+      "after": "JS_EXTERN uint64_t JS_PiExecutionTerminationGeneration(JSRuntime *rt);\n/* Borrowed actual pending reasons only, never retained/returned DATA. Returns\n   whether incoming replaces retained under the existing first-fatal rule and\n   the cancelled native-completion precedence. If a private event loses, retires\n   its in-flight lease without clearing a later unserviced request. Neither\n   operand is freed; the caller retires the losing owned value. No allocation,\n   guest call, pending-slot mutation or public Error-flag inference is added. */\nJS_EXTERN bool JS_PiNativePendingReplace(JSRuntime *rt,\n                                         JSValueConst retained_pending,\n                                         JSValueConst incoming_pending);\n",
+      "count": 1,
+      "packet": "suppressed-event-lease-successor.json",
+      "owned_base_before_offsets": [
+        47973
+      ],
+      "owned_base_after_offsets": [
+        47973
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "publish prior pending before request servicing after job retirement",
+      "before": "    js_pi_job_release_payload(rt, e, &pending);\n    JS_PiCheckExecutionTermination(ctx);\n    js_pi_continuation_take_pending_rt(rt, &pending);\n",
+      "after": "    js_pi_job_release_payload(rt, e, &pending);\n    if (pending.present) {\n        rt->current_exception = pending.reason;\n        pending.present = false;\n        pending.reason = JS_UNDEFINED;\n    }\n    JS_PiCheckExecutionTermination(ctx);\n    js_pi_continuation_take_pending_rt(rt, &pending);\n",
+      "count": 1,
+      "packet": "queue-pending-successor.json",
+      "owned_base_before_offsets": [
+        124275
+      ],
+      "owned_base_after_offsets": [
+        124275
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "drain newly owned teardown reasons without leaving a dead pending value",
+      "before": "        js_pi_job_list_retire(rt, &aborted, &pending);\n        if (pending.present)\n            JS_FreeValueRT(rt, pending.reason);\n",
+      "after": "        js_pi_job_list_retire(rt, &aborted, &pending);\n        while (pending.present) {\n            JSValue reason = pending.reason;\n            pending.present = false;\n            pending.reason = JS_UNDEFINED;\n            JS_FreeValueRT(rt, reason);\n            js_pi_continuation_take_pending_rt(rt, &pending);\n        }\n",
+      "count": 1,
+      "packet": "queue-pending-successor.json",
+      "owned_base_before_offsets": [
+        128347
+      ],
+      "owned_base_after_offsets": [
+        128347
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "expose actual-owned pending classification without querying pending slot",
+      "before": "/* Both operands are actual pending completions owned by a native reducer.\n",
+      "after": "/* Classify only an owned/borrowed ACTUAL pending completion. Detached native\n   owners retain provenance even while the runtime pending slot is empty. */\nint JS_PiNativePendingPriority(JSRuntime *rt, JSValueConst actual_pending_reason)\n{\n    return js_pi_pending_priority(rt, actual_pending_reason);\n}\n\n/* Both operands are actual pending completions owned by a native reducer.\n",
+      "count": 1,
+      "packet": "pending-classification-successor.json",
+      "owned_base_before_offsets": [
+        60192
+      ],
+      "owned_base_after_offsets": [
+        60192
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "document dynamic native pending classification and DATA exclusion",
+      "before": "/* Borrowed actual pending reasons only, never retained/returned DATA. Returns\n",
+      "after": "/* Borrowed ACTUAL pending reason only, including one detached into a native\n   cleanup owner; never diagnostic/returned/rejected DATA. Returns -1 for a\n   cancelled private termination completion, 0 for an ordinary actual reason,\n   and 1 for an active private event or an actual uncatchable Error. It reads\n   the event lease, not the pending slot; no allocation, call or mutation. */\nJS_EXTERN int JS_PiNativePendingPriority(JSRuntime *rt,\n                                          JSValueConst actual_pending_reason);\n/* Borrowed actual pending reasons only, never retained/returned DATA. Returns\n",
+      "count": 1,
+      "packet": "pending-classification-successor.json",
+      "owned_base_before_offsets": [
+        48044
+      ],
+      "owned_base_after_offsets": [
+        48044
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "keep the current job selected through actual payload retirement",
+      "before": " completed:\n    rt->pi_current_job = previous_job;\n    ret = JS_IsException(e->result) ? -1 : 1;\n",
+      "after": " completed:\n    /* Payload/Promise/context finalizers still belong to this active call.\n       They cannot complete the outer checkpoint before its caller restores\n       the saved continuation. Keep the guard until the last retirement. */\n    ret = JS_IsException(e->result) ? -1 : 1;\n",
+      "count": 1,
+      "packet": "active-job-retirement-successor.json",
+      "owned_base_before_offsets": [
+        124135
+      ],
+      "owned_base_after_offsets": [
+        124135
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "restore the caller current job only after publishing the aborted owner",
+      "before": "        js_pi_hold_terminated_job(rt, e);\n        *pctx = ctx;\n        return JS_PI_JOB_TERMINATED;\n",
+      "after": "        js_pi_hold_terminated_job(rt, e);\n        rt->pi_current_job = previous_job;\n        *pctx = ctx;\n        return JS_PI_JOB_TERMINATED;\n",
+      "count": 2,
+      "packet": "active-job-retirement-successor.json",
+      "owned_base_before_offsets": [
+        124464,
+        125234
+      ],
+      "owned_base_after_offsets": [
+        124464,
+        125277
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "restore the current job after all finalizable entry ownership retires",
+      "before": "    js_pi_job_retire(rt, e, &pending);\n    if (pending.present) {\n",
+      "after": "    js_pi_job_retire(rt, e, &pending);\n    rt->pi_current_job = previous_job;\n    if (pending.present) {\n",
+      "count": 1,
+      "packet": "active-job-retirement-successor.json",
+      "owned_base_before_offsets": [
+        125426
+      ],
+      "owned_base_after_offsets": [
+        125426
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "share losing-event lease retirement while preserving cached host generic event classification",
+      "before": "bool JS_PiNativePendingReplace(JSRuntime *rt, JSValueConst retained,\n                                JSValueConst incoming)\n{\n    bool replace = js_pi_pending_priority(rt, incoming) >\n                   js_pi_pending_priority(rt, retained);\n    JSValueConst selected = replace ? incoming : retained;\n    JSValueConst discarded = replace ? retained : incoming;\n    if (JS_PiIsExecutionTermination(discarded) &&\n        !JS_PiIsExecutionTermination(selected))\n        rt->pi_termination_in_flight = false;\n    return replace;\n}\n",
+      "after": "static bool js_pi_native_pending_replace(JSRuntime *rt,\n                                          JSValueConst retained,\n                                          JSValueConst incoming,\n                                          int retained_priority,\n                                          int incoming_priority)\n{\n    bool replace = incoming_priority > retained_priority;\n    JSValueConst selected = replace ? incoming : retained;\n    JSValueConst discarded = replace ? retained : incoming;\n    if (JS_PiIsExecutionTermination(discarded) &&\n        !JS_PiIsExecutionTermination(selected))\n        rt->pi_termination_in_flight = false;\n    return replace;\n}\n\nbool JS_PiNativePendingReplace(JSRuntime *rt, JSValueConst retained,\n                                JSValueConst incoming)\n{\n    return js_pi_native_pending_replace(rt, retained, incoming,\n        js_pi_pending_priority(rt, retained), js_pi_pending_priority(rt, incoming));\n}\n\nbool JS_PiNativePendingReplaceClassified(JSRuntime *rt,\n                                          JSValueConst retained,\n                                          bool retained_generic_fatal,\n                                          JSValueConst incoming,\n                                          bool incoming_generic_fatal)\n{\n    /* Host owners that already classified an ACTUAL generic event keep that\n       policy. Public flag changes during cleanup must not alter its selection.\n       Only the private event lease is dynamically cancelled or retired. */\n    int retained_priority = JS_PiIsExecutionTermination(retained) ?\n        js_pi_pending_priority(rt, retained) : (retained_generic_fatal ? 1 : 0);\n    int incoming_priority = JS_PiIsExecutionTermination(incoming) ?\n        js_pi_pending_priority(rt, incoming) : (incoming_generic_fatal ? 1 : 0);\n    return js_pi_native_pending_replace(rt, retained, incoming,\n                                        retained_priority, incoming_priority);\n}\n",
+      "count": 1,
+      "packet": "classified-pending-successor.json",
+      "owned_base_before_offsets": [
+        60730
+      ],
+      "owned_base_after_offsets": [
+        60730
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "actual cached-owner classified pending contract",
+      "before": "JS_EXTERN bool JS_PiNativePendingReplace(JSRuntime *rt,\n                                         JSValueConst retained_pending,\n                                         JSValueConst incoming_pending);\n",
+      "after": "JS_EXTERN bool JS_PiNativePendingReplace(JSRuntime *rt,\n                                         JSValueConst retained_pending,\n                                         JSValueConst incoming_pending);\n/* Same actual-owner operation for native hosts that already cached generic\n   event classification. Both booleans must come from those actual events,\n   never DATA. They are ignored for private tokens, whose lease remains dynamic.\n   Neither Error flag is read for a generic operand or changed by this call. */\nJS_EXTERN bool JS_PiNativePendingReplaceClassified(JSRuntime *rt,\n                                         JSValueConst retained_pending,\n                                         bool retained_generic_fatal,\n                                         JSValueConst incoming_pending,\n                                         bool incoming_generic_fatal);\n",
+      "count": 1,
+      "packet": "classified-pending-successor.json",
+      "owned_base_before_offsets": [
+        49040
+      ],
+      "owned_base_after_offsets": [
+        49040
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "private native-abrupt result for explicit cancelled termination unwind",
+      "before": "bool JS_PiIsExecutionTermination(JSValueConst value)\n",
+      "after": "/* Native completion propagation only: this result does not establish a\n   pending event or lease. It carries an already-observed termination failure\n   across a callback even when Cancel cleared the actual pending event. */\nJSValue JS_PiNativeTerminationResult(void)\n{\n    return js_pi_termination_token();\n}\n\nbool JS_PiIsExecutionTermination(JSValueConst value)\n",
+      "count": 1,
+      "packet": "native-abrupt-result-successor.json",
+      "owned_base_before_offsets": [
+        59506
+      ],
+      "owned_base_after_offsets": [
+        59506
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "private sentinel provenance includes native completion propagation",
+      "before": "   immediate is created only by native termination servicing; it carries no\n",
+      "after": "   immediate is created only by native termination servicing/propagation; it carries no\n",
+      "count": 1,
+      "packet": "native-abrupt-result-successor.json",
+      "owned_base_before_offsets": [
+        59263
+      ],
+      "owned_base_after_offsets": [
+        59263
+      ]
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "native aborted result has no event side effect and is never guest DATA",
+      "before": "JS_EXTERN bool JS_PiIsExecutionTermination(JSValueConst actual_pending_token);\n",
+      "after": "JS_EXTERN bool JS_PiIsExecutionTermination(JSValueConst actual_pending_token);\n/* Native callback result only, for an already-observed termination failure\n   still unwinding after cancellation. No request, pending event, lease or\n   generation is created. It is an exception result, never a guest value,\n   Action payload, Promise rejection or captured diagnostic. Existing later\n   actual pending reasons retain precedence when the callback boundary runs. */\nJS_EXTERN JSValue JS_PiNativeTerminationResult(void);\n",
+      "count": 1,
+      "packet": "native-abrupt-result-successor.json",
+      "owned_base_before_offsets": [
+        47831
+      ],
+      "owned_base_after_offsets": [
+        47831
+      ]
+    }
+  ],
+  "limits": [
+    "No execution, runtime acceptance or existing-pass transfer.",
+    "Main private-setter addition is outside this donor base and must remain intact at intake.",
+    "Engine and five callback gateways are supplied as exact separate Main-based intake snippets, not applied to this donor production tree.",
+    "Planned TypeBox Machine internal owner requires its distinct successor.",
+    "Owned-base offsets prove exact reversal of repeated internal lines; Main composition uses ordered before/after replacements and expected match counts."
+  ]
+}

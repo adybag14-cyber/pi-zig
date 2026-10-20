@@ -1,0 +1,144 @@
+{
+  "source_only": true,
+  "main_is_not_modified": true,
+  "base_path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\engine.zig",
+  "before_sha256": "5B3B91B0053508AAC9D4C9951CEF3F4B74D1A154342CD33FE21BE25E03EE3B0F",
+  "after_sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417",
+  "before_bytes": 96591,
+  "after_bytes": 99337,
+  "edits": [
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "checked",
+      "before": "    pub fn checked(self: *Engine, value: c.JSValue) !c.JSValue {\n        const result = self.nativeCallbackResult(value);\n        if (c.JS_IsException(result)) {\n            if (!c.JS_HasException(self.context)) _ = c.JS_ThrowInternalError(self.context, \"Native callback returned exception without a pending reason\");\n            self.captureException(self.context);\n            return error.JavaScriptException;\n        }\n        return result;\n    }\n",
+      "after": "    pub fn checked(self: *Engine, value: c.JSValue) !c.JSValue {\n        const result = self.nativeCallbackResult(value);\n        if (c.JS_IsException(result)) {\n            if (!c.JS_HasException(self.context)) {\n                if (c.JS_PiIsExecutionTermination(result)) _ = c.JS_Throw(self.context, result)\n                else _ = c.JS_ThrowInternalError(self.context, \"Native callback returned exception without a pending reason\");\n            }\n            return self.captureException(self.context);\n        }\n        return result;\n    }\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "checkNativeEntry",
+      "before": "    pub fn checkNativeEntry(self: *Engine) !void {\n        if (!c.JS_HasException(self.context) and self.currentNativeFatal() == null) return;\n        self.native_exception_diagnostics_suppressed += 1;\n        defer self.native_exception_diagnostics_suppressed -= 1;\n        _ = self.nativeCallbackResult(c.pi_js_undefined());\n        self.captureException(self.context);\n        return error.JavaScriptException;\n    }\n",
+      "after": "    pub fn checkNativeEntry(self: *Engine) !void {\n        self.native_exception_diagnostics_suppressed += 1;\n        defer self.native_exception_diagnostics_suppressed -= 1;\n        const result = self.nativeCallbackResult(c.pi_js_undefined());\n        if (c.JS_IsException(result)) return self.captureException(self.context);\n    }\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "currentNativeFatal",
+      "before": "    fn currentNativeFatal(self: *Engine) ?c.JSValue {\n        var cursor = self.native_fatal_invocation;\n        while (cursor) |invocation| : (cursor = invocation.previous) if (invocation.first) |first| return first;\n        return null;\n    }\n",
+      "after": "    fn currentNativeFatal(self: *Engine) ?c.JSValue {\n        var cursor = self.native_fatal_invocation;\n        while (cursor) |invocation| : (cursor = invocation.previous) if (invocation.first) |first| {\n            // Generic first-fatal authority is historical. A private event is\n            // different: Cancel can invalidate its lease while this native\n            // record still owns the already-aborted completion.\n            if (!c.JS_PiIsExecutionTermination(first) or\n                c.JS_PiNativePendingPriority(self.runtime, first) > 0) return first;\n        };\n        return null;\n    }\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "recordNativeFatal",
+      "before": "    fn recordNativeFatal(self: *Engine, reason: c.JSValue) void {\n        const first = self.currentNativeFatal() orelse reason;\n        var cursor = self.native_fatal_invocation;\n        while (cursor) |invocation| : (cursor = invocation.previous) {\n            std.debug.assert(invocation.active);\n            if (invocation.first == null) invocation.first = c.JS_DupValue(self.context, first);\n        }\n    }\n",
+      "after": "    fn recordNativeFatal(self: *Engine, reason: c.JSValue) void {\n        const first = self.currentNativeFatal() orelse reason;\n        var cursor = self.native_fatal_invocation;\n        while (cursor) |invocation| : (cursor = invocation.previous) {\n            std.debug.assert(invocation.active);\n            if (invocation.first) |previous| {\n                if (!c.JS_PiIsExecutionTermination(previous) or\n                    c.JS_PiNativePendingPriority(self.runtime, previous) > 0) continue;\n                // The private immediate has no finalizer. Publish the new\n                // actual owner before retiring the cancelled completion.\n                invocation.first = c.JS_DupValue(self.context, first);\n                self.freeValue(previous);\n            } else invocation.first = c.JS_DupValue(self.context, first);\n        }\n    }\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "leaveNativeInvocation",
+      "before": "    pub fn leaveNativeInvocation(self: *Engine, invocation: *NativeInvocation, result: c.JSValue) c.JSValue {\n        if (!invocation.active) return result;\n        std.debug.assert(self.native_fatal_invocation == invocation);\n        var owned: NativePending = .{ .reason = if (invocation.first) |first| c.JS_DupValue(self.context, first) else null, .fatal = invocation.first != null };\n        self.takeNativePending(&owned);\n        if (owned.reason != null) self.releaseNativeOwned(result, &owned);\n        if (invocation.first) |first| if (!owned.fatal) {\n            const displaced = owned.reason;\n            owned = .{ .reason = c.JS_DupValue(self.context, first), .fatal = true };\n            if (displaced) |old| self.releaseNativeOwned(old, &owned);\n        };\n        self.native_fatal_invocation = invocation.previous;\n        invocation.active = false;\n        const retained = invocation.first;\n        invocation.first = null;\n        if (retained) |first| self.releaseNativeOwned(first, &owned);\n        if (owned.reason) |reason| {\n            if (owned.fatal) c.JS_SetUncatchableError(self.context, reason);\n            return c.JS_Throw(self.context, reason);\n        }\n        return result;\n    }\n",
+      "after": "    pub fn leaveNativeInvocation(self: *Engine, invocation: *NativeInvocation, result: c.JSValue) c.JSValue {\n        if (!invocation.active) return result;\n        std.debug.assert(self.native_fatal_invocation == invocation);\n        const entry_first = self.currentNativeFatal();\n        var owned: NativePending = .{ .reason = if (entry_first) |reason| c.JS_DupValue(self.context, reason) else null, .fatal = entry_first != null };\n        self.takeNativePending(&owned);\n        if (owned.reason != null) self.releaseNativeOwned(result, &owned);\n        if (invocation.first) |first| if (!owned.isFatal(self.runtime) and\n            (!c.JS_PiIsExecutionTermination(first) or c.JS_PiNativePendingPriority(self.runtime, first) > 0)) {\n            const displaced = owned.reason;\n            owned = .{ .reason = c.JS_DupValue(self.context, first), .fatal = true };\n            if (displaced) |old| self.releaseNativeOwned(old, &owned);\n        };\n        self.native_fatal_invocation = invocation.previous;\n        invocation.active = false;\n        const retained = invocation.first;\n        invocation.first = null;\n        if (retained) |first| self.releaseNativeOwned(first, &owned);\n        if (owned.reason != null) return self.throwNativePending(&owned);\n        return result;\n    }\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "nativeCallbackResult",
+      "before": "    pub fn nativeCallbackResult(self: *Engine, result: c.JSValue) c.JSValue {\n        const first = self.currentNativeFatal();\n        var owned: NativePending = .{ .reason = if (first) |reason| c.JS_DupValue(self.context, reason) else null, .fatal = first != null };\n        self.takeNativePending(&owned);\n        if (owned.reason == null) return result;\n        self.releaseNativeOwned(result, &owned);\n        if (self.currentNativeFatal()) |actual| if (!owned.fatal) {\n            const displaced = owned.reason.?;\n            owned = .{ .reason = c.JS_DupValue(self.context, actual), .fatal = true };\n            self.releaseNativeOwned(displaced, &owned);\n        };\n        if (owned.fatal) c.JS_SetUncatchableError(self.context, owned.reason.?);\n        return c.JS_Throw(self.context, owned.reason.?);\n    }\n",
+      "after": "    pub fn nativeCallbackResult(self: *Engine, result: c.JSValue) c.JSValue {\n        const first = self.currentNativeFatal();\n        var owned: NativePending = .{ .reason = if (first) |reason| c.JS_DupValue(self.context, reason) else null, .fatal = first != null };\n        self.takeNativePending(&owned);\n        // An earlier owned actual event has the same pending-entry priority\n        // as one still in the VM slot. Do not service a request across it or\n        // reclassify its cached generic status by publishing and retaking it.\n        if (owned.reason == null) {\n            _ = c.JS_PiCheckExecutionTermination(self.context);\n            self.takeNativePending(&owned);\n        }\n        if (owned.reason == null) return result;\n        self.releaseNativeOwned(result, &owned);\n        if (self.currentNativeFatal()) |actual| if (!owned.isFatal(self.runtime)) {\n            const displaced = owned.reason.?;\n            owned = .{ .reason = c.JS_DupValue(self.context, actual), .fatal = true };\n            self.releaseNativeOwned(displaced, &owned);\n        };\n        return self.throwNativePending(&owned);\n    }\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "actual pending provenance and dynamic private completion with unchanged generic cached classification",
+      "before": "    const NativePending = struct { reason: ?c.JSValue = null, fatal: bool = false };\n",
+      "after": "    const NativePending = struct {\n        reason: ?c.JSValue = null,\n        fatal: bool = false,\n        actual_event: bool = true,\n        fn isFatal(self: *const NativePending, runtime: *c.JSRuntime) bool {\n            const reason = self.reason orelse return false;\n            if (!self.actual_event) return false;\n            return if (c.JS_PiIsExecutionTermination(reason))\n                c.JS_PiNativePendingPriority(runtime, reason) > 0\n            else self.fatal;\n        }\n    };\n    fn nativePendingReplace(self: *Engine, owned: *const NativePending, incoming: c.JSValue, incoming_fatal: bool) bool {\n        const retained = owned.reason orelse return true;\n        if (!owned.actual_event) return incoming_fatal;\n        return c.JS_PiNativePendingReplaceClassified(self.runtime,\n            retained, owned.fatal, incoming, incoming_fatal);\n    }\n    fn throwNativePending(self: *Engine, owned: *NativePending) c.JSValue {\n        const reason = owned.reason.?;\n        owned.reason = null;\n        if (owned.fatal and !c.JS_PiIsExecutionTermination(reason))\n            c.JS_SetUncatchableError(self.context, reason);\n        return c.JS_Throw(self.context, reason);\n    }\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "takeNativePendingAfterRelease",
+      "before": "    fn takeNativePendingAfterRelease(self: *Engine, owned: *NativePending, boundary: ?u64) void {\n        var release_generation = boundary;\n        while (c.JS_HasException(self.context)) {\n            const next = c.JS_GetException(self.context);\n            // This is an owned ACTUAL pending event, not captured diagnostics,\n            // a returned value or PromiseResult DATA. Qualify a private native\n            // producer only against the generation BEFORE this exact release.\n            if (release_generation) |generation| {\n                const tagged = c.pi_js_native_allocation_error_generation(next);\n                const distance = tagged -% generation;\n                if (tagged != 0 and distance != 0 and distance <= self.native_allocation_generation -% generation)\n                    c.JS_SetUncatchableError(self.context, next);\n            }\n            const fatal = c.JS_IsUncatchableError(next);\n            // Publish before retiring a displaced ordinary reason: its own\n            // finalizer may produce another actual fatal. First fatal wins.\n            if (fatal) self.recordNativeFatal(next);\n            if (owned.reason == null) {\n                owned.* = .{ .reason = next, .fatal = fatal };\n                release_generation = null;\n            } else if (!owned.fatal and fatal) {\n                const displaced = owned.reason.?;\n                owned.* = .{ .reason = next, .fatal = true };\n                release_generation = self.native_allocation_generation;\n                self.freeValue(displaced);\n            } else {\n                release_generation = self.native_allocation_generation;\n                self.freeValue(next);\n            }\n        }\n    }\n",
+      "after": "    fn takeNativePendingAfterRelease(self: *Engine, owned: *NativePending, boundary: ?u64) void {\n        var release_generation = boundary;\n        while (c.JS_HasException(self.context)) {\n            const next = c.JS_GetException(self.context);\n            // Only actual pending ownership enters this reducer. A captured\n            // diagnostic or rejected Promise value never supplies authority.\n            if (release_generation) |generation| {\n                const tagged = c.pi_js_native_allocation_error_generation(next);\n                const distance = tagged -% generation;\n                if (tagged != 0 and distance != 0 and distance <= self.native_allocation_generation -% generation)\n                    c.JS_SetUncatchableError(self.context, next);\n            }\n            const fatal = c.JS_PiNativePendingPriority(self.runtime, next) > 0;\n            if (fatal) self.recordNativeFatal(next);\n            if (owned.reason == null) {\n                owned.* = .{ .reason = next, .fatal = fatal };\n                release_generation = null;\n            } else if (self.nativePendingReplace(owned, next, fatal)) {\n                const displaced = owned.reason.?;\n                owned.* = .{ .reason = next, .fatal = fatal };\n                release_generation = self.native_allocation_generation;\n                self.freeValue(displaced);\n            } else {\n                release_generation = self.native_allocation_generation;\n                self.freeValue(next);\n            }\n        }\n    }\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "throwNativeOutOfMemoryMode",
+      "before": "    fn throwNativeOutOfMemoryMode(self: *Engine, fatal: bool) c.JSValue {\n        const first = self.currentNativeFatal();\n        var owned: NativePending = .{ .reason = if (first) |reason| c.JS_DupValue(self.context, reason) else null, .fatal = first != null };\n        self.takeNativePending(&owned);\n        if (owned.fatal) {\n            c.JS_SetUncatchableError(self.context, owned.reason.?);\n            return c.JS_Throw(self.context, owned.reason.?);\n        }\n        const prior = owned.reason;\n        _ = c.JS_ThrowOutOfMemory(self.context);\n        const exception = c.JS_GetException(self.context);\n        if (fatal) c.JS_SetUncatchableError(self.context, exception);\n        if (fatal) self.recordNativeFatal(exception);\n        owned = .{ .reason = exception, .fatal = fatal or c.JS_IsUncatchableError(exception) };\n        const previous = self.native_allocation_exception;\n        // Publish/tag before releasing old tracking: a reentrant cleanup may\n        // create a later OOM, whose tracking must not then be overwritten.\n        self.native_allocation_exception = c.JS_DupValue(self.context, exception);\n        self.native_allocation_generation +%= 1;\n        // Zero means unmarked. Keep the counter entirely in u64, including\n        // its wrap boundary; no guest number, map, property, or allocation.\n        if (self.native_allocation_generation == 0) self.native_allocation_generation = 1;\n        c.pi_js_mark_native_allocation_error(exception, self.native_allocation_generation);\n        if (prior) |old| self.releaseNativeOwned(old, &owned);\n        if (previous) |old| self.releaseNativeOwned(old, &owned);\n        self.takeNativePending(&owned);\n        if (owned.fatal) c.JS_SetUncatchableError(self.context, owned.reason.?);\n        return c.JS_Throw(self.context, owned.reason.?);\n    }\n",
+      "after": "    fn throwNativeOutOfMemoryMode(self: *Engine, fatal: bool) c.JSValue {\n        const first = self.currentNativeFatal();\n        var owned: NativePending = .{ .reason = if (first) |reason| c.JS_DupValue(self.context, reason) else null, .fatal = first != null };\n        self.takeNativePending(&owned);\n        if (owned.isFatal(self.runtime)) return self.throwNativePending(&owned);\n        const prior = owned.reason;\n        _ = c.JS_ThrowOutOfMemory(self.context);\n        const exception = c.JS_GetException(self.context);\n        if (fatal) c.JS_SetUncatchableError(self.context, exception);\n        if (fatal) self.recordNativeFatal(exception);\n        owned = .{ .reason = exception, .fatal = fatal or c.JS_IsUncatchableError(exception) };\n        const previous = self.native_allocation_exception;\n        // Publish/tag before releasing old tracking: a reentrant cleanup may\n        // create a later OOM, whose tracking must not then be overwritten.\n        self.native_allocation_exception = c.JS_DupValue(self.context, exception);\n        self.native_allocation_generation +%= 1;\n        // Zero means unmarked. Keep the counter entirely in u64, including\n        // its wrap boundary; no guest number, map, property, or allocation.\n        if (self.native_allocation_generation == 0) self.native_allocation_generation = 1;\n        c.pi_js_mark_native_allocation_error(exception, self.native_allocation_generation);\n        if (prior) |old| self.releaseNativeOwned(old, &owned);\n        if (previous) |old| self.releaseNativeOwned(old, &owned);\n        self.takeNativePending(&owned);\n        return self.throwNativePending(&owned);\n    }\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "throwCaptured",
+      "before": "    pub fn throwCaptured(self: *Engine) c.JSValue {\n        if (c.JS_HasException(self.context)) return c.JS_Throw(self.context, c.JS_GetException(self.context));\n        if (self.captured_exception) |exception| return c.JS_Throw(self.context, c.JS_DupValue(self.context, exception));\n        return c.JS_ThrowInternalError(self.context, \"Native callback failed without an exception value\");\n    }\n",
+      "after": "    pub fn throwCaptured(self: *Engine) c.JSValue {\n        const pending = self.nativeCallbackResult(c.pi_js_undefined());\n        if (c.JS_IsException(pending)) return pending;\n        if (self.captured_exception) |exception| return c.JS_Throw(self.context, c.JS_DupValue(self.context, exception));\n        return c.JS_ThrowInternalError(self.context, \"Native callback failed without an exception value\");\n    }\n\n    /// Propagate an already-observed native termination failure without a\n    /// diagnostic or a new event, including after its actual event was cancelled.\n    pub fn throwExecutionTerminated(self: *Engine) c.JSValue {\n        return self.nativeCallbackResult(c.JS_PiNativeTerminationResult());\n    }\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "captureException",
+      "before": "    fn captureException(self: *Engine, context: *c.JSContext) void {\n        const exception = c.JS_GetException(context);\n        self.captureValue(context, exception, true);\n    }\n",
+      "after": "    fn captureException(self: *Engine, context: *c.JSContext) anyerror {\n        const exception = c.JS_GetException(context);\n        return self.captureValue(context, exception, true);\n    }\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "captureValue",
+      "before": "    fn captureValue(self: *Engine, context: *c.JSContext, exception: c.JSValue, actual_event: bool) void {\n        var owned: NativePending = .{ .reason = exception, .fatal = actual_event and c.JS_IsUncatchableError(exception) };\n        if (owned.fatal) self.recordNativeFatal(exception);\n        if (self.currentNativeFatal()) |first| {\n            owned = .{ .reason = c.JS_DupValue(context, first), .fatal = true };\n            self.releaseNativeOwned(exception, &owned);\n        }\n        self.takeNativePending(&owned);\n        // A native implementation may call guest functions whose exceptions\n        // are still inside a guest try/catch. Capturing their identity must\n        // not invoke user ToString code before that catch gets the exception.\n        var diagnostic_message: ?[]u8 = null;\n        if (self.native_exception_diagnostics_suppressed == 0 and !owned.fatal) {\n            const text = c.JS_ToCString(context, owned.reason.?);\n            self.takeNativePending(&owned);\n            if (text != null) {\n                if (!owned.fatal) diagnostic_message = self.gpa.dupe(u8, std.mem.span(text)) catch null;\n                c.JS_FreeCString(context, text);\n                self.takeNativePending(&owned);\n            }\n        }\n        // String conversion can invoke user code and another native callback.\n        // Commit ownership only afterward, retaining the original thrown value.\n        while (c.JS_HasException(self.context) or self.captured_exception != null or self.last_error != null) {\n            self.takeNativePending(&owned);\n            if (self.captured_exception) |previous| {\n                self.captured_exception = null;\n                self.releaseNativeOwned(previous, &owned);\n            } else if (self.last_error) |message| {\n                // A released diagnostic may reenter checked()/captureValue\n                // and publish another owned message. Detach before freeing;\n                // drain all channels before committing this invocation's text.\n                self.last_error = null;\n                self.gpa.free(message);\n            }\n        }\n        if (owned.fatal) {\n            if (diagnostic_message) |message| self.gpa.free(message);\n            c.JS_SetUncatchableError(context, owned.reason.?);\n        } else self.last_error = diagnostic_message;\n        self.captured_exception = owned.reason.?;\n    }\n",
+      "after": "    fn captureValue(self: *Engine, context: *c.JSContext, exception: c.JSValue, actual_event: bool) anyerror {\n        var owned: NativePending = .{\n            .reason = exception,\n            .fatal = actual_event and c.JS_PiNativePendingPriority(self.runtime, exception) > 0,\n            .actual_event = actual_event,\n        };\n        if (owned.isFatal(self.runtime)) self.recordNativeFatal(exception);\n        if (self.currentNativeFatal()) |first| {\n            if (actual_event) _ = c.JS_PiNativePendingReplaceClassified(self.runtime,\n                first, true, exception, owned.fatal);\n            owned = .{ .reason = c.JS_DupValue(context, first), .fatal = true };\n            self.releaseNativeOwned(exception, &owned);\n        }\n        self.takeNativePending(&owned);\n        // A native implementation may call guest functions whose exceptions\n        // are still inside a guest try/catch. Capturing their identity must\n        // not invoke user ToString code before that catch gets the exception.\n        var diagnostic_message: ?[]u8 = null;\n        if (self.native_exception_diagnostics_suppressed == 0 and\n            !owned.isFatal(self.runtime) and !c.JS_PiIsExecutionTermination(owned.reason.?)) {\n            const text = c.JS_ToCString(context, owned.reason.?);\n            self.takeNativePending(&owned);\n            if (text != null) {\n                if (!owned.isFatal(self.runtime) and !c.JS_PiIsExecutionTermination(owned.reason.?)) diagnostic_message = self.gpa.dupe(u8, std.mem.span(text)) catch null;\n                c.JS_FreeCString(context, text);\n                self.takeNativePending(&owned);\n            }\n        }\n        // String conversion can invoke user code and another native callback.\n        // Commit ownership only afterward, retaining the original thrown value.\n        while (c.JS_HasException(self.context) or self.captured_exception != null or self.last_error != null) {\n            self.takeNativePending(&owned);\n            if (self.captured_exception) |previous| {\n                self.captured_exception = null;\n                self.releaseNativeOwned(previous, &owned);\n            } else if (self.last_error) |message| {\n                // A released diagnostic may reenter checked()/captureValue\n                // and publish another owned message. Detach before freeing;\n                // drain all channels before committing this invocation's text.\n                self.last_error = null;\n                self.gpa.free(message);\n            }\n        }\n        if (c.JS_PiIsExecutionTermination(owned.reason.?)) {\n            if (diagnostic_message) |message| self.gpa.free(message);\n            _ = self.throwNativePending(&owned);\n            return error.ExecutionTerminated;\n        }\n        if (owned.isFatal(self.runtime)) {\n            if (diagnostic_message) |message| self.gpa.free(message);\n            c.JS_SetUncatchableError(context, owned.reason.?);\n        } else self.last_error = diagnostic_message;\n        self.captured_exception = owned.reason.?;\n        return error.JavaScriptException;\n    }\n",
+      "count": 1
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "separate native job completion before diagnostic capture",
+      "before": "            if (status < 0) {\n                self.captureException(context orelse self.context);\n                return error.JavaScriptException;\n            }\n",
+      "after": "            if (status == c.JS_PI_JOB_TERMINATED) return error.ExecutionTerminated;\n            if (status < 0) return self.captureException(context orelse self.context);\n",
+      "count": 2
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "propagate native capture result at original failure boundary",
+      "before": "            self.captureException(self.context);\n            return error.JavaScriptException;",
+      "after": "            return self.captureException(self.context);",
+      "count": 5
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "propagate native capture result at original failure boundary",
+      "before": "            self.captureException(self.context);\n            return error.JavaScriptException;",
+      "after": "            return self.captureException(self.context);",
+      "count": 0
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "propagate native capture result at original failure boundary",
+      "before": "            self.captureException(self.context);\n            return error.JavaScriptException;",
+      "after": "            return self.captureException(self.context);",
+      "count": 0
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "propagate native capture result at original failure boundary",
+      "before": "            self.captureException(self.context);\n            return error.JavaScriptException;",
+      "after": "            return self.captureException(self.context);",
+      "count": 0
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "propagate native capture result at original failure boundary",
+      "before": "            self.captureException(self.context);\n            return error.JavaScriptException;",
+      "after": "            return self.captureException(self.context);",
+      "count": 0
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "label": "rejected Promise DATA uses the same diagnostic result without private-token conversion",
+      "before": "                self.captureValue(self.context, reason, false);\n                break :blk error.JavaScriptException;",
+      "after": "                break :blk self.captureValue(self.context, reason, false);",
+      "count": 1
+    }
+  ]
+}

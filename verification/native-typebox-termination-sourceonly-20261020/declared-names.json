@@ -1,0 +1,23 @@
+{
+  "source_only": true,
+  "root": "src/native_typebox_execution_termination_test.zig",
+  "count": 15,
+  "names": [
+    "TypeBox native termination active step skips finally and retires its actual frame",
+    "TypeBox native termination cancelled step keeps native unwind apart from diagnostic DATA",
+    "TypeBox native termination planned child unwinds both actual finally owners",
+    "TypeBox native termination cancelled planned child never resumes either guest frame",
+    "TypeBox native termination actual callback failure stays native through Machine call",
+    "TypeBox native termination cleanup can cancel a detached event without reviving finally",
+    "TypeBox native termination cancelled cleanup permits its later actual ordinary reason",
+    "TypeBox native termination cancelled cleanup permits its later actual allocation fatal",
+    "TypeBox native termination losing cleanup event leaves the later request unserviced",
+    "TypeBox native termination cached generic fatal survives a later public flag clear",
+    "TypeBox native termination retains ordinary cleanup override and real finally behavior",
+    "TypeBox native termination cached ordinary reason cannot acquire fatal authority during cleanup",
+    "TypeBox native termination returned flagged Error remains DATA through actual finally",
+    "TypeBox native termination explicit planned throw establishes actual generic authority",
+    "TypeBox native termination during captured-slot retirement preempts the planned ordinary throw"
+  ],
+  "metadata_execution": false
+}

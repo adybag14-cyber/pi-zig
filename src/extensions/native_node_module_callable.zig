@@ -25,6 +25,7 @@ pub fn failure(engine: *v.em.Engine, err: anyerror, _: u64) c.JSValue {
     // Keep the caller API, but a callback-wide generation or captured DATA bit
     // is not producer evidence. Trusted host OOM is an actual new event.
     if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     _ = engine.nativeCallbackResult(c.pi_js_undefined());
     if (c.JS_HasException(engine.context)) return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
     if (err == error.JavaScriptException) {

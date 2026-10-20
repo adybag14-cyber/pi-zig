@@ -1,0 +1,120 @@
+{
+  "scope": "Proposed next source-only private FS request graph intake. All eight direct production/test imports checked against frozen Main. No full FileHandle/native StreamBase/public fs namespace claim.",
+  "paths": [
+    {
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "bytes": 16721,
+      "sha256": "FF468B5F806AFB07188B2B5CC5BCE8CF826BFD44C7588A8A0B19C4AB7D03D44F",
+      "in_main": false
+    },
+    {
+      "path": "src/extensions/native_node_weak_global.zig",
+      "bytes": 2477,
+      "sha256": "2B776E789CCBB8626B928C0EA44896BE843B11C379C42B30D298E19A49AE6C8A",
+      "in_main": false
+    },
+    {
+      "path": "src/extensions/native_node_fs_binding_data.zig",
+      "bytes": 17792,
+      "sha256": "AB6FB9BD2C6442D19B2EC60BCA0F536DD3BC64636971E5C1E2761E25E11277C8",
+      "in_main": false
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_promise.zig",
+      "bytes": 18818,
+      "sha256": "0ED6B910579E96E38A897C60BFE77F6DF8A42613676FA0BBCAA0453A90092158",
+      "in_main": false
+    },
+    {
+      "path": "src/extensions/native_node_fs_after_scope.zig",
+      "bytes": 4945,
+      "sha256": "F85EEA38E5BBB9285B3E4F3110C507D722B9E419CBF5365358BFF5CF070879D2",
+      "in_main": false
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "bytes": 12854,
+      "sha256": "35414605067B5743463EDEC07FF938508AF755AF644C38A1D86DB41AF3AD7644",
+      "in_main": false
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_read_binding.zig",
+      "bytes": 9556,
+      "sha256": "A620FEDB2C50D46A17947845B5FE2D7EE1AE4603F10BFA3F55FB44A588DD4375",
+      "in_main": false
+    },
+    {
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "bytes": 56999,
+      "sha256": "5E111B6D1B660D797D0FA75941B8F8309997C2508A141C067906735F3907A45E",
+      "in_main": false
+    }
+  ],
+  "direct_dependencies": {
+    "src/extensions/native_node_argument_values.zig": {
+      "exists_main": true,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+    },
+    "src/extensions/native_node_async_wrap_state.zig": {
+      "exists_main": true,
+      "sha256": "DE34706EF1C09C584BB1878AA6CB68C69B517DEB9FEEA1FE4CF24CE0338138D5"
+    },
+    "src/extensions/native_node_module_callable.zig": {
+      "exists_main": true,
+      "sha256": "D54499FAEAF3FFB935EA45CC427223972C5FA6CC78C85932A83F161CF7E97F65"
+    },
+    "src/extensions/native_node_fs_private_publication.zig": {
+      "exists_main": true,
+      "sha256": "F118D857DB722708344B87083608FEFEB769183BC0DB0F09C05D1CDCF87AB307"
+    },
+    "src/extensions/native_node_callback_scope.zig": {
+      "exists_main": true,
+      "sha256": "FBD43D092911F08D7CCF5E051C62894747AD6BD42D13309EC1B6B7872B9BE00B"
+    },
+    "src/extensions/native_node_request_state.zig": {
+      "exists_main": true,
+      "sha256": "01DA46DC010A3108D592172C6F65AAB8100560FC274228FE9F1B6643A70A755A"
+    },
+    "src/extensions/native_node_uv_service.zig": {
+      "exists_main": true,
+      "sha256": "3D1D632D250F78ED0EB7DEF8A7B44F99429D81CCB82F3199F3118C9FFA037D17"
+    },
+    "src/extensions/native_node_uv_exception.zig": {
+      "exists_main": true,
+      "sha256": "1B54AD31BC151A65DF4798C3D1C1AEC0E4603B634C6467DD64CF7B03CAF90F31"
+    },
+    "src/extensions/native_env_io.zig": {
+      "exists_main": true,
+      "sha256": "4BC66694AB6B22FC9A51A0943192BDCD61F0213C6846B0A69E0B459C26EF120E"
+    },
+    "src/extensions/native_sdk_owned_completion.zig": {
+      "exists_main": true,
+      "sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F"
+    },
+    "src/extensions/native_node_function.zig": {
+      "exists_main": true,
+      "sha256": "469B1CFE5B3C589881533EA38EA45163BE4282C29234B11EDAA82DA1F557B73B"
+    },
+    "src/extensions/native_node_async_providers.zig": {
+      "exists_main": true,
+      "sha256": "5C66F18156086D2C00A4AEE22C62F46E1C6DED84624A410F5900C49D2FECA4CA"
+    },
+    "src/extensions/native_process.zig": {
+      "exists_main": true,
+      "sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B"
+    }
+  },
+  "pending_peers": [
+    "VM BindingData native lifetime and Request settle/control9–16",
+    "Modules physical control17–21 and Fixture extensions",
+    "VM physical control22–25",
+    "Root or peer install-only build seam"
+  ],
+  "target": "build-native-node-fs-request-owner",
+  "control_count": 25,
+  "unselected_actual_dependencies": [
+    "Full callback checkpoint/uncaught/destroy scheduling Operations remain explicit unselected fixture guards. Outer skip-task-queues controls do not substitute for bootstrap.",
+    "Native FileHandle callback/StreamBase template remains explicitly unavailable; no fabricated public class."
+  ],
+  "execution": "none"
+}

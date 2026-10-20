@@ -24,6 +24,7 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc)
 }
 fn fail(engine: *js.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
     return c.JS_ThrowTypeError(engine.context, "Native Node function: %s", @as([*:0]const u8, @errorName(err)));
 }

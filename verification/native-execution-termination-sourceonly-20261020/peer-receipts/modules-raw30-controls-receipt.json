@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "reviewer": "/root/modules_io",
+  "status": "finite_source_peer_closed",
+  "date": "2026-10-20",
+  "root": {
+    "path": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/src/native_vm_execution_termination_test.zig",
+    "sha256": "164F8DCA345A71FA43D2894E8F07173A04304FDB6E0BED5FCA9EC3277E304EA8",
+    "bytes": 59079,
+    "declarations": 30
+  },
+  "assigned_declarations": [
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    29,
+    30
+  ],
+  "scope": [
+    "Actual Fixture/Probe/Batch and native callbacks required by assigned declarations",
+    "Owned current-job and detached-queue retirement controls, actual deferred Promise AFTER, foreign-context lifetime and no-hook runtime teardown",
+    "Explicit cancelled private native completion acknowledgement, distinct from active termination or guest DATA",
+    "Six-line install-only build seam"
+  ],
+  "evidence": [
+    "Declaration 19's actual ordinary failure preserves its continuation through job-root retirement, and its drained reason now has an unconditional defer before the fallible identity assertion. Its retirement remains before the next job.",
+    "Reaction and thenable controls retain the genuine target Promise through GC and the outer restore. Counts and native hook records distinguish old queued retirement, current Promise retirement, a finalizer-enqueued new job, and one deferred AFTER.",
+    "The payload-finalizer control requests/services termination then attempts Finish while Execute still owns the active entry; the old queued holder remains live until the outer finish.",
+    "Cancel before finish preserves the live queue and skips a manufactured deferred hook. Cancellation during detached retirement permits a later actual ordinary or generic fatal reason without reviving the old event.",
+    "BEFORE/AFTER producers, Disallow, foreign-context caller release and runtime teardown reach distinct actual native owners. The probe is disabled before fallback teardown and its storage remains alive.",
+    "Declaration 30 services then cancels a real event in an actual job, returns the explicit native abrupt result, and observes the inactive private pending classification. Only that private completion is acknowledged before the surviving queue resumes."
+  ],
+  "correction": {
+    "packet": "C:/Users/adyba/pi-zig/worktrees/public-modes-resume-20261018/verification/native-execution-termination-sourceonly-20261020/raw-job-reason-cleanup-successor.json",
+    "sha256": "0A60294860BF29AB49936B979C45272F1D00D154119EC48B074D41AF4C73E7A3",
+    "exact_one_edit_reversion": true,
+    "prior_root": "A340E69DDA8262266CA758FEE014072DEB04C2E2DD28A67881757C9C29E0DE21",
+    "assertions_preserved": true
+  },
+  "build": {
+    "packet": "verification/native-execution-termination-sourceonly-20261020/build-intake.json",
+    "sha256": "9BF1FBDBE890B0B4F85A9A92950252D1B319011DA775D1A503672EDD567A071F",
+    "added_lines": 6,
+    "actual_filter": "VM termination",
+    "all_30_names_match": true,
+    "shared_linkQuickJs": true,
+    "run_edges": 0,
+    "source_application_and_reversal_checked": true
+  },
+  "outside_scope": [
+    "SDK declarations 1–18 and 28",
+    "Original Node checkpoint reporting, completed-callback or bootstrap installation",
+    "Compiler and runtime execution or complete termination acceptance"
+  ],
+  "native_execution": false
+}

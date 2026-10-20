@@ -1,0 +1,158 @@
+{
+  "scope": "Exact Node24.13 V8 Promise job metadata, termination AFTER selection, queue cleanup and current TryCatch cancellation. Source only.",
+  "documents": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-disallow-javascript-sourceonly-20261019\\authority\\src__execution__isolate.cc",
+      "sha256": "EEA4CAC8477AE94429B28D2369BECC2DF00E0002A2664AC559435A802A40B2D0",
+      "bytes": 296824,
+      "parts": [
+        {
+          "anchor": "void Isolate::OnTerminationDuringRunMicrotasks()",
+          "start_char": 270173,
+          "start_byte": 270173,
+          "start_line": 7001,
+          "excerpt": "void Isolate::OnTerminationDuringRunMicrotasks() {\n  DCHECK(is_execution_terminating());\n  // This performs cleanup for when RunMicrotasks (in\n  // builtins-microtask-queue-gen.cc) is aborted via a termination exception.\n  // This has to be kept in sync with the code in said file. Currently this\n  // includes:\n  //\n  //  (1) Resetting the |current_microtask| slot on the Isolate to avoid leaking\n  //      memory (and also to keep |current_microtask| not being undefined as an\n  //      indicator that we're currently pumping the microtask queue).\n  //  (2) Empty the promise stack to avoid leaking memory.\n  //  (3) If the |current_microtask| is a promise reaction or resolve thenable\n  //      job task, then signal the async event delegate and debugger that the\n  //      microtask finished running.\n  //\n\n  // Reset the |current_microtask| global slot.\n  DirectHandle<Microtask> current_microtask(\n      Cast<Microtask>(heap()->current_microtask()), this);\n  heap()->set_current_microtask(ReadOnlyRoots(this).undefined_value());\n\n  if (IsPromiseReactionJobTask(*current_microtask)) {\n    auto promise_reaction_job_task =\n        Cast<PromiseReactionJobTask>(current_microtask);\n    DirectHandle<HeapObject> promise_or_capability(\n        promise_reaction_job_task->promise_or_capability(), this);\n    if (IsPromiseCapability(*promise_or_capability)) {\n      promise_or_capability = direct_handle(\n          Cast<PromiseCapability>(promise_or_capability)->promise(), this);\n    }\n    if (IsJSPromise(*promise_or_capability)) {\n      OnPromiseAfter(Cast<JSPromise>(promise_or_capability));\n    }\n  } else if (IsPromiseResolveThenableJobTask(*current_microtask)) {\n    auto promise_resolve_thenable_job_task =\n        Cast<PromiseResolveThenableJobTask>(current_microtask);\n    DirectHandle<JSPromise> promise_to_resolve(\n        promise_resolve_thenable_job_task->promise_to_resolve(), this);\n    OnPromiseAfter(promise_to_resolve);\n  }\n\n  SetTerminationOnExternalTryCatch();\n}\n"
+        },
+        {
+          "anchor": "void Isolate::OnPromiseAfter(",
+          "start_char": 269536,
+          "start_byte": 269536,
+          "start_line": 6983,
+          "excerpt": "void Isolate::OnPromiseAfter(DirectHandle<JSPromise> promise) {\n  RunPromiseHook(PromiseHookType::kAfter, promise,\n                 factory()->undefined_value());\n  if (HasAsyncEventDelegate()) {\n    if (promise->has_async_task_id()) {\n      async_event_delegate_->AsyncEventOccurred(\n          debug::kDebugDidHandle, promise->async_task_id(), false);\n    }\n  }\n}\n"
+        },
+        {
+          "anchor": "void Isolate::CancelTerminateExecution()",
+          "start_char": 76031,
+          "start_byte": 76031,
+          "start_line": 1954,
+          "excerpt": "void Isolate::CancelTerminateExecution() {\n  if (!is_execution_terminating()) return;\n  clear_internal_exception();\n  if (try_catch_handler()) try_catch_handler()->ResetInternal();\n}\n"
+        },
+        {
+          "anchor": "void Isolate::SetTerminationOnExternalTryCatch()",
+          "start_char": 186317,
+          "start_byte": 186317,
+          "start_line": 4799,
+          "excerpt": "void Isolate::SetTerminationOnExternalTryCatch() {\n  DCHECK_IMPLIES(v8_flags.strict_termination_checks,\n                 is_execution_terminating());\n  if (try_catch_handler() == nullptr) return;\n  try_catch_handler()->can_continue_ = false;\n  try_catch_handler()->exception_ = reinterpret_cast<void*>(\n      ReadOnlyRoots(heap()).termination_exception().ptr());\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-existing-promise-settlement-sourceonly-20261019\\authority\\v8-api.v24.13.cc",
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201",
+      "bytes": 489340,
+      "parts": [
+        {
+          "anchor": "TryCatch::~TryCatch()",
+          "start_char": 112796,
+          "start_byte": 112796,
+          "start_line": 2780,
+          "excerpt": "TryCatch::~TryCatch() {\n  if (HasCaught()) {\n    if (rethrow_ || (V8_UNLIKELY(HasTerminated()) &&\n                     !i_isolate_->thread_local_top()->CallDepthIsZero())) {\n      if (capture_message_) {\n        // If an exception was caught and rethrow_ is indicated, the saved\n        // message, script, and location need to be restored to Isolate TLS\n        // for reuse.  capture_message_ needs to be disabled so that Throw()\n        // does not create a new message.\n        i_isolate_->thread_local_top()->rethrowing_message_ = true;\n        i_isolate_->set_pending_message(ToObject(message_obj_));\n      }\n      i_isolate_->UnregisterTryCatchHandler(this);\n      i_isolate_->clear_internal_exception();\n      i_isolate_->Throw(ToObject(exception_));\n      return;\n    }\n    Reset();\n  }\n  i_isolate_->UnregisterTryCatchHandler(this);\n  DCHECK_IMPLIES(rethrow_,\n                 !i_isolate_->thread_local_top()->rethrowing_message_);\n}\n"
+        },
+        {
+          "anchor": "bool v8::TryCatch::HasCaught()",
+          "start_char": 114020,
+          "start_byte": 114020,
+          "start_line": 2809,
+          "excerpt": "bool v8::TryCatch::HasCaught() const {\n  return !IsTheHole(ToObject(exception_), i_isolate_);\n}\n"
+        },
+        {
+          "anchor": "v8::Local<v8::Value> v8::TryCatch::ReThrow()",
+          "start_char": 114325,
+          "start_byte": 114325,
+          "start_line": 2820,
+          "excerpt": "v8::Local<v8::Value> v8::TryCatch::ReThrow() {\n  if (!HasCaught()) return v8::Local<v8::Value>();\n  rethrow_ = true;\n  return v8::Undefined(reinterpret_cast<v8::Isolate*>(i_isolate_));\n}\n"
+        },
+        {
+          "anchor": "void v8::TryCatch::Reset()",
+          "start_char": 116152,
+          "start_byte": 116152,
+          "start_line": 2867,
+          "excerpt": "void v8::TryCatch::Reset() {\n  if (rethrow_) return;\n  if (V8_UNLIKELY(i_isolate_->is_execution_terminating()) &&\n      !i_isolate_->thread_local_top()->CallDepthIsZero()) {\n    return;\n  }\n  i_isolate_->clear_internal_exception();\n  i_isolate_->clear_pending_message();\n  ResetInternal();\n}\n"
+        },
+        {
+          "anchor": "void v8::TryCatch::ResetInternal()",
+          "start_char": 116445,
+          "start_byte": 116445,
+          "start_line": 2878,
+          "excerpt": "void v8::TryCatch::ResetInternal() {\n  i::Tagged<i::Object> the_hole = i::ReadOnlyRoots(i_isolate_).the_hole_value();\n  exception_ = reinterpret_cast<void*>(the_hole.ptr());\n  message_obj_ = reinterpret_cast<void*>(the_hole.ptr());\n}\n"
+        },
+        {
+          "anchor": "void Isolate::CancelTerminateExecution()",
+          "start_char": 393242,
+          "start_byte": 393242,
+          "start_line": 9926,
+          "excerpt": "void Isolate::CancelTerminateExecution() {\n  i::Isolate* i_isolate = reinterpret_cast<i::Isolate*>(this);\n  i_isolate->stack_guard()->ClearTerminateExecution();\n  i_isolate->CancelTerminateExecution();\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-disallow-javascript-sourceonly-20261019\\authority\\src__execution__microtask-queue.cc",
+      "sha256": "10755841F920DABD0B4174B60F14B17DC30E25EFB216B3B9B7EB0A025DA44209",
+      "bytes": 11313,
+      "parts": [
+        {
+          "anchor": "int MicrotaskQueue::RunMicrotasks(",
+          "start_char": 5195,
+          "start_byte": 5195,
+          "start_line": 153,
+          "excerpt": "int MicrotaskQueue::RunMicrotasks(Isolate* isolate) {\n  SetIsRunningMicrotasks scope(&is_running_microtasks_);\n  v8::Isolate::SuppressMicrotaskExecutionScope suppress(\n      reinterpret_cast<v8::Isolate*>(isolate), this);\n\n  if (!size()) {\n    OnCompleted(isolate);\n    return 0;\n  }\n\n  // We should not enter V8 if it's marked for termination.\n  DCHECK_IMPLIES(v8_flags.strict_termination_checks,\n                 !isolate->is_execution_terminating());\n\n  intptr_t base_count = finished_microtask_count_;\n  HandleScope handle_scope(isolate);\n  MaybeDirectHandle<Object> maybe_result;\n\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n  DirectHandle<Object> continuation_preserved_embedder_data(\n      isolate->isolate_data()->continuation_preserved_embedder_data(), isolate);\n  isolate->isolate_data()->set_continuation_preserved_embedder_data(\n      ReadOnlyRoots(isolate).undefined_value());\n#endif  // V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n\n  int processed_microtask_count;\n  {\n    HandleScopeImplementer::EnteredContextRewindScope rewind_scope(\n        isolate->handle_scope_implementer());\n    TRACE_EVENT_BEGIN0(\"v8.execute\", \"RunMicrotasks\");\n    {\n      TRACE_EVENT_CALL_STATS_SCOPED(isolate, \"v8\", \"V8.RunMicrotasks\");\n      maybe_result = Execution::TryRunMicrotasks(isolate, this);\n      processed_microtask_count =\n          static_cast<int>(finished_microtask_count_ - base_count);\n    }\n    TRACE_EVENT_END1(\"v8.execute\", \"RunMicrotasks\", \"microtask_count\",\n                     processed_microtask_count);\n  }\n\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n  isolate->isolate_data()->set_continuation_preserved_embedder_data(\n      *continuation_preserved_embedder_data);\n#endif  // V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n\n  if (isolate->is_execution_terminating()) {\n    DCHECK(isolate->has_exception());\n    DCHECK(maybe_result.is_null());\n    delete[] ring_buffer_;\n    ring_buffer_ = nullptr;\n    capacity_ = 0;\n    size_ = 0;\n    start_ = 0;\n    isolate->OnTerminationDuringRunMicrotasks();\n    OnCompleted(isolate);\n    return -1;\n  }\n\n  DCHECK_EQ(0, size());\n  OnCompleted(isolate);\n\n  return processed_microtask_count;\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-continuation-data-sourceonly-20261019\\authority\\src__builtins__builtins-microtask-queue-gen.cc",
+      "sha256": "DB93208AE2A372DA671F315875B6809BD21BE536B5F14FBDBCB327E93E6372A0",
+      "bytes": 25447,
+      "parts": [
+        {
+          "anchor": "void MicrotaskQueueBuiltinsAssembler::RunSingleMicrotask(",
+          "start_char": 6153,
+          "start_byte": 6153,
+          "start_line": 145,
+          "excerpt": "void MicrotaskQueueBuiltinsAssembler::RunSingleMicrotask(\n    TNode<Context> current_context, TNode<Microtask> microtask) {\n  CSA_DCHECK(this, TaggedIsNotSmi(microtask));\n  CSA_DCHECK(this, Word32BinaryNot(IsExecutionTerminating()));\n\n  StoreRoot(RootIndex::kCurrentMicrotask, microtask);\n  TNode<IntPtrT> saved_entered_context_count = GetEnteredContextCount();\n  TNode<Map> microtask_map = LoadMap(microtask);\n  TNode<Uint16T> microtask_type = LoadMapInstanceType(microtask_map);\n\n  TVARIABLE(Object, var_exception);\n  Label if_exception(this, Label::kDeferred);\n  Label is_callable(this), is_callback(this),\n      is_promise_fulfill_reaction_job(this),\n      is_promise_reject_reaction_job(this),\n      is_promise_resolve_thenable_job(this),\n      is_unreachable(this, Label::kDeferred), done(this);\n\n  int32_t case_values[] = {CALLABLE_TASK_TYPE, CALLBACK_TASK_TYPE,\n                           PROMISE_FULFILL_REACTION_JOB_TASK_TYPE,\n                           PROMISE_REJECT_REACTION_JOB_TASK_TYPE,\n                           PROMISE_RESOLVE_THENABLE_JOB_TASK_TYPE};\n  Label* case_labels[] = {\n      &is_callable, &is_callback, &is_promise_fulfill_reaction_job,\n      &is_promise_reject_reaction_job, &is_promise_resolve_thenable_job};\n  static_assert(arraysize(case_values) == arraysize(case_labels), \"\");\n  Switch(microtask_type, &is_unreachable, case_values, case_labels,\n         arraysize(case_labels));\n\n  BIND(&is_callable);\n  {\n    // Enter the context of the {microtask}.\n    TNode<Context> microtask_context =\n        LoadObjectField<Context>(microtask, CallableTask::kContextOffset);\n    TNode<NativeContext> native_context = LoadNativeContext(microtask_context);\n    PrepareForContext(native_context, &done);\n\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n    SetupContinuationPreservedEmbedderData(microtask);\n#endif\n    TNode<JSReceiver> callable =\n        LoadObjectField<JSReceiver>(microtask, CallableTask::kCallableOffset);\n    {\n      ScopedExceptionHandler handler(this, &if_exception, &var_exception);\n      Call(microtask_context, callable, UndefinedConstant());\n    }\n    RewindEnteredContext(saved_entered_context_count);\n    SetCurrentContext(current_context);\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n    ClearContinuationPreservedEmbedderData();\n#endif\n    Goto(&done);\n  }\n\n  BIND(&is_callback);\n  {\n    const TNode<Object> microtask_callback =\n        LoadObjectField(microtask, CallbackTask::kCallbackOffset);\n    const TNode<Object> microtask_data =\n        LoadObjectField(microtask, CallbackTask::kDataOffset);\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n    SetupContinuationPreservedEmbedderData(microtask);\n#endif\n\n    // If this turns out to become a bottleneck because of the calls\n    // to C++ via CEntry, we can choose to speed them up using a\n    // similar mechanism that we use for the CallApiFunction stub,\n    // except that calling the MicrotaskCallback is even easier, since\n    // it doesn't accept any tagged parameters, doesn't return a value\n    // and ignores exceptions.\n    //\n    // But from our current measurements it doesn't seem to be a\n    // serious performance problem, even if the microtask is full\n    // of CallHandlerTasks (which is not a realistic use case anyways).\n    {\n      ScopedExceptionHandler handler(this, &if_exception, &var_exception);\n      CallRuntime(Runtime::kRunMicrotaskCallback, current_context,\n                  microtask_callback, microtask_data);\n    }\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n    ClearContinuationPreservedEmbedderData();\n#endif\n    Goto(&done);\n  }\n\n  BIND(&is_promise_resolve_thenable_job);\n  {\n    // Enter the context of the {microtask}.\n    TNode<Context> microtask_context = LoadObjectField<Context>(\n        microtask, PromiseResolveThenableJobTask::kContextOffset);\n    TNode<NativeContext> native_context = LoadNativeContext(microtask_context);\n    PrepareForContext(native_context, &done);\n\n    const TNode<Object> promise_to_resolve = LoadObjectField(\n        microtask, PromiseResolveThenableJobTask::kPromiseToResolveOffset);\n    const TNode<Object> then =\n        LoadObjectField(microtask, PromiseResolveThenableJobTask::kThenOffset);\n    const TNode<Object> thenable = LoadObjectField(\n        microtask, PromiseResolveThenableJobTask::kThenableOffset);\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n    SetupContinuationPreservedEmbedderData(microtask);\n#endif\n    RunAllPromiseHooks(PromiseHookType::kBefore, microtask_context,\n                   CAST(promise_to_resolve));\n\n    {\n      ScopedExceptionHandler handler(this, &if_exception, &var_exception);\n      CallBuiltin(Builtin::kPromiseResolveThenableJob, native_context,\n                  promise_to_resolve, thenable, then);\n    }\n\n    RunAllPromiseHooks(PromiseHookType::kAfter, microtask_context,\n                   CAST(promise_to_resolve));\n\n    RewindEnteredContext(saved_entered_context_count);\n    SetCurrentContext(current_context);\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n    ClearContinuationPreservedEmbedderData();\n#endif  // V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n    Goto(&done);\n  }\n\n  BIND(&is_promise_fulfill_reaction_job);\n  {\n    // Enter the context of the {microtask}.\n    TNode<Context> microtask_context = LoadObjectField<Context>(\n        microtask, PromiseReactionJobTask::kContextOffset);\n    TNode<NativeContext> native_context = LoadNativeContext(microtask_context);\n    PrepareForContext(native_context, &done);\n\n    const TNode<Object> argument =\n        LoadObjectField(microtask, PromiseReactionJobTask::kArgumentOffset);\n    const TNode<Object> job_handler =\n        LoadObjectField(microtask, PromiseReactionJobTask::kHandlerOffset);\n    const TNode<HeapObject> promise_or_capability = CAST(LoadObjectField(\n        microtask, PromiseReactionJobTask::kPromiseOrCapabilityOffset));\n\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n    SetupContinuationPreservedEmbedderData(microtask);\n#endif  // V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n\n    // Run the promise before/debug hook if enabled.\n    RunAllPromiseHooks(PromiseHookType::kBefore, microtask_context,\n                       promise_or_capability);\n\n    {\n      ScopedExceptionHandler handler(this, &if_exception, &var_exception);\n      CallBuiltin(Builtin::kPromiseFulfillReactionJob, microtask_context,\n                  argument, job_handler, promise_or_capability);\n    }\n\n    // Run the promise after/debug hook if enabled.\n    RunAllPromiseHooks(PromiseHookType::kAfter, microtask_context,\n                       promise_or_capability);\n\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n    ClearContinuationPreservedEmbedderData();\n#endif  // V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n\n    RewindEnteredContext(saved_entered_context_count);\n    SetCurrentContext(current_context);\n    Goto(&done);\n  }\n\n  BIND(&is_promise_reject_reaction_job);\n  {\n    // Enter the context of the {microtask}.\n    TNode<Context> microtask_context = LoadObjectField<Context>(\n        microtask, PromiseReactionJobTask::kContextOffset);\n    TNode<NativeContext> native_context = LoadNativeContext(microtask_context);\n    PrepareForContext(native_context, &done);\n\n    const TNode<Object> argument =\n        LoadObjectField(microtask, PromiseReactionJobTask::kArgumentOffset);\n    const TNode<Object> job_handler =\n        LoadObjectField(microtask, PromiseReactionJobTask::kHandlerOffset);\n    const TNode<HeapObject> promise_or_capability = CAST(LoadObjectField(\n        microtask, PromiseReactionJobTask::kPromiseOrCapabilityOffset));\n\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n    SetupContinuationPreservedEmbedderData(microtask);\n#endif  // V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n\n    // Run the promise before/debug hook if enabled.\n    RunAllPromiseHooks(PromiseHookType::kBefore, microtask_context,\n                       promise_or_capability);\n\n    {\n      ScopedExceptionHandler handler(this, &if_exception, &var_exception);\n      CallBuiltin(Builtin::kPromiseRejectReactionJob, microtask_context,\n                  argument, job_handler, promise_or_capability);\n    }\n\n    // Run the promise after/debug hook if enabled.\n    RunAllPromiseHooks(PromiseHookType::kAfter, microtask_context,\n                       promise_or_capability);\n\n#ifdef V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n    ClearContinuationPreservedEmbedderData();\n#endif  // V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA\n\n    RewindEnteredContext(saved_entered_context_count);\n    SetCurrentContext(current_context);\n    Goto(&done);\n  }\n\n  BIND(&is_unreachable);\n  Unreachable();\n\n  BIND(&if_exception);\n  {\n    // Report unhandled exceptions from microtasks.\n    CallRuntime(Runtime::kReportMessageFromMicrotask, GetCurrentContext(),\n                var_exception.value());\n    RewindEnteredContext(saved_entered_context_count);\n    SetCurrentContext(current_context);\n    Goto(&done);\n  }\n\n  BIND(&done);\n}\n"
+        },
+        {
+          "anchor": "void MicrotaskQueueBuiltinsAssembler::RunAllPromiseHooks(",
+          "start_char": 19313,
+          "start_byte": 19313,
+          "start_line": 471,
+          "excerpt": "void MicrotaskQueueBuiltinsAssembler::RunAllPromiseHooks(\n    PromiseHookType type, TNode<Context> context,\n    TNode<HeapObject> promise_or_capability) {\n  TNode<Uint32T> promiseHookFlags = PromiseHookFlags();\n#ifdef V8_ENABLE_JAVASCRIPT_PROMISE_HOOKS\n  Label hook(this, Label::kDeferred), done_hook(this);\n  Branch(NeedsAnyPromiseHooks(promiseHookFlags), &hook, &done_hook);\n  BIND(&hook);\n  {\n#endif\n    switch (type) {\n      case PromiseHookType::kBefore:\n#ifdef V8_ENABLE_JAVASCRIPT_PROMISE_HOOKS\n        RunContextPromiseHookBefore(context, CAST(promise_or_capability),\n                                    promiseHookFlags);\n#endif\n        RunPromiseHook(Runtime::kPromiseHookBefore, context,\n                       promise_or_capability, promiseHookFlags);\n        break;\n      case PromiseHookType::kAfter:\n#ifdef V8_ENABLE_JAVASCRIPT_PROMISE_HOOKS\n        RunContextPromiseHookAfter(context, CAST(promise_or_capability),\n                                   promiseHookFlags);\n#endif\n        RunPromiseHook(Runtime::kPromiseHookAfter, context,\n                       promise_or_capability, promiseHookFlags);\n        break;\n      default:\n        UNREACHABLE();\n    }\n#ifdef V8_ENABLE_JAVASCRIPT_PROMISE_HOOKS\n    Goto(&done_hook);\n  }\n  BIND(&done_hook);\n#endif\n}\n"
+        },
+        {
+          "anchor": "void MicrotaskQueueBuiltinsAssembler::RunPromiseHook(",
+          "start_char": 20586,
+          "start_byte": 20586,
+          "start_line": 508,
+          "excerpt": "void MicrotaskQueueBuiltinsAssembler::RunPromiseHook(\n    Runtime::FunctionId id, TNode<Context> context,\n    TNode<HeapObject> promise_or_capability,\n    TNode<Uint32T> promiseHookFlags) {\n  Label hook(this, Label::kDeferred), done_hook(this);\n  Branch(IsIsolatePromiseHookEnabledOrDebugIsActiveOrHasAsyncEventDelegate(\n      promiseHookFlags), &hook, &done_hook);\n  BIND(&hook);\n  {\n    // Get to the underlying JSPromise instance.\n    TNode<HeapObject> promise = Select<HeapObject>(\n        IsPromiseCapability(promise_or_capability),\n        [=, this] {\n          return CAST(LoadObjectField(promise_or_capability,\n                                      PromiseCapability::kPromiseOffset));\n        },\n\n        [=] { return promise_or_capability; });\n    GotoIf(IsUndefined(promise), &done_hook);\n    CallRuntime(id, context, promise);\n    Goto(&done_hook);\n  }\n  BIND(&done_hook);\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-continuation-data-sourceonly-20261019\\authority\\src__objects__promise.tq",
+      "sha256": "648402343C1884D59B994C7ACD89E9FF4BC2CBBBDF094AC0C164EA7DC2EBD5D2",
+      "bytes": 3301,
+      "parts": [
+        {
+          "start_char": 0,
+          "start_byte": 0,
+          "start_line": 1,
+          "excerpt": "// Copyright 2019 the V8 project authors. All rights reserved.\n// Use of this source code is governed by a BSD-style license that can be\n// found in the LICENSE file.\n\nextern class PromiseCapability extends Struct {\n  promise: JSReceiver|Undefined;\n  // Ideally, resolve and reject would be typed as Callable|Undefined. However,\n  // the executor that creates the capability can be called in an arbitrary way\n  // by user-provided thenable constructors, and these resolver functions are\n  // not checked to be callable until after the user-provided thenable\n  // constructor returns. IOW, the callable check timing is observable.\n  resolve: JSAny;\n  reject: JSAny;\n}\n\n// PromiseReaction constants\ntype PromiseReactionType extends int31 constexpr 'PromiseReaction::Type';\nconst kPromiseReactionFulfill: constexpr PromiseReactionType\n    generates 'PromiseReaction::kFulfill';\nconst kPromiseReactionReject: constexpr PromiseReactionType\n    generates 'PromiseReaction::kReject';\nconst kPromiseReactionSize:\n    constexpr int31 generates 'PromiseReaction::kSize';\nconst kPromiseReactionFulfillHandlerOffset: constexpr int31\n    generates 'PromiseReaction::kFulfillHandlerOffset';\nconst kPromiseReactionPromiseOrCapabilityOffset: constexpr int31\n    generates 'PromiseReaction::kPromiseOrCapabilityOffset';\n// @if(V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA)\nconst kPromiseReactionContinuationPreservedEmbedderDataOffset: constexpr int31\n    generates 'PromiseReaction::kContinuationPreservedEmbedderDataOffset';\n\nextern class PromiseReaction extends Struct {\n  @if(V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA)\n  continuation_preserved_embedder_data: Object|Undefined;\n  next: PromiseReaction|Zero;\n  reject_handler: Callable|Undefined;\n  fulfill_handler: Callable|Undefined;\n  // Either a JSPromise (in case of native promises), a PromiseCapability\n  // (general case), or undefined (in case of await).\n  promise_or_capability: JSPromise|PromiseCapability|Undefined;\n}\n\n// PromiseReactionJobTask constants\nconst kPromiseReactionJobTaskSizeOfAllPromiseReactionJobTasks: constexpr int31\n    generates 'PromiseReactionJobTask::kSizeOfAllPromiseReactionJobTasks';\nconst kPromiseReactionJobTaskHandlerOffset: constexpr int31\n    generates 'PromiseReactionJobTask::kHandlerOffset';\nconst kPromiseReactionJobTaskPromiseOrCapabilityOffset: constexpr int31\n    generates 'PromiseReactionJobTask::kPromiseOrCapabilityOffset';\n// @if(V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA)\nconst kPromiseReactionJobTaskContinuationPreservedEmbedderDataOffset:\n    constexpr int31\n    generates 'PromiseReactionJobTask::kContinuationPreservedEmbedderDataOffset'\n    ;\n\n@abstract\nextern class PromiseReactionJobTask extends Microtask {\n  argument: Object;\n  context: Context;\n  handler: Callable|Undefined;\n  // Either a JSPromise (in case of native promises), a PromiseCapability\n  // (general case), or undefined (in case of await).\n  promise_or_capability: JSPromise|PromiseCapability|Undefined;\n}\n\nextern class PromiseFulfillReactionJobTask extends PromiseReactionJobTask {}\n\nextern class PromiseRejectReactionJobTask extends PromiseReactionJobTask {}\n\nextern class PromiseResolveThenableJobTask extends Microtask {\n  context: Context;\n  promise_to_resolve: JSPromise;\n  thenable: JSReceiver;\n  then: JSReceiver;\n}\n"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\public-modes-resume-20261018\\verification\\native-continuation-data-sourceonly-20261019\\authority\\src__builtins__promise-misc.tq",
+      "sha256": "6108DCD8D11928A8A41EB32BB95C2004E4CC342945FEB4B4F9D7A5701ECB66E0",
+      "bytes": 16000,
+      "parts": [
+        {
+          "anchor": "macro NewPromiseResolveThenableJobTask(",
+          "start_char": 10728,
+          "start_byte": 10728,
+          "start_line": 334,
+          "excerpt": "macro NewPromiseResolveThenableJobTask(\n    implicit context: Context)(promiseToResolve: JSPromise,\n    thenable: JSReceiver, then: Callable): PromiseResolveThenableJobTask {\n  // 2. Let getThenRealmResult be GetFunctionRealm(then).\n  // 3. If getThenRealmResult is a normal completion, then let thenRealm be\n  //    getThenRealmResult.[[Value]].\n  // 4. Otherwise, let thenRealm be null.\n  //\n  // The only cases where |thenRealm| can be null is when |then| is a revoked\n  // Proxy object, which would throw when it is called anyway. So instead of\n  // setting the context to null as the spec does, we just use the current\n  // realm.\n  const thenContext: Context = ExtractHandlerContext(then);\n  const nativeContext = LoadNativeContext(thenContext);\n\n  // 1. Let job be a new Job abstract closure with no parameters that\n  //    captures promiseToResolve, thenable, and then...\n  // 5. Return { [[Job]]: job, [[Realm]]: thenRealm }.\n  @if(V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA) {\n    return new PromiseResolveThenableJobTask{\n      map: PromiseResolveThenableJobTaskMapConstant(),\n      continuation_preserved_embedder_data:\n          macros::GetContinuationPreservedEmbedderData(),\n      context: nativeContext,\n      promise_to_resolve: promiseToResolve,\n      thenable,\n      then\n    };\n  }\n\n  @ifnot(V8_ENABLE_CONTINUATION_PRESERVED_EMBEDDER_DATA) {\n    return new PromiseResolveThenableJobTask{\n      map: PromiseResolveThenableJobTaskMapConstant(),\n      context: nativeContext,\n      promise_to_resolve: promiseToResolve,\n      thenable,\n      then\n    };\n  }\n}\n"
+        }
+      ]
+    }
+  ]
+}

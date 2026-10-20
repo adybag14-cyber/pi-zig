@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "status": "source_only_build_proposal",
+  "path": "build.zig",
+  "observed_main_sha256": "B6F18B479B12F510D65DD83672E06AC2B0BADC395B050CC0C3A16FD399954D2A",
+  "observed_main_bytes": 476918,
+  "edits": [
+    {
+      "before": "    // Actual Node guest-operation controls; installed only until runtime grant.\n",
+      "after": "    const native_host_termination_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_host_termination_ownership_test.zig\"), .target = target, .optimize = optimize }), .filters = &.{\"native host termination\"}, .use_llvm = use_llvm });\n    linkQuickJs(b, native_host_termination_tests.root_module, quickjs, sqlite_lib_dir);\n    linkTypeScriptParser(b, native_host_termination_tests.root_module, typescript_parser);\n    linkSqlite(native_host_termination_tests.root_module, sqlite_lib_dir, sqlite_library);\n    native_host_termination_tests.root_module.addImport(\"catalog_tool\", catalog_tool);\n    if (target.result.os.tag == .windows) { native_host_termination_tests.root_module.linkSystemLibrary(\"advapi32\", .{}); native_host_termination_tests.root_module.linkSystemLibrary(\"userenv\", .{}); }\n    b.step(\"build-native-host-termination-ownership\", \"Install sixteen actual host termination ownership controls without execution\").dependOn(&b.addInstallArtifact(native_host_termination_tests, .{ .dest_sub_path = b.fmt(\"native-host-termination-ownership{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n    // Actual Node guest-operation controls; installed only until runtime grant.\n",
+      "count": 1
+    }
+  ],
+  "added_lines": 7,
+  "target": "build-native-host-termination-ownership",
+  "root": "src/native_host_termination_ownership_test.zig",
+  "filter": "native host termination",
+  "declarations": 16,
+  "artifact": "native-host-termination-ownership",
+  "scope": "One install-only target using the existing Engine/QuickJS/TypeScript/sqlite/catalog graph and Windows system libraries. No run edge, default build enrollment, second library or public namespace."
+}

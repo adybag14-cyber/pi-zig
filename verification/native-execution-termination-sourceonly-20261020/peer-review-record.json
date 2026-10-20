@@ -1,0 +1,64 @@
+{
+  "status": "SOURCE PEER CLOSURES ONLY; no execution",
+  "recorded_by": "vm_foundation from the actual peer messages",
+  "sdk_owners": [
+    {
+      "scope": "request/event/lease/query/Cancel, native dispatch and result retirement",
+      "packets": [
+        "CD95C983",
+        "A7D10E7D",
+        "E06E7824",
+        "26ECB530",
+        "F55ECF61"
+      ],
+      "finding_closed": "Discarding a losing private event now retires its lease without erasing a later unserviced request."
+    },
+    {
+      "scope": "real Promise metadata and ordinary native BEFORE/AFTER",
+      "packets": [
+        "B2A67BC7",
+        "64F69F0F"
+      ],
+      "authority": [
+        "F3CB7064",
+        "8E16A8DE"
+      ]
+    },
+    {
+      "scope": "actual-pending dynamic/classified API and explicit native abrupt result",
+      "packets": [
+        "E072CAB7",
+        "BDF052BB",
+        "A0889F7A"
+      ],
+      "c": "96843FA1",
+      "h": "840A2BD8"
+    },
+    {
+      "scope": "raw controls1\u201318 and28 plus required native helpers",
+      "root": "A340E69D",
+      "successor": "164F8DCA changes only Modules declaration19 cleanup",
+      "finding_closed": "Two actual-reason failure cleanup gaps and declaration7 actual-fatal provenance are corrected without assertion changes."
+    }
+  ],
+  "modules_io": [
+    {
+      "scope": "queue/current-job/context retirement and nested finalizer guard",
+      "receipt": "peer-receipts/modules-queue-receipt.json",
+      "sha256": "29A322B483AE4713CE47547868F13B47FF35D0D208D7177CDF78FA97391DBD05"
+    },
+    {
+      "scope": "Engine19 exact edits and five outer callback gateway branches",
+      "receipt": "peer-receipts/modules-engine-gateway-receipt.json",
+      "sha256": "7A08BE06C5702CADE32B795556DECAE12A13662CD376AD3943372B1CADE13D94",
+      "limit": "Internal TypeBox Machine remains a separate correction."
+    },
+    {
+      "scope": "raw Fixture/Probe/Batch and19\u201327/29\u201330 plus6-line install target",
+      "receipt": "peer-receipts/modules-raw30-controls-receipt.json",
+      "sha256": "74ED965F54915423AFA0F1C6E75E49825DD001714BD15A350041E374296BF305",
+      "root": "164F8DCA",
+      "build_packet": "9BF1FBDB"
+    }
+  ]
+}

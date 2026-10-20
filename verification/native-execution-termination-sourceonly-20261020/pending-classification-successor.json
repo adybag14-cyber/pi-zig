@@ -1,0 +1,34 @@
+{
+  "base": "5ddf165d802280e22c3a1efd4c048b956bbbacf4",
+  "source_only": true,
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "expose actual-owned pending classification without querying pending slot",
+      "before": "/* Both operands are actual pending completions owned by a native reducer.\n",
+      "after": "/* Classify only an owned/borrowed ACTUAL pending completion. Detached native\n   owners retain provenance even while the runtime pending slot is empty. */\nint JS_PiNativePendingPriority(JSRuntime *rt, JSValueConst actual_pending_reason)\n{\n    return js_pi_pending_priority(rt, actual_pending_reason);\n}\n\n/* Both operands are actual pending completions owned by a native reducer.\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "document dynamic native pending classification and DATA exclusion",
+      "before": "/* Borrowed actual pending reasons only, never retained/returned DATA. Returns\n",
+      "after": "/* Borrowed ACTUAL pending reason only, including one detached into a native\n   cleanup owner; never diagnostic/returned/rejected DATA. Returns -1 for a\n   cancelled private termination completion, 0 for an ordinary actual reason,\n   and 1 for an active private event or an actual uncatchable Error. It reads\n   the event lease, not the pending slot; no allocation, call or mutation. */\nJS_EXTERN int JS_PiNativePendingPriority(JSRuntime *rt,\n                                          JSValueConst actual_pending_reason);\n/* Borrowed actual pending reasons only, never retained/returned DATA. Returns\n",
+      "count": 1
+    }
+  ],
+  "files": {
+    "vendor/quickjs/quickjs.c": {
+      "before_sha256": "F68278E440DEF8E4D46EA8B343E2AEBE2AA6D7FA8E5D3D1BDACB37F0D254F842",
+      "before_bytes": 2358898,
+      "after_sha256": "4B8DA102AAB14A3D7409775E2AA58F67E76408A184024A20C799FFA2BEA42C94",
+      "after_bytes": 2359202
+    },
+    "vendor/quickjs/quickjs.h": {
+      "before_sha256": "472493D77B6E2E179479F9A7CACF5468AC4AF4C1582F470699A44DD2142DBA1E",
+      "before_bytes": 102612,
+      "after_sha256": "972CC8275CD07165976813D55B17337CE19D42CBF8125D82529CC1222B2639BE",
+      "after_bytes": 103134
+    }
+  }
+}

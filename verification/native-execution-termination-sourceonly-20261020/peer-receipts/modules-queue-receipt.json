@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "status": "finite_source_peer_closed_no_execution",
+  "reviewer": "modules_io",
+  "scope": "Native termination queue/current-job ownership and status ABI",
+  "sources": {
+    "c": "2E4983E3D99EB98FBF8B00832D78FC5896573C8115A37652130D0CF8736BB4D0",
+    "h": "972CC8275CD07165976813D55B17337CE19D42CBF8125D82529CC1222B2639BE",
+    "queue_packet": "301CB0BE13C282ACD8C41C2FFD7FDC04B81AFE29BA17176C3E2DFD93E3A33112",
+    "pending_successor": "F55ECF61C602D5459A7714EE61A733D26333998B6DD2DA104DE1A6474A97C1B0",
+    "active_successor": "8C25D33774B9B10433066121BA0CD8B0EBB9610569E9F1427C748493260B1158"
+  },
+  "proof": [
+    "Complete assigned queue region equals the read F682 region after only the 1/2/1 active-retirement edits; runtime detach/drain prefix is unchanged.",
+    "Actual active context is independently retained before callbacks and stays alive through deferred AFTER. Slots are cleared before their values retire; actual pending owners span every release.",
+    "Old queued and aborted lists detach before retirement. New cleanup enqueues remain in the fresh live queue; Finish and Execute cannot reenter a finishing checkpoint.",
+    "The corrected current-job guard remains set through payload, Promise and context release, so a finalizer cannot finish the owning checkpoint before its outer continuation restore.",
+    "Canceled events do not clear the live queue or synthesize AFTER; runtime teardown releases owners without Promise hooks. Existing in_free enqueue assertion is retained."
+  ],
+  "excluded": [
+    "SDK event/dispatch/Promise metadata semantics",
+    "Engine checkpoint and capture integration",
+    "New causal controls",
+    "Compilation/runtime qualification"
+  ]
+}

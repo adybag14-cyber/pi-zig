@@ -375,6 +375,15 @@ struct JSRuntime {
     uintptr_t stack_limit; /* lower stack limit */
 
     JSValue current_exception;
+    /* A request is not an event. The lease only blocks reentry while an
+       actual native termination is temporarily held by a cleanup owner. */
+#ifdef CONFIG_ATOMICS
+    _Atomic bool pi_termination_requested;
+#else
+    bool pi_termination_requested;
+#endif
+    bool pi_termination_in_flight;
+    uint64_t pi_termination_generation;
     /* true if inside an out of memory error, to avoid recursing */
     bool in_out_of_memory;
     /* true if inside build_backtrace, to avoid recursing */
@@ -413,6 +422,10 @@ struct JSRuntime {
     void *host_promise_rejection_tracker_opaque;
 
     struct list_head job_list; /* list of JSJobEntry.link */
+    struct JSJobEntry *pi_current_job; /* active borrowed native owner */
+    struct JSJobEntry *pi_terminated_job; /* selected owner in aborted list */
+    struct list_head pi_aborted_job_list;
+    bool pi_finishing_terminated_jobs;
 
     bool module_normalize_has_attr;
     union {
@@ -1166,6 +1179,12 @@ typedef struct JSJobEntry {
     JSJobFunc *job_func;
     JSValue execution_context;
     JSValue continuation_preserved_embedder_data;
+    /* The actual reaction capability result or thenable target, never
+       inferred from a resolving function or guest property. */
+    JSValue promise;
+    JSValue result;
+    bool ctx_owned;
+    bool after_boundary_crossed;
     int argc;
     JSValue argv[];
 } JSJobEntry;
@@ -1482,6 +1501,91 @@ typedef struct JSNativeAsyncPending {
     JSValue reason;
 } JSNativeAsyncPending;
 
+/* No guest value can have an exception-sentinel payload. This private
+   immediate is created only by native termination servicing/propagation; it carries no
+   allocation or Error flag and is never a Promise value or diagnostic. */
+static JSValue js_pi_termination_token(void)
+{
+    return JS_MKVAL(JS_TAG_EXCEPTION, 1);
+}
+
+/* Native completion propagation only: this result does not establish a
+   pending event or lease. It carries an already-observed termination failure
+   across a callback even when Cancel cleared the actual pending event. */
+JSValue JS_PiNativeTerminationResult(void)
+{
+    return js_pi_termination_token();
+}
+
+bool JS_PiIsExecutionTermination(JSValueConst value)
+{
+    return JS_VALUE_GET_TAG(value) == JS_TAG_EXCEPTION &&
+           JS_VALUE_GET_INT(value) == 1;
+}
+
+static bool js_pi_is_uncatchable_exception(JSValueConst value)
+{
+    return JS_PiIsExecutionTermination(value) || JS_IsUncatchableError(value);
+}
+
+/* A cancelled, already detached native completion still unwinds without
+   entering guest catch/finally, but a subsequent real cleanup event wins. */
+static int js_pi_pending_priority(JSRuntime *rt, JSValueConst reason)
+{
+    if (JS_PiIsExecutionTermination(reason) && !rt->pi_termination_in_flight)
+        return -1;
+    return js_pi_is_uncatchable_exception(reason) ? 1 : 0;
+}
+
+/* Classify only an owned/borrowed ACTUAL pending completion. Detached native
+   owners retain provenance even while the runtime pending slot is empty. */
+int JS_PiNativePendingPriority(JSRuntime *rt, JSValueConst actual_pending_reason)
+{
+    return js_pi_pending_priority(rt, actual_pending_reason);
+}
+
+/* Both operands are actual pending completions owned by a native reducer.
+   Releasing a losing private event is an owner decision, not public Cancel:
+   a detached event is eligible here and a later unserviced request stays set. */
+static bool js_pi_native_pending_replace(JSRuntime *rt,
+                                          JSValueConst retained,
+                                          JSValueConst incoming,
+                                          int retained_priority,
+                                          int incoming_priority)
+{
+    bool replace = incoming_priority > retained_priority;
+    JSValueConst selected = replace ? incoming : retained;
+    JSValueConst discarded = replace ? retained : incoming;
+    if (JS_PiIsExecutionTermination(discarded) &&
+        !JS_PiIsExecutionTermination(selected))
+        rt->pi_termination_in_flight = false;
+    return replace;
+}
+
+bool JS_PiNativePendingReplace(JSRuntime *rt, JSValueConst retained,
+                                JSValueConst incoming)
+{
+    return js_pi_native_pending_replace(rt, retained, incoming,
+        js_pi_pending_priority(rt, retained), js_pi_pending_priority(rt, incoming));
+}
+
+bool JS_PiNativePendingReplaceClassified(JSRuntime *rt,
+                                          JSValueConst retained,
+                                          bool retained_generic_fatal,
+                                          JSValueConst incoming,
+                                          bool incoming_generic_fatal)
+{
+    /* Host owners that already classified an ACTUAL generic event keep that
+       policy. Public flag changes during cleanup must not alter its selection.
+       Only the private event lease is dynamically cancelled or retired. */
+    int retained_priority = JS_PiIsExecutionTermination(retained) ?
+        js_pi_pending_priority(rt, retained) : (retained_generic_fatal ? 1 : 0);
+    int incoming_priority = JS_PiIsExecutionTermination(incoming) ?
+        js_pi_pending_priority(rt, incoming) : (incoming_generic_fatal ? 1 : 0);
+    return js_pi_native_pending_replace(rt, retained, incoming,
+                                        retained_priority, incoming_priority);
+}
+
 static void js_native_async_take_pending(JSContext *ctx, JSNativeAsyncPending *owned);
 static void js_native_async_release(JSContext *ctx, JSValue value,
                                     JSNativeAsyncPending *owned);
@@ -1623,7 +1727,8 @@ static JSValue js_new_promise_capability(JSContext *ctx,
 static __exception int perform_promise_then(JSContext *ctx,
                                             JSValueConst promise,
                                             JSValueConst *resolve_reject,
-                                            JSValueConst *cap_resolving_funcs);
+                                            JSValueConst *cap_resolving_funcs,
+                                            JSValueConst cap_promise);
 static JSValue js_promise_resolve(JSContext *ctx, JSValueConst this_val,
                                   int argc, JSValueConst *argv, int magic);
 static JSValue js_promise_then(JSContext *ctx, JSValueConst this_val,
@@ -2508,6 +2613,9 @@ JSRuntime *JS_NewRuntime2(const JSMallocFunctions *mf, void *opaque)
     rt->continuation_preserved_embedder_data = JS_UNDEFINED;
     rt->pi_javascript_execution_allowed = true;
     rt->pi_javascript_execution_error = JS_UNDEFINED;
+#ifdef CONFIG_ATOMICS
+    atomic_store(&rt->pi_termination_requested, false);
+#endif
     rt->mf = *mf;
     if (!rt->mf.js_malloc_usable_size) {
         /* use dummy function if none provided */
@@ -2529,6 +2637,7 @@ JSRuntime *JS_NewRuntime2(const JSMallocFunctions *mf, void *opaque)
     init_list_head(&rt->string_list);
 #endif
     init_list_head(&rt->job_list);
+    init_list_head(&rt->pi_aborted_job_list);
 
     if (JS_InitAtoms(rt))
         goto fail;
@@ -2689,6 +2798,96 @@ void JS_PiSetArrayBufferStorageFunctions(
     rt->array_buffer_storage_funcs = *functions;
 }
 
+static bool js_pi_termination_requested(JSRuntime *rt)
+{
+#ifdef CONFIG_ATOMICS
+    return atomic_load(&rt->pi_termination_requested);
+#else
+    return rt->pi_termination_requested;
+#endif
+}
+
+void JS_PiRequestExecutionTermination(JSRuntime *rt)
+{
+#ifdef CONFIG_ATOMICS
+    atomic_store(&rt->pi_termination_requested, true);
+#else
+    rt->pi_termination_requested = true;
+#endif
+}
+
+bool JS_PiIsExecutionTerminating(JSRuntime *rt)
+{
+    return rt->pi_termination_in_flight &&
+           JS_PiIsExecutionTermination(rt->current_exception);
+}
+
+uint64_t JS_PiExecutionTerminationGeneration(JSRuntime *rt)
+{
+    return rt->pi_termination_generation;
+}
+
+void JS_PiCancelExecutionTermination(JSRuntime *rt)
+{
+#ifdef CONFIG_ATOMICS
+    atomic_store(&rt->pi_termination_requested, false);
+#else
+    rt->pi_termination_requested = false;
+#endif
+    /* V8 clears the request even when no actual termination is pending.
+       Its event cancellation is conditional on the private pending event;
+       an event held only by a native cleanup owner is not that condition. */
+    if (!JS_PiIsExecutionTerminating(rt))
+        return;
+    rt->current_exception = JS_UNINITIALIZED;
+    rt->pi_termination_in_flight = false;
+}
+
+int JS_PiCheckExecutionTermination(JSContext *ctx)
+{
+    JSRuntime *rt = ctx->rt;
+    bool requested;
+
+    if (rt->pi_termination_in_flight) {
+        /* Reentry while the token is detached republishes the same event.
+           It does not create another generation or a replacement Error. */
+        JS_Throw(ctx, js_pi_termination_token());
+        return -1;
+    }
+    if (JS_PiIsExecutionTermination(rt->current_exception))
+        return -1; /* cancelled native abrupt completion, not a new event */
+    if (!js_pi_termination_requested(rt))
+        return 0;
+    /* Existing ordinary/fatal pending-entry policy is retained. A request
+       waits until the earlier real event has been handled by its owner. */
+    if (JS_HasException(ctx))
+        return -1;
+#ifdef CONFIG_ATOMICS
+    requested = atomic_exchange(&rt->pi_termination_requested, false);
+#else
+    requested = rt->pi_termination_requested;
+    rt->pi_termination_requested = false;
+#endif
+    if (!requested)
+        return 0;
+    rt->pi_termination_in_flight = true;
+    rt->pi_termination_generation++;
+    JS_Throw(ctx, js_pi_termination_token());
+    return -1;
+}
+
+/* A native callback can cancel an event while its failed call is unwinding.
+   Keep the failure native rather than inventing an ordinary undefined throw.
+   This does not reestablish the cancelled event lease. */
+static void js_pi_record_aborted_native_call(JSContext *ctx, JSValueConst result,
+                                              uint64_t entry_generation)
+{
+    if (JS_IsException(result) && !JS_HasException(ctx) &&
+        (JS_PiIsExecutionTermination(result) ||
+         ctx->rt->pi_termination_generation != entry_generation))
+        ctx->rt->current_exception = js_pi_termination_token();
+}
+
 void JS_ClearKeptObjects(JSRuntime *rt)
 {
     /* Native callbacks may pump nested promises while their caller's JS job
@@ -2704,8 +2903,9 @@ void JS_ClearKeptObjects(JSRuntime *rt)
 }
 
 /* return 0 if OK, < 0 if exception */
-int JS_EnqueueJob(JSContext *ctx, JSJobFunc *job_func,
-                  int argc, JSValueConst *argv)
+static int js_pi_enqueue_job(JSContext *ctx, JSJobFunc *job_func,
+                              int argc, JSValueConst *argv,
+                              JSValueConst promise)
 {
     JSRuntime *rt = ctx->rt;
     JSJobEntry *e;
@@ -2721,12 +2921,22 @@ int JS_EnqueueJob(JSContext *ctx, JSJobFunc *job_func,
     e->execution_context = js_dup(rt->execution_context);
     e->continuation_preserved_embedder_data =
         js_dup(rt->continuation_preserved_embedder_data);
+    e->promise = js_dup(promise);
+    e->result = JS_UNDEFINED;
+    e->ctx_owned = false;
+    e->after_boundary_crossed = false;
     e->argc = argc;
     for(i = 0; i < argc; i++) {
         e->argv[i] = js_dup(argv[i]);
     }
     list_add_tail(&e->link, &rt->job_list);
     return 0;
+}
+
+int JS_EnqueueJob(JSContext *ctx, JSJobFunc *job_func,
+                  int argc, JSValueConst *argv)
+{
+    return js_pi_enqueue_job(ctx, job_func, argc, argv, JS_UNDEFINED);
 }
 
 /* Only actual pending reasons participate in native root retirement. This
@@ -2741,8 +2951,7 @@ static void js_pi_continuation_take_pending_rt(JSRuntime *rt,
         if (!owned->present) {
             owned->present = true;
             owned->reason = next;
-        } else if (!JS_IsUncatchableError(owned->reason) &&
-                   JS_IsUncatchableError(next)) {
+        } else if (JS_PiNativePendingReplace(rt, owned->reason, next)) {
             JSValue displaced = owned->reason;
             owned->reason = next;
             JS_FreeValueRT(rt, displaced);
@@ -2794,7 +3003,8 @@ bool JS_PiExchangeJavascriptExecutionAllowed(JSRuntime *rt, bool allowed)
 static int js_enqueue_job_context(JSContext *ctx, JSJobFunc *job_func,
                                   int argc, JSValueConst *argv,
                                   JSValueConst execution_context,
-                                  JSValueConst continuation_data)
+                                  JSValueConst continuation_data,
+                                  JSValueConst promise)
 {
     JSRuntime *rt = ctx->rt;
     JSValue previous = rt->execution_context;
@@ -2804,7 +3014,7 @@ static int js_enqueue_job_context(JSContext *ctx, JSJobFunc *job_func,
        owned roots stay retained while the actual enqueue allocation runs. */
     rt->execution_context = execution_context;
     rt->continuation_preserved_embedder_data = continuation_data;
-    result = JS_EnqueueJob(ctx, job_func, argc, argv);
+    result = js_pi_enqueue_job(ctx, job_func, argc, argv, promise);
     rt->execution_context = previous;
     rt->continuation_preserved_embedder_data = previous_data;
     return result;
@@ -2823,28 +3033,182 @@ JSContext *JS_GetPendingJobContext(JSRuntime *rt)
     return NULL;
 }
 
-/* return < 0 if exception, 0 if no job ran (empty or execution disallowed),
-   1 if a job was executed successfully. No-progress leaves '*pctx' NULL. */
+/* Only the actual Promise selected by the job participates. Generic native
+   jobs, ignored Await capabilities, and custom non-Promise species do not. */
+static void js_pi_job_promise_hook(JSContext *ctx, JSJobEntry *e,
+                                    JSPromiseHookType type)
+{
+    JSRuntime *rt = ctx->rt;
+    JSNativeAsyncPending pending = { false, JS_UNDEFINED };
+
+    if (!rt->promise_hook || !JS_IsPromise(e->promise))
+        return;
+    /* A native hook sees the original pending event. Keep an independent
+       entitlement so consuming it cannot accidentally erase the first event.
+       Actual cancellation still changes the private event's precedence. */
+    if (JS_HasException(ctx)) {
+        pending.present = true;
+        pending.reason = js_dup(rt->current_exception);
+    }
+    rt->promise_hook(ctx, type, e->promise, JS_UNDEFINED,
+                     rt->promise_hook_opaque);
+    JS_PiCheckExecutionTermination(ctx);
+    js_native_async_take_pending(ctx, &pending);
+    if (pending.present)
+        rt->current_exception = pending.reason;
+}
+
+/* Queue entries are native owners. Detach a complete queue before any root
+   retirement so a finalizer can enqueue only into the new live queue. */
+static void js_pi_move_job_list(struct list_head *to, struct list_head *from)
+{
+    init_list_head(to);
+    if (list_empty(from))
+        return;
+    to->next = from->next;
+    to->prev = from->prev;
+    to->next->prev = to;
+    to->prev->next = to;
+    init_list_head(from);
+}
+
+static void js_pi_job_release_value(JSRuntime *rt, JSValue *slot,
+                                     JSNativeAsyncPending *pending)
+{
+    JSValue value = *slot;
+    *slot = JS_UNDEFINED;
+    js_pi_continuation_take_pending_rt(rt, pending);
+    JS_FreeValueRT(rt, value);
+    js_pi_continuation_take_pending_rt(rt, pending);
+}
+
+static void js_pi_job_release_payload(JSRuntime *rt, JSJobEntry *e,
+                                       JSNativeAsyncPending *pending)
+{
+    int i;
+    js_pi_job_release_value(rt, &e->execution_context, pending);
+    js_pi_job_release_value(rt, &e->continuation_preserved_embedder_data, pending);
+    for (i = 0; i < e->argc; i++)
+        js_pi_job_release_value(rt, &e->argv[i], pending);
+    js_pi_job_release_value(rt, &e->result, pending);
+}
+
+static void js_pi_job_retire(JSRuntime *rt, JSJobEntry *e,
+                              JSNativeAsyncPending *pending)
+{
+    JSContext *ctx = e->ctx_owned ? e->ctx : NULL;
+    e->ctx_owned = false;
+    e->ctx = NULL;
+    js_pi_job_release_payload(rt, e, pending);
+    js_pi_job_release_value(rt, &e->promise, pending);
+    if (ctx) {
+        JS_FreeContext(ctx);
+        js_pi_continuation_take_pending_rt(rt, pending);
+    }
+    js_free_rt(rt, e);
+}
+
+static void js_pi_job_list_retire(JSRuntime *rt, struct list_head *list,
+                                   JSNativeAsyncPending *pending)
+{
+    while (!list_empty(list)) {
+        JSJobEntry *e = list_entry(list->next, JSJobEntry, link);
+        list_del(&e->link);
+        js_pi_job_retire(rt, e, pending);
+    }
+}
+
+static void js_pi_hold_terminated_job(JSRuntime *rt, JSJobEntry *e)
+{
+    /* Native embedders may nest ordinary job pumps. Retain every aborted
+       native owner, but the innermost actual task supplies current-microtask
+       metadata. The Node checkpoint itself must not be reentered. */
+    list_add_tail(&e->link, &rt->pi_aborted_job_list);
+    if (!rt->pi_terminated_job)
+        rt->pi_terminated_job = e;
+}
+
+/* The caller restores its saved batch continuation before this operation and
+   invokes completed callbacks afterwards. Neither action is synthesized here. */
+int JS_PiFinishTerminatedMicrotasks(JSRuntime *rt)
+{
+    struct list_head queued, aborted;
+    JSJobEntry *current;
+    JSNativeAsyncPending pending = { false, JS_UNDEFINED };
+    bool terminating;
+
+    /* Finalizer reentry cannot consume the new queue or retire an active
+       caller's job. The owning outer checkpoint completes this operation. */
+    if (rt->pi_finishing_terminated_jobs || rt->pi_current_job)
+        return 0;
+    terminating = JS_PiIsExecutionTerminating(rt);
+    if (!terminating && list_empty(&rt->pi_aborted_job_list))
+        return 0;
+
+    rt->pi_finishing_terminated_jobs = true;
+    init_list_head(&queued);
+    if (terminating)
+        js_pi_move_job_list(&queued, &rt->job_list);
+    js_pi_move_job_list(&aborted, &rt->pi_aborted_job_list);
+    current = rt->pi_terminated_job;
+    rt->pi_terminated_job = NULL;
+    /* The queue is already logically empty and the current-task slot is
+       cleared before any cleanup or deferred native AFTER can reenter. */
+    js_pi_continuation_take_pending_rt(rt, &pending);
+    js_pi_job_list_retire(rt, &queued, &pending);
+    if (pending.present) {
+        rt->current_exception = pending.reason;
+        pending.present = false;
+        pending.reason = JS_UNDEFINED;
+    }
+    if (terminating && current && !current->after_boundary_crossed) {
+        current->after_boundary_crossed = true;
+        /* V8 OnTermination calls only the isolate/native hook, after the
+           outer continuation was restored. A custom species object is skipped. */
+        js_pi_job_promise_hook(current->ctx, current, JS_PROMISE_HOOK_AFTER);
+    }
+    js_pi_continuation_take_pending_rt(rt, &pending);
+    js_pi_job_list_retire(rt, &aborted, &pending);
+    if (pending.present)
+        rt->current_exception = pending.reason;
+    rt->pi_finishing_terminated_jobs = false;
+    return terminating ? 1 : 0;
+}
+
+/* 1 = executed successfully, 0 = no progress, -1 = ordinary/host-fatal error,
+   JS_PI_JOB_TERMINATED = native termination completion, possibly cancelled
+   while unwinding. No-progress leaves '*pctx' NULL. */
 int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)
 {
     JSContext *ctx;
-    JSJobEntry *e;
-    JSValue res;
-    int i, ret;
+    JSJobEntry *e, *previous_job;
+    int ret;
+    bool body_started = false;
     JSExecutionContextHook *context_hook;
     void *context_opaque;
     JSNativeAsyncPending pending = { false, JS_UNDEFINED };
 
+    if (rt->pi_finishing_terminated_jobs) {
+        *pctx = NULL;
+        return 0;
+    }
+    if (rt->pi_terminated_job) {
+        *pctx = rt->pi_terminated_job->ctx;
+        return JS_PI_JOB_TERMINATED;
+    }
     if (list_empty(&rt->job_list)) {
         *pctx = NULL;
         return 0;
     }
 
-    /* V8's nonverbose TryRunMicrotasks catches the ordinary disallow reason
-       before JSEntry: no entry is consumed and the checkpoint reports zero.
-       Preserve an already pending native failure instead of swallowing it. */
+    e = list_entry(rt->job_list.next, JSJobEntry, link);
+    if (JS_PiCheckExecutionTermination(e->ctx)) {
+        *pctx = e->ctx;
+        return JS_PiIsExecutionTermination(rt->current_exception) ?
+            JS_PI_JOB_TERMINATED : -1;
+    }
+    /* The disallow checkpoint consumes no entry and does not run a hook. */
     if (unlikely(!rt->pi_javascript_execution_allowed)) {
-        e = list_entry(rt->job_list.next, JSJobEntry, link);
         if (JS_HasException(e->ctx)) {
             *pctx = e->ctx;
             return -1;
@@ -2853,17 +3217,16 @@ int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)
         return 0;
     }
 
-    /* get the first pending job and execute it */
-    e = list_entry(rt->job_list.next, JSJobEntry, link);
     list_del(&e->link);
-    ctx = e->ctx;
-    /* V8 SetupContinuationPreservedEmbedderData deliberately skips undefined.
-       A preceding failed task can leave its data for such a following task. */
+    ctx = JS_DupContext(e->ctx);
+    e->ctx_owned = true;
+    previous_job = rt->pi_current_job;
+    rt->pi_current_job = e;
     if (!JS_IsUndefined(e->continuation_preserved_embedder_data)) {
         JS_PiSetContinuationPreservedEmbedderData(
             rt, e->continuation_preserved_embedder_data);
         if (JS_HasException(ctx)) {
-            res = JS_EXCEPTION;
+            e->result = JS_EXCEPTION;
             goto completed;
         }
     }
@@ -2871,29 +3234,69 @@ int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)
     context_opaque = rt->execution_context_opaque;
     if (context_hook)
         context_hook(ctx, true, e->execution_context, context_opaque);
-    res = e->job_func(e->ctx, e->argc, vc(e->argv));
+    JS_PiCheckExecutionTermination(ctx);
+    if (!JS_HasException(ctx))
+        js_pi_job_promise_hook(ctx, e, JS_PROMISE_HOOK_BEFORE);
+    if (JS_HasException(ctx)) {
+        e->result = JS_EXCEPTION;
+    } else {
+        uint64_t generation = rt->pi_termination_generation;
+        body_started = true;
+        e->result = e->job_func(ctx, e->argc, vc(e->argv));
+        js_pi_record_aborted_native_call(ctx, e->result, generation);
+        JS_PiCheckExecutionTermination(ctx);
+    }
+    if (body_started &&
+        !JS_PiIsExecutionTermination(rt->current_exception) &&
+        ((!JS_IsException(e->result) && !JS_HasException(ctx)) ||
+         (e->job_func == js_promise_resolve_thenable_job &&
+          JS_HasException(ctx) && JS_IsUncatchableError(rt->current_exception)))) {
+        e->after_boundary_crossed = true;
+        js_pi_job_promise_hook(ctx, e, JS_PROMISE_HOOK_AFTER);
+    }
     if (context_hook && context_hook == rt->execution_context_hook &&
         context_opaque == rt->execution_context_opaque)
         context_hook(ctx, false, e->execution_context, context_opaque);
-    /* Successful V8 tasks clear the slot; the exception branch deliberately
-       does not. The enclosing Node checkpoint saves/resets/restores its outer
-       value once for the whole nonempty batch, not around each task. */
-    if (!JS_IsException(res) && !JS_HasException(ctx))
+    JS_PiCheckExecutionTermination(ctx);
+    if (!JS_IsException(e->result) && !JS_HasException(ctx))
         JS_PiSetContinuationPreservedEmbedderData(rt, JS_UNDEFINED);
  completed:
-    ret = JS_IsException(res) ? -1 : 1;
-    js_native_async_take_pending(ctx, &pending);
-    js_native_async_release(ctx, e->execution_context, &pending);
-    js_native_async_release(ctx, e->continuation_preserved_embedder_data, &pending);
-    for(i = 0; i < e->argc; i++)
-        js_native_async_release(ctx, e->argv[i], &pending);
-    js_native_async_release(ctx, res, &pending);
-    js_free(ctx, e);
+    /* Payload/Promise/context finalizers still belong to this active call.
+       They cannot complete the outer checkpoint before its caller restores
+       the saved continuation. Keep the guard until the last retirement. */
+    ret = JS_IsException(e->result) ? -1 : 1;
+    if (JS_PiIsExecutionTerminating(rt)) {
+        js_pi_hold_terminated_job(rt, e);
+        rt->pi_current_job = previous_job;
+        *pctx = ctx;
+        return JS_PI_JOB_TERMINATED;
+    }
+    /* Keep the actual Promise metadata until payload retirement is complete:
+       a native cleanup producer can itself start termination. */
+    js_pi_continuation_take_pending_rt(rt, &pending);
+    js_pi_job_release_payload(rt, e, &pending);
     if (pending.present) {
-        /* Restore an already produced exception; do not manufacture a new
-           throw from a retained data root. */
         rt->current_exception = pending.reason;
-        ret = -1;
+        pending.present = false;
+        pending.reason = JS_UNDEFINED;
+    }
+    JS_PiCheckExecutionTermination(ctx);
+    js_pi_continuation_take_pending_rt(rt, &pending);
+    if (pending.present &&
+        JS_PiIsExecutionTermination(pending.reason) &&
+        rt->pi_termination_in_flight) {
+        rt->current_exception = pending.reason;
+        js_pi_hold_terminated_job(rt, e);
+        rt->pi_current_job = previous_job;
+        *pctx = ctx;
+        return JS_PI_JOB_TERMINATED;
+    }
+    js_pi_job_retire(rt, e, &pending);
+    rt->pi_current_job = previous_job;
+    if (pending.present) {
+        rt->current_exception = pending.reason;
+        ret = JS_PiIsExecutionTermination(pending.reason) ?
+            JS_PI_JOB_TERMINATED : -1;
     }
     *pctx = ctx;
     return ret;
@@ -3002,17 +3405,29 @@ void JS_FreeRuntime(JSRuntime *rt)
     js_free_rt(rt, rt->kept_objects);
     rt->kept_objects = NULL;
     rt->kept_objects_capacity = 0;
-    JS_FreeValueRT(rt, rt->current_exception);
-
-    list_for_each_safe(el, el1, &rt->job_list) {
-        JSJobEntry *e = list_entry(el, JSJobEntry, link);
-        JS_FreeValueRT(rt, e->execution_context);
-        JS_FreeValueRT(rt, e->continuation_preserved_embedder_data);
-        for(i = 0; i < e->argc; i++)
-            JS_FreeValueRT(rt, e->argv[i]);
-        js_free_rt(rt, e);
+    {
+        JSValue exception = rt->current_exception;
+        rt->current_exception = JS_UNINITIALIZED;
+        JS_FreeValueRT(rt, exception);
     }
-    init_list_head(&rt->job_list);
+
+    {
+        struct list_head queued, aborted;
+        JSNativeAsyncPending pending = { false, JS_UNDEFINED };
+        assert(!rt->pi_current_job);
+        js_pi_move_job_list(&queued, &rt->job_list);
+        js_pi_move_job_list(&aborted, &rt->pi_aborted_job_list);
+        rt->pi_terminated_job = NULL;
+        js_pi_job_list_retire(rt, &queued, &pending);
+        js_pi_job_list_retire(rt, &aborted, &pending);
+        while (pending.present) {
+            JSValue reason = pending.reason;
+            pending.present = false;
+            pending.reason = JS_UNDEFINED;
+            JS_FreeValueRT(rt, reason);
+            js_pi_continuation_take_pending_rt(rt, &pending);
+        }
+    }
 
     JS_RunGC(rt);
 
@@ -8513,6 +8928,27 @@ JSValue JS_GetGlobalObject(JSContext *ctx)
 JSValue JS_Throw(JSContext *ctx, JSValue obj)
 {
     JSRuntime *rt = ctx->rt;
+    if (JS_PiIsExecutionTermination(obj)) {
+        if (!rt->pi_termination_in_flight) {
+            /* A cancelled cleanup completion cannot revive the event or
+               displace a new real reason. It still cannot enter guest catch. */
+            if (JS_IsUninitialized(rt->current_exception))
+                rt->current_exception = obj;
+            return JS_EXCEPTION;
+        }
+        if (!JS_PiIsExecutionTermination(rt->current_exception)) {
+            JSValue displaced = rt->current_exception;
+            rt->current_exception = obj;
+            JS_FreeValue(ctx, displaced);
+        }
+        return JS_EXCEPTION;
+    }
+    if (JS_PiIsExecutionTerminating(rt)) {
+        /* Retire the supplied value with the native event still published.
+           Cancellation in that retirement is authoritative. */
+        JS_FreeValue(ctx, obj);
+        return JS_EXCEPTION;
+    }
     JS_FreeValue(ctx, rt->current_exception);
     rt->current_exception = obj;
     return JS_EXCEPTION;
@@ -8795,7 +9231,7 @@ static bool js_pi_metadata_take_pending(JSContext *ctx, JSPiMetadataPending *own
         if (!owned->present) {
             owned->present = true;
             owned->reason = next;
-        } else if (!JS_IsUncatchableError(owned->reason) && JS_IsUncatchableError(next)) {
+        } else if (JS_PiNativePendingReplace(ctx->rt, owned->reason, next)) {
             JSValue displaced = owned->reason;
             owned->reason = next;
             JS_FreeValue(ctx, displaced);
@@ -9616,6 +10052,8 @@ static no_inline __exception int __js_poll_interrupts(JSContext *ctx)
 {
     JSRuntime *rt = ctx->rt;
     ctx->interrupt_counter = JS_INTERRUPT_COUNTER_INIT;
+    if (JS_PiCheckExecutionTermination(ctx))
+        return -1;
     if (rt->interrupt_handler) {
         if (rt->interrupt_handler(rt, rt->interrupt_opaque)) {
             if (ctx->pi_compiler_diagnostic)
@@ -18268,21 +18706,18 @@ static JSValue JS_GetIterator(JSContext *ctx, JSValueConst obj, bool is_async)
 JSValue JS_PiGetAsyncIterator(JSContext *ctx, JSValueConst obj)
 {
     JSValue result, reason, cleanup, displaced;
-    bool fatal;
     if (JS_HasException(ctx))
         return JS_EXCEPTION;
     result = JS_GetIterator(ctx, obj, true);
     if (!JS_HasException(ctx))
         return result;
     reason = JS_GetException(ctx);
-    fatal = JS_IsUncatchableError(reason);
     JS_FreeValue(ctx, result);
     while (JS_HasException(ctx)) {
         cleanup = JS_GetException(ctx);
-        if (!fatal && JS_IsUncatchableError(cleanup)) {
+        if (JS_PiNativePendingReplace(ctx->rt, reason, cleanup)) {
             displaced = reason;
             reason = cleanup;
-            fatal = true;
         } else {
             displaced = cleanup;
         }
@@ -19409,6 +19844,8 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
 static int js_pi_check_javascript_execution(JSContext *ctx, const JSObject *function)
 {
     JSRuntime *rt = ctx->rt;
+    if (JS_PiCheckExecutionTermination(ctx))
+        return -1;
     if (likely(rt->pi_javascript_execution_allowed))
         return 0;
     if (JS_HasException(ctx))
@@ -19423,6 +19860,8 @@ static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,
                                JSValueConst this_obj, JSValueConst new_target,
                                int argc, JSValueConst *argv, int flags)
 {
+    if (JS_PiCheckExecutionTermination(caller_ctx))
+        return JS_EXCEPTION;
     if (unlikely(!caller_ctx->rt->pi_javascript_execution_allowed) &&
         JS_HasException(caller_ctx))
         return JS_EXCEPTION;
@@ -19436,7 +19875,20 @@ static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,
                 return JS_ThrowTypeErrorNotAFunction(caller_ctx);
             if (js_pi_check_javascript_execution(caller_ctx, p))
                 return JS_EXCEPTION;
-            return call_func(caller_ctx, func_obj, this_obj, argc, argv, flags);
+            {
+                uint64_t generation = caller_ctx->rt->pi_termination_generation;
+                JSValue result = call_func(caller_ctx, func_obj, this_obj,
+                                           argc, argv, flags);
+                js_pi_record_aborted_native_call(caller_ctx, result, generation);
+                if (JS_PiCheckExecutionTermination(caller_ctx)) {
+                    JSNativeAsyncPending pending = { false, JS_UNDEFINED };
+                    js_native_async_release(caller_ctx, result, &pending);
+                    if (pending.present)
+                        JS_Throw(caller_ctx, pending.reason);
+                    return JS_EXCEPTION;
+                }
+                return result;
+            }
         }
         if (js_pi_check_javascript_execution(caller_ctx, NULL))
             return JS_EXCEPTION;
@@ -22387,13 +22839,14 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
         }
     }
  exception:
-    if (needs_backtrace(rt->current_exception)
-    || JS_IsUndefined(ctx->error_back_trace)) {
+    if (!JS_PiIsExecutionTermination(rt->current_exception) &&
+        (needs_backtrace(rt->current_exception) ||
+         JS_IsUndefined(ctx->error_back_trace))) {
         sf->cur_pc = pc;
         build_backtrace(ctx, rt->current_exception, JS_UNDEFINED,
                         NULL, 0, 0, 0);
     }
-    if (!JS_IsUncatchableError(rt->current_exception)) {
+    if (!js_pi_is_uncatchable_exception(rt->current_exception)) {
         while (sp > stack_buf) {
             JSValue val = *--sp;
             JS_FreeValue(ctx, val);
@@ -22582,6 +23035,8 @@ static JSValue JS_CallConstructorInternal(JSContext *ctx,
     JSObject *p;
     JSFunctionBytecode *b;
 
+    if (JS_PiCheckExecutionTermination(ctx))
+        return JS_EXCEPTION;
     if (unlikely(!ctx->rt->pi_javascript_execution_allowed) && JS_HasException(ctx))
         return JS_EXCEPTION;
     if (js_poll_interrupts(ctx))
@@ -22601,8 +23056,19 @@ static JSValue JS_CallConstructorInternal(JSContext *ctx,
         not_a_function:
             return JS_ThrowTypeErrorNotAFunction(ctx);
         }
-        return call_func(ctx, func_obj, new_target, argc,
-                         argv, flags);
+        {
+            uint64_t generation = ctx->rt->pi_termination_generation;
+            JSValue result = call_func(ctx, func_obj, new_target, argc, argv, flags);
+            js_pi_record_aborted_native_call(ctx, result, generation);
+            if (JS_PiCheckExecutionTermination(ctx)) {
+                JSNativeAsyncPending pending = { false, JS_UNDEFINED };
+                js_native_async_release(ctx, result, &pending);
+                if (pending.present)
+                    JS_Throw(ctx, pending.reason);
+                return JS_EXCEPTION;
+            }
+            return result;
+        }
     }
 
     b = p->u.func.function_bytecode;
@@ -23133,6 +23599,7 @@ static JSValue js_native_async_function_step(JSAsyncFunctionData *s,
     JSFunctionBytecode *b = JS_VALUE_GET_OBJ(s->native_function)->u.func.function_bytecode;
     JSStackFrame frame = { 0 };
     JSValue output;
+    uint64_t generation;
     if (js_pi_check_javascript_execution(ctx, NULL))
         return JS_EXCEPTION;
     if (js_check_stack_overflow(ctx->rt, sizeof(frame)))
@@ -23147,9 +23614,18 @@ static JSValue js_native_async_function_step(JSAsyncFunctionData *s,
     frame.receiver = js_dup(s->native_receiver);
     frame.cur_gc_obj = &s->header;
     ctx->rt->current_stack_frame = &frame;
+    generation = ctx->rt->pi_termination_generation;
     output = s->native_body(ctx, b->cpool[0], s->native_this,
         s->native_supplied_argc, vc(s->native_argv), completion, input,
         &s->native_state, action);
+    js_pi_record_aborted_native_call(ctx, output, generation);
+    if (JS_PiCheckExecutionTermination(ctx)) {
+        JSNativeAsyncPending pending = { false, JS_UNDEFINED };
+        js_native_async_release(ctx, output, &pending);
+        output = JS_EXCEPTION;
+        if (pending.present)
+            JS_Throw(ctx, pending.reason);
+    }
     js_callsite_release_receiver(ctx, &frame);
     ctx->rt->current_stack_frame = frame.prev_frame;
     return output;
@@ -23162,7 +23638,7 @@ static void js_native_async_take_pending(JSContext *ctx, JSNativeAsyncPending *o
         if (!owned->present) {
             owned->present = true;
             owned->reason = next;
-        } else if (!JS_IsUncatchableError(owned->reason) && JS_IsUncatchableError(next)) {
+        } else if (JS_PiNativePendingReplace(ctx->rt, owned->reason, next)) {
             JSValue displaced = owned->reason;
             owned->reason = next;
             JS_FreeValue(ctx, displaced);
@@ -23543,7 +24019,8 @@ static bool js_native_async_function_resume(JSAsyncFunctionData *s,
         goto await_rejected;
     }
     ignored_funcs[0] = ignored_funcs[1] = JS_UNDEFINED;
-    status = perform_promise_then(ctx, promise, vc(resolving_funcs), vc(ignored_funcs));
+    status = perform_promise_then(ctx, promise, vc(resolving_funcs),
+                                  vc(ignored_funcs), JS_UNDEFINED);
     js_native_async_release(ctx, promise, &owned);
     for (i = 0; i < 2; i++)
         js_native_async_release(ctx, resolving_funcs[i], &owned);
@@ -23554,7 +24031,7 @@ static bool js_native_async_function_resume(JSAsyncFunctionData *s,
         JS_ThrowInternalError(ctx, "Native Await failed without pending reason");
         js_native_async_take_pending(ctx, &owned);
     }
-    if (!JS_IsUncatchableError(owned.reason)) {
+    if (!js_pi_is_uncatchable_exception(owned.reason)) {
         resumed_input = owned.reason;
         owned.present = false; owned.reason = JS_UNDEFINED;
         input = resumed_input;
@@ -23562,7 +24039,7 @@ static bool js_native_async_function_resume(JSAsyncFunctionData *s,
         goto resume_body;
     }
  rejected_event:
-    if (JS_IsUncatchableError(owned.reason)) {
+    if (js_pi_is_uncatchable_exception(owned.reason)) {
         js_native_async_release(ctx, resumed_input, &owned);
         js_native_async_retire(ctx, s, &owned);
         JS_Throw(ctx, owned.reason); /* pending is empty; consumes owner */
@@ -23595,14 +24072,14 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
     func_ret = async_func_resume(ctx, &s->func_state);
     if (JS_IsException(func_ret)) {
     fail:
-        if (unlikely(JS_IsUncatchableError(ctx->rt->current_exception))) {
+        if (unlikely(js_pi_is_uncatchable_exception(ctx->rt->current_exception))) {
             is_success = false;
         } else {
             JSValue error = JS_GetException(ctx);
             ret2 = JS_Call(ctx, s->resolving_funcs[1], JS_UNDEFINED,
                            1, vc(&error));
             if (s->module_execution &&
-                JS_IsUncatchableError(ctx->rt->current_exception)) {
+                js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {
                 module_error = JS_GetException(ctx);
                 module_fatal = true;
             }
@@ -23614,7 +24091,7 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
             if (module_fatal)
                 is_success = false;
             if (unlikely(JS_IsException(ret2))) {
-                if (module_fatal || JS_IsUncatchableError(ctx->rt->current_exception)) {
+                if (module_fatal || js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {
                     is_success = false;
                 } else {
                     abort(); /* BUG */
@@ -23640,7 +24117,7 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
             ret2 = JS_Call(ctx, s->resolving_funcs[0], JS_UNDEFINED,
                            1, vc(&value));
             if (s->module_execution &&
-                JS_IsUncatchableError(ctx->rt->current_exception)) {
+                js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {
                 module_error = JS_GetException(ctx);
                 module_fatal = true;
             }
@@ -23685,7 +24162,7 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
                 resolving_funcs1[i] = JS_UNDEFINED;
             res = perform_promise_then(ctx, promise,
                                        vc(resolving_funcs),
-                                       vc(resolving_funcs1));
+                                       vc(resolving_funcs1), JS_UNDEFINED);
             bool module_failed = s->module_execution &&
                                  (res || JS_HasException(ctx));
             JSValue error = module_failed ? JS_GetException(ctx) : JS_UNDEFINED;
@@ -24136,7 +24613,7 @@ static int js_async_generator_await(JSContext *ctx,
         resolving_funcs1[i] = JS_UNDEFINED;
     res = perform_promise_then(ctx, promise,
                                vc(resolving_funcs),
-                               vc(resolving_funcs1));
+                               vc(resolving_funcs1), JS_UNDEFINED);
     JS_FreeValue(ctx, promise);
     for(i = 0; i < 2; i++)
         JS_FreeValue(ctx, resolving_funcs[i]);
@@ -24248,7 +24725,7 @@ static int js_async_generator_completed_return(JSContext *ctx,
     resolving_funcs[1] = JS_UNDEFINED;
     res = perform_promise_then(ctx, promise,
                                vc(resolving_funcs1),
-                               vc(resolving_funcs));
+                               vc(resolving_funcs), JS_UNDEFINED);
     JS_FreeValue(ctx, resolving_funcs1[0]);
     JS_FreeValue(ctx, resolving_funcs1[1]);
     JS_FreeValue(ctx, promise);
@@ -35263,7 +35740,7 @@ static JSValue js_async_module_execution_fulfilled(JSContext *ctx, JSValueConst 
         } else if (m->has_tla) {
             if (js_execute_async_module(ctx, m) < 0) {
                 JSValue error = JS_GetException(ctx);
-                if (JS_IsUncatchableError(error)) {
+                if (js_pi_is_uncatchable_exception(error)) {
                     js_mark_module_fatal_failure(m, error);
                     js_free(ctx, exec_list->tab);
                     return JS_Throw(ctx, error);
@@ -35283,7 +35760,7 @@ static JSValue js_async_module_execution_fulfilled(JSContext *ctx, JSValueConst 
         } else {
             JSValue error;
             if (js_execute_sync_module(ctx, m, &error) < 0) {
-                if (JS_IsUncatchableError(error)) {
+                if (js_pi_is_uncatchable_exception(error)) {
                     js_mark_module_fatal_failure(m, error);
                     js_free(ctx, exec_list->tab);
                     return JS_Throw(ctx, error);
@@ -35526,7 +36003,7 @@ static JSValue js_evaluate_module(JSContext *ctx, JSModuleDef *m)
 
     stack_top = NULL;
     if (js_inner_module_evaluation(ctx, m, 0, &stack_top, &result, &fatal) < 0) {
-        fatal |= JS_IsUncatchableError(result);
+        fatal |= js_pi_is_uncatchable_exception(result);
         while (stack_top != NULL) {
             m1 = stack_top;
             assert(m1->status == JS_MODULE_STATUS_EVALUATING);
@@ -55081,7 +55558,7 @@ static JSValue pi_json_parse_with_error_hook(JSContext *ctx, JSValueConst source
     exception = JS_GetException(ctx);
     /* Fresh intrinsic subtype identity, never a mutable guest name/getter.
        OOM, interrupts, stack failures and all non-SyntaxErrors pass through. */
-    if (!JS_IsObject(exception) || JS_IsUncatchableError(exception))
+    if (!JS_IsObject(exception) || js_pi_is_uncatchable_exception(exception))
         return JS_Throw(ctx, exception);
     object = JS_VALUE_GET_OBJ(exception);
     if (object->class_id != JS_CLASS_ERROR ||
@@ -59425,6 +59902,7 @@ typedef struct JSPromiseReactionData {
     JSValue handler;
     JSValue execution_context;
     JSValue continuation_preserved_embedder_data;
+    JSValue promise;
 } JSPromiseReactionData;
 
 JSPromiseStateEnum JS_PromiseState(JSContext *ctx, JSValueConst promise)
@@ -59500,6 +59978,12 @@ static void promise_reaction_data_free(JSRuntime *rt,
         js_pi_continuation_take_pending_rt(rt, &pending);
         JS_FreeValueRT(rt, rd->continuation_preserved_embedder_data);
         js_pi_continuation_take_pending_rt(rt, &pending);
+        {
+            JSValue promise = rd->promise;
+            rd->promise = JS_UNDEFINED;
+            JS_FreeValueRT(rt, promise);
+        }
+        js_pi_continuation_take_pending_rt(rt, &pending);
         if (pending.present)
             rt->current_exception = pending.reason;
     }
@@ -59540,7 +60024,7 @@ static JSValue promise_reaction_job(JSContext *ctx, int argc,
         res = JS_Call(ctx, handler, JS_UNDEFINED, 1, &arg);
         is_reject = JS_IsException(res);
         if (is_reject) {
-            if (unlikely(JS_IsUncatchableError(ctx->rt->current_exception)))
+            if (unlikely(js_pi_is_uncatchable_exception(ctx->rt->current_exception)))
                 return JS_EXCEPTION;
             res = JS_GetException(ctx);
         }
@@ -59603,6 +60087,12 @@ static void fulfill_or_reject_promise(JSContext *ctx, JSValueConst promise,
     JSPromiseReactionData *rd;
     JSValueConst args[5];
 
+    /* Private native completions are not values and cannot enter the
+       Promise state machine, including internal rejection-forwarding paths. */
+    if (JS_PiIsExecutionTermination(value)) {
+        JS_Throw(ctx, js_pi_termination_token());
+        return;
+    }
     if (!s || s->promise_state != JS_PROMISE_PENDING)
         return; /* should never happen */
     set_value(ctx, &s->promise_result, js_dup(value));
@@ -59629,7 +60119,8 @@ static void fulfill_or_reject_promise(JSContext *ctx, JSValueConst promise,
         args[4] = value;
         js_enqueue_job_context(ctx, promise_reaction_job, 5, args,
                                rd->execution_context,
-                               rd->continuation_preserved_embedder_data);
+                               rd->continuation_preserved_embedder_data,
+                               rd->promise);
         list_del(&rd->link);
         promise_reaction_data_free(ctx->rt, rd);
     }
@@ -59646,9 +60137,8 @@ static JSValue js_promise_resolve_thenable_job(JSContext *ctx,
 {
     JSValueConst promise, thenable, then;
     JSValue args[2] = { JS_UNDEFINED, JS_UNDEFINED };
-    JSValue res = JS_UNDEFINED, fatal = JS_UNDEFINED;
-    bool has_fatal = false;
-    JSRuntime *rt;
+    JSValue res = JS_UNDEFINED;
+    JSNativeAsyncPending pending = { false, JS_UNDEFINED };
 
     promise_trace(ctx, "js_promise_resolve_thenable_job\n");
 
@@ -59658,55 +60148,26 @@ static JSValue js_promise_resolve_thenable_job(JSContext *ctx,
     then = argv[2];
     if (js_create_resolving_functions(ctx, args, promise) < 0)
         return JS_EXCEPTION;
-    rt = ctx->rt;
-    if (rt->promise_hook) {
-        rt->promise_hook(ctx, JS_PROMISE_HOOK_BEFORE, promise, JS_UNDEFINED,
-                         rt->promise_hook_opaque);
-        if (JS_HasException(ctx) &&
-            JS_IsUncatchableError(ctx->rt->current_exception)) {
-            fatal = JS_GetException(ctx);
-            goto fatal_cleanup;
-        }
-    }
     res = JS_Call(ctx, then, thenable, 2, vc(args));
     if (JS_HasException(ctx) &&
-        JS_IsUncatchableError(ctx->rt->current_exception)) {
-        /* Preserve paired AFTER notification and its existing view of the
-           current exception, but retain the first fatal before that hook can
-           consume or replace it. This duplicate does not allocate. */
-        fatal = js_dup(ctx->rt->current_exception);
-        has_fatal = true;
-    }
-    if (rt->promise_hook) {
-        rt->promise_hook(ctx, JS_PROMISE_HOOK_AFTER, promise, JS_UNDEFINED,
-                         rt->promise_hook_opaque);
-    }
-    if (!has_fatal && JS_HasException(ctx) &&
-        JS_IsUncatchableError(ctx->rt->current_exception)) {
-        fatal = JS_GetException(ctx);
-        has_fatal = true;
-    }
-    if (has_fatal)
-        goto fatal_cleanup;
+        js_pi_is_uncatchable_exception(ctx->rt->current_exception))
+        goto done;
     if (JS_IsException(res)) {
         JSValue error = JS_GetException(ctx);
         res = JS_Call(ctx, args[1], JS_UNDEFINED, 1, vc(&error));
-        if (JS_HasException(ctx) &&
-            JS_IsUncatchableError(ctx->rt->current_exception)) {
-            fatal = JS_GetException(ctx);
-            JS_FreeValue(ctx, error);
-            goto fatal_cleanup;
-        }
-        JS_FreeValue(ctx, error);
+        js_native_async_release(ctx, error, &pending);
     }
-    JS_FreeValue(ctx, args[0]);
-    JS_FreeValue(ctx, args[1]);
+ done:
+    /* BEFORE/AFTER belong to the complete job, including the real resolving
+       pair and ordinary rejection handling. Never reject with a native event. */
+    js_native_async_take_pending(ctx, &pending);
+    js_native_async_release(ctx, args[0], &pending);
+    js_native_async_release(ctx, args[1], &pending);
+    if (pending.present) {
+        js_native_async_release(ctx, res, &pending);
+        return JS_Throw(ctx, pending.reason);
+    }
     return res;
- fatal_cleanup:
-    JS_FreeValue(ctx, res);
-    JS_FreeValue(ctx, args[0]);
-    JS_FreeValue(ctx, args[1]);
-    return JS_Throw(ctx, fatal);
 }
 
 static void js_promise_resolve_function_free_resolved(JSRuntime *rt,
@@ -59790,6 +60251,8 @@ static JSValue js_promise_resolve_value(JSContext *ctx,
     JSValueConst args[3];
     JSValue then;
 
+    if (JS_PiIsExecutionTermination(resolution))
+        return JS_Throw(ctx, js_pi_termination_token());
     if (is_reject || !JS_IsObject(resolution)) {
         goto done;
     } else if (js_same_value(ctx, resolution, promise)) {
@@ -59798,7 +60261,7 @@ static JSValue js_promise_resolve_value(JSContext *ctx,
     }
     then = JS_GetProperty(ctx, resolution, JS_ATOM_then);
     if (JS_HasException(ctx) &&
-        JS_IsUncatchableError(ctx->rt->current_exception)) {
+        js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {
         JSValue error = JS_GetException(ctx);
         JS_FreeValue(ctx, then);
         return JS_Throw(ctx, error);
@@ -59809,7 +60272,7 @@ static JSValue js_promise_resolve_value(JSContext *ctx,
         error = JS_GetException(ctx);
         fulfill_or_reject_promise(ctx, promise, error, true);
         if (JS_HasException(ctx) &&
-            JS_IsUncatchableError(ctx->rt->current_exception)) {
+            js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {
             JSValue fatal = JS_GetException(ctx);
             JS_FreeValue(ctx, error);
             return JS_Throw(ctx, fatal);
@@ -59820,7 +60283,7 @@ static JSValue js_promise_resolve_value(JSContext *ctx,
     done:
         fulfill_or_reject_promise(ctx, promise, resolution, is_reject);
         if (JS_HasException(ctx) &&
-            JS_IsUncatchableError(ctx->rt->current_exception)) {
+            js_pi_is_uncatchable_exception(ctx->rt->current_exception)) {
             JSValue fatal = JS_GetException(ctx);
             return JS_Throw(ctx, fatal);
         }
@@ -59828,7 +60291,7 @@ static JSValue js_promise_resolve_value(JSContext *ctx,
         args[0] = promise;
         args[1] = resolution;
         args[2] = then;
-        JS_EnqueueJob(ctx, js_promise_resolve_thenable_job, 3, args);
+        js_pi_enqueue_job(ctx, js_promise_resolve_thenable_job, 3, args, promise);
         JS_FreeValue(ctx, then);
     }
     return JS_UNDEFINED;
@@ -59926,6 +60389,7 @@ static void js_promise_mark(JSRuntime *rt, JSValueConst val,
             JS_MarkValue(rt, rd->handler, mark_func);
             JS_MarkValue(rt, rd->execution_context, mark_func);
             JS_MarkValue(rt, rd->continuation_preserved_embedder_data, mark_func);
+            JS_MarkValue(rt, rd->promise, mark_func);
         }
     }
     JS_MarkValue(rt, s->promise_result, mark_func);
@@ -60127,7 +60591,8 @@ JSValue JS_PromiseThen(JSContext *ctx, JSValueConst promise,
     if (JS_IsException(result_promise))
         return result_promise;
 
-    ret = perform_promise_then(ctx, promise, handlers, vc(resolving_funcs));
+    ret = perform_promise_then(ctx, promise, handlers, vc(resolving_funcs),
+                               result_promise);
     for (i = 0; i < 2; i++)
         JS_FreeValue(ctx, resolving_funcs[i]);
     if (ret) {
@@ -60543,7 +61008,8 @@ static JSValue js_promise_race(JSContext *ctx, JSValueConst this_val,
 static __exception int perform_promise_then(JSContext *ctx,
                                             JSValueConst promise,
                                             JSValueConst *resolve_reject,
-                                            JSValueConst *cap_resolving_funcs)
+                                            JSValueConst *cap_resolving_funcs,
+                                            JSValueConst cap_promise)
 {
     JSPromiseData *s = JS_GetOpaque(promise, JS_CLASS_PROMISE);
     JSPromiseReactionData *rd_array[2], *rd;
@@ -60568,6 +61034,7 @@ static __exception int perform_promise_then(JSContext *ctx,
         rd->execution_context = js_dup(ctx->rt->execution_context);
         rd->continuation_preserved_embedder_data =
             js_dup(ctx->rt->continuation_preserved_embedder_data);
+        rd->promise = js_dup(cap_promise);
         rd_array[i] = rd;
     }
 
@@ -60586,7 +61053,8 @@ static __exception int perform_promise_then(JSContext *ctx,
         args[4] = s->promise_result;
         js_enqueue_job_context(ctx, promise_reaction_job, 5, args,
                                rd->execution_context,
-                               rd->continuation_preserved_embedder_data);
+                               rd->continuation_preserved_embedder_data,
+                               rd->promise);
         for(i = 0; i < 2; i++)
             promise_reaction_data_free(ctx->rt, rd_array[i]);
     }
@@ -60624,7 +61092,8 @@ static JSValue js_promise_then(JSContext *ctx, JSValueConst this_val,
     JS_FreeValue(ctx, ctor);
     if (JS_IsException(result_promise))
         return result_promise;
-    ret = perform_promise_then(ctx, this_val, argv, vc(resolving_funcs));
+    ret = perform_promise_then(ctx, this_val, argv, vc(resolving_funcs),
+                               result_promise);
     for(i = 0; i < 2; i++)
         JS_FreeValue(ctx, resolving_funcs[i]);
     if (ret) {
@@ -60919,7 +61388,7 @@ static JSValue js_async_from_sync_iterator_next(JSContext *ctx, JSValueConst thi
 
         res = perform_promise_then(ctx, value_wrapper_promise,
                                    vc(resolve_reject),
-                                   vc(resolving_funcs));
+                                   vc(resolving_funcs), promise);
         JS_FreeValue(ctx, resolve_reject[0]);
         JS_FreeValue(ctx, value_wrapper_promise);
         JS_FreeValue(ctx, resolving_funcs[0]);

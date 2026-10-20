@@ -1,0 +1,340 @@
+{
+  "status": "source-only selected private FS request graph closed; compile/runtime not performed",
+  "scope": "Actual no-handler AsyncWrap and FS request templates, native weak alias/BindingData lifetimes, FSReqPromise one-Promise return/settle, FSReqAfterScope, shared service Read dispatch/completion and disabled-Hub drain. No public FileHandle or fs namespace assembly.",
+  "production_and_control_files": [
+    {
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "bytes": 16721,
+      "sha256": "FF468B5F806AFB07188B2B5CC5BCE8CF826BFD44C7588A8A0B19C4AB7D03D44F"
+    },
+    {
+      "path": "src/extensions/native_node_weak_global.zig",
+      "bytes": 2477,
+      "sha256": "2B776E789CCBB8626B928C0EA44896BE843B11C379C42B30D298E19A49AE6C8A"
+    },
+    {
+      "path": "src/extensions/native_node_fs_binding_data.zig",
+      "bytes": 17792,
+      "sha256": "AB6FB9BD2C6442D19B2EC60BCA0F536DD3BC64636971E5C1E2761E25E11277C8"
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_promise.zig",
+      "bytes": 18818,
+      "sha256": "0ED6B910579E96E38A897C60BFE77F6DF8A42613676FA0BBCAA0453A90092158"
+    },
+    {
+      "path": "src/extensions/native_node_fs_after_scope.zig",
+      "bytes": 4949,
+      "sha256": "28500D5D0A6D551AE2491FF49357A3682FCA678F88055AFC57CF0D1DA8C63D04"
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "bytes": 12858,
+      "sha256": "C360094C29E55F7F9C6BE6677390D94986D1FFED2680A05D8AF34162E20644C4"
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_read_binding.zig",
+      "bytes": 9556,
+      "sha256": "A620FEDB2C50D46A17947845B5FE2D7EE1AE4603F10BFA3F55FB44A588DD4375"
+    },
+    {
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "bytes": 57006,
+      "sha256": "66D6FCF1646FE123C5DC80B5BE53AB3FF397E1F1C4469B19480077D2CCAC08AA"
+    }
+  ],
+  "authority_and_exact_successor_files": [
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/aliased_buffer.h.v24.13.txt",
+      "bytes": 6393,
+      "sha256": "F5AEC5E5B138E4EF31F0CE223EB10A0FBD0A39EA57615C8CA6BD137BF4A9157E"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/aliased_buffer-inl.h.v24.13.txt",
+      "bytes": 7954,
+      "sha256": "7F503C60AB4AE93C492E1926C888C4E1FE89AE5BAB80510ECED151108556BD4C"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/async_wrap.h.v24.13.txt",
+      "bytes": 12198,
+      "sha256": "3EBF97B3044B4875D1F62C3F8BA1668886F4AE19F6369A8DD20EC0E262BBF1EF"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/binding-data-lifecycle-source.json",
+      "bytes": 35593,
+      "sha256": "7479736B86FD4E994B38EA7F75721CE4E0813D6CA93ED646461C558344D2F028"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/native-fsreq-promise-source.json",
+      "bytes": 20491,
+      "sha256": "933400DCB922CBCCB6000B9A1EECAA82864FD2954249981597A1EAEC931F55D0"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/native-read-numeric-predicates.json",
+      "bytes": 14034,
+      "sha256": "12091830B10E76E49332F339763A94F9074F847EB8F26E8334F6F44F537FEEE6"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/native-read-view-length-source.json",
+      "bytes": 16309,
+      "sha256": "A9721540D828A364086E51F32717323EE389269E2552177889A5001CF8F2C0D5"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/native-callback-and-exception-source.json",
+      "bytes": 20217,
+      "sha256": "008EEC523290C9547E6F4D2BA2AA108E62FCC57BCB8E5ECB730F1548E7F1977C"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/v8-api-natives.v24.13.cc",
+      "bytes": 27716,
+      "sha256": "103316A825D58AE72CE9F97AA741878F84EFA3C7D3167ADE3D5458C664E75B0A"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/v8-api-natives.v24.13.acquisition.json",
+      "bytes": 321,
+      "sha256": "6662F6EA8FE09463F83CAC547AFE7371A32AC6FE5F59F9D4B5679D290AC39E91"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/v8-templates-h.v24.13.txt",
+      "bytes": 14181,
+      "sha256": "48C3F6F73D41E963B934EDB22E10FC776C5E7E2E35BE724B996EA322B34B8F55"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/v8-templates-cc.v24.13.txt",
+      "bytes": 14143,
+      "sha256": "2E942E1E027ECBA55FAEBF578A371F1635175ABFE7D3C7114B579F244C4FE270"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/v8-templates-inl.v24.13.h",
+      "bytes": 17470,
+      "sha256": "65DA9C53E31BC6454388AD27C7DB941D3F0787C9F1067206C5981DDD40E2EC9B"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/async-wrap-method-receiver-successor.json",
+      "bytes": 3731,
+      "sha256": "E8840FEB93FE12C7EF8F0BF052066E9A00AAA8E027E3DE7B1B09A09CC6765247"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/fsreq-after-scope-source.json",
+      "bytes": 4247,
+      "sha256": "930E996977A9F85A0CFEF3D93247327B9ED304C668263E79E2A81C7325836087"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/fsreq-factory-binding-edge-successor.json",
+      "bytes": 9914,
+      "sha256": "F5923B8FA6F9AAC2DEAFF490E9CD533B4EA7E540B5F3E5F8432D878069679A09"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/fsreq-physical-construction-successor.json",
+      "bytes": 7791,
+      "sha256": "7E76B5FDA05B4E2AFF7FD597DF16E498A52D9BAEEDB0BF9CA9B239705B1F66B5"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/native-check-source-map.json",
+      "bytes": 9681,
+      "sha256": "50D167B1590BF732E77E8F8EA79A21FA8A29C1E9520973F20530A96ABDF107DB"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/request-owner-intake-boundary.json",
+      "bytes": 4777,
+      "sha256": "D3E8F943FC0D731A11EF211846278C2E33B5664FEBBF03636A09C46853145631"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/request-owner-build-intake.json",
+      "bytes": 2134,
+      "sha256": "A8ECF7FE7AA7D99FB8C57D4F1AD95171CB3B274D78A4FB8C95531597E1785FA4"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/request-read-controls-successor.json",
+      "bytes": 32049,
+      "sha256": "51709364518AADF752A6AC891E4CA5E46701009265F24F971C761D462D21BB24"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/base-request-owner-before-callable-correction.zig.txt",
+      "bytes": 56999,
+      "sha256": "5E111B6D1B660D797D0FA75941B8F8309997C2508A141C067906735F3907A45E"
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/request-owner-callable-api-successor.json",
+      "bytes": 1046,
+      "sha256": "29E8E617C8D6A2ED4467093900679EBD844AD00804EB4CE9C4EBDFCA953D5A22"
+    }
+  ],
+  "intake_paths": [
+    "src/extensions/native_node_async_wrap.zig",
+    "src/extensions/native_node_weak_global.zig",
+    "src/extensions/native_node_fs_binding_data.zig",
+    "src/extensions/native_node_fs_request_promise.zig",
+    "src/extensions/native_node_fs_after_scope.zig",
+    "src/extensions/native_node_fs_request_io.zig",
+    "src/extensions/native_node_file_handle_read_binding.zig",
+    "src/native_node_fs_request_owner_test.zig",
+    "verification/native-node-file-handle-sourceonly-20261019/authority/aliased_buffer.h.v24.13.txt",
+    "verification/native-node-file-handle-sourceonly-20261019/authority/aliased_buffer-inl.h.v24.13.txt",
+    "verification/native-node-file-handle-sourceonly-20261019/authority/async_wrap.h.v24.13.txt",
+    "verification/native-node-file-handle-sourceonly-20261019/authority/binding-data-lifecycle-source.json",
+    "verification/native-node-file-handle-sourceonly-20261019/authority/native-fsreq-promise-source.json",
+    "verification/native-node-file-handle-sourceonly-20261019/authority/native-read-numeric-predicates.json",
+    "verification/native-node-file-handle-sourceonly-20261019/authority/native-read-view-length-source.json",
+    "verification/native-node-file-handle-sourceonly-20261019/authority/native-callback-and-exception-source.json",
+    "verification/native-node-file-handle-sourceonly-20261019/authority/v8-api-natives.v24.13.cc",
+    "verification/native-node-file-handle-sourceonly-20261019/authority/v8-api-natives.v24.13.acquisition.json",
+    "verification/native-node-file-handle-sourceonly-20261019/authority/v8-templates-h.v24.13.txt",
+    "verification/native-node-file-handle-sourceonly-20261019/authority/v8-templates-cc.v24.13.txt",
+    "verification/native-node-file-handle-sourceonly-20261019/authority/v8-templates-inl.v24.13.h",
+    "verification/native-node-file-handle-sourceonly-20261019/async-wrap-method-receiver-successor.json",
+    "verification/native-node-file-handle-sourceonly-20261019/fsreq-after-scope-source.json",
+    "verification/native-node-file-handle-sourceonly-20261019/fsreq-factory-binding-edge-successor.json",
+    "verification/native-node-file-handle-sourceonly-20261019/fsreq-physical-construction-successor.json",
+    "verification/native-node-file-handle-sourceonly-20261019/native-check-source-map.json",
+    "verification/native-node-file-handle-sourceonly-20261019/request-owner-intake-boundary.json",
+    "verification/native-node-file-handle-sourceonly-20261019/request-owner-build-intake.json",
+    "verification/native-node-file-handle-sourceonly-20261019/request-read-controls-successor.json",
+    "verification/native-node-file-handle-sourceonly-20261019/base-request-owner-before-callable-correction.zig.txt",
+    "verification/native-node-file-handle-sourceonly-20261019/request-owner-callable-api-successor.json",
+    "verification/native-node-file-handle-sourceonly-20261019/request-owner-README.md",
+    "verification/native-node-file-handle-sourceonly-20261019/request-owner-source-closure.json"
+  ],
+  "build": {
+    "packet": "verification/native-node-file-handle-sourceonly-20261019/request-owner-build-intake.json",
+    "sha256": "A8ECF7FE7AA7D99FB8C57D4F1AD95171CB3B274D78A4FB8C95531597E1785FA4",
+    "added_lines": 15,
+    "target": "build-native-node-fs-request-owner",
+    "root": "src/native_node_fs_request_owner_test.zig",
+    "filter": "native FS request owner",
+    "declarations": 25,
+    "install_only": true,
+    "shared_library": "existing native_node_network; no second UV graph",
+    "source_base": "Main B6F18B47 source guard/Engine dependencies; applied and reversed by Modules without execution"
+  },
+  "current_main_direct_dependencies": {
+    "src/extensions/native_node_argument_values.zig": {
+      "current_main_sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9",
+      "bytes": 3512
+    },
+    "src/extensions/native_node_async_wrap_state.zig": {
+      "current_main_sha256": "A5EF66E7B302998DB7C27E8EA2B7C1315F154286D3B284A5670358B6B5CF863A",
+      "bytes": 19937
+    },
+    "src/extensions/native_node_module_callable.zig": {
+      "current_main_sha256": "D54499FAEAF3FFB935EA45CC427223972C5FA6CC78C85932A83F161CF7E97F65",
+      "bytes": 12697
+    },
+    "src/extensions/native_node_fs_private_publication.zig": {
+      "current_main_sha256": "F118D857DB722708344B87083608FEFEB769183BC0DB0F09C05D1CDCF87AB307",
+      "bytes": 1033
+    },
+    "src/extensions/native_node_callback_scope.zig": {
+      "current_main_sha256": "8868C64C8B9DF78CC7EA43DE34E682B3ABB74285C6B47BA9D268C015FB9CAF1F",
+      "bytes": 37754
+    },
+    "src/extensions/native_node_request_state.zig": {
+      "current_main_sha256": "01DA46DC010A3108D592172C6F65AAB8100560FC274228FE9F1B6643A70A755A",
+      "bytes": 4949
+    },
+    "src/extensions/native_node_uv_service.zig": {
+      "current_main_sha256": "3D1D632D250F78ED0EB7DEF8A7B44F99429D81CCB82F3199F3118C9FFA037D17",
+      "bytes": 8933
+    },
+    "src/extensions/native_node_uv_exception.zig": {
+      "current_main_sha256": "B58AB2B8EBE7A01E28110417446827F74FA54B0D6D1965C44FD8ADAE345FBA64",
+      "bytes": 5208
+    },
+    "src/extensions/native_env_io.zig": {
+      "current_main_sha256": "4BC66694AB6B22FC9A51A0943192BDCD61F0213C6846B0A69E0B459C26EF120E",
+      "bytes": 8014
+    },
+    "src/extensions/native_sdk_owned_completion.zig": {
+      "current_main_sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+      "bytes": 13354
+    },
+    "src/extensions/native_node_function.zig": {
+      "current_main_sha256": "469B1CFE5B3C589881533EA38EA45163BE4282C29234B11EDAA82DA1F557B73B",
+      "bytes": 14346
+    },
+    "src/extensions/native_node_async_providers.zig": {
+      "current_main_sha256": "5C66F18156086D2C00A4AEE22C62F46E1C6DED84624A410F5900C49D2FECA4CA",
+      "bytes": 1780
+    },
+    "src/extensions/native_process.zig": {
+      "current_main_sha256": "6D2D7B13CEAB0A6C73CB5128EC9F51BA21D0882886AAA1C7D2C0D707945B821B",
+      "bytes": 6626
+    }
+  },
+  "missing_direct_imports": [],
+  "required_successor_dependencies": [
+    {
+      "unit": "VM native termination30 plus Engine/gateway source integration",
+      "commit": "ce0981538962d96c8d79f0e526ed024e538c305b",
+      "engine_packet": "F42CE0C3",
+      "engine_successor": "87DDDFAD",
+      "gateway_packet": "37F9A682",
+      "reason": "C435/D964 actual-owner successors rely on the genuine actual-pending classifier/reducer and explicit ExecutionTerminated transport. This unit does not silently add those C/Engine changes."
+    },
+    {
+      "unit": "SDK actual-owned Completion/Boundary successor",
+      "commit": "f596f333dc868a0887b8ba5b7df641eacae39dbd",
+      "completion_sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC",
+      "boundary_git_sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "uv_service_sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5",
+      "reason": "Actual public Boundary.isFatal uses cached generic authority and dynamic private event priority. The two private producer substitutions in AfterScope/request IO are included here; the shared service substitution is already in f596."
+    },
+    {
+      "unit": "Same actual Registry/BaseEntry",
+      "main_base_sha256": "A5EF66E7B302998DB7C27E8EA2B7C1315F154286D3B284A5670358B6B5CF863A",
+      "compatible_addition_commit": "9d2c2c43a6869cb3b9052c186b665b8a90e15227",
+      "compatible_addition_sha256": "B53C4D0C1412BA496A267C03F58F8AB88CDA0288336098180D986C9D9FC0A04F",
+      "reason": "Preserve Root's documentation fixes and shared FIFO. The separate modules weak slot is additive and not needed to invent a second FS registry."
+    }
+  ],
+  "existing_native_prerequisites": [
+    "Actual callback Environment/provider table/RequestState/MakeCallback/check dispatcher already owned by Root/Main.",
+    "Actual native Global cell, one pending Promise allocator and same-Promise settlement APIs already in Main.",
+    "Shared UV service/typed FS14 and intrinsic view ByteLength11 already in Main; original TCP12 root unchanged.",
+    "Current genuine UVException B58AB2 immediate Maybe.Check policy is consumed without copying the prior incomplete ordinary-throw policy."
+  ],
+  "peers": [
+    {
+      "owner": "Modules",
+      "status": "closed",
+      "scope": "AsyncWrap template/signature/receiver FF468; BindingData construction/publication AB6; Request0ED6 construction including partial init continuation and factory F592; AfterScope F85 typed-OOM-before-clear; Read A620 primitive/body; Fixture1–8 and physical17–21; build15 A8EC."
+    },
+    {
+      "owner": "VM",
+      "status": "closed",
+      "scope": "WeakGlobal2B776 actual adapter; BindingDataAB6 weak/native/retire and Request0ED6 return/settle; RequestIO3541 ownership/lifecycle then C360 exact isFatal successor; ReadA620 factory; controls9–16/22–25 on5E111; final import-only66D6/29E8 exact inverse."
+    },
+    {
+      "owner": "VM",
+      "status": "closed",
+      "scope": "Completion/Boundary and three isFatal consumers: host owner packet A52D/native-abort7CDAD/consumer6369, preserving typed-OOM/generation policy. Controls and Engine composition remain their separate units."
+    },
+    {
+      "owner": "Root",
+      "status": "closed dependencies",
+      "scope": "General AsyncWrap State DE347/Main A5 documentation successor, RequestState01DA, native callback/check owners, shared UV C/service intake. Their original source scope remains separate."
+    }
+  ],
+  "readback": {
+    "all_8_files_read": true,
+    "all_direct_zig_imports_exist_in_current_main_or_unit": true,
+    "control_count": 25,
+    "conditional_defer_semicolons": "All four actual errdefer/defer conditional blocks read with required semicolon.",
+    "test_api_correction": "Only callable alias native_node_function -> actual native_node_module_callable, used by exactly three failure calls; original5E111 root retained. All25 names/bodies/assertions exact."
+  },
+  "lifecycle_contract": [
+    "Disable actual canCallIntoJs before stopping the Hub.",
+    "Keep Environment and VM alive through actual stop/join/FIFO drain and request cleanup.",
+    "Retained Controller checks stopping before touching the retired Hub.",
+    "Realm cleanup follows joined I/O and actual BaseEntry FIFO; request waiting count/queue must already be empty.",
+    "Native weak cells retire before the VM; no public WeakRef or kept-object substitute."
+  ],
+  "limits": [
+    "Controls deliberately run actual nested CallbackScope under an outer skip_task_queues scope. Unselected actual fatal/report/checkpoint/scheduler operations fail explicitly; those controls do not qualify full bootstrap.",
+    "Native FileHandle callback/StreamBase template remains explicitly unavailable; no fabricated partial public class or namespace.",
+    "Open/class/validators/promises public FileHandle drafts are excluded from this intake.",
+    "No compiler, native, Node, generator, formatter, AST or tests executed in the agent tree.",
+    "Original D3E8 and historical source packets retain their old pending labels; this additive receipt records current closure without rewriting them."
+  ],
+  "execution": "none"
+}

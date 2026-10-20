@@ -105,6 +105,8 @@ pub fn build(b: *std.Build) void {
     };
     // The real filesystem is reachable from every VM; share one static owner.
     if (native_node_network) |network| quickjs.root_module.linkLibrary(network);
+    const native_package_json = @import("tools/build_native_package_json.zig").add(b, target, optimize);
+    if (native_package_json) |parser| quickjs.root_module.linkLibrary(parser);
     const typescript_parser = b.addLibrary(.{
         .name = "pi-typescript-parser",
         .linkage = .static,
@@ -1987,6 +1989,19 @@ pub fn build(b: *std.Build) void {
         linkQuickJs(b, vm_array_buffer_view_length_tests.root_module, quickjs, sqlite_lib_dir);
         b.step("build-native-vm-array-buffer-view-length", "Install intrinsic ArrayBufferView byteLength controls without execution").dependOn(&b.addInstallArtifact(vm_array_buffer_view_length_tests, .{}).step);
     }
+    const typebox_execution_termination_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_typebox_execution_termination_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"TypeBox native termination"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, typebox_execution_termination_tests.root_module, quickjs, sqlite_lib_dir);
+    typebox_execution_termination_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-typebox-execution-termination", "Install planned native termination ownership controls without execution").dependOn(&b.addInstallArtifact(typebox_execution_termination_tests, .{}).step);
+    const execution_termination_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_execution_termination_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"VM termination"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, execution_termination_tests.root_module, quickjs, sqlite_lib_dir);
+    b.step("build-native-vm-execution-termination", "Install native execution termination and Promise job ownership controls without execution").dependOn(&b.addInstallArtifact(execution_termination_tests, .{}).step);
     const existing_promise_settlement_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_existing_promise_settlement_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"VM Promise settlement"}, .use_llvm = use_llvm,
@@ -2047,6 +2062,21 @@ pub fn build(b: *std.Build) void {
         native_node_fs_request_transport_tests.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
         native_node_fs_request_transport_tests.root_module.linkLibrary(network);
         b.step("build-native-node-fs-request-transport", "Install actual shared libuv FS request ownership controls without execution").dependOn(&b.addInstallArtifact(native_node_fs_request_transport_tests, .{}).step);
+        const native_node_fs_request_owner_tests = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_fs_request_owner_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native FS request owner"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, native_node_fs_request_owner_tests.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, native_node_fs_request_owner_tests.root_module, typescript_parser);
+        linkSqlite(native_node_fs_request_owner_tests.root_module, sqlite_lib_dir, sqlite_library);
+        native_node_fs_request_owner_tests.root_module.addImport("catalog_tool", catalog_tool);
+        native_node_fs_request_owner_tests.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        native_node_fs_request_owner_tests.root_module.linkLibrary(network);
+        if (target.result.os.tag == .windows) {
+            native_node_fs_request_owner_tests.root_module.linkSystemLibrary("advapi32", .{});
+            native_node_fs_request_owner_tests.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-fs-request-owner", "Install twenty-five actual FS request and private Read controls without execution").dependOn(&b.addInstallArtifact(native_node_fs_request_owner_tests, .{ .dest_sub_path = b.fmt("native-node-fs-request-owner{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
         const native_node_uv_exception_tests = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_uv_exception_test.zig"), .target = target, .optimize = optimize }),
             .filters = &.{"native UVException"}, .use_llvm = use_llvm,
@@ -4157,6 +4187,13 @@ pub fn build(b: *std.Build) void {
     engine_owned_retirement.root_module.addImport("catalog_tool", catalog_tool);
     if (target.result.os.tag == .windows) { engine_owned_retirement.root_module.linkSystemLibrary("advapi32", .{}); engine_owned_retirement.root_module.linkSystemLibrary("userenv", .{}); }
     b.step("build-native-engine-owned-retirement", "Install actual Engine owned-retirement controls without execution").dependOn(&b.addInstallArtifact(engine_owned_retirement, .{ .dest_sub_path = b.fmt("native-engine-owned-retirement{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    const native_host_termination_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_host_termination_ownership_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native host termination"}, .use_llvm = use_llvm });
+    linkQuickJs(b, native_host_termination_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, native_host_termination_tests.root_module, typescript_parser);
+    linkSqlite(native_host_termination_tests.root_module, sqlite_lib_dir, sqlite_library);
+    native_host_termination_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { native_host_termination_tests.root_module.linkSystemLibrary("advapi32", .{}); native_host_termination_tests.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-host-termination-ownership", "Install sixteen actual host termination ownership controls without execution").dependOn(&b.addInstallArtifact(native_host_termination_tests, .{ .dest_sub_path = b.fmt("native-host-termination-ownership{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
     // Actual Node guest-operation controls; installed only until runtime grant.
     const node_operation_boundary = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_operation_boundary_test.zig"), .target = target, .optimize = optimize }),
@@ -4775,6 +4812,32 @@ pub fn build(b: *std.Build) void {
     }
 
     if (native_node_network != null) {
+        const node_stream_resource = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_stream_resource_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native Node stream resource"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_stream_resource.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_stream_resource.root_module, typescript_parser);
+        linkSqlite(node_stream_resource.root_module, sqlite_lib_dir, sqlite_library);
+        node_stream_resource.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            node_stream_resource.root_module.linkSystemLibrary("advapi32", .{});
+            node_stream_resource.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-stream-resource", "Install eight actual native StreamResource lifetime controls without execution").dependOn(&b.addInstallArtifact(node_stream_resource, .{ .dest_sub_path = b.fmt("native-node-stream-resource{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+        const node_microtask_checkpoint = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_microtask_checkpoint_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native Node microtask checkpoint"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_microtask_checkpoint.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_microtask_checkpoint.root_module, typescript_parser);
+        linkSqlite(node_microtask_checkpoint.root_module, sqlite_lib_dir, sqlite_library);
+        node_microtask_checkpoint.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            node_microtask_checkpoint.root_module.linkSystemLibrary("advapi32", .{});
+            node_microtask_checkpoint.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-microtask-checkpoint", "Install actual Node microtask checkpoint controls without execution").dependOn(&b.addInstallArtifact(node_microtask_checkpoint, .{ .dest_sub_path = b.fmt("native-node-microtask-checkpoint{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
         const node_callbacks = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_callback_scope_test.zig"), .target = target, .optimize = optimize }),
             .filters = &.{"native Node callback scope"}, .use_llvm = use_llvm,
@@ -4858,6 +4921,15 @@ pub fn build(b: *std.Build) void {
         b.step("build-native-node-uv-exception-probe", "Install isolated actual UVException Maybe.Check expected-exit probes without execution").dependOn(&b.addInstallArtifact(native_uv_exception_probe, .{ .dest_sub_path = b.fmt("native-node-uv-exception-probe{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
     }
 
+
+    if (native_package_json != null) {
+        const native_package_json_tests = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_package_json_parser_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native package JSON parser"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, native_package_json_tests.root_module, quickjs, sqlite_lib_dir);
+        b.step("build-native-node-package-json-parser", "Install actual package JSON parser and native allocation controls without execution").dependOn(&b.addInstallArtifact(native_package_json_tests, .{}).step);
+    }
 
 }
 

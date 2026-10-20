@@ -1,0 +1,8 @@
+{
+  "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/deps/v8/src/api/api-natives.cc",
+  "raw_sha256": "103316A825D58AE72CE9F97AA741878F84EFA3C7D3167ADE3D5458C664E75B0A",
+  "bytes": 27716,
+  "retrieved_utc": "2026-10-20T10:54:41.125252+00:00",
+  "source_only": true,
+  "downloaded_content_executed": false
+}

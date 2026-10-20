@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "status": "source_only_native_parser_draft_pending_split_peer",
+  "node_revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "production": [
+    {
+      "path": "src/extensions/native_node_package_json_parser.h",
+      "sha256": "37C9BD3BDF660069FBB322575FE84857CF8798D310DE44F49EE1DA9491832F14",
+      "bytes": 2352
+    },
+    {
+      "path": "src/extensions/native_node_package_json_parser.cpp",
+      "sha256": "8ACF480084F24FB4C843475C6693BD68C4A871E33F36578D04C20E9CA110D347",
+      "bytes": 10825
+    }
+  ],
+  "dependencies": {
+    "allocator_packet": "simdjson-allocation-successor.json",
+    "allocator_packet_sha256": "2A0683036B1E295768E347CC7424DD834846BF21FFA3F523BB6F3543FC98AFAA",
+    "original_node_modules_cpp": "26C1741820F992983DE87A5EDBE8274B9FFDFF348F988E4D44586B8809EAA414",
+    "original_simdjson_h": "2FC8120BB21A9FA887EB77DA5E1E80FD670FD281E7F183937C46C44105483D77"
+  },
+  "selected_originals": [
+    {
+      "file": "verification/cjs-fs-inputs-sourceonly-20261018/authority/node_modules.cc.txt",
+      "offset_bytes": 2792,
+      "text": "const BindingData::PackageConfig* BindingData::GetPackageJSON(\n    Realm* realm, std::string_view path, ErrorContext* error_context) {\n  auto binding_data = realm->GetBindingData<BindingData>();\n\n  auto cache_entry = binding_data->package_configs_.find(path.data());\n  if (cache_entry != binding_data->package_configs_.end()) {\n    auto& cache_value = cache_entry->second;\n    if (cache_value) {\n      return &*cache_value;\n    }\n\n    // If we have a cache entry without a value, we've already\n    // attempted to open and read this path and couldn't (it most\n    // likely doesn't exist)\n    return nullptr;\n  }\n\n  PackageConfig package_config{};\n  package_config.file_path = path;\n  // No need to exclude BOM since simdjson will skip it.\n  if (ReadFileSync(&package_config.raw_json, path.data()) < 0) {\n    // Add `nullopt` to the package config cache so that we don't\n    // need to open and attempt to read this path again\n    binding_data->package_configs_.insert({std::string(path), std::nullopt});\n    return nullptr;\n  }\n\n  simdjson::ondemand::document document;\n  simdjson::ondemand::object main_object;\n  simdjson::error_code error =\n      binding_data->json_parser.iterate(simdjson::pad(package_config.raw_json))\n          .get(document);\n\n  const auto throw_invalid_package_config = [error_context, path, realm]() {\n    if (error_context == nullptr) {\n      THROW_ERR_INVALID_PACKAGE_CONFIG(\n          realm->isolate(), \"Invalid package config %s.\", path.data());\n    } else if (error_context->base.has_value()) {\n      auto file_url = ada::parse(error_context->base.value());\n      CHECK(file_url);\n      auto file_path = url::FileURLToPath(realm->env(), *file_url);\n      CHECK(file_path.has_value());\n      THROW_ERR_INVALID_PACKAGE_CONFIG(\n          realm->isolate(),\n          \"Invalid package config %s while importing \\\"%s\\\" from %s.\",\n          path.data(),\n          error_context->specifier.c_str(),\n          file_path->c_str());\n    } else {\n      THROW_ERR_INVALID_PACKAGE_CONFIG(\n          realm->isolate(), \"Invalid package config %s.\", path.data());\n    }\n\n    return nullptr;\n  };\n\n  if (error || document.get_object().get(main_object)) {\n    return throw_invalid_package_config();\n  }\n\n  simdjson::ondemand::raw_json_string key;\n  simdjson::ondemand::value value;\n  std::string_view field_value;\n  simdjson::ondemand::json_type field_type;\n\n  for (auto field : main_object) {\n    // Throw error if getting key or value fails.\n    if (field.key().get(key) || field.value().get(value)) {\n      return throw_invalid_package_config();\n    }\n\n    // based on coverity using key with == derefs the raw value\n    // avoid derefing if its null\n    if (key.raw() == nullptr) continue;\n\n    if (key == \"name\") {\n      // Though there is a key \"name\" with a corresponding value,\n      // the value may not be a string or could be an invalid JSON string\n      if (value.get_string(package_config.name)) {\n        return throw_invalid_package_config();\n      }\n    } else if (key == \"main\") {\n      // Omit all non-string values\n      USE(value.get_string(package_config.main));\n    } else if (key == \"exports\") {\n      if (value.type().get(field_type)) {\n        return throw_invalid_package_config();\n      }\n      switch (field_type) {\n        case simdjson::ondemand::json_type::object:\n        case simdjson::ondemand::json_type::array: {\n          if (value.raw_json().get(field_value)) {\n            return throw_invalid_package_config();\n          }\n          package_config.exports = field_value;\n          break;\n        }\n        case simdjson::ondemand::json_type::string: {\n          if (value.get_string(package_config.exports)) {\n            return throw_invalid_package_config();\n          }\n          break;\n        }\n        default:\n          break;\n      }\n    } else if (key == \"imports\") {\n      if (value.type().get(field_type)) {\n        return throw_invalid_package_config();\n      }\n      switch (field_type) {\n        case simdjson::ondemand::json_type::array:\n        case simdjson::ondemand::json_type::object: {\n          if (value.raw_json().get(field_value)) {\n            return throw_invalid_package_config();\n          }\n          package_config.imports = field_value;\n          break;\n        }\n        case simdjson::ondemand::json_type::string: {\n          if (value.get_string(package_config.imports)) {\n            return throw_invalid_package_config();\n          }\n          break;\n        }\n        default:\n          break;\n      }\n    } else if (key == \"type\") {\n      if (value.get_string().get(field_value)) {\n        return throw_invalid_package_config();\n      }\n      // Only update type if it is \"commonjs\" or \"module\"\n      // The default value is \"none\" for backward compatibility.\n      if (field_value == \"commonjs\" || field_value == \"module\") {\n        package_config.type = field_value;\n      }\n    } else if (key == \"scripts\") {\n      if (value.type().get(field_type)) {\n        return throw_invalid_package_config();\n      }\n      switch (field_type) {\n        case simdjson::ondemand::json_type::object: {\n          if (value.raw_json().get(field_value)) {\n            return throw_invalid_package_config();\n          }\n          package_config.scripts = field_value;\n          break;\n        }\n        default:\n          break;\n      }\n    }\n  }\n  // package_config could be quite large, so we should move it instead of\n  // copying it.\n  auto cached = binding_data->package_configs_.insert(\n      {std::string(path), std::move(package_config)});\n\n  return &*cached.first->second;\n}\n\n"
+    },
+    {
+      "file": "vendor/node-v24.13.0/simdjson/simdjson.h",
+      "offset_bytes": 143909,
+      "text": "inline padded_string_view pad(std::string& s) noexcept {\n  size_t existing_padding = 0;\n  for (size_t i = s.size(); i > 0; i--) {\n    char c = s[i - 1];\n    if (c == ' ' || c == '\\t' || c == '\\n' || c == '\\r') {\n      existing_padding++;\n    } else {\n      break;\n    }\n  }\n  size_t needed_padding = 0;\n  if (existing_padding < SIMDJSON_PADDING) {\n    needed_padding = SIMDJSON_PADDING - existing_padding;\n    s.append(needed_padding, ' ');\n  }\n\n  return padded_string_view(s.data(), s.size() - needed_padding, s.size());\n}\n\n"
+    },
+    {
+      "file": "vendor/node-v24.13.0/simdjson/simdjson.h",
+      "offset_bytes": 1783390,
+      "text": "inline error_code parser::allocate(size_t new_capacity, size_t new_max_depth) noexcept {\n  if (new_capacity > max_capacity()) { return CAPACITY; }\n  if (string_buf && new_capacity == capacity() && new_max_depth == max_depth()) { return SUCCESS; }\n\n  // string_capacity copied from document::allocate\n  _capacity = 0;\n  size_t string_capacity = SIMDJSON_ROUNDUP_N(5 * new_capacity / 3 + SIMDJSON_PADDING, 64);\n  string_buf.reset(new (std::nothrow) uint8_t[string_capacity]);\n#if SIMDJSON_DEVELOPMENT_CHECKS\n  start_positions.reset(new (std::nothrow) token_position[new_max_depth]);\n#endif\n  if (implementation) {\n    SIMDJSON_TRY( implementation->set_capacity(new_capacity) );\n    SIMDJSON_TRY( implementation->set_max_depth(new_max_depth) );\n  } else {\n    SIMDJSON_TRY( simdjson::get_active_implementation()->create_dom_parser_implementation(new_capacity, new_max_depth, implementation) );\n  }\n  _capacity = new_capacity;\n  _max_depth = new_max_depth;\n  return SUCCESS;\n}\n#if SIMDJSON_DEVELOPMENT_CHECKS\nsimdjson_inline simdjson_warn_unused bool parser::string_buffer_overflow(const uint8_t *string_buf_loc) const noexcept {\n  return (string_buf_loc < string_buf.get()) || (size_t(string_buf_loc - string_buf.get()) >= capacity());\n}\n#endif\n\nsimdjson_warn_unused simdjson_inline simdjson_result<document> parser::iterate(padded_string_view json) & noexcept {\n  if (!json.has_sufficient_padding()) { return INSUFFICIENT_PADDING; }\n\n  json.remove_utf8_bom();\n\n  // Allocate if needed\n  if (capacity() < json.length() || !string_buf) {\n    SIMDJSON_TRY( allocate(json.length(), max_depth()) );\n  }\n\n  // Run stage 1.\n  SIMDJSON_TRY( implementation->stage1(reinterpret_cast<const uint8_t *>(json.data()), json.length(), stage1_mode::regular) );\n  return document::start({ reinterpret_cast<const uint8_t *>(json.data()), this });\n}\n\n"
+    }
+  ],
+  "ownership": [
+    "Parser and Config are separate actual native allocations. The aligned allocation prefix retains the original charged native memory owner; the parser's raw owner pointer is borrowed only from its own prefix.",
+    "Every real raw/string field block is allocated by the same actual allocator. A growth allocates and charges the replacement before releasing the old block; no capacity-derived approximate reservation exists.",
+    "Input is borrowed only during synchronous parse. Config owns its padded raw bytes and all copied selected fields; returned views borrow Config and remain valid after parser destruction.",
+    "An unpublished Config is held by unique_ptr with an exact native destructor. Every failure leaves output null; a published Config has exactly one transferred native owner.",
+    "The default type is a nonallocating private enum reflecting only the three original accepted strings. A missing field remains absent; an explicitly empty string remains present with length zero.",
+    "Every allocation failure is sticky in the active native Scope and then in Parser. The outer Zig owner must record the real native allocation-fatal event and retire this parser; parsing again is refused.",
+    "Parser allocation is performed at the original capacity/first-buffer boundary before iterate. This allows the actual producer flag to stop before the original unchecked missing string/development buffers could be dereferenced. The original raw-input BOM is removed only once by iterate."
+  ],
+  "algorithm": [
+    "pad counts only the original four ASCII JSON whitespace characters, appends exactly the missing suffix, retains those raw bytes, and passes original length.",
+    "The actual simdjson ondemand grammar, UTF8, raw key comparison, iteration and error behavior remain in the pinned allocator successor; no replacement scanner is used.",
+    "The selected node_modules field loop preserves raw key matching, duplicate-field update behavior, ignored main conversion error, strict name/type handling, imports/exports object/array/string selection, and scripts object-only handling.",
+    "All field copies preserve explicit lengths, including embedded NUL. Raw object/array slices retain the original formatting emitted by value.raw_json()."
+  ],
+  "review_split": {
+    "sdk": "parseBody padding/BOM/capacity admission and actual Node selected field loop",
+    "vm": "Bytes and Parser/Config allocation/lifetime; C ABI publication/error outputs; actual memory owner retention across parser/runtime retirement"
+  },
+  "outside_scope": [
+    "Physical ReadFileSync and native path conversion",
+    "Actual package path/cache owner and negative cache",
+    "ERR_INVALID_PACKAGE_CONFIG construction and ESM context",
+    "Native JS binding/Serialize and public loader assembly",
+    "Source controls/build wiring and all execution"
+  ]
+}

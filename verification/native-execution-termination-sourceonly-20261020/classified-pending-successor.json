@@ -1,0 +1,33 @@
+{
+  "source_only": true,
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "share losing-event lease retirement while preserving cached host generic event classification",
+      "before": "bool JS_PiNativePendingReplace(JSRuntime *rt, JSValueConst retained,\n                                JSValueConst incoming)\n{\n    bool replace = js_pi_pending_priority(rt, incoming) >\n                   js_pi_pending_priority(rt, retained);\n    JSValueConst selected = replace ? incoming : retained;\n    JSValueConst discarded = replace ? retained : incoming;\n    if (JS_PiIsExecutionTermination(discarded) &&\n        !JS_PiIsExecutionTermination(selected))\n        rt->pi_termination_in_flight = false;\n    return replace;\n}\n",
+      "after": "static bool js_pi_native_pending_replace(JSRuntime *rt,\n                                          JSValueConst retained,\n                                          JSValueConst incoming,\n                                          int retained_priority,\n                                          int incoming_priority)\n{\n    bool replace = incoming_priority > retained_priority;\n    JSValueConst selected = replace ? incoming : retained;\n    JSValueConst discarded = replace ? retained : incoming;\n    if (JS_PiIsExecutionTermination(discarded) &&\n        !JS_PiIsExecutionTermination(selected))\n        rt->pi_termination_in_flight = false;\n    return replace;\n}\n\nbool JS_PiNativePendingReplace(JSRuntime *rt, JSValueConst retained,\n                                JSValueConst incoming)\n{\n    return js_pi_native_pending_replace(rt, retained, incoming,\n        js_pi_pending_priority(rt, retained), js_pi_pending_priority(rt, incoming));\n}\n\nbool JS_PiNativePendingReplaceClassified(JSRuntime *rt,\n                                          JSValueConst retained,\n                                          bool retained_generic_fatal,\n                                          JSValueConst incoming,\n                                          bool incoming_generic_fatal)\n{\n    /* Host owners that already classified an ACTUAL generic event keep that\n       policy. Public flag changes during cleanup must not alter its selection.\n       Only the private event lease is dynamically cancelled or retired. */\n    int retained_priority = JS_PiIsExecutionTermination(retained) ?\n        js_pi_pending_priority(rt, retained) : (retained_generic_fatal ? 1 : 0);\n    int incoming_priority = JS_PiIsExecutionTermination(incoming) ?\n        js_pi_pending_priority(rt, incoming) : (incoming_generic_fatal ? 1 : 0);\n    return js_pi_native_pending_replace(rt, retained, incoming,\n                                        retained_priority, incoming_priority);\n}\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "label": "actual cached-owner classified pending contract",
+      "before": "JS_EXTERN bool JS_PiNativePendingReplace(JSRuntime *rt,\n                                         JSValueConst retained_pending,\n                                         JSValueConst incoming_pending);\n",
+      "after": "JS_EXTERN bool JS_PiNativePendingReplace(JSRuntime *rt,\n                                         JSValueConst retained_pending,\n                                         JSValueConst incoming_pending);\n/* Same actual-owner operation for native hosts that already cached generic\n   event classification. Both booleans must come from those actual events,\n   never DATA. They are ignored for private tokens, whose lease remains dynamic.\n   Neither Error flag is read for a generic operand or changed by this call. */\nJS_EXTERN bool JS_PiNativePendingReplaceClassified(JSRuntime *rt,\n                                         JSValueConst retained_pending,\n                                         bool retained_generic_fatal,\n                                         JSValueConst incoming_pending,\n                                         bool incoming_generic_fatal);\n",
+      "count": 1
+    }
+  ],
+  "files": {
+    "vendor/quickjs/quickjs.c": {
+      "before_sha256": "2E4983E3D99EB98FBF8B00832D78FC5896573C8115A37652130D0CF8736BB4D0",
+      "before_bytes": 2359516,
+      "after_sha256": "7A28CA31511E6BF1B4548A29F145A7D4F1AEC7D03A24C2C4231502F3643AF753",
+      "after_bytes": 2360936
+    },
+    "vendor/quickjs/quickjs.h": {
+      "before_sha256": "972CC8275CD07165976813D55B17337CE19D42CBF8125D82529CC1222B2639BE",
+      "before_bytes": 103134,
+      "after_sha256": "06CE44C96DC3B7174DEAF5FD487D9E6D403EB3FB93770790BB3239A35D821B66",
+      "after_bytes": 103797
+    }
+  }
+}

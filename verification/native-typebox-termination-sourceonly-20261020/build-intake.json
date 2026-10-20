@@ -1,0 +1,17 @@
+{
+  "source_only": true,
+  "base_sha256": "E4ACD05A7442E19730668C6B37FEAF4707400D7740459D472BD882B4B64F6DE4",
+  "after_sha256": "BE214D02354497862167C82BC4B382A5E47F6112B7A18961D3F9E12DB349D40A",
+  "edits": [
+    {
+      "before": "    const execution_termination_tests = b.addTest(.{\n",
+      "after": "    const typebox_execution_termination_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_typebox_execution_termination_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"TypeBox native termination\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, typebox_execution_termination_tests.root_module, quickjs, sqlite_lib_dir);\n    typebox_execution_termination_tests.root_module.addImport(\"catalog_tool\", catalog_tool);\n    b.step(\"build-native-typebox-execution-termination\", \"Install planned native termination ownership controls without execution\").dependOn(&b.addInstallArtifact(typebox_execution_termination_tests, .{}).step);\n    const execution_termination_tests = b.addTest(.{\n",
+      "count": 1
+    }
+  ],
+  "added_lines": 7,
+  "root": "src/native_typebox_execution_termination_test.zig",
+  "filter": "TypeBox native termination",
+  "target": "build-native-typebox-execution-termination",
+  "execution": false
+}

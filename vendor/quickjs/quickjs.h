@@ -1060,6 +1060,57 @@ static inline bool JS_IsModule(JSValueConst v)
 JS_EXTERN JSValue JS_Throw(JSContext *ctx, JSValue obj);
 JS_EXTERN JSValue JS_GetException(JSContext *ctx);
 JS_EXTERN bool JS_HasException(JSContext *ctx);
+/* Native execution termination. A request alone is not a pending event.
+   Request may be made by another thread in CONFIG_ATOMICS builds; all other
+   operations require the owning VM thread. Runtime lifetime remains caller-owned.
+   Check services the dedicated request without allocating an Error. An earlier
+   actual pending reason is preserved; generic interrupt/cancel/budget/OOM
+   producers are unchanged. It returns -1 for a blocked entry, otherwise 0.
+   IsExecutionTerminating observes the actual private pending event, not a
+   requested bit or an event temporarily detached by native cleanup.
+   Cancel clears the request, and clears the event only when actually pending.
+   The private token returned by GetException is native unwind provenance only:
+   never a guest value, Promise rejection, diagnostic, or uncatchable Error bit.
+   After cancellation an already-owned token may carry a native abrupt result
+   but cannot reestablish the event or displace a later real cleanup reason.
+   The generation increments only on servicing a new dedicated request. */
+JS_EXTERN void JS_PiRequestExecutionTermination(JSRuntime *rt);
+JS_EXTERN int JS_PiCheckExecutionTermination(JSContext *ctx);
+JS_EXTERN bool JS_PiIsExecutionTerminating(JSRuntime *rt);
+JS_EXTERN bool JS_PiIsExecutionTermination(JSValueConst actual_pending_token);
+/* Native callback result only, for an already-observed termination failure
+   still unwinding after cancellation. No request, pending event, lease or
+   generation is created. It is an exception result, never a guest value,
+   Action payload, Promise rejection or captured diagnostic. Existing later
+   actual pending reasons retain precedence when the callback boundary runs. */
+JS_EXTERN JSValue JS_PiNativeTerminationResult(void);
+JS_EXTERN void JS_PiCancelExecutionTermination(JSRuntime *rt);
+JS_EXTERN uint64_t JS_PiExecutionTerminationGeneration(JSRuntime *rt);
+/* Borrowed ACTUAL pending reason only, including one detached into a native
+   cleanup owner; never diagnostic/returned/rejected DATA. Returns -1 for a
+   cancelled private termination completion, 0 for an ordinary actual reason,
+   and 1 for an active private event or an actual uncatchable Error. It reads
+   the event lease, not the pending slot; no allocation, call or mutation. */
+JS_EXTERN int JS_PiNativePendingPriority(JSRuntime *rt,
+                                          JSValueConst actual_pending_reason);
+/* Borrowed actual pending reasons only, never retained/returned DATA. Returns
+   whether incoming replaces retained under the existing first-fatal rule and
+   the cancelled native-completion precedence. If a private event loses, retires
+   its in-flight lease without clearing a later unserviced request. Neither
+   operand is freed; the caller retires the losing owned value. No allocation,
+   guest call, pending-slot mutation or public Error-flag inference is added. */
+JS_EXTERN bool JS_PiNativePendingReplace(JSRuntime *rt,
+                                         JSValueConst retained_pending,
+                                         JSValueConst incoming_pending);
+/* Same actual-owner operation for native hosts that already cached generic
+   event classification. Both booleans must come from those actual events,
+   never DATA. They are ignored for private tokens, whose lease remains dynamic.
+   Neither Error flag is read for a generic operand or changed by this call. */
+JS_EXTERN bool JS_PiNativePendingReplaceClassified(JSRuntime *rt,
+                                         JSValueConst retained_pending,
+                                         bool retained_generic_fatal,
+                                         JSValueConst incoming_pending,
+                                         bool incoming_generic_fatal);
 JS_EXTERN bool JS_IsError(JSValueConst val);
 JS_EXTERN bool JS_IsUncatchableError(JSValueConst val);
 JS_EXTERN void JS_SetUncatchableError(JSContext *ctx, JSValueConst val);
@@ -1668,7 +1719,23 @@ JS_EXTERN int JS_PiMarkNativeApiFunction(JSContext *ctx, JSValueConst function);
 
 JS_EXTERN bool JS_IsJobPending(JSRuntime *rt);
 JS_EXTERN JSContext *JS_GetPendingJobContext(JSRuntime *rt);
+/* Native termination has a distinct completion status, even if it was
+   cancelled while native frames were unwinding. It must not be converted to a
+   guest rejection or captured diagnostic. Ordinary errors remain -1. */
+#define JS_PI_JOB_TERMINATED (-2)
 JS_EXTERN int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx);
+/* Owner-thread outer-checkpoint operation. Restore the saved outer continuation
+   before calling; invoke completed callbacks afterwards. When an actual native
+   termination is pending, detaches the old queue before any retirement and
+   clears current-task metadata before the deferred genuine native Promise AFTER.
+   New jobs enqueued by cleanup remain in the new queue. Pending reasons use the
+   same first-actual-fatal owner, and cancellation cannot revive an old event.
+   Retained aborted jobs are also released after cancellation, without clearing
+   the live queue or manufacturing AFTER. Returns 1 if the actual-termination
+   branch was selected, otherwise 0 (including nested/finalizer no-progress).
+   This does not provide a V8 external TryCatch object or completed-callback owner.
+   Runtime teardown releases these native owners without invoking Promise hooks. */
+JS_EXTERN int JS_PiFinishTerminatedMicrotasks(JSRuntime *rt);
 
 /* Structure to retrieve (de)serialized SharedArrayBuffer objects. */
 typedef struct JSSABTab {

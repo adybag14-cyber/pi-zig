@@ -57,6 +57,7 @@ pub const Registry = struct {
     head: ?*BaseEntry = null,
     tail: ?*BaseEntry = null,
     fs_binding_data: ?WeakBindingSlot = null,
+    modules_binding_data: ?WeakBindingSlot = null,
     cleanup: callbacks.RealmCleanup,
 
     pub fn create(engine: *Engine, environment: *Environment) !*Registry {
@@ -110,6 +111,10 @@ pub const Registry = struct {
         if (self.cleanup.environment != null) environment.unregisterRealmCleanup(&self.cleanup);
         if (self.fs_binding_data) |slot| {
             self.fs_binding_data = null;
+            slot.release(slot.raw);
+        }
+        if (self.modules_binding_data) |slot| {
+            self.modules_binding_data = null;
             slot.release(slot.raw);
         }
         environment.allocator().destroy(self);

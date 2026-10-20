@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "status": "source_only_native_checkpoint_intake",
+  "created_utc": "2026-10-20T12:05:43.321882+00:00",
+  "files": [
+    {
+      "path": "src/extensions/native_node_microtask_checkpoint.zig",
+      "bytes": 12861,
+      "sha256": "530066FCB850A701610D822400675DE985AFE250AA4E7F299A5F6DAB3F1039D1"
+    },
+    {
+      "path": "src/native_node_microtask_checkpoint_test.zig",
+      "bytes": 21986,
+      "sha256": "3B31C013C0377FAAF264145A4BBB3D3197EB2DA6FD29AE0D9EF2A88611FA8C0E"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/authority/source-acquisition.json",
+      "bytes": 27589,
+      "sha256": "845878666265FFC0CCC718817E08B09C66E90C6CB929A48FCCEE11A2CEC73172"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/authority/src__execution__microtask-queue.cc",
+      "bytes": 11313,
+      "sha256": "10755841F920DABD0B4174B60F14B17DC30E25EFB216B3B9B7EB0A025DA44209"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/authority/src__execution__microtask-queue.h",
+      "bytes": 5600,
+      "sha256": "6536767FD7DA37645BEA56AF113F2008F06FE25BDD26303BF34A9101F445AD91"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/authority/src__node_task_queue.cc",
+      "bytes": 6915,
+      "sha256": "842979575188903B07B0171E3EFFE5F51646AAA16C7391B0B5E854BAE99625C5"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/authority/src__runtime__runtime-internal.cc.selected.txt",
+      "bytes": 8000,
+      "sha256": "E0C0F14EB05E67B0F4B929A84B88613C3496C93059ED964FAE2F6799491FE1F8"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/authority/V8-LICENSE",
+      "bytes": 3093,
+      "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/build-intake.json",
+      "bytes": 2195,
+      "sha256": "0A710FA4934B32F4A86F097380F5815AD7045922D5678A2CA40DFA74EC47BFE1"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/build-peer-sdk.json",
+      "bytes": 616,
+      "sha256": "769433169FF04FE9E3FCA59848F152F379810716769FA78146112CB26FD88506"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/checkpoint-before-empty-terminal-fix-49D1.zig.txt",
+      "bytes": 12764,
+      "sha256": "49D1BD650ADE9031EABE36A51D3B9A0E4BC20FC2ADD02BB787FA0ACCA20A5347"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/checkpoint-distinct-fifo-controls.json",
+      "bytes": 679,
+      "sha256": "AA1BAAA1879FBEED323409910A6771612ECDEEDEAAD35661FB7045C23EF8E831"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/checkpoint-peer-corrections.json",
+      "bytes": 1458,
+      "sha256": "88A766A560166BB2C0A200C59185299B823503152A994D658905BEA5F4271EC6"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/checkpoint20-before-distinct-fifo-controls-D943.zig.txt",
+      "bytes": 21983,
+      "sha256": "D943903B269FED58F0EC1387DF099F04AFA5CB998E5F88164C2C697F6E941D10"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/checkpoint20-before-peer-fixes-C532.zig.txt",
+      "bytes": 21162,
+      "sha256": "C532AC50987DC978D1973275CF1DF80DE84CE9638AD5E124F955E6013FAA0372"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/original-DFC1-checkpoint.zig.txt",
+      "bytes": 11881,
+      "sha256": "DFC1AD452973D524B270904C02F307545E9903BA397809E3E38349337CF8801C"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/README.md",
+      "bytes": 2354,
+      "sha256": "C04FC8D81C3ABE7CF3B3C801BD18BE3A8189DFB7CD34D4E9AA91D791B3424469"
+    },
+    {
+      "path": "verification/native-node-microtask-checkpoint-sourceonly-20261020/source-peer-closure.json",
+      "bytes": 4601,
+      "sha256": "D531BE861C37690202961A9B97A4C4F424406BCA1648C4F5FC315B864C4220A6"
+    }
+  ],
+  "production": {
+    "path": "src/extensions/native_node_microtask_checkpoint.zig",
+    "bytes": 12861,
+    "sha256": "530066FCB850A701610D822400675DE985AFE250AA4E7F299A5F6DAB3F1039D1"
+  },
+  "controls": {
+    "path": "src/native_node_microtask_checkpoint_test.zig",
+    "bytes": 21986,
+    "sha256": "3B31C013C0377FAAF264145A4BBB3D3197EB2DA6FD29AE0D9EF2A88611FA8C0E"
+  },
+  "declarations": 20,
+  "native_build": false,
+  "native_runtime": false,
+  "main_modified": false,
+  "required_actual_report_operation_implemented": false,
+  "application_qualified": false
+}

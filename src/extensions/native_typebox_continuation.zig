@@ -51,7 +51,21 @@ pub const Action = union(enum) {
     leave_try: usize,
     finish_finally,
 };
-const Reason = struct { value: c.JSValue, fatal: bool };
+const Reason = struct {
+    value: c.JSValue,
+    fatal: bool, // Established generic classification; private activity is dynamic.
+    fn isNative(self: Reason) bool { return c.JS_PiIsExecutionTermination(self.value); }
+    fn isFatal(self: Reason, engine: *js.Engine) bool {
+        return if (self.isNative())
+            c.JS_PiNativePendingPriority(engine.runtime, self.value) > 0
+        else self.fatal;
+    }
+    fn skipsGuest(self: Reason) bool {
+        // Cancel can retire event authority without turning an already-aborted
+        // native call back into a completion that may enter guest finally.
+        return self.fatal or self.isNative();
+    }
+};
 const Completion = union(enum) {
     @"resume": usize,
     returned: c.JSValue, // owned, moved before Scope.own
@@ -242,8 +256,8 @@ pub fn invokeBody(engine: *js.Engine, function: c.JSValue, provenance: Provenanc
             destroy(frame, &completion, boundary);
         }
         const captured = captureOwned(engine, completion.thrown, boundary);
-        _ = c.JS_Throw(engine.context, captured.value);
-        return error.JavaScriptException;
+        _ = publishReason(engine, captured);
+        return reasonError(captured);
     };
 }
 
@@ -257,14 +271,37 @@ fn classify(engine: *js.Engine, reason: c.JSValue, boundary: u64) Reason {
 fn takePending(engine: *js.Engine, boundary: u64) ?Reason {
     return if (c.JS_HasException(engine.context)) classify(engine, c.JS_GetException(engine.context), boundary) else null;
 }
+fn retainBeforeCleanup(engine: *js.Engine, retained: Reason, incoming: Reason) bool {
+    if (retained.isNative() or incoming.isNative()) {
+        // Both values came from real pending ownership, including the explicit
+        // cancelled native completion published by failureReason. This reducer
+        // retires a losing private lease without erasing another request.
+        return !c.JS_PiNativePendingReplaceClassified(engine.runtime,
+            retained.value, retained.fatal, incoming.value, incoming.fatal);
+    }
+    // Keep this interpreter's existing ordinary-finally/cleanup policy:
+    // a later ordinary cleanup replaces an earlier ordinary completion.
+    return retained.fatal;
+}
+fn publishReason(engine: *js.Engine, reason: Reason) c.JSValue {
+    if (reason.fatal and !reason.isNative())
+        c.JS_SetUncatchableError(engine.context, reason.value);
+    return c.JS_Throw(engine.context, reason.value);
+}
+fn reasonError(reason: Reason) anyerror {
+    return if (reason.isNative()) error.ExecutionTerminated else error.JavaScriptException;
+}
 fn mergeCleanup(engine: *js.Engine, initial: Completion, boundary: u64) Completion {
     var completion = initial;
     // A native finalizer may publish a pending exception while releasing a
     // captured value. Consume it before another cleanup operation. Keep the
     // first trusted fatal; an ordinary completion cannot hide a new fatal.
     while (takePending(engine, boundary)) |cleanup| {
-        const prior_fatal = switch (completion) { .thrown => |reason| reason.fatal, else => false };
-        if (prior_fatal) {
+        const retain = switch (completion) {
+            .thrown => |reason| retainBeforeCleanup(engine, reason, cleanup),
+            else => false,
+        };
+        if (retain) {
             engine.freeValue(cleanup.value);
         } else {
             const prior = completion;
@@ -275,9 +312,16 @@ fn mergeCleanup(engine: *js.Engine, initial: Completion, boundary: u64) Completi
     return completion;
 }
 fn failureReason(engine: *js.Engine, err: anyerror, boundary: u64) Reason {
+    if (err == error.ExecutionTerminated) {
+        if (takePending(engine, boundary)) |pending| return pending;
+        // Publish only the already-observed native abrupt result. This creates
+        // no event, request, generation or active lease after a genuine Cancel.
+        _ = c.JS_Throw(engine.context, c.JS_PiNativeTerminationResult());
+        return takePending(engine, boundary).?;
+    }
     if (err != error.JavaScriptException) {
         while (takePending(engine, boundary)) |pending| {
-            if (pending.fatal) return pending;
+            if (pending.isFatal(engine)) return pending;
             engine.freeValue(pending.value);
         }
     }
@@ -291,16 +335,21 @@ fn failureReason(engine: *js.Engine, err: anyerror, boundary: u64) Reason {
         _ = c.JS_ThrowInternalError(engine.context, "TypeBox continuation: %s", @as([*:0]const u8, @errorName(err)));
         return classify(engine, c.JS_GetException(engine.context), boundary);
     }
-    const reason = if (c.JS_HasException(engine.context)) c.JS_GetException(engine.context) else if (engine.captured_exception) |captured| c.JS_DupValue(engine.context, captured) else missing: {
+    if (takePending(engine, boundary)) |pending| return pending;
+    if (engine.captured_exception) |captured| {
+        // This is the actual failed operation's rethrow, not classification of
+        // a successful returned value. Acquire the real pending owner first.
+        _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, captured));
+    } else {
         _ = c.JS_ThrowInternalError(engine.context, "TypeBox continuation missing exception");
-        break :missing c.JS_GetException(engine.context);
-    };
-    return classify(engine, reason, boundary);
+    }
+    return takePending(engine, boundary).?;
 }
 fn captureThrown(engine: *js.Engine, value: c.JSValue, boundary: u64) Reason {
     // Preserve the original rt.throwValue/Engine.checked captured-slot behavior
     // before guest-capable finally operations; diagnostics remain suppressed.
-    return captureOwned(engine, classify(engine, c.JS_DupValue(engine.context, value), boundary), boundary);
+    _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value));
+    return captureOwned(engine, takePending(engine, boundary).?, boundary);
 }
 /// Consumes and returns an owned reason. Engine.checked may free the previous
 /// captured slot. Keep the first reason rooted independently throughout that
@@ -308,15 +357,27 @@ fn captureThrown(engine: *js.Engine, value: c.JSValue, boundary: u64) Reason {
 fn captureOwned(engine: *js.Engine, initial: Reason, boundary: u64) Reason {
     var reason = initial;
     while (true) {
+        if (reason.isNative())
+            return mergeCleanup(engine, .{ .thrown = reason }, boundary).thrown;
         captured: {
-            _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason.value))) catch |err| {
+            _ = engine.checked(publishReason(engine, .{
+                .value = c.JS_DupValue(engine.context, reason.value), .fatal = reason.fatal,
+            })) catch |err| {
+                if (err == error.ExecutionTerminated) {
+                    // checked selected an actual native abrupt completion.
+                    // It may already be cancelled; do not revive the displaced
+                    // ordinary operation merely because its lease is inactive.
+                    const selected = failureReason(engine, err, boundary);
+                    engine.freeValue(reason.value);
+                    return mergeCleanup(engine, .{ .thrown = selected }, boundary).thrown;
+                }
                 std.debug.assert(err == error.JavaScriptException);
                 break :captured;
             };
             unreachable;
         }
         const cleanup = takePending(engine, boundary) orelse return reason;
-        if (reason.fatal) {
+        if (retainBeforeCleanup(engine, reason, cleanup)) {
             engine.freeValue(cleanup.value);
             // Drain further native cleanup while retaining first-fatal priority.
             return mergeCleanup(engine, .{ .thrown = reason }, boundary).thrown;
@@ -332,6 +393,7 @@ fn captureOwned(engine: *js.Engine, initial: Reason, boundary: u64) Reason {
 /// catchable native OOM path. Never creates a second OOM for a captured reason.
 pub fn fail(engine: *js.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
+    if (err == error.ExecutionTerminated) return engine.throwExecutionTerminated();
     const reason = failureReason(engine, err, engine.native_allocation_generation);
     return c.JS_Throw(engine.context, reason.value);
 }
@@ -416,8 +478,8 @@ const Machine = struct {
             // ordinary Source finally can run. Pre-dispatch failures are real
             // VM failures even when the scheduling request was not consumed.
             const captured = captureOwned(self.engine, completion.thrown, boundary);
-            _ = c.JS_Throw(self.engine.context, captured.value);
-            return error.JavaScriptException;
+            _ = publishReason(self.engine, captured);
+            return reasonError(captured);
         }
         if (eligible != null) {
             const child = request.prepared;
@@ -453,8 +515,8 @@ const Machine = struct {
             .returned => unreachable,
             .thrown => |reason| {
                 const captured = captureOwned(self.engine, reason, boundary);
-                _ = c.JS_Throw(self.engine.context, captured.value);
-                return error.JavaScriptException;
+                _ = publishReason(self.engine, captured);
+                return reasonError(captured);
             },
         }
     }
@@ -470,8 +532,8 @@ const Machine = struct {
                 freeCompletion(self.engine, previous); // ordinary finally override
             }
             completion = mergeCleanup(self.engine, completion, boundary);
-            const fatal = switch (completion) { .thrown => |reason| reason.fatal, else => false };
-            if (!fatal) if (frame.finally_handler) |handler| {
+            const skips_guest = switch (completion) { .thrown => |reason| reason.skipsGuest(), else => false };
+            if (!skips_guest) if (frame.finally_handler) |handler| {
                 frame.finally_handler = null;
                 frame.pending = completion;
                 frame.pc = handler;
@@ -504,8 +566,8 @@ const Machine = struct {
                     if (parent == null) {
                         // invokeBody's owned error unwind captures this same
                         // pending reason before the NativeNode fail transport.
-                        _ = c.JS_Throw(self.engine.context, reason.value);
-                        return error.JavaScriptException;
+                        _ = publishReason(self.engine, reason);
+                        return reasonError(reason);
                     }
                 },
                 .@"resume" => unreachable,

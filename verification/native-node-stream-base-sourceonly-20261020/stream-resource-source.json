@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "status": "source_written_peer_pending",
+  "production": "src/extensions/native_node_stream_resource.zig",
+  "source_scope": "Actual StreamResource/StreamListener linked-list construction, removal, destructor callbacks and default member-before-base retirement contract. No StreamBase public methods, default read/write callbacks, FileHandle implementation or execution.",
+  "selected": [
+    {
+      "path": "authority/stream_base.cc.v24.13.txt",
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4",
+      "start": 25885,
+      "end": 27488,
+      "offset_unit": "JavaScript UTF-16 string offsets; byte offsets are also explicit",
+      "text": "StreamListener::~StreamListener() {\n  if (stream_ != nullptr)\n    stream_->RemoveStreamListener(this);\n}\n\nvoid StreamListener::OnStreamAfterShutdown(ShutdownWrap* w, int status) {\n  CHECK_NOT_NULL(previous_listener_);\n  previous_listener_->OnStreamAfterShutdown(w, status);\n}\n\nvoid StreamListener::OnStreamAfterWrite(WriteWrap* w, int status) {\n  CHECK_NOT_NULL(previous_listener_);\n  previous_listener_->OnStreamAfterWrite(w, status);\n}\n\nStreamResource::~StreamResource() {\n  while (listener_ != nullptr) {\n    StreamListener* listener = listener_;\n    listener->OnStreamDestroy();\n    // Remove the listener if it didn’t remove itself. This makes the logic\n    // in `OnStreamDestroy()` implementations easier, because they\n    // may call generic cleanup functions which can just remove the\n    // listener unconditionally.\n    if (listener == listener_)\n      RemoveStreamListener(listener_);\n  }\n}\n\nvoid StreamResource::RemoveStreamListener(StreamListener* listener) {\n  CHECK_NOT_NULL(listener);\n\n  StreamListener* previous;\n  StreamListener* current;\n\n  // Remove from the linked list.\n  // No loop condition because we want a crash if listener is not found.\n  for (current = listener_, previous = nullptr;;\n       previous = current, current = current->previous_listener_) {\n    CHECK_NOT_NULL(current);\n    if (current == listener) {\n      if (previous != nullptr)\n        previous->previous_listener_ = current->previous_listener_;\n      else\n        listener_ = listener->previous_listener_;\n      break;\n    }\n  }\n\n  listener->stream_ = nullptr;\n  listener->previous_listener_ = nullptr;\n}\n\n",
+      "start_bytes": 25885,
+      "end_bytes": 27490
+    },
+    {
+      "path": "authority/stream_base-inl.h.v24.13.txt",
+      "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6",
+      "start": 1614,
+      "end": 1844,
+      "offset_unit": "JavaScript UTF-16 string offsets; byte offsets are also explicit",
+      "text": "void StreamResource::PushStreamListener(StreamListener* listener) {\n  CHECK_NOT_NULL(listener);\n  CHECK_NULL(listener->stream_);\n\n  listener->previous_listener_ = listener_;\n  listener->stream_ = this;\n\n  listener_ = listener;\n}\n\n",
+      "start_bytes": 1614,
+      "end_bytes": 1844
+    },
+    {
+      "path": "authority/stream_base-inl.h.v24.13.txt",
+      "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6",
+      "start": 2688,
+      "end": 2788,
+      "offset_unit": "JavaScript UTF-16 string offsets; byte offsets are also explicit",
+      "text": "StreamBase::StreamBase(Environment* env) : env_(env) {\n  PushStreamListener(&default_listener_);\n}\n\n",
+      "start_bytes": 2688,
+      "end_bytes": 2788
+    },
+    {
+      "path": "authority/stream_base.h.v24.13.txt",
+      "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334",
+      "start": 5740,
+      "end": 6444,
+      "offset_unit": "JavaScript UTF-16 string offsets; byte offsets are also explicit",
+      "text": "  // This is called immediately before the stream is destroyed.\n  virtual void OnStreamDestroy() {}\n\n  // The stream this is currently associated with, or nullptr if there is none.\n  StreamResource* stream() const { return stream_; }\n\n protected:\n  // Pass along a read error to the `StreamListener` instance that was active\n  // before this one. For example, a protocol parser does not care about read\n  // errors and may instead want to let the original handler\n  // (e.g. the JS handler) take care of the situation.\n  inline void PassReadErrorToPreviousListener(ssize_t nread);\n\n  StreamResource* stream_ = nullptr;\n  StreamListener* previous_listener_ = nullptr;\n\n  friend class StreamResource;\n};\n\n\n",
+      "start_bytes": 5740,
+      "end_bytes": 6444
+    },
+    {
+      "path": "authority/stream_base.h.v24.13.txt",
+      "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334",
+      "start": 11427,
+      "end": 11562,
+      "offset_unit": "JavaScript UTF-16 string offsets; byte offsets are also explicit",
+      "text": "  StreamListener* listener_ = nullptr;\n  uint64_t bytes_read_ = 0;\n  uint64_t bytes_written_ = 0;\n\n  friend class StreamListener;\n};\n\n\n",
+      "start_bytes": 11431,
+      "end_bytes": 11566
+    },
+    {
+      "path": "authority/stream_base.h.v24.13.txt",
+      "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334",
+      "start": 16174,
+      "end": 17146,
+      "offset_unit": "JavaScript UTF-16 string offsets; byte offsets are also explicit",
+      "text": " private:\n  Environment* env_;\n  EmitToJSStreamListener default_listener_;\n\n  void SetWriteResult(const StreamWriteResult& res);\n  static void AddAccessor(v8::Isolate* isolate,\n                          v8::Local<v8::Signature> sig,\n                          enum v8::PropertyAttribute attributes,\n                          v8::Local<v8::FunctionTemplate> t,\n                          JSMethodFunction* getter,\n                          JSMethodFunction* setter,\n                          v8::Local<v8::String> str);\n  static void AddMethod(v8::Isolate* isolate,\n                        v8::Local<v8::Signature> sig,\n                        enum v8::PropertyAttribute attributes,\n                        v8::Local<v8::FunctionTemplate> t,\n                        JSMethodFunction* stream_method,\n                        v8::Local<v8::String> str);\n\n  friend class WriteWrap;\n  friend class ShutdownWrap;\n  friend class Environment;  // For kNumStreamBaseStateFields.\n};\n\n\n",
+      "start_bytes": 16178,
+      "end_bytes": 17150
+    }
+  ],
+  "check_dependency": {
+    "path": "src/extensions/native_node_check_failure.zig",
+    "sha256": "E4C368A3",
+    "contract": "Actual terminating native assertion. Source conditions and original sites are retained. Function identifiers are semantic Source names, not a claim of compiler-specific PRETTY_FUNCTION_NAME spelling."
+  },
+  "limits": [
+    "Records are embedded at stable native addresses; their parent must keep the borrowed Engine diagnostic context alive.",
+    "No ownership of arbitrary callback data or JavaScript roots is introduced.",
+    "Native CHECK negative paths require separate expected-exit processes; no in-process catchable substitute.",
+    "Source-only, no native build/compiler/Node/generator/formatter execution."
+  ]
+}

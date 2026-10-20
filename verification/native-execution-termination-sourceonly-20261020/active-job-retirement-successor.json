@@ -1,0 +1,28 @@
+{
+  "base_sha256": "4B8DA102AAB14A3D7409775E2AA58F67E76408A184024A20C799FFA2BEA42C94",
+  "after_sha256": "2E4983E3D99EB98FBF8B00832D78FC5896573C8115A37652130D0CF8736BB4D0",
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "keep the current job selected through actual payload retirement",
+      "before": " completed:\n    rt->pi_current_job = previous_job;\n    ret = JS_IsException(e->result) ? -1 : 1;\n",
+      "after": " completed:\n    /* Payload/Promise/context finalizers still belong to this active call.\n       They cannot complete the outer checkpoint before its caller restores\n       the saved continuation. Keep the guard until the last retirement. */\n    ret = JS_IsException(e->result) ? -1 : 1;\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "restore the caller current job only after publishing the aborted owner",
+      "before": "        js_pi_hold_terminated_job(rt, e);\n        *pctx = ctx;\n        return JS_PI_JOB_TERMINATED;\n",
+      "after": "        js_pi_hold_terminated_job(rt, e);\n        rt->pi_current_job = previous_job;\n        *pctx = ctx;\n        return JS_PI_JOB_TERMINATED;\n",
+      "count": 2
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "restore the current job after all finalizable entry ownership retires",
+      "before": "    js_pi_job_retire(rt, e, &pending);\n    if (pending.present) {\n",
+      "after": "    js_pi_job_retire(rt, e, &pending);\n    rt->pi_current_job = previous_job;\n    if (pending.present) {\n",
+      "count": 1
+    }
+  ],
+  "source_only": true
+}

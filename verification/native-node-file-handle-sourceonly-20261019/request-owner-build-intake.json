@@ -1,0 +1,12 @@
+{
+  "path": "build.zig",
+  "scope": "One install-only selected request-owner target inside the existing Windows/Linux native_node_network guard. Reuses the same shared library; no run edge, second libuv graph or namespace install.",
+  "before": "        const native_node_uv_exception_tests = b.addTest(.{\n",
+  "after": "        const native_node_fs_request_owner_tests = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_fs_request_owner_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native FS request owner\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, native_node_fs_request_owner_tests.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, native_node_fs_request_owner_tests.root_module, typescript_parser);\n        linkSqlite(native_node_fs_request_owner_tests.root_module, sqlite_lib_dir, sqlite_library);\n        native_node_fs_request_owner_tests.root_module.addImport(\"catalog_tool\", catalog_tool);\n        native_node_fs_request_owner_tests.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        native_node_fs_request_owner_tests.root_module.linkLibrary(network);\n        if (target.result.os.tag == .windows) {\n            native_node_fs_request_owner_tests.root_module.linkSystemLibrary(\"advapi32\", .{});\n            native_node_fs_request_owner_tests.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-fs-request-owner\", \"Install twenty-five actual FS request and private Read controls without execution\").dependOn(&b.addInstallArtifact(native_node_fs_request_owner_tests, .{ .dest_sub_path = b.fmt(\"native-node-fs-request-owner{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const native_node_uv_exception_tests = b.addTest(.{\n",
+  "added_lines": 15,
+  "target": "build-native-node-fs-request-owner",
+  "filter": "native FS request owner",
+  "declarations": 25,
+  "artifact": "native-node-fs-request-owner",
+  "root": "src/native_node_fs_request_owner_test.zig"
+}

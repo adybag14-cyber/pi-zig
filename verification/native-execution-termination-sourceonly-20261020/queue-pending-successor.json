@@ -1,0 +1,19 @@
+{
+  "base_c_sha256": "8971419831186C3C5AF3339C157E767D20D6A461A9C7CFED27A9A02F6D6A36C4",
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "publish prior pending before request servicing after job retirement",
+      "before": "    js_pi_job_release_payload(rt, e, &pending);\n    JS_PiCheckExecutionTermination(ctx);\n    js_pi_continuation_take_pending_rt(rt, &pending);\n",
+      "after": "    js_pi_job_release_payload(rt, e, &pending);\n    if (pending.present) {\n        rt->current_exception = pending.reason;\n        pending.present = false;\n        pending.reason = JS_UNDEFINED;\n    }\n    JS_PiCheckExecutionTermination(ctx);\n    js_pi_continuation_take_pending_rt(rt, &pending);\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "drain newly owned teardown reasons without leaving a dead pending value",
+      "before": "        js_pi_job_list_retire(rt, &aborted, &pending);\n        if (pending.present)\n            JS_FreeValueRT(rt, pending.reason);\n",
+      "after": "        js_pi_job_list_retire(rt, &aborted, &pending);\n        while (pending.present) {\n            JSValue reason = pending.reason;\n            pending.present = false;\n            pending.reason = JS_UNDEFINED;\n            JS_FreeValueRT(rt, reason);\n            js_pi_continuation_take_pending_rt(rt, &pending);\n        }\n",
+      "count": 1
+    }
+  ]
+}

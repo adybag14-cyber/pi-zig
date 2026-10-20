@@ -1,0 +1,71 @@
+{
+  "base": "5ddf165d802280e22c3a1efd4c048b956bbbacf4",
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    JSValue current_exception;\n",
+      "after": "    JSValue current_exception;\n    /* A request is not an event. The lease only blocks reentry while an\n       actual native termination is temporarily held by a cleanup owner. */\n#ifdef CONFIG_ATOMICS\n    _Atomic bool pi_termination_requested;\n#else\n    bool pi_termination_requested;\n#endif\n    bool pi_termination_in_flight;\n    uint64_t pi_termination_generation;\n",
+      "label": "native request and in-flight event ownership"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "static void js_native_async_take_pending(JSContext *ctx, JSNativeAsyncPending *owned);\n",
+      "after": "/* No guest value can have an exception-sentinel payload. This private\n   immediate is created only by native termination servicing; it carries no\n   allocation or Error flag and is never a Promise value or diagnostic. */\nstatic JSValue js_pi_termination_token(void)\n{\n    return JS_MKVAL(JS_TAG_EXCEPTION, 1);\n}\n\nbool JS_PiIsExecutionTermination(JSValueConst value)\n{\n    return JS_VALUE_GET_TAG(value) == JS_TAG_EXCEPTION &&\n           JS_VALUE_GET_INT(value) == 1;\n}\n\nstatic bool js_pi_is_uncatchable_exception(JSValueConst value)\n{\n    return JS_PiIsExecutionTermination(value) || JS_IsUncatchableError(value);\n}\n\n/* A cancelled, already detached native completion still unwinds without\n   entering guest catch/finally, but a subsequent real cleanup event wins. */\nstatic int js_pi_pending_priority(JSRuntime *rt, JSValueConst reason)\n{\n    if (JS_PiIsExecutionTermination(reason) && !rt->pi_termination_in_flight)\n        return -1;\n    return js_pi_is_uncatchable_exception(reason) ? 1 : 0;\n}\n\nstatic void js_native_async_take_pending(JSContext *ctx, JSNativeAsyncPending *owned);\n",
+      "label": "private event token and native pending precedence"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    rt->pi_javascript_execution_error = JS_UNDEFINED;\n    rt->mf = *mf;\n",
+      "after": "    rt->pi_javascript_execution_error = JS_UNDEFINED;\n#ifdef CONFIG_ATOMICS\n    atomic_store(&rt->pi_termination_requested, false);\n#endif\n    rt->mf = *mf;\n",
+      "label": "atomic request initialization"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "void JS_ClearKeptObjects(JSRuntime *rt)\n",
+      "after": "static bool js_pi_termination_requested(JSRuntime *rt)\n{\n#ifdef CONFIG_ATOMICS\n    return atomic_load(&rt->pi_termination_requested);\n#else\n    return rt->pi_termination_requested;\n#endif\n}\n\nvoid JS_PiRequestExecutionTermination(JSRuntime *rt)\n{\n#ifdef CONFIG_ATOMICS\n    atomic_store(&rt->pi_termination_requested, true);\n#else\n    rt->pi_termination_requested = true;\n#endif\n}\n\nbool JS_PiIsExecutionTerminating(JSRuntime *rt)\n{\n    return rt->pi_termination_in_flight &&\n           JS_PiIsExecutionTermination(rt->current_exception);\n}\n\nuint64_t JS_PiExecutionTerminationGeneration(JSRuntime *rt)\n{\n    return rt->pi_termination_generation;\n}\n\nvoid JS_PiCancelExecutionTermination(JSRuntime *rt)\n{\n#ifdef CONFIG_ATOMICS\n    atomic_store(&rt->pi_termination_requested, false);\n#else\n    rt->pi_termination_requested = false;\n#endif\n    /* V8 clears the request even when no actual termination is pending.\n       Its event cancellation is conditional on the private pending event;\n       an event held only by a native cleanup owner is not that condition. */\n    if (!JS_PiIsExecutionTerminating(rt))\n        return;\n    rt->current_exception = JS_UNINITIALIZED;\n    rt->pi_termination_in_flight = false;\n}\n\nint JS_PiCheckExecutionTermination(JSContext *ctx)\n{\n    JSRuntime *rt = ctx->rt;\n    bool requested;\n\n    if (rt->pi_termination_in_flight) {\n        /* Reentry while the token is detached republishes the same event.\n           It does not create another generation or a replacement Error. */\n        JS_Throw(ctx, js_pi_termination_token());\n        return -1;\n    }\n    if (JS_PiIsExecutionTermination(rt->current_exception))\n        return -1; /* cancelled native abrupt completion, not a new event */\n    if (!js_pi_termination_requested(rt))\n        return 0;\n    /* Existing ordinary/fatal pending-entry policy is retained. A request\n       waits until the earlier real event has been handled by its owner. */\n    if (JS_HasException(ctx))\n        return -1;\n#ifdef CONFIG_ATOMICS\n    requested = atomic_exchange(&rt->pi_termination_requested, false);\n#else\n    requested = rt->pi_termination_requested;\n    rt->pi_termination_requested = false;\n#endif\n    if (!requested)\n        return 0;\n    rt->pi_termination_in_flight = true;\n    rt->pi_termination_generation++;\n    JS_Throw(ctx, js_pi_termination_token());\n    return -1;\n}\n\n/* A native callback can cancel an event while its failed call is unwinding.\n   Keep the failure native rather than inventing an ordinary undefined throw.\n   This does not reestablish the cancelled event lease. */\nstatic void js_pi_record_aborted_native_call(JSContext *ctx, JSValueConst result,\n                                              uint64_t entry_generation)\n{\n    if (JS_IsException(result) && !JS_HasException(ctx) &&\n        ctx->rt->pi_termination_generation != entry_generation)\n        ctx->rt->current_exception = js_pi_termination_token();\n}\n\nvoid JS_ClearKeptObjects(JSRuntime *rt)\n",
+      "label": "request service event query cancellation and native-abort provenance"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "JSValue JS_Throw(JSContext *ctx, JSValue obj)\n{\n    JSRuntime *rt = ctx->rt;\n    JS_FreeValue(ctx, rt->current_exception);\n    rt->current_exception = obj;\n    return JS_EXCEPTION;\n}",
+      "after": "JSValue JS_Throw(JSContext *ctx, JSValue obj)\n{\n    JSRuntime *rt = ctx->rt;\n    if (JS_PiIsExecutionTermination(obj)) {\n        if (!rt->pi_termination_in_flight) {\n            /* A cancelled cleanup completion cannot revive the event or\n               displace a new real reason. It still cannot enter guest catch. */\n            if (JS_IsUninitialized(rt->current_exception))\n                rt->current_exception = obj;\n            return JS_EXCEPTION;\n        }\n        if (!JS_PiIsExecutionTermination(rt->current_exception)) {\n            JSValue displaced = rt->current_exception;\n            rt->current_exception = obj;\n            JS_FreeValue(ctx, displaced);\n        }\n        return JS_EXCEPTION;\n    }\n    if (JS_PiIsExecutionTerminating(rt)) {\n        /* Retire the supplied value with the native event still published.\n           Cancellation in that retirement is authoritative. */\n        JS_FreeValue(ctx, obj);\n        return JS_EXCEPTION;\n    }\n    JS_FreeValue(ctx, rt->current_exception);\n    rt->current_exception = obj;\n    return JS_EXCEPTION;\n}",
+      "label": "private event rethrow and cancellation-safe actual pending publication"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    ctx->interrupt_counter = JS_INTERRUPT_COUNTER_INIT;\n    if (rt->interrupt_handler) {\n",
+      "after": "    ctx->interrupt_counter = JS_INTERRUPT_COUNTER_INIT;\n    if (JS_PiCheckExecutionTermination(ctx))\n        return -1;\n    if (rt->interrupt_handler) {\n",
+      "label": "dedicated request precedes generic interrupt without changing its producer"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    JSRuntime *rt = ctx->rt;\n    if (likely(rt->pi_javascript_execution_allowed))\n        return 0;\n",
+      "after": "    JSRuntime *rt = ctx->rt;\n    if (JS_PiCheckExecutionTermination(ctx))\n        return -1;\n    if (likely(rt->pi_javascript_execution_allowed))\n        return 0;\n",
+      "label": "termination covers direct API and ordinary dispatch"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "{\n    if (unlikely(!caller_ctx->rt->pi_javascript_execution_allowed) &&\n        JS_HasException(caller_ctx))\n",
+      "after": "{\n    if (JS_PiCheckExecutionTermination(caller_ctx))\n        return JS_EXCEPTION;\n    if (unlikely(!caller_ctx->rt->pi_javascript_execution_allowed) &&\n        JS_HasException(caller_ctx))\n",
+      "label": "raw call entry termination guard"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "            return call_func(caller_ctx, func_obj, this_obj, argc, argv, flags);\n",
+      "after": "            {\n                uint64_t generation = caller_ctx->rt->pi_termination_generation;\n                JSValue result = call_func(caller_ctx, func_obj, this_obj,\n                                           argc, argv, flags);\n                js_pi_record_aborted_native_call(caller_ctx, result, generation);\n                if (JS_PiCheckExecutionTermination(caller_ctx)) {\n                    JSNativeAsyncPending pending = { false, JS_UNDEFINED };\n                    js_native_async_release(caller_ctx, result, &pending);\n                    if (pending.present)\n                        JS_Throw(caller_ctx, pending.reason);\n                    return JS_EXCEPTION;\n                }\n                return result;\n            }\n",
+      "label": "native callback return services request and preserves result ownership"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "    if (needs_backtrace(rt->current_exception)\n    || JS_IsUndefined(ctx->error_back_trace)) {\n",
+      "after": "    if (!JS_PiIsExecutionTermination(rt->current_exception) &&\n        (needs_backtrace(rt->current_exception) ||\n         JS_IsUndefined(ctx->error_back_trace))) {\n",
+      "label": "private termination never allocates guest backtrace"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "JS_EXTERN bool JS_HasException(JSContext *ctx);\n",
+      "after": "JS_EXTERN bool JS_HasException(JSContext *ctx);\n/* Native execution termination. A request alone is not a pending event.\n   Request may be made by another thread in CONFIG_ATOMICS builds; all other\n   operations require the owning VM thread. Runtime lifetime remains caller-owned.\n   Check services the dedicated request without allocating an Error. An earlier\n   actual pending reason is preserved; generic interrupt/cancel/budget/OOM\n   producers are unchanged. It returns -1 for a blocked entry, otherwise 0.\n   IsExecutionTerminating observes the actual private pending event, not a\n   requested bit or an event temporarily detached by native cleanup.\n   Cancel clears the request, and clears the event only when actually pending.\n   The private token returned by GetException is native unwind provenance only:\n   never a guest value, Promise rejection, diagnostic, or uncatchable Error bit.\n   After cancellation an already-owned token may carry a native abrupt result\n   but cannot reestablish the event or displace a later real cleanup reason.\n   The generation increments only on servicing a new dedicated request. */\nJS_EXTERN void JS_PiRequestExecutionTermination(JSRuntime *rt);\nJS_EXTERN int JS_PiCheckExecutionTermination(JSContext *ctx);\nJS_EXTERN bool JS_PiIsExecutionTerminating(JSRuntime *rt);\nJS_EXTERN bool JS_PiIsExecutionTermination(JSValueConst actual_pending_token);\nJS_EXTERN void JS_PiCancelExecutionTermination(JSRuntime *rt);\nJS_EXTERN uint64_t JS_PiExecutionTerminationGeneration(JSRuntime *rt);\n",
+      "label": "native termination ABI distinguishes request pending and escrow"
+    }
+  ]
+}

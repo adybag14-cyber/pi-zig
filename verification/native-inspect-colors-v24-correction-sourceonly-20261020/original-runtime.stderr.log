@@ -1,0 +1,20 @@
+expected error.JavaScriptException, found void
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:65:9: 0x7ff686ab986a in expectError__anon_79991 (test_zcu.obj)
+        return error.TestExpectedError;
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_inspect_colors_test.zig:186:9: 0x7ff686ab9ba6 in actualFatal__anon_79983 (test_zcu.obj)
+        try std.testing.expectError(error.JavaScriptException, fixture.run(name));
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_inspect_colors_test.zig:207:96: 0x7ff686aba047 in test.native actual inspect color current native fatal prevents guest catch and later reads (test_zcu.obj)
+test "native actual inspect color current native fatal prevents guest catch and later reads" { try actualFatal("observeColorCurrentFatal", 0); }
+                                                                                               ^
+expected error.JavaScriptException, found void
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:65:9: 0x7ff686ab74ba in expectError__anon_79737 (test_zcu.obj)
+        return error.TestExpectedError;
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_inspect_colors_test.zig:186:9: 0x7ff686ab7e16 in actualFatal__anon_79722 (test_zcu.obj)
+        try std.testing.expectError(error.JavaScriptException, fixture.run(name));
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_inspect_colors_test.zig:208:101: 0x7ff686ab82ba in test.native actual inspect color receiver retirement fatal prevents guest catch and later reads (test_zcu.obj)
+test "native actual inspect color receiver retirement fatal prevents guest catch and later reads" { try actualFatal("observeColorRetirementFatal", 1); }
+                                                                                                    ^

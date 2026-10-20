@@ -1,0 +1,36 @@
+{
+  "status": "source-only prerequisite closed; no execution",
+  "source": {
+    "path": "src/extensions/native_node_async_wrap_state.zig",
+    "sha256": "B53C4D0C1412BA496A267C03F58F8AB88CDA0288336098180D986C9D9FC0A04F",
+    "bytes": 20128
+  },
+  "base": {
+    "sha256": "A5EF66E7B302998DB7C27E8EA2B7C1315F154286D3B284A5670358B6B5CF863A",
+    "bytes": 19937,
+    "retained": "base-native_node_async_wrap_state.zig.txt"
+  },
+  "delta": {
+    "path": "source-delta.json",
+    "sha256": "5469132F9DA4515378428190A7F25408585C4A9CA2C00F1F68BD50D87CB353DF",
+    "exact_edits": 2
+  },
+  "peers": [
+    {
+      "owner": "Root",
+      "status": "closed",
+      "scope": "Full Registry/weak-slot lifetime; exact two edits forward to actual SDK B53 and inverse to Main A5EF. Same FIFO; native weak-only metadata; clear-before-release; Environment last."
+    },
+    {
+      "owner": "Modules",
+      "status": "closed",
+      "scope": "Complete Registry plus original Realm-inl EDAE; two-edit exact inverse. Existing FS/API/State/FIFO unchanged; native modules construction/cache/controls separate."
+    }
+  ],
+  "limits": [
+    "No modules target/class/constructor/cache implementation is introduced by this seam.",
+    "No public binding or namespace qualification.",
+    "No runtime or compile qualification.",
+    "Existing Main three documentation fixes are preserved rather than reverted to older owned DE347 bytes."
+  ]
+}

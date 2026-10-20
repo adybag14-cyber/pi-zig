@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "status": "source_written_finite_peer_pending",
+  "path": "src/extensions/native_node_async_wrap_state.zig",
+  "base_sha256": "A5EF66E7B302998DB7C27E8EA2B7C1315F154286D3B284A5670358B6B5CF863A",
+  "base_bytes": 19937,
+  "prior_owned_sha256": "DE34706EF1C09C584BB1878AA6CB68C69B517DEB9FEEA1FE4CF24CE0338138D5",
+  "inherited_main_changes": "Only the three Root-reviewed misplaced //! documentation lines become ///, matching current Main A5EF66E7. No other inherited change.",
+  "edits": [
+    {
+      "label": "Add the distinct actual modules binding weak slot to the same Realm registry",
+      "before": "    fs_binding_data: ?WeakBindingSlot = null,\n",
+      "after": "    fs_binding_data: ?WeakBindingSlot = null,\n    modules_binding_data: ?WeakBindingSlot = null,\n"
+    },
+    {
+      "label": "Clear the modules metadata slot before dropping only its native weak entitlement",
+      "before": "        environment.allocator().destroy(self);\n        environment.release();\n    }\n    pub fn check",
+      "after": "        if (self.modules_binding_data) |slot| {\n            self.modules_binding_data = null;\n            slot.release(slot.raw);\n        }\n        environment.allocator().destroy(self);\n        environment.release();\n    }\n    pub fn check"
+    }
+  ],
+  "source": {
+    "packet": "../native-node-file-handle-sourceonly-20261019/authority/binding-data-lifecycle-source.json",
+    "packet_sha256": "7479736B86FD4E994B38EA7F75721CE4E0813D6CA93ED646461C558344D2F028",
+    "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/node_realm-inl.h",
+    "body_sha256": "EDAEF1C54760111714DE1C027073732D9571E5903064B1C8B807DC3514FE19D5",
+    "excerpt": "#ifndef SRC_NODE_REALM_INL_H_\n#define SRC_NODE_REALM_INL_H_\n\n#if defined(NODE_WANT_INTERNALS) && NODE_WANT_INTERNALS\n\n#include \"node_context_data.h\"\n#include \"node_realm.h\"\n\nnamespace node {\n\ninline Realm* Realm::GetCurrent(v8::Isolate* isolate) {\n  if (!isolate->InContext()) [[unlikely]] {\n    return nullptr;\n  }\n  v8::HandleScope handle_scope(isolate);\n  return GetCurrent(isolate->GetCurrentContext());\n}\n\ninline Realm* Realm::GetCurrent(v8::Local<v8::Context> context) {\n  if (!ContextEmbedderTag::IsNodeContext(context)) [[unlikely]] {\n    return nullptr;\n  }\n  return static_cast<Realm*>(\n      context->GetAlignedPointerFromEmbedderData(ContextEmbedderIndex::kRealm));\n}\n\ninline Realm* Realm::GetCurrent(\n    const v8::FunctionCallbackInfo<v8::Value>& info) {\n  return GetCurrent(info.GetIsolate()->GetCurrentContext());\n}\n\ntemplate <typename T>\ninline Realm* Realm::GetCurrent(const v8::PropertyCallbackInfo<T>& info) {\n  return GetCurrent(info.GetIsolate()->GetCurrentContext());\n}\n\ninline IsolateData* Realm::isolate_data() const {\n  return env_->isolate_data();\n}\n\ninline Environment* Realm::env() const {\n  return env_;\n}\n\ninline v8::Isolate* Realm::isolate() const {\n  return isolate_;\n}\n\ninline Realm::Kind Realm::kind() const {\n  return kind_;\n}\n\ninline bool Realm::has_run_bootstrapping_code() const {\n  return has_run_bootstrapping_code_;\n}\n\n// static\ntemplate <typename T, typename U>\ninline T* Realm::GetBindingData(const v8::PropertyCallbackInfo<U>& info) {\n  return GetBindingData<T>(info.GetIsolate()->GetCurrentContext());\n}\n\n// static\ntemplate <typename T>\ninline T* Realm::GetBindingData(\n    const v8::FunctionCallbackInfo<v8::Value>& info) {\n  return GetBindingData<T>(info.GetIsolate()->GetCurrentContext());\n}\n\n// static\ntemplate <typename T>\ninline T* Realm::GetBindingData(v8::Local<v8::Context> context) {\n  Realm* realm = GetCurrent(context);\n  return realm->GetBindingData<T>();\n}\n\ntemplate <typename T>\ninline T* Realm::GetBindingData() {\n  constexpr size_t binding_index = static_cast<size_t>(T::binding_type_int);\n  static_assert(binding_index < std::tuple_size_v<BindingDataStore>);\n  auto ptr = binding_data_store_[binding_index];\n  if (!ptr) [[unlikely]] {\n    return nullptr;\n  }\n  T* result = static_cast<T*>(ptr.get());\n  DCHECK_NOT_NULL(result);\n  return result;\n}\n\ntemplate <typename T, typename... Args>\ninline T* Realm::AddBindingData(v8::Local<v8::Object> target, Args&&... args) {\n  // This won't compile if T is not a BaseObject subclass.\n  static_assert(std::is_base_of_v<BaseObject, T>);\n  // The binding data must be weak so that it won't keep the realm reachable\n  // from strong GC roots indefinitely. The wrapper object of binding data\n  // should be referenced from JavaScript, thus the binding data should be\n  // reachable throughout the lifetime of the realm.\n  BaseObjectWeakPtr<T> item =\n      MakeWeakBaseObject<T>(this, target, std::forward<Args>(args)...);\n  constexpr size_t binding_index = static_cast<size_t>(T::binding_type_int);\n  static_assert(binding_index < std::tuple_size_v<BindingDataStore>);\n  // Each slot is expected to be assigned only once.\n  CHECK(!binding_data_store_[binding_index]);\n  binding_data_store_[binding_index] = item;\n  return item.get();\n}\n\ninline BindingDataStore* Realm::binding_data_store() {\n  return &binding_data_store_;\n}\n\ntemplate <typename T>\nvoid Realm::ForEachBaseObject(T&& iterator) const {\n  for (auto bo : base_object_list_) {\n    iterator(bo);\n  }\n}\n\nint64_t Realm::base_object_created_after_bootstrap() const {\n  return base_object_count_ - base_object_created_by_bootstrap_;\n}\n\nint64_t Realm::base_object_count() const {\n  return base_object_count_;\n}\n\nvoid Realm::TrackBaseObject(BaseObject* bo) {\n  DCHECK_EQ(bo->realm(), this);\n  base_object_list_.PushBack(bo);\n  ++base_object_count_;\n}\n\nCppgcWrapperListNode::CppgcWrapperListNode(CppgcMixin* ptr) : persistent(ptr) {}\n\nvoid Realm::TrackCppgcWrapper(CppgcMixin* handle) {\n  DCHECK_EQ(handle->realm(), this);\n  cppgc_wrapper_list_.PushFront(new CppgcWrapperListNode(handle));\n}\n\nvoid Realm::UntrackBaseObject(BaseObject* bo) {\n  DCHECK_EQ(bo->realm(), this);\n  --base_object_count_;\n}\n\nbool Realm::PendingCleanup() const {\n  return !base_object_list_.IsEmpty();\n}\n\n}  // namespace node\n\n#endif  // defined(NODE_WANT_INTERNALS) && NODE_WANT_INTERNALS\n\n#endif  // SRC_NODE_REALM_INL_H_\n"
+  },
+  "contract": [
+    "The actual Registry is shared with the existing fs BindingData and generic BaseEntry FIFO; no second Registry or cleanup registration is created.",
+    "Each selected binding type has a distinct native weak-metadata slot, matching Realm's binding_type_int indexed store. Neither slot is a JavaScript root.",
+    "The derived modules owner supplies its own real target class/template and BaseEntry. It must retain the Registry through its actual native lifetime, preserve the real target JS edge, and publish the weak slot only after completed construction.",
+    "Final Registry retirement requires an empty FIFO. Both stored metadata slots are cleared before their native release, then the Registry and Environment entitlements retire.",
+    "Existing FS slot, class IDs, wrapper State, AsyncReset, queue algorithms and public namespace remain unchanged."
+  ],
+  "limits": [
+    "This additive storage seam does not implement modules BindingData or certify its construction, cache, publication, ownership controls or whole loader graph.",
+    "The binding's existing-slot CHECK and weak winner validation belong to its actual concrete construction path.",
+    "No compiler/native/Node/generator/formatter/AST execution or Main mutation."
+  ]
+}

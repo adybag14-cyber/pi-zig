@@ -1,0 +1,1689 @@
+//! Direct C ABI for the extension language. No Node process or bridge source.
+const std = @import("std");
+const builtin = @import("builtin");
+const file_urls = @import("file_urls.zig");
+pub const c = @cImport({
+    // Zig 0.16 translate-c emits invalid unused declarations for MinGW's
+    // fortified wide-string inline wrappers in ReleaseSafe. This affects
+    // declaration import only; the separately compiled C library keeps its
+    // normal compiler safety flags and does not use these inline wrappers.
+    @cUndef("_FORTIFY_SOURCE");
+    @cDefine("_FORTIFY_SOURCE", "0");
+    @cInclude("engine_abi.h");
+    @cInclude("libregexp.h");
+});
+
+pub const Options = struct {
+    deterministic_clock: ?@import("../mcp/codemode_clock.zig").Clock = null,
+    // Extension hosts use Node collation; CodeMode's inner VM uses the
+    // original QuickJS comparison and does not inspect locale/options.
+    node_locale_compare: bool = true,
+    node_json_diagnostics: bool = true,
+    // Optional native execution-option input. Config.create copies every
+    // supplied string/list before Engine.init returns.
+    node_options: ?@import("native_node_options_config.zig").Input = null,
+    memory_limit: usize = 64 * 1024 * 1024,
+    stack_limit: usize = 1024 * 1024,
+    interrupt_budget: u64 = 10_000,
+    job_budget: usize = 100_000,
+    host_await_timeout_ms: u64 = 15_000,
+    // Hosted extensions are imported by Pi, rather than being JS entrypoints.
+    // Standalone embedders may explicitly designate their evaluated root.
+    main_module: bool = false,
+};
+
+pub const SourceLoader = struct {
+    context: ?*anyopaque = null,
+    load: *const fn (?*anyopaque, std.mem.Allocator, []const u8) anyerror![]u8,
+    normalize: ?*const fn (?*anyopaque, std.mem.Allocator, []const u8, []const u8) anyerror![]u8 = null,
+    normalize_require: ?*const fn (?*anyopaque, std.mem.Allocator, []const u8, []const u8) anyerror![]u8 = null,
+    input: ?*const fn (?*anyopaque, *Engine, []const u8) anyerror!ModuleInput = null,
+};
+
+/// Values and source returned by the loader are owned by its caller.
+pub const ModuleInput = union(enum) { source: []u8, exports: c.JSValue };
+
+/// Optional owner-thread diagnostic counters. No VM value or worker pointer is
+/// retained, and ordinary engines do not allocate or install a probe.
+pub const ProgressProbe = struct {
+    context_entries: u64 = 0,
+    control_pumps: u64 = 0,
+    job_attempts: u64 = 0,
+    empty_job_polls: u64 = 0,
+};
+
+pub const Engine = struct {
+    gpa: std.mem.Allocator,
+    runtime: *c.JSRuntime,
+    native_memory_owner: *anyopaque,
+    context: *c.JSContext,
+    options: Options,
+    node_options: ?*@import("native_node_options_config.zig").Config = null,
+    progress_probe: ?*ProgressProbe = null,
+    interrupts: u64 = 0,
+    cancelled: std.atomic.Value(bool) = .init(false),
+    // Private synchronous native admission only. Native registry retains no
+    // Engine pointer; zero is idle, MAX is lifecycle-busy with no publisher.
+    // Owner logically clears publication before detach, then idles after release.
+    native_sync_cancel_token: std.atomic.Value(u64) = .init(0),
+    last_error: ?[]u8 = null,
+    captured_exception: ?c.JSValue = null,
+    native_exception_diagnostics_suppressed: usize = 0,
+    native_json_diagnostic_depth: usize = 0,
+    // Installed only by the interactive application's owned worker. Public
+    // promise state/result queries must never consume a guest rejection.
+    native_application_fatal: ?*anyopaque = null,
+    native_rejection_tracking: bool = false,
+    native_fatal_teardown: bool = false,
+    native_allocation_exception: ?c.JSValue = null,
+    native_allocation_generation: u64 = 0,
+    host_data: ?*anyopaque = null,
+    native_ui_manager: ?*anyopaque = null,
+    host_ui_pending: usize = 0,
+    native_io: ?std.Io = null,
+    native_async_scope: ?*anyopaque = null,
+    native_sdk_noop_ui: ?c.JSValue = null,
+    native_sdk_command_runner_prototype: ?c.JSValue = null,
+    native_sdk_mcp_registry_prototype: ?c.JSValue = null,
+    native_sdk_agent_default_model: ?c.JSValue = null,
+    native_agent_core_cache: ?c.JSValue = null,
+    native_agent_default_stream: ?c.JSValue = null,
+    native_writable_stream_bindings: ?c.JSValue = null,
+    native_agent_complete_cache: ?c.JSValue = null,
+    native_ai_session_resources: ?c.JSValue = null,
+    native_ai_model_values: ?c.JSValue = null,
+    native_ai_lazy_api: ?c.JSValue = null,
+    native_ai_builtin_modules: ?c.JSValue = null,
+    native_ai_builtin_apis: ?c.JSValue = null,
+    native_ai_env_keys: ?c.JSValue = null,
+    native_ai_compat_exports: ?c.JSValue = null,
+    native_ai_models_namespace: ?c.JSValue = null,
+    native_ai_auth_abort_namespace: ?c.JSValue = null,
+    native_models_core_namespace: ?c.JSValue = null,
+    native_ai_model_operations_namespace: ?c.JSValue = null,
+    native_ai_provider_factories_namespace: ?c.JSValue = null,
+    native_ai_openai_sdk_codec: ?c.JSValue = null,
+    native_ai_catalog_values: ?c.JSValue = null,
+    native_ai_oauth_loader_namespace: ?c.JSValue = null,
+    native_provider_env_lookup: ?c.JSValue = null,
+    native_ai_retry_patterns: ?c.JSValue = null,
+    native_sdk_compaction_prepare_callbacks: ?c.JSValue = null,
+    native_cache_warmer_bindings: ?c.JSValue = null,
+    native_readable_stream_bindings: ?c.JSValue = null,
+
+    native_sdk_command_runner_constructor: ?c.JSValue = null,
+    native_sdk_reserved_shortcuts: ?c.JSValue = null,
+    native_sdk_prompt_section_regex: ?c.JSValue = null,
+    native_sdk_public_emit_class: c.JSClassID = 0,
+    native_command_metadata: ?*anyopaque = null,
+    native_command_metadata_row_class: c.JSClassID = 0,
+    native_command_metadata_task_class: c.JSClassID = 0,
+    native_command_metadata_deinit: ?*const fn (*Engine) void = null,
+    native_command_metadata_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_command_projection_observer: ?*anyopaque = null,
+    native_command_projection_class: c.JSClassID = 0,
+    native_sdk_events: ?*anyopaque = null,
+    native_sdk_events_deinit: ?*const fn (*Engine) void = null,
+    native_sdk_event_retire_owner: ?*const fn (*Engine, u64) void = null,
+    native_sdk_default_admission: ?*const fn (*Engine, u64) anyerror!void = null,
+    native_sdk_class: c.JSClassID = 0,
+    native_durable_class: c.JSClassID = 0,
+    native_models_store_class: c.JSClassID = 0,
+    native_sdk_extension_group: ?*anyopaque = null,
+    native_sdk_resource_scope_class: c.JSClassID = 0,
+    native_sdk_resource_retire_pending: ?*anyopaque = null,
+    native_sdk_resource_owner_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_sdk_resource_owner_deinit: ?*const fn (*Engine) void = null,
+    native_sdk_next_runtime_id: u64 = 1,
+    native_durable_harness_class: c.JSClassID = 0,
+    native_durable_submission_class: c.JSClassID = 0,
+    native_durable_submission_prototype_ready: bool = false,
+    native_durable_runtime_class: c.JSClassID = 0,
+    native_durable_duration_observer_context: ?*anyopaque = null,
+    native_durable_duration_observer: ?*const fn (?*anyopaque, u64, u64, u64) void = null,
+    native_durable_scheduler_class: c.JSClassID = 0,
+    native_durable_watch_class: c.JSClassID = 0,
+    native_durable_state_class: c.JSClassID = 0,
+    native_durable_subscriber_class: c.JSClassID = 0,
+    native_durable_registry_class: c.JSClassID = 0,
+    native_durable_registry_snapshot_class: c.JSClassID = 0,
+    native_durable_uuid_last_ms: u64 = 0,
+    native_durable_uuid_sequence: ?u64 = null,
+    native_sdk_model_bridge_registry: ?c.JSValue = null,
+    native_sdk_model_bridge_lease_class: c.JSClassID = 0,
+    native_sdk_next_session_generation: u64 = 1,
+    native_sdk_prototypes: [7]?c.JSValue = .{null} ** 7,
+    native_weak_ref_constructor: ?c.JSValue = null,
+    native_weak_ref_deref: ?c.JSValue = null,
+    native_console_stdout: bool = false,
+    text_encoder_class: c.JSClassID = 0,
+    text_decoder_class: c.JSClassID = 0,
+    dom_exception_class: c.JSClassID = 0,
+    url_class: c.JSClassID = 0,
+    url_search_params_class: c.JSClassID = 0,
+    url_search_params_iterator_class: c.JSClassID = 0,
+    url_decode_uri_component: ?c.JSValue = null,
+    native_url_constructor: ?c.JSValue = null,
+    intrinsic_decode_uri_component: c.JSValue,
+    intrinsic_regexp_constructor: c.JSValue,
+    intrinsic_bigint_constructor: c.JSValue,
+    intrinsic_clone_operations: c.JSValue,
+    event_stream_class: c.JSClassID = 0,
+    event_stream_iterator_class: c.JSClassID = 0,
+    event_stream_async_atom: c.JSAtom = c.JS_ATOM_NULL,
+    buffer_prototype: ?c.JSValue = null,
+    buffer_ready: bool = false,
+    native_readable_stream_classes: ?[3]c.JSClassID = null,
+    abort_signal_class: c.JSClassID = 0,
+    abort_controller_class: c.JSClassID = 0,
+    abort_signals_ready: bool = false,
+    host_scheduler: ?*anyopaque = null,
+    host_pump: ?*const fn (*Engine) anyerror!bool = null,
+    // Called only by the context's owning thread. Transport reader tasks may
+    // queue bytes, but must never call QuickJS or dispatch AbortSignal listeners.
+    host_control_context: ?*anyopaque = null,
+    host_control_pump: ?*const fn (*Engine) anyerror!bool = null,
+    // The notifier is synchronization-only and may be copied into worker leases.
+    // Its owner keeps the context alive until every leased worker has joined.
+    host_owner_notify_context: ?*anyopaque = null,
+    host_owner_notify: ?*const fn (?*anyopaque) void = null,
+    native_owner_signal: @import("native_owner_signal.zig").Signal = .{},
+    native_codemode_owner: ?*anyopaque = null,
+    native_codemode_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_codemode_deinit: ?*const fn (*Engine) void = null,
+    native_durable_control_context: ?*anyopaque = null,
+    native_durable_control_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_durable_control_deinit: ?*const fn (*Engine) void = null,
+    native_durable_storage_context: ?*anyopaque = null,
+    native_durable_storage_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_durable_storage_close: ?*const fn (*Engine) void = null,
+    native_env_context: ?*anyopaque = null,
+    native_env_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_env_deinit: ?*const fn (*Engine) void = null,
+    host_scheduler_deinit: ?*const fn (*Engine) void = null,
+    native_immediate_state: ?*anyopaque = null,
+    native_immediate_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_immediate_pending: ?*const fn (*Engine) bool = null,
+    native_immediate_referenced: ?*const fn (*Engine) bool = null,
+    native_immediate_before_poll: ?*const fn (*Engine) anyerror!bool = null,
+    native_immediate_timer_ready: ?*const fn (*Engine) anyerror!bool = null,
+    native_immediate_cleanup: ?*const fn (*Engine) void = null,
+    host_await_deadline_ms: ?i64 = null,
+    modules: std.StringHashMapUnmanaged([:0]u8) = .empty,
+    native_module_names: std.StringHashMapUnmanaged(void) = .empty,
+    native_module_values: std.StringHashMapUnmanaged(c.JSValue) = .empty,
+    native_namespace_counter: u64 = 0,
+    native_tool_validator_cache: ?c.JSValue = null,
+    native_tool_legacy_symbol: ?c.JSValue = null,
+    native_tool_parameter_constants: [4]?c.JSValue = .{null} ** 4,
+    native_sdk_tools_state: ?*anyopaque = null,
+    native_sdk_tools_cleanup: ?*const fn (*Engine) void = null,
+    native_sdk_builtin_execution_state: ?*anyopaque = null,
+    native_sdk_builtin_execution_class: c.JSClassID = 0,
+    native_sdk_builtin_execution_cleanup: ?*const fn (*Engine) void = null,
+    native_sdk_builtin_execution_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_sdk_builtin_execution_pending: ?*const fn (*Engine) bool = null,
+    native_ai_oauth_callback_state: ?*anyopaque = null,
+    native_ai_oauth_callback_cleanup: ?*const fn (*Engine) void = null,
+    native_ai_oauth_callback_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_ai_oauth_callback_pending: ?*const fn (*Engine) bool = null,
+    native_ai_http_state: ?*anyopaque = null,
+    native_ai_http_cleanup: ?*const fn (*Engine) void = null,
+    native_ai_http_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_ai_http_pending: ?*const fn (*Engine) bool = null,
+    native_ai_oauth_chatgpt_state: ?*anyopaque = null,
+    native_ai_oauth_chatgpt_cleanup: ?*const fn (*Engine) void = null,
+    native_ai_oauth_chatgpt_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_ai_oauth_chatgpt_pending: ?*const fn (*Engine) bool = null,
+    native_ai_codex_socket_state: ?*anyopaque = null,
+    native_ai_codex_socket_cleanup: ?*const fn (*Engine) void = null,
+    native_ai_codex_socket_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_ai_codex_socket_pending: ?*const fn (*Engine) bool = null,
+    native_chord_json_functions: ?c.JSValue = null,
+    native_typebox_continuation: ?*anyopaque = null,
+    native_fatal_invocation: ?*NativeInvocation = null,
+    native_typebox_hash_accumulator: u64 = 14695981039346656037,
+    native_typebox_literal_error: ?c.JSValue = null,
+    native_typebox_literal_base: ?c.JSValue = null,
+    native_typebox_literal_stack: ?c.JSValue = null,
+    commonjs_cache: c.JSValue,
+    source_loader: ?SourceLoader = null,
+
+    pub fn init(gpa: std.mem.Allocator, options: Options) !*Engine {
+        if (options.deterministic_clock) |clock| try clock.validate();
+        const self = try gpa.create(Engine);
+        errdefer gpa.destroy(self);
+        var memory_owner: ?*anyopaque = null;
+        const runtime = c.pi_js_new_runtime(options.memory_limit, &memory_owner) orelse return error.OutOfMemory;
+        errdefer c.pi_js_release_memory_owner(memory_owner);
+        var continuation_owner_initialized = false;
+        errdefer {
+            c.JS_FreeRuntime(runtime);
+            if (continuation_owner_initialized) @import("native_typebox_continuation.zig").deinitAfterRuntime(self);
+        }
+        c.JS_SetMemoryLimit(runtime, options.memory_limit);
+        c.JS_SetMaxStackSize(runtime, options.stack_limit);
+        if (options.deterministic_clock) |clock| if (c.JS_PISetDeterministicTime(runtime, clock.seed, clock.realtime(), clock.elapsed()) < 0) return error.InvalidDeterministicTime;
+        const context = c.JS_NewContext(runtime) orelse return error.OutOfMemory;
+        errdefer c.JS_FreeContext(context);
+        if (c.JS_AddPerformance(context) < 0) return error.OutOfMemory;
+        const commonjs_cache = c.JS_NewObjectProto(context, c.pi_js_null());
+        if (c.JS_IsException(commonjs_cache)) {
+            return error.OutOfMemory;
+        }
+        errdefer c.JS_FreeValue(context, commonjs_cache);
+        const intrinsic_global = c.JS_GetGlobalObject(context);
+        defer c.JS_FreeValue(context, intrinsic_global);
+        const intrinsic_decoder = c.JS_GetPropertyStr(context, intrinsic_global, "decodeURIComponent");
+        if (c.JS_IsException(intrinsic_decoder)) return error.OutOfMemory;
+        errdefer c.JS_FreeValue(context, intrinsic_decoder);
+        const intrinsic_regexp = c.JS_GetPropertyStr(context, intrinsic_global, "RegExp");
+        if (c.JS_IsException(intrinsic_regexp)) return error.OutOfMemory;
+        errdefer c.JS_FreeValue(context, intrinsic_regexp);
+        const intrinsic_bigint = c.JS_GetPropertyStr(context, intrinsic_global, "BigInt");
+        if (c.JS_IsException(intrinsic_bigint)) return error.OutOfMemory;
+        errdefer c.JS_FreeValue(context, intrinsic_bigint);
+        const clone_operations = try @import("native_clone_intrinsics.zig").create(context);
+        errdefer c.JS_FreeValue(context, clone_operations);
+        self.* = .{ .gpa = gpa, .runtime = runtime, .native_memory_owner = memory_owner.?, .context = context, .options = options, .commonjs_cache = commonjs_cache, .intrinsic_decode_uri_component = intrinsic_decoder, .intrinsic_regexp_constructor = intrinsic_regexp, .intrinsic_bigint_constructor = intrinsic_bigint, .intrinsic_clone_operations = clone_operations };
+        continuation_owner_initialized = true;
+        c.JS_SetContextOpaque(context, self);
+        c.JS_SetRuntimeOpaque(runtime, self);
+        c.JS_SetInterruptHandler(runtime, interrupt, self);
+        c.JS_SetModuleLoaderFunc(runtime, null, moduleLoader, self);
+        // These fields may acquire values if startup installation fails. The
+        // existing errdefers own the context/runtime and captured intrinsics.
+        errdefer {
+            if (self.captured_exception) |value| self.freeValue(value);
+            if (self.native_allocation_exception) |value| self.freeValue(value);
+            if (self.last_error) |value| gpa.free(value);
+            if (self.node_options) |config| config.destroy();
+        }
+        // Capture genuine symbols and error constructors before guest code can
+        // replace globals or String.prototype. ICU bootstrap requires no Io.
+        if (options.node_locale_compare) try @import("native_localecompare_binding.zig").install(self);
+        if (options.node_json_diagnostics) try @import("native_json_host.zig").install(self);
+        if (options.node_options) |input| {
+            self.node_options = try @import("native_node_options_config.zig").Config.create(self, input);
+            self.options.node_options = self.node_options.?.original;
+        }
+        // Capture pristine intrinsics before any extension input executes.
+        // Lease affinity must not depend on mutable globals/prototypes.
+        const global = c.JS_GetGlobalObject(context);
+        defer self.freeValue(global);
+        const weak_ctor = c.JS_GetPropertyStr(context, global, "WeakRef");
+        const weak_proto = c.JS_GetPropertyStr(context, weak_ctor, "prototype");
+        defer self.freeValue(weak_proto);
+        const weak_deref = c.JS_GetPropertyStr(context, weak_proto, "deref");
+        if (c.JS_IsException(weak_ctor) or c.JS_IsException(weak_proto) or c.JS_IsException(weak_deref)) {
+            self.freeValue(weak_ctor);
+            self.freeValue(weak_deref);
+            return error.OutOfMemory;
+        }
+        self.native_weak_ref_constructor = weak_ctor;
+        self.native_weak_ref_deref = weak_deref;
+        return self;
+    }
+
+    pub fn deinit(self: *Engine) void {
+        self.requireNoNativeAdmission();
+        std.debug.assert(self.native_fatal_invocation == null);
+        _ = c.JS_PiSetJSONParseErrorHook(self.context, null);
+        self.native_json_diagnostic_depth = 0;
+        if (self.native_ai_oauth_callback_cleanup) |cleanup| cleanup(self);
+        if (self.native_ai_http_cleanup) |cleanup| cleanup(self);
+        if (self.native_ai_oauth_chatgpt_cleanup) |cleanup| cleanup(self);
+        if (self.native_ai_codex_socket_cleanup) |cleanup| cleanup(self);
+        if (self.native_env_deinit) |cleanup| cleanup(self);
+        if (self.native_codemode_deinit) |cleanup| cleanup(self);
+        if (self.native_command_metadata_deinit) |cleanup| cleanup(self);
+        if (self.native_sdk_builtin_execution_cleanup) |cleanup| cleanup(self);
+        if (self.native_sdk_events_deinit) |cleanup| cleanup(self);
+        if (self.native_sdk_resource_owner_deinit) |cleanup| cleanup(self);
+        self.closeDurableOwner();
+        if (self.native_immediate_cleanup) |cleanup| cleanup(self);
+        @import("native_async_scope.zig").deinit(self);
+        if (self.native_sdk_noop_ui) |value| self.freeValue(value);
+        if (self.native_sdk_command_runner_prototype) |value| self.freeValue(value);
+        if (self.native_sdk_mcp_registry_prototype) |value| self.freeValue(value);
+        if (self.native_sdk_agent_default_model) |value| self.freeValue(value);
+        if (self.native_agent_core_cache) |value| self.freeValue(value);
+        if (self.native_agent_default_stream) |value| self.freeValue(value);
+        if (self.native_writable_stream_bindings) |value| self.freeValue(value);
+        if (self.native_agent_complete_cache) |value| self.freeValue(value);
+        if (self.native_ai_session_resources) |value| self.freeValue(value);
+        if (self.native_ai_model_values) |value| self.freeValue(value);
+        if (self.native_ai_lazy_api) |value| self.freeValue(value);
+        if (self.native_ai_builtin_modules) |value| self.freeValue(value);
+        if (self.native_ai_builtin_apis) |value| self.freeValue(value);
+        if (self.native_ai_env_keys) |value| self.freeValue(value);
+        if (self.native_ai_compat_exports) |value| self.freeValue(value);
+        if (self.native_ai_models_namespace) |value| self.freeValue(value);
+        if (self.native_ai_auth_abort_namespace) |value| self.freeValue(value);
+        if (self.native_models_core_namespace) |value| self.freeValue(value);
+        if (self.native_ai_model_operations_namespace) |value| self.freeValue(value);
+        if (self.native_ai_provider_factories_namespace) |value| self.freeValue(value);
+        if (self.native_ai_openai_sdk_codec) |value| self.freeValue(value);
+        if (self.native_ai_catalog_values) |value| self.freeValue(value);
+        if (self.native_ai_oauth_loader_namespace) |value| self.freeValue(value);
+        if (self.native_provider_env_lookup) |value| self.freeValue(value);
+        if (self.native_ai_retry_patterns) |value| self.freeValue(value);
+        if (self.native_sdk_compaction_prepare_callbacks) |value| self.freeValue(value);
+        if (self.native_cache_warmer_bindings) |value| self.freeValue(value);
+        if (self.native_readable_stream_bindings) |value| self.freeValue(value);
+        if (self.native_sdk_command_runner_constructor) |value| self.freeValue(value);
+        if (self.native_sdk_reserved_shortcuts) |value| self.freeValue(value);
+        if (self.native_sdk_prompt_section_regex) |value| self.freeValue(value);
+        for (self.native_sdk_prototypes) |prototype| if (prototype) |value| self.freeValue(value);
+        if (self.native_weak_ref_constructor) |value| self.freeValue(value);
+        if (self.native_weak_ref_deref) |value| self.freeValue(value);
+        c.JS_FreeAtom(self.context, self.event_stream_async_atom);
+        if (self.host_scheduler_deinit) |cleanup| cleanup(self);
+        if (self.captured_exception) |exception| self.freeValue(exception);
+        if (self.native_allocation_exception) |exception| self.freeValue(exception);
+        if (self.buffer_prototype) |prototype| self.freeValue(prototype);
+        if (self.url_decode_uri_component) |decoder| self.freeValue(decoder);
+        if (self.native_url_constructor) |constructor| self.freeValue(constructor);
+        self.freeValue(self.intrinsic_decode_uri_component);
+        self.freeValue(self.intrinsic_regexp_constructor);
+        self.freeValue(self.intrinsic_bigint_constructor);
+        self.freeValue(self.intrinsic_clone_operations);
+        var values = self.native_module_values.valueIterator();
+        while (values.next()) |value| self.freeValue(value.*);
+        self.native_module_values.deinit(self.gpa);
+        if (self.native_sdk_model_bridge_registry) |value| self.freeValue(value);
+        if (self.native_tool_validator_cache) |cache| self.freeValue(cache);
+        if (self.native_tool_legacy_symbol) |symbol| self.freeValue(symbol);
+        for (self.native_tool_parameter_constants) |value| if (value) |constant| self.freeValue(constant);
+        if (self.native_sdk_tools_cleanup) |cleanup| cleanup(self);
+        if (self.native_chord_json_functions) |value| self.freeValue(value);
+        if (self.native_typebox_literal_error) |constructor| self.freeValue(constructor);
+        if (self.native_typebox_literal_base) |constructor| self.freeValue(constructor);
+        if (self.native_typebox_literal_stack) |getter| self.freeValue(getter);
+        self.freeValue(self.commonjs_cache);
+        c.JS_FreeContext(self.context);
+        c.JS_FreeRuntime(self.runtime);
+        @import("native_typebox_continuation.zig").deinitAfterRuntime(self);
+        @import("native_durable_storage.zig").deinit(self);
+        if (self.node_options) |config| config.destroy();
+        c.pi_js_release_memory_owner(self.native_memory_owner);
+        if (self.last_error) |message| self.gpa.free(message);
+        var modules = self.modules.iterator();
+        while (modules.next()) |entry| {
+            self.gpa.free(entry.key_ptr.*);
+            self.gpa.free(entry.value_ptr.*);
+        }
+        self.modules.deinit(self.gpa);
+        var native_modules = self.native_module_names.keyIterator();
+        while (native_modules.next()) |name| self.gpa.free(name.*);
+        self.native_module_names.deinit(self.gpa);
+        const gpa = self.gpa;
+        gpa.destroy(self);
+    }
+
+    pub fn fromContext(context: *c.JSContext) *Engine {
+        const engine: *Engine = @ptrCast(@alignCast(c.JS_GetContextOpaque(context).?));
+        if (engine.progress_probe) |probe| probe.context_entries +%= 1;
+        return engine;
+    }
+
+    pub fn beginInvocation(self: *Engine) void {
+        self.requireNoNativeAdmission();
+        self.finishJob();
+        self.interrupts = 0;
+        self.cancelled.store(false, .release);
+        if (self.last_error) |message| self.gpa.free(message);
+        self.last_error = null;
+        if (self.captured_exception) |exception| self.freeValue(exception);
+        self.captured_exception = null;
+    }
+
+    pub fn cancel(self: *Engine) void {
+        self.cancelled.store(true, .seq_cst);
+        if (builtin.os.tag == .linux) {
+            const publication = @import("native_child_process_cancel_publication_linux.zig");
+            const token = self.native_sync_cancel_token.load(.seq_cst);
+            if (token != publication.retiring_token) publication.notify(token);
+        }
+    }
+
+    fn requireNoNativeAdmission(self: *Engine) void {
+        // Host lifecycle misuse cannot reset/free a live native owner. This is
+        // an all-build guard; no guest-facing input can satisfy this condition.
+        if (self.native_sync_cancel_token.load(.seq_cst) != 0) @panic("Engine lifecycle entered during active native admission");
+    }
+
+    /// Register native-loader input; source is extension input, not host code.
+    pub fn registerModule(self: *Engine, name: []const u8, source: []const u8) !void {
+        if (name.len == 0 or std.mem.indexOfScalar(u8, name, 0) != null) return error.InvalidNativeModuleName;
+        if (self.modules.contains(name) or self.native_module_names.contains(name)) return error.DuplicateExtensionModule;
+        const key = try self.gpa.dupe(u8, name);
+        errdefer self.gpa.free(key);
+        const terminated = try self.gpa.dupeZ(u8, source);
+        errdefer self.gpa.free(terminated);
+        try self.modules.put(self.gpa, key, terminated);
+    }
+
+    pub fn setSourceLoader(self: *Engine, loader: SourceLoader) void {
+        self.source_loader = loader;
+        const normalizer: ?*const c.JSModuleNormalizeFunc = if (loader.normalize != null) normalizeModule else null;
+        c.JS_SetModuleLoaderFunc(self.runtime, normalizer, moduleLoader, self);
+    }
+
+    fn normalizeModule(context: ?*c.JSContext, base: [*c]const u8, name: [*c]const u8, context_data: ?*anyopaque) callconv(.c) [*c]u8 {
+        const self: *Engine = @ptrCast(@alignCast(context_data.?));
+        const specifier = std.mem.span(name);
+        const registered = self.native_module_names.contains(specifier);
+        // Node builtins always use native host bindings. Schema packages may
+        // instead come from an extension project's user-installed ESM input.
+        const schema_package = std.mem.eql(u8, specifier, "typebox") or std.mem.eql(u8, specifier, "@sinclair/typebox");
+        var resolved: ?[]u8 = null;
+        defer if (resolved) |owned| self.gpa.free(owned);
+        if (!(registered and !schema_package) and !self.modules.contains(specifier)) {
+            const loader = self.source_loader.?;
+            resolved = loader.normalize.?(loader.context, self.gpa, std.mem.span(base), specifier) catch |err| fallback: {
+                if (err == error.ExtensionModuleNotFound and registered) break :fallback null;
+                _ = c.JS_ThrowReferenceError(context, "Native extension resolution failed: %s", @as([*:0]const u8, @errorName(err)));
+                return null;
+            };
+        }
+        const bytes = resolved orelse specifier;
+        const allocation = c.js_malloc(context, bytes.len + 1) orelse return null;
+        const output: [*]u8 = @ptrCast(allocation);
+        @memcpy(output[0..bytes.len], bytes);
+        output[bytes.len] = 0;
+        return output;
+    }
+
+    /// Export a native object as an ES module without generating bridge code.
+    /// The engine duplicates exports; the caller retains its original value.
+    pub fn registerValueModule(self: *Engine, name: []const u8, exports: c.JSValue) !void {
+        _ = try self.createValueModule(name, exports);
+    }
+    /// Native namespaces use the engine's real ESM exotic object, including its
+    /// readonly bindings and descriptors. No JavaScript shim is evaluated.
+    pub fn valueNamespace(self: *Engine, exports: c.JSValue) !c.JSValue {
+        self.native_namespace_counter += 1;
+        const name = try std.fmt.allocPrint(self.gpa, "pi-native:namespace/{d}", .{self.native_namespace_counter});
+        defer self.gpa.free(name);
+        const module = try self.createValueModule(name, exports);
+        const value = c.pi_js_module_value(self.context, module);
+        var consumed = false;
+        errdefer if (!consumed) self.freeValue(value);
+        if (c.JS_ResolveModule(self.context, value) < 0) {
+            return self.captureException(self.context);
+        }
+        consumed = true;
+        const pending = try self.checked(c.JS_EvalFunction(self.context, value));
+        defer self.freeValue(pending);
+        const settled = try self.awaitValue(pending);
+        self.freeValue(settled);
+        return self.checked(c.JS_GetModuleNamespace(self.context, module));
+    }
+
+    fn createValueModule(self: *Engine, name: []const u8, exports: c.JSValue) !*c.JSModuleDef {
+        if (name.len == 0 or std.mem.indexOfScalar(u8, name, 0) != null) return error.InvalidNativeModuleName;
+        if (self.modules.contains(name) or self.native_module_names.contains(name)) return error.DuplicateExtensionModule;
+        const terminated = try self.gpa.dupeZ(u8, name);
+        defer self.gpa.free(terminated);
+        // Finish host allocations before installing an immutable C module.
+        const owned_name = try self.gpa.dupe(u8, name);
+        var reserved = false;
+        var module_created = false;
+        errdefer if (!module_created) {
+            if (reserved) _ = self.native_module_names.remove(name);
+            self.gpa.free(owned_name);
+        };
+        try self.native_module_values.ensureUnusedCapacity(self.gpa, 1);
+        try self.native_module_names.put(self.gpa, owned_name, {});
+        reserved = true;
+        const module = c.JS_NewCModule(self.context, terminated.ptr, initializeValueModule) orelse return error.OutOfMemory;
+        // A failed C registration remains reserved until engine teardown.
+        module_created = true;
+        self.native_module_values.putAssumeCapacity(owned_name, c.JS_DupValue(self.context, exports));
+        if (c.JS_SetModulePrivateValue(self.context, module, c.JS_DupValue(self.context, exports)) < 0) {
+            return self.captureException(self.context);
+        }
+        var properties: [*c]c.JSPropertyEnum = null;
+        var count: u32 = 0;
+        if (c.JS_GetOwnPropertyNames(self.context, &properties, &count, exports, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) {
+            return self.captureException(self.context);
+        }
+        defer c.JS_FreePropertyEnum(self.context, properties, count);
+        for (0..count) |index| {
+            const property = c.JS_AtomToCString(self.context, properties[index].atom);
+            if (property == null) return error.OutOfMemory;
+            defer c.JS_FreeCString(self.context, property);
+            if (c.JS_AddModuleExport(self.context, module, property) < 0) return error.InvalidNativeModuleExport;
+        }
+        return module;
+    }
+
+    /// ESM namespaces expose a default binding without putting a cyclic
+    /// `.default` property on the underlying builtin object.
+    pub fn registerDefaultModule(self: *Engine, name: []const u8, object: c.JSValue) !void {
+        _ = try self.createDefaultModule(name, object);
+    }
+
+    fn createDefaultModule(self: *Engine, name: []const u8, object: c.JSValue) !*c.JSModuleDef {
+        const exports = try self.defaultExports(object);
+        defer self.freeValue(exports);
+        return self.createValueModule(name, exports);
+    }
+
+    pub fn defaultExports(self: *Engine, object: c.JSValue) !c.JSValue {
+        const exports = try self.checked(c.JS_NewObject(self.context));
+        errdefer self.freeValue(exports);
+        var properties: [*c]c.JSPropertyEnum = null;
+        var count: u32 = 0;
+        if (c.JS_IsObject(object)) {
+            if (c.JS_GetOwnPropertyNames(self.context, &properties, &count, object, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
+        }
+        defer c.JS_FreePropertyEnum(self.context, properties, count);
+        for (0..count) |index| {
+            const value = try self.checked(c.JS_GetProperty(self.context, object, properties[index].atom));
+            if (c.JS_DefinePropertyValue(self.context, exports, properties[index].atom, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+        }
+        if (c.JS_DefinePropertyValueStr(self.context, exports, "default", c.JS_DupValue(self.context, object), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+        return exports;
+    }
+
+    pub fn loadModuleInput(self: *Engine, name: []const u8) !ModuleInput {
+        const loader = self.source_loader orelse return error.NativeModuleLoaderUnavailable;
+        if (loader.input) |input| return input(loader.context, self, name);
+        return .{ .source = try loader.load(loader.context, self.gpa, name) };
+    }
+
+    pub fn normalizeRequire(self: *Engine, base: []const u8, name: []const u8) ![]u8 {
+        const schema_package = std.mem.eql(u8, name, "typebox") or std.mem.startsWith(u8, name, "typebox/") or std.mem.eql(u8, name, "@sinclair/typebox") or std.mem.startsWith(u8, name, "@sinclair/typebox/");
+        if (self.native_module_names.contains(name) and self.native_module_values.contains(name) and !schema_package) return self.gpa.dupe(u8, name);
+        const loader = self.source_loader orelse return error.NativeModuleLoaderUnavailable;
+        const normalize = loader.normalize_require orelse loader.normalize orelse return error.NativeModuleLoaderUnavailable;
+        return normalize(loader.context, self.gpa, base, name);
+    }
+
+    pub fn requireBuiltin(self: *Engine, name: []const u8) !?c.JSValue {
+        if (std.fs.path.isAbsolute(name)) return null;
+        // The value cache also holds host-private state. Only explicitly
+        // registered module names are part of the guest require surface.
+        if (!self.native_module_names.contains(name)) return null;
+        const namespace = self.native_module_values.get(name) orelse return null;
+        const default = try self.checked(c.JS_GetPropertyStr(self.context, namespace, "default"));
+        if (!c.JS_IsUndefined(default)) return default;
+        self.freeValue(default);
+        return c.JS_DupValue(self.context, namespace);
+    }
+
+    fn initializeValueModule(context: ?*c.JSContext, module: ?*c.JSModuleDef) callconv(.c) c_int {
+        const exports = c.JS_GetModulePrivateValue(context, module);
+        defer c.JS_FreeValue(context, exports);
+        var properties: [*c]c.JSPropertyEnum = null;
+        var count: u32 = 0;
+        if (c.JS_GetOwnPropertyNames(context, &properties, &count, exports, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return -1;
+        defer c.JS_FreePropertyEnum(context, properties, count);
+        for (0..count) |index| {
+            const property = c.JS_AtomToCString(context, properties[index].atom);
+            if (property == null) return -1;
+            defer c.JS_FreeCString(context, property);
+            const value = c.JS_GetProperty(context, exports, properties[index].atom);
+            if (c.JS_IsException(value)) return -1;
+            if (c.JS_SetModuleExport(context, module, property, value) < 0) return -1;
+        }
+        return 0;
+    }
+
+    /// Evaluate an ES module and return its owned export namespace.
+    pub fn evalModule(self: *Engine, source: []const u8, filename: [:0]const u8) !c.JSValue {
+        const compiled = try self.eval(source, filename, c.JS_EVAL_TYPE_MODULE | c.JS_EVAL_FLAG_COMPILE_ONLY);
+        const module = c.pi_js_module(compiled) orelse {
+            self.freeValue(compiled);
+            return error.InvalidExtensionModule;
+        };
+        self.setImportMeta(module, filename, self.options.main_module) catch |err| {
+            self.freeValue(compiled);
+            return err;
+        };
+        // JS_EvalFunction consumes the compiled module value even on failure.
+        const evaluated = try self.checked(c.JS_EvalFunction(self.context, compiled));
+        defer self.freeValue(evaluated);
+        const settled = try self.awaitValue(evaluated);
+        defer self.freeValue(settled);
+        return self.checked(c.JS_GetModuleNamespace(self.context, module));
+    }
+
+    fn setImportMeta(self: *Engine, module: *c.JSModuleDef, filename: []const u8, main: bool) !void {
+        const meta = try self.checked(c.JS_GetImportMeta(self.context, module));
+        defer self.freeValue(meta);
+        if (c.JS_DefinePropertyValueStr(self.context, meta, "main", c.pi_js_bool(self.context, @intFromBool(main)), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+        if (!std.fs.path.isAbsolute(filename)) return;
+        const url = try file_urls.fromPath(self.gpa, filename, builtin.os.tag == .windows);
+        defer self.gpa.free(url);
+        const platform_path = try self.gpa.dupe(u8, filename);
+        defer self.gpa.free(platform_path);
+        if (builtin.os.tag == .windows) for (platform_path) |*byte| {
+            if (byte.* == '/') byte.* = '\\';
+        };
+        const directory = std.fs.path.dirname(platform_path) orelse platform_path;
+        const fields = [_]struct { name: [*:0]const u8, value: []const u8 }{
+            .{ .name = "url", .value = url },
+            .{ .name = "filename", .value = platform_path },
+            .{ .name = "dirname", .value = directory },
+        };
+        for (fields) |field| {
+            const value = try self.checked(c.JS_NewStringLen(self.context, field.value.ptr, field.value.len));
+            if (c.JS_DefinePropertyValueStr(self.context, meta, field.name, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+        }
+    }
+
+    fn moduleLoader(context: ?*c.JSContext, name: [*c]const u8, context_data: ?*anyopaque) callconv(.c) ?*c.JSModuleDef {
+        const self: *Engine = @ptrCast(@alignCast(context_data.?));
+        const module_name = std.mem.span(name);
+        const source = self.modules.get(module_name) orelse loaded: {
+            const loader = self.source_loader orelse {
+                _ = c.JS_ThrowReferenceError(context, "Native extension module not registered: %s", name);
+                return null;
+            };
+            _ = loader;
+            const loaded = self.loadModuleInput(module_name) catch |err| {
+                _ = c.JS_ThrowReferenceError(context, "Native extension import failed: %s", @as([*:0]const u8, @errorName(err)));
+                return null;
+            };
+            if (loaded == .exports) {
+                defer self.freeValue(loaded.exports);
+                return self.createDefaultModule(module_name, loaded.exports) catch |err| {
+                    _ = c.JS_ThrowReferenceError(context, "Native extension value import failed: %s", @as([*:0]const u8, @errorName(err)));
+                    return null;
+                };
+            }
+            defer self.gpa.free(loaded.source);
+            self.registerModule(module_name, loaded.source) catch |err| {
+                _ = c.JS_ThrowReferenceError(context, "Native extension import registration failed: %s", @as([*:0]const u8, @errorName(err)));
+                return null;
+            };
+            break :loaded self.modules.get(module_name).?;
+        };
+        const compiled = c.JS_Eval(context, source.ptr, source.len, name, c.JS_EVAL_TYPE_MODULE | c.JS_EVAL_FLAG_COMPILE_ONLY);
+        if (c.JS_IsException(compiled)) return null;
+        // QuickJS keeps the compiled dependency in its module registry.
+        const module = c.pi_js_module(compiled) orelse {
+            c.JS_FreeValue(context, compiled);
+            _ = c.JS_ThrowInternalError(context, "Invalid native extension module");
+            return null;
+        };
+        self.setImportMeta(module, module_name, false) catch |err| {
+            c.JS_FreeValue(context, compiled);
+            _ = c.JS_ThrowInternalError(context, "Native import metadata failed: %s", @as([*:0]const u8, @errorName(err)));
+            return null;
+        };
+        c.JS_FreeValue(context, compiled);
+        return module;
+    }
+
+    /// Returns an owned value. The caller releases it with freeValue().
+    pub fn eval(self: *Engine, source: []const u8, filename: [:0]const u8, flags: c_int) !c.JSValue {
+        const terminated = try self.gpa.dupeZ(u8, source);
+        defer self.gpa.free(terminated);
+        return self.checked(c.JS_Eval(self.context, terminated.ptr, source.len, filename.ptr, flags));
+    }
+
+    pub fn checked(self: *Engine, value: c.JSValue) !c.JSValue {
+        const result = self.nativeCallbackResult(value);
+        if (c.JS_IsException(result)) {
+            if (!c.JS_HasException(self.context)) {
+                if (c.JS_PiIsExecutionTermination(result)) _ = c.JS_Throw(self.context, result)
+                else _ = c.JS_ThrowInternalError(self.context, "Native callback returned exception without a pending reason");
+            }
+            return self.captureException(self.context);
+        }
+        return result;
+    }
+
+    /// Host factory entry: no guest conversion/allocation before preserving a
+    /// real already-pending event. A prior captured diagnostic is only DATA.
+    pub fn checkNativeEntry(self: *Engine) !void {
+        self.native_exception_diagnostics_suppressed += 1;
+        defer self.native_exception_diagnostics_suppressed -= 1;
+        const result = self.nativeCallbackResult(c.pi_js_undefined());
+        if (c.JS_IsException(result)) return self.captureException(self.context);
+    }
+    /// Stack-only current-event retention. No guest value or diagnostic slot
+    /// can publish into this list; only actual fatal event producers record.
+    pub const NativeInvocation = struct { previous: ?*NativeInvocation = null, first: ?c.JSValue = null, active: bool = false };
+    pub fn enterNativeInvocation(self: *Engine, invocation: *NativeInvocation) void {
+        std.debug.assert(!invocation.active);
+        const inherited = self.currentNativeFatal();
+        invocation.* = .{ .previous = self.native_fatal_invocation, .first = if (inherited) |first| c.JS_DupValue(self.context, first) else null, .active = true };
+        self.native_fatal_invocation = invocation;
+    }
+    fn currentNativeFatal(self: *Engine) ?c.JSValue {
+        var cursor = self.native_fatal_invocation;
+        while (cursor) |invocation| : (cursor = invocation.previous) if (invocation.first) |first| {
+            // Generic first-fatal authority is historical. A private event is
+            // different: Cancel can invalidate its lease while this native
+            // record still owns the already-aborted completion.
+            if (!c.JS_PiIsExecutionTermination(first) or
+                c.JS_PiNativePendingPriority(self.runtime, first) > 0) return first;
+        };
+        return null;
+    }
+    fn recordNativeFatal(self: *Engine, reason: c.JSValue) void {
+        const first = self.currentNativeFatal() orelse reason;
+        var cursor = self.native_fatal_invocation;
+        while (cursor) |invocation| : (cursor = invocation.previous) {
+            std.debug.assert(invocation.active);
+            if (invocation.first) |previous| {
+                if (!c.JS_PiIsExecutionTermination(previous) or
+                    c.JS_PiNativePendingPriority(self.runtime, previous) > 0) continue;
+                // The private immediate has no finalizer. Publish the new
+                // actual owner before retiring the cancelled completion.
+                invocation.first = c.JS_DupValue(self.context, first);
+                self.freeValue(previous);
+            } else invocation.first = c.JS_DupValue(self.context, first);
+        }
+    }
+    /// Consumes result exactly once. Pop BEFORE holder cleanup/return so no
+    /// suspended AF or late finalizer can retain an escaping stack pointer.
+    pub fn leaveNativeInvocation(self: *Engine, invocation: *NativeInvocation, result: c.JSValue) c.JSValue {
+        if (!invocation.active) return result;
+        std.debug.assert(self.native_fatal_invocation == invocation);
+        const entry_first = self.currentNativeFatal();
+        var owned: NativePending = .{ .reason = if (entry_first) |reason| c.JS_DupValue(self.context, reason) else null, .fatal = entry_first != null };
+        self.takeNativePending(&owned);
+        if (owned.reason != null) self.releaseNativeOwned(result, &owned);
+        if (invocation.first) |first| if (!owned.isFatal(self.runtime) and
+            (!c.JS_PiIsExecutionTermination(first) or c.JS_PiNativePendingPriority(self.runtime, first) > 0)) {
+            const displaced = owned.reason;
+            owned = .{ .reason = c.JS_DupValue(self.context, first), .fatal = true };
+            if (displaced) |old| self.releaseNativeOwned(old, &owned);
+        };
+        self.native_fatal_invocation = invocation.previous;
+        invocation.active = false;
+        const retained = invocation.first;
+        invocation.first = null;
+        if (retained) |first| self.releaseNativeOwned(first, &owned);
+        if (owned.reason != null) return self.throwNativePending(&owned);
+        return result;
+    }
+    /// Consumes result. A native finalizer can publish an actual event while
+    /// successful callback temporaries retire; do not return success with it.
+    pub fn nativeCallbackResult(self: *Engine, result: c.JSValue) c.JSValue {
+        const first = self.currentNativeFatal();
+        var owned: NativePending = .{ .reason = if (first) |reason| c.JS_DupValue(self.context, reason) else null, .fatal = first != null };
+        self.takeNativePending(&owned);
+        // An earlier owned actual event has the same pending-entry priority
+        // as one still in the VM slot. Do not service a request across it or
+        // reclassify its cached generic status by publishing and retaking it.
+        if (owned.reason == null) {
+            _ = c.JS_PiCheckExecutionTermination(self.context);
+            self.takeNativePending(&owned);
+        }
+        if (owned.reason == null) return result;
+        self.releaseNativeOwned(result, &owned);
+        if (self.currentNativeFatal()) |actual| if (!owned.isFatal(self.runtime)) {
+            const displaced = owned.reason.?;
+            owned = .{ .reason = c.JS_DupValue(self.context, actual), .fatal = true };
+            self.releaseNativeOwned(displaced, &owned);
+        };
+        return self.throwNativePending(&owned);
+    }
+
+    /// Remember native allocator failures crossing a C callback by object
+    /// identity. Private native callers can restore their error union without
+    /// mistaking a user's similarly named error, or a later rethrow, for OOM.
+    pub fn throwNativeOutOfMemory(self: *Engine) c.JSValue {
+        return self.throwNativeOutOfMemoryMode(false);
+    }
+    /// Actual callback producer of a trusted direct Zig OutOfMemory. Mark the
+    /// newborn event BEFORE tracking cleanup; this is not a DATA classifier.
+    pub fn throwNativeOutOfMemoryFatal(self: *Engine) c.JSValue {
+        return self.throwNativeOutOfMemoryMode(true);
+    }
+    const NativePending = struct {
+        reason: ?c.JSValue = null,
+        fatal: bool = false,
+        actual_event: bool = true,
+        fn isFatal(self: *const NativePending, runtime: *c.JSRuntime) bool {
+            const reason = self.reason orelse return false;
+            if (!self.actual_event) return false;
+            return if (c.JS_PiIsExecutionTermination(reason))
+                c.JS_PiNativePendingPriority(runtime, reason) > 0
+            else self.fatal;
+        }
+    };
+    fn nativePendingReplace(self: *Engine, owned: *const NativePending, incoming: c.JSValue, incoming_fatal: bool) bool {
+        const retained = owned.reason orelse return true;
+        if (!owned.actual_event) return incoming_fatal;
+        return c.JS_PiNativePendingReplaceClassified(self.runtime,
+            retained, owned.fatal, incoming, incoming_fatal);
+    }
+    fn throwNativePending(self: *Engine, owned: *NativePending) c.JSValue {
+        const reason = owned.reason.?;
+        owned.reason = null;
+        if (owned.fatal and !c.JS_PiIsExecutionTermination(reason))
+            c.JS_SetUncatchableError(self.context, reason);
+        return c.JS_Throw(self.context, reason);
+    }
+    fn takeNativePending(self: *Engine, owned: *NativePending) void {
+        self.takeNativePendingAfterRelease(owned, null);
+    }
+    fn takeNativePendingAfterRelease(self: *Engine, owned: *NativePending, boundary: ?u64) void {
+        var release_generation = boundary;
+        while (c.JS_HasException(self.context)) {
+            const next = c.JS_GetException(self.context);
+            // Only actual pending ownership enters this reducer. A captured
+            // diagnostic or rejected Promise value never supplies authority.
+            if (release_generation) |generation| {
+                const tagged = c.pi_js_native_allocation_error_generation(next);
+                const distance = tagged -% generation;
+                if (tagged != 0 and distance != 0 and distance <= self.native_allocation_generation -% generation)
+                    c.JS_SetUncatchableError(self.context, next);
+            }
+            const fatal = c.JS_PiNativePendingPriority(self.runtime, next) > 0;
+            if (fatal) self.recordNativeFatal(next);
+            if (owned.reason == null) {
+                owned.* = .{ .reason = next, .fatal = fatal };
+                release_generation = null;
+            } else if (self.nativePendingReplace(owned, next, fatal)) {
+                const displaced = owned.reason.?;
+                owned.* = .{ .reason = next, .fatal = fatal };
+                release_generation = self.native_allocation_generation;
+                self.freeValue(displaced);
+            } else {
+                release_generation = self.native_allocation_generation;
+                self.freeValue(next);
+            }
+        }
+    }
+    fn releaseNativeOwned(self: *Engine, value: c.JSValue, owned: *NativePending) void {
+        self.takeNativePending(owned);
+        const generation = self.native_allocation_generation;
+        self.freeValue(value);
+        self.takeNativePendingAfterRelease(owned, generation);
+    }
+    fn throwNativeOutOfMemoryMode(self: *Engine, fatal: bool) c.JSValue {
+        const first = self.currentNativeFatal();
+        var owned: NativePending = .{ .reason = if (first) |reason| c.JS_DupValue(self.context, reason) else null, .fatal = first != null };
+        self.takeNativePending(&owned);
+        if (owned.isFatal(self.runtime)) return self.throwNativePending(&owned);
+        const prior = owned.reason;
+        _ = c.JS_ThrowOutOfMemory(self.context);
+        const exception = c.JS_GetException(self.context);
+        if (fatal) c.JS_SetUncatchableError(self.context, exception);
+        if (fatal) self.recordNativeFatal(exception);
+        owned = .{ .reason = exception, .fatal = fatal or c.JS_IsUncatchableError(exception) };
+        const previous = self.native_allocation_exception;
+        // Publish/tag before releasing old tracking: a reentrant cleanup may
+        // create a later OOM, whose tracking must not then be overwritten.
+        self.native_allocation_exception = c.JS_DupValue(self.context, exception);
+        self.native_allocation_generation +%= 1;
+        // Zero means unmarked. Keep the counter entirely in u64, including
+        // its wrap boundary; no guest number, map, property, or allocation.
+        if (self.native_allocation_generation == 0) self.native_allocation_generation = 1;
+        c.pi_js_mark_native_allocation_error(exception, self.native_allocation_generation);
+        if (prior) |old| self.releaseNativeOwned(old, &owned);
+        if (previous) |old| self.releaseNativeOwned(old, &owned);
+        self.takeNativePending(&owned);
+        return self.throwNativePending(&owned);
+    }
+    pub fn nativeAllocationError(self: *Engine, err: anyerror, generation: u64) anyerror {
+        if (err == error.JavaScriptException and generation != self.native_allocation_generation) {
+            if (self.captured_exception) |exception| {
+                const tagged = c.pi_js_native_allocation_error_generation(exception);
+                // A later cleanup OOM must not erase the original error's
+                // identity. Reject errors born before this host boundary,
+                // including a previously caught native error rethrown later.
+                const distance = tagged -% generation;
+                if (tagged != 0 and distance != 0 and distance <= self.native_allocation_generation -% generation) {
+                    // A private native delivery may need to escape a promise
+                    // reaction first. Its trusted host classification ends
+                    // that propagation without changing the retained value.
+                    c.JS_ClearUncatchableError(self.context, exception);
+                    return error.OutOfMemory;
+                }
+            }
+        }
+        return err;
+    }
+
+    /// Native callbacks preserve the user's exception object and identity.
+    pub fn throwCaptured(self: *Engine) c.JSValue {
+        const pending = self.nativeCallbackResult(c.pi_js_undefined());
+        if (c.JS_IsException(pending)) return pending;
+        if (self.captured_exception) |exception| return c.JS_Throw(self.context, c.JS_DupValue(self.context, exception));
+        return c.JS_ThrowInternalError(self.context, "Native callback failed without an exception value");
+    }
+
+    /// Propagate an already-observed native termination failure without a
+    /// diagnostic or a new event, including after its actual event was cancelled.
+    pub fn throwExecutionTerminated(self: *Engine) c.JSValue {
+        return self.nativeCallbackResult(c.JS_PiNativeTerminationResult());
+    }
+
+    pub fn freeValue(self: *Engine, value: c.JSValue) void {
+        c.JS_FreeValue(self.context, value);
+    }
+
+    pub const NativeFunction = *const fn (?*c.JSContext, c.JSValue, c_int, [*c]c.JSValue) callconv(.c) c.JSValue;
+
+    /// Install a Zig callback as a real extension-language function.
+    pub fn bindFunction(self: *Engine, name: [:0]const u8, function: NativeFunction, arity: c_int) !void {
+        const global = c.JS_GetGlobalObject(self.context);
+        defer self.freeValue(global);
+        const native = try self.checked(c.JS_NewCFunction(self.context, function, name.ptr, arity));
+        // SetProperty consumes native on both its success and failure paths.
+        if (c.JS_SetPropertyStr(self.context, global, name.ptr, native) < 0) {
+            return self.captureException(self.context);
+        }
+    }
+
+    pub fn stringify(self: *Engine, value: c.JSValue) ![]u8 {
+        const encoded = try self.checked(c.JS_JSONStringify(self.context, value, c.pi_js_undefined(), c.pi_js_undefined()));
+        defer self.freeValue(encoded);
+        return self.toString(encoded);
+    }
+
+    /// Construct host DTOs without evaluating generated bridge source. Numbers
+    /// retain NaN/Infinity when an upstream API returns them outside JSON.
+    pub fn fromJsonValue(self: *Engine, value: std.json.Value) !c.JSValue {
+        return self.fromJsonValueDepth(value, 0);
+    }
+
+    fn fromJsonValueDepth(self: *Engine, value: std.json.Value, depth: usize) anyerror!c.JSValue {
+        if (depth > 256) return error.NativeValueDepthLimit;
+        return switch (value) {
+            .null => c.pi_js_null(),
+            .bool => |boolean| c.pi_js_bool(self.context, @intFromBool(boolean)),
+            .integer => |integer| self.checked(c.JS_NewInt64(self.context, integer)),
+            .float => |number| self.checked(c.JS_NewFloat64(self.context, number)),
+            .number_string => |text| self.checked(c.JS_NewFloat64(self.context, try std.fmt.parseFloat(f64, text))),
+            .string => |text| self.checked(c.JS_NewStringLen(self.context, text.ptr, text.len)),
+            .array => |array| result: {
+                const object = try self.checked(c.JS_NewArray(self.context));
+                errdefer self.freeValue(object);
+                for (array.items, 0..) |item, index| {
+                    const child = try self.fromJsonValueDepth(item, depth + 1);
+                    if (c.JS_SetPropertyUint32(self.context, object, @intCast(index), child) < 0) return error.JavaScriptException;
+                }
+                break :result object;
+            },
+            .object => |map| result: {
+                const object = try self.checked(c.JS_NewObject(self.context));
+                errdefer self.freeValue(object);
+                var fields = map.iterator();
+                while (fields.next()) |field| {
+                    const key = c.JS_NewAtomLen(self.context, field.key_ptr.*.ptr, field.key_ptr.*.len);
+                    if (key == c.JS_ATOM_NULL) return error.OutOfMemory;
+                    defer c.JS_FreeAtom(self.context, key);
+                    const child = try self.fromJsonValueDepth(field.value_ptr.*, depth + 1);
+                    if (c.JS_DefinePropertyValue(self.context, object, key, child, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+                }
+                break :result object;
+            },
+        };
+    }
+
+    pub fn toString(self: *Engine, value: c.JSValue) ![]u8 {
+        var length: usize = 0;
+        const bytes = c.JS_ToCStringLen(self.context, &length, value);
+        if (bytes == null) {
+            return self.captureException(self.context);
+        }
+        defer c.JS_FreeCString(self.context, bytes);
+        return self.gpa.dupe(u8, bytes[0..length]);
+    }
+
+    /// Return a new owned result without consuming the caller's promise/value.
+    pub fn pumpControls(self: *Engine) !bool {
+        if (self.progress_probe) |probe| probe.control_pumps +%= 1;
+        self.refreshUiDeadline();
+        // Complete the preceding check/timer boundary before fresh I/O records
+        // can schedule a new check batch. Timer-created jobs retain priority.
+        if (self.native_immediate_before_poll) |before_poll| if (try before_poll(self)) return true;
+        const host_worked = if (self.host_control_pump) |pump| try pump(self) else false;
+        const storage_worked = if (self.native_durable_storage_pump) |pump| try pump(self) else false;
+        const durable_worked = if (self.native_durable_control_pump) |pump| try pump(self) else false;
+        const sdk_retired = if (self.native_sdk_resource_owner_pump) |pump| try pump(self) else false;
+        const tools_worked = if (self.native_sdk_builtin_execution_pump) |pump| try pump(self) else false;
+        const oauth_callback_worked = if (self.native_ai_oauth_callback_pump) |pump| try pump(self) else false;
+        const ai_http_worked = if (self.native_ai_http_pump) |pump| try pump(self) else false;
+        const oauth_chatgpt_worked = if (self.native_ai_oauth_chatgpt_pump) |pump| try pump(self) else false;
+        const codex_socket_worked = if (self.native_ai_codex_socket_pump) |pump| try pump(self) else false;
+        const commands_worked = if (self.native_command_metadata_pump) |pump| try pump(self) else false;
+        const codemode_worked = if (self.native_codemode_pump) |pump| try pump(self) else false;
+        const env_worked = if (self.native_env_pump) |pump| try pump(self) else false;
+        return host_worked or storage_worked or durable_worked or sdk_retired or tools_worked or oauth_callback_worked or ai_http_worked or oauth_chatgpt_worked or codex_socket_worked or commands_worked or codemode_worked or env_worked;
+    }
+    /// Native leases notify through this Engine-owned signal. External worker
+    /// transports keep their existing wakeup while standalone VMs wake too.
+    pub fn notifyOwner(raw: ?*anyopaque) void {
+        const self: *Engine = @ptrCast(@alignCast(raw.?));
+        if (self.native_io) |io| self.native_owner_signal.notify(io);
+        if (self.host_owner_notify) |notify| notify(self.host_owner_notify_context);
+    }
+    pub fn closeDurableOwner(self: *Engine) void {
+        if (self.native_durable_storage_close) |cleanup| cleanup(self);
+        if (self.native_durable_control_deinit) |cleanup| cleanup(self);
+        self.native_durable_control_context = null;
+        self.native_durable_control_pump = null;
+        self.native_durable_control_deinit = null;
+    }
+
+    /// Finish a microtask checkpoint and one ready check batch without sleeping.
+    /// Used by the persistent owner's idle event loop.
+    pub fn drainReadyJobs(self: *Engine) !bool {
+        return self.drainReadyJobsImpl(true);
+    }
+    /// The direct stdio loop checks referenced liveness between its microtask
+    /// checkpoint and the check phase, while preserving every existing I/O pump.
+    pub fn drainReadyJobsBeforeCheck(self: *Engine) !bool {
+        return self.drainReadyJobsImpl(false);
+    }
+    fn drainReadyJobsImpl(self: *Engine, check_phase: bool) !bool {
+        defer self.finishJob();
+        const oauth_callback_worked = if (self.native_ai_oauth_callback_pump) |pump| try pump(self) else false;
+        const ai_http_worked = if (self.native_ai_http_pump) |pump| try pump(self) else false;
+        const oauth_chatgpt_worked = if (self.native_ai_oauth_chatgpt_pump) |pump| try pump(self) else false;
+        const codex_socket_worked = if (self.native_ai_codex_socket_pump) |pump| try pump(self) else false;
+        const jobs = try self.runReadyJobs(self.options.job_budget);
+        if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
+        self.finishJob();
+        const timer_worked = if (check_phase) (if (self.native_immediate_before_poll) |before_poll| try before_poll(self) else false) else false;
+        const timer_jobs = if (timer_worked) try self.runReadyJobs(self.options.job_budget -| jobs) else 0;
+        if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
+        if (timer_worked) self.finishJob();
+        const immediate_worked = if (check_phase) (if (self.native_immediate_pump) |pump| try pump(self) else false) else false;
+        const after_immediate = if (immediate_worked) try self.runReadyJobs(self.options.job_budget -| jobs -| timer_jobs) else 0;
+        if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
+        return oauth_callback_worked or ai_http_worked or oauth_chatgpt_worked or codex_socket_worked or jobs != 0 or timer_worked or immediate_worked or timer_jobs != 0 or after_immediate != 0;
+    }
+
+    /// Run part of a microtask checkpoint. The caller must finish the checkpoint
+    /// after the queue empties or execution is interrupted; a batch boundary
+    /// alone must not release kept WeakRef targets.
+    pub fn runReadyJobs(self: *Engine, limit: usize) !usize {
+        var jobs: usize = 0;
+        while (jobs < limit and c.JS_IsJobPending(self.runtime)) {
+            var context: ?*c.JSContext = null;
+            if (self.progress_probe) |probe| probe.job_attempts +%= 1;
+            const status = c.JS_ExecutePendingJob(self.runtime, &context);
+            if (status == c.JS_PI_JOB_TERMINATED) return error.ExecutionTerminated;
+            if (status < 0) return self.captureException(context orelse self.context);
+            if (status == 0) break;
+            jobs += 1;
+        }
+        return jobs;
+    }
+
+    fn refreshUiDeadline(self: *Engine) void {
+        const tool_pending = if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false;
+        if ((self.host_ui_pending == 0 and !tool_pending) or self.host_await_deadline_ms == null or self.options.host_await_timeout_ms == 0) return;
+        if (self.native_io) |io| self.host_await_deadline_ms = std.Io.Clock.awake.now(io).toMilliseconds() +| @as(i64, @intCast(@min(self.options.host_await_timeout_ms, std.math.maxInt(i64))));
+    }
+
+    pub fn awaitValue(self: *Engine, value: c.JSValue) !c.JSValue {
+        return self.awaitValueImpl(value, true);
+    }
+    /// A nested SDK event must stop at its own result. Draining unrelated
+    /// continuations here can dispose its original session before it returns.
+    pub fn awaitValueOnly(self: *Engine, value: c.JSValue) !c.JSValue {
+        return self.awaitValueImpl(value, false);
+    }
+    fn awaitValueImpl(self: *Engine, value: c.JSValue, drain_ready_jobs: bool) !c.JSValue {
+        try self.checkNativeEntry();
+        if (self.native_rejection_tracking and c.JS_PromiseState(self.context, value) >= 0)
+            c.JS_PromiseMarkAsHandled(self.context, value);
+        defer self.finishJob();
+        const previous_deadline = self.host_await_deadline_ms;
+        defer self.host_await_deadline_ms = previous_deadline;
+        if (self.native_io) |io| {
+            if (self.options.host_await_timeout_ms > 0) self.host_await_deadline_ms = std.Io.Clock.awake.now(io).toMilliseconds() +| @as(i64, @intCast(@min(self.options.host_await_timeout_ms, std.math.maxInt(i64))));
+        }
+        var jobs: usize = 0;
+        while (c.JS_PromiseState(self.context, value) == c.JS_PROMISE_PENDING or (drain_ready_jobs and c.JS_IsJobPending(self.runtime))) {
+            const owner_epoch = self.native_owner_signal.observe();
+            self.refreshUiDeadline();
+            if (self.native_io) |io| if (self.host_await_deadline_ms) |limit| {
+                if (std.Io.Clock.awake.now(io).toMilliseconds() >= limit) return error.NativeHostPromiseTimeout;
+            };
+            // Once this promise has settled, remaining queued microtasks may
+            // still drain, but a late wire abort must not mutate its signal.
+            if (c.JS_PromiseState(self.context, value) == c.JS_PROMISE_PENDING) _ = try self.pumpControls();
+            if (c.JS_PromiseState(self.context, value) != c.JS_PROMISE_PENDING and !c.JS_IsJobPending(self.runtime)) break;
+            if (jobs >= self.options.job_budget) return error.JavaScriptJobLimit;
+            var context: ?*c.JSContext = null;
+            if (self.progress_probe) |probe| probe.job_attempts +%= 1;
+            const status = c.JS_ExecutePendingJob(self.runtime, &context);
+            if (status == c.JS_PI_JOB_TERMINATED) return error.ExecutionTerminated;
+            if (status < 0) return self.captureException(context orelse self.context);
+            if (status == 0) {
+                if (self.progress_probe) |probe| probe.empty_job_polls +%= 1;
+                // The promise may span another timer/I/O turn. The current
+                // job's complete microtask checkpoint ends before that turn.
+                self.finishJob();
+                if (self.native_immediate_pump) |pump| {
+                    if (try pump(self)) continue;
+                }
+                if (self.host_pump) |pump| {
+                    if (try pump(self)) continue;
+                }
+                // A completed check batch yields to the timer/poll turn before
+                // nested immediates begin the next check phase.
+                if (self.native_immediate_pending) |has_pending| if (has_pending(self)) continue;
+                // A native transport can settle a promise through an incoming
+                // abort or UI response even when no timer or JS job is pending.
+                if ((self.host_control_pump != null or self.native_durable_control_pump != null or self.native_durable_storage_pump != null or self.native_codemode_pump != null or self.native_env_pump != null or (if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_oauth_callback_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_http_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_oauth_chatgpt_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_codex_socket_pending) |has_pending| has_pending(self) else false)) and self.native_io != null) {
+                    _ = try self.native_owner_signal.waitAfter(self.native_io.?, owner_epoch, .{ .duration = .{ .raw = .fromMilliseconds(5), .clock = .awake } });
+                    continue;
+                }
+                return error.JavaScriptPromiseUnsettled;
+            }
+            jobs += 1;
+        }
+        return switch (c.JS_PromiseState(self.context, value)) {
+            c.JS_PROMISE_REJECTED => blk: {
+                const reason = c.JS_PromiseResult(self.context, value);
+                break :blk self.captureValue(self.context, reason, false);
+            },
+            c.JS_PROMISE_FULFILLED => c.JS_PromiseResult(self.context, value),
+            else => c.JS_DupValue(self.context, value),
+        };
+    }
+
+    /// Host job checkpoint, never a checkpoint between promise microtasks.
+    /// Pending jobs retain construction/deref targets until the queue drains.
+    pub fn finishJob(self: *Engine) void {
+        if (!c.JS_IsJobPending(self.runtime) and !@import("native_async_scope.zig").isActive(self)) c.JS_ClearKeptObjects(self.runtime);
+    }
+
+    fn captureException(self: *Engine, context: *c.JSContext) anyerror {
+        const exception = c.JS_GetException(context);
+        return self.captureValue(context, exception, true);
+    }
+
+    /// Consumes exception. actual_event is supplied only by JS_GetException;
+    /// settled Promise rejection DATA never gains fatal authority from its bit.
+    fn captureValue(self: *Engine, context: *c.JSContext, exception: c.JSValue, actual_event: bool) anyerror {
+        var owned: NativePending = .{
+            .reason = exception,
+            .fatal = actual_event and c.JS_PiNativePendingPriority(self.runtime, exception) > 0,
+            .actual_event = actual_event,
+        };
+        if (owned.isFatal(self.runtime)) self.recordNativeFatal(exception);
+        if (self.currentNativeFatal()) |first| {
+            if (actual_event) _ = c.JS_PiNativePendingReplaceClassified(self.runtime,
+                first, true, exception, owned.fatal);
+            owned = .{ .reason = c.JS_DupValue(context, first), .fatal = true };
+            self.releaseNativeOwned(exception, &owned);
+        }
+        self.takeNativePending(&owned);
+        // A native implementation may call guest functions whose exceptions
+        // are still inside a guest try/catch. Capturing their identity must
+        // not invoke user ToString code before that catch gets the exception.
+        var diagnostic_message: ?[]u8 = null;
+        if (self.native_exception_diagnostics_suppressed == 0 and
+            !owned.isFatal(self.runtime) and !c.JS_PiIsExecutionTermination(owned.reason.?)) {
+            const text = c.JS_ToCString(context, owned.reason.?);
+            self.takeNativePending(&owned);
+            if (text != null) {
+                if (!owned.isFatal(self.runtime) and !c.JS_PiIsExecutionTermination(owned.reason.?)) diagnostic_message = self.gpa.dupe(u8, std.mem.span(text)) catch null;
+                c.JS_FreeCString(context, text);
+                self.takeNativePending(&owned);
+            }
+        }
+        // String conversion can invoke user code and another native callback.
+        // Commit ownership only afterward, retaining the original thrown value.
+        while (c.JS_HasException(self.context) or self.captured_exception != null or self.last_error != null) {
+            self.takeNativePending(&owned);
+            if (self.captured_exception) |previous| {
+                self.captured_exception = null;
+                self.releaseNativeOwned(previous, &owned);
+            } else if (self.last_error) |message| {
+                // A released diagnostic may reenter checked()/captureValue
+                // and publish another owned message. Detach before freeing;
+                // drain all channels before committing this invocation's text.
+                self.last_error = null;
+                self.gpa.free(message);
+            }
+        }
+        if (c.JS_PiIsExecutionTermination(owned.reason.?)) {
+            if (diagnostic_message) |message| self.gpa.free(message);
+            _ = self.throwNativePending(&owned);
+            return error.ExecutionTerminated;
+        }
+        if (owned.isFatal(self.runtime)) {
+            if (diagnostic_message) |message| self.gpa.free(message);
+            c.JS_SetUncatchableError(context, owned.reason.?);
+        } else self.last_error = diagnostic_message;
+        self.captured_exception = owned.reason.?;
+        return error.JavaScriptException;
+    }
+
+    fn interrupt(_: ?*c.JSRuntime, context_data: ?*anyopaque) callconv(.c) c_int {
+        const self: *Engine = @ptrCast(@alignCast(context_data.?));
+        if (self.cancelled.load(.acquire)) return 1;
+        self.interrupts += 1;
+        return if (self.interrupts > self.options.interrupt_budget) 1 else 0;
+    }
+};
+
+test "native durable VM native allocation exception tracking distinguishes fresh identity user replacements and later rethrows" {
+    const Fixture = struct {
+        fn fail(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+            return Engine.fromContext(context.?).throwNativeOutOfMemory();
+        }
+    };
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try engine.bindFunction("nativeAllocationFixture", Fixture.fail, 0);
+    var generation = engine.native_allocation_generation;
+    _ = engine.eval("nativeAllocationFixture()", "native-allocation-fresh", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+        try std.testing.expectEqual(error.OutOfMemory, engine.nativeAllocationError(err, generation));
+    };
+    const native = engine.captured_exception.?;
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    if (c.JS_SetPropertyStr(engine.context, global, "savedNativeAllocation", c.JS_DupValue(engine.context, native)) < 0) return error.JavaScriptException;
+    generation = engine.native_allocation_generation;
+    _ = engine.eval("throw savedNativeAllocation", "native-allocation-rethrow", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+        try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(err, generation));
+    };
+    generation = engine.native_allocation_generation;
+    _ = engine.eval("try{nativeAllocationFixture()}catch(error){throw {name:'InternalError',message:'out of memory',user:true}}", "native-allocation-user-replacement", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+        try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(err, generation));
+    };
+    const user = try engine.checked(c.JS_GetPropertyStr(engine.context, engine.captured_exception.?, "user"));
+    defer engine.freeValue(user);
+    try std.testing.expect(c.JS_ToBool(engine.context, user) != 0);
+}
+
+test "native allocation original identity survives cleanup OOM with scoped user and stale controls" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const first_scope = engine.native_allocation_generation;
+    _ = engine.throwNativeOutOfMemory();
+    const first = c.JS_GetException(engine.context);
+    defer engine.freeValue(first);
+    _ = engine.throwNativeOutOfMemory();
+    const second = c.JS_GetException(engine.context);
+    defer engine.freeValue(second);
+    try std.testing.expect(!c.JS_IsStrictEqual(engine.context, first, second));
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, second, engine.native_allocation_exception.?));
+    const classified_first = if (engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, first)))) |unexpected| bad: {
+        engine.freeValue(unexpected);
+        break :bad error.ExpectedNativeException;
+    } else |err| engine.nativeAllocationError(err, first_scope);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, first, engine.captured_exception.?));
+    const next_scope = engine.native_allocation_generation;
+    const user = try engine.eval("new InternalError('out of memory')", "user-oom-lookalike-fixture", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(user);
+    _ = engine.throwNativeOutOfMemory();
+    engine.freeValue(c.JS_GetException(engine.context));
+    _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, user))) catch |err| {
+        try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(err, next_scope));
+    };
+    _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, first))) catch |err| {
+        try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(err, next_scope));
+    };
+    const stale_scope = engine.native_allocation_generation;
+    _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, second))) catch |err| {
+        try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(err, stale_scope));
+    };
+    try std.testing.expectEqual(error.OutOfMemory, classified_first);
+}
+
+test "native allocation original identity tags survive guest tampering proxies and u64 wrap" {
+    const Fixture = struct {
+        fn fail(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+            return Engine.fromContext(context.?).throwNativeOutOfMemory();
+        }
+    };
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try engine.bindFunction("nativeAllocationFixture", Fixture.fail, 0);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    engine.native_allocation_generation = std.math.maxInt(u64) - 1;
+    const generation = engine.native_allocation_generation;
+    _ = engine.eval(
+        \\globalThis.allocationTrapCalls = 0;
+        \\WeakMap.prototype.get = WeakMap.prototype.set = function(){ throw 'tampered WeakMap'; };
+        \\globalThis.WeakMap = new Proxy(WeakMap, {construct(){throw 'tampered constructor';}});
+        \\try { nativeAllocationFixture(); } catch (error) { globalThis.firstNativeAllocation = error; }
+        \\Object.defineProperty(firstNativeAllocation, 'native_allocation_generation', {value:0});
+        \\firstNativeAllocation.message = 'changed by guest';
+        \\Object.freeze(firstNativeAllocation);
+        \\try { nativeAllocationFixture(); } catch (_) {}
+        \\throw firstNativeAllocation;
+    , "native-allocation-u64-wrap", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+        try std.testing.expectEqual(error.OutOfMemory, engine.nativeAllocationError(err, generation));
+    };
+    try std.testing.expectEqual(@as(u64, 1), engine.native_allocation_generation);
+    try std.testing.expectEqual(std.math.maxInt(u64), c.pi_js_native_allocation_error_generation(engine.captured_exception.?));
+    const next_generation = engine.native_allocation_generation;
+    _ = engine.eval(
+        \\try { nativeAllocationFixture(); } catch (_) {}
+        \\throw new Proxy(firstNativeAllocation, {
+        \\  get(){ allocationTrapCalls++; throw 'get trap'; },
+        \\  getPrototypeOf(){ allocationTrapCalls++; throw 'prototype trap'; }
+        \\});
+    , "native-allocation-proxy-control", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+        try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(err, next_generation));
+    };
+    try std.testing.expectEqual(@as(u64, 0), c.pi_js_native_allocation_error_generation(engine.captured_exception.?));
+    const traps = try engine.eval("allocationTrapCalls", "native-allocation-traps", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(traps);
+    var trap_count: i32 = -1;
+    try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt32(engine.context, &trap_count, traps));
+    try std.testing.expectEqual(@as(i32, 0), trap_count);
+}
+
+test "native allocation original identity tags allocate nothing under exhausted VM heap and retain no old error" {
+    try std.testing.expectError(error.OutOfMemory, Engine.init(std.testing.allocator, .{ .memory_limit = 1 }));
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    _ = engine.throwNativeOutOfMemory();
+    const first = c.JS_GetException(engine.context);
+    var weak_arguments = [_]c.JSValue{first};
+    const weak = try engine.checked(c.JS_CallConstructor(engine.context, engine.native_weak_ref_constructor.?, 1, &weak_arguments));
+    defer engine.freeValue(weak);
+    _ = engine.throwNativeOutOfMemory();
+    engine.freeValue(c.JS_GetException(engine.context));
+    // Releasing the ordinary reference must release the first error: the
+    // native tracker stores no table, list, or additional strong reference.
+    engine.freeValue(first);
+    engine.finishJob();
+    c.JS_RunGC(engine.runtime);
+    const dereferenced = try engine.checked(c.JS_Call(engine.context, engine.native_weak_ref_deref.?, weak, 0, null));
+    defer engine.freeValue(dereferenced);
+    try std.testing.expect(c.JS_IsUndefined(dereferenced));
+    const exception = engine.native_allocation_exception.?;
+    const generation = engine.native_allocation_generation;
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    c.JS_SetMemoryLimit(engine.runtime, 1);
+    defer c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
+    // At this limit even a JS allocation fails. Reading/writing the private
+    // marker and capturing/classifying an already owned error still succeed.
+    c.pi_js_mark_native_allocation_error(exception, generation);
+    try std.testing.expectEqual(generation, c.pi_js_native_allocation_error_generation(exception));
+    _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, exception))) catch |err| {
+        try std.testing.expectEqual(error.OutOfMemory, engine.nativeAllocationError(err, generation - 1));
+    };
+    _ = engine.throwNativeOutOfMemory();
+    const exhausted = c.JS_GetException(engine.context);
+    defer engine.freeValue(exhausted);
+    // QuickJS may fall back to null when it cannot create an Error object.
+    // A primitive has no trustworthy native identity and must stay unmarked.
+    try std.testing.expect(c.JS_IsNull(exhausted));
+    try std.testing.expectEqual(@as(u64, 0), c.pi_js_native_allocation_error_generation(exhausted));
+    _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, exhausted))) catch |err| {
+        try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(err, generation));
+    };
+}
+
+test "native control pump settles an idle promise on its owner thread and bounds missing responses" {
+    const Control = struct {
+        polls: usize = 0,
+        settle: bool = true,
+
+        fn pump(engine: *Engine) !bool {
+            const self: *@This() = @ptrCast(@alignCast(engine.host_control_context.?));
+            self.polls += 1;
+            if (!self.settle or self.polls < 2) return false;
+            const global = c.JS_GetGlobalObject(engine.context);
+            defer engine.freeValue(global);
+            const resolve = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "ownedResolve"));
+            defer engine.freeValue(resolve);
+            var arguments = [_]c.JSValue{try engine.checked(c.JS_NewString(engine.context, "owner-settled"))};
+            defer engine.freeValue(arguments[0]);
+            const result = try engine.checked(c.JS_Call(engine.context, resolve, c.pi_js_undefined(), 1, &arguments));
+            engine.freeValue(result);
+            return true;
+        }
+    };
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 1000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    var control: Control = .{};
+    engine.host_control_context = &control;
+    engine.host_control_pump = Control.pump;
+    const pending = try engine.eval("new Promise(resolve=>globalThis.ownedResolve=resolve)", "owner-control.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(pending);
+    const result = try engine.awaitValue(pending);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer engine.gpa.free(text);
+    try std.testing.expectEqualStrings("owner-settled", text);
+    try std.testing.expectEqual(@as(usize, 2), control.polls);
+    control.settle = false;
+    engine.options.host_await_timeout_ms = 1;
+    const unanswered = try engine.eval("new Promise(()=>{})", "owner-control-timeout.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(unanswered);
+    try std.testing.expectError(error.NativeHostPromiseTimeout, engine.awaitValue(unanswered));
+}
+
+test "native rejected promises retain the original reason when diagnostic conversion throws" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const promise = try engine.eval("globalThis.rejectReason={toString(){throw Error('diagnostic conversion');}}; Promise.reject(rejectReason);", "native-rejection.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(promise);
+    try std.testing.expectError(error.JavaScriptException, engine.awaitValue(promise));
+    try std.testing.expect(!c.JS_HasException(engine.context));
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const original = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "rejectReason"));
+    defer engine.freeValue(original);
+    _ = engine.throwCaptured();
+    const thrown = c.JS_GetException(engine.context);
+    defer engine.freeValue(thrown);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, thrown));
+}
+
+test "native DTO construction preserves nonfinite numbers and literal prototype and NUL keys" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
+    defer arena.deinit();
+    const allocator = arena.allocator();
+    var object: std.json.ObjectMap = .empty;
+    try object.put(allocator, "nan", .{ .float = std.math.nan(f64) });
+    try object.put(allocator, "__proto__", .{ .bool = true });
+    try object.put(allocator, "nul\x00key", .{ .integer = 42 });
+    const value = try engine.fromJsonValue(.{ .object = object });
+    defer engine.freeValue(value);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try std.testing.expect(c.JS_DefinePropertyValueStr(engine.context, global, "nativeDto", c.JS_DupValue(engine.context, value), c.JS_PROP_C_W_E) >= 0);
+    const result = try engine.eval("if(!Number.isNaN(nativeDto.nan)||!Object.hasOwn(nativeDto,'__proto__')||Object.getPrototypeOf(nativeDto)!==Object.prototype||nativeDto['nul\\0key']!==42)throw Error('native DTO');", "native-dto.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+}
+
+test "native import metadata distinguishes hosted modules from explicitly selected entrypoints" {
+    for ([_]bool{ false, true }) |main| {
+        const engine = try Engine.init(std.testing.allocator, .{ .main_module = main });
+        defer engine.deinit();
+        const filename = if (builtin.os.tag == .windows) "C:/native/input file.mjs" else "/native/input file.mjs";
+        const result = try engine.evalModule("export const main=import.meta.main; export const url=import.meta.url;", filename);
+        defer engine.freeValue(result);
+        const value = try engine.checked(c.JS_GetPropertyStr(engine.context, result, "main"));
+        defer engine.freeValue(value);
+        try std.testing.expectEqual(@as(c_int, @intFromBool(main)), c.JS_ToBool(engine.context, value));
+        const url_value = try engine.checked(c.JS_GetPropertyStr(engine.context, result, "url"));
+        defer engine.freeValue(url_value);
+        const url = try engine.toString(url_value);
+        defer engine.gpa.free(url);
+        try std.testing.expect(std.mem.endsWith(u8, url, "/native/input%20file.mjs"));
+    }
+}
+
+test "native require cannot expose private cached state or observe its getters" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const private_owner = try engine.eval("({get default(){throw Error('private cache getter must not run')}})", "private-require-owner.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(private_owner);
+    for ([_][]const u8{ "private-unregistered-state", "\x00private-unregistered-state" }) |name| {
+        const retained = c.JS_DupValue(engine.context, private_owner);
+        engine.native_module_values.put(engine.gpa, name, retained) catch |err| {
+            engine.freeValue(retained);
+            return err;
+        };
+        const escaped = try engine.requireBuiltin(name);
+        defer if (escaped) |value| engine.freeValue(value);
+        try std.testing.expect(escaped == null);
+        if (engine.normalizeRequire("private-require-entry.cjs", name)) |normalized| {
+            engine.gpa.free(normalized);
+            return error.PrivateNativeCacheEscaped;
+        } else |err| {
+            try std.testing.expectEqual(error.NativeModuleLoaderUnavailable, err);
+        }
+    }
+    const public_owner = try engine.eval("({marker:42})", "public-require-owner.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(public_owner);
+    try engine.registerValueModule("public-require-fixture", public_owner);
+    const public_value = (try engine.requireBuiltin("public-require-fixture")) orelse return error.PublicNativeModuleMissing;
+    defer engine.freeValue(public_value);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, public_owner, public_value));
+    const public_name = try engine.normalizeRequire("private-require-entry.cjs", "public-require-fixture");
+    defer engine.gpa.free(public_name);
+    try std.testing.expectEqualStrings("public-require-fixture", public_name);
+}
+
+test "native module allocation failures do not install hidden modules before retry" {
+    for (0..4) |failure_offset| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+        const engine = try Engine.init(failing.allocator(), .{});
+        defer engine.deinit();
+        const exports = try engine.checked(c.JS_NewObject(engine.context));
+        defer engine.freeValue(exports);
+        try std.testing.expect(c.JS_DefinePropertyValueStr(engine.context, exports, "value", c.pi_js_int32(engine.context, 42), c.JS_PROP_C_W_E) >= 0);
+        failing.fail_index = failing.alloc_index + failure_offset;
+        try std.testing.expectError(error.OutOfMemory, engine.registerValueModule("native:retry", exports));
+        failing.fail_index = std.math.maxInt(usize);
+        try std.testing.expectError(error.JavaScriptException, engine.evalModule("import {value} from 'native:retry'; export const answer=value;", "missing-module-probe.js"));
+        engine.beginInvocation();
+        try engine.registerValueModule("native:retry", exports);
+        const namespace = try engine.evalModule("import {value} from 'native:retry'; export const answer=value;", "healthy-module-probe.js");
+        defer engine.freeValue(namespace);
+        const answer = try engine.checked(c.JS_GetPropertyStr(engine.context, namespace, "answer"));
+        defer engine.freeValue(answer);
+        var number: i32 = 0;
+        try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt32(engine.context, &number, answer));
+        try std.testing.expectEqual(@as(i32, 42), number);
+        try std.testing.expectError(error.InvalidNativeModuleName, engine.registerValueModule("invalid\x00name", exports));
+    }
+}
+
+test "linked C engine executes modern extension language without Node" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const value = try engine.eval("JSON.stringify({ value: 2 ** 5, text: 'hello 🌍', spread: [...new Set([1, 1, 2])] })", "fixture.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(value);
+    const text = try engine.toString(value);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"value\":32,\"text\":\"hello 🌍\",\"spread\":[1,2]}", text);
+}
+
+test "linked C engine settles promises and async generator code" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const promise = try engine.eval("(async () => { async function* values() { yield 2; yield 3; } let total = 0; for await (const value of values()) total += value; return total; })()", "async-fixture.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(promise);
+    const result = try engine.awaitValue(promise);
+    defer engine.freeValue(result);
+    const text = try engine.stringify(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("5", text);
+}
+
+test "linked C engine reports rejected promises and syntax errors" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try std.testing.expectError(error.JavaScriptException, engine.eval("const = invalid;", "invalid-fixture.js", c.JS_EVAL_TYPE_GLOBAL));
+    try std.testing.expect(engine.last_error != null);
+    engine.beginInvocation();
+    const promise = try engine.eval("Promise.reject(new Error('extension rejected'))", "rejected-fixture.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(promise);
+    try std.testing.expectError(error.JavaScriptException, engine.awaitValue(promise));
+    try std.testing.expect(std.mem.indexOf(u8, engine.last_error.?, "extension rejected") != null);
+}
+
+test "linked C engine interrupts infinite loops and supports cancellation" {
+    const engine = try Engine.init(std.testing.allocator, .{ .interrupt_budget = 2 });
+    defer engine.deinit();
+    try std.testing.expectError(error.JavaScriptException, engine.eval("while (true) {}", "hostile-fixture.js", c.JS_EVAL_TYPE_GLOBAL));
+    engine.beginInvocation();
+    engine.cancel();
+    try std.testing.expectError(error.JavaScriptException, engine.eval("while (true) {}", "cancel-fixture.js", c.JS_EVAL_TYPE_GLOBAL));
+}
+
+test "native module loader resolves relative imports and top level await" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try engine.registerModule("helpers/value.js", "export const value = 41;");
+    const namespace = try engine.evalModule("import { value } from './helpers/value.js'; export const answer = await Promise.resolve(value + 1); export default (name) => `hello ${name}`;", "entry.js");
+    defer engine.freeValue(namespace);
+    const answer = c.JS_GetPropertyStr(engine.context, namespace, "answer");
+    defer engine.freeValue(answer);
+    const encoded = try engine.stringify(answer);
+    defer std.testing.allocator.free(encoded);
+    try std.testing.expectEqualStrings("42", encoded);
+    const factory = c.JS_GetPropertyStr(engine.context, namespace, "default");
+    defer engine.freeValue(factory);
+    const name = c.JS_NewString(engine.context, "pi");
+    defer engine.freeValue(name);
+    var arguments = [_]c.JSValue{name};
+    const result = try engine.checked(c.JS_Call(engine.context, factory, c.pi_js_undefined(), 1, &arguments));
+    defer engine.freeValue(result);
+    const greeting = try engine.toString(result);
+    defer std.testing.allocator.free(greeting);
+    try std.testing.expectEqualStrings("hello pi", greeting);
+}
+
+test "native module loader rejects missing dependencies and duplicate registrations" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try engine.registerModule("helper.js", "export const value = 1;");
+    try std.testing.expectError(error.DuplicateExtensionModule, engine.registerModule("helper.js", "export const value = 2;"));
+    try std.testing.expectError(error.JavaScriptException, engine.evalModule("import './missing.js';", "missing-entry.js"));
+    try std.testing.expect(engine.last_error != null);
+}
+
+test "extension calls a Zig host function through the direct C ABI" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const Add = struct {
+        fn call(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+            if (argc != 2) return c.JS_ThrowTypeError(context, "nativeAdd expects two integer arguments");
+            var left: i32 = 0;
+            var right: i32 = 0;
+            if (c.JS_ToInt32(context, &left, argv[0]) < 0 or c.JS_ToInt32(context, &right, argv[1]) < 0) return c.JS_ThrowTypeError(context, "nativeAdd expects integers");
+            const value = std.math.add(i32, left, right) catch return c.JS_ThrowRangeError(context, "nativeAdd overflow");
+            return c.pi_js_int32(context, value);
+        }
+    };
+    try engine.bindFunction("nativeAdd", Add.call, 2);
+    const value = try engine.eval("nativeAdd(19, 23)", "native-host-fixture.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(value);
+    const encoded = try engine.stringify(value);
+    defer std.testing.allocator.free(encoded);
+    try std.testing.expectEqualStrings("42", encoded);
+    try std.testing.expectError(error.JavaScriptException, engine.eval("nativeAdd(1)", "native-argument-fixture.js", c.JS_EVAL_TYPE_GLOBAL));
+}
+
+test "extension imports native object exports without a JavaScript bridge module" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const exports = c.JS_NewObject(engine.context);
+    defer engine.freeValue(exports);
+    try std.testing.expect(c.JS_SetPropertyStr(engine.context, exports, "answer", c.pi_js_int32(engine.context, 42)) >= 0);
+    try engine.registerValueModule("@pi/native", exports);
+    try std.testing.expectError(error.DuplicateExtensionModule, engine.registerValueModule("@pi/native", exports));
+    try std.testing.expectError(error.DuplicateExtensionModule, engine.registerModule("@pi/native", "export const answer = 0;"));
+    const namespace = try engine.evalModule("import { answer } from '@pi/native'; export const result = answer;", "native-import.js");
+    defer engine.freeValue(namespace);
+    const result = c.JS_GetPropertyStr(engine.context, namespace, "result");
+    defer engine.freeValue(result);
+    const encoded = try engine.stringify(result);
+    defer std.testing.allocator.free(encoded);
+    try std.testing.expectEqualStrings("42", encoded);
+}

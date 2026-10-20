@@ -88,7 +88,7 @@ pub const Owner = struct {
     }
     fn record(s: *a.Scope, err: anyerror) void {
         s.boundary.escaping();
-        if (err == error.OutOfMemory and !s.boundary.fatal) {
+        if (err == error.OutOfMemory and !s.boundary.isFatal()) {
             _ = s.engine.throwNativeOutOfMemoryFatal();
             s.boundary.escaping();
         }

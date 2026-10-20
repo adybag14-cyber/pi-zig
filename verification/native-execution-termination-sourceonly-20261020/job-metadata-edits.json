@@ -1,0 +1,166 @@
+{
+  "base_c_sha256": "A154A207BEEC93ABB563BC0BED52C390825766AA5950777B55FF1D7815F6EC01",
+  "edits": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "job retains actual Promise metadata",
+      "before": "    JSValue continuation_preserved_embedder_data;\n    int argc;\n    JSValue argv[];\n} JSJobEntry;",
+      "after": "    JSValue continuation_preserved_embedder_data;\n    /* The actual reaction capability result or thenable target, never\n       inferred from a resolving function or guest property. */\n    JSValue promise;\n    int argc;\n    JSValue argv[];\n} JSJobEntry;",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "private enqueue accepts borrowed Promise metadata",
+      "before": "int JS_EnqueueJob(JSContext *ctx, JSJobFunc *job_func,\n                  int argc, JSValueConst *argv)\n",
+      "after": "static int js_pi_enqueue_job(JSContext *ctx, JSJobFunc *job_func,\n                              int argc, JSValueConst *argv,\n                              JSValueConst promise)\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "job metadata owns one real value",
+      "before": "    e->argc = argc;\n    for(i = 0; i < argc; i++) {\n        e->argv[i] = js_dup(argv[i]);\n",
+      "after": "    e->promise = js_dup(promise);\n    e->argc = argc;\n    for(i = 0; i < argc; i++) {\n        e->argv[i] = js_dup(argv[i]);\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "public generic enqueue has no Promise metadata",
+      "before": "    list_add_tail(&e->link, &rt->job_list);\n    return 0;\n}\n\n/* Only actual pending reasons participate",
+      "after": "    list_add_tail(&e->link, &rt->job_list);\n    return 0;\n}\n\nint JS_EnqueueJob(JSContext *ctx, JSJobFunc *job_func,\n                  int argc, JSValueConst *argv)\n{\n    return js_pi_enqueue_job(ctx, job_func, argc, argv, JS_UNDEFINED);\n}\n\n/* Only actual pending reasons participate",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "selected-context enqueue accepts actual Promise",
+      "before": "                                  JSValueConst execution_context,\n                                  JSValueConst continuation_data)\n",
+      "after": "                                  JSValueConst execution_context,\n                                  JSValueConst continuation_data,\n                                  JSValueConst promise)\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "selected-context enqueue forwards metadata",
+      "before": "    result = JS_EnqueueJob(ctx, job_func, argc, argv);\n",
+      "after": "    result = js_pi_enqueue_job(ctx, job_func, argc, argv, promise);\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "existing executed-job cleanup releases new metadata",
+      "before": "    js_native_async_release(ctx, res, &pending);\n    js_free(ctx, e);\n",
+      "after": "    js_native_async_release(ctx, res, &pending);\n    js_native_async_release(ctx, e->promise, &pending);\n    js_free(ctx, e);\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "runtime teardown releases queued metadata",
+      "before": "        for(i = 0; i < e->argc; i++)\n            JS_FreeValueRT(rt, e->argv[i]);\n        js_free_rt(rt, e);\n",
+      "after": "        for(i = 0; i < e->argc; i++)\n            JS_FreeValueRT(rt, e->argv[i]);\n        JS_FreeValueRT(rt, e->promise);\n        js_free_rt(rt, e);\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "reaction retains genuine capability Promise",
+      "before": "    JSValue continuation_preserved_embedder_data;\n} JSPromiseReactionData;",
+      "after": "    JSValue continuation_preserved_embedder_data;\n    JSValue promise;\n} JSPromiseReactionData;",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "new reaction root retires through actual pending reducer",
+      "before": "        JS_FreeValueRT(rt, rd->continuation_preserved_embedder_data);\n        js_pi_continuation_take_pending_rt(rt, &pending);\n        if (pending.present)\n",
+      "after": "        JS_FreeValueRT(rt, rd->continuation_preserved_embedder_data);\n        js_pi_continuation_take_pending_rt(rt, &pending);\n        {\n            JSValue promise = rd->promise;\n            rd->promise = JS_UNDEFINED;\n            JS_FreeValueRT(rt, promise);\n        }\n        js_pi_continuation_take_pending_rt(rt, &pending);\n        if (pending.present)\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "reaction metadata is a real graph edge",
+      "before": "            JS_MarkValue(rt, rd->continuation_preserved_embedder_data, mark_func);\n",
+      "after": "            JS_MarkValue(rt, rd->continuation_preserved_embedder_data, mark_func);\n            JS_MarkValue(rt, rd->promise, mark_func);\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "perform then declaration takes actual result",
+      "before": "                                            JSValueConst *cap_resolving_funcs);",
+      "after": "                                            JSValueConst *cap_resolving_funcs,\n                                            JSValueConst cap_promise);",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "perform then definition takes actual result",
+      "before": "                                            JSValueConst *cap_resolving_funcs)\n{",
+      "after": "                                            JSValueConst *cap_resolving_funcs,\n                                            JSValueConst cap_promise)\n{",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "reaction captures actual result at registration",
+      "before": "        rd->continuation_preserved_embedder_data =\n            js_dup(ctx->rt->continuation_preserved_embedder_data);\n        rd_array[i] = rd;\n",
+      "after": "        rd->continuation_preserved_embedder_data =\n            js_dup(ctx->rt->continuation_preserved_embedder_data);\n        rd->promise = js_dup(cap_promise);\n        rd_array[i] = rd;\n",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "pending and settled reactions forward captured result",
+      "before": "                               rd->execution_context,\n                               rd->continuation_preserved_embedder_data);",
+      "after": "                               rd->execution_context,\n                               rd->continuation_preserved_embedder_data,\n                               rd->promise);",
+      "count": 2
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "thenable job selects actual resolution target",
+      "before": "        JS_EnqueueJob(ctx, js_promise_resolve_thenable_job, 3, args);",
+      "after": "        js_pi_enqueue_job(ctx, js_promise_resolve_thenable_job, 3, args, promise);",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "native Await ignored capability has no result Promise",
+      "before": "    status = perform_promise_then(ctx, promise, vc(resolving_funcs), vc(ignored_funcs));",
+      "after": "    status = perform_promise_then(ctx, promise, vc(resolving_funcs),\n                                  vc(ignored_funcs), JS_UNDEFINED);",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "source Await ignored capability has no result Promise",
+      "before": "            res = perform_promise_then(ctx, promise,\n                                       vc(resolving_funcs),\n                                       vc(resolving_funcs1));",
+      "after": "            res = perform_promise_then(ctx, promise,\n                                       vc(resolving_funcs),\n                                       vc(resolving_funcs1), JS_UNDEFINED);",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "generator Await ignored capability has no result Promise",
+      "before": "    res = perform_promise_then(ctx, promise,\n                               vc(resolving_funcs),\n                               vc(resolving_funcs1));",
+      "after": "    res = perform_promise_then(ctx, promise,\n                               vc(resolving_funcs),\n                               vc(resolving_funcs1), JS_UNDEFINED);",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "generator result Await ignored capability has no result Promise",
+      "before": "    res = perform_promise_then(ctx, promise,\n                               vc(resolving_funcs1),\n                               vc(resolving_funcs));",
+      "after": "    res = perform_promise_then(ctx, promise,\n                               vc(resolving_funcs1),\n                               vc(resolving_funcs), JS_UNDEFINED);",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "intrinsic then selects actual new Promise",
+      "before": "    ret = perform_promise_then(ctx, promise, handlers, vc(resolving_funcs));",
+      "after": "    ret = perform_promise_then(ctx, promise, handlers, vc(resolving_funcs),\n                               result_promise);",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "species then selects actual capability result",
+      "before": "    ret = perform_promise_then(ctx, this_val, argv, vc(resolving_funcs));",
+      "after": "    ret = perform_promise_then(ctx, this_val, argv, vc(resolving_funcs),\n                               result_promise);",
+      "count": 1
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "label": "async from sync selects actual capability Promise",
+      "before": "        res = perform_promise_then(ctx, value_wrapper_promise,\n                                   vc(resolve_reject),\n                                   vc(resolving_funcs));",
+      "after": "        res = perform_promise_then(ctx, value_wrapper_promise,\n                                   vc(resolve_reject),\n                                   vc(resolving_funcs), promise);",
+      "count": 1
+    }
+  ]
+}

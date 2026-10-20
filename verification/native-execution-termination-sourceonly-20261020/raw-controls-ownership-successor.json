@@ -1,0 +1,23 @@
+{
+  "base_sha256": "B97F89FA2DF0BD11A3B5E5C9867D7B35D65ECAD8085F675DD0F027D39F36839C",
+  "successor_sha256": "A340E69DDA8262266CA758FEE014072DEB04C2E2DD28A67881757C9C29E0DE21",
+  "edits": [
+    {
+      "label": "declaration3 own actual reason through assertions",
+      "before": "        const actual = try f.pending();\n        try std.testing.expect(c.JS_IsStrictEqual(f.context.?, reason, actual));\n        try std.testing.expectEqual(fatal, c.JS_IsUncatchableError(actual));\n        c.JS_FreeValue(f.context.?, actual);",
+      "after": "        {\n            const actual = try f.pending(); defer c.JS_FreeValue(f.context.?, actual);\n            try std.testing.expect(c.JS_IsStrictEqual(f.context.?, reason, actual));\n            try std.testing.expectEqual(fatal, c.JS_IsUncatchableError(actual));\n        }"
+    },
+    {
+      "label": "declaration6 own actual reason through assertion",
+      "before": "    const actual = try f.pending();\n    try std.testing.expect(c.JS_IsStrictEqual(f.context.?, probe.reasons[0], actual));\n    c.JS_FreeValue(f.context.?, actual);",
+      "after": "    {\n        const actual = try f.pending(); defer c.JS_FreeValue(f.context.?, actual);\n        try std.testing.expect(c.JS_IsStrictEqual(f.context.?, probe.reasons[0], actual));\n    }"
+    },
+    {
+      "label": "declaration7 obtain a separately proven actual fatal classification",
+      "before": "    try std.testing.expect(c.JS_IsUncatchableError(first));\n    try std.testing.expect(c.JS_PiNativePendingReplaceClassified(f.runtime.?,\n        owned_first, false, owned_second, true));",
+      "after": "    try std.testing.expect(c.JS_IsUncatchableError(first));\n    c.JS_SetUncatchableError(f.context.?, second);\n    _ = c.JS_Throw(f.context.?, c.JS_DupValue(f.context.?, second));\n    const owned_second_fatal = try f.pending(); defer c.JS_FreeValue(f.context.?, owned_second_fatal);\n    try std.testing.expect(c.JS_IsUncatchableError(owned_second_fatal));\n    c.JS_ClearUncatchableError(f.context.?, second);\n    try std.testing.expect(c.JS_PiNativePendingReplaceClassified(f.runtime.?,\n        owned_first, false, owned_second_fatal, true));"
+    }
+  ],
+  "declared_tests": 30,
+  "scope": "source-only causal controls; no production or execution"
+}

@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "path": "build.zig",
+  "base_sha256": "B6F18B479B12F510D65DD83672E06AC2B0BADC395B050CC0C3A16FD399954D2A",
+  "base_bytes": 476918,
+  "before": "        const node_callbacks = b.addTest(.{\n",
+  "after": "        const node_stream_resource = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_stream_resource_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native Node stream resource\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_stream_resource.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_stream_resource.root_module, typescript_parser);\n        linkSqlite(node_stream_resource.root_module, sqlite_lib_dir, sqlite_library);\n        node_stream_resource.root_module.addImport(\"catalog_tool\", catalog_tool);\n        if (target.result.os.tag == .windows) {\n            node_stream_resource.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_stream_resource.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-stream-resource\", \"Install eight actual native StreamResource lifetime controls without execution\").dependOn(&b.addInstallArtifact(node_stream_resource, .{ .dest_sub_path = b.fmt(\"native-node-stream-resource{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n        const node_callbacks = b.addTest(.{\n",
+  "added_lines": 13,
+  "target": "build-native-node-stream-resource",
+  "artifact": "native-node-stream-resource",
+  "root": "src/native_node_stream_resource_test.zig",
+  "filter": "native Node stream resource",
+  "declarations": 8,
+  "scope": "Install-only insertion inside the existing Windows/Linux network-available guard before the actual callback-scope root. The existing Engine/QuickJS/TypeScript/sqlite/catalog graph and platform links are reused. No build.zig edit, duplicate network graph, run edge or execution."
+}

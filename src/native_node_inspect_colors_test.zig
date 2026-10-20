@@ -34,8 +34,11 @@ const Probe = struct {
         if (!self.enabled or self.fail_on == null or self.fail_on.? != token.index) return;
         self.fail_on = null;
         const engine = self.engine orelse return;
+        var invocation: v.em.Engine.NativeInvocation = .{};
+        engine.enterNativeInvocation(&invocation);
         _ = engine.throwNativeOutOfMemoryFatal();
         engine.freeValue(c.JS_GetException(engine.context));
+        engine.freeValue(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined()));
     }
 };
 var active_probe: ?*Probe = null;
@@ -64,9 +67,11 @@ fn failOn(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue
 }
 fn fatal(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = v.em.Engine.fromContext(context.?);
+    var invocation: v.em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
     _ = engine.throwNativeOutOfMemoryFatal();
     engine.freeValue(c.JS_GetException(context));
-    return c.pi_js_undefined();
+    return engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());
 }
 fn privateData(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = v.em.Engine.fromContext(context.?);

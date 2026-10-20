@@ -1,0 +1,269 @@
+{
+  "status": "source-only; no build, metadata, runtime or native execution",
+  "base_commit": "5ddf165d802280e22c3a1efd4c048b956bbbacf4",
+  "source_paths": [
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "src/native_vm_execution_termination_test.zig",
+    "build.zig"
+  ],
+  "target": "build-native-vm-execution-termination",
+  "declared_names": 30,
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2361259,
+      "sha256": "96843FA1E0527ECFE70FA2CC6F47C8C3A6A056932456F88A93F981D2297657DE"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 104232,
+      "sha256": "840A2BD84BE0A32046BF09F047C1C646114523343353D7EF6B7DF3003433DB1A"
+    },
+    {
+      "path": "src/native_vm_execution_termination_test.zig",
+      "bytes": 59079,
+      "sha256": "164F8DCA345A71FA43D2894E8F07173A04304FDB6E0BED5FCA9EC3277E304EA8"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 417045,
+      "sha256": "E4ACD05A7442E19730668C6B37FEAF4707400D7740459D472BD882B4B64F6DE4"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/active-job-retirement-successor.json",
+      "bytes": 1623,
+      "sha256": "8C25D33774B9B10433066121BA0CD8B0EBB9610569E9F1427C748493260B1158"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/authority/isolate.v24.13.cc",
+      "bytes": 296824,
+      "sha256": "EEA4CAC8477AE94429B28D2369BECC2DF00E0002A2664AC559435A802A40B2D0"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/authority/microtask-queue.v24.13.cc",
+      "bytes": 11313,
+      "sha256": "10755841F920DABD0B4174B60F14B17DC30E25EFB216B3B9B7EB0A025DA44209"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/authority/stack-guard.cc",
+      "bytes": 14056,
+      "sha256": "0AC88E7E8292A349CB4AC01EE43E0556080DBFB6AE9471FDF0BF2A358290CE0C"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/authority/stack-guard.h",
+      "bytes": 11426,
+      "sha256": "0639E001BACDFBD37FC4D7DEDFAF637FA91D5130A9EEC01DBE199C835C17787D"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/authority/v8-normal-promise-hook-proof.json",
+      "bytes": 1537,
+      "sha256": "8E16A8DE4C4D6A74F303E2135325CF1DAECDEF937EDDB44E1F171B0FCD67342D"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/authority/v8-runtime-promise.v24.13.cc",
+      "bytes": 8083,
+      "sha256": "9F750D31091B37975B3F3F7A7CAE5136E97F3DA726631AE5F711FF98BBF1D7D6"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/authority/v8-termination-job-and-cancel-proof.json",
+      "bytes": 28943,
+      "sha256": "F3CB7064BC7ADDF7438663A0BD593663A3DC77950A5FDC73211798533574A8B9"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/build-intake.json",
+      "bytes": 1159,
+      "sha256": "9BF1FBDBE890B0B4F85A9A92950252D1B319011DA775D1A503672EDD567A071F"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/callback-gateway-intake.before-node-function.json",
+      "bytes": 2379,
+      "sha256": "A7285E3B18A6E994CB0C35CA8F68EDB6AE3AC2EC00961752B6914F5BB486C759"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/callback-gateway-intake.json",
+      "bytes": 4077,
+      "sha256": "37F9A682284DB03806AEF8D4E4ADED50EA8A0F2A46404E66AE6CA6659CF27D50"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/classified-pending-successor.json",
+      "bytes": 4624,
+      "sha256": "BDF052BB44E9447D3ABA2E6975DA2F7A4188A08A342610CD1BC4257F498CEBE4"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/complete-source-intake.json",
+      "bytes": 94828,
+      "sha256": "D922B7EAD3316F74D9F8F06C092A66A4662958546BAF89A9EEB84271D38C1B9D"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/engine-edits-authored.json",
+      "bytes": 25028,
+      "sha256": "AE79359E665F37140616F97E9E114FF6B4ED08A6B506CED9646489B5B2179FD7"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/engine-intake.json",
+      "bytes": 28602,
+      "sha256": "F42CE0C3F1F2548CC677EAF5CCE43752BB014653851D51C63898801BFF3F3018"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/engine.main-base.zig",
+      "bytes": 96591,
+      "sha256": "5B3B91B0053508AAC9D4C9951CEF3F4B74D1A154342CD33FE21BE25E03EE3B0F"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/engine.successor.zig",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/foundation-edits.json",
+      "bytes": 11645,
+      "sha256": "CD95C983AE8B8E883728F663876D2E39F9D7C8BC3A064AD341ACC13C6ECAA684"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/job-metadata-edits.json",
+      "bytes": 10505,
+      "sha256": "B2A67BC77EDC8C780F7EAA2719CE5F070AFC8CE5BEBAEAB54704C5CB329E8278"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/native-abrupt-result-successor.json",
+      "bytes": 2412,
+      "sha256": "A0889F7AA18D7B8A1D39AA441EB39B4849871E54C53A719D01B9B8EA36B62464"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/native_async_function.zig.main-base",
+      "bytes": 10475,
+      "sha256": "A8F1F0BCCF185093A215AE753C12ADA6A4E54EA156F946A59612523D78086694"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/native_async_function.zig.successor",
+      "bytes": 10559,
+      "sha256": "841611400E3F5BF3D9190C60CAFC8A0365E9174CECC50EB1582EAF7AD2F206AC"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/native_node_function.zig.main-base",
+      "bytes": 14346,
+      "sha256": "469B1CFE5B3C589881533EA38EA45163BE4282C29234B11EDAA82DA1F557B73B"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/native_node_function.zig.successor",
+      "bytes": 14430,
+      "sha256": "6683D5D3934E56DDA41200DD9AAF86474FDA901B5F5CD7033218EC0AC82CFE52"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/native_node_module_callable.zig.main-base",
+      "bytes": 12697,
+      "sha256": "D54499FAEAF3FFB935EA45CC427223972C5FA6CC78C85932A83F161CF7E97F65"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/native_node_module_callable.zig.successor",
+      "bytes": 12781,
+      "sha256": "C26485A20B34E0A292FCC6EDFBF1EF58794864EB4D70896A170C9677C5A9B491"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/native_sdk.zig.main-base",
+      "bytes": 164574,
+      "sha256": "22EA10685F93FC7CB9D06C346978BE15DBB43A879042059DFBE9054687756907"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/native_sdk.zig.successor",
+      "bytes": 164658,
+      "sha256": "E1B8911FD251C9CBAC710EFB8F6C41728F0DDC9C3E0CB6AB7301AFC474D8CCF3"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/native_typebox_continuation.zig.main-base",
+      "bytes": 25609,
+      "sha256": "69286C144813B1369F303485E6831AE5103B630E006E9D936A7DC5DD7127708A"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/native_typebox_continuation.zig.successor",
+      "bytes": 25693,
+      "sha256": "521944FB6811DE25C2D84022B7B2DDE199381DEA47731E112AD79803030EF50C"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/ordinary-hook-edits.json",
+      "bytes": 13094,
+      "sha256": "64F69F0F03A5B90785F85C97E9116E6B3FF7DB4107C683E215F070369A96618B"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/peer-receipts/modules-engine-gateway-receipt.json",
+      "bytes": 6131,
+      "sha256": "7A08BE06C5702CADE32B795556DECAE12A13662CD376AD3943372B1CADE13D94"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/peer-receipts/modules-queue-receipt.json",
+      "bytes": 1719,
+      "sha256": "29A322B483AE4713CE47547868F13B47FF35D0D208D7177CDF78FA97391DBD05"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/peer-receipts/modules-raw30-controls-receipt.json",
+      "bytes": 3392,
+      "sha256": "74ED965F54915423AFA0F1C6E75E49825DD001714BD15A350041E374296BF305"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/peer-review-record.json",
+      "bytes": 2191,
+      "sha256": "8D7D1295F6D353F94D064C78CDAAC0780F19A049CAB50C936A79E7B167AB43D6"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/pending-classification-successor.json",
+      "bytes": 2225,
+      "sha256": "E072CAB7AE1C96D6584A9B6BBD975D4607AA1730C5532BF44FC863D02BA27646"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/queue-edits.json",
+      "bytes": 20413,
+      "sha256": "301CB0BE13C282ACD8C41C2FFD7FDC04B81AFE29BA17176C3E2DFD93E3A33112"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/queue-pending-successor.json",
+      "bytes": 1424,
+      "sha256": "F55ECF61C602D5459A7714EE61A733D26333998B6DD2DA104DE1A6474A97C1B0"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/raw-controls-ownership-successor.json",
+      "bytes": 2275,
+      "sha256": "9A644251678279C0D77D4A751D724664263AA6EF3748F73F8082BE34FBE4DC01"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/raw-job-reason-cleanup-successor.json",
+      "bytes": 721,
+      "sha256": "0A60294860BF29AB49936B979C45272F1D00D154119EC48B074D41AF4C73E7A3"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/README.md",
+      "bytes": 7948,
+      "sha256": "87C8118B73A353E37BC3D5FB4E479004C4EB3658A22F0C06699E356FE7C860B6"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/retained-peer-and-authority-copies.json",
+      "bytes": 2868,
+      "sha256": "8C8ACB31015D5361440FD740E869D2A48C2389ED72964130B7FE2896B345DC7D"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/source-investigation.json",
+      "bytes": 43951,
+      "sha256": "7BC8E78950A5972D5171FD357E6A1925B5466EFAD2E6BAB8FCFE3C2AE301EE3B"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/suppressed-event-lease-successor.json",
+      "bytes": 3672,
+      "sha256": "26ECB5308BA1CCD9316494F1D4B8AE3FF5F3EBCF2BF6470283F3CE6497FF4913"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/test-names.json",
+      "bytes": 3684,
+      "sha256": "568E4ECF0A6C7DB2E64B09989BA218E90B5C75978CFA3437E7671587FA9D3C33"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/unwind-edits.json",
+      "bytes": 5742,
+      "sha256": "A7D10E7D53B5564BF0D7FD2A3023C79FBE5E82546CB987F8B74415881762C41E"
+    },
+    {
+      "path": "verification/native-execution-termination-sourceonly-20261020/unwind-site-proof.json",
+      "bytes": 4830,
+      "sha256": "E06E7824230B668E2CB16A6D744DA488A02FA91E3BB23370B28B87C21044F6E6"
+    }
+  ]
+}
