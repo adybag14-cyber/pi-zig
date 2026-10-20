@@ -20,6 +20,7 @@ const io = @import("native_node_fs_request_io.zig");
 const check = @import("native_node_check_failure.zig");
 const c = a.c;
 const uv = io.uv;
+const native_uv = @import("native_node_stream_resource.zig").uv;
 
 /// The original FS_ASYNC_TRACE_BEGIN0/END1 operations, compiled by the actual
 /// native trace owner. The identity is FileHandleReadWrap*, not uv_fs_t*.
@@ -60,12 +61,12 @@ pub fn Type(comptime Handle: type) type {
         /// in acquireWrap's inner Source HandleScope.
         pub fn start(s: *a.Scope, handle: *Handle) !c_int {
             const state = handle.getReadState();
-            if (state.closed or state.closing) return uv.UV_EOF;
+            if (state.closed or state.closing) return native_uv.UV_EOF;
             state.reading = true;
             if (state.current_read != null) return 0;
             if (state.read_length == 0) {
                 handle.getStreamBase().resource.emitRead(
-                    uv.UV_EOF, std.mem.zeroes(uv.uv_buf_t)) catch |err| {
+                    native_uv.UV_EOF, std.mem.zeroes(native_uv.uv_buf_t)) catch |err| {
                     record(s, err);
                     if (!canContinue(s, err)) return err;
                 };
@@ -73,7 +74,7 @@ pub fn Type(comptime Handle: type) type {
             }
 
             var selected: ?*ReadWrap = try acquireWrap(s, handle);
-            if (selected == null) return uv.UV_EBUSY;
+            if (selected == null) return native_uv.UV_EBUSY;
             errdefer if (selected) |request| releasePreserving(s, request);
             const request = selected.?;
             var recommended_read: i64 = 65536;
@@ -114,7 +115,7 @@ pub fn Type(comptime Handle: type) type {
             state.fd = -1;
             if (state.reading and handle.getAsyncWrap().object() != null)
                 try handle.getStreamBase().resource.emitRead(
-                    uv.UV_EOF, std.mem.zeroes(uv.uv_buf_t));
+                    native_uv.UV_EOF, std.mem.zeroes(native_uv.uv_buf_t));
         }
 
         fn acquireWrap(s: *a.Scope, handle: *Handle) !?*ReadWrap {
@@ -244,7 +245,7 @@ pub fn Type(comptime Handle: type) type {
         }
 
         fn completeBody(s: *a.Scope, handle: *Handle,
-            local_request: *?*ReadWrap, result: *isize, buffer: uv.uv_buf_t) !void
+            local_request: *?*ReadWrap, result: *isize, buffer: native_uv.uv_buf_t) !void
         {
             const data = handle.getBindingData();
             if (data.file_handle_read_wrap_freelist.items.len < 100) {
@@ -262,7 +263,7 @@ pub fn Type(comptime Handle: type) type {
                 if (state.read_length >= 0) state.read_length -= result.*;
                 if (state.read_offset >= 0) state.read_offset += result.*;
             }
-            if (result.* == 0) result.* = uv.UV_EOF;
+            if (result.* == 0) result.* = native_uv.UV_EOF;
             handle.getStreamBase().resource.emitRead(result.*, buffer) catch |err| {
                 record(s, err);
                 if (!canContinue(s, err)) return err;

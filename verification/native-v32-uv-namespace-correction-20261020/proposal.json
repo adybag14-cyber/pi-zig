@@ -1,0 +1,536 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-20T18:52:47.633165+00:00",
+  "status": "finite_canonical_uv_namespace_source_correction_peer_pending",
+  "main_source_predecessor_head": "5521437c5581de3232e8fa1a2d017f2f4eb865af",
+  "base_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\handoff-count-separation.json",
+    "sha256": "310687BC2ACDB06CA017E1BF810149C57FEE85BBDBFB686A7523869E2FFE1499"
+  },
+  "production_proposal_sha256": "0753466963F6EB964F582B99E7CD5002A278CB82C13C5F8722A22C9DBC563313",
+  "position_semantics": "Byte offsets into the stated before and after images; apply before offsets descending, invert after offsets descending.",
+  "files": [
+    {
+      "path": "src/extensions/native_node_file_handle_read.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-uv-import-sourceonly-20261020\\original\\src\\extensions\\native_node_file_handle_read.zig",
+        "sha256": "DEEEDCB2CFA51512571574F676091D71E49448FFDF23F1B60DF881B73B9307FD",
+        "bytes": 14225
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-uv-import-sourceonly-20261020\\projected\\src\\extensions\\native_node_file_handle_read.zig",
+        "sha256": "733A1A3F86A2C2761181A4EE67FD679941AEE10F86CC1A44D4F18988C50922E1",
+        "bytes": 14346
+      },
+      "hunks": [
+        {
+          "before_byte_offset": 1272,
+          "after_byte_offset": 1272,
+          "before": "",
+          "after": "const native_uv = @import(\"native_node_stream_resource.zig\").uv;\n",
+          "before_line": 23,
+          "after_line": 23
+        },
+        {
+          "before_byte_offset": 2891,
+          "after_byte_offset": 2956,
+          "before": "            if (state.closed or state.closing) return uv.UV_EOF;\n",
+          "after": "            if (state.closed or state.closing) return native_uv.UV_EOF;\n",
+          "before_line": 63,
+          "after_line": 64
+        },
+        {
+          "before_byte_offset": 3144,
+          "after_byte_offset": 3216,
+          "before": "                    uv.UV_EOF, std.mem.zeroes(uv.uv_buf_t)) catch |err| {\n",
+          "after": "                    native_uv.UV_EOF, std.mem.zeroes(native_uv.uv_buf_t)) catch |err| {\n",
+          "before_line": 68,
+          "after_line": 69
+        },
+        {
+          "before_byte_offset": 3439,
+          "after_byte_offset": 3525,
+          "before": "            if (selected == null) return uv.UV_EBUSY;\n",
+          "after": "            if (selected == null) return native_uv.UV_EBUSY;\n",
+          "before_line": 76,
+          "after_line": 77
+        },
+        {
+          "before_byte_offset": 5562,
+          "after_byte_offset": 5655,
+          "before": "                    uv.UV_EOF, std.mem.zeroes(uv.uv_buf_t));\n",
+          "after": "                    native_uv.UV_EOF, std.mem.zeroes(native_uv.uv_buf_t));\n",
+          "before_line": 117,
+          "after_line": 118
+        },
+        {
+          "before_byte_offset": 12290,
+          "after_byte_offset": 12397,
+          "before": "            local_request: *?*ReadWrap, result: *isize, buffer: uv.uv_buf_t) !void\n",
+          "after": "            local_request: *?*ReadWrap, result: *isize, buffer: native_uv.uv_buf_t) !void\n",
+          "before_line": 247,
+          "after_line": 248
+        },
+        {
+          "before_byte_offset": 13160,
+          "after_byte_offset": 13274,
+          "before": "            if (result.* == 0) result.* = uv.UV_EOF;\n",
+          "after": "            if (result.* == 0) result.* = native_uv.UV_EOF;\n",
+          "before_line": 265,
+          "after_line": 266
+        }
+      ],
+      "native_uv_constant_references": 5,
+      "native_uv_buffer_type_references": 3,
+      "declared_names_unchanged": [],
+      "whole_forward_exact": true,
+      "whole_inverse_exact": true,
+      "sdk_source_unchanged": true,
+      "main_source_unchanged_by_this_operation": true
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_read_wrap.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-uv-import-sourceonly-20261020\\original\\src\\extensions\\native_node_file_handle_read_wrap.zig",
+        "sha256": "1E98E0231C43EF57A35010CD2B531BB2FE23A84D8A6AA9DD0A885286799E6A49",
+        "bytes": 9466
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-uv-import-sourceonly-20261020\\projected\\src\\extensions\\native_node_file_handle_read_wrap.zig",
+        "sha256": "2B55FDB92E199B2074C08EB700211ABF57DE520A5AC6FE4829A6A1B941A8E85C",
+        "bytes": 9538
+      },
+      "hunks": [
+        {
+          "before_byte_offset": 723,
+          "after_byte_offset": 723,
+          "before": "",
+          "after": "const native_uv = @import(\"native_node_stream_resource.zig\").uv;\n",
+          "before_line": 13,
+          "after_line": 13
+        },
+        {
+          "before_byte_offset": 1476,
+          "after_byte_offset": 1541,
+          "before": "        buffer: uv.uv_buf_t = undefined,\n",
+          "after": "        buffer: native_uv.uv_buf_t = undefined,\n",
+          "before_line": 30,
+          "after_line": 31
+        }
+      ],
+      "native_uv_constant_references": 0,
+      "native_uv_buffer_type_references": 1,
+      "declared_names_unchanged": [],
+      "whole_forward_exact": true,
+      "whole_inverse_exact": true,
+      "sdk_source_unchanged": true,
+      "main_source_unchanged_by_this_operation": true
+    },
+    {
+      "path": "src/native_node_file_handle_read_test.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-uv-import-sourceonly-20261020\\original\\src\\native_node_file_handle_read_test.zig",
+        "sha256": "FFAEE39E71868A92884A855B886D296686558C955EA700C0D735F68DB8D2777D",
+        "bytes": 16427
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-uv-import-sourceonly-20261020\\projected\\src\\native_node_file_handle_read_test.zig",
+        "sha256": "FEBE76A6E671D84DCC170F03077113ACF5C45C2D1D2FB5506A486E3A653BE4AE",
+        "bytes": 16566
+      },
+      "hunks": [
+        {
+          "before_byte_offset": 410,
+          "after_byte_offset": 410,
+          "before": "",
+          "after": "const native_uv = @import(\"extensions/native_node_stream_resource.zig\").uv;\n",
+          "before_line": 9,
+          "after_line": 9
+        },
+        {
+          "before_byte_offset": 2074,
+          "after_byte_offset": 2150,
+          "before": "    try std.testing.expectEqual(@as(c_int, uv.UV_EOF), try f.start());\n",
+          "after": "    try std.testing.expectEqual(@as(c_int, native_uv.UV_EOF), try f.start());\n",
+          "before_line": 44,
+          "after_line": 45
+        },
+        {
+          "before_byte_offset": 2241,
+          "after_byte_offset": 2324,
+          "before": "    try std.testing.expectEqual(@as(c_int, uv.UV_EOF), try f.start());\n",
+          "after": "    try std.testing.expectEqual(@as(c_int, native_uv.UV_EOF), try f.start());\n",
+          "before_line": 48,
+          "after_line": 49
+        },
+        {
+          "before_byte_offset": 2904,
+          "after_byte_offset": 2994,
+          "before": "    try expectOutput(f.observations[0], uv.UV_EOF, \"\");\n",
+          "after": "    try expectOutput(f.observations[0], native_uv.UV_EOF, \"\");\n",
+          "before_line": 61,
+          "after_line": 62
+        },
+        {
+          "before_byte_offset": 6684,
+          "after_byte_offset": 6781,
+          "before": "    try expectOutput(f.observations[1], uv.UV_EOF, \"\");\n",
+          "after": "    try expectOutput(f.observations[1], native_uv.UV_EOF, \"\");\n",
+          "before_line": 130,
+          "after_line": 131
+        },
+        {
+          "before_byte_offset": 8478,
+          "after_byte_offset": 8582,
+          "before": "    try expectOutput(f.observations[1], uv.UV_EOF, \"\");\n",
+          "after": "    try expectOutput(f.observations[1], native_uv.UV_EOF, \"\");\n",
+          "before_line": 166,
+          "after_line": 167
+        },
+        {
+          "before_byte_offset": 9799,
+          "after_byte_offset": 9910,
+          "before": "    try expectOutput(f.observations[1], uv.UV_EOF, \"\");\n",
+          "after": "    try expectOutput(f.observations[1], native_uv.UV_EOF, \"\");\n",
+          "before_line": 190,
+          "after_line": 191
+        },
+        {
+          "before_byte_offset": 13978,
+          "after_byte_offset": 14096,
+          "before": "    try expectOutput(f.observations[1], uv.UV_EOF, \"\");\n",
+          "after": "    try expectOutput(f.observations[1], native_uv.UV_EOF, \"\");\n",
+          "before_line": 276,
+          "after_line": 277
+        },
+        {
+          "before_byte_offset": 16203,
+          "after_byte_offset": 16328,
+          "before": "    try expectOutput(f.observations[0], uv.UV_EOF, \"\");\n    try std.testing.expectEqual(@as(c_int, uv.UV_EOF), try f.start());\n",
+          "after": "    try expectOutput(f.observations[0], native_uv.UV_EOF, \"\");\n    try std.testing.expectEqual(@as(c_int, native_uv.UV_EOF), try f.start());\n",
+          "before_line": 324,
+          "after_line": 325
+        }
+      ],
+      "native_uv_constant_references": 9,
+      "native_uv_buffer_type_references": 0,
+      "declared_names_unchanged": [
+        "native FileHandle read closed and closing return EOF before read admission",
+        "native FileHandle zero length emits actual stream EOF without allocating a request",
+        "native FileHandle first read bypasses FSReqCallback construction and retains the real ReadWrap",
+        "native FileHandle repeated start and ReadStop preserve the accepted completion",
+        "native FileHandle bounded offset advances by emitted bytes before inline EOF",
+        "native FileHandle completion uses the live length and preserves the raw trace result",
+        "native FileHandle unbounded restart recycles the same native request through actual EOF",
+        "native FileHandle reentrant onread restarts before old Wrapper and event retirement",
+        "native FileHandle reuse creates a fresh resource and restores the default trigger",
+        "native FileHandle ignored resource Set exception continues reset and real admission",
+        "native FileHandle ordinary onread reason survives restart and the actual second completion",
+        "native FileHandle full freelist releases the completed local after EmitRead",
+        "native FileHandle joined service drains the accepted buffer after JavaScript is disabled",
+        "native FileHandle AfterClose shares the actual flags and emits EOF through StreamBase"
+      ],
+      "whole_forward_exact": true,
+      "whole_inverse_exact": true,
+      "sdk_source_unchanged": true,
+      "main_source_unchanged_by_this_operation": true
+    },
+    {
+      "path": "src/native_node_fs_callback_template_test.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-uv-import-sourceonly-20261020\\original\\src\\native_node_fs_callback_template_test.zig",
+        "sha256": "1DC90343E1BB318344F4C9652C73610B8098AA50D6A3F8B3E9EC0C17BECA8BCC",
+        "bytes": 14838
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-uv-import-sourceonly-20261020\\projected\\src\\native_node_fs_callback_template_test.zig",
+        "sha256": "E084DB5D68A928CF1872FEC2DA6B3DC00A3F182263ACA55CE17277E5835A9D18",
+        "bytes": 14928
+      },
+      "hunks": [
+        {
+          "before_byte_offset": 498,
+          "after_byte_offset": 498,
+          "before": "",
+          "after": "const native_uv = @import(\"extensions/native_node_stream_resource.zig\").uv;\n",
+          "before_line": 10,
+          "after_line": 10
+        },
+        {
+          "before_byte_offset": 13092,
+          "after_byte_offset": 13168,
+          "before": "    try std.testing.expectEqual(@as(c_int, uv.UV_EINVAL),\n",
+          "after": "    try std.testing.expectEqual(@as(c_int, native_uv.UV_EINVAL),\n",
+          "before_line": 241,
+          "after_line": 242
+        },
+        {
+          "before_byte_offset": 13231,
+          "after_byte_offset": 13314,
+          "before": "    try std.testing.expectEqual(@as(c_int, uv.UV_EINVAL),\n",
+          "after": "    try std.testing.expectEqual(@as(c_int, native_uv.UV_EINVAL),\n",
+          "before_line": 243,
+          "after_line": 244
+        }
+      ],
+      "native_uv_constant_references": 2,
+      "native_uv_buffer_type_references": 0,
+      "declared_names_unchanged": [
+        "native FSReqCallback no argument initializes the actual selected FSReqBase defaults",
+        "native FSReqCallback IsTrue accepts only literal true and never coerces an argument",
+        "native FSReqCallback caller local owns a weak actual request and one BindingData pointer",
+        "native FSReqCallback weak finalization removes its actual Entry and releases BindingData",
+        "native FSReqCallback stored InstanceTemplate creates a real blank brand without calling its constructor",
+        "native FSReqCallback stored brand distinguishes the actual FileHandleReadWrap native allocation",
+        "native FSReqCallback inherits actual AsyncWrap methods and constructor descriptors",
+        "native FSReqCallback subclass prototype is selected before its genuine native constructor",
+        "native FSReqCallback throwing new target prototype preserves the reason before native allocation",
+        "native FSReqCallback configuration retains the actual shared Controller once and rejects retired Hub entry",
+        "native FSReqCallback generic storage admits the actual read and retires through the real Wrapper"
+      ],
+      "whole_forward_exact": true,
+      "whole_inverse_exact": true,
+      "sdk_source_unchanged": true,
+      "main_source_unchanged_by_this_operation": true
+    }
+  ],
+  "source_include_evidence": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_uv_service.zig",
+      "sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5",
+      "bytes": 8937,
+      "include_lines": [],
+      "relevant_lines": [
+        {
+          "line": 12,
+          "text": "pub const uv = @cImport({ @cInclude(\"native_uv_tcp.h\"); @cInclude(\"native_uv_fs.h\"); });"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_uv_tcp.h",
+      "sha256": "B6F8D5269B8EF9DC9964E7F356EF1A23DBB483FB9B485C2C6D77D464816B4F45",
+      "bytes": 5344,
+      "include_lines": [
+        {
+          "line": 8,
+          "text": "#include <stddef.h>"
+        },
+        {
+          "line": 9,
+          "text": "#include <stdint.h>"
+        }
+      ],
+      "relevant_lines": [
+        {
+          "line": 24,
+          "text": "    PI_UV_EOF,"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_uv_fs.h",
+      "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+      "bytes": 4931,
+      "include_lines": [
+        {
+          "line": 6,
+          "text": "#include \"native_uv_tcp.h\""
+        },
+        {
+          "line": 7,
+          "text": "#include \"quickjs.h\""
+        }
+      ],
+      "relevant_lines": [
+        {
+          "line": 44,
+          "text": " * UV_EBUSY without changing state. No wrapper, event, backing or request is"
+        },
+        {
+          "line": 60,
+          "text": " * returns UV_EINVAL before admission. Windows requires its real ULONG extent."
+        },
+        {
+          "line": 70,
+          "text": " * whose callback is still pending. A no-in-flight command returns UV_EINVAL."
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C",
+      "bytes": 113474,
+      "include_lines": [
+        {
+          "line": 30,
+          "text": "#include <stdbool.h>"
+        },
+        {
+          "line": 31,
+          "text": "#include <stdio.h>"
+        },
+        {
+          "line": 32,
+          "text": "#include <stdint.h>"
+        },
+        {
+          "line": 33,
+          "text": "#include <string.h>"
+        },
+        {
+          "line": 34,
+          "text": "#include <math.h>"
+        },
+        {
+          "line": 123,
+          "text": "#include <sal.h>"
+        }
+      ],
+      "relevant_lines": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_stream_resource.zig",
+      "sha256": "6CA4CF5CD5E71EAD8C9E6F4FCF0D0075190C853E26978B497389F7D29EBE0AC6",
+      "bytes": 5762,
+      "include_lines": [],
+      "relevant_lines": [
+        {
+          "line": 13,
+          "text": "pub const uv = @import(\"native_node_managed_buffers.zig\").uv;"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_managed_buffers.zig",
+      "sha256": "BE567B795D5129373EEFCF2A7C95E9017C481E020F17472E2C35838689F22B88",
+      "bytes": 2875,
+      "include_lines": [],
+      "relevant_lines": [
+        {
+          "line": 7,
+          "text": "pub const uv = @cImport({ @cInclude(\"uv.h\"); });"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\include\\uv.h",
+      "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C",
+      "bytes": 72810,
+      "include_lines": [
+        {
+          "line": 56,
+          "text": "#include \"uv/errno.h\""
+        },
+        {
+          "line": 57,
+          "text": "#include \"uv/version.h\""
+        },
+        {
+          "line": 58,
+          "text": "#include <stddef.h>"
+        },
+        {
+          "line": 59,
+          "text": "#include <stdio.h>"
+        },
+        {
+          "line": 60,
+          "text": "#include <stdint.h>"
+        },
+        {
+          "line": 61,
+          "text": "#include <math.h>"
+        },
+        {
+          "line": 70,
+          "text": "# include \"uv/win.h\""
+        },
+        {
+          "line": 72,
+          "text": "# include \"uv/unix.h\""
+        }
+      ],
+      "relevant_lines": [
+        {
+          "line": 99,
+          "text": "  XX(EBUSY, \"resource busy or locked\")                                        \\"
+        },
+        {
+          "line": 111,
+          "text": "  XX(EINVAL, \"invalid argument\")                                              \\"
+        },
+        {
+          "line": 150,
+          "text": "  XX(EOF, \"end of file\")                                                      \\"
+        },
+        {
+          "line": 197,
+          "text": "  UV_ERRNO_MAX = UV__EOF - 1"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\include\\uv\\errno.h",
+      "sha256": "4242EDF790E4569EF349026AB4C6E31093334EE5FC02B16ED7A0D9FBACDFFD16",
+      "bytes": 11216,
+      "include_lines": [
+        {
+          "line": 25,
+          "text": "#include <errno.h>"
+        }
+      ],
+      "relevant_lines": [
+        {
+          "line": 32,
+          "text": "#define UV__EOF     (-4095)"
+        },
+        {
+          "line": 102,
+          "text": "# define UV__EBUSY UV__ERR(EBUSY)"
+        },
+        {
+          "line": 104,
+          "text": "# define UV__EBUSY (-4082)"
+        },
+        {
+          "line": 168,
+          "text": "# define UV__EINVAL UV__ERR(EINVAL)"
+        },
+        {
+          "line": 170,
+          "text": "# define UV__EINVAL (-4071)"
+        }
+      ]
+    }
+  ],
+  "canonical_type_chain": [
+    "native_node_stream_resource.zig public uv alias",
+    "native_node_managed_buffers.zig public uv alias",
+    "the single managed-buffer @cImport of uv.h"
+  ],
+  "private_fs_api_chain": [
+    "native_node_fs_request_io.zig public uv alias",
+    "native_node_uv_service.zig public C import of native_uv_tcp.h and native_uv_fs.h",
+    "PiUv FS request API; no uv.h type/constants export"
+  ],
+  "support_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_file_handle_read_test_support.zig",
+    "sha256": "F72A583ED548F7BE10477B0AEFD0F77E3D035FB48F2708324AF2E92EB6CA90EC",
+    "bytes": 23302,
+    "no_missing_uv_type_or_constant_references": true
+  },
+  "unchanged_declared_source_controls": 25,
+  "assertions_unchanged_except_correct_module_qualification": true,
+  "build_install_blocks_unchanged": true,
+  "new_transitive_source_modules": 0,
+  "future_actual_metadata_count": null,
+  "prior_frozen_snapshots_preserved": true,
+  "main_modified": false,
+  "sdk_live_source_modified": false,
+  "compiler_execution": false,
+  "native_execution": false,
+  "test_execution": false,
+  "source_generator_execution": false,
+  "qualification": false
+}

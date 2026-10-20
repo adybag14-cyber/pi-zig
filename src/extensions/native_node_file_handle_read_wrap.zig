@@ -10,6 +10,7 @@ const request_state = @import("native_node_request_state.zig");
 const io = @import("native_node_fs_request_io.zig");
 const c = a.c;
 const uv = io.uv;
+const native_uv = @import("native_node_stream_resource.zig").uv;
 const Scope = a.Scope;
 
 // The complete Node provider macro places FSREQCALLBACK at index 8. This is the
@@ -27,7 +28,7 @@ pub fn Type(comptime Handle: type) type {
         // These two members have the original declaration/ownership order.
         // buffer is assigned only by the real StreamResource EmitAlloc.
         file_handle: *Handle = undefined,
-        buffer: uv.uv_buf_t = undefined,
+        buffer: native_uv.uv_buf_t = undefined,
 
         // Port allocation and partial-construction bookkeeping. The C owner
         // reserves the actual reusable uv_fs_t before the AsyncWrap init hook.

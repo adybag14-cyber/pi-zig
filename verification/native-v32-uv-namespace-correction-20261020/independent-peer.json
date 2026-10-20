@@ -1,0 +1,210 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-20T18:56:31.024220+00:00",
+  "status": "independently_reviewed_canonical_uv_namespace_source_correction",
+  "source_only": true,
+  "predecessor_head": "5521437c5581de3232e8fa1a2d017f2f4eb865af",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-uv-import-sourceonly-20261020\\proposal.json",
+    "sha256": "ADE2B2C28D558A48AE20896E4204360ADADFADD4C30EE72E60C8ED0BB5659407",
+    "bytes": 21484
+  },
+  "files": [
+    {
+      "path": "src/extensions/native_node_file_handle_read.zig",
+      "before_sha256": "DEEEDCB2CFA51512571574F676091D71E49448FFDF23F1B60DF881B73B9307FD",
+      "sha256": "733A1A3F86A2C2761181A4EE67FD679941AEE10F86CC1A44D4F18988C50922E1",
+      "bytes": 14346,
+      "hunks": 7,
+      "declared_names_unchanged": [],
+      "whole_forward_exact": true,
+      "whole_inverse_exact": true,
+      "only_alias_and_native_uv_reference_changes": true,
+      "PiUv_reference_sequence_unchanged": true
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_read_wrap.zig",
+      "before_sha256": "1E98E0231C43EF57A35010CD2B531BB2FE23A84D8A6AA9DD0A885286799E6A49",
+      "sha256": "2B55FDB92E199B2074C08EB700211ABF57DE520A5AC6FE4829A6A1B941A8E85C",
+      "bytes": 9538,
+      "hunks": 2,
+      "declared_names_unchanged": [],
+      "whole_forward_exact": true,
+      "whole_inverse_exact": true,
+      "only_alias_and_native_uv_reference_changes": true,
+      "PiUv_reference_sequence_unchanged": true
+    },
+    {
+      "path": "src/native_node_file_handle_read_test.zig",
+      "before_sha256": "FFAEE39E71868A92884A855B886D296686558C955EA700C0D735F68DB8D2777D",
+      "sha256": "FEBE76A6E671D84DCC170F03077113ACF5C45C2D1D2FB5506A486E3A653BE4AE",
+      "bytes": 16566,
+      "hunks": 9,
+      "declared_names_unchanged": [
+        "native FileHandle read closed and closing return EOF before read admission",
+        "native FileHandle zero length emits actual stream EOF without allocating a request",
+        "native FileHandle first read bypasses FSReqCallback construction and retains the real ReadWrap",
+        "native FileHandle repeated start and ReadStop preserve the accepted completion",
+        "native FileHandle bounded offset advances by emitted bytes before inline EOF",
+        "native FileHandle completion uses the live length and preserves the raw trace result",
+        "native FileHandle unbounded restart recycles the same native request through actual EOF",
+        "native FileHandle reentrant onread restarts before old Wrapper and event retirement",
+        "native FileHandle reuse creates a fresh resource and restores the default trigger",
+        "native FileHandle ignored resource Set exception continues reset and real admission",
+        "native FileHandle ordinary onread reason survives restart and the actual second completion",
+        "native FileHandle full freelist releases the completed local after EmitRead",
+        "native FileHandle joined service drains the accepted buffer after JavaScript is disabled",
+        "native FileHandle AfterClose shares the actual flags and emits EOF through StreamBase"
+      ],
+      "whole_forward_exact": true,
+      "whole_inverse_exact": true,
+      "only_alias_and_native_uv_reference_changes": true,
+      "PiUv_reference_sequence_unchanged": true
+    },
+    {
+      "path": "src/native_node_fs_callback_template_test.zig",
+      "before_sha256": "1DC90343E1BB318344F4C9652C73610B8098AA50D6A3F8B3E9EC0C17BECA8BCC",
+      "sha256": "E084DB5D68A928CF1872FEC2DA6B3DC00A3F182263ACA55CE17277E5835A9D18",
+      "bytes": 14928,
+      "hunks": 3,
+      "declared_names_unchanged": [
+        "native FSReqCallback no argument initializes the actual selected FSReqBase defaults",
+        "native FSReqCallback IsTrue accepts only literal true and never coerces an argument",
+        "native FSReqCallback caller local owns a weak actual request and one BindingData pointer",
+        "native FSReqCallback weak finalization removes its actual Entry and releases BindingData",
+        "native FSReqCallback stored InstanceTemplate creates a real blank brand without calling its constructor",
+        "native FSReqCallback stored brand distinguishes the actual FileHandleReadWrap native allocation",
+        "native FSReqCallback inherits actual AsyncWrap methods and constructor descriptors",
+        "native FSReqCallback subclass prototype is selected before its genuine native constructor",
+        "native FSReqCallback throwing new target prototype preserves the reason before native allocation",
+        "native FSReqCallback configuration retains the actual shared Controller once and rejects retired Hub entry",
+        "native FSReqCallback generic storage admits the actual read and retires through the real Wrapper"
+      ],
+      "whole_forward_exact": true,
+      "whole_inverse_exact": true,
+      "only_alias_and_native_uv_reference_changes": true,
+      "PiUv_reference_sequence_unchanged": true
+    }
+  ],
+  "file_count": 4,
+  "finite_hunk_count": 21,
+  "native_uv_buffer_type_reference_count": 4,
+  "native_uv_constant_reference_count": 16,
+  "added_alias_count": 4,
+  "unchanged_declared_control_count": 25,
+  "source_include_evidence": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_uv_service.zig",
+      "sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5",
+      "bytes": 8937
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_uv_tcp.h",
+      "sha256": "B6F8D5269B8EF9DC9964E7F356EF1A23DBB483FB9B485C2C6D77D464816B4F45",
+      "bytes": 5344
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_uv_fs.h",
+      "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+      "bytes": 4931
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C",
+      "bytes": 113474
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_stream_resource.zig",
+      "sha256": "6CA4CF5CD5E71EAD8C9E6F4FCF0D0075190C853E26978B497389F7D29EBE0AC6",
+      "bytes": 5762
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_managed_buffers.zig",
+      "sha256": "BE567B795D5129373EEFCF2A7C95E9017C481E020F17472E2C35838689F22B88",
+      "bytes": 2875
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\include\\uv.h",
+      "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C",
+      "bytes": 72810
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\include\\uv\\errno.h",
+      "sha256": "4242EDF790E4569EF349026AB4C6E31093334EE5FC02B16ED7A0D9FBACDFFD16",
+      "bytes": 11216
+    }
+  ],
+  "additional_owner_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_request_io.zig",
+      "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "bytes": 14502
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\include\\uv\\win.h",
+      "sha256": "51B6BF729C4C3E66CD89E0B0B0D734998776E675FE0A5EDA9DB77B634EB83EF0",
+      "bytes": 33836
+    }
+  ],
+  "existing_import_closure": [
+    {
+      "path": "src/extensions/native_node_file_handle_read.zig",
+      "before_literal_import_closure_modules": 690,
+      "after_literal_import_closure_modules": 691,
+      "added_modules": [
+        "src/extensions/native_node_stream_resource.zig"
+      ],
+      "removed_modules": [],
+      "cohort_root_module_set_unchanged": null
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_read_wrap.zig",
+      "before_literal_import_closure_modules": 689,
+      "after_literal_import_closure_modules": 690,
+      "added_modules": [
+        "src/extensions/native_node_stream_resource.zig"
+      ],
+      "removed_modules": [],
+      "cohort_root_module_set_unchanged": null
+    },
+    {
+      "path": "src/native_node_file_handle_read_test.zig",
+      "before_literal_import_closure_modules": 697,
+      "after_literal_import_closure_modules": 697,
+      "added_modules": [],
+      "removed_modules": [],
+      "cohort_root_module_set_unchanged": true
+    },
+    {
+      "path": "src/native_node_fs_callback_template_test.zig",
+      "before_literal_import_closure_modules": 697,
+      "after_literal_import_closure_modules": 697,
+      "added_modules": [],
+      "removed_modules": [],
+      "cohort_root_module_set_unchanged": true
+    }
+  ],
+  "findings": [
+    "The four inserted aliases select StreamResource.uv, which directly aliases managed_buffers.uv and its existing uv.h C import. Buffer field, completion parameter, zero buffer and StreamResource emitAlloc/emitRead therefore select the same source type declaration.",
+    "Original io.uv selects the PiUv service C import, whose native_uv_tcp.h/native_uv_fs.h/quickjs.h include chain does not provide uv.h. All PiUv identifiers and call expressions are byte-identical after removing only the finite namespace corrections.",
+    "Every modified source is exactly the original plus one alias line and native_uv qualification for uv_buf_t or UV_*; full before and after bytes are recovered independently by segmented assembly. Control names and all other assertion expressions remain byte-identical.",
+    "Both canonical owner modules already occur in each original installed test-root literal closure, and both complete test-root module sets remain identical after overlaying all four corrected files. Standalone Read and ReadWrap each gain exactly StreamResource as a literal dependency; managed_buffers was already reachable. No new transitive module is introduced at the two cohort roots."
+  ],
+  "concrete_blockers": [],
+  "qualification": false,
+  "compiler_execution": false,
+  "native_execution": false,
+  "test_execution": false,
+  "source_generator_execution": false,
+  "main_modified": false,
+  "sdk_live_source_modified": false,
+  "historical_snapshots_modified": false,
+  "main_clean_after_review": true,
+  "initial_checker_scope_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-uv-namespace-source-peer-attempt1-20261020.json",
+    "sha256": "242358673DA10E97607C57D672CB0E2010E9AE27488553A03489E4DAF7F9F60E",
+    "preserved": true
+  },
+  "cohort_root_source_modules_added": 0,
+  "standalone_production_module_dependency_additions_disclosed": true
+}

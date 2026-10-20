@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-20T18:56:14.274560+00:00",
+  "status": "independent_source_checker_scope_assertion_rejected",
+  "proposal_sha256": "ADE2B2C28D558A48AE20896E4204360ADADFADD4C30EE72E60C8ED0BB5659407",
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\UVNamespacePeer-InitialOverbroadReachabilityCheck-20261020.py",
+    "sha256": "4E124FC05990609D9B9B8305AFC85AF7B7A3EC0F06625949826BFEA4B6006739",
+    "bytes": 8072
+  },
+  "exit_code": 1,
+  "stderr": "Traceback (most recent call last):\r\n  File \"<string>\", line 79, in <module>\r\n    assert (M/'src/extensions/native_node_stream_resource.zig').resolve() in seen\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError\r\n",
+  "overbroad_assertion": "Every original standalone production-module and control-root literal closure already contains StreamResource.",
+  "observed_original_literal_closures": [
+    {
+      "path": "src/extensions/native_node_file_handle_read.zig",
+      "literal_closure_modules": 690,
+      "stream_resource": false,
+      "managed_buffers": true
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_read_wrap.zig",
+      "literal_closure_modules": 689,
+      "stream_resource": false,
+      "managed_buffers": true
+    },
+    {
+      "path": "src/native_node_file_handle_read_test.zig",
+      "literal_closure_modules": 697,
+      "stream_resource": true,
+      "managed_buffers": true
+    },
+    {
+      "path": "src/native_node_fs_callback_template_test.zig",
+      "literal_closure_modules": 697,
+      "stream_resource": true,
+      "managed_buffers": true
+    }
+  ],
+  "finding": "The two test-root closures already include StreamResource; the standalone production-module closures do not. This is a verifier claim-scope negative, with all earlier finite-byte and alias checks passed. No source change or positive peer was written by the failed check.",
+  "correction_scope": "Retain the original failure and require exact before/after module-set equality at both test roots; independently record the exact additional StreamResource dependency at both production modules.",
+  "source_only": true,
+  "native_execution": false,
+  "main_modified": false
+}

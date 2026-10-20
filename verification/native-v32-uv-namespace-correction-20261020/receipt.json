@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-20T18:58:13.758990+00:00",
+  "status": "root_reviewed_and_authorized_source_only_uv_namespace_correction",
+  "predecessor_head": "5521437c5581de3232e8fa1a2d017f2f4eb865af",
+  "source_intake_commit": "5521437c5581de3232e8fa1a2d017f2f4eb865af",
+  "proposal_sha256": "ADE2B2C28D558A48AE20896E4204360ADADFADD4C30EE72E60C8ED0BB5659407",
+  "peer_sha256": "6EDDB24D85B7F876BCBA2802D166DE71702E21AF8CFD3B53E5F3E47B8C4329E5",
+  "applier_sha256": "78D266066F4C48436062AE4D3240A84A078D3E0F540344201BF00E2EBD64EE5B",
+  "source_files": [
+    {
+      "path": "src/extensions/native_node_file_handle_read.zig",
+      "before_sha256": "DEEEDCB2CFA51512571574F676091D71E49448FFDF23F1B60DF881B73B9307FD",
+      "sha256": "733A1A3F86A2C2761181A4EE67FD679941AEE10F86CC1A44D4F18988C50922E1",
+      "bytes": 14346,
+      "hunks": 7
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_read_wrap.zig",
+      "before_sha256": "1E98E0231C43EF57A35010CD2B531BB2FE23A84D8A6AA9DD0A885286799E6A49",
+      "sha256": "2B55FDB92E199B2074C08EB700211ABF57DE520A5AC6FE4829A6A1B941A8E85C",
+      "bytes": 9538,
+      "hunks": 2
+    },
+    {
+      "path": "src/native_node_file_handle_read_test.zig",
+      "before_sha256": "FFAEE39E71868A92884A855B886D296686558C955EA700C0D735F68DB8D2777D",
+      "sha256": "FEBE76A6E671D84DCC170F03077113ACF5C45C2D1D2FB5506A486E3A653BE4AE",
+      "bytes": 16566,
+      "hunks": 9
+    },
+    {
+      "path": "src/native_node_fs_callback_template_test.zig",
+      "before_sha256": "1DC90343E1BB318344F4C9652C73610B8098AA50D6A3F8B3E9EC0C17BECA8BCC",
+      "sha256": "E084DB5D68A928CF1872FEC2DA6B3DC00A3F182263ACA55CE17277E5835A9D18",
+      "bytes": 14928,
+      "hunks": 3
+    }
+  ],
+  "finite_hunks": 21,
+  "whole_forward_inverse_verified": true,
+  "all_other_source_and_assertion_bytes_preserved": true,
+  "unchanged_named_declarations": 25,
+  "canonical_type": "StreamResource.uv -> managed_buffers.uv -> uv.h",
+  "private_fs_api": "PiUv APIs remain in io.uv",
+  "cohort_module_sets_unchanged": true,
+  "standalone_read_and_readwrap_gain_stream_resource": true,
+  "original_proposal_scope_claim_clarified_by_peer": true,
+  "original_checker_scope_negative_preserved": true,
+  "native_execution": false,
+  "application_qualification": false,
+  "production_bridge_removed": false
+}

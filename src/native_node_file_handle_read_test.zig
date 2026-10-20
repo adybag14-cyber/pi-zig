@@ -6,6 +6,7 @@ const support = @import("native_node_file_handle_read_test_support.zig");
 const a = support.a;
 const c = support.c;
 const uv = support.uv;
+const native_uv = @import("extensions/native_node_stream_resource.zig").uv;
 const Fixture = support.Fixture;
 const File = support.File;
 const Read = support.Read;
@@ -41,11 +42,11 @@ test "native FileHandle read closed and closing return EOF before read admission
     var f: Fixture = undefined; try f.init(); defer f.deinit();
     const state = &f.handle.?.read_state;
     state.closed = true;
-    try std.testing.expectEqual(@as(c_int, uv.UV_EOF), try f.start());
+    try std.testing.expectEqual(@as(c_int, native_uv.UV_EOF), try f.start());
     try std.testing.expect(!state.reading);
     state.closed = false;
     state.closing = true;
-    try std.testing.expectEqual(@as(c_int, uv.UV_EOF), try f.start());
+    try std.testing.expectEqual(@as(c_int, native_uv.UV_EOF), try f.start());
     try std.testing.expect(!state.reading);
     try std.testing.expectEqual(@as(usize, 0), f.queueCount());
     try std.testing.expectEqual(@as(usize, 0), f.read_count);
@@ -58,7 +59,7 @@ test "native FileHandle zero length emits actual stream EOF without allocating a
     f.handle.?.read_state.read_length = 0;
     try std.testing.expectEqual(@as(c_int, 0), try f.start());
     try std.testing.expectEqual(@as(usize, 1), f.read_count);
-    try expectOutput(f.observations[0], uv.UV_EOF, "");
+    try expectOutput(f.observations[0], native_uv.UV_EOF, "");
     try std.testing.expectEqual(@as(usize, 0), f.observations[0].freelist);
     try std.testing.expectEqual(@as(usize, 0), f.queueCount());
     try std.testing.expectEqual(@as(usize, 0), f.allocation_count);
@@ -127,7 +128,7 @@ test "native FileHandle bounded offset advances by emitted bytes before inline E
     try f.pump();
     try std.testing.expectEqual(@as(usize, 2), f.read_count);
     try expectOutput(f.observations[0], 3, "CDE");
-    try expectOutput(f.observations[1], uv.UV_EOF, "");
+    try expectOutput(f.observations[1], native_uv.UV_EOF, "");
     try std.testing.expectEqual(@as(i64, 5), f.handle.?.read_state.read_offset);
     try std.testing.expectEqual(@as(i64, 0), f.handle.?.read_state.read_length);
     try std.testing.expectEqual(@as(usize, 1), f.begin_count);
@@ -163,7 +164,7 @@ test "native FileHandle unbounded restart recycles the same native request throu
     try std.testing.expectEqual(@as(usize, 2), f.begin_count);
     try std.testing.expectEqual(@as(usize, 2), f.read_count);
     try expectOutput(f.observations[0], 8, "ABCDEFGH");
-    try expectOutput(f.observations[1], uv.UV_EOF, "");
+    try expectOutput(f.observations[1], native_uv.UV_EOF, "");
     try std.testing.expectEqual(f.begin_pointers[0], f.begin_pointers[1]);
     try std.testing.expect(f.begin_ids[1] > f.begin_ids[0]);
     try std.testing.expectEqualSlices(c_int, &.{8, 0}, f.end_results[0..f.end_count]);
@@ -187,7 +188,7 @@ test "native FileHandle reentrant onread restarts before old Wrapper and event r
     try std.testing.expectEqualSlices(usize, &.{2, 2},
         f.end_references[0..f.end_count]);
     try expectOutput(f.observations[0], 8, "ABCDEFGH");
-    try expectOutput(f.observations[1], uv.UV_EOF, "");
+    try expectOutput(f.observations[1], native_uv.UV_EOF, "");
     try expectDrained(&f);
 }
 
@@ -273,7 +274,7 @@ test "native FileHandle ordinary onread reason survives restart and the actual s
     try std.testing.expect(f.handle.?.read_state.current_read != null);
     try f.pump();
     try std.testing.expectEqual(@as(usize, 2), f.read_count);
-    try expectOutput(f.observations[1], uv.UV_EOF, "");
+    try expectOutput(f.observations[1], native_uv.UV_EOF, "");
     try std.testing.expectEqual(f.begin_pointers[0], f.begin_pointers[1]);
     try expectDrained(&f);
 }
@@ -321,8 +322,8 @@ test "native FileHandle AfterClose shares the actual flags and emits EOF through
     try std.testing.expect(!f.handle.?.read_state.closing);
     try std.testing.expectEqual(@as(c_int, -1), f.handle.?.read_state.fd);
     try std.testing.expectEqual(@as(usize, 1), f.read_count);
-    try expectOutput(f.observations[0], uv.UV_EOF, "");
-    try std.testing.expectEqual(@as(c_int, uv.UV_EOF), try f.start());
+    try expectOutput(f.observations[0], native_uv.UV_EOF, "");
+    try std.testing.expectEqual(@as(c_int, native_uv.UV_EOF), try f.start());
     try std.testing.expectEqual(@as(usize, 0), f.allocation_count);
     try expectDrained(&f);
 }

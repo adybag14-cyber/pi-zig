@@ -7,6 +7,7 @@ const support = @import("native_node_file_handle_read_test_support.zig");
 const a = support.a;
 const c = support.c;
 const uv = support.uv;
+const native_uv = @import("extensions/native_node_stream_resource.zig").uv;
 const Fixture = support.Fixture;
 const Request = support.callback_request.Request;
 const templates = support.templates;
@@ -238,9 +239,9 @@ test "native FSReqCallback generic storage admits the actual read and retires th
     const wrapper = try construct(&f, &.{}); defer f.engine.freeValue(wrapper);
     const request = try expectNative(&f, wrapper);
     // Invalid span/path requests fail before choosing or admitting an operation.
-    try std.testing.expectEqual(@as(c_int, uv.UV_EINVAL),
+    try std.testing.expectEqual(@as(c_int, native_uv.UV_EINVAL),
         uv.pi_uv_fs_read_buffer(request.actual.?, file.descriptor, null, 1, 0));
-    try std.testing.expectEqual(@as(c_int, uv.UV_EINVAL),
+    try std.testing.expectEqual(@as(c_int, native_uv.UV_EINVAL),
         uv.pi_uv_fs_open(request.actual.?, null, support.physical.O_RDONLY, 0));
     try std.testing.expectEqual(@as(c_int, 0), uv.pi_uv_fs_request_reset(request.actual.?));
     try std.testing.expect(!request.entry.dispatched and !request.entry.counted);
