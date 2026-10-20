@@ -29,6 +29,9 @@ pub const Check = enum {
     waiting_requests_after_io_join, request_queue_during_disarm,
     callback_argument_count, callback_argument_buffer,
     binding_data_property_set, binding_data_slot_occupied,
+    fs_read_argument_count, fs_read_fd, fs_read_buffer,
+    fs_read_offset_integer, fs_read_offset_nonnegative, fs_read_offset_bounds,
+    fs_read_length, fs_read_range, fs_read_position, fs_read_request,
 };
 
 /// Required real embedding operations. In particular on_hook_exception is the
