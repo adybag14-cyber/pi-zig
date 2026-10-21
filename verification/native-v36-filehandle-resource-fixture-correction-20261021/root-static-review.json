@@ -1,0 +1,115 @@
+{
+  "schema": 1,
+  "status": "root_static_source_and_ownership_review_of_minimal_v36_fixture_correction",
+  "reviewed_utc": "2026-10-21T08:57:50.309076+00:00",
+  "candidate_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "target": "src/native_node_file_handle_owner_test_support.zig",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\proposal.json",
+    "bytes": 11951,
+    "sha256": "E40157BF97BD043A541247B885680820560135EE4286F896F031B268C6B5FEFB"
+  },
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test_support.zig",
+    "bytes": 33137,
+    "sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127"
+  },
+  "selected_fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+    "bytes": 33152,
+    "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+  },
+  "finite_hunks": 3,
+  "edits": [
+    {
+      "index": 1,
+      "byte_offset": 13624,
+      "before": "        const bootstrap_result = try a.expression(self.engine, bootstrap, .{self});\n        self.engine.freeValue(bootstrap_result);\n",
+      "after": "        const outer_resource = try a.expression(self.engine, bootstrap, .{self});\n        defer self.engine.freeValue(outer_resource);\n",
+      "before_file_sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127",
+      "after_file_sha256": "62B7E5A76E3CE04C60B6FD313EBC6C9D91845AECA8993328D713A31E090B6C30"
+    },
+    {
+      "index": 2,
+      "byte_offset": 14304,
+      "before": "        self.outer.init(self.env(), c.pi_js_undefined(),\n",
+      "after": "        self.outer.init(self.env(), outer_resource,\n",
+      "before_file_sha256": "62B7E5A76E3CE04C60B6FD313EBC6C9D91845AECA8993328D713A31E090B6C30",
+      "after_file_sha256": "526DF1D1391A4C03C50D85E1B970FB12EDCE972732467DA29BEF9DFE3A39CBD0"
+    },
+    {
+      "index": 3,
+      "byte_offset": 16720,
+      "before": "        try s.boundary.checkPendingSince(class_generation);\n        return c.pi_js_undefined();\n",
+      "after": "        try s.boundary.checkPendingSince(class_generation);\n        return a.duplicate(s.engine, try s.object());\n",
+      "before_file_sha256": "526DF1D1391A4C03C50D85E1B970FB12EDCE972732467DA29BEF9DFE3A39CBD0",
+      "after_file_sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+    }
+  ],
+  "complete_forward_and_inverse_bytes_exact": true,
+  "live_and_committed_preimage_exact": true,
+  "unchanged_literal_file_imports": 16,
+  "unchanged_standard_imports": 1,
+  "unchanged_embeds_and_anonymous_declarations": true,
+  "all58_declared_controls_and4_root_import_topologies_unchanged": true,
+  "four_root_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_fs_before_hook_continuation_test.zig",
+      "bytes": 6578,
+      "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_vm_error_constructor_name_test.zig",
+      "bytes": 28931,
+      "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_transfer_test.zig",
+      "bytes": 23797,
+      "sha256": "E5656DE3AEC771F144939E5852CC7161B1B0499D4764A3F2E0BF42460570C5B1"
+    }
+  ],
+  "production_authority_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+      "bytes": 9934,
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+    }
+  ],
+  "ownership_review": [
+    "s.object uses beforeAllocation, JS_NewObject and checkedAllocation, then owns the new object within operation Scope.",
+    "a.duplicate gives the bootstrap result a distinct reference. a.expression calls Scope.finish and Boundary.finish, which releases tracked Scope values and returns the escaped result only on success; failureRoots releases the result on any completion failure.",
+    "init registers local defer immediately after the successful expression. Any later setup failure releases that local before the existing earlier errdefer destroys Fixture/Engine.",
+    "callbacks.Scope.init duplicates the resource into its stable self.resource before pushing its address into Environment.native_resources; the Environment vector borrows that stable address.",
+    "After successful init, the local defer retires its reference while CallbackScope retains its own. Scope.deinit closes/pops and releases self.resource before Environment release.",
+    "If Scope.init fails after initialized becomes true, the existing catch marks failed and deinitializes the scope before the local defer and Fixture errdefer run.",
+    "The fresh plain object gains no properties pointing to BindingData or FileHandle; collectHandle and dropBindingTarget retain their original ability to remove the tested strong references.",
+    "No production source, test body, expected result, observer phase, import, embed or named declaration is changed."
+  ],
+  "source_only": true,
+  "independent_peer_pending": true,
+  "Main_written": false,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "application_qualified": false
+}

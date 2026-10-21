@@ -307,8 +307,8 @@ pub const Fixture = struct {
         self.engine.host_control_context = self;
         try @import("extensions/native_process.zig").install(self.engine,
             std.testing.io, &self.native_environment, &.{"native-filehandle-owner"});
-        const bootstrap_result = try a.expression(self.engine, bootstrap, .{self});
-        self.engine.freeValue(bootstrap_result);
+        const outer_resource = try a.expression(self.engine, bootstrap, .{self});
+        defer self.engine.freeValue(outer_resource);
         try self.engine.bindFunction("actualOwnerWarningFlag", warningFlag, 0);
         self.controller = switch (try fs_io.acquire(self.engine, self.env())) {
             .ready => |actual| actual,
@@ -318,7 +318,7 @@ pub const Fixture = struct {
         try phase.install(self.engine);
         self.queue = try phase.acquireNative(self.engine, immediate_hooks);
         self.outer.initialized = false;
-        self.outer.init(self.env(), c.pi_js_undefined(),
+        self.outer.init(self.env(), outer_resource,
             .{ .async_id = 0, .trigger_async_id = 0 },
             .{ .skip_async_hooks = true, .skip_task_queues = true },
             c.pi_js_undefined()) catch |err| {
@@ -361,7 +361,7 @@ pub const Fixture = struct {
         if (c.JS_NewClass(s.engine.runtime, self.marker_class, &definition) < 0)
             return error.OutOfMemory;
         try s.boundary.checkPendingSince(class_generation);
-        return c.pi_js_undefined();
+        return a.duplicate(s.engine, try s.object());
     }
     pub fn env(self: *Fixture) *callbacks.Environment { return self.environment.?; }
     pub fn registry(self: *Fixture) *native.Registry { return self.registry_owner.?; }

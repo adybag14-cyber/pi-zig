@@ -1,0 +1,13 @@
+{
+  "schema": "pi-zig-v36-outer-resource-independent-audit-authoring-negative-v1",
+  "original_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\source-audit.py",
+    "bytes": 8784,
+    "sha256": "BE6DC8866FEBC60F9DD3655C011862FC668745FAF95CA808FC8700F08F30A598"
+  },
+  "exit_code": 1,
+  "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\source-audit.py\", line 112, in <module>\r\n    b = section(original, first, until)\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\source-audit.py\", line 103, in section\r\n    assert raw.count(first) == 1 and raw.count(until) == 1\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError\r\n",
+  "cause": "Independent audit section delimiters used undefined instead of the actual c.pi_js_undefined() frame argument and a nonunique deinit prefix. It stopped at the first section assertion before FINAL OUTPUT; no audit result was written.",
+  "correction": "source-audit-v2.py selects the exact existing catch prefix and Fixture-specific deinit declaration through the File declaration. No candidate or Main source changed.",
+  "production_or_native_negative": false
+}
