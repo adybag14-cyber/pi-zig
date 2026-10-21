@@ -1,0 +1,44 @@
+{
+  "candidate_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "batch": "new4",
+  "control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254",
+  "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-buildquery-20261020-223254",
+  "launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\launch.ps1",
+    "bytes": 1776,
+    "sha256": "4AC7728393EFE80994996BB7C28CEC21A31740ED9205A5C4459C78C3464F10AE"
+  },
+  "grant": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\root-grant.json",
+    "bytes": 11138,
+    "sha256": "F811A77512DFC44CC44242FF4DF39B413939D46E5A6404497676065058D523BB"
+  },
+  "preparation_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-new4-prepared-20261020\\preparation-review.json",
+    "bytes": 77860,
+    "sha256": "8A2C86365742929786BB4BFEF03C249D01AC1A698CC0B325E21BF69B9188658B"
+  },
+  "specific_root_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-new4-buildquery-issued-config-20261020.json",
+    "bytes": 4004,
+    "sha256": "28F54574401B145D2D24D8E061BA10645EDBB3C385E7FF401C29CC969C89A241"
+  },
+  "groups": [
+    "native-node-file-handle-owner",
+    "native-node-fs-before-hook-continuation",
+    "native-vm-error-constructor-name",
+    "native-node-file-handle-transfer"
+  ],
+  "declared_count": 58,
+  "actual_metadata_count": null,
+  "driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+  "matrix_sha256": "B5DDAB29463DC9EEF28A795F702F605AEC013B21236975B857AE66C25A8CD7FA",
+  "metadata_auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-new4-prepared-20261020\\Audit-CombinedNativeBatch.py",
+    "bytes": 17696,
+    "sha256": "B9AA7515F2494E1181E7418C340E0398B81126C413B6E914B16874FB48CB0A0B"
+  },
+  "issued_utc": "2026-10-20T22:32:54.736278+00:00",
+  "runtime_authority": false,
+  "qualification": false
+}

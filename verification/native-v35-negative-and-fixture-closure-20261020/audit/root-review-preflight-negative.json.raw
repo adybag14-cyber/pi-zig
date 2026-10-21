@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "status": "root_review_harness_assumptions_rejected_before_auditor_execution",
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\Audit-FreshV35New4FirstCompileNegative.py",
+    "bytes": 33739,
+    "sha256": "D35C23ED245CF3B33F78075A36FC8316602098AC779E49BD2197950134F5E24E"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v35-new4-first-compile-negative-auditor-sourceonly-20261020\\finite-adaptation.json",
+    "bytes": 43863,
+    "sha256": "00846BBF125069B5E933C18EC396203B53F3571CEF9416F5C1EA488A79AA8902"
+  },
+  "observed_errors": [
+    "AssertionError: owner_identity",
+    "AssertionError: require"
+  ],
+  "reason": "First Root helper loop incorrectly treated all six function rows as invariants although adaptation explicitly declares five invariants and one deadline-bound insertion. Second attempt stripped the function ending newline although the declared function hash includes it. The candidate, adaptation and all32 full edit inverses remain unchanged. Final Root replay verifies exact recorded segment hashes and full function equality, with only the declared owner deadline insertion.",
+  "auditor_executed": false,
+  "Main_mutated": false,
+  "native_executed": false
+}

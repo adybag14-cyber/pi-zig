@@ -1,0 +1,25 @@
+{
+  "status": "admitted",
+  "phase": "compile",
+  "probe": {
+    "phase": "compile",
+    "free_kib": 23009732,
+    "minimum_kib": 16777216,
+    "native_roots": 0,
+    "native": [],
+    "elapsed_seconds": 0.5588381,
+    "utc": "2026-10-20T22:33:50.6457471+00:00"
+  },
+  "accepted_elapsed_seconds": 0.5611131,
+  "probes": [
+    {
+      "phase": "compile",
+      "free_kib": 23009732,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "native": [],
+      "elapsed_seconds": 0.5588381,
+      "utc": "2026-10-20T22:33:50.6457471+00:00"
+    }
+  ]
+}

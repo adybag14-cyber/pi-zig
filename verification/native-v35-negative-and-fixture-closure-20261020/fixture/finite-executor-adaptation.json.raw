@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "status": "source_only_finite_single_phase_adaptation",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ReviewedSourceIntakes-v3-20261020.py",
+    "bytes": 11534,
+    "sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV35FixtureSourceIntake-20261020.py",
+    "bytes": 9700,
+    "sha256": "9C834CDB7C83528F9B1DE0F713696D4B816C20E874E16F18F2725AA24A35CA1F"
+  },
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-fixture-main-intake-20261020\\manifest.json",
+    "bytes": 20327,
+    "sha256": "88001A1F0F533194756769F86D0BE306B252BC6EE1D90C13A9D270B3BE278287"
+  },
+  "finite_edits": [
+    {
+      "label": "single phase description",
+      "offset": 0,
+      "old": "\"\"\"Exact three-phase Main source intake; no compiler, runtime, generator or push.\"\"\"",
+      "new": "\"\"\"Exact V35 fixture Main source intake; no compiler, runtime, generator or push.\"\"\"",
+      "before_sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4",
+      "after_sha256": "CCA1F504F0D8095FB71C530D05FBF7DD0CF7F32FDE64D3EF089091A49303B7BA"
+    },
+    {
+      "label": "current exact comparison head",
+      "offset": 230,
+      "old": "BASIS=\"c764130caf2f2c7c63728bec0f6d1e16ac5c59a4\"",
+      "new": "BASIS=\"79c19fc30c886e85b71aca75d1a025397db04fec\"",
+      "before_sha256": "CCA1F504F0D8095FB71C530D05FBF7DD0CF7F32FDE64D3EF089091A49303B7BA",
+      "after_sha256": "0AB1A58C4212C0E24A12733BDD11DF5F216A1C9AAB5AE573173DE41C85FD6688"
+    },
+    {
+      "label": "only exact fixture manifest and commit subject",
+      "offset": 322,
+      "old": "MANIFESTS={\n \"owner-error\":(\"evidence/pending-file-handle-error-main-intake-20261020/manifest-v2.json\",\"5730CB5FA9F17FE33478C128E763287E59A37477B2AF2A0820BBCA002D0FADCF\",192,\"Port native FileHandle lifecycle and Error constructor provenance\"),\n \"reqwrap\":(\"evidence/pending-v34-reqwrap-fixture-main-intake-20261020/manifest-v2.json\",\"BA8482D0DA4837630E158C5F345C9D5F58D8AE2614F8F372E164EDB9894EEF73\",10,\"Correct ReqWrap fixture for the actual host error boundary\"),\n \"fs-init\":(\"evidence/pending-v34-fs-init-observer-main-intake-20261020/manifest-v2.json\",\"21093750D07017BCA35F42D958AA758B8B4BC030920190ADC003BDA1246371E8\",34,\"Observe FS request preparation before native completion\"),\n}",
+      "new": "MANIFESTS={\n \"fixture\":(\"evidence/pending-v35-fixture-main-intake-20261020/manifest.json\",\"88001A1F0F533194756769F86D0BE306B252BC6EE1D90C13A9D270B3BE278287\",42,\"Correct FileHandle fixture bindings and close preparation observation\"),\n}",
+      "before_sha256": "0AB1A58C4212C0E24A12733BDD11DF5F216A1C9AAB5AE573173DE41C85FD6688",
+      "after_sha256": "DF112ADDD79F9B0640C493A9582665D08A53BB72D973206BD38FF0C47800FEDF"
+    },
+    {
+      "label": "single-phase exact predecessor",
+      "offset": 3763,
+      "old": "if phase==\"owner-error\":\n assert head==BASIS\nelif phase==\"reqwrap\":\n prior_raw=raw(proof/\"owner-error-receipt.json\"); prior=json.loads(prior_raw)\n assert prior[\"status\"]==\"exact_source_intake_committed\"\n assert prior[\"executor_sha256\"]==self_sha and prior[\"release_sha256\"]==release_sha\n assert prior[\"manifest_sha256\"]==MANIFESTS[\"owner-error\"][1]\n assert prior[\"before_head\"]==BASIS and prior[\"after_head\"]==head\n assert prior[\"path_count\"]==192 and prior[\"staged_and_committed_bytes_match\"] is True\n assert gout(\"rev-parse\",head+\"^\")==BASIS\nelse:\n assert phase==\"fs-init\"\n owner=json.loads(raw(proof/\"owner-error-receipt.json\"))\n prior=json.loads(raw(proof/\"reqwrap-receipt.json\"))\n for name,receipt in ((\"owner-error\",owner),(\"reqwrap\",prior)):\n  assert receipt[\"status\"]==\"exact_source_intake_committed\"\n  assert receipt[\"executor_sha256\"]==self_sha and receipt[\"release_sha256\"]==release_sha\n  assert receipt[\"manifest_sha256\"]==MANIFESTS[name][1]\n  assert receipt[\"path_count\"]==MANIFESTS[name][2] and receipt[\"staged_and_committed_bytes_match\"] is True\n assert owner[\"before_head\"]==BASIS and prior[\"before_head\"]==owner[\"after_head\"]\n assert prior[\"after_head\"]==head and gout(\"rev-parse\",head+\"^\")==owner[\"after_head\"]\n assert gout(\"rev-parse\",owner[\"after_head\"]+\"^\")==BASIS\n assert manifest[\"required_predecessor_manifests\"]==[MANIFESTS[\"owner-error\"][1],MANIFESTS[\"reqwrap\"][1]]\n",
+      "new": "assert phase==\"fixture\" and head==BASIS\n",
+      "before_sha256": "DF112ADDD79F9B0640C493A9582665D08A53BB72D973206BD38FF0C47800FEDF",
+      "after_sha256": "8EDD07C4181FC983E46901CF66C6F56E2FC9D1E760E4ECA4A0B8B81E0BCA9CFE"
+    },
+    {
+      "label": "single-phase raw preimage reference",
+      "offset": 4993,
+      "old": "preimage_reference=head if phase==\"fs-init\" else BASIS",
+      "new": "preimage_reference=BASIS",
+      "before_sha256": "8EDD07C4181FC983E46901CF66C6F56E2FC9D1E760E4ECA4A0B8B81E0BCA9CFE",
+      "after_sha256": "9C834CDB7C83528F9B1DE0F713696D4B816C20E874E16F18F2725AA24A35CA1F"
+    }
+  ],
+  "complete_inverse_exact": true,
+  "all_blob_filter_containment_preimage_staging_commit_and_clean_checks_preserved": true,
+  "native_execution_authorized": false,
+  "main_applied": false,
+  "qualification": false
+}

@@ -1,0 +1,188 @@
+"""Independent read-only source review of the V35 fixture intake; never executes the intake adapter."""
+from pathlib import Path, PurePosixPath
+import ast, hashlib, json, os, subprocess
+ROOT=Path(r"C:\Users\adyba\pi-zig")
+MAIN=ROOT/"main"
+OWN=ROOT/"worktrees/modules-io-resume-20261018"
+SDK=ROOT/"worktrees/sdk-owners-resume-20261018"
+OUT=OWN/"verification/v35-fixture-intake-independent-peer-20261020"
+PACK=ROOT/"evidence/pending-v35-fixture-main-intake-20261020"
+HEAD="79c19fc30c886e85b71aca75d1a025397db04fec"
+BRANCH="work/pi-zig-consolidated-20261016"
+PREFIX="verification/native-v35-fixture-corrections-20261020/"
+def sha(b): return hashlib.sha256(b).hexdigest().upper()
+def info(p):
+ b=Path(p).read_bytes()
+ return {"path":str(p),"bytes":len(b),"sha256":sha(b)}
+def pin(p,n,h):
+ b=Path(p).read_bytes(); assert len(b)==n and sha(b)==h,(str(p),len(b),sha(b)); return b
+def git(*args,input=None,allow_nonzero=False):
+ assert args[0] in {"rev-parse","branch","status","cat-file","ls-tree","check-attr","hash-object","config"},args
+ e=dict(os.environ);e["GIT_OPTIONAL_LOCKS"]="0"
+ q=subprocess.run(["git",*args],cwd=MAIN,input=input,capture_output=True,env=e)
+ assert allow_nonzero or q.returncode==0,(args,q.returncode,q.stderr.decode("utf8","replace"))
+ return q
+def gout(*args): return git(*args).stdout.decode("utf8").strip()
+def clean():
+ assert gout("rev-parse","HEAD")==HEAD
+ assert gout("branch","--show-current")==BRANCH
+ assert git("status","--porcelain=v1","--untracked-files=all").stdout==b""
+clean()
+manifest_raw=pin(PACK/"manifest.json",20327,"88001A1F0F533194756769F86D0BE306B252BC6EE1D90C13A9D270B3BE278287")
+candidate_path=ROOT/"evidence/Apply-ExactV35FixtureSourceIntake-20261020.py"
+candidate=pin(candidate_path,9700,"9C834CDB7C83528F9B1DE0F713696D4B816C20E874E16F18F2725AA24A35CA1F")
+baseline_path=ROOT/"evidence/Apply-ExactV34ReviewedSourceIntakes-v3-20261020.py"
+baseline=pin(baseline_path,11534,"20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4")
+adaptation_raw=pin(PACK/"finite-executor-adaptation.json",5344,"11ABF1FF524A11A4BAA43DAC7F9C2C583827534CA834D9DD066B03BE4A855AEB")
+manifest=json.loads(manifest_raw); adaptation=json.loads(adaptation_raw)
+assert adaptation["baseline"]==info(baseline_path)
+assert adaptation["candidate"]==info(candidate_path)
+assert adaptation["manifest"]==info(PACK/"manifest.json")
+edits=adaptation["finite_edits"]; assert len(edits)==5
+current=baseline;steps=[]
+for e in edits:
+ old=e["old"].encode();new=e["new"].encode();offset=e["offset"]
+ assert sha(current)==e["before_sha256"]
+ assert current.count(old)==1 and current[offset:offset+len(old)]==old
+ current=current[:offset]+new+current[offset+len(old):]
+ assert sha(current)==e["after_sha256"]
+ steps.append({"label":e["label"],"offset":offset,"old_bytes":len(old),"new_bytes":len(new),"before_sha256":e["before_sha256"],"after_sha256":sha(current)})
+assert current==candidate
+for e in reversed(edits):
+ old=e["old"].encode();new=e["new"].encode();offset=e["offset"]
+ assert sha(current)==e["after_sha256"] and current[offset:offset+len(new)]==new
+ current=current[:offset]+old+current[offset+len(new):]
+ assert sha(current)==e["before_sha256"]
+assert current==baseline
+base_text=baseline.decode();candidate_text=candidate.decode()
+base_ast=ast.parse(base_text);cand_ast=ast.parse(candidate_text)
+def functions(text,tree):
+ return {n.name:ast.get_source_segment(text,n) for n in tree.body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))}
+assert functions(base_text,base_ast)==functions(candidate_text,cand_ast)
+constants={}
+for n in cand_ast.body:
+ if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name) and n.targets[0].id in ("BASIS","BRANCH","MANIFESTS"):
+  constants[n.targets[0].id]=ast.literal_eval(n.value)
+assert constants=={"BASIS":HEAD,"BRANCH":BRANCH,"MANIFESTS":{"fixture":("evidence/pending-v35-fixture-main-intake-20261020/manifest.json",sha(manifest_raw),42,"Correct FileHandle fixture bindings and close preparation observation")}}
+release_start='assert len(sys.argv)==4'
+release_end='head=gout("rev-parse","HEAD")\n'
+def span(text,a,b): return text[text.index(a):text.index(b)+len(b)]
+assert span(base_text,release_start,release_end)==span(candidate_text,release_start,release_end)
+rows_start='rows=manifest["rows"]\n'
+old_pre='preimage_reference=head if phase=="fs-init" else BASIS\n'
+new_pre='preimage_reference=BASIS\n'
+assert span(base_text,rows_start,old_pre)[:-len(old_pre)]==span(candidate_text,rows_start,new_pre)[:-len(new_pre)]
+base_tail=base_text[base_text.index(old_pre)+len(old_pre):]
+cand_tail=candidate_text[candidate_text.index(new_pre)+len(new_pre):]
+assert base_tail==cand_tail
+assert 'assert phase=="fixture" and head==BASIS\n' in candidate_text
+# AST is inspected only. No adapter import, eval or exec is performed.
+subprocess_calls=[n for n in ast.walk(cand_ast) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and isinstance(n.func.value,ast.Name) and n.func.value.id=="subprocess"]
+assert len(subprocess_calls)==1 and subprocess_calls[0].func.attr=="run"
+git_commands=sorted({n.args[0].value for n in ast.walk(cand_ast) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=="git" and n.args and isinstance(n.args[0],ast.Constant)})
+assert git_commands==["add","cat-file","check-attr","commit","config","diff","diff-tree","hash-object","ls-files","ls-tree","status"]
+assert manifest["comparison_head"]==HEAD and manifest["path_count_including_manifest"]==42
+assert manifest["manifest_target"]==PREFIX+"manifest.json"
+for k in ("source_mutation_hold_released","main_applied","native_execution_authorized","application_qualified","production_bridge_removed"):
+ assert manifest[k] is False
+dirs={
+ "alpha":(SDK/"verification/v35-file-handle-fixture-shadowing-sourceonly-20261020",11),
+ "phase":(SDK/"verification/v35-file-handle-close-observer-sourceonly-20261020",19),
+ "alpha-peer":(OWN/"verification/v35-file-handle-fixture-shadowing-independent-peer-20261020",3),
+ "phase-peer":(OWN/"verification/v35-file-handle-close-observer-candidate-peer-20261020",3),
+ "phase-finding":(OWN/"verification/v35-file-handle-close-observer-source-peer-20261020",3)}
+expected={};census=[]
+for label,(directory,count) in dirs.items():
+ files=sorted(p for p in directory.rglob("*") if p.is_file())
+ assert len(files)==count,(label,len(files))
+ census.append({"directory":str(directory),"target_prefix":PREFIX+label+"/","files":count})
+ for p in files:
+  rel=p.relative_to(directory).as_posix()
+  target=PREFIX+label+"/"+rel+(".raw" if p.suffix in (".zig",".c",".h") else "")
+  expected[target]={"target":target,"source":str(p),"bytes":p.stat().st_size,"sha256":sha(p.read_bytes()),"before":None,"role":"immutable_evidence"}
+root_accept=ROOT/"evidence/root-v35-filehandle-fixture-corrections-source-acceptance-20261020.json"
+root_raw=pin(root_accept,3873,"083D5CBD75E1A23F555F556BE1136CA6F0977F9DCBB9BDC073BA2AF8C99FAAB3")
+accept=json.loads(root_raw)
+root_target=PREFIX+"root-source-acceptance.json"
+expected[root_target]={"target":root_target,"source":str(root_accept),"bytes":len(root_raw),"sha256":sha(root_raw),"before":None,"role":"immutable_evidence"}
+fixture="src/native_node_file_handle_owner_test_support.zig"
+selected=SDK/"verification/v35-file-handle-close-observer-sourceonly-20261020/projected"/fixture
+selected_raw=pin(selected,33137,"0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127")
+before={"bytes":32558,"sha256":"8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"}
+expected[fixture]={"target":fixture,"source":str(selected),"bytes":len(selected_raw),"sha256":sha(selected_raw),"before":before,"role":"fixture_source"}
+assert accept["selected_fixture"]==info(selected)
+assert accept["original"]=={"path":str(MAIN/fixture),**before}
+assert len(expected)==41 and len(manifest["rows"])==41
+actual={r["target"]:r for r in manifest["rows"]}
+assert len(actual)==41 and actual==expected
+manifest_row={"target":manifest["manifest_target"],"source":str(PACK/"manifest.json"),"bytes":len(manifest_raw),"sha256":sha(manifest_raw),"before":None,"role":"exact_intake_manifest"}
+allrows=[*manifest["rows"],manifest_row]
+names=[r["target"] for r in allrows]
+assert len(names)==len(set(x.casefold() for x in names))==42
+tree=set(p.decode("utf8") for p in git("ls-tree","-r","--name-only","-z",HEAD).stdout.split(b"\0") if p)
+content={};pins=[]
+for row in allrows:
+ rel=row["target"];parts=PurePosixPath(rel).parts
+ assert rel==PurePosixPath(rel).as_posix() and not PurePosixPath(rel).is_absolute()
+ assert ":" not in rel and "\\" not in rel and all(p not in ("..",".","") for p in parts)
+ assert not any(ord(c)<32 for c in rel)
+ donor=Path(row["source"]).resolve();target=(MAIN/rel).resolve()
+ assert ROOT.resolve() in donor.parents and MAIN.resolve() in target.parents
+ for depth in range(1,len(parts)):
+  assert not MAIN.joinpath(*parts[:depth]).is_symlink()
+ b=pin(donor,row["bytes"],row["sha256"]);content[rel]=b
+ if row["before"] is None:
+  assert not target.exists() and rel not in tree
+ else:
+  assert rel==fixture and row["before"]==before and rel in tree
+  live=pin(target,before["bytes"],before["sha256"])
+  blob=git("cat-file","blob",HEAD+":"+rel).stdout
+  assert blob==live
+ pins.append({k:row[k] for k in ("target","role","bytes","sha256","before")})
+assert sum(r["role"]=="immutable_evidence" for r in allrows)==40
+assert sum(r["before"] is None for r in allrows)==41
+q=git("config","--get","core.hooksPath",allow_nonzero=True);assert q.returncode==1
+hooks=Path(gout("rev-parse","--git-path","hooks"))
+if not hooks.is_absolute(): hooks=MAIN/hooks
+assert not [p for p in hooks.iterdir() if p.is_file() and not p.name.endswith(".sample")]
+assert gout("config","--get","core.autocrlf")=="false"
+attr_raw=git("check-attr","-z","--stdin","filter","working-tree-encoding","ident",input=b"\0".join(x.encode() for x in names)+b"\0").stdout
+parts=attr_raw.split(b"\0");assert parts.pop()==b"" and len(parts)==9*42
+attributes={}
+for i in range(0,len(parts),3):
+ name,attr,value=(p.decode() for p in parts[i:i+3])
+ assert name in names and attr in ("filter","working-tree-encoding","ident") and value in ("unspecified","unset")
+ assert attr not in attributes.setdefault(name,{})
+ attributes[name][attr]=value
+assert set(attributes)==set(names) and all(len(v)==3 for v in attributes.values())
+blob_pins=[]
+for rel in names:
+ b=content[rel];expected_blob=hashlib.sha1(b"blob "+str(len(b)).encode()+b"\0"+b).hexdigest()
+ actual_blob=git("hash-object","--path="+rel,"--stdin",input=b).stdout.decode().strip()
+ assert actual_blob==expected_blob
+ blob_pins.append({"target":rel,"raw_and_filtered_git_blob":actual_blob})
+clean()
+result={
+ "schema":1,"status":"independent_exact_fixture_intake_source_review_passed",
+ "main_head":HEAD,"main_branch":BRANCH,"main_clean_before_and_after":True,
+ "inputs":[info(PACK/"manifest.json"),info(candidate_path),info(baseline_path),info(PACK/"finite-executor-adaptation.json"),info(root_accept)],
+ "finite_executor_edits":steps,"full_forward_and_inverse_exact":True,
+ "identical_helper_functions":sorted(functions(base_text,base_ast)),
+ "release_and_preflight_prefix":{"bytes":len(span(candidate_text,release_start,release_end).encode()),"sha256":sha(span(candidate_text,release_start,release_end).encode())},
+ "unchanged_raw_preimage_filter_write_stage_commit_receipt_tail":{"bytes":len(cand_tail.encode()),"sha256":sha(cand_tail.encode())},
+ "adapter_only_subprocess_site":"git helper; unchanged from baseline",
+ "adapter_static_git_commands":git_commands,
+ "archive_directory_census":census,"archive_files":40,"fixture_replacements":1,"manifest_paths":1,"total_paths":42,
+ "new_paths_absent_from_filesystem_and_raw_head_tree":41,
+ "fixture_live_and_raw_git_preimage":before,
+ "fixture_selected":{"bytes":len(selected_raw),"sha256":sha(selected_raw)},
+ "exact_donor_and_target_set":pins,
+ "no_effective_filters":True,"attribute_triples":126,"attributes_sha256":sha(attr_raw),
+ "raw_git_blob_equalities":blob_pins,"no_hooks":True,"core_autocrlf":"false",
+ "scope":"No adapter or constructor execution, no Main writes, no staging, commit, push, compiler, native, reference or generator run. The release remains a separate Root decision. Fixture semantics rely on already accepted peers and are not re-reviewed here.",
+ "adapter_executed":False,"main_mutated":False,"native_execution_authorized":False,"application_qualified":False}
+# Sole output phase: own new evidence only.
+OUT.mkdir(parents=True,exist_ok=True)
+out=OUT/"source-audit.json";assert not out.exists()
+out.write_bytes((json.dumps(result,indent=2,ensure_ascii=False)+"\n").encode())
+print(json.dumps(info(out)))

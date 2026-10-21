@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "status": "root_release_authoring_syntax_negative_before_execution",
+  "exit_code": 1,
+  "stderr": "  File \"<string>\", line 36\r\n    release=dict(schema=1,status=\"root_reviewed_exact_v35_fixture_source_intake_release\",reviewer=\"Root\",issued_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),basis_main_head=HEAD,branch=\"work/pi-zig-consolidated-20261016\",executor_sha256=required[5][\"sha256\"],source_intake_authorized=True,source_mutation_hold_released=True,authorized_phases={\"fixture\":{\"manifest_sha256\":required[2][\"sha256\"],total_commit_paths\":42}},required_current_pins=required,receipt_directory=str(proof),native_execution_authorized=False,application_qualified=False,production_bridge_removed=False,push_authorized_by_this_release=False,\r\n                                                                                                                                                                                                                                                                                                                                                                                                                                            ^\r\nSyntaxError: unterminated string literal (detected at line 36)\r\n",
+  "main_mutated": false,
+  "release_written": false,
+  "native_executed": false,
+  "resolution": "Corrected a missing quote in JSON-like Python record assembly. No candidate executor, manifest, required input or execution gate changed."
+}

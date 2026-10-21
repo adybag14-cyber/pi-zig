@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "status": "unissued_complete_v35_new4_first_compile_negative_closure_package",
+  "candidate_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\Audit-FreshV35New4FirstCompileNegative.py",
+    "bytes": 33739,
+    "sha256": "D35C23ED245CF3B33F78075A36FC8316602098AC779E49BD2197950134F5E24E"
+  },
+  "inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\independent-first-compile-negative-audit-inputs.json",
+    "bytes": 4098,
+    "sha256": "E701BA08CC3B4368BAE9A40A2FC7C4F6D0769102D7401AC8363F44DCC03F6ABC"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v35-new4-first-compile-negative-auditor-sourceonly-20261020\\finite-adaptation.json",
+    "bytes": 43863,
+    "sha256": "00846BBF125069B5E933C18EC396203B53F3571CEF9416F5C1EA488A79AA8902"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v32-control-20261020-190752\\Audit-FreshV32FirstCompileNegative.py",
+    "bytes": 26634,
+    "sha256": "5957B447DC5F40240C3E9C7891C41133E371A3ED311A1FF5771E96FCE3D2E472"
+  },
+  "accepted_baseline_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v32-control-20261020-190752\\independent-first-compile-negative-closure.json",
+    "bytes": 16158,
+    "sha256": "CD5F425E6604717C68CCF35DACDD86D77584D2B83C998BB71B11B6DE7EE03152"
+  },
+  "expected_output": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\independent-first-compile-negative-closure.json",
+  "exact_invocation": {
+    "program": "python",
+    "args": [
+      "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\Audit-FreshV35New4FirstCompileNegative.py"
+    ],
+    "working_directory": "C:\\Users\\adyba\\pi-zig"
+  },
+  "execution_requires": "Separate exact Root source review and audit-only grant; this handoff does not authorize execution.",
+  "expected_original_instances": [
+    {
+      "role": "compiler",
+      "pid": 68180,
+      "created_utc": "2026-10-20T22:33:50.6644500Z",
+      "completed_utc": "2026-10-20T22:39:18.9309873+00:00"
+    },
+    {
+      "role": "outer",
+      "pid": 64192,
+      "created_utc": "2026-10-20T22:33:10.5622640Z",
+      "completed_utc": "2026-10-20T22:39:57.0935168+00:00"
+    },
+    {
+      "role": "runner",
+      "pid": 67948,
+      "process_instance": "134370091902069734",
+      "completed_utc": "2026-10-20T22:39:57.322Z"
+    },
+    {
+      "role": "launcher",
+      "pid": 44496,
+      "job_creation_envelope_start": "2026-10-20T22:33:10.186Z",
+      "job_completion_envelope_end": "2026-10-20T22:39:57.322Z"
+    }
+  ],
+  "required_closure": [
+    "Exact immutable result, identical before/final raw bytes, original compile/stdout/stderr/admission/artifact/absence journals, original outer and durable job.",
+    "Frozen clean Main 79c19; full tracked source and recursive Main/vendor/compiler inventories; every sealed input hash and all supplemental source/configuration/control pins rechecked.",
+    "Source14499/tree14512/vendor1489/compiler19546/controls14; all role sets and duplicate control identity rules retained.",
+    "Original four granted roots in exact order; only owner root attempted; compile-only failed1; no metadata/runtime receipts or installed/cached test.exe/test.pdb.",
+    "Exact retained/live compiler executable hash/argv/root/command line/creation and completed instance; nested time spelling may differ only by equal UTC100ns and all other fields/key inventories must match.",
+    "One complete original 16 GiB admission probe, native absence and elapsed owner1320/outer1800 deadlines; original failed owner-binding and artifacts-bound false flags are preserved.",
+    "Exact ten fixture shadowing errors plus original two compiler failure summaries, unchanged24890-byte stderr and empty stdout.",
+    "Current native classifier empty; all actual original compiler/outer/runner/launcher creation instances absent; direct-child timestamps excluded from every original parent lifetime; later PID reuse distinguished by complete intervals.",
+    "Fresh create-only negative certificate, metadata_acceptance=false, runtime_started=false, qualification=false, source_mutation_hold_released=false."
+  ],
+  "counts": {
+    "granted_groups": 4,
+    "attempted_groups": 1,
+    "unstarted_groups": 3,
+    "native_owner_count": 1,
+    "actual_partial_metadata_count": 0,
+    "actual_tests_started": 0,
+    "runtime_started": false
+  },
+  "audit_execution": false,
+  "native_execution": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_fixture_intake_adapter_and_manifest",
+  "reviewer": "/root/module_io_port",
+  "reconciled_utc_date": "2026-10-21",
+  "candidate_manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-fixture-main-intake-20261020\\manifest.json",
+    "bytes": 20327,
+    "sha256": "88001A1F0F533194756769F86D0BE306B252BC6EE1D90C13A9D270B3BE278287"
+  },
+  "candidate_executor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV35FixtureSourceIntake-20261020.py",
+    "bytes": 9700,
+    "sha256": "9C834CDB7C83528F9B1DE0F713696D4B816C20E874E16F18F2725AA24A35CA1F"
+  },
+  "accepted_executor_basis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ReviewedSourceIntakes-v3-20261020.py",
+    "bytes": 11534,
+    "sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-fixture-main-intake-20261020\\finite-executor-adaptation.json",
+    "bytes": 5344,
+    "sha256": "11ABF1FF524A11A4BAA43DAC7F9C2C583827534CA834D9DD066B03BE4A855AEB"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-fixture-intake-independent-peer-20261020\\source-audit.py",
+    "bytes": 12665,
+    "sha256": "B82904B005ADFCC778F9D9B854614959E9C4B63E181FF20562875625BA70D95B"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-fixture-intake-independent-peer-20261020\\source-audit.json",
+    "bytes": 27142,
+    "sha256": "107CF22AF9861B6ABCD8E19CD336F9C4A627FF279DCA6416562718970CEDA57F"
+  },
+  "finding": "No concrete blocker in the exact single-phase adapter or its 42-path intake set.",
+  "checks": [
+    "Read the entire candidate and baseline; independently replayed all five edits and intermediate hashes, then recovered the entire accepted 20E068A4 baseline by inverse.",
+    "All helpers, the release/preflight prefix, and the complete raw-preimage/filter/write/stage/commit/receipt tail are byte-identical. The sole phase requires exact Main79 and binds the fixed manifest, 42-path count and commit subject.",
+    "Independent complete directory censuses are 11 alpha, 19 phase, three alpha-peer, three phase-peer and three original phase-finding files. These 39 files plus Root acceptance083D are exactly all 40 immutable archive rows; only fixture0D09 and the manifest complete the 42 paths.",
+    "All donor bytes/hashes match. All 41 new paths are absent from the Main filesystem and raw HEAD tree. The only replacement has exactly the 32,558-byte 8E1205EA live and raw-Git preimage.",
+    "Containment, case-insensitive uniqueness and parent symlink exclusion pass. All 126 attribute triples are unset/unspecified; all 42 path-filtered Git object IDs equal independently computed raw blob IDs. core.autocrlf=false, with no active hooks/core.hooksPath.",
+    "Main stayed clean on work/pi-zig-consolidated-20261016 at 79c19fc30c886e85b71aca75d1a025397db04fec."
+  ],
+  "outage_reconciliation": [
+    "The first recovered read confirmed peer.json absent. On-disk checker B82904B0/12,665 and proof107CF22A/27,142 now match the previously reported pins.",
+    "All three current planned intake inputs match. Replayed only the fully reviewed independent source-audit.py prefix before its output phase; the complete recomputed 27,142-byte proof is byte-identical. That prefix reads/parses the adapter without importing or executing it.",
+    "This peer was then created exclusively; no earlier receipt or evidence was overwritten."
+  ],
+  "limits": [
+    "A separate Root release and execution remain required. This source peer does not issue a release.",
+    "Accepted fixture-semantic peers EB41FE47 and 419398D6 remain retained; their implementation review was not repeated.",
+    "No Main write, adapter execution, staging, commit, push, compiler, native, reference or generator execution occurred. No runtime or application qualification is claimed."
+  ],
+  "source_only": true,
+  "adapter_executed": false,
+  "main_applied": false,
+  "native_execution_authorized": false,
+  "application_qualified": false
+}

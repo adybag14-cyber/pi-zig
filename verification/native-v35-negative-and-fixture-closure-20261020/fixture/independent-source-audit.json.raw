@@ -1,0 +1,631 @@
+{
+  "schema": 1,
+  "status": "independent_exact_fixture_intake_source_review_passed",
+  "main_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "main_branch": "work/pi-zig-consolidated-20261016",
+  "main_clean_before_and_after": true,
+  "inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-fixture-main-intake-20261020\\manifest.json",
+      "bytes": 20327,
+      "sha256": "88001A1F0F533194756769F86D0BE306B252BC6EE1D90C13A9D270B3BE278287"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV35FixtureSourceIntake-20261020.py",
+      "bytes": 9700,
+      "sha256": "9C834CDB7C83528F9B1DE0F713696D4B816C20E874E16F18F2725AA24A35CA1F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ReviewedSourceIntakes-v3-20261020.py",
+      "bytes": 11534,
+      "sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-fixture-main-intake-20261020\\finite-executor-adaptation.json",
+      "bytes": 5344,
+      "sha256": "11ABF1FF524A11A4BAA43DAC7F9C2C583827534CA834D9DD066B03BE4A855AEB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-filehandle-fixture-corrections-source-acceptance-20261020.json",
+      "bytes": 3873,
+      "sha256": "083D5CBD75E1A23F555F556BE1136CA6F0977F9DCBB9BDC073BA2AF8C99FAAB3"
+    }
+  ],
+  "finite_executor_edits": [
+    {
+      "label": "single phase description",
+      "offset": 0,
+      "old_bytes": 84,
+      "new_bytes": 84,
+      "before_sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4",
+      "after_sha256": "CCA1F504F0D8095FB71C530D05FBF7DD0CF7F32FDE64D3EF089091A49303B7BA"
+    },
+    {
+      "label": "current exact comparison head",
+      "offset": 230,
+      "old_bytes": 48,
+      "new_bytes": 48,
+      "before_sha256": "CCA1F504F0D8095FB71C530D05FBF7DD0CF7F32FDE64D3EF089091A49303B7BA",
+      "after_sha256": "0AB1A58C4212C0E24A12733BDD11DF5F216A1C9AAB5AE573173DE41C85FD6688"
+    },
+    {
+      "label": "only exact fixture manifest and commit subject",
+      "offset": 322,
+      "old_bytes": 687,
+      "new_bytes": 235,
+      "before_sha256": "0AB1A58C4212C0E24A12733BDD11DF5F216A1C9AAB5AE573173DE41C85FD6688",
+      "after_sha256": "DF112ADDD79F9B0640C493A9582665D08A53BB72D973206BD38FF0C47800FEDF"
+    },
+    {
+      "label": "single-phase exact predecessor",
+      "offset": 3763,
+      "old_bytes": 1392,
+      "new_bytes": 40,
+      "before_sha256": "DF112ADDD79F9B0640C493A9582665D08A53BB72D973206BD38FF0C47800FEDF",
+      "after_sha256": "8EDD07C4181FC983E46901CF66C6F56E2FC9D1E760E4ECA4A0B8B81E0BCA9CFE"
+    },
+    {
+      "label": "single-phase raw preimage reference",
+      "offset": 4993,
+      "old_bytes": 54,
+      "new_bytes": 24,
+      "before_sha256": "8EDD07C4181FC983E46901CF66C6F56E2FC9D1E760E4ECA4A0B8B81E0BCA9CFE",
+      "after_sha256": "9C834CDB7C83528F9B1DE0F713696D4B816C20E874E16F18F2725AA24A35CA1F"
+    }
+  ],
+  "full_forward_and_inverse_exact": true,
+  "identical_helper_functions": [
+    "blob_many",
+    "git",
+    "gout",
+    "inside",
+    "new_file",
+    "new_json",
+    "no_hooks",
+    "pinned",
+    "raw",
+    "sha",
+    "tree_paths"
+  ],
+  "release_and_preflight_prefix": {
+    "bytes": 1320,
+    "sha256": "6BE22509716956BB22006A88B9B87B9C6C01209DA8F1FAF3909DAFA8D27BDE0D"
+  },
+  "unchanged_raw_preimage_filter_write_stage_commit_receipt_tail": {
+    "bytes": 4682,
+    "sha256": "F4A4697E3ACC0BB277B7C8829B3B4F6FF6F198EA3290923BAAAC7CDD3C5B273F"
+  },
+  "adapter_only_subprocess_site": "git helper; unchanged from baseline",
+  "adapter_static_git_commands": [
+    "add",
+    "cat-file",
+    "check-attr",
+    "commit",
+    "config",
+    "diff",
+    "diff-tree",
+    "hash-object",
+    "ls-files",
+    "ls-tree",
+    "status"
+  ],
+  "archive_directory_census": [
+    {
+      "directory": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020",
+      "target_prefix": "verification/native-v35-fixture-corrections-20261020/alpha/",
+      "files": 11
+    },
+    {
+      "directory": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020",
+      "target_prefix": "verification/native-v35-fixture-corrections-20261020/phase/",
+      "files": 19
+    },
+    {
+      "directory": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-independent-peer-20261020",
+      "target_prefix": "verification/native-v35-fixture-corrections-20261020/alpha-peer/",
+      "files": 3
+    },
+    {
+      "directory": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-close-observer-candidate-peer-20261020",
+      "target_prefix": "verification/native-v35-fixture-corrections-20261020/phase-peer/",
+      "files": 3
+    },
+    {
+      "directory": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-close-observer-source-peer-20261020",
+      "target_prefix": "verification/native-v35-fixture-corrections-20261020/phase-finding/",
+      "files": 3
+    }
+  ],
+  "archive_files": 40,
+  "fixture_replacements": 1,
+  "manifest_paths": 1,
+  "total_paths": 42,
+  "new_paths_absent_from_filesystem_and_raw_head_tree": 41,
+  "fixture_live_and_raw_git_preimage": {
+    "bytes": 32558,
+    "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+  },
+  "fixture_selected": {
+    "bytes": 33137,
+    "sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127"
+  },
+  "exact_donor_and_target_set": [
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/fixture-alpha-renames.patch",
+      "role": "immutable_evidence",
+      "bytes": 7029,
+      "sha256": "482AA11097EF6263F7492590DEEF53FC57B3A176C3331BF4F19045FFD9E280A8",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/input-inventory.json",
+      "role": "immutable_evidence",
+      "bytes": 194665,
+      "sha256": "8DBD78DA21AE269A03BAE66ECE60CD8A6D6A3A7CA66E0D2D8D08D4321608229D",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/negative/compile.json",
+      "role": "immutable_evidence",
+      "bytes": 2292,
+      "sha256": "8FA9761496EB7C1F63F918B554FC488F76331AE9760B40F9181C3802A404E904",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/negative/compile.stderr.log",
+      "role": "immutable_evidence",
+      "bytes": 24890,
+      "sha256": "9EBCCA812674DE30F512015FD2FB696D9DDA97F0D81CF617D4E4B3825BC5D25D",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/original/native_node_file_handle_owner_test_support.zig.raw",
+      "role": "immutable_evidence",
+      "bytes": 32558,
+      "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/original/src/native_node_file_handle_owner_test_support.zig.raw",
+      "role": "immutable_evidence",
+      "bytes": 32558,
+      "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/prepare-proposal.py",
+      "role": "immutable_evidence",
+      "bytes": 16040,
+      "sha256": "DCF56EAF57BF756CC904DD6A76EA88BB5C961AF902350F36BA33154B3AAD1104",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/projected/src/native_node_file_handle_owner_test_support.zig.raw",
+      "role": "immutable_evidence",
+      "bytes": 32741,
+      "sha256": "50E65ED03D8280B3DC35632D49274BC97A63A1A7012E70C362DB845B2C29878B",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/proposal.json",
+      "role": "immutable_evidence",
+      "bytes": 5249,
+      "sha256": "9CEEC8BF72B9E955697145E989A65C06AB9DB14B94444332545B4E5A233DD16E",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/token-and-graph-proof.json",
+      "role": "immutable_evidence",
+      "bytes": 33269,
+      "sha256": "68C99BF537F7A9EBDAEEDB9472A4A511E0951DD9AB3F4372FA02B192AD5A6104",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/zig-shadowing-authority.json",
+      "role": "immutable_evidence",
+      "bytes": 2985,
+      "sha256": "DE4BA5698B8D90AD16D32166C80B8A69E32625DD27EE9D9C837552D6E08B4520",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/node_file.cc.v24.13",
+      "role": "immutable_evidence",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_env_io.zig.raw",
+      "role": "immutable_evidence",
+      "bytes": 8014,
+      "sha256": "4BC66694AB6B22FC9A51A0943192BDCD61F0213C6846B0A69E0B459C26EF120E",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_node_file_handle_close_request.zig.raw",
+      "role": "immutable_evidence",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_node_file_handle_owner.zig.raw",
+      "role": "immutable_evidence",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_node_fs_request_io.zig.raw",
+      "role": "immutable_evidence",
+      "bytes": 15469,
+      "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_node_request_state.zig.raw",
+      "role": "immutable_evidence",
+      "bytes": 5818,
+      "sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_node_uv_service.zig.raw",
+      "role": "immutable_evidence",
+      "bytes": 8937,
+      "sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_uv_fs.h.raw",
+      "role": "immutable_evidence",
+      "bytes": 6334,
+      "sha256": "23B85BBB1BD8395D1D5085BE0797F06CE2C323DAACF366F5CF3B587D06EACA6D",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_uv_tcp.c.raw",
+      "role": "immutable_evidence",
+      "bytes": 46648,
+      "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/native_node_file_handle_owner_test.zig.raw",
+      "role": "immutable_evidence",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/native_node_file_handle_owner_test_support.zig.raw",
+      "role": "immutable_evidence",
+      "bytes": 32558,
+      "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/close-observer-phase.patch",
+      "role": "immutable_evidence",
+      "bytes": 993,
+      "sha256": "2C38BE02A2173F3E25E040448377B178DDF84060522C111EE5778A0379BE9C39",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/composition-and-phase-proof.json",
+      "role": "immutable_evidence",
+      "bytes": 15835,
+      "sha256": "ACE1DFE276227F09A50D6AB0389D855C7BB8481841166E7D56A61A5EB5C70C06",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/composition/phase-only-from-Main79.zig.raw",
+      "role": "immutable_evidence",
+      "bytes": 32954,
+      "sha256": "96A5CD94957DD2575D4F0B69C6AF745DA3FB6A60CA730AEF66EE314E55A42536",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/original/src/native_node_file_handle_owner_test_support.zig.raw",
+      "role": "immutable_evidence",
+      "bytes": 32741,
+      "sha256": "50E65ED03D8280B3DC35632D49274BC97A63A1A7012E70C362DB845B2C29878B",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/prepare-proposal.py",
+      "role": "immutable_evidence",
+      "bytes": 13869,
+      "sha256": "0F68B9BEA1D83CEF49929883FAADEC44475A67FD3324191209891D961DEA13D9",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/projected/src/native_node_file_handle_owner_test_support.zig.raw",
+      "role": "immutable_evidence",
+      "bytes": 33137,
+      "sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/proposal.json",
+      "role": "immutable_evidence",
+      "bytes": 3791,
+      "sha256": "4D8BAC94FF3A5CD4F27F9F4BB19C944F672EBA816A8D73E7453B819870B5EAFA",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/source-map.json",
+      "role": "immutable_evidence",
+      "bytes": 43721,
+      "sha256": "35266857348314A8481F98107CB6B94421FFF9A97A04C38A41DC0779F64F4B0A",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha-peer/peer.json",
+      "role": "immutable_evidence",
+      "bytes": 4707,
+      "sha256": "EB41FE47065EA84F89B08E477965F6F0BDFFCF16527DA9AF948E3C5B1DEA9C2F",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha-peer/source-audit.json",
+      "role": "immutable_evidence",
+      "bytes": 39142,
+      "sha256": "E2ABF53DA669E604E25556948F2F71640DAF11556070FC663325A725EC29580C",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha-peer/source-audit.py",
+      "role": "immutable_evidence",
+      "bytes": 12825,
+      "sha256": "9F95E8276DABBAE1DDE3E5249E7B609E47DC9BA1E550458484D4127F319A639F",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase-peer/peer.json",
+      "role": "immutable_evidence",
+      "bytes": 5512,
+      "sha256": "419398D6FEA22337A10972741687944AB86CBB1FD32B9771A24CCF1272AE9284",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase-peer/source-audit.json",
+      "role": "immutable_evidence",
+      "bytes": 33463,
+      "sha256": "0A2DF2740F08EA76BC4E7EBC66964FC2916944ACE0C0D1C035855D3CEC75D110",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase-peer/source-audit.py",
+      "role": "immutable_evidence",
+      "bytes": 15255,
+      "sha256": "127A0EC76A379BC910F236589D04EEE924F20E36BA4C662B19BFBE8952186DF2",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase-finding/causal-proof.json",
+      "role": "immutable_evidence",
+      "bytes": 22004,
+      "sha256": "9AE461824CBBEB0E87F450FE0E6660EE6A83AF3F3FEBA820D97B8F5ECBBAD724",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase-finding/finding.json",
+      "role": "immutable_evidence",
+      "bytes": 1893,
+      "sha256": "AED0E3E9518D691A36068A6B410B11B1D060718AB313E9921FBC665EFBA68DE1",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase-finding/source-audit.py",
+      "role": "immutable_evidence",
+      "bytes": 7195,
+      "sha256": "0561DDA610B2270BDDE726151F2B37B755D6E33390ACE7EC55140762AD3A30ED",
+      "before": null
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/root-source-acceptance.json",
+      "role": "immutable_evidence",
+      "bytes": 3873,
+      "sha256": "083D5CBD75E1A23F555F556BE1136CA6F0977F9DCBB9BDC073BA2AF8C99FAAB3",
+      "before": null
+    },
+    {
+      "target": "src/native_node_file_handle_owner_test_support.zig",
+      "role": "fixture_source",
+      "bytes": 33137,
+      "sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127",
+      "before": {
+        "bytes": 32558,
+        "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+      }
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/manifest.json",
+      "role": "exact_intake_manifest",
+      "bytes": 20327,
+      "sha256": "88001A1F0F533194756769F86D0BE306B252BC6EE1D90C13A9D270B3BE278287",
+      "before": null
+    }
+  ],
+  "no_effective_filters": true,
+  "attribute_triples": 126,
+  "attributes_sha256": "6D1B1BDAD9AF2769D1FFF1710DAA6E174A4BD7507C41C8909F1AD7D58C5895F7",
+  "raw_git_blob_equalities": [
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/fixture-alpha-renames.patch",
+      "raw_and_filtered_git_blob": "b0878aa77c0ff1e698dddb2f820c6083329be77a"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/input-inventory.json",
+      "raw_and_filtered_git_blob": "1ec8bc8850dae472bb211da010be1bf44c63eea5"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/negative/compile.json",
+      "raw_and_filtered_git_blob": "18fc3a277a4bf14a69e3628461a69206db538a64"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/negative/compile.stderr.log",
+      "raw_and_filtered_git_blob": "34acbaaedddeaa49be5061cbb792f9db15838f20"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/original/native_node_file_handle_owner_test_support.zig.raw",
+      "raw_and_filtered_git_blob": "7c82a0ad21d83236ae437c9d1e9b67a0bcbc2cb9"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/original/src/native_node_file_handle_owner_test_support.zig.raw",
+      "raw_and_filtered_git_blob": "7c82a0ad21d83236ae437c9d1e9b67a0bcbc2cb9"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/prepare-proposal.py",
+      "raw_and_filtered_git_blob": "a5d84f6066b4c87e3637e4994c2f61adf92e2f10"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/projected/src/native_node_file_handle_owner_test_support.zig.raw",
+      "raw_and_filtered_git_blob": "4e304ad74686ff8407a64cf22aab69ac0792d584"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/proposal.json",
+      "raw_and_filtered_git_blob": "eb289fe013fd2224b5a7a0a169ea8710cfa1f118"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/token-and-graph-proof.json",
+      "raw_and_filtered_git_blob": "ae9912171903723d45f9df78f67d45be12a1c6bd"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha/zig-shadowing-authority.json",
+      "raw_and_filtered_git_blob": "25c09818c29da6387f8eb12e6654756605eac428"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/node_file.cc.v24.13",
+      "raw_and_filtered_git_blob": "88fdca1eb85a49468e787d50f1cee6b8561841d6"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_env_io.zig.raw",
+      "raw_and_filtered_git_blob": "ea99c9173ca629139157ae7a954ccef66b29af44"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_node_file_handle_close_request.zig.raw",
+      "raw_and_filtered_git_blob": "104e354d33545899f01e38c7985882bbb3672f41"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_node_file_handle_owner.zig.raw",
+      "raw_and_filtered_git_blob": "822ce2dc6661cb68468bbffbb956052eb95370cd"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_node_fs_request_io.zig.raw",
+      "raw_and_filtered_git_blob": "113b46fa18980f2e8a2724386c450aab223d1d16"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_node_request_state.zig.raw",
+      "raw_and_filtered_git_blob": "e84aa7e68b3e5d732705b77678300758cc73a02a"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_node_uv_service.zig.raw",
+      "raw_and_filtered_git_blob": "dee337d66d7efbcc97ca8cd670de25e8207fa6da"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_uv_fs.h.raw",
+      "raw_and_filtered_git_blob": "bececf94687b0ec6c59a726c9f0805761ecf42bb"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/extensions/native_uv_tcp.c.raw",
+      "raw_and_filtered_git_blob": "c98a4b198caab394546808ffa6b2ce1c16a09020"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/native_node_file_handle_owner_test.zig.raw",
+      "raw_and_filtered_git_blob": "74239ee49b58716ef786d86cea81a5a0f9278c2b"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/authority/src/native_node_file_handle_owner_test_support.zig.raw",
+      "raw_and_filtered_git_blob": "7c82a0ad21d83236ae437c9d1e9b67a0bcbc2cb9"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/close-observer-phase.patch",
+      "raw_and_filtered_git_blob": "aa0a8a6eef821ac2edcb1e8c0aea40f2acc074d3"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/composition-and-phase-proof.json",
+      "raw_and_filtered_git_blob": "6830bb07f47331d52856e652737df0280c6571a7"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/composition/phase-only-from-Main79.zig.raw",
+      "raw_and_filtered_git_blob": "263fc51aaa0ba7b31ec0773a7dbfb40abf4c17ea"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/original/src/native_node_file_handle_owner_test_support.zig.raw",
+      "raw_and_filtered_git_blob": "4e304ad74686ff8407a64cf22aab69ac0792d584"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/prepare-proposal.py",
+      "raw_and_filtered_git_blob": "a1a668f54c57acfa6a55d65505130f72859e72dc"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/projected/src/native_node_file_handle_owner_test_support.zig.raw",
+      "raw_and_filtered_git_blob": "3e8ecab2f8c30885b51d14b2b0331d1daab59827"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/proposal.json",
+      "raw_and_filtered_git_blob": "9636cd8e712068b6d862caa49610a6ae5a001400"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase/source-map.json",
+      "raw_and_filtered_git_blob": "f6e8b2b92303b2e50a4e437ca01ea2aa519118f4"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha-peer/peer.json",
+      "raw_and_filtered_git_blob": "abf47ce3aaa22d0b9e08c01c3e6910c2ce17ed81"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha-peer/source-audit.json",
+      "raw_and_filtered_git_blob": "af62e48b2d0f9760abad0a707066a508eb59c5c4"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/alpha-peer/source-audit.py",
+      "raw_and_filtered_git_blob": "ed0b5c7f4d25f92f45b07f70118ecd7bd7609d48"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase-peer/peer.json",
+      "raw_and_filtered_git_blob": "87ac536ef6c30aeaaea6013af067388ec8b32d8a"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase-peer/source-audit.json",
+      "raw_and_filtered_git_blob": "6fb8a2abb8ba63a16289246c8ae637f3dff752e7"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase-peer/source-audit.py",
+      "raw_and_filtered_git_blob": "d2f3fae7be5f5d37a48476b4c6a7bd15f5e9b0d8"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase-finding/causal-proof.json",
+      "raw_and_filtered_git_blob": "ef40dae5c42885459ba8b02083db9fef4cf3a480"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase-finding/finding.json",
+      "raw_and_filtered_git_blob": "0b659a5370ac8027ad5c82bdf6f71c974df41695"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/phase-finding/source-audit.py",
+      "raw_and_filtered_git_blob": "00e86c6a1b0c20c6ffd0c8fa520d9da6b8f087f1"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/root-source-acceptance.json",
+      "raw_and_filtered_git_blob": "c499f0b75eacfc76388d784b88c66fb1b17cf8c7"
+    },
+    {
+      "target": "src/native_node_file_handle_owner_test_support.zig",
+      "raw_and_filtered_git_blob": "3e8ecab2f8c30885b51d14b2b0331d1daab59827"
+    },
+    {
+      "target": "verification/native-v35-fixture-corrections-20261020/manifest.json",
+      "raw_and_filtered_git_blob": "0ec638cfbe5e1104765a6af32da68d8f9dada41e"
+    }
+  ],
+  "no_hooks": true,
+  "core_autocrlf": "false",
+  "scope": "No adapter or constructor execution, no Main writes, no staging, commit, push, compiler, native, reference or generator run. The release remains a separate Root decision. Fixture semantics rely on already accepted peers and are not re-reviewed here.",
+  "adapter_executed": false,
+  "main_mutated": false,
+  "native_execution_authorized": false,
+  "application_qualified": false
+}

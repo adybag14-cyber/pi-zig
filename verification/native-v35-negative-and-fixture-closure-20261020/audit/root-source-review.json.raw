@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v35_new4_first_compile_negative_audit",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-20T22:50:59.096519+00:00",
+  "candidate_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\Audit-FreshV35New4FirstCompileNegative.py",
+    "bytes": 33739,
+    "sha256": "D35C23ED245CF3B33F78075A36FC8316602098AC779E49BD2197950134F5E24E"
+  },
+  "inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\independent-first-compile-negative-audit-inputs.json",
+    "bytes": 4098,
+    "sha256": "E701BA08CC3B4368BAE9A40A2FC7C4F6D0769102D7401AC8363F44DCC03F6ABC"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v35-new4-first-compile-negative-auditor-sourceonly-20261020\\finite-adaptation.json",
+    "bytes": 43863,
+    "sha256": "00846BBF125069B5E933C18EC396203B53F3571CEF9416F5C1EA488A79AA8902"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v32-control-20261020-190752\\Audit-FreshV32FirstCompileNegative.py",
+    "bytes": 26634,
+    "sha256": "5957B447DC5F40240C3E9C7891C41133E371A3ED311A1FF5771E96FCE3D2E472"
+  },
+  "accepted_baseline_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v32-control-20261020-190752\\independent-first-compile-negative-closure.json",
+    "bytes": 16158,
+    "sha256": "CD5F425E6604717C68CCF35DACDD86D77584D2B83C998BB71B11B6DE7EE03152"
+  },
+  "root_full_auditor_source_read": true,
+  "all32_intermediate_and_whole_byte_inverses_verified": true,
+  "exact_reviewed_direct_launch_and_nested_UTC100ns_regions": [
+    {
+      "label": "reviewed_V35_direct_launch_provenance",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV35CompleteBuildQuery-Template-20261020.py",
+        "bytes": 37257,
+        "sha256": "51FC9472FC8566CC4C5274EB2E48688340BC1CC11E058E08386C255BF7BB7853"
+      },
+      "source_byte_offset": 9557,
+      "candidate_byte_offset": 7785,
+      "bytes": 6306,
+      "sha256": "7269EDFEA1E2B2047775CF1A47391066182D1746F68F38BC59D5E19A809782EB",
+      "exact_byte_equality": true
+    },
+    {
+      "label": "exact_key_inventory_and_nested_UTC100ns_identity",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV35CompleteBuildQuery-Template-20261020.py",
+        "bytes": 37257,
+        "sha256": "51FC9472FC8566CC4C5274EB2E48688340BC1CC11E058E08386C255BF7BB7853"
+      },
+      "source_byte_offset": 24731,
+      "candidate_byte_offset": 20875,
+      "bytes": 710,
+      "sha256": "A09EEBC062A2D77A78E2D25E00EA5B18CA67CB0CA86200533AA644A8EF6DC62D",
+      "exact_byte_equality": true
+    }
+  ],
+  "unchanged_critical_regions": 5,
+  "unchanged_functions": 5,
+  "owner_identity_only_adds_deadline_interval_check": true,
+  "preserved_root_review_preflight": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-negative-auditor-review-preflight-20261020.json",
+    "bytes": 1312,
+    "sha256": "0B98E37A816CEC9DD17BFFF67DA2CFBEF7E4A8B654518065D709550B587260D6"
+  },
+  "actual_negative_cutpoint": {
+    "granted_groups": 4,
+    "attempted_groups": 1,
+    "unstarted_groups": 3,
+    "native_owner_count": 1,
+    "actual_partial_metadata_count": 0,
+    "actual_tests_started": 0,
+    "runtime_started": false
+  },
+  "audit_execution_authorized": true,
+  "native_execution_authorized": false,
+  "metadata_acceptance": false,
+  "runtime_authority": false,
+  "qualification": false,
+  "source_mutation_hold_released": false,
+  "scope": "Only execute this exact independent negative closure auditor against exact pinned V35 input configuration. Retain all original failed compile and owner-binding rejection fields. This grant does not authorize source mutation or any compiler/runtime launch."
+}

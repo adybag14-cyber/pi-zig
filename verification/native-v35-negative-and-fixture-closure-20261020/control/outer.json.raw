@@ -1,0 +1,32 @@
+{
+  "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+  "executable_sha256": "FA2C8BB1E35CDD62AD15CD06A1D8F2C5961E9725A9BFA1E7CFD2C322F49E9619",
+  "arguments": [
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-File",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-new4-prepared-20261020\\Run-CombinedNativeBatch.ps1",
+    "-RootGrant",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\root-grant.json",
+    "-Mode",
+    "BuildQuery"
+  ],
+  "working_directory": "C:\\Users\\adyba\\pi-zig",
+  "pid": 64192,
+  "retained_handle": 2104,
+  "created_utc": "2026-10-20T22:33:10.5622640Z",
+  "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+  "timeout_seconds": 1800,
+  "status": "failed",
+  "live_identity": {
+    "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-new4-prepared-20261020\\Run-CombinedNativeBatch.ps1 -RootGrant C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\root-grant.json -Mode BuildQuery",
+    "created_utc": "2026-10-20T22:33:10.5622640Z",
+    "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "command_line_method": "Win32_Process.CommandLine",
+    "pid": 64192
+  },
+  "exit_code": 1,
+  "completed_utc": "2026-10-20T22:39:57.0935168+00:00",
+  "error": "Owned terminal failed: C:\\Program Files\\PowerShell\\7\\pwsh.exe"
+}
