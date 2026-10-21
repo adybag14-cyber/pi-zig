@@ -13,6 +13,9 @@ const Fixture = support.Fixture;
 const File = support.File;
 const Handle = support.Handle;
 
+// Avoid libuv Windows' fd <= 2 close branch and any recycled real descriptor.
+const invalid_descriptor: c_int = std.math.maxInt(c_int);
+
 fn expectClosed(f: *Fixture, descriptor: c_int) !void {
     const handle = try f.handle();
     try std.testing.expect(handle.read_state.closed and !handle.read_state.closing);
@@ -175,7 +178,7 @@ test "native FileHandle owner explicit close keeps one Promise and one actual CL
 
 test "native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose" {
     var f: Fixture = undefined; try f.init(); defer f.deinit();
-    const handle = try f.create(-2, null, null);
+    const handle = try f.create(invalid_descriptor, null, null);
     const promise = try handle.closePromise();
     defer f.engine.freeValue(promise);
     c.JS_PromiseMarkAsHandled(f.engine.context, promise);
@@ -183,7 +186,7 @@ test "native FileHandle owner accepted bad descriptor close rejects the real UVE
     defer uv.pi_uv_fs_request_release(actual);
     try std.testing.expectEqual(@as(c_int, 1), f.env().requests.waiting);
     try f.pumpIo();
-    try expectClosed(&f, -2);
+    try expectClosed(&f, invalid_descriptor);
     try expectDrainedClose(&f, actual);
     try std.testing.expectEqual(@as(i64, physical.UV_EBADF), uv.pi_uv_fs_request_info(actual).result);
     try std.testing.expectEqual(c.JS_PROMISE_REJECTED, c.JS_PromiseState(f.engine.context, promise));
@@ -359,7 +362,7 @@ test "native FileHandle owner ordinary GC warning throw still reaches deprecatio
 test "native FileHandle owner failed GC close queues one refed actual UVException ticket" {
     var f: Fixture = undefined; try f.init(); defer f.deinit();
     try warningRecorder(&f);
-    _ = try f.create(-2, null, null);
+    _ = try f.create(invalid_descriptor, null, null);
     f.collectHandle();
     try std.testing.expectEqual(@as(usize, 1), f.sync_begins);
     try std.testing.expectEqual(@as(usize, 1), f.sync_ends);
@@ -371,7 +374,7 @@ test "native FileHandle owner failed GC close queues one refed actual UVExceptio
     try f.expose("ownerGcError", f.caught[0]);
     try f.expect("ownerGcError instanceof Error && ownerGcError.code === 'EBADF' && " ++
         "ownerGcError.syscall === 'close' && ownerGcError.message === " ++
-        "'EBADF: Closing file descriptor -2 on garbage collection failed, close' && " ++
+        "'EBADF: Closing file descriptor 2147483647 on garbage collection failed, close' && " ++
         "ownerWarnings.length === 0");
     try std.testing.expect(f.env().emit_filehandle_warning);
     try std.testing.expectEqual(@as(usize, 0), f.queue.?.count);
@@ -455,7 +458,7 @@ test "native FileHandle owner real throwing before hook still settles close and 
         var file: File = undefined; try file.init(); defer file.deinit();
         var f: Fixture = undefined; try f.init(); defer f.deinit();
         try f.installThrowingBeforeHook();
-        const descriptor = if (reject) @as(c_int, -2) else file.take();
+        const descriptor = if (reject) invalid_descriptor else file.take();
         const handle = try f.create(descriptor, null, null);
         const promise = try handle.closePromise();
         defer f.engine.freeValue(promise);

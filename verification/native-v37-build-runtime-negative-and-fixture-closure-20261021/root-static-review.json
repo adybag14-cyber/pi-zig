@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "status": "root_exact_two_file_finite_source_review_pending_causal_peer",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-21T13:57:44.614168+00:00",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "review_code": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V37FileHandleRuntimeFixtureFiniteEdits-20261021.py",
+    "bytes": 3076,
+    "sha256": "798B55ECDBD6614829AF7DE19DAA2FC4B368A26BCC19CE457B1B8CD0A02B822D"
+  },
+  "executed_read_only_source_checker": true,
+  "tool_result": {
+    "ok": true,
+    "summary": "Ran python directly in the Windows host devbox.",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      },
+      "output": {
+        "mode": "head",
+        "max_chars": 10000,
+        "max_lines": 0,
+        "stdout_original_chars": 4309,
+        "stderr_original_chars": 0,
+        "stdout_capture_truncated": false,
+        "stderr_capture_truncated": false
+      }
+    },
+    "stdout": "{\"proposal_rehashed\": true, \"main_clean\": true, \"files\": [{\"path\": \"src/native_node_file_handle_owner_test.zig\", \"edits\": 6, \"names\": 18, \"imports\": 2, \"full_forward_inverse_exact\": true, \"current_committed_preimage_exact\": true}, {\"path\": \"src/native_node_file_handle_owner_test_support.zig\", \"edits\": 2, \"names\": 0, \"imports\": 19, \"full_forward_inverse_exact\": true, \"current_committed_preimage_exact\": true}], \"cohort\": [{\"name\": \"native-node-file-handle-owner\", \"declared\": 18, \"current_imports_unchanged\": true}, {\"name\": \"native-node-fs-before-hook-continuation\", \"declared\": 3, \"current_imports_unchanged\": true}, {\"name\": \"native-vm-error-constructor-name\", \"declared\": 24, \"current_imports_unchanged\": true}, {\"name\": \"native-node-file-handle-transfer\", \"declared\": 13, \"current_imports_unchanged\": true}], \"native_execution\": false}\r\n{\"source\": {\"path\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\sdk-owners-resume-20261018\\\\verification\\\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\\\projected\\\\src\\\\native_node_file_handle_owner_test_support.zig\", \"bytes\": 33411, \"sha256\": \"DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B\"}, \"start\": 70, \"lines\": [\"70: fn unselectedCorruption(_: *callbacks.Environment, _: f64) anyerror {\", \"71:     return error.UnselectedConcreteFileHandleStackCorruption;\", \"72: }\", \"73: const operations: callbacks.Operations = .{\", \"74:     .on_hook_exception = selectedHookException,\", \"75:     .native_check_failure = unselectedCheck,\", \"76:     .fail_corrupted_async_stack = unselectedCorruption,\", \"77:     .perform_checkpoint = unselected,\", \"78:     .schedule_destroy_immediate = unselected,\", \"79:     .request_destroy_interrupt = unselected,\", \"80: };\", \"81: \", \"82: const NativeCallback = struct {\", \"83:     scope: callbacks.Scope = undefined,\", \"84:     fixture: *Fixture,\", \"85:     prior_javascript: ?bool = null,\", \"86: };\", \"87: fn fixtureOf(engine: *em.Engine) *Fixture {\", \"88:     return @ptrCast(@alignCast(engine.host_control_context orelse unreachable));\", \"89: }\", \"90: fn immediateResource(s: *a.Scope) !c.JSValue {\", \"91:     return a.duplicate(s.engine, try s.object());\", \"92: }\", \"93: fn beginImmediate(engine: *em.Engine, mode: immediate.Mode) !immediate.CallbackScope {\", \"94:     const f = fixtureOf(engine);\", \"95:     const frame = try f.env().allocator().create(NativeCallback);\", \"96:     frame.* = .{ .fixture = f };\", \"97:     frame.scope.initialized = false;\", \"98:     errdefer {\", \"99:         if (frame.scope.initialized) {\", \"100:             frame.scope.markFailed();\", \"101:             frame.scope.deinit() catch {};\", \"102:         }\", \"103:         f.env().allocator().destroy(frame);\", \"104:     }\", \"105:     const resource = if (f.env().canCallIntoJs())\", \"106:         try a.expression(engine, immediateResource, .{}) else c.pi_js_undefined();\", \"107:     defer engine.freeValue(resource);\", \"108:     try frame.scope.init(f.env(), resource,\", \"109:         .{ .async_id = 0, .trigger_async_id = 0 },\", \"110:         .{ .skip_async_hooks = true, .skip_task_queues = true },\", \"111:         c.pi_js_undefined());\", \"112:     if (mode == .cleanup)\", \"113:         frame.prior_javascript = c.JS_PiExchangeJavascriptExecutionAllowed(engine.runtime, false);\", \"114:     f.immediate_scopes += 1;\", \"115:     return .{ .raw = frame, .finish = finishImmediate };\", \"116: }\", \"117: fn finishImmediate(engine: *em.Engine, raw: ?*anyopaque, outcome: anyerror!bool) !bool {\", \"118:     const frame: *NativeCallback = @ptrCast(@alignCast(raw.?));\", \"119:     const f = frame.fixture;\", \"120:     var handles = a.Scope.init(engine);\", \"121:     var worked = false;\", \"122:     var failure: ?anyerror = null;\", \"123:     if (outcome) |value| worked = value else |err| {\", \"124:         handles.boundary.escaping();\", \"125:         failure = err;\", \"126:         frame.scope.markFailed();\", \"127:     }\", \"128:     frame.scope.deinit() catch |err| {\", \"129:         handles.boundary.escaping();\", \"130:         if (failure == null) failure = err;\", \"131:     };\", \"132:     if (frame.prior_javascript) |previous|\", \"133:         _ = c.JS_PiExchangeJavascriptExecutionAllowed(engine.runtime, previous);\", \"134:     f.env().allocator().destroy(frame);\", \"135:     const ignored = try handles.finish(if (failure) |err|\"]}\r\n",
+    "exitCode": 0,
+    "truncated": false
+  },
+  "observations": [
+    {
+      "proposal_rehashed": true,
+      "main_clean": true,
+      "files": [
+        {
+          "path": "src/native_node_file_handle_owner_test.zig",
+          "edits": 6,
+          "names": 18,
+          "imports": 2,
+          "full_forward_inverse_exact": true,
+          "current_committed_preimage_exact": true
+        },
+        {
+          "path": "src/native_node_file_handle_owner_test_support.zig",
+          "edits": 2,
+          "names": 0,
+          "imports": 19,
+          "full_forward_inverse_exact": true,
+          "current_committed_preimage_exact": true
+        }
+      ],
+      "cohort": [
+        {
+          "name": "native-node-file-handle-owner",
+          "declared": 18,
+          "current_imports_unchanged": true
+        },
+        {
+          "name": "native-node-fs-before-hook-continuation",
+          "declared": 3,
+          "current_imports_unchanged": true
+        },
+        {
+          "name": "native-vm-error-constructor-name",
+          "declared": 24,
+          "current_imports_unchanged": true
+        },
+        {
+          "name": "native-node-file-handle-transfer",
+          "declared": 13,
+          "current_imports_unchanged": true
+        }
+      ],
+      "native_execution": false
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 33411,
+        "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+      },
+      "start": 70,
+      "lines": [
+        "70: fn unselectedCorruption(_: *callbacks.Environment, _: f64) anyerror {",
+        "71:     return error.UnselectedConcreteFileHandleStackCorruption;",
+        "72: }",
+        "73: const operations: callbacks.Operations = .{",
+        "74:     .on_hook_exception = selectedHookException,",
+        "75:     .native_check_failure = unselectedCheck,",
+        "76:     .fail_corrupted_async_stack = unselectedCorruption,",
+        "77:     .perform_checkpoint = unselected,",
+        "78:     .schedule_destroy_immediate = unselected,",
+        "79:     .request_destroy_interrupt = unselected,",
+        "80: };",
+        "81: ",
+        "82: const NativeCallback = struct {",
+        "83:     scope: callbacks.Scope = undefined,",
+        "84:     fixture: *Fixture,",
+        "85:     prior_javascript: ?bool = null,",
+        "86: };",
+        "87: fn fixtureOf(engine: *em.Engine) *Fixture {",
+        "88:     return @ptrCast(@alignCast(engine.host_control_context orelse unreachable));",
+        "89: }",
+        "90: fn immediateResource(s: *a.Scope) !c.JSValue {",
+        "91:     return a.duplicate(s.engine, try s.object());",
+        "92: }",
+        "93: fn beginImmediate(engine: *em.Engine, mode: immediate.Mode) !immediate.CallbackScope {",
+        "94:     const f = fixtureOf(engine);",
+        "95:     const frame = try f.env().allocator().create(NativeCallback);",
+        "96:     frame.* = .{ .fixture = f };",
+        "97:     frame.scope.initialized = false;",
+        "98:     errdefer {",
+        "99:         if (frame.scope.initialized) {",
+        "100:             frame.scope.markFailed();",
+        "101:             frame.scope.deinit() catch {};",
+        "102:         }",
+        "103:         f.env().allocator().destroy(frame);",
+        "104:     }",
+        "105:     const resource = if (f.env().canCallIntoJs())",
+        "106:         try a.expression(engine, immediateResource, .{}) else c.pi_js_undefined();",
+        "107:     defer engine.freeValue(resource);",
+        "108:     try frame.scope.init(f.env(), resource,",
+        "109:         .{ .async_id = 0, .trigger_async_id = 0 },",
+        "110:         .{ .skip_async_hooks = true, .skip_task_queues = true },",
+        "111:         c.pi_js_undefined());",
+        "112:     if (mode == .cleanup)",
+        "113:         frame.prior_javascript = c.JS_PiExchangeJavascriptExecutionAllowed(engine.runtime, false);",
+        "114:     f.immediate_scopes += 1;",
+        "115:     return .{ .raw = frame, .finish = finishImmediate };",
+        "116: }",
+        "117: fn finishImmediate(engine: *em.Engine, raw: ?*anyopaque, outcome: anyerror!bool) !bool {",
+        "118:     const frame: *NativeCallback = @ptrCast(@alignCast(raw.?));",
+        "119:     const f = frame.fixture;",
+        "120:     var handles = a.Scope.init(engine);",
+        "121:     var worked = false;",
+        "122:     var failure: ?anyerror = null;",
+        "123:     if (outcome) |value| worked = value else |err| {",
+        "124:         handles.boundary.escaping();",
+        "125:         failure = err;",
+        "126:         frame.scope.markFailed();",
+        "127:     }",
+        "128:     frame.scope.deinit() catch |err| {",
+        "129:         handles.boundary.escaping();",
+        "130:         if (failure == null) failure = err;",
+        "131:     };",
+        "132:     if (frame.prior_javascript) |previous|",
+        "133:         _ = c.JS_PiExchangeJavascriptExecutionAllowed(engine.runtime, previous);",
+        "134:     f.env().allocator().destroy(frame);",
+        "135:     const ignored = try handles.finish(if (failure) |err|"
+      ]
+    }
+  ],
+  "finite_hunks": 8,
+  "full_byte_forward_and_inverse_verified": true,
+  "current_committed_preimages_verified": true,
+  "all58_declared_controls_and4_root_import_topologies_unchanged": true,
+  "fixture_inputs_and_callback_resource_only": true,
+  "source_accepted": false,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "application_qualified": false
+}

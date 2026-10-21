@@ -1,0 +1,623 @@
+{
+  "schema": 1,
+  "status": "root_verified_bounded_filehandle_fixture_causal_sources",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-21T14:01:10.622572+00:00",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "executed_read_only_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V37FileHandleFixtureCausalPins-20261021.py",
+    "bytes": 2625,
+    "sha256": "3B1378625D342BF6B815A7AB41C2000A56C4BCF0EFBAC10704C30C912471A517"
+  },
+  "source_evidence": {
+    "distinct_current_pins": 47,
+    "source_proof": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\causal-proof.json",
+      "bytes": 83979,
+      "sha256": "39DF95F9780D1A663A6CAC9542B1F7656AAD5EE6CDCCD4761219142295E81C5D"
+    },
+    "independent_proof": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\source-audit.json",
+      "bytes": 101785,
+      "sha256": "74591C1609D2A07397D44585C0BD92C1BEDB406AC9663AFF77161D4449CA9512"
+    },
+    "SDK_excerpts_verified": 41,
+    "peer_source_ranges_verified": 48,
+    "source_pins": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\causal-proof.json",
+        "bytes": 83979,
+        "sha256": "39DF95F9780D1A663A6CAC9542B1F7656AAD5EE6CDCCD4761219142295E81C5D"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\source-audit.json",
+        "bytes": 101785,
+        "sha256": "74591C1609D2A07397D44585C0BD92C1BEDB406AC9663AFF77161D4449CA9512"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\proposal.json",
+        "bytes": 21669,
+        "sha256": "2933A7AB4CCC196984FC27419B3E4A64DCCEB99B0834734AA7B357EE1280C7FC"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 33152,
+        "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28576,
+        "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 33411,
+        "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+        "bytes": 3512,
+        "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+        "bytes": 7087,
+        "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+        "bytes": 9934,
+        "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+        "bytes": 40069,
+        "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_native_immediates.zig",
+        "bytes": 8688,
+        "sha256": "4D08479443076E84E1B16005FEC0078BAD08BD19D31DD6012266752E44CE7578"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_close_request.zig",
+        "bytes": 15879,
+        "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_gc_close.zig",
+        "bytes": 6402,
+        "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\node-env.v24.13.cc",
+        "bytes": 84987,
+        "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority-acquisition.json",
+        "bytes": 10905,
+        "sha256": "28C98F0DE650DFA0F97E1D1BCE71E2D7EEE0A61012CE36A1732DD46C81DADF7C"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs.c",
+        "bytes": 105366,
+        "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\core.c",
+        "bytes": 18494,
+        "sha256": "3026F2888B3360E65A2E2662508EEF6BA9B1AF17735391CA6F79DC06887B8B23"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 46648,
+        "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_node_network.zig",
+        "bytes": 5905,
+        "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\_mingw.h",
+        "bytes": 19371,
+        "sha256": "9DAA9C8670CB7E5D73E2290A020D8CBEBF55BC19FD4C5E2F27E661C98827C3B6"
+      },
+      {
+        "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Source\\10.0.26100.0\\ucrt\\lowio\\close.cpp",
+        "bytes": 2884,
+        "sha256": "66EF4CA9584690771768589C039BA04E024AD6FA5758958473E6BCE4209603F3"
+      },
+      {
+        "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Source\\10.0.26100.0\\ucrt\\inc\\corecrt_internal_lowio.h",
+        "bytes": 11985,
+        "sha256": "1465B3388C22524A779C19DCD709EEFF116993D21A0068E639281181DDB2A751"
+      },
+      {
+        "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Source\\10.0.26100.0\\ucrt\\misc\\invalid_parameter.cpp",
+        "bytes": 10714,
+        "sha256": "B09696292D181B0D51D360377F933763B7B1BE796557AB3334F481800B0C3F2E"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\_setmaxstdio.md",
+        "bytes": 2790,
+        "sha256": "367035800B397585FA213D7B45D6EEA4937700894B9AD3E9FCDBD45C6FEA0578"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\_close.md",
+        "bytes": 2050,
+        "sha256": "A8D0AFB0CCDBF82FFC426F5CD12DE4D5051FDB6DE36CCD1B02119119CCB419DD"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\native-hermes-primary-fetch.json",
+        "bytes": 9887,
+        "sha256": "9CE71D3BE82597741722A7CDF47A75707C76646E0655DD9DFE7F7B6AD41E9B08"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\result.json",
+        "bytes": 8438,
+        "sha256": "20387216D12CBABE8C6763CB26E0C3228897F6AAAE500E69F18B94201CC38C10"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.json",
+        "bytes": 1228,
+        "sha256": "73AE870C555B868366E33B52366E42E99BADF550B5AEA4DFD35251993809D659"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stderr.log",
+        "bytes": 68389,
+        "sha256": "1BB42117F374DECBF5C91100686DF7DA7D686A285ECF9F874423D5799AF945ED"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stdout.bin",
+        "bytes": 546,
+        "sha256": "28AC47910B5D5309DD1A1454816A2C051A0E420C51BD0827D4EC61F5D5528C9E"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\groups.json",
+        "bytes": 1104585,
+        "sha256": "E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c4d8e30b697e1e299b33fef4aed6127d\\test.exe",
+        "bytes": 49019392,
+        "sha256": "BF100B0B3CFB386757E0415DAFC8A7BEFF430ED96166AD5AA06E9129E0F8DB7F"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\result.json",
+        "bytes": 16657,
+        "sha256": "66E9CE52981B6DA16C7A1F79EE596FA98754E5F69E435FDF0A36EB3AB8139165"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+        "bytes": 15176,
+        "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 33152,
+        "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_transfer_test.zig",
+        "bytes": 23797,
+        "sha256": "E5656DE3AEC771F144939E5852CC7161B1B0499D4764A3F2E0BF42460570C5B1"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_fs_before_hook_continuation_test.zig",
+        "bytes": 6578,
+        "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_vm_error_constructor_name_test.zig",
+        "bytes": 28931,
+        "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs-fd-hash-inl.h",
+        "bytes": 6886,
+        "sha256": "1365F18D01C4117B0F42CFB2E0065F37AD62E4F5214B150CBF660F986955BB2D"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs-v2.json",
+        "bytes": 16810,
+        "sha256": "B97468E1DD34137C80A6199BABE6E227FEBDB5BD3FD0654B31EA3F05CF8C123F"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs.json",
+        "bytes": 16810,
+        "sha256": "940ED7F295FDE2A6D4F2F7770B7041E15F810B2A3D6C8FF8CCA8B5079A1B7727"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-corecrt-internal-lowio.h",
+        "bytes": 11985,
+        "sha256": "1465B3388C22524A779C19DCD709EEFF116993D21A0068E639281181DDB2A751"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-close.cpp",
+        "bytes": 2884,
+        "sha256": "66EF4CA9584690771768589C039BA04E024AD6FA5758958473E6BCE4209603F3"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-invalid-parameter.cpp",
+        "bytes": 10714,
+        "sha256": "B09696292D181B0D51D360377F933763B7B1BE796557AB3334F481800B0C3F2E"
+      }
+    ],
+    "SDK_excerpt_index": [
+      {
+        "i": 0,
+        "key": "original_test",
+        "first": 176,
+        "last": 197,
+        "bytes": 1403
+      },
+      {
+        "i": 1,
+        "key": "original_test",
+        "first": 359,
+        "last": 379,
+        "bytes": 1227
+      },
+      {
+        "i": 2,
+        "key": "original_test",
+        "first": 453,
+        "last": 484,
+        "bytes": 2090
+      },
+      {
+        "i": 3,
+        "key": "original_fixture",
+        "first": 82,
+        "last": 132,
+        "bytes": 2023
+      },
+      {
+        "i": 4,
+        "key": "original_fixture",
+        "first": 386,
+        "last": 405,
+        "bytes": 1316
+      },
+      {
+        "i": 5,
+        "key": "candidate_test",
+        "first": 6,
+        "last": 18,
+        "bytes": 433
+      },
+      {
+        "i": 6,
+        "key": "candidate_test",
+        "first": 365,
+        "last": 381,
+        "bytes": 1064
+      },
+      {
+        "i": 7,
+        "key": "candidate_fixture",
+        "first": 90,
+        "last": 116,
+        "bytes": 1124
+      },
+      {
+        "i": 8,
+        "key": "argument",
+        "first": 9,
+        "last": 14,
+        "bytes": 438
+      },
+      {
+        "i": 9,
+        "key": "operation_scope",
+        "first": 13,
+        "last": 27,
+        "bytes": 1166
+      },
+      {
+        "i": 10,
+        "key": "operation_scope",
+        "first": 71,
+        "last": 71,
+        "bytes": 176
+      },
+      {
+        "i": 11,
+        "key": "owned_boundary",
+        "first": 85,
+        "last": 95,
+        "bytes": 789
+      },
+      {
+        "i": 12,
+        "key": "owned_boundary",
+        "first": 114,
+        "last": 134,
+        "bytes": 1813
+      },
+      {
+        "i": 13,
+        "key": "owned_boundary",
+        "first": 158,
+        "last": 163,
+        "bytes": 505
+      },
+      {
+        "i": 14,
+        "key": "callback_scope",
+        "first": 433,
+        "last": 442,
+        "bytes": 656
+      },
+      {
+        "i": 15,
+        "key": "callback_scope",
+        "first": 671,
+        "last": 691,
+        "bytes": 1070
+      },
+      {
+        "i": 16,
+        "key": "callback_scope",
+        "first": 775,
+        "last": 791,
+        "bytes": 779
+      },
+      {
+        "i": 17,
+        "key": "immediates",
+        "first": 123,
+        "last": 148,
+        "bytes": 1231
+      },
+      {
+        "i": 18,
+        "key": "owner",
+        "first": 223,
+        "last": 238,
+        "bytes": 900
+      },
+      {
+        "i": 19,
+        "key": "owner",
+        "first": 275,
+        "last": 288,
+        "bytes": 905
+      },
+      {
+        "i": 20,
+        "key": "close_request",
+        "first": 270,
+        "last": 298,
+        "bytes": 1392
+      },
+      {
+        "i": 21,
+        "key": "gc_close",
+        "first": 41,
+        "last": 55,
+        "bytes": 892
+      },
+      {
+        "i": 22,
+        "key": "gc_close",
+        "first": 98,
+        "last": 134,
+        "bytes": 1528
+      },
+      {
+        "i": 23,
+        "key": "node_env",
+        "first": 1389,
+        "last": 1400,
+        "bytes": 605
+      },
+      {
+        "i": 24,
+        "key": "uv_fs",
+        "first": 74,
+        "last": 97,
+        "bytes": 1705
+      },
+      {
+        "i": 25,
+        "key": "uv_fs",
+        "first": 117,
+        "last": 122,
+        "bytes": 394
+      },
+      {
+        "i": 26,
+        "key": "uv_fs",
+        "first": 397,
+        "last": 410,
+        "bytes": 360
+      },
+      {
+        "i": 27,
+        "key": "uv_fs",
+        "first": 668,
+        "last": 695,
+        "bytes": 590
+      },
+      {
+        "i": 28,
+        "key": "uv_fs",
+        "first": 3241,
+        "last": 3245,
+        "bytes": 126
+      },
+      {
+        "i": 29,
+        "key": "uv_core",
+        "first": 73,
+        "last": 79,
+        "bytes": 250
+      },
+      {
+        "i": 30,
+        "key": "uv_core",
+        "first": 179,
+        "last": 198,
+        "bytes": 847
+      },
+      {
+        "i": 31,
+        "key": "uv_core",
+        "first": 227,
+        "last": 238,
+        "bytes": 360
+      },
+      {
+        "i": 32,
+        "key": "uv_core",
+        "first": 332,
+        "last": 334,
+        "bytes": 67
+      },
+      {
+        "i": 33,
+        "key": "uv_service",
+        "first": 676,
+        "last": 697,
+        "bytes": 1043
+      },
+      {
+        "i": 34,
+        "key": "network_build",
+        "first": 9,
+        "last": 29,
+        "bytes": 1417
+      },
+      {
+        "i": 35,
+        "key": "network_build",
+        "first": 83,
+        "last": 90,
+        "bytes": 575
+      },
+      {
+        "i": 36,
+        "key": "mingw_header",
+        "first": 229,
+        "last": 247,
+        "bytes": 537
+      },
+      {
+        "i": 37,
+        "key": "ucrt_close",
+        "first": 50,
+        "last": 77,
+        "bytes": 961
+      },
+      {
+        "i": 38,
+        "key": "ucrt_lowio",
+        "first": 110,
+        "last": 129,
+        "bytes": 743
+      },
+      {
+        "i": 39,
+        "key": "ucrt_lowio",
+        "first": 150,
+        "last": 166,
+        "bytes": 639
+      },
+      {
+        "i": 40,
+        "key": "ucrt_invalid_parameter",
+        "first": 99,
+        "last": 114,
+        "bytes": 595
+      }
+    ],
+    "peer_only_ranges": [
+      {
+        "i": 41,
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+        "first": 122,
+        "last": 163,
+        "bytes": 3075
+      },
+      {
+        "i": 42,
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+        "first": 162,
+        "last": 169,
+        "bytes": 369
+      },
+      {
+        "i": 43,
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+        "first": 215,
+        "last": 227,
+        "bytes": 661
+      },
+      {
+        "i": 44,
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+        "first": 699,
+        "last": 732,
+        "bytes": 1614
+      },
+      {
+        "i": 45,
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs-fd-hash-inl.h",
+        "first": 93,
+        "last": 120,
+        "bytes": 1913
+      },
+      {
+        "i": 46,
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs-fd-hash-inl.h",
+        "first": 167,
+        "last": 194,
+        "bytes": 731
+      },
+      {
+        "i": 47,
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+        "first": 927,
+        "last": 939,
+        "bytes": 778
+      }
+    ],
+    "PE": {
+      "artifact": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c4d8e30b697e1e299b33fef4aed6127d\\test.exe",
+        "bytes": 49019392,
+        "sha256": "BF100B0B3CFB386757E0415DAFC8A7BEFF430ED96166AD5AA06E9129E0F8DB7F"
+      },
+      "full_import_inventory_sha256": "FB62DE635650479F63C2DCDB8F9C5A24C9E610C59626EECFD699AC42C9F47A57",
+      "selected": {
+        "_close": "api-ms-win-crt-stdio-l1-1-0.dll",
+        "_set_invalid_parameter_handler": "api-ms-win-crt-runtime-l1-1-0.dll"
+      },
+      "thread_local_handler_import_present": false,
+      "binary_executed": false
+    }
+  },
+  "reviewed_source": "Root fully read both source checkers, peer, causal semantic findings, the eight raw edits, affected tests, real expression/object/duplicate/retirement and callback scope init/deinit; pinned Node immediate object admission; selected libuv INIT/close/once/handler; SDK table/bounds/handler and real artifact import proof. All47 input versions and41+48 source excerpts independently rehashed. The source inference is bounded to the selected fixture and CRT family; it does not assert loaded DLL bytes or candidate runtime results.",
+  "native_execution_authorized": false,
+  "candidate_executed": false,
+  "Main_written": false,
+  "qualification": false
+}

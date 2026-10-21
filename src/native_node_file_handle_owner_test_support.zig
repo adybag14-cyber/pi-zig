@@ -87,6 +87,9 @@ const NativeCallback = struct {
 fn fixtureOf(engine: *em.Engine) *Fixture {
     return @ptrCast(@alignCast(engine.host_control_context orelse unreachable));
 }
+fn immediateResource(s: *a.Scope) !c.JSValue {
+    return a.duplicate(s.engine, try s.object());
+}
 fn beginImmediate(engine: *em.Engine, mode: immediate.Mode) !immediate.CallbackScope {
     const f = fixtureOf(engine);
     const frame = try f.env().allocator().create(NativeCallback);
@@ -99,7 +102,10 @@ fn beginImmediate(engine: *em.Engine, mode: immediate.Mode) !immediate.CallbackS
         }
         f.env().allocator().destroy(frame);
     }
-    try frame.scope.init(f.env(), c.pi_js_undefined(),
+    const resource = if (f.env().canCallIntoJs())
+        try a.expression(engine, immediateResource, .{}) else c.pi_js_undefined();
+    defer engine.freeValue(resource);
+    try frame.scope.init(f.env(), resource,
         .{ .async_id = 0, .trigger_async_id = 0 },
         .{ .skip_async_hooks = true, .skip_task_queues = true },
         c.pi_js_undefined());

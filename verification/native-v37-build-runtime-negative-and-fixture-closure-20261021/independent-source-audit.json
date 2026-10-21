@@ -1,0 +1,1097 @@
+{
+  "schema": 1,
+  "status": "passed_bounded_static_fixture_source_checks",
+  "candidate_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\proposal.json",
+    "bytes": 21669,
+    "sha256": "2933A7AB4CCC196984FC27419B3E4A64DCCEB99B0834734AA7B357EE1280C7FC"
+  },
+  "authority_inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs-v2.json",
+    "bytes": 16810,
+    "sha256": "B97468E1DD34137C80A6199BABE6E227FEBDB5BD3FD0654B31EA3F05CF8C123F"
+  },
+  "authority_original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs.json",
+    "bytes": 16810,
+    "sha256": "940ED7F295FDE2A6D4F2F7770B7041E15F810B2A3D6C8FF8CCA8B5079A1B7727"
+  },
+  "authority_range_single_edit_inverse_exact": true,
+  "contained_SDK_snapshots": [
+    {
+      "original": {
+        "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Source\\10.0.26100.0\\ucrt\\lowio\\close.cpp",
+        "bytes": 2884,
+        "sha256": "66EF4CA9584690771768589C039BA04E024AD6FA5758958473E6BCE4209603F3"
+      },
+      "contained": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-close.cpp",
+        "bytes": 2884,
+        "sha256": "66EF4CA9584690771768589C039BA04E024AD6FA5758958473E6BCE4209603F3"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Source\\10.0.26100.0\\ucrt\\inc\\corecrt_internal_lowio.h",
+        "bytes": 11985,
+        "sha256": "1465B3388C22524A779C19DCD709EEFF116993D21A0068E639281181DDB2A751"
+      },
+      "contained": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-corecrt-internal-lowio.h",
+        "bytes": 11985,
+        "sha256": "1465B3388C22524A779C19DCD709EEFF116993D21A0068E639281181DDB2A751"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Source\\10.0.26100.0\\ucrt\\misc\\invalid_parameter.cpp",
+        "bytes": 10714,
+        "sha256": "B09696292D181B0D51D360377F933763B7B1BE796557AB3334F481800B0C3F2E"
+      },
+      "contained": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-invalid-parameter.cpp",
+        "bytes": 10714,
+        "sha256": "B09696292D181B0D51D360377F933763B7B1BE796557AB3334F481800B0C3F2E"
+      }
+    }
+  ],
+  "main_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "main_clean_before_and_after": true,
+  "exact_files": 2,
+  "exact_edits": 8,
+  "source_files": [
+    {
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28576,
+        "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+      },
+      "current_and_raw_git_equal": true,
+      "whole_forward_and_inverse_exact": true,
+      "named_controls": [
+        "native FileHandle owner constructor attaches the same native stream and transfers the real descriptor on release",
+        "native FileHandle owner optional Number IntegerValue follows pinned V8 truncation and saturation",
+        "native FileHandle owner non Number optional arguments perform no guest coercion",
+        "native FileHandle owner keeps the full public method template an explicit dependency",
+        "native FileHandle owner explicit close keeps one Promise and one actual CLOSE request through cleanup",
+        "native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose",
+        "native FileHandle owner real stopped service admission rejects without fabricating completion or closing the descriptor",
+        "native FileHandle owner retained CloseReq wrapper loses native state after both callback references retire",
+        "native FileHandle owner CloseReq Global keeps the handle and weak BindingData alive until actual completion",
+        "native FileHandle owner GC closes synchronously and the warning ticket retains no handle or BindingData",
+        "native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once",
+        "native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason",
+        "native FileHandle owner failed GC close queues one refed actual UVException ticket",
+        "native FileHandle owner cleanup skips unrefed GC warning execution and destroys its native capture",
+        "native FileHandle owner GC uses the retained real service for synchronous close after worker join",
+        "native FileHandle owner consumes the real read engine and reuses its physical ReadWrap across concrete handles",
+        "native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity",
+        "native FileHandle owner real Hub shutdown drains accepted close without settling its guest Promise"
+      ],
+      "imports": [
+        [
+          "import",
+          "std"
+        ],
+        [
+          "import",
+          "native_node_file_handle_owner_test_support.zig"
+        ]
+      ],
+      "std_testing_expect_lines_exact": 162,
+      "edits": [
+        {
+          "id": "invalid-descriptor-constant",
+          "offset": 641,
+          "before_sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+          "after_sha256": "A7F075BEC57770A868DB43DB203EE484C3DB9ACF716864928268BFEBF4CC3006",
+          "before_bytes": 31,
+          "after_bytes": 169
+        },
+        {
+          "id": "accepted-close-input",
+          "offset": 9875,
+          "before_sha256": "A7F075BEC57770A868DB43DB203EE484C3DB9ACF716864928268BFEBF4CC3006",
+          "after_sha256": "2C813AA6E866906BA6957D8CFA625D9E503132C0127301411F3EC7870A176D00",
+          "before_bytes": 49,
+          "after_bytes": 65
+        },
+        {
+          "id": "accepted-close-observation",
+          "offset": 10272,
+          "before_sha256": "2C813AA6E866906BA6957D8CFA625D9E503132C0127301411F3EC7870A176D00",
+          "after_sha256": "CCCF3C29F52C63F14DF6B06C9D716F699E3F629A5742283DD477E840761EB158",
+          "before_bytes": 30,
+          "after_bytes": 46
+        },
+        {
+          "id": "gc-close-input",
+          "offset": 20201,
+          "before_sha256": "CCCF3C29F52C63F14DF6B06C9D716F699E3F629A5742283DD477E840761EB158",
+          "after_sha256": "7CC795F84B2560EB9DC5CC1E60FF431D0810B109B9B3C6BC80FCEC03ABA025B8",
+          "before_bytes": 38,
+          "after_bytes": 54
+        },
+        {
+          "id": "gc-exact-error-message",
+          "offset": 20932,
+          "before_sha256": "7CC795F84B2560EB9DC5CC1E60FF431D0810B109B9B3C6BC80FCEC03ABA025B8",
+          "after_sha256": "B2F1B65D8550C6532704979AF92EB9DE4CCF4D22A64C254A2003B755F58A861A",
+          "before_bytes": 89,
+          "after_bytes": 97
+        },
+        {
+          "id": "before-hook-rejected-close-input",
+          "offset": 25546,
+          "before_sha256": "B2F1B65D8550C6532704979AF92EB9DE4CCF4D22A64C254A2003B755F58A861A",
+          "after_sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6",
+          "before_bytes": 72,
+          "after_bytes": 76
+        }
+      ]
+    },
+    {
+      "relative_path": "src/native_node_file_handle_owner_test_support.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 33152,
+        "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 33411,
+        "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+      },
+      "current_and_raw_git_equal": true,
+      "whole_forward_and_inverse_exact": true,
+      "named_controls": [],
+      "imports": [
+        [
+          "import",
+          "std"
+        ],
+        [
+          "import",
+          "extensions/native_node_argument_values.zig"
+        ],
+        [
+          "import",
+          "extensions/native_node_async_wrap_state.zig"
+        ],
+        [
+          "import",
+          "extensions/native_node_callback_scope.zig"
+        ],
+        [
+          "import",
+          "extensions/native_node_async_wrap.zig"
+        ],
+        [
+          "import",
+          "extensions/native_node_fs_binding_data.zig"
+        ],
+        [
+          "import",
+          "extensions/native_node_file_handle_owner.zig"
+        ],
+        [
+          "import",
+          "extensions/native_node_async_providers.zig"
+        ],
+        [
+          "import",
+          "extensions/native_node_stream_base.zig"
+        ],
+        [
+          "import",
+          "extensions/native_node_managed_buffers.zig"
+        ],
+        [
+          "import",
+          "extensions/native_node_module_callable.zig"
+        ],
+        [
+          "import",
+          "extensions/native_node_fs_request_io.zig"
+        ],
+        [
+          "import",
+          "extensions/native_node_fs_request_promise.zig"
+        ],
+        [
+          "import",
+          "extensions/native_node_file_handle_read_binding.zig"
+        ],
+        [
+          "import",
+          "extensions/native_node_native_immediates.zig"
+        ],
+        [
+          "import",
+          "extensions/native_immediates.zig"
+        ],
+        [
+          "cInclude",
+          "uv.h"
+        ],
+        [
+          "cInclude",
+          "fcntl.h"
+        ],
+        [
+          "import",
+          "extensions/native_process.zig"
+        ]
+      ],
+      "std_testing_expect_lines_exact": 2,
+      "edits": [
+        {
+          "id": "native-immediate-plain-object",
+          "offset": 4273,
+          "before_sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F",
+          "after_sha256": "C41CEDB336AB0DE7A82A9A76176F07A058B3D2385BDBF4F3186E31BC3018FCC4",
+          "before_bytes": 87,
+          "after_bytes": 186
+        },
+        {
+          "id": "native-immediate-resource-lifetime",
+          "offset": 4823,
+          "before_sha256": "C41CEDB336AB0DE7A82A9A76176F07A058B3D2385BDBF4F3186E31BC3018FCC4",
+          "after_sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B",
+          "before_bytes": 55,
+          "after_bytes": 215
+        }
+      ]
+    }
+  ],
+  "cohort": [
+    {
+      "name": "native-node-file-handle-owner",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "declarations": 18,
+      "names": [
+        "native_node_file_handle_owner_test.test.native FileHandle owner constructor attaches the same native stream and transfers the real descriptor on release",
+        "native_node_file_handle_owner_test.test.native FileHandle owner optional Number IntegerValue follows pinned V8 truncation and saturation",
+        "native_node_file_handle_owner_test.test.native FileHandle owner non Number optional arguments perform no guest coercion",
+        "native_node_file_handle_owner_test.test.native FileHandle owner keeps the full public method template an explicit dependency",
+        "native_node_file_handle_owner_test.test.native FileHandle owner explicit close keeps one Promise and one actual CLOSE request through cleanup",
+        "native_node_file_handle_owner_test.test.native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose",
+        "native_node_file_handle_owner_test.test.native FileHandle owner real stopped service admission rejects without fabricating completion or closing the descriptor",
+        "native_node_file_handle_owner_test.test.native FileHandle owner retained CloseReq wrapper loses native state after both callback references retire",
+        "native_node_file_handle_owner_test.test.native FileHandle owner CloseReq Global keeps the handle and weak BindingData alive until actual completion",
+        "native_node_file_handle_owner_test.test.native FileHandle owner GC closes synchronously and the warning ticket retains no handle or BindingData",
+        "native_node_file_handle_owner_test.test.native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once",
+        "native_node_file_handle_owner_test.test.native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason",
+        "native_node_file_handle_owner_test.test.native FileHandle owner failed GC close queues one refed actual UVException ticket",
+        "native_node_file_handle_owner_test.test.native FileHandle owner cleanup skips unrefed GC warning execution and destroys its native capture",
+        "native_node_file_handle_owner_test.test.native FileHandle owner GC uses the retained real service for synchronous close after worker join",
+        "native_node_file_handle_owner_test.test.native FileHandle owner consumes the real read engine and reuses its physical ReadWrap across concrete handles",
+        "native_node_file_handle_owner_test.test.native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity",
+        "native_node_file_handle_owner_test.test.native FileHandle owner real Hub shutdown drains accepted close without settling its guest Promise"
+      ],
+      "imports": [
+        "std",
+        "native_node_file_handle_owner_test_support.zig"
+      ]
+    },
+    {
+      "name": "native-node-fs-before-hook-continuation",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_fs_before_hook_continuation_test.zig",
+        "bytes": 6578,
+        "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92"
+      },
+      "declarations": 3,
+      "names": [
+        "native_node_fs_before_hook_continuation_test.test.native FS before hook actual read fulfills after the same ordinary hook rethrow",
+        "native_node_fs_before_hook_continuation_test.test.native FS before hook actual EBADF read rejects with UVException while the hook reason propagates separately",
+        "native_node_fs_before_hook_continuation_test.test.native FS before hook continuation performs the original live Promise Get before settlement"
+      ],
+      "imports": [
+        "std",
+        "native_node_file_handle_owner_test_support.zig"
+      ]
+    },
+    {
+      "name": "native-vm-error-constructor-name",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_vm_error_constructor_name_test.zig",
+        "bytes": 28931,
+        "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+      },
+      "declarations": 24,
+      "names": [
+        "native_vm_error_constructor_name_test.test.VM native Error constructor intrinsic families retain their native initial names",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor direct native creation and throws record real origins",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor real VM stack exhaustion retains RangeError provenance",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor public function and Error names do not replace provenance",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor public replacement cannot redirect native intrinsic factories",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor changing an Error prototype preserves base provenance",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor new inheritors suppress fast provenance with real prototype admission",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor explicit prototype admission uses the same original fallback",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor inherited data tag precedes constructor at the same level",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor receiver constructor and accessor tag are never invoked",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor prototype accessors and mutable builtin name are skipped",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor actual intrinsic Object is skipped without its public name",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor final native class fallback remains Error",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor bound and Proxy constructors are skipped without traps",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor missing general DebugName is explicit without function name Get",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor Proxy prototype storage stays unsupported without traps",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor native exotic descriptors remain uncalled and unsupported",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor different new target is an explicit remaining dependency",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor unrecorded physical Error allocation cannot invent provenance",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor ordinary lookalikes never acquire the actual native class",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor query preserves actual ordinary and uncatchable pending owners",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor active and cancelled native termination state is unchanged",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor all selected query branches allocate no VM storage",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor actual native origin survives released foreign realm and retires with Error"
+      ],
+      "imports": [
+        "std"
+      ]
+    },
+    {
+      "name": "native-node-file-handle-transfer",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_transfer_test.zig",
+        "bytes": 23797,
+        "sha256": "E5656DE3AEC771F144939E5852CC7161B1B0499D4764A3F2E0BF42460570C5B1"
+      },
+      "declarations": 13,
+      "names": [
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer changes only the live closed member and retains the real descriptor",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer admission follows real ReadStart and ReadStop with the original pending request",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer rejects real closing and closed state without weakening the close request",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer admission excludes the real released descriptor state",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer packet move preserves one native allocation and closes once",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer packet survives actual sender GC and weak BindingData retirement",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer allocation alone retains its native memory domain after Engine teardown",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer abandoned on a real different thread closes after sender Engine retirement",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer destructor null admission masks and restores an outer real context",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer native member and destructor calls preserve an actual current exception",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer missing real BindingData consumes the packet and closes its descriptor",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer disowns before the explicit missing full template boundary without inventing a receiver",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer strong result edges clone and move over the same actual weak wrapper"
+      ],
+      "imports": [
+        "std",
+        "native_node_file_handle_owner_test_support.zig",
+        "extensions/native_node_file_handle_transfer.zig"
+      ]
+    }
+  ],
+  "declared_controls": 58,
+  "future_actual_metadata": null,
+  "finishImmediate_byte_sha256": "053D2061E9777E5EF3B7A8185E43A3C05C6D625273A950152FF4FD5941B1BCDD",
+  "existing_init_errdefer_byte_sha256": "EEF05355E572F2EE47F5C86FC299D2610AD0D05867D09696A364507103CB3FD0",
+  "original_negative_artifacts": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\result.json",
+      "bytes": 16657,
+      "sha256": "66E9CE52981B6DA16C7A1F79EE596FA98754E5F69E435FDF0A36EB3AB8139165"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stdout.bin",
+      "bytes": 546,
+      "sha256": "28AC47910B5D5309DD1A1454816A2C051A0E420C51BD0827D4EC61F5D5528C9E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stderr.log",
+      "bytes": 68389,
+      "sha256": "1BB42117F374DECBF5C91100686DF7DA7D686A285ECF9F874423D5799AF945ED"
+    }
+  ],
+  "pe_imports": {
+    "artifact": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c4d8e30b697e1e299b33fef4aed6127d\\test.exe",
+      "bytes": 49019392,
+      "sha256": "BF100B0B3CFB386757E0415DAFC8A7BEFF430ED96166AD5AA06E9129E0F8DB7F"
+    },
+    "full_import_inventory_sha256": "FB62DE635650479F63C2DCDB8F9C5A24C9E610C59626EECFD699AC42C9F47A57",
+    "selected": {
+      "_close": "api-ms-win-crt-stdio-l1-1-0.dll",
+      "_set_invalid_parameter_handler": "api-ms-win-crt-runtime-l1-1-0.dll"
+    },
+    "thread_local_handler_import_present": false,
+    "binary_executed": false
+  },
+  "source_ranges": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+      "file_sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "first_line": 176,
+      "last_line": 197,
+      "bytes": 1403,
+      "sha256": "27997EA37D0676037096189D3E1F42301B3C2BBB6DEF8162CECC778712342A61",
+      "text": "test \"native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const handle = try f.create(-2, null, null);\n    const promise = try handle.closePromise();\n    defer f.engine.freeValue(promise);\n    c.JS_PromiseMarkAsHandled(f.engine.context, promise);\n    const actual = try retainCloseStorage(&f);\n    defer uv.pi_uv_fs_request_release(actual);\n    try std.testing.expectEqual(@as(c_int, 1), f.env().requests.waiting);\n    try f.pumpIo();\n    try expectClosed(&f, -2);\n    try expectDrainedClose(&f, actual);\n    try std.testing.expectEqual(@as(i64, physical.UV_EBADF), uv.pi_uv_fs_request_info(actual).result);\n    try std.testing.expectEqual(c.JS_PROMISE_REJECTED, c.JS_PromiseState(f.engine.context, promise));\n    const reason = c.JS_PromiseResult(f.engine.context, promise);\n    defer f.engine.freeValue(reason);\n    try f.expose(\"ownerRejected\", reason);\n    try f.expose(\"ownerEBADF\", c.JS_NewInt32(f.engine.context, physical.UV_EBADF));\n    try f.expect(\"ownerRejected instanceof Error && ownerRejected.code === 'EBADF' && \" ++\n        \"ownerRejected.errno === ownerEBADF && ownerRejected.syscall === 'close'\");\n    try std.testing.expect(!c.JS_IsUncatchableError(reason));\n    try std.testing.expect(!c.JS_HasException(f.engine.context) and f.engine.captured_exception == null);\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+      "file_sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "first_line": 359,
+      "last_line": 379,
+      "bytes": 1227,
+      "sha256": "52C98D5CC7395CCE55DE52C9DA8FD7F5B917048B73671D6A010DC6305FB21DEB",
+      "text": "test \"native FileHandle owner failed GC close queues one refed actual UVException ticket\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    try warningRecorder(&f);\n    _ = try f.create(-2, null, null);\n    f.collectHandle();\n    try std.testing.expectEqual(@as(usize, 1), f.sync_begins);\n    try std.testing.expectEqual(@as(usize, 1), f.sync_ends);\n    try std.testing.expectEqual(@as(usize, 1), f.queue.?.count);\n    try std.testing.expectEqual(@as(usize, 1), f.queue.?.refed_count);\n    try std.testing.expect(f.queue.?.referenced());\n    try std.testing.expect(try f.queue.?.drain(f.engine, .check));\n    try std.testing.expectEqual(@as(usize, 1), f.caught_count);\n    try f.expose(\"ownerGcError\", f.caught[0]);\n    try f.expect(\"ownerGcError instanceof Error && ownerGcError.code === 'EBADF' && \" ++\n        \"ownerGcError.syscall === 'close' && ownerGcError.message === \" ++\n        \"'EBADF: Closing file descriptor -2 on garbage collection failed, close' && \" ++\n        \"ownerWarnings.length === 0\");\n    try std.testing.expect(f.env().emit_filehandle_warning);\n    try std.testing.expectEqual(@as(usize, 0), f.queue.?.count);\n    try std.testing.expectEqual(@as(usize, 0), f.queue.?.refed_count);\n}\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+      "file_sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "first_line": 453,
+      "last_line": 484,
+      "bytes": 2090,
+      "sha256": "0746D6F830AA4B89E17B527CF5E39B639525FA6D45FFD682A2576F85E14305AE",
+      "text": "test \"native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity\" {\n    for ([_]bool{ false, true }) |reject| {\n        var file: File = undefined; try file.init(); defer file.deinit();\n        var f: Fixture = undefined; try f.init(); defer f.deinit();\n        try f.installThrowingBeforeHook();\n        const descriptor = if (reject) @as(c_int, -2) else file.take();\n        const handle = try f.create(descriptor, null, null);\n        const promise = try handle.closePromise();\n        defer f.engine.freeValue(promise);\n        c.JS_PromiseMarkAsHandled(f.engine.context, promise);\n        const id = (try f.pendingClose()).wrap.async_id;\n        const actual = try retainCloseStorage(&f);\n        defer uv.pi_uv_fs_request_release(actual);\n        try std.testing.expectError(error.JavaScriptException, f.pumpIo());\n        const caught = try f.takeCaught();\n        defer f.engine.freeValue(caught);\n        try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, caught, f.selected_hook_reason.?));\n        try std.testing.expectEqual(@as(usize, 1), f.hook_rethrows);\n        try std.testing.expectEqual(if (reject) c.JS_PROMISE_REJECTED else c.JS_PROMISE_FULFILLED,\n            c.JS_PromiseState(f.engine.context, promise));\n        try std.testing.expectEqual(@as(usize, 1), f.env().callback_depth);\n        try std.testing.expectEqual(@as(u32, 1), f.env().field(.stack_length).*);\n        try expectClosed(&f, descriptor);\n        try expectDrainedClose(&f, actual);\n        try f.expose(\"ownerCloseId\", c.JS_NewFloat64(f.engine.context, id));\n        try f.expect(\"ownerBeforeIds.length === 1 && ownerAfterIds.length === 1 && \" ++\n            \"ownerBeforeIds[0] === ownerCloseId && ownerAfterIds[0] === ownerCloseId\");\n        if (reject) {\n            const result = c.JS_PromiseResult(f.engine.context, promise);\n            defer f.engine.freeValue(result);\n            try std.testing.expect(!c.JS_IsStrictEqual(f.engine.context, result, caught));\n            try f.expose(\"ownerRejectedAfterBefore\", result);\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test_support.zig",
+      "file_sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F",
+      "first_line": 82,
+      "last_line": 132,
+      "bytes": 2023,
+      "sha256": "704E3CE8098BA6E0D92D5DC9DD4F6D59B49CD0314EA6E8F99737DBBDD1CC1799",
+      "text": "const NativeCallback = struct {\n    scope: callbacks.Scope = undefined,\n    fixture: *Fixture,\n    prior_javascript: ?bool = null,\n};\nfn fixtureOf(engine: *em.Engine) *Fixture {\n    return @ptrCast(@alignCast(engine.host_control_context orelse unreachable));\n}\nfn beginImmediate(engine: *em.Engine, mode: immediate.Mode) !immediate.CallbackScope {\n    const f = fixtureOf(engine);\n    const frame = try f.env().allocator().create(NativeCallback);\n    frame.* = .{ .fixture = f };\n    frame.scope.initialized = false;\n    errdefer {\n        if (frame.scope.initialized) {\n            frame.scope.markFailed();\n            frame.scope.deinit() catch {};\n        }\n        f.env().allocator().destroy(frame);\n    }\n    try frame.scope.init(f.env(), c.pi_js_undefined(),\n        .{ .async_id = 0, .trigger_async_id = 0 },\n        .{ .skip_async_hooks = true, .skip_task_queues = true },\n        c.pi_js_undefined());\n    if (mode == .cleanup)\n        frame.prior_javascript = c.JS_PiExchangeJavascriptExecutionAllowed(engine.runtime, false);\n    f.immediate_scopes += 1;\n    return .{ .raw = frame, .finish = finishImmediate };\n}\nfn finishImmediate(engine: *em.Engine, raw: ?*anyopaque, outcome: anyerror!bool) !bool {\n    const frame: *NativeCallback = @ptrCast(@alignCast(raw.?));\n    const f = frame.fixture;\n    var handles = a.Scope.init(engine);\n    var worked = false;\n    var failure: ?anyerror = null;\n    if (outcome) |value| worked = value else |err| {\n        handles.boundary.escaping();\n        failure = err;\n        frame.scope.markFailed();\n    }\n    frame.scope.deinit() catch |err| {\n        handles.boundary.escaping();\n        if (failure == null) failure = err;\n    };\n    if (frame.prior_javascript) |previous|\n        _ = c.JS_PiExchangeJavascriptExecutionAllowed(engine.runtime, previous);\n    f.env().allocator().destroy(frame);\n    const ignored = try handles.finish(if (failure) |err|\n        @as(anyerror!c.JSValue, err) else c.pi_js_undefined());\n    engine.freeValue(ignored);\n    return worked;\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test_support.zig",
+      "file_sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F",
+      "first_line": 386,
+      "last_line": 405,
+      "bytes": 1316,
+      "sha256": "2AFEED8C654212574B44C76F059A2D09663A664E0705909FC64BF3BCD1685878",
+      "text": "    pub fn create(self: *Fixture, descriptor: c_int, offset: ?f64, length: ?f64) !*Handle {\n        const args = [_]c.JSValue{\n            c.JS_NewInt32(self.engine.context, descriptor),\n            if (offset) |offset_value| c.JS_NewFloat64(self.engine.context, offset_value) else c.pi_js_undefined(),\n            if (length) |length_value| c.JS_NewFloat64(self.engine.context, length_value) else c.pi_js_undefined(),\n        };\n        return self.createArgs(&args);\n    }\n    pub fn createArgs(self: *Fixture, args: []const c.JSValue) !*Handle {\n        if (self.primary_wrapper != null) return error.ConcreteFileHandlePreviousWrapperRequiredGone;\n        const constructor_result = try a.expression(self.engine, createBody, .{ self, args });\n        self.engine.freeValue(constructor_result);\n        return self.handle();\n    }\n    fn createBody(s: *a.Scope, self: *Fixture, args: []const c.JSValue) !c.JSValue {\n        // The fixture supplies a genuine FileHandle internal-field class and\n        // parent prototype. It does not publish the missing complete template.\n        const wrapper = try self.registry().newInstance(s, .filehandle, self.prototype.?);\n        self.primary_wrapper = a.duplicate(s.engine, wrapper);\n        try Handle.construct(s, self.registry(), wrapper, args, true, self.inputs());\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test.zig",
+      "file_sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6",
+      "first_line": 6,
+      "last_line": 18,
+      "bytes": 433,
+      "sha256": "CC65626CD529E807AC97F8BD1A2C048696F2791FE7D408F9DBD6FCDA5061ABD4",
+      "text": "const std = @import(\"std\");\nconst support = @import(\"native_node_file_handle_owner_test_support.zig\");\nconst a = support.a;\nconst c = support.c;\nconst uv = support.uv;\nconst physical = support.physical;\nconst Fixture = support.Fixture;\nconst File = support.File;\nconst Handle = support.Handle;\n\n// Avoid libuv Windows' fd <= 2 close branch and any recycled real descriptor.\nconst invalid_descriptor: c_int = std.math.maxInt(c_int);\n\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test.zig",
+      "file_sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6",
+      "first_line": 365,
+      "last_line": 381,
+      "bytes": 1064,
+      "sha256": "E7FCCFA56F51AF966D6F8A53CBE3C9619ED96F6DBD60AED6A6ABD7564B94936A",
+      "text": "    _ = try f.create(invalid_descriptor, null, null);\n    f.collectHandle();\n    try std.testing.expectEqual(@as(usize, 1), f.sync_begins);\n    try std.testing.expectEqual(@as(usize, 1), f.sync_ends);\n    try std.testing.expectEqual(@as(usize, 1), f.queue.?.count);\n    try std.testing.expectEqual(@as(usize, 1), f.queue.?.refed_count);\n    try std.testing.expect(f.queue.?.referenced());\n    try std.testing.expect(try f.queue.?.drain(f.engine, .check));\n    try std.testing.expectEqual(@as(usize, 1), f.caught_count);\n    try f.expose(\"ownerGcError\", f.caught[0]);\n    try f.expect(\"ownerGcError instanceof Error && ownerGcError.code === 'EBADF' && \" ++\n        \"ownerGcError.syscall === 'close' && ownerGcError.message === \" ++\n        \"'EBADF: Closing file descriptor 2147483647 on garbage collection failed, close' && \" ++\n        \"ownerWarnings.length === 0\");\n    try std.testing.expect(f.env().emit_filehandle_warning);\n    try std.testing.expectEqual(@as(usize, 0), f.queue.?.count);\n    try std.testing.expectEqual(@as(usize, 0), f.queue.?.refed_count);\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+      "file_sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B",
+      "first_line": 90,
+      "last_line": 116,
+      "bytes": 1124,
+      "sha256": "EE3938FE30A8F7E9836E4EE4A8B04B289FCB8E63BB9F664255C673E4F431B129",
+      "text": "fn immediateResource(s: *a.Scope) !c.JSValue {\n    return a.duplicate(s.engine, try s.object());\n}\nfn beginImmediate(engine: *em.Engine, mode: immediate.Mode) !immediate.CallbackScope {\n    const f = fixtureOf(engine);\n    const frame = try f.env().allocator().create(NativeCallback);\n    frame.* = .{ .fixture = f };\n    frame.scope.initialized = false;\n    errdefer {\n        if (frame.scope.initialized) {\n            frame.scope.markFailed();\n            frame.scope.deinit() catch {};\n        }\n        f.env().allocator().destroy(frame);\n    }\n    const resource = if (f.env().canCallIntoJs())\n        try a.expression(engine, immediateResource, .{}) else c.pi_js_undefined();\n    defer engine.freeValue(resource);\n    try frame.scope.init(f.env(), resource,\n        .{ .async_id = 0, .trigger_async_id = 0 },\n        .{ .skip_async_hooks = true, .skip_task_queues = true },\n        c.pi_js_undefined());\n    if (mode == .cleanup)\n        frame.prior_javascript = c.JS_PiExchangeJavascriptExecutionAllowed(engine.runtime, false);\n    f.immediate_scopes += 1;\n    return .{ .raw = frame, .finish = finishImmediate };\n}\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+      "file_sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9",
+      "first_line": 9,
+      "last_line": 14,
+      "bytes": 438,
+      "sha256": "372E4F7BB59CDAB3DC28D7F8871C4E2DF3CB1ACA643D90AC0DC8DC1839348A2F",
+      "text": "pub fn duplicate(engine: *v.em.Engine, value: c.JSValue) c.JSValue { return c.JS_DupValue(engine.context, value); }\npub fn arg(args: []const c.JSValue, position: usize) c.JSValue { return if (position < args.len) args[position] else c.pi_js_undefined(); }\npub fn expression(engine: *v.em.Engine, comptime body: anytype, args: anytype) !c.JSValue {\n    var s = Scope.init(engine);\n    return s.finish(@call(.auto, body, .{&s} ++ args));\n}\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+      "file_sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+      "first_line": 13,
+      "last_line": 27,
+      "bytes": 1166,
+      "sha256": "F20DD9DD82DEF0B9468F34D6BB2FBB046195DC5AC5628B7677AB5E5A619EF53A",
+      "text": "    pub fn beforeAllocation(self: *Scope) !u64 { return self.boundary.beforeAllocation(); }\r\n    pub fn own(self: *Scope, value: c.JSValue) !c.JSValue { return self.boundary.own(&self.values, value); }\r\n    /// Raw result with no supplied operation provenance. Do not recover an\r\n    /// earlier generation from the whole Scope or a captured diagnostic.\r\n    pub fn checked(self: *Scope, value: c.JSValue) !c.JSValue {\r\n        self.boundary.checkPendingSince(null) catch |err| { var owned = value; self.boundary.release(&owned); return err; };\r\n        if (c.JS_IsException(value)) return error.MissingActualCJSBootstrapReason;\r\n        return self.own(value);\r\n    }\r\n    /// Only for a non-guest raw producer (e.g. NewString/NewObject). Never use\r\n    /// this tag span around getters, JS calls/constructors or coercion.\r\n    pub fn checkedAllocation(self: *Scope, value: c.JSValue, generation: u64) !c.JSValue {\r\n        self.boundary.checkPendingSince(generation) catch |err| { var owned = value; self.boundary.release(&owned); return err; };\r\n        if (c.JS_IsException(value)) return error.MissingActualCJSBootstrapReason;\r\n        return self.own(value);\r\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+      "file_sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+      "first_line": 71,
+      "last_line": 71,
+      "bytes": 176,
+      "sha256": "6F69000496E6782A9004D19FF03AE99D20D387BE7065246C45E12082DF4361CF",
+      "text": "    pub fn object(self: *Scope) !c.JSValue { const generation = try self.beforeAllocation(); return self.checkedAllocation(c.JS_NewObject(self.engine.context), generation); }\r\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+      "file_sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "first_line": 85,
+      "last_line": 95,
+      "bytes": 789,
+      "sha256": "EA6B33D5C83CCDD6D377F5F15D32BBAD7B25CB941DCA4CB25C447B255A25C8DF",
+      "text": "    pub fn own(self:*Boundary,scope:*v.Scope,value:c.JSValue)!c.JSValue{\n        self.start();\n        _=self.engine.nativeCallbackResult(c.pi_js_undefined());\n        if(c.JS_HasException(self.engine.context))return self.rejectOwned(value);\n        if(scope.inline_count<scope.inline_values.len){scope.inline_values[scope.inline_count]=value;scope.inline_count+=1;return value;}\n        scope.values.append(self.engine.gpa,value) catch |err|{\n            // This allocator failure precedes incoming-root retirement. Publish\n            // its real event before a sole carrier can run a later finalizer.\n            if(err==error.OutOfMemory){_=self.engine.throwNativeOutOfMemoryFatal();self.observe(null);}\n            var old=value;self.release(&old);return err;\n        };return value;\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+      "file_sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "first_line": 114,
+      "last_line": 134,
+      "bytes": 1813,
+      "sha256": "02557D961365D9AC064C712AD85D6E17BB64B00B0C5A489D65BE51025BA692F5",
+      "text": "    pub fn rejectOwned(self:*Boundary,value:c.JSValue)anyerror{var owned=value;self.release(&owned);return self.completionError();}\n    fn failureRoots(self:*Boundary,values:[]c.JSValue)void{\n        for(values)|*value|self.release(value);\n        while(self.engine.captured_exception)|value|{self.engine.captured_exception=null;var old=value;self.release(&old);}\n        if(self.previous)|value|{self.previous=null;var old=value;self.release(&old);}\n    }\n    /// Retire native ownership without popping/materializing the completion.\n    /// Args owner rollback uses this SAME stable frame before finishRetired.\n    pub fn retire(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)void{\n        self.start();self.observe(null);\n        if(host_error) |err| { if(err==error.JavaScriptException and self.reason==null)self.escaping(); }\n        // A trusted direct host allocation failure precedes root retirement.\n        if(host_error) |err| { if(err==error.OutOfMemory and !self.isFatal()){_=self.engine.throwNativeOutOfMemoryFatal();self.observe(null);} }\n        const count=scope.inline_count;scope.inline_count=0;for(scope.inline_values[0..count])|*value|self.release(value);\n        const dynamic=scope.values.items;scope.values.items=dynamic[0..0];for(dynamic)|*value|self.release(value);\n        const generation=self.engine.native_allocation_generation;scope.values.deinit(self.engine.gpa);self.observe(generation);\n        if(host_error!=null or self.reason!=null)self.failureRoots(values)\n        else if(self.engine.captured_exception==null){self.engine.captured_exception=self.previous;self.previous=null;}\n        else if(self.previous)|value|{self.previous=null;var old=value;self.release(&old);}\n        if(host_error!=null or self.reason!=null)self.failureRoots(values);\n    }\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+      "file_sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "first_line": 158,
+      "last_line": 163,
+      "bytes": 505,
+      "sha256": "9F3FFEA79925A565C91E3784992C94929BD899048D9C3E8DE54A6CFE144FD262",
+      "text": "    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}\n    pub fn finish(self:*Boundary,completion:anyerror!c.JSValue,scope:*v.Scope)!c.JSValue{\n        var values=[_]c.JSValue{c.pi_js_undefined()};var host_error:?anyerror=null;\n        if(completion)|value|values[0]=value else |err|host_error=err;\n        try self.finishMany(host_error,scope,&values);return values[0];\n    }\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+      "file_sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E",
+      "first_line": 433,
+      "last_line": 442,
+      "bytes": 656,
+      "sha256": "0FCB71D3C9DB7A7103CAE48023E5A75121E964237EFFBB438CE110AA2ACC2FE7",
+      "text": "    pub fn pushAsyncContext(self: *Environment, id: AsyncContext, resource: ?*const c.JSValue) !void {\n        const engine = try self.requireEngine();\n        var s = LocalScope.init(engine);\n        const ignored = try s.finish(pushBody(&s, self, id, resource));\n        engine.freeValue(ignored);\n    }\n    fn pushBody(s: *LocalScope, self: *Environment, id: AsyncContext, resource: ?*const c.JSValue) !c.JSValue {\n        if (resource) |value| if (!c.JS_IsObject(value.*))\n            return self.operations.native_check_failure(self, .invalid_resource);\n        if (self.field(.check).* > 0 and (!(id.async_id >= -1) or !(id.trigger_async_id >= -1)))\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+      "file_sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E",
+      "first_line": 671,
+      "last_line": 691,
+      "bytes": 1070,
+      "sha256": "28FB06E65C4B360E9F25CFCA62AF9717E8C415D9510A4584CE4BF63344D22AA7",
+      "text": "    pub fn init(self: *Scope, environment: *Environment, resource: c.JSValue, id: AsyncContext, flags: Flags, frame: c.JSValue) !void {\n        const engine = try environment.requireEngine();\n        self.* = .{\n            .environment = environment.retain(),\n            .resource = a.duplicate(engine, resource),\n            .prior_frame = c.pi_js_undefined(),\n            .async_context = id,\n            .flags = flags,\n            .previous_scope = environment.callback_scope,\n            .initialized = true,\n        };\n        // PushAsyncCallbackScope precedes can_call_into_js and frame exchange.\n        environment.callback_depth += 1;\n        environment.callback_scope = self;\n        if (!environment.canCallIntoJs()) { self.failed = true; return; }\n        environment.idle = false;\n        self.prior_frame = try environment.exchangeContextFrame(frame);\n        try environment.pushAsyncContext(id, &self.resource);\n        self.pushed_ids = true;\n        if (id.async_id != 0 and !flags.skip_async_hooks) try environment.emitBefore(id.async_id);\n    }\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+      "file_sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E",
+      "first_line": 775,
+      "last_line": 791,
+      "bytes": 779,
+      "sha256": "17C922AA93DA60152C9F06DEFA71B03DF232439A6C9FFA80A3EB45FD5BCF0528",
+      "text": "    pub fn deinit(self: *Scope) !void {\n        std.debug.assert(self.initialized and !self.deinitialized);\n        const env = self.environment;\n        const engine = try env.requireEngine();\n        if (env.callback_scope != self or env.callback_depth == 0)\n            return env.operations.native_check_failure(env, .callback_scope_order);\n        var completion = Completion.initVoid(engine, self.close());\n        env.callback_scope = self.previous_scope;\n        env.callback_depth -= 1;\n        self.deinitialized = true;\n        completion.release(self.prior_frame);\n        completion.release(self.resource);\n        self.prior_frame = c.pi_js_undefined();\n        self.resource = c.pi_js_undefined();\n        env.release();\n        try completion.finishVoid();\n    }\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_native_immediates.zig",
+      "file_sha256": "4D08479443076E84E1B16005FEC0078BAD08BD19D31DD6012266752E44CE7578",
+      "first_line": 123,
+      "last_line": 148,
+      "bytes": 1231,
+      "sha256": "A0473256896B54354FF748D5803A42FD14F05878551840A4817A7B542F94C098",
+      "text": "        return first;\n    }\n    fn drainBody(self: *Queue, engine: *em.Engine, mode: Mode) bool {\n        var removed_refed: usize = 0;\n        // Source subtracts the drained ref count after the complete native\n        // queue, before InternalCallbackScope's destructor/checkpoint.\n        defer self.refed_count -= removed_refed;\n        var worked = false;\n        while (self.shift()) |task| {\n            const is_refed = task.refed;\n            if (is_refed) removed_refed += 1;\n            const outcome: anyerror!void =\n                if (mode == .check or is_refed) task.run(engine, task) else {};\n            // Record actual failure before destroying native captures. This\n            // is the Source head.reset() boundary before HasCaught/Trigger.\n            var completion = owned.Completion.initVoid(engine, outcome);\n            task.destroy(task);\n            completion.finishVoid() catch |err| self.hooks.caught(engine, err);\n            worked = true;\n        }\n        return worked;\n    }\n    fn inScope(self: *Queue, engine: *em.Engine, mode: Mode) !bool {\n        const entered = try self.hooks.begin(engine, mode);\n        return entered.finish(engine, entered.raw, self.drainBody(engine, mode));\n    }\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+      "file_sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D",
+      "first_line": 223,
+      "last_line": 238,
+      "bytes": 900,
+      "sha256": "3F844AD26681433A4CD16EEF8B842DB929FC68A76481666BF2DFA999BFFE62F1",
+      "text": "    /// FileHandle::New callback after actual template receiver allocation.\n    /// No guest coercion is performed by IsInt32/IsNumber/NumberToInt64.\n    pub fn construct(s: *Scope, registry: *native.Registry, wrapper: c.JSValue,\n        args: []const c.JSValue, constructing: bool, input: Inputs) !void\n    {\n        if (!constructing) check.assertion(s.engine, .{\n            .file_line = \"src/node_file.cc:252\", .message = \"args.IsConstructCall()\",\n            .function = \"node::fs::FileHandle::New\",\n        });\n        const descriptor = try int32(s, a.arg(args, 0));\n        const data = binding.get(registry) orelse\n            return error.ActualFileHandleRealmBindingDataRequired;\n        const offset = try optionalInteger(s, a.arg(args, 1));\n        const length = try optionalInteger(s, a.arg(args, 2));\n        _ = try create(s, data, descriptor, wrapper, offset, length, input);\n    }\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+      "file_sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D",
+      "first_line": 275,
+      "last_line": 288,
+      "bytes": 905,
+      "sha256": "F3A7F3D8D0EE9997E6D3C8EEA3B032E841004ECACE9526BAF16DC021E82163D3",
+      "text": "        const close_wrapper = try s.own(try templates.newInstance(\n            s.engine, self.getBindingData().template_owner, .filehandleclosereq));\n        self.read_state.closing = true;\n        try registry.setFileHandleClosingPromise(s, wrapper, promise);\n        const request = try CloseReq.create(s, self, close_wrapper, promise, wrapper);\n        if (self.read_state.fd == -1) check.assertion(s.engine, .{\n            .file_line = \"src/node_file.cc:495\", .message = \"(fd_) != (-1)\",\n            .function = \"node::fs::FileHandle::ClosePromise\",\n        });\n        self.close_trace.begin_async(self.close_trace.raw, request);\n        const result = try self.controller.dispatchRawClose(s, &request.entry,\n            request.actual.?, self.read_state.fd, CloseReq.completed);\n        if (result < 0) try request.rejectImmediateAndDelete(s, result);\n        return a.duplicate(s.engine, promise);\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "file_sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A",
+      "first_line": 270,
+      "last_line": 298,
+      "bytes": 1392,
+      "sha256": "684CFFD1609B3C3E711C50340C105D692BD91E8220146332E87D611AF12551BB",
+      "text": "        fn completeBody(self: *CloseReq, s: *Scope, result: i64) !void {\n            // The pointer is non-null by construction, matching CHECK(close).\n            const handle = try self.fileHandle();\n            handle.afterClose() catch |err| {\n                record(s, err);\n                if (!canContinue(s, err)) return err;\n            };\n            if (!self.wrap.registry.environment.canCallIntoJs()) return;\n            if (result < 0) {\n                // This source HandleScope is inside the negative branch and\n                // retires before the callback's local BaseObjectPtr.\n                var locals = Scope.init(s.engine);\n                var failure: ?anyerror = null;\n                self.rejectResult(&locals, @truncate(result)) catch |err| {\n                    record(&locals, err);\n                    failure = err;\n                };\n                const ignored = try locals.finish(if (failure) |err|\n                    @as(anyerror!c.JSValue, err) else c.pi_js_undefined());\n                s.engine.freeValue(ignored);\n            } else {\n                try self.resolve();\n            }\n        }\n        fn rejectResult(self: *CloseReq, s: *Scope, result: c_int) !void {\n            const reason = try s.own(try uv_exception.create(s.engine,\n                .{ .code = result, .syscall = \"close\" }));\n            try self.reject(reason);\n        }\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_gc_close.zig",
+      "file_sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4",
+      "first_line": 41,
+      "last_line": 55,
+      "bytes": 892,
+      "sha256": "D88C08B902C31104EA0F4FEA7377130353CA52BDD28052302A96F70CBB5C29C9",
+      "text": "    fn body(s: *Scope, self: *Ticket) !c.JSValue {\n        if (self.result < 0) {\n            // Original snprintf uses a 70-byte native stack buffer. Every\n            // signed native-int descriptor fits this exact selected format.\n            var buffer: [70]u8 = undefined;\n            const message = std.fmt.bufPrint(&buffer,\n                \"Closing file descriptor {d} on garbage collection failed\",\n                .{self.descriptor}) catch unreachable;\n            const reason = try s.own(try uv_exception.create(s.engine, .{\n                .code = self.result, .syscall = \"close\", .message = message,\n            }));\n            // Native immediate queue owns the real catch/uncaught policy.\n            // This is the original ThrowUVException, not a fabricated abort\n            // or classification of a returned Error as an exception.\n            return a.raise(s, reason);\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_gc_close.zig",
+      "file_sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4",
+      "first_line": 98,
+      "last_line": 134,
+      "bytes": 1528,
+      "sha256": "408F1B0CBC2DDDB16B1258FFCDCDAC2C6667C280E07D4D3B60F558EA7A31D820",
+      "text": "pub fn close(s: *Scope, handle: anytype) !void {\n    const state = handle.getReadState();\n    if (state.closed or state.closing) return;\n    if (state.fd == -1) check.assertion(s.engine, .{\n        .file_line = \"src/node_file.cc:343\",\n        .message = \"(fd_) != (-1)\",\n        .function = \"node::fs::FileHandle::Close\",\n    });\n    const environment = handle.getAsyncWrap().registry.environment;\n    const inputs = handle.getReadInputs();\n    const trace = handle.getCloseTrace();\n    var request: native_uv.uv_fs_t = undefined;\n    trace.begin_sync(trace.raw);\n    const result = uv.pi_uv_fs_close_sync(inputs.controller.service,\n        @ptrCast(&request), state.fd);\n    trace.end_sync(trace.raw);\n    native_uv.uv_fs_req_cleanup(&request);\n\n    // Capture both scalars before AfterClose changes fd_ to -1 or emits EOF.\n    const descriptor = state.fd;\n    handle.afterClose() catch |err| {\n        record(s, err);\n        if (!canContinue(s, err)) return err;\n    };\n\n    // Source SetImmediate allocates its native callback after AfterClose.\n    // Queue.enqueue consumes the ticket even after queue disarm; unrefed\n    // cleanup skips run but always destroys these native captures.\n    const ticket = try environment.allocator().create(Ticket);\n    ticket.* = .{\n        .task = .{ .refed = result < 0, .run = Ticket.run, .destroy = Ticket.destroy },\n        .environment = environment.retain(),\n        .result = result,\n        .descriptor = descriptor,\n    };\n    handle.getImmediateQueue().enqueue(&ticket.task);\n}\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\node-env.v24.13.cc",
+      "file_sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9",
+      "first_line": 1389,
+      "last_line": 1400,
+      "bytes": 605,
+      "sha256": "D7A8658358057F4C9CFCBEF5937F9B4FCB49069B55C3A6ED7E82C486CF6AD4D4",
+      "text": "void Environment::RunAndClearNativeImmediates(bool only_refed) {\n  TRACE_EVENT0(TRACING_CATEGORY_NODE1(environment),\n               \"RunAndClearNativeImmediates\");\n  HandleScope handle_scope(isolate_);\n  // In case the Isolate is no longer accessible just use an empty Local. This\n  // is not an issue for InternalCallbackScope as this case is already handled\n  // in its constructor but we avoid calls into v8 which can crash the process\n  // in debug builds.\n  Local<Object> obj =\n      can_call_into_js() ? Object::New(isolate_) : Local<Object>();\n  InternalCallbackScope cb_scope(this, obj, {0, 0});\n\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs.c",
+      "file_sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693",
+      "first_line": 74,
+      "last_line": 97,
+      "bytes": 1705,
+      "sha256": "98230F70A513B1700FA3E2927FADBB8B2F742D005CAA2AAA9A2A9A61E5F551EE",
+      "text": "#define INIT(subtype)                                                         \\\n  do {                                                                        \\\n    if (req == NULL)                                                          \\\n      return UV_EINVAL;                                                       \\\n    uv__fs_req_init(loop, req, subtype, cb);                                  \\\n  }                                                                           \\\n  while (0)\n\n#define POST                                                                  \\\n  do {                                                                        \\\n    if (cb != NULL) {                                                         \\\n      uv__req_register(loop);                                                 \\\n      uv__work_submit(loop,                                                   \\\n                      &req->work_req,                                         \\\n                      UV__WORK_FAST_IO,                                       \\\n                      uv__fs_work,                                            \\\n                      uv__fs_done);                                           \\\n      return 0;                                                               \\\n    } else {                                                                  \\\n      uv__fs_work(&req->work_req);                                            \\\n      return req->result;                                                     \\\n    }                                                                         \\\n  }                                                                           \\\n  while (0)\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs.c",
+      "file_sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693",
+      "first_line": 117,
+      "last_line": 122,
+      "bytes": 394,
+      "sha256": "02F2A4176CF4D6FC04AA1FD6284975A305F89B182E0ACB68F54D27AE67A2EA8B",
+      "text": "#define VERIFY_FD(fd, req)                                                  \\\n  if (fd == -1) {                                                           \\\n    req->result = UV_EBADF;                                                 \\\n    req->sys_errno_ = ERROR_INVALID_HANDLE;                                 \\\n    return;                                                                 \\\n  }\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs.c",
+      "file_sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693",
+      "first_line": 397,
+      "last_line": 410,
+      "bytes": 360,
+      "sha256": "8DCF1A52FE9D25FCD6364D601BB3C5CF0F8AE2B220B5C4EEA5C9735CE0988FA6",
+      "text": "INLINE static void uv__fs_req_init(uv_loop_t* loop, uv_fs_t* req,\n    uv_fs_type fs_type, const uv_fs_cb cb) {\n  uv__once_init();\n  UV_REQ_INIT(req, UV_FS);\n  req->loop = loop;\n  req->flags = 0;\n  req->fs_type = fs_type;\n  req->sys_errno_ = 0;\n  req->result = 0;\n  req->ptr = NULL;\n  req->path = NULL;\n  req->cb = cb;\n  memset(&req->fs, 0, sizeof(req->fs));\n}\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs.c",
+      "file_sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693",
+      "first_line": 668,
+      "last_line": 695,
+      "bytes": 590,
+      "sha256": "36324C09E28C987C9414AFCE5558D245D34B607B7CD10F2F7A35541A4C358D08",
+      "text": "void fs__close(uv_fs_t* req) {\n  int fd = req->file.fd;\n  int result;\n  struct uv__fd_info_s fd_info;\n\n  VERIFY_FD(fd, req);\n\n  if (uv__fd_hash_remove(fd, &fd_info)) {\n    if (fd_info.mapping != INVALID_HANDLE_VALUE) {\n      CloseHandle(fd_info.mapping);\n    }\n  }\n\n  if (fd > 2)\n    result = _close(fd);\n  else\n    result = 0;\n\n  /* _close doesn't set _doserrno on failure, but it does always set errno\n   * to EBADF on failure.\n   */\n  if (result == -1) {\n    assert(errno == EBADF);\n    SET_REQ_UV_ERROR(req, UV_EBADF, ERROR_INVALID_HANDLE);\n  } else {\n    SET_REQ_RESULT(req, 0);\n  }\n}\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs.c",
+      "file_sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693",
+      "first_line": 3241,
+      "last_line": 3245,
+      "bytes": 126,
+      "sha256": "689115A4D2A2CEF51FA528EFDBB2CC8807D6269B1907585D9242FE26B4437C67",
+      "text": "int uv_fs_close(uv_loop_t* loop, uv_fs_t* req, uv_file fd, uv_fs_cb cb) {\n  INIT(UV_FS_CLOSE);\n  req->file.fd = fd;\n  POST;\n}\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\core.c",
+      "file_sha256": "3026F2888B3360E65A2E2662508EEF6BA9B1AF17735391CA6F79DC06887B8B23",
+      "first_line": 73,
+      "last_line": 79,
+      "bytes": 250,
+      "sha256": "4A1C8585608BC880E93C9D95B873DF89717F4508583CABC52CD4BD3DC5B1F4D0",
+      "text": "#if !defined(__MINGW32__) || __MSVCRT_VERSION__ >= 0x800\nstatic void uv__crt_invalid_parameter_handler(const wchar_t* expression,\n    const wchar_t* function, const wchar_t * file, unsigned int line,\n    uintptr_t reserved) {\n  /* No-op. */\n}\n#endif\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\core.c",
+      "file_sha256": "3026F2888B3360E65A2E2662508EEF6BA9B1AF17735391CA6F79DC06887B8B23",
+      "first_line": 179,
+      "last_line": 198,
+      "bytes": 847,
+      "sha256": "4230B3E3BD2E581D7589C522862E3649EEAE0F15FE6D7ACCBC3AA42E4711FA03",
+      "text": "static void uv__init(void) {\n  /* Tell Windows that we will handle critical errors. */\n  SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX |\n               SEM_NOOPENFILEERRORBOX);\n\n  /* Tell the CRT to not exit the application when an invalid parameter is\n   * passed. The main issue is that invalid FDs will trigger this behavior.\n   */\n#if !defined(__MINGW32__) || __MSVCRT_VERSION__ >= 0x800\n  _set_invalid_parameter_handler(uv__crt_invalid_parameter_handler);\n#endif\n\n  /* We also need to setup our debug report handler because some CRT\n   * functions (eg _get_osfhandle) raise an assert when called with invalid\n   * FDs even though they return the proper error code in the release build.\n   */\n#if defined(_DEBUG) && (defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR))\n  _CrtSetReportHook(uv__crt_dbg_report_handler);\n#endif\n\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\core.c",
+      "file_sha256": "3026F2888B3360E65A2E2662508EEF6BA9B1AF17735391CA6F79DC06887B8B23",
+      "first_line": 227,
+      "last_line": 238,
+      "bytes": 360,
+      "sha256": "7397D74DD27E0C5C4788BCCD5DAAD2D515DF602032C8F2B8C649D6FE4E3A83A2",
+      "text": "int uv_loop_init(uv_loop_t* loop) {\n  uv__loop_internal_fields_t* lfields;\n  struct heap* timer_heap;\n  int err;\n\n  /* Initialize libuv itself first */\n  uv__once_init();\n\n  /* Create an I/O completion port */\n  loop->iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 1);\n  if (loop->iocp == NULL)\n    return uv_translate_sys_error(GetLastError());\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\core.c",
+      "file_sha256": "3026F2888B3360E65A2E2662508EEF6BA9B1AF17735391CA6F79DC06887B8B23",
+      "first_line": 332,
+      "last_line": 334,
+      "bytes": 67,
+      "sha256": "C50E47B545C4B3A230BB8A4777DC8EC375437F01E25E0020B2EA210EE1486E30",
+      "text": "void uv__once_init(void) {\n  uv_once(&uv_init_guard_, uv__init);\n}\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+      "file_sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+      "first_line": 676,
+      "last_line": 697,
+      "bytes": 1043,
+      "sha256": "B13A6A5563D60059EA05999E7A399CDF110859D27AB374B7A7D79BC07072EB18",
+      "text": "    int status = uv_mutex_init(&service->command_mutex);\n    if (status < 0) goto fail_service;\n    status = uv_cond_init(&service->command_condition);\n    if (status < 0) goto fail_command_mutex;\n    status = uv_mutex_init(&service->event_mutex);\n    if (status < 0) goto fail_condition;\n    status = uv_loop_init(&service->loop);\n    if (status < 0) goto fail_event_mutex;\n    status = uv_async_init(&service->loop, &service->command_async, pi_uv_command_ready);\n    if (status < 0) goto fail_loop;\n    service->command_async.data = service;\n    pi_uv_service_retain(service);\n    status = uv_thread_create(&service->thread, pi_uv_thread_main, service);\n    if (status < 0) {\n        /* No worker exists. Close only the already initialized native async. */\n        atomic_fetch_sub_explicit(&service->references, 1, memory_order_relaxed);\n        uv_close((uv_handle_t *)&service->command_async, NULL);\n        (void)uv_run(&service->loop, UV_RUN_DEFAULT);\n        goto fail_loop;\n    }\n    *result = service;\n    return pi_uv_result(0, 0);\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_node_network.zig",
+      "file_sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369",
+      "first_line": 9,
+      "last_line": 29,
+      "bytes": 1417,
+      "sha256": "B624CF3DAB7FBCD70AFEF0FCAE3D232BBC28D22E6DAEE209617E33C4BE04D0AF",
+      "text": "    const library = b.addLibrary(.{\n        .name = \"pi-node-network\",\n        .linkage = .static,\n        .root_module = b.createModule(.{ .target = target, .optimize = optimize, .link_libc = true, .link_libcpp = native_memory != null }),\n    });\n    const module = library.root_module;\n    module.addIncludePath(b.path(uv_root ++ \"/include\"));\n    module.addIncludePath(b.path(uv_root ++ \"/src\"));\n    module.addIncludePath(b.path(llhttp_root ++ \"/include\"));\n    module.addIncludePath(b.path(\"src/extensions\"));\n    module.addIncludePath(b.path(\"vendor/quickjs\"));\n    const flags: []const []const u8 = switch (target.result.os.tag) {\n        .windows => &.{ \"-std=gnu11\", \"-D_WIN32_WINNT=0x0602\", \"-D_GNU_SOURCE\", \"-fno-strict-aliasing\" },\n        .linux => &.{ \"-std=gnu11\", \"-D_GNU_SOURCE\", \"-D_LARGEFILE_SOURCE\", \"-D_FILE_OFFSET_BITS=64\", \"-fno-strict-aliasing\" },\n        else => std.debug.panic(\"The real Node TCP backend has no admitted source set for {s}\", .{@tagName(target.result.os.tag)}),\n    };\n    module.addCSourceFiles(.{ .root = b.path(uv_root), .files = &common_sources, .flags = flags });\n    switch (target.result.os.tag) {\n        .windows => {\n            module.addCSourceFiles(.{ .root = b.path(uv_root), .files = &windows_sources, .flags = flags });\n            inline for (.{ \"advapi32\", \"dbghelp\", \"ole32\", \"iphlpapi\", \"psapi\", \"shell32\", \"user32\", \"userenv\", \"uuid\", \"ws2_32\" }) |name|\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_node_network.zig",
+      "file_sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369",
+      "first_line": 83,
+      "last_line": 90,
+      "bytes": 575,
+      "sha256": "7689005C0B811D6900C20285C6E866754CA94B41705176B4388912C739746112",
+      "text": "const windows_sources = [_][]const u8{\n    \"src/win/async.c\", \"src/win/core.c\", \"src/win/detect-wakeup.c\", \"src/win/dl.c\",\n    \"src/win/error.c\", \"src/win/fs.c\", \"src/win/fs-event.c\", \"src/win/getaddrinfo.c\",\n    \"src/win/getnameinfo.c\", \"src/win/handle.c\", \"src/win/loop-watcher.c\", \"src/win/pipe.c\",\n    \"src/win/thread.c\", \"src/win/poll.c\", \"src/win/process.c\", \"src/win/process-stdio.c\",\n    \"src/win/signal.c\", \"src/win/snprintf.c\", \"src/win/stream.c\", \"src/win/tcp.c\",\n    \"src/win/tty.c\", \"src/win/udp.c\", \"src/win/util.c\", \"src/win/winapi.c\", \"src/win/winsock.c\",\n};\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\_mingw.h",
+      "file_sha256": "9DAA9C8670CB7E5D73E2290A020D8CBEBF55BC19FD4C5E2F27E661C98827C3B6",
+      "first_line": 229,
+      "last_line": 247,
+      "bytes": 537,
+      "sha256": "A3528E66941A02FF45DADBFF1085E5A264E6E2F97E10045ABD86A48A9DCF2388",
+      "text": "#ifndef __MSVCRT_VERSION__\n/*  High byte is the major version, low byte is the minor. */\n# if defined(__CRTDLL__)\n#  define __MSVCRT_VERSION__ 0x00\n# elif defined(_UCRT)\n#  define __MSVCRT_VERSION__ 0xE00\n# else\n#  define __MSVCRT_VERSION__ 0xE00\n# endif\n#endif\n\n#if !defined(__CRTDLL__) && __MSVCRT_VERSION__ == 0x00\n#define __CRTDLL__\n#endif\n\n#if !defined(_UCRT) && ((__MSVCRT_VERSION__ >= 0x1400) || (__MSVCRT_VERSION__ >= 0xE00 && __MSVCRT_VERSION__ < 0x1000))\n/* Allow both 0x1400 and 0xE00 to identify UCRT */\n#define _UCRT\n#endif\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-close.cpp",
+      "file_sha256": "66EF4CA9584690771768589C039BA04E024AD6FA5758958473E6BCE4209603F3",
+      "first_line": 50,
+      "last_line": 77,
+      "bytes": 961,
+      "sha256": "7035050B9FF621720805D9A2D0B9EB754BAFD8D9E61ADE88193DA5E6D38EAA65",
+      "text": "// Closes the file associated with the given file handle.  On success, returns 0.\r\n// On failure, returns -1 and sets errno.\r\nextern \"C\" int __cdecl _close_internal(int const fh, __crt_cached_ptd_host& ptd)\r\n{\r\n    _UCRT_CHECK_FH_CLEAR_OSSERR_RETURN(ptd, fh, EBADF, -1);\r\n    _UCRT_VALIDATE_CLEAR_OSSERR_RETURN(ptd, (fh >= 0 && (unsigned)fh < (unsigned)_nhandle), EBADF, -1);\r\n    _UCRT_VALIDATE_CLEAR_OSSERR_RETURN(ptd, (_osfile(fh) & FOPEN), EBADF, -1);\r\n\r\n    return __acrt_lowio_lock_fh_and_call(fh, [&]()\r\n    {\r\n        if (_osfile(fh) & FOPEN)\r\n        {\r\n            return _close_nolock_internal(fh, ptd);\r\n        }\r\n        else\r\n        {\r\n            ptd.get_errno().set(EBADF);\r\n            _ASSERTE((\"Invalid file descriptor. File possibly closed by a different thread\",0));\r\n            return -1;\r\n        }\r\n    });\r\n}\r\n\r\nextern \"C\" int __cdecl _close(int const fh)\r\n{\r\n    __crt_cached_ptd_host ptd;\r\n    return _close_internal(fh, ptd);\r\n}\r\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-corecrt-internal-lowio.h",
+      "file_sha256": "1465B3388C22524A779C19DCD709EEFF116993D21A0068E639281181DDB2A751",
+      "first_line": 110,
+      "last_line": 129,
+      "bytes": 743,
+      "sha256": "99DDFEFD7ED34A1A02EC500568DCEDD63A37A4D068B5212E56516CE1D0B6CD86",
+      "text": "// The log-base-2 of the number of elements in each array of lowio file objects\r\n#define IOINFO_L2E          6\r\n\r\n// The number of elements in each array of lowio file objects\r\n#define IOINFO_ARRAY_ELTS   (1 << IOINFO_L2E)\r\n\r\n// The hard maximum number of arrays of lowio file objects that may be allocated\r\n#define IOINFO_ARRAYS       128\r\n\r\n// The maximum number of lowio file objects that may be allocated at any one time\r\n#define _NHANDLE_           (IOINFO_ARRAYS * IOINFO_ARRAY_ELTS)\r\n\r\n\r\n\r\n#define STDIO_HANDLES_COUNT       3\r\n/*\r\n * Access macros for getting at an __crt_lowio_handle_data struct and its fields from a\r\n * file handle\r\n */\r\n#define _pioinfo(i)          (__pioinfo[(i) >> IOINFO_L2E] + ((i) & (IOINFO_ARRAY_ELTS - 1)))\r\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-corecrt-internal-lowio.h",
+      "file_sha256": "1465B3388C22524A779C19DCD709EEFF116993D21A0068E639281181DDB2A751",
+      "first_line": 150,
+      "last_line": 166,
+      "bytes": 639,
+      "sha256": "09F5329CA8053173D097D97C3C24B4FF8F4FA426C988379EF4BB2875479B5930",
+      "text": "typedef __crt_lowio_handle_data* __crt_lowio_handle_data_array[IOINFO_ARRAYS];\r\n\r\n// Special, static lowio file object used only for more graceful handling\r\n// of a C file handle value of -1 (results from common errors at the stdio\r\n// level).\r\nextern __crt_lowio_handle_data __badioinfo;\r\n\r\n// The umask value\r\nextern int _umaskval;\r\n\r\n// Global array of pointers to the arrays of lowio file objects.\r\nextern __crt_lowio_handle_data_array __pioinfo;\r\n\r\n// The number of handles for which file objects have been allocated.  This\r\n// number is such that for any fh in [0, _nhandle), _pioinfo(fh) is well-\r\n// formed.\r\nextern int _nhandle;\r\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-invalid-parameter.cpp",
+      "file_sha256": "B09696292D181B0D51D360377F933763B7B1BE796557AB3334F481800B0C3F2E",
+      "first_line": 99,
+      "last_line": 114,
+      "bytes": 595,
+      "sha256": "628D5B5C28447B07928433A3C1B484186E0DD0052FCEBE62A0310823D7D8E137",
+      "text": "    __acrt_ptd * const raw_ptd = ptd.get_raw_ptd_noexit();\r\n    if (raw_ptd && raw_ptd->_thread_local_iph)\r\n    {\r\n        raw_ptd->_thread_local_iph(expression, function_name, file_name, line_number, reserved);\r\n        return;\r\n    }\r\n\r\n    _invalid_parameter_handler const global_handler = __crt_fast_decode_pointer(__acrt_invalid_parameter_handler.value(ptd));\r\n    if (global_handler)\r\n    {\r\n        global_handler(expression, function_name, file_name, line_number, reserved);\r\n        return;\r\n    }\r\n\r\n    _invoke_watson(expression, function_name, file_name, line_number, reserved);\r\n}\r\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+      "file_sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "first_line": 122,
+      "last_line": 163,
+      "bytes": 3075,
+      "sha256": "83E02FA5D3A706ACA1BC45BF38099F7CCD6725489F3A0881F1F6203039217A35",
+      "text": "    pub fn retire(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)void{\n        self.start();self.observe(null);\n        if(host_error) |err| { if(err==error.JavaScriptException and self.reason==null)self.escaping(); }\n        // A trusted direct host allocation failure precedes root retirement.\n        if(host_error) |err| { if(err==error.OutOfMemory and !self.isFatal()){_=self.engine.throwNativeOutOfMemoryFatal();self.observe(null);} }\n        const count=scope.inline_count;scope.inline_count=0;for(scope.inline_values[0..count])|*value|self.release(value);\n        const dynamic=scope.values.items;scope.values.items=dynamic[0..0];for(dynamic)|*value|self.release(value);\n        const generation=self.engine.native_allocation_generation;scope.values.deinit(self.engine.gpa);self.observe(generation);\n        if(host_error!=null or self.reason!=null)self.failureRoots(values)\n        else if(self.engine.captured_exception==null){self.engine.captured_exception=self.previous;self.previous=null;}\n        else if(self.previous)|value|{self.previous=null;var old=value;self.release(&old);}\n        if(host_error!=null or self.reason!=null)self.failureRoots(values);\n    }\n    pub fn failed(self:*Boundary,host_error:?anyerror)bool{self.observe(null);return host_error!=null or self.reason!=null;}\n    pub fn finishRetired(self:*Boundary,host_error:?anyerror,values:[]c.JSValue)!void{\n        defer self.engine.native_exception_diagnostics_suppressed-=1;\n        self.observe(null);\n        if(host_error!=null or self.reason!=null)self.failureRoots(values);\n        // Pop at the caller-stable address before returning any completion.\n        self.finished=true;\n        const result=self.engine.leaveNativeInvocation(&self.invocation,c.pi_js_undefined());\n        self.engine.freeValue(result); // Undefined/exception sentinel only.\n        self.observe(null); // finished prevents relinking the dead frame.\n        if(host_error!=null or self.reason!=null)self.failureRoots(values);\n        if(self.reason)|value|{\n            const termination=self.isTermination();\n            self.reason=null;self.reason_pending=false;\n            if(!termination){\n                if(self.fatal)c.JS_SetUncatchableError(self.engine.context,value)\n                else c.JS_ClearUncatchableError(self.engine.context,value);\n            }\n            _=self.engine.checked(c.JS_Throw(self.engine.context,value)) catch |err|return err;\n            return error.ActualCommonJSBoundaryThrowDidNotFail;\n        }\n        if(host_error)|err|return err;\n    }\n    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}\n    pub fn finish(self:*Boundary,completion:anyerror!c.JSValue,scope:*v.Scope)!c.JSValue{\n        var values=[_]c.JSValue{c.pi_js_undefined()};var host_error:?anyerror=null;\n        if(completion)|value|values[0]=value else |err|host_error=err;\n        try self.finishMany(host_error,scope,&values);return values[0];\n    }\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+      "file_sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC",
+      "first_line": 162,
+      "last_line": 169,
+      "bytes": 369,
+      "sha256": "A56FB40BAF9AAE96FE25204716022BAA25151B3AFA8A6A4DF667C9AE112CB579",
+      "text": "    /// Consumes one actual owned native root in the caller's original order.\n    pub fn release(self: *Completion, value: c.JSValue) void {\n        std.debug.assert(!self.finished);\n        self.enter();\n        const generation = self.owner.engine.native_allocation_generation;\n        self.owner.engine.freeValue(value);\n        self.owner.events(generation);\n    }\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+      "file_sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC",
+      "first_line": 215,
+      "last_line": 227,
+      "bytes": 661,
+      "sha256": "EEDBDC9F98E162DBC1F8A61D31E702F3FDC47AA980DFE3C05737C0AA4C044213",
+      "text": "    pub fn finishValue(self: *Completion) anyerror!c.JSValue {\n        return switch (try self.finishAction()) {\n            .returned => |value| value,\n            .thrown => |reason| self.owner.engine.checked(c.JS_Throw(self.owner.engine.context, reason)),\n            .awaited => unreachable,\n        };\n    }\n    pub fn finishVoid(self: *Completion) anyerror!void {\n        switch (try self.finishAction()) {\n            .returned => |value| self.owner.engine.freeValue(value),\n            .thrown => |reason| { _ = try self.owner.engine.checked(c.JS_Throw(self.owner.engine.context, reason)); unreachable; },\n            .awaited => unreachable,\n        }\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+      "file_sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E",
+      "first_line": 699,
+      "last_line": 732,
+      "bytes": 1614,
+      "sha256": "1DFE7B6A0E2B3ABE202686621375BB590E2F8275146335F5D2C91061BA92EF67",
+      "text": "    pub fn close(self: *Scope) !void {\n        std.debug.assert(self.initialized and !self.deinitialized);\n        if (self.closed) return;\n        self.closed = true;\n        const env = self.environment;\n        const engine = try env.requireEngine();\n        var s = LocalScope.init(engine);\n        const ignored = try s.finish(self.closeBody(&s));\n        engine.freeValue(ignored);\n    }\n    fn closeBody(self: *Scope, s: *LocalScope) !c.JSValue {\n        const env = self.environment;\n        // Stopping clears IDs and returns before frame restoration or idle reset.\n        if (try self.stoppingCheck()) return c.pi_js_undefined();\n        defer env.idle = true;\n        var error_from_hook: ?anyerror = null;\n        if (!self.failed and self.async_context.async_id != 0 and !self.flags.skip_async_hooks)\n            env.emitAfter(self.async_context.async_id) catch |err| {\n                s.boundary.escaping();\n                error_from_hook = err;\n            };\n        if (self.pushed_ids) {\n            _ = env.popAsyncContext(self.async_context.async_id) catch |err| failed_pop: {\n                s.boundary.escaping();\n                if (error_from_hook == null) error_from_hook = err;\n                break :failed_pop false;\n            };\n            const displaced = try env.exchangeContextFrame(self.prior_frame);\n            var old = displaced;\n            s.boundary.release(&old);\n        }\n        if (error_from_hook) |err| return err;\n        if (self.failed or env.callback_depth > 1 or self.flags.skip_task_queues or !env.canCallIntoJs())\n            return c.pi_js_undefined();\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs-fd-hash-inl.h",
+      "file_sha256": "1365F18D01C4117B0F42CFB2E0065F37AD62E4F5214B150CBF660F986955BB2D",
+      "first_line": 93,
+      "last_line": 120,
+      "bytes": 1913,
+      "sha256": "5BEFF15A7A617C88D8A0CCB90F3C0E389FB945CA6BFEFA3876C546FB33F11EA0",
+      "text": "  unsigned i;                                                                \\\n  unsigned bucket = fd % ARRAY_SIZE(uv__fd_hash);                            \\\n  struct uv__fd_hash_entry_s* entry_ptr = NULL;                              \\\n  struct uv__fd_hash_entry_group_s* group_ptr;                               \\\n  struct uv__fd_hash_bucket_s* bucket_ptr = &uv__fd_hash[bucket];\n\n#define FIND_IN_GROUP_PTR(group_size)                                        \\\n  do {                                                                       \\\n    for (i = 0; i < group_size; ++i) {                                       \\\n      if (group_ptr->entries[i].fd == fd) {                                  \\\n        entry_ptr = &group_ptr->entries[i];                                  \\\n        break;                                                               \\\n      }                                                                      \\\n    }                                                                        \\\n  } while (0)\n\n#define FIND_IN_BUCKET_PTR()                                                 \\\n  do {                                                                       \\\n    size_t first_group_size = bucket_ptr->size % UV__FD_HASH_GROUP_SIZE;     \\\n    if (bucket_ptr->size != 0 && first_group_size == 0)                      \\\n      first_group_size = UV__FD_HASH_GROUP_SIZE;                             \\\n    group_ptr = bucket_ptr->data;                                            \\\n    FIND_IN_GROUP_PTR(first_group_size);                                     \\\n    for (group_ptr = group_ptr->next;                                        \\\n         group_ptr != NULL && entry_ptr == NULL;                             \\\n         group_ptr = group_ptr->next)                                        \\\n      FIND_IN_GROUP_PTR(UV__FD_HASH_GROUP_SIZE);                             \\\n  } while (0)\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs-fd-hash-inl.h",
+      "file_sha256": "1365F18D01C4117B0F42CFB2E0065F37AD62E4F5214B150CBF660F986955BB2D",
+      "first_line": 167,
+      "last_line": 194,
+      "bytes": 731,
+      "sha256": "E6C6BA8A3C551455A8589B986E82E7FCB6741843EC25A6B60BA5059461120727",
+      "text": "INLINE static int uv__fd_hash_remove(int fd, struct uv__fd_info_s* info) {\n  FIND_COMMON_VARIABLES\n\n  uv_mutex_lock(&uv__fd_hash_mutex);\n\n  FIND_IN_BUCKET_PTR();\n\n  if (entry_ptr != NULL) {\n    *info = entry_ptr->info;\n\n    bucket_ptr->size -= 1;\n\n    i = bucket_ptr->size % UV__FD_HASH_GROUP_SIZE;\n    if (entry_ptr != &bucket_ptr->data->entries[i]) {\n      *entry_ptr = bucket_ptr->data->entries[i];\n    }\n\n    if (bucket_ptr->size != 0 &&\n        bucket_ptr->size % UV__FD_HASH_GROUP_SIZE == 0) {\n      struct uv__fd_hash_entry_group_s* old_group_ptr = bucket_ptr->data;\n      bucket_ptr->data = old_group_ptr->next;\n      uv__free(old_group_ptr);\n    }\n  }\n\n  uv_mutex_unlock(&uv__fd_hash_mutex);\n  return entry_ptr != NULL;\n}\n"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+      "file_sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+      "first_line": 927,
+      "last_line": 939,
+      "bytes": 778,
+      "sha256": "FCB8BE20F3CEF4AA722E0783F02795CA0F5019965104847DE2A3DBF276E1BC26",
+      "text": "int pi_uv_fs_close(PiUvFsRequest *request, int descriptor) {\n    if (!pi_uv_fs_unsubmitted(request, PI_UV_FS_CLOSE)) return UV_EINVAL;\n    request->descriptor = descriptor;\n    PiUvCommand command = { .kind = PI_UV_CMD_FS_CLOSE, .fs_request = request };\n    return pi_uv_fs_submit(request, &command, PI_UV_FS_CLOSE);\n}\nint pi_uv_fs_close_sync(PiUvService *service, struct uv_fs_s *request,\n                        int descriptor) {\n    assert(service != NULL && request != NULL);\n    /* cb == NULL follows the actual synchronous libuv FS implementation.\n     * No service command, queued completion, callback, or waiting count is\n     * involved. The original caller traces and cleans its own stack request. */\n    return uv_fs_close(&service->loop, request, descriptor, NULL);\n"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Source\\10.0.26100.0\\ucrt\\inc\\corecrt_internal_lowio.h",
+      "bytes": 11985,
+      "sha256": "1465B3388C22524A779C19DCD709EEFF116993D21A0068E639281181DDB2A751"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Source\\10.0.26100.0\\ucrt\\lowio\\close.cpp",
+      "bytes": 2884,
+      "sha256": "66EF4CA9584690771768589C039BA04E024AD6FA5758958473E6BCE4209603F3"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Source\\10.0.26100.0\\ucrt\\misc\\invalid_parameter.cpp",
+      "bytes": 10714,
+      "sha256": "B09696292D181B0D51D360377F933763B7B1BE796557AB3334F481800B0C3F2E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\groups.json",
+      "bytes": 1104585,
+      "sha256": "E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c4d8e30b697e1e299b33fef4aed6127d\\test.exe",
+      "bytes": 49019392,
+      "sha256": "BF100B0B3CFB386757E0415DAFC8A7BEFF430ED96166AD5AA06E9129E0F8DB7F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\result.json",
+      "bytes": 8438,
+      "sha256": "20387216D12CBABE8C6763CB26E0C3228897F6AAAE500E69F18B94201CC38C10"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.json",
+      "bytes": 1228,
+      "sha256": "73AE870C555B868366E33B52366E42E99BADF550B5AEA4DFD35251993809D659"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stderr.log",
+      "bytes": 68389,
+      "sha256": "1BB42117F374DECBF5C91100686DF7DA7D686A285ECF9F874423D5799AF945ED"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stdout.bin",
+      "bytes": 546,
+      "sha256": "28AC47910B5D5309DD1A1454816A2C051A0E420C51BD0827D4EC61F5D5528C9E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\result.json",
+      "bytes": 16657,
+      "sha256": "66E9CE52981B6DA16C7A1F79EE596FA98754E5F69E435FDF0A36EB3AB8139165"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\_close.md",
+      "bytes": 2050,
+      "sha256": "A8D0AFB0CCDBF82FFC426F5CD12DE4D5051FDB6DE36CCD1B02119119CCB419DD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\_setmaxstdio.md",
+      "bytes": 2790,
+      "sha256": "367035800B397585FA213D7B45D6EEA4937700894B9AD3E9FCDBD45C6FEA0578"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\native-hermes-primary-fetch.json",
+      "bytes": 9887,
+      "sha256": "9CE71D3BE82597741722A7CDF47A75707C76646E0655DD9DFE7F7B6AD41E9B08"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+      "bytes": 9934,
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_gc_close.zig",
+      "bytes": 6402,
+      "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_native_immediates.zig",
+      "bytes": 8688,
+      "sha256": "4D08479443076E84E1B16005FEC0078BAD08BD19D31DD6012266752E44CE7578"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+      "bytes": 15176,
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+      "bytes": 46648,
+      "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33152,
+      "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_transfer_test.zig",
+      "bytes": 23797,
+      "sha256": "E5656DE3AEC771F144939E5852CC7161B1B0499D4764A3F2E0BF42460570C5B1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_fs_before_hook_continuation_test.zig",
+      "bytes": 6578,
+      "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_vm_error_constructor_name_test.zig",
+      "bytes": 28931,
+      "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_node_network.zig",
+      "bytes": 5905,
+      "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\core.c",
+      "bytes": 18494,
+      "sha256": "3026F2888B3360E65A2E2662508EEF6BA9B1AF17735391CA6F79DC06887B8B23"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs-fd-hash-inl.h",
+      "bytes": 6886,
+      "sha256": "1365F18D01C4117B0F42CFB2E0065F37AD62E4F5214B150CBF660F986955BB2D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs.c",
+      "bytes": 105366,
+      "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\_mingw.h",
+      "bytes": 19371,
+      "sha256": "9DAA9C8670CB7E5D73E2290A020D8CBEBF55BC19FD4C5E2F27E661C98827C3B6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority-acquisition.json",
+      "bytes": 10905,
+      "sha256": "28C98F0DE650DFA0F97E1D1BCE71E2D7EEE0A61012CE36A1732DD46C81DADF7C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\node-env.v24.13.cc",
+      "bytes": 84987,
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs-v2.json",
+      "bytes": 16810,
+      "sha256": "B97468E1DD34137C80A6199BABE6E227FEBDB5BD3FD0654B31EA3F05CF8C123F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs.json",
+      "bytes": 16810,
+      "sha256": "940ED7F295FDE2A6D4F2F7770B7041E15F810B2A3D6C8FF8CCA8B5079A1B7727"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-corecrt-internal-lowio.h",
+      "bytes": 11985,
+      "sha256": "1465B3388C22524A779C19DCD709EEFF116993D21A0068E639281181DDB2A751"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-close.cpp",
+      "bytes": 2884,
+      "sha256": "66EF4CA9584690771768589C039BA04E024AD6FA5758958473E6BCE4209603F3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-invalid-parameter.cpp",
+      "bytes": 10714,
+      "sha256": "B09696292D181B0D51D360377F933763B7B1BE796557AB3334F481800B0C3F2E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33152,
+      "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28576,
+      "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33411,
+      "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\proposal.json",
+      "bytes": 21669,
+      "sha256": "2933A7AB4CCC196984FC27419B3E4A64DCCEB99B0834734AA7B357EE1280C7FC"
+    }
+  ],
+  "all_inputs_rehashed_at_end": true,
+  "source_only": true,
+  "candidate_executed": false,
+  "target_prefix_or_helper_executed": false,
+  "native_execution": false,
+  "compiler_execution": false,
+  "Main_written": false,
+  "application_qualified": false
+}
