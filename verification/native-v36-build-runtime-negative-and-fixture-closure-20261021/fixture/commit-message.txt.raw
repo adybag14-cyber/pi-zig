@@ -1,0 +1,3 @@
+Correct FileHandle outer callback scope resource ownership
+
+Source-reviewed intake only. Native runtime and full application qualification remain pending.

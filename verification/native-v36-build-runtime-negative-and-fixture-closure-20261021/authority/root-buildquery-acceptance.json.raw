@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "status": "root_accepted_complete_v36_new4_buildquery",
+  "reviewer": "Root",
+  "candidate_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "batch": "new4",
+  "complete_buildquery_accepted": true,
+  "runtime_execution_authorized": false,
+  "qualification": false,
+  "source_mutation_hold_released": false,
+  "groups": [
+    "native-node-file-handle-owner",
+    "native-node-fs-before-hook-continuation",
+    "native-vm-error-constructor-name",
+    "native-node-file-handle-transfer"
+  ],
+  "actual_metadata_count": 61,
+  "declared_groups": 4,
+  "declared_controls": 58,
+  "build_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-buildquery-20261021-080944\\result.json",
+    "bytes": 67212,
+    "sha256": "311113328569FB8BBD39AC5F8F19D90EEBEA8A3B7E0415731DFA4682BA9D0DA8"
+  },
+  "build_final": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-buildquery-20261021-080944\\final.json",
+    "bytes": 15763177,
+    "sha256": "BC2672711FDE7526D8A94EAE376F3DC458C6A0DE3E7025303035FC9B89416428"
+  },
+  "metadata_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944\\independent-metadata-acceptance.json",
+    "bytes": 14149,
+    "sha256": "84B8758A2C6ABD2E1FF34AFC4E2714B68A3922BE4857C19ADB1143B6DABD0F48"
+  },
+  "independent_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944\\independent-current-seals-and-owners.json",
+    "bytes": 113188,
+    "sha256": "5569A62842A16A5F1A48022A5D6EB78F06808B73E22772FA3C4CAB7A89B2FE4A"
+  },
+  "independent_audit_job": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944\\independent-positive-audit-job-observation.json",
+    "bytes": 1561,
+    "sha256": "030078DBB670F2EC2025DA52EA3D50B177FE000DF4A462700EFB608E951C43D3"
+  },
+  "root_review": "Root accepts the complete actual fresh BuildQuery only after terminal job success, full independent raw-wire metadata acceptance, unchanged whole bookends, all eight terminal-zero compile/query owner gates, complete current directory inventories and 34,160 current files rehashed. All eleven original native/controller/runner/launcher process instances are retired. Launcher PID52108 is now a Chrome process created after the original job completed, explicitly reconciled without weakening any original gate. The actual ordered test counts are19,4,24,14=61; zero runtime tests have started. Production/application qualification remains false.",
+  "reviewed_utc": "2026-10-21T08:25:54.485610+00:00"
+}

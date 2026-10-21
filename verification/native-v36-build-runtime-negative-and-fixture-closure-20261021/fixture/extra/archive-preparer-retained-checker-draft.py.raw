@@ -1,0 +1,193 @@
+"""Independent static archive-source peer; never execute/import the preparer or any prefix."""
+from pathlib import Path
+import ast,hashlib,json
+B=Path(r"C:\Users\adyba\pi-zig")
+E=B/"evidence"
+D=E/"v36-progress-negative-archive-sourceonly-20261021"
+O=B/"worktrees/sdk-owners-resume-20261018/verification/v36-progress-archive-source-peer-20261021"
+A6="a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8"
+inputs={}
+def sha(raw):return hashlib.sha256(raw).hexdigest().upper()
+def check(path,size,h):
+ p=Path(path);raw=p.read_bytes();assert len(raw)==size and sha(raw)==h,str(p)
+ row=dict(path=str(p),bytes=size,sha256=h);assert inputs.setdefault(str(p),row)==row
+ return raw
+def rowcheck(row):return check(row["path"],row["bytes"],row["sha256"])
+def readj(path):return json.loads(Path(path).read_bytes())
+def funs(raw):
+ lines=raw.splitlines(keepends=True)
+ return {n.name:b"".join(lines[n.lineno-1:n.end_lineno]) for n in ast.parse(raw).body if isinstance(n,ast.FunctionDef)}
+proof=json.loads(check(D/"finite-source-adaptation.json",85421,"6CB5F0B23A5DC9DEC7670A578E5D299798CED5E091255183BBE21B7F20911763"))
+handoff=json.loads(check(D/"handoff.json",9198,"4228802B99A808BFA08DE18B1789E7AABCB4398A128C47F9B7F316F53F462E90"))
+cfg=json.loads(check(D/"unissued-root-configuration.json",5065,"6ED333E8DC2A7E6CEC54A68E48A39165C691E3A46C68A80693A80D382181909D"))
+inv=json.loads(check(D/"original-evidence-inventory.json",26114,"7506C352F1CA9DDB9B2AAA8132F0C3DAEA7913AF2631F2DAE3AE9E73DAAA87E5"))
+old=rowcheck(proof["baseline"]);new=rowcheck(proof["candidate"]);cur=old
+assert proof["candidate"]==handoff["candidate"] and proof["baseline"]==handoff["baseline"]
+assert len(proof["edits"])==proof["finite_edit_count"]==71
+for i,e in enumerate(proof["edits"],1):
+ a=e["before"].encode();z=e["after"].encode();off=e["byte_offset_at_step"]
+ assert e["step"]==i and len(a)==e["before_bytes"] and len(z)==e["after_bytes"]
+ assert sha(cur)==e["before_file_sha256"] and cur[off:off+len(a)]==a
+ cur=cur[:off]+z+cur[off+len(a):];assert sha(cur)==e["after_file_sha256"]
+assert cur==new
+for e in reversed(proof["edits"]):
+ a=e["before"].encode();z=e["after"].encode();off=e["byte_offset_at_step"]
+ assert sha(cur)==e["after_file_sha256"] and cur[off:off+len(z)]==z
+ cur=cur[:off]+a+cur[off+len(z):];assert sha(cur)==e["before_file_sha256"]
+assert cur==old
+of,nf=funs(old),funs(new)
+assert set(of)==set(nf) and sorted(k for k in of if of[k]!=nf[k])==proof["changed_helpers"]==["original_inventory"]
+for h in proof["unchanged_helpers"]:
+ raw=of[h["name"]];assert raw==nf[h["name"]] and len(raw)==h["bytes"] and sha(raw)==h["sha256"]
+assert len(proof["unchanged_helpers"])==21
+regions=[]
+for r in proof["unchanged_critical_regions"]:
+ n=r["bytes"];positions=[i for i in range(len(old)-n+1) if sha(old[i:i+n])==r["sha256"]]
+ assert len(positions)==1
+ raw=old[positions[0]:positions[0]+n];assert new.count(raw)==1
+ regions.append(dict(**r,baseline_byte_offset=positions[0],candidate_byte_offset=new.index(raw),exact_bytes_unchanged=True))
+assert len(regions)==3
+tree=ast.parse(new)
+calls=[n for n in ast.walk(tree)if isinstance(n,ast.Call)]
+assert not any(isinstance(n.func,ast.Name)and n.func.id in ("exec","eval","compile","__import__") for n in calls)
+git_calls=[]
+for c in calls:
+ if isinstance(c.func,ast.Name)and c.func.id=="git":
+  assert c.args and isinstance(c.args[0],ast.Constant)and isinstance(c.args[0].value,str)
+  command=c.args[0].value
+  assert command in {"rev-parse","branch","status","show","ls-tree","diff","cat-file","check-attr","hash-object"}
+  constants=[a.value for a in c.args if isinstance(a,ast.Constant)]
+  assert "-w" not in constants
+  git_calls.append(dict(line=c.lineno,command=command))
+used_cfg={n.slice.value for n in ast.walk(tree)if isinstance(n,ast.Subscript) and isinstance(n.value,ast.Name) and n.value.id=="cfg" and isinstance(n.slice,ast.Constant)and isinstance(n.slice.value,str)}
+assert used_cfg<=set(cfg)
+literal_assignments={}
+for n in tree.body:
+ if isinstance(n,ast.Assign)and len(n.targets)==1 and isinstance(n.targets[0],ast.Name):
+  try:literal_assignments[n.targets[0].id]=ast.literal_eval(n.value)
+  except (ValueError,TypeError):pass
+assert set(cfg["fixture_source"])==set(literal_assignments["FIXTURE_SOURCE_NAMES"])
+assert set(cfg["fixture_execution"])==set(literal_assignments["EXECUTION_NAMES"])
+assert cfg["status"]=="unissued_v36_progress_negative_archive_preparation" and cfg["evidence_preparation_authorized"] is False
+assert cfg["fixture_commit"] is None and cfg["fixture_path_count"] is None and cfg["fixture_commit_message"] is None and cfg["recorded_utc"] is None
+assert cfg["preparer_sha256"]==proof["candidate"]["sha256"] and cfg["basis_head"]==A6
+assert cfg["fixture_after"]==dict(bytes=33152,sha256="EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F")
+assert cfg["fixture_finite_hunks"]==3
+for k in ("main_intake_authorized","native_execution_authorized","runtime_authority","qualification"):assert cfg[k] is False
+# Independent literal/source inspection, not running even the candidate's first statement.
+text=new.decode()
+assert text.index('cfg["status"]=="root_reviewed_specific_v36_progress_negative_archive_preparation"')<text.index("state(HEAD)")<text.index("OUT.mkdir()")
+assert 'require(git("rev-parse",HEAD+"^").decode().strip()==BASIS' in text
+assert 'require(changed==set(names)' in text
+assert 'require(current==donor' in text and 'committed(current_tree,target,donor)' in text
+assert 'require(execution["pathspec"]==b"\\0".join(n.encode("utf-8") for n in names)+b"\\0"' in text
+assert 'require(actual_commit==execution["commit_message"]' in text
+assert 'require(inverse==old and encode(inverse)==old_progress_raw' in text
+assert 'require(updated["execution_checkpoint_history"][-1]==old["current_execution_checkpoint"]' in text
+assert 'mtime=0,compresslevel=9' in text and 'gzip.GzipFile(filename=""' in text
+assert 'require(gzip.decompress(compressed)==before_raw==final_raw' in text
+assert 'require(gzip_bytes(before_raw)==compressed' in text
+assert 'require(not OUT.exists() and not (M/ARCHIVE).exists(),"final create-only gate")' in text
+groups=inv["groups"];assert groups==literal_assignments["GROUPS"]
+assert inv["basis_head"]==A6 and inv["declared_counts"]==[18,3,24,13] and inv["accepted_metadata_counts"]==[19,4,24,14]
+assert set(inv["runs"])=={"buildquery","strict_runtime"}
+inventory_checks=[];bookends=[]
+for phase,data in inv["runs"].items():
+ proofdir=Path(data["proof"]);controldir=Path(data["control"])
+ assert {p.name for p in proofdir.iterdir()if p.is_file()}=={r[0]for r in data["proof_files"]}=={"before.json","final.json","result.json"}
+ assert {p.name for p in proofdir.iterdir()if p.is_dir()}==set(data["proof_directories"])==({"cache","global-cache","groups"}if phase=="buildquery"else{"groups"})
+ assert {p.name for p in controldir.iterdir()if p.is_file()}=={r[0]for r in data["control_files"]}
+ assert not any(p.is_dir()for p in controldir.iterdir())
+ assert set(data["group_files"])==set(groups if phase=="buildquery"else groups[:1])
+ assert {p.name for p in (proofdir/"groups").iterdir()}==set(data["group_files"])
+ rows=[(proofdir,r)for r in data["proof_files"]]+[(controldir,r)for r in data["control_files"]]
+ for group,files in data["group_files"].items():
+  gd=proofdir/"groups"/group
+  assert {p.name for p in gd.iterdir()if p.is_file()}=={r[0]for r in files}
+  assert {p.name for p in gd.iterdir()if p.is_dir()}==({"installed"}if phase=="buildquery"else set())
+  rows.extend((gd,r)for r in files)
+ for directory,(name,size,h)in rows:check(directory/name,size,h)
+ br=(proofdir/"before.json").read_bytes();fr=(proofdir/"final.json").read_bytes();assert br==fr
+ seal=json.loads(br)
+ assert seal["candidate_head"]==A6 and seal["clean"] is True and seal["errors"]==[]
+ assert {k:len(seal[k])for k in data["seal_counts"]}==data["seal_counts"]
+ bookends.append(dict(phase=phase,bytes=len(br),sha256=sha(br),before_equals_final=True,seal_counts=data["seal_counts"],compression_not_executed=True))
+ inventory_checks.append(dict(phase=phase,proof_files=len(data["proof_files"]),control_files=len(data["control_files"]),group_files={g:len(v)for g,v in data["group_files"].items()},all_listed_files_current_pins_exact=True,complete_directory_membership=True))
+ del seal,br,fr
+assert sum(x["proof_files"]+x["control_files"]+sum(x["group_files"].values())for x in inventory_checks)==125
+assert len(inv["extra_files"])==15
+for r in inv["extra_files"]:rowcheck(r)
+BC=Path(inv["runs"]["buildquery"]["control"]);BP=Path(inv["runs"]["buildquery"]["proof"])
+C=Path(inv["runs"]["strict_runtime"]["control"]);P=Path(inv["runs"]["strict_runtime"]["proof"]);G=P/"groups"/groups[0]
+build=readj(BC/"independent-current-seals-and-owners.json");metadata=readj(BC/"independent-metadata-acceptance.json");br=readj(BP/"result.json")
+rootb=readj(E/"root-v36-new4-complete-buildquery-acceptance-20261021.json")
+neg=readj(C/"independent-negative-runtime-closure.json");nr=readj(P/"result.json");rootn=readj(E/"root-v36-new4-original-negative-runtime-acceptance-20261021.json");can=readj(G/"runtime.results.json")
+assert build["status"]=="independently_closed_complete_fresh_build_query" and build["candidate_head"]==A6
+assert [build[k]for k in ("granted_groups","attempted_groups","unstarted_groups","actual_metadata_count","actual_tests_started","native_owner_count")]==[4,4,0,61,0,8]
+assert build["distinct_current_files_rehashed"]==34160 and build["seal_counts"]==inv["runs"]["buildquery"]["seal_counts"] and len(build["actual_process_intervals"])==11
+for k in ("whole_bookends_unchanged","current_all_sealed_inputs_rehashed","current_complete_directory_inventories_verified","current_actual_process_instances_absent","all_original_terminal0_owner_gates_passed","controller_environment_restored"):assert build[k] is True
+for k in ("runtime_started","qualification","cache_seeded","source_mutation_hold_released"):assert build[k] is False
+assert build["current_absence"]["native"]==build["current_absence"]["direct_children"]==[]
+assert len(build["current_absence"]["owners"])==len(build["current_process_instance_reconciliations"])==1
+assert metadata["status"]=="independently_accepted_combined_native_batch_metadata" and metadata["accepted"] is True and metadata["candidate_head"]==A6
+assert [g["group"]for g in metadata["groups"]]==groups and [g["actual_count"]for g in metadata["groups"]]==[19,4,24,14]
+assert metadata["runtime_started"] is False and metadata["runtime_qualification"] is False
+assert br["status"]=="passed_build_query_batch" and br["mode"]=="BuildQuery" and br["candidate_head"]==A6
+assert [g["group"]for g in br["groups"]]==groups and all(g["status"]=="passed_build_query"for g in br["groups"])
+assert br["runtime_requested"] is False and br["product_qualified"] is False
+assert rootb["status"]=="root_accepted_complete_v36_new4_buildquery" and rootb["candidate_head"]==A6 and rootb["actual_metadata_count"]==61
+assert rootb["groups"]==groups and rootb["complete_buildquery_accepted"] is True
+assert neg["status"]=="independently_closed_negative_strict_runtime" and neg["candidate_head"]==A6
+assert [neg[k]for k in ("granted_groups","attempted_groups","unstarted_groups","accepted_cohort","runtime_owner_count","observed_started","observed_completed","observed_failed","observed_passed","not_started")]==[4,1,3,61,1,19,19,18,1,42]
+assert neg["distinct_current_files_rehashed"]==34171 and neg["seal_counts"]==inv["runs"]["strict_runtime"]["seal_counts"] and len(neg["actual_process_intervals"])==4
+for k in ("whole_bookends_unchanged","current_all_sealed_inputs_rehashed","current_complete_directory_inventories_verified","current_actual_process_instances_absent","original_strict_failures_preserved","controller_environment_restored"):assert neg[k] is True
+for k in ("all_original_strict_empty_stderr_and_all_tests_passing_gates_passed","runtime_qualification","product_qualification","source_mutation_hold_released"):assert neg[k] is False
+assert all(neg["current_absence"][k]==[]for k in ("owners","direct_children","native"))
+assert nr["status"]=="failed" and nr["mode"]=="RuntimeOnly" and nr["candidate_head"]==A6 and nr["all_groups_closed"] is False
+assert nr["runtime_requested"] is True and nr["product_qualified"] is False and [g["group"]for g in nr["groups"]]==groups[:1]
+assert (P/"result.json").read_bytes()==(C/"outer.stdout.bin").read_bytes()
+assert [can[k]for k in ("expected","started","completed","failed_or_skipped_or_logged_or_leaked")]==[19,19,19,18] and can["status"]=="failed"
+assert can["results"]==[dict(index=i,flags=int(i<18),passed=i==18)for i in range(19)]
+phase=nr["groups"][0]["phases"]["runtime"]
+assert phase["failure"]==phase["original_execution_failure"]=="Native test protocol did not report every selected test passing without logs/leaks"
+assert phase["owner_binding"]["status"]=="invalid" and phase["owner_binding"]["errors"]==["Actual metadata/new API or ordinary retained runtime stderr must be empty"]
+assert phase["postchecks"]["owner_bound"] is False
+assert all(phase["postchecks"][k] is True for k in ("evidence_valid","source_sealed","artifacts_bound","absence_closed"))
+assert rootn["status"]=="root_accepted_original_v36_new4_strict_runtime_negative_closure" and rootn["negative_closure_accepted"] is True and rootn["original_nonempty_stderr_and_failure_flags_preserved"] is True
+for obj in (rootb,rootn):
+ for k in ("qualification","runtime_execution_authorized","native_execution_authorized","source_mutation_hold_released","runtime_qualification","product_qualification"):
+  if k in obj:assert obj[k] is False
+# Exact observed pin edges are checked independently, not merely accepted from counts.
+edges=[(build,"metadata_acceptance",BC/"independent-metadata-acceptance.json"),(neg,"metadata_acceptance",BC/"independent-metadata-acceptance.json"),(neg,"independent_build_closure",BC/"independent-current-seals-and-owners.json")]
+for obj,key,path in edges:assert obj[key]==inputs[str(path)]
+for key,path in [("build_result",BP/"result.json"),("build_final",BP/"final.json"),("metadata_acceptance",BC/"independent-metadata-acceptance.json"),("independent_closure",BC/"independent-current-seals-and-owners.json")]:assert rootb[key]==inputs[str(path)]
+for key,name in [("independent_negative_closure","independent-negative-runtime-closure.json"),("independent_negative_auditor","Audit-NegativeV36New4StrictRuntime.py"),("audit_configuration","independent-negative-runtime-audit-inputs.json"),("root_audit_release","root-negative-runtime-audit-release.json"),("audit_job_observation","independent-negative-audit-job-observation.json")]:assert rootn[key]==inputs[str(C/name)]
+assert metadata["build_result_sha256"]==inputs[str(BP/"result.json")]["sha256"] and metadata["build_source_seal_sha256"]==inputs[str(BP/"final.json")]["sha256"]
+progress=cfg["known_observed"]["prior_progress"];pr=rowcheck(progress);oldp=json.loads(pr)
+assert (json.dumps(oldp,indent=2)+"\n").encode()==pr
+assert {k:len(oldp[k])for k in ("integrated_source_units","preserved_attempts","retained_recent_native_negatives","execution_checkpoint_history")}==dict(integrated_source_units=63,preserved_attempts=33,retained_recent_native_negatives=11,execution_checkpoint_history=12)
+assert oldp["status"]=="active_incomplete" and oldp["schema"]==1 and oldp["current_execution_checkpoint"]["schema"]==6
+np=oldp["next_native_batch"];assert np==oldp["current_execution_checkpoint"]["next_validation"]
+assert np["status"]=="preparing_fresh_v36_complete_disjoint_batches" and np["batch_group_counts"]==[4,63] and np["batch_source_declarations"]==[58,1249]
+assert [np[k]for k in ("total_selected_groups","total_selected_source_declarations","catalog_expected_groups","catalog_expected_source_declarations","group_cap")]==[67,1307,117,2013,64]
+assert len(np["retained63_group_order"])==len(set(np["retained63_group_order"]))==63
+assert [r["declared_controls"]for r in np["new_source_roots"]]==[18,3,24,13] and all(r["actual_metadata_count"] is None for r in np["new_source_roots"])
+for k in ("application_qualification","production_bridge_removed","published_release"):assert oldp[k] is False
+for r in cfg["known_observed"].values():rowcheck(r)
+rowcheck(cfg["fixture_source"]["correction_proposal"])
+for r in inputs.values():
+ raw=Path(r["path"]).read_bytes();assert len(raw)==r["bytes"] and sha(raw)==r["sha256"]
+peer=dict(schema=1,status="independent_source_only_v36_archive_preparer_peer_no_bounded_blocker",reviewer="sdk_environment_port",candidate=proof["candidate"],baseline=proof["baseline"],finite_proof=inputs[str(D/"finite-source-adaptation.json")],unissued_configuration=inputs[str(D/"unissued-root-configuration.json")],handoff=inputs[str(D/"handoff.json")],source_bytes_manually_read=61100,finite_edits=71,every_forward_and_inverse_intermediate_hash_verified=True,full_byte_inverse_verified=True,unchanged_helpers=proof["unchanged_helpers"],changed_helpers=["original_inventory"],unchanged_critical_regions=regions,read_only_git_calls=git_calls,config_literal_keys_present=sorted(used_cfg),complete_original_directory_inventories=inventory_checks,original_run_file_count=125,extra_authority_file_count=15,bookends=bookends,actual_build_counts=dict(groups=4,declared=58,actual_metadata=[19,4,24,14],total_actual=61,native_owners=8,process_instances=11,runtime_tests=0,original_pid_reuse_reconciliation_preserved=True),actual_runtime_counts=dict(granted_groups=4,attempted_groups=1,unstarted_groups=3,accepted_metadata=61,started=19,completed=19,failed=18,passed=1,not_started=42,native_owners=1,process_instances=4,original_invalid_owner_and_nonempty_stderr_preserved=True),prior_progress=progress,observed_input_count=len(inputs),inputs=sorted(inputs.values(),key=lambda r:r["path"]),manual_findings=[
+"All 71 reviewed edits reproduce the selected full source and invert to the accepted predecessor; the sole changed helper inventories both retained phases.",
+"The 21 helpers and three complete history, Git-attribute/blob and create-only regions remain byte-identical. The candidate only invokes read-only Git commands and has no target execution.",
+"All 125 original proof/control/group files and 15 additional authorities still match their complete directory inventory and pins. Installed binaries and cache subtrees are excluded from the archive and are not modified.",
+"Both original before/final pairs are fully byte-equal with the selected raw pins. The unchanged gzip helper selects an empty name, mtime zero and level nine; the candidate requires header, full decompression and second-encoding equality. This peer performed no compression or preparer execution.",
+"Historical BuildQuery metadata and negative runtime are independently matched to actual captures. The accepted later Chrome PID reuse remains represented, while strict runtime retains all 18 failure flags, one pass and nonempty stderr.",
+"The current unissued configuration fails the explicit status/authorization gate and has no fixture commit or intake authority. The future single fixture commit, exact parent/raw Git/pathspec/message/donor/current pins, independent source/intake peers and release/receipt bindings must pass before any output.",
+"The progress successor only appends the full prior checkpoint and bounded records, preserves every nested historical list prefix and unrelated field, and requires complete structural/raw-byte inverse. Fresh V37 actual metadata stays unknown; original 4+63 and 58+1249 cohorts remain.",
+"All filesystem writes in the preparer occur after final validations in the fixed new evidence directory with exclusive file creation; Main/index/cache remain untouched. Separate Root execution and later source-intake authority are required."
+],preparer_executed=False,preparer_prefix_executed=False,archive_emitted=False,compression_executed=False,fixture_commit_admitted=False,main_modified=False,index_modified=False,native_execution=False,source_mutation_hold_released=False,runtime_qualification=False,product_qualification=False)
+checker=O/"independent-static-source-peer.py";raw=checker.read_bytes();peer["checker"]=dict(path=str(checker),bytes=len(raw),sha256=sha(raw))
+out=O/"peer.json";assert not out.exists()
+with out.open("xb")as f:f.write((json.dumps(peer,indent=2)+"\n").encode())
+raw=out.read_bytes();print(json.dumps(dict(peer=dict(path=str(out),bytes=len(raw),sha256=sha(raw)),checker=peer["checker"],finite_edits=71,helpers=21,critical_regions=3,original_files=125,extra_files=15,input_count=len(inputs),target_executed=False,compression_executed=False)))

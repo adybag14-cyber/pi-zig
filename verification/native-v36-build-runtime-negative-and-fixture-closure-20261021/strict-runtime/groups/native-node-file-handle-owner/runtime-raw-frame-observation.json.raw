@@ -1,0 +1,202 @@
+{
+  "scope": "Raw complete protocol frames including partial failure evidence; never acceptance authority",
+  "frames": [
+    {
+      "tag": 0,
+      "length": 6,
+      "version": "0.16.0"
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 0,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 1,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 2,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 3,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 4,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 5,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 6,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 7,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 8,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 9,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 10,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 11,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 12,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 13,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 14,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 15,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 16,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 17,
+      "flags": 1
+    },
+    {
+      "tag": 5,
+      "length": 0
+    },
+    {
+      "tag": 4,
+      "length": 12,
+      "index": 18,
+      "flags": 0
+    }
+  ],
+  "parse_error": null,
+  "trailing_bytes": 0
+}

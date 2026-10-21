@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "status": "actual_fixture_commit_and_all_raw_bytes_verified",
+  "basis_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "fixture_commit": "891b74c94b1d9fc859587762187bb1040970b8a8",
+  "parent_exact": true,
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-filehandle-resource-fixture-main-intake-20261021\\manifest.json",
+    "bytes": 12777,
+    "sha256": "3905D6C0319E27D8467C0B720833030F048200A97BCFD3B2816ABBD452928F38"
+  },
+  "receipt": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-receipts-20261021\\fixture-receipt.json",
+    "bytes": 4122,
+    "sha256": "CC0A39654C92BAAD563B11AA15247403FC839189351F99DE0C41BF26C813E982"
+  },
+  "execution_inputs": {
+    "source_release": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-release-20261021.json",
+      "bytes": 7697,
+      "sha256": "D64FCF4D848FAB1717A8F9A243FFB6381AA5DF8BBF5E9D5A5EA4F1CA1B5DA6E3"
+    },
+    "executor_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-fixture-intake-independent-peer-20261021\\peer.json",
+      "bytes": 4797,
+      "sha256": "A0E2F5AD05D978FCD631A7493A69ADB7482A8E4D5D8CFBF70876579ADA309B37"
+    },
+    "receipt": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-receipts-20261021\\fixture-receipt.json",
+      "bytes": 4122,
+      "sha256": "CC0A39654C92BAAD563B11AA15247403FC839189351F99DE0C41BF26C813E982"
+    },
+    "preflight": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-receipts-20261021\\fixture-preflight.json",
+      "bytes": 8967,
+      "sha256": "1B72E9682359F23F5E764C28AB6750A956A147A9E1A77B40C77CDEB6496CC069"
+    },
+    "staged": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-receipts-20261021\\fixture-staged.json",
+      "bytes": 393,
+      "sha256": "6044A885DDF97A8630D8D155903E90D7D264EB60E47107EF5DA94396C182A71A"
+    },
+    "pathspec": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-receipts-20261021\\fixture-paths.nul",
+      "bytes": 2495,
+      "sha256": "62162B17D1EA6BE82C04A7B2535B8788CFF2E1AC46D54A4CA1012296FB05891F"
+    },
+    "commit_message": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-receipts-20261021\\fixture-commit-message.txt",
+      "bytes": 155,
+      "sha256": "DCF44A8C67EE10E65801B7A9ECEF53AFC9B25AB7D5FC3C80A54F70CDFEF76654"
+    }
+  },
+  "path_count": 26,
+  "existing_source_replacements": 1,
+  "new_archive_paths_including_manifest": 25,
+  "complete_changed_path_set_exact": true,
+  "all_donor_current_and_committed_bytes_exact": true,
+  "original_raw_fixture_preimage_exact": true,
+  "all_current_fixture_evidence_pins_rehashed": true,
+  "production_and_build_sources_unchanged": true,
+  "old_progress_unchanged_by_fixture_intake": true,
+  "source_corrections": [
+    {
+      "name": "FileHandle outer callback scope uses a separately owned plain object",
+      "proposal": {
+        "original": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\proposal.json",
+          "bytes": 11951,
+          "sha256": "E40157BF97BD043A541247B885680820560135EE4286F896F031B268C6B5FEFB"
+        },
+        "archived_path": "verification/native-v36-filehandle-resource-fixture-correction-20261021/source-proposal.json"
+      },
+      "independent_peer": {
+        "original": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\peer.json",
+          "bytes": 7852,
+          "sha256": "1474959A14A6212AEC8673296A5F8A616CB5007E17DF2DA3667D09D97B0A37E2"
+        },
+        "archived_path": "verification/native-v36-filehandle-resource-fixture-correction-20261021/independent-peer.json"
+      },
+      "finite_hunks": 3,
+      "source_only": true,
+      "native_qualification": false
+    }
+  ],
+  "historical_release_consumed_for_this_completed_phase_only": true,
+  "new_source_release": false,
+  "native_execution": false,
+  "qualification": false
+}

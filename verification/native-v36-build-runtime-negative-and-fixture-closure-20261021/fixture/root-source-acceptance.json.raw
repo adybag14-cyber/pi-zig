@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "status": "root_and_independent_peer_accepted_bounded_fixture_resource_correction",
+  "recorded_utc": "2026-10-21T09:11:00.391993+00:00",
+  "candidate_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "target": "src/native_node_file_handle_owner_test_support.zig",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test_support.zig",
+    "bytes": 33137,
+    "sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127"
+  },
+  "selected_fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+    "bytes": 33152,
+    "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+  },
+  "source_accepted": true,
+  "source_corrections_accepted": true,
+  "finite_hunks": 3,
+  "all58_declared_controls_and4_root_import_topologies_unchanged": true,
+  "production_source_unchanged": true,
+  "source_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\proposal.json",
+    "bytes": 11951,
+    "sha256": "E40157BF97BD043A541247B885680820560135EE4286F896F031B268C6B5FEFB"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\peer.json",
+    "bytes": 7852,
+    "sha256": "1474959A14A6212AEC8673296A5F8A616CB5007E17DF2DA3667D09D97B0A37E2"
+  },
+  "sdk_ownership_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\ownership-proof.json",
+    "bytes": 14106,
+    "sha256": "D12FC3C071251FC75B1CAD32E684522F443E903167C6055765E862BCE5475D73"
+  },
+  "root_static_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-filehandle-outer-resource-fixture-static-review-20261021.json",
+    "bytes": 6480,
+    "sha256": "D19CB4DEA35E842D5BEB45BC0FA5A310B14A48CA432F0037211FE9A63C80386D"
+  },
+  "independent_source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\source-audit-v2.py",
+    "bytes": 9170,
+    "sha256": "1575C20AA7BC959180E85E8702AA4CFF15107287936E1431962A2FE18371737C"
+  },
+  "independent_source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\source-audit.json",
+    "bytes": 16304,
+    "sha256": "1530D273D9346895F0AFC66AD738E6739D29883C45B245BE764AF81F938379AF"
+  },
+  "authority_snapshot_index": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-filehandle-resource-fixture-main-intake-20261021\\authority-snapshot-index.json",
+    "bytes": 10176,
+    "sha256": "52C7EF044E2CF939123B13E8C236FA0FF375A9E974D85853DE9E15283811E416"
+  },
+  "completion_authority": {
+    "original": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+      "bytes": 15176,
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+    },
+    "immutable_donor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-filehandle-resource-fixture-main-intake-20261021\\authority-snapshots\\completion.raw",
+      "bytes": 15176,
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+    }
+  },
+  "original_runtime_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-closure.json",
+    "bytes": 26137,
+    "sha256": "8BCCF2D351EEDC42D65C56E8605D2DD10ACFF153231552AD90F496E4668CF9AF"
+  },
+  "original_negative_root_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-new4-original-negative-runtime-acceptance-20261021.json",
+    "bytes": 2496,
+    "sha256": "182883E0C8BA52A96B34E790DD65A9DF247F0DD67031D68CD73DBAB614D0DCCC"
+  },
+  "root_review": {
+    "finite_replay": "Root independently replayed all three unique edits, every intermediate hash and the complete byte inverse. Live and raw a6 preimage agree; all other fixture bytes remain exact.",
+    "source_authority": "Root read the original Node typed Local<Object> callback-scope and Environment pointer ownership, the complete argument expression and operation Scope implementation, actual Boundary return retirement, CallbackScope initialization/push/deinit, and the complete SDK Completion implementation. All 13 SDK source pins and 17 exact raw excerpts were independently verified.",
+    "escaped_object": "bootstrap returns an explicit duplicate of a separately allocated ordinary object. The operation Boundary retires its local root and preserves the escaping result on successful completion; failureRoots owns that result on failure.",
+    "initializer_ownership": "The initializer holds its own returned reference with defer. CallbackScope.init retains Environment and duplicates the object into its stable self.resource member. Environment borrows a pointer to that member rather than the stack-local variable.",
+    "failure_and_teardown": "The existing initialized catch marks failure and deinitializes the partial Scope. The new local defer precedes the earlier Fixture errdefer, preserving Engine lifetime. Existing Scope Completion releases resource/prior-frame roots and Environment after close; Fixture.deinit ordering is unchanged.",
+    "weak_lifetime": "The ordinary resource object has no added property or native edge to a FileHandle or the weak BindingData target. Existing GC/root-drop helpers and phase observations are unchanged.",
+    "controls": "All four root sources, their 58 named declarations and fixture imports/embeds are byte-identical. This source review does not predict new native metadata or reclassify the original runtime negative."
+  },
+  "independent_peer_authoring_negative_preserved": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\source-audit.py",
+      "bytes": 8784,
+      "sha256": "BE6DC8866FEBC60F9DD3655C011862FC668745FAF95CA808FC8700F08F30A598"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\audit-authoring-negative.json",
+      "bytes": 1479,
+      "sha256": "BEB13636BCAAAAFD91C0213F0EE0B3EF0A1B066ED54440ECCF5BB309C334AB89"
+    }
+  ],
+  "Main_written": false,
+  "source_intake_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "application_qualified": false,
+  "production_bridge_removed": false
+}

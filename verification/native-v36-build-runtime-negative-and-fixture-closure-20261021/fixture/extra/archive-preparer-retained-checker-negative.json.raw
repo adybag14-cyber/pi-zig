@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "status": "retained_static_peer_helper_span_negative",
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-progress-archive-source-peer-20261021\\independent-static-source-peer.py",
+    "bytes": 20486,
+    "sha256": "B301A0963448055C76879A5106644C46D24B403EE94B35FFCF9F422ACCD7D8FD"
+  },
+  "exit_code": 1,
+  "line": 41,
+  "reason": "The independent checker initially included the final LF in helper spans; Handover proof pins AST source segments without that LF. All 21 baseline/candidate helper pairs are byte-identical including the LF; all 42 no-final-LF segments match the proof pins.",
+  "finite_71_full_replays_and_inverses_passed_before_failure": true,
+  "preparer_executed": false,
+  "preparer_prefix_executed": false,
+  "peer_output_written": false,
+  "candidate_modified": false,
+  "fix": "Keep full helper-byte equality and explicit trailing-LF check; compare the documented AST span length/hash after removing exactly that single LF.",
+  "changes": [
+    {
+      "before": " raw=of[h[\"name\"]];assert raw==nf[h[\"name\"]] and len(raw)==h[\"bytes\"] and sha(raw)==h[\"sha256\"]",
+      "after": " raw=of[h[\"name\"]];assert raw==nf[h[\"name\"]] and raw.endswith(b\"\\n\")\n assert len(raw[:-1])==h[\"bytes\"] and sha(raw[:-1])==h[\"sha256\"]"
+    },
+    {
+      "before": "checker=O/\"independent-static-source-peer.py\";raw=checker.read_bytes();peer[\"checker\"]=dict(path=str(checker),bytes=len(raw),sha256=sha(raw))",
+      "after": "checker=O/\"independent-static-source-peer-v2.py\";raw=checker.read_bytes();peer[\"checker\"]=dict(path=str(checker),bytes=len(raw),sha256=sha(raw))\nnegative_path=O/\"helper-span-negative.json\";raw=negative_path.read_bytes();peer[\"retained_checker_span_negative\"]=dict(path=str(negative_path),bytes=len(raw),sha256=sha(raw))"
+    }
+  ]
+}

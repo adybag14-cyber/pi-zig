@@ -1,0 +1,218 @@
+{
+  "schema": 1,
+  "status": "proposed_exact_v36_fixture_source_intake",
+  "comparison_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "path_count_including_manifest": 26,
+  "rows": [
+    {
+      "target": "src/native_node_file_handle_owner_test_support.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33152,
+      "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F",
+      "before": {
+        "bytes": 33137,
+        "sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127"
+      },
+      "role": "bounded_fixture_resource_ownership_correction"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/source-proposal.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\proposal.json",
+      "bytes": 11951,
+      "sha256": "E40157BF97BD043A541247B885680820560135EE4286F896F031B268C6B5FEFB",
+      "before": null,
+      "role": "original_immutable_correction_proposal"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/ownership-proof.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\ownership-proof.json",
+      "bytes": 14106,
+      "sha256": "D12FC3C071251FC75B1CAD32E684522F443E903167C6055765E862BCE5475D73",
+      "before": null,
+      "role": "source_ownership_proof"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/fixture.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33137,
+      "sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127",
+      "before": null,
+      "role": "immutable_source_authority_fixture"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/callback.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-filehandle-resource-fixture-main-intake-20261021\\authority-snapshots\\callback.raw",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E",
+      "before": null,
+      "role": "immutable_source_authority_callback"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/argument.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-filehandle-resource-fixture-main-intake-20261021\\authority-snapshots\\argument.raw",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9",
+      "before": null,
+      "role": "immutable_source_authority_argument"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/scope.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-filehandle-resource-fixture-main-intake-20261021\\authority-snapshots\\scope.raw",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+      "before": null,
+      "role": "immutable_source_authority_scope"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/boundary.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-filehandle-resource-fixture-main-intake-20261021\\authority-snapshots\\boundary.raw",
+      "bytes": 9934,
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "before": null,
+      "role": "immutable_source_authority_boundary"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/binding.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-filehandle-resource-fixture-main-intake-20261021\\authority-snapshots\\binding.raw",
+      "bytes": 17792,
+      "sha256": "AB6FB9BD2C6442D19B2EC60BCA0F536DD3BC64636971E5C1E2761E25E11277C8",
+      "before": null,
+      "role": "immutable_source_authority_binding"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/existing_fixture.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-filehandle-resource-fixture-main-intake-20261021\\authority-snapshots\\existing_fixture.raw",
+      "bytes": 23302,
+      "sha256": "F72A583ED548F7BE10477B0AEFD0F77E3D035FB48F2708324AF2E92EB6CA90EC",
+      "before": null,
+      "role": "immutable_source_authority_existing_fixture"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/node_callback.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-api-callback.v24.13.cc",
+      "bytes": 13682,
+      "sha256": "0A4C8ECF051F995F9669826DC9D85560ADD6ECD6FB2E28CE6B2F3DD309947DE2",
+      "before": null,
+      "role": "immutable_source_authority_node_callback"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/callback_authority.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\native-callback-and-exception-source.json",
+      "bytes": 20217,
+      "sha256": "008EEC523290C9547E6F4D2BA2AA108E62FCC57BCB8E5ECB730F1548E7F1977C",
+      "before": null,
+      "role": "immutable_source_authority_callback_authority"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/node_env.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\node-env.v24.13.cc",
+      "bytes": 84987,
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9",
+      "before": null,
+      "role": "immutable_source_authority_node_env"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/env_authority.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority-acquisition.json",
+      "bytes": 10905,
+      "sha256": "28C98F0DE650DFA0F97E1D1BCE71E2D7EEE0A61012CE36A1732DD46C81DADF7C",
+      "before": null,
+      "role": "immutable_source_authority_env_authority"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/runtime_negative.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\runtime.stderr.log",
+      "bytes": 45026,
+      "sha256": "E974EC5E5AA6B6EB9FC5BBFF3CC3826DFD7AF8CB3052AC10B4BF38CA8DC6ED0C",
+      "before": null,
+      "role": "immutable_source_authority_runtime_negative"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/candidate.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33152,
+      "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F",
+      "before": null,
+      "role": "immutable_source_authority_candidate"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/completion.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-filehandle-resource-fixture-main-intake-20261021\\authority-snapshots\\completion.raw",
+      "bytes": 15176,
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC",
+      "before": null,
+      "role": "immutable_completion_authority"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/authority-snapshot-index.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-filehandle-resource-fixture-main-intake-20261021\\authority-snapshot-index.json",
+      "bytes": 10176,
+      "sha256": "52C7EF044E2CF939123B13E8C236FA0FF375A9E974D85853DE9E15283811E416",
+      "before": null,
+      "role": "original_authority_snapshot_mapping"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/root-static-review.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-filehandle-outer-resource-fixture-static-review-20261021.json",
+      "bytes": 6480,
+      "sha256": "D19CB4DEA35E842D5BEB45BC0FA5A310B14A48CA432F0037211FE9A63C80386D",
+      "before": null,
+      "role": "root_independent_finite_source_review"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/root-source-acceptance.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-filehandle-outer-resource-fixture-source-acceptance-20261021.json",
+      "bytes": 7035,
+      "sha256": "590FA13B117F79761FE1C1FA634EC4AF9B685EAAD6CA69FF49B80F3E688AA973",
+      "before": null,
+      "role": "root_and_peer_source_acceptance"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/independent-peer.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\peer.json",
+      "bytes": 7852,
+      "sha256": "1474959A14A6212AEC8673296A5F8A616CB5007E17DF2DA3667D09D97B0A37E2",
+      "before": null,
+      "role": "independent_correction_peer"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/independent-source-audit.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\source-audit-v2.py",
+      "bytes": 9170,
+      "sha256": "1575C20AA7BC959180E85E8702AA4CFF15107287936E1431962A2FE18371737C",
+      "before": null,
+      "role": "independent_source_checker"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/independent-source-audit.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\source-audit.json",
+      "bytes": 16304,
+      "sha256": "1530D273D9346895F0AFC66AD738E6739D29883C45B245BE764AF81F938379AF",
+      "before": null,
+      "role": "independent_source_check_proof"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/retained-source-audit-draft.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\source-audit.py",
+      "bytes": 8784,
+      "sha256": "BE6DC8866FEBC60F9DD3655C011862FC668745FAF95CA808FC8700F08F30A598",
+      "before": null,
+      "role": "retained_checker_authoring_negative_source"
+    },
+    {
+      "target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/retained-audit-authoring-negative.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\audit-authoring-negative.json",
+      "bytes": 1479,
+      "sha256": "BEB13636BCAAAAFD91C0213F0EE0B3EF0A1B066ED54440ECCF5BB309C334AB89",
+      "before": null,
+      "role": "retained_checker_authoring_negative"
+    }
+  ],
+  "manifest_target": "verification/native-v36-filehandle-resource-fixture-correction-20261021/manifest.json",
+  "source_mutation_hold_released": false,
+  "main_applied": false,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "production_bridge_removed": false,
+  "scope": "Exactly one three-edit fixture replacement; all other targets are new immutable source, authority and review archives. Original V36 strict negative remains negative; no runtime, compiler, generator or push is authorized."
+}

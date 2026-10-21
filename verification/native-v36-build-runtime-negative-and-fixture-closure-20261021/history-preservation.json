@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "status": "complete_historical_prefixes_and_progress_inverse_verified",
+  "basis_progress": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+    "bytes": 354535,
+    "sha256": "23A951AAEB578839CC84AD9548C755F63BD034E966549F5C73B93E2833073DD8"
+  },
+  "prior_progress_archive": "verification/native-v36-build-runtime-negative-and-fixture-closure-20261021/prior-progress.json.raw",
+  "projected_progress": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-progress-and-negative-archive-intake-20261021\\projected\\verification\\port-roadmap-resume-20261018\\progress.json",
+    "bytes": 438396,
+    "sha256": "18E61B7DFE07DA5D13C64E4B933EC519312AFED1DC7B29AC4789AC0C3A5EB49F"
+  },
+  "replaced_top_level_keys": [
+    "current_execution_checkpoint",
+    "current_source_head_at_record",
+    "execution_checkpoint_history",
+    "integrated_source_units",
+    "next_native_batch",
+    "preserved_attempts",
+    "record_note",
+    "retained_recent_native_negatives",
+    "updated_utc"
+  ],
+  "added_top_level_keys": [
+    "v36_build_and_runtime_negative_and_v37_successor"
+  ],
+  "old_top_level_history_lengths": {
+    "integrated_source_units": 63,
+    "preserved_attempts": 33,
+    "retained_recent_native_negatives": 11,
+    "execution_checkpoint_history": 12
+  },
+  "new_top_level_history_lengths": {
+    "integrated_source_units": 64,
+    "preserved_attempts": 35,
+    "retained_recent_native_negatives": 12,
+    "execution_checkpoint_history": 13
+  },
+  "nested_historical_lists_checked": 116,
+  "nested_list_check_inventory_sha256": "1B349BEE186F05CDE703AE0A3A1CA4711BA636814E2B75C7A5D5043B2C27CF0E",
+  "complete_old_checkpoint_appended": true,
+  "old_checkpoint_canonical_sha256": "4D1B994BA92BA1A57CAFCD84CF761D363C068B66C95C40CCEBAADD495B9FBCD2",
+  "unrelated_historical_records_exact": true,
+  "complete_structural_inverse": true,
+  "complete_raw_byte_inverse": true,
+  "inverse_method": "Remove exactly added_top_level_keys and restore exactly replaced_top_level_keys from the archived byte-identical prior progress; indent-2 UTF-8 plus LF reproduces the complete 354535-byte original.",
+  "qualification": false,
+  "native_execution": false,
+  "source_mutation_hold_released": false
+}

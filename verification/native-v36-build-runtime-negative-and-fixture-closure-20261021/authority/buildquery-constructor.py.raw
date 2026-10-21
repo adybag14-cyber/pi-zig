@@ -1,0 +1,141 @@
+"""Root-only exact V36 BuildQuery grant construction; no native execution."""
+from pathlib import Path
+import copy, datetime, hashlib, json, subprocess, sys
+B=Path(r"C:\Users\adyba\pi-zig")
+M=B/"main"
+OLD=B/"evidence/root-native-foundation-fresh-v34-control-20261020-202924"
+HEAD="a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8"
+DRIVER="1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+CLASSIFIER="3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def read(p):return json.loads(Path(p).read_bytes().decode("utf-8-sig"))
+def pin(p):
+    p=Path(p);b=p.read_bytes();return dict(path=str(p),bytes=len(b),sha256=sha(b))
+def verify(row):
+    p=Path(row["path"]);assert p.is_absolute() and p.resolve().is_relative_to(B.resolve()),str(p)
+    actual=pin(p);assert actual["sha256"]==row["sha256"],str(p)
+    if "bytes" in row:assert actual["bytes"]==row["bytes"],str(p)
+    return actual
+def verify_pins(value):
+    if isinstance(value,dict):
+        if isinstance(value.get("path"),str) and isinstance(value.get("sha256"),str):verify(value)
+        for child in value.values():verify_pins(child)
+    elif isinstance(value,list):
+        for child in value:verify_pins(child)
+def put(p,v):
+    with p.open("xb") as f:f.write((json.dumps(v,indent=2)+"\n").encode())
+def git(*args):return subprocess.check_output(["git","-C",str(M),*args])
+assert len(sys.argv)==3,"Exact Root configuration path and hash required"
+cfg_path=Path(sys.argv[1]);assert pin(cfg_path)["sha256"]==sys.argv[2]
+assert cfg_path.resolve().is_relative_to((B/"evidence").resolve())
+cfg=read(cfg_path)
+assert cfg["status"]=="root_reviewed_specific_v36_buildquery_preparation"
+assert cfg["candidate_head"]==HEAD and cfg["preparer_sha256"]==pin(Path(__file__))["sha256"]
+assert cfg["execution_authorized"] is True and cfg["runtime_authority"] is False
+batch=cfg["batch"];assert batch in ("new4","existing63")
+expected_groups,expected_declared=(4,58) if batch=="new4" else (63,1249)
+assert cfg["declared_groups"]==expected_groups and cfg["declared_controls"]==expected_declared
+assert cfg["actual_metadata_count"] is None and cfg["qualification"] is False
+assert git("rev-parse","HEAD").decode().strip()==HEAD
+assert git("branch","--show-current").decode().strip()=="work/pi-zig-consolidated-20261016"
+assert git("status","--porcelain")==b""
+verify(cfg["preparation_review"]);PREP=Path(cfg["preparation_review"]["path"]).parent
+assert PREP.parent.resolve()==(B/"evidence").resolve()
+assert Path(cfg["preparation_review"]["path"]).name=="preparation-review.json"
+review=read(Path(cfg["preparation_review"]["path"]))
+assert review["status"]=="source_only_fresh_batch_prepared" and review["candidate_head"]==HEAD
+assert review["execution_authority"] is False and review["runtime_authority"] is False and review["qualification"] is False
+assert review["selected_groups"]==expected_groups and review["selected_declarations"]==expected_declared
+assert review["catalog_groups"]==117 and review["catalog_declarations"]==2013 and review["actual_metadata_count"] is None
+for key in ("driver","matrix","auditor","classifier","metadata_auditor_adaptation"):verify(review[key])
+verify_pins(review["provenance"])
+assert Path(review["driver"]["path"]).resolve()==(PREP/"Run-CombinedNativeBatch.ps1").resolve()
+assert Path(review["matrix"]["path"]).resolve()==(PREP/"groups.json").resolve()
+assert Path(review["classifier"]["path"]).resolve()==(PREP/"Get-ModelsNativeCandidates.ps1").resolve()
+assert review["driver"]["sha256"]==DRIVER and review["classifier"]["sha256"]==CLASSIFIER
+for key in ("independent_catalog_peer","root_catalog_acceptance"):verify(cfg[key])
+root_review=read(Path(cfg["root_catalog_acceptance"]["path"]))
+assert root_review["reviewer"]=="Root" and root_review["candidate_head"]==HEAD
+assert root_review["catalog_source_accepted"] is True and root_review["native_execution_authorized"] is False
+assert root_review["new4_and_original63_preserved"] is True
+assert root_review["matrix_sha256"]==review["matrix"]["sha256"]
+assert root_review["independent_catalog_peer"]==cfg["independent_catalog_peer"]
+assert cfg["preparation_review"] in root_review["preparation_reviews"]
+matrix=read(PREP/"groups.json");assert matrix["schema"]==1 and matrix["source_head_at_preparation"]==HEAD
+assert len(matrix["groups"])==117 and sum(len(g["required_named"]) for g in matrix["groups"])==2013
+selected=review["selected_group_names"]
+assert selected==cfg["selected_group_names"] and len(selected)==len(set(selected))==expected_groups<=64
+by_name={g["name"]:g for g in matrix["groups"]};assert len(by_name)==117
+assert sum(len(by_name[n]["required_named"]) for n in selected)==expected_declared
+if batch=="existing63":
+    assert selected==read(OLD/"root-grant.json")["groups"]
+else:
+    assert selected==["native-node-file-handle-owner","native-node-fs-before-hook-continuation","native-vm-error-constructor-name","native-node-file-handle-transfer"]
+for group in matrix["groups"]:
+    for row in group["source_pins"]:assert pin(M/row["path"])["sha256"]==row["sha256"],row["path"]
+for row in matrix["whole_tree_dependency_pins"]:assert pin(M/row["path"])["sha256"]==row["sha256"],row["path"]
+verify_pins(cfg["grant_provenance_updates"])
+assert pin(OLD/"root-grant.json")["sha256"]=="275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15"
+original=read(OLD/"root-grant.json");grant=copy.deepcopy(original)
+fixed={
+"status":"root_reviewed_combined_native_batch_release","execution_authorized":True,
+"required_release_status":"root_reviewed_combined_native_batch_release","candidate_root":str(M),
+"mode":"BuildQuery","runtime_restoration_claim":False,"dedicated_external53_controller":True,
+"initial_grant_max_age_seconds":300,"minimum_free_kib":16777216,"driver_sha256":DRIVER,"classifier_sha256":CLASSIFIER,
+"workspace_resolver_sha256":"163E0872FC8CA7C9FAA37949E4F4787CDAE7C5103313894BAE26B0312ACF8BF9","workspace_layout_sha256":"130333B38F5150EEE50F58259D39D29AAC4088E5BB7282296105F39658074E87","path_relocations_sha256":"8928A70AD67AF10C61BCF45169E4FAB8C26052A3DBFFAA8D3782E9E7A136A4E2",
+"compile_outer_seconds":1320,"metadata_outer_seconds":30,"runtime_outer_actual_seconds":120,
+"owner_settle_seconds":10,"outer_controller_seconds":1800,"reuse_unsealed_original_compile_caches":False,
+"qualification_requested":True,"cache_mode":"fresh_batch","cache_seed_manifest_path":None,
+"cache_seed_manifest_sha256":None,"allow_seed_source_delta_paths":[]}
+null_fields=("build_result_path","build_result_sha256","build_artifacts_path","build_artifacts_sha256",
+"build_metadata_path","build_metadata_sha256","build_source_seal_path","build_source_seal_sha256",
+"metadata_acceptance_path","metadata_acceptance_sha256","actual_metadata_count")
+for k,v in fixed.items():assert grant[k]==v,k
+for k in null_fields:assert grant[k] is None,k
+old_launch=(OLD/"launch.ps1").read_bytes()
+assert sha(old_launch)=="3DAC09B54DD866DA95FCAF67E9CA29A687AB9A28B6EAE598931ED69FFE5AA73F"
+before=b"evidence/combined-native-batch-v34-prepared-20261020"
+after=PREP.relative_to(B).as_posix().encode()
+assert old_launch.count(before)==1 and after not in old_launch
+launch=old_launch.replace(before,after,1)
+assert launch.replace(after,before,1)==old_launch
+assert not (PREP/"buildquery-launch.json").exists()
+now=datetime.datetime.now(datetime.timezone.utc);suffix=now.strftime("%Y%m%d-%H%M%S")
+control=B/("evidence/root-native-foundation-fresh-v36-"+batch+"-control-"+suffix)
+proof=B/("evidence/root-native-foundation-fresh-v36-"+batch+"-buildquery-"+suffix)
+assert not control.exists() and not proof.exists()
+updates=dict(cfg["grant_provenance_updates"])
+reserved=set(fixed)|set(null_fields)|{"groups","candidate_head","issued_utc","grant_id","receipt_directory","cache_directory","global_cache_directory","group_manifest_sha256","preparation_review","specific_root_configuration","root_review","independent_catalog_peer","root_catalog_acceptance"}
+assert not (set(updates)&reserved)
+updates.update(
+grant_id="root-native-foundation-fresh-v36-"+batch+"-"+suffix,issued_utc=now.isoformat(),candidate_head=HEAD,
+receipt_directory=str(proof),cache_directory=str(proof/"cache"),global_cache_directory=str(proof/"global-cache"),
+group_manifest_sha256=review["matrix"]["sha256"],groups=selected,preparation_review=cfg["preparation_review"],
+specific_root_configuration=pin(cfg_path),independent_catalog_peer=cfg["independent_catalog_peer"],
+root_catalog_acceptance=cfg["root_catalog_acceptance"],
+root_review=cfg["root_review"])
+grant.update(updates)
+for k,v in fixed.items():assert grant[k]==v,k
+for k in null_fields:assert grant[k] is None,k
+verify_pins(grant)
+inverse=copy.deepcopy(grant)
+for k in updates:
+    if k in original:inverse[k]=original[k]
+    else:del inverse[k]
+assert inverse==original
+assert git("rev-parse","HEAD").decode().strip()==HEAD and git("status","--porcelain")==b""
+control.mkdir()
+put(control/"root-grant.json",grant)
+with (control/"launch.ps1").open("xb") as f:f.write(launch)
+put(control/"grant-launch-adaptation.json",dict(schema=1,original_grant=pin(OLD/"root-grant.json"),grant=pin(control/"root-grant.json"),
+field_changes=[dict(key=k,old_present=k in original,before=original.get(k),after=v) for k,v in updates.items()],
+complete_grant_inverse=True,original_launch=pin(OLD/"launch.ps1"),launch=pin(control/"launch.ps1"),
+launch_edit_count=1,before=before.decode(),after=after.decode(),complete_launch_byte_inverse=True,
+all_strict_gate_fields_unchanged=True,runtime_authority=False,qualification=False))
+record=dict(candidate_head=HEAD,batch=batch,control=str(control),proof=str(proof),launch=pin(control/"launch.ps1"),
+grant=pin(control/"root-grant.json"),preparation_review=cfg["preparation_review"],specific_root_configuration=pin(cfg_path),
+groups=selected,declared_count=expected_declared,actual_metadata_count=None,driver_sha256=DRIVER,
+matrix_sha256=review["matrix"]["sha256"],metadata_auditor=review["auditor"],issued_utc=now.isoformat(),
+runtime_authority=False,qualification=False)
+put(PREP/"buildquery-launch.json",record)
+print(json.dumps(record))

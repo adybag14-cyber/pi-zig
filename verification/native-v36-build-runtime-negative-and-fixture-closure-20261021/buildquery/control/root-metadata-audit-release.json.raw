@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v36_new4_metadata_audit",
+  "reviewer": "Root",
+  "candidate_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "audit_execution_authorized": true,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-new4-prepared-20261020\\Audit-CombinedNativeBatch.py",
+    "bytes": 17696,
+    "sha256": "B91D64912D1E1A5DAB06D6362AD014C8612A25FB9D6D4359AFB355272EF4234D"
+  },
+  "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-buildquery-20261021-080944",
+  "control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944",
+  "originals": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-buildquery-20261021-080944\\before.json",
+      "bytes": 15763177,
+      "sha256": "BC2672711FDE7526D8A94EAE376F3DC458C6A0DE3E7025303035FC9B89416428"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-buildquery-20261021-080944\\final.json",
+      "bytes": 15763177,
+      "sha256": "BC2672711FDE7526D8A94EAE376F3DC458C6A0DE3E7025303035FC9B89416428"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-buildquery-20261021-080944\\result.json",
+      "bytes": 67212,
+      "sha256": "311113328569FB8BBD39AC5F8F19D90EEBEA8A3B7E0415731DFA4682BA9D0DA8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944\\outer.json",
+      "bytes": 1525,
+      "sha256": "73FAFC7DFB695397183CFE59E434AAB9A0D8DA9BB73B0A51590E91E28B860E38"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944\\outer-absence.json",
+      "bytes": 183,
+      "sha256": "6A31732247F1342F888F9BBD14DBE8CE5935B64927E5FAE797A43B36DFDF9461"
+    }
+  ],
+  "job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944\\independent-observed-job-status.json",
+    "bytes": 1572,
+    "sha256": "AF60AC456C0B9EADCDFC120458CB43EAB0CEB55E9140F34D4CAFE86B13E4876E"
+  },
+  "root_review": "Root read the complete pinned metadata auditor and original positive aggregate/group gates, whole-batch bookend identities, four ordered selected metadata arrays and eight original retained compile/query owners. Actual terminal durable job succeeded with exit zero and runner absent. Execute only independent raw-wire/artifact metadata acceptance; no selected tests or native build/runtime.",
+  "issued_utc": "2026-10-21T08:20:31.569527+00:00"
+}

@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_fixture_intake_adapter_and_manifest",
+  "reviewer": "/root/module_io_port",
+  "reviewed_utc_date": "2026-10-21",
+  "candidate_manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-filehandle-resource-fixture-main-intake-20261021\\manifest.json",
+    "bytes": 12777,
+    "sha256": "3905D6C0319E27D8467C0B720833030F048200A97BCFD3B2816ABBD452928F38"
+  },
+  "candidate_executor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV36FixtureSourceIntake-20261021.py",
+    "bytes": 9709,
+    "sha256": "6613A7F431D132B72C948FBCB61E1988FA4799AD3AE660BC65B9BAA3E9AE48F0"
+  },
+  "accepted_executor_basis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV35FixtureSourceIntake-20261020.py",
+    "bytes": 9700,
+    "sha256": "9C834CDB7C83528F9B1DE0F713696D4B816C20E874E16F18F2725AA24A35CA1F"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-fixture-source-intake-finite-adaptation-20261021.json",
+    "bytes": 4566,
+    "sha256": "45EF7E1D5DEEFB6FA4DE5D03CD5F512B24DC368ECAB96DB3499FFCE929BC56EE"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-fixture-intake-independent-peer-20261021\\source-audit.py",
+    "bytes": 15618,
+    "sha256": "57FC8CB7E2F9E6C1863A4A3973553B6BE8366B18AE9B917924C0375008093737"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-fixture-intake-independent-peer-20261021\\source-audit.json",
+    "bytes": 57320,
+    "sha256": "F309B43F1BE77ECEB03E8CDE6E866621A026089F8F0CB929931726D76973EB27"
+  },
+  "root_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-filehandle-outer-resource-fixture-source-acceptance-20261021.json",
+    "bytes": 7035,
+    "sha256": "590FA13B117F79761FE1C1FA634EC4AF9B685EAAD6CA69FF49B80F3E688AA973"
+  },
+  "finding": "No concrete blocker in the exact three-substitution executor or its 26-path fixture intake set.",
+  "checks": [
+    "Read the complete baseline and candidate. Independently replayed all three unique substitutions and every intermediate hash, then recovered the complete accepted 9C834CDB executor by inverse. Changes are only the docstring, fixed BASIS to a6, and the one fixture MANIFESTS tuple.",
+    "All 11 helpers and the complete 9,142-byte tail from def sha are byte-identical. This includes release/current-pin checks; exact clean branch/head; hook/autocrlf gates; containment and raw preimages; attributes/filter checks; exact stage/commit blob sets; and final receipt checks. The entire rows-assignment-to-end tail also matches.",
+    "Independently derived the exact target/donor set from the accepted source proposal, semantic peer, SDK ownership map and Root acceptance: one fixture replacement, 24 immutable archive files, and the manifest. No extra target or altered donor is present.",
+    "All 13 SDK authority records map to byte-equal immutable donors, including six new live-source snapshots and the already saved fixture preimage. The additional Completion snapshot equals the actual current owner. Original proposal/peer donor paths, the successful checker, and both checker-authoring negative files remain preserved.",
+    "All 26 donor pins match. All 25 new targets are absent from the filesystem and raw a6 tree. The only replacement has the exact 33,137-byte 0D09 preimage in both live Main and raw committed Git and selects the reviewed 33,152-byte EEDD candidate.",
+    "Containment, canonical relative paths, case-insensitive uniqueness and parent symlink exclusion pass. All 78 attribute triples are unset/unspecified. Every path-filtered Git hash-object result equals the independently calculated raw blob ID. No active hooks or core.hooksPath; core.autocrlf=false.",
+    "Main remained fully clean on work/pi-zig-consolidated-20261016 at a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8 before and after the read-only checks."
+  ],
+  "limits": [
+    "This is a source-only peer, not a release. Root must issue its separate exact release before any application.",
+    "The accepted 1474959A fixture ownership peer and 590FA13B Root source acceptance are retained; their semantic review was not repeated.",
+    "Candidate, baseline and all their prefixes were treated as text and never imported or executed. Only this independent Python byte/source checker and read-only Git ran.",
+    "No Main write, staging, commit, push, compiler, native, reference or project generator execution occurred. The original runtime negative remains negative."
+  ],
+  "source_only": true,
+  "adapter_executed": false,
+  "main_applied": false,
+  "native_execution_authorized": false,
+  "application_qualified": false
+}

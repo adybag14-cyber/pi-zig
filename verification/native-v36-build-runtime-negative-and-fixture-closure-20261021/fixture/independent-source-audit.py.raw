@@ -1,0 +1,265 @@
+"""Independent finite intake audit; reads candidate text, never imports/executes it.
+Only FINAL OUTPUT writes a fresh peer-evidence JSON outside Main.
+"""
+from pathlib import Path, PurePosixPath
+import ast, hashlib, json, subprocess
+
+ROOT = Path(r"C:\Users\adyba\pi-zig")
+MAIN = ROOT / "main"
+OWN = ROOT / "worktrees/modules-io-resume-20261018"
+SDK = ROOT / "worktrees/sdk-owners-resume-20261018"
+OUT = Path(__file__).resolve().parent
+PACKET = ROOT / "evidence/pending-v36-filehandle-resource-fixture-main-intake-20261021"
+SEMANTIC = OWN / "verification/v36-file-handle-outer-scope-independent-peer-20261021"
+SOURCE = SDK / "verification/v36-file-handle-outer-scope-sourceonly-20261021"
+HEAD = "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8"
+PREFIX = "verification/native-v36-filehandle-resource-fixture-correction-20261021/"
+pins = []
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest().upper()
+
+def check_pin(row, label):
+    raw = Path(row["path"]).read_bytes()
+    assert len(raw) == row["bytes"] and sha(raw) == row["sha256"], (label, len(raw), sha(raw))
+    pins.append({"label": label, **row})
+    return raw
+
+def pin(path, size, digest, label):
+    return check_pin({"path": str(path), "bytes": size, "sha256": digest}, label)
+
+def git(*args, data=None, check=True):
+    r = subprocess.run(["git", "--no-optional-locks", "-c", "core.fsmonitor=false",
+                        "-C", str(MAIN), *args], input=data,
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=20)
+    if check:
+        assert r.returncode == 0, (args, r.returncode, r.stderr.decode(errors="replace"))
+    return r
+
+def gout(*args):
+    return git(*args).stdout.decode().strip()
+
+manifest_raw = pin(PACKET / "manifest.json", 12777,
+    "3905D6C0319E27D8467C0B720833030F048200A97BCFD3B2816ABBD452928F38", "manifest")
+manifest = json.loads(manifest_raw)
+executor = pin(ROOT / "evidence/Apply-ExactV36FixtureSourceIntake-20261021.py", 9709,
+    "6613A7F431D132B72C948FBCB61E1988FA4799AD3AE660BC65B9BAA3E9AE48F0", "executor")
+baseline = pin(ROOT / "evidence/Apply-ExactV35FixtureSourceIntake-20261020.py", 9700,
+    "9C834CDB7C83528F9B1DE0F713696D4B816C20E874E16F18F2725AA24A35CA1F", "baseline")
+adapt = json.loads(pin(ROOT / "evidence/v36-fixture-source-intake-finite-adaptation-20261021.json", 4566,
+    "45EF7E1D5DEEFB6FA4DE5D03CD5F512B24DC368ECAB96DB3499FFCE929BC56EE", "adaptation"))
+accepted = json.loads(pin(ROOT / "evidence/root-v36-filehandle-outer-resource-fixture-source-acceptance-20261021.json", 7035,
+    "590FA13B117F79761FE1C1FA634EC4AF9B685EAAD6CA69FF49B80F3E688AA973", "root_acceptance"))
+peer = json.loads(pin(SEMANTIC / "peer.json", 7852,
+    "1474959A14A6212AEC8673296A5F8A616CB5007E17DF2DA3667D09D97B0A37E2", "accepted_semantic_peer"))
+ownership = json.loads(pin(SOURCE / "ownership-proof.json", 14106,
+    "D12FC3C071251FC75B1CAD32E684522F443E903167C6055765E862BCE5475D73", "ownership"))
+proposal = json.loads(pin(SOURCE / "proposal.json", 11951,
+    "E40157BF97BD043A541247B885680820560135EE4286F896F031B268C6B5FEFB", "source_proposal"))
+snapshot = json.loads(pin(PACKET / "authority-snapshot-index.json", 10176,
+    "52C7EF044E2CF939123B13E8C236FA0FF375A9E974D85853DE9E15283811E416", "snapshot_index"))
+prior_peer = json.loads(pin(OWN / "verification/v35-fixture-intake-independent-peer-20261020/peer.json", 4230,
+    "CE1DFFD281F522C7D8B2DC5C2627B09805A4DD354E81E6B869C1F31B6EAE5DD2", "accepted_adapter_peer"))
+assert prior_peer["candidate_executor"] == adapt["baseline"]
+assert prior_peer["status"] == "accepted_bounded_source_only_fixture_intake_adapter_and_manifest"
+assert adapt["basis_head"] == manifest["comparison_head"] == accepted["candidate_head"] == HEAD
+assert adapt["path_count"] == manifest["path_count_including_manifest"] == 26
+
+cur = baseline
+steps = []
+assert len(adapt["edits"]) == 3
+for i, edit in enumerate(adapt["edits"], 1):
+    before, after = edit["before"].encode(), edit["after"].encode()
+    assert edit["step"] == i
+    assert len(before) == edit["before_bytes"] and len(after) == edit["after_bytes"]
+    assert sha(cur) == edit["before_file_sha256"] and cur.count(before) == 1
+    at = cur.index(before)
+    assert at == edit["byte_offset_at_step"]
+    cur = cur[:at] + after + cur[at + len(before):]
+    assert sha(cur) == edit["after_file_sha256"]
+    steps.append({"step": i, "offset": at, "before_bytes": len(before),
+                  "after_bytes": len(after), "sha256": sha(cur)})
+assert cur == executor
+for edit in reversed(adapt["edits"]):
+    before, after, at = edit["before"].encode(), edit["after"].encode(), edit["byte_offset_at_step"]
+    assert cur[at:at + len(after)] == after
+    cur = cur[:at] + before + cur[at + len(after):]
+assert cur == baseline
+assert adapt["edits"][0]["byte_offset_at_step"] == 0
+assert adapt["edits"][1]["after"] == 'BASIS="' + HEAD + '"'
+expected_tuple = (
+    "evidence/pending-v36-filehandle-resource-fixture-main-intake-20261021/manifest.json",
+    sha(manifest_raw), 26, "Correct FileHandle outer callback scope resource ownership")
+tree = ast.parse(executor.decode())
+bindings = {n.targets[0].id: n.value for n in tree.body
+            if isinstance(n, ast.Assign) and len(n.targets) == 1 and isinstance(n.targets[0], ast.Name)}
+assert ast.literal_eval(bindings["BASIS"]) == HEAD
+assert ast.literal_eval(bindings["BRANCH"]) == "work/pi-zig-consolidated-20261016"
+assert ast.literal_eval(bindings["MANIFESTS"]) == {"fixture": expected_tuple}
+assert ast.get_docstring(tree) == "Exact V36 fixture Main source intake; no compiler, runtime, generator or push."
+tail = executor[executor.index(b"def sha("):]
+assert tail == baseline[baseline.index(b"def sha("):]
+assert len(tail) == adapt["unchanged_tail_from_def_sha"]["bytes"]
+assert sha(tail) == adapt["unchanged_tail_from_def_sha"]["sha256"]
+rows_tail = executor[executor.index(b'rows=manifest["rows"]'):]
+assert rows_tail == baseline[baseline.index(b'rows=manifest["rows"]'):]
+
+def helpers(raw):
+    lines = raw.splitlines(keepends=True)
+    return [(n.name, b"".join(lines[n.lineno - 1:n.end_lineno]))
+            for n in ast.parse(raw.decode()).body if isinstance(n, ast.FunctionDef)]
+
+base_helpers, selected_helpers = helpers(baseline), helpers(executor)
+assert base_helpers == selected_helpers and len(selected_helpers) == 11
+helper_pins = [{"name": name, "bytes": len(body), "sha256": sha(body)} for name, body in selected_helpers]
+assert helper_pins == adapt["unchanged_helpers"]
+
+assert accepted["source_accepted"] and accepted["source_corrections_accepted"]
+assert accepted["selected_fixture"] == proposal["projected"] == peer["selected_candidate"]
+assert accepted["source_proposal"] == peer["selected_proposal"]
+assert accepted["sdk_ownership_proof"] == peer["sdk_ownership"]
+assert accepted["independent_source_peer"]["sha256"] == "1474959A14A6212AEC8673296A5F8A616CB5007E17DF2DA3667D09D97B0A37E2"
+assert accepted["source_intake_authorized"] is False
+assert manifest["source_mutation_hold_released"] is False and manifest["main_applied"] is False
+assert manifest["native_execution_authorized"] is False and manifest["application_qualified"] is False
+
+# Derive the target/donor membership from accepted source/review records.
+expected = {}
+def expect(target, row, before=None):
+    assert target not in expected
+    expected[target] = {"source": row["path"], "bytes": row["bytes"],
+                        "sha256": row["sha256"], "before": before}
+
+expect(proposal["source_target"], proposal["projected"],
+       {k: proposal["original"][k] for k in ("bytes", "sha256")})
+expect(PREFIX + "source-proposal.json", peer["selected_proposal"])
+expect(PREFIX + "ownership-proof.json", peer["sdk_ownership"])
+assert snapshot["ownership_proof"] == peer["sdk_ownership"] and snapshot["basis_head"] == HEAD
+assert snapshot["source_rows"] == len(snapshot["rows"]) == len(ownership["sources"]) == 13
+assert [r["key"] for r in snapshot["rows"]] == list(ownership["sources"])
+snapshots = []
+snapshot_keys = ["callback", "argument", "scope", "boundary", "binding", "existing_fixture"]
+for row in snapshot["rows"]:
+    key = row["key"]
+    assert row["original"] == ownership["sources"][key]
+    if key == "fixture":
+        wanted = proposal["original"]
+    elif key in snapshot_keys:
+        wanted = {**row["original"], "path": str(PACKET / "authority-snapshots" / (key + ".raw"))}
+    else:
+        wanted = row["original"]
+    assert row["donor"] == wanted and row["archive_name"] == "authority/" + key + ".raw"
+    old = check_pin(row["original"], "authority_original_" + key)
+    donor = check_pin(row["donor"], "authority_donor_" + key)
+    assert old == donor
+    expect(PREFIX + row["archive_name"], row["donor"])
+    snapshots.append({"key": key, "equal_original_and_donor": True, "bytes": len(donor), "sha256": sha(donor)})
+assert sum(r["live_Main_source_snapshotted"] for r in snapshot["rows"]) == snapshot["new_live_source_snapshots"] == 6
+completion = accepted["completion_authority"]
+assert completion["original"]["path"] == str(MAIN / "src/extensions/native_sdk_owned_completion.zig")
+assert completion["immutable_donor"]["path"] == str(PACKET / "authority-snapshots/completion.raw")
+assert completion["original"]["sha256"] == completion["immutable_donor"]["sha256"] == "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+assert check_pin(completion["original"], "completion_original") == check_pin(completion["immutable_donor"], "completion_donor")
+expect(PREFIX + "authority/completion.raw", completion["immutable_donor"])
+expect(PREFIX + "authority-snapshot-index.json", accepted["authority_snapshot_index"])
+expect(PREFIX + "root-static-review.json", peer["root_static_review"])
+expect(PREFIX + "root-source-acceptance.json", {
+    "path": str(ROOT / "evidence/root-v36-filehandle-outer-resource-fixture-source-acceptance-20261021.json"),
+    "bytes": 7035, "sha256": "590FA13B117F79761FE1C1FA634EC4AF9B685EAAD6CA69FF49B80F3E688AA973"})
+expect(PREFIX + "independent-peer.json", accepted["independent_source_peer"])
+peer_archives = ["independent-source-audit.py", "independent-source-audit.json",
+                 "retained-source-audit-draft.py", "retained-audit-authoring-negative.json"]
+assert len(peer["independent_evidence"]) == len(peer_archives) == 4
+for name, row in zip(peer_archives, peer["independent_evidence"]):
+    expect(PREFIX + name, row)
+assert manifest["manifest_target"] == PREFIX + "manifest.json"
+expect(manifest["manifest_target"], {"path": str(PACKET / "manifest.json"),
+       "bytes": len(manifest_raw), "sha256": sha(manifest_raw)})
+allrows = [*manifest["rows"], {
+    "target": manifest["manifest_target"], **expected[manifest["manifest_target"]],
+    "role": "exact_intake_manifest"}]
+assert len(allrows) == len(expected) == 26
+assert {r["target"] for r in allrows} == set(expected)
+for row in allrows:
+    assert {k: row[k] for k in ("source", "bytes", "sha256", "before")} == expected[row["target"]]
+assert len([r for r in allrows if r["before"] is not None]) == 1
+
+assert gout("rev-parse", "HEAD") == HEAD
+assert gout("branch", "--show-current") == "work/pi-zig-consolidated-20261016"
+assert git("status", "--porcelain=v1", "--untracked-files=all").stdout == b""
+assert git("config", "--get", "core.hooksPath", check=False).returncode == 1
+hookdir = Path(gout("rev-parse", "--git-path", "hooks"))
+if not hookdir.is_absolute():
+    hookdir = MAIN / hookdir
+assert not [p for p in hookdir.iterdir() if p.is_file() and not p.name.endswith(".sample")]
+assert gout("config", "--get", "core.autocrlf") == "false"
+raw_tree = git("ls-tree", "-r", "--name-only", "-z", HEAD).stdout
+tree_names = {p.decode() for p in raw_tree.split(b"\0") if p}
+names, contents, checked_rows = [], [], []
+for row in allrows:
+    rel = row["target"]
+    pp = PurePosixPath(rel)
+    assert not pp.is_absolute() and pp.as_posix() == rel
+    assert "\\" not in rel and ":" not in rel and all(p not in (".", "..") for p in pp.parts)
+    target = MAIN / rel
+    assert target.resolve().is_relative_to(MAIN.resolve())
+    donor = Path(row["source"])
+    assert donor.resolve().is_relative_to(ROOT.resolve()) and not donor.resolve().is_relative_to(MAIN.resolve())
+    raw = check_pin({"path": str(donor), "bytes": row["bytes"], "sha256": row["sha256"]}, "intake_" + rel)
+    if row["before"] is None:
+        assert not target.exists() and rel not in tree_names
+    else:
+        before = target.read_bytes()
+        assert len(before) == row["before"]["bytes"] and sha(before) == row["before"]["sha256"]
+        assert rel in tree_names
+        assert git("show", HEAD + ":" + rel).stdout == before
+    for depth in range(1, len(pp.parts)):
+        assert not MAIN.joinpath(*pp.parts[:depth]).is_symlink()
+    names.append(rel)
+    contents.append(raw)
+    checked_rows.append({"target": rel, "bytes": len(raw), "sha256": sha(raw),
+                         "before": row["before"], "donor": str(donor)})
+assert len(set(n.casefold() for n in names)) == 26
+attr = git("check-attr", "-z", "--stdin", "filter", "working-tree-encoding", "ident",
+           data=b"\0".join(n.encode() for n in names) + b"\0").stdout
+parts = attr.split(b"\0")[:-1]
+assert len(parts) == 26 * 9
+triples = [tuple(p.decode() for p in parts[n:n + 3]) for n in range(0, len(parts), 3)]
+assert {(p, a) for p, a, v in triples} == {(p, a) for p in names for a in ("filter", "working-tree-encoding", "ident")}
+assert all(v in ("unspecified", "unset") for p, a, v in triples)
+blobs = []
+for rel, raw in zip(names, contents):
+    expected_blob = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+    actual_blob = git("hash-object", "--path=" + rel, "--stdin", data=raw).stdout.decode().strip()
+    assert actual_blob == expected_blob
+    blobs.append({"target": rel, "git_blob": actual_blob, "raw_blob_equal": True})
+assert gout("rev-parse", "HEAD") == HEAD
+assert git("status", "--porcelain=v1", "--untracked-files=all").stdout == b""
+
+proof = {
+    "schema": 1, "status": "passed_bounded_read_only_fixture_intake_checks",
+    "basis_main_head": HEAD, "pins": pins, "adaptation_steps": steps,
+    "whole_forward_and_inverse_exact": True,
+    "unchanged_helpers": helper_pins,
+    "unchanged_entire_tail_from_def_sha": {"bytes": len(tail), "sha256": sha(tail)},
+    "unchanged_tail_from_rows_assignment": {"bytes": len(rows_tail), "sha256": sha(rows_tail)},
+    "exact_path_count": 26, "replacements": 1, "absent_new_paths": 25,
+    "membership_derived_from_accepted_source_and_review_records": True,
+    "authority_snapshot_equalities": snapshots,
+    "completion_snapshot_equal": True,
+    "checked_rows": checked_rows,
+    "attribute_triples": triples, "filtered_git_blob_checks": blobs,
+    "live_and_raw_committed_preimage_match": True,
+    "main_clean": True, "branch": "work/pi-zig-consolidated-20261016",
+    "active_hooks": False, "core_hooksPath_defined": False, "core_autocrlf": "false",
+    "source_only": True, "adapter_executed": False, "main_applied": False,
+    "native_execution_authorized": False, "application_qualified": False,
+    "execution_limit": "Own Python source/byte verification and read-only Git only; candidate/baseline and all their prefixes were treated as text."
+}
+proof_raw = (json.dumps(proof, indent=2, ensure_ascii=False) + "\n").encode()
+# FINAL OUTPUT: only one new source-peer evidence file outside Main.
+with (OUT / "source-audit.json").open("xb") as f:
+    f.write(proof_raw)
+print(json.dumps({"path": str(OUT / "source-audit.json"), "bytes": len(proof_raw),
+                  "sha256": sha(proof_raw), "paths": 26, "helpers": 11,
+                  "attribute_triples": len(triples), "passed": True}))

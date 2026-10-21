@@ -1,0 +1,21 @@
+{
+  "status": "exact_source_intake_committed",
+  "phase": "fixture",
+  "utc": "2026-10-21T09:16:00.468800+00:00",
+  "before_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "after_head": "891b74c94b1d9fc859587762187bb1040970b8a8",
+  "basis_main_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "branch": "work/pi-zig-consolidated-20261016",
+  "manifest": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-filehandle-resource-fixture-main-intake-20261021\\manifest.json",
+  "manifest_sha256": "3905D6C0319E27D8467C0B720833030F048200A97BCFD3B2816ABBD452928F38",
+  "executor_sha256": "6613A7F431D132B72C948FBCB61E1988FA4799AD3AE660BC65B9BAA3E9AE48F0",
+  "release_sha256": "D64FCF4D848FAB1717A8F9A243FFB6381AA5DF8BBF5E9D5A5EA4F1CA1B5DA6E3",
+  "path_count": 26,
+  "staged_and_committed_bytes_match": true,
+  "clean_worktree": true,
+  "commit_stdout": "[work/pi-zig-consolidated-20261016 891b74c9] Correct FileHandle outer callback scope resource ownership\n 26 files changed, 9309 insertions(+), 4 deletions(-)\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/authority-snapshot-index.json\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/argument.raw\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/binding.raw\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/boundary.raw\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/callback.raw\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/callback_authority.raw\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/candidate.raw\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/completion.raw\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/env_authority.raw\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/existing_fixture.raw\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/fixture.raw\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/node_callback.raw\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/node_env.raw\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/runtime_negative.raw\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/authority/scope.raw\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/independent-peer.json\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/independent-source-audit.json\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/independent-source-audit.py\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/manifest.json\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/ownership-proof.json\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/retained-audit-authoring-negative.json\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/retained-source-audit-draft.py\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/root-source-acceptance.json\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/root-static-review.json\n create mode 100644 verification/native-v36-filehandle-resource-fixture-correction-20261021/source-proposal.json\n",
+  "commit_stderr": "",
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "production_bridge_removed": false
+}

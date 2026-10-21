@@ -1,0 +1,179 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v36_progress_negative_archive_preparation",
+  "evidence_preparation_authorized": true,
+  "main_intake_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "qualification": false,
+  "preparer_sha256": "BC45FAAFF6F34876F644173DFA2815EAD7BF74E4F1DFE02CFA884CE9C03C8DDF",
+  "basis_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "fixture_commit": "891b74c94b1d9fc859587762187bb1040970b8a8",
+  "output_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-progress-and-negative-archive-intake-20261021",
+  "archive_target_prefix": "verification/native-v36-build-runtime-negative-and-fixture-closure-20261021",
+  "fixture_path_count": 26,
+  "fixture_after": {
+    "bytes": 33152,
+    "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+  },
+  "fixture_finite_hunks": 3,
+  "fixture_correction_name": "FileHandle outer callback scope uses a separately owned plain object",
+  "fixture_commit_message": "Correct FileHandle outer callback scope resource ownership\n\nSource-reviewed intake only. Native runtime and full application qualification remain pending.\n",
+  "fixture_extra_files": [
+    {
+      "name": "archive-preparer-independent-peer.json",
+      "pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-progress-archive-source-peer-20261021\\peer.json",
+        "bytes": 53509,
+        "sha256": "117A2F3FC76165887C3C7BD0C3D650AA752B157E04115F8C8DEFE41E144FE2E9"
+      }
+    },
+    {
+      "name": "archive-preparer-independent-checker.py",
+      "pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-progress-archive-source-peer-20261021\\independent-static-source-peer-v2.py",
+        "bytes": 20702,
+        "sha256": "271664A9EEE3D08F7FF7289E58CFA2642C8EE7FEE6ADAE8DE699D3B0E7E3D38F"
+      }
+    },
+    {
+      "name": "archive-preparer-retained-checker-negative.json",
+      "pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-progress-archive-source-peer-20261021\\helper-span-negative.json",
+        "bytes": 1869,
+        "sha256": "B625D366B893EF27036A5C6F7163E70795DCB37F097CEAF943809B2901CF29E0"
+      }
+    },
+    {
+      "name": "archive-preparer-retained-checker-draft.py",
+      "pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-progress-archive-source-peer-20261021\\independent-static-source-peer.py",
+        "bytes": 20486,
+        "sha256": "B301A0963448055C76879A5106644C46D24B403EE94B35FFCF9F422ACCD7D8FD"
+      }
+    }
+  ],
+  "fixture_source": {
+    "manifest": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-filehandle-resource-fixture-main-intake-20261021\\manifest.json",
+      "bytes": 12777,
+      "sha256": "3905D6C0319E27D8467C0B720833030F048200A97BCFD3B2816ABBD452928F38"
+    },
+    "executor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV36FixtureSourceIntake-20261021.py",
+      "bytes": 9709,
+      "sha256": "6613A7F431D132B72C948FBCB61E1988FA4799AD3AE660BC65B9BAA3E9AE48F0"
+    },
+    "executor_adaptation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-fixture-source-intake-finite-adaptation-20261021.json",
+      "bytes": 4566,
+      "sha256": "45EF7E1D5DEEFB6FA4DE5D03CD5F512B24DC368ECAB96DB3499FFCE929BC56EE"
+    },
+    "root_source_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-filehandle-outer-resource-fixture-source-acceptance-20261021.json",
+      "bytes": 7035,
+      "sha256": "590FA13B117F79761FE1C1FA634EC4AF9B685EAAD6CA69FF49B80F3E688AA973"
+    },
+    "correction_proposal": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\proposal.json",
+      "bytes": 11951,
+      "sha256": "E40157BF97BD043A541247B885680820560135EE4286F896F031B268C6B5FEFB"
+    },
+    "independent_correction_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\peer.json",
+      "bytes": 7852,
+      "sha256": "1474959A14A6212AEC8673296A5F8A616CB5007E17DF2DA3667D09D97B0A37E2"
+    },
+    "executor_source_audit": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-fixture-intake-independent-peer-20261021\\source-audit.py",
+      "bytes": 15618,
+      "sha256": "57FC8CB7E2F9E6C1863A4A3973553B6BE8366B18AE9B917924C0375008093737"
+    },
+    "executor_source_proof": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-fixture-intake-independent-peer-20261021\\source-audit.json",
+      "bytes": 57320,
+      "sha256": "F309B43F1BE77ECEB03E8CDE6E866621A026089F8F0CB929931726D76973EB27"
+    }
+  },
+  "fixture_execution": {
+    "source_release": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-release-20261021.json",
+      "bytes": 7697,
+      "sha256": "D64FCF4D848FAB1717A8F9A243FFB6381AA5DF8BBF5E9D5A5EA4F1CA1B5DA6E3"
+    },
+    "executor_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-fixture-intake-independent-peer-20261021\\peer.json",
+      "bytes": 4797,
+      "sha256": "A0E2F5AD05D978FCD631A7493A69ADB7482A8E4D5D8CFBF70876579ADA309B37"
+    },
+    "receipt": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-receipts-20261021\\fixture-receipt.json",
+      "bytes": 4122,
+      "sha256": "CC0A39654C92BAAD563B11AA15247403FC839189351F99DE0C41BF26C813E982"
+    },
+    "preflight": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-receipts-20261021\\fixture-preflight.json",
+      "bytes": 8967,
+      "sha256": "1B72E9682359F23F5E764C28AB6750A956A147A9E1A77B40C77CDEB6496CC069"
+    },
+    "staged": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-receipts-20261021\\fixture-staged.json",
+      "bytes": 393,
+      "sha256": "6044A885DDF97A8630D8D155903E90D7D264EB60E47107EF5DA94396C182A71A"
+    },
+    "pathspec": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-receipts-20261021\\fixture-paths.nul",
+      "bytes": 2495,
+      "sha256": "62162B17D1EA6BE82C04A7B2535B8788CFF2E1AC46D54A4CA1012296FB05891F"
+    },
+    "commit_message": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-receipts-20261021\\fixture-commit-message.txt",
+      "bytes": 155,
+      "sha256": "DCF44A8C67EE10E65801B7A9ECEF53AFC9B25AB7D5FC3C80A54F70CDFEF76654"
+    }
+  },
+  "preparer_finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-progress-negative-archive-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 85421,
+    "sha256": "6CB5F0B23A5DC9DEC7670A578E5D299798CED5E091255183BBE21B7F20911763"
+  },
+  "preparer_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-progress-negative-archive-preparer-source-review-20261021.json",
+    "bytes": 5087,
+    "sha256": "488C2D0CB65C539F4EDB11552A63632A8173C88AF1168DBDBE7B58EB0EEC35BB"
+  },
+  "preparer_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-progress-negative-archive-sourceonly-20261021\\handoff.json",
+    "bytes": 9198,
+    "sha256": "4228802B99A808BFA08DE18B1789E7AABCB4398A128C47F9B7F316F53F462E90"
+  },
+  "recorded_utc": "2026-10-21T09:17:28.940436+00:00",
+  "known_observed": {
+    "original_evidence_inventory": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-progress-negative-archive-sourceonly-20261021\\original-evidence-inventory.json",
+      "bytes": 26114,
+      "sha256": "7506C352F1CA9DDB9B2AAA8132F0C3DAEA7913AF2631F2DAE3AE9E73DAAA87E5"
+    },
+    "accepted_buildquery_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944\\independent-current-seals-and-owners.json",
+      "bytes": 113188,
+      "sha256": "5569A62842A16A5F1A48022A5D6EB78F06808B73E22772FA3C4CAB7A89B2FE4A"
+    },
+    "accepted_runtime_negative": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-closure.json",
+      "bytes": 26137,
+      "sha256": "8BCCF2D351EEDC42D65C56E8605D2DD10ACFF153231552AD90F496E4668CF9AF"
+    },
+    "root_negative_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-new4-original-negative-runtime-acceptance-20261021.json",
+      "bytes": 2496,
+      "sha256": "182883E0C8BA52A96B34E790DD65A9DF247F0DD67031D68CD73DBAB614D0DCCC"
+    },
+    "prior_progress": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+      "bytes": 354535,
+      "sha256": "23A951AAEB578839CC84AD9548C755F63BD034E966549F5C73B93E2833073DD8"
+    }
+  },
+  "unresolved_contract": "Issued by Root for this exact observed fixture commit and immutable pins only. This permits create-only evidence preparation; Main/index/native execution and qualification remain false."
+}

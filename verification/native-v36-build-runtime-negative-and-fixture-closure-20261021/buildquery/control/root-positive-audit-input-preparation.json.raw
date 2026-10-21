@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v36_new4_positive_audit_input_preparation",
+  "reviewer": "Root",
+  "candidate_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "job_id": "job-op-5503df41740582d61073728f8bbecea61f3f29cc42820cd0f80087878488f132",
+  "preparer_sha256": "4A7A2579B9DB33325ADCA5CA478ADDFB69540170950C375D33040A86AE9A417C",
+  "helper_execution_authorized": true,
+  "audit_configuration_issuance_authorized": true,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "observed": {
+    "before": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-buildquery-20261021-080944\\before.json",
+      "bytes": 15763177,
+      "sha256": "BC2672711FDE7526D8A94EAE376F3DC458C6A0DE3E7025303035FC9B89416428"
+    },
+    "final": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-buildquery-20261021-080944\\final.json",
+      "bytes": 15763177,
+      "sha256": "BC2672711FDE7526D8A94EAE376F3DC458C6A0DE3E7025303035FC9B89416428"
+    },
+    "result": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-buildquery-20261021-080944\\result.json",
+      "bytes": 67212,
+      "sha256": "311113328569FB8BBD39AC5F8F19D90EEBEA8A3B7E0415731DFA4682BA9D0DA8"
+    },
+    "outer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944\\outer.json",
+      "bytes": 1525,
+      "sha256": "73FAFC7DFB695397183CFE59E434AAB9A0D8DA9BB73B0A51590E91E28B860E38"
+    },
+    "outer_absence": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944\\outer-absence.json",
+      "bytes": 183,
+      "sha256": "6A31732247F1342F888F9BBD14DBE8CE5935B64927E5FAE797A43B36DFDF9461"
+    },
+    "job_observation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944\\independent-observed-job-status.json",
+      "bytes": 1572,
+      "sha256": "AF60AC456C0B9EADCDFC120458CB43EAB0CEB55E9140F34D4CAFE86B13E4876E"
+    },
+    "metadata_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944\\independent-metadata-acceptance.json",
+      "bytes": 14149,
+      "sha256": "84B8758A2C6ABD2E1FF34AFC4E2714B68A3922BE4857C19ADB1143B6DABD0F48"
+    }
+  },
+  "root_source_review": "Root read all 18,967 bytes of the fixed observed-input helper. Its only write is a new audit-input JSON for the original completed new4 run. It verifies exact fixed source/grant/config provenance and seven original observed pins; derives original ordered owners and counts; preserves zero runtime starts and all source/product holds; no auditor or native execution is embedded. The original metadata audit independently accepted 19,4,24,14 actual names (61 total). Source accepted only for this exact config issuance.",
+  "issued_utc": "2026-10-21T08:21:17.353586+00:00"
+}

@@ -1,0 +1,90 @@
+[
+  {
+    "schema": 1,
+    "status": "exact_original_bookends_represented_losslessly",
+    "phase": "buildquery",
+    "raw_bytes": 15763177,
+    "raw_sha256": "BC2672711FDE7526D8A94EAE376F3DC458C6A0DE3E7025303035FC9B89416428",
+    "original_before_and_final_byte_identical": true,
+    "originals": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-buildquery-20261021-080944\\before.json",
+        "bytes": 15763177,
+        "sha256": "BC2672711FDE7526D8A94EAE376F3DC458C6A0DE3E7025303035FC9B89416428"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-buildquery-20261021-080944\\final.json",
+        "bytes": 15763177,
+        "sha256": "BC2672711FDE7526D8A94EAE376F3DC458C6A0DE3E7025303035FC9B89416428"
+      }
+    ],
+    "archive_target": "verification/native-v36-build-runtime-negative-and-fixture-closure-20261021/buildquery/proof/before-and-final.json.gz",
+    "archive_pin": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v36-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\proof\\before-and-final.json.gz",
+      "bytes": 2747095,
+      "sha256": "F2A96B3EEFB93B26863616AEFC89B921BCB4183C730DCF6AB8D82B0BBB3D4B5B"
+    },
+    "gzip": {
+      "filename": "",
+      "mtime": 0,
+      "compression_level": 9,
+      "header_hex": "1f8b08000000000002ff"
+    },
+    "complete_decompression_roundtrip": true,
+    "deterministic_second_encoding_equal": true,
+    "historical_seal_counts": {
+      "source": 14591,
+      "tree": 14604,
+      "vendor": 1489,
+      "compiler": 19546,
+      "controls": 14
+    },
+    "original_files_modified": false,
+    "new_native_execution": false,
+    "qualification": false
+  },
+  {
+    "schema": 1,
+    "status": "exact_original_bookends_represented_losslessly",
+    "phase": "strict-runtime",
+    "raw_bytes": 15768084,
+    "raw_sha256": "18F842DD770EB1B53E9931A015D544C9D631F60FC40C1C06FC9487DDCD5FC20C",
+    "original_before_and_final_byte_identical": true,
+    "originals": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\before.json",
+        "bytes": 15768084,
+        "sha256": "18F842DD770EB1B53E9931A015D544C9D631F60FC40C1C06FC9487DDCD5FC20C"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\final.json",
+        "bytes": 15768084,
+        "sha256": "18F842DD770EB1B53E9931A015D544C9D631F60FC40C1C06FC9487DDCD5FC20C"
+      }
+    ],
+    "archive_target": "verification/native-v36-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/proof/before-and-final.json.gz",
+    "archive_pin": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v36-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\proof\\before-and-final.json.gz",
+      "bytes": 2747845,
+      "sha256": "DB1D0F8794EE0F260B4E4DA732C5ECA2502A065780ED39927A9E38D55EACC447"
+    },
+    "gzip": {
+      "filename": "",
+      "mtime": 0,
+      "compression_level": 9,
+      "header_hex": "1f8b08000000000002ff"
+    },
+    "complete_decompression_roundtrip": true,
+    "deterministic_second_encoding_equal": true,
+    "historical_seal_counts": {
+      "source": 14591,
+      "tree": 14604,
+      "vendor": 1489,
+      "compiler": 19546,
+      "controls": 25
+    },
+    "original_files_modified": false,
+    "new_native_execution": false,
+    "qualification": false
+  }
+]

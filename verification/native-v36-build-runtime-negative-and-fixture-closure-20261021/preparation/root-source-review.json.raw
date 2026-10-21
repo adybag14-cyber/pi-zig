@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "status": "root_and_independent_peer_accepted_bounded_v36_progress_negative_archive_preparer_source",
+  "recorded_utc": "2026-10-21T09:13:40.272348+00:00",
+  "basis_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-V36ProgressAndNegativeArchive-20261021.py",
+    "bytes": 61100,
+    "sha256": "BC45FAAFF6F34876F644173DFA2815EAD7BF74E4F1DFE02CFA884CE9C03C8DDF"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-V35ProgressAndNegativeArchive-20261021.py",
+    "bytes": 48039,
+    "sha256": "4ED77FE0A9E7230DFD6CCB8BB989E26C9BCFDEED3491EF7DA3FA716431639FF9"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-progress-negative-archive-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 85421,
+    "sha256": "6CB5F0B23A5DC9DEC7670A578E5D299798CED5E091255183BBE21B7F20911763"
+  },
+  "original_evidence_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-progress-negative-archive-sourceonly-20261021\\original-evidence-inventory.json",
+    "bytes": 26114,
+    "sha256": "7506C352F1CA9DDB9B2AAA8132F0C3DAEA7913AF2631F2DAE3AE9E73DAAA87E5"
+  },
+  "unissued_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-progress-negative-archive-sourceonly-20261021\\unissued-root-configuration.json",
+    "bytes": 5065,
+    "sha256": "6ED333E8DC2A7E6CEC54A68E48A39165C691E3A46C68A80693A80D382181909D"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-progress-negative-archive-sourceonly-20261021\\handoff.json",
+    "bytes": 9198,
+    "sha256": "4228802B99A808BFA08DE18B1789E7AABCB4398A128C47F9B7F316F53F462E90"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-progress-archive-source-peer-20261021\\peer.json",
+    "bytes": 53509,
+    "sha256": "117A2F3FC76165887C3C7BD0C3D650AA752B157E04115F8C8DEFE41E144FE2E9"
+  },
+  "independent_source_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-progress-archive-source-peer-20261021\\independent-static-source-peer-v2.py",
+    "bytes": 20702,
+    "sha256": "271664A9EEE3D08F7FF7289E58CFA2642C8EE7FEE6ADAE8DE699D3B0E7E3D38F"
+  },
+  "root_review": {
+    "complete_source_bytes_read": 61100,
+    "finite_edits_replayed": 71,
+    "all_intermediate_forward_and_inverse_hashes_verified": true,
+    "full_byte_inverse_verified": true,
+    "unchanged_helpers": 21,
+    "only_changed_helper": "original_inventory",
+    "complete_unchanged_critical_regions": [
+      {
+        "name": "complete_nested_history_prefixes_and_raw_inverse",
+        "bytes": 601,
+        "sha256": "F964E025C2CD11D5EA3D1BE799ADD67676EF398DBF9E5A2DF8FC3750FA822E0C",
+        "baseline_byte_offset": 38514,
+        "candidate_byte_offset": 50393,
+        "exact_bytes_unchanged": true
+      },
+      {
+        "name": "complete_path_attribute_and_git_blob_admission",
+        "bytes": 905,
+        "sha256": "7D3FC622B68FFE2368F9E3BEBF8515A6837FDFDB7FE9B7CA3C0AC989BED89935",
+        "baseline_byte_offset": 44411,
+        "candidate_byte_offset": 57254,
+        "exact_bytes_unchanged": true
+      },
+      {
+        "name": "create_only_evidence_write_tail_and_final_bookend",
+        "bytes": 988,
+        "sha256": "94F66E8F47C19FC689FC05384379C6762BE878AF1C1633849D688A35C454630F",
+        "baseline_byte_offset": 45562,
+        "candidate_byte_offset": 58405,
+        "exact_bytes_unchanged": true
+      }
+    ],
+    "all_148_peer_inputs_independently_rehashed": true,
+    "all125_original_file_pins_and_complete_directories_verified": true,
+    "extra_authority_files": 15,
+    "both_raw_before_final_pairs_byte_equal": true,
+    "original_buildquery": "4 groups, 58 declarations and 61 actual metadata accepted historically; 8 native owners, 11 process intervals and actual later PID reuse closure retained.",
+    "original_runtime": "1 of 4 groups attempted, 19 completed, 18 failures and one anonymous pass; 42 accepted indexes and 3 groups unstarted. Original invalid owner, 45026 stderr bytes and strict failure flags stay negative.",
+    "scope": "Future actual fixture commit, exact release/receipt/preimage/committed blobs, original proposal and peer plus source acceptance must all bind before create-only output. No preparer execution has occurred.",
+    "progress": "All prior nested list prefixes and unrelated keys retained; complete prior checkpoint appended; whole structural and raw byte inverse required. Two deterministic compressed bookends have explicit raw/header/roundtrip/second-encoding gates.",
+    "execution": "Only read-only Git queries and new evidence writes are present. Main/index/cache/native/Node capture remain outside this source acceptance."
+  },
+  "source_accepted": true,
+  "preparer_executed": false,
+  "preparation_execution_authorized": false,
+  "main_intake_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "qualification": false
+}

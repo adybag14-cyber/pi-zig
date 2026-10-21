@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "status": "root_source_accepted_exact_v36_bound_execution_sources",
+  "reviewer": "Root",
+  "candidate_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "matrix_sha256": "2B55BD045392080556925051B7C19810C3546BB6EAACD2672A35E37622DD91DD",
+  "finite_binding_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-execution-bound-source-20261021\\finite-bindings.json",
+    "bytes": 8489,
+    "sha256": "6405AD38C38D8B2267E3CA858F0E9F9A90084F9F68CAF9F61508C06420E51EA3"
+  },
+  "root_unresolved_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-execution-templates-unresolved-source-review-20261020.json",
+    "bytes": 2462,
+    "sha256": "0C4DB9529973A5050E40C52FFA3E36DDD90A3D3C7EE3205F78CDC1E3992DD03A"
+  },
+  "sources": [
+    {
+      "kind": "buildquery_constructor",
+      "unresolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-execution-source-templates-20261020\\Prepare-ReviewedV36BuildQueryGrant.unresolved-template.py",
+        "bytes": 10095,
+        "sha256": "C611B18B5FA37AFB7C71F04B3697A15555B30AE4F9CC663C34D80508843201B8"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV36BuildQueryGrant-20261020-v2.py",
+        "bytes": 10095,
+        "sha256": "7BED5946B76AA7C2AB5AFB48B3CDCEBFD3291BEA6EA1567D2EB0FB25EB4D4481"
+      },
+      "equal_length_bindings": 1,
+      "unchanged_helpers": 7
+    },
+    {
+      "kind": "runtime_constructor",
+      "unresolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-execution-source-templates-20261020\\Prepare-ReviewedV36RuntimeGrant.unresolved-template.py",
+        "bytes": 12499,
+        "sha256": "B42ADC3A275077E1A3533EB93A53D753A1ECC29FB79723741D2FE84CB0B799DB"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV36RuntimeGrant-20261020-v2.py",
+        "bytes": 12499,
+        "sha256": "0F66B94F62D7F2B3F20B514006C16F54FBA5C1AC6E7ECEB0A58E84EC7738538C"
+      },
+      "equal_length_bindings": 2,
+      "unchanged_helpers": 8
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "unresolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-execution-source-templates-20261020\\Audit-PositiveV36CompleteBuildQuery.unresolved-template.py",
+        "bytes": 37257,
+        "sha256": "5EE298704D49160C48C5C6CA7B04B8FCFA94E5FCD0A54207F89A0E7343AA9FCF"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV36CompleteBuildQuery-Template-20261020.py",
+        "bytes": 37257,
+        "sha256": "9F01ABAD4F4D2597A106B01EE2445D4D0F8D66B6777332E3925FC276AF6E4FB0"
+      },
+      "equal_length_bindings": 3,
+      "unchanged_helpers": 6
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "unresolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-execution-source-templates-20261020\\Audit-PositiveV36StrictRuntime.unresolved-template.py",
+        "bytes": 39914,
+        "sha256": "31B9C7BBF897CA1345594EC320E77F4C2A3EB6AD8EB0A50717501580CD416A59"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV36StrictRuntime-20261021.py",
+        "bytes": 39914,
+        "sha256": "5E34EDAE4D2B06CD5C79406670529B0010CC358C39FDD07D13B4EA8DD3145A23"
+      },
+      "equal_length_bindings": 3,
+      "unchanged_helpers": 6
+    }
+  ],
+  "source_accepted": true,
+  "runtime_constructor_source_accepted": true,
+  "all9_equal_length_literal_bindings_reviewed_and_replayed": true,
+  "all_complete_raw_inverses_exact": true,
+  "all_helpers_byte_identical": true,
+  "all_non_string_tokens_equal": true,
+  "canonical_constructor_path_size_hash_crossbindings_exact": true,
+  "strict_gates_unchanged": true,
+  "catalog_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-catalog-source-acceptance-20261021.json",
+    "bytes": 9660,
+    "sha256": "F6FB2B1004AFFE8A1B313266B762899EC96994AEC8F01E788A99953BAA4E3C8E"
+  },
+  "root_review": "Root re-read both complete constructors and reviewed every final binding with its exact byte offset, intermediate hash, forward replay and complete inverse. All nine substitutions bind only the actual final clean head, actual emitted common catalog hash, and final canonical constructor hashes. The four sources reverse byte-for-byte to the previously reviewed unresolved templates, whose complete finite adaptations and accepted baseline reviews remain immutable. All 27 helper functions and all non-string tokens remain exact. Constructor sizes stay10095 and12499; both positive auditors require those exact canonical paths and hashes. No failure certificate is converted into positive evidence.",
+  "execution_requirements": "Separate exact per-phase Root configurations remain required. BuildQuery may use only the complete granted batch, fresh private caches, fresh16GiB serial admission, bounded retained/live owners and whole input seals. Positive metadata/current-input/process closure must precede a separately granted strict RuntimeOnly phase. Runtime auditors require the complete original durable job observation, exact actual per-group owner and wire evidence, empty stderr and all accepted tests completing with zero flags.",
+  "constructor_execution_authorized": false,
+  "auditor_execution_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "production_bridge_removed": false,
+  "reviewed_utc": "2026-10-21T08:08:55.835552+00:00"
+}

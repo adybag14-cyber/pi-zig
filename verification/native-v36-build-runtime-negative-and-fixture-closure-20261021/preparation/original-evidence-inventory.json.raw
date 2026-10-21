@@ -1,0 +1,799 @@
+{
+  "schema": 1,
+  "status": "source_only_unissued_exact_observed_v36_archive_inputs",
+  "basis_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "groups": [
+    "native-node-file-handle-owner",
+    "native-node-fs-before-hook-continuation",
+    "native-vm-error-constructor-name",
+    "native-node-file-handle-transfer"
+  ],
+  "declared_counts": [
+    18,
+    3,
+    24,
+    13
+  ],
+  "accepted_metadata_counts": [
+    19,
+    4,
+    24,
+    14
+  ],
+  "runs": {
+    "buildquery": {
+      "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-buildquery-20261021-080944",
+      "control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944",
+      "proof_files": [
+        [
+          "before.json",
+          15763177,
+          "BC2672711FDE7526D8A94EAE376F3DC458C6A0DE3E7025303035FC9B89416428"
+        ],
+        [
+          "final.json",
+          15763177,
+          "BC2672711FDE7526D8A94EAE376F3DC458C6A0DE3E7025303035FC9B89416428"
+        ],
+        [
+          "result.json",
+          67212,
+          "311113328569FB8BBD39AC5F8F19D90EEBEA8A3B7E0415731DFA4682BA9D0DA8"
+        ]
+      ],
+      "control_files": [
+        [
+          "grant-launch-adaptation.json",
+          15735,
+          "AC7BBAB60D358E608A916BFC63D29D27A7631E75FC3C5279669374E117E2EC05"
+        ],
+        [
+          "independent-current-seals-and-owners.json",
+          113188,
+          "5569A62842A16A5F1A48022A5D6EB78F06808B73E22772FA3C4CAB7A89B2FE4A"
+        ],
+        [
+          "independent-input-helper-job-observation.json",
+          1561,
+          "EE656C4D635548E512AF6907EA4051FDC4B06A89F0F8249EDB564B7C8F02A5E5"
+        ],
+        [
+          "independent-metadata-acceptance.json",
+          14149,
+          "84B8758A2C6ABD2E1FF34AFC4E2714B68A3922BE4857C19ADB1143B6DABD0F48"
+        ],
+        [
+          "independent-observed-job-status.json",
+          1572,
+          "AF60AC456C0B9EADCDFC120458CB43EAB0CEB55E9140F34D4CAFE86B13E4876E"
+        ],
+        [
+          "independent-positive-audit-job-observation.json",
+          1561,
+          "030078DBB670F2EC2025DA52EA3D50B177FE000DF4A462700EFB608E951C43D3"
+        ],
+        [
+          "independent-positive-buildquery-audit-inputs.json",
+          3079,
+          "44C09BC674265B0F497EDDF293DBDF6B953D55D3D3CEC66E38B42C29AD54A980"
+        ],
+        [
+          "launch.ps1",
+          1776,
+          "855A62D997052A4CEA9064AB23D75E0A70CE3E4FCB5884C704CBD7B8F917B040"
+        ],
+        [
+          "outer-absence.json",
+          183,
+          "6A31732247F1342F888F9BBD14DBE8CE5935B64927E5FAE797A43B36DFDF9461"
+        ],
+        [
+          "outer.json",
+          1525,
+          "73FAFC7DFB695397183CFE59E434AAB9A0D8DA9BB73B0A51590E91E28B860E38"
+        ],
+        [
+          "outer.stderr.log",
+          0,
+          "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        ],
+        [
+          "outer.stdout.bin",
+          67636,
+          "2EE6CA09D643DEC5A7C3D47D5C4FB34A8479DACC69257B41B7482C5E97B16F4C"
+        ],
+        [
+          "root-grant.json",
+          13125,
+          "B4AFF323FB9107034BA8ABF4FBEBB58EBD7CBD7AB99C0C0AAA9BA64D394263A7"
+        ],
+        [
+          "root-metadata-audit-release.json",
+          2832,
+          "9846B02ACBD95BA8A170D3BA5D09F2AC05CFD05701183DB3940B1B36894DA3FB"
+        ],
+        [
+          "root-positive-audit-input-preparation.json",
+          3090,
+          "D18D46C88183C4DE9F71D5A044424777B0A706AD433C1FB0BA7B7B8155B8D73C"
+        ]
+      ],
+      "group_files": {
+        "native-node-file-handle-owner": [
+          [
+            "build-artifacts.json",
+            1516,
+            "D6396ED63B819909D9B225852D438AB29A21D857961D75A3476F80E4DAB88464"
+          ],
+          [
+            "commands.json",
+            1625,
+            "8DB0A6E7288BF741DD19FB32BF544399CD3821FAE63C573719CEFC73C0AF7D4C"
+          ],
+          [
+            "compile-absence.json",
+            3306,
+            "25F7A43B2A67E016352E1778EA389980CAE0BDF2BE4153F16BAC98D3A148DB28"
+          ],
+          [
+            "compile-admission.json",
+            580,
+            "7B965399933F8A803773865F7784DFE49156969C29491972266B067A430D587D"
+          ],
+          [
+            "compile-after-artifacts.json",
+            1516,
+            "D6396ED63B819909D9B225852D438AB29A21D857961D75A3476F80E4DAB88464"
+          ],
+          [
+            "compile.json",
+            2182,
+            "33ADCC01B89A033EE8DFDBA60AAFEB937F179C6CBFA3865AFB3CF1D87698FDB7"
+          ],
+          [
+            "compile.stderr.log",
+            15168,
+            "A9DA4F0581EE7EE773D9CBC79325700A54E7890B95C0012AD398C3935816A06B"
+          ],
+          [
+            "compile.stdout.bin",
+            0,
+            "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+          ],
+          [
+            "final-artifacts.json",
+            3130,
+            "8B33C819EE4F3400D2A9974323F566061704FD365627B950CD22C2CDE838260C"
+          ],
+          [
+            "metadata-absence.json",
+            2290,
+            "70A2395CCD194EFB77BE1D8BBCE67D822336898B6F854D43701814794EEB3EBB"
+          ],
+          [
+            "metadata-admission.json",
+            583,
+            "8A0294DD4CF1D8394FCF6488903453E2F78139AB86C1BB0DBD38CB4CAA0559DD"
+          ],
+          [
+            "metadata-after-artifacts.json",
+            1516,
+            "D6396ED63B819909D9B225852D438AB29A21D857961D75A3476F80E4DAB88464"
+          ],
+          [
+            "metadata-before-artifacts.json",
+            1516,
+            "D6396ED63B819909D9B225852D438AB29A21D857961D75A3476F80E4DAB88464"
+          ],
+          [
+            "metadata.json",
+            1224,
+            "C1F3C01E34CFFE116881CE95C91C9DED89CC5E541C68FE6C1A17913AC4140816"
+          ],
+          [
+            "metadata.stderr.log",
+            0,
+            "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+          ],
+          [
+            "metadata.stdout.bin",
+            2800,
+            "E5154A849826D30FE04B3DA9314B6EBCCF7ABC20A8281E7F6C584F1BF8C519EE"
+          ],
+          [
+            "result-provisional.json",
+            8948,
+            "01B0843DA3175FEBCA4B4FEE9A712BCC33804AFBB55E55FE3959471EB0FC7C86"
+          ],
+          [
+            "result.json",
+            8941,
+            "88EE8E12F25327FC23C4682D8789B4DB92DE7E2A2B9F93F99318B68B9E0604E4"
+          ],
+          [
+            "selected-tests.json",
+            3307,
+            "0CAA437838E73A721B890D6D0EB18CB21999823882D399C969620B672FFD40B2"
+          ]
+        ],
+        "native-node-fs-before-hook-continuation": [
+          [
+            "build-artifacts.json",
+            2084,
+            "B4240C6DEA548E81645AF3BE7A0EDB70D8B2EA346C6356A96EBFA55B87CD9CE1"
+          ],
+          [
+            "commands.json",
+            1684,
+            "9AF584B064E86448359B8520A10CA66AB74900FD55AC4E5615E3E3F43D52679A"
+          ],
+          [
+            "compile-absence.json",
+            3366,
+            "B455314BEA2B3BE948E43D313068E8A5301FDC52880A3BD69AB18C79C7517CD2"
+          ],
+          [
+            "compile-admission.json",
+            579,
+            "62DFA665C136CE514186D41EEC816B8F8E01A7985640D0A59E38FC57DC6B7533"
+          ],
+          [
+            "compile-after-artifacts.json",
+            2084,
+            "B4240C6DEA548E81645AF3BE7A0EDB70D8B2EA346C6356A96EBFA55B87CD9CE1"
+          ],
+          [
+            "compile.json",
+            2222,
+            "DB211C17C5BE33EB0DE953743D4C867C1A40D004D92BC7333D807118984C7582"
+          ],
+          [
+            "compile.stderr.log",
+            15180,
+            "9431E5797AA84C005C15FFD0376A0896094F80DAF60E803F8C9F61D6DDF59D96"
+          ],
+          [
+            "compile.stdout.bin",
+            0,
+            "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+          ],
+          [
+            "final-artifacts.json",
+            3160,
+            "2812A75934B8245C3C4D8EF72FB6D0A8B65869360FD20A3D672F40EA650FC6FE"
+          ],
+          [
+            "metadata-absence.json",
+            2310,
+            "9776B381BD4F1F9219037141E19694B0513BE9D7F9C123D94E304D8388D341D1"
+          ],
+          [
+            "metadata-admission.json",
+            583,
+            "C7015008A57F7B6E9D53B61E0BE0596CCE76264B4D64AF46E29B727DD4D87AA1"
+          ],
+          [
+            "metadata-after-artifacts.json",
+            2084,
+            "B4240C6DEA548E81645AF3BE7A0EDB70D8B2EA346C6356A96EBFA55B87CD9CE1"
+          ],
+          [
+            "metadata-before-artifacts.json",
+            2084,
+            "B4240C6DEA548E81645AF3BE7A0EDB70D8B2EA346C6356A96EBFA55B87CD9CE1"
+          ],
+          [
+            "metadata.json",
+            1225,
+            "2C63A161976DACEE22FBD061B07CFBF423F9D4D076146E2BBD561FF3508A8007"
+          ],
+          [
+            "metadata.stderr.log",
+            0,
+            "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+          ],
+          [
+            "metadata.stdout.bin",
+            535,
+            "BCD33EDD18FFAF8CFC586597E27FF3847B088DB222C63F7F82CB78BEBB63A4EA"
+          ],
+          [
+            "result-provisional.json",
+            9088,
+            "A0197095FFC412497869E9575D08BB6FF3E1DBDBCC35268D5E1B66A8649BF0BD"
+          ],
+          [
+            "result.json",
+            9081,
+            "AA87C93021E36CF9D240F49EA831D099136EDD5A68566A15D6EC961B28CD6987"
+          ],
+          [
+            "selected-tests.json",
+            1051,
+            "FE13B1EE1B3D517BF618B7B2FE8E79250DD860EE4470EA89C69F4EF9DAF02BBB"
+          ]
+        ],
+        "native-vm-error-constructor-name": [
+          [
+            "build-artifacts.json",
+            2599,
+            "2FC88503BC350555EE3EB0AB3FAB77A8D04B90B01D8E34E47A76420191522ADF"
+          ],
+          [
+            "commands.json",
+            1643,
+            "20AB8705935757C7AB4C2D318348E22868534D4B9B0F35AF9374AC0A5EFBEF07"
+          ],
+          [
+            "compile-absence.json",
+            3324,
+            "56BA65AE4B249F5EEE397F13C5B83E65B0187A78433C209549DE5513B43C2718"
+          ],
+          [
+            "compile-admission.json",
+            580,
+            "E35B497E42ABF1FA9E21DB81FF6245F694158C24A9ED16E1292C7DF84C2655EC"
+          ],
+          [
+            "compile-after-artifacts.json",
+            2599,
+            "2FC88503BC350555EE3EB0AB3FAB77A8D04B90B01D8E34E47A76420191522ADF"
+          ],
+          [
+            "compile.json",
+            2194,
+            "AD2D1FF8E9C1CF3C7E04B53A02771BE82D742AF7B85E492745C51BC743065AC4"
+          ],
+          [
+            "compile.stderr.log",
+            14683,
+            "9EFC1C2DDB490603EA570B4A547CA54CF9156EAC906E26439DFFA5EB35BBF83B"
+          ],
+          [
+            "compile.stdout.bin",
+            0,
+            "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+          ],
+          [
+            "final-artifacts.json",
+            3137,
+            "0826CEE478C71D5413482F20521C328111D79D43CC4744FD99AAFE89521C9601"
+          ],
+          [
+            "metadata-absence.json",
+            2297,
+            "817F2F56BAEBC7198E88B54B56886A28B8BB29DCC385919EF242190FC2E3682D"
+          ],
+          [
+            "metadata-admission.json",
+            583,
+            "D0E5645B0E255356FEADFC4904235CCD521FB13B49EFF97AD5109FF45FB88BD8"
+          ],
+          [
+            "metadata-after-artifacts.json",
+            2599,
+            "2FC88503BC350555EE3EB0AB3FAB77A8D04B90B01D8E34E47A76420191522ADF"
+          ],
+          [
+            "metadata-before-artifacts.json",
+            2599,
+            "2FC88503BC350555EE3EB0AB3FAB77A8D04B90B01D8E34E47A76420191522ADF"
+          ],
+          [
+            "metadata.json",
+            1225,
+            "55305D26D3D13CE4C9D034DBA85CFF015C584AECD4ABC294DF2DEEE09B473DF8"
+          ],
+          [
+            "metadata.stderr.log",
+            0,
+            "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+          ],
+          [
+            "metadata.stdout.bin",
+            3325,
+            "D8F2F86C332F24EC92ADBE1E77C737D7D1E9EEAD0C9E59EE62C50A5BF8FF61AC"
+          ],
+          [
+            "result-provisional.json",
+            8991,
+            "248AAB2A578F53B7A923751F9514BBD805D3F13853B620AD995EF95B5E59B859"
+          ],
+          [
+            "result.json",
+            8984,
+            "D3446325508725CC35D8E821232CB994333A635C8FF06DF27298765F152B59AB"
+          ],
+          [
+            "selected-tests.json",
+            3835,
+            "A55F6E879A95A74191E13E24C15794FC064687E351969326787799720A6AB085"
+          ]
+        ],
+        "native-node-file-handle-transfer": [
+          [
+            "build-artifacts.json",
+            3139,
+            "A9ADBD377BE6DBE97E11EEC36D4498FBDC826B03627E0488E2A110C8FA11B4FF"
+          ],
+          [
+            "commands.json",
+            1643,
+            "3A9BCB149A3F60E1BB16EFAF0CCB7D55F8462D13267DFA23961DD1F4E64FA6C0"
+          ],
+          [
+            "compile-absence.json",
+            3322,
+            "812AAAED7CF4F4795E947625FAEDE7B7836585E5DFD69C1240C885582F8D6229"
+          ],
+          [
+            "compile-admission.json",
+            580,
+            "9F73CB5AB0BD7B99DF351E80767301898961EFA50CD0CEB945860BA2A8D00D43"
+          ],
+          [
+            "compile-after-artifacts.json",
+            3139,
+            "A9ADBD377BE6DBE97E11EEC36D4498FBDC826B03627E0488E2A110C8FA11B4FF"
+          ],
+          [
+            "compile.json",
+            2194,
+            "93E3213285AA9102B1D23AB813CBB7B5CEB24D2445A8A41FE724A7FA2498DE18"
+          ],
+          [
+            "compile.stderr.log",
+            15173,
+            "51D6B3E2613C2B1FAE33A26F5750E0BDFFFE49DBF046DE5701C6CF54D45B8613"
+          ],
+          [
+            "compile.stdout.bin",
+            0,
+            "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+          ],
+          [
+            "final-artifacts.json",
+            3139,
+            "A9ADBD377BE6DBE97E11EEC36D4498FBDC826B03627E0488E2A110C8FA11B4FF"
+          ],
+          [
+            "metadata-absence.json",
+            2297,
+            "4D0B8C888E58297E9F9603921A82CC053685276BA22C16A28E7A30CCFF10FB4D"
+          ],
+          [
+            "metadata-admission.json",
+            583,
+            "174975F26A68E95E8E7ACA974C6FE61BFCDCED05CB56351793F97AD4ED662674"
+          ],
+          [
+            "metadata-after-artifacts.json",
+            3139,
+            "A9ADBD377BE6DBE97E11EEC36D4498FBDC826B03627E0488E2A110C8FA11B4FF"
+          ],
+          [
+            "metadata-before-artifacts.json",
+            3139,
+            "A9ADBD377BE6DBE97E11EEC36D4498FBDC826B03627E0488E2A110C8FA11B4FF"
+          ],
+          [
+            "metadata.json",
+            1225,
+            "135F19DAC7A8D9F66DE859B16432CEBE903F270F2775D39FEE473C55AC77F29E"
+          ],
+          [
+            "metadata.stderr.log",
+            0,
+            "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+          ],
+          [
+            "metadata.stdout.bin",
+            2009,
+            "CA3D9558F23A3779A51D9FAB26A01A151099334B6615D8B73A3BE26A14EA61A6"
+          ],
+          [
+            "result-provisional.json",
+            8989,
+            "1F35DF6D06B3F213C222C43A85049DA277A4CF1337B84FEBDAF2062365BC00B5"
+          ],
+          [
+            "result.json",
+            8982,
+            "E571F4DBCA95E976F68E58D3510F4B1814435DCF9DB54195F97B68BA0DE049C2"
+          ],
+          [
+            "selected-tests.json",
+            2519,
+            "0CBFC7E909B61E7A097877289AB442C5F55A45510FAE52BE9DB7CBDC74EB1201"
+          ]
+        ]
+      },
+      "proof_directories": [
+        "cache",
+        "global-cache",
+        "groups"
+      ],
+      "seal_counts": {
+        "source": 14591,
+        "tree": 14604,
+        "vendor": 1489,
+        "compiler": 19546,
+        "controls": 14
+      }
+    },
+    "strict_runtime": {
+      "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608",
+      "control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608",
+      "proof_files": [
+        [
+          "before.json",
+          15768084,
+          "18F842DD770EB1B53E9931A015D544C9D631F60FC40C1C06FC9487DDCD5FC20C"
+        ],
+        [
+          "final.json",
+          15768084,
+          "18F842DD770EB1B53E9931A015D544C9D631F60FC40C1C06FC9487DDCD5FC20C"
+        ],
+        [
+          "result.json",
+          16681,
+          "09913304EA1EFD7235477C0DA4A7B0AE705B7E5BF20DDAAA9C29C3F5C3E50461"
+        ]
+      ],
+      "control_files": [
+        [
+          "Audit-NegativeV36New4StrictRuntime.py",
+          47948,
+          "5B32C5507CE78E1DB6BF0CB2AC1FE1ED8A48232E76AA6EFF3378034CF76F0DE0"
+        ],
+        [
+          "grant-launch-adaptation.json",
+          7580,
+          "EDF2C276E7D420219B76698AB1FEE9072BC523545AAF5FEC2AC6CBFC9B014E2C"
+        ],
+        [
+          "independent-negative-audit-job-observation.json",
+          1281,
+          "7FB854823E9A919B4804A002E6FC0D8279AA3EE55407A6B110F56C823A4C9AD8"
+        ],
+        [
+          "independent-negative-runtime-audit-inputs.json",
+          14813,
+          "62D821EB4E6F0AD4D4F9C3278A137D355533651B5C3542BA885FADE9936AEDE4"
+        ],
+        [
+          "independent-negative-runtime-closure.json",
+          26137,
+          "8BCCF2D351EEDC42D65C56E8605D2DD10ACFF153231552AD90F496E4668CF9AF"
+        ],
+        [
+          "independent-observed-job-status.json",
+          1644,
+          "CD65F6E08E83A4B24E94B4AC816F415F0626C8FACE184E51F824BA6595B64CE1"
+        ],
+        [
+          "launch.ps1",
+          1777,
+          "CE2DB4FB7F39FCB23885D30142F197BADA37FA9B0F041470B0D1830D2F0911A0"
+        ],
+        [
+          "outer-absence.json",
+          183,
+          "BA502A50CAA22825BC5CFF20431AC867A9A1CE6D9CFFB7EF16E79BE109500F86"
+        ],
+        [
+          "outer.json",
+          1612,
+          "38E91B71886BC30B1C788928AAE84C2A8758115107E3D10CC16DFA254160C656"
+        ],
+        [
+          "outer.stderr.log",
+          605,
+          "EE11F6DF277BF5D54C20293D5D8CEC76574E458F5BC0A117B3BD17697F46E889"
+        ],
+        [
+          "outer.stdout.bin",
+          16681,
+          "09913304EA1EFD7235477C0DA4A7B0AE705B7E5BF20DDAAA9C29C3F5C3E50461"
+        ],
+        [
+          "root-grant.json",
+          14111,
+          "3DF78ED69728EE99A2BA4C37B319FC49BDAAFAA247407A4B5DE6E38176F642EE"
+        ],
+        [
+          "root-negative-runtime-audit-release.json",
+          7208,
+          "45ECC6A0A303288F02FAA9D9AF7A164C2C175376A5E10D3EE3D4C5C1DB680D89"
+        ],
+        [
+          "runtime-launch.json",
+          2768,
+          "AF09BB130C204818A16B59D68E6A9F91CB3CDD9B0EDE2422851A34AF0BEA8891"
+        ]
+      ],
+      "group_files": {
+        "native-node-file-handle-owner": [
+          [
+            "commands.json",
+            4396,
+            "077C8D74859C1B0F67C4F0EE3DCDA46E66826FFEDB07FF15B546F7EB45E739E6"
+          ],
+          [
+            "final-artifacts.json",
+            3130,
+            "8B33C819EE4F3400D2A9974323F566061704FD365627B950CD22C2CDE838260C"
+          ],
+          [
+            "result-provisional.json",
+            8453,
+            "0C5BA6227DC2288C89A620754763EBD2E5DABA4DED54166FF479B3D512F4EF9A"
+          ],
+          [
+            "result.json",
+            8451,
+            "2B8E34184346879681BA7CA88E7268C357F881127B6ED006A0E24884DE046611"
+          ],
+          [
+            "runtime-absence.json",
+            4753,
+            "3A187C4898D1D4182AD9133543741FA4604749A28508189C0AD4ADB9DB204520"
+          ],
+          [
+            "runtime-admission.json",
+            578,
+            "D3ED11BD9468D6482E4DD0DDB1D3C82346B36685BC9BDE05F4D68CDC3408690D"
+          ],
+          [
+            "runtime-after-artifacts.json",
+            3130,
+            "8B33C819EE4F3400D2A9974323F566061704FD365627B950CD22C2CDE838260C"
+          ],
+          [
+            "runtime-before-artifacts.json",
+            3130,
+            "8B33C819EE4F3400D2A9974323F566061704FD365627B950CD22C2CDE838260C"
+          ],
+          [
+            "runtime-prerequisite-artifacts.json",
+            3130,
+            "8B33C819EE4F3400D2A9974323F566061704FD365627B950CD22C2CDE838260C"
+          ],
+          [
+            "runtime-raw-frame-observation.json",
+            2947,
+            "C5F1DF5D9F1526817C38415D3DFB53160CE6B467FD4C82D071B7278AB0983E64"
+          ],
+          [
+            "runtime.json",
+            1226,
+            "5D92E2E3EDDD744ABFBA71D4DF9386DCC3A010CFBA06C8C0288564C5F87E15F3"
+          ],
+          [
+            "runtime.results.json",
+            2057,
+            "0977624B7A6C47AE764394866CF578B55DC134E9EC0B69D8FBB047E418625FB6"
+          ],
+          [
+            "runtime.stderr.log",
+            45026,
+            "E974EC5E5AA6B6EB9FC5BBFF3CC3826DFD7AF8CB3052AC10B4BF38CA8DC6ED0C"
+          ],
+          [
+            "runtime.stdout.bin",
+            546,
+            "FE185ABB9B92CC5249217C8E1D49A3BB0166859C051FF5091AF01E72AAF0D9BC"
+          ]
+        ]
+      },
+      "proof_directories": [
+        "groups"
+      ],
+      "seal_counts": {
+        "source": 14591,
+        "tree": 14604,
+        "vendor": 1489,
+        "compiler": 19546,
+        "controls": 25
+      }
+    }
+  },
+  "extra_files": [
+    {
+      "archive_name": "authority/buildquery-issued-config.json",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-new4-buildquery-issued-config-20261021.json",
+      "bytes": 6061,
+      "sha256": "BA7842650F008D571C6994F5B08B8C643499917DC434738E916FC5A6E4A983CE"
+    },
+    {
+      "archive_name": "authority/runtime-issued-config.json",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-new4-runtime-issued-config-20261021.json",
+      "bytes": 3345,
+      "sha256": "BB724400FEF15FC6760B60B897CAFD003C4050C4093A1F07F30763C3923C2859"
+    },
+    {
+      "archive_name": "authority/buildquery-launch.json",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-new4-prepared-20261020\\buildquery-launch.json",
+      "bytes": 2090,
+      "sha256": "DCFF0F2425568AC169DBC30AFD237E2F008CD1367FD076AEA9D424A61F2C3397"
+    },
+    {
+      "archive_name": "authority/root-buildquery-acceptance.json",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-new4-complete-buildquery-acceptance-20261021.json",
+      "bytes": 2692,
+      "sha256": "B54DAE7F3999880FFCA7FDC7D7C73A47B3003BFE9A4776E978C7413D4455268E"
+    },
+    {
+      "archive_name": "authority/root-runtime-negative-acceptance.json",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-new4-original-negative-runtime-acceptance-20261021.json",
+      "bytes": 2496,
+      "sha256": "182883E0C8BA52A96B34E790DD65A9DF247F0DD67031D68CD73DBAB614D0DCCC"
+    },
+    {
+      "archive_name": "audit/negative-finite-adaptation.json",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-new4-negative-runtime-auditor-sourceonly-20261021\\finite-adaptation.json",
+      "bytes": 58429,
+      "sha256": "FF2F41C2298AD3372EDE0DD0E912FC228E03639F7DDFE62D041A345B6EE94A6C"
+    },
+    {
+      "archive_name": "audit/negative-handoff.json",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-new4-negative-runtime-auditor-sourceonly-20261021\\handoff.json",
+      "bytes": 3184,
+      "sha256": "CF89DB13AF65AFA58EAA9238C9CC63591FCB7A41F24D1EBD15015AE2975578D7"
+    },
+    {
+      "archive_name": "audit/positive-buildquery-auditor.py",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV36CompleteBuildQuery-Template-20261020.py",
+      "bytes": 37257,
+      "sha256": "9F01ABAD4F4D2597A106B01EE2445D4D0F8D66B6777332E3925FC276AF6E4FB0"
+    },
+    {
+      "archive_name": "audit/metadata-auditor.py",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-new4-prepared-20261020\\Audit-CombinedNativeBatch.py",
+      "bytes": 17696,
+      "sha256": "B91D64912D1E1A5DAB06D6362AD014C8612A25FB9D6D4359AFB355272EF4234D"
+    },
+    {
+      "archive_name": "audit/positive-input-preparer.py",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV36New4PositiveBuildQueryAuditInputs-20261021.py",
+      "bytes": 18967,
+      "sha256": "4A7A2579B9DB33325ADCA5CA478ADDFB69540170950C375D33040A86AE9A417C"
+    },
+    {
+      "archive_name": "authority/buildquery-constructor.py",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV36BuildQueryGrant-20261020-v2.py",
+      "bytes": 10095,
+      "sha256": "7BED5946B76AA7C2AB5AFB48B3CDCEBFD3291BEA6EA1567D2EB0FB25EB4D4481"
+    },
+    {
+      "archive_name": "authority/runtime-constructor.py",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV36RuntimeGrant-20261020-v2.py",
+      "bytes": 12499,
+      "sha256": "0F66B94F62D7F2B3F20B514006C16F54FBA5C1AC6E7ECEB0A58E84EC7738538C"
+    },
+    {
+      "archive_name": "authority/execution-source-bindings.json",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-execution-bound-source-20261021\\finite-bindings.json",
+      "bytes": 8489,
+      "sha256": "6405AD38C38D8B2267E3CA858F0E9F9A90084F9F68CAF9F61508C06420E51EA3"
+    },
+    {
+      "archive_name": "authority/root-execution-source-review.json",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-execution-bound-source-review-20261021.json",
+      "bytes": 5554,
+      "sha256": "5504DFAC9B9251126D8C0FCB8DE9412A8441CD53E2932DB815335450BC2044D9"
+    },
+    {
+      "archive_name": "authority/root-catalog-source-acceptance.json",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-catalog-source-acceptance-20261021.json",
+      "bytes": 9660,
+      "sha256": "F6FB2B1004AFFE8A1B313266B762899EC96994AEC8F01E788A99953BAA4E3C8E"
+    }
+  ],
+  "original_evidence_modified": false,
+  "cache_files_to_archive": 0,
+  "preparer_execution_authorized": false,
+  "native_execution_authorized": false,
+  "qualification": false
+}

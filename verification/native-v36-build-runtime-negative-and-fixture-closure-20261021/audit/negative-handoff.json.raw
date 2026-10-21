@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "status": "ready_for_root_source_review_only",
+  "reviewer": "/root/handover_review",
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\Audit-NegativeV36New4StrictRuntime.py",
+    "bytes": 47948,
+    "sha256": "5B32C5507CE78E1DB6BF0CB2AC1FE1ED8A48232E76AA6EFF3378034CF76F0DE0"
+  },
+  "captured_inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-audit-inputs.json",
+    "bytes": 14813,
+    "sha256": "62D821EB4E6F0AD4D4F9C3278A137D355533651B5C3542BA885FADE9936AEDE4"
+  },
+  "finite_adaptation_path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-new4-negative-runtime-auditor-sourceonly-20261021\\finite-adaptation.json",
+  "expected_invocation": {
+    "program": "python",
+    "args": [
+      "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\Audit-NegativeV36New4StrictRuntime.py",
+      "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-audit-inputs.json"
+    ],
+    "execution_authorized": false
+  },
+  "expected_output": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-closure.json",
+  "source_only": true,
+  "auditor_executed": false,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "counts": {
+    "granted_groups": 4,
+    "attempted_groups": 1,
+    "accepted_metadata": 61,
+    "started": 19,
+    "completed": 19,
+    "failed_flags1": 18,
+    "passed_flags0": 1,
+    "unstarted_groups": 3,
+    "unstarted_indices": 42,
+    "owner_exit": 0,
+    "outer_exit": 1,
+    "durable_job_exit": 1,
+    "stderr_bytes": 45026,
+    "original_owner_binding": "invalid",
+    "original_strict_empty_stderr_gate_passed": false
+  },
+  "seal_counts": {
+    "source": 14591,
+    "tree": 14604,
+    "vendor": 1489,
+    "compiler": 19546,
+    "controls": 25
+  },
+  "original_processes": {
+    "native_pid": 4248,
+    "outer_pid": 55612,
+    "runner_pid": 30712,
+    "runner_process_instance": "134370447872177862",
+    "launcher_pid": 18388
+  },
+  "timestamp_difference": {
+    "field": "completed_utc",
+    "standalone": "2026-10-21T08:27:08.2553991+00:00",
+    "all_three_aggregate_copies": "2026-10-21T09:27:08.2553991+01:00",
+    "all_other_owner_and_live_fields_exact": true,
+    "full_100ns_equivalence_only": true
+  },
+  "required_closure": "All original failed flags and the nonempty ordinary stderr rejection stay failed. Close every original native/outer/runner/launcher creation instance, current descendants and native inventory; rehash every complete current source/tree/vendor/compiler/control member and all accepted artifacts. Qualification and source release stay false.",
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-new4-negative-runtime-auditor-sourceonly-20261021\\finite-adaptation.json",
+    "bytes": 58429,
+    "sha256": "FF2F41C2298AD3372EDE0DD0E912FC228E03639F7DDFE62D041A345B6EE94A6C"
+  }
+}
