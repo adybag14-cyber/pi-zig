@@ -1,0 +1,692 @@
+{
+  "schema": "pi-zig-v35-fixture-shadowing-independent-proof-v1",
+  "main_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\proposal.json",
+    "bytes": 5249,
+    "sha256": "9CEEC8BF72B9E955697145E989A65C06AB9DB14B94444332545B4E5A233DD16E"
+  },
+  "packet_input_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-buildquery-20261020-223254\\groups\\native-node-file-handle-owner\\compile.json",
+      "bytes": 2292,
+      "sha256": "8FA9761496EB7C1F63F918B554FC488F76331AE9760B40F9181C3802A404E904"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-buildquery-20261020-223254\\groups\\native-node-file-handle-owner\\compile.stderr.log",
+      "bytes": 24890,
+      "sha256": "9EBCCA812674DE30F512015FD2FB696D9DDA97F0D81CF617D4E4B3825BC5D25D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\fixture-alpha-renames.patch",
+      "bytes": 7029,
+      "sha256": "482AA11097EF6263F7492590DEEF53FC57B3A176C3331BF4F19045FFD9E280A8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\input-inventory.json",
+      "bytes": 194665,
+      "sha256": "8DBD78DA21AE269A03BAE66ECE60CD8A6D6A3A7CA66E0D2D8D08D4321608229D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\negative\\compile.json",
+      "bytes": 2292,
+      "sha256": "8FA9761496EB7C1F63F918B554FC488F76331AE9760B40F9181C3802A404E904"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\negative\\compile.stderr.log",
+      "bytes": 24890,
+      "sha256": "9EBCCA812674DE30F512015FD2FB696D9DDA97F0D81CF617D4E4B3825BC5D25D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\original\\native_node_file_handle_owner_test_support.zig.raw",
+      "bytes": 32558,
+      "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\original\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 32558,
+      "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\prepare-proposal.py",
+      "bytes": 16040,
+      "sha256": "DCF56EAF57BF756CC904DD6A76EA88BB5C961AF902350F36BA33154B3AAD1104"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 32741,
+      "sha256": "50E65ED03D8280B3DC35632D49274BC97A63A1A7012E70C362DB845B2C29878B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\token-and-graph-proof.json",
+      "bytes": 33269,
+      "sha256": "68C99BF537F7A9EBDAEEDB9472A4A511E0951DD9AB3F4372FA02B192AD5A6104"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\zig-shadowing-authority.json",
+      "bytes": 2985,
+      "sha256": "DE4BA5698B8D90AD16D32166C80B8A69E32625DD27EE9D9C837552D6E08B4520"
+    }
+  ],
+  "independent_line_reconstruction": [
+    {
+      "binding": "Fixture.init",
+      "old": "value",
+      "new": "bootstrap_result",
+      "tokens": 2,
+      "lines": [
+        {
+          "line": 304,
+          "identifier_tokens": 1,
+          "before": "        const value = try a.expression(self.engine, bootstrap, .{self});\n",
+          "after": "        const bootstrap_result = try a.expression(self.engine, bootstrap, .{self});\n"
+        },
+        {
+          "line": 305,
+          "identifier_tokens": 1,
+          "before": "        self.engine.freeValue(value);\n",
+          "after": "        self.engine.freeValue(bootstrap_result);\n"
+        }
+      ]
+    },
+    {
+      "binding": "Fixture.bootstrap",
+      "old": "global",
+      "new": "global_object",
+      "tokens": 3,
+      "lines": [
+        {
+          "line": 328,
+          "identifier_tokens": 1,
+          "before": "        const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));\n",
+          "after": "        const global_object = try s.checked(c.JS_GetGlobalObject(s.engine.context));\n"
+        },
+        {
+          "line": 329,
+          "identifier_tokens": 1,
+          "before": "        const process = try s.get(global, \"process\");\n",
+          "after": "        const process = try s.get(global_object, \"process\");\n"
+        },
+        {
+          "line": 341,
+          "identifier_tokens": 1,
+          "before": "        const object = try s.get(global, \"Object\");\n",
+          "after": "        const object = try s.get(global_object, \"Object\");\n"
+        }
+      ]
+    },
+    {
+      "binding": "Fixture.create.offset",
+      "old": "value",
+      "new": "offset_value",
+      "tokens": 2,
+      "lines": [
+        {
+          "line": 383,
+          "identifier_tokens": 2,
+          "before": "            if (offset) |value| c.JS_NewFloat64(self.engine.context, value) else c.pi_js_undefined(),\n",
+          "after": "            if (offset) |offset_value| c.JS_NewFloat64(self.engine.context, offset_value) else c.pi_js_undefined(),\n"
+        }
+      ]
+    },
+    {
+      "binding": "Fixture.create.length",
+      "old": "value",
+      "new": "length_value",
+      "tokens": 2,
+      "lines": [
+        {
+          "line": 384,
+          "identifier_tokens": 2,
+          "before": "            if (length) |value| c.JS_NewFloat64(self.engine.context, value) else c.pi_js_undefined(),\n",
+          "after": "            if (length) |length_value| c.JS_NewFloat64(self.engine.context, length_value) else c.pi_js_undefined(),\n"
+        }
+      ]
+    },
+    {
+      "binding": "Fixture.createArgs",
+      "old": "value",
+      "new": "constructor_result",
+      "tokens": 2,
+      "lines": [
+        {
+          "line": 390,
+          "identifier_tokens": 1,
+          "before": "        const value = try a.expression(self.engine, createBody, .{ self, args });\n",
+          "after": "        const constructor_result = try a.expression(self.engine, createBody, .{ self, args });\n"
+        },
+        {
+          "line": 391,
+          "identifier_tokens": 1,
+          "before": "        self.engine.freeValue(value);\n",
+          "after": "        self.engine.freeValue(constructor_result);\n"
+        }
+      ]
+    },
+    {
+      "binding": "Fixture.expose",
+      "old": "value",
+      "new": "exposed_value",
+      "tokens": 2,
+      "lines": [
+        {
+          "line": 512,
+          "identifier_tokens": 1,
+          "before": "    pub fn expose(self: *Fixture, name: [*:0]const u8, value: c.JSValue) !void {\n",
+          "after": "    pub fn expose(self: *Fixture, name: [*:0]const u8, exposed_value: c.JSValue) !void {\n"
+        },
+        {
+          "line": 519,
+          "identifier_tokens": 1,
+          "before": "        }.body, .{ name, value });\n",
+          "after": "        }.body, .{ name, exposed_value });\n"
+        }
+      ]
+    },
+    {
+      "binding": "Fixture.installInitRecorder",
+      "old": "init",
+      "new": "init_hook",
+      "tokens": 3,
+      "lines": [
+        {
+          "line": 569,
+          "identifier_tokens": 1,
+          "before": "        const init = try self.global(\"ownerInitHook\");\n",
+          "after": "        const init_hook = try self.global(\"ownerInitHook\");\n"
+        },
+        {
+          "line": 570,
+          "identifier_tokens": 1,
+          "before": "        defer self.engine.freeValue(init);\n",
+          "after": "        defer self.engine.freeValue(init_hook);\n"
+        },
+        {
+          "line": 573,
+          "identifier_tokens": 1,
+          "before": "        try self.env().installHooks(.{ .init = init, .before = other, .after = other,\n",
+          "after": "        try self.env().installHooks(.{ .init = init_hook, .before = other, .after = other,\n"
+        }
+      ]
+    },
+    {
+      "binding": "Fixture.stopIo",
+      "old": "registry",
+      "new": "actual_registry",
+      "tokens": 2,
+      "lines": [
+        {
+          "line": 581,
+          "identifier_tokens": 2,
+          "before": "            if (self.registry_owner) |registry| if (registry.unwrap(wrapper)) |state| {\n",
+          "after": "            if (self.registry_owner) |actual_registry| if (actual_registry.unwrap(wrapper)) |state| {\n"
+        }
+      ]
+    },
+    {
+      "binding": "Fixture.drop",
+      "old": "value",
+      "new": "owned_value",
+      "tokens": 2,
+      "lines": [
+        {
+          "line": 591,
+          "identifier_tokens": 2,
+          "before": "        if (slot.*) |value| { slot.* = null; self.engine.freeValue(value); }\n",
+          "after": "        if (slot.*) |owned_value| { slot.* = null; self.engine.freeValue(owned_value); }\n"
+        }
+      ]
+    },
+    {
+      "binding": "Fixture.deinit.caught",
+      "old": "value",
+      "new": "caught_value",
+      "tokens": 2,
+      "lines": [
+        {
+          "line": 610,
+          "identifier_tokens": 2,
+          "before": "            for (self.caught[0..self.caught_count]) |value| self.engine.freeValue(value);\n",
+          "after": "            for (self.caught[0..self.caught_count]) |caught_value| self.engine.freeValue(caught_value);\n"
+        }
+      ]
+    },
+    {
+      "binding": "File.init",
+      "old": "status",
+      "new": "open_status",
+      "tokens": 3,
+      "lines": [
+        {
+          "line": 652,
+          "identifier_tokens": 1,
+          "before": "        const status = physical.uv_fs_open(null, &request, self.path.?.ptr,\n",
+          "after": "        const open_status = physical.uv_fs_open(null, &request, self.path.?.ptr,\n"
+        },
+        {
+          "line": 655,
+          "identifier_tokens": 1,
+          "before": "        if (status < 0) return error.ConcreteFileHandlePhysicalOpenFailed;\n",
+          "after": "        if (open_status < 0) return error.ConcreteFileHandlePhysicalOpenFailed;\n"
+        },
+        {
+          "line": 656,
+          "identifier_tokens": 1,
+          "before": "        self.descriptor = status;\n",
+          "after": "        self.descriptor = open_status;\n"
+        }
+      ]
+    }
+  ],
+  "identifier_tokens": 25,
+  "local_bindings": 11,
+  "all_unselected_lines_exact": true,
+  "complete_forward_and_inverse_exact": true,
+  "patch_exact": true,
+  "public_declarations_function_names_imports_embeds_exact": true,
+  "source_only_replay": {
+    "preparation_source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\prepare-proposal.py",
+      "bytes": 16040,
+      "sha256": "DCF56EAF57BF756CC904DD6A76EA88BB5C961AF902350F36BA33154B3AAD1104"
+    },
+    "read_only_prefix_bytes": 15531,
+    "read_only_prefix_sha256": "825DB447865FE0BD2BF8299D834C8BF1E12537ED306458604C2F52567C555558",
+    "excluded_marker": "# FINAL OUTPUT PHASE:",
+    "exact_outputs": [
+      {
+        "relative_path": "fixture-alpha-renames.patch",
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\fixture-alpha-renames.patch",
+        "bytes": 7029,
+        "sha256": "482AA11097EF6263F7492590DEEF53FC57B3A176C3331BF4F19045FFD9E280A8"
+      },
+      {
+        "relative_path": "input-inventory.json",
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\input-inventory.json",
+        "bytes": 194665,
+        "sha256": "8DBD78DA21AE269A03BAE66ECE60CD8A6D6A3A7CA66E0D2D8D08D4321608229D"
+      },
+      {
+        "relative_path": "negative/compile.json",
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\negative\\compile.json",
+        "bytes": 2292,
+        "sha256": "8FA9761496EB7C1F63F918B554FC488F76331AE9760B40F9181C3802A404E904"
+      },
+      {
+        "relative_path": "negative/compile.stderr.log",
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\negative\\compile.stderr.log",
+        "bytes": 24890,
+        "sha256": "9EBCCA812674DE30F512015FD2FB696D9DDA97F0D81CF617D4E4B3825BC5D25D"
+      },
+      {
+        "relative_path": "original/native_node_file_handle_owner_test_support.zig.raw",
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\original\\native_node_file_handle_owner_test_support.zig.raw",
+        "bytes": 32558,
+        "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+      },
+      {
+        "relative_path": "original/src/native_node_file_handle_owner_test_support.zig",
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\original\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 32558,
+        "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+      },
+      {
+        "relative_path": "projected/src/native_node_file_handle_owner_test_support.zig",
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 32741,
+        "sha256": "50E65ED03D8280B3DC35632D49274BC97A63A1A7012E70C362DB845B2C29878B"
+      },
+      {
+        "relative_path": "proposal.json",
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\proposal.json",
+        "bytes": 5249,
+        "sha256": "9CEEC8BF72B9E955697145E989A65C06AB9DB14B94444332545B4E5A233DD16E"
+      },
+      {
+        "relative_path": "token-and-graph-proof.json",
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\token-and-graph-proof.json",
+        "bytes": 33269,
+        "sha256": "68C99BF537F7A9EBDAEEDB9472A4A511E0951DD9AB3F4372FA02B192AD5A6104"
+      },
+      {
+        "relative_path": "zig-shadowing-authority.json",
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\zig-shadowing-authority.json",
+        "bytes": 2985,
+        "sha256": "DE4BA5698B8D90AD16D32166C80B8A69E32625DD27EE9D9C837552D6E08B4520"
+      }
+    ]
+  },
+  "complete_current_input_rehash": {
+    "inventory": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\input-inventory.json",
+      "bytes": 194665,
+      "sha256": "8DBD78DA21AE269A03BAE66ECE60CD8A6D6A3A7CA66E0D2D8D08D4321608229D"
+    },
+    "count": 960
+  },
+  "four_complete_topologies": [
+    {
+      "group": "native-node-file-handle-owner",
+      "source_root": "src/native_node_file_handle_owner_test.zig",
+      "root_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "declared_controls": 18,
+      "required_named": [
+        "native_node_file_handle_owner_test.test.native FileHandle owner constructor attaches the same native stream and transfers the real descriptor on release",
+        "native_node_file_handle_owner_test.test.native FileHandle owner optional Number IntegerValue follows pinned V8 truncation and saturation",
+        "native_node_file_handle_owner_test.test.native FileHandle owner non Number optional arguments perform no guest coercion",
+        "native_node_file_handle_owner_test.test.native FileHandle owner keeps the full public method template an explicit dependency",
+        "native_node_file_handle_owner_test.test.native FileHandle owner explicit close keeps one Promise and one actual CLOSE request through cleanup",
+        "native_node_file_handle_owner_test.test.native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose",
+        "native_node_file_handle_owner_test.test.native FileHandle owner real stopped service admission rejects without fabricating completion or closing the descriptor",
+        "native_node_file_handle_owner_test.test.native FileHandle owner retained CloseReq wrapper loses native state after both callback references retire",
+        "native_node_file_handle_owner_test.test.native FileHandle owner CloseReq Global keeps the handle and weak BindingData alive until actual completion",
+        "native_node_file_handle_owner_test.test.native FileHandle owner GC closes synchronously and the warning ticket retains no handle or BindingData",
+        "native_node_file_handle_owner_test.test.native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once",
+        "native_node_file_handle_owner_test.test.native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason",
+        "native_node_file_handle_owner_test.test.native FileHandle owner failed GC close queues one refed actual UVException ticket",
+        "native_node_file_handle_owner_test.test.native FileHandle owner cleanup skips unrefed GC warning execution and destroys its native capture",
+        "native_node_file_handle_owner_test.test.native FileHandle owner GC uses the retained real service for synchronous close after worker join",
+        "native_node_file_handle_owner_test.test.native FileHandle owner consumes the real read engine and reuses its physical ReadWrap across concrete handles",
+        "native_node_file_handle_owner_test.test.native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity",
+        "native_node_file_handle_owner_test.test.native FileHandle owner real Hub shutdown drains accepted close without settling its guest Promise"
+      ],
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "modules": 710,
+      "embeds": 243,
+      "edges": 4643,
+      "topology_sha256": "74C3DED84D57F833D57814F1A97F4567B4E5564641ACE3205D729855157F5AB8",
+      "complete_before_after_topology_equal": true,
+      "fixture_reachable": true
+    },
+    {
+      "group": "native-node-fs-before-hook-continuation",
+      "source_root": "src/native_node_fs_before_hook_continuation_test.zig",
+      "root_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_fs_before_hook_continuation_test.zig",
+        "bytes": 6578,
+        "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92"
+      },
+      "declared_controls": 3,
+      "required_named": [
+        "native_node_fs_before_hook_continuation_test.test.native FS before hook actual read fulfills after the same ordinary hook rethrow",
+        "native_node_fs_before_hook_continuation_test.test.native FS before hook actual EBADF read rejects with UVException while the hook reason propagates separately",
+        "native_node_fs_before_hook_continuation_test.test.native FS before hook continuation performs the original live Promise Get before settlement"
+      ],
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "modules": 710,
+      "embeds": 243,
+      "edges": 4643,
+      "topology_sha256": "9FC5AAE622351CE90F963B94550FEA4E47EA8CDA44A5A5E8221A28FF9395C953",
+      "complete_before_after_topology_equal": true,
+      "fixture_reachable": true
+    },
+    {
+      "group": "native-vm-error-constructor-name",
+      "source_root": "src/native_vm_error_constructor_name_test.zig",
+      "root_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_vm_error_constructor_name_test.zig",
+        "bytes": 28931,
+        "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525"
+      },
+      "declared_controls": 24,
+      "required_named": [
+        "native_vm_error_constructor_name_test.test.VM native Error constructor intrinsic families retain their native initial names",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor direct native creation and throws record real origins",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor real VM stack exhaustion retains RangeError provenance",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor public function and Error names do not replace provenance",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor public replacement cannot redirect native intrinsic factories",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor changing an Error prototype preserves base provenance",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor new inheritors suppress fast provenance with real prototype admission",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor explicit prototype admission uses the same original fallback",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor inherited data tag precedes constructor at the same level",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor receiver constructor and accessor tag are never invoked",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor prototype accessors and mutable builtin name are skipped",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor actual intrinsic Object is skipped without its public name",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor final native class fallback remains Error",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor bound and Proxy constructors are skipped without traps",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor missing general DebugName is explicit without function name Get",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor Proxy prototype storage stays unsupported without traps",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor native exotic descriptors remain uncalled and unsupported",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor different new target is an explicit remaining dependency",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor unrecorded physical Error allocation cannot invent provenance",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor ordinary lookalikes never acquire the actual native class",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor query preserves actual ordinary and uncatchable pending owners",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor active and cancelled native termination state is unchanged",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor all selected query branches allocate no VM storage",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor actual native origin survives released foreign realm and retires with Error"
+      ],
+      "allowed_anonymous": [],
+      "modules": 1,
+      "embeds": 0,
+      "edges": 0,
+      "topology_sha256": "498461DB79246DF01B72DC574E43319A995AAF4CBA3B6E25A521F4C2F97D8429",
+      "complete_before_after_topology_equal": true,
+      "fixture_reachable": false
+    },
+    {
+      "group": "native-node-file-handle-transfer",
+      "source_root": "src/native_node_file_handle_transfer_test.zig",
+      "root_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_transfer_test.zig",
+        "bytes": 23797,
+        "sha256": "E5656DE3AEC771F144939E5852CC7161B1B0499D4764A3F2E0BF42460570C5B1"
+      },
+      "declared_controls": 13,
+      "required_named": [
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer changes only the live closed member and retains the real descriptor",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer admission follows real ReadStart and ReadStop with the original pending request",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer rejects real closing and closed state without weakening the close request",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer admission excludes the real released descriptor state",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer packet move preserves one native allocation and closes once",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer packet survives actual sender GC and weak BindingData retirement",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer allocation alone retains its native memory domain after Engine teardown",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer abandoned on a real different thread closes after sender Engine retirement",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer destructor null admission masks and restores an outer real context",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer native member and destructor calls preserve an actual current exception",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer missing real BindingData consumes the packet and closes its descriptor",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer disowns before the explicit missing full template boundary without inventing a receiver",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer strong result edges clone and move over the same actual weak wrapper"
+      ],
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "modules": 711,
+      "embeds": 243,
+      "edges": 4649,
+      "topology_sha256": "BCF0B677209155DB9B3BB43EED14A808777A8E5F79D602843697ADF8D778E9A1",
+      "complete_before_after_topology_equal": true,
+      "fixture_reachable": true
+    }
+  ],
+  "declared_names_unchanged": 58,
+  "future_actual_metadata": null,
+  "original_diagnostics": [
+    {
+      "line": 304,
+      "column": 15,
+      "message": "local constant shadows declaration of 'value'",
+      "declaration_line": 483,
+      "declaration_column": 9,
+      "verbatim": "src\\native_node_file_handle_owner_test_support.zig:304:15: error: local constant shadows declaration of 'value'\n        const value = try a.expression(self.engine, bootstrap, .{self});\n              ^~~~~\nsrc\\native_node_file_handle_owner_test_support.zig:483:9: note: declared here"
+    },
+    {
+      "line": 328,
+      "column": 15,
+      "message": "local constant shadows declaration of 'global'",
+      "declaration_line": 504,
+      "declaration_column": 9,
+      "verbatim": "src\\native_node_file_handle_owner_test_support.zig:328:15: error: local constant shadows declaration of 'global'\n        const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));\n              ^~~~~~\nsrc\\native_node_file_handle_owner_test_support.zig:504:9: note: declared here"
+    },
+    {
+      "line": 383,
+      "column": 26,
+      "message": "capture shadows declaration of 'value'",
+      "declaration_line": 483,
+      "declaration_column": 9,
+      "verbatim": "src\\native_node_file_handle_owner_test_support.zig:383:26: error: capture shadows declaration of 'value'\n            if (offset) |value| c.JS_NewFloat64(self.engine.context, value) else c.pi_js_undefined(),\n                         ^~~~~\nsrc\\native_node_file_handle_owner_test_support.zig:483:9: note: declared here"
+    },
+    {
+      "line": 390,
+      "column": 15,
+      "message": "local constant shadows declaration of 'value'",
+      "declaration_line": 483,
+      "declaration_column": 9,
+      "verbatim": "src\\native_node_file_handle_owner_test_support.zig:390:15: error: local constant shadows declaration of 'value'\n        const value = try a.expression(self.engine, createBody, .{ self, args });\n              ^~~~~\nsrc\\native_node_file_handle_owner_test_support.zig:483:9: note: declared here"
+    },
+    {
+      "line": 512,
+      "column": 56,
+      "message": "function parameter shadows declaration of 'value'",
+      "declaration_line": 483,
+      "declaration_column": 9,
+      "verbatim": "src\\native_node_file_handle_owner_test_support.zig:512:56: error: function parameter shadows declaration of 'value'\n    pub fn expose(self: *Fixture, name: [*:0]const u8, value: c.JSValue) !void {\n                                                       ^~~~~\nsrc\\native_node_file_handle_owner_test_support.zig:483:9: note: declared here"
+    },
+    {
+      "line": 569,
+      "column": 15,
+      "message": "local constant shadows declaration of 'init'",
+      "declaration_line": 296,
+      "declaration_column": 9,
+      "verbatim": "src\\native_node_file_handle_owner_test_support.zig:569:15: error: local constant shadows declaration of 'init'\n        const init = try self.global(\"ownerInitHook\");\n              ^~~~\nsrc\\native_node_file_handle_owner_test_support.zig:296:9: note: declared here"
+    },
+    {
+      "line": 581,
+      "column": 39,
+      "message": "capture shadows declaration of 'registry'",
+      "declaration_line": 361,
+      "declaration_column": 9,
+      "verbatim": "src\\native_node_file_handle_owner_test_support.zig:581:39: error: capture shadows declaration of 'registry'\n            if (self.registry_owner) |registry| if (registry.unwrap(wrapper)) |state| {\n                                      ^~~~~~~~\nsrc\\native_node_file_handle_owner_test_support.zig:361:9: note: declared here"
+    },
+    {
+      "line": 591,
+      "column": 22,
+      "message": "capture shadows declaration of 'value'",
+      "declaration_line": 483,
+      "declaration_column": 9,
+      "verbatim": "src\\native_node_file_handle_owner_test_support.zig:591:22: error: capture shadows declaration of 'value'\n        if (slot.*) |value| { slot.* = null; self.engine.freeValue(value); }\n                     ^~~~~\nsrc\\native_node_file_handle_owner_test_support.zig:483:9: note: declared here"
+    },
+    {
+      "line": 610,
+      "column": 54,
+      "message": "capture shadows declaration of 'value'",
+      "declaration_line": 483,
+      "declaration_column": 9,
+      "verbatim": "src\\native_node_file_handle_owner_test_support.zig:610:54: error: capture shadows declaration of 'value'\n            for (self.caught[0..self.caught_count]) |value| self.engine.freeValue(value);\n                                                     ^~~~~\nsrc\\native_node_file_handle_owner_test_support.zig:483:9: note: declared here"
+    },
+    {
+      "line": 652,
+      "column": 15,
+      "message": "local constant shadows declaration of 'status'",
+      "declaration_line": 664,
+      "declaration_column": 9,
+      "verbatim": "src\\native_node_file_handle_owner_test_support.zig:652:15: error: local constant shadows declaration of 'status'\n        const status = physical.uv_fs_open(null, &request, self.path.?.ptr,\n              ^~~~~~\nsrc\\native_node_file_handle_owner_test_support.zig:664:9: note: declared here"
+    }
+  ],
+  "adjacent_length_capture": {
+    "line": 384,
+    "reason": "Same Fixture.value shadow in the immediately adjacent length capture; direct source finding, not an extra reported compiler error."
+  },
+  "contained_zig_authority": [
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\doc\\langref.html",
+        "bytes": 983945,
+        "sha256": "095DAA2D9F1262FB8BC00AFBB44D386F20363FD930E400BF703A8BC4255A4FFD"
+      },
+      "first_line": 1940,
+      "last_line": 1946,
+      "bytes": 441,
+      "sha256": "695539D96DCD8C0BF2B498A0F2610E16D8BCC8708636BFA4A546C6B9EBC5CE99",
+      "text": "      It is generally preferable to use <code><span class=\"tok-kw\">const</span></code> rather than\n      <code><span class=\"tok-kw\">var</span></code> when declaring a variable. This causes less work for both\n      humans and computers to do when reading code, and creates more optimization opportunities.\n      </p>\n      <p>\n      Variables are never allowed to shadow <a href=\"#Identifiers\">Identifiers</a> from an outer scope.\n      </p>\n"
+    },
+    {
+      "authority": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\doc\\langref.html",
+        "bytes": 983945,
+        "sha256": "095DAA2D9F1262FB8BC00AFBB44D386F20363FD930E400BF703A8BC4255A4FFD"
+      },
+      "first_line": 5477,
+      "last_line": 5501,
+      "bytes": 1644,
+      "sha256": "FF776FE4FCEFF8A403F53DAAC731FA4F587E68C8ABBCD6D4BF6F8BAC0594BD6F",
+      "text": "      <h3 id=\"Shadowing\"><a href=\"#toc-Shadowing\">Shadowing</a> <a class=\"hdr\" href=\"#Shadowing\">\u00a7</a></h3>\n\n      <p><a href=\"#Identifiers\">Identifiers</a> are never allowed to \"hide\" other identifiers by using the same name:</p>\n      <figure><figcaption class=\"zig-cap\"><cite class=\"file\">test_shadowing.zig</cite></figcaption><pre><code><span class=\"tok-kw\">const</span> pi = <span class=\"tok-number\">3.14</span>;\n\n<span class=\"tok-kw\">test</span> <span class=\"tok-str\">&quot;inside test block&quot;</span> {\n    <span class=\"tok-comment\">// Let's even go inside another block</span>\n    {\n        <span class=\"tok-kw\">var</span> pi: <span class=\"tok-type\">i32</span> = <span class=\"tok-number\">1234</span>;\n    }\n}</code></pre></figure><figure><figcaption class=\"shell-cap\">Shell</figcaption><pre><samp>$ <kbd>zig test test_shadowing.zig</kbd>\n<span class=\"sgr-1m\">/home/ci/work/zig-bootstrap/zig/doc/langref/test_shadowing.zig:6:13: </span><span class=\"sgr-31m\">error: </span><span class=\"sgr-1m\">local variable shadows declaration of 'pi'\n</span>        var pi: i32 = 1234;\n            <span class=\"sgr-32m\">^~\n</span><span class=\"sgr-1m\">/home/ci/work/zig-bootstrap/zig/doc/langref/test_shadowing.zig:1:1: </span><span class=\"sgr-36m\">note: </span><span class=\"sgr-1m\">declared here\n</span>const pi = 3.14;\n<span class=\"sgr-32m\">^~~~~~~~~~~~~~~\n</span>\n</samp></pre></figure>\n\n      <p>\n      Because of this, when you read Zig code you can always rely on an identifier to consistently mean\n      the same thing within the scope it is defined. Note that you can, however, use the same name if\n      the scopes are separate:\n      </p>\n"
+    }
+  ],
+  "separate_phase_observer": {
+    "finding": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-close-observer-source-peer-20261020\\finding.json",
+      "bytes": 1893,
+      "sha256": "AED0E3E9518D691A36068A6B410B11B1D060718AB313E9921FBC665EFBA68DE1"
+    },
+    "alpha_observer_lines": [
+      196,
+      215
+    ],
+    "bytes": 1148,
+    "sha256": "EF15E57B116D549DCB5647C12BA55652C3C941BBCAC240E61CB290DF8EEF7A06",
+    "original_bad_begin_read_preserved": true,
+    "no_lifecycle_acceptance_claim": true
+  },
+  "preserved_identity_draft": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-runtime-template-identity-sourceonly-20261020\\production\\src\\extensions\\native_node_runtime_template_identity.zig",
+      "bytes": 7105,
+      "sha256": "1C029A4C5F220B2668DDC354CDF767C630549E56CA89557BE17234A3DDBFA7A8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-runtime-template-identity-sourceonly-20261020\\shared\\proposal.json",
+      "bytes": 16459,
+      "sha256": "3CBDF1798B9FAFDDCDA77CDE738DA0709A23E7A59831B37B22A3E1849759994F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-runtime-template-identity-sourceonly-20261020\\build\\proposal.json",
+      "bytes": 11103,
+      "sha256": "B025CC27AE5548CA37063370B94A084BC2993578D7971082F0329F9682A16763"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-runtime-template-identity-sourceonly-20261020\\controls\\src\\native_node_runtime_template_identity_test.zig",
+      "bytes": 29051,
+      "sha256": "4DCD0ADB1E72B5E89FBC8F13E424EC183DF28DACD4ABE4E97792EDB89A547F6E"
+    }
+  ],
+  "main_clean_before_and_after": true,
+  "live_main_and_sdk_fixture_original": true,
+  "execution": {
+    "native": false,
+    "compiler": false,
+    "formatter": false,
+    "metadata_auditor": false,
+    "project_generator": false,
+    "grant_constructor": false,
+    "source_only_sdk_prefix": true
+  }
+}

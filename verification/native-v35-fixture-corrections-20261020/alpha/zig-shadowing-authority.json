@@ -1,0 +1,26 @@
+[
+  {
+    "authority": {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\doc\\langref.html",
+      "bytes": 983945,
+      "sha256": "095DAA2D9F1262FB8BC00AFBB44D386F20363FD930E400BF703A8BC4255A4FFD"
+    },
+    "first_line": 1940,
+    "last_line": 1946,
+    "bytes": 441,
+    "sha256": "695539D96DCD8C0BF2B498A0F2610E16D8BCC8708636BFA4A546C6B9EBC5CE99",
+    "text": "      It is generally preferable to use <code><span class=\"tok-kw\">const</span></code> rather than\n      <code><span class=\"tok-kw\">var</span></code> when declaring a variable. This causes less work for both\n      humans and computers to do when reading code, and creates more optimization opportunities.\n      </p>\n      <p>\n      Variables are never allowed to shadow <a href=\"#Identifiers\">Identifiers</a> from an outer scope.\n      </p>\n"
+  },
+  {
+    "authority": {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\doc\\langref.html",
+      "bytes": 983945,
+      "sha256": "095DAA2D9F1262FB8BC00AFBB44D386F20363FD930E400BF703A8BC4255A4FFD"
+    },
+    "first_line": 5477,
+    "last_line": 5501,
+    "bytes": 1644,
+    "sha256": "FF776FE4FCEFF8A403F53DAAC731FA4F587E68C8ABBCD6D4BF6F8BAC0594BD6F",
+    "text": "      <h3 id=\"Shadowing\"><a href=\"#toc-Shadowing\">Shadowing</a> <a class=\"hdr\" href=\"#Shadowing\">\u00a7</a></h3>\n\n      <p><a href=\"#Identifiers\">Identifiers</a> are never allowed to \"hide\" other identifiers by using the same name:</p>\n      <figure><figcaption class=\"zig-cap\"><cite class=\"file\">test_shadowing.zig</cite></figcaption><pre><code><span class=\"tok-kw\">const</span> pi = <span class=\"tok-number\">3.14</span>;\n\n<span class=\"tok-kw\">test</span> <span class=\"tok-str\">&quot;inside test block&quot;</span> {\n    <span class=\"tok-comment\">// Let's even go inside another block</span>\n    {\n        <span class=\"tok-kw\">var</span> pi: <span class=\"tok-type\">i32</span> = <span class=\"tok-number\">1234</span>;\n    }\n}</code></pre></figure><figure><figcaption class=\"shell-cap\">Shell</figcaption><pre><samp>$ <kbd>zig test test_shadowing.zig</kbd>\n<span class=\"sgr-1m\">/home/ci/work/zig-bootstrap/zig/doc/langref/test_shadowing.zig:6:13: </span><span class=\"sgr-31m\">error: </span><span class=\"sgr-1m\">local variable shadows declaration of 'pi'\n</span>        var pi: i32 = 1234;\n            <span class=\"sgr-32m\">^~\n</span><span class=\"sgr-1m\">/home/ci/work/zig-bootstrap/zig/doc/langref/test_shadowing.zig:1:1: </span><span class=\"sgr-36m\">note: </span><span class=\"sgr-1m\">declared here\n</span>const pi = 3.14;\n<span class=\"sgr-32m\">^~~~~~~~~~~~~~~\n</span>\n</samp></pre></figure>\n\n      <p>\n      Because of this, when you read Zig code you can always rely on an identifier to consistently mean\n      the same thing within the scope it is defined. Note that you can, however, use the same name if\n      the scopes are separate:\n      </p>\n"
+  }
+]

@@ -1,0 +1,17 @@
+--- a/src/native_node_file_handle_owner_test_support.zig
++++ b/src/native_node_file_handle_owner_test_support.zig
+@@ -199,7 +199,13 @@
+     f.close_begins += 1;
+     f.close_actual = @intFromPtr(request.actual.?);
+     f.close_begin_provider = request.wrap.provider;
+-    f.close_begin_kind = uv.pi_uv_fs_request_info(request.actual.?).kind;
++    // ClosePromise calls this synchronously on the dispatch owner thread,
++    // while CloseReq owns the native storage and before its first submission.
++    std.debug.assert(!request.entry.dispatched and !request.entry.counted);
++    const preparation = uv.pi_uv_fs_request_preparation_info(request.actual.?);
++    std.debug.assert(preparation.accepted == 0 and preparation.cleaned == 0 and
++        preparation.completed == 0);
++    f.close_begin_kind = preparation.kind;
+     f.close_begin_unsubmitted = !request.entry.dispatched and !request.entry.counted;
+     f.close_begin_globals = request.promise != null and request.reference != null;
+ }

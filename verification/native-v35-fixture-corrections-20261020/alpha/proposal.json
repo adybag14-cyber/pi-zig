@@ -1,0 +1,101 @@
+{
+  "schema": "pi-zig-v35-fixture-shadowing-source-proposal-v1",
+  "status": "UNEXECUTED SOURCE PROPOSAL; original V35 compile failure remains unqualified",
+  "base_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "source_target": "src/native_node_file_handle_owner_test_support.zig",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\original\\src\\native_node_file_handle_owner_test_support.zig",
+    "bytes": 32558,
+    "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+    "bytes": 32741,
+    "sha256": "50E65ED03D8280B3DC35632D49274BC97A63A1A7012E70C362DB845B2C29878B"
+  },
+  "raw_git_original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\original\\native_node_file_handle_owner_test_support.zig.raw",
+    "bytes": 32558,
+    "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\fixture-alpha-renames.patch",
+    "bytes": 7029,
+    "sha256": "482AA11097EF6263F7492590DEEF53FC57B3A176C3331BF4F19045FFD9E280A8"
+  },
+  "proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\token-and-graph-proof.json",
+    "bytes": 33269,
+    "sha256": "68C99BF537F7A9EBDAEEDB9472A4A511E0951DD9AB3F4372FA02B192AD5A6104"
+  },
+  "input_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\input-inventory.json",
+    "bytes": 194665,
+    "sha256": "8DBD78DA21AE269A03BAE66ECE60CD8A6D6A3A7CA66E0D2D8D08D4321608229D"
+  },
+  "authority_excerpts": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\zig-shadowing-authority.json",
+    "bytes": 2985,
+    "sha256": "DE4BA5698B8D90AD16D32166C80B8A69E32625DD27EE9D9C837552D6E08B4520"
+  },
+  "negative_compiler_record": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\negative\\compile.json",
+    "bytes": 2292,
+    "sha256": "8FA9761496EB7C1F63F918B554FC488F76331AE9760B40F9181C3802A404E904"
+  },
+  "negative_compiler_stderr": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\negative\\compile.stderr.log",
+    "bytes": 24890,
+    "sha256": "9EBCCA812674DE30F512015FD2FB696D9DDA97F0D81CF617D4E4B3825BC5D25D"
+  },
+  "original_negative_paths": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-buildquery-20261020-223254\\groups\\native-node-file-handle-owner\\compile.json",
+      "bytes": 2292,
+      "sha256": "8FA9761496EB7C1F63F918B554FC488F76331AE9760B40F9181C3802A404E904"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-buildquery-20261020-223254\\groups\\native-node-file-handle-owner\\compile.stderr.log",
+      "bytes": 24890,
+      "sha256": "9EBCCA812674DE30F512015FD2FB696D9DDA97F0D81CF617D4E4B3825BC5D25D"
+    }
+  ],
+  "preparation_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\prepare-proposal.py",
+    "bytes": 16040,
+    "sha256": "DCF56EAF57BF756CC904DD6A76EA88BB5C961AF902350F36BA33154B3AAD1104"
+  },
+  "review_scope": "Eleven local bindings / 25 identifier tokens only; all ten reported errors and declaration notes retained. Full-file forward/inverse and four root import topologies checked. No live source write.",
+  "control_counts": [
+    {
+      "root": "src/native_node_file_handle_owner_test.zig",
+      "declared": 18
+    },
+    {
+      "root": "src/native_node_fs_before_hook_continuation_test.zig",
+      "declared": 3
+    },
+    {
+      "root": "src/native_vm_error_constructor_name_test.zig",
+      "declared": 24
+    },
+    {
+      "root": "src/native_node_file_handle_transfer_test.zig",
+      "declared": 13
+    }
+  ],
+  "unchanged_constraints": [
+    "No production code change",
+    "No control, assertion, fixture operation, literal, import, or type change",
+    "No method or field name change",
+    "No Main, build, catalog, cache, lease or native execution",
+    "Original compile failure and SDK fixture remain unchanged",
+    "Separate phase observer issue is outside this packet"
+  ],
+  "pending": [
+    "Independent source peer",
+    "Root review and failure closure",
+    "Any later Main intake and fresh exact-head catalog/grant",
+    "New compiler and runtime qualification"
+  ]
+}

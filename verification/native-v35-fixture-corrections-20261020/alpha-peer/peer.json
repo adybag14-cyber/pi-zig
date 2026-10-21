@@ -1,0 +1,71 @@
+{
+  "schema": "pi-zig-v35-fixture-shadowing-independent-peer-v1",
+  "status": "ACCEPTED FOR THE BOUNDED SOURCE-ONLY IDENTIFIER DELTA",
+  "reviewer": "/root/module_io_port",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\proposal.json",
+    "bytes": 5249,
+    "sha256": "9CEEC8BF72B9E955697145E989A65C06AB9DB14B94444332545B4E5A233DD16E"
+  },
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\original\\src\\native_node_file_handle_owner_test_support.zig",
+    "bytes": 32558,
+    "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+    "bytes": 32741,
+    "sha256": "50E65ED03D8280B3DC35632D49274BC97A63A1A7012E70C362DB845B2C29878B"
+  },
+  "audit_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-independent-peer-20261020\\source-audit.py",
+    "bytes": 12825,
+    "sha256": "9F95E8276DABBAE1DDE3E5249E7B609E47DC9BA1E550458484D4127F319A639F"
+  },
+  "audit_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-independent-peer-20261020\\source-audit.json",
+    "bytes": 39142,
+    "sha256": "E2ABF53DA669E604E25556948F2F71640DAF11556070FC663325A725EC29580C"
+  },
+  "scope": "Independent full original fixture and entire patch read; exact line-based forward/inverse reconstruction of 25 identifier tokens in eleven bindings; independently rehashed 960 current input files and reproduced all ten SDK artifacts from the fully read output-free source prefix.",
+  "findings": [
+    "All ten reported Zig shadowing errors map to the intended local bindings. The adjacent line 384 length capture has the same source-level conflict and is explicitly recorded as an additional source finding, not an eleventh compiler diagnostic.",
+    "The selected names remain local. The expose parameter changes spelling only; its public method name and type, all other method and field names, all type tokens, literals, operations, assertions, imports, whitespace and comments are preserved.",
+    "Four root dependency topologies and all 58 declared control names are unchanged. The Error constructor root does not reach this fixture. Actual future compiler-selected metadata is unknown.",
+    "The original beginAsyncClose completion-only observer is deliberately unchanged in this alpha packet. Its separate source finding is retained and must compose through a separately reviewed successor; this receipt does not accept that observer lifecycle.",
+    "No concrete blocker remains in the selected alpha-renaming slice."
+  ],
+  "manual_reads": [
+    "Full 32,558-byte original fixture and the entire 7,029-byte unified patch.",
+    "Full 16,040-byte SDK preparation source, proposal, token/graph proof and selected Zig language-reference excerpts.",
+    "Ten terminal shadowing diagnostic messages and declaration notes, retained without interpreting a source repair as a successful compilation."
+  ],
+  "proof_totals": {
+    "local_bindings": 11,
+    "identifier_tokens": 25,
+    "reported_errors": 10,
+    "adjacent_source_only_binding": 1,
+    "reproduced_artifacts": 10,
+    "current_input_files": 960,
+    "root_topologies": 4,
+    "declared_controls": 58,
+    "authority_excerpts": 2
+  },
+  "separate_phase_finding": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-close-observer-source-peer-20261020\\finding.json",
+    "bytes": 1893,
+    "sha256": "AED0E3E9518D691A36068A6B410B11B1D060718AB313E9921FBC665EFBA68DE1"
+  },
+  "limits": [
+    "No compiler, native, formatter, Node reference, project generator, metadata auditor or grant constructor execution.",
+    "No Main, SDK live fixture, build, catalog, cache, lease or unrelated source modification.",
+    "No declaration of runtime success, process/artifact closure, full FileHandle correctness or future metadata counts.",
+    "Root retains first-compile negative closure, source intake and fresh catalog/grant release authority."
+  ],
+  "preservation": {
+    "main_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+    "main_clean": true,
+    "original_sdk_fixture": true,
+    "identity_owner_shared_build_and_16_controls_pinned": true
+  }
+}

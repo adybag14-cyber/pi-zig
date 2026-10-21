@@ -199,7 +199,13 @@ fn beginAsyncClose(raw: ?*anyopaque, value: *anyopaque) void {
     f.close_begins += 1;
     f.close_actual = @intFromPtr(request.actual.?);
     f.close_begin_provider = request.wrap.provider;
-    f.close_begin_kind = uv.pi_uv_fs_request_info(request.actual.?).kind;
+    // ClosePromise calls this synchronously on the dispatch owner thread,
+    // while CloseReq owns the native storage and before its first submission.
+    std.debug.assert(!request.entry.dispatched and !request.entry.counted);
+    const preparation = uv.pi_uv_fs_request_preparation_info(request.actual.?);
+    std.debug.assert(preparation.accepted == 0 and preparation.cleaned == 0 and
+        preparation.completed == 0);
+    f.close_begin_kind = preparation.kind;
     f.close_begin_unsubmitted = !request.entry.dispatched and !request.entry.counted;
     f.close_begin_globals = request.promise != null and request.reference != null;
 }
@@ -301,8 +307,8 @@ pub const Fixture = struct {
         self.engine.host_control_context = self;
         try @import("extensions/native_process.zig").install(self.engine,
             std.testing.io, &self.native_environment, &.{"native-filehandle-owner"});
-        const value = try a.expression(self.engine, bootstrap, .{self});
-        self.engine.freeValue(value);
+        const bootstrap_result = try a.expression(self.engine, bootstrap, .{self});
+        self.engine.freeValue(bootstrap_result);
         try self.engine.bindFunction("actualOwnerWarningFlag", warningFlag, 0);
         self.controller = switch (try fs_io.acquire(self.engine, self.env())) {
             .ready => |actual| actual,
@@ -325,8 +331,8 @@ pub const Fixture = struct {
         self.outer_initialized = true;
     }
     fn bootstrap(s: *a.Scope, self: *Fixture) !c.JSValue {
-        const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));
-        const process = try s.get(global, "process");
+        const global_object = try s.checked(c.JS_GetGlobalObject(s.engine.context));
+        const process = try s.get(global_object, "process");
         const generation = try s.beforeAllocation();
         const symbol = try s.checkedAllocation(c.JS_NewSymbol(
             s.engine.context, "node:resource_symbol", false), generation);
@@ -338,7 +344,7 @@ pub const Fixture = struct {
         self.env().markBootstrapComplete();
         self.template_owner = try templates.acquire(s.engine, self.env());
         self.registry_owner = try templates.registry(s.engine, self.template_owner.?);
-        const object = try s.get(global, "Object");
+        const object = try s.get(global_object, "Object");
         const object_prototype = try s.get(object, "prototype");
         const async_constructor = try s.own(try templates.constructor(
             s.engine, self.template_owner.?, .async_wrap));
@@ -380,15 +386,15 @@ pub const Fixture = struct {
     pub fn create(self: *Fixture, descriptor: c_int, offset: ?f64, length: ?f64) !*Handle {
         const args = [_]c.JSValue{
             c.JS_NewInt32(self.engine.context, descriptor),
-            if (offset) |value| c.JS_NewFloat64(self.engine.context, value) else c.pi_js_undefined(),
-            if (length) |value| c.JS_NewFloat64(self.engine.context, value) else c.pi_js_undefined(),
+            if (offset) |offset_value| c.JS_NewFloat64(self.engine.context, offset_value) else c.pi_js_undefined(),
+            if (length) |length_value| c.JS_NewFloat64(self.engine.context, length_value) else c.pi_js_undefined(),
         };
         return self.createArgs(&args);
     }
     pub fn createArgs(self: *Fixture, args: []const c.JSValue) !*Handle {
         if (self.primary_wrapper != null) return error.ConcreteFileHandlePreviousWrapperRequiredGone;
-        const value = try a.expression(self.engine, createBody, .{ self, args });
-        self.engine.freeValue(value);
+        const constructor_result = try a.expression(self.engine, createBody, .{ self, args });
+        self.engine.freeValue(constructor_result);
         return self.handle();
     }
     fn createBody(s: *a.Scope, self: *Fixture, args: []const c.JSValue) !c.JSValue {
@@ -509,14 +515,14 @@ pub const Fixture = struct {
             }
         }.body, .{name});
     }
-    pub fn expose(self: *Fixture, name: [*:0]const u8, value: c.JSValue) !void {
+    pub fn expose(self: *Fixture, name: [*:0]const u8, exposed_value: c.JSValue) !void {
         const result = try a.expression(self.engine, struct {
             fn body(s: *a.Scope, key: [*:0]const u8, value_to_set: c.JSValue) !c.JSValue {
                 const object = try s.checked(c.JS_GetGlobalObject(s.engine.context));
                 try s.put(object, key, value_to_set);
                 return c.pi_js_undefined();
             }
-        }.body, .{ name, value });
+        }.body, .{ name, exposed_value });
         self.engine.freeValue(result);
     }
     pub fn installThrowingBeforeHook(self: *Fixture) !void {
@@ -566,11 +572,11 @@ pub const Fixture = struct {
             "ownerInitEvents.push([type,id,trigger]);" ++
             "if(type==='FILEHANDLECLOSEREQ')ownerCloseResources.push(resource);};" ++
             "globalThis.ownerUnselectedHook=function(){throw Error('unselected async hook');};");
-        const init = try self.global("ownerInitHook");
-        defer self.engine.freeValue(init);
+        const init_hook = try self.global("ownerInitHook");
+        defer self.engine.freeValue(init_hook);
         const other = try self.global("ownerUnselectedHook");
         defer self.engine.freeValue(other);
-        try self.env().installHooks(.{ .init = init, .before = other, .after = other,
+        try self.env().installHooks(.{ .init = init_hook, .before = other, .after = other,
             .destroy = other, .promise_resolve = other }, self.binding_target.?);
         self.env().field(.init).* = 1;
     }
@@ -578,7 +584,7 @@ pub const Fixture = struct {
         if (self.io_stopped) return;
         self.io_stopped = true;
         if (self.primary_wrapper) |wrapper| {
-            if (self.registry_owner) |registry| if (registry.unwrap(wrapper)) |state| {
+            if (self.registry_owner) |actual_registry| if (actual_registry.unwrap(wrapper)) |state| {
                 const handle_value: *Handle = @alignCast(@fieldParentPtr("wrap", state));
                 _ = handle_value.readStop();
             };
@@ -588,7 +594,7 @@ pub const Fixture = struct {
         self.controller = null;
     }
     fn drop(self: *Fixture, slot: *?c.JSValue) void {
-        if (slot.*) |value| { slot.* = null; self.engine.freeValue(value); }
+        if (slot.*) |owned_value| { slot.* = null; self.engine.freeValue(owned_value); }
     }
     pub fn deinit(self: *Fixture) void {
         self.stopIo();
@@ -607,7 +613,7 @@ pub const Fixture = struct {
             environment.disarm() catch @panic("concrete FileHandle Environment disarm failed");
         self.registry_owner = null;
         if (self.engine_alive) {
-            for (self.caught[0..self.caught_count]) |value| self.engine.freeValue(value);
+            for (self.caught[0..self.caught_count]) |caught_value| self.engine.freeValue(caught_value);
             self.caught_count = 0;
             self.drop(&self.primary_wrapper);
             self.drop(&self.selected_hook_reason);
@@ -649,11 +655,11 @@ pub const File = struct {
         defer std.testing.allocator.free(joined);
         self.path = try std.testing.allocator.dupeZ(u8, joined);
         var request: physical.uv_fs_t = undefined;
-        const status = physical.uv_fs_open(null, &request, self.path.?.ptr,
+        const open_status = physical.uv_fs_open(null, &request, self.path.?.ptr,
             physical.O_RDONLY, 0, null);
         physical.uv_fs_req_cleanup(&request);
-        if (status < 0) return error.ConcreteFileHandlePhysicalOpenFailed;
-        self.descriptor = status;
+        if (open_status < 0) return error.ConcreteFileHandlePhysicalOpenFailed;
+        self.descriptor = open_status;
     }
     pub fn take(self: *File) c_int {
         std.debug.assert(self.descriptor >= 0);

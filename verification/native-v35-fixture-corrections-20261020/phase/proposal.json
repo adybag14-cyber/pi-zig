@@ -1,0 +1,63 @@
+{
+  "schema": "pi-zig-v35-close-observer-phase-proposal-v1",
+  "status": "UNEXECUTED SOURCE PROPOSAL; no compile/runtime qualification",
+  "base_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "target": "src/native_node_file_handle_owner_test_support.zig",
+  "identifier_predecessor_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\proposal.json",
+    "bytes": 5249,
+    "sha256": "9CEEC8BF72B9E955697145E989A65C06AB9DB14B94444332545B4E5A233DD16E"
+  },
+  "original_alpha_fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\original\\src\\native_node_file_handle_owner_test_support.zig",
+    "bytes": 32741,
+    "sha256": "50E65ED03D8280B3DC35632D49274BC97A63A1A7012E70C362DB845B2C29878B"
+  },
+  "projected_fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+    "bytes": 33137,
+    "sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127"
+  },
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\close-observer-phase.patch",
+    "bytes": 993,
+    "sha256": "2C38BE02A2173F3E25E040448377B178DDF84060522C111EE5778A0379BE9C39"
+  },
+  "proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\composition-and-phase-proof.json",
+    "bytes": 15835,
+    "sha256": "ACE1DFE276227F09A50D6AB0389D855C7BB8481841166E7D56A61A5EB5C70C06"
+  },
+  "source_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\source-map.json",
+    "bytes": 43721,
+    "sha256": "35266857348314A8481F98107CB6B94421FFF9A97A04C38A41DC0779F64F4B0A"
+  },
+  "independent_finding": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-close-observer-source-peer-20261020\\finding.json",
+    "bytes": 1893,
+    "sha256": "AED0E3E9518D691A36068A6B410B11B1D060718AB313E9921FBC665EFBA68DE1"
+  },
+  "independent_causal_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-close-observer-source-peer-20261020\\causal-proof.json",
+    "bytes": 22004,
+    "sha256": "9AE461824CBBEB0E87F450FE0E6660EE6A83AF3F3FEBA820D97B8F5ECBBAD724"
+  },
+  "input_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\input-inventory.json",
+    "bytes": 194665,
+    "sha256": "8DBD78DA21AE269A03BAE66ECE60CD8A6D6A3A7CA66E0D2D8D08D4321608229D"
+  },
+  "preparation_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\prepare-proposal.py",
+    "bytes": 13869,
+    "sha256": "0F68B9BEA1D83CEF49929883FAADEC44475A67FD3324191209891D961DEA13D9"
+  },
+  "scope": "Replace only the beginAsyncClose completion-only kind observation with existing preparation-info and actual phase assertions. Retain every completion-path check and all 58 control names; preserve the identifier proposal separately.",
+  "pending": [
+    "Independent candidate peer",
+    "Root review and terminal V35 failure closure",
+    "Separate authorized source intake and exact new-head catalog/grant",
+    "Fresh compiler and runtime validation"
+  ]
+}
