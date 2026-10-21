@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "status": "unexecuted_minimal_v37_retry1_literal_only_source_successor",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37RuntimeGrant-20261021-v2.py",
+    "bytes": 12499,
+    "sha256": "D1F3A1CBD0CB3BDD30ED8E4B1501B358E5E41C515793FDCAB034C26D416E946B"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37RuntimeGrant-Retry1-20261021.py",
+    "bytes": 12513,
+    "sha256": "414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0"
+  },
+  "finite_edit_count": 2,
+  "string_literal_edits": 2,
+  "numeric_literal_edits": 0,
+  "edits": [
+    {
+      "token_index": 697,
+      "token_kind": "STRING",
+      "baseline_line": 45,
+      "baseline_column": 49,
+      "offset_in_baseline": 2615,
+      "before": "\"buildquery-launch.json\"",
+      "after": "\"buildquery-retry1-launch.json\"",
+      "purpose": "Require/read the exact accepted retry1 prepared launch without changing any RuntimeOnly gate.",
+      "index": 1,
+      "offset_before_step": 2615,
+      "before_file_sha256": "D1F3A1CBD0CB3BDD30ED8E4B1501B358E5E41C515793FDCAB034C26D416E946B",
+      "after_file_sha256": "5C48CD55DF6F9ACDED1A4A0EF42366BCDB64F7156C6B99FE7DCB7971BFC2F0D5"
+    },
+    {
+      "token_index": 705,
+      "token_kind": "STRING",
+      "baseline_line": 46,
+      "baseline_column": 14,
+      "offset_in_baseline": 2654,
+      "before": "\"buildquery-launch.json\"",
+      "after": "\"buildquery-retry1-launch.json\"",
+      "purpose": "Require/read the exact accepted retry1 prepared launch without changing any RuntimeOnly gate.",
+      "index": 2,
+      "offset_before_step": 2661,
+      "before_file_sha256": "5C48CD55DF6F9ACDED1A4A0EF42366BCDB64F7156C6B99FE7DCB7971BFC2F0D5",
+      "after_file_sha256": "414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0"
+    }
+  ],
+  "all_intermediate_hashes_verified": true,
+  "complete_forward_bytes_exact": true,
+  "complete_inverse_bytes_exact": true,
+  "all_other_tokens_byte_identical": true,
+  "nonconstant_ast_structure_identical": true,
+  "unchanged_helpers": [
+    {
+      "name": "sha",
+      "bytes": 56,
+      "sha256": "B039248BE12F1B2D0E8C61567B4FF89EAD07E700FCD674F3E4CFC47DC8D82DFF",
+      "byte_identical": true
+    },
+    {
+      "name": "read",
+      "bytes": 72,
+      "sha256": "8E3857AEC558153A79BECAFA5517C2F233B502620310CE0012CE0C67E3FA72E6",
+      "byte_identical": true
+    },
+    {
+      "name": "pin",
+      "bytes": 92,
+      "sha256": "A8C688649B0E6B427DEC5EE7CFB05D284B19AB49CA0524E8C1F0D995F476F19B",
+      "byte_identical": true
+    },
+    {
+      "name": "verify",
+      "bytes": 251,
+      "sha256": "D706A9ED45BF54FD735447D5BF44CAE88F1A789B7FC29390A6F3F99D22ADEF22",
+      "byte_identical": true
+    },
+    {
+      "name": "verify_pins",
+      "bytes": 248,
+      "sha256": "77A8B1DA837DF9D76A972DD58C5A426E6A5A7B33B6C8AA966C6177A02C27B1E5",
+      "byte_identical": true
+    },
+    {
+      "name": "put",
+      "bytes": 86,
+      "sha256": "9AF2631B808218365CB5BF246D1277915BD871EFDB1152965D9BEE3FD6E57AAE",
+      "byte_identical": true
+    },
+    {
+      "name": "git",
+      "bytes": 73,
+      "sha256": "587656637E31B34B477B76CF6836C5C42D3C4808D1B929CBD4B49F5C34E8D115",
+      "byte_identical": true
+    },
+    {
+      "name": "state",
+      "bytes": 202,
+      "sha256": "65E00CA27BB3B545F9630F099C28B26F04D55475C473DBFBD4724468A204FF25",
+      "byte_identical": true
+    }
+  ],
+  "untouched_fragments": [
+    {
+      "baseline_offset": 0,
+      "candidate_offset": 0,
+      "bytes": 2615,
+      "sha256": "9AC692D95D70937C32E1CABD3CC0E178397DABD453C48DB8CF5AAE0FC78B5905",
+      "byte_identical": true
+    },
+    {
+      "baseline_offset": 2639,
+      "candidate_offset": 2646,
+      "bytes": 15,
+      "sha256": "0CF647F72E0AD588CE77D456DF8504640C1F6A669D3164A4752B89AD8E25A50C",
+      "byte_identical": true
+    },
+    {
+      "baseline_offset": 2678,
+      "candidate_offset": 2692,
+      "bytes": 9821,
+      "sha256": "08C7A0BB4A604CC274232F7B32CA1F0ADADE343DF322E56AD762F855E86968C0",
+      "byte_identical": true
+    }
+  ],
+  "all_untouched_raw_fragments_byte_identical": true,
+  "all_validation_logic_unchanged": true,
+  "authoring_method": "Read raw baseline, tokenize/AST static checks, exact literal spans, complete raw inverse, create-only output; no target or prefix execution.",
+  "source_only": true,
+  "target_executed": false,
+  "prefix_executed": false,
+  "constructor_executed": false,
+  "auditor_executed": false,
+  "helper_executed": false,
+  "native_executed": false,
+  "Main_written": false,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

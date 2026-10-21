@@ -1,0 +1,3 @@
+Correct FileHandle callback resource and invalid descriptor fixtures
+
+Source-reviewed intake only. Native runtime and full application qualification remain pending.

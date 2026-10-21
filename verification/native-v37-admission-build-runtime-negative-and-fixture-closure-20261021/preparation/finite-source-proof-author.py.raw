@@ -1,0 +1,87 @@
+"""Static finite-source proof only. Never imports, executes or prefixes either preparer."""
+from pathlib import Path
+import ast, hashlib, json
+D=Path(r"C:\Users\adyba\pi-zig\evidence\v37-progress-negative-archive-sourceonly-20261021")
+SPEC=D/"finite-edit-specifications.json"
+def sha(b): return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ b=p.read_bytes(); return {"path":str(p),"bytes":len(b),"sha256":sha(b)}
+raw_spec=SPEC.read_bytes()
+assert len(raw_spec)==50613 and sha(raw_spec)=="D06399DF175BB56BBC6C0CB40C7B5641006D186ECC7859D5D2074E3393E1E483"
+spec=json.loads(raw_spec)
+def admitted(row):
+ p=Path(row["path"]);b=p.read_bytes()
+ assert len(b)==row["bytes"] and sha(b)==row["sha256"]
+ return b
+old=admitted(spec["baseline"]);new=admitted(spec["candidate"])
+assert len(spec["specifications"])==83
+current=old;steps=[]
+for index,edit in enumerate(spec["specifications"]):
+ a,b=edit["old"].encode(),edit["new"].encode()
+ assert current.count(a)==edit["count"],edit["label"]
+ starts=[];offset=0
+ for occurrence in range(edit["count"]):
+  found=current.find(a,offset);assert found>=0
+  starts.append(found);offset=found+len(a)
+ shift=0
+ for occurrence,base_offset in enumerate(starts):
+  offset=base_offset+shift;assert current[offset:offset+len(a)]==a
+  before=sha(current)
+  current=current[:offset]+b+current[offset+len(a):]
+  steps.append({"specification":index+1,"occurrence":occurrence+1,"label":edit["label"],"offset":offset,"old":edit["old"],"new":edit["new"],"before_sha256":before,"after_sha256":sha(current)})
+  shift+=len(b)-len(a)
+assert current==new,"whole source forward"
+for edit in reversed(steps):
+ a,b=edit["old"].encode(),edit["new"].encode();off=edit["offset"]
+ assert sha(current)==edit["after_sha256"] and current[off:off+len(b)]==b
+ current=current[:off]+a+current[off+len(b):]
+ assert sha(current)==edit["before_sha256"]
+assert current==old,"whole raw inverse"
+def functions(raw):
+ lines=raw.splitlines(keepends=True);out={}
+ for node in ast.parse(raw).body:
+  if isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef)):
+   out[node.name]=b"".join(lines[node.lineno-1:node.end_lineno])
+ return out
+a,b=functions(old),functions(new)
+assert set(a)==set(b)
+changed=[name for name in a if a[name]!=b[name]]
+assert changed==["original_inventory"],changed
+helpers=[{"name":name,"bytes":len(a[name]),"sha256":sha(a[name]),"complete_full_line_bytes_equal":True} for name in a if name not in changed]
+regions=[]
+for name,start,end in [
+ ("deterministic_two_phase_gzip_roundtrip",b"def gzip_bytes(raw):",b"# Update only current state"),
+ ("complete_nested_history_prefix_and_raw_inverse",b"def list_paths(value, path=()):",b"history_report = {"),
+ ("all_Git_attributes_original_rechecks_create_only_write_tail",b"# Path-filtered hash-object has no -w:",b"review = {"),
+]:
+ assert old.count(start)==new.count(start)==1
+ x=old[old.index(start):old.index(end,old.index(start))]
+ y=new[new.index(start):new.index(end,new.index(start))]
+ assert x==y,name
+ regions.append({"name":name,"bytes":len(x),"sha256":sha(x),"complete_bytes_equal":True})
+assert b'for token in (b"import",b"embedFile",b"cInclude",b"cDefine",b"cUndef"):' in new
+assert b'fixture_before[target] = before' in new
+assert b'next_plan["selected_current_source_roots"] = selected_current_roots' in new
+assert b'updated["execution_checkpoint_history"].append(copy.deepcopy(old["current_execution_checkpoint"]))' in new
+assert b'current[:len(items)]==items' in new
+assert b'inverse==old and encode(inverse)==old_progress_raw' in new
+assert b'with target.open("xb") as f:' in new
+assert b'RUNTIME_CURRENT_FILES==34365' in new
+for path,before in [(Path(spec["baseline"]["path"]),old),(Path(spec["candidate"]["path"]),new),(SPEC,raw_spec)]:
+ assert path.read_bytes()==before
+out={"schema":1,"status":"unexecuted_finite_v37_progress_archive_source_adaptation_verified",
+ "baseline":spec["baseline"],"candidate":{k:spec["candidate"][k] for k in ("path","bytes","sha256")},
+ "specifications":pin(SPEC),"source_specification_count":len(spec["specifications"]),"source_step_count":len(steps),
+ "all_intermediate_hashes_exact":True,"complete_source_forward_exact":True,"complete_raw_byte_inverse_exact":True,
+ "steps":steps,"unchanged_helpers":helpers,"changed_helpers":changed,"unchanged_critical_regions":regions,
+ "current_scope":"Three distinct actual V37 outcomes; two exact test/support replacements; historical lists retained with selected_current_source_roots added for V38.",
+ "future_fixture_commit_release_receipt_unresolved":True,
+ "source_only":True,"preparer_executed":False,"prefix_executed":False,"compression_executed":False,
+ "generated_archive_or_manifest":False,"Main_written":False,"native_execution_authorized":False,
+ "runtime_qualification":False,"application_qualified":False,"source_mutation_hold_released":False}
+dest=D/"finite-source-adaptation.json"
+assert not dest.exists()
+data=(json.dumps(out,indent=2)+"\n").encode()
+with dest.open("xb") as f:f.write(data)
+assert dest.read_bytes()==data
+print(json.dumps({"proof":pin(dest),"steps":len(steps),"unchanged_helpers":len(helpers),"critical_regions":len(regions),"target_executed":False}))

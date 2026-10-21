@@ -1,0 +1,470 @@
+{
+  "schema": 1,
+  "status": "unexecuted_minimal_v37_retry1_source_packet",
+  "sources": [
+    {
+      "kind": "buildquery_constructor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37BuildQueryGrant-20261021-v2.py",
+        "bytes": 10095,
+        "sha256": "21BDC9AB8EAEBEC3B9C9427E8D20A10F0EBAA0728D55A06BADCB83327A215ABC"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37BuildQueryGrant-Retry1-20261021.py",
+        "bytes": 10109,
+        "sha256": "81FA8E7BA4DED5788F1618D393395666C82BC209791079DCCB3EEBDAEC6E9F58"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\buildquery-constructor-finite.json",
+        "bytes": 4603,
+        "sha256": "3D482147579827314416D50DD38E8221E77CE5B55370CD2548347D8ACD6EEAA9"
+      },
+      "literal_edits": 2,
+      "string_literals": 2,
+      "numeric_literals": 0,
+      "unchanged_helpers": [
+        {
+          "name": "sha",
+          "bytes": 56,
+          "sha256": "B039248BE12F1B2D0E8C61567B4FF89EAD07E700FCD674F3E4CFC47DC8D82DFF",
+          "byte_identical": true
+        },
+        {
+          "name": "read",
+          "bytes": 72,
+          "sha256": "8E3857AEC558153A79BECAFA5517C2F233B502620310CE0012CE0C67E3FA72E6",
+          "byte_identical": true
+        },
+        {
+          "name": "pin",
+          "bytes": 95,
+          "sha256": "3EAB5E7A1F4F969C2AAECE64A14EA73C033DE2CA297593FD7E5C718B6ABD36DB",
+          "byte_identical": true
+        },
+        {
+          "name": "verify",
+          "bytes": 263,
+          "sha256": "0B95EFF3B9ECE3EB28B68C519A4FC268F7B31439DE1ED0179ABC6E34A6C18B1B",
+          "byte_identical": true
+        },
+        {
+          "name": "verify_pins",
+          "bytes": 288,
+          "sha256": "96E8F654E265CA4D2DA213F558DF02FBEFD1E5504839FFDD5A51914BE3EC88C7",
+          "byte_identical": true
+        },
+        {
+          "name": "put",
+          "bytes": 89,
+          "sha256": "CD6F4AA01CB1840202FB4119841109497D9522851838342592292B230E8F8BD9",
+          "byte_identical": true
+        },
+        {
+          "name": "git",
+          "bytes": 73,
+          "sha256": "587656637E31B34B477B76CF6836C5C42D3C4808D1B929CBD4B49F5C34E8D115",
+          "byte_identical": true
+        }
+      ],
+      "untouched_fragment_count": 3
+    },
+    {
+      "kind": "runtime_constructor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37RuntimeGrant-20261021-v2.py",
+        "bytes": 12499,
+        "sha256": "D1F3A1CBD0CB3BDD30ED8E4B1501B358E5E41C515793FDCAB034C26D416E946B"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37RuntimeGrant-Retry1-20261021.py",
+        "bytes": 12513,
+        "sha256": "414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\runtime-constructor-finite.json",
+        "bytes": 4721,
+        "sha256": "7EBB7AA0665F7BDEEB8BB4EF77564E0102CFD568AE99AA2457419AD49966B289"
+      },
+      "literal_edits": 2,
+      "string_literals": 2,
+      "numeric_literals": 0,
+      "unchanged_helpers": [
+        {
+          "name": "sha",
+          "bytes": 56,
+          "sha256": "B039248BE12F1B2D0E8C61567B4FF89EAD07E700FCD674F3E4CFC47DC8D82DFF",
+          "byte_identical": true
+        },
+        {
+          "name": "read",
+          "bytes": 72,
+          "sha256": "8E3857AEC558153A79BECAFA5517C2F233B502620310CE0012CE0C67E3FA72E6",
+          "byte_identical": true
+        },
+        {
+          "name": "pin",
+          "bytes": 92,
+          "sha256": "A8C688649B0E6B427DEC5EE7CFB05D284B19AB49CA0524E8C1F0D995F476F19B",
+          "byte_identical": true
+        },
+        {
+          "name": "verify",
+          "bytes": 251,
+          "sha256": "D706A9ED45BF54FD735447D5BF44CAE88F1A789B7FC29390A6F3F99D22ADEF22",
+          "byte_identical": true
+        },
+        {
+          "name": "verify_pins",
+          "bytes": 248,
+          "sha256": "77A8B1DA837DF9D76A972DD58C5A426E6A5A7B33B6C8AA966C6177A02C27B1E5",
+          "byte_identical": true
+        },
+        {
+          "name": "put",
+          "bytes": 86,
+          "sha256": "9AF2631B808218365CB5BF246D1277915BD871EFDB1152965D9BEE3FD6E57AAE",
+          "byte_identical": true
+        },
+        {
+          "name": "git",
+          "bytes": 73,
+          "sha256": "587656637E31B34B477B76CF6836C5C42D3C4808D1B929CBD4B49F5C34E8D115",
+          "byte_identical": true
+        },
+        {
+          "name": "state",
+          "bytes": 202,
+          "sha256": "65E00CA27BB3B545F9630F099C28B26F04D55475C473DBFBD4724468A204FF25",
+          "byte_identical": true
+        }
+      ],
+      "untouched_fragment_count": 3
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37CompleteBuildQuery-Template-20261021.py",
+        "bytes": 37257,
+        "sha256": "09E12000DE6CB46F7CEF7A685E4B8518003957E5B1DAC6724CC13742B684E188"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37CompleteBuildQuery-Retry1-20261021.py",
+        "bytes": 37268,
+        "sha256": "2C89B824BE10438684ECAB4AC72197B7A54F9218F15578F9F1A4EB6FEFDB4063"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\positive-buildquery-auditor-finite.json",
+        "bytes": 6053,
+        "sha256": "1471267DC974F94A5EF6B86DDB4A888454E8EA4CAE66AE1F8E2673974572290F"
+      },
+      "literal_edits": 4,
+      "string_literals": 3,
+      "numeric_literals": 1,
+      "unchanged_helpers": [
+        {
+          "name": "require",
+          "bytes": 64,
+          "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB",
+          "byte_identical": true
+        },
+        {
+          "name": "utc_ticks",
+          "bytes": 576,
+          "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245",
+          "byte_identical": true
+        },
+        {
+          "name": "read",
+          "bytes": 77,
+          "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E",
+          "byte_identical": true
+        },
+        {
+          "name": "digest",
+          "bytes": 151,
+          "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC",
+          "byte_identical": true
+        },
+        {
+          "name": "pin",
+          "bytes": 94,
+          "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C",
+          "byte_identical": true
+        },
+        {
+          "name": "owner_identity",
+          "bytes": 974,
+          "sha256": "C960E7F5AFEBDDEF082CB4E4FA635A52BD018C4BF10043C4C45C548BADC7F6C9",
+          "byte_identical": true
+        }
+      ],
+      "untouched_fragment_count": 5
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37StrictRuntime-20261021.py",
+        "bytes": 39914,
+        "sha256": "709D0D6F155E303B9AA527329AEDBBB39223805386C89ED956B074494C5534F2"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37StrictRuntime-Retry1-20261021.py",
+        "bytes": 39946,
+        "sha256": "049C8CFE6053CDC7632BF44B57EB64BD8F220685AFB99FB029AC844EC3A4DC40"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\positive-runtime-auditor-finite.json",
+        "bytes": 8491,
+        "sha256": "677FA9349B66E3924C406EB18C2C9B39EF5F849F435C10097E55E94534806230"
+      },
+      "literal_edits": 7,
+      "string_literals": 6,
+      "numeric_literals": 1,
+      "unchanged_helpers": [
+        {
+          "name": "require",
+          "bytes": 64,
+          "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB",
+          "byte_identical": true
+        },
+        {
+          "name": "utc_ticks",
+          "bytes": 576,
+          "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245",
+          "byte_identical": true
+        },
+        {
+          "name": "read",
+          "bytes": 77,
+          "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E",
+          "byte_identical": true
+        },
+        {
+          "name": "digest",
+          "bytes": 151,
+          "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC",
+          "byte_identical": true
+        },
+        {
+          "name": "pin",
+          "bytes": 94,
+          "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C",
+          "byte_identical": true
+        },
+        {
+          "name": "verify_pins",
+          "bytes": 568,
+          "sha256": "5576E465D77460F5AE653A28E3513FBCF8A935CF87A29D444F5239CB153B3EA6",
+          "byte_identical": true
+        }
+      ],
+      "untouched_fragment_count": 8
+    },
+    {
+      "kind": "positive_input_helper_unresolved",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV37New4PositiveBuildQueryAuditInputs-20261021-unresolved.py",
+        "bytes": 18951,
+        "sha256": "AE0A736D92218A09FB84D32BE916E741518D29EBE251A791FAB32E5F1A8C9B90"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV37New4PositiveBuildQueryAuditInputs-Retry1-20261021-unresolved.py",
+        "bytes": 18974,
+        "sha256": "8F0ECC3CAF504E858A29891E25BA78A0F06F258C4C4DEB1EDB87A11EF12DA344"
+      },
+      "finite_proof": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\positive-input-helper-finite.json",
+        "bytes": 9192,
+        "sha256": "DE17130B5AE3807F0CBC42A97971F611E6D5636710210AD0C3E2435820827E58"
+      },
+      "literal_edits": 7,
+      "string_literals": 5,
+      "numeric_literals": 2,
+      "unchanged_helpers": [
+        {
+          "name": "require",
+          "bytes": 67,
+          "sha256": "6BE7166935F5DFB388A5956D4AA6502092E6369CFDFFECA9F3E1E2E490327278",
+          "byte_identical": true
+        },
+        {
+          "name": "sha",
+          "bytes": 60,
+          "sha256": "0DA028679B0C76DB05C2D4E51461B0715296811B3124685F6AE5A5E7992AA3AA",
+          "byte_identical": true
+        },
+        {
+          "name": "digest",
+          "bytes": 160,
+          "sha256": "32EA65C3F92328E599E4747D4D6F65AE42B78DA012BEA0134320B8D7C4303457",
+          "byte_identical": true
+        },
+        {
+          "name": "pin",
+          "bytes": 91,
+          "sha256": "5BC5E0F51AC01263A04662EC3C1F614CD3F53665B2ED276E6C02FE78742DE2A1",
+          "byte_identical": true
+        },
+        {
+          "name": "verify",
+          "bytes": 429,
+          "sha256": "35321E3086E923AF42E5A0B3F6F8D7B6AD4540C93ED981B1114A532B56BA268B",
+          "byte_identical": true
+        },
+        {
+          "name": "read_pin",
+          "bytes": 201,
+          "sha256": "ED98E906305412C77F867755EF1142903CE98FA4BA60E3DD1CAE24EB1AF00703",
+          "byte_identical": true
+        },
+        {
+          "name": "fixed",
+          "bytes": 59,
+          "sha256": "A6EE3A7F72491787F90C604A97194AF4ECA71B6A089A5B73138DA44095F2CA38",
+          "byte_identical": true
+        },
+        {
+          "name": "current_json",
+          "bytes": 61,
+          "sha256": "257E28B3FA11F7E0C208BCA10A6105A12D20BA37736F1219C8DE3DADD44ADA52",
+          "byte_identical": true
+        },
+        {
+          "name": "git",
+          "bytes": 100,
+          "sha256": "198C9597406BE5D57C3C110C0DC945E8E71816E5BF661C13FDC3AE79191B0FD0",
+          "byte_identical": true
+        },
+        {
+          "name": "clean_head",
+          "bytes": 180,
+          "sha256": "0EAABAD47F8550D12ECDBF0669BEAA38E40305AAF67F62551FE68890EB960DE3",
+          "byte_identical": true
+        }
+      ],
+      "untouched_fragment_count": 8
+    }
+  ],
+  "literal_edit_counts": [
+    2,
+    2,
+    4,
+    7,
+    7
+  ],
+  "total_literal_edits": 22,
+  "string_literal_edits": 18,
+  "numeric_literal_edits": 4,
+  "all_intermediate_hashes_replayed": true,
+  "all_complete_raw_forward_and_inverses_exact": true,
+  "all_nonconstant_tokens_and_ast_structure_unchanged": true,
+  "all_untouched_fragments_exact": true,
+  "unchanged_helper_count": 37,
+  "helper_critical_regions": [
+    {
+      "name": "complete_original_job_observation_and_six_field_mapping",
+      "baseline_offset": 4982,
+      "candidate_offset": 5005,
+      "bytes": 1603,
+      "sha256": "C45D6AFA387B7AFC03ECF162960561B9CB8794FF9EA9CCC7A3A0465772AA8999",
+      "byte_identical": true
+    },
+    {
+      "name": "original_result_metadata_native_owners_and_all_failure_gates",
+      "baseline_offset": 10095,
+      "candidate_offset": 10118,
+      "bytes": 4711,
+      "sha256": "8A3B4495E070910F2C40E4BE85F35A7D1880E26CF405A2D712B69F252E534D71",
+      "byte_identical": true
+    },
+    {
+      "name": "complete_bookend_current_seals_and_original_outer_gates",
+      "baseline_offset": 14806,
+      "candidate_offset": 14829,
+      "bytes": 1982,
+      "sha256": "89051C1D7DAAF80A2950ECD6A5EC297C1A302BF00CE5BC359C410988A968785F",
+      "byte_identical": true
+    }
+  ],
+  "cross_file_constructor_path_hash_size_bindings_exact": true,
+  "helper_constructor_auditor_paths_and_sizes_exact": true,
+  "canonical_bound_helper_self_path": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV37New4PositiveBuildQueryAuditInputs-20261021.py",
+    "observed_absent": true,
+    "self_path_literal_unchanged": true
+  },
+  "future_helper_binding": {
+    "literal_count": 17,
+    "string_literals": 12,
+    "numeric_literals": 5,
+    "actual_job_id": null,
+    "actual_control_and_proof_stamp": null,
+    "actual_grant": null,
+    "actual_launcher": null,
+    "actual_specific_configuration": null,
+    "actual_prepared_launch": null,
+    "source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-retry1-execution-bound-source-review-20261021.json",
+      "bytes": null,
+      "sha256": null
+    },
+    "constructor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37BuildQueryGrant-Retry1-20261021.py",
+      "bytes": 10109,
+      "sha256": "81FA8E7BA4DED5788F1618D393395666C82BC209791079DCCB3EEBDAEC6E9F58"
+    },
+    "auditor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37CompleteBuildQuery-Retry1-20261021.py",
+      "bytes": 37268,
+      "sha256": "2C89B824BE10438684ECAB4AC72197B7A54F9218F15578F9F1A4EB6FEFDB4063"
+    },
+    "all_actual_binding_markers_and_five_zero_size_sentinels_preserved": true
+  },
+  "required_new_grant_provenance_key": "v37_execution_bound_source_review",
+  "required_source_review_kinds": [
+    "buildquery_constructor",
+    "positive_buildquery_auditor"
+  ],
+  "review_sequence": "Seal/review the exact retry constructor and positive BuildQuery auditor in the new immutable Root receipt before issuing the retry grant. The helper can be bound after the actual submission; execution waits for actual terminal success and independent metadata acceptance.",
+  "original_bound_source_review_preserved": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-execution-bound-source-review-20261021.json",
+    "bytes": 6566,
+    "sha256": "B0A86EEC807F83AC467E5B194891FC6F6BA0C551BEBCBDF7C33AFA6E689FC914"
+  },
+  "original_launch_record_and_config_preserved": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-094837\\root-grant.json",
+      "bytes": 16272,
+      "sha256": "7938B022DC9D7F8A997FD0F9953CA999BF8388987F9BAE22CC0A7F2301FC09F7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-094837\\launch.ps1",
+      "bytes": 1776,
+      "sha256": "FD145CD97E2E36AC0727356B58CFFF1A69071805EDE1548011A0E98596D9CEB6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-buildquery-issued-config-20261021.json",
+      "bytes": 9692,
+      "sha256": "32D70EB267D32CA919CF71C561906272DBCCDE0697D2AECA36CC9CDF80823369"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\buildquery-launch.json",
+      "bytes": 2091,
+      "sha256": "94A0A3134BF95B96E92A6CE9486F826E3A412C3F3F280B5DEE414396D079AC31"
+    }
+  ],
+  "unchanged_initial_grant_max_age_seconds": 300,
+  "source_only": true,
+  "target_executed": false,
+  "prefix_executed": false,
+  "constructor_executed": false,
+  "auditor_executed": false,
+  "helper_executed": false,
+  "native_executed": false,
+  "Main_written": false,
+  "execution_configuration_issued": false,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

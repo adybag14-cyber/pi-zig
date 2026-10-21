@@ -1,0 +1,26 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c5ee8d94bf0cdfce16df60ade65df120\\test.exe",
+  "binary_sha256": "C7486063C378534C730AF7A7DDB8DFF851D15B96AB08E47B0ABECA72D9ECCF80",
+  "version": "0.16.0",
+  "actual_count": 14,
+  "tests": [
+    "native_node_file_handle_transfer_test.test.native FileHandle transfer changes only the live closed member and retains the real descriptor",
+    "native_node_file_handle_transfer_test.test.native FileHandle transfer admission follows real ReadStart and ReadStop with the original pending request",
+    "native_node_file_handle_transfer_test.test.native FileHandle transfer rejects real closing and closed state without weakening the close request",
+    "native_node_file_handle_transfer_test.test.native FileHandle transfer admission excludes the real released descriptor state",
+    "native_node_file_handle_transfer_test.test.native FileHandle transfer packet move preserves one native allocation and closes once",
+    "native_node_file_handle_transfer_test.test.native FileHandle transfer packet survives actual sender GC and weak BindingData retirement",
+    "native_node_file_handle_transfer_test.test.native FileHandle transfer allocation alone retains its native memory domain after Engine teardown",
+    "native_node_file_handle_transfer_test.test.native FileHandle transfer abandoned on a real different thread closes after sender Engine retirement",
+    "native_node_file_handle_transfer_test.test.native FileHandle transfer destructor null admission masks and restores an outer real context",
+    "native_node_file_handle_transfer_test.test.native FileHandle transfer native member and destructor calls preserve an actual current exception",
+    "native_node_file_handle_transfer_test.test.native FileHandle transfer missing real BindingData consumes the packet and closes its descriptor",
+    "native_node_file_handle_transfer_test.test.native FileHandle transfer disowns before the explicit missing full template boundary without inventing a receiver",
+    "native_node_file_handle_transfer_test.test.native FileHandle transfer strong result edges clone and move over the same actual weak wrapper",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-file-handle-transfer",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

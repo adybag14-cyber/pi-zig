@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "status": "root_source_accepted_exact_v37_bound_execution_sources",
+  "reviewer": "Root",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "matrix_sha256": "E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37",
+  "finite_binding_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-execution-bound-source-20261021\\finite-bindings.json",
+    "bytes": 13163,
+    "sha256": "AD70606111D66040B75AF43E53F57E61459AB4F212802FD750313511FCDBA59D"
+  },
+  "root_unresolved_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-unresolved-execution-source-peer-acceptance-20261021.json",
+    "bytes": 3649,
+    "sha256": "0CE80DBE00865987ADEAE90F1BA440BBF7511148709A74D8B6997C7BEB12A4BD"
+  },
+  "independent_binding_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-execution-bindings-independent-peer-20261021\\peer.json",
+    "bytes": 5697,
+    "sha256": "76D300F102BB8B2ACB1FCB167C44C596094493AD658893CDF7B822BFB99BFA6E"
+  },
+  "independent_binding_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-execution-bindings-independent-peer-20261021\\source-audit.py",
+    "bytes": 12298,
+    "sha256": "429C5A321B468DA4E171D3C417394636F5053DE9ADF84310D0D21570ECBE1C50"
+  },
+  "independent_binding_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-execution-bindings-independent-peer-20261021\\source-audit.json",
+    "bytes": 23170,
+    "sha256": "2AB994DE09F49256ECA63A1B87B70A5485D16ADD1BB4A7BEFE12508E9617E66F"
+  },
+  "sources": [
+    {
+      "kind": "buildquery_constructor",
+      "unresolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37BuildQueryGrant-20261021-unresolved-v2.py",
+        "bytes": 10095,
+        "sha256": "341C07AE5512C63943196181838487DE7D2D98D2A9CF6EE8533712ED1B2D3F6B"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37BuildQueryGrant-20261021-v2.py",
+        "bytes": 10095,
+        "sha256": "21BDC9AB8EAEBEC3B9C9427E8D20A10F0EBAA0728D55A06BADCB83327A215ABC"
+      },
+      "equal_length_bindings": 1,
+      "unchanged_helpers": 7
+    },
+    {
+      "kind": "runtime_constructor",
+      "unresolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37RuntimeGrant-20261021-unresolved-v2.py",
+        "bytes": 12499,
+        "sha256": "FD0C0C0846FAC465A3BB04A99E7F9051012E3F049E917DD84F2FA443EAE32B6E"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37RuntimeGrant-20261021-v2.py",
+        "bytes": 12499,
+        "sha256": "D1F3A1CBD0CB3BDD30ED8E4B1501B358E5E41C515793FDCAB034C26D416E946B"
+      },
+      "equal_length_bindings": 2,
+      "unchanged_helpers": 8
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "unresolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37CompleteBuildQuery-Template-20261021-unresolved.py",
+        "bytes": 37257,
+        "sha256": "AE976E2FAD9F230321E0AEE4EA70C80F58CED0C1F4B32A44CD674886B3E6C42B"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37CompleteBuildQuery-Template-20261021.py",
+        "bytes": 37257,
+        "sha256": "09E12000DE6CB46F7CEF7A685E4B8518003957E5B1DAC6724CC13742B684E188"
+      },
+      "equal_length_bindings": 3,
+      "unchanged_helpers": 6
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "unresolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37StrictRuntime-20261021-unresolved-v2.py",
+        "bytes": 39914,
+        "sha256": "9E6CF36266B680D7D369A0A13F62F57F03F320A2B1975005F99263D8D2D1CA8B"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37StrictRuntime-20261021.py",
+        "bytes": 39914,
+        "sha256": "709D0D6F155E303B9AA527329AEDBBB39223805386C89ED956B074494C5534F2"
+      },
+      "equal_length_bindings": 3,
+      "unchanged_helpers": 6
+    }
+  ],
+  "source_accepted": true,
+  "runtime_constructor_source_accepted": true,
+  "all9_equal_length_literal_bindings_reviewed_and_replayed": true,
+  "all_complete_raw_inverses_exact": true,
+  "all_helpers_byte_identical": true,
+  "all_non_string_tokens_equal": true,
+  "canonical_constructor_path_size_hash_crossbindings_exact": true,
+  "strict_gates_unchanged": true,
+  "all22_independent_peer_inputs_rehashed": true,
+  "catalog_source_static_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-emitted-catalog-static-review-20261021.json",
+    "bytes": 3871,
+    "sha256": "0C83307EA8CA446F7695FFDEB2BB16ACA95E3611840E8518EC6A9485C527D550"
+  },
+  "catalog_semantic_acceptance_requires_separate_root_receipt": true,
+  "root_review": "Root read the complete reviewed unresolved source chain and all actual binding records, replayed each of the nine equal-length substitutions with every intermediate hash and full inverse, and verified all27 full-line helper bodies and non-string tokens unchanged. Root fully read the5697-byte independent peer and12298-byte checker, reviewed the complete decisive proof, rehashed all22 input pins and re-read the actual10095-byte BuildQuery constructor. The canonical sources bind only actual Main b13, observed E4 matrix and saved21BDC9AB/D1F3A1CB constructor hashes. The original V34 path/date anchors remain unchanged; the prior initial mistaken drafts stay rejected and preserved. No failure certificate is promoted.",
+  "execution_requirements": "Each phase still requires its own exact Root configuration. BuildQuery requires the complete granted batch, separate catalog source acceptance, fresh private caches, serial fresh16GiB admission, retained/live bounded process owners, complete whole source/vendor/compiler/control seals and independent metadata/artifact/current-input/process closure. Only actual complete positive BuildQuery acceptance can support a separate strict RuntimeOnly grant. Positive runtime requires the complete original durable job observation, exact actual owner/wire evidence, empty stderr and every accepted index completing with zero flags.",
+  "constructor_execution_authorized": false,
+  "auditor_execution_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "production_bridge_removed": false,
+  "reviewed_utc": "2026-10-21T09:40:45.543406+00:00"
+}

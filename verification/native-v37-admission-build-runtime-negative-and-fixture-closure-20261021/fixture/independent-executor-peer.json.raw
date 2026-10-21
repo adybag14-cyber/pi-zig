@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_fixture_intake_adapter_and_manifest",
+  "candidate_manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\manifest.json",
+    "bytes": 20679,
+    "sha256": "236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9"
+  },
+  "candidate_executor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+    "bytes": 9719,
+    "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\executor-finite-adaptation.json",
+    "bytes": 2345,
+    "sha256": "015AC7CCF9B9DCA273874A10E7BF06A7B449248F5A9B40106F73609A53921FDF"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-filehandle-runtime-fixture-intake-peer-20261021\\source-audit.py",
+    "bytes": 13271,
+    "sha256": "0DB76485133F67F9AEDF027C0B5E32301135EE29747B5D0C78B025CB18E0BC82"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-filehandle-runtime-fixture-intake-peer-20261021\\source-audit.json",
+    "bytes": 70089,
+    "sha256": "2D1620F33CC30E4675DA66630235557333EF3B6EB704C47566E8477047DDE5B7"
+  },
+  "accepted_baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV36FixtureSourceIntake-20261021.py",
+    "bytes": 9709,
+    "sha256": "6613A7F431D132B72C948FBCB61E1988FA4799AD3AE660BC65B9BAA3E9AE48F0"
+  },
+  "root_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-source-acceptance-20261021.json",
+    "bytes": 5656,
+    "sha256": "9896A0FDAE942CF2F579555E602EB23CD4E07BBFD8FFEAAF50787A21A9FBAD85"
+  },
+  "main_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "path_counts": {
+    "total_commit_paths": 44,
+    "fixture_replacements": 2,
+    "new_immutable_archives": 41,
+    "new_manifest": 1,
+    "new_targets_verified_absent": 42
+  },
+  "findings": [
+    "All three executor edits replay with exact intermediate hashes and complete raw inverse to the accepted 6613 baseline. Only the V37 docstring, exact b13 basis and one fixed manifest/hash/count/subject tuple change.",
+    "All 11 complete helper bodies and every byte from def sha through EOF are identical. Release authorization, current-pin checks, branch/head/clean guards, containment, donor/preimage checks, filter checks, exact stage/index/commit verification and create-only receipt gates are preserved.",
+    "The exact 43 donor rows were independently reconstructed from accepted source selections, the selected authority inventory and the explicit review archive mappings; adding the manifest gives exactly 44 distinct case-insensitive paths. The only existing targets are the two reviewed fixture files. All other targets are new files under the one declared verification directory.",
+    "Both live fixture preimages equal their committed b13 Git blobs. Every selected donor has the exact expected bytes and SHA-256; the accepted source/review receipts bind the selected candidates. All 42 new targets are absent from the filesystem and committed tree, and no target parent is a symlink.",
+    "All 132 effective filter/working-tree-encoding/ident attribute results are unspecified or unset. core.autocrlf is false and no custom hooks are present. All 44 read-only hash-object results equal the independently computed raw Git blob hashes.",
+    "All 47 distinct bounded inputs were rehashed after checking. Main remained clean on the required branch at b13 before and after the review. This review leaves original runtime and source evidence unchanged and does not rerun the accepted fixture semantic review."
+  ],
+  "concrete_blockers": [],
+  "source_only": true,
+  "adapter_executed": false,
+  "candidate_or_prefix_executed": false,
+  "main_applied": false,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "reviewer_executed_only": "Independent static byte/AST/manifest checker and read-only Git commands; no target, executor, preparer, source generator or native execution.",
+  "remaining_gate": "Root must separately review this peer and issue the exact source-intake release before applying the executor."
+}

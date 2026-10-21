@@ -1,0 +1,33 @@
+{
+  "ok": true,
+  "summary": "Background job job-op-fa17b9be7400dac56c03a5ae0ff2d7c0851b611abf90b477e3684b977b3a9f1e is running.",
+  "data": {
+    "id": "job-op-fa17b9be7400dac56c03a5ae0ff2d7c0851b611abf90b477e3684b977b3a9f1e",
+    "status": "running",
+    "mode": "program",
+    "createdAtUtc": "2026-10-21T13:15:06.976Z",
+    "startedAtUtc": "2026-10-21T13:15:07.045Z",
+    "completedAtUtc": null,
+    "runnerPid": 39076,
+    "exitCode": null,
+    "readOnly": false,
+    "resourceClass": "heavy",
+    "runtimeMode": "host",
+    "queuedAtUtc": "2026-10-21T13:15:07.023Z",
+    "runnerProcessInstance": "134370621069980793",
+    "queueWaitMs": 8,
+    "executionSlot": 4,
+    "executionSlots": [
+      4,
+      3
+    ],
+    "executionPool": "execution",
+    "executionWeight": 2,
+    "childPid": 54188,
+    "runnerAlive": true,
+    "heartbeatAgeMs": 3539,
+    "jobDir": "C:\\Users\\adyba\\docker-chatgpt-devbox\\run\\jobs\\job-op-fa17b9be7400dac56c03a5ae0ff2d7c0851b611abf90b477e3684b977b3a9f1e"
+  },
+  "exitCode": null,
+  "truncated": false
+}

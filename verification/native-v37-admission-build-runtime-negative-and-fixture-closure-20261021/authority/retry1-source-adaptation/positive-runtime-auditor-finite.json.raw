@@ -1,0 +1,233 @@
+{
+  "schema": 1,
+  "status": "unexecuted_minimal_v37_retry1_literal_only_source_successor",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37StrictRuntime-20261021.py",
+    "bytes": 39914,
+    "sha256": "709D0D6F155E303B9AA527329AEDBBB39223805386C89ED956B074494C5534F2"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37StrictRuntime-Retry1-20261021.py",
+    "bytes": 39946,
+    "sha256": "049C8CFE6053CDC7632BF44B57EB64BD8F220685AFB99FB029AC844EC3A4DC40"
+  },
+  "finite_edit_count": 7,
+  "string_literal_edits": 6,
+  "numeric_literal_edits": 1,
+  "edits": [
+    {
+      "token_index": 1369,
+      "token_kind": "STRING",
+      "baseline_line": 82,
+      "baseline_column": 26,
+      "offset_in_baseline": 6566,
+      "before": "\"Prepare-ReviewedV37RuntimeGrant-20261021-v2.py\"",
+      "after": "\"Prepare-ReviewedV37RuntimeGrant-Retry1-20261021.py\"",
+      "purpose": "Require the exact independently reviewed retry1 RuntimeOnly constructor.",
+      "index": 1,
+      "offset_before_step": 6566,
+      "before_file_sha256": "709D0D6F155E303B9AA527329AEDBBB39223805386C89ED956B074494C5534F2",
+      "after_file_sha256": "FD02ACD9450B0ECD078D9628C3D805DD2D5CA1C519EAA0E46F51B89141A97313"
+    },
+    {
+      "token_index": 1391,
+      "token_kind": "NUMBER",
+      "baseline_line": 83,
+      "baseline_column": 98,
+      "offset_in_baseline": 6713,
+      "before": "12499",
+      "after": "12513",
+      "purpose": "Retain the exact size gate for the actual retry1 RuntimeOnly constructor.",
+      "index": 2,
+      "offset_before_step": 6717,
+      "before_file_sha256": "FD02ACD9450B0ECD078D9628C3D805DD2D5CA1C519EAA0E46F51B89141A97313",
+      "after_file_sha256": "3B611E03E0B0B47C2FBCD5BDC53EFC33D6F3D205D094BD9E946EEC3BF5326D48"
+    },
+    {
+      "token_index": 1403,
+      "token_kind": "STRING",
+      "baseline_line": 83,
+      "baseline_column": 166,
+      "offset_in_baseline": 6781,
+      "before": "\"D1F3A1CBD0CB3BDD30ED8E4B1501B358E5E41C515793FDCAB034C26D416E946B\"",
+      "after": "\"414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0\"",
+      "purpose": "Pin the actual saved retry1 RuntimeOnly constructor hash.",
+      "index": 3,
+      "offset_before_step": 6785,
+      "before_file_sha256": "3B611E03E0B0B47C2FBCD5BDC53EFC33D6F3D205D094BD9E946EEC3BF5326D48",
+      "after_file_sha256": "0D0A5B8CDF5A866FD8626DA4C2843477EE7381079D55C23EF81BCB176F24D06D"
+    },
+    {
+      "token_index": 1424,
+      "token_kind": "STRING",
+      "baseline_line": 84,
+      "baseline_column": 80,
+      "offset_in_baseline": 6976,
+      "before": "\"buildquery-launch.json\"",
+      "after": "\"buildquery-retry1-launch.json\"",
+      "purpose": "Preserve exact parent launch binding and receipt pins using the immutable retry1 record.",
+      "index": 4,
+      "offset_before_step": 6980,
+      "before_file_sha256": "0D0A5B8CDF5A866FD8626DA4C2843477EE7381079D55C23EF81BCB176F24D06D",
+      "after_file_sha256": "0CCF76E3342F2758213ED9CB4122BFF105B331CBAAA0FDE8FF19ADFA0C102529"
+    },
+    {
+      "token_index": 1431,
+      "token_kind": "STRING",
+      "baseline_line": 84,
+      "baseline_column": 122,
+      "offset_in_baseline": 7018,
+      "before": "\"buildquery-launch.json\"",
+      "after": "\"buildquery-retry1-launch.json\"",
+      "purpose": "Preserve exact parent launch binding and receipt pins using the immutable retry1 record.",
+      "index": 5,
+      "offset_before_step": 7029,
+      "before_file_sha256": "0CCF76E3342F2758213ED9CB4122BFF105B331CBAAA0FDE8FF19ADFA0C102529",
+      "after_file_sha256": "AD242B89F5238CF89E967DDF4D6938B80837D827A01E502EBCA91DD197692A61"
+    },
+    {
+      "token_index": 1448,
+      "token_kind": "STRING",
+      "baseline_line": 85,
+      "baseline_column": 23,
+      "offset_in_baseline": 7134,
+      "before": "\"buildquery-launch.json\"",
+      "after": "\"buildquery-retry1-launch.json\"",
+      "purpose": "Preserve exact parent launch binding and receipt pins using the immutable retry1 record.",
+      "index": 6,
+      "offset_before_step": 7152,
+      "before_file_sha256": "AD242B89F5238CF89E967DDF4D6938B80837D827A01E502EBCA91DD197692A61",
+      "after_file_sha256": "0E445C076636C0D2392842FC26CB10B1810FBCB7F5B525AD62EAE6C79E480871"
+    },
+    {
+      "token_index": 7177,
+      "token_kind": "STRING",
+      "baseline_line": 298,
+      "baseline_column": 349,
+      "offset_in_baseline": 39016,
+      "before": "\"buildquery-launch.json\"",
+      "after": "\"buildquery-retry1-launch.json\"",
+      "purpose": "Preserve exact parent launch binding and receipt pins using the immutable retry1 record.",
+      "index": 7,
+      "offset_before_step": 39041,
+      "before_file_sha256": "0E445C076636C0D2392842FC26CB10B1810FBCB7F5B525AD62EAE6C79E480871",
+      "after_file_sha256": "049C8CFE6053CDC7632BF44B57EB64BD8F220685AFB99FB029AC844EC3A4DC40"
+    }
+  ],
+  "all_intermediate_hashes_verified": true,
+  "complete_forward_bytes_exact": true,
+  "complete_inverse_bytes_exact": true,
+  "all_other_tokens_byte_identical": true,
+  "nonconstant_ast_structure_identical": true,
+  "unchanged_helpers": [
+    {
+      "name": "require",
+      "bytes": 64,
+      "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB",
+      "byte_identical": true
+    },
+    {
+      "name": "utc_ticks",
+      "bytes": 576,
+      "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245",
+      "byte_identical": true
+    },
+    {
+      "name": "read",
+      "bytes": 77,
+      "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E",
+      "byte_identical": true
+    },
+    {
+      "name": "digest",
+      "bytes": 151,
+      "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC",
+      "byte_identical": true
+    },
+    {
+      "name": "pin",
+      "bytes": 94,
+      "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C",
+      "byte_identical": true
+    },
+    {
+      "name": "verify_pins",
+      "bytes": 568,
+      "sha256": "5576E465D77460F5AE653A28E3513FBCF8A935CF87A29D444F5239CB153B3EA6",
+      "byte_identical": true
+    }
+  ],
+  "untouched_fragments": [
+    {
+      "baseline_offset": 0,
+      "candidate_offset": 0,
+      "bytes": 6566,
+      "sha256": "60491C55F40A1BD2E96F66E6E8E4F6509E7E183672DAB360D797F7278FB53CB0",
+      "byte_identical": true
+    },
+    {
+      "baseline_offset": 6614,
+      "candidate_offset": 6618,
+      "bytes": 99,
+      "sha256": "33FD7CE693356AAE26E1C430AC9A764D002699A0D98735A3CAAA8CDB81E0685E",
+      "byte_identical": true
+    },
+    {
+      "baseline_offset": 6718,
+      "candidate_offset": 6722,
+      "bytes": 63,
+      "sha256": "EEDB2196980FA62605DD79462FFF0FF13098870065A5BFE2496A9D61B505AE01",
+      "byte_identical": true
+    },
+    {
+      "baseline_offset": 6847,
+      "candidate_offset": 6851,
+      "bytes": 129,
+      "sha256": "C7D1AAAA14F238DF40C230BF9E5E32EA8DCAE35C9D2BDF1C0DBA6739D89A9540",
+      "byte_identical": true
+    },
+    {
+      "baseline_offset": 7000,
+      "candidate_offset": 7011,
+      "bytes": 18,
+      "sha256": "4BD2FA2FCA1393758CAF882D1718B97C07D70232CB43777EC049F79D3510FA47",
+      "byte_identical": true
+    },
+    {
+      "baseline_offset": 7042,
+      "candidate_offset": 7060,
+      "bytes": 92,
+      "sha256": "C4BCCF2AD100BF0C372DB29D188ECF33778FA779EDF3657D16E4B103B61D8124",
+      "byte_identical": true
+    },
+    {
+      "baseline_offset": 7158,
+      "candidate_offset": 7183,
+      "bytes": 31858,
+      "sha256": "2C944F92A6EEB192041FBE777801BCD4868C1CFF97406E37057921D4E25426E6",
+      "byte_identical": true
+    },
+    {
+      "baseline_offset": 39040,
+      "candidate_offset": 39072,
+      "bytes": 874,
+      "sha256": "B8997CE742DD6F4D3A1AA09D950B58D2BC73A9325B5BA8F9EDE0BBDA3812BB75",
+      "byte_identical": true
+    }
+  ],
+  "all_untouched_raw_fragments_byte_identical": true,
+  "all_validation_logic_unchanged": true,
+  "authoring_method": "Read raw baseline, tokenize/AST static checks, exact literal spans, complete raw inverse, create-only output; no target or prefix execution.",
+  "source_only": true,
+  "target_executed": false,
+  "prefix_executed": false,
+  "constructor_executed": false,
+  "auditor_executed": false,
+  "helper_executed": false,
+  "native_executed": false,
+  "Main_written": false,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

@@ -1,0 +1,212 @@
+{
+  "group": "native-node-file-handle-owner",
+  "status": "failed",
+  "mode": "RuntimeOnly",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "receipt_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner",
+  "output_prefix": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\installed",
+  "installed_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\installed\\bin\\native-node-file-handle-owner.exe",
+  "installed_pdb": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\installed\\bin\\test.pdb",
+  "cached_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c4d8e30b697e1e299b33fef4aed6127d\\test.exe",
+  "phases": {
+    "runtime": {
+      "failure": "Native test protocol did not report every selected test passing without logs/leaks",
+      "original_execution_failure": "Native test protocol did not report every selected test passing without logs/leaks",
+      "evidence": {
+        "valid": true,
+        "evidence_errors": [],
+        "owner": {
+          "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c4d8e30b697e1e299b33fef4aed6127d\\test.exe",
+          "executable_sha256": "BF100B0B3CFB386757E0415DAFC8A7BEFF430ED96166AD5AA06E9129E0F8DB7F",
+          "arguments": [
+            "--listen=-"
+          ],
+          "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+          "pid": 48028,
+          "retained_handle": 2204,
+          "created_utc": "2026-10-21T13:30:33.3955731Z",
+          "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+          "timeout_seconds": 120,
+          "status": "passed",
+          "live_identity": {
+            "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c4d8e30b697e1e299b33fef4aed6127d\\test.exe",
+            "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c4d8e30b697e1e299b33fef4aed6127d\\test.exe\" --listen=-",
+            "command_line_method": "Win32_Process.CommandLine",
+            "pid": 48028,
+            "created_utc": "2026-10-21T13:30:33.3955731Z"
+          },
+          "exit_code": 0,
+          "completed_utc": "2026-10-21T14:30:34.0686403+01:00"
+        },
+        "canonical_results": {
+          "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c4d8e30b697e1e299b33fef4aed6127d\\test.exe",
+          "binary_sha256": "BF100B0B3CFB386757E0415DAFC8A7BEFF430ED96166AD5AA06E9129E0F8DB7F",
+          "version": "0.16.0",
+          "expected": 19,
+          "started": 19,
+          "completed": 19,
+          "results": [
+            {
+              "index": 0,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 1,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 2,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 3,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 4,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 5,
+              "flags": 1,
+              "passed": false
+            },
+            {
+              "index": 6,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 7,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 8,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 9,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 10,
+              "flags": 1,
+              "passed": false
+            },
+            {
+              "index": 11,
+              "flags": 1,
+              "passed": false
+            },
+            {
+              "index": 12,
+              "flags": 1,
+              "passed": false
+            },
+            {
+              "index": 13,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 14,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 15,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 16,
+              "flags": 1,
+              "passed": false
+            },
+            {
+              "index": 17,
+              "flags": 0,
+              "passed": true
+            },
+            {
+              "index": 18,
+              "flags": 0,
+              "passed": true
+            }
+          ],
+          "failed_or_skipped_or_logged_or_leaked": 5,
+          "owner_receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.json",
+          "status": "failed"
+        },
+        "raw_outputs": [
+          {
+            "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stdout.bin",
+            "bytes": 546,
+            "sha256": "28AC47910B5D5309DD1A1454816A2C051A0E420C51BD0827D4EC61F5D5528C9E"
+          },
+          {
+            "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stderr.log",
+            "bytes": 68389,
+            "sha256": "1BB42117F374DECBF5C91100686DF7DA7D686A285ECF9F874423D5799AF945ED"
+          }
+        ],
+        "current_owner_pid_present": 0,
+        "current_owned_descendants": [],
+        "preexisting_pid_ancestry": [],
+        "absence_error": null
+      },
+      "owner_binding": {
+        "status": "invalid",
+        "errors": [
+          "Actual metadata/new API or ordinary retained runtime stderr must be empty"
+        ],
+        "expected_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c4d8e30b697e1e299b33fef4aed6127d\\test.exe",
+        "expected_sha256": "BF100B0B3CFB386757E0415DAFC8A7BEFF430ED96166AD5AA06E9129E0F8DB7F",
+        "expected_deadline": 120
+      },
+      "postchecks": {
+        "evidence_valid": true,
+        "owner_bound": false,
+        "source_sealed": false,
+        "artifacts_bound": true,
+        "absence_closed": true,
+        "errors": [
+          "Actual terminal owner binding failed: Actual metadata/new API or ordinary retained runtime stderr must be empty"
+        ],
+        "source_seal_scope": "Whole batch before/final; no group is admissible until the final complete seal closes"
+      }
+    }
+  },
+  "postseal": false,
+  "source_seal_scope": "whole_batch",
+  "errors": [
+    "Actual terminal owner binding failed: Actual metadata/new API or ordinary retained runtime stderr must be empty",
+    "Native test protocol did not report every selected test passing without logs/leaks"
+  ],
+  "runtime_requested": true,
+  "runtime_owner_launch_attempted": true,
+  "actual_runtime_owner_started": true,
+  "native_selected_tests_started": 19,
+  "attempted_phases": [
+    "runtime"
+  ],
+  "owned_started_phases": [
+    "runtime"
+  ],
+  "runtime_count_observation": {
+    "expected": 19,
+    "started": 19,
+    "completed": 19,
+    "failed_or_skipped_or_logged_or_leaked": 5,
+    "status": "failed",
+    "acceptance_authority": "Validated canonical result and all original owner/postseal gates remain required"
+  }
+}

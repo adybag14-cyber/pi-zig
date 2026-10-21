@@ -1,0 +1,229 @@
+{
+  "schema": 1,
+  "status": "unexecuted_exact_v37_retry1_new4_negative_runtime_auditor_for_root_review",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\candidate\\Audit-NegativeV37Retry1New4StrictRuntime.py",
+    "bytes": 47992,
+    "sha256": "77B7214537A583410F686B560FA158097087C836C5A7DD34345FE8ED5266ECC8"
+  },
+  "captured_inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\candidate\\independent-negative-runtime-audit-inputs.json",
+    "bytes": 11361,
+    "sha256": "7B5903FF048D7545C9DE37089413BAED532EA7FFDFD7F556EF4631D287BDCD8C"
+  },
+  "finite_source_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 26166,
+    "sha256": "34DCA9D9D9C03E881FA0372FBA8FDF06BCAC7C8A5C185A3E1B4EB5E43324C8CB"
+  },
+  "finite_input_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\finite-input-adaptation.json",
+    "bytes": 28846,
+    "sha256": "C00A728B2B60F414DA00C5FB3A14E7E734031FA0520760DA87BF179CAFBDBEED"
+  },
+  "static_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\static-source-check.py",
+    "bytes": 12771,
+    "sha256": "5B698169BC73AA7F71ECAE5C7382FB2CBCA5162DB95D518C166B6896AE90E397"
+  },
+  "static_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\static-source-proof.json",
+    "bytes": 17263,
+    "sha256": "071804AC6CC94331205A322C34A6423F66B674D7E8FD7BD48472B3C93AC6D7E0"
+  },
+  "accepted_baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\Audit-NegativeV36New4StrictRuntime.py",
+    "bytes": 47948,
+    "sha256": "5B32C5507CE78E1DB6BF0CB2AC1FE1ED8A48232E76AA6EFF3378034CF76F0DE0"
+  },
+  "accepted_baseline_release": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\root-negative-runtime-audit-release.json",
+    "bytes": 7208,
+    "sha256": "45ECC6A0A303288F02FAA9D9AF7A164C2C175376A5E10D3EE3D4C5C1DB680D89"
+  },
+  "accepted_baseline_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-closure.json",
+    "bytes": 26137,
+    "sha256": "8BCCF2D351EEDC42D65C56E8605D2DD10ACFF153231552AD90F496E4668CF9AF"
+  },
+  "accepted_baseline_root_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-new4-original-negative-runtime-acceptance-20261021.json",
+    "bytes": 2496,
+    "sha256": "182883E0C8BA52A96B34E790DD65A9DF247F0DD67031D68CD73DBAB614D0DCCC"
+  },
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "original_runtime_control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912",
+  "original_runtime_proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912",
+  "original_runtime_job": {
+    "id": "job-op-4d0480e45249519d20b8b2acade1b1e10a0c17a5aa1d8c53cd86b89c6f456f1b",
+    "status": "failed",
+    "mode": "program",
+    "createdAtUtc": "2026-10-21T13:29:50.856Z",
+    "startedAtUtc": "2026-10-21T13:29:50.929Z",
+    "completedAtUtc": "2026-10-21T13:31:14.227Z",
+    "runnerPid": 9880,
+    "exitCode": 1,
+    "readOnly": false,
+    "resourceClass": "heavy",
+    "runtimeMode": "host",
+    "queuedAtUtc": "2026-10-21T13:29:50.903Z",
+    "runnerProcessInstance": "134370629908773270",
+    "queueWaitMs": 10,
+    "executionSlot": 4,
+    "executionSlots": [
+      4,
+      3
+    ],
+    "executionPool": "execution",
+    "executionWeight": 2,
+    "childPid": 30808,
+    "error": "Owned terminal failed: C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "logs": {
+      "stdout": {
+        "maxBytes": 33554432,
+        "rotations": 2,
+        "rotationsPerformed": 0,
+        "totalBytes": 0,
+        "currentBytes": 0,
+        "truncated": false,
+        "failed": false,
+        "error": null
+      },
+      "stderr": {
+        "maxBytes": 33554432,
+        "rotations": 2,
+        "rotationsPerformed": 0,
+        "totalBytes": 63,
+        "currentBytes": 63,
+        "truncated": false,
+        "failed": false,
+        "error": null
+      },
+      "truncated": false
+    },
+    "runnerAlive": false,
+    "jobDir": "C:\\Users\\adyba\\docker-chatgpt-devbox\\run\\jobs\\job-op-4d0480e45249519d20b8b2acade1b1e10a0c17a5aa1d8c53cd86b89c6f456f1b"
+  },
+  "observed_original_counts": {
+    "declared_groups": 4,
+    "declared_controls": 58,
+    "accepted_metadata": 61,
+    "attempted_groups": 1,
+    "started": 19,
+    "completed": 19,
+    "failed_indices": [
+      5,
+      10,
+      11,
+      12,
+      16
+    ],
+    "failed": 5,
+    "passed": 14,
+    "unstarted_groups": 3,
+    "unstarted_accepted_indices": 42
+  },
+  "original_native_owner": {
+    "pid": 48028,
+    "created_utc": "2026-10-21T13:30:33.3955731Z",
+    "completed_utc_standalone": "2026-10-21T13:30:34.0686403+00:00",
+    "completed_utc_aggregate": "2026-10-21T14:30:34.0686403+01:00",
+    "exit_code": 0,
+    "status": "passed",
+    "qualification": false
+  },
+  "original_outer": {
+    "pid": 51836,
+    "created_utc": "2026-10-21T13:29:51.2090614Z",
+    "completed_utc": "2026-10-21T13:31:14.0331208+00:00",
+    "status": "failed",
+    "exit_code": 1
+  },
+  "source_adaptation": {
+    "source_steps": 39,
+    "source_complete_forward_and_raw_inverse": true,
+    "input_field_changes": 34,
+    "input_key_inventory": 50,
+    "input_complete_raw_inverse": true,
+    "complete_unchanged_helpers": 6,
+    "complete_unchanged_critical_blocks": 7,
+    "changes": "Only exact V37/Retry1 identities, observed input/provenance hashes, source/tree cardinalities, five original failed-index expectations, exact stderr length and corresponding descriptive/result fields.",
+    "preserved": "Full directory/source/vendor/compiler seals, all four accepted cached/installed executable/PDB pairs and PE headers, strict negative owner/stderr/postchecks, sequential raw wire decoder, original 29 strict fields, exact 100ns timestamps and ancestry/PID reuse checks, fresh independent classifier query, create-only output, original V34 anchors.",
+    "syntax_check": "AST parse only; candidate and its prefix were never executed."
+  },
+  "static_original_checks": {
+    "file_versions_rehashed": 47,
+    "main_clean_before_and_after": true,
+    "main_head_unchanged": true,
+    "attempted_group_files": 14,
+    "raw_wire_bytes": 546,
+    "raw_stderr_bytes": 68389,
+    "raw_bookends_identical": true,
+    "seal_counts": {
+      "source": 14785,
+      "tree": 14798,
+      "vendor": 1489,
+      "compiler": 19546,
+      "controls": 25
+    },
+    "source_full_current_rehash_pending": true,
+    "fresh_independent_process_absence_pending": true
+  },
+  "original_raw_frame_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-raw-frame-observation.json",
+    "bytes": 2947,
+    "sha256": "B7900534C9B3F265D43883B096D0824C5893A9E1472FC657F3D260237B032DBA",
+    "producer": "Pinned 1DD3 Run-CombinedNativeBatch.ps1 Observe-RuntimeFrames, lines 355-358; Save-Json emits the phase raw-frame observation during the original runtime. No reviewer created or changed it.",
+    "scope": "Raw complete protocol frames including partial failure evidence; never acceptance authority",
+    "original_native_receipt_not_independent_acceptance": true
+  },
+  "proposed_placement_after_root_review": [
+    {
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\candidate\\Audit-NegativeV37Retry1New4StrictRuntime.py",
+        "bytes": 47992,
+        "sha256": "77B7214537A583410F686B560FA158097087C836C5A7DD34345FE8ED5266ECC8"
+      },
+      "target": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\Audit-NegativeV37Retry1New4StrictRuntime.py"
+    },
+    {
+      "donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\candidate\\independent-negative-runtime-audit-inputs.json",
+        "bytes": 11361,
+        "sha256": "7B5903FF048D7545C9DE37089413BAED532EA7FFDFD7F556EF4631D287BDCD8C"
+      },
+      "target": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-audit-inputs.json"
+    }
+  ],
+  "exact_input_gate": "The candidate embeds captured-input SHA 7B5903FF and requires its path to equal the original control/independent-negative-runtime-audit-inputs.json. Root must place the two exact reviewed snapshots without overwriting original files before any separately granted invocation.",
+  "future_invocation_shape": {
+    "program": "python",
+    "args": [
+      "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\Audit-NegativeV37Retry1New4StrictRuntime.py",
+      "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-audit-inputs.json"
+    ],
+    "authority": "Unissued; Root review and explicit exact audit execution grant required."
+  },
+  "sole_future_output": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-closure.json",
+  "limitations": [
+    "All listed outcomes are decoded or read from original receipts; no fresh audit outcome is predicted.",
+    "The future audit must rehash the complete sealed source/compiler/control universe, verify original artifacts and raw outputs, and reconcile all actual process intervals against a fresh independent query.",
+    "The native process returned terminal zero while the original protocol and nonempty stderr gates failed. The negative must remain nonqualifying.",
+    "Initial failed V37 BuildQuery admission and every V36 original remain preserved; Retry1 parent provenance selects buildquery-retry1-launch.json and Root review 67148BD4.",
+    "One bounded metadata display was truncated; the same read was repeated with compact output and complete required facts. No target was executed and no original file was changed."
+  ],
+  "source_only": true,
+  "candidate_executed": false,
+  "prefix_executed": false,
+  "constructor_executed": false,
+  "target_helper_executed": false,
+  "current_seal_audit_executed": false,
+  "fresh_process_audit_executed": false,
+  "native_execution_authorized": false,
+  "audit_execution_authorized": false,
+  "main_mutated": false,
+  "original_run_files_mutated": false,
+  "source_mutation_hold_released": false,
+  "runtime_qualification": false,
+  "product_qualification": false
+}

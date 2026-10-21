@@ -1,0 +1,202 @@
+{
+  "schema": 1,
+  "status": "root_and_independent_peer_accepted_v37_emitted_catalog_source",
+  "reviewer": "Root",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "previous_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "catalog_source_accepted": true,
+  "native_execution_authorized": false,
+  "new4_and_original63_preserved": true,
+  "matrix_sha256": "E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37",
+  "independent_catalog_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v37-catalog-source-peer-20261021\\emitted-peer.json",
+    "bytes": 16494,
+    "sha256": "858C81B1A83FCFE96980FA1C9EEB460FCDDF775095407A11DE346885C379DFE4"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v37-catalog-source-peer-20261021\\emitted-checker.py",
+    "bytes": 50489,
+    "sha256": "781B9472251D386BED5449AE873711FA32AC5CB58A3EC17EFB99B6F38D644D32"
+  },
+  "independent_input_verification": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v37-catalog-source-peer-20261021\\emitted-input-verification.json",
+    "bytes": 601818,
+    "sha256": "5F2935BB910AA2D7679553B8AFE1588C45C8BAD8696AE8DE9B9DC23B27FC9DFB"
+  },
+  "preparation_reviews": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\preparation-review.json",
+      "bytes": 212519,
+      "sha256": "CC5D3FF8C0FFD05B78EC524EFB6E9F642F15A5648FECD3DA0DDEF9FA0C0B29D9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-regression63-prepared-20261021\\preparation-review.json",
+      "bytes": 214727,
+      "sha256": "A48963B22BFD4E005CBC4ABD7CF6D6EB42B204363BA7C4ED3CF5D1D887A87FC0"
+    }
+  ],
+  "catalog_preparer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-FreshV37Catalog-20261021.py",
+    "bytes": 54634,
+    "sha256": "BDEDEE0A5A00C895C6E2375AE67C910223D091A8286B4B85201DF8BE7A72A30F"
+  },
+  "catalog_preparer_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-catalog-preparer-source-acceptance-20261021.json",
+    "bytes": 6131,
+    "sha256": "C2C57834807501FB9B228BCBE0F7A3DF061718F9903C9B417CF57CC8A271597E"
+  },
+  "catalog_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-catalog-issued-config-20261021.json",
+    "bytes": 6734,
+    "sha256": "4FAB8D007646C668139B60D5467C37F51050710DF5EFD613897AB24BA0BCFA50"
+  },
+  "root_static_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-emitted-catalog-static-review-20261021.json",
+    "bytes": 3871,
+    "sha256": "0C83307EA8CA446F7695FFDEB2BB16ACA95E3611840E8518EC6A9485C527D550"
+  },
+  "bound_execution_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-execution-bound-source-review-20261021.json",
+    "bytes": 6566,
+    "sha256": "B0A86EEC807F83AC467E5B194891FC6F6BA0C551BEBCBDF7C33AFA6E689FC914"
+  },
+  "catalog_groups": 117,
+  "catalog_source_declarations": 2013,
+  "whole_dependency_rows": 576,
+  "source_pin_changes": [
+    {
+      "group": "native-node-file-handle-owner",
+      "group_index": 113,
+      "row_index": 850,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127",
+      "after": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+    },
+    {
+      "group": "native-node-fs-before-hook-continuation",
+      "group_index": 114,
+      "row_index": 850,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127",
+      "after": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+    },
+    {
+      "group": "native-node-file-handle-transfer",
+      "group_index": 116,
+      "row_index": 851,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127",
+      "after": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+    }
+  ],
+  "fixture_inventory_member_changes": [
+    {
+      "root_index": 0,
+      "module_index": 674,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before_bytes": 33137,
+      "after_bytes": 33152,
+      "before_sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127",
+      "after_sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+    },
+    {
+      "root_index": 1,
+      "module_index": 673,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before_bytes": 33137,
+      "after_bytes": 33152,
+      "before_sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127",
+      "after_sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+    },
+    {
+      "root_index": 3,
+      "module_index": 674,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before_bytes": 33137,
+      "after_bytes": 33152,
+      "before_sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127",
+      "after_sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+    }
+  ],
+  "complete_catalog_and_inventory_inverses_verified": true,
+  "graph_checks": [
+    {
+      "name": "native-node-file-handle-owner",
+      "modules": 710,
+      "embeds": 243,
+      "literal_import_edges": 3334,
+      "declarations": 18,
+      "anonymous_blocks": 8,
+      "source_pins": 907,
+      "dependency_rows": 75
+    },
+    {
+      "name": "native-node-fs-before-hook-continuation",
+      "modules": 710,
+      "embeds": 243,
+      "literal_import_edges": 3334,
+      "declarations": 3,
+      "anonymous_blocks": 8,
+      "source_pins": 907,
+      "dependency_rows": 75
+    },
+    {
+      "name": "native-vm-error-constructor-name",
+      "modules": 1,
+      "embeds": 0,
+      "literal_import_edges": 0,
+      "declarations": 24,
+      "anonymous_blocks": 0,
+      "source_pins": 2,
+      "dependency_rows": 5
+    },
+    {
+      "name": "native-node-file-handle-transfer",
+      "modules": 711,
+      "embeds": 243,
+      "literal_import_edges": 3340,
+      "declarations": 13,
+      "anonymous_blocks": 8,
+      "source_pins": 908,
+      "dependency_rows": 77
+    }
+  ],
+  "current_input_versions_rehashed_by_root": 1309,
+  "immutable_reference_versions_rehashed_by_root": 503,
+  "current_intake_paths_rehashed_by_root": 196,
+  "all654_provenance_entries_per_batch_previously_rehashed_by_root": true,
+  "phase_checks": [
+    {
+      "phase": "fixture",
+      "before_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+      "after_head": "891b74c94b1d9fc859587762187bb1040970b8a8",
+      "path_count": 26,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    },
+    {
+      "phase": "progress",
+      "before_head": "891b74c94b1d9fc859587762187bb1040970b8a8",
+      "after_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+      "path_count": 170,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    }
+  ],
+  "new4_group_count": 4,
+  "new4_declared_controls": 58,
+  "original63_group_count": 63,
+  "original63_declared_controls": 1249,
+  "selections_disjoint": true,
+  "per_batch_cap": 64,
+  "all_strict_driver_classifier_and_metadata_auditor_gates_preserved": true,
+  "prior_buildquery_and_original_runtime_negative_remain_history_only": true,
+  "actual_metadata_count": null,
+  "runtime_authority": false,
+  "runtime_qualification": false,
+  "application_qualified": false,
+  "production_bridge_removed": false,
+  "source_mutation_hold_released": false,
+  "root_review": "Root fully read the 50489-byte independent emitted checker, the complete 16494-byte peer and actual 6566-byte execution source acceptance. The existing Root static review independently checked both 15-file emitted sets, all654 provenance entries per batch, all current matrix versions and complete byte inverses. Root now rehashed all1309 current catalog inputs, all503 independent referenced versions and all196 current intake paths from the sealed601818-byte independent input proof. The separate commits and exact three fixture substitutions preserve all117 groups,2013 declarations,576 dependencies, original63 order and four conservative graphs. Source acceptance is complete. Fresh BuildQuery actual metadata, complete current seals/process absence and a separate strict runtime grant remain required. No historical61 metadata count or runtime result is transferred.",
+  "reviewed_utc": "2026-10-21T09:47:15.364579+00:00"
+}

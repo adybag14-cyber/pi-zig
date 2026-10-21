@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "status": "root_source_accepted_unissued_v37_existing63_config_shape",
+  "reviewer": "Root",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-existing63-buildquery-unissued-config-20261021.json",
+    "bytes": 10015,
+    "sha256": "7FA476AC5B7A008EEFEE9F47B0D3D0708E5D789BB6289F144244AEBB88853D8E"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-existing63-buildquery-unissued-config-20261021.json",
+    "bytes": 8332,
+    "sha256": "3BF01831F38693388F1C561DC370D2A31020D88054E3D72EC20A761D09213616"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-existing63-buildquery-configuration-sourceonly-20261021\\finite-adaptation.json",
+    "bytes": 28744,
+    "sha256": "E3DBDC770D7AB1C4399D33E570F55E9FF3C876E15012141D04AA55B1C4414378"
+  },
+  "retained_baseline_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-existing63-buildquery-config-finite-adaptation-20261021.json",
+    "bytes": 19895,
+    "sha256": "7FC9F7489BA7287A80C2AACC9B045FDEE9FADB6789B5801098094509ECB396EF"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-existing63-buildquery-configuration-source-peer-20261021\\peer.json",
+    "bytes": 22438,
+    "sha256": "DF33BD7E4CE6A94B25A9DB6E368CB52FA12F790B6F9063FFE8F8FB5CD72407CD"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-existing63-buildquery-configuration-source-peer-20261021\\independent-static-peer.py",
+    "bytes": 13103,
+    "sha256": "13B3C22368C29429B7B63CC5E4464CB00D48CF0B7033207D35F08E19BB8CFFD5"
+  },
+  "source_accepted": true,
+  "all20_and_retained9_edits_intermediates_full_raw_inverses_replayed": true,
+  "all34_peer_inputs_rehashed": true,
+  "original63_order_exact": true,
+  "selected_groups": 63,
+  "source_declarations": 1249,
+  "disjoint_from_new4": true,
+  "unchanged_group_cap": 64,
+  "required_source_review_key": "grant_provenance_updates.v37_execution_bound_source_review",
+  "all15_immutable_historical_provenance_rows_preserved": true,
+  "old_progress_frozen_copy_now_verified": true,
+  "root_review": "Root read the complete10015-byte7FA4 shape, handoff,22438-byte independent DF33 peer and13103-byte checker, reviewed all20 finite edits, rehashed all34 independent input pins and replayed both20-field and original9-field chains with exact raw-byte inverses. The original63 ordered names and1249 source declarations match the actual E4 catalog and remain disjoint from new4/58. All future actual evidence, memory, timestamp and metadata fields remain unissued. Root observed the retained23A951 old progress copy at the actual V37 regression preparation. Any future issue requires fresh serial admission, exact actual source/catalog pins and unchanged strict BuildQuery controls; the original63 has not run.",
+  "configuration_issued": false,
+  "constructor_execution_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "actual_metadata_count": null,
+  "reviewed_utc": "2026-10-21T13:00:24.365060+00:00"
+}

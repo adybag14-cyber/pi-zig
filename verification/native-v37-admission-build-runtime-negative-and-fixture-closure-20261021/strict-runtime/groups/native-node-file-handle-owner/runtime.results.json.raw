@@ -1,0 +1,108 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c4d8e30b697e1e299b33fef4aed6127d\\test.exe",
+  "binary_sha256": "BF100B0B3CFB386757E0415DAFC8A7BEFF430ED96166AD5AA06E9129E0F8DB7F",
+  "version": "0.16.0",
+  "expected": 19,
+  "started": 19,
+  "completed": 19,
+  "results": [
+    {
+      "index": 0,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 1,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 2,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 3,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 4,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 5,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 6,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 7,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 8,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 9,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 10,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 11,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 12,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 13,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 14,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 15,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 16,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 17,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 18,
+      "flags": 0,
+      "passed": true
+    }
+  ],
+  "failed_or_skipped_or_logged_or_leaked": 5,
+  "owner_receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.json",
+  "status": "failed"
+}

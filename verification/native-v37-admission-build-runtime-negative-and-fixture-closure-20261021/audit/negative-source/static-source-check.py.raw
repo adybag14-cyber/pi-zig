@@ -1,0 +1,157 @@
+"""Static finite-source and original-receipt inspection only.
+Never imports, compiles, executes, or evaluates the candidate or any prefix.
+Writes only new proof files in this owned proposal directory.
+"""
+from pathlib import Path
+import ast,copy,datetime as dt,hashlib,json,re,subprocess
+B=Path(r'C:\Users\adyba\pi-zig')
+P=Path(__file__).resolve().parent
+OLD=B/'evidence/root-native-foundation-v36-new4-runtime-control-20261021-082608'
+C=B/'evidence/root-native-foundation-v37-new4-runtime-control-20261021-132912'
+R=B/'evidence/root-native-foundation-v37-new4-runtime-20261021-132912'
+BP=B/'evidence/root-native-foundation-fresh-v37-new4-buildquery-20261021-131435'
+BC=B/'evidence/root-native-foundation-fresh-v37-new4-control-20261021-131435'
+PREP=B/'evidence/combined-native-batch-v37-new4-prepared-20261021'
+HEAD='b13be24e44cc1bbc361639eb35900a368ae60eac'
+pins={}
+def sha(raw):return hashlib.sha256(raw).hexdigest().upper()
+def pin(p,size=None,h=None):
+ p=Path(p);raw=p.read_bytes();row=dict(path=str(p),bytes=len(raw),sha256=sha(raw))
+ if size is not None:assert len(raw)==size,(p,len(raw),size)
+ if h is not None:assert row['sha256']==h,(p,row['sha256'],h)
+ if str(p) in pins:assert pins[str(p)]==row
+ pins[str(p)]=row
+ return raw
+def obj(p,size=None,h=None):return json.loads(pin(p,size,h))
+def rowpin(row):return pin(row['path'],row.get('bytes'),row['sha256'])
+def utc(stamp):
+ m=re.fullmatch(r'(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d)(?:\.(\d{1,7}))?(Z|[+-]\d\d:\d\d)',stamp);assert m
+ whole=dt.datetime.fromisoformat(m[1]+('+00:00' if m[3]=='Z' else m[3]))
+ delta=whole-dt.datetime(1970,1,1,tzinfo=dt.timezone.utc)
+ return (delta.days*86400+delta.seconds)*10000000+int((m[2] or '').ljust(7,'0'))
+def state():
+ args=['git','--no-optional-locks','-c','core.fsmonitor=false','-C',str(B/'main')]
+ h=subprocess.check_output(args+['rev-parse','HEAD']).decode().strip()
+ s=subprocess.check_output(args+['status','--porcelain=v1','--untracked-files=all'])
+ assert h==HEAD and s==b''
+ return dict(head=h,status_bytes=len(s))
+main_before=state()
+baseline=pin(OLD/'Audit-NegativeV36New4StrictRuntime.py',47948,'5B32C5507CE78E1DB6BF0CB2AC1FE1ED8A48232E76AA6EFF3378034CF76F0DE0')
+candidate=pin(P/'candidate/Audit-NegativeV37Retry1New4StrictRuntime.py',47992,'77B7214537A583410F686B560FA158097087C836C5A7DD34345FE8ED5266ECC8')
+cfgraw=pin(P/'candidate/independent-negative-runtime-audit-inputs.json',11361,'7B5903FF048D7545C9DE37089413BAED532EA7FFDFD7F556EF4631D287BDCD8C');cfg=json.loads(cfgraw)
+oldcfgraw=pin(OLD/'independent-negative-runtime-audit-inputs.json',14813,'62D821EB4E6F0AD4D4F9C3278A137D355533651B5C3542BA885FADE9936AEDE4');oldcfg=json.loads(oldcfgraw)
+finite=obj(P/'finite-source-adaptation.json',26166,'34DCA9D9D9C03E881FA0372FBA8FDF06BCAC7C8A5C185A3E1B4EB5E43324C8CB')
+assert len(finite['steps'])==39
+current=baseline
+for step in finite['steps']:
+ assert len(current)==step['before_bytes'] and sha(current)==step['before_sha256']
+ off=step['offset'];before=step['before'].encode();after=step['after'].encode()
+ assert current[off:off+len(before)]==before
+ current=current[:off]+after+current[off+len(before):]
+ assert len(current)==step['after_bytes'] and sha(current)==step['after_sha256']
+assert current==candidate
+for step in reversed(finite['steps']):
+ off=step['offset'];before=step['before'].encode();after=step['after'].encode()
+ assert current[off:off+len(after)]==after
+ current=current[:off]+before+current[off+len(after):]
+assert current==baseline
+def helpers(raw):
+ lines=raw.splitlines(keepends=True)
+ return {n.name:b''.join(lines[n.lineno-1:n.end_lineno]) for n in ast.parse(raw).body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))}
+bh=helpers(baseline);ch=helpers(candidate)
+assert set(bh)==set(ch)=={'require','utc_ticks','read','digest','pin','verify_pins'}
+helper_rows=[]
+for name in bh:
+ assert bh[name]==ch[name],name
+ helper_rows.append(dict(name=name,bytes=len(bh[name]),sha256=sha(bh[name])))
+ranges=[
+ ('complete_current_directory_inventory_and_rehash',b'for role,root,excludes in ((',b'\n\nrequire(digest(build/"result.json")'),
+ ('all_four_cached_installed_pairs_and_PE_headers',b'complete_cached=sorted(',b'runtime_bounds=[];observations=[];runtime_receipts=[]'),
+ ('strict_original_owner_and_stderr_postcheck_gates',b' expected_error="Native test protocol',b' require((gp/"runtime.stderr.log").stat().st_size'),
+ ('complete_raw_runtime_decoder',b' raw=(gp/"runtime.stdout.bin").read_bytes();offset=0;tags=[];results=[]',b' runtime_bounds.append('),
+ ('current_exact_process_instance_reconciliation',b'reconciled=[]',b'certificate=dict('),
+ ('original_29_strict_grant_fields',b'for key in ("schema","status","execution_authorized"',b'require(grant["cache_directory"]'),
+ ('original_UTC100ns_aggregate_owner_and_ancestry',b'  require(set(e["owner"])==set(owner)',b' expected_error="Native test protocol')
+]
+block_rows=[]
+for name,start,end in ranges:
+ assert baseline.count(start)==candidate.count(start)==1
+ a=baseline.index(start);z=baseline.index(end,a)
+ block=baseline[a:z];x=candidate.index(start);y=candidate.index(end,x)
+ assert candidate[x:y]==block,name
+ block_rows.append(dict(name=name,baseline_offset=a,candidate_offset=x,bytes=len(block),sha256=sha(block)))
+assert list(cfg)==list(oldcfg)
+field_changes=[dict(key=k,before=oldcfg[k],after=cfg[k])for k in oldcfg if oldcfg[k]!=cfg[k]]
+inv=copy.deepcopy(cfg)
+for step in reversed(field_changes):assert inv[step['key']]==step['after'];inv[step['key']]=step['before']
+assert (json.dumps(inv,indent=2)+'\n').encode()==oldcfgraw
+pin(OLD/'root-negative-runtime-audit-release.json',7208,'45ECC6A0A303288F02FAA9D9AF7A164C2C175376A5E10D3EE3D4C5C1DB680D89')
+pin(B/'evidence/root-v36-new4-original-negative-runtime-acceptance-20261021.json',2496,'182883E0C8BA52A96B34E790DD65A9DF247F0DD67031D68CD73DBAB614D0DCCC')
+pin(OLD/'independent-negative-runtime-closure.json',26137,'8BCCF2D351EEDC42D65C56E8605D2DD10ACFF153231552AD90F496E4668CF9AF')
+for name,key in [('result.json','runtime_result_sha256'),('before.json','runtime_before_sha256'),('final.json','runtime_final_sha256')]:pin(R/name,h=cfg[key])
+assert (R/'before.json').read_bytes()==(R/'final.json').read_bytes()
+final=obj(R/'final.json')
+assert {k:len(final[k])for k in cfg['seal_counts']}==cfg['seal_counts']==dict(source=14785,tree=14798,vendor=1489,compiler=19546,controls=25)
+for name,key in [('root-grant.json','runtime_grant_sha256'),('runtime-launch.json','runtime_launch_sha256'),('grant-launch-adaptation.json','runtime_grant_launch_adaptation_sha256'),('outer.json','outer_sha256'),('outer-absence.json','outer_absence_sha256'),('independent-observed-job-status.json','job_observation_sha256')]:pin(C/name,h=cfg[key])
+launch=obj(C/'runtime-launch.json');rowpin(launch['launch'])
+runtimecfg=json.loads(rowpin(launch['specific_root_configuration']))
+assert sha(Path(launch['specific_root_configuration']['path']).read_bytes())==cfg['runtime_configuration_sha256']
+for k in ['build_result','build_final','metadata_acceptance','independent_build_closure']:rowpin(launch[k])
+rowpin(runtimecfg['runtime_constructor_source_review']);rowpin(runtimecfg['root_buildquery_acceptance']);rowpin(runtimecfg['buildquery_launch']);rowpin(cfg['runtime_grant_preparer'])
+assert runtimecfg['runtime_constructor_source_review']['sha256']==cfg['runtime_constructor_source_review_sha256']=='67148BD40AA1DACA49B6575CD22853CCD56229D95517CC58E7897A89ABCA9F77'
+pin(PREP/'preparation-review.json',h=cfg['preparation_review_sha256'])
+pin(PREP/'Run-CombinedNativeBatch.ps1',60094,'1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601')
+pin(PREP/'Get-ModelsNativeCandidates.ps1',1786,'3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301')
+pin(PREP/'groups.json',1104585,'E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37')
+for row in cfg['original_attempted_group_files']+cfg['original_outer_outputs']:rowpin(row)
+gp=R/'groups/native-node-file-handle-owner'
+assert {r['path']for r in cfg['original_attempted_group_files']}=={str(q)for q in gp.iterdir()if q.is_file()}
+assert len(cfg['original_attempted_group_files'])==14
+assert [q.name for q in (R/'groups').iterdir()if q.is_dir()]==['native-node-file-handle-owner']
+assert (C/'outer.stdout.bin').read_bytes()==(R/'result.json').read_bytes()
+import struct
+accept=obj(BC/'independent-metadata-acceptance.json')
+canonical=obj(gp/'runtime.results.json')
+wire=(gp/'runtime.stdout.bin').read_bytes();offset=0;tags=[];decoded=[]
+while offset<len(wire):
+ assert len(wire)-offset>=8
+ tag,size=struct.unpack_from('<II',wire,offset);offset+=8
+ assert size<=1024*1024 and size<=len(wire)-offset
+ body=wire[offset:offset+size];offset+=size;tags.append(tag)
+ if tag==0:assert tags==[0] and body==b'0.16.0'
+ elif tag==5:assert size==0 and len(tags)%2==0
+ elif tag==4:
+  assert size==12 and len(tags)%2==1 and tags[-2]==5
+  index,flags=struct.unpack('<IQ',body);assert index==len(decoded) and flags in (0,1)
+  decoded.append(dict(index=index,flags=flags,passed=flags==0))
+ else:assert False,tag
+assert tags==[0]+[x for _ in range(19)for x in (5,4)] and offset==len(wire)==546
+assert decoded==canonical['results']
+failed=[r['index']for r in decoded if r['flags']]
+assert failed==cfg['selected'][0]['failed']==[5,10,11,12,16]
+assert sum(r['passed']for r in decoded)==14
+assert [dict(group='native-node-file-handle-owner',index=i,flags=1,name=accept['groups'][0]['tests'][i])for i in failed]==cfg['failed_names']
+assert [g['actual_count']for g in accept['groups']]==[19,4,24,14]
+assert sum(g['actual_count']for g in accept['groups'][1:])==cfg['unstarted_accepted_indices']==42
+owner=obj(gp/'runtime.json');result=obj(R/'result.json');aggregate=result['groups'][0]['phases']['runtime']['evidence']['owner']
+assert utc(owner['created_utc'])==utc(aggregate['created_utc'])
+assert utc(owner['completed_utc'])==utc(aggregate['completed_utc'])
+assert owner['pid']==48028 and owner['status']=='passed' and owner['exit_code']==0
+assert (gp/'runtime.stderr.log').stat().st_size==68389
+assert result['status']=='failed' and result['errors']==['Native test protocol did not report every selected test passing without logs/leaks']
+assert cfg['selected'][0]['pid']==owner['pid'] and cfg['selected'][0]['created']==owner['created_utc']
+job=obj(C/'independent-observed-job-status.json')['data'];assert job==cfg['job']
+assert type(job['runnerProcessInstance'])is str and job['runnerProcessInstance']=='134370629908773270'
+assert job['runnerPid']==9880 and job['childPid']==30808 and job['status']=='failed' and job['exitCode']==1
+assert cfg['observed_started']==cfg['observed_completed']==19 and cfg['observed_failed']==5
+assert cfg['actual_metadata_count']==cfg['accepted_metadata_count']==61
+for q in [C/'Audit-NegativeV37Retry1New4StrictRuntime.py',C/'independent-negative-runtime-audit-inputs.json',C/'independent-negative-runtime-closure.json']:assert not q.exists(),str(q)
+main_after=state();assert main_after==main_before
+for row in list(pins.values()):rowpin(row)
+config_proof=dict(schema=1,baseline=pins[str(OLD/'independent-negative-runtime-audit-inputs.json')],candidate=pins[str(P/'candidate/independent-negative-runtime-audit-inputs.json')],field_changes=field_changes,complete_raw_inverse=True,key_inventory_unchanged=True,source_only=True,auditor_executed=False)
+check=dict(schema=1,status='static_source_and_original_receipt_bindings_verified_unexecuted',baseline=pins[str(OLD/'Audit-NegativeV36New4StrictRuntime.py')],candidate=pins[str(P/'candidate/Audit-NegativeV37Retry1New4StrictRuntime.py')],captured_inputs=pins[str(P/'candidate/independent-negative-runtime-audit-inputs.json')],source_edit_count=39,complete_source_forward_inverse=True,complete_input_raw_inverse=True,config_field_changes=len(field_changes),unchanged_helpers=helper_rows,unchanged_critical_blocks=block_rows,original_receipt_pins=sorted(pins.values(),key=lambda r:r['path']),original_wire=dict(bytes=546,started=19,completed=19,failed=failed,passed=14,unstarted=42),original_100ns_timestamp_equivalence=dict(standalone=owner['completed_utc'],aggregate=aggregate['completed_utc'],ticks=str(utc(owner['completed_utc']))),main_before=main_before,main_after=main_after,current_full_sealed_input_rehash_pending_authorized_audit=True,fresh_process_absence_pending_authorized_audit=True,source_only=True,candidate_executed=False,prefix_executed=False,native_execution_authorized=False,source_mutation_hold_released=False,qualification=False)
+# FINAL OUTPUT PHASE: only new static proposal evidence, never original run directories.
+for name,value in [('finite-input-adaptation.json',config_proof),('static-source-proof.json',check)]:
+ raw=(json.dumps(value,indent=2)+'\n').encode();path=P/name
+ with path.open('xb')as f:f.write(raw)
+ print(json.dumps(dict(path=str(path),bytes=len(raw),sha256=sha(raw))))

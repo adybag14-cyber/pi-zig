@@ -1,0 +1,229 @@
+"""Independent pre-creation admission-negative check. Reads only original inputs.
+Only this script's final create-only proof write mutates its own evidence directory.
+Does not execute any target, original helper, constructor, prefix or native binary.
+"""
+from pathlib import Path
+import copy, datetime as dt, hashlib, json, re, subprocess
+BASE=Path(r'C:\Users\adyba\pi-zig')
+MAIN=BASE/'main'
+OWN=Path(__file__).resolve().parent
+PREP=BASE/'evidence/combined-native-batch-v37-new4-prepared-20261021'
+CONTROL=BASE/'evidence/root-native-foundation-fresh-v37-new4-control-20261021-094837'
+PROOF=BASE/'evidence/root-native-foundation-fresh-v37-new4-buildquery-20261021-094837'
+HEAD='b13be24e44cc1bbc361639eb35900a368ae60eac'
+JOB='job-op-91a26b7a9a5f34e0321f75a4566081f085bb28ec0b26bc25b7c89cccbd7e381c'
+GROUPS=['native-node-file-handle-owner','native-node-fs-before-hook-continuation','native-vm-error-constructor-name','native-node-file-handle-transfer']
+CONTROL_PINS={
+ 'grant-launch-adaptation.json':(19922,'BADAD7A7D4BE3AF9ED73AE9745BA4DF17C6E37302538695363F805440FAA27A3'),
+ 'launch.ps1':(1776,'FD145CD97E2E36AC0727356B58CFFF1A69071805EDE1548011A0E98596D9CEB6'),
+ 'outer-absence.json':(183,'871AD28EB65857E408CF7BF20F4E2C5418F9D366B86D04E0AC2AD8202C98A992'),
+ 'outer.json':(1606,'A6DE970F969DD67704188D5DEC071AC55038977CE2DABAE0EB5EA417F5F4D989'),
+ 'outer.stderr.log':(586,'0774AFEC222E0FD88BD8EE42438C130FF957AEC0962E2FC0E1A82FF8F7087D76'),
+ 'outer.stdout.bin':(0,'E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855'),
+ 'root-grant.json':(16272,'7938B022DC9D7F8A997FD0F9953CA999BF8388987F9BAE22CC0A7F2301FC09F7')}
+OWN_PINS={
+ 'job-tool-observation.json':(3511,'D38CF38CBFBE5072F2A76483506531E124EFA315474DB53B79D51CC5C4CC93A5'),
+ 'process-query.ps1':(4213,'AD2BEAEC4DDAE1690B8396B387BD6602E4D0D7AFE292AD5E9F7F056D5717D8ED'),
+ 'process-observation.json':(39167,'08DC1C3A05A051FFB4395822BB209581A1E24B2E13DC0D401353C14C634B088E'),
+ 'process-query-tool-metadata.json':(1071,'810F68CB15808F40B67CB95C0CC2DBE80AEDADE0CCDF902694E7087F84A6C45B')}
+seen={}
+def digest(raw): return hashlib.sha256(raw).hexdigest().upper()
+def pin(path,size=None,sha=None):
+ p=Path(path);raw=p.read_bytes()
+ row={'path':str(p),'bytes':len(raw),'sha256':digest(raw)}
+ if size is not None: assert len(raw)==size,('size',str(p),len(raw),size)
+ if sha is not None: assert row['sha256']==sha.upper(),('hash',str(p))
+ key=str(p).lower()
+ if key in seen: assert seen[key]==row,('input changed',str(p))
+ seen[key]=row
+ return raw
+def json_read(p,size=None,sha=None): return json.loads(pin(p,size,sha))
+def collect_pin_objects(value):
+ if isinstance(value,dict):
+  if {'path','sha256'}<=value.keys() and value['path'] and value['sha256']:
+   pin(value['path'],value.get('bytes'),value['sha256'])
+  for v in value.values(): collect_pin_objects(v)
+ elif isinstance(value,list):
+  for v in value: collect_pin_objects(v)
+def git(*args):
+ r=subprocess.run(['git','--no-optional-locks','-c','core.fsmonitor=false','-C',str(MAIN),*args],capture_output=True,check=True,timeout=30)
+ assert not r.stderr,r.stderr.decode(errors='replace')
+ return r.stdout
+def main_state():
+ head=git('rev-parse','HEAD').decode().strip()
+ branch=git('branch','--show-current').decode().strip()
+ status=git('status','--porcelain=v1','--untracked-files=all')
+ assert head==HEAD and branch=='work/pi-zig-consolidated-20261016'
+ assert status==b'',status
+ return {'head':head,'branch':branch,'status_porcelain_bytes':0}
+def ticks(stamp):
+ m=re.fullmatch(r'(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d)(?:\.(\d{1,7}))?(Z|[+-]\d\d:\d\d)',stamp)
+ assert m,stamp
+ whole=dt.datetime.fromisoformat(m[1]+('+00:00' if m[3]=='Z' else m[3])).astimezone(dt.timezone.utc)
+ delta=whole-dt.datetime(1601,1,1,tzinfo=dt.timezone.utc)
+ return (delta.days*86400+delta.seconds)*10000000+int((m[2] or '').ljust(7,'0'))
+def decimal_seconds(value):
+ whole,fraction=divmod(value,10000000)
+ return str(whole)+'.'+str(fraction).zfill(7)
+before=main_state()
+assert not PROOF.exists()
+assert sorted(p.name for p in CONTROL.iterdir())==sorted(CONTROL_PINS)
+for name,(size,sha) in CONTROL_PINS.items(): pin(CONTROL/name,size,sha)
+for name,(size,sha) in OWN_PINS.items(): pin(OWN/name,size,sha)
+grant=json_read(CONTROL/'root-grant.json')
+config=json_read(BASE/'evidence/root-v37-new4-buildquery-issued-config-20261021.json',9692,'32D70EB267D32CA919CF71C561906272DBCCDE0697D2AECA36CC9CDF80823369')
+launch=json_read(PREP/'buildquery-launch.json',2091,'94A0A3134BF95B96E92A6CE9486F826E3A412C3F3F280B5DEE414396D079AC31')
+adapt=json_read(CONTROL/'grant-launch-adaptation.json')
+outer=json_read(CONTROL/'outer.json')
+absence=json_read(CONTROL/'outer-absence.json')
+for obj in (grant,config,launch): collect_pin_objects(obj)
+assert grant['candidate_head']==config['candidate_head']==launch['candidate_head']==HEAD
+assert grant['mode']=='BuildQuery' and grant['groups']==config['selected_group_names']==launch['groups']==GROUPS
+assert config['declared_groups']==4 and config['declared_controls']==launch['declared_count']==58
+assert config['actual_metadata_count'] is None and launch['actual_metadata_count'] is None
+assert grant['actual_metadata_count'] is None
+assert config['runtime_authority'] is False and launch['runtime_authority'] is False
+assert grant['runtime_restoration_claim'] is False
+assert grant['receipt_directory']==launch['proof']==str(PROOF)
+assert launch['control']==str(CONTROL)
+assert grant['cache_directory']==str(PROOF/'cache') and grant['global_cache_directory']==str(PROOF/'global-cache')
+assert grant['issued_utc']==launch['issued_utc']=='2026-10-21T09:48:37.244867+00:00'
+for k in ['build_result_path','build_result_sha256','build_artifacts_path','build_artifacts_sha256','build_metadata_path','build_metadata_sha256','build_source_seal_path','build_source_seal_sha256','metadata_acceptance_path','metadata_acceptance_sha256']:
+ assert grant[k] is None,k
+old_grant_raw=pin(adapt['original_grant']['path'],adapt['original_grant']['bytes'],adapt['original_grant']['sha256'])
+old_grant=json.loads(old_grant_raw)
+forward=copy.deepcopy(old_grant)
+assert len(adapt['field_changes'])==36
+for edit in adapt['field_changes']:
+ k=edit['key'];assert (k in forward)==edit['old_present']
+ assert forward.get(k)==edit['before']
+ forward[k]=copy.deepcopy(edit['after'])
+assert forward==grant
+inverse=copy.deepcopy(grant)
+for edit in reversed(adapt['field_changes']):
+ k=edit['key'];assert inverse[k]==edit['after']
+ if edit['old_present']: inverse[k]=copy.deepcopy(edit['before'])
+ else: del inverse[k]
+assert inverse==old_grant
+assert (json.dumps(inverse,indent=2)+'\n').encode()==old_grant_raw
+old_launch=pin(adapt['original_launch']['path'],adapt['original_launch']['bytes'],adapt['original_launch']['sha256'])
+new_launch=pin(CONTROL/'launch.ps1')
+old_token=adapt['before'].encode();new_token=adapt['after'].encode()
+assert adapt['launch_edit_count']==1 and old_launch.count(old_token)==1 and new_launch.count(new_token)==1
+assert old_launch.replace(old_token,new_token)==new_launch and new_launch.replace(new_token,old_token)==old_launch
+assert adapt['all_strict_gate_fields_unchanged'] is True
+driver_raw=pin(PREP/'Run-CombinedNativeBatch.ps1',60094,'1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601')
+driver=driver_raw.decode().splitlines(keepends=True)
+classifier=pin(PREP/'Get-ModelsNativeCandidates.ps1',1786,'3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301').decode()
+resolver=pin(MAIN/'tools/workspace/Resolve-PiZigWorkspace.ps1',1299,grant['workspace_resolver_sha256'])
+pin(BASE/'.pi-zig-workspace.json',sha=grant['workspace_layout_sha256'])
+pin(BASE/'path-relocations.json',sha=grant['path_relocations_sha256'])
+outer_helper=pin(BASE/'evidence/root-crypto58-native-outer-prepared-20261017/outer-owned-process.ps1',11658,'53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B')
+pin(outer['executable'],sha=outer['executable_sha256'])
+assert grant['initial_grant_max_age_seconds']==300
+reason='Initial grant must be within300seconds before first child launch'
+assert driver[43].startswith('function Assert-InitialGrantFresh ') and reason in driver[43]
+assert driver[44].strip()=='Assert-InitialGrantFresh'
+assert driver[45].startswith('if(Test-Path -LiteralPath $taskProof)')
+assert driver[26].strip()=='$taskWorkspace=& $taskResolver -StartPath $PSScriptRoot'
+assert driver[72].strip()=='. $taskClassifier' and driver[73].strip()=='. $taskCi' and driver[74].strip()=='. $taskProtocol'
+assert driver[413].strip()=='[void][IO.Directory]::CreateDirectory($batchProof)'
+assert driver[421].strip()=="Restore-ObserverEnvironment ([ordered]@{present=$false;value=$null})"
+assert "$taskBefore=Get-TaskSeal 'before'" in driver[425]
+assert 'Assert-InitialGrantFresh' in driver[464]
+assert 'compile{[void](Invoke-CiOwnedProcess $taskZig' in driver[468]
+stderr=pin(CONTROL/'outer.stderr.log').decode()
+assert reason in stderr and 'Run-CombinedNativeBatch.ps1:44' in stderr
+assert pin(CONTROL/'outer.stdout.bin')==b''
+expected_args=['-NoLogo','-NoProfile','-NonInteractive','-File',str(PREP/'Run-CombinedNativeBatch.ps1'),'-RootGrant',str(CONTROL/'root-grant.json'),'-Mode','BuildQuery']
+assert outer['arguments']==expected_args and outer['working_directory']==str(BASE)
+assert outer['pid']==29764 and outer['status']=='failed' and outer['exit_code']==1
+assert outer['created_utc']=='2026-10-21T12:55:22.0262399Z'
+assert outer['live_identity']['created_utc']==outer['created_utc']
+assert outer['live_identity']['pid']==outer['pid'] and outer['live_identity']['executable']==outer['executable']
+assert all(s in outer['live_identity']['command_line'] for s in (str(PREP/'Run-CombinedNativeBatch.ps1'),str(CONTROL/'root-grant.json'),'-Mode BuildQuery'))
+assert absence['currently_absent'] is True and absence['current_records']==[]
+assert absence['pid']==outer['pid'] and absence['created_utc']==outer['created_utc']
+job_wrapper=json_read(OWN/'job-tool-observation.json')
+assert job_wrapper['structuredContent']['ok'] is True and job_wrapper.get('isError') is False
+job=job_wrapper['structuredContent']['data']
+assert job['id']==JOB and job['status']=='failed' and job['exitCode']==1 and job['runnerAlive'] is False
+assert job['runnerPid']==17540 and job['childPid']==8612
+assert type(job['runnerProcessInstance']) is str and job['runnerProcessInstance']=='134370609217126858'
+assert ticks('2026-10-21T12:55:21.7126858Z')==int(job['runnerProcessInstance'])
+assert ticks(job['startedAtUtc'])<ticks(outer['created_utc'])<ticks(outer['completed_utc'])<ticks(job['completedAtUtc'])
+assert job['logs']['truncated'] is False
+for stream in ['stdout','stderr']:
+ assert job['logs'][stream]['truncated'] is False and job['logs'][stream]['failed'] is False
+process=json_read(OWN/'process-observation.json')
+assert process['classifier_sha256']==grant['classifier_sha256']
+assert process['process_rows']==len(process['all_process_identity_index'])==474
+assert process['native_candidates']==[] and process['original_pid_or_direct_child_records']==[]
+assert ticks(process['began_utc'])>ticks(job['completedAtUtc'])
+pids={17540,8612,29764}
+assert not [r for r in process['all_process_identity_index'] if r[0] in pids or r[1] in pids]
+assert process['target_executed'] is False and process['native_execution'] is False and process['target_helper_executed'] is False
+tool_metadata=json_read(OWN/'process-query-tool-metadata.json')
+tm=tool_metadata['result_without_stdout']
+assert tm['ok'] is True and tm['exitCode']==0 and tm['truncated'] is False
+assert tm['data']['output']['stdout_original_chars']==39167 and tm['data']['output']['stderr_original_chars']==0
+query=pin(OWN/'process-query.ps1').decode()
+# Compare all five actual condition expressions after variable-only normalization.
+original_conditions=re.findall(r"if\((.*?)\)\{\$taskReasons\.Add\('([^']+)'\)\}",classifier)
+actual_conditions=re.findall(r"if\((.*?)\)\{\$taskReviewReasons\+='([^']+)'\}",query)
+mapping={'$taskReviewName':'$taskName','$taskReviewExe':'$taskExe','$taskReviewCommand':'$taskCommand','$taskReviewPrefix':'$taskContainerPrefix','$taskReviewPattern':'$taskContainedPattern'}
+normalized=[]
+for condition,label in actual_conditions:
+ for old,new in mapping.items(): condition=condition.replace(old,new)
+ normalized.append((condition,label))
+assert len(original_conditions)==5 and normalized==original_conditions
+pattern_original=next(s.strip() for s in classifier.splitlines() if s.strip().startswith('$taskContainedPattern='))
+pattern_actual=next(s.strip() for s in query.splitlines() if s.strip().startswith('$taskReviewPattern='))
+for old,new in mapping.items(): pattern_actual=pattern_actual.replace(old,new)
+assert pattern_actual==pattern_original
+matrix_raw=pin(PREP/'groups.json',1104585,'E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37')
+matrix=json.loads(matrix_raw)
+assert matrix['source_head_at_preparation']==HEAD
+selected=[]
+for name,count in zip(GROUPS,[18,3,24,13]):
+ r=next(r for r in matrix['groups'] if r['name']==name)
+ assert len(r['required_named'])==count
+ rootpin=next(p for p in r['source_pins'] if p['path']==r['source_root'])
+ pin(MAIN/rootpin['path'],sha=rootpin['sha256'])
+ selected.append({'group':name,'source_root':r['source_root'],'declared_controls':count,'compile_attempted':False,'metadata_attempted':False,'runtime_attempted':False,'actual_metadata_count':None})
+elapsed=ticks(outer['created_utc'])-ticks(grant['issued_utc'])
+assert elapsed==112047813729 and elapsed>300*10000000
+excerpts=[]
+for first,last in [(21,28),(44,47),(59,75),(414,426),(465,471)]:
+ raw=''.join(driver[first-1:last]).encode()
+ excerpts.append({'source':str(PREP/'Run-CombinedNativeBatch.ps1'),'first_line':first,'last_line':last,'bytes':len(raw),'sha256':digest(raw),'text':raw.decode()})
+assert not PROOF.exists()
+assert sorted(p.name for p in CONTROL.iterdir())==sorted(CONTROL_PINS)
+for row in list(seen.values()): pin(row['path'],row['bytes'],row['sha256'])
+after=main_state()
+assert after==before
+result={
+ 'schema':1,'status':'independently_closed_initial_admission_negative_before_proof_creation',
+ 'scope':'Original V37 new4 stale-grant rejection only; source/process evidence closure, not build acceptance',
+ 'original_job_id':JOB,'candidate_root':str(MAIN),'candidate_head':HEAD,'main_before':before,'main_after':after,
+ 'original_control':str(CONTROL),'original_control_exact_names':sorted(CONTROL_PINS),
+ 'original_proof':str(PROOF),'proof_absent_before_and_after':True,
+ 'initial_grant_issued_utc':grant['issued_utc'],'outer_created_utc':outer['created_utc'],
+ 'age_lower_bound_100ns_ticks':str(elapsed),'age_lower_bound_seconds_exact':decimal_seconds(elapsed),'maximum_age_seconds':300,
+ 'failure_reason':reason,'failure_source_line':44,'first_call_line':45,
+ 'terminal':{'job_status':'failed','job_exit_code':1,'outer_status':'failed','outer_exit_code':1,'runner_pid':17540,'runner_filetime_decimal_string':job['runnerProcessInstance'],'runner_created_utc':'2026-10-21T12:55:21.7126858Z','launcher_pid':8612,'launcher_creation_utc':None,'outer_pid':29764,'outer_created_utc':outer['created_utc'],'outer_completed_utc':outer['completed_utc'],'job_completed_utc':job['completedAtUtc']},
+ 'current_process_observation':{'began_utc':process['began_utc'],'completed_utc':process['completed_utc'],'current_rows':474,'original_pids_present':[],'original_direct_children_present':[],'native_candidates':[],'all_five_classifier_conditions_and_pattern_equal':True,'runner_instance_preserved_as_string':True,'cim_timestamp_precision':'CIM microsecond-resolution timestamps are not claimed to equal retained 100ns process identities; no original PID is present.'},
+ 'causal_source_review':{'readonly_resolver_executed_before_guard':True,'resolver_pinned_and_read':True,'driver_private_observer_environment_write_reached':False,'native_helper_imports_reached':False,'proof_directory_creation_reached':False,'source_compiler_bookend_seals_created':False,'native_compile_or_metadata_or_runtime_reached':False,'outer_owner_scope':'The original outer owner did launch PowerShell, clear three NODE_* variables in child ProcessStartInfo, and write seven control/owner files. The negative does not claim no outer process/environment activity.','known_descendants_scope':'Durable runner/launcher and retained outer driver reconciled; no known PID/direct child survives, all pinned native classifier candidates absent. Launcher creation timestamp is not provided by the durable tool record and is not invented.'},
+ 'grant_adaptation':{'field_changes':36,'whole_grant_inverse':True,'launcher_literal_edits':1,'whole_launcher_inverse':True},
+ 'groups':selected,'declared_groups':4,'declared_controls':58,'actual_metadata_count':None,
+ 'current_file_pins':sorted(seen.values(),key=lambda r:r['path'].lower()),
+ 'source_excerpts':excerpts,
+ 'source_only':True,'native_execution_authorized':False,'target_or_helper_executed_by_reviewer':False,
+ 'build_acceptance':False,'runtime_authority':False,'application_qualified':False,
+ 'full_source_vendor_compiler_seal_claim':False,
+ 'limitations':['This is a pre-creation rejection: no build/result/metadata/source/compiler seal exists to accept.','Current process absence is an observation at the recorded time, not an authorization or preflight for a later launch.','A new attempt requires Root review and a newly issued fresh grant; the original seven control files and prepared launch remain immutable.']}
+# FINAL OUTPUT: one create-only evidence write, outside Main.
+out=OWN/'source-audit.json'
+raw=(json.dumps(result,indent=2)+'\n').encode()
+with out.open('xb') as f: f.write(raw)
+print(json.dumps({'path':str(out),'bytes':len(raw),'sha256':digest(raw),'current_pin_count':len(seen),'status':result['status'],'source_audit':{'path':str(Path(__file__).resolve()),'bytes':Path(__file__).stat().st_size,'sha256':digest(Path(__file__).read_bytes())}}))

@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_progress_negative_archive_preparer",
+  "reviewer": "/root/module_io_port",
+  "source_only": true,
+  "bounded_source_accepted": true,
+  "candidate_preparer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021-v2.py",
+    "bytes": 75644,
+    "sha256": "079CE8663FFA9C337F5AC04D41E4222E6B2EFB9B39E5B459F6F4E460F9AC790D"
+  },
+  "accepted_baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-V36ProgressAndNegativeArchive-20261021.py",
+    "bytes": 61100,
+    "sha256": "BC45FAAFF6F34876F644173DFA2815EAD7BF74E4F1DFE02CFA884CE9C03C8DDF"
+  },
+  "parent_finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 76375,
+    "sha256": "384A47B49862B8311E2503BE122FBC2FE3A01A58E08833D74FCB114244E21ED6"
+  },
+  "selected_schema_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\initial-outer-schema-correction.json",
+    "bytes": 2911,
+    "sha256": "783D8C3A9E2AF763C6A428899C5370816E22C230E12A6991DBA18AD48E7DAD1E"
+  },
+  "original_evidence_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\original-evidence-inventory.json",
+    "bytes": 41248,
+    "sha256": "084344C78DC536B6E2003EF08E5D8DE64F17859987DC6F6E4576F1392190EC46"
+  },
+  "unissued_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\unissued-root-configuration.json",
+    "bytes": 10265,
+    "sha256": "6661FF392BFB0A7CBC95DBA4C74D07F35CECADB04B49247C859054500E202EBE"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\handoff.json",
+    "bytes": 17768,
+    "sha256": "9E76DCB6352BE12A88BDEF8BE251FED6459C4C0306B3436A8C9C249945BAEBDA"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-preparer-peer-20261021\\source-audit.py",
+    "bytes": 18123,
+    "sha256": "27872FB473C425FE94D950130107C454E8DA168E1D4CEC51B405110F2838A088"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-preparer-peer-20261021\\source-audit.json",
+    "bytes": 159519,
+    "sha256": "30E61CD681E6E6744FE0AD6613029FDF25C10214F2B2E0D0EA03FD8593105A26"
+  },
+  "review_scope": {
+    "full_selected_source_read": true,
+    "parent_specifications": 83,
+    "parent_steps": 84,
+    "selected_schema_gate_steps": 1,
+    "all_intermediate_hashes_and_full_raw_inverses_exact": true,
+    "unchanged_full_line_helpers": 21,
+    "only_changed_helper": "original_inventory",
+    "unchanged_complete_critical_regions": [
+      "deterministic two-phase gzip and raw bookend roundtrips",
+      "nested historical list prefixes and complete progress raw inverse",
+      "Git attributes, original rechecks and create-only output tail"
+    ],
+    "original_inventory_versions": 182,
+    "original_phase_files": 122,
+    "original_initial_control_files": 7,
+    "additional_authority_and_source_files": 53,
+    "total_current_inputs_rehashed_by_independent_checker": 250,
+    "non_null_unissued_configuration_pins_rehashed": 27,
+    "handoff_and_capture_author_pins_separately_verified": true,
+    "semantic_handoff_partition_exact": "All 83 specifications occur once in the five named semantic groups; their occurrence counts total 84, followed by the exact one-gate v2 correction."
+  },
+  "findings": [
+    {
+      "topic": "Distinct original outcomes",
+      "conclusion": "The source separately admits and appends the initial expired-grant rejection, accepted Retry1 BuildQuery, and failed strict runtime. The first record preserves zero attempted groups and unknown metadata without erasing actual resolver/outer activity. Retry1 retains 61 metadata records, eight native owners and eleven original process instances, including accepted later PID reuse. Runtime retains all 19 original completed records, failed indices 5/10/11/12/16, fourteen passes, 42 unstarted indices and the original nonempty stderr owner rejection. Neither changed fixture is represented as validated."
+    },
+    {
+      "topic": "Complete bounded archive",
+      "conclusion": "Independent hashes and directory memberships agree for all 182 inventory versions. Initial control remains exactly seven files with absent proof. Both original full before/final seal pairs match byte-for-byte. The unchanged gzip block requires deterministic bytes, complete decompression equality to both originals and a second exact encoding. Cache and installed binaries are excluded from the raw archive while original artifact journals, metadata, flags and stderr remain included. This peer did not compress or create the proposed archive."
+    },
+    {
+      "topic": "Actual fixture chain",
+      "conclusion": "The observed source-only commit f878aa40ab4bc4629f2cf57b281fcd2e7329473b has parent b13be24e44cc1bbc361639eb35900a368ae60eac and exactly the reviewed 44 paths. All donor and committed bytes agree, including exactly two test/support replacements. The candidate checks the actual release, peer, preflight, staged bytes, NUL pathspec, raw commit message and eight correction edits/inverses. Historical b13 preimages were read through Git; current Main was clean throughout this static review."
+    },
+    {
+      "topic": "Historical progress",
+      "conclusion": "The complete 438396-byte prior progress is identical in b13, f878 and the current checkout, with existing list lengths 64/35/12/13. The source appends three attempts, two negatives, one fixture unit and one full checkpoint, then checks every nested historical list prefix and the full raw-byte inverse. Original new_source_roots stays unchanged. An additive selected_current_source_roots contains the current owner-test pin and unchanged other three roots; future metadata remains unknown and the original complete 4+63 partition is preserved."
+    },
+    {
+      "topic": "Configuration and write authority",
+      "conclusion": "All 27 non-null pins in the unissued configuration match current bytes and the actual fixture chain. All authority flags are false; preparer_source_review, preparer_handoff and recorded_utc are unresolved. The selected source rejects this unissued status and requires a distinct exact Root-issued configuration. Its only write block creates new files under one absent evidence directory, after exact pins, current clean Git state, path/alias, attribute and raw hash-object checks, and repeats preservation checks afterward."
+    }
+  ],
+  "preserved_source_finding": {
+    "original_candidate": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021.py",
+      "bytes": 75542,
+      "sha256": "F40C2032692492E98D61D3B8F72275C56B5C23708C9FAEF50221127D8FA3BD71"
+    },
+    "issue": "The original F40 draft indexed a timed_out key absent from the immutable initial outer receipt. Selected v2 changes exactly that gate to the actual failed status, exit_code 1, exact owner error and timeout_seconds 1800 fields.",
+    "source_schema_correction_only": true,
+    "original_candidate_and_finite_proof_unchanged": true,
+    "target_execution_was_not_used": true
+  },
+  "concrete_blockers": [],
+  "limitations": [
+    "This is bounded source, byte, AST and historical-input compatibility review. It does not execute the selected preparer, any prefix or helper, compression, archive generation, or intake.",
+    "Historical accepted closures are preserved as exact inputs; this review is not a fresh compiler/source seal or process audit and does not transfer metadata or runtime acceptance to f878.",
+    "Root must separately issue the exact evidence-preparation configuration, inspect emitted bytes/history/gzip and then authorize any eventual Main intake. The future V38 catalog must use selected_current_source_roots."
+  ],
+  "preparer_executed": false,
+  "target_executed": false,
+  "prefix_executed": false,
+  "target_helpers_executed": false,
+  "compression_executed": false,
+  "archive_or_manifest_generated": false,
+  "main_applied": false,
+  "Main_written": false,
+  "index_changed": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "runtime_qualification": false,
+  "application_qualified": false,
+  "source_mutation_hold_released": false
+}

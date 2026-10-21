@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV36FixtureSourceIntake-20261021.py",
+    "bytes": 9709,
+    "sha256": "6613A7F431D132B72C948FBCB61E1988FA4799AD3AE660BC65B9BAA3E9AE48F0"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+    "bytes": 9719,
+    "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+  },
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\manifest.json",
+    "bytes": 20679,
+    "sha256": "236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9"
+  },
+  "finite_edits": [
+    {
+      "offset": 0,
+      "old": "\"\"\"Exact V36 fixture Main source intake;",
+      "new": "\"\"\"Exact V37 fixture Main source intake;",
+      "before_sha256": "6613A7F431D132B72C948FBCB61E1988FA4799AD3AE660BC65B9BAA3E9AE48F0",
+      "after_sha256": "1706E98D9ED99726B2EA1863162D2F373B166EE3998B1E653C42F267E3FBC5EF"
+    },
+    {
+      "offset": 230,
+      "old": "BASIS=\"a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8\"",
+      "new": "BASIS=\"b13be24e44cc1bbc361639eb35900a368ae60eac\"",
+      "before_sha256": "1706E98D9ED99726B2EA1863162D2F373B166EE3998B1E653C42F267E3FBC5EF",
+      "after_sha256": "F1A6724E68BB2C7BCD36895DF3AC006526C0B6F3FA62A0B7140C058BD4D6D9F3"
+    },
+    {
+      "offset": 334,
+      "old": " \"fixture\":(\"evidence/pending-v36-filehandle-resource-fixture-main-intake-20261021/manifest.json\",\"3905D6C0319E27D8467C0B720833030F048200A97BCFD3B2816ABBD452928F38\",26,\"Correct FileHandle outer callback scope resource ownership\"),",
+      "new": " \"fixture\":(\"evidence/pending-v37-filehandle-runtime-fixtures-main-intake-20261021/manifest.json\",\"236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9\",44,\"Correct FileHandle callback resource and invalid descriptor fixtures\"),",
+      "before_sha256": "F1A6724E68BB2C7BCD36895DF3AC006526C0B6F3FA62A0B7140C058BD4D6D9F3",
+      "after_sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+    }
+  ],
+  "complete_raw_inverse": true,
+  "all_helper_and_gate_bytes_unchanged_outside_three_literal_edits": true,
+  "candidate_executed": false,
+  "Main_written": false,
+  "native_execution_authorized": false
+}

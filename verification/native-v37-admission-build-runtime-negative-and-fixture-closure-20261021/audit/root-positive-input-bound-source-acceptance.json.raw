@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "status": "root_accepted_exact_v37_retry1_bound_positive_input_helper_source",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-21T13:22:29.919413+00:00",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "job_id": "job-op-fa17b9be7400dac56c03a5ae0ff2d7c0851b611abf90b477e3684b977b3a9f1e",
+  "source_accepted": true,
+  "helper": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV37New4PositiveBuildQueryAuditInputs-20261021.py",
+    "bytes": 18990,
+    "sha256": "F70938AB86C7B721718EB4529AB710D7C9076F0A5CD3F0B2A21A57BC019B2BAF"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV37New4PositiveBuildQueryAuditInputs-Retry1-20261021-unresolved.py",
+    "bytes": 18974,
+    "sha256": "8F0ECC3CAF504E858A29891E25BA78A0F06F258C4C4DEB1EDB87A11EF12DA344"
+  },
+  "finite_binding": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-positive-buildquery-input-helper-bound-20261021\\finite-binding.json",
+    "bytes": 24815,
+    "sha256": "122D5EE757B661D365ECDBBEA87F88B57A587AC76A97FC26228ABF52E9C4A67A"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-positive-buildquery-input-helper-bound-20261021\\handoff.json",
+    "bytes": 8258,
+    "sha256": "D3CAE46B2757CCF4BF7CD2B694D732DEFB77CE620037E9BFADBB8601F3780B20"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-retry1-positive-input-helper-bound-peer-20261021\\peer.json",
+    "bytes": 6193,
+    "sha256": "982466AC99B89434E28248564943D9BBF3DB1106DEC6E5BD25678584E4E6A760"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-retry1-positive-input-helper-bound-peer-20261021\\independent-static-peer.py",
+    "bytes": 26588,
+    "sha256": "D60CB600A9D9BA3F8C7FFFBC3EFF0486F69BBA488240C7361620D17299C902B3"
+  },
+  "independent_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-retry1-positive-input-helper-bound-peer-20261021\\source-proof.json",
+    "bytes": 38355,
+    "sha256": "23FD525FB5F484EFB24A87F106F50DD8CF30D24CBDD88AE58FC64AFD2F5ACA4E"
+  },
+  "root_independent_source_verification": {
+    "status": "root_independent_actual_helper_binding_passed",
+    "candidate": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV37New4PositiveBuildQueryAuditInputs-20261021.py",
+      "bytes": 18990,
+      "sha256": "F70938AB86C7B721718EB4529AB710D7C9076F0A5CD3F0B2A21A57BC019B2BAF"
+    },
+    "finite_proof": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-positive-buildquery-input-helper-bound-20261021\\finite-binding.json",
+      "bytes": 24815,
+      "sha256": "122D5EE757B661D365ECDBBEA87F88B57A587AC76A97FC26228ABF52E9C4A67A"
+    },
+    "edits": 17,
+    "string_literals": 12,
+    "actual_size_literals": 5,
+    "whole_forward_and_inverse": true,
+    "all_intermediate_hashes": true,
+    "all_other_tokens_and_raw_fragments_unchanged": true,
+    "unchanged_helpers": 10,
+    "unchanged_critical_regions": 3,
+    "current_input_pins": 16,
+    "source_review_bound": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-retry1-execution-bound-source-review-20261021.json",
+      "bytes": 8935,
+      "sha256": "67148BD40AA1DACA49B6575CD22853CCD56229D95517CC58E7897A89ABCA9F77"
+    },
+    "actual_metadata_count": null,
+    "target_executed": false
+  },
+  "current_peer_input_pins_rehashed": 81,
+  "root_review": "Root read the full accepted unresolved helper, exact seventeen binding records, all actual fixed-row identities, handoff and complete independent SDK checker/receipt. Root independently reconstructed all17 tokens from actual fa17 launch/config/job/source-review inputs, including exactly12 string and5 actual byte-size literals; all intermediate hashes, complete raw forward/inverse, every other token/fragment, ten complete helper bodies and three full critical regions were verified. The mandatory original grant67148 source-review binding is preserved. Source accepted at F70938AB only. The running-only binding capture carries no terminal, metadata or native outcome. A distinct exact Root configuration can authorize this helper only after original complete terminal success and independent metadata acceptance, with all seven actual observed inputs pinned. The sole helper output is a39-field positive audit input; the unchanged2C89 auditor remains a separate action.",
+  "source_only": true,
+  "helper_execution_authorized": false,
+  "auditor_execution_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

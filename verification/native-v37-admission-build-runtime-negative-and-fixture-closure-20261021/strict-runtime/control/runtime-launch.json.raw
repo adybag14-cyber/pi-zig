@@ -1,0 +1,58 @@
+{
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "batch": "new4",
+  "control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912",
+  "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912",
+  "grant": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\root-grant.json",
+    "bytes": 17445,
+    "sha256": "748C056A5CADFD40EB0B8E072D94CF816DA1FC2D21EA51D7D4C62FD2B31972E3"
+  },
+  "launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\launch.ps1",
+    "bytes": 1777,
+    "sha256": "08E0E75D8D097C30F0FE539A32072E156DD949AF80FA1E48284A8D63BE6EA69E"
+  },
+  "buildquery_launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\buildquery-retry1-launch.json",
+    "bytes": 2098,
+    "sha256": "02B61D9076D6E5DD5E870722D939DDF53EBB21293FEB231692B807D26A9FE88A"
+  },
+  "specific_root_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-retry1-runtime-issued-config-20261021.json",
+    "bytes": 4448,
+    "sha256": "A5783FA11462C9DF73698648E9A2128E45D0EA9CA1BB5E56F2550AADD31C0998"
+  },
+  "groups": [
+    "native-node-file-handle-owner",
+    "native-node-fs-before-hook-continuation",
+    "native-vm-error-constructor-name",
+    "native-node-file-handle-transfer"
+  ],
+  "declared_count": 58,
+  "actual_metadata_count": 61,
+  "build_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\result.json",
+    "bytes": 67229,
+    "sha256": "8A86FD362D0E48FABAB9BE0F6E6902BECDDDA8F4F779AE8E73FB6492D927DBFC"
+  },
+  "build_final": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\final.json",
+    "bytes": 15933885,
+    "sha256": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27"
+  },
+  "metadata_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-metadata-acceptance.json",
+    "bytes": 14153,
+    "sha256": "6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B"
+  },
+  "independent_build_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-current-seals-and-owners.json",
+    "bytes": 224405,
+    "sha256": "7299F65541DED34F87D3671FAA895C2F0E9B2C8B9149AE4757DE466B5FD11382"
+  },
+  "issued_utc": "2026-10-21T13:29:12.996266+00:00",
+  "diagnostic_continue": false,
+  "compile_authority": false,
+  "qualification": false
+}

@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "status": "independently_reviewed_exact_retry1_bound_positive_input_helper_source",
+  "reviewer": "sdk_environment_port",
+  "reviewed_utc": "2026-10-21T13:21:27.268850+00:00",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "actual_job_id": "job-op-fa17b9be7400dac56c03a5ae0ff2d7c0851b611abf90b477e3684b977b3a9f1e",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV37New4PositiveBuildQueryAuditInputs-Retry1-20261021-unresolved.py",
+    "bytes": 18974,
+    "sha256": "8F0ECC3CAF504E858A29891E25BA78A0F06F258C4C4DEB1EDB87A11EF12DA344"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV37New4PositiveBuildQueryAuditInputs-20261021.py",
+    "bytes": 18990,
+    "sha256": "F70938AB86C7B721718EB4529AB710D7C9076F0A5CD3F0B2A21A57BC019B2BAF"
+  },
+  "author_finite_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-positive-buildquery-input-helper-bound-20261021\\finite-binding.json",
+    "bytes": 24815,
+    "sha256": "122D5EE757B661D365ECDBBEA87F88B57A587AC76A97FC26228ABF52E9C4A67A"
+  },
+  "author_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-positive-buildquery-input-helper-bound-20261021\\handoff.json",
+    "bytes": 8258,
+    "sha256": "D3CAE46B2757CCF4BF7CD2B694D732DEFB77CE620037E9BFADBB8601F3780B20"
+  },
+  "independent_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-retry1-positive-input-helper-bound-peer-20261021\\source-proof.json",
+    "bytes": 38355,
+    "sha256": "23FD525FB5F484EFB24A87F106F50DD8CF30D24CBDD88AE58FC64AFD2F5ACA4E"
+  },
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-retry1-positive-input-helper-bound-peer-20261021\\independent-static-peer.py",
+    "bytes": 26588,
+    "sha256": "D60CB600A9D9BA3F8C7FFFBC3EFF0486F69BBA488240C7361620D17299C902B3"
+  },
+  "input_pin_count": 81,
+  "actual_rows": {
+    "grant": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\root-grant.json",
+      "bytes": 16449,
+      "sha256": "B6F51B152F776946C9E401E0813D3E0691B339B185E0AF91C54EA9F3BFE1608A"
+    },
+    "launch": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\launch.ps1",
+      "bytes": 1776,
+      "sha256": "FD145CD97E2E36AC0727356B58CFFF1A69071805EDE1548011A0E98596D9CEB6"
+    },
+    "specific": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-buildquery-retry1-issued-config-20261021.json",
+      "bytes": 9887,
+      "sha256": "7D8D8F2701A39D4F14B8C61629482463FCDE64318EC75A974BEB78CAD3A865B7"
+    },
+    "prepared": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\buildquery-retry1-launch.json",
+      "bytes": 2098,
+      "sha256": "02B61D9076D6E5DD5E870722D939DDF53EBB21293FEB231692B807D26A9FE88A"
+    },
+    "constructor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37BuildQueryGrant-Retry1-20261021.py",
+      "bytes": 10109,
+      "sha256": "81FA8E7BA4DED5788F1618D393395666C82BC209791079DCCB3EEBDAEC6E9F58"
+    },
+    "auditor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37CompleteBuildQuery-Retry1-20261021.py",
+      "bytes": 37268,
+      "sha256": "2C89B824BE10438684ECAB4AC72197B7A54F9218F15578F9F1A4EB6FEFDB4063"
+    },
+    "source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-retry1-execution-bound-source-review-20261021.json",
+      "bytes": 8935,
+      "sha256": "67148BD40AA1DACA49B6575CD22853CCD56229D95517CC58E7897A89ABCA9F77"
+    }
+  },
+  "original_job_capture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-positive-buildquery-input-helper-bound-20261021\\original-job-status-at-binding.json",
+    "bytes": 1042,
+    "sha256": "8C0E047AB38B89CF94B0FF39CF060D6DF0B4B35EE212E9F294919D6DF5A7CBBF"
+  },
+  "captured_job_state": "running",
+  "captured_submission_within300seconds_of_grant": true,
+  "that_fact_does_not_claim_native_admission": true,
+  "full_current_token_span_and_intermediate_hashes_verified": true,
+  "full_forward_and_raw_inverse_exact": true,
+  "binding_count": 17,
+  "string_literals": 12,
+  "numeric_literals": 5,
+  "unchanged_full_line_helper_bodies": 10,
+  "unchanged_critical_regions": [
+    {
+      "name": "complete_original_job_observation_and_six_field_mapping",
+      "baseline_offset": 5005,
+      "candidate_offset": 5021,
+      "bytes": 1603,
+      "sha256": "C45D6AFA387B7AFC03ECF162960561B9CB8794FF9EA9CCC7A3A0465772AA8999",
+      "byte_identical": true
+    },
+    {
+      "name": "original_result_metadata_native_owners_and_all_failure_gates",
+      "baseline_offset": 10118,
+      "candidate_offset": 10134,
+      "bytes": 4711,
+      "sha256": "8A3B4495E070910F2C40E4BE85F35A7D1880E26CF405A2D712B69F252E534D71",
+      "byte_identical": true
+    },
+    {
+      "name": "complete_bookend_current_seals_and_original_outer_gates",
+      "baseline_offset": 14829,
+      "candidate_offset": 14845,
+      "bytes": 1982,
+      "sha256": "89051C1D7DAAF80A2950ECD6A5EC297C1A302BF00CE5BC359C410988A968785F",
+      "byte_identical": true
+    }
+  ],
+  "all_other_tokens_and_raw_fragments_unchanged": true,
+  "all_actual_pin_sizes_hashes_and_paths_verified": true,
+  "all_source_reference_bindings_preserved": true,
+  "canonical_helper_self_path_gate_unchanged": true,
+  "mandatory_v37_execution_bound_source_review_bound_to_67148": true,
+  "no_current_job_poll_or_outcome_inference": true,
+  "no_positive_buildquery_metadata_or_runtime_claim": true,
+  "execution_requires_separate_exact_Root_config_after_actual_terminal_success_and_metadata_acceptance": true,
+  "bounded_source_blockers": [],
+  "source_only": true,
+  "target_executed": false,
+  "prefix_executed": false,
+  "helper_executed": false,
+  "auditor_executed": false,
+  "constructor_executed": false,
+  "native_executed": false,
+  "Main_written": false,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

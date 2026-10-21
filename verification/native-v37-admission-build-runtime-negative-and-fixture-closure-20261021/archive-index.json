@@ -1,0 +1,2837 @@
+{
+  "schema": 1,
+  "status": "exact_original_initial_admission_negative_retry1_buildquery_and_strict_runtime_negative_and_fixture_execution_archive",
+  "candidate_head": "f878aa40ab4bc4629f2cf57b281fcd2e7329473b",
+  "original_observed_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "archive_prefix": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021",
+  "raw_archived_files": [
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\result.json",
+        "bytes": 67229,
+        "sha256": "8A86FD362D0E48FABAB9BE0F6E6902BECDDDA8F4F779AE8E73FB6492D927DBFC"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/proof/result.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\proof\\result.json.raw",
+        "bytes": 67229,
+        "sha256": "8A86FD362D0E48FABAB9BE0F6E6902BECDDDA8F4F779AE8E73FB6492D927DBFC"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\grant-launch-adaptation.json",
+        "bytes": 20099,
+        "sha256": "DD19DABFC1CCCCF81E8B6F227E7FFC4DA86D1DA39C6135D1A78CCC2998B76308"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/control/grant-launch-adaptation.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\control\\grant-launch-adaptation.json.raw",
+        "bytes": 20099,
+        "sha256": "DD19DABFC1CCCCF81E8B6F227E7FFC4DA86D1DA39C6135D1A78CCC2998B76308"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-current-seals-and-owners.json",
+        "bytes": 224405,
+        "sha256": "7299F65541DED34F87D3671FAA895C2F0E9B2C8B9149AE4757DE466B5FD11382"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/control/independent-current-seals-and-owners.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\control\\independent-current-seals-and-owners.json.raw",
+        "bytes": 224405,
+        "sha256": "7299F65541DED34F87D3671FAA895C2F0E9B2C8B9149AE4757DE466B5FD11382"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-metadata-acceptance.json",
+        "bytes": 14153,
+        "sha256": "6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/control/independent-metadata-acceptance.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\control\\independent-metadata-acceptance.json.raw",
+        "bytes": 14153,
+        "sha256": "6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-observed-job-status.json",
+        "bytes": 1572,
+        "sha256": "79BDD040C8AE961F2190A684AEA93E45BB899F42CD087BCE5BE6E593289FD311"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/control/independent-observed-job-status.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\control\\independent-observed-job-status.json.raw",
+        "bytes": 1572,
+        "sha256": "79BDD040C8AE961F2190A684AEA93E45BB899F42CD087BCE5BE6E593289FD311"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-positive-buildquery-audit-inputs.json",
+        "bytes": 3087,
+        "sha256": "7CA14423C1A1E4FFFF7C93A95EFFF2A0970D629C9433074837916939091B29F2"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/control/independent-positive-buildquery-audit-inputs.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\control\\independent-positive-buildquery-audit-inputs.json.raw",
+        "bytes": 3087,
+        "sha256": "7CA14423C1A1E4FFFF7C93A95EFFF2A0970D629C9433074837916939091B29F2"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\launch.ps1",
+        "bytes": 1776,
+        "sha256": "FD145CD97E2E36AC0727356B58CFFF1A69071805EDE1548011A0E98596D9CEB6"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/control/launch.ps1.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\control\\launch.ps1.raw",
+        "bytes": 1776,
+        "sha256": "FD145CD97E2E36AC0727356B58CFFF1A69071805EDE1548011A0E98596D9CEB6"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\outer-absence.json",
+        "bytes": 183,
+        "sha256": "0FE9EF89CD316F2E1260A4BBF9AF3E698AC3C203849E4649523C1C1D3DAFEB27"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/control/outer-absence.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\control\\outer-absence.json.raw",
+        "bytes": 183,
+        "sha256": "0FE9EF89CD316F2E1260A4BBF9AF3E698AC3C203849E4649523C1C1D3DAFEB27"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\outer.json",
+        "bytes": 1525,
+        "sha256": "933163A57AA1FA2BE3A8B3B058D82470CBA39007DC3FE4BB0BB20F4A12EF167C"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/control/outer.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\control\\outer.json.raw",
+        "bytes": 1525,
+        "sha256": "933163A57AA1FA2BE3A8B3B058D82470CBA39007DC3FE4BB0BB20F4A12EF167C"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\outer.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/control/outer.stderr.log.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\control\\outer.stderr.log.raw",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\outer.stdout.bin",
+        "bytes": 67653,
+        "sha256": "15D58D66E15AF134771E57750AF650B941812FDE601179F7CD78E6B6788ECA23"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/control/outer.stdout.bin.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\control\\outer.stdout.bin.raw",
+        "bytes": 67653,
+        "sha256": "15D58D66E15AF134771E57750AF650B941812FDE601179F7CD78E6B6788ECA23"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\root-grant.json",
+        "bytes": 16449,
+        "sha256": "B6F51B152F776946C9E401E0813D3E0691B339B185E0AF91C54EA9F3BFE1608A"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/control/root-grant.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\control\\root-grant.json.raw",
+        "bytes": 16449,
+        "sha256": "B6F51B152F776946C9E401E0813D3E0691B339B185E0AF91C54EA9F3BFE1608A"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\root-metadata-audit-release.json",
+        "bytes": 3115,
+        "sha256": "D985475EFFC1FD580B6B4E664E1ACDE6005D737FEB4402F995DFC66745EC7459"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/control/root-metadata-audit-release.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\control\\root-metadata-audit-release.json.raw",
+        "bytes": 3115,
+        "sha256": "D985475EFFC1FD580B6B4E664E1ACDE6005D737FEB4402F995DFC66745EC7459"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\build-artifacts.json",
+        "bytes": 1516,
+        "sha256": "C4B9B675BBA96269FB15FD9EB41FA6EC6C803F91774B5F4E1AEF7454A7196CCD"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/build-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\build-artifacts.json.raw",
+        "bytes": 1516,
+        "sha256": "C4B9B675BBA96269FB15FD9EB41FA6EC6C803F91774B5F4E1AEF7454A7196CCD"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\commands.json",
+        "bytes": 1625,
+        "sha256": "6D01C2EE258975C3129A409DA6BC54BF5C5C4463830BC450E0BA92390150028C"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/commands.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\commands.json.raw",
+        "bytes": 1625,
+        "sha256": "6D01C2EE258975C3129A409DA6BC54BF5C5C4463830BC450E0BA92390150028C"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\compile-absence.json",
+        "bytes": 3306,
+        "sha256": "467A8766A341CEB2BCE896B38687FC506B4DEEE4500F6B0C0B7D776D0C3B8E5A"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/compile-absence.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\compile-absence.json.raw",
+        "bytes": 3306,
+        "sha256": "467A8766A341CEB2BCE896B38687FC506B4DEEE4500F6B0C0B7D776D0C3B8E5A"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\compile-admission.json",
+        "bytes": 580,
+        "sha256": "72CD9F6B895AF0206D23323C7D083FCAA5A91D8A8190D2C48AA536E42B7FEA58"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/compile-admission.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\compile-admission.json.raw",
+        "bytes": 580,
+        "sha256": "72CD9F6B895AF0206D23323C7D083FCAA5A91D8A8190D2C48AA536E42B7FEA58"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\compile-after-artifacts.json",
+        "bytes": 1516,
+        "sha256": "C4B9B675BBA96269FB15FD9EB41FA6EC6C803F91774B5F4E1AEF7454A7196CCD"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/compile-after-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\compile-after-artifacts.json.raw",
+        "bytes": 1516,
+        "sha256": "C4B9B675BBA96269FB15FD9EB41FA6EC6C803F91774B5F4E1AEF7454A7196CCD"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\compile.json",
+        "bytes": 2182,
+        "sha256": "6C2357BB5F27359FB4E6C605DC1F0FE7D25411F4E242F114079E3BF817D3B999"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/compile.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\compile.json.raw",
+        "bytes": 2182,
+        "sha256": "6C2357BB5F27359FB4E6C605DC1F0FE7D25411F4E242F114079E3BF817D3B999"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\compile.stderr.log",
+        "bytes": 15189,
+        "sha256": "B6FD0E69AA8AA23FB23B04ED508DC1CBAAFEBBA3ACEA7E0761FA189B70A69778"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/compile.stderr.log.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\compile.stderr.log.raw",
+        "bytes": 15189,
+        "sha256": "B6FD0E69AA8AA23FB23B04ED508DC1CBAAFEBBA3ACEA7E0761FA189B70A69778"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\compile.stdout.bin",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/compile.stdout.bin.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\compile.stdout.bin.raw",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\final-artifacts.json",
+        "bytes": 3130,
+        "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/final-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\final-artifacts.json.raw",
+        "bytes": 3130,
+        "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\metadata-absence.json",
+        "bytes": 2293,
+        "sha256": "625DE3C936202CFA759BF994ACFA3D8C5E1B97F999A7103BF236C8CA2E1DEF45"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/metadata-absence.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\metadata-absence.json.raw",
+        "bytes": 2293,
+        "sha256": "625DE3C936202CFA759BF994ACFA3D8C5E1B97F999A7103BF236C8CA2E1DEF45"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\metadata-admission.json",
+        "bytes": 581,
+        "sha256": "962584FEAB91C38FF53DC4D5C981DEDA2AE12005DF2C717DF25E4186A023AC97"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/metadata-admission.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\metadata-admission.json.raw",
+        "bytes": 581,
+        "sha256": "962584FEAB91C38FF53DC4D5C981DEDA2AE12005DF2C717DF25E4186A023AC97"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\metadata-after-artifacts.json",
+        "bytes": 1516,
+        "sha256": "C4B9B675BBA96269FB15FD9EB41FA6EC6C803F91774B5F4E1AEF7454A7196CCD"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/metadata-after-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\metadata-after-artifacts.json.raw",
+        "bytes": 1516,
+        "sha256": "C4B9B675BBA96269FB15FD9EB41FA6EC6C803F91774B5F4E1AEF7454A7196CCD"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\metadata-before-artifacts.json",
+        "bytes": 1516,
+        "sha256": "C4B9B675BBA96269FB15FD9EB41FA6EC6C803F91774B5F4E1AEF7454A7196CCD"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/metadata-before-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\metadata-before-artifacts.json.raw",
+        "bytes": 1516,
+        "sha256": "C4B9B675BBA96269FB15FD9EB41FA6EC6C803F91774B5F4E1AEF7454A7196CCD"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\metadata.json",
+        "bytes": 1227,
+        "sha256": "7ABFB3794EACFF8E7A540709830AA0209D6365C837A7E9C9C8871175D8850FA9"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/metadata.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\metadata.json.raw",
+        "bytes": 1227,
+        "sha256": "7ABFB3794EACFF8E7A540709830AA0209D6365C837A7E9C9C8871175D8850FA9"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\metadata.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/metadata.stderr.log.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\metadata.stderr.log.raw",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\metadata.stdout.bin",
+        "bytes": 2800,
+        "sha256": "E5154A849826D30FE04B3DA9314B6EBCCF7ABC20A8281E7F6C584F1BF8C519EE"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/metadata.stdout.bin.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\metadata.stdout.bin.raw",
+        "bytes": 2800,
+        "sha256": "E5154A849826D30FE04B3DA9314B6EBCCF7ABC20A8281E7F6C584F1BF8C519EE"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\result-provisional.json",
+        "bytes": 8951,
+        "sha256": "40A01D3C97FBD1FD955741412E92CDF3C392382991976AFAA9351D028BEF4B80"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/result-provisional.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\result-provisional.json.raw",
+        "bytes": 8951,
+        "sha256": "40A01D3C97FBD1FD955741412E92CDF3C392382991976AFAA9351D028BEF4B80"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\result.json",
+        "bytes": 8944,
+        "sha256": "A69868B0376B15C4F9D08224B2B4A25AC221B9A166827F7AC989EDCE9F1E541B"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/result.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\result.json.raw",
+        "bytes": 8944,
+        "sha256": "A69868B0376B15C4F9D08224B2B4A25AC221B9A166827F7AC989EDCE9F1E541B"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-owner\\selected-tests.json",
+        "bytes": 3307,
+        "sha256": "E45036FC9CCEB8DA8C382BFBBF706D4021DAFEF41534D1C9B5369A3D44A2CADE"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-owner/selected-tests.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-owner\\selected-tests.json.raw",
+        "bytes": 3307,
+        "sha256": "E45036FC9CCEB8DA8C382BFBBF706D4021DAFEF41534D1C9B5369A3D44A2CADE"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\build-artifacts.json",
+        "bytes": 2084,
+        "sha256": "2547C431D356A6EE02B2A63EEF470BB5D1A469A0AE269E51DEA5124CFB914C4B"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/build-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\build-artifacts.json.raw",
+        "bytes": 2084,
+        "sha256": "2547C431D356A6EE02B2A63EEF470BB5D1A469A0AE269E51DEA5124CFB914C4B"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\commands.json",
+        "bytes": 1684,
+        "sha256": "C05D26B15DD13A04B88B79E30DA69B1B96C8ECD42E82B7FD008F2F99C91C456C"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/commands.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\commands.json.raw",
+        "bytes": 1684,
+        "sha256": "C05D26B15DD13A04B88B79E30DA69B1B96C8ECD42E82B7FD008F2F99C91C456C"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\compile-absence.json",
+        "bytes": 3366,
+        "sha256": "62BCF2A3A8B41D7CC478996C51F1902CE5B17BD68A56417FC05C4B0B2B4A48A1"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/compile-absence.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\compile-absence.json.raw",
+        "bytes": 3366,
+        "sha256": "62BCF2A3A8B41D7CC478996C51F1902CE5B17BD68A56417FC05C4B0B2B4A48A1"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\compile-admission.json",
+        "bytes": 580,
+        "sha256": "B02D56CAA066F06B2372C67AB7904EEA2B8A068DD68391267067D5D58FA17A2F"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/compile-admission.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\compile-admission.json.raw",
+        "bytes": 580,
+        "sha256": "B02D56CAA066F06B2372C67AB7904EEA2B8A068DD68391267067D5D58FA17A2F"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\compile-after-artifacts.json",
+        "bytes": 2084,
+        "sha256": "2547C431D356A6EE02B2A63EEF470BB5D1A469A0AE269E51DEA5124CFB914C4B"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/compile-after-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\compile-after-artifacts.json.raw",
+        "bytes": 2084,
+        "sha256": "2547C431D356A6EE02B2A63EEF470BB5D1A469A0AE269E51DEA5124CFB914C4B"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\compile.json",
+        "bytes": 2222,
+        "sha256": "AC6D8FB80B8C35497B1188ECA371B2CE5340AF630A7AC946FB777254E147A32C"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/compile.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\compile.json.raw",
+        "bytes": 2222,
+        "sha256": "AC6D8FB80B8C35497B1188ECA371B2CE5340AF630A7AC946FB777254E147A32C"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\compile.stderr.log",
+        "bytes": 15180,
+        "sha256": "789D1AE3DE54ED426BA518E0643EAB0DEF6884E3D8B558DDA933DAA36CC1F2E6"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/compile.stderr.log.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\compile.stderr.log.raw",
+        "bytes": 15180,
+        "sha256": "789D1AE3DE54ED426BA518E0643EAB0DEF6884E3D8B558DDA933DAA36CC1F2E6"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\compile.stdout.bin",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/compile.stdout.bin.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\compile.stdout.bin.raw",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\final-artifacts.json",
+        "bytes": 3160,
+        "sha256": "74A799A181C09ED9D429F11ADB64FD096A129E482BBE35D3364733A66F024A39"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/final-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\final-artifacts.json.raw",
+        "bytes": 3160,
+        "sha256": "74A799A181C09ED9D429F11ADB64FD096A129E482BBE35D3364733A66F024A39"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\metadata-absence.json",
+        "bytes": 2311,
+        "sha256": "38AC3F6262466937B0E242B786F69A124BE71F08392913689E1A47354AE23A80"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/metadata-absence.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\metadata-absence.json.raw",
+        "bytes": 2311,
+        "sha256": "38AC3F6262466937B0E242B786F69A124BE71F08392913689E1A47354AE23A80"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\metadata-admission.json",
+        "bytes": 583,
+        "sha256": "C0E8ABA50144F11EEE2AFFD76A52CD4EAA4ADE7146B116B3AF47793405EDDAC6"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/metadata-admission.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\metadata-admission.json.raw",
+        "bytes": 583,
+        "sha256": "C0E8ABA50144F11EEE2AFFD76A52CD4EAA4ADE7146B116B3AF47793405EDDAC6"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\metadata-after-artifacts.json",
+        "bytes": 2084,
+        "sha256": "2547C431D356A6EE02B2A63EEF470BB5D1A469A0AE269E51DEA5124CFB914C4B"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/metadata-after-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\metadata-after-artifacts.json.raw",
+        "bytes": 2084,
+        "sha256": "2547C431D356A6EE02B2A63EEF470BB5D1A469A0AE269E51DEA5124CFB914C4B"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\metadata-before-artifacts.json",
+        "bytes": 2084,
+        "sha256": "2547C431D356A6EE02B2A63EEF470BB5D1A469A0AE269E51DEA5124CFB914C4B"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/metadata-before-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\metadata-before-artifacts.json.raw",
+        "bytes": 2084,
+        "sha256": "2547C431D356A6EE02B2A63EEF470BB5D1A469A0AE269E51DEA5124CFB914C4B"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\metadata.json",
+        "bytes": 1226,
+        "sha256": "2701A5CD297BD5F6F5CF2E34DF4D76C3D51102D5125A08C63FBBBAD7353E4169"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/metadata.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\metadata.json.raw",
+        "bytes": 1226,
+        "sha256": "2701A5CD297BD5F6F5CF2E34DF4D76C3D51102D5125A08C63FBBBAD7353E4169"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\metadata.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/metadata.stderr.log.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\metadata.stderr.log.raw",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\metadata.stdout.bin",
+        "bytes": 535,
+        "sha256": "BCD33EDD18FFAF8CFC586597E27FF3847B088DB222C63F7F82CB78BEBB63A4EA"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/metadata.stdout.bin.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\metadata.stdout.bin.raw",
+        "bytes": 535,
+        "sha256": "BCD33EDD18FFAF8CFC586597E27FF3847B088DB222C63F7F82CB78BEBB63A4EA"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\result-provisional.json",
+        "bytes": 9089,
+        "sha256": "F129A510A02B930CC669F3DCBDBA4D354FFD6DCBE1DAE46B957BBA6C8F7ADDC2"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/result-provisional.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\result-provisional.json.raw",
+        "bytes": 9089,
+        "sha256": "F129A510A02B930CC669F3DCBDBA4D354FFD6DCBE1DAE46B957BBA6C8F7ADDC2"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\result.json",
+        "bytes": 9082,
+        "sha256": "7D4F93D2004CD46D8160DC6E25F513BA7A89E056BD0A854CB6762A1FAB347688"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/result.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\result.json.raw",
+        "bytes": 9082,
+        "sha256": "7D4F93D2004CD46D8160DC6E25F513BA7A89E056BD0A854CB6762A1FAB347688"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\selected-tests.json",
+        "bytes": 1051,
+        "sha256": "0212DA56DBC88EF80FAFA53FE844214FB188A46547C47A6F5D60B76712F37B39"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-fs-before-hook-continuation/selected-tests.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-fs-before-hook-continuation\\selected-tests.json.raw",
+        "bytes": 1051,
+        "sha256": "0212DA56DBC88EF80FAFA53FE844214FB188A46547C47A6F5D60B76712F37B39"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\build-artifacts.json",
+        "bytes": 2599,
+        "sha256": "69E3611FBB1C128C7B66E4922C777DC4D38BD732DEA0D7A70248B55B02CF93E1"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/build-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\build-artifacts.json.raw",
+        "bytes": 2599,
+        "sha256": "69E3611FBB1C128C7B66E4922C777DC4D38BD732DEA0D7A70248B55B02CF93E1"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\commands.json",
+        "bytes": 1643,
+        "sha256": "B9847789EC7EFA74311091CCDC972AF9DB12C72929CB5C85E7BA75FCAD2BC5E5"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/commands.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\commands.json.raw",
+        "bytes": 1643,
+        "sha256": "B9847789EC7EFA74311091CCDC972AF9DB12C72929CB5C85E7BA75FCAD2BC5E5"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\compile-absence.json",
+        "bytes": 3324,
+        "sha256": "AF84590DDD84125A747475A8EECD37610DF9FBCB0FA69EA4194F72E6A8895114"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/compile-absence.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\compile-absence.json.raw",
+        "bytes": 3324,
+        "sha256": "AF84590DDD84125A747475A8EECD37610DF9FBCB0FA69EA4194F72E6A8895114"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\compile-admission.json",
+        "bytes": 580,
+        "sha256": "7A066669A2BB9438797B196D2CC555E7646F7C16DDC822B276B64E1807B2479F"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/compile-admission.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\compile-admission.json.raw",
+        "bytes": 580,
+        "sha256": "7A066669A2BB9438797B196D2CC555E7646F7C16DDC822B276B64E1807B2479F"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\compile-after-artifacts.json",
+        "bytes": 2599,
+        "sha256": "69E3611FBB1C128C7B66E4922C777DC4D38BD732DEA0D7A70248B55B02CF93E1"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/compile-after-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\compile-after-artifacts.json.raw",
+        "bytes": 2599,
+        "sha256": "69E3611FBB1C128C7B66E4922C777DC4D38BD732DEA0D7A70248B55B02CF93E1"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\compile.json",
+        "bytes": 2194,
+        "sha256": "024CF307B154ECD191E5063FB7A8049EE9461185D9BFD07F8C8A88113FDDDB60"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/compile.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\compile.json.raw",
+        "bytes": 2194,
+        "sha256": "024CF307B154ECD191E5063FB7A8049EE9461185D9BFD07F8C8A88113FDDDB60"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\compile.stderr.log",
+        "bytes": 14683,
+        "sha256": "EECB60B8A459DF2E2A2F0042A4F8CEA64EE52F6D6BD117D76275F7B4E634653E"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/compile.stderr.log.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\compile.stderr.log.raw",
+        "bytes": 14683,
+        "sha256": "EECB60B8A459DF2E2A2F0042A4F8CEA64EE52F6D6BD117D76275F7B4E634653E"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\compile.stdout.bin",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/compile.stdout.bin.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\compile.stdout.bin.raw",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\final-artifacts.json",
+        "bytes": 3137,
+        "sha256": "3D25843C0C83610F9B8D58C8CCF72A617EE1C6492006C8F1B6D95F38E471A96C"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/final-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\final-artifacts.json.raw",
+        "bytes": 3137,
+        "sha256": "3D25843C0C83610F9B8D58C8CCF72A617EE1C6492006C8F1B6D95F38E471A96C"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\metadata-absence.json",
+        "bytes": 2299,
+        "sha256": "7FA4170B43E2B8452E4C7409A99C4C5D06C2AD981DECF1B3165521092B314A43"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/metadata-absence.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\metadata-absence.json.raw",
+        "bytes": 2299,
+        "sha256": "7FA4170B43E2B8452E4C7409A99C4C5D06C2AD981DECF1B3165521092B314A43"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\metadata-admission.json",
+        "bytes": 583,
+        "sha256": "4A566B081A0D6F93135C7E441779CC9FF6E0A02A364DA7CAB1C4C7D03B9D7728"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/metadata-admission.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\metadata-admission.json.raw",
+        "bytes": 583,
+        "sha256": "4A566B081A0D6F93135C7E441779CC9FF6E0A02A364DA7CAB1C4C7D03B9D7728"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\metadata-after-artifacts.json",
+        "bytes": 2599,
+        "sha256": "69E3611FBB1C128C7B66E4922C777DC4D38BD732DEA0D7A70248B55B02CF93E1"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/metadata-after-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\metadata-after-artifacts.json.raw",
+        "bytes": 2599,
+        "sha256": "69E3611FBB1C128C7B66E4922C777DC4D38BD732DEA0D7A70248B55B02CF93E1"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\metadata-before-artifacts.json",
+        "bytes": 2599,
+        "sha256": "69E3611FBB1C128C7B66E4922C777DC4D38BD732DEA0D7A70248B55B02CF93E1"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/metadata-before-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\metadata-before-artifacts.json.raw",
+        "bytes": 2599,
+        "sha256": "69E3611FBB1C128C7B66E4922C777DC4D38BD732DEA0D7A70248B55B02CF93E1"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\metadata.json",
+        "bytes": 1227,
+        "sha256": "CBC812CEEF3E820AC509E299AB3AA6F682595898BC4EDAE145116B1F4CB66FEF"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/metadata.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\metadata.json.raw",
+        "bytes": 1227,
+        "sha256": "CBC812CEEF3E820AC509E299AB3AA6F682595898BC4EDAE145116B1F4CB66FEF"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\metadata.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/metadata.stderr.log.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\metadata.stderr.log.raw",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\metadata.stdout.bin",
+        "bytes": 3325,
+        "sha256": "D8F2F86C332F24EC92ADBE1E77C737D7D1E9EEAD0C9E59EE62C50A5BF8FF61AC"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/metadata.stdout.bin.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\metadata.stdout.bin.raw",
+        "bytes": 3325,
+        "sha256": "D8F2F86C332F24EC92ADBE1E77C737D7D1E9EEAD0C9E59EE62C50A5BF8FF61AC"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\result-provisional.json",
+        "bytes": 8993,
+        "sha256": "E715F5A4519126018BD1FD42D4EC6D57EDC0458BF5D153E47E6095575BD7B0AC"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/result-provisional.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\result-provisional.json.raw",
+        "bytes": 8993,
+        "sha256": "E715F5A4519126018BD1FD42D4EC6D57EDC0458BF5D153E47E6095575BD7B0AC"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\result.json",
+        "bytes": 8986,
+        "sha256": "DCFC5EF585AF66DD28FC493F0C4A63A36435399CC4CBBABD9E5CB1BCAFD24506"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/result.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\result.json.raw",
+        "bytes": 8986,
+        "sha256": "DCFC5EF585AF66DD28FC493F0C4A63A36435399CC4CBBABD9E5CB1BCAFD24506"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\selected-tests.json",
+        "bytes": 3835,
+        "sha256": "60CB6D73C5BFC7D1930D4268DAB300A862932E3D8E8D7DE2E5B6C4C9608DE780"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-vm-error-constructor-name/selected-tests.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-vm-error-constructor-name\\selected-tests.json.raw",
+        "bytes": 3835,
+        "sha256": "60CB6D73C5BFC7D1930D4268DAB300A862932E3D8E8D7DE2E5B6C4C9608DE780"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\build-artifacts.json",
+        "bytes": 3139,
+        "sha256": "A6C0EEEF088E82D58CB9ABC37B5EBC12DB18951CB1BBB57B3B2A860CDA0B4EA6"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/build-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\build-artifacts.json.raw",
+        "bytes": 3139,
+        "sha256": "A6C0EEEF088E82D58CB9ABC37B5EBC12DB18951CB1BBB57B3B2A860CDA0B4EA6"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\commands.json",
+        "bytes": 1643,
+        "sha256": "E40EBC84F24C6357A184AD36E03928B09E9FC829CA808B81E92B608ECBAD85DC"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/commands.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\commands.json.raw",
+        "bytes": 1643,
+        "sha256": "E40EBC84F24C6357A184AD36E03928B09E9FC829CA808B81E92B608ECBAD85DC"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\compile-absence.json",
+        "bytes": 3324,
+        "sha256": "DE0A339CBC93D2A921919D9B60C3629D8B2F30D889726827848143968C05A5B4"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/compile-absence.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\compile-absence.json.raw",
+        "bytes": 3324,
+        "sha256": "DE0A339CBC93D2A921919D9B60C3629D8B2F30D889726827848143968C05A5B4"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\compile-admission.json",
+        "bytes": 580,
+        "sha256": "D9CC16B60279CD95752C0DB00B0E54050B4EF7E1B93192BE1C699B13F9D4299F"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/compile-admission.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\compile-admission.json.raw",
+        "bytes": 580,
+        "sha256": "D9CC16B60279CD95752C0DB00B0E54050B4EF7E1B93192BE1C699B13F9D4299F"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\compile-after-artifacts.json",
+        "bytes": 3139,
+        "sha256": "A6C0EEEF088E82D58CB9ABC37B5EBC12DB18951CB1BBB57B3B2A860CDA0B4EA6"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/compile-after-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\compile-after-artifacts.json.raw",
+        "bytes": 3139,
+        "sha256": "A6C0EEEF088E82D58CB9ABC37B5EBC12DB18951CB1BBB57B3B2A860CDA0B4EA6"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\compile.json",
+        "bytes": 2194,
+        "sha256": "F9C3C708FE7CA172AF33F7094EBFB78C70DD93A267C4B77175687CC98457E64B"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/compile.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\compile.json.raw",
+        "bytes": 2194,
+        "sha256": "F9C3C708FE7CA172AF33F7094EBFB78C70DD93A267C4B77175687CC98457E64B"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\compile.stderr.log",
+        "bytes": 15172,
+        "sha256": "2CB398D0DAFE249D784F6ADC88497EC7196C962C9F1FC4544ED74CE80532892A"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/compile.stderr.log.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\compile.stderr.log.raw",
+        "bytes": 15172,
+        "sha256": "2CB398D0DAFE249D784F6ADC88497EC7196C962C9F1FC4544ED74CE80532892A"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\compile.stdout.bin",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/compile.stdout.bin.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\compile.stdout.bin.raw",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\final-artifacts.json",
+        "bytes": 3139,
+        "sha256": "A6C0EEEF088E82D58CB9ABC37B5EBC12DB18951CB1BBB57B3B2A860CDA0B4EA6"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/final-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\final-artifacts.json.raw",
+        "bytes": 3139,
+        "sha256": "A6C0EEEF088E82D58CB9ABC37B5EBC12DB18951CB1BBB57B3B2A860CDA0B4EA6"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\metadata-absence.json",
+        "bytes": 2298,
+        "sha256": "0A053EA96655D2906CF645C0CD5BF153D544323AA0F6649DD3CC10E2407392DE"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/metadata-absence.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\metadata-absence.json.raw",
+        "bytes": 2298,
+        "sha256": "0A053EA96655D2906CF645C0CD5BF153D544323AA0F6649DD3CC10E2407392DE"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\metadata-admission.json",
+        "bytes": 583,
+        "sha256": "77A18093D3D52ADC1DC124C4E565023FDE28063B0AEF6C91834AB5E085CAAF2E"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/metadata-admission.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\metadata-admission.json.raw",
+        "bytes": 583,
+        "sha256": "77A18093D3D52ADC1DC124C4E565023FDE28063B0AEF6C91834AB5E085CAAF2E"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\metadata-after-artifacts.json",
+        "bytes": 3139,
+        "sha256": "A6C0EEEF088E82D58CB9ABC37B5EBC12DB18951CB1BBB57B3B2A860CDA0B4EA6"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/metadata-after-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\metadata-after-artifacts.json.raw",
+        "bytes": 3139,
+        "sha256": "A6C0EEEF088E82D58CB9ABC37B5EBC12DB18951CB1BBB57B3B2A860CDA0B4EA6"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\metadata-before-artifacts.json",
+        "bytes": 3139,
+        "sha256": "A6C0EEEF088E82D58CB9ABC37B5EBC12DB18951CB1BBB57B3B2A860CDA0B4EA6"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/metadata-before-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\metadata-before-artifacts.json.raw",
+        "bytes": 3139,
+        "sha256": "A6C0EEEF088E82D58CB9ABC37B5EBC12DB18951CB1BBB57B3B2A860CDA0B4EA6"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\metadata.json",
+        "bytes": 1227,
+        "sha256": "B6ECDDB7F67BCD33A3EB50D28F45F7BE1637B39845A1460E425341FD999B03B6"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/metadata.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\metadata.json.raw",
+        "bytes": 1227,
+        "sha256": "B6ECDDB7F67BCD33A3EB50D28F45F7BE1637B39845A1460E425341FD999B03B6"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\metadata.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/metadata.stderr.log.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\metadata.stderr.log.raw",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\metadata.stdout.bin",
+        "bytes": 2009,
+        "sha256": "CA3D9558F23A3779A51D9FAB26A01A151099334B6615D8B73A3BE26A14EA61A6"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/metadata.stdout.bin.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\metadata.stdout.bin.raw",
+        "bytes": 2009,
+        "sha256": "CA3D9558F23A3779A51D9FAB26A01A151099334B6615D8B73A3BE26A14EA61A6"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\result-provisional.json",
+        "bytes": 8992,
+        "sha256": "64EB2AC311FBEB95EAA8819A5FCB43C92212DECAF18A694BBD0C3FE22368C02A"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/result-provisional.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\result-provisional.json.raw",
+        "bytes": 8992,
+        "sha256": "64EB2AC311FBEB95EAA8819A5FCB43C92212DECAF18A694BBD0C3FE22368C02A"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\result.json",
+        "bytes": 8985,
+        "sha256": "D33A55F18F20791B9ED39C1019E30AD2C6517E0CE6C8E670ED5BAE075CF10231"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/result.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\result.json.raw",
+        "bytes": 8985,
+        "sha256": "D33A55F18F20791B9ED39C1019E30AD2C6517E0CE6C8E670ED5BAE075CF10231"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\selected-tests.json",
+        "bytes": 2519,
+        "sha256": "6B51D025FD0D6925A074C0C16571C3526BE3ED32A6516279EB7DC26CC1AAC8C0"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/groups/native-node-file-handle-transfer/selected-tests.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\groups\\native-node-file-handle-transfer\\selected-tests.json.raw",
+        "bytes": 2519,
+        "sha256": "6B51D025FD0D6925A074C0C16571C3526BE3ED32A6516279EB7DC26CC1AAC8C0"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\result.json",
+        "bytes": 16657,
+        "sha256": "66E9CE52981B6DA16C7A1F79EE596FA98754E5F69E435FDF0A36EB3AB8139165"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/proof/result.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\proof\\result.json.raw",
+        "bytes": 16657,
+        "sha256": "66E9CE52981B6DA16C7A1F79EE596FA98754E5F69E435FDF0A36EB3AB8139165"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\Audit-NegativeV37Retry1New4StrictRuntime.py",
+        "bytes": 47992,
+        "sha256": "77B7214537A583410F686B560FA158097087C836C5A7DD34345FE8ED5266ECC8"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/control/Audit-NegativeV37Retry1New4StrictRuntime.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\control\\Audit-NegativeV37Retry1New4StrictRuntime.py.raw",
+        "bytes": 47992,
+        "sha256": "77B7214537A583410F686B560FA158097087C836C5A7DD34345FE8ED5266ECC8"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\grant-launch-adaptation.json",
+        "bytes": 8852,
+        "sha256": "16FD4C55F273B52A90932829E3910D185CDA934D24C83BD22B16F1A52E7430C2"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/control/grant-launch-adaptation.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\control\\grant-launch-adaptation.json.raw",
+        "bytes": 8852,
+        "sha256": "16FD4C55F273B52A90932829E3910D185CDA934D24C83BD22B16F1A52E7430C2"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-audit-job-observation.json",
+        "bytes": 1559,
+        "sha256": "93ED30ABDCBED9FA178C2071CFE3E63EF1165BCC6F0BFE5B7071D7904AF328FE"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/control/independent-negative-audit-job-observation.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\control\\independent-negative-audit-job-observation.json.raw",
+        "bytes": 1559,
+        "sha256": "93ED30ABDCBED9FA178C2071CFE3E63EF1165BCC6F0BFE5B7071D7904AF328FE"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-audit-inputs.json",
+        "bytes": 11361,
+        "sha256": "7B5903FF048D7545C9DE37089413BAED532EA7FFDFD7F556EF4631D287BDCD8C"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/control/independent-negative-runtime-audit-inputs.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\control\\independent-negative-runtime-audit-inputs.json.raw",
+        "bytes": 11361,
+        "sha256": "7B5903FF048D7545C9DE37089413BAED532EA7FFDFD7F556EF4631D287BDCD8C"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-closure.json",
+        "bytes": 22838,
+        "sha256": "321ABB743297FC9720D36E78F17B38441F8FAE3A60BEA32DE488FC248342F517"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/control/independent-negative-runtime-closure.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\control\\independent-negative-runtime-closure.json.raw",
+        "bytes": 22838,
+        "sha256": "321ABB743297FC9720D36E78F17B38441F8FAE3A60BEA32DE488FC248342F517"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-observed-job-status.json",
+        "bytes": 1644,
+        "sha256": "F5DA6BCCFFA59A176902EE387F4DE2A130C399DEB7C584BBE73D2A3E0FFFA870"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/control/independent-observed-job-status.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\control\\independent-observed-job-status.json.raw",
+        "bytes": 1644,
+        "sha256": "F5DA6BCCFFA59A176902EE387F4DE2A130C399DEB7C584BBE73D2A3E0FFFA870"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\launch.ps1",
+        "bytes": 1777,
+        "sha256": "08E0E75D8D097C30F0FE539A32072E156DD949AF80FA1E48284A8D63BE6EA69E"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/control/launch.ps1.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\control\\launch.ps1.raw",
+        "bytes": 1777,
+        "sha256": "08E0E75D8D097C30F0FE539A32072E156DD949AF80FA1E48284A8D63BE6EA69E"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\outer-absence.json",
+        "bytes": 183,
+        "sha256": "E062823ADA5AE0C0822FF4300D937F88B822DA4087F53514E1EB046D9FD4E408"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/control/outer-absence.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\control\\outer-absence.json.raw",
+        "bytes": 183,
+        "sha256": "E062823ADA5AE0C0822FF4300D937F88B822DA4087F53514E1EB046D9FD4E408"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\outer.json",
+        "bytes": 1612,
+        "sha256": "871048AF7C8680EA81D87C8A0BC535F19AE9E5CDE7B10012B5955516639BCE31"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/control/outer.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\control\\outer.json.raw",
+        "bytes": 1612,
+        "sha256": "871048AF7C8680EA81D87C8A0BC535F19AE9E5CDE7B10012B5955516639BCE31"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\outer.stderr.log",
+        "bytes": 605,
+        "sha256": "8321BACFA72BD52330EEE9B5EAAAFE6D2BCB96971451C66FBCB0CB9125CCAAA3"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/control/outer.stderr.log.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\control\\outer.stderr.log.raw",
+        "bytes": 605,
+        "sha256": "8321BACFA72BD52330EEE9B5EAAAFE6D2BCB96971451C66FBCB0CB9125CCAAA3"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\outer.stdout.bin",
+        "bytes": 16657,
+        "sha256": "66E9CE52981B6DA16C7A1F79EE596FA98754E5F69E435FDF0A36EB3AB8139165"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/control/outer.stdout.bin.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\control\\outer.stdout.bin.raw",
+        "bytes": 16657,
+        "sha256": "66E9CE52981B6DA16C7A1F79EE596FA98754E5F69E435FDF0A36EB3AB8139165"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\root-grant.json",
+        "bytes": 17445,
+        "sha256": "748C056A5CADFD40EB0B8E072D94CF816DA1FC2D21EA51D7D4C62FD2B31972E3"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/control/root-grant.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\control\\root-grant.json.raw",
+        "bytes": 17445,
+        "sha256": "748C056A5CADFD40EB0B8E072D94CF816DA1FC2D21EA51D7D4C62FD2B31972E3"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\root-negative-runtime-audit-release.json",
+        "bytes": 5004,
+        "sha256": "F86B2BF4E9937AC1286E02F038D50374E03838DCE70E044DF989328FDCBF99F9"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/control/root-negative-runtime-audit-release.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\control\\root-negative-runtime-audit-release.json.raw",
+        "bytes": 5004,
+        "sha256": "F86B2BF4E9937AC1286E02F038D50374E03838DCE70E044DF989328FDCBF99F9"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\runtime-launch.json",
+        "bytes": 2782,
+        "sha256": "EFFCCF89CC41F26FFEA62A78C4F08534DC4B1E9F1D2CE1874573DFB252641AF3"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/control/runtime-launch.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\control\\runtime-launch.json.raw",
+        "bytes": 2782,
+        "sha256": "EFFCCF89CC41F26FFEA62A78C4F08534DC4B1E9F1D2CE1874573DFB252641AF3"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\commands.json",
+        "bytes": 4396,
+        "sha256": "3D7016EB0EC8B7B792C972F8051A5A8BA89FAEDB2D71426E3C9B1D6B6FCD5444"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/groups/native-node-file-handle-owner/commands.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\groups\\native-node-file-handle-owner\\commands.json.raw",
+        "bytes": 4396,
+        "sha256": "3D7016EB0EC8B7B792C972F8051A5A8BA89FAEDB2D71426E3C9B1D6B6FCD5444"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\final-artifacts.json",
+        "bytes": 3130,
+        "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/groups/native-node-file-handle-owner/final-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\groups\\native-node-file-handle-owner\\final-artifacts.json.raw",
+        "bytes": 3130,
+        "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\result-provisional.json",
+        "bytes": 8440,
+        "sha256": "5297D4AD7CBB4F2C56C1599173642BF75573F24F51C5FAF9EDBD2235D240B58C"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/groups/native-node-file-handle-owner/result-provisional.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\groups\\native-node-file-handle-owner\\result-provisional.json.raw",
+        "bytes": 8440,
+        "sha256": "5297D4AD7CBB4F2C56C1599173642BF75573F24F51C5FAF9EDBD2235D240B58C"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\result.json",
+        "bytes": 8438,
+        "sha256": "20387216D12CBABE8C6763CB26E0C3228897F6AAAE500E69F18B94201CC38C10"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/groups/native-node-file-handle-owner/result.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\groups\\native-node-file-handle-owner\\result.json.raw",
+        "bytes": 8438,
+        "sha256": "20387216D12CBABE8C6763CB26E0C3228897F6AAAE500E69F18B94201CC38C10"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-absence.json",
+        "bytes": 4741,
+        "sha256": "002604BED4E16E711B1E26720D5C89858C435528E7C438C3DA76AA9E3CDC281B"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/groups/native-node-file-handle-owner/runtime-absence.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\groups\\native-node-file-handle-owner\\runtime-absence.json.raw",
+        "bytes": 4741,
+        "sha256": "002604BED4E16E711B1E26720D5C89858C435528E7C438C3DA76AA9E3CDC281B"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-admission.json",
+        "bytes": 580,
+        "sha256": "DA15B1FF7DAEC51DAB9052A5A2F91C2345A39612227EB0A1BF0EB9B5D0DB2B15"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/groups/native-node-file-handle-owner/runtime-admission.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\groups\\native-node-file-handle-owner\\runtime-admission.json.raw",
+        "bytes": 580,
+        "sha256": "DA15B1FF7DAEC51DAB9052A5A2F91C2345A39612227EB0A1BF0EB9B5D0DB2B15"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-after-artifacts.json",
+        "bytes": 3130,
+        "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/groups/native-node-file-handle-owner/runtime-after-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\groups\\native-node-file-handle-owner\\runtime-after-artifacts.json.raw",
+        "bytes": 3130,
+        "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-before-artifacts.json",
+        "bytes": 3130,
+        "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/groups/native-node-file-handle-owner/runtime-before-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\groups\\native-node-file-handle-owner\\runtime-before-artifacts.json.raw",
+        "bytes": 3130,
+        "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-prerequisite-artifacts.json",
+        "bytes": 3130,
+        "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/groups/native-node-file-handle-owner/runtime-prerequisite-artifacts.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\groups\\native-node-file-handle-owner\\runtime-prerequisite-artifacts.json.raw",
+        "bytes": 3130,
+        "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-raw-frame-observation.json",
+        "bytes": 2947,
+        "sha256": "B7900534C9B3F265D43883B096D0824C5893A9E1472FC657F3D260237B032DBA"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/groups/native-node-file-handle-owner/runtime-raw-frame-observation.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\groups\\native-node-file-handle-owner\\runtime-raw-frame-observation.json.raw",
+        "bytes": 2947,
+        "sha256": "B7900534C9B3F265D43883B096D0824C5893A9E1472FC657F3D260237B032DBA"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.json",
+        "bytes": 1228,
+        "sha256": "73AE870C555B868366E33B52366E42E99BADF550B5AEA4DFD35251993809D659"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/groups/native-node-file-handle-owner/runtime.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\groups\\native-node-file-handle-owner\\runtime.json.raw",
+        "bytes": 1228,
+        "sha256": "73AE870C555B868366E33B52366E42E99BADF550B5AEA4DFD35251993809D659"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.results.json",
+        "bytes": 2043,
+        "sha256": "9B224B5628500F9018F32B6338DF13A7BA5A6DCC067C391D5D555FFE621A8B50"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/groups/native-node-file-handle-owner/runtime.results.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\groups\\native-node-file-handle-owner\\runtime.results.json.raw",
+        "bytes": 2043,
+        "sha256": "9B224B5628500F9018F32B6338DF13A7BA5A6DCC067C391D5D555FFE621A8B50"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stderr.log",
+        "bytes": 68389,
+        "sha256": "1BB42117F374DECBF5C91100686DF7DA7D686A285ECF9F874423D5799AF945ED"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/groups/native-node-file-handle-owner/runtime.stderr.log.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\groups\\native-node-file-handle-owner\\runtime.stderr.log.raw",
+        "bytes": 68389,
+        "sha256": "1BB42117F374DECBF5C91100686DF7DA7D686A285ECF9F874423D5799AF945ED"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stdout.bin",
+        "bytes": 546,
+        "sha256": "28AC47910B5D5309DD1A1454816A2C051A0E420C51BD0827D4EC61F5D5528C9E"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/groups/native-node-file-handle-owner/runtime.stdout.bin.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\groups\\native-node-file-handle-owner\\runtime.stdout.bin.raw",
+        "bytes": 546,
+        "sha256": "28AC47910B5D5309DD1A1454816A2C051A0E420C51BD0827D4EC61F5D5528C9E"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-094837\\grant-launch-adaptation.json",
+        "bytes": 19922,
+        "sha256": "BADAD7A7D4BE3AF9ED73AE9745BA4DF17C6E37302538695363F805440FAA27A3"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/control/grant-launch-adaptation.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\control\\grant-launch-adaptation.json.raw",
+        "bytes": 19922,
+        "sha256": "BADAD7A7D4BE3AF9ED73AE9745BA4DF17C6E37302538695363F805440FAA27A3"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-094837\\launch.ps1",
+        "bytes": 1776,
+        "sha256": "FD145CD97E2E36AC0727356B58CFFF1A69071805EDE1548011A0E98596D9CEB6"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/control/launch.ps1.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\control\\launch.ps1.raw",
+        "bytes": 1776,
+        "sha256": "FD145CD97E2E36AC0727356B58CFFF1A69071805EDE1548011A0E98596D9CEB6"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-094837\\outer-absence.json",
+        "bytes": 183,
+        "sha256": "871AD28EB65857E408CF7BF20F4E2C5418F9D366B86D04E0AC2AD8202C98A992"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/control/outer-absence.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\control\\outer-absence.json.raw",
+        "bytes": 183,
+        "sha256": "871AD28EB65857E408CF7BF20F4E2C5418F9D366B86D04E0AC2AD8202C98A992"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-094837\\outer.json",
+        "bytes": 1606,
+        "sha256": "A6DE970F969DD67704188D5DEC071AC55038977CE2DABAE0EB5EA417F5F4D989"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/control/outer.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\control\\outer.json.raw",
+        "bytes": 1606,
+        "sha256": "A6DE970F969DD67704188D5DEC071AC55038977CE2DABAE0EB5EA417F5F4D989"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-094837\\outer.stderr.log",
+        "bytes": 586,
+        "sha256": "0774AFEC222E0FD88BD8EE42438C130FF957AEC0962E2FC0E1A82FF8F7087D76"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/control/outer.stderr.log.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\control\\outer.stderr.log.raw",
+        "bytes": 586,
+        "sha256": "0774AFEC222E0FD88BD8EE42438C130FF957AEC0962E2FC0E1A82FF8F7087D76"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-094837\\outer.stdout.bin",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/control/outer.stdout.bin.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\control\\outer.stdout.bin.raw",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-094837\\root-grant.json",
+        "bytes": 16272,
+        "sha256": "7938B022DC9D7F8A997FD0F9953CA999BF8388987F9BAE22CC0A7F2301FC09F7"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/control/root-grant.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\control\\root-grant.json.raw",
+        "bytes": 16272,
+        "sha256": "7938B022DC9D7F8A997FD0F9953CA999BF8388987F9BAE22CC0A7F2301FC09F7"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-initial-admission-negative-acceptance-20261021.json",
+        "bytes": 4271,
+        "sha256": "913E5C1AD65C42FC084C63304A766105F810C7DDCE50C4109EFA441BAE04C91A"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/root-acceptance.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\root-acceptance.json.raw",
+        "bytes": 4271,
+        "sha256": "913E5C1AD65C42FC084C63304A766105F810C7DDCE50C4109EFA441BAE04C91A"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\peer.json",
+        "bytes": 8119,
+        "sha256": "97CA02ED14001C8AC9D1043647660D112052580B99BB478EBE069BDE939EFA67"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/independent-peer.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\independent-peer.json.raw",
+        "bytes": 8119,
+        "sha256": "97CA02ED14001C8AC9D1043647660D112052580B99BB478EBE069BDE939EFA67"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\source-audit.py",
+        "bytes": 17828,
+        "sha256": "EAECD99591D740BD9880A37F3DD8412BDEEF3E1589B184B8A58D5DFD866272A3"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/source-audit.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\source-audit.py.raw",
+        "bytes": 17828,
+        "sha256": "EAECD99591D740BD9880A37F3DD8412BDEEF3E1589B184B8A58D5DFD866272A3"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\source-audit.json",
+        "bytes": 30601,
+        "sha256": "D9C0D2D1D202069E5BFFA95AE8632DBE1E495D63DC150DE8E7B1D40016F12F0F"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/source-audit.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\source-audit.json.raw",
+        "bytes": 30601,
+        "sha256": "D9C0D2D1D202069E5BFFA95AE8632DBE1E495D63DC150DE8E7B1D40016F12F0F"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\job-tool-observation.json",
+        "bytes": 3511,
+        "sha256": "D38CF38CBFBE5072F2A76483506531E124EFA315474DB53B79D51CC5C4CC93A5"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/job-tool-observation.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\job-tool-observation.json.raw",
+        "bytes": 3511,
+        "sha256": "D38CF38CBFBE5072F2A76483506531E124EFA315474DB53B79D51CC5C4CC93A5"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\process-query.ps1",
+        "bytes": 4213,
+        "sha256": "AD2BEAEC4DDAE1690B8396B387BD6602E4D0D7AFE292AD5E9F7F056D5717D8ED"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/process-query.ps1.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\process-query.ps1.raw",
+        "bytes": 4213,
+        "sha256": "AD2BEAEC4DDAE1690B8396B387BD6602E4D0D7AFE292AD5E9F7F056D5717D8ED"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\process-observation.json",
+        "bytes": 39167,
+        "sha256": "08DC1C3A05A051FFB4395822BB209581A1E24B2E13DC0D401353C14C634B088E"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/process-observation.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\process-observation.json.raw",
+        "bytes": 39167,
+        "sha256": "08DC1C3A05A051FFB4395822BB209581A1E24B2E13DC0D401353C14C634B088E"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\process-query-tool-metadata.json",
+        "bytes": 1071,
+        "sha256": "810F68CB15808F40B67CB95C0CC2DBE80AEDADE0CCDF902694E7087F84A6C45B"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/process-query-tool-metadata.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\process-query-tool-metadata.json.raw",
+        "bytes": 1071,
+        "sha256": "810F68CB15808F40B67CB95C0CC2DBE80AEDADE0CCDF902694E7087F84A6C45B"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\buildquery-launch.json",
+        "bytes": 2091,
+        "sha256": "94A0A3134BF95B96E92A6CE9486F826E3A412C3F3F280B5DEE414396D079AC31"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/buildquery-launch.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\buildquery-launch.json.raw",
+        "bytes": 2091,
+        "sha256": "94A0A3134BF95B96E92A6CE9486F826E3A412C3F3F280B5DEE414396D079AC31"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-buildquery-issued-config-20261021.json",
+        "bytes": 9692,
+        "sha256": "32D70EB267D32CA919CF71C561906272DBCCDE0697D2AECA36CC9CDF80823369"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/issued-config.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\issued-config.json.raw",
+        "bytes": 9692,
+        "sha256": "32D70EB267D32CA919CF71C561906272DBCCDE0697D2AECA36CC9CDF80823369"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-execution-bound-source-review-20261021.json",
+        "bytes": 6566,
+        "sha256": "B0A86EEC807F83AC467E5B194891FC6F6BA0C551BEBCBDF7C33AFA6E689FC914"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/root-execution-source-review.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\root-execution-source-review.json.raw",
+        "bytes": 6566,
+        "sha256": "B0A86EEC807F83AC467E5B194891FC6F6BA0C551BEBCBDF7C33AFA6E689FC914"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37BuildQueryGrant-20261021-v2.py",
+        "bytes": 10095,
+        "sha256": "21BDC9AB8EAEBEC3B9C9427E8D20A10F0EBAA0728D55A06BADCB83327A215ABC"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/initial-admission/buildquery-constructor.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\initial-admission\\buildquery-constructor.py.raw",
+        "bytes": 10095,
+        "sha256": "21BDC9AB8EAEBEC3B9C9427E8D20A10F0EBAA0728D55A06BADCB83327A215ABC"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-buildquery-retry1-issued-config-20261021.json",
+        "bytes": 9887,
+        "sha256": "7D8D8F2701A39D4F14B8C61629482463FCDE64318EC75A974BEB78CAD3A865B7"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/buildquery-issued-config.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\buildquery-issued-config.json.raw",
+        "bytes": 9887,
+        "sha256": "7D8D8F2701A39D4F14B8C61629482463FCDE64318EC75A974BEB78CAD3A865B7"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\buildquery-retry1-launch.json",
+        "bytes": 2098,
+        "sha256": "02B61D9076D6E5DD5E870722D939DDF53EBB21293FEB231692B807D26A9FE88A"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/buildquery-launch.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\buildquery-launch.json.raw",
+        "bytes": 2098,
+        "sha256": "02B61D9076D6E5DD5E870722D939DDF53EBB21293FEB231692B807D26A9FE88A"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-retry1-complete-buildquery-acceptance-20261021.json",
+        "bytes": 3420,
+        "sha256": "30CF28F108FCA7C9210237E23A1253AA7B6F93E534DA099E1E9738AF2D71877B"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/root-buildquery-acceptance.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\root-buildquery-acceptance.json.raw",
+        "bytes": 3420,
+        "sha256": "30CF28F108FCA7C9210237E23A1253AA7B6F93E534DA099E1E9738AF2D71877B"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-retry1-original-negative-runtime-acceptance-20261021.json",
+        "bytes": 3131,
+        "sha256": "D305B2B2E462CA38BCC4D0E8B44F51E8F997DA902ABBD323E1F9283B51BC6557"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/root-runtime-negative-acceptance.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\root-runtime-negative-acceptance.json.raw",
+        "bytes": 3131,
+        "sha256": "D305B2B2E462CA38BCC4D0E8B44F51E8F997DA902ABBD323E1F9283B51BC6557"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37BuildQueryGrant-Retry1-20261021.py",
+        "bytes": 10109,
+        "sha256": "81FA8E7BA4DED5788F1618D393395666C82BC209791079DCCB3EEBDAEC6E9F58"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/buildquery-constructor.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\buildquery-constructor.py.raw",
+        "bytes": 10109,
+        "sha256": "81FA8E7BA4DED5788F1618D393395666C82BC209791079DCCB3EEBDAEC6E9F58"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37RuntimeGrant-Retry1-20261021.py",
+        "bytes": 12513,
+        "sha256": "414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/runtime-constructor.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\runtime-constructor.py.raw",
+        "bytes": 12513,
+        "sha256": "414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-retry1-execution-bound-source-review-20261021.json",
+        "bytes": 8935,
+        "sha256": "67148BD40AA1DACA49B6575CD22853CCD56229D95517CC58E7897A89ABCA9F77"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/root-execution-source-review.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\root-execution-source-review.json.raw",
+        "bytes": 8935,
+        "sha256": "67148BD40AA1DACA49B6575CD22853CCD56229D95517CC58E7897A89ABCA9F77"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-catalog-source-acceptance-20261021.json",
+        "bytes": 8792,
+        "sha256": "1DE26AC6A76F9B4082D95EDFA331DDB99781159400F4B23219A261C44FB556A1"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/root-catalog-source-acceptance.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\root-catalog-source-acceptance.json.raw",
+        "bytes": 8792,
+        "sha256": "1DE26AC6A76F9B4082D95EDFA331DDB99781159400F4B23219A261C44FB556A1"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37CompleteBuildQuery-Retry1-20261021.py",
+        "bytes": 37268,
+        "sha256": "2C89B824BE10438684ECAB4AC72197B7A54F9218F15578F9F1A4EB6FEFDB4063"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/positive-buildquery-auditor.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\positive-buildquery-auditor.py.raw",
+        "bytes": 37268,
+        "sha256": "2C89B824BE10438684ECAB4AC72197B7A54F9218F15578F9F1A4EB6FEFDB4063"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\Audit-CombinedNativeBatch.py",
+        "bytes": 17696,
+        "sha256": "34D2F0302C08A89DDA3E136C0723AA575F0D0ECC22FD0AB4C50DD2A7AA45EA17"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/metadata-auditor.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\metadata-auditor.py.raw",
+        "bytes": 17696,
+        "sha256": "34D2F0302C08A89DDA3E136C0723AA575F0D0ECC22FD0AB4C50DD2A7AA45EA17"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV37New4PositiveBuildQueryAuditInputs-20261021.py",
+        "bytes": 18990,
+        "sha256": "F70938AB86C7B721718EB4529AB710D7C9076F0A5CD3F0B2A21A57BC019B2BAF"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/positive-input-preparer.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\positive-input-preparer.py.raw",
+        "bytes": 18990,
+        "sha256": "F70938AB86C7B721718EB4529AB710D7C9076F0A5CD3F0B2A21A57BC019B2BAF"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-retry1-positive-audit-helper-issued-config-20261021.json",
+        "bytes": 3710,
+        "sha256": "8A8ADDACB147C4AC94FB1C9BDB80DE22C705600E76742772B64C2EF681A1C16B"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/positive-input-preparation-issued-config.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\positive-input-preparation-issued-config.json.raw",
+        "bytes": 3710,
+        "sha256": "8A8ADDACB147C4AC94FB1C9BDB80DE22C705600E76742772B64C2EF681A1C16B"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-retry1-positive-buildquery-bound-helper-source-acceptance-20261021.json",
+        "bytes": 4768,
+        "sha256": "772AC7E9C46FD906C357DCC10E6A1FC2916CAC45A67A3F27DF4F905F90382B6C"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/root-positive-input-bound-source-acceptance.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\root-positive-input-bound-source-acceptance.json.raw",
+        "bytes": 4768,
+        "sha256": "772AC7E9C46FD906C357DCC10E6A1FC2916CAC45A67A3F27DF4F905F90382B6C"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-retry1-negative-runtime-auditor-static-review-20261021.json",
+        "bytes": 11625,
+        "sha256": "C7B6F70D4C7C672A7325F2092364DBC0B0793EAE6D39098714F51EF85C3842C7"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/root-negative-auditor-static-review.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\root-negative-auditor-static-review.json.raw",
+        "bytes": 11625,
+        "sha256": "C7B6F70D4C7C672A7325F2092364DBC0B0793EAE6D39098714F51EF85C3842C7"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-retry1-runtime-issued-config-20261021.json",
+        "bytes": 4448,
+        "sha256": "A5783FA11462C9DF73698648E9A2128E45D0EA9CA1BB5E56F2550AADD31C0998"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/runtime-issued-config.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\runtime-issued-config.json.raw",
+        "bytes": 4448,
+        "sha256": "A5783FA11462C9DF73698648E9A2128E45D0EA9CA1BB5E56F2550AADD31C0998"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\buildquery-constructor-finite.json",
+        "bytes": 4603,
+        "sha256": "3D482147579827314416D50DD38E8221E77CE5B55370CD2548347D8ACD6EEAA9"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/retry1-source-adaptation/buildquery-constructor-finite.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\retry1-source-adaptation\\buildquery-constructor-finite.json.raw",
+        "bytes": 4603,
+        "sha256": "3D482147579827314416D50DD38E8221E77CE5B55370CD2548347D8ACD6EEAA9"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\finite-source-adaptation.json",
+        "bytes": 17062,
+        "sha256": "7AD9E12410967B564AA982840DF7CE427493AEFB0AD4749D024B1D6BD4BB4C7B"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/retry1-source-adaptation/finite-source-adaptation.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\retry1-source-adaptation\\finite-source-adaptation.json.raw",
+        "bytes": 17062,
+        "sha256": "7AD9E12410967B564AA982840DF7CE427493AEFB0AD4749D024B1D6BD4BB4C7B"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\handoff.json",
+        "bytes": 13872,
+        "sha256": "323A0E716C8BB162AD7F14B4C43C82AAF9C49955F1B4EAE8C888C43E153699F9"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/retry1-source-adaptation/handoff.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\retry1-source-adaptation\\handoff.json.raw",
+        "bytes": 13872,
+        "sha256": "323A0E716C8BB162AD7F14B4C43C82AAF9C49955F1B4EAE8C888C43E153699F9"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\positive-buildquery-auditor-finite.json",
+        "bytes": 6053,
+        "sha256": "1471267DC974F94A5EF6B86DDB4A888454E8EA4CAE66AE1F8E2673974572290F"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/retry1-source-adaptation/positive-buildquery-auditor-finite.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\retry1-source-adaptation\\positive-buildquery-auditor-finite.json.raw",
+        "bytes": 6053,
+        "sha256": "1471267DC974F94A5EF6B86DDB4A888454E8EA4CAE66AE1F8E2673974572290F"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\positive-input-helper-finite.json",
+        "bytes": 9192,
+        "sha256": "DE17130B5AE3807F0CBC42A97971F611E6D5636710210AD0C3E2435820827E58"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/retry1-source-adaptation/positive-input-helper-finite.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\retry1-source-adaptation\\positive-input-helper-finite.json.raw",
+        "bytes": 9192,
+        "sha256": "DE17130B5AE3807F0CBC42A97971F611E6D5636710210AD0C3E2435820827E58"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\positive-runtime-auditor-finite.json",
+        "bytes": 8491,
+        "sha256": "677FA9349B66E3924C406EB18C2C9B39EF5F849F435C10097E55E94534806230"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/retry1-source-adaptation/positive-runtime-auditor-finite.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\retry1-source-adaptation\\positive-runtime-auditor-finite.json.raw",
+        "bytes": 8491,
+        "sha256": "677FA9349B66E3924C406EB18C2C9B39EF5F849F435C10097E55E94534806230"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-execution-sourceonly-20261021\\runtime-constructor-finite.json",
+        "bytes": 4721,
+        "sha256": "7EBB7AA0665F7BDEEB8BB4EF77564E0102CFD568AE99AA2457419AD49966B289"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/authority/retry1-source-adaptation/runtime-constructor-finite.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\authority\\retry1-source-adaptation\\runtime-constructor-finite.json.raw",
+        "bytes": 4721,
+        "sha256": "7EBB7AA0665F7BDEEB8BB4EF77564E0102CFD568AE99AA2457419AD49966B289"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-positive-buildquery-input-helper-bound-20261021\\finite-binding.json",
+        "bytes": 24815,
+        "sha256": "122D5EE757B661D365ECDBBEA87F88B57A587AC76A97FC26228ABF52E9C4A67A"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/positive-input-bound/finite-binding.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\positive-input-bound\\finite-binding.json.raw",
+        "bytes": 24815,
+        "sha256": "122D5EE757B661D365ECDBBEA87F88B57A587AC76A97FC26228ABF52E9C4A67A"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-positive-buildquery-input-helper-bound-20261021\\handoff.json",
+        "bytes": 8258,
+        "sha256": "D3CAE46B2757CCF4BF7CD2B694D732DEFB77CE620037E9BFADBB8601F3780B20"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/positive-input-bound/handoff.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\positive-input-bound\\handoff.json.raw",
+        "bytes": 8258,
+        "sha256": "D3CAE46B2757CCF4BF7CD2B694D732DEFB77CE620037E9BFADBB8601F3780B20"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-retry1-positive-buildquery-input-helper-bound-20261021\\original-job-status-at-binding.json",
+        "bytes": 1042,
+        "sha256": "8C0E047AB38B89CF94B0FF39CF060D6DF0B4B35EE212E9F294919D6DF5A7CBBF"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/positive-input-bound/original-job-status-at-binding.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\positive-input-bound\\original-job-status-at-binding.json.raw",
+        "bytes": 1042,
+        "sha256": "8C0E047AB38B89CF94B0FF39CF060D6DF0B4B35EE212E9F294919D6DF5A7CBBF"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\finite-source-adaptation.json",
+        "bytes": 26166,
+        "sha256": "34DCA9D9D9C03E881FA0372FBA8FDF06BCAC7C8A5C185A3E1B4EB5E43324C8CB"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/negative-source/finite-source-adaptation.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\negative-source\\finite-source-adaptation.json.raw",
+        "bytes": 26166,
+        "sha256": "34DCA9D9D9C03E881FA0372FBA8FDF06BCAC7C8A5C185A3E1B4EB5E43324C8CB"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\finite-input-adaptation.json",
+        "bytes": 28846,
+        "sha256": "C00A728B2B60F414DA00C5FB3A14E7E734031FA0520760DA87BF179CAFBDBEED"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/negative-source/finite-input-adaptation.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\negative-source\\finite-input-adaptation.json.raw",
+        "bytes": 28846,
+        "sha256": "C00A728B2B60F414DA00C5FB3A14E7E734031FA0520760DA87BF179CAFBDBEED"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\static-source-check.py",
+        "bytes": 12771,
+        "sha256": "5B698169BC73AA7F71ECAE5C7382FB2CBCA5162DB95D518C166B6896AE90E397"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/negative-source/static-source-check.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\negative-source\\static-source-check.py.raw",
+        "bytes": 12771,
+        "sha256": "5B698169BC73AA7F71ECAE5C7382FB2CBCA5162DB95D518C166B6896AE90E397"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\static-source-proof.json",
+        "bytes": 17263,
+        "sha256": "071804AC6CC94331205A322C34A6423F66B674D7E8FD7BD48472B3C93AC6D7E0"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/negative-source/static-source-proof.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\negative-source\\static-source-proof.json.raw",
+        "bytes": 17263,
+        "sha256": "071804AC6CC94331205A322C34A6423F66B674D7E8FD7BD48472B3C93AC6D7E0"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\handoff.json",
+        "bytes": 11400,
+        "sha256": "E4E8518F73862F6023A99C8CAC599B332BD86FB4681F1AE9BF15E2A617DFF10F"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/negative-source/handoff.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\negative-source\\handoff.json.raw",
+        "bytes": 11400,
+        "sha256": "E4E8518F73862F6023A99C8CAC599B332BD86FB4681F1AE9BF15E2A617DFF10F"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v37-retry1-negative-runtime-auditor-source-peer-20261021\\peer.json",
+        "bytes": 12425,
+        "sha256": "2C3D67EDA05DD06FE5CE50622DD5B2BB705BC14BAB7DFEE3FCB4BF225D4B213F"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/negative-independent-peer/peer.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\negative-independent-peer\\peer.json.raw",
+        "bytes": 12425,
+        "sha256": "2C3D67EDA05DD06FE5CE50622DD5B2BB705BC14BAB7DFEE3FCB4BF225D4B213F"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v37-retry1-negative-runtime-auditor-source-peer-20261021\\independent-static-peer.py",
+        "bytes": 18143,
+        "sha256": "C7844D72E6043901C74A9C247D90C543A8A5A9CE18FACC6A879D3E41B4B0893E"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/negative-independent-peer/independent-static-peer.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\negative-independent-peer\\independent-static-peer.py.raw",
+        "bytes": 18143,
+        "sha256": "C7844D72E6043901C74A9C247D90C543A8A5A9CE18FACC6A879D3E41B4B0893E"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v37-retry1-negative-runtime-auditor-source-peer-20261021\\peer-inputs.json",
+        "bytes": 9839,
+        "sha256": "B2C9E1F80CD55D1EAF5F759A7DBB9778943BEE53295A93D81BC85E02FA529FD6"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/negative-independent-peer/peer-inputs.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\negative-independent-peer\\peer-inputs.json.raw",
+        "bytes": 9839,
+        "sha256": "B2C9E1F80CD55D1EAF5F759A7DBB9778943BEE53295A93D81BC85E02FA529FD6"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v37-retry1-negative-runtime-auditor-source-peer-20261021\\source-proof.json",
+        "bytes": 58885,
+        "sha256": "E6ED583C8EFB2C47853C7B87589BF8B4F561BCE46F8D2E86FA11F70685418859"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/negative-independent-peer/source-proof.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\negative-independent-peer\\source-proof.json.raw",
+        "bytes": 58885,
+        "sha256": "E6ED583C8EFB2C47853C7B87589BF8B4F561BCE46F8D2E86FA11F70685418859"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-retry1-positive-input-helper-bound-peer-20261021\\peer.json",
+        "bytes": 6193,
+        "sha256": "982466AC99B89434E28248564943D9BBF3DB1106DEC6E5BD25678584E4E6A760"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/audit/positive-input-independent-peer/peer.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\audit\\positive-input-independent-peer\\peer.json.raw",
+        "bytes": 6193,
+        "sha256": "982466AC99B89434E28248564943D9BBF3DB1106DEC6E5BD25678584E4E6A760"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021.py",
+        "bytes": 75542,
+        "sha256": "F40C2032692492E98D61D3B8F72275C56B5C23708C9FAEF50221127D8FA3BD71"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/preparation/preserved-original-preparer-draft.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\preparation\\preserved-original-preparer-draft.py.raw",
+        "bytes": 75542,
+        "sha256": "F40C2032692492E98D61D3B8F72275C56B5C23708C9FAEF50221127D8FA3BD71"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\finite-source-adaptation.json",
+        "bytes": 76375,
+        "sha256": "384A47B49862B8311E2503BE122FBC2FE3A01A58E08833D74FCB114244E21ED6"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/preparation/parent-finite-source-adaptation.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\preparation\\parent-finite-source-adaptation.json.raw",
+        "bytes": 76375,
+        "sha256": "384A47B49862B8311E2503BE122FBC2FE3A01A58E08833D74FCB114244E21ED6"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\finite-edit-specifications.json",
+        "bytes": 50613,
+        "sha256": "D06399DF175BB56BBC6C0CB40C7B5641006D186ECC7859D5D2074E3393E1E483"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/preparation/finite-edit-specifications.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\preparation\\finite-edit-specifications.json.raw",
+        "bytes": 50613,
+        "sha256": "D06399DF175BB56BBC6C0CB40C7B5641006D186ECC7859D5D2074E3393E1E483"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\prove-finite-source.py",
+        "bytes": 5141,
+        "sha256": "659B11AA27926B92D3DF35A42C4A124C207DE98471341BCA263BDA1B3128FCF9"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/preparation/finite-source-proof-author.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\preparation\\finite-source-proof-author.py.raw",
+        "bytes": 5141,
+        "sha256": "659B11AA27926B92D3DF35A42C4A124C207DE98471341BCA263BDA1B3128FCF9"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-existing63-buildquery-unissued-config-20261021.json",
+        "bytes": 10015,
+        "sha256": "7FA476AC5B7A008EEFEE9F47B0D3D0708E5D789BB6289F144244AEBB88853D8E"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/original63/unissued-configuration.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\original63\\unissued-configuration.json.raw",
+        "bytes": 10015,
+        "sha256": "7FA476AC5B7A008EEFEE9F47B0D3D0708E5D789BB6289F144244AEBB88853D8E"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-existing63-buildquery-config-shape-source-acceptance-20261021.json",
+        "bytes": 3245,
+        "sha256": "BE43C37B04E0ECBAB1A503EB6DCE0018ACF7177864691F2ED2A090368C581996"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/original63/root-shape-acceptance.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\original63\\root-shape-acceptance.json.raw",
+        "bytes": 3245,
+        "sha256": "BE43C37B04E0ECBAB1A503EB6DCE0018ACF7177864691F2ED2A090368C581996"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+        "bytes": 438396,
+        "sha256": "18E61B7DFE07DA5D13C64E4B933EC519312AFED1DC7B29AC4789AC0C3A5EB49F"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/prior-progress.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\prior-progress.json.raw",
+        "bytes": 438396,
+        "sha256": "18E61B7DFE07DA5D13C64E4B933EC519312AFED1DC7B29AC4789AC0C3A5EB49F"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\original-evidence-inventory.json",
+        "bytes": 41248,
+        "sha256": "084344C78DC536B6E2003EF08E5D8DE64F17859987DC6F6E4576F1392190EC46"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/preparation/original-evidence-inventory.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\preparation\\original-evidence-inventory.json.raw",
+        "bytes": 41248,
+        "sha256": "084344C78DC536B6E2003EF08E5D8DE64F17859987DC6F6E4576F1392190EC46"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\manifest.json",
+        "bytes": 20679,
+        "sha256": "236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/manifest.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\manifest.json.raw",
+        "bytes": 20679,
+        "sha256": "236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+        "bytes": 9719,
+        "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/executor.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\executor.py.raw",
+        "bytes": 9719,
+        "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\executor-finite-adaptation.json",
+        "bytes": 2345,
+        "sha256": "015AC7CCF9B9DCA273874A10E7BF06A7B449248F5A9B40106F73609A53921FDF"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/finite-executor-adaptation.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\finite-executor-adaptation.json.raw",
+        "bytes": 2345,
+        "sha256": "015AC7CCF9B9DCA273874A10E7BF06A7B449248F5A9B40106F73609A53921FDF"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-source-acceptance-20261021.json",
+        "bytes": 5656,
+        "sha256": "9896A0FDAE942CF2F579555E602EB23CD4E07BBFD8FFEAAF50787A21A9FBAD85"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/root-source-acceptance.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\root-source-acceptance.json.raw",
+        "bytes": 5656,
+        "sha256": "9896A0FDAE942CF2F579555E602EB23CD4E07BBFD8FFEAAF50787A21A9FBAD85"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\proposal.json",
+        "bytes": 21669,
+        "sha256": "2933A7AB4CCC196984FC27419B3E4A64DCCEB99B0834734AA7B357EE1280C7FC"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/correction-proposal.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\correction-proposal.json.raw",
+        "bytes": 21669,
+        "sha256": "2933A7AB4CCC196984FC27419B3E4A64DCCEB99B0834734AA7B357EE1280C7FC"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\peer.json",
+        "bytes": 9273,
+        "sha256": "9CB321CDEC59D5FE1A616B13FBCB4EB07D14D663F8CF445462F1E4A9A2C5B703"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/independent-correction-peer.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\independent-correction-peer.json.raw",
+        "bytes": 9273,
+        "sha256": "9CB321CDEC59D5FE1A616B13FBCB4EB07D14D663F8CF445462F1E4A9A2C5B703"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-filehandle-runtime-fixture-intake-peer-20261021\\source-audit.py",
+        "bytes": 13271,
+        "sha256": "0DB76485133F67F9AEDF027C0B5E32301135EE29747B5D0C78B025CB18E0BC82"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/independent-source-audit.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\independent-source-audit.py.raw",
+        "bytes": 13271,
+        "sha256": "0DB76485133F67F9AEDF027C0B5E32301135EE29747B5D0C78B025CB18E0BC82"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-filehandle-runtime-fixture-intake-peer-20261021\\source-audit.json",
+        "bytes": 70089,
+        "sha256": "2D1620F33CC30E4675DA66630235557333EF3B6EB704C47566E8477047DDE5B7"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/independent-source-audit.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\independent-source-audit.json.raw",
+        "bytes": 70089,
+        "sha256": "2D1620F33CC30E4675DA66630235557333EF3B6EB704C47566E8477047DDE5B7"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-release-20261021.json",
+        "bytes": 4783,
+        "sha256": "EFD306E15D960868B57C7314E09DE108F0A363CF0B972F471EB7E37E71EE7ABC"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/source-release.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\source-release.json.raw",
+        "bytes": 4783,
+        "sha256": "EFD306E15D960868B57C7314E09DE108F0A363CF0B972F471EB7E37E71EE7ABC"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-filehandle-runtime-fixture-intake-peer-20261021\\peer.json",
+        "bytes": 4434,
+        "sha256": "CE9579242B01CAB1683416AAE8B82900C0C6D79464F1ACB118240A1CA7517109"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/independent-executor-peer.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\independent-executor-peer.json.raw",
+        "bytes": 4434,
+        "sha256": "CE9579242B01CAB1683416AAE8B82900C0C6D79464F1ACB118240A1CA7517109"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-20261021\\fixture-receipt.json",
+        "bytes": 6347,
+        "sha256": "5010977B7618E5E79DFFF90FC1D8EDD59E49A9CD7E5E32E6C97669C18587ABE7"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/receipt.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\receipt.json.raw",
+        "bytes": 6347,
+        "sha256": "5010977B7618E5E79DFFF90FC1D8EDD59E49A9CD7E5E32E6C97669C18587ABE7"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-20261021\\fixture-preflight.json",
+        "bytes": 14818,
+        "sha256": "E7EE56D4501B7DA2CE0F5E505857111B8C971F49CD5EBEC504B9605D079104AB"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/preflight.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\preflight.json.raw",
+        "bytes": 14818,
+        "sha256": "E7EE56D4501B7DA2CE0F5E505857111B8C971F49CD5EBEC504B9605D079104AB"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-20261021\\fixture-staged.json",
+        "bytes": 393,
+        "sha256": "CDD1E1943E195B75138100B8AC8952A2BE94432EE7E643EC25CDED7512CA5F58"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/staged.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\staged.json.raw",
+        "bytes": 393,
+        "sha256": "CDD1E1943E195B75138100B8AC8952A2BE94432EE7E643EC25CDED7512CA5F58"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-20261021\\fixture-paths.nul",
+        "bytes": 4395,
+        "sha256": "1A127FB1FEB796B5083A1F43C3CCC7EF4D5251B3CF8F0214F9C539A0110FB83B"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/paths.nul.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\paths.nul.raw",
+        "bytes": 4395,
+        "sha256": "1A127FB1FEB796B5083A1F43C3CCC7EF4D5251B3CF8F0214F9C539A0110FB83B"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-20261021\\fixture-commit-message.txt",
+        "bytes": 165,
+        "sha256": "4BDDA631FCB2F8D963408F5EDCBD9DEA54ED626DE7B2DF7096DDC6701B148AF9"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/commit-message.txt.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\commit-message.txt.raw",
+        "bytes": 165,
+        "sha256": "4BDDA631FCB2F8D963408F5EDCBD9DEA54ED626DE7B2DF7096DDC6701B148AF9"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021-v2.py",
+        "bytes": 75644,
+        "sha256": "079CE8663FFA9C337F5AC04D41E4222E6B2EFB9B39E5B459F6F4E460F9AC790D"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/preparation/preparer.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\preparation\\preparer.py.raw",
+        "bytes": 75644,
+        "sha256": "079CE8663FFA9C337F5AC04D41E4222E6B2EFB9B39E5B459F6F4E460F9AC790D"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-negative-archive-issued-configuration-20261021.json",
+        "bytes": 12745,
+        "sha256": "3CD25A720BFA525AC13C761A1C825033DBD3609FDDCEF54F9985CE72E20BFD12"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/preparation/root-issued-config.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\preparation\\root-issued-config.json.raw",
+        "bytes": 12745,
+        "sha256": "3CD25A720BFA525AC13C761A1C825033DBD3609FDDCEF54F9985CE72E20BFD12"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\initial-outer-schema-correction.json",
+        "bytes": 2911,
+        "sha256": "783D8C3A9E2AF763C6A428899C5370816E22C230E12A6991DBA18AD48E7DAD1E"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/preparation/finite-source-adaptation.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\preparation\\finite-source-adaptation.json.raw",
+        "bytes": 2911,
+        "sha256": "783D8C3A9E2AF763C6A428899C5370816E22C230E12A6991DBA18AD48E7DAD1E"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-negative-archive-preparer-source-acceptance-20261021.json",
+        "bytes": 3999,
+        "sha256": "8FB3820CD97FF00F048F7550CE718D186821734CBAD21E5AB7B554A898472941"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/preparation/root-source-review.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\preparation\\root-source-review.json.raw",
+        "bytes": 3999,
+        "sha256": "8FB3820CD97FF00F048F7550CE718D186821734CBAD21E5AB7B554A898472941"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\handoff.json",
+        "bytes": 17768,
+        "sha256": "9E76DCB6352BE12A88BDEF8BE251FED6459C4C0306B3436A8C9C249945BAEBDA"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/preparation/source-handoff.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\preparation\\source-handoff.json.raw",
+        "bytes": 17768,
+        "sha256": "9E76DCB6352BE12A88BDEF8BE251FED6459C4C0306B3436A8C9C249945BAEBDA"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-20261021\\job-observation.json",
+        "bytes": 1559,
+        "sha256": "36A59C813E8A60DCC1221AF8D5F6066DA61D5325CD7D6E83BBAD273ED13AC28A"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/extra/fixture-job-observation.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\extra\\fixture-job-observation.json.raw",
+        "bytes": 1559,
+        "sha256": "36A59C813E8A60DCC1221AF8D5F6066DA61D5325CD7D6E83BBAD273ED13AC28A"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-20261021\\root-completion-review.json",
+        "bytes": 1777,
+        "sha256": "ABF35A629D608B42DAE9F3C66A1C7FEDF1A30E69117FDBBF9A6BC5426A6829C1"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/extra/fixture-root-completion-review.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\extra\\fixture-root-completion-review.json.raw",
+        "bytes": 1777,
+        "sha256": "ABF35A629D608B42DAE9F3C66A1C7FEDF1A30E69117FDBBF9A6BC5426A6829C1"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-intake-executor-static-review-20261021.json",
+        "bytes": 1660,
+        "sha256": "A211B80D4847E7DB5FD5EB913C31A1672337F30A013C2007FFC0A24E270D4E9D"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/extra/fixture-executor-root-static-review.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\extra\\fixture-executor-root-static-review.json.raw",
+        "bytes": 1660,
+        "sha256": "A211B80D4847E7DB5FD5EB913C31A1672337F30A013C2007FFC0A24E270D4E9D"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-negative-archive-preparer-static-review-20261021.json",
+        "bytes": 2879,
+        "sha256": "1C67E5C9559204B2298F500AD74DC73C42923D99C0853B11861D071D63CEBE52"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/extra/progress-preparer-root-static-review.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\extra\\progress-preparer-root-static-review.json.raw",
+        "bytes": 2879,
+        "sha256": "1C67E5C9559204B2298F500AD74DC73C42923D99C0853B11861D071D63CEBE52"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-preparer-peer-20261021\\peer.json",
+        "bytes": 8694,
+        "sha256": "4D71300A6BE7D546A0EB2B8E8F3C510A94B49A89F218FF7B89203B7534E70F31"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/extra/progress-preparer-independent-peer.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\extra\\progress-preparer-independent-peer.json.raw",
+        "bytes": 8694,
+        "sha256": "4D71300A6BE7D546A0EB2B8E8F3C510A94B49A89F218FF7B89203B7534E70F31"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-preparer-peer-20261021\\source-audit.py",
+        "bytes": 18123,
+        "sha256": "27872FB473C425FE94D950130107C454E8DA168E1D4CEC51B405110F2838A088"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/extra/progress-preparer-independent-checker.py.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\extra\\progress-preparer-independent-checker.py.raw",
+        "bytes": 18123,
+        "sha256": "27872FB473C425FE94D950130107C454E8DA168E1D4CEC51B405110F2838A088"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-preparer-peer-20261021\\source-audit.json",
+        "bytes": 159519,
+        "sha256": "30E61CD681E6E6744FE0AD6613029FDF25C10214F2B2E0D0EA03FD8593105A26"
+      },
+      "target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/fixture/extra/progress-preparer-independent-proof.json.raw",
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\fixture\\extra\\progress-preparer-independent-proof.json.raw",
+        "bytes": 159519,
+        "sha256": "30E61CD681E6E6744FE0AD6613029FDF25C10214F2B2E0D0EA03FD8593105A26"
+      }
+    }
+  ],
+  "compressed_original_bookends": [
+    {
+      "schema": 1,
+      "status": "exact_original_bookends_represented_losslessly",
+      "phase": "buildquery",
+      "raw_bytes": 15933885,
+      "raw_sha256": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27",
+      "original_before_and_final_byte_identical": true,
+      "originals": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\before.json",
+          "bytes": 15933885,
+          "sha256": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\final.json",
+          "bytes": 15933885,
+          "sha256": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27"
+        }
+      ],
+      "archive_target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/buildquery/proof/before-and-final.json.gz",
+      "archive_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\buildquery\\proof\\before-and-final.json.gz",
+        "bytes": 2767281,
+        "sha256": "00E5FEC45AFDCE7BCD02EF21CE5C5D7453CDAE28D23C463C1626F7FA6A5563BA"
+      },
+      "gzip": {
+        "filename": "",
+        "mtime": 0,
+        "compression_level": 9,
+        "header_hex": "1f8b08000000000002ff"
+      },
+      "complete_decompression_roundtrip": true,
+      "deterministic_second_encoding_equal": true,
+      "historical_seal_counts": {
+        "source": 14785,
+        "tree": 14798,
+        "vendor": 1489,
+        "compiler": 19546,
+        "controls": 14
+      },
+      "original_files_modified": false,
+      "new_native_execution": false,
+      "qualification": false
+    },
+    {
+      "schema": 1,
+      "status": "exact_original_bookends_represented_losslessly",
+      "phase": "strict-runtime",
+      "raw_bytes": 15938792,
+      "raw_sha256": "DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7",
+      "original_before_and_final_byte_identical": true,
+      "originals": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\before.json",
+          "bytes": 15938792,
+          "sha256": "DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\final.json",
+          "bytes": 15938792,
+          "sha256": "DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7"
+        }
+      ],
+      "archive_target": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021/strict-runtime/proof/before-and-final.json.gz",
+      "archive_pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\\strict-runtime\\proof\\before-and-final.json.gz",
+        "bytes": 2768026,
+        "sha256": "2E38E3DE4344583568C44BD8E482D1670A0DAD02BF50F7434FBE32BBCD1EB854"
+      },
+      "gzip": {
+        "filename": "",
+        "mtime": 0,
+        "compression_level": 9,
+        "header_hex": "1f8b08000000000002ff"
+      },
+      "complete_decompression_roundtrip": true,
+      "deterministic_second_encoding_equal": true,
+      "historical_seal_counts": {
+        "source": 14785,
+        "tree": 14798,
+        "vendor": 1489,
+        "compiler": 19546,
+        "controls": 25
+      },
+      "original_files_modified": false,
+      "new_native_execution": false,
+      "qualification": false
+    }
+  ],
+  "original_evidence_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\original-evidence-inventory.json",
+    "bytes": 41248,
+    "sha256": "084344C78DC536B6E2003EF08E5D8DE64F17859987DC6F6E4576F1392190EC46"
+  },
+  "initial_admission_inventory": {
+    "proof_absent": true,
+    "control_top_level_files": 7,
+    "groups_attempted": 0,
+    "actual_metadata_count": null
+  },
+  "original_phase_inventories": {
+    "buildquery": {
+      "proof_top_level_files": 3,
+      "control_top_level_files": 12,
+      "attempted_group_count": 4,
+      "group_files": {
+        "native-node-file-handle-owner": 19,
+        "native-node-fs-before-hook-continuation": 19,
+        "native-vm-error-constructor-name": 19,
+        "native-node-file-handle-transfer": 19
+      }
+    },
+    "strict_runtime": {
+      "proof_top_level_files": 3,
+      "control_top_level_files": 14,
+      "attempted_group_count": 1,
+      "group_files": {
+        "native-node-file-handle-owner": 14
+      }
+    }
+  },
+  "large_original_seal_copies": 2,
+  "represented_original_seal_files": 4,
+  "cache_files_archived": 0,
+  "installed_native_binary_files_archived": 0,
+  "excluded_artifact_subtrees": [
+    "buildquery/cache",
+    "buildquery/global-cache",
+    "buildquery/groups/*/installed"
+  ],
+  "artifact_journals_and_accepted_raw_metadata_fully_archived": true,
+  "all_raw_archive_suffixes_preserve_original_bytes": true,
+  "original_evidence_modified": false,
+  "qualification": false,
+  "native_execution": false,
+  "source_mutation_hold_released": false
+}

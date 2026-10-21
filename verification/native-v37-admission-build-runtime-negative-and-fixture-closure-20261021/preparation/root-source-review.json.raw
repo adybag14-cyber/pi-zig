@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "status": "root_and_independent_peer_accepted_v37_progress_negative_archive_preparer",
+  "reviewer": "Root",
+  "recorded_utc": "2026-10-21T14:20:22.722350Z",
+  "candidate_head": "f878aa40ab4bc4629f2cf57b281fcd2e7329473b",
+  "preparer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021-v2.py",
+    "bytes": 75644,
+    "sha256": "079CE8663FFA9C337F5AC04D41E4222E6B2EFB9B39E5B459F6F4E460F9AC790D"
+  },
+  "root_static_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-negative-archive-preparer-static-review-20261021.json",
+    "bytes": 2879,
+    "sha256": "1C67E5C9559204B2298F500AD74DC73C42923D99C0853B11861D071D63CEBE52"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-preparer-peer-20261021\\peer.json",
+    "bytes": 8694,
+    "sha256": "4D71300A6BE7D546A0EB2B8E8F3C510A94B49A89F218FF7B89203B7534E70F31"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-preparer-peer-20261021\\source-audit.py",
+    "bytes": 18123,
+    "sha256": "27872FB473C425FE94D950130107C454E8DA168E1D4CEC51B405110F2838A088"
+  },
+  "independent_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-preparer-peer-20261021\\source-audit.json",
+    "bytes": 159519,
+    "sha256": "30E61CD681E6E6744FE0AD6613029FDF25C10214F2B2E0D0EA03FD8593105A26"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\handoff.json",
+    "bytes": 17768,
+    "sha256": "9E76DCB6352BE12A88BDEF8BE251FED6459C4C0306B3436A8C9C249945BAEBDA"
+  },
+  "unissued_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\unissued-root-configuration.json",
+    "bytes": 10265,
+    "sha256": "6661FF392BFB0A7CBC95DBA4C74D07F35CECADB04B49247C859054500E202EBE"
+  },
+  "original_evidence_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\original-evidence-inventory.json",
+    "bytes": 41248,
+    "sha256": "084344C78DC536B6E2003EF08E5D8DE64F17859987DC6F6E4576F1392190EC46"
+  },
+  "root_full_source_read": true,
+  "parent_steps": 84,
+  "schema_correction_steps": 1,
+  "all_intermediate_hashes_and_full_raw_inverses_independently_verified": true,
+  "unchanged_helpers": 21,
+  "unchanged_critical_regions": 3,
+  "root_rehashed_independent_inputs": 250,
+  "original_inventory_versions": 182,
+  "original_outcomes": {
+    "initial_admission": {
+      "groups_attempted": 0,
+      "actual_metadata_count": null
+    },
+    "retry1_buildquery": {
+      "groups": 4,
+      "actual_metadata_count": 61
+    },
+    "strict_runtime": {
+      "started": 19,
+      "completed": 19,
+      "failed": 5,
+      "passed": 14,
+      "unstarted": 42
+    },
+    "original63": {
+      "issued": false,
+      "actual_metadata_count": null
+    }
+  },
+  "actual_fixture_chain": {
+    "commit": "f878aa40ab4bc4629f2cf57b281fcd2e7329473b",
+    "parent": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+    "paths": 44,
+    "existing_source_replacements": 2
+  },
+  "prior_progress_preserved": {
+    "bytes": 438396,
+    "sha256": "18E61B7DFE07DA5D13C64E4B933EC519312AFED1DC7B29AC4789AC0C3A5EB49F",
+    "list_lengths": [
+      64,
+      35,
+      12,
+      13
+    ]
+  },
+  "source_only": true,
+  "source_accepted": true,
+  "preparer_executed": false,
+  "main_intake_authorized": false,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "source_mutation_hold_released": false,
+  "decision": "Separate exact evidence-only configuration may prepare new archive proposal. Preserve all original raw evidence and drafts; no Main or native execution under this review."
+}

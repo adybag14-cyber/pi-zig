@@ -1,0 +1,1116 @@
+expected -4083, found 0
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:118:17: 0x7ff6ee3ef05a in expectEqualInner__anon_80002 (test_zcu.obj)
+                return error.TestExpectedEqual;
+                ^
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56ccc3 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:188:5: 0x7ff6ee56cd84 in test.native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose (test_zcu.obj)
+    try std.testing.expectEqual(@as(i64, physical.UV_EBADF), uv.pi_uv_fs_request_info(actual).result);
+    ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff6ee452c2a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff6ee4203e6 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff6ee3e3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff6ee3e3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff6ee3e3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff6ee3e406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff6ee3ecec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff6ee3ed469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:102:5: 0x7ff6ee4222ff in beginImmediate (test_zcu.obj)
+    try frame.scope.init(f.env(), c.pi_js_undefined(),
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_native_immediates.zig:146:25: 0x7ff6ee4233f8 in inScope (test_zcu.obj)
+        const entered = try self.hooks.begin(engine, mode);
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:1258:9: 0x7ff6ee5446d2 in captureValue (test_zcu.obj)
+        return error.JavaScriptException;
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:1200:9: 0x7ff6ee5437e8 in captureException (test_zcu.obj)
+        return self.captureValue(context, exception, true);
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:736:13: 0x7ff6ee3976f1 in checked (test_zcu.obj)
+            return self.captureException(self.context);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_sdk_owned_completion.zig:225:39: 0x7ff6ee43d0c2 in finishVoid (test_zcu.obj)
+            .thrown => |reason| { _ = try self.owner.engine.checked(c.JS_Throw(self.owner.engine.context, reason)); unreachable; },
+                                      ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_native_immediates.zig:170:9: 0x7ff6ee42379d in drain (test_zcu.obj)
+        try completion.finishVoid();
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:315:28: 0x7ff6ee567ea3 in test.native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once (test_zcu.obj)
+    try std.testing.expect(try f.queue.?.drain(f.engine, .check));
+                           ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff6ee452c2a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff6ee4203e6 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff6ee3e3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff6ee3e3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff6ee3e3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff6ee3e406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff6ee3ecec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff6ee3ed469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:102:5: 0x7ff6ee4222ff in beginImmediate (test_zcu.obj)
+    try frame.scope.init(f.env(), c.pi_js_undefined(),
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_native_immediates.zig:146:25: 0x7ff6ee4233f8 in inScope (test_zcu.obj)
+        const entered = try self.hooks.begin(engine, mode);
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:1258:9: 0x7ff6ee5446d2 in captureValue (test_zcu.obj)
+        return error.JavaScriptException;
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:1200:9: 0x7ff6ee5437e8 in captureException (test_zcu.obj)
+        return self.captureValue(context, exception, true);
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\engine.zig:736:13: 0x7ff6ee3976f1 in checked (test_zcu.obj)
+            return self.captureException(self.context);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_sdk_owned_completion.zig:225:39: 0x7ff6ee43d0c2 in finishVoid (test_zcu.obj)
+            .thrown => |reason| { _ = try self.owner.engine.checked(c.JS_Throw(self.owner.engine.context, reason)); unreachable; },
+                                      ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_native_immediates.zig:170:9: 0x7ff6ee42379d in drain (test_zcu.obj)
+        try completion.finishVoid();
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:350:28: 0x7ff6ee567281 in test.native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason (test_zcu.obj)
+    try std.testing.expect(try f.queue.?.drain(f.engine, .check));
+                           ^
+expected 1, found 0
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:118:17: 0x7ff6ee3ef90a in expectEqualInner__anon_80122 (test_zcu.obj)
+                return error.TestExpectedEqual;
+                ^
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee56672a in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:367:5: 0x7ff6ee56679a in test.native FileHandle owner failed GC close queues one refed actual UVException ticket (test_zcu.obj)
+    try std.testing.expectEqual(@as(usize, 1), f.queue.?.refed_count);
+    ^
+expected 2, found 1
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:118:17: 0x7ff6ee3ef527 in expectEqualInner__anon_80085 (test_zcu.obj)
+                return error.TestExpectedEqual;
+                ^
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\toolchain\zig-x86_64-windows-0.16.0\lib\std\testing.zig:83: 0x7ff6ee5564d9 in expectEqual (test_zcu.obj)
+    return expectEqualInner(T, expected, actual);
+
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:471:9: 0x7ff6ee5565c3 in test.native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity (test_zcu.obj)
+        try std.testing.expectEqual(if (reject) c.JS_PROMISE_REJECTED else c.JS_PROMISE_FULFILLED,
+        ^

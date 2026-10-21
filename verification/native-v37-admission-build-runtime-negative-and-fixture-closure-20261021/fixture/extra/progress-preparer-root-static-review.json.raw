@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "status": "root_full_source_and_finite_inverse_reviewed_v37_progress_archive_preparer",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-21T14:11:24.748679+00:00",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-V36ProgressAndNegativeArchive-20261021.py",
+    "bytes": 61100,
+    "sha256": "BC45FAAFF6F34876F644173DFA2815EAD7BF74E4F1DFE02CFA884CE9C03C8DDF"
+  },
+  "retained_initial_candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021.py",
+    "bytes": 75542,
+    "sha256": "F40C2032692492E98D61D3B8F72275C56B5C23708C9FAEF50221127D8FA3BD71"
+  },
+  "selected_candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021-v2.py",
+    "bytes": 75644,
+    "sha256": "079CE8663FFA9C337F5AC04D41E4222E6B2EFB9B39E5B459F6F4E460F9AC790D"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 76375,
+    "sha256": "384A47B49862B8311E2503BE122FBC2FE3A01A58E08833D74FCB114244E21ED6"
+  },
+  "outer_schema_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\initial-outer-schema-correction.json",
+    "bytes": 2911,
+    "sha256": "783D8C3A9E2AF763C6A428899C5370816E22C230E12A6991DBA18AD48E7DAD1E"
+  },
+  "all84_intermediate_forward_and_reverse_hashes_verified": true,
+  "selected_one_gate_forward_inverse_verified": true,
+  "all934_initial_candidate_lines_and_actual_schema_correction_read": true,
+  "unchanged_complete_helpers": [
+    "require",
+    "sha",
+    "encode",
+    "read_json",
+    "raw_pin",
+    "inside",
+    "relative",
+    "exact",
+    "configured",
+    "git",
+    "state",
+    "blob_id",
+    "tree",
+    "committed",
+    "filenames",
+    "json_pin",
+    "add",
+    "archive",
+    "gzip_bytes",
+    "list_paths",
+    "get_path"
+  ],
+  "unchanged_critical_regions": [
+    "deterministic_two_phase_gzip_roundtrip",
+    "complete_nested_history_prefix_and_raw_inverse",
+    "all_Git_attributes_original_rechecks_create_only_write_tail"
+  ],
+  "changed_inventory_helper_explicitly_reviewed": true,
+  "three_distinct_v37_outcomes_retained": true,
+  "exact_two_fixture_source_scope_and_actual_commit_chain_required": true,
+  "all_prior_nested_history_prefixes_and_raw_progress_inverse_required": true,
+  "selected_current_source_roots_additive_only": true,
+  "all_create_only_Git_byte_and_original_input_rechecks_preserved": true,
+  "independent_peer_pending": true,
+  "preparer_executed": false,
+  "prefix_executed": false,
+  "native_execution_authorized": false,
+  "main_intake_authorized": false,
+  "qualification": false
+}

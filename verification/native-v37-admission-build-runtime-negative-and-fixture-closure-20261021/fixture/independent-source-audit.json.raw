@@ -1,0 +1,1528 @@
+{
+  "schema": 1,
+  "status": "passed_independent_exact_fixture_intake_static_checks",
+  "candidate_manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\manifest.json",
+    "bytes": 20679,
+    "sha256": "236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9"
+  },
+  "candidate_executor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+    "bytes": 9719,
+    "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\executor-finite-adaptation.json",
+    "bytes": 2345,
+    "sha256": "015AC7CCF9B9DCA273874A10E7BF06A7B449248F5A9B40106F73609A53921FDF"
+  },
+  "main_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "main_clean_before_and_after": true,
+  "finite_edits": [
+    {
+      "step": 1,
+      "offset": 0,
+      "old": "\"\"\"Exact V36 fixture Main source intake;",
+      "new": "\"\"\"Exact V37 fixture Main source intake;",
+      "before_sha256": "6613A7F431D132B72C948FBCB61E1988FA4799AD3AE660BC65B9BAA3E9AE48F0",
+      "after_sha256": "1706E98D9ED99726B2EA1863162D2F373B166EE3998B1E653C42F267E3FBC5EF"
+    },
+    {
+      "step": 2,
+      "offset": 230,
+      "old": "BASIS=\"a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8\"",
+      "new": "BASIS=\"b13be24e44cc1bbc361639eb35900a368ae60eac\"",
+      "before_sha256": "1706E98D9ED99726B2EA1863162D2F373B166EE3998B1E653C42F267E3FBC5EF",
+      "after_sha256": "F1A6724E68BB2C7BCD36895DF3AC006526C0B6F3FA62A0B7140C058BD4D6D9F3"
+    },
+    {
+      "step": 3,
+      "offset": 334,
+      "old": " \"fixture\":(\"evidence/pending-v36-filehandle-resource-fixture-main-intake-20261021/manifest.json\",\"3905D6C0319E27D8467C0B720833030F048200A97BCFD3B2816ABBD452928F38\",26,\"Correct FileHandle outer callback scope resource ownership\"),",
+      "new": " \"fixture\":(\"evidence/pending-v37-filehandle-runtime-fixtures-main-intake-20261021/manifest.json\",\"236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9\",44,\"Correct FileHandle callback resource and invalid descriptor fixtures\"),",
+      "before_sha256": "F1A6724E68BB2C7BCD36895DF3AC006526C0B6F3FA62A0B7140C058BD4D6D9F3",
+      "after_sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+    }
+  ],
+  "complete_forward_and_raw_inverse": true,
+  "helpers": [
+    {
+      "name": "sha",
+      "bytes": 57,
+      "sha256": "4FC52FB70BB0793D472938E4324857597433C1E7DDBB15063EE372297676A588"
+    },
+    {
+      "name": "raw",
+      "bytes": 40,
+      "sha256": "0674AD6317F2AE8EB96A5F56EFBC878FF39C90C68C99C8F4C9978F7A23316A26"
+    },
+    {
+      "name": "pinned",
+      "bytes": 73,
+      "sha256": "5DF7EDACFCE2ED39EB6DC75D1A5F85E312FDDFB88E50861484072351D188F54B"
+    },
+    {
+      "name": "git",
+      "bytes": 260,
+      "sha256": "FC6515AF1843269E597434A172257CA17ABBD50C611145B8D12A50030C9D6F91"
+    },
+    {
+      "name": "gout",
+      "bytes": 66,
+      "sha256": "D4BED77E98D7E0410BF8A6950089ECF30E6E537B8ADFE7B2A7249DF93CD6FEB1"
+    },
+    {
+      "name": "inside",
+      "bytes": 134,
+      "sha256": "BC7F1D1F13B1AC08CB47D2ECC8EEC9D015E9D5509C90D7E82AE778A30CFDA777"
+    },
+    {
+      "name": "new_file",
+      "bytes": 140,
+      "sha256": "A4CF95E3648B13330AAA4B9D1CCA39CB3EDA7D34C70738A6801D61E9F950D66A"
+    },
+    {
+      "name": "new_json",
+      "bytes": 96,
+      "sha256": "72B0BE02D4C073A234A09E2AEDF42D5451679590CC88BBCD1588A719F16DAA9C"
+    },
+    {
+      "name": "blob_many",
+      "bytes": 541,
+      "sha256": "5C5894AA029CC5F735A97EF61E00D8759C94D09386C65454A06F66CCE87E4F9B"
+    },
+    {
+      "name": "tree_paths",
+      "bytes": 139,
+      "sha256": "C33D511D519C1F80C2CC3EF6D508C6A113624CBC9C08A10BE63A825AC26C0C23"
+    },
+    {
+      "name": "no_hooks",
+      "bytes": 339,
+      "sha256": "7D17240FF95A97C6347339D55C052EE66A7744D034501DD353282E1B6476A115"
+    }
+  ],
+  "all_11_helpers_exact": true,
+  "complete_def_sha_through_EOF_exact": {
+    "bytes": 9142,
+    "sha256": "7EE73FE0E1D1742B54098C9D09B876AA8659AB97253B63AF970126DC34298231"
+  },
+  "selected_constants": {
+    "BASIS": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+    "BRANCH": "work/pi-zig-consolidated-20261016",
+    "MANIFESTS": {
+      "fixture": [
+        "evidence/pending-v37-filehandle-runtime-fixtures-main-intake-20261021/manifest.json",
+        "236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9",
+        44,
+        "Correct FileHandle callback resource and invalid descriptor fixtures"
+      ]
+    }
+  },
+  "total_paths": 44,
+  "fixture_replacements": 2,
+  "new_archives_excluding_manifest": 41,
+  "new_targets_including_manifest": 42,
+  "exact_membership_independently_reconstructed": true,
+  "rows": [
+    {
+      "target": "src/native_node_file_handle_owner_test.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test.zig",
+      "role": "bounded_fixture_runtime_correction",
+      "bytes": 28576,
+      "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6",
+      "before": {
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "current_and_committed_preimage_exact": true,
+      "new_target_absent": false,
+      "raw_git_blob_sha1": "c465b5e5beee1fc0e4c2e64099ab3770b972cf28"
+    },
+    {
+      "target": "src/native_node_file_handle_owner_test_support.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+      "role": "bounded_fixture_runtime_correction",
+      "bytes": 33411,
+      "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B",
+      "before": {
+        "bytes": 33152,
+        "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+      },
+      "current_and_committed_preimage_exact": true,
+      "new_target_absent": false,
+      "raw_git_blob_sha1": "715f662079efe62d704b8f4ab97e8ebc1fa86ee6"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/source-proposal.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\proposal.json",
+      "role": "original_immutable_source_proposal",
+      "bytes": 21669,
+      "sha256": "2933A7AB4CCC196984FC27419B3E4A64DCCEB99B0834734AA7B357EE1280C7FC",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "0e709f9547748f296903ae087a7f544a54d763cb"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/source-causal-proof.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\causal-proof.json",
+      "role": "additive_causal_source_proof",
+      "bytes": 83979,
+      "sha256": "39DF95F9780D1A663A6CAC9542B1F7656AAD5EE6CDCCD4761219142295E81C5D",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "4b70edc1d5a0d1882f2e264ccb7d55bb3a55a29c"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/source-causal-checker.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\static-causal-check.py",
+      "role": "source_only_causal_checker",
+      "bytes": 17124,
+      "sha256": "8BE29BDE289F5E498F8CB1DBEA1E6D47B69FD72E47543AA2E0FAB8E936622E59",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "4159c79960c589dbbf5276f3be4f2c99219f3463"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/selected-authority-inputs.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs-v2.json",
+      "role": "selected_source_authority_inputs",
+      "bytes": 16810,
+      "sha256": "B97468E1DD34137C80A6199BABE6E227FEBDB5BD3FD0654B31EA3F05CF8C123F",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "c5c66549e6499918f2c209d5ebe676ed95de2c59"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/retained-authority-inputs.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs.json",
+      "role": "preserved_original_authority_inputs",
+      "bytes": 16810,
+      "sha256": "940ED7F295FDE2A6D4F2F7770B7041E15F810B2A3D6C8FF8CCA8B5079A1B7727",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "73b3e5e628c3a77edadf8a9f6a6cd2f0b1b3bb30"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-static-review.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-static-review-20261021.json",
+      "role": "root_finite_source_review",
+      "bytes": 11302,
+      "sha256": "FF6A9635CD6D2243D7836FB938B0214BEC719D751183F012139ECEB8D1FFD60D",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "581a48d3148da671338a51d36c6fd605062aa3ae"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-finite-checker.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V37FileHandleRuntimeFixtureFiniteEdits-20261021.py",
+      "role": "root_finite_source_checker",
+      "bytes": 3076,
+      "sha256": "798B55ECDBD6614829AF7DE19DAA2FC4B368A26BCC19CE457B1B8CD0A02B822D",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "2cc35027fae3023b4da4512b8b51c88c4fd063d0"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-causal-review.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-causal-review-20261021.json",
+      "role": "root_causal_source_review",
+      "bytes": 21711,
+      "sha256": "776422BCBEFAC73EF451B3B33A8A0894C9217CCE15BC4FA7CF1B3BF134C43A22",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "2025fc9dc9d6eec1a882c5f5ba9b52121c635876"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-causal-checker.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V37FileHandleFixtureCausalPins-20261021.py",
+      "role": "root_causal_source_checker",
+      "bytes": 2625,
+      "sha256": "3B1378625D342BF6B815A7AB41C2000A56C4BCF0EFBAC10704C30C912471A517",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "35b1681e1dd05178d3604468512529a957986e3d"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-source-acceptance.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-source-acceptance-20261021.json",
+      "role": "root_and_independent_peer_source_acceptance",
+      "bytes": 5656,
+      "sha256": "9896A0FDAE942CF2F579555E602EB23CD4E07BBFD8FFEAAF50787A21A9FBAD85",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "d0406b0f16cb5c3e86cb857984bf776c40c45c94"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/independent-peer.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\peer.json",
+      "role": "independent_correction_peer",
+      "bytes": 9273,
+      "sha256": "9CB321CDEC59D5FE1A616B13FBCB4EB07D14D663F8CF445462F1E4A9A2C5B703",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "d40052f135ea732d3509fbdd5a544dd8f971631b"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/independent-source-audit.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\source-audit.py",
+      "role": "independent_source_checker",
+      "bytes": 13017,
+      "sha256": "CC8CF1D47EAC0B4C9EABF739370F78896288030782C090F33DC6248A71AD7DD8",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "ec7453088cd5ceb226e84421517591ff1ace67db"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/independent-source-audit.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\source-audit.json",
+      "role": "independent_source_proof",
+      "bytes": 101785,
+      "sha256": "74591C1609D2A07397D44585C0BD92C1BEDB406AC9663AFF77161D4449CA9512",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "1e02096561b32047ffc4957416694e159ee2b654"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/original_test.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+      "role": "immutable_source_authority_original_test",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "74239ee49b58716ef786d86cea81a5a0f9278c2b"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/original_fixture.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test_support.zig",
+      "role": "immutable_source_authority_original_fixture",
+      "bytes": 33152,
+      "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "533050e6e3cd33a04fd21d7fce1aae07d357385c"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/candidate_test.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test.zig",
+      "role": "immutable_source_authority_candidate_test",
+      "bytes": 28576,
+      "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "c465b5e5beee1fc0e4c2e64099ab3770b972cf28"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/candidate_fixture.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+      "role": "immutable_source_authority_candidate_fixture",
+      "bytes": 33411,
+      "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "715f662079efe62d704b8f4ab97e8ebc1fa86ee6"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/argument.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+      "role": "immutable_source_authority_argument",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "24904dca102bf40da1570c0490ad0ad4ccfc4399"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/operation_scope.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+      "role": "immutable_source_authority_operation_scope",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "9fdbf65f8b27b24c5804c5785dc37609257ffd6a"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/owned_boundary.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+      "role": "immutable_source_authority_owned_boundary",
+      "bytes": 9934,
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "8549f0a37071169ca12c5a6def87dfa8f3ed67f7"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/callback_scope.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+      "role": "immutable_source_authority_callback_scope",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "1b788afd8f2de8fe10d3c7ea401f5adc776a4c53"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/immediates.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_native_immediates.zig",
+      "role": "immutable_source_authority_immediates",
+      "bytes": 8688,
+      "sha256": "4D08479443076E84E1B16005FEC0078BAD08BD19D31DD6012266752E44CE7578",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "8708eae616af9fa6fea9b5d1c35737d6474b1313"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/owner.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+      "role": "immutable_source_authority_owner",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "822ce2dc6661cb68468bbffbb956052eb95370cd"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/close_request.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "role": "immutable_source_authority_close_request",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "104e354d33545899f01e38c7985882bbb3672f41"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/gc_close.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_gc_close.zig",
+      "role": "immutable_source_authority_gc_close",
+      "bytes": 6402,
+      "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "51da5ee90fb57c9f6976fa00416f9d7dc35ac99c"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/node_env.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\node-env.v24.13.cc",
+      "role": "immutable_source_authority_node_env",
+      "bytes": 84987,
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "fdabe48dd7776c59298f7d972286d0d2ed062752"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/node_authority.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority-acquisition.json",
+      "role": "immutable_source_authority_node_authority",
+      "bytes": 10905,
+      "sha256": "28C98F0DE650DFA0F97E1D1BCE71E2D7EEE0A61012CE36A1732DD46C81DADF7C",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "178bc7fd23a077d1c657352e31a001a35932822f"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_fs.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs.c",
+      "role": "immutable_source_authority_uv_fs",
+      "bytes": 105366,
+      "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "27248f644f381bbdeeef7c65401c74ab9474d0ad"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_core.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\core.c",
+      "role": "immutable_source_authority_uv_core",
+      "bytes": 18494,
+      "sha256": "3026F2888B3360E65A2E2662508EEF6BA9B1AF17735391CA6F79DC06887B8B23",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "5f41c87ad5ed137c51b43e4941414c89ddff5216"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_service.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+      "role": "immutable_source_authority_uv_service",
+      "bytes": 46648,
+      "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "c98a4b198caab394546808ffa6b2ce1c16a09020"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/network_build.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_node_network.zig",
+      "role": "immutable_source_authority_network_build",
+      "bytes": 5905,
+      "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "f13440e90d4b6d65a2e6b61c0f3d285f09be8c8a"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/mingw_header.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\_mingw.h",
+      "role": "immutable_source_authority_mingw_header",
+      "bytes": 19371,
+      "sha256": "9DAA9C8670CB7E5D73E2290A020D8CBEBF55BC19FD4C5E2F27E661C98827C3B6",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "acfc0f9bd64400216f3d167a1ef67304d27e4ea8"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/ucrt_close.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-close.cpp",
+      "role": "immutable_source_authority_ucrt_close",
+      "bytes": 2884,
+      "sha256": "66EF4CA9584690771768589C039BA04E024AD6FA5758958473E6BCE4209603F3",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "7d2607b874cc88be85dcb53e7ab90d772b2a6a10"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/ucrt_lowio.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-corecrt-internal-lowio.h",
+      "role": "immutable_source_authority_ucrt_lowio",
+      "bytes": 11985,
+      "sha256": "1465B3388C22524A779C19DCD709EEFF116993D21A0068E639281181DDB2A751",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "d6263afd08f9c238d7494acb1021f9041cc89bc0"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/ucrt_invalid_parameter.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-invalid-parameter.cpp",
+      "role": "immutable_source_authority_ucrt_invalid_parameter",
+      "bytes": 10714,
+      "sha256": "B09696292D181B0D51D360377F933763B7B1BE796557AB3334F481800B0C3F2E",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "059feabaf6c833192b2f18db5c5226edffe957cd"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/doc_setmaxstdio.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\_setmaxstdio.md",
+      "role": "immutable_source_authority_doc_setmaxstdio",
+      "bytes": 2790,
+      "sha256": "367035800B397585FA213D7B45D6EEA4937700894B9AD3E9FCDBD45C6FEA0578",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "d7d3b227fea04d2c2fe9d22e8212f3c916372f0f"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/doc_close.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\_close.md",
+      "role": "immutable_source_authority_doc_close",
+      "bytes": 2050,
+      "sha256": "A8D0AFB0CCDBF82FFC426F5CD12DE4D5051FDB6DE36CCD1B02119119CCB419DD",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "3e1554f974c9223150e9f4d4968152643edd8288"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/doc_acquisition.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\native-hermes-primary-fetch.json",
+      "role": "immutable_source_authority_doc_acquisition",
+      "bytes": 9887,
+      "sha256": "9CE71D3BE82597741722A7CDF47A75707C76646E0655DD9DFE7F7B6AD41E9B08",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "ea197eb0832cb6d4cdc46f1a75c2bfa8c88dec32"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/completion.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+      "role": "immutable_source_authority_completion",
+      "bytes": 15176,
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "2f737430c81a91ab64c616534cb491a64a4dc57c"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_fd_hash.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs-fd-hash-inl.h",
+      "role": "immutable_source_authority_uv_fd_hash",
+      "bytes": 6886,
+      "sha256": "1365F18D01C4117B0F42CFB2E0065F37AD62E4F5214B150CBF660F986955BB2D",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "0b532af12d4371c2311bd50a66913287a0716f43"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/initial_html_extraction.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\original-html-extraction-outcome.json",
+      "role": "immutable_source_authority_initial_html_extraction",
+      "bytes": 4993,
+      "sha256": "639F4CEA9AFD5698722DAA9842915BAA71D69B587470029A515560DE425EFDFD",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "fc99d4763e1a2499baa891f0d6f68ce54bd00c30"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/manifest.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\manifest.json",
+      "role": "exact_intake_manifest",
+      "bytes": 20679,
+      "sha256": "236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9",
+      "before": null,
+      "current_and_committed_preimage_exact": null,
+      "new_target_absent": true,
+      "raw_git_blob_sha1": "f51bf0037ee5e3ad5c65878867a20f9663e05529"
+    }
+  ],
+  "effective_attributes": [
+    {
+      "target": "src/native_node_file_handle_owner_test.zig",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "src/native_node_file_handle_owner_test.zig",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "src/native_node_file_handle_owner_test.zig",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "src/native_node_file_handle_owner_test_support.zig",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "src/native_node_file_handle_owner_test_support.zig",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "src/native_node_file_handle_owner_test_support.zig",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/source-proposal.json",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/source-proposal.json",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/source-proposal.json",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/source-causal-proof.json",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/source-causal-proof.json",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/source-causal-proof.json",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/source-causal-checker.py",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/source-causal-checker.py",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/source-causal-checker.py",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/selected-authority-inputs.json",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/selected-authority-inputs.json",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/selected-authority-inputs.json",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/retained-authority-inputs.json",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/retained-authority-inputs.json",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/retained-authority-inputs.json",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-static-review.json",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-static-review.json",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-static-review.json",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-finite-checker.py",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-finite-checker.py",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-finite-checker.py",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-causal-review.json",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-causal-review.json",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-causal-review.json",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-causal-checker.py",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-causal-checker.py",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-causal-checker.py",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-source-acceptance.json",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-source-acceptance.json",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/root-source-acceptance.json",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/independent-peer.json",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/independent-peer.json",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/independent-peer.json",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/independent-source-audit.py",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/independent-source-audit.py",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/independent-source-audit.py",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/independent-source-audit.json",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/independent-source-audit.json",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/independent-source-audit.json",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/original_test.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/original_test.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/original_test.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/original_fixture.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/original_fixture.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/original_fixture.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/candidate_test.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/candidate_test.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/candidate_test.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/candidate_fixture.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/candidate_fixture.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/candidate_fixture.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/argument.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/argument.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/argument.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/operation_scope.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/operation_scope.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/operation_scope.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/owned_boundary.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/owned_boundary.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/owned_boundary.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/callback_scope.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/callback_scope.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/callback_scope.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/immediates.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/immediates.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/immediates.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/owner.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/owner.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/owner.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/close_request.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/close_request.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/close_request.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/gc_close.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/gc_close.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/gc_close.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/node_env.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/node_env.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/node_env.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/node_authority.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/node_authority.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/node_authority.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_fs.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_fs.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_fs.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_core.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_core.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_core.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_service.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_service.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_service.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/network_build.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/network_build.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/network_build.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/mingw_header.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/mingw_header.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/mingw_header.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/ucrt_close.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/ucrt_close.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/ucrt_close.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/ucrt_lowio.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/ucrt_lowio.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/ucrt_lowio.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/ucrt_invalid_parameter.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/ucrt_invalid_parameter.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/ucrt_invalid_parameter.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/doc_setmaxstdio.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/doc_setmaxstdio.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/doc_setmaxstdio.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/doc_close.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/doc_close.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/doc_close.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/doc_acquisition.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/doc_acquisition.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/doc_acquisition.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/completion.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/completion.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/completion.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_fd_hash.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_fd_hash.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/uv_fd_hash.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/initial_html_extraction.raw",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/initial_html_extraction.raw",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/authority/initial_html_extraction.raw",
+      "attribute": "ident",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/manifest.json",
+      "attribute": "filter",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/manifest.json",
+      "attribute": "working-tree-encoding",
+      "value": "unspecified"
+    },
+    {
+      "target": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021/manifest.json",
+      "attribute": "ident",
+      "value": "unspecified"
+    }
+  ],
+  "core_autocrlf": false,
+  "no_custom_hooks": true,
+  "all_44_raw_Git_filter_results_exact": true,
+  "input_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV36FixtureSourceIntake-20261021.py",
+      "bytes": 9709,
+      "sha256": "6613A7F431D132B72C948FBCB61E1988FA4799AD3AE660BC65B9BAA3E9AE48F0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+      "bytes": 9719,
+      "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\executor-finite-adaptation.json",
+      "bytes": 2345,
+      "sha256": "015AC7CCF9B9DCA273874A10E7BF06A7B449248F5A9B40106F73609A53921FDF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\manifest.json",
+      "bytes": 20679,
+      "sha256": "236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V37FileHandleFixtureCausalPins-20261021.py",
+      "bytes": 2625,
+      "sha256": "3B1378625D342BF6B815A7AB41C2000A56C4BCF0EFBAC10704C30C912471A517"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V37FileHandleRuntimeFixtureFiniteEdits-20261021.py",
+      "bytes": 3076,
+      "sha256": "798B55ECDBD6614829AF7DE19DAA2FC4B368A26BCC19CE457B1B8CD0A02B822D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-causal-review-20261021.json",
+      "bytes": 21711,
+      "sha256": "776422BCBEFAC73EF451B3B33A8A0894C9217CCE15BC4FA7CF1B3BF134C43A22"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-source-acceptance-20261021.json",
+      "bytes": 5656,
+      "sha256": "9896A0FDAE942CF2F579555E602EB23CD4E07BBFD8FFEAAF50787A21A9FBAD85"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-static-review-20261021.json",
+      "bytes": 11302,
+      "sha256": "FF6A9635CD6D2243D7836FB938B0214BEC719D751183F012139ECEB8D1FFD60D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\_close.md",
+      "bytes": 2050,
+      "sha256": "A8D0AFB0CCDBF82FFC426F5CD12DE4D5051FDB6DE36CCD1B02119119CCB419DD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\_setmaxstdio.md",
+      "bytes": 2790,
+      "sha256": "367035800B397585FA213D7B45D6EEA4937700894B9AD3E9FCDBD45C6FEA0578"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\native-hermes-primary-fetch.json",
+      "bytes": 9887,
+      "sha256": "9CE71D3BE82597741722A7CDF47A75707C76646E0655DD9DFE7F7B6AD41E9B08"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-windows-crt-invalid-descriptor-authority-20261021\\original-html-extraction-outcome.json",
+      "bytes": 4993,
+      "sha256": "639F4CEA9AFD5698722DAA9842915BAA71D69B587470029A515560DE425EFDFD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+      "bytes": 9934,
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_gc_close.zig",
+      "bytes": 6402,
+      "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_native_immediates.zig",
+      "bytes": 8688,
+      "sha256": "4D08479443076E84E1B16005FEC0078BAD08BD19D31DD6012266752E44CE7578"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_sdk_owned_completion.zig",
+      "bytes": 15176,
+      "sha256": "BED505F14A7E0E0792802DA8EB915404C2E7AAFC77D8274108A6B916A8C0E6CC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+      "bytes": 46648,
+      "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33152,
+      "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_node_network.zig",
+      "bytes": 5905,
+      "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\core.c",
+      "bytes": 18494,
+      "sha256": "3026F2888B3360E65A2E2662508EEF6BA9B1AF17735391CA6F79DC06887B8B23"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs-fd-hash-inl.h",
+      "bytes": 6886,
+      "sha256": "1365F18D01C4117B0F42CFB2E0065F37AD62E4F5214B150CBF660F986955BB2D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\node-v24.13.0\\uv\\src\\win\\fs.c",
+      "bytes": 105366,
+      "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\_mingw.h",
+      "bytes": 19371,
+      "sha256": "9DAA9C8670CB7E5D73E2290A020D8CBEBF55BC19FD4C5E2F27E661C98827C3B6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\peer.json",
+      "bytes": 9273,
+      "sha256": "9CB321CDEC59D5FE1A616B13FBCB4EB07D14D663F8CF445462F1E4A9A2C5B703"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\source-audit.json",
+      "bytes": 101785,
+      "sha256": "74591C1609D2A07397D44585C0BD92C1BEDB406AC9663AFF77161D4449CA9512"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\source-audit.py",
+      "bytes": 13017,
+      "sha256": "CC8CF1D47EAC0B4C9EABF739370F78896288030782C090F33DC6248A71AD7DD8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority-acquisition.json",
+      "bytes": 10905,
+      "sha256": "28C98F0DE650DFA0F97E1D1BCE71E2D7EEE0A61012CE36A1732DD46C81DADF7C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\node-env.v24.13.cc",
+      "bytes": 84987,
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs-v2.json",
+      "bytes": 16810,
+      "sha256": "B97468E1DD34137C80A6199BABE6E227FEBDB5BD3FD0654B31EA3F05CF8C123F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs.json",
+      "bytes": 16810,
+      "sha256": "940ED7F295FDE2A6D4F2F7770B7041E15F810B2A3D6C8FF8CCA8B5079A1B7727"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-corecrt-internal-lowio.h",
+      "bytes": 11985,
+      "sha256": "1465B3388C22524A779C19DCD709EEFF116993D21A0068E639281181DDB2A751"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-close.cpp",
+      "bytes": 2884,
+      "sha256": "66EF4CA9584690771768589C039BA04E024AD6FA5758958473E6BCE4209603F3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority\\windows-sdk-10.0.26100-ucrt-invalid-parameter.cpp",
+      "bytes": 10714,
+      "sha256": "B09696292D181B0D51D360377F933763B7B1BE796557AB3334F481800B0C3F2E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\causal-proof.json",
+      "bytes": 83979,
+      "sha256": "39DF95F9780D1A663A6CAC9542B1F7656AAD5EE6CDCCD4761219142295E81C5D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33152,
+      "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28576,
+      "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33411,
+      "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\proposal.json",
+      "bytes": 21669,
+      "sha256": "2933A7AB4CCC196984FC27419B3E4A64DCCEB99B0834734AA7B357EE1280C7FC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\static-causal-check.py",
+      "bytes": 17124,
+      "sha256": "8BE29BDE289F5E498F8CB1DBEA1E6D47B69FD72E47543AA2E0FAB8E936622E59"
+    }
+  ],
+  "all_inputs_rehashed_at_end": true,
+  "source_only": true,
+  "candidate_or_prefix_executed": false,
+  "adapter_executed": false,
+  "main_applied": false,
+  "native_execution_authorized": false,
+  "application_qualified": false
+}

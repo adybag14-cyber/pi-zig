@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "original_grant": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\root-grant.json",
+    "bytes": 16449,
+    "sha256": "B6F51B152F776946C9E401E0813D3E0691B339B185E0AF91C54EA9F3BFE1608A"
+  },
+  "grant": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\root-grant.json",
+    "bytes": 17445,
+    "sha256": "748C056A5CADFD40EB0B8E072D94CF816DA1FC2D21EA51D7D4C62FD2B31972E3"
+  },
+  "field_changes": [
+    {
+      "key": "grant_id",
+      "old_present": true,
+      "before": "root-native-foundation-fresh-v37-new4-20261021-131435",
+      "after": "root-native-foundation-v37-new4-runtime-20261021-132912"
+    },
+    {
+      "key": "issued_utc",
+      "old_present": true,
+      "before": "2026-10-21T13:14:35.412773+00:00",
+      "after": "2026-10-21T13:29:12.996266+00:00"
+    },
+    {
+      "key": "mode",
+      "old_present": true,
+      "before": "BuildQuery",
+      "after": "RuntimeOnly"
+    },
+    {
+      "key": "receipt_directory",
+      "old_present": true,
+      "before": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435",
+      "after": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912"
+    },
+    {
+      "key": "build_result_path",
+      "old_present": true,
+      "before": null,
+      "after": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\result.json"
+    },
+    {
+      "key": "build_result_sha256",
+      "old_present": true,
+      "before": null,
+      "after": "8A86FD362D0E48FABAB9BE0F6E6902BECDDDA8F4F779AE8E73FB6492D927DBFC"
+    },
+    {
+      "key": "build_source_seal_path",
+      "old_present": true,
+      "before": null,
+      "after": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\final.json"
+    },
+    {
+      "key": "build_source_seal_sha256",
+      "old_present": true,
+      "before": null,
+      "after": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27"
+    },
+    {
+      "key": "metadata_acceptance_path",
+      "old_present": true,
+      "before": null,
+      "after": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-metadata-acceptance.json"
+    },
+    {
+      "key": "metadata_acceptance_sha256",
+      "old_present": true,
+      "before": null,
+      "after": "6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B"
+    },
+    {
+      "key": "actual_metadata_count",
+      "old_present": true,
+      "before": null,
+      "after": 61
+    },
+    {
+      "key": "independent_build_closure_path",
+      "old_present": false,
+      "before": null,
+      "after": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-current-seals-and-owners.json"
+    },
+    {
+      "key": "independent_build_closure_sha256",
+      "old_present": false,
+      "before": null,
+      "after": "7299F65541DED34F87D3671FAA895C2F0E9B2C8B9149AE4757DE466B5FD11382"
+    },
+    {
+      "key": "build_specific_root_configuration",
+      "old_present": false,
+      "before": null,
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-buildquery-retry1-issued-config-20261021.json",
+        "bytes": 9887,
+        "sha256": "7D8D8F2701A39D4F14B8C61629482463FCDE64318EC75A974BEB78CAD3A865B7"
+      }
+    },
+    {
+      "key": "specific_root_configuration",
+      "old_present": true,
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-buildquery-retry1-issued-config-20261021.json",
+        "bytes": 9887,
+        "sha256": "7D8D8F2701A39D4F14B8C61629482463FCDE64318EC75A974BEB78CAD3A865B7"
+      },
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-retry1-runtime-issued-config-20261021.json",
+        "bytes": 4448,
+        "sha256": "A5783FA11462C9DF73698648E9A2128E45D0EA9CA1BB5E56F2550AADD31C0998"
+      }
+    },
+    {
+      "key": "root_buildquery_acceptance",
+      "old_present": false,
+      "before": null,
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-retry1-complete-buildquery-acceptance-20261021.json",
+        "bytes": 3420,
+        "sha256": "30CF28F108FCA7C9210237E23A1253AA7B6F93E534DA099E1E9738AF2D71877B"
+      }
+    },
+    {
+      "key": "root_review",
+      "old_present": true,
+      "before": "Root specifically authorizes the exact 10109-byte 81FA8E7B Retry1 V37 BuildQuery constructor with this configuration to emit one fresh private new4 grant, launcher and separate buildquery-retry1-launch.json. Root accepts the exact 67148BD4 Retry1 source review, including constructor and positive auditor 2C89B824, before this issue. Root accepted original failed-admission closure 913E5C1A; preserve its original grant, controls and launch record. The fresh attempt is independent. Retain accepted catalog 1DE26AC6, independent 858C81B1 peer, CC5D new4 preparation and E4 matrix at clean pushed Main b13; all 23 actual provenance pins remain bound. Grant only the complete ordered FileHandle owner18, FS before-hook continuation3, Error constructor-name24 and FileHandle Transfer13 cohort:4 groups/58 source declarations, actual metadata unknown. Root authorizes the emitted1776-byte launcher only after reading its actual grant/adaptation and verifying the full raw inverse and fresh pins. Submit immediately within the unchanged300-second initial-grant gate as one bounded1900-second durable heavy job with1800-second outer controller. Fresh serial16GiB admission, pinned Zig0.16, private empty caches, unchanged1DD3 strict driver,3413 classifier, exact CI/protocol/outer owners, complete source/vendor/compiler/control bookend seals and metadata-only query remain mandatory. Historical metadata counts and outcomes never transfer. Independently close every real owner instance and current seal before any separately granted strict RuntimeOnly. This grants no runtime, source mutation, weakened diagnostic checks or application qualification.",
+      "after": "Root separately authorizes the exact12513-byte414B Retry1 RuntimeOnly constructor with this immutable configuration after accepting original fa17 fresh BuildQuery in30CF28F1. The original four groups, source58/actual61 metadata19/4/24/14, complete7299F655 closure, original6D28EB76 metadata and14FE33B7 full source bookends are verified, with no build processes remaining. The separate canonical67148 runtime-constructor source-review pin is mandatory and must match inherited v37_execution_bound_source_review. Use exact02B61 retry launch and only its accepted original cached executables/PDBs. Root grants one strict RuntimeOnly run after reading and checking the newly emitted grant/launcher/adaptation and immediately submitting within the unchanged300-second initial-age gate. Fresh serial16GiB admission, 1DD3 strict driver/3413 classifier, original CI/protocol/outer owners,120s actual runtime owner,10s settlement and1800s outer remain. Every selected raw result must pass original wire/stderr/source/artifact/owner gates; DiagnosticContinue is false. No compile, metadata rerun, diagnostic weakening, Main mutation or application qualification. Preserve any original negative and independently close all actual intervals and full current seals before ending the source hold or considering another cohort."
+    }
+  ],
+  "complete_grant_inverse": true,
+  "original_launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\launch.ps1",
+    "bytes": 1776,
+    "sha256": "FD145CD97E2E36AC0727356B58CFFF1A69071805EDE1548011A0E98596D9CEB6"
+  },
+  "launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\launch.ps1",
+    "bytes": 1777,
+    "sha256": "08E0E75D8D097C30F0FE539A32072E156DD949AF80FA1E48284A8D63BE6EA69E"
+  },
+  "launch_edit_count": 1,
+  "before": "'BuildQuery'",
+  "after": "'RuntimeOnly'",
+  "complete_launch_byte_inverse": true,
+  "prior_strict_runtime_grant": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-control-20261020-210255\\root-grant.json",
+    "bytes": 6351,
+    "sha256": "FA3D60CE15F2886D687F140D8DD93FD3B9F1BAADD86153505CA9026512A19303"
+  },
+  "prior_strict_runtime_launcher": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-control-20261020-210255\\launch.ps1",
+    "bytes": 1772,
+    "sha256": "9B6B65EEF10F702596CCBE9E698AC77FB4D63F2F49FDFE1AEB5E0EF49EE4D4DC"
+  },
+  "all_strict_gate_fields_unchanged": true,
+  "diagnostic_continue": false,
+  "qualification": false
+}

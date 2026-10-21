@@ -1,0 +1,430 @@
+{
+  "schema": 1,
+  "status": "source_only_unissued_v37_progress_negative_archive_preparer_handoff",
+  "author": "/root/handover_review",
+  "source_only": true,
+  "preparer_or_prefix_executed": false,
+  "compression_executed": false,
+  "output_proposal_created": false,
+  "Main_written": false,
+  "index_changed": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "qualification": false,
+  "source_mutation_hold_released": false,
+  "selected_preparer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021-v2.py",
+    "bytes": 75644,
+    "sha256": "079CE8663FFA9C337F5AC04D41E4222E6B2EFB9B39E5B459F6F4E460F9AC790D"
+  },
+  "accepted_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-V36ProgressAndNegativeArchive-20261021.py",
+    "bytes": 61100,
+    "sha256": "BC45FAAFF6F34876F644173DFA2815EAD7BF74E4F1DFE02CFA884CE9C03C8DDF"
+  },
+  "preserved_first_draft": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021.py",
+    "bytes": 75542,
+    "sha256": "F40C2032692492E98D61D3B8F72275C56B5C23708C9FAEF50221127D8FA3BD71"
+  },
+  "finite_specifications": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\finite-edit-specifications.json",
+    "bytes": 50613,
+    "sha256": "D06399DF175BB56BBC6C0CB40C7B5641006D186ECC7859D5D2074E3393E1E483"
+  },
+  "parent_finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 76375,
+    "sha256": "384A47B49862B8311E2503BE122FBC2FE3A01A58E08833D74FCB114244E21ED6"
+  },
+  "selected_one_gate_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\initial-outer-schema-correction.json",
+    "bytes": 2911,
+    "sha256": "783D8C3A9E2AF763C6A428899C5370816E22C230E12A6991DBA18AD48E7DAD1E"
+  },
+  "finite_static_proof_author": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\prove-finite-source.py",
+    "bytes": 5141,
+    "sha256": "659B11AA27926B92D3DF35A42C4A124C207DE98471341BCA263BDA1B3128FCF9"
+  },
+  "original_evidence_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\original-evidence-inventory.json",
+    "bytes": 41248,
+    "sha256": "084344C78DC536B6E2003EF08E5D8DE64F17859987DC6F6E4576F1392190EC46"
+  },
+  "inventory_capture_author": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\capture-observed-archive-inventory.py",
+    "bytes": 9683,
+    "sha256": "77A68342BABC2B8FC6F6B81D3074C57763E3C9C2B65B31321744BA06A7452F64"
+  },
+  "unissued_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\unissued-root-configuration.json",
+    "bytes": 10265,
+    "sha256": "6661FF392BFB0A7CBC95DBA4C74D07F35CECADB04B49247C859054500E202EBE"
+  },
+  "root_static_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-negative-archive-preparer-static-review-20261021.json",
+    "bytes": 2879,
+    "sha256": "1C67E5C9559204B2298F500AD74DC73C42923D99C0853B11861D071D63CEBE52"
+  },
+  "finite_proof": {
+    "parent_specifications": 83,
+    "parent_actual_steps": 84,
+    "selected_successor_steps": 1,
+    "total_actual_steps": 85,
+    "all_intermediate_hashes_and_complete_raw_forward_inverse_exact": true,
+    "complete_unchanged_helpers": 21,
+    "changed_helper": "original_inventory: extends original inventory admission to the separate seven-file initial control, absent initial proof and retained original63 unissued preparation",
+    "unchanged_complete_critical_regions": [
+      "two deterministic gzip representations, raw roundtrip and both original before/final mappings",
+      "every historical list prefix and complete prior-progress raw byte inverse",
+      "Git attributes, original-input rechecks and complete create-only proposal write tail"
+    ],
+    "candidate_AST_parse_only": true,
+    "semantic_edit_groups": [
+      {
+        "kind": "identity_status_counts_and_observed_pin_literals",
+        "specifications": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          17,
+          18,
+          19,
+          21,
+          22,
+          23,
+          24,
+          29,
+          31,
+          32,
+          33,
+          34,
+          36,
+          38,
+          39,
+          40,
+          41,
+          43,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          73,
+          75,
+          76,
+          77,
+          78,
+          79,
+          81,
+          82,
+          83
+        ],
+        "meaning": "Refresh version/output labels, original run identities, observed bookend and diagnostic pins, exact 61 metadata and 19 completed / 5 failed / 14 passed / 42 unstarted counts, history cardinalities, and manifest/preparation descriptions. No future metadata or runtime result is predicted.",
+        "actual_steps": 48
+      },
+      {
+        "kind": "configuration_and_actual_outcome_admission",
+        "specifications": [
+          16,
+          20,
+          25,
+          27,
+          28,
+          30,
+          35,
+          37,
+          42,
+          55
+        ],
+        "meaning": "Bind exact observed inventory, separately accepted runtime closure and actual fixture inputs; retain initial seven-file control/proof absence and original63 unissued state. Check the initial admission negative independently of Retry1 BuildQuery and the strict runtime negative.",
+        "actual_steps": 10
+      },
+      {
+        "kind": "two_exact_fixture_replacements",
+        "specifications": [
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54
+        ],
+        "meaning": "Admit exactly the owner test and shared fixture replacements, current/committed predecessor bytes, complete eight-edit forward/inverse, unchanged import literals and named controls, exact source acceptance and actual 44-path fixture receipt chain.",
+        "actual_steps": 11
+      },
+      {
+        "kind": "history_and_next_plan_assembly",
+        "specifications": [
+          56,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72
+        ],
+        "meaning": "Append all three V37 attempts and two distinct negatives; retain the full old checkpoint, every historical list prefix and historical root pin. Add selected_current_source_roots for the corrected owner while preserving new_source_roots as historical evidence; advance only the unqualified V38 plan.",
+        "actual_steps": 12
+      },
+      {
+        "kind": "archive_membership_and_reporting",
+        "specifications": [
+          26,
+          74,
+          80
+        ],
+        "meaning": "Archive the seven initial control files and initial independent closure as a distinct outcome in the archive index and manifest; existing deterministic two-phase gzip, original rechecks, Git filtering and create-only write behavior remain unchanged.",
+        "actual_steps": 3
+      }
+    ],
+    "selected_successor": {
+      "label": "Use only the actual original initial outer receipt fields; no absent timed_out field",
+      "old": "require(initial_outer[\"status\"]==\"failed\" and initial_outer[\"exit_code\"]==1 and initial_outer[\"timed_out\"] is False,\"initial retained outer failed without timeout\")",
+      "new": "require(initial_outer[\"status\"]==\"failed\" and initial_outer[\"exit_code\"]==1 and initial_outer[\"error\"]==\"Owned terminal failed: \"+initial_outer[\"executable\"] and initial_outer[\"timeout_seconds\"]==1800,\"initial retained outer failed under the original bounded owner\")",
+      "count": 1
+    },
+    "preserved_authoring_finding": "F40 had a newly authored initial_outer['timed_out'] lookup, but the immutable actual A6DE outer receipt has no such field. No preparer or prefix was executed. Selected v2 uses its actual status, exit_code, exact error and timeout_seconds=1800 fields. F40, the complete BC45-to-F40 proof and the one-gate full inverse remain immutable and are archived."
+  },
+  "observations": {
+    "basis_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+    "current_fixture_commit": "f878aa40ab4bc4629f2cf57b281fcd2e7329473b",
+    "prior_progress": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+      "bytes": 438396,
+      "sha256": "18E61B7DFE07DA5D13C64E4B933EC519312AFED1DC7B29AC4789AC0C3A5EB49F"
+    },
+    "history_lengths": {
+      "integrated_source_units": 64,
+      "preserved_attempts": 35,
+      "retained_recent_native_negatives": 12,
+      "execution_checkpoint_history": 13
+    },
+    "initial_admission": {
+      "job": "job-op-91a26b7a9a5f34e0321f75a4566081f085bb28ec0b26bc25b7c89cccbd7e381c",
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-initial-admission-negative-acceptance-20261021.json",
+        "bytes": 4271,
+        "sha256": "913E5C1AD65C42FC084C63304A766105F810C7DDCE50C4109EFA441BAE04C91A"
+      },
+      "original_control_files": 7,
+      "proof_absent": true,
+      "groups_granted": 4,
+      "groups_attempted": 0,
+      "actual_metadata_count": null,
+      "runtime_started": false,
+      "original_300_second_age_rejection_preserved": true
+    },
+    "retry1_buildquery": {
+      "job": "job-op-fa17b9be7400dac56c03a5ae0ff2d7c0851b611abf90b477e3684b977b3a9f1e",
+      "closure": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-current-seals-and-owners.json",
+        "bytes": 224405,
+        "sha256": "7299F65541DED34F87D3671FAA895C2F0E9B2C8B9149AE4757DE466B5FD11382"
+      },
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-retry1-complete-buildquery-acceptance-20261021.json",
+        "bytes": 3420,
+        "sha256": "30CF28F108FCA7C9210237E23A1253AA7B6F93E534DA099E1E9738AF2D71877B"
+      },
+      "groups": 4,
+      "declared_controls": 58,
+      "actual_metadata_by_group": [
+        19,
+        4,
+        24,
+        14
+      ],
+      "actual_metadata_count": 61,
+      "current_files_rehashed": 34354,
+      "runtime_started": false
+    },
+    "strict_runtime_negative": {
+      "job": "job-op-4d0480e45249519d20b8b2acade1b1e10a0c17a5aa1d8c53cd86b89c6f456f1b",
+      "closure": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-closure.json",
+        "bytes": 22838,
+        "sha256": "321ABB743297FC9720D36E78F17B38441F8FAE3A60BEA32DE488FC248342F517"
+      },
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-retry1-original-negative-runtime-acceptance-20261021.json",
+        "bytes": 3131,
+        "sha256": "D305B2B2E462CA38BCC4D0E8B44F51E8F997DA902ABBD323E1F9283B51BC6557"
+      },
+      "groups_granted": 4,
+      "groups_attempted": 1,
+      "actual_metadata_count": 61,
+      "started": 19,
+      "completed": 19,
+      "failed": 5,
+      "passed": 14,
+      "failed_indices": [
+        5,
+        10,
+        11,
+        12,
+        16
+      ],
+      "unstarted": 42,
+      "current_files_rehashed": 34365,
+      "original_native_outer_runner_launcher_instances_closed": 4,
+      "original_nonempty_stderr_owner_negative_preserved": true,
+      "qualified": false
+    },
+    "original63": {
+      "issued": false,
+      "attempted": false,
+      "selected_groups": 63,
+      "declared_controls": 1249,
+      "actual_metadata_count": null
+    },
+    "fixture": {
+      "manifest": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\manifest.json",
+        "bytes": 20679,
+        "sha256": "236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9"
+      },
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-20261021\\fixture-receipt.json",
+        "bytes": 6347,
+        "sha256": "5010977B7618E5E79DFFF90FC1D8EDD59E49A9CD7E5E32E6C97669C18587ABE7"
+      },
+      "release": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-fixture-source-intake-release-20261021.json",
+        "bytes": 4783,
+        "sha256": "EFD306E15D960868B57C7314E09DE108F0A363CF0B972F471EB7E37E71EE7ABC"
+      },
+      "executor_peer": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-filehandle-runtime-fixture-intake-peer-20261021\\peer.json",
+        "bytes": 4434,
+        "sha256": "CE9579242B01CAB1683416AAE8B82900C0C6D79464F1ACB118240A1CA7517109"
+      },
+      "path_count": 44,
+      "source_replacements": 2,
+      "finite_hunks": 8,
+      "selected_files": {
+        "src/native_node_file_handle_owner_test.zig": {
+          "bytes": 28576,
+          "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+        },
+        "src/native_node_file_handle_owner_test_support.zig": {
+          "bytes": 33411,
+          "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+        }
+      },
+      "named_controls_preserved": 58,
+      "production_and_build_unchanged": true
+    }
+  },
+  "archive": {
+    "proposal_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021",
+    "archive_target_prefix": "verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021",
+    "fixture_archive_target_prefix": "verification/native-v37-build-runtime-negative-and-fixture-closure-20261021",
+    "existing_replacement_only": "verification/port-roadmap-resume-20261018/progress.json",
+    "original_inventory_counts": {
+      "phase_files": 122,
+      "initial_control_files": 7,
+      "extras": 53,
+      "distinct_versions": 182
+    },
+    "fixture_source_pins": 8,
+    "fixture_execution_pins": 7,
+    "fixture_extra_pins": 4,
+    "original_inputs_rehashed_before_inventory_seal": true,
+    "unissued_configuration_current_pins_rehashed": 27,
+    "archive_original_bytes_with_raw_suffix": true,
+    "caches_or_installed_native_binaries_archived": false,
+    "deterministic_gzip_plan": [
+      {
+        "phase": "buildquery",
+        "raw_bytes": 15933885,
+        "raw_sha256": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27",
+        "represents": "byte-identical original before.json and final.json",
+        "mtime": 0
+      },
+      {
+        "phase": "strict-runtime",
+        "raw_bytes": 15938792,
+        "raw_sha256": "DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7",
+        "represents": "byte-identical original before.json and final.json",
+        "mtime": 0
+      }
+    ],
+    "gzip_output_pins": null,
+    "manifest_path_count": null,
+    "explanation": "Compression, projected progress, final archive membership and manifest do not exist until Root separately issues and executes this exact preparer. All original inputs and authoring evidence remain immutable."
+  },
+  "progress": {
+    "preserve_full_old_checkpoint": true,
+    "preserve_all_historical_records_and_list_prefixes": true,
+    "full_original_progress_byte_inverse_required": true,
+    "append_attempts": 3,
+    "append_recent_negatives": 2,
+    "append_integrated_fixture_unit": 1,
+    "append_checkpoint": 1,
+    "checkpoint_schema": 8,
+    "checkpoint_status": "v37_initial_admission_negative_retry1_buildquery_accepted_strict_runtime_negative_closed_fixtures_committed_v38_pending",
+    "next_status": "preparing_fresh_v38_complete_disjoint_batches",
+    "catalog_groups": 117,
+    "catalog_declared_controls": 2013,
+    "whole_dependency_rows": 576,
+    "batch_partition": [
+      {
+        "groups": 4,
+        "declared_controls": 58
+      },
+      {
+        "groups": 63,
+        "declared_controls": 1249
+      }
+    ],
+    "historical_new_source_roots_unchanged": true,
+    "additive_selected_current_source_roots_required": true,
+    "next_catalog_must_consume": "selected_current_source_roots",
+    "future_actual_metadata_count": null,
+    "application_qualified": false,
+    "production_bridge_removed": false,
+    "release_authority": false
+  },
+  "next_root_binding": {
+    "required_unresolved_fields": [
+      "preparer_source_review",
+      "preparer_handoff",
+      "recorded_utc"
+    ],
+    "issued_status": "root_reviewed_specific_v37_progress_negative_archive_preparation",
+    "evidence_preparation_authorized": true,
+    "all_other_authority_fields_remain_false": true,
+    "cli": [
+      "python",
+      "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021-v2.py",
+      "<distinct exact Root-issued configuration path>",
+      "<exact configuration SHA256>"
+    ],
+    "no_authorization_in_this_handoff": true,
+    "note": "Root must finish the independent source peer and full configuration review before issuing the separate exact evidence-only preparation. The Root-issued configuration can bind this handoff without a cycle; this unissued snapshot intentionally leaves its handoff pin null."
+  }
+}

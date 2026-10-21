@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v37_new4_retry1_metadata_audit",
+  "reviewer": "Root",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "audit_execution_authorized": true,
+  "native_execution_authorized": false,
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\Audit-CombinedNativeBatch.py",
+    "bytes": 17696,
+    "sha256": "34D2F0302C08A89DDA3E136C0723AA575F0D0ECC22FD0AB4C50DD2A7AA45EA17"
+  },
+  "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435",
+  "control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435",
+  "original_pins": {
+    "before": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\before.json",
+      "bytes": 15933885,
+      "sha256": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27"
+    },
+    "final": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\final.json",
+      "bytes": 15933885,
+      "sha256": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27"
+    },
+    "result": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\result.json",
+      "bytes": 67229,
+      "sha256": "8A86FD362D0E48FABAB9BE0F6E6902BECDDDA8F4F779AE8E73FB6492D927DBFC"
+    },
+    "outer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\outer.json",
+      "bytes": 1525,
+      "sha256": "933163A57AA1FA2BE3A8B3B058D82470CBA39007DC3FE4BB0BB20F4A12EF167C"
+    },
+    "outer_absence": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\outer-absence.json",
+      "bytes": 183,
+      "sha256": "0FE9EF89CD316F2E1260A4BBF9AF3E698AC3C203849E4649523C1C1D3DAFEB27"
+    }
+  },
+  "job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-observed-job-status.json",
+    "bytes": 1572,
+    "sha256": "79BDD040C8AE961F2190A684AEA93E45BB899F42CD087BCE5BE6E593289FD311"
+  },
+  "root_review": "Root has observed original fa17 Retry1 durable job success0 with runner absent, all four ordered BuildQuery groups passed without runtime, complete source/tree/vendor/compiler/control bookends equal and original outer passed0/absent. Root specifically authorizes unchanged17696-byte34D2 metadata auditor over these exact original artifacts and raw metadata wires, at b13/E4/1DD3, writing only independent-metadata-acceptance.json on full acceptance. Source declarations58 do not determine actual metadata; actual counts must be independently read from the four original wires. No native test runtime, source mutation, compiler rerun, historical outcome transfer or application qualification is authorized.",
+  "issued_utc": "2026-10-21T13:23:38.393468+00:00"
+}

@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "status": "unexecuted_minimal_v37_retry1_literal_only_source_successor",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37CompleteBuildQuery-Template-20261021.py",
+    "bytes": 37257,
+    "sha256": "09E12000DE6CB46F7CEF7A685E4B8518003957E5B1DAC6724CC13742B684E188"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV37CompleteBuildQuery-Retry1-20261021.py",
+    "bytes": 37268,
+    "sha256": "2C89B824BE10438684ECAB4AC72197B7A54F9218F15578F9F1A4EB6FEFDB4063"
+  },
+  "finite_edit_count": 4,
+  "string_literal_edits": 3,
+  "numeric_literal_edits": 1,
+  "edits": [
+    {
+      "token_index": 2393,
+      "token_kind": "STRING",
+      "baseline_line": 112,
+      "baseline_column": 19,
+      "offset_in_baseline": 11645,
+      "before": "\"buildquery-launch.json\"",
+      "after": "\"buildquery-retry1-launch.json\"",
+      "purpose": "Read only the distinct original retry1 prepared-launch record.",
+      "index": 1,
+      "offset_before_step": 11645,
+      "before_file_sha256": "09E12000DE6CB46F7CEF7A685E4B8518003957E5B1DAC6724CC13742B684E188",
+      "after_file_sha256": "8E875A97B81391816F18D30F12DDCEFEF4A7C503ADD93CB817132EFC27AEB666"
+    },
+    {
+      "token_index": 2902,
+      "token_kind": "STRING",
+      "baseline_line": 129,
+      "baseline_column": 16,
+      "offset_in_baseline": 14332,
+      "before": "\"evidence/Prepare-ReviewedV37BuildQueryGrant-20261021-v2.py\"",
+      "after": "\"evidence/Prepare-ReviewedV37BuildQueryGrant-Retry1-20261021.py\"",
+      "purpose": "Require the exact immutable retry1 constructor source.",
+      "index": 2,
+      "offset_before_step": 14339,
+      "before_file_sha256": "8E875A97B81391816F18D30F12DDCEFEF4A7C503ADD93CB817132EFC27AEB666",
+      "after_file_sha256": "FEC29AE5D83BC895CDBA013545B520394173C56FF9B9BF2FEAB37D865508CB60"
+    },
+    {
+      "token_index": 2914,
+      "token_kind": "STRING",
+      "baseline_line": 129,
+      "baseline_column": 118,
+      "offset_in_baseline": 14434,
+      "before": "\"21BDC9AB8EAEBEC3B9C9427E8D20A10F0EBAA0728D55A06BADCB83327A215ABC\"",
+      "after": "\"81FA8E7BA4DED5788F1618D393395666C82BC209791079DCCB3EEBDAEC6E9F58\"",
+      "purpose": "Pin the actual saved retry1 constructor bytes.",
+      "index": 3,
+      "offset_before_step": 14445,
+      "before_file_sha256": "FEC29AE5D83BC895CDBA013545B520394173C56FF9B9BF2FEAB37D865508CB60",
+      "after_file_sha256": "A64F8A9C913608F41C525D612DACEA92BDA35DD147D55390149C709C03B0A4BE"
+    },
+    {
+      "token_index": 2929,
+      "token_kind": "NUMBER",
+      "baseline_line": 129,
+      "baseline_column": 232,
+      "offset_in_baseline": 14548,
+      "before": "10095",
+      "after": "10109",
+      "purpose": "Retain the exact constructor-size gate after its two explicit record-name edits.",
+      "index": 4,
+      "offset_before_step": 14559,
+      "before_file_sha256": "A64F8A9C913608F41C525D612DACEA92BDA35DD147D55390149C709C03B0A4BE",
+      "after_file_sha256": "2C89B824BE10438684ECAB4AC72197B7A54F9218F15578F9F1A4EB6FEFDB4063"
+    }
+  ],
+  "all_intermediate_hashes_verified": true,
+  "complete_forward_bytes_exact": true,
+  "complete_inverse_bytes_exact": true,
+  "all_other_tokens_byte_identical": true,
+  "nonconstant_ast_structure_identical": true,
+  "unchanged_helpers": [
+    {
+      "name": "require",
+      "bytes": 64,
+      "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB",
+      "byte_identical": true
+    },
+    {
+      "name": "utc_ticks",
+      "bytes": 576,
+      "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245",
+      "byte_identical": true
+    },
+    {
+      "name": "read",
+      "bytes": 77,
+      "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E",
+      "byte_identical": true
+    },
+    {
+      "name": "digest",
+      "bytes": 151,
+      "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC",
+      "byte_identical": true
+    },
+    {
+      "name": "pin",
+      "bytes": 94,
+      "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C",
+      "byte_identical": true
+    },
+    {
+      "name": "owner_identity",
+      "bytes": 974,
+      "sha256": "C960E7F5AFEBDDEF082CB4E4FA635A52BD018C4BF10043C4C45C548BADC7F6C9",
+      "byte_identical": true
+    }
+  ],
+  "untouched_fragments": [
+    {
+      "baseline_offset": 0,
+      "candidate_offset": 0,
+      "bytes": 11645,
+      "sha256": "43DD41C13F435E7E904CA27B635A5BDF73FA8391F0DE438CD6A087AD24F87AE8",
+      "byte_identical": true
+    },
+    {
+      "baseline_offset": 11669,
+      "candidate_offset": 11676,
+      "bytes": 2663,
+      "sha256": "1D37DCEAD305341A2ED2A4791494C6F0EA059B425944AFC6679D645CB8FBF1A1",
+      "byte_identical": true
+    },
+    {
+      "baseline_offset": 14392,
+      "candidate_offset": 14403,
+      "bytes": 42,
+      "sha256": "E1F035319F3FD3F0F49D9C13BF64C7BA2019EC069FEA53C6C0BC6A58BB391369",
+      "byte_identical": true
+    },
+    {
+      "baseline_offset": 14500,
+      "candidate_offset": 14511,
+      "bytes": 48,
+      "sha256": "E2830A46234A38C542C55A6817491E5E428ECF6779DBA8208332F93BB2045A4C",
+      "byte_identical": true
+    },
+    {
+      "baseline_offset": 14553,
+      "candidate_offset": 14564,
+      "bytes": 22704,
+      "sha256": "BD5D7F64BCF6EAD0EC11D3AF39EB1581EBF626BCC39E899A0ABB852CCA13B7CE",
+      "byte_identical": true
+    }
+  ],
+  "all_untouched_raw_fragments_byte_identical": true,
+  "all_validation_logic_unchanged": true,
+  "authoring_method": "Read raw baseline, tokenize/AST static checks, exact literal spans, complete raw inverse, create-only output; no target or prefix execution.",
+  "source_only": true,
+  "target_executed": false,
+  "prefix_executed": false,
+  "constructor_executed": false,
+  "auditor_executed": false,
+  "helper_executed": false,
+  "native_executed": false,
+  "Main_written": false,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

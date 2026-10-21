@@ -1,0 +1,1029 @@
+{
+  "schema": 1,
+  "status": "unexecuted_finite_v37_progress_archive_source_adaptation_verified",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-V36ProgressAndNegativeArchive-20261021.py",
+    "bytes": 61100,
+    "sha256": "BC45FAAFF6F34876F644173DFA2815EAD7BF74E4F1DFE02CFA884CE9C03C8DDF"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021.py",
+    "bytes": 75542,
+    "sha256": "F40C2032692492E98D61D3B8F72275C56B5C23708C9FAEF50221127D8FA3BD71"
+  },
+  "specifications": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\finite-edit-specifications.json",
+    "bytes": 50613,
+    "sha256": "D06399DF175BB56BBC6C0CB40C7B5641006D186ECC7859D5D2074E3393E1E483"
+  },
+  "source_specification_count": 83,
+  "source_step_count": 84,
+  "all_intermediate_hashes_exact": true,
+  "complete_source_forward_exact": true,
+  "complete_raw_byte_inverse_exact": true,
+  "steps": [
+    {
+      "specification": 1,
+      "occurrence": 1,
+      "label": "Describe all three original V37 outcomes",
+      "offset": 0,
+      "old": "\"\"\"Prepare exact V36 BuildQuery, strict runtime negative and fixture/progress archives outside Main.",
+      "new": "\"\"\"Prepare exact V37 initial admission negative, Retry1 BuildQuery, strict runtime negative and fixture/progress archives outside Main.",
+      "before_sha256": "BC45FAAFF6F34876F644173DFA2815EAD7BF74E4F1DFE02CFA884CE9C03C8DDF",
+      "after_sha256": "B7CDB7210BC200D1E33EF39477FC09330E7A2CABE9722EC077AE1AB6AD0BC82B"
+    },
+    {
+      "specification": 2,
+      "occurrence": 1,
+      "label": "New proposal directory",
+      "offset": 544,
+      "old": "OUT = E / \"pending-v36-progress-and-negative-archive-intake-20261021\"",
+      "new": "OUT = E / \"pending-v37-progress-and-negative-archive-intake-20261021\"",
+      "before_sha256": "B7CDB7210BC200D1E33EF39477FC09330E7A2CABE9722EC077AE1AB6AD0BC82B",
+      "after_sha256": "EE6D48AB0A3F7CE21E77DF7A68924971C3C1152DCEB9DF9149F6BF196BC588F0"
+    },
+    {
+      "specification": 3,
+      "occurrence": 1,
+      "label": "New immutable archive prefix",
+      "offset": 614,
+      "old": "ARCHIVE = \"verification/native-v36-build-runtime-negative-and-fixture-closure-20261021\"",
+      "new": "ARCHIVE = \"verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021\"",
+      "before_sha256": "EE6D48AB0A3F7CE21E77DF7A68924971C3C1152DCEB9DF9149F6BF196BC588F0",
+      "after_sha256": "181DC09A3FCDFD08B367DD7AC8113E8EFB23777DA635F83504F2AA5C62F5E6DE"
+    },
+    {
+      "specification": 4,
+      "occurrence": 1,
+      "label": "Actual frozen predecessor head",
+      "offset": 897,
+      "old": "\"a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8\"",
+      "new": "\"b13be24e44cc1bbc361639eb35900a368ae60eac\"",
+      "before_sha256": "181DC09A3FCDFD08B367DD7AC8113E8EFB23777DA635F83504F2AA5C62F5E6DE",
+      "after_sha256": "97928EDE405C3CE3DBD5E616E8BF219DB9579D48C13753EF3B5B3AA916604177"
+    },
+    {
+      "specification": 5,
+      "occurrence": 1,
+      "label": "Actual prior progress hash",
+      "offset": 1000,
+      "old": "\"23A951AAEB578839CC84AD9548C755F63BD034E966549F5C73B93E2833073DD8\"",
+      "new": "\"18E61B7DFE07DA5D13C64E4B933EC519312AFED1DC7B29AC4789AC0C3A5EB49F\"",
+      "before_sha256": "97928EDE405C3CE3DBD5E616E8BF219DB9579D48C13753EF3B5B3AA916604177",
+      "after_sha256": "EB3C2BE334F21F39684E5F114D3667E2F56B90BB8BB95F4BADAF7782F1DB4C15"
+    },
+    {
+      "specification": 6,
+      "occurrence": 1,
+      "label": "Actual prior progress byte count",
+      "offset": 1067,
+      "old": "OLD_PROGRESS_BYTES = 354535",
+      "new": "OLD_PROGRESS_BYTES = 438396",
+      "before_sha256": "EB3C2BE334F21F39684E5F114D3667E2F56B90BB8BB95F4BADAF7782F1DB4C15",
+      "after_sha256": "B5AAEEC68C9D6AF20D2F0ED22F53D258963085E96F61381D36D6DD248E9BE2D2"
+    },
+    {
+      "specification": 7,
+      "occurrence": 1,
+      "label": "Actual existing fixture hash",
+      "offset": 1109,
+      "old": "\"0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127\"",
+      "new": "\"EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F\"",
+      "before_sha256": "B5AAEEC68C9D6AF20D2F0ED22F53D258963085E96F61381D36D6DD248E9BE2D2",
+      "after_sha256": "0357B21DEF6CE8B2EDECF7DF7809B6A56862A57D991313FEE68ABC610569F812"
+    },
+    {
+      "specification": 8,
+      "occurrence": 1,
+      "label": "Actual existing fixture byte count",
+      "offset": 1176,
+      "old": "OLD_FIXTURE_BYTES = 33137",
+      "new": "OLD_FIXTURE_BYTES = 33152",
+      "before_sha256": "0357B21DEF6CE8B2EDECF7DF7809B6A56862A57D991313FEE68ABC610569F812",
+      "after_sha256": "B961C9E5EBE18EA9F1CE8BC6BEA07CF0864E7C82FE45C8BF5673A8756EFDD792"
+    },
+    {
+      "specification": 9,
+      "occurrence": 1,
+      "label": "Original V37 strict runtime proof",
+      "offset": 1211,
+      "old": "root-native-foundation-v36-new4-runtime-20261021-082608",
+      "new": "root-native-foundation-v37-new4-runtime-20261021-132912",
+      "before_sha256": "B961C9E5EBE18EA9F1CE8BC6BEA07CF0864E7C82FE45C8BF5673A8756EFDD792",
+      "after_sha256": "D5660DBD7186798A1BF492BE72705CAA96D94F0A17A00F003AADCE01CAF08A55"
+    },
+    {
+      "specification": 10,
+      "occurrence": 1,
+      "label": "Original V37 strict runtime control",
+      "offset": 1277,
+      "old": "root-native-foundation-v36-new4-runtime-control-20261021-082608",
+      "new": "root-native-foundation-v37-new4-runtime-control-20261021-132912",
+      "before_sha256": "D5660DBD7186798A1BF492BE72705CAA96D94F0A17A00F003AADCE01CAF08A55",
+      "after_sha256": "3F80CDFCF60112B5EA1F4407198AC3CCBCE6029420BF13FB589B8C518A8366F4"
+    },
+    {
+      "specification": 11,
+      "occurrence": 1,
+      "label": "Original V37 Retry1 BuildQuery proof",
+      "offset": 1399,
+      "old": "root-native-foundation-fresh-v36-new4-buildquery-20261021-080944",
+      "new": "root-native-foundation-fresh-v37-new4-buildquery-20261021-131435",
+      "before_sha256": "3F80CDFCF60112B5EA1F4407198AC3CCBCE6029420BF13FB589B8C518A8366F4",
+      "after_sha256": "784AC3643D8A2C0A7B24B62F352011DB984CF4005F5B76F7EF49730820077216"
+    },
+    {
+      "specification": 12,
+      "occurrence": 1,
+      "label": "Original V37 Retry1 BuildQuery control",
+      "offset": 1475,
+      "old": "root-native-foundation-fresh-v36-new4-control-20261021-080944",
+      "new": "root-native-foundation-fresh-v37-new4-control-20261021-131435",
+      "before_sha256": "784AC3643D8A2C0A7B24B62F352011DB984CF4005F5B76F7EF49730820077216",
+      "after_sha256": "94B017B2700804AB12C64C32DE57BD8918F640F753E46398F9B3D6F595683727"
+    },
+    {
+      "specification": 13,
+      "occurrence": 1,
+      "label": "Original V37 runtime job",
+      "offset": 1545,
+      "old": "job-op-c8c6744c3b5afaed7a7ee43db871f1edb0abd5430430ea7671ffec45962bfdb4",
+      "new": "job-op-4d0480e45249519d20b8b2acade1b1e10a0c17a5aa1d8c53cd86b89c6f456f1b",
+      "before_sha256": "94B017B2700804AB12C64C32DE57BD8918F640F753E46398F9B3D6F595683727",
+      "after_sha256": "64A9230EC8D1D1BFAEE36D4C681DCFABFD1ECE3D29E45095879573B66BFC93EC"
+    },
+    {
+      "specification": 14,
+      "occurrence": 1,
+      "label": "Original V37 Retry1 BuildQuery job",
+      "offset": 1631,
+      "old": "job-op-5503df41740582d61073728f8bbecea61f3f29cc42820cd0f80087878488f132",
+      "new": "job-op-fa17b9be7400dac56c03a5ae0ff2d7c0851b611abf90b477e3684b977b3a9f1e",
+      "before_sha256": "64A9230EC8D1D1BFAEE36D4C681DCFABFD1ECE3D29E45095879573B66BFC93EC",
+      "after_sha256": "EAD8F04C50061E00BF6FBCE2DBD28D75DCC0BA25CE73E34A7464B72BA3A8AE87"
+    },
+    {
+      "specification": 15,
+      "occurrence": 1,
+      "label": "Original exact seal cardinalities",
+      "offset": 1704,
+      "old": "COUNTS = {\"source\":14591,\"tree\":14604,\"vendor\":1489,\"compiler\":19546,\"controls\":25}",
+      "new": "COUNTS = {\"source\":14785,\"tree\":14798,\"vendor\":1489,\"compiler\":19546,\"controls\":25}",
+      "before_sha256": "EAD8F04C50061E00BF6FBCE2DBD28D75DCC0BA25CE73E34A7464B72BA3A8AE87",
+      "after_sha256": "FC5DA1EB8A6C782EDEBCE89D62CED5B5959494BF2BDC35E559F68503674CBA67"
+    },
+    {
+      "specification": 16,
+      "occurrence": 1,
+      "label": "Observed inventory and future fixture identities remain exact Root config inputs",
+      "offset": 2012,
+      "old": "INVENTORY_PATH = E / \"v36-progress-negative-archive-sourceonly-20261021/original-evidence-inventory.json\"\nINVENTORY_SHA = \"7506C352F1CA9DDB9B2AAA8132F0C3DAEA7913AF2631F2DAE3AE9E73DAAA87E5\"\nINVENTORY_BYTES = 26114\nFIXTURE_MANIFEST = E / \"pending-v36-filehandle-resource-fixture-main-intake-20261021/manifest.json\"\nFIXTURE_ARCHIVE = \"verification/native-v36-filehandle-resource-fixture-correction-20261021\"",
+      "new": "INVENTORY_PATH = E / \"v37-progress-negative-archive-sourceonly-20261021/original-evidence-inventory.json\"\nIP = E / \"root-native-foundation-fresh-v37-new4-buildquery-20261021-094837\"\nIC = E / \"root-native-foundation-fresh-v37-new4-control-20261021-094837\"\nINITIAL_JOB = \"job-op-91a26b7a9a5f34e0321f75a4566081f085bb28ec0b26bc25b7c89cccbd7e381c\"\nINITIAL_ROOT = E / \"root-v37-new4-initial-admission-negative-acceptance-20261021.json\"\nINITIAL_ROOT_SHA = \"913E5C1AD65C42FC084C63304A766105F810C7DDCE50C4109EFA441BAE04C91A\"\nINITIAL_ROOT_BYTES = 4271\nINITIAL_PEER = B / \"worktrees/modules-io-resume-20261018/verification/v37-new4-admission-negative-independent-20261021/peer.json\"\nINITIAL_PEER_SHA = \"97CA02ED14001C8AC9D1043647660D112052580B99BB478EBE069BDE939EFA67\"\nINITIAL_PEER_BYTES = 8119",
+      "before_sha256": "FC5DA1EB8A6C782EDEBCE89D62CED5B5959494BF2BDC35E559F68503674CBA67",
+      "after_sha256": "241FD3E51EBA91A4E15819E4FC0D57D67696745253D2B1679BFCB5140907BD19"
+    },
+    {
+      "specification": 17,
+      "occurrence": 1,
+      "label": "Observed Retry1 BuildQuery bookends",
+      "offset": 2810,
+      "old": "(\"buildquery\",BP,15763177,\"BC2672711FDE7526D8A94EAE376F3DC458C6A0DE3E7025303035FC9B89416428\",BUILD_COUNTS)",
+      "new": "(\"buildquery\",BP,15933885,\"14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27\",BUILD_COUNTS)",
+      "before_sha256": "241FD3E51EBA91A4E15819E4FC0D57D67696745253D2B1679BFCB5140907BD19",
+      "after_sha256": "0B22E4B91415A47510A8EE64B49A9314530B15EC2B05D8FFAE1AAF28A4F67D3B"
+    },
+    {
+      "specification": 18,
+      "occurrence": 1,
+      "label": "Observed original strict runtime bookends",
+      "offset": 2919,
+      "old": "(\"strict-runtime\",P,15768084,\"18F842DD770EB1B53E9931A015D544C9D631F60FC40C1C06FC9487DDCD5FC20C\",COUNTS)",
+      "new": "(\"strict-runtime\",P,15938792,\"DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7\",COUNTS)",
+      "before_sha256": "0B22E4B91415A47510A8EE64B49A9314530B15EC2B05D8FFAE1AAF28A4F67D3B",
+      "after_sha256": "9DC269F556D4CBE6ADAAA92056597C7058DEAE6C9D4675915B35C33038E37106"
+    },
+    {
+      "specification": 19,
+      "occurrence": 1,
+      "label": "Root-specific preparation status",
+      "offset": 9037,
+      "old": "\"root_reviewed_specific_v36_progress_negative_archive_preparation\"",
+      "new": "\"root_reviewed_specific_v37_progress_negative_archive_preparation\"",
+      "before_sha256": "9DC269F556D4CBE6ADAAA92056597C7058DEAE6C9D4675915B35C33038E37106",
+      "after_sha256": "D20DAAA3D0815217BC8A4FD1AD858F4C4AF2ADFC31FEE737DA960385DAE95270"
+    },
+    {
+      "specification": 20,
+      "occurrence": 1,
+      "label": "Explicit exact future fixture manifest and scoped archive before original gates",
+      "offset": 10029,
+      "old": "require(cfg[\"fixture_source\"][\"manifest\"][\"path\"]==str(FIXTURE_MANIFEST),\"fixed forthcoming fixture manifest path\")",
+      "new": "FIXTURE_MANIFEST = inside(Path(cfg[\"fixture_source\"][\"manifest\"][\"path\"]),E)\nFIXTURE_ARCHIVE = relative(cfg[\"fixture_archive_target_prefix\"])\nrequire(FIXTURE_MANIFEST.parent.parent==E and FIXTURE_MANIFEST.name==\"manifest.json\",\"one exact Root-selected future fixture manifest under evidence\")\nrequire(FIXTURE_ARCHIVE.startswith(\"verification/native-v37-\") and \"/\" not in FIXTURE_ARCHIVE[len(\"verification/\"):],\"bounded separate V37 fixture archive\")\nrequire(cfg[\"original_evidence_inventory\"][\"path\"]==str(INVENTORY_PATH),\"fixed observed evidence inventory path\")\nINVENTORY_SHA = cfg[\"original_evidence_inventory\"][\"sha256\"]\nINVENTORY_BYTES = cfg[\"original_evidence_inventory\"][\"bytes\"]\nrequire(cfg[\"runtime_negative_closure\"][\"path\"]==str(C/\"independent-negative-runtime-closure.json\"),\"original exact runtime closure path\")\nruntime_closure_raw = configured(cfg[\"runtime_negative_closure\"])\nruntime_root_raw = configured(cfg[\"runtime_negative_root_acceptance\"])\nRUNTIME_CURRENT_FILES = cfg[\"runtime_current_files_rehashed\"]\nrequire(type(RUNTIME_CURRENT_FILES) is int and RUNTIME_CURRENT_FILES>0,\"actual accepted runtime inventory cardinality required\")",
+      "before_sha256": "D20DAAA3D0815217BC8A4FD1AD858F4C4AF2ADFC31FEE737DA960385DAE95270",
+      "after_sha256": "5771C13639770F6BCAA6B3B10835E6E10DAC477D7DE9D33DC9E2DC0D5B9E2B22"
+    },
+    {
+      "specification": 21,
+      "occurrence": 1,
+      "label": "Observed preceding progress history cardinalities",
+      "offset": 13404,
+      "old": "old_lengths = {\"integrated_source_units\":63,\"preserved_attempts\":33,\"retained_recent_native_negatives\":11,\"execution_checkpoint_history\":12}",
+      "new": "old_lengths = {\"integrated_source_units\":64,\"preserved_attempts\":35,\"retained_recent_native_negatives\":12,\"execution_checkpoint_history\":13}",
+      "before_sha256": "5771C13639770F6BCAA6B3B10835E6E10DAC477D7DE9D33DC9E2DC0D5B9E2B22",
+      "after_sha256": "1A2B86489743D1BE35BB60ADB49FC0BB3F1F25EBA0706222F0A2B1CC3597FFA5"
+    },
+    {
+      "specification": 22,
+      "occurrence": 1,
+      "label": "Observed preceding checkpoint schema",
+      "offset": 13644,
+      "old": "old[\"current_execution_checkpoint\"][\"schema\"]==6",
+      "new": "old[\"current_execution_checkpoint\"][\"schema\"]==7",
+      "before_sha256": "1A2B86489743D1BE35BB60ADB49FC0BB3F1F25EBA0706222F0A2B1CC3597FFA5",
+      "after_sha256": "19927CE18DF85923E64FC28C1CC029622301FDBBC76E2306FC26E1397B005320"
+    },
+    {
+      "specification": 23,
+      "occurrence": 1,
+      "label": "Observed preceding checkpoint status",
+      "offset": 13780,
+      "old": "\"v35_first_compile_negative_closed_fixture_corrections_committed_v36_pending\"",
+      "new": "\"v36_buildquery_accepted_strict_runtime_negative_closed_fixture_committed_v37_pending\"",
+      "before_sha256": "19927CE18DF85923E64FC28C1CC029622301FDBBC76E2306FC26E1397B005320",
+      "after_sha256": "A6207C649F5659F264E75C49E6C37D57F51EDAC15404A0D985BB8774E0D80F4B"
+    },
+    {
+      "specification": 24,
+      "occurrence": 1,
+      "label": "Observed inventory schema identity",
+      "offset": 14034,
+      "old": "\"source_only_unissued_exact_observed_v36_archive_inputs\"",
+      "new": "\"source_only_unissued_exact_observed_v37_archive_inputs\"",
+      "before_sha256": "A6207C649F5659F264E75C49E6C37D57F51EDAC15404A0D985BB8774E0D80F4B",
+      "after_sha256": "A77B140DAB6FD5E77F0160FBA74F9D9DB296F8B1F36EAE80D3376E49E0F8B26A"
+    },
+    {
+      "specification": 25,
+      "occurrence": 1,
+      "label": "Retain exact initial admission control inventory and absent proof",
+      "offset": 7143,
+      "old": "def original_inventory():\n    for key,proof,control,groups,expected_dirs in (",
+      "new": "def original_inventory():\n    initial = inventory[\"initial_admission\"]\n    require(initial[\"proof\"]==str(IP) and initial[\"control\"]==str(IC) and initial[\"job_id\"]==INITIAL_JOB,\"initial admission original roots and job\")\n    require(not IP.exists() and initial[\"proof_absent\"] is True,\"initial admission created no proof directory\")\n    required_names = {\"grant-launch-adaptation.json\",\"launch.ps1\",\"outer-absence.json\",\"outer.json\",\"outer.stderr.log\",\"outer.stdout.bin\",\"root-grant.json\"}\n    require(filenames(IC)=={r[0] for r in initial[\"control_files\"]}==required_names,\"all seven original initial-admission control files\")\n    require(not any(p.is_dir() for p in IC.iterdir()),\"no initial-admission control subdirectory\")\n    for key,proof,control,groups,expected_dirs in (",
+      "before_sha256": "A77B140DAB6FD5E77F0160FBA74F9D9DB296F8B1F36EAE80D3376E49E0F8B26A",
+      "after_sha256": "D2E640C8AD95617F280E574ECB53D3278891A253E1FCD376793DB4EC2B3B5337"
+    },
+    {
+      "specification": 26,
+      "occurrence": 1,
+      "label": "Archive all seven original initial-admission control files",
+      "offset": 16903,
+      "old": "for row in inventory[\"extra_files\"]:\n    archive(row[\"archive_name\"],Path(row[\"path\"]),row[\"bytes\"],row[\"sha256\"])",
+      "new": "for name,size,digest in inventory[\"initial_admission\"][\"control_files\"]:\n    archive(\"initial-admission/control/\"+name,IC/name,size,digest)\nfor row in inventory[\"extra_files\"]:\n    archive(row[\"archive_name\"],Path(row[\"path\"]),row[\"bytes\"],row[\"sha256\"])",
+      "before_sha256": "D2E640C8AD95617F280E574ECB53D3278891A253E1FCD376793DB4EC2B3B5337",
+      "after_sha256": "6C6E6D3155FFEB39397C63F72779519260B2255F9C22B2DDE2735B0B7373B38D"
+    },
+    {
+      "specification": 27,
+      "occurrence": 1,
+      "label": "Retain separate unexecuted original63 preparation and observed phase pin inputs",
+      "offset": 15146,
+      "old": "require(inventory[\"runs\"][\"buildquery\"][\"seal_counts\"]==BUILD_COUNTS and inventory[\"runs\"][\"strict_runtime\"][\"seal_counts\"]==COUNTS,\"both complete historical seal counts\")\noriginal_inventory()",
+      "new": "require(inventory[\"runs\"][\"buildquery\"][\"seal_counts\"]==BUILD_COUNTS and inventory[\"runs\"][\"strict_runtime\"][\"seal_counts\"]==COUNTS,\"both complete historical seal counts\")\nrequire(inventory[\"initial_admission\"][\"actual_metadata_count\"] is None and inventory[\"initial_admission\"][\"attempted_groups\"]==0,\"initial admission metadata remains unknown with no attempted group\")\nrequire(inventory[\"original63\"][\"issued\"] is False and inventory[\"original63\"][\"attempted\"] is False,\"original63 remains explicitly unissued and unattempted\")\nrequire(inventory[\"runtime_negative_closure\"]==cfg[\"runtime_negative_closure\"] and inventory[\"runtime_negative_root_acceptance\"]==cfg[\"runtime_negative_root_acceptance\"],\"observed inventory binds exact separately accepted runtime closure\")\noriginal_inventory()",
+      "before_sha256": "6C6E6D3155FFEB39397C63F72779519260B2255F9C22B2DDE2735B0B7373B38D",
+      "after_sha256": "B3E1AD7AA6AF5343A745B0BE9104FA00074F4D88B2525C465AC456C6C4FAC023"
+    },
+    {
+      "specification": 28,
+      "occurrence": 1,
+      "label": "Fixture release binds actual observed V37 runtime closure instead of preceding V36",
+      "offset": 24331,
+      "old": "\"8BCCF2D351EEDC42D65C56E8605D2DD10ACFF153231552AD90F496E4668CF9AF\"}<=required_release_pins",
+      "new": "cfg[\"runtime_negative_closure\"][\"sha256\"]}<=required_release_pins",
+      "before_sha256": "B3E1AD7AA6AF5343A745B0BE9104FA00074F4D88B2525C465AC456C6C4FAC023",
+      "after_sha256": "3236B25678BECA4AFDCBAC8635FDBDA5194675C52B938066EE7050D0D248E9C5"
+    },
+    {
+      "specification": 29,
+      "occurrence": 1,
+      "label": "New fixture-only release status",
+      "offset": 23283,
+      "old": "\"root_reviewed_exact_v36_fixture_source_intake_release\"",
+      "new": "\"root_reviewed_exact_v37_fixture_source_intake_release\"",
+      "before_sha256": "3236B25678BECA4AFDCBAC8635FDBDA5194675C52B938066EE7050D0D248E9C5",
+      "after_sha256": "382C2A77B1127EE1202F9A8B3E46C03F7BB9A00F029A779D76E5E1CC253EF0B2"
+    },
+    {
+      "specification": 30,
+      "occurrence": 1,
+      "label": "Admit initial failure independently from later successful retry",
+      "offset": 29290,
+      "old": "# Read both accepted historical phases.\n# Read both accepted historical phases. This preparation never reruns either audit.",
+      "new": "\n# Retain the independently closed initial admission rejection as its own attempt.\ninitial_root = read_json(exact(INITIAL_ROOT,INITIAL_ROOT_SHA,INITIAL_ROOT_BYTES))\ninitial_peer = read_json(exact(INITIAL_PEER,INITIAL_PEER_SHA,INITIAL_PEER_BYTES))\nrequire(archived[\"initial-admission/root-acceptance.json\"][\"original\"]==raw_pin(INITIAL_ROOT,originals[str(INITIAL_ROOT)]),\"initial Root receipt archived exactly\")\nrequire(archived[\"initial-admission/independent-peer.json\"][\"original\"]==raw_pin(INITIAL_PEER,originals[str(INITIAL_PEER)]),\"initial independent closure archived exactly\")\nrequire(initial_root[\"status\"]==\"root_accepted_original_v37_new4_initial_admission_negative\" and initial_peer[\"status\"]==\"independently_closed_initial_admission_negative_before_proof_creation\",\"two exact initial-admission closure authorities\")\nfor record in (initial_root,initial_peer):\n    require(record[\"candidate_head\"]==BASIS and record[\"original_job_id\"]==INITIAL_JOB,\"initial closure original identity\")\n    require(record[\"original_control\"]==str(IC) and record[\"original_proof\"]==str(IP),\"initial closure original directories\")\n    require(record[\"failure\"][\"reason\"]==\"Initial grant must be within300seconds before first child launch\",\"original unchanged freshness rejection\")\n    require(record[\"failure\"][\"source_line\"]==44 and record[\"failure\"][\"first_call_line\"]==45 and record[\"failure\"][\"maximum_seconds\"]==300,\"unchanged initial freshness guard\")\n    require(record[\"failure\"][\"driver_sha256\"]==\"1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601\",\"unchanged strict driver\")\n    require(record[\"failure\"][\"terminal_job_status\"]==record[\"failure\"][\"terminal_outer_status\"]==\"failed\" and record[\"failure\"][\"terminal_job_exit_code\"]==record[\"failure\"][\"terminal_outer_exit_code\"]==1,\"initial failed terminal observations retained\")\n    for key in (\"full_source_vendor_compiler_seal_claim\",\"build_acceptance\",\"runtime_authority\",\"native_execution_authorized\",\"application_qualified\"):\n        require(record[key] is False,\"initial admission negative cannot imply build/runtime qualification\")\nrequire(initial_root[\"negative_accepted\"] is True and initial_root[\"proof_absent\"] is True and initial_root[\"all_groups_unattempted\"] is True,\"Root accepted only pre-proof negative\")\nrequire(initial_root[\"declared_groups\"]==4 and initial_root[\"declared_controls\"]==58 and initial_root[\"actual_metadata_count\"] is None,\"initial count separation\")\nrequire(initial_root[\"source_mutation_hold_released\"] is False and initial_peer[\"retry_authorized\"] is False,\"historical initial closure has no successor authority\")\nrequire(initial_root[\"independent_peer\"]==raw_pin(INITIAL_PEER,originals[str(INITIAL_PEER)]),\"Root exact initial independent peer\")\nfor root_role,peer_role,archive_name in (\n (\"independent_proof\",\"decisive_proof\",\"source-audit.json\"),\n (\"independent_checker\",\"source_audit\",\"source-audit.py\"),\n (\"full_job_tool_observation\",\"full_job_tool_observation\",\"job-tool-observation.json\"),\n (\"process_observation\",\"fresh_process_observation\",\"process-observation.json\"),\n):\n    require(initial_root[root_role]==initial_peer[peer_role]==archived[\"initial-admission/\"+archive_name][\"original\"],\"complete initial original closure proof archived: \"+root_role)\nfor role,name in ((\"fresh_process_query\",\"process-query.ps1\"),(\"process_query_tool_metadata\",\"process-query-tool-metadata.json\")):\n    require(initial_peer[role]==archived[\"initial-admission/\"+name][\"original\"],\"initial exact independent process-query evidence retained\")\nrequire(initial_root[\"failure\"]==initial_peer[\"failure\"],\"initial exact failure authority agreement\")\nrequire(initial_root[\"original_control_exact_names\"]==initial_peer[\"original_control_members\"]==sorted(r[0] for r in inventory[\"initial_admission\"][\"control_files\"]),\"initial exact original control names\")\nrequire(initial_peer[\"process_observation\"][\"original_pids_present\"]==initial_peer[\"process_observation\"][\"original_direct_children_present\"]==initial_peer[\"process_observation\"][\"native_candidates\"]==[],\"historically closed initial original instances\")\nrequire(initial_peer[\"process_observation\"][\"all_five_classifier_conditions_and_pattern_equal\"] is True and initial_peer[\"process_observation\"][\"runner_instance_preserved_as_string\"] is True,\"initial process evidence retains original identity and classifier\")\nrequire([g[\"group\"] for g in initial_peer[\"groups\"]]==GROUPS and [g[\"declared_controls\"] for g in initial_peer[\"groups\"]]==[18,3,24,13],\"all four initial unattempted groups\")\nfor group in initial_peer[\"groups\"]:\n    require(group[\"actual_metadata_count\"] is None and all(group[k] is False for k in (\"compile_attempted\",\"metadata_attempted\",\"runtime_attempted\")),\"initial metadata remains unobserved and no native phase attempted\")\ninitial_outer = read_json(originals[str(IC/\"outer.json\")])\nrequire(initial_outer[\"status\"]==\"failed\" and initial_outer[\"exit_code\"]==1 and initial_outer[\"timed_out\"] is False,\"initial retained outer failed without timeout\")\nrequire(originals[str(IC/\"outer.stdout.bin\")]==b\"\",\"initial driver emitted no build result\")\nrequire(b\"Initial grant must be within300seconds before first child launch\" in originals[str(IC/\"outer.stderr.log\")],\"actual original stderr freshness rejection retained\")\nrequire(initial_root[\"original_prepared_launch\"]==initial_peer[\"original_prepared_launch\"]==archived[\"initial-admission/buildquery-launch.json\"][\"original\"],\"old prepared launch remains separate from Retry1\")\n\n# Read both accepted Retry1 phases. This preparation never reruns any audit.",
+      "before_sha256": "382C2A77B1127EE1202F9A8B3E46C03F7BB9A00F029A779D76E5E1CC253EF0B2",
+      "after_sha256": "EE55913E990CBF2DE66F1EB351A9A610527ABC38824F1D9CB4A06FEABA29A638"
+    },
+    {
+      "specification": 31,
+      "occurrence": 1,
+      "label": "Accepted Retry1 Root BuildQuery receipt path",
+      "offset": 35112,
+      "old": "E/\"root-v36-new4-complete-buildquery-acceptance-20261021.json\"",
+      "new": "E/\"root-v37-new4-retry1-complete-buildquery-acceptance-20261021.json\"",
+      "before_sha256": "EE55913E990CBF2DE66F1EB351A9A610527ABC38824F1D9CB4A06FEABA29A638",
+      "after_sha256": "9E72D6B89EEAAD0553A58CD032E2E59CE91024EAF915616CA14C1FAF1DE20C66"
+    },
+    {
+      "specification": 32,
+      "occurrence": 1,
+      "label": "Actual BuildQuery current inventory count",
+      "offset": 35379,
+      "old": "==34160",
+      "new": "==34354",
+      "before_sha256": "9E72D6B89EEAAD0553A58CD032E2E59CE91024EAF915616CA14C1FAF1DE20C66",
+      "after_sha256": "A908E0872285CF08EC80AD88FEC06BA92424AC24713DE5D07D75DB244365F08C"
+    },
+    {
+      "specification": 33,
+      "occurrence": 1,
+      "label": "V37 BuildQuery description",
+      "offset": 35295,
+      "old": "\"accepted original V36 BuildQuery\"",
+      "new": "\"accepted original V37 Retry1 BuildQuery\"",
+      "before_sha256": "A908E0872285CF08EC80AD88FEC06BA92424AC24713DE5D07D75DB244365F08C",
+      "after_sha256": "C0190B4AA9B517EDDEBA046E28E7563BF0ACE0BEACC6C4E4C8800CF6D02D7157"
+    },
+    {
+      "specification": 34,
+      "occurrence": 1,
+      "label": "Accepted Retry1 Root BuildQuery status",
+      "offset": 38055,
+      "old": "\"root_accepted_complete_v36_new4_buildquery\"",
+      "new": "\"root_accepted_complete_v37_new4_retry1_buildquery\"",
+      "before_sha256": "C0190B4AA9B517EDDEBA046E28E7563BF0ACE0BEACC6C4E4C8800CF6D02D7157",
+      "after_sha256": "6F2A360B280ED1840861E9B6B8E84725E6D276EA3871FBEA6E8A7744F9BDCE4A"
+    },
+    {
+      "specification": 35,
+      "occurrence": 1,
+      "label": "Pin future runtime Root acceptance explicitly",
+      "offset": 39137,
+      "old": "negative_root = read_json(originals[str(E/\"root-v36-new4-original-negative-runtime-acceptance-20261021.json\")])",
+      "new": "negative_root = read_json(runtime_root_raw)\nrequire(originals[str(C/\"independent-negative-runtime-closure.json\")]==runtime_closure_raw,\"exact configured accepted runtime closure archived\")\nrequire(archived[\"authority/root-runtime-negative-acceptance.json\"][\"original\"]==cfg[\"runtime_negative_root_acceptance\"],\"exact configured Root runtime acceptance archived\")",
+      "before_sha256": "6F2A360B280ED1840861E9B6B8E84725E6D276EA3871FBEA6E8A7744F9BDCE4A",
+      "after_sha256": "81375310B63429D725D8F17C55561DA37D85986A7B9EDF44087D4F35A8E8903C"
+    },
+    {
+      "specification": 36,
+      "occurrence": 1,
+      "label": "Original V37 negative identity message",
+      "offset": 39643,
+      "old": "\"exact V36 original runtime negative\"",
+      "new": "\"exact V37 Retry1 original runtime negative\"",
+      "before_sha256": "81375310B63429D725D8F17C55561DA37D85986A7B9EDF44087D4F35A8E8903C",
+      "after_sha256": "AF65E628359120971261A3D14242C38F3535AF9B254E22680BCC81C516919E05"
+    },
+    {
+      "specification": 37,
+      "occurrence": 1,
+      "label": "Actual future observed current inventory cardinality, never predicted",
+      "offset": 39697,
+      "old": "negative[\"distinct_current_files_rehashed\"]==34171",
+      "new": "negative[\"distinct_current_files_rehashed\"]==RUNTIME_CURRENT_FILES",
+      "before_sha256": "AF65E628359120971261A3D14242C38F3535AF9B254E22680BCC81C516919E05",
+      "after_sha256": "078A7E00ED42A7713A29026C7FD050B6AB41BE0AEBEABFA4F46B3CA064E9834A"
+    },
+    {
+      "specification": 38,
+      "occurrence": 1,
+      "label": "Exact five failed indices / fourteen passed metadata outcomes",
+      "offset": 40063,
+      "old": "==[4,1,3,61,1,19,19,18,1,42]",
+      "new": "==[4,1,3,61,1,19,19,5,14,42]",
+      "before_sha256": "078A7E00ED42A7713A29026C7FD050B6AB41BE0AEBEABFA4F46B3CA064E9834A",
+      "after_sha256": "F6C04EAF0B2CC4BE7C4B7889297110D71AF35D2E581A01B39B1F0CCC88B6F073"
+    },
+    {
+      "specification": 39,
+      "occurrence": 1,
+      "label": "Exact canonical negative count and message",
+      "offset": 41956,
+      "old": "canonical[\"failed_or_skipped_or_logged_or_leaked\"]==18 and canonical[\"status\"]==\"failed\",\"original complete19 results remain18 failed\"",
+      "new": "canonical[\"failed_or_skipped_or_logged_or_leaked\"]==5 and canonical[\"status\"]==\"failed\",\"original complete19 results retain five failures\"",
+      "before_sha256": "F6C04EAF0B2CC4BE7C4B7889297110D71AF35D2E581A01B39B1F0CCC88B6F073",
+      "after_sha256": "65854B65895E90901C6539FAD9EFB589CC7AE50F1C3336D49145AA0DEE10ADB0"
+    },
+    {
+      "specification": 40,
+      "occurrence": 1,
+      "label": "Exact five original failed flag indices",
+      "offset": 42126,
+      "old": "[{\"index\":i,\"flags\":1 if i<18 else 0,\"passed\":i==18} for i in range(19)],\"original18 failure flags and one pass exactly retained\"",
+      "new": "[{\"index\":i,\"flags\":1 if i in (5,10,11,12,16) else 0,\"passed\":i not in (5,10,11,12,16)} for i in range(19)],\"original five failure flags and fourteen passes exactly retained\"",
+      "before_sha256": "65854B65895E90901C6539FAD9EFB589CC7AE50F1C3336D49145AA0DEE10ADB0",
+      "after_sha256": "7743E4F1AEB8D60D03243C5D060F5BE05774D78E2F67A578A191D28D82FD2007"
+    },
+    {
+      "specification": 41,
+      "occurrence": 1,
+      "label": "Exact current original stderr length/hash",
+      "offset": 43030,
+      "old": "==45026 and sha(originals[str(G/\"runtime.stderr.log\")])==\"E974EC5E5AA6B6EB9FC5BBFF3CC3826DFD7AF8CB3052AC10B4BF38CA8DC6ED0C\"",
+      "new": "==68389 and sha(originals[str(G/\"runtime.stderr.log\")])==\"1BB42117F374DECBF5C91100686DF7DA7D686A285ECF9F874423D5799AF945ED\"",
+      "before_sha256": "7743E4F1AEB8D60D03243C5D060F5BE05774D78E2F67A578A191D28D82FD2007",
+      "after_sha256": "39D81046465E5242D7E570FEB4441BF0FCD2EC8B01ABE9D9324A66ADEFC5DDB7"
+    },
+    {
+      "specification": 42,
+      "occurrence": 1,
+      "label": "Configured Root runtime-negative status with exact future schema role",
+      "offset": 43196,
+      "old": "negative_root[\"status\"]==\"root_accepted_original_v36_new4_strict_runtime_negative_closure\"",
+      "new": "negative_root[\"status\"]==\"root_accepted_original_v37_retry1_new4_strict_runtime_negative_closure\"",
+      "before_sha256": "39D81046465E5242D7E570FEB4441BF0FCD2EC8B01ABE9D9324A66ADEFC5DDB7",
+      "after_sha256": "7A83216C310E4C6600FFA37B31B006AE90B88A64F7977270325B99468ADE794B"
+    },
+    {
+      "specification": 43,
+      "occurrence": 1,
+      "label": "Actual reviewed negative auditor filename",
+      "offset": 43706,
+      "old": "strict-runtime/control/Audit-NegativeV36New4StrictRuntime.py",
+      "new": "strict-runtime/control/Audit-NegativeV37Retry1New4StrictRuntime.py",
+      "before_sha256": "7A83216C310E4C6600FFA37B31B006AE90B88A64F7977270325B99468ADE794B",
+      "after_sha256": "F4C0F7D862D10205B260D15D7E9A405B39614459F545842F9F4F2F74CC85FE77"
+    },
+    {
+      "specification": 44,
+      "occurrence": 1,
+      "label": "Explicit two-file test-only target set",
+      "offset": 826,
+      "old": "FIXTURE = \"src/native_node_file_handle_owner_test_support.zig\"",
+      "new": "FIXTURES = (\"src/native_node_file_handle_owner_test.zig\",\"src/native_node_file_handle_owner_test_support.zig\")",
+      "before_sha256": "F4C0F7D862D10205B260D15D7E9A405B39614459F545842F9F4F2F74CC85FE77",
+      "after_sha256": "86FF2BFA144F2B445120BF7DF96E88EB8D408201302A3C59BAC8EB78291F73F7"
+    },
+    {
+      "specification": 45,
+      "occurrence": 1,
+      "label": "Both exact frozen source preimages",
+      "offset": 1143,
+      "old": "OLD_FIXTURE = \"EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F\"\nOLD_FIXTURE_BYTES = 33152",
+      "new": "OLD_FIXTURES = {\n FIXTURES[0]:{\"bytes\":28378,\"sha256\":\"93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422\"},\n FIXTURES[1]:{\"bytes\":33152,\"sha256\":\"EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F\"},\n}",
+      "before_sha256": "86FF2BFA144F2B445120BF7DF96E88EB8D408201302A3C59BAC8EB78291F73F7",
+      "after_sha256": "2534230BB3118E88A028FDD3ACA0064DD2128E14CD9066EE62CFE5A2C5F573FD"
+    },
+    {
+      "specification": 46,
+      "occurrence": 1,
+      "label": "Exact planned fixture manifest and archive identities replace unresolved scope",
+      "offset": 10901,
+      "old": "FIXTURE_MANIFEST = inside(Path(cfg[\"fixture_source\"][\"manifest\"][\"path\"]),E)\nFIXTURE_ARCHIVE = relative(cfg[\"fixture_archive_target_prefix\"])\nrequire(FIXTURE_MANIFEST.parent.parent==E and FIXTURE_MANIFEST.name==\"manifest.json\",\"one exact Root-selected future fixture manifest under evidence\")\nrequire(FIXTURE_ARCHIVE.startswith(\"verification/native-v37-\") and \"/\" not in FIXTURE_ARCHIVE[len(\"verification/\"):],\"bounded separate V37 fixture archive\")",
+      "new": "FIXTURE_MANIFEST = E / \"pending-v37-filehandle-runtime-fixtures-main-intake-20261021/manifest.json\"\nFIXTURE_ARCHIVE = \"verification/native-v37-build-runtime-negative-and-fixture-closure-20261021\"\nrequire(cfg[\"fixture_source\"][\"manifest\"][\"path\"]==str(FIXTURE_MANIFEST) and cfg[\"fixture_archive_target_prefix\"]==FIXTURE_ARCHIVE,\"fixed exact future fixture manifest and separate archive\")",
+      "before_sha256": "2534230BB3118E88A028FDD3ACA0064DD2128E14CD9066EE62CFE5A2C5F573FD",
+      "after_sha256": "CACCFF4D958D9F40426192D63BC2D692EE2AB69BE94A7EB7CADF086917CE534C"
+    },
+    {
+      "specification": 47,
+      "occurrence": 1,
+      "label": "Both selected fixture postimages exact Root inputs",
+      "offset": 12437,
+      "old": "require(set(cfg[\"fixture_after\"])=={\"bytes\",\"sha256\"},\"exact forthcoming fixture after pin\")\nNEW_FIXTURE_BYTES,NEW_FIXTURE = cfg[\"fixture_after\"][\"bytes\"],cfg[\"fixture_after\"][\"sha256\"]\nrequire(type(NEW_FIXTURE_BYTES) is int and NEW_FIXTURE_BYTES>0 and re.fullmatch(r\"[0-9A-F]{64}\",NEW_FIXTURE) and NEW_FIXTURE!=OLD_FIXTURE,\"actual changed fixture bytes required\")",
+      "new": "NEW_FIXTURES = cfg[\"fixtures_after\"]\nrequire(set(NEW_FIXTURES)==set(FIXTURES),\"both exact selected fixture postimages required\")\nfor target,row in NEW_FIXTURES.items():\n    require(set(row)=={\"bytes\",\"sha256\"} and type(row[\"bytes\"]) is int and row[\"bytes\"]>0 and re.fullmatch(r\"[0-9A-F]{64}\",row[\"sha256\"]) and row[\"sha256\"]!=OLD_FIXTURES[target][\"sha256\"],\"exact changed fixture bytes required: \"+target)",
+      "before_sha256": "CACCFF4D958D9F40426192D63BC2D692EE2AB69BE94A7EB7CADF086917CE534C",
+      "after_sha256": "7681C76A505ACF5D13BCC0E7F705E2C2FE4C8264C64300FBEF39066823631FCB"
+    },
+    {
+      "specification": 48,
+      "occurrence": 1,
+      "label": "Two and only two existing test/support replacements",
+      "offset": 20440,
+      "old": "require([r[\"target\"] for r in fixture_rows if r[\"before\"] is not None]==[FIXTURE],\"one fixture replacement\")\nrequire(all(n==FIXTURE or n.startswith(FIXTURE_ARCHIVE+\"/\") for n in names),\"fixture intake scope\")",
+      "new": "require(sorted(r[\"target\"] for r in fixture_rows if r[\"before\"] is not None)==sorted(FIXTURES),\"exactly two reviewed test/support replacements\")\nrequire(all(n in FIXTURES or n.startswith(FIXTURE_ARCHIVE+\"/\") for n in names),\"fixture intake scope\")",
+      "before_sha256": "7681C76A505ACF5D13BCC0E7F705E2C2FE4C8264C64300FBEF39066823631FCB",
+      "after_sha256": "2C4B8B0B74713437861984450F68E83FCEF14A14A5313AC319F7709ECE0887AB"
+    },
+    {
+      "specification": 49,
+      "occurrence": 1,
+      "label": "Retain both raw predecessor bodies",
+      "offset": 20921,
+      "old": "fixture_before = None",
+      "new": "fixture_before = {}",
+      "before_sha256": "2C4B8B0B74713437861984450F68E83FCEF14A14A5313AC319F7709ECE0887AB",
+      "after_sha256": "567C95BABA0A965F43AFC84C1B78CB372F51678EE262F02BA483B13FA36595D3"
+    },
+    {
+      "specification": 50,
+      "occurrence": 1,
+      "label": "Both source donor/current/committed preimages and unchanged imports/control names",
+      "offset": 21381,
+      "old": "        require(row[\"before\"][\"bytes\"]==OLD_FIXTURE_BYTES and row[\"before\"][\"sha256\"]==OLD_FIXTURE,\"fixture predecessor pin\")\n        before = git(\"show\",BASIS+\":\"+target)\n        require(len(before)==OLD_FIXTURE_BYTES and sha(before)==OLD_FIXTURE,\"fixture original committed preimage\")\n        require(len(current)==NEW_FIXTURE_BYTES and sha(current)==NEW_FIXTURE,\"selected fixture bytes\")\n        fixture_before = before\nrequire(fixture_before is not None,\"actual fixture preimage admitted\")\nfor token in (b\"import\",b\"embedFile\",b\"cInclude\",b\"cDefine\",b\"cUndef\"):\n    pattern = rb\"@\"+token+rb\"\\s*\\(([^)]*)\\)\"\n    require(re.findall(pattern,fixture_before)==re.findall(pattern,fixture_current[FIXTURE]),\"fixture literal dependency invocations unchanged\")\n    require(fixture_before.count(b\"@\"+token)==fixture_current[FIXTURE].count(b\"@\"+token),\"fixture dependency invocation count unchanged\")",
+      "new": "        require(row[\"before\"]==OLD_FIXTURES[target],\"exact fixture predecessor pin\")\n        before = git(\"show\",BASIS+\":\"+target)\n        require({\"bytes\":len(before),\"sha256\":sha(before)}==OLD_FIXTURES[target],\"fixture original committed preimage\")\n        require({\"bytes\":len(current),\"sha256\":sha(current)}==NEW_FIXTURES[target],\"selected fixture bytes\")\n        fixture_before[target] = before\nrequire(set(fixture_before)==set(FIXTURES),\"both actual fixture preimages admitted\")\nfor target,before in fixture_before.items():\n    current = fixture_current[target]\n    for token in (b\"import\",b\"embedFile\",b\"cInclude\",b\"cDefine\",b\"cUndef\"):\n        pattern = rb\"@\"+token+rb\"\\s*\\(([^)]*)\\)\"\n        require(re.findall(pattern,before)==re.findall(pattern,current),\"fixture literal dependency invocations unchanged: \"+target)\n        require(before.count(b\"@\"+token)==current.count(b\"@\"+token),\"fixture dependency invocation count unchanged: \"+target)\n    require(re.findall(rb'\\btest\\s+\"([^\"]*)\"\\s*\\{',before)==re.findall(rb'\\btest\\s+\"([^\"]*)\"\\s*\\{',current),\"all exact named test declarations unchanged: \"+target)",
+      "before_sha256": "567C95BABA0A965F43AFC84C1B78CB372F51678EE262F02BA483B13FA36595D3",
+      "after_sha256": "0CA2785D3C154E65C8915CDF6B3AE4C2CC8C3214E8A6F9C73508A98BC439B1FC"
+    },
+    {
+      "specification": 51,
+      "occurrence": 1,
+      "label": "Agreed two-file Root source acceptance contract",
+      "offset": 27789,
+      "old": "require(acceptance[\"status\"]==\"root_and_independent_peer_accepted_bounded_fixture_resource_correction\",\"fixture source acceptance\")\nrequire(acceptance[\"candidate_head\"]==BASIS and acceptance[\"target\"]==FIXTURE,\"accepted fixture basis\")\nrequire(acceptance[\"original\"][\"sha256\"]==OLD_FIXTURE and acceptance[\"original\"][\"bytes\"]==OLD_FIXTURE_BYTES,\"accepted old fixture\")\nrequire(acceptance[\"selected_fixture\"][\"sha256\"]==NEW_FIXTURE and acceptance[\"selected_fixture\"][\"bytes\"]==NEW_FIXTURE_BYTES,\"accepted selected fixture\")",
+      "new": "require(acceptance[\"status\"]==\"root_and_independent_peer_accepted_bounded_filehandle_runtime_fixture_corrections\",\"fixture source acceptance\")\nrequire(acceptance[\"candidate_head\"]==BASIS,\"accepted two-file fixture basis\")",
+      "before_sha256": "0CA2785D3C154E65C8915CDF6B3AE4C2CC8C3214E8A6F9C73508A98BC439B1FC",
+      "after_sha256": "799F82962DC20F65485CA48F91BCD56AC2255CA371B899B4E3388FCD838B62CE"
+    },
+    {
+      "specification": 52,
+      "occurrence": 1,
+      "label": "Derive both exact selected bodies from pinned accepted proposal and replay all eight edits",
+      "offset": 29058,
+      "old": "selected_raw = configured(acceptance[\"selected_fixture\"])\nrequire(selected_raw==fixture_current[FIXTURE],\"Root accepted fixture donor equals actual committed bytes\")",
+      "new": "proposal = read_json(configured(acceptance[\"source_proposal\"]))\nrequire(proposal[\"main_basis\"]==BASIS and proposal[\"finite_edits\"]==cfg[\"fixture_finite_hunks\"],\"accepted proposal basis and finite edit total\")\nrequire([r[\"relative_path\"] for r in proposal[\"files\"]]==list(FIXTURES),\"accepted proposal exact two-file order\")\nproposal_edits = 0\nfor row in proposal[\"files\"]:\n    target = row[\"relative_path\"]\n    before = configured(row[\"original\"])\n    after = configured(row[\"candidate\"])\n    require(before==fixture_before[target] and after==fixture_current[target],\"Root accepted original/projected donors equal actual committed bytes: \"+target)\n    replay = before\n    for edit in row[\"edits\"]:\n        old_bytes,new_bytes = edit[\"old\"].encode(),edit[\"new\"].encode()\n        offset = edit[\"offset\"]\n        require(sha(replay)==edit[\"before_sha256\"] and replay[offset:offset+len(old_bytes)]==old_bytes,\"proposal exact finite source preimage\")\n        replay = replay[:offset]+new_bytes+replay[offset+len(old_bytes):]\n        require(sha(replay)==edit[\"after_sha256\"],\"proposal finite source intermediate hash\")\n    require(replay==after,\"proposal complete source forward\")\n    for edit in reversed(row[\"edits\"]):\n        old_bytes,new_bytes = edit[\"old\"].encode(),edit[\"new\"].encode()\n        offset = edit[\"offset\"]\n        require(replay[offset:offset+len(new_bytes)]==new_bytes,\"proposal exact inverse span\")\n        replay = replay[:offset]+old_bytes+replay[offset+len(new_bytes):]\n    require(replay==before and row[\"full_inverse_exact\"] is True,\"proposal complete raw source inverse\")\n    proposal_edits += len(row[\"edits\"])\nrequire(proposal_edits==cfg[\"fixture_finite_hunks\"],\"every accepted finite correction edit retained\")",
+      "before_sha256": "799F82962DC20F65485CA48F91BCD56AC2255CA371B899B4E3388FCD838B62CE",
+      "after_sha256": "EF84F223096DB76CF6D6B2BD58BD1E70EE7F890150F2106E7F4DD471BEF53CC9"
+    },
+    {
+      "specification": 53,
+      "occurrence": 1,
+      "label": "Two-source fixture history row",
+      "offset": 52309,
+      "old": "\"manifest_sha256\":FIXTURE_MANIFEST_SHA,\"commit_paths\":FIXTURE_PATH_COUNT,\"source_build_paths\":1,\n \"fixture\":{\"path\":FIXTURE,\"before_bytes\":OLD_FIXTURE_BYTES,\"before_sha256\":OLD_FIXTURE,\"after_bytes\":NEW_FIXTURE_BYTES,\"after_sha256\":NEW_FIXTURE},",
+      "new": "\"manifest_sha256\":FIXTURE_MANIFEST_SHA,\"commit_paths\":FIXTURE_PATH_COUNT,\"source_build_paths\":2,\n \"fixtures\":[{\"path\":target,\"before\":OLD_FIXTURES[target],\"after\":NEW_FIXTURES[target]} for target in FIXTURES],",
+      "before_sha256": "EF84F223096DB76CF6D6B2BD58BD1E70EE7F890150F2106E7F4DD471BEF53CC9",
+      "after_sha256": "E6A026ADE8AD337D635B2CFEC741E1AD53974DE9961A4494062F045E2863EC0F"
+    },
+    {
+      "specification": 54,
+      "occurrence": 1,
+      "label": "Two-source actual fixture chain count",
+      "offset": 63033,
+      "old": "\"path_count\":FIXTURE_PATH_COUNT,\"existing_source_replacements\":1,\"new_archive_paths_including_manifest\":FIXTURE_PATH_COUNT-1,",
+      "new": "\"path_count\":FIXTURE_PATH_COUNT,\"existing_source_replacements\":2,\"new_archive_paths_including_manifest\":FIXTURE_PATH_COUNT-2,",
+      "before_sha256": "E6A026ADE8AD337D635B2CFEC741E1AD53974DE9961A4494062F045E2863EC0F",
+      "after_sha256": "BD3DD2A3F44DC303E51C03EF1A919B484D5069C1C75501688FC8DB6481999339"
+    },
+    {
+      "specification": 55,
+      "occurrence": 1,
+      "label": "Bind actual completed runtime closure and Root acceptance before archive admission",
+      "offset": 11863,
+      "old": "require(type(RUNTIME_CURRENT_FILES) is int and RUNTIME_CURRENT_FILES>0,\"actual accepted runtime inventory cardinality required\")",
+      "new": "require(type(RUNTIME_CURRENT_FILES) is int and RUNTIME_CURRENT_FILES==34365,\"actual accepted runtime inventory cardinality\")\nrequire(cfg[\"runtime_negative_closure\"]=={\"path\":str(C/\"independent-negative-runtime-closure.json\"),\"bytes\":22838,\"sha256\":\"321ABB743297FC9720D36E78F17B38441F8FAE3A60BEA32DE488FC248342F517\"},\"observed exact accepted original runtime closure\")\nrequire(cfg[\"runtime_negative_root_acceptance\"]=={\"path\":str(E/\"root-v37-new4-retry1-original-negative-runtime-acceptance-20261021.json\"),\"bytes\":3131,\"sha256\":\"D305B2B2E462CA38BCC4D0E8B44F51E8F997DA902ABBD323E1F9283B51BC6557\"},\"observed exact Root original runtime acceptance\")",
+      "before_sha256": "BD3DD2A3F44DC303E51C03EF1A919B484D5069C1C75501688FC8DB6481999339",
+      "after_sha256": "6FC982962F3241DC0D30F53E8F74AA1F0E7B09635F10A55B0DC617773B108EEC"
+    },
+    {
+      "specification": 56,
+      "occurrence": 1,
+      "label": "Distinct initial admission historical record",
+      "offset": 48831,
+      "old": "# Update only current state# Update only current state and append records; historical records are immutable.\nbuild_record = {",
+      "new": "# Update only current state and append records; historical records are immutable.\ninitial_record = {\n \"name\":\"V37 new4 initial expired-grant admission rejection\",\n \"status\":\"independently_closed_initial_admission_negative_before_proof_creation\",\"candidate_head\":BASIS,\n \"job_id\":INITIAL_JOB,\"proof\":str(IP),\"proof_created\":False,\"control\":str(IC),\n \"granted_groups\":4,\"attempted_groups\":0,\"unstarted_groups\":4,\"source_declarations\":58,\n \"compile_attempted\":False,\"metadata_attempted\":False,\"actual_metadata_observed\":None,\"runtime_tests_started\":0,\n \"independent_closure\":archived[\"initial-admission/independent-peer.json\"][\"original\"],\n \"archived_closure\":archived[\"initial-admission/independent-peer.json\"][\"target\"],\n \"root_acceptance\":archived[\"initial-admission/root-acceptance.json\"][\"original\"],\n \"original_prepared_launch\":initial_root[\"original_prepared_launch\"],\n \"reason\":initial_root[\"failure\"],\"original_process_observation\":initial_peer[\"process_observation\"],\n \"bounded_current_pins_verified\":initial_root[\"root_verified_current_pins\"],\n \"full_source_vendor_compiler_seal_claim\":False,\n \"scope\":\"The unchanged first 300-second freshness guard rejected the initial driver before proof creation or native phases. Resolver/outer process activity is retained; this is distinct from the later fresh Retry1.\",\n \"runtime_started\":False,\"runtime_qualification\":False,\"qualification\":False,\"source_mutation_hold_released\":False\n}\nbuild_record = {",
+      "before_sha256": "6FC982962F3241DC0D30F53E8F74AA1F0E7B09635F10A55B0DC617773B108EEC",
+      "after_sha256": "DD8D11895FFCA41A4EEEFE38850E926185363EB99EF384234397C960F360BF3D"
+    },
+    {
+      "specification": 57,
+      "occurrence": 1,
+      "label": "New Retry1 build history description",
+      "offset": 50285,
+      "old": "\"name\":\"V36 new4 complete fresh BuildQuery and independently accepted metadata\"",
+      "new": "\"name\":\"V37 Retry1 new4 complete fresh BuildQuery and independently accepted metadata\"",
+      "before_sha256": "DD8D11895FFCA41A4EEEFE38850E926185363EB99EF384234397C960F360BF3D",
+      "after_sha256": "D1FC9B94E59B21C28DD9B62657C9F58B5108EFF3731D7384298E824B87E5FC38"
+    },
+    {
+      "specification": 58,
+      "occurrence": 1,
+      "label": "Actual BuildQuery closure cardinality in history",
+      "offset": 50807,
+      "old": "\"current_files_rehashed\":34160",
+      "new": "\"current_files_rehashed\":34354",
+      "before_sha256": "D1FC9B94E59B21C28DD9B62657C9F58B5108EFF3731D7384298E824B87E5FC38",
+      "after_sha256": "DE4DFDBE03E2BC1796C753BFCE5CB03D75EAC7D0EB2EFE51FB4A5144113031B9"
+    },
+    {
+      "specification": 59,
+      "occurrence": 1,
+      "label": "New strict runtime history description",
+      "offset": 51672,
+      "old": "\"name\":\"V36 new4 FileHandle owner strict runtime failures\"",
+      "new": "\"name\":\"V37 Retry1 new4 FileHandle owner strict runtime failures\"",
+      "before_sha256": "DE4DFDBE03E2BC1796C753BFCE5CB03D75EAC7D0EB2EFE51FB4A5144113031B9",
+      "after_sha256": "87D31BEF959A1F4BBAE957F457CD00624ED16EF2968C0273438E258C11FC491F"
+    },
+    {
+      "specification": 60,
+      "occurrence": 1,
+      "label": "Actual strict runtime failed and passed counts in history",
+      "offset": 52026,
+      "old": "\"runtime_tests_started\":19,\"runtime_tests_completed\":19,\"runtime_failed\":18,\n \"runtime_passed\":1",
+      "new": "\"runtime_tests_started\":19,\"runtime_tests_completed\":19,\"runtime_failed\":5,\n \"runtime_passed\":14",
+      "before_sha256": "87D31BEF959A1F4BBAE957F457CD00624ED16EF2968C0273438E258C11FC491F",
+      "after_sha256": "466B080C811F107F253069FE11BCEF994918AA4FFA04249F61081302736D6CFA"
+    },
+    {
+      "specification": 61,
+      "occurrence": 1,
+      "label": "Actual strict runtime closure cardinality in history",
+      "offset": 52231,
+      "old": "\"current_files_rehashed\":34171",
+      "new": "\"current_files_rehashed\":RUNTIME_CURRENT_FILES",
+      "before_sha256": "466B080C811F107F253069FE11BCEF994918AA4FFA04249F61081302736D6CFA",
+      "after_sha256": "6EE9F0C576B6123389D7B80F16C50B27E347BB9390060E3F550E0BF055DFC65B"
+    },
+    {
+      "specification": 62,
+      "occurrence": 1,
+      "label": "Exact negative explanation includes all five original indices",
+      "offset": 53154,
+      "old": "\"reason\":\"The first original runtime group completed19 indices with18 failure flags and one pass. Its nonempty45026-byte stderr independently invalidated the strict owner binding even though the retained native process exited0. The remaining42 accepted indices in three groups were not started. The reviewed fixture-only source correction still requires fresh validation.\"",
+      "new": "\"reason\":\"The first original runtime group completed 19 indices: five failed (5, 10, 11, 12, 16) and fourteen passed. Its nonempty 68,389-byte stderr independently invalidated the strict owner binding even though the retained native process exited 0. The remaining 42 accepted indices in three groups were not started. The reviewed two-file test/support correction still requires fresh validation.\"",
+      "before_sha256": "6EE9F0C576B6123389D7B80F16C50B27E347BB9390060E3F550E0BF055DFC65B",
+      "after_sha256": "453A1AC77F9DFDBC21D7AA4859CFF00D7E3A16CBCE7B9B7BF15041A76A5F4A5C"
+    },
+    {
+      "specification": 63,
+      "occurrence": 1,
+      "label": "Observe old plan and advance only new plan status",
+      "offset": 54941,
+      "old": "require(next_plan[\"status\"]==\"preparing_fresh_v36_complete_disjoint_batches\",\"old next plan status\")",
+      "new": "require(next_plan[\"status\"]==\"preparing_fresh_v37_complete_disjoint_batches\",\"old next plan status\")",
+      "before_sha256": "453A1AC77F9DFDBC21D7AA4859CFF00D7E3A16CBCE7B9B7BF15041A76A5F4A5C",
+      "after_sha256": "372BAA7877ECB2E99F58001CB404E4A950A818A2ADB815CC9BCC911BC1BA8AA8"
+    },
+    {
+      "specification": 64,
+      "occurrence": 1,
+      "label": "Preserve historical root list exactly and add selected corrected current roots",
+      "offset": 55795,
+      "old": "for row in next_plan[\"new_source_roots\"]:\n    require(row[\"actual_metadata_count\"] is None,\"future four-root actual metadata unknown\")\n    current = (M/relative(row[\"source_root\"])).read_bytes()\n    require(sha(current)==row[\"sha256\"],\"unchanged four-root source\")\n    committed(current_tree,row[\"source_root\"],current)\nnext_plan[\"status\"] = \"preparing_fresh_v37_complete_disjoint_batches\"",
+      "new": "require(\"selected_current_source_roots\" not in next_plan,\"new selected-current root list was absent\")\nselected_current_roots = copy.deepcopy(next_plan[\"new_source_roots\"])\nfor historical,row in zip(next_plan[\"new_source_roots\"],selected_current_roots):\n    require(row[\"actual_metadata_count\"] is None,\"future four-root actual metadata unknown\")\n    target = relative(row[\"source_root\"])\n    current = (M/target).read_bytes()\n    if target in FIXTURES:\n        require(target==FIXTURES[0] and historical[\"sha256\"]==OLD_FIXTURES[target][\"sha256\"] and sha(current)==NEW_FIXTURES[target][\"sha256\"],\"only the exact reviewed owner test root pin changes\")\n        row[\"sha256\"] = NEW_FIXTURES[target][\"sha256\"]\n    else:\n        require(sha(current)==historical[\"sha256\"],\"other three complete root sources unchanged\")\n    committed(current_tree,target,current)\nnext_plan[\"selected_current_source_roots\"] = selected_current_roots\nnext_plan[\"new_source_roots_are_original_historical_pins\"] = True\nnext_plan[\"status\"] = \"preparing_fresh_v38_complete_disjoint_batches\"",
+      "before_sha256": "372BAA7877ECB2E99F58001CB404E4A950A818A2ADB815CC9BCC911BC1BA8AA8",
+      "after_sha256": "7D41C5796324F84E5D52917AE00F9A04E826641D6CDEB4147072133814ECB5A7"
+    },
+    {
+      "specification": 65,
+      "occurrence": 1,
+      "label": "Three outcomes separated in successor plan",
+      "offset": 57263,
+      "old": " \"V36 new4 completed BuildQuery with61 accepted metadata records, then strict runtime completed19 indices with18 failed and one passed; \"\n \"42 indices in three groups were unstarted. The separate regression63 batch was not started. These are exact historical observations \"\n \"and do not qualify the corrected fixture. Keep the strict driver, classifier, 64-group cap, and all source/ownership/deadline gates.\"",
+      "new": " \"V37 initial admission failed before proof creation or native phases. Its separate fresh Retry1 completed BuildQuery with 61 accepted metadata records, \"\n \"then strict runtime completed 19 indices with five failed and fourteen passed; 42 indices in three groups were unstarted. \"\n \"The separate regression63 batch was never issued or started. These exact historical observations do not qualify either corrected source file. \"\n \"V38 must consume selected_current_source_roots; new_source_roots retains its complete original historical pins. \"\n \"Keep the strict driver, classifier, 64-group cap, and all source/ownership/deadline gates.\"",
+      "before_sha256": "7D41C5796324F84E5D52917AE00F9A04E826641D6CDEB4147072133814ECB5A7",
+      "after_sha256": "888594BB939445B2E09F73488EBD1A32234FB23B7B37B88E3FF096F293C620A7"
+    },
+    {
+      "specification": 66,
+      "occurrence": 1,
+      "label": "Preserve earlier V36 history and add three V37 closure flags",
+      "offset": 58139,
+      "old": "next_plan[\"prior_v36_buildquery_closed\"] = True\nnext_plan[\"prior_v36_strict_runtime_negative_closed\"] = True",
+      "new": "require(next_plan[\"prior_v36_buildquery_closed\"] is True and next_plan[\"prior_v36_strict_runtime_negative_closed\"] is True,\"earlier V36 closures preserved\")\nnext_plan[\"prior_v37_initial_admission_negative_closed\"] = True\nnext_plan[\"prior_v37_retry1_buildquery_closed\"] = True\nnext_plan[\"prior_v37_retry1_strict_runtime_negative_closed\"] = True",
+      "before_sha256": "888594BB939445B2E09F73488EBD1A32234FB23B7B37B88E3FF096F293C620A7",
+      "after_sha256": "6C6CF94DE034EE8AA7443C0E0A717AB49C7121BC166D4080D69291DADDA252DD"
+    },
+    {
+      "specification": 67,
+      "occurrence": 1,
+      "label": "Append all three attempts and both distinct negatives",
+      "offset": 58685,
+      "old": "updated[\"preserved_attempts\"].extend([copy.deepcopy(build_record),copy.deepcopy(negative_record)])\nupdated[\"retained_recent_native_negatives\"].append(copy.deepcopy(negative_record))",
+      "new": "updated[\"preserved_attempts\"].extend([copy.deepcopy(initial_record),copy.deepcopy(build_record),copy.deepcopy(negative_record)])\nupdated[\"retained_recent_native_negatives\"].extend([copy.deepcopy(initial_record),copy.deepcopy(negative_record)])",
+      "before_sha256": "6C6CF94DE034EE8AA7443C0E0A717AB49C7121BC166D4080D69291DADDA252DD",
+      "after_sha256": "AF17C1F2825C60B7FF04121A16ADA2BEAE177CBDAF9FE472B7029EB688EAA59E"
+    },
+    {
+      "specification": 68,
+      "occurrence": 1,
+      "label": "New checkpoint retains complete old checkpoint and adds three outcomes",
+      "offset": 59111,
+      "old": " schema=7,status=\"v36_buildquery_accepted_strict_runtime_negative_closed_fixture_committed_v37_pending\",\n source_head=HEAD,recorded_utc=now,next_validation=copy.deepcopy(next_plan),\n v36_buildquery=copy.deepcopy(build_record),v36_strict_runtime_negative=copy.deepcopy(negative_record),v36_fixture_correction=copy.deepcopy(fixture_record),",
+      "new": " schema=8,status=\"v37_initial_admission_negative_retry1_buildquery_accepted_strict_runtime_negative_closed_fixtures_committed_v38_pending\",\n source_head=HEAD,recorded_utc=now,next_validation=copy.deepcopy(next_plan),\n v37_initial_admission_negative=copy.deepcopy(initial_record),v37_retry1_buildquery=copy.deepcopy(build_record),\n v37_retry1_strict_runtime_negative=copy.deepcopy(negative_record),v37_fixture_corrections=copy.deepcopy(fixture_record),",
+      "before_sha256": "AF17C1F2825C60B7FF04121A16ADA2BEAE177CBDAF9FE472B7029EB688EAA59E",
+      "after_sha256": "6CCE767F68C9E797A64A4F516F7C9CDB7ED869E7E7BB5B70530C647B0C66EE4B"
+    },
+    {
+      "specification": 69,
+      "occurrence": 1,
+      "label": "Complete current progress narrative with exact distinct original outcomes",
+      "offset": 60224,
+      "old": "updated[\"record_note\"] = (\n \"V36 new4 completed fresh BuildQuery for four groups with61 actual metadata records in ordered counts19,4,24,14, \"\n \"zero runtime tests in that phase, and independent complete closure of34,160 current files and eleven original process instances. \"\n \"Its separately granted strict runtime attempted one group and completed19 indices:18 failed and one passed. \"\n \"The original nonempty45026-byte stderr and failure flags remain negative;42 indices in three groups were unstarted. \"\n \"Independent negative closure rehashed34,171 files and closed all four original runtime/outer/job process instances. \"\n \"The separate regression63 batch was never started. A subsequent exact source-only fixture intake commits the reviewed correction, \"\n \"which has no native validation on its changed head. All historical progress, accepted BuildQuery evidence and strict negatives \"\n \"remain preserved. Fresh V37 validation requires the same disjoint4+63 groups and58+1249 declarations, with actual metadata unknown \"\n \"until independently observed. Application qualification, production bridge removal, publication and new execution/source releases remain false.\"\n)",
+      "new": "updated[\"record_note\"] = (\n \"V37's initial expired-grant admission failed before proof creation or native phases; its original outer process and independent closure remain retained. \"\n \"A separately issued fresh Retry1 completed BuildQuery for four groups with 61 actual metadata records in ordered counts 19, 4, 24, 14, \"\n \"zero runtime tests in that phase, and independent complete closure of 34,354 current files and eleven original process instances. \"\n \"Its separately granted strict runtime attempted one group and completed 19 indices: five failed (5, 10, 11, 12, 16) and fourteen passed. \"\n \"The original nonempty 68,389-byte stderr and failure flags remain negative; 42 indices in three groups were unstarted. \"\n \"Independent negative closure rehashed 34,365 files and closed all four original runtime/outer/job process instances. \"\n \"The separate regression63 batch was never issued or started. A subsequent exact source-only intake commits two reviewed test/support corrections, \"\n \"which have no native validation on the changed head. All historical progress, accepted BuildQuery evidence and strict negatives remain preserved. \"\n \"Fresh V38 validation requires the same disjoint 4+63 groups and 58+1249 declarations, using selected_current_source_roots for current source pins \"\n \"and retaining new_source_roots as original historical pins. Actual future metadata remains unknown until independently observed. \"\n \"Application qualification, production bridge removal, publication and new execution/source releases remain false.\"\n)",
+      "before_sha256": "6CCE767F68C9E797A64A4F516F7C9CDB7ED869E7E7BB5B70530C647B0C66EE4B",
+      "after_sha256": "3564BCA78B259297C4B4EDC7B89BA2BD44585D388F095CF253A119A7BB02043D"
+    },
+    {
+      "specification": 70,
+      "occurrence": 1,
+      "label": "New additive top-level history key",
+      "offset": 61826,
+      "old": "v36_build_and_runtime_negative_and_v37_successor",
+      "new": "v37_admission_build_and_runtime_negative_and_v38_successor",
+      "before_sha256": "3564BCA78B259297C4B4EDC7B89BA2BD44585D388F095CF253A119A7BB02043D",
+      "after_sha256": "F633C9DBF9F1631A027A2CF8674C851BDDE1414A8444580F1844693F0994E2FD"
+    },
+    {
+      "specification": 70,
+      "occurrence": 2,
+      "label": "New additive top-level history key",
+      "offset": 62958,
+      "old": "v36_build_and_runtime_negative_and_v37_successor",
+      "new": "v37_admission_build_and_runtime_negative_and_v38_successor",
+      "before_sha256": "F633C9DBF9F1631A027A2CF8674C851BDDE1414A8444580F1844693F0994E2FD",
+      "after_sha256": "13FAA3C1520714CB5D71E96FA0EB394B2056FB18410C9D26C18BE997947B1116"
+    },
+    {
+      "specification": 71,
+      "occurrence": 1,
+      "label": "Include initial admission outcome in new additive record",
+      "offset": 61952,
+      "old": " \"buildquery\":copy.deepcopy(build_record),\"negative\":copy.deepcopy(negative_record),\"fixture_intake\":copy.deepcopy(fixture_record),",
+      "new": " \"initial_admission_negative\":copy.deepcopy(initial_record),\"buildquery\":copy.deepcopy(build_record),\"negative\":copy.deepcopy(negative_record),\"fixture_intake\":copy.deepcopy(fixture_record),",
+      "before_sha256": "13FAA3C1520714CB5D71E96FA0EB394B2056FB18410C9D26C18BE997947B1116",
+      "after_sha256": "E51FF2ABA139CA2B16DC02A072A24EEDFAA9558B305409EF519FEB910C9AF977"
+    },
+    {
+      "specification": 72,
+      "occurrence": 1,
+      "label": "Exact additional history lengths for all three outcomes",
+      "offset": 63493,
+      "old": "history_increments = {\"integrated_source_units\":1,\"preserved_attempts\":2,\"retained_recent_native_negatives\":1,\"execution_checkpoint_history\":1}",
+      "new": "history_increments = {\"integrated_source_units\":1,\"preserved_attempts\":3,\"retained_recent_native_negatives\":2,\"execution_checkpoint_history\":1}",
+      "before_sha256": "E51FF2ABA139CA2B16DC02A072A24EEDFAA9558B305409EF519FEB910C9AF977",
+      "after_sha256": "2A8F5C482789FED343E9AAE8BC0AFBF4627288FBF4EB92865BEBAB5B8C074DCA"
+    },
+    {
+      "specification": 73,
+      "occurrence": 1,
+      "label": "Current complete original progress byte inverse label",
+      "offset": 66152,
+      "old": "complete 354535-byte original",
+      "new": "complete 438396-byte original",
+      "before_sha256": "2A8F5C482789FED343E9AAE8BC0AFBF4627288FBF4EB92865BEBAB5B8C074DCA",
+      "after_sha256": "6078685A46F3FB65827B576E292CCEDB811C79A2ED44EBD8629CFFA18C8034E6"
+    },
+    {
+      "specification": 74,
+      "occurrence": 1,
+      "label": "Archive-index includes initial control capture independently",
+      "offset": 67759,
+      "old": "\"original_phase_inventories\":{\n  key:{\"proof_top_level_files\":len(row[\"proof_files\"]),\"control_top_level_files\":len(row[\"control_files\"]),",
+      "new": "\"initial_admission_inventory\":{\"proof_absent\":True,\"control_top_level_files\":len(inventory[\"initial_admission\"][\"control_files\"]),\"groups_attempted\":0,\"actual_metadata_count\":None},\n \"original_phase_inventories\":{\n  key:{\"proof_top_level_files\":len(row[\"proof_files\"]),\"control_top_level_files\":len(row[\"control_files\"]),",
+      "before_sha256": "6078685A46F3FB65827B576E292CCEDB811C79A2ED44EBD8629CFFA18C8034E6",
+      "after_sha256": "8D6F2E117B795D8B2A3AA5B258680E56214D713E3907871F922750B54611C728"
+    },
+    {
+      "specification": 75,
+      "occurrence": 1,
+      "label": "New archive index status",
+      "offset": 67409,
+      "old": "\"exact_original_buildquery_and_strict_runtime_negative_and_fixture_execution_archive\"",
+      "new": "\"exact_original_initial_admission_negative_retry1_buildquery_and_strict_runtime_negative_and_fixture_execution_archive\"",
+      "before_sha256": "8D6F2E117B795D8B2A3AA5B258680E56214D713E3907871F922750B54611C728",
+      "after_sha256": "1B57412DD3974171F7ED295997977CEBEC4DF6C0C781B0B1501E2C7E3E142CC7"
+    },
+    {
+      "specification": 76,
+      "occurrence": 1,
+      "label": "New manifest status",
+      "offset": 69500,
+      "old": "\"exact_v36_build_runtime_negative_progress_archive_intake_unissued\"",
+      "new": "\"exact_v37_admission_build_runtime_negative_progress_archive_intake_unissued\"",
+      "before_sha256": "1B57412DD3974171F7ED295997977CEBEC4DF6C0C781B0B1501E2C7E3E142CC7",
+      "after_sha256": "E25DC3B04D3EF5A809501186E6CC167BA86443A4691FF8A713C64D0B6DA980C7"
+    },
+    {
+      "specification": 77,
+      "occurrence": 1,
+      "label": "V37 manifest negative closure field",
+      "offset": 69870,
+      "old": "original_v36_negative_closure_sha256",
+      "new": "original_v37_negative_closure_sha256",
+      "before_sha256": "E25DC3B04D3EF5A809501186E6CC167BA86443A4691FF8A713C64D0B6DA980C7",
+      "after_sha256": "D1FD30D9AB9A1EB03F43CD19B67651B981BDE7A7D1CA5B3CE6A2770395BF14C8"
+    },
+    {
+      "specification": 78,
+      "occurrence": 1,
+      "label": "V37 manifest BuildQuery closure field",
+      "offset": 69948,
+      "old": "original_v36_buildquery_closure_sha256",
+      "new": "original_v37_buildquery_closure_sha256",
+      "before_sha256": "D1FD30D9AB9A1EB03F43CD19B67651B981BDE7A7D1CA5B3CE6A2770395BF14C8",
+      "after_sha256": "EC046180D829EC0C55AC6620B467652BA56FB7D0D61CFDCAD1B4FE5B7166ABD2"
+    },
+    {
+      "specification": 79,
+      "occurrence": 1,
+      "label": "V37 manifest metadata field",
+      "offset": 70025,
+      "old": "original_v36_metadata_acceptance_sha256",
+      "new": "original_v37_metadata_acceptance_sha256",
+      "before_sha256": "EC046180D829EC0C55AC6620B467652BA56FB7D0D61CFDCAD1B4FE5B7166ABD2",
+      "after_sha256": "DA0674827812F3FC964464166964957CB6A0244998ED2B3A5BF1DCC0500D5428"
+    },
+    {
+      "specification": 80,
+      "occurrence": 1,
+      "label": "Manifest includes distinct initial negative closure",
+      "offset": 70024,
+      "old": "\"original_v37_metadata_acceptance_sha256\":build_record[\"metadata_acceptance\"][\"sha256\"],",
+      "new": "\"original_v37_metadata_acceptance_sha256\":build_record[\"metadata_acceptance\"][\"sha256\"],\n \"original_v37_initial_admission_negative_peer_sha256\":initial_record[\"independent_closure\"][\"sha256\"],",
+      "before_sha256": "DA0674827812F3FC964464166964957CB6A0244998ED2B3A5BF1DCC0500D5428",
+      "after_sha256": "8A1DCB9898DD5D8F602042ECCF63FD53F683DCD5EDCBF265C92B3E899D3F055C"
+    },
+    {
+      "specification": 81,
+      "occurrence": 1,
+      "label": "Three-outcome immutable manifest scope sentence",
+      "offset": 70453,
+      "old": "new immutable raw/gzip original BuildQuery, strict runtime negative and fixture execution archives only.",
+      "new": "new immutable raw/gzip initial admission rejection, Retry1 BuildQuery, strict runtime negative and fixture execution archives only.",
+      "before_sha256": "8A1DCB9898DD5D8F602042ECCF63FD53F683DCD5EDCBF265C92B3E899D3F055C",
+      "after_sha256": "72BC781FF7F80B8696CE5561E8F142C76445B4AA88ECAFA4462F228BDA026D8A"
+    },
+    {
+      "specification": 82,
+      "occurrence": 1,
+      "label": "New preparation review status",
+      "offset": 73760,
+      "old": "\"source_only_exact_v36_build_runtime_negative_progress_archive_prepared\"",
+      "new": "\"source_only_exact_v37_admission_build_runtime_negative_progress_archive_prepared\"",
+      "before_sha256": "72BC781FF7F80B8696CE5561E8F142C76445B4AA88ECAFA4462F228BDA026D8A",
+      "after_sha256": "D42F9DF0544BF2AC92A88BE0689D894F05179CCCA50B5333011207047345FC5A"
+    },
+    {
+      "specification": 83,
+      "occurrence": 1,
+      "label": "Exact preparation review counts",
+      "offset": 74270,
+      "old": "\"historical_buildquery_metadata\":61,\"historical_runtime_completed\":19,\"historical_runtime_failed\":18,\"historical_runtime_passed\":1,\"historical_runtime_unstarted\":42,",
+      "new": "\"historical_initial_admission_groups_attempted\":0,\"historical_initial_admission_metadata\":None,\n \"historical_buildquery_metadata\":61,\"historical_runtime_completed\":19,\"historical_runtime_failed\":5,\"historical_runtime_passed\":14,\"historical_runtime_unstarted\":42,",
+      "before_sha256": "D42F9DF0544BF2AC92A88BE0689D894F05179CCCA50B5333011207047345FC5A",
+      "after_sha256": "F40C2032692492E98D61D3B8F72275C56B5C23708C9FAEF50221127D8FA3BD71"
+    }
+  ],
+  "unchanged_helpers": [
+    {
+      "name": "require",
+      "bytes": 75,
+      "sha256": "E5352BFB27AA56D36D8F34B36A9EE9D744ECFFDCC85703010CAF37D1653D8E38",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "sha",
+      "bytes": 65,
+      "sha256": "ACC12A90964A54F651A83AA95D98D6C1DA6A3CECA2C91DE37FC32A3E285A0AB9",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "encode",
+      "bytes": 80,
+      "sha256": "87252C64FCA619040C79E8CFFC2ECCA63F877FB49CF0A4189BA0BF3304494E42",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "read_json",
+      "bytes": 67,
+      "sha256": "3C15C8ED8398AC328B6AF104E0EE8CE1733F0D476E0981B0F78DD3EA166D5210",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "raw_pin",
+      "bytes": 89,
+      "sha256": "0BBD7D3A6EAC82839CC7C291E101C092C03BEBA8C220B841F585F7ED5D5F2985",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "inside",
+      "bytes": 545,
+      "sha256": "0EE41A591AA4925CDC67DE7762FA76AED2C5B1D276B90A67C60F9403F6099E23",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "relative",
+      "bytes": 534,
+      "sha256": "D843A26B0950595C46DE852F1D1B27B961DE70BDBED0D9978FD81A95148ECAB6",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "exact",
+      "bytes": 456,
+      "sha256": "8ACA1218850124B4D83968332EE61462A2E95A6F3B1BBD773D01E710499933DC",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "configured",
+      "bytes": 155,
+      "sha256": "003DC1A25557ABC4EF84B7A21DB30F05A22FE4F376BF97ACBE972DAFD2EE7609",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "git",
+      "bytes": 288,
+      "sha256": "8362E56F531215FFC9F529282049028FFD3D056EFE71FBA3C273E74A54FADCAE",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "state",
+      "bytes": 266,
+      "sha256": "BC4780C33CBAA26EFA97921124B118BD01988D78351127341224306A83516735",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "blob_id",
+      "bytes": 97,
+      "sha256": "FF670311D86BFB4A7EE0BD0F8872B1A78F35A1F305F448A98601091E9269982F",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "tree",
+      "bytes": 439,
+      "sha256": "3A3E07D0491BEE6275D3BB323A79461469087ED8D6ED78C4BD8BC0DC668C25F0",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "committed",
+      "bytes": 164,
+      "sha256": "E75637CF3B74C2B75954E9140BE1964A4DB8D66AD4A9A347039403B2D6F070D2",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "filenames",
+      "bytes": 90,
+      "sha256": "616E56E7CCBEE5CE27A0A962FD31868BD4F72318ACDAC702E9FE9D0E830A9C69",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "json_pin",
+      "bytes": 83,
+      "sha256": "E1CE7E41F87DADCE5EF453845D07F854FD2B23DBE02B41BE183BFD784BDAE310",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "add",
+      "bytes": 467,
+      "sha256": "6F4BF48306577624627E0443DD8244FC90325C9D5C2ADC1D59C35CF6B77BE79D",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "archive",
+      "bytes": 318,
+      "sha256": "0B96CC1559B55CEA3EAAE55F3742F08569D66193872C6C1AF384E4ED6743A6E4",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "gzip_bytes",
+      "bytes": 181,
+      "sha256": "F3FEE0F7502E42C5112750BEE55ED802E1C682B161214427D9A1A1DFB138E237",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "list_paths",
+      "bytes": 310,
+      "sha256": "65BC5CD1BC3467130DF465058763847035A130A723D356F0C40BA8469BFAF639",
+      "complete_full_line_bytes_equal": true
+    },
+    {
+      "name": "get_path",
+      "bytes": 94,
+      "sha256": "D7D20ED0DD7FD4050C0B529F778DD19B8B7FF62F301FD1FCD89126E23F4E59B5",
+      "complete_full_line_bytes_equal": true
+    }
+  ],
+  "changed_helpers": [
+    "original_inventory"
+  ],
+  "unchanged_critical_regions": [
+    {
+      "name": "deterministic_two_phase_gzip_roundtrip",
+      "bytes": 2266,
+      "sha256": "9D58393C26BFC587F2B79D18EAFA43F1CB930DAE3C83DB53151022A637DE5F05",
+      "complete_bytes_equal": true
+    },
+    {
+      "name": "complete_nested_history_prefix_and_raw_inverse",
+      "bytes": 1166,
+      "sha256": "F0DA35B74C9DDF988B0AFBF3A762D3F8FE1C5F82DE966A74002446A4363A12DB",
+      "complete_bytes_equal": true
+    },
+    {
+      "name": "all_Git_attributes_original_rechecks_create_only_write_tail",
+      "bytes": 2139,
+      "sha256": "7CE9701C0F11E234621B4BD41938118FEEB58FDF4373BB51CF6B5A457B2D54E2",
+      "complete_bytes_equal": true
+    }
+  ],
+  "current_scope": "Three distinct actual V37 outcomes; two exact test/support replacements; historical lists retained with selected_current_source_roots added for V38.",
+  "future_fixture_commit_release_receipt_unresolved": true,
+  "source_only": true,
+  "preparer_executed": false,
+  "prefix_executed": false,
+  "compression_executed": false,
+  "generated_archive_or_manifest": false,
+  "Main_written": false,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "application_qualified": false,
+  "source_mutation_hold_released": false
+}

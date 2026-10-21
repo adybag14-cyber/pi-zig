@@ -1,0 +1,38 @@
+{
+  "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "arguments": [
+    "build",
+    "build-native-node-fs-before-hook-continuation",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-Ddiagnostic-tests=false",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--prefix",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\installed",
+    "--cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache",
+    "--global-cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\global-cache",
+    "--summary",
+    "all"
+  ],
+  "working_directory": "C:\\Users\\adyba\\pi-zig\\main",
+  "pid": 20328,
+  "retained_handle": 1688,
+  "created_utc": "2026-10-21T13:20:30.1047119Z",
+  "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+  "timeout_seconds": 1320,
+  "status": "passed",
+  "live_identity": {
+    "pid": 20328,
+    "command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-node-fs-before-hook-continuation -Doptimize=Debug -Duse-llvm=true -Ddiagnostic-tests=false -j1 --test-timeout 120s --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-fs-before-hook-continuation\\installed --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\global-cache --summary all",
+    "created_utc": "2026-10-21T13:20:30.1047119Z",
+    "command_line_method": "Win32_Process.CommandLine",
+    "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe"
+  },
+  "exit_code": 0,
+  "completed_utc": "2026-10-21T13:20:41.0813687+00:00"
+}

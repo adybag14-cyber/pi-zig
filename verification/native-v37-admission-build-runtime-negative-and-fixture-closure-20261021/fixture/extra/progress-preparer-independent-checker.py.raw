@@ -1,0 +1,219 @@
+"""Independent source/byte/AST review. Does not import or execute any reviewed preparer or prefix."""
+from pathlib import Path
+import ast,hashlib,json,re,subprocess
+B=Path(r"C:\Users\adyba\pi-zig");M=B/"main";D=B/"evidence/v37-progress-negative-archive-sourceonly-20261021"
+OUT=B/"worktrees/modules-io-resume-20261018/verification/v37-progress-archive-preparer-peer-20261021"
+BASIS="b13be24e44cc1bbc361639eb35900a368ae60eac";HEAD="f878aa40ab4bc4629f2cf57b281fcd2e7329473b"
+memo={}
+def sha(raw):return hashlib.sha256(raw).hexdigest().upper()
+def record(path,raw):return {"path":str(path),"bytes":len(raw),"sha256":sha(raw)}
+def read(path,size=None,digest=None):
+ p=Path(path);assert p.resolve().is_relative_to(B.resolve()) and p.is_file() and not p.is_symlink()
+ raw=p.read_bytes()
+ if size is not None:assert len(raw)==size,str(p)
+ if digest is not None:assert sha(raw)==digest,str(p)
+ prior=memo.get(str(p));assert prior is None or prior==raw
+ memo[str(p)]=raw
+ return raw
+def pinned(row):return read(row["path"],row["bytes"],row["sha256"])
+def obj(path,size=None,digest=None):return json.loads(read(path,size,digest))
+def git(*args):return subprocess.check_output(["git","--no-optional-locks","-c","core.fsmonitor=false",*args],cwd=M)
+def state():
+ assert git("rev-parse","HEAD").decode().strip()==HEAD
+ assert git("branch","--show-current").decode().strip()=="work/pi-zig-consolidated-20261016"
+ assert git("status","--porcelain=v1","--untracked-files=all")==b""
+state()
+f=obj(D/"finite-source-adaptation.json",76375,"384A47B49862B8311E2503BE122FBC2FE3A01A58E08833D74FCB114244E21ED6")
+v=obj(D/"initial-outer-schema-correction.json",2911,"783D8C3A9E2AF763C6A428899C5370816E22C230E12A6991DBA18AD48E7DAD1E")
+s=json.loads(pinned(f["specifications"]))
+assert f["baseline"]["sha256"]=="BC45FAAFF6F34876F644173DFA2815EAD7BF74E4F1DFE02CFA884CE9C03C8DDF"
+assert f["candidate"]["sha256"]=="F40C2032692492E98D61D3B8F72275C56B5C23708C9FAEF50221127D8FA3BD71"
+assert v["candidate"]["sha256"]=="079CE8663FFA9C337F5AC04D41E4222E6B2EFB9B39E5B459F6F4E460F9AC790D"
+old=pinned(f["baseline"]);mid=pinned(f["candidate"]);new=pinned(v["candidate"])
+assert s["baseline"]==f["baseline"] and all(s["candidate"][k]==f["candidate"][k] for k in ("path","bytes","sha256"))
+assert len(s["specifications"])==f["source_specification_count"]==83
+x=old;steps=[]
+for i,e in enumerate(s["specifications"]):
+ a=e["old"].encode();b=e["new"].encode();assert x.count(a)==e["count"]
+ offsets=[];start=0
+ for occurrence in range(e["count"]):
+  off=x.index(a,start);offsets.append(off);start=off+len(a)
+ shift=0
+ for occurrence,off in enumerate(offsets):
+  off+=shift;before=sha(x);assert x[off:off+len(a)]==a
+  x=x[:off]+b+x[off+len(a):]
+  steps.append({"specification":i+1,"occurrence":occurrence+1,"label":e["label"],"offset":off,"old":e["old"],"new":e["new"],"before_sha256":before,"after_sha256":sha(x)})
+  shift+=len(b)-len(a)
+assert steps==f["steps"] and len(steps)==84 and x==mid
+for e in reversed(steps):
+ a=e["old"].encode();b=e["new"].encode();off=e["offset"]
+ assert sha(x)==e["after_sha256"] and x[off:off+len(b)]==b
+ x=x[:off]+a+x[off+len(b):];assert sha(x)==e["before_sha256"]
+assert x==old
+a=v["edit"]["old"].encode();b=v["edit"]["new"].encode();off=v["offset"]
+assert mid.count(a)==1 and mid.index(a)==off
+assert mid[:off]+b+mid[off+len(a):]==new and new[:off]+a+new[off+len(b):]==mid
+outer=json.loads(pinned(v["actual_original_outer"]))
+assert sorted(outer)==v["actual_original_outer_keys"] and "timed_out" not in outer
+assert outer["status"]=="failed" and outer["exit_code"]==1 and outer["error"]=="Owned terminal failed: "+outer["executable"] and outer["timeout_seconds"]==1800
+def funcs(raw):
+ lines=raw.splitlines(keepends=True)
+ return {n.name:b"".join(lines[n.lineno-1:n.end_lineno]) for n in ast.parse(raw).body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))}
+fs=[funcs(z) for z in (old,mid,new)]
+assert all(set(z)==set(fs[0]) for z in fs)
+assert [k for k in fs[0] if fs[0][k]!=fs[2][k]]==["original_inventory"]
+assert len(f["unchanged_helpers"])==21
+for r in f["unchanged_helpers"]:
+ z=fs[0][r["name"]];assert z==fs[1][r["name"]]==fs[2][r["name"]] and(len(z),sha(z))==(r["bytes"],r["sha256"])
+for start,end,r in zip((b"def gzip_bytes(raw):",b"def list_paths(value, path=()):",b"# Path-filtered hash-object has no -w:"),(b"# Update only current state",b"history_report = {",b"review = {"),f["unchanged_critical_regions"]):
+ parts=[z[z.index(start):z.index(end,z.index(start))] for z in (old,mid,new)]
+ assert parts[0]==parts[1]==parts[2] and(len(parts[0]),sha(parts[0]))==(r["bytes"],r["sha256"])
+inv=obj(D/"original-evidence-inventory.json",41248,"084344C78DC536B6E2003EF08E5D8DE64F17859987DC6F6E4576F1392190EC46")
+assert inv["basis_head"]==BASIS and inv["status"]=="source_only_unissued_exact_observed_v37_archive_inputs"
+assert inv["declared_counts"]==[18,3,24,13] and inv["accepted_metadata_counts"]==[19,4,24,14]
+versions=[];memberships=[]
+for key,row in inv["runs"].items():
+ for label,base in (("proof_files",Path(row["proof"])),("control_files",Path(row["control"]))):
+  names={p.name for p in base.iterdir() if p.is_file()};assert names=={r[0] for r in row[label]}
+  memberships.append({"directory":str(base),"files":sorted(names)})
+  for name,n,h in row[label]:versions.append(record(base/name,read(base/name,n,h)))
+ assert {p.name for p in Path(row["proof"]).iterdir() if p.is_dir()}==set(row["proof_directories"])==({"cache","global-cache","groups"} if key=="buildquery" else {"groups"})
+ assert not any(p.is_dir() for p in Path(row["control"]).iterdir())
+ assert {p.name for p in (Path(row["proof"])/"groups").iterdir()}==set(row["group_files"])
+ assert list(row["group_files"])==(inv["groups"] if key=="buildquery" else inv["groups"][:1])
+ for group,rows in row["group_files"].items():
+  base=Path(row["proof"])/"groups"/group
+  names={p.name for p in base.iterdir() if p.is_file()};assert names=={r[0] for r in rows}
+  assert {p.name for p in base.iterdir() if p.is_dir()}==({"installed"} if key=="buildquery" else set())
+  memberships.append({"directory":str(base),"files":sorted(names)})
+  for name,n,h in rows:versions.append(record(base/name,read(base/name,n,h)))
+phase_files=len(versions);assert phase_files==122
+initial=inv["initial_admission"];base=Path(initial["control"])
+assert not Path(initial["proof"]).exists() and initial["proof_absent"] is True
+assert initial["attempted_groups"]==0 and initial["actual_metadata_count"] is None
+names={p.name for p in base.iterdir()};assert names=={r[0] for r in initial["control_files"]} and len(names)==7
+memberships.append({"directory":str(base),"files":sorted(names)})
+for name,n,h in initial["control_files"]:versions.append(record(base/name,read(base/name,n,h)))
+for row in inv["extra_files"]:versions.append(record(row["path"],pinned(row)))
+assert len(inv["extra_files"])==53 and len(versions)==len({r["path"].casefold() for r in versions})==182
+assert inv["original63"]["issued"] is inv["original63"]["attempted"] is False
+assert inv["original63"]["source_declarations"]==1249 and inv["original63"]["actual_metadata_count"] is None
+for p in inv["original63"]["launch_and_issued_paths_observed_absent"]:assert not Path(p).exists()
+extras={r["archive_name"]:r for r in inv["extra_files"]}
+bqdir=Path(inv["runs"]["buildquery"]["control"]);rtdir=Path(inv["runs"]["strict_runtime"]["control"])
+bq=obj(bqdir/"independent-current-seals-and-owners.json")
+metadata=obj(bqdir/"independent-metadata-acceptance.json")
+negative=json.loads(pinned(inv["runtime_negative_closure"]))
+negative_root=json.loads(pinned(inv["runtime_negative_root_acceptance"]))
+initial_root=json.loads(pinned(extras["initial-admission/root-acceptance.json"]))
+initial_peer=json.loads(pinned(extras["initial-admission/independent-peer.json"]))
+build_root=json.loads(pinned(extras["authority/root-buildquery-acceptance.json"]))
+runtime_result=obj(Path(inv["runs"]["strict_runtime"]["proof"])/"result.json")
+canonical=obj(Path(inv["runs"]["strict_runtime"]["proof"])/"groups/native-node-file-handle-owner/runtime.results.json")
+assert negative["candidate_head"]==bq["candidate_head"]==BASIS
+assert canonical["started"]==canonical["completed"]==19
+assert [r["index"] for r in canonical["results"] if r["flags"]!=0]==[5,10,11,12,16]
+assert sum(r["flags"]==0 for r in canonical["results"])==14
+assert negative["observed_started"]==negative["observed_completed"]==19
+assert negative["observed_failed"]==5 and negative["observed_passed"]==14 and negative["not_started"]==42
+assert bq["attempted_groups"]==4 and bq["actual_metadata_count"]==61 and bq["distinct_current_files_rehashed"]==34354
+assert negative["distinct_current_files_rehashed"]==34365
+bookends=[]
+for key,row in inv["runs"].items():
+ root=Path(row["proof"]);a=read(root/"before.json");b=read(root/"final.json");assert a==b
+ seal=json.loads(a);bookends.append({"phase":key,"bytes":len(a),"sha256":sha(a),"before_equals_final":True})
+assert [r["sha256"] for r in bookends]==["14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27","DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7"]
+progress="verification/port-roadmap-resume-20261018/progress.json"
+prior=git("show",BASIS+":"+progress);assert prior==git("show",HEAD+":"+progress)==read(M/progress)
+assert(len(prior),sha(prior))==(438396,"18E61B7DFE07DA5D13C64E4B933EC519312AFED1DC7B29AC4789AC0C3A5EB49F")
+p=json.loads(prior);assert(json.dumps(p,indent=2)+"\n").encode()==prior
+lengths={k:len(p[k]) for k in ("integrated_source_units","preserved_attempts","retained_recent_native_negatives","execution_checkpoint_history")}
+assert list(lengths.values())==[64,35,12,13]
+assert p["current_execution_checkpoint"]["schema"]==7
+assert p["next_native_batch"]==p["current_execution_checkpoint"]["next_validation"]
+plan=p["next_native_batch"];assert plan["batch_group_counts"]==[4,63] and plan["batch_source_declarations"]==[58,1249]
+assert len(plan["retained63_group_order"])==len(set(plan["retained63_group_order"]))==63
+assert "selected_current_source_roots" not in plan
+roots=[]
+for i,row in enumerate(plan["new_source_roots"]):
+ raw=read(M/row["source_root"]);assert raw==git("show",HEAD+":"+row["source_root"])
+ expected="03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6" if i==0 else row["sha256"]
+ assert sha(raw)==expected and row["actual_metadata_count"] is None
+ roots.append({"source_root":row["source_root"],"historical_sha256":row["sha256"],"current_sha256":sha(raw),"declared_controls":row["declared_controls"],"actual_future_metadata":None})
+receipt_path=B/"evidence/root-v37-fixture-source-intake-20261021/fixture-receipt.json"
+release_path=B/"evidence/root-v37-fixture-source-intake-release-20261021.json"
+receipt=obj(receipt_path,6347,"5010977B7618E5E79DFFF90FC1D8EDD59E49A9CD7E5E32E6C97669C18587ABE7")
+release=obj(release_path,4783,"EFD306E15D960868B57C7314E09DE108F0A363CF0B972F471EB7E37E71EE7ABC")
+assert receipt["after_head"]==HEAD and receipt["before_head"]==receipt["basis_main_head"]==BASIS
+assert git("rev-parse",HEAD+"^").decode().strip()==BASIS and receipt["path_count"]==44
+manifest=obj(receipt["manifest"],20679,"236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9")
+rows=manifest["rows"]+[{"target":manifest["manifest_target"],"source":receipt["manifest"],"bytes":20679,"sha256":receipt["manifest_sha256"],"before":None}]
+assert len(rows)==44 and set(filter(None,git("diff","--name-only",BASIS,HEAD).decode().splitlines()))=={r["target"] for r in rows}
+for row in rows:
+ raw=read(row["source"],row["bytes"],row["sha256"]);assert raw==git("show",HEAD+":"+row["target"])
+ if row["before"] is not None:
+  raw=git("show",BASIS+":"+row["target"]);assert(len(raw),sha(raw))==(row["before"]["bytes"],row["before"]["sha256"])
+assert len([r for r in rows if r["before"] is not None])==2
+assert release["executor_sha256"]==receipt["executor_sha256"]=="56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+assert release["authorized_phases"]=={"fixture":{"manifest_sha256":receipt["manifest_sha256"],"total_commit_paths":44}}
+assert receipt["release_sha256"]==sha(read(release_path))
+for key in ("native_execution_authorized","application_qualified","production_bridge_removed"):assert receipt[key] is release[key] is False
+for row in release["required_current_pins"]:pinned(row)
+cfg=obj(D/"unissued-root-configuration.json",10265,"6661FF392BFB0A7CBC95DBA4C74D07F35CECADB04B49247C859054500E202EBE")
+assert cfg["status"]=="unissued_v37_progress_negative_archive_preparation"
+for k in ("evidence_preparation_authorized","main_intake_authorized","native_execution_authorized","runtime_authority","qualification"):assert cfg[k] is False
+assert cfg["preparer_sha256"]==sha(new) and cfg["basis_head"]==BASIS and cfg["fixture_commit"]==HEAD
+assert cfg["preparer_source_review"]==cfg["preparer_handoff"]=={"path":None,"bytes":None,"sha256":None} and cfg["recorded_utc"] is None
+required={n.slice.value for n in ast.walk(ast.parse(new)) if isinstance(n,ast.Subscript) and isinstance(n.value,ast.Name) and n.value.id=="cfg" and isinstance(n.slice,ast.Constant) and isinstance(n.slice.value,str)}
+assert required<=set(cfg)
+def allpins(x):
+ if isinstance(x,dict):
+  if {"path","bytes","sha256"}<=set(x) and x["path"] is not None:yield x
+  else:
+   for z in x.values():yield from allpins(z)
+ elif isinstance(x,list):
+  for z in x:yield from allpins(z)
+config_pins=list(allpins(cfg));assert len(config_pins)==27
+for row in config_pins:pinned(row)
+assert cfg["fixture_execution"]["receipt"]==record(receipt_path,read(receipt_path))
+assert cfg["fixture_execution"]["source_release"]==record(release_path,read(release_path))
+assert cfg["fixture_path_count"]==44 and cfg["fixture_finite_hunks"]==8
+assert cfg["fixture_commit_message"].encode()==git("cat-file","commit",HEAD).split(b"\n\n",1)[1]
+assert pinned(cfg["fixture_execution"]["pathspec"])==b"\0".join(r["target"].encode() for r in rows)+b"\0"
+assert not (B/"evidence/pending-v37-progress-and-negative-archive-intake-20261021").exists()
+assert not (M/"verification/native-v37-admission-build-runtime-negative-and-fixture-closure-20261021").exists()
+# Source review anchors are checked as bytes, never executed or compiled.
+anchors=[
+ b'updated["preserved_attempts"].extend([copy.deepcopy(initial_record),copy.deepcopy(build_record),copy.deepcopy(negative_record)])',
+ b'updated["retained_recent_native_negatives"].extend([copy.deepcopy(initial_record),copy.deepcopy(negative_record)])',
+ b'updated["execution_checkpoint_history"].append(copy.deepcopy(old["current_execution_checkpoint"]))',
+ b'next_plan["selected_current_source_roots"] = selected_current_roots',
+ b'next_plan["new_source_roots_are_original_historical_pins"] = True',
+ b'"source_intake_authorized":False,"native_execution":False',
+ b'current[:len(items)]==items',b'inverse==old and encode(inverse)==old_progress_raw',
+ b'with target.open("xb") as f:',b'fixture_before[target] = before',
+ b'require(changed==set(names),"complete fixture commit delta")',
+]
+for text in anchors:assert text in new,text
+state()
+for name,raw in memo.items():assert Path(name).read_bytes()==raw,name
+out={"schema":1,"status":"independent_static_v37_progress_archive_preparer_source_checks_passed",
+"candidate":record(v["candidate"]["path"],new),"baseline":f["baseline"],"parent_finite_adaptation":record(D/"finite-source-adaptation.json",memo[str(D/"finite-source-adaptation.json")]),
+"schema_correction":record(D/"initial-outer-schema-correction.json",memo[str(D/"initial-outer-schema-correction.json")]),
+"source_specifications":83,"source_steps":84,"schema_gate_steps":1,"every_intermediate_hash_exact":True,"complete_forward_and_raw_inverse":True,
+"step_hash_chain":[{k:r[k] for k in ("specification","occurrence","offset","before_sha256","after_sha256")} for r in steps],
+"unchanged_helpers":f["unchanged_helpers"],"only_changed_helper":"original_inventory","unchanged_critical_regions":f["unchanged_critical_regions"],
+"inventory":{"phase_files":122,"initial_control_files":7,"additional_files":53,"total_distinct_versions":182,"memberships":memberships,"pins":versions},
+"original_outcomes":{"initial_admission":{"groups_attempted":0,"metadata_count":None,"proof_absent":True},"retry1_buildquery":{"groups":4,"actual_metadata":61,"current_files_historically_rehashed":34354},"retry1_strict_runtime":{"started":19,"completed":19,"failed_indices":[5,10,11,12,16],"passed":14,"unstarted":42,"current_files_historically_rehashed":34365},"regression63":{"issued":False,"attempted":False,"future_metadata_count":None}},
+"original_full_bookends":bookends,"compression_executed":False,
+"history":{"prior_progress_bytes":len(prior),"prior_progress_sha256":sha(prior),"same_raw_bytes_in_basis_and_fixture_commit":True,"original_list_lengths":lengths,"current_root_pins":roots,"complete_history_inverse_block_preserved":True},
+"fixture":{"receipt":record(receipt_path,memo[str(receipt_path)]),"release":record(release_path,memo[str(release_path)]),"parent":BASIS,"commit":HEAD,"exact_commit_path_count":44,"existing_source_replacements":2,"all_donor_and_committed_bytes_equal":True,"native_qualification":False},
+"unissued_configuration":{"pin":record(D/"unissued-root-configuration.json",read(D/"unissued-root-configuration.json")),"non_null_pins":27,"required_config_keys":sorted(required),"remaining_review_handoff_time_unresolved":True,"all_authority_false":True},
+"checked_input_count":len(memo),"checked_inputs":[record(k,memo[k]) for k in sorted(memo,key=str.casefold)],
+"main_clean_unchanged_during_review":True,"source_only":True,"target_executed":False,"prefix_executed":False,"helper_executed":False,"preparer_executed":False,"generated_archive_or_manifest":False,"Main_written":False,"native_execution_authorized":False,"application_qualified":False}
+# FINAL EVIDENCE OUTPUT: the sole file write, inside this assigned worktree.
+raw=(json.dumps(out,indent=2)+"\n").encode()
+dest=OUT/"source-audit.json";assert not dest.exists()
+with dest.open("xb") as h:h.write(raw)
+assert dest.read_bytes()==raw
+print(json.dumps({"proof":record(dest,raw),"checked_inputs":len(memo),"inventory_versions":182,"target_executed":False}))

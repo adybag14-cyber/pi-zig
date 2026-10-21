@@ -1,0 +1,39 @@
+{
+  "mode": "BuildQuery",
+  "group": "native-vm-error-constructor-name",
+  "compile": [
+    "build",
+    "build-native-vm-error-constructor-name",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-Ddiagnostic-tests=false",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--prefix",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\installed",
+    "--cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache",
+    "--global-cache-dir",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\global-cache",
+    "--summary",
+    "all"
+  ],
+  "metadata": [
+    "--listen=-"
+  ],
+  "runtime": [
+    "--listen=-"
+  ],
+  "expected_names": [],
+  "expected_count": null,
+  "named_controls": 24,
+  "source_seal_scope": "whole_batch",
+  "cache_authority": "One initially fresh private cache pair; serial exact-head group compilation; no seed lineage",
+  "compile_seconds": 1320,
+  "metadata_seconds": 30,
+  "runtime_whole_group_seconds": 120,
+  "pipe_settle_seconds": 10,
+  "installed_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\installed\\bin\\native-vm-error-constructor-name.exe",
+  "installed_pdb": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-vm-error-constructor-name\\installed\\bin\\test.pdb"
+}

@@ -1,0 +1,294 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_independent_source_peer_of_exact_v37_retry1_negative_runtime_auditor",
+  "reviewer": "/root/handover_review",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\Audit-NegativeV36New4StrictRuntime.py",
+    "bytes": 47948,
+    "sha256": "5B32C5507CE78E1DB6BF0CB2AC1FE1ED8A48232E76AA6EFF3378034CF76F0DE0"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\candidate\\Audit-NegativeV37Retry1New4StrictRuntime.py",
+    "bytes": 47992,
+    "sha256": "77B7214537A583410F686B560FA158097087C836C5A7DD34345FE8ED5266ECC8"
+  },
+  "captured_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\candidate\\independent-negative-runtime-audit-inputs.json",
+    "bytes": 11361,
+    "sha256": "7B5903FF048D7545C9DE37089413BAED532EA7FFDFD7F556EF4631D287BDCD8C"
+  },
+  "finite_source_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 26166,
+    "sha256": "34DCA9D9D9C03E881FA0372FBA8FDF06BCAC7C8A5C185A3E1B4EB5E43324C8CB"
+  },
+  "finite_input_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\finite-input-adaptation.json",
+    "bytes": 28846,
+    "sha256": "C00A728B2B60F414DA00C5FB3A14E7E734031FA0520760DA87BF179CAFBDBEED"
+  },
+  "module_static_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\static-source-proof.json",
+    "bytes": 17263,
+    "sha256": "071804AC6CC94331205A322C34A6423F66B674D7E8FD7BD48472B3C93AC6D7E0"
+  },
+  "module_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\handoff.json",
+    "bytes": 11400,
+    "sha256": "E4E8518F73862F6023A99C8CAC599B332BD86FB4681F1AE9BF15E2A617DFF10F"
+  },
+  "independent_inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v37-retry1-negative-runtime-auditor-source-peer-20261021\\peer-inputs.json",
+    "bytes": 9839,
+    "sha256": "B2C9E1F80CD55D1EAF5F759A7DBB9778943BEE53295A93D81BC85E02FA529FD6"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v37-retry1-negative-runtime-auditor-source-peer-20261021\\independent-static-peer.py",
+    "bytes": 18143,
+    "sha256": "C7844D72E6043901C74A9C247D90C543A8A5A9CE18FACC6A879D3E41B4B0893E"
+  },
+  "independent_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v37-retry1-negative-runtime-auditor-source-peer-20261021\\source-proof.json",
+    "bytes": 58885,
+    "sha256": "E6ED583C8EFB2C47853C7B87589BF8B4F561BCE46F8D2E86FA11F70685418859"
+  },
+  "source_review": {
+    "complete_baseline_and_candidate_read": true,
+    "source_specifications": 34,
+    "source_steps": 39,
+    "all_intermediate_hashes_and_complete_raw_forward_inverse": true,
+    "nonliteral_tokens_and_AST_identical_after_three_explicit_failed_index_data_rewrites": true,
+    "complete_unchanged_helpers": [
+      {
+        "name": "require",
+        "bytes": 64,
+        "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB",
+        "byte_identical": true
+      },
+      {
+        "name": "utc_ticks",
+        "bytes": 576,
+        "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245",
+        "byte_identical": true
+      },
+      {
+        "name": "read",
+        "bytes": 77,
+        "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E",
+        "byte_identical": true
+      },
+      {
+        "name": "digest",
+        "bytes": 151,
+        "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC",
+        "byte_identical": true
+      },
+      {
+        "name": "pin",
+        "bytes": 94,
+        "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C",
+        "byte_identical": true
+      },
+      {
+        "name": "verify_pins",
+        "bytes": 568,
+        "sha256": "5576E465D77460F5AE653A28E3513FBCF8A935CF87A29D444F5239CB153B3EA6",
+        "byte_identical": true
+      }
+    ],
+    "complete_unchanged_critical_regions": [
+      {
+        "name": "all_current_directory_inventories_and_hash_loop",
+        "baseline_offset": 24528,
+        "candidate_offset": 24566,
+        "bytes": 899,
+        "sha256": "46E46FE7055166997D19526EE80B81B52C2AE8E986DA2C5C9620B52C8370955A",
+        "byte_identical": true
+      },
+      {
+        "name": "complete_cached_installed_PE_PDB_inventory",
+        "baseline_offset": 25850,
+        "candidate_offset": 25888,
+        "bytes": 3597,
+        "sha256": "94D6FA1CF5109BB725D22D2A4E0BBBA42A9E8C8B96986B014C49E51D078AE5F2",
+        "byte_identical": true
+      },
+      {
+        "name": "actual_native_retained_live_deadline_admission_ancestry",
+        "baseline_offset": 32462,
+        "candidate_offset": 32496,
+        "bytes": 3509,
+        "sha256": "57A318D3BF9BB54584BCB674C5AF4BC9C9782AA493334448FB8883B60ECE928A",
+        "byte_identical": true
+      },
+      {
+        "name": "original_negative_owner_and_postcheck_gates",
+        "baseline_offset": 35971,
+        "candidate_offset": 36005,
+        "bytes": 1232,
+        "sha256": "D602918789A7AEAE0F9356FDDBBE4D2551A2D088ABB1CA29D8B62544C7C68159",
+        "byte_identical": true
+      },
+      {
+        "name": "complete_raw_runtime_decoder",
+        "baseline_offset": 37396,
+        "candidate_offset": 37430,
+        "bytes": 1267,
+        "sha256": "E2CD4564BD057927C12C38639D4FBBF84D4A1D6B3F076064C2752278B36FB2EF",
+        "byte_identical": true
+      },
+      {
+        "name": "strict_runtime_grant_and_launcher_complete_inverse",
+        "baseline_offset": 14694,
+        "candidate_offset": 14732,
+        "bytes": 1716,
+        "sha256": "617369AFB393D6F01FBF664B6BEF6D682FA3299D5CE5F959A50A4EE413DDE51B",
+        "byte_identical": true
+      },
+      {
+        "name": "unchanged_V34_runtime_baselines_and_all_strict_fields",
+        "baseline_offset": 16410,
+        "candidate_offset": 16448,
+        "bytes": 2076,
+        "sha256": "E49BC5DEFABFD0059274A098ADD712BD643EFEDB0C0CB9CA0555D70B4ADB440A",
+        "byte_identical": true
+      },
+      {
+        "name": "original_outer_owner_deadline_and_absence",
+        "baseline_offset": 40229,
+        "candidate_offset": 40267,
+        "bytes": 1656,
+        "sha256": "35212B31EDE85903D598036A4321E749D3C8F7B125F32377D1EFE46C2E33729E",
+        "byte_identical": true
+      },
+      {
+        "name": "original_terminal_job_and_four_instance_intervals",
+        "baseline_offset": 42104,
+        "candidate_offset": 42142,
+        "bytes": 1381,
+        "sha256": "03D0033D700F4259BEBF2E8F54A7D1255D5B1C21017D0F4A311FE068217CD9E7",
+        "byte_identical": true
+      },
+      {
+        "name": "current_complete_process_instance_reconciliation",
+        "baseline_offset": 44501,
+        "candidate_offset": 44539,
+        "bytes": 881,
+        "sha256": "8DF01EE5A3E0CDB7493A317A801F21AC555AC45F019D7E2DA07BD7D26A434A62",
+        "byte_identical": true
+      }
+    ],
+    "configuration_key_inventory": 50,
+    "changed_configuration_fields": 34,
+    "complete_configuration_raw_inverse": true,
+    "referenced_file_versions_rehashed": 87
+  },
+  "original_outcome": {
+    "accepted_metadata": 61,
+    "granted_groups": 4,
+    "declared_controls": 58,
+    "attempted_groups": 1,
+    "unstarted_groups": 3,
+    "wire": {
+      "bytes": 546,
+      "sha256": "28AC47910B5D5309DD1A1454816A2C051A0E420C51BD0827D4EC61F5D5528C9E",
+      "started": 19,
+      "completed": 19,
+      "failed": 5,
+      "passed": 14,
+      "not_started": 42,
+      "failed_names": [
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 5,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 10,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 11,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 12,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner failed GC close queues one refed actual UVException ticket"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 16,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity"
+        }
+      ]
+    },
+    "bookends": {
+      "bytes": 15938792,
+      "sha256": "DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7",
+      "byte_identical": true,
+      "counts": {
+        "source": 14785,
+        "tree": 14798,
+        "vendor": 1489,
+        "compiler": 19546,
+        "controls": 25
+      }
+    },
+    "stderr": {
+      "bytes": 68389,
+      "sha256": "1BB42117F374DECBF5C91100686DF7DA7D686A285ECF9F874423D5799AF945ED"
+    },
+    "native_exit_code": 0,
+    "native_owner_binding_valid": false,
+    "original_owner_rejection": "Only original nonempty strict runtime stderr invalidated the otherwise terminal-zero native owner; all five protocol failures remain preserved.",
+    "outer_exit_code": 1,
+    "job_exit_code": 1,
+    "original_job": "job-op-4d0480e45249519d20b8b2acade1b1e10a0c17a5aa1d8c53cd86b89c6f456f1b",
+    "utc100ns_offset_equivalence_exact": true
+  },
+  "canonical_placement": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\Audit-NegativeV37Retry1New4StrictRuntime.py",
+      "bytes": 47992,
+      "sha256": "77B7214537A583410F686B560FA158097087C836C5A7DD34345FE8ED5266ECC8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-audit-inputs.json",
+      "bytes": 11361,
+      "sha256": "7B5903FF048D7545C9DE37089413BAED532EA7FFDFD7F556EF4631D287BDCD8C"
+    }
+  ],
+  "current_control_placement_by": "Root; create-only intervening placement independently verified byte-identical while this source peer completed.",
+  "no_bounded_source_blocker_found": true,
+  "limitations": [
+    "This source peer did not execute the candidate, any prefix, constructor, helper or native process.",
+    "Full current source/tree/vendor/compiler/control inventories, all cached/installed artifacts and current native/outer/job instance absence remain obligations of the separately authorized Root audit.",
+    "The original runtime-raw-frame-observation.json is pinned driver evidence, never independent acceptance authority.",
+    "No application, runtime or source-mutation release is implied by this source peer."
+  ],
+  "source_only": true,
+  "candidate_executed": false,
+  "prefix_executed": false,
+  "constructor_executed": false,
+  "helper_executed": false,
+  "current_seal_audit_executed": false,
+  "fresh_process_audit_executed": false,
+  "native_executed": false,
+  "Main_written": false,
+  "original_run_files_mutated": false,
+  "audit_execution_authorized": false,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "reviewed_at_utc": "2026-10-21T13:48:57.949261+00:00"
+}

@@ -1,0 +1,1306 @@
+{
+  "schema": 1,
+  "status": "independent_static_source_peer_passed",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\Audit-NegativeV36New4StrictRuntime.py",
+    "bytes": 47948,
+    "sha256": "5B32C5507CE78E1DB6BF0CB2AC1FE1ED8A48232E76AA6EFF3378034CF76F0DE0"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\candidate\\Audit-NegativeV37Retry1New4StrictRuntime.py",
+    "bytes": 47992,
+    "sha256": "77B7214537A583410F686B560FA158097087C836C5A7DD34345FE8ED5266ECC8"
+  },
+  "configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\candidate\\independent-negative-runtime-audit-inputs.json",
+    "bytes": 11361,
+    "sha256": "7B5903FF048D7545C9DE37089413BAED532EA7FFDFD7F556EF4631D287BDCD8C"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 26166,
+    "sha256": "34DCA9D9D9C03E881FA0372FBA8FDF06BCAC7C8A5C185A3E1B4EB5E43324C8CB"
+  },
+  "independent_inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v37-retry1-negative-runtime-auditor-source-peer-20261021\\peer-inputs.json",
+    "bytes": 9839,
+    "sha256": "B2C9E1F80CD55D1EAF5F759A7DBB9778943BEE53295A93D81BC85E02FA529FD6"
+  },
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v37-retry1-negative-runtime-auditor-source-peer-20261021\\independent-static-peer.py",
+    "bytes": 18143,
+    "sha256": "C7844D72E6043901C74A9C247D90C543A8A5A9CE18FACC6A879D3E41B4B0893E"
+  },
+  "source_steps": 39,
+  "source_specifications": 34,
+  "all_intermediate_hashes_and_complete_raw_forward_inverse": true,
+  "unchanged_helpers": [
+    {
+      "name": "require",
+      "bytes": 64,
+      "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB",
+      "byte_identical": true
+    },
+    {
+      "name": "utc_ticks",
+      "bytes": 576,
+      "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245",
+      "byte_identical": true
+    },
+    {
+      "name": "read",
+      "bytes": 77,
+      "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E",
+      "byte_identical": true
+    },
+    {
+      "name": "digest",
+      "bytes": 151,
+      "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC",
+      "byte_identical": true
+    },
+    {
+      "name": "pin",
+      "bytes": 94,
+      "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C",
+      "byte_identical": true
+    },
+    {
+      "name": "verify_pins",
+      "bytes": 568,
+      "sha256": "5576E465D77460F5AE653A28E3513FBCF8A935CF87A29D444F5239CB153B3EA6",
+      "byte_identical": true
+    }
+  ],
+  "unchanged_critical_regions": [
+    {
+      "name": "all_current_directory_inventories_and_hash_loop",
+      "baseline_offset": 24528,
+      "candidate_offset": 24566,
+      "bytes": 899,
+      "sha256": "46E46FE7055166997D19526EE80B81B52C2AE8E986DA2C5C9620B52C8370955A",
+      "byte_identical": true
+    },
+    {
+      "name": "complete_cached_installed_PE_PDB_inventory",
+      "baseline_offset": 25850,
+      "candidate_offset": 25888,
+      "bytes": 3597,
+      "sha256": "94D6FA1CF5109BB725D22D2A4E0BBBA42A9E8C8B96986B014C49E51D078AE5F2",
+      "byte_identical": true
+    },
+    {
+      "name": "actual_native_retained_live_deadline_admission_ancestry",
+      "baseline_offset": 32462,
+      "candidate_offset": 32496,
+      "bytes": 3509,
+      "sha256": "57A318D3BF9BB54584BCB674C5AF4BC9C9782AA493334448FB8883B60ECE928A",
+      "byte_identical": true
+    },
+    {
+      "name": "original_negative_owner_and_postcheck_gates",
+      "baseline_offset": 35971,
+      "candidate_offset": 36005,
+      "bytes": 1232,
+      "sha256": "D602918789A7AEAE0F9356FDDBBE4D2551A2D088ABB1CA29D8B62544C7C68159",
+      "byte_identical": true
+    },
+    {
+      "name": "complete_raw_runtime_decoder",
+      "baseline_offset": 37396,
+      "candidate_offset": 37430,
+      "bytes": 1267,
+      "sha256": "E2CD4564BD057927C12C38639D4FBBF84D4A1D6B3F076064C2752278B36FB2EF",
+      "byte_identical": true
+    },
+    {
+      "name": "strict_runtime_grant_and_launcher_complete_inverse",
+      "baseline_offset": 14694,
+      "candidate_offset": 14732,
+      "bytes": 1716,
+      "sha256": "617369AFB393D6F01FBF664B6BEF6D682FA3299D5CE5F959A50A4EE413DDE51B",
+      "byte_identical": true
+    },
+    {
+      "name": "unchanged_V34_runtime_baselines_and_all_strict_fields",
+      "baseline_offset": 16410,
+      "candidate_offset": 16448,
+      "bytes": 2076,
+      "sha256": "E49BC5DEFABFD0059274A098ADD712BD643EFEDB0C0CB9CA0555D70B4ADB440A",
+      "byte_identical": true
+    },
+    {
+      "name": "original_outer_owner_deadline_and_absence",
+      "baseline_offset": 40229,
+      "candidate_offset": 40267,
+      "bytes": 1656,
+      "sha256": "35212B31EDE85903D598036A4321E749D3C8F7B125F32377D1EFE46C2E33729E",
+      "byte_identical": true
+    },
+    {
+      "name": "original_terminal_job_and_four_instance_intervals",
+      "baseline_offset": 42104,
+      "candidate_offset": 42142,
+      "bytes": 1381,
+      "sha256": "03D0033D700F4259BEBF2E8F54A7D1255D5B1C21017D0F4A311FE068217CD9E7",
+      "byte_identical": true
+    },
+    {
+      "name": "current_complete_process_instance_reconciliation",
+      "baseline_offset": 44501,
+      "candidate_offset": 44539,
+      "bytes": 881,
+      "sha256": "8DF01EE5A3E0CDB7493A317A801F21AC555AC45F019D7E2DA07BD7D26A434A62",
+      "byte_identical": true
+    }
+  ],
+  "all_nonliteral_tokens_and_AST_identical_after_three_explicit_failed_index_data_rewrites": true,
+  "input_keys": 50,
+  "changed_input_fields": 34,
+  "input_field_changes": [
+    {
+      "key": "status",
+      "before": "specific_original_v36_new4_strict_runtime_negative_inputs_for_root_review",
+      "after": "specific_original_v37_retry1_new4_strict_runtime_negative_inputs_for_root_review"
+    },
+    {
+      "key": "control",
+      "before": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608",
+      "after": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912"
+    },
+    {
+      "key": "proof",
+      "before": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608",
+      "after": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912"
+    },
+    {
+      "key": "candidate_head",
+      "before": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+      "after": "b13be24e44cc1bbc361639eb35900a368ae60eac"
+    },
+    {
+      "key": "preparation",
+      "before": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-new4-prepared-20261020",
+      "after": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021"
+    },
+    {
+      "key": "build_control",
+      "before": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944",
+      "after": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435"
+    },
+    {
+      "key": "build_proof",
+      "before": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-buildquery-20261021-080944",
+      "after": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435"
+    },
+    {
+      "key": "runtime_result_sha256",
+      "before": "09913304EA1EFD7235477C0DA4A7B0AE705B7E5BF20DDAAA9C29C3F5C3E50461",
+      "after": "66E9CE52981B6DA16C7A1F79EE596FA98754E5F69E435FDF0A36EB3AB8139165"
+    },
+    {
+      "key": "runtime_before_sha256",
+      "before": "18F842DD770EB1B53E9931A015D544C9D631F60FC40C1C06FC9487DDCD5FC20C",
+      "after": "DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7"
+    },
+    {
+      "key": "runtime_final_sha256",
+      "before": "18F842DD770EB1B53E9931A015D544C9D631F60FC40C1C06FC9487DDCD5FC20C",
+      "after": "DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7"
+    },
+    {
+      "key": "runtime_grant_sha256",
+      "before": "3DF78ED69728EE99A2BA4C37B319FC49BDAAFAA247407A4B5DE6E38176F642EE",
+      "after": "748C056A5CADFD40EB0B8E072D94CF816DA1FC2D21EA51D7D4C62FD2B31972E3"
+    },
+    {
+      "key": "runtime_launch_sha256",
+      "before": "AF09BB130C204818A16B59D68E6A9F91CB3CDD9B0EDE2422851A34AF0BEA8891",
+      "after": "EFFCCF89CC41F26FFEA62A78C4F08534DC4B1E9F1D2CE1874573DFB252641AF3"
+    },
+    {
+      "key": "runtime_configuration_sha256",
+      "before": "BB724400FEF15FC6760B60B897CAFD003C4050C4093A1F07F30763C3923C2859",
+      "after": "A5783FA11462C9DF73698648E9A2128E45D0EA9CA1BB5E56F2550AADD31C0998"
+    },
+    {
+      "key": "runtime_grant_launch_adaptation_sha256",
+      "before": "EDF2C276E7D420219B76698AB1FEE9072BC523545AAF5FEC2AC6CBFC9B014E2C",
+      "after": "16FD4C55F273B52A90932829E3910D185CDA934D24C83BD22B16F1A52E7430C2"
+    },
+    {
+      "key": "runtime_grant_preparer",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV36RuntimeGrant-20261020-v2.py",
+        "bytes": 12499,
+        "sha256": "0F66B94F62D7F2B3F20B514006C16F54FBA5C1AC6E7ECEB0A58E84EC7738538C"
+      },
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37RuntimeGrant-Retry1-20261021.py",
+        "bytes": 12513,
+        "sha256": "414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0"
+      }
+    },
+    {
+      "key": "runtime_constructor_source_review_sha256",
+      "before": "5504DFAC9B9251126D8C0FCB8DE9412A8441CD53E2932DB815335450BC2044D9",
+      "after": "67148BD40AA1DACA49B6575CD22853CCD56229D95517CC58E7897A89ABCA9F77"
+    },
+    {
+      "key": "buildquery_launch_sha256",
+      "before": "DCFF0F2425568AC169DBC30AFD237E2F008CD1367FD076AEA9D424A61F2C3397",
+      "after": "02B61D9076D6E5DD5E870722D939DDF53EBB21293FEB231692B807D26A9FE88A"
+    },
+    {
+      "key": "preparation_review_sha256",
+      "before": "00EB18EB73351D5242652C615C88F5241D00103410F49B866A063C2C823A2C64",
+      "after": "CC5D3FF8C0FFD05B78EC524EFB6E9F642F15A5648FECD3DA0DDEF9FA0C0B29D9"
+    },
+    {
+      "key": "build_result_sha256",
+      "before": "311113328569FB8BBD39AC5F8F19D90EEBEA8A3B7E0415731DFA4682BA9D0DA8",
+      "after": "8A86FD362D0E48FABAB9BE0F6E6902BECDDDA8F4F779AE8E73FB6492D927DBFC"
+    },
+    {
+      "key": "build_final_sha256",
+      "before": "BC2672711FDE7526D8A94EAE376F3DC458C6A0DE3E7025303035FC9B89416428",
+      "after": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27"
+    },
+    {
+      "key": "metadata_acceptance_sha256",
+      "before": "84B8758A2C6ABD2E1FF34AFC4E2714B68A3922BE4857C19ADB1143B6DABD0F48",
+      "after": "6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B"
+    },
+    {
+      "key": "independent_build_closure_sha256",
+      "before": "5569A62842A16A5F1A48022A5D6EB78F06808B73E22772FA3C4CAB7A89B2FE4A",
+      "after": "7299F65541DED34F87D3671FAA895C2F0E9B2C8B9149AE4757DE466B5FD11382"
+    },
+    {
+      "key": "root_buildquery_acceptance_sha256",
+      "before": "B54DAE7F3999880FFCA7FDC7D7C73A47B3003BFE9A4776E978C7413D4455268E",
+      "after": "30CF28F108FCA7C9210237E23A1253AA7B6F93E534DA099E1E9738AF2D71877B"
+    },
+    {
+      "key": "outer_sha256",
+      "before": "38E91B71886BC30B1C788928AAE84C2A8758115107E3D10CC16DFA254160C656",
+      "after": "871048AF7C8680EA81D87C8A0BC535F19AE9E5CDE7B10012B5955516639BCE31"
+    },
+    {
+      "key": "outer_absence_sha256",
+      "before": "BA502A50CAA22825BC5CFF20431AC867A9A1CE6D9CFFB7EF16E79BE109500F86",
+      "after": "E062823ADA5AE0C0822FF4300D937F88B822DA4087F53514E1EB046D9FD4E408"
+    },
+    {
+      "key": "outer_pid",
+      "before": 55612,
+      "after": 51836
+    },
+    {
+      "key": "job_observation_sha256",
+      "before": "CD65F6E08E83A4B24E94B4AC816F415F0626C8FACE184E51F824BA6595B64CE1",
+      "after": "F5DA6BCCFFA59A176902EE387F4DE2A130C399DEB7C584BBE73D2A3E0FFFA870"
+    },
+    {
+      "key": "job",
+      "before": {
+        "id": "job-op-c8c6744c3b5afaed7a7ee43db871f1edb0abd5430430ea7671ffec45962bfdb4",
+        "status": "failed",
+        "mode": "program",
+        "createdAtUtc": "2026-10-21T08:26:27.198Z",
+        "startedAtUtc": "2026-10-21T08:26:27.272Z",
+        "completedAtUtc": "2026-10-21T08:27:47.059Z",
+        "runnerPid": 30712,
+        "exitCode": 1,
+        "readOnly": false,
+        "resourceClass": "heavy",
+        "runtimeMode": "host",
+        "queuedAtUtc": "2026-10-21T08:26:27.249Z",
+        "runnerProcessInstance": "134370447872177862",
+        "queueWaitMs": 9,
+        "executionSlot": 4,
+        "executionSlots": [
+          4,
+          3
+        ],
+        "executionPool": "execution",
+        "executionWeight": 2,
+        "childPid": 18388,
+        "error": "Owned terminal failed: C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "logs": {
+          "stdout": {
+            "maxBytes": 33554432,
+            "rotations": 2,
+            "rotationsPerformed": 0,
+            "totalBytes": 0,
+            "currentBytes": 0,
+            "truncated": false,
+            "failed": false,
+            "error": null
+          },
+          "stderr": {
+            "maxBytes": 33554432,
+            "rotations": 2,
+            "rotationsPerformed": 0,
+            "totalBytes": 63,
+            "currentBytes": 63,
+            "truncated": false,
+            "failed": false,
+            "error": null
+          },
+          "truncated": false
+        },
+        "runnerAlive": false,
+        "jobDir": "C:\\Users\\adyba\\docker-chatgpt-devbox\\run\\jobs\\job-op-c8c6744c3b5afaed7a7ee43db871f1edb0abd5430430ea7671ffec45962bfdb4"
+      },
+      "after": {
+        "id": "job-op-4d0480e45249519d20b8b2acade1b1e10a0c17a5aa1d8c53cd86b89c6f456f1b",
+        "status": "failed",
+        "mode": "program",
+        "createdAtUtc": "2026-10-21T13:29:50.856Z",
+        "startedAtUtc": "2026-10-21T13:29:50.929Z",
+        "completedAtUtc": "2026-10-21T13:31:14.227Z",
+        "runnerPid": 9880,
+        "exitCode": 1,
+        "readOnly": false,
+        "resourceClass": "heavy",
+        "runtimeMode": "host",
+        "queuedAtUtc": "2026-10-21T13:29:50.903Z",
+        "runnerProcessInstance": "134370629908773270",
+        "queueWaitMs": 10,
+        "executionSlot": 4,
+        "executionSlots": [
+          4,
+          3
+        ],
+        "executionPool": "execution",
+        "executionWeight": 2,
+        "childPid": 30808,
+        "error": "Owned terminal failed: C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "logs": {
+          "stdout": {
+            "maxBytes": 33554432,
+            "rotations": 2,
+            "rotationsPerformed": 0,
+            "totalBytes": 0,
+            "currentBytes": 0,
+            "truncated": false,
+            "failed": false,
+            "error": null
+          },
+          "stderr": {
+            "maxBytes": 33554432,
+            "rotations": 2,
+            "rotationsPerformed": 0,
+            "totalBytes": 63,
+            "currentBytes": 63,
+            "truncated": false,
+            "failed": false,
+            "error": null
+          },
+          "truncated": false
+        },
+        "runnerAlive": false,
+        "jobDir": "C:\\Users\\adyba\\docker-chatgpt-devbox\\run\\jobs\\job-op-4d0480e45249519d20b8b2acade1b1e10a0c17a5aa1d8c53cd86b89c6f456f1b"
+      }
+    },
+    {
+      "key": "selected",
+      "before": [
+        {
+          "group": "native-node-file-handle-owner",
+          "pid": 4248,
+          "created": "2026-10-21T08:27:07.5176059Z",
+          "owner_sha": "5D92E2E3EDDD744ABFBA71D4DF9386DCC3A010CFBA06C8C0288564C5F87E15F3",
+          "stdout_sha": "FE185ABB9B92CC5249217C8E1D49A3BB0166859C051FF5091AF01E72AAF0D9BC",
+          "stderr_sha": "E974EC5E5AA6B6EB9FC5BBFF3CC3826DFD7AF8CB3052AC10B4BF38CA8DC6ED0C",
+          "stdout_bytes": 546,
+          "count": 19,
+          "failed": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17
+          ]
+        }
+      ],
+      "after": [
+        {
+          "group": "native-node-file-handle-owner",
+          "pid": 48028,
+          "created": "2026-10-21T13:30:33.3955731Z",
+          "owner_sha": "73AE870C555B868366E33B52366E42E99BADF550B5AEA4DFD35251993809D659",
+          "stdout_sha": "28AC47910B5D5309DD1A1454816A2C051A0E420C51BD0827D4EC61F5D5528C9E",
+          "stderr_sha": "1BB42117F374DECBF5C91100686DF7DA7D686A285ECF9F874423D5799AF945ED",
+          "stdout_bytes": 546,
+          "count": 19,
+          "failed": [
+            5,
+            10,
+            11,
+            12,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "key": "seal_counts",
+      "before": {
+        "source": 14591,
+        "tree": 14604,
+        "vendor": 1489,
+        "compiler": 19546,
+        "controls": 25
+      },
+      "after": {
+        "source": 14785,
+        "tree": 14798,
+        "vendor": 1489,
+        "compiler": 19546,
+        "controls": 25
+      }
+    },
+    {
+      "key": "observed_failed",
+      "before": 18,
+      "after": 5
+    },
+    {
+      "key": "failed_names",
+      "before": [
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 0,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner constructor attaches the same native stream and transfers the real descriptor on release"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 1,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner optional Number IntegerValue follows pinned V8 truncation and saturation"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 2,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner non Number optional arguments perform no guest coercion"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 3,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner keeps the full public method template an explicit dependency"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 4,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner explicit close keeps one Promise and one actual CLOSE request through cleanup"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 5,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 6,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner real stopped service admission rejects without fabricating completion or closing the descriptor"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 7,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner retained CloseReq wrapper loses native state after both callback references retire"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 8,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner CloseReq Global keeps the handle and weak BindingData alive until actual completion"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 9,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner GC closes synchronously and the warning ticket retains no handle or BindingData"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 10,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 11,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 12,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner failed GC close queues one refed actual UVException ticket"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 13,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner cleanup skips unrefed GC warning execution and destroys its native capture"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 14,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner GC uses the retained real service for synchronous close after worker join"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 15,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner consumes the real read engine and reuses its physical ReadWrap across concrete handles"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 16,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 17,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner real Hub shutdown drains accepted close without settling its guest Promise"
+        }
+      ],
+      "after": [
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 5,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 10,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 11,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 12,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner failed GC close queues one refed actual UVException ticket"
+        },
+        {
+          "group": "native-node-file-handle-owner",
+          "index": 16,
+          "flags": 1,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity"
+        }
+      ]
+    },
+    {
+      "key": "original_attempted_group_files",
+      "before": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\commands.json",
+          "bytes": 4396,
+          "sha256": "077C8D74859C1B0F67C4F0EE3DCDA46E66826FFEDB07FF15B546F7EB45E739E6"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\final-artifacts.json",
+          "bytes": 3130,
+          "sha256": "8B33C819EE4F3400D2A9974323F566061704FD365627B950CD22C2CDE838260C"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\result-provisional.json",
+          "bytes": 8453,
+          "sha256": "0C5BA6227DC2288C89A620754763EBD2E5DABA4DED54166FF479B3D512F4EF9A"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\result.json",
+          "bytes": 8451,
+          "sha256": "2B8E34184346879681BA7CA88E7268C357F881127B6ED006A0E24884DE046611"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\runtime-absence.json",
+          "bytes": 4753,
+          "sha256": "3A187C4898D1D4182AD9133543741FA4604749A28508189C0AD4ADB9DB204520"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\runtime-admission.json",
+          "bytes": 578,
+          "sha256": "D3ED11BD9468D6482E4DD0DDB1D3C82346B36685BC9BDE05F4D68CDC3408690D"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\runtime-after-artifacts.json",
+          "bytes": 3130,
+          "sha256": "8B33C819EE4F3400D2A9974323F566061704FD365627B950CD22C2CDE838260C"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\runtime-before-artifacts.json",
+          "bytes": 3130,
+          "sha256": "8B33C819EE4F3400D2A9974323F566061704FD365627B950CD22C2CDE838260C"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\runtime-prerequisite-artifacts.json",
+          "bytes": 3130,
+          "sha256": "8B33C819EE4F3400D2A9974323F566061704FD365627B950CD22C2CDE838260C"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\runtime-raw-frame-observation.json",
+          "bytes": 2947,
+          "sha256": "C5F1DF5D9F1526817C38415D3DFB53160CE6B467FD4C82D071B7278AB0983E64"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\runtime.json",
+          "bytes": 1226,
+          "sha256": "5D92E2E3EDDD744ABFBA71D4DF9386DCC3A010CFBA06C8C0288564C5F87E15F3"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\runtime.results.json",
+          "bytes": 2057,
+          "sha256": "0977624B7A6C47AE764394866CF578B55DC134E9EC0B69D8FBB047E418625FB6"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\runtime.stderr.log",
+          "bytes": 45026,
+          "sha256": "E974EC5E5AA6B6EB9FC5BBFF3CC3826DFD7AF8CB3052AC10B4BF38CA8DC6ED0C"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\runtime.stdout.bin",
+          "bytes": 546,
+          "sha256": "FE185ABB9B92CC5249217C8E1D49A3BB0166859C051FF5091AF01E72AAF0D9BC"
+        }
+      ],
+      "after": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\commands.json",
+          "bytes": 4396,
+          "sha256": "3D7016EB0EC8B7B792C972F8051A5A8BA89FAEDB2D71426E3C9B1D6B6FCD5444"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\final-artifacts.json",
+          "bytes": 3130,
+          "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\result-provisional.json",
+          "bytes": 8440,
+          "sha256": "5297D4AD7CBB4F2C56C1599173642BF75573F24F51C5FAF9EDBD2235D240B58C"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\result.json",
+          "bytes": 8438,
+          "sha256": "20387216D12CBABE8C6763CB26E0C3228897F6AAAE500E69F18B94201CC38C10"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-absence.json",
+          "bytes": 4741,
+          "sha256": "002604BED4E16E711B1E26720D5C89858C435528E7C438C3DA76AA9E3CDC281B"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-admission.json",
+          "bytes": 580,
+          "sha256": "DA15B1FF7DAEC51DAB9052A5A2F91C2345A39612227EB0A1BF0EB9B5D0DB2B15"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-after-artifacts.json",
+          "bytes": 3130,
+          "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-before-artifacts.json",
+          "bytes": 3130,
+          "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-prerequisite-artifacts.json",
+          "bytes": 3130,
+          "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-raw-frame-observation.json",
+          "bytes": 2947,
+          "sha256": "B7900534C9B3F265D43883B096D0824C5893A9E1472FC657F3D260237B032DBA"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.json",
+          "bytes": 1228,
+          "sha256": "73AE870C555B868366E33B52366E42E99BADF550B5AEA4DFD35251993809D659"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.results.json",
+          "bytes": 2043,
+          "sha256": "9B224B5628500F9018F32B6338DF13A7BA5A6DCC067C391D5D555FFE621A8B50"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stderr.log",
+          "bytes": 68389,
+          "sha256": "1BB42117F374DECBF5C91100686DF7DA7D686A285ECF9F874423D5799AF945ED"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stdout.bin",
+          "bytes": 546,
+          "sha256": "28AC47910B5D5309DD1A1454816A2C051A0E420C51BD0827D4EC61F5D5528C9E"
+        }
+      ]
+    },
+    {
+      "key": "original_outer_outputs",
+      "before": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\outer.stdout.bin",
+          "bytes": 16681,
+          "sha256": "09913304EA1EFD7235477C0DA4A7B0AE705B7E5BF20DDAAA9C29C3F5C3E50461"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\outer.stderr.log",
+          "bytes": 605,
+          "sha256": "EE11F6DF277BF5D54C20293D5D8CEC76574E458F5BC0A117B3BD17697F46E889"
+        }
+      ],
+      "after": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\outer.stdout.bin",
+          "bytes": 16657,
+          "sha256": "66E9CE52981B6DA16C7A1F79EE596FA98754E5F69E435FDF0A36EB3AB8139165"
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\outer.stderr.log",
+          "bytes": 605,
+          "sha256": "8321BACFA72BD52330EEE9B5EAAAFE6D2BCB96971451C66FBCB0CB9125CCAAA3"
+        }
+      ]
+    }
+  ],
+  "complete_input_raw_inverse": true,
+  "checked_inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\Audit-NegativeV36New4StrictRuntime.py",
+      "bytes": 47948,
+      "sha256": "5B32C5507CE78E1DB6BF0CB2AC1FE1ED8A48232E76AA6EFF3378034CF76F0DE0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\candidate\\Audit-NegativeV37Retry1New4StrictRuntime.py",
+      "bytes": 47992,
+      "sha256": "77B7214537A583410F686B560FA158097087C836C5A7DD34345FE8ED5266ECC8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\candidate\\independent-negative-runtime-audit-inputs.json",
+      "bytes": 11361,
+      "sha256": "7B5903FF048D7545C9DE37089413BAED532EA7FFDFD7F556EF4631D287BDCD8C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\finite-source-adaptation.json",
+      "bytes": 26166,
+      "sha256": "34DCA9D9D9C03E881FA0372FBA8FDF06BCAC7C8A5C185A3E1B4EB5E43324C8CB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-audit-inputs.json",
+      "bytes": 14813,
+      "sha256": "62D821EB4E6F0AD4D4F9C3278A137D355533651B5C3542BA885FADE9936AEDE4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-closure.json",
+      "bytes": 26137,
+      "sha256": "8BCCF2D351EEDC42D65C56E8605D2DD10ACFF153231552AD90F496E4668CF9AF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\result.json",
+      "bytes": 16657,
+      "sha256": "66E9CE52981B6DA16C7A1F79EE596FA98754E5F69E435FDF0A36EB3AB8139165"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\before.json",
+      "bytes": 15938792,
+      "sha256": "DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\final.json",
+      "bytes": 15938792,
+      "sha256": "DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\root-grant.json",
+      "bytes": 17445,
+      "sha256": "748C056A5CADFD40EB0B8E072D94CF816DA1FC2D21EA51D7D4C62FD2B31972E3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\runtime-launch.json",
+      "bytes": 2782,
+      "sha256": "EFFCCF89CC41F26FFEA62A78C4F08534DC4B1E9F1D2CE1874573DFB252641AF3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\grant-launch-adaptation.json",
+      "bytes": 8852,
+      "sha256": "16FD4C55F273B52A90932829E3910D185CDA934D24C83BD22B16F1A52E7430C2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\buildquery-retry1-launch.json",
+      "bytes": 2098,
+      "sha256": "02B61D9076D6E5DD5E870722D939DDF53EBB21293FEB231692B807D26A9FE88A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\preparation-review.json",
+      "bytes": 212519,
+      "sha256": "CC5D3FF8C0FFD05B78EC524EFB6E9F642F15A5648FECD3DA0DDEF9FA0C0B29D9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\result.json",
+      "bytes": 67229,
+      "sha256": "8A86FD362D0E48FABAB9BE0F6E6902BECDDDA8F4F779AE8E73FB6492D927DBFC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\final.json",
+      "bytes": 15933885,
+      "sha256": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-metadata-acceptance.json",
+      "bytes": 14153,
+      "sha256": "6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-current-seals-and-owners.json",
+      "bytes": 224405,
+      "sha256": "7299F65541DED34F87D3671FAA895C2F0E9B2C8B9149AE4757DE466B5FD11382"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\outer.json",
+      "bytes": 1612,
+      "sha256": "871048AF7C8680EA81D87C8A0BC535F19AE9E5CDE7B10012B5955516639BCE31"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\outer-absence.json",
+      "bytes": 183,
+      "sha256": "E062823ADA5AE0C0822FF4300D937F88B822DA4087F53514E1EB046D9FD4E408"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-observed-job-status.json",
+      "bytes": 1644,
+      "sha256": "F5DA6BCCFFA59A176902EE387F4DE2A130C399DEB7C584BBE73D2A3E0FFFA870"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-retry1-runtime-issued-config-20261021.json",
+      "bytes": 4448,
+      "sha256": "A5783FA11462C9DF73698648E9A2128E45D0EA9CA1BB5E56F2550AADD31C0998"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-retry1-execution-bound-source-review-20261021.json",
+      "bytes": 8935,
+      "sha256": "67148BD40AA1DACA49B6575CD22853CCD56229D95517CC58E7897A89ABCA9F77"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-retry1-complete-buildquery-acceptance-20261021.json",
+      "bytes": 3420,
+      "sha256": "30CF28F108FCA7C9210237E23A1253AA7B6F93E534DA099E1E9738AF2D71877B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\launch.ps1",
+      "bytes": 1777,
+      "sha256": "08E0E75D8D097C30F0FE539A32072E156DD949AF80FA1E48284A8D63BE6EA69E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v34-prepared-20261020\\combined-build-source-peer.json",
+      "bytes": 12133,
+      "sha256": "BEAA36175DB36CE596DB8F01C908935C6B7DBDFBA54EE07A90B7874D0423A5E4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-diagnostic-runtime-control-20261020-181658\\independent-partial-diagnostic-runtime-closure.json",
+      "bytes": 51849,
+      "sha256": "36D4EAB4F1D7A1E9632C847220F8CD6FE03DDF1FEC422C3F431F96B8519B71BD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-foundation-intake-20261020\\receipt.json",
+      "bytes": 72248,
+      "sha256": "75B8888E6AFDDA487D3BEEF9A6AFC100F6A4FF5F08CA090F03E3E43FB6F8E1C4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-control-20261020-165337\\independent-partial-compile-negative-closure.json",
+      "bytes": 32149,
+      "sha256": "CC4A348630D267A9A9F308D662CC366428C0E74A36E159B5DED41493E06DBE9C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-script-v27-constants-sourceonly-20261020\\main-intake.json",
+      "bytes": 2463,
+      "sha256": "818AB72A1CF294D9A761DB38698A3CEE1980B0C0E2EE26A0260D5971BC1EC9F9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-backing-v28-field-sourceonly-20261020\\main-intake.json",
+      "bytes": 3066,
+      "sha256": "99D365A2EFD929BE95501E02FBBA5EBDE006A19A456BC4844AD5DF8BD2B41B1A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v29-fixture-corrections-main-intake-20261020\\main-intake.json",
+      "bytes": 5941,
+      "sha256": "9954E1870B0A9DD99E4639900CD78030F625AB6C973874BE8B862ED64A78C185"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-async-wrap-callback-v30-coercion-sourceonly-20261020\\main-intake.json",
+      "bytes": 3323,
+      "sha256": "B309380148C4A99C20C0B1144D6EF873079483D338E68CFD9454BD5E1DFA2A28"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-uv-namespace-correction-20261020\\receipt.json",
+      "bytes": 2335,
+      "sha256": "E4BD386169320FD193D8F0FDE656CEBF82B9BAA0CAA7D9BE0E44EF96C0F97108"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v31-control-20261020-171134\\independent-current-seals-and-owners.json",
+      "bytes": 253761,
+      "sha256": "A7750EE7463D338AE5CB77E8D13FD7098C52941FE4EC3319252B2A1B8B6D8367"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-runtime-control-20261020-175939\\independent-negative-runtime-closure.json",
+      "bytes": 28759,
+      "sha256": "8F55C557EC227EE9803F7C7D9969B4202C5C539BA482F18790C2694B5C356BEA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v33-prepared-20261020\\prior-v32-progress.json",
+      "bytes": 180536,
+      "sha256": "BCCEBFD7E8A6116F63300FEE6C2500F3A794585C708951E6C292A2591E7D3D27"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v32-control-20261020-190752\\independent-first-compile-negative-closure.json",
+      "bytes": 16158,
+      "sha256": "CD5F425E6604717C68CCF35DACDD86D77584D2B83C998BB71B11B6DE7EE03152"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v33-map-entry-symbol-correction-20261020\\receipt.json",
+      "bytes": 2940,
+      "sha256": "9ABB0B547B74AC7FA090BD82FC9A1834CA67133BF1FF2EB68343637EDD87DE5C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v32-to-v33-root-source-release-20261020.json",
+      "bytes": 1518,
+      "sha256": "F3AB87CE77F0303055FB8B57C86CD7115CD0FD410EDA2A91AB5DC02B8888F532"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v34-prepared-20261020\\prior-v33-progress.json",
+      "bytes": 203132,
+      "sha256": "2E3318EA85B1F81762E798C5471CC0EFF9F57E110A5D0F894F16F9B9E66D86C9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\independent-partial-compile-negative-closure.json",
+      "bytes": 42692,
+      "sha256": "5E477904C85A3D1C09D0CBC952350B7D816C2A36B3BA48A61C7474A98C45D0EB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v34-exotic-query-pointer-correction-20261020\\receipt.json",
+      "bytes": 5507,
+      "sha256": "55B4233397760F2252CB3B67587BE5B0FD114E053FB5EEF2F42A2989137D46C9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v33-to-v34-root-source-release-20261020.json",
+      "bytes": 2411,
+      "sha256": "BDF56A8D7A8507E340B6CB7B7130245DFA50FF4FC1CAE3AE109DAFD4359A6AE0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-new4-prepared-20261020\\prior-v34-progress.json",
+      "bytes": 235681,
+      "sha256": "8711EC0A199BC616F823BE25D08A380F47359284AACB37ABF497297DC32080D6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-new4-prepared-20261020\\prior-v35-progress.json",
+      "bytes": 294251,
+      "sha256": "3BCB7BF1CE552D95FDD8B34356EB01EAE4C2C0B7E30294920B2975B9D0794F10"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-catalog-preparer-source-review-20261020.json",
+      "bytes": 2058,
+      "sha256": "69921D41E556B9F7161722000E22A77BD624D5F1800860826E56F91A694199C4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-catalog-issued-config-20261020.json",
+      "bytes": 7121,
+      "sha256": "1334A56F931EEA16E70203F460C7CA09FF23BFC656DCCF6F04C6D86B854EE138"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-buildquery-grant-constructor-source-peer-20261020\\peer.json",
+      "bytes": 9547,
+      "sha256": "BF57C2EB3D2D19FFE743020E693A8ACA4571BF43F541497E72F55C8663628A39"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-positive-buildquery-auditor-source-review-20261020.json",
+      "bytes": 2166,
+      "sha256": "A9EA5D3330FBDB027ACA500B910D34B100AA5B41359F88B3C2CE0D04B4DEB1A9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\prior-v36-progress.json",
+      "bytes": 354535,
+      "sha256": "23A951AAEB578839CC84AD9548C755F63BD034E966549F5C73B93E2833073DD8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-catalog-preparer-source-review-20261020.json",
+      "bytes": 2970,
+      "sha256": "C78362731CFAD8A83D50775C4B0583BBB632B898BBA33A2967BC25B88AD51BC1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-catalog-issued-config-20261021.json",
+      "bytes": 5000,
+      "sha256": "F787BEF7CED69C60A3B5E7F03C24C5985051A32ED800B93199E592414A59BA13"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-execution-bound-source-20261021\\finite-bindings.json",
+      "bytes": 8489,
+      "sha256": "6405AD38C38D8B2267E3CA858F0E9F9A90084F9F68CAF9F61508C06420E51EA3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-progress-negative-intake-receipts-20261021\\progress-receipt.json",
+      "bytes": 7079,
+      "sha256": "C9A78181E0C1BE2212524550A22B9AD68D665F52C888293D6748025030E9604F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\independent-first-compile-negative-closure.json",
+      "bytes": 46548,
+      "sha256": "07883502323A898D097E467FB9E2CE5ED1A52A8A83A0A6B1EA7F877A35657129"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-execution-bound-source-review-20261021.json",
+      "bytes": 5554,
+      "sha256": "5504DFAC9B9251126D8C0FCB8DE9412A8441CD53E2932DB815335450BC2044D9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+      "bytes": 438396,
+      "sha256": "18E61B7DFE07DA5D13C64E4B933EC519312AFED1DC7B29AC4789AC0C3A5EB49F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-catalog-preparer-source-acceptance-20261021.json",
+      "bytes": 6131,
+      "sha256": "C2C57834807501FB9B228BCBE0F7A3DF061718F9903C9B417CF57CC8A271597E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-catalog-issued-config-20261021.json",
+      "bytes": 6734,
+      "sha256": "4FAB8D007646C668139B60D5467C37F51050710DF5EFD613897AB24BA0BCFA50"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-execution-bound-source-20261021\\finite-bindings.json",
+      "bytes": 13163,
+      "sha256": "AD70606111D66040B75AF43E53F57E61459AB4F212802FD750313511FCDBA59D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-receipts-20261021\\fixture-receipt.json",
+      "bytes": 4122,
+      "sha256": "CC0A39654C92BAAD563B11AA15247403FC839189351F99DE0C41BF26C813E982"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-progress-negative-intake-receipts-20261021\\progress-receipt.json",
+      "bytes": 27955,
+      "sha256": "E50786A89214CBA2E7E5E0A6C7E19B6A998F9CF2D46F309E0A34323488594EC9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944\\independent-current-seals-and-owners.json",
+      "bytes": 113188,
+      "sha256": "5569A62842A16A5F1A48022A5D6EB78F06808B73E22772FA3C4CAB7A89B2FE4A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-new4-original-negative-runtime-acceptance-20261021.json",
+      "bytes": 2496,
+      "sha256": "182883E0C8BA52A96B34E790DD65A9DF247F0DD67031D68CD73DBAB614D0DCCC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v37-catalog-source-peer-20261021\\emitted-peer.json",
+      "bytes": 16494,
+      "sha256": "858C81B1A83FCFE96980FA1C9EEB460FCDDF775095407A11DE346885C379DFE4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-catalog-source-acceptance-20261021.json",
+      "bytes": 8792,
+      "sha256": "1DE26AC6A76F9B4082D95EDFA331DDB99781159400F4B23219A261C44FB556A1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-buildquery-retry1-issued-config-20261021.json",
+      "bytes": 9887,
+      "sha256": "7D8D8F2701A39D4F14B8C61629482463FCDE64318EC75A974BEB78CAD3A865B7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-observed-job-status.json",
+      "bytes": 1572,
+      "sha256": "79BDD040C8AE961F2190A684AEA93E45BB899F42CD087BCE5BE6E593289FD311"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\before.json",
+      "bytes": 15933885,
+      "sha256": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV37RuntimeGrant-Retry1-20261021.py",
+      "bytes": 12513,
+      "sha256": "414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\commands.json",
+      "bytes": 4396,
+      "sha256": "3D7016EB0EC8B7B792C972F8051A5A8BA89FAEDB2D71426E3C9B1D6B6FCD5444"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\final-artifacts.json",
+      "bytes": 3130,
+      "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\result-provisional.json",
+      "bytes": 8440,
+      "sha256": "5297D4AD7CBB4F2C56C1599173642BF75573F24F51C5FAF9EDBD2235D240B58C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\result.json",
+      "bytes": 8438,
+      "sha256": "20387216D12CBABE8C6763CB26E0C3228897F6AAAE500E69F18B94201CC38C10"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-absence.json",
+      "bytes": 4741,
+      "sha256": "002604BED4E16E711B1E26720D5C89858C435528E7C438C3DA76AA9E3CDC281B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-admission.json",
+      "bytes": 580,
+      "sha256": "DA15B1FF7DAEC51DAB9052A5A2F91C2345A39612227EB0A1BF0EB9B5D0DB2B15"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-after-artifacts.json",
+      "bytes": 3130,
+      "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-before-artifacts.json",
+      "bytes": 3130,
+      "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-prerequisite-artifacts.json",
+      "bytes": 3130,
+      "sha256": "6C62F7524DB97776854E2FDE3705F94E98D68F7A4DE2F43F63BA395BE36ABCA4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime-raw-frame-observation.json",
+      "bytes": 2947,
+      "sha256": "B7900534C9B3F265D43883B096D0824C5893A9E1472FC657F3D260237B032DBA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.json",
+      "bytes": 1228,
+      "sha256": "73AE870C555B868366E33B52366E42E99BADF550B5AEA4DFD35251993809D659"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.results.json",
+      "bytes": 2043,
+      "sha256": "9B224B5628500F9018F32B6338DF13A7BA5A6DCC067C391D5D555FFE621A8B50"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stderr.log",
+      "bytes": 68389,
+      "sha256": "1BB42117F374DECBF5C91100686DF7DA7D686A285ECF9F874423D5799AF945ED"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912\\groups\\native-node-file-handle-owner\\runtime.stdout.bin",
+      "bytes": 546,
+      "sha256": "28AC47910B5D5309DD1A1454816A2C051A0E420C51BD0827D4EC61F5D5528C9E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\outer.stdout.bin",
+      "bytes": 16657,
+      "sha256": "66E9CE52981B6DA16C7A1F79EE596FA98754E5F69E435FDF0A36EB3AB8139165"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\outer.stderr.log",
+      "bytes": 605,
+      "sha256": "8321BACFA72BD52330EEE9B5EAAAFE6D2BCB96971451C66FBCB0CB9125CCAAA3"
+    }
+  ],
+  "actual_raw_wire": {
+    "bytes": 546,
+    "sha256": "28AC47910B5D5309DD1A1454816A2C051A0E420C51BD0827D4EC61F5D5528C9E",
+    "started": 19,
+    "completed": 19,
+    "failed": 5,
+    "passed": 14,
+    "not_started": 42,
+    "failed_names": [
+      {
+        "group": "native-node-file-handle-owner",
+        "index": 5,
+        "flags": 1,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose"
+      },
+      {
+        "group": "native-node-file-handle-owner",
+        "index": 10,
+        "flags": 1,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once"
+      },
+      {
+        "group": "native-node-file-handle-owner",
+        "index": 11,
+        "flags": 1,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason"
+      },
+      {
+        "group": "native-node-file-handle-owner",
+        "index": 12,
+        "flags": 1,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner failed GC close queues one refed actual UVException ticket"
+      },
+      {
+        "group": "native-node-file-handle-owner",
+        "index": 16,
+        "flags": 1,
+        "name": "native_node_file_handle_owner_test.test.native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity"
+      }
+    ]
+  },
+  "actual_bookends": {
+    "bytes": 15938792,
+    "sha256": "DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7",
+    "byte_identical": true,
+    "counts": {
+      "source": 14785,
+      "tree": 14798,
+      "vendor": 1489,
+      "compiler": 19546,
+      "controls": 25
+    }
+  },
+  "original_empty_stderr_owner_rejection_and_protocol_negative_preserved": true,
+  "utc100ns_offset_equivalence_exact": true,
+  "source_only": true,
+  "candidate_or_prefix_executed": false,
+  "live_process_query_executed": false,
+  "complete_current_inventory_audit_executed": false,
+  "native_executed": false,
+  "Main_written": false,
+  "current_control_mutated": false,
+  "source_mutation_hold_released": false,
+  "runtime_qualification": false,
+  "product_qualification": false
+}

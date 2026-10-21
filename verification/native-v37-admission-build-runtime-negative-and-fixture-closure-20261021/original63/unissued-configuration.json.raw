@@ -1,0 +1,214 @@
+{
+  "schema": 1,
+  "status": "unissued_specific_v37_existing63_buildquery_preparation",
+  "candidate_head": null,
+  "preparer_sha256": null,
+  "execution_authorized": false,
+  "runtime_authority": false,
+  "batch": "existing63",
+  "declared_groups": 63,
+  "declared_controls": 1249,
+  "actual_metadata_count": null,
+  "qualification": false,
+  "preparation_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-regression63-prepared-20261021\\preparation-review.json",
+    "bytes": null,
+    "sha256": null
+  },
+  "independent_catalog_peer": {
+    "path": null,
+    "bytes": null,
+    "sha256": null
+  },
+  "root_catalog_acceptance": {
+    "path": null,
+    "bytes": null,
+    "sha256": null
+  },
+  "selected_group_names": [
+    "native-node-file-handle-read",
+    "native-node-fs-callback-template",
+    "native-vm-simple-stack-source",
+    "native-vm-exotic-operations",
+    "native-node-diagnostic-context",
+    "native-node-native-debug",
+    "native-node-permission",
+    "native-node-fs-readwrap-reuse",
+    "native-node-reqwrap-callback-routing",
+    "native-vm-script-location",
+    "native-node-stream-read",
+    "native-node-environment-map",
+    "native-vm-backing-store-adoption",
+    "native-node-environment-paths",
+    "native-node-stream-fields",
+    "native-node-managed-buffers",
+    "native-node-fs-request-owner",
+    "native-vm-execution-termination",
+    "native-typebox-execution-termination",
+    "native-host-termination-ownership",
+    "native-node-stream-resource",
+    "native-node-package-json-parser",
+    "native-node-microtask-checkpoint",
+    "native-vm-property-retirement",
+    "native-vm-consuming-operands",
+    "native-vm-oom-occurrence",
+    "native-node-callback-scope",
+    "native-node-inspect-colors",
+    "native-vm-captured-frame-logging",
+    "native-node-experimental-warning",
+    "native-node-commonjs-helpers",
+    "native-node-process-warning",
+    "native-node-fs-request-transport",
+    "native-vm-array-buffer-view-length",
+    "native-vm-array-buffer-backing",
+    "native-vm-private-property",
+    "native-node-tcp-transport",
+    "native-vm-async-arguments",
+    "native-node-fs-write-uv",
+    "native-vm-sync-arguments",
+    "native-vm-async-retirement",
+    "native-vm-template-literal",
+    "native-vm-borrowed-bridges",
+    "vm-af-throw",
+    "native-ai-oauth-anthropic-genuine-af",
+    "native-node-module-creation",
+    "native-node-module-search-paths",
+    "native-node-fs-realpath-classic",
+    "native-node-fs-path-helpers",
+    "native-node-file-url-paths",
+    "native-sdk-tool-search-public",
+    "native-ai-radius-config",
+    "native-ai-radius-provider-genuine-af",
+    "native-node-inspect-entry",
+    "native-ai-oauth-radius-genuine-af",
+    "native-vm-existing-promise-settlement",
+    "native-node-options",
+    "native-node-uv-exception",
+    "native-vm-disallow-javascript",
+    "native-vm-continuation-data",
+    "native-vm-pending-promise",
+    "native-vm-native-global",
+    "native-vm-copy-data-properties"
+  ],
+  "grant_provenance_updates": {
+    "v34_progress": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-new4-prepared-20261020\\prior-v34-progress.json",
+      "bytes": 235681,
+      "sha256": "8711EC0A199BC616F823BE25D08A380F47359284AACB37ABF497297DC32080D6"
+    },
+    "v35_current_progress": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-new4-prepared-20261020\\prior-v35-progress.json",
+      "bytes": 294251,
+      "sha256": "3BCB7BF1CE552D95FDD8B34356EB01EAE4C2C0B7E30294920B2975B9D0794F10"
+    },
+    "v35_catalog_preparer_source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-catalog-preparer-source-review-20261020.json",
+      "bytes": 2058,
+      "sha256": "69921D41E556B9F7161722000E22A77BD624D5F1800860826E56F91A694199C4"
+    },
+    "v35_catalog_configuration": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-catalog-issued-config-20261020.json",
+      "bytes": 7121,
+      "sha256": "1334A56F931EEA16E70203F460C7CA09FF23BFC656DCCF6F04C6D86B854EE138"
+    },
+    "v35_grant_constructor_source_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-buildquery-grant-constructor-source-peer-20261020\\peer.json",
+      "bytes": 9547,
+      "sha256": "BF57C2EB3D2D19FFE743020E693A8ACA4571BF43F541497E72F55C8663628A39"
+    },
+    "v35_positive_closure_auditor_source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-positive-buildquery-auditor-source-review-20261020.json",
+      "bytes": 2166,
+      "sha256": "A9EA5D3330FBDB027ACA500B910D34B100AA5B41359F88B3C2CE0D04B4DEB1A9"
+    },
+    "v36_current_progress": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-regression63-prepared-20261021\\prior-v36-progress.json",
+      "bytes": null,
+      "sha256": null
+    },
+    "v36_catalog_preparer_source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-catalog-preparer-source-review-20261020.json",
+      "bytes": 2970,
+      "sha256": "C78362731CFAD8A83D50775C4B0583BBB632B898BBA33A2967BC25B88AD51BC1"
+    },
+    "v36_catalog_configuration": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-catalog-issued-config-20261021.json",
+      "bytes": 5000,
+      "sha256": "F787BEF7CED69C60A3B5E7F03C24C5985051A32ED800B93199E592414A59BA13"
+    },
+    "v36_execution_finite_bindings": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-execution-bound-source-20261021\\finite-bindings.json",
+      "bytes": 8489,
+      "sha256": "6405AD38C38D8B2267E3CA858F0E9F9A90084F9F68CAF9F61508C06420E51EA3"
+    },
+    "v36_progress_intake_receipt": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-progress-negative-intake-receipts-20261021\\progress-receipt.json",
+      "bytes": 7079,
+      "sha256": "C9A78181E0C1BE2212524550A22B9AD68D665F52C888293D6748025030E9604F"
+    },
+    "v36_prior_first_compile_negative_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\independent-first-compile-negative-closure.json",
+      "bytes": 46548,
+      "sha256": "07883502323A898D097E467FB9E2CE5ED1A52A8A83A0A6B1EA7F877A35657129"
+    },
+    "v36_execution_bound_source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-execution-bound-source-review-20261021.json",
+      "bytes": 5554,
+      "sha256": "5504DFAC9B9251126D8C0FCB8DE9412A8441CD53E2932DB815335450BC2044D9"
+    },
+    "v37_current_progress": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+      "bytes": null,
+      "sha256": null
+    },
+    "v37_catalog_preparer_source_review": {
+      "path": null,
+      "bytes": null,
+      "sha256": null
+    },
+    "v37_catalog_configuration": {
+      "path": null,
+      "bytes": null,
+      "sha256": null
+    },
+    "v37_execution_finite_bindings": {
+      "path": null,
+      "bytes": null,
+      "sha256": null
+    },
+    "v37_fixture_intake_receipt": {
+      "path": null,
+      "bytes": null,
+      "sha256": null
+    },
+    "v37_progress_intake_receipt": {
+      "path": null,
+      "bytes": null,
+      "sha256": null
+    },
+    "v37_prior_new4_complete_buildquery_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-control-20261021-080944\\independent-current-seals-and-owners.json",
+      "bytes": 113188,
+      "sha256": "5569A62842A16A5F1A48022A5D6EB78F06808B73E22772FA3C4CAB7A89B2FE4A"
+    },
+    "v37_prior_new4_strict_runtime_negative_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-closure.json",
+      "bytes": 26137,
+      "sha256": "8BCCF2D351EEDC42D65C56E8605D2DD10ACFF153231552AD90F496E4668CF9AF"
+    },
+    "v37_prior_new4_strict_runtime_root_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-new4-original-negative-runtime-acceptance-20261021.json",
+      "bytes": 2496,
+      "sha256": "182883E0C8BA52A96B34E790DD65A9DF247F0DD67031D68CD73DBAB614D0DCCC"
+    },
+    "v37_execution_bound_source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-execution-bound-source-review-20261021.json",
+      "bytes": null,
+      "sha256": null
+    }
+  },
+  "root_review": "UNISSUED V37 SHAPE for Root review only. Preserve every original V34 group in its exact retained order: 63 groups and 1249 source declarations, disjoint from the separate complete new4/58 batch and below the unchanged64-group cap. The future V37 final clean head, full117-group/2013-declaration/576-dependency catalog, emitted regression63 preparation, independent catalog peer, Root catalog acceptance and canonical bound constructor are unresolved. Historical V34/V35/V36 evidence remains immutable; the old354535-byte V36 progress must be verified at the new preparation's frozen prior-v36-progress.json before issuance, with exact SHA23A951AAEB578839CC84AD9548C755F63BD034E966549F5C73B93E2833073DD8. Retain the actual V36 new4 BuildQuery61 and original strict runtime19completed/18failed/1passed/42unstarted only as historical evidence. Future existing63 metadata is unknown and no result transfers. A distinct exact Root-issued configuration must bind all observed future pins and the mandatory grant_provenance_updates.v37_execution_bound_source_review after the prior serial lease closes. Require the unchanged strict1DD3/classifier3413, fresh private caches, fresh16GiB admission at launch, CI607/protocol39F2/outer53 bounded retained/live ownership, complete current source/vendor/compiler/control seals, exact executable/PDB metadata query and full independent current-input/process closure. No cache seed, old-cache reuse, runtime, source mutation or application qualification is authorized by this shape.",
+  "issued_utc": null,
+  "matrix_sha256": null,
+  "fresh_memory_observation": null
+}

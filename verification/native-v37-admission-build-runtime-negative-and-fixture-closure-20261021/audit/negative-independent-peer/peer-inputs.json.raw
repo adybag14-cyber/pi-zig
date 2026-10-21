@@ -1,0 +1,262 @@
+{
+  "schema": 1,
+  "reviewer": "/root/handover_review",
+  "output_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v37-retry1-negative-runtime-auditor-source-peer-20261021",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\Audit-NegativeV36New4StrictRuntime.py",
+    "bytes": 47948,
+    "sha256": "5B32C5507CE78E1DB6BF0CB2AC1FE1ED8A48232E76AA6EFF3378034CF76F0DE0"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\candidate\\Audit-NegativeV37Retry1New4StrictRuntime.py",
+    "bytes": 47992,
+    "sha256": "77B7214537A583410F686B560FA158097087C836C5A7DD34345FE8ED5266ECC8"
+  },
+  "configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\candidate\\independent-negative-runtime-audit-inputs.json",
+    "bytes": 11361,
+    "sha256": "7B5903FF048D7545C9DE37089413BAED532EA7FFDFD7F556EF4631D287BDCD8C"
+  },
+  "finite_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 26166,
+    "sha256": "34DCA9D9D9C03E881FA0372FBA8FDF06BCAC7C8A5C185A3E1B4EB5E43324C8CB"
+  },
+  "baseline_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-audit-inputs.json",
+    "bytes": 14813,
+    "sha256": "62D821EB4E6F0AD4D4F9C3278A137D355533651B5C3542BA885FADE9936AEDE4"
+  },
+  "accepted_baseline_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-closure.json",
+    "bytes": 26137,
+    "sha256": "8BCCF2D351EEDC42D65C56E8605D2DD10ACFF153231552AD90F496E4668CF9AF"
+  },
+  "control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912",
+  "proof_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-20261021-132912",
+  "head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "job_id": "job-op-4d0480e45249519d20b8b2acade1b1e10a0c17a5aa1d8c53cd86b89c6f456f1b",
+  "failed_indices": [
+    5,
+    10,
+    11,
+    12,
+    16
+  ],
+  "seal_counts": {
+    "source": 14785,
+    "tree": 14798,
+    "vendor": 1489,
+    "compiler": 19546,
+    "controls": 25
+  },
+  "allowed_specifications": [
+    {
+      "label": "description",
+      "before": "original negative V36 new4 strict runtime closure",
+      "after": "original negative V37 Retry1 new4 strict runtime closure",
+      "occurrences": 1
+    },
+    {
+      "label": "accepted-build-proof",
+      "before": "root-native-foundation-fresh-v36-new4-buildquery-20261021-080944",
+      "after": "root-native-foundation-fresh-v37-new4-buildquery-20261021-131435",
+      "occurrences": 1
+    },
+    {
+      "label": "accepted-build-control",
+      "before": "root-native-foundation-fresh-v36-new4-control-20261021-080944",
+      "after": "root-native-foundation-fresh-v37-new4-control-20261021-131435",
+      "occurrences": 1
+    },
+    {
+      "label": "preparation",
+      "before": "combined-native-batch-v36-new4-prepared-20261020",
+      "after": "combined-native-batch-v37-new4-prepared-20261021",
+      "occurrences": 2
+    },
+    {
+      "label": "head",
+      "before": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+      "after": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+      "occurrences": 1
+    },
+    {
+      "label": "captured-input-hash",
+      "before": "62D821EB4E6F0AD4D4F9C3278A137D355533651B5C3542BA885FADE9936AEDE4",
+      "after": "7B5903FF048D7545C9DE37089413BAED532EA7FFDFD7F556EF4631D287BDCD8C",
+      "occurrences": 1
+    },
+    {
+      "label": "runtime-control",
+      "before": "root-native-foundation-v36-new4-runtime-control-20261021-082608",
+      "after": "root-native-foundation-v37-new4-runtime-control-20261021-132912",
+      "occurrences": 1
+    },
+    {
+      "label": "runtime-proof",
+      "before": "root-native-foundation-v36-new4-runtime-20261021-082608",
+      "after": "root-native-foundation-v37-new4-runtime-20261021-132912",
+      "occurrences": 1
+    },
+    {
+      "label": "input-status",
+      "before": "specific_original_v36_new4_strict_runtime_negative_inputs_for_root_review",
+      "after": "specific_original_v37_retry1_new4_strict_runtime_negative_inputs_for_root_review",
+      "occurrences": 1
+    },
+    {
+      "label": "observed-failed-count",
+      "before": "cfg[\"observed_failed\"]==18",
+      "after": "cfg[\"observed_failed\"]==5",
+      "occurrences": 1
+    },
+    {
+      "label": "source-cardinality-compact",
+      "before": "source=14591,tree=14604",
+      "after": "source=14785,tree=14798",
+      "occurrences": 1
+    },
+    {
+      "label": "runtime-config-status",
+      "before": "root_reviewed_specific_v36_runtime_preparation",
+      "after": "root_reviewed_specific_v37_runtime_preparation",
+      "occurrences": 1
+    },
+    {
+      "label": "runtime-constructor-path",
+      "before": "Prepare-ReviewedV36RuntimeGrant-20261020-v2.py",
+      "after": "Prepare-ReviewedV37RuntimeGrant-Retry1-20261021.py",
+      "occurrences": 1
+    },
+    {
+      "label": "runtime-constructor-length",
+      "before": "runtime_preparer.stat().st_size==12499",
+      "after": "runtime_preparer.stat().st_size==12513",
+      "occurrences": 1
+    },
+    {
+      "label": "runtime-constructor-hash",
+      "before": "0F66B94F62D7F2B3F20B514006C16F54FBA5C1AC6E7ECEB0A58E84EC7738538C",
+      "after": "414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0",
+      "occurrences": 1
+    },
+    {
+      "label": "retry-launch-basename",
+      "before": "buildquery-launch.json",
+      "after": "buildquery-retry1-launch.json",
+      "occurrences": 4
+    },
+    {
+      "label": "metadata-acceptance",
+      "before": "84B8758A2C6ABD2E1FF34AFC4E2714B68A3922BE4857C19ADB1143B6DABD0F48",
+      "after": "6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B",
+      "occurrences": 1
+    },
+    {
+      "label": "accepted-build-closure",
+      "before": "5569A62842A16A5F1A48022A5D6EB78F06808B73E22772FA3C4CAB7A89B2FE4A",
+      "after": "7299F65541DED34F87D3671FAA895C2F0E9B2C8B9149AE4757DE466B5FD11382",
+      "occurrences": 1
+    },
+    {
+      "label": "runtime-result",
+      "before": "09913304EA1EFD7235477C0DA4A7B0AE705B7E5BF20DDAAA9C29C3F5C3E50461",
+      "after": "66E9CE52981B6DA16C7A1F79EE596FA98754E5F69E435FDF0A36EB3AB8139165",
+      "occurrences": 1
+    },
+    {
+      "label": "runtime-bookends",
+      "before": "18F842DD770EB1B53E9931A015D544C9D631F60FC40C1C06FC9487DDCD5FC20C",
+      "after": "DA0C9EE610B4ECD4D1A875259F88BADD669A7C7CBC42ABA1C42B403D2D5B85D7",
+      "occurrences": 1
+    },
+    {
+      "label": "matrix",
+      "before": "2B55BD045392080556925051B7C19810C3546BB6EAACD2672A35E37622DD91DD",
+      "after": "E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37",
+      "occurrences": 1
+    },
+    {
+      "label": "source-cardinality-final",
+      "before": "len(final[\"source\"])==14591 and len(final[\"tree\"])==14604",
+      "after": "len(final[\"source\"])==14785 and len(final[\"tree\"])==14798",
+      "occurrences": 1
+    },
+    {
+      "label": "accepted-build-result",
+      "before": "311113328569FB8BBD39AC5F8F19D90EEBEA8A3B7E0415731DFA4682BA9D0DA8",
+      "after": "8A86FD362D0E48FABAB9BE0F6E6902BECDDDA8F4F779AE8E73FB6492D927DBFC",
+      "occurrences": 1
+    },
+    {
+      "label": "accepted-build-final",
+      "before": "BC2672711FDE7526D8A94EAE376F3DC458C6A0DE3E7025303035FC9B89416428",
+      "after": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27",
+      "occurrences": 1
+    },
+    {
+      "label": "failed-index-selection",
+      "before": "list(range(18))",
+      "after": "[5,10,11,12,16]",
+      "occurrences": 2
+    },
+    {
+      "label": "selection-description",
+      "before": "all eighteen original failed indices retained",
+      "after": "all five original failed indices retained",
+      "occurrences": 1
+    },
+    {
+      "label": "stderr-byte-count",
+      "before": "==45026 and want",
+      "after": "==68389 and want",
+      "occurrences": 1
+    },
+    {
+      "label": "stderr-byte-description",
+      "before": "exactly45026 bytes",
+      "after": "exactly68389 bytes",
+      "occurrences": 1
+    },
+    {
+      "label": "failed-name-selection",
+      "before": "for i in range(18)",
+      "after": "for i in [5,10,11,12,16]",
+      "occurrences": 1
+    },
+    {
+      "label": "decoded-failed-count",
+      "before": "sum(o[\"failed\"]for o in observations)==18",
+      "after": "sum(o[\"failed\"]for o in observations)==5",
+      "occurrences": 1
+    },
+    {
+      "label": "decoded-count-description",
+      "before": "eighteen fail, one passes",
+      "after": "five fail, fourteen pass",
+      "occurrences": 1
+    },
+    {
+      "label": "original-job-observation",
+      "before": "CD65F6E08E83A4B24E94B4AC816F415F0626C8FACE184E51F824BA6595B64CE1",
+      "after": "F5DA6BCCFFA59A176902EE387F4DE2A130C399DEB7C584BBE73D2A3E0FFFA870",
+      "occurrences": 1
+    },
+    {
+      "label": "certificate-observed-counts",
+      "before": "observed_failed=18,observed_passed=1,",
+      "after": "observed_failed=5,observed_passed=14,",
+      "occurrences": 1
+    },
+    {
+      "label": "stdout-summary-count",
+      "before": "actual_completed=19,failed=18,not_started=42",
+      "after": "actual_completed=19,failed=5,not_started=42",
+      "occurrences": 1
+    }
+  ],
+  "source_only": true,
+  "target_execution_authorized": false,
+  "prefix_execution_authorized": false
+}

@@ -1,0 +1,31 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c4d8e30b697e1e299b33fef4aed6127d\\test.exe",
+  "binary_sha256": "BF100B0B3CFB386757E0415DAFC8A7BEFF430ED96166AD5AA06E9129E0F8DB7F",
+  "version": "0.16.0",
+  "actual_count": 19,
+  "tests": [
+    "native_node_file_handle_owner_test.test.native FileHandle owner constructor attaches the same native stream and transfers the real descriptor on release",
+    "native_node_file_handle_owner_test.test.native FileHandle owner optional Number IntegerValue follows pinned V8 truncation and saturation",
+    "native_node_file_handle_owner_test.test.native FileHandle owner non Number optional arguments perform no guest coercion",
+    "native_node_file_handle_owner_test.test.native FileHandle owner keeps the full public method template an explicit dependency",
+    "native_node_file_handle_owner_test.test.native FileHandle owner explicit close keeps one Promise and one actual CLOSE request through cleanup",
+    "native_node_file_handle_owner_test.test.native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose",
+    "native_node_file_handle_owner_test.test.native FileHandle owner real stopped service admission rejects without fabricating completion or closing the descriptor",
+    "native_node_file_handle_owner_test.test.native FileHandle owner retained CloseReq wrapper loses native state after both callback references retire",
+    "native_node_file_handle_owner_test.test.native FileHandle owner CloseReq Global keeps the handle and weak BindingData alive until actual completion",
+    "native_node_file_handle_owner_test.test.native FileHandle owner GC closes synchronously and the warning ticket retains no handle or BindingData",
+    "native_node_file_handle_owner_test.test.native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once",
+    "native_node_file_handle_owner_test.test.native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason",
+    "native_node_file_handle_owner_test.test.native FileHandle owner failed GC close queues one refed actual UVException ticket",
+    "native_node_file_handle_owner_test.test.native FileHandle owner cleanup skips unrefed GC warning execution and destroys its native capture",
+    "native_node_file_handle_owner_test.test.native FileHandle owner GC uses the retained real service for synchronous close after worker join",
+    "native_node_file_handle_owner_test.test.native FileHandle owner consumes the real read engine and reuses its physical ReadWrap across concrete handles",
+    "native_node_file_handle_owner_test.test.native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity",
+    "native_node_file_handle_owner_test.test.native FileHandle owner real Hub shutdown drains accepted close without settling its guest Promise",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-file-handle-owner",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

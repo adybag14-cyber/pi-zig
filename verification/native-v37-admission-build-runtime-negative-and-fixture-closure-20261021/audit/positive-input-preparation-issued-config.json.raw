@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v37_new4_positive_audit_input_preparation",
+  "reviewer": "Root",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "job_id": "job-op-fa17b9be7400dac56c03a5ae0ff2d7c0851b611abf90b477e3684b977b3a9f1e",
+  "preparer_sha256": "F70938AB86C7B721718EB4529AB710D7C9076F0A5CD3F0B2A21A57BC019B2BAF",
+  "helper_execution_authorized": true,
+  "audit_configuration_issuance_authorized": true,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "observed": {
+    "before": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\before.json",
+      "bytes": 15933885,
+      "sha256": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27"
+    },
+    "final": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\final.json",
+      "bytes": 15933885,
+      "sha256": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27"
+    },
+    "result": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\result.json",
+      "bytes": 67229,
+      "sha256": "8A86FD362D0E48FABAB9BE0F6E6902BECDDDA8F4F779AE8E73FB6492D927DBFC"
+    },
+    "outer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\outer.json",
+      "bytes": 1525,
+      "sha256": "933163A57AA1FA2BE3A8B3B058D82470CBA39007DC3FE4BB0BB20F4A12EF167C"
+    },
+    "outer_absence": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\outer-absence.json",
+      "bytes": 183,
+      "sha256": "0FE9EF89CD316F2E1260A4BBF9AF3E698AC3C203849E4649523C1C1D3DAFEB27"
+    },
+    "job_observation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-observed-job-status.json",
+      "bytes": 1572,
+      "sha256": "79BDD040C8AE961F2190A684AEA93E45BB899F42CD087BCE5BE6E593289FD311"
+    },
+    "metadata_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-metadata-acceptance.json",
+      "bytes": 14153,
+      "sha256": "6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B"
+    }
+  },
+  "helper_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-retry1-positive-buildquery-bound-helper-source-acceptance-20261021.json",
+    "bytes": 4768,
+    "sha256": "772AC7E9C46FD906C357DCC10E6A1FC2916CAC45A67A3F27DF4F905F90382B6C"
+  },
+  "issued_utc": "2026-10-21T13:24:40.111567+00:00",
+  "root_review": "Root authorizes the exact F70938AB bound helper only with this immutable configuration, after original fa17 terminal success0 and independent34D2 metadata acceptance6D28EB76. Root has read all four actual metadata records (19/4/24/14, total61), original source/compiler/control bookends, outer pass/absence and retained complete durable observation with decimal-string process identity. The helper must reverify the seven exact original pins and derive every39-field audit input from the completed evidence; owners, counts and seal cardinalities are not copied from history. Root authorizes issuance of one exact2C89 positive BuildQuery audit configuration. Root will read and verify that generated configuration before separately invoking the auditor for complete current source/directory/artifact/process closure. No native runtime, source mutation or qualification is granted."
+}

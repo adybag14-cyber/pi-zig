@@ -1,0 +1,48 @@
+{
+  "installed": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\installed\\bin\\native-node-file-handle-transfer.exe",
+      "bytes": 48990208,
+      "sha256": "C7486063C378534C730AF7A7DDB8DFF851D15B96AB08E47B0ABECA72D9ECCF80"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\groups\\native-node-file-handle-transfer\\installed\\bin\\test.pdb",
+      "bytes": 17539072,
+      "sha256": "968847B48845DE9282870E462DD59A88169A446B7280F4151FB2F66E826012DF"
+    }
+  ],
+  "cached_executables": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\75a37382f9b36267003962d738061f61\\test.exe",
+      "sha256": "1A0384B5EDC3A42E1AF41920A007C82959373391A1CE010740C23537C71A76C4",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\75a37382f9b36267003962d738061f61\\test.pdb",
+      "pdb_sha256": "98CCE4CA7A52B5B7AAA6298E6FC2BAF2CCFCBA7DA9F6FDDDD23780E4F786899F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c4d8e30b697e1e299b33fef4aed6127d\\test.exe",
+      "sha256": "BF100B0B3CFB386757E0415DAFC8A7BEFF430ED96166AD5AA06E9129E0F8DB7F",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c4d8e30b697e1e299b33fef4aed6127d\\test.pdb",
+      "pdb_sha256": "CE4ADD4DC9D9508B91C861EAB8A581D2431ABCF851E5FB2AE9CFF1E0A360BA52"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c5ee8d94bf0cdfce16df60ade65df120\\test.exe",
+      "sha256": "C7486063C378534C730AF7A7DDB8DFF851D15B96AB08E47B0ABECA72D9ECCF80",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\c5ee8d94bf0cdfce16df60ade65df120\\test.pdb",
+      "pdb_sha256": "968847B48845DE9282870E462DD59A88169A446B7280F4151FB2F66E826012DF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\d1f8dac521567a381451ed6259407b76\\test.exe",
+      "sha256": "4F0CDE494165EC23BDEF1E68DADF0A2CD8846362287DFD27B7AA7C8B833081B2",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\cache\\o\\d1f8dac521567a381451ed6259407b76\\test.pdb",
+      "pdb_sha256": "D71C49B5C617CD12285E0AC3C2FA78C78D51D19682102DE2D947EA04C1E6051C"
+    }
+  ],
+  "pe": {
+    "reserved_stack_bytes": 16777216,
+    "committed_stack_bytes": 4096,
+    "Engine_guard_bytes": 1048576,
+    "guard_authority": "Frozen Engine default1MiB; no controller or source stack override",
+    "dynamic_stack_measured": false
+  },
+  "errors": []
+}

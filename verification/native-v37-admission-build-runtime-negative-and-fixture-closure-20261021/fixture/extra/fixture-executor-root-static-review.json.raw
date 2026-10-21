@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_exact_v37_fixture_manifest_and_intake_executor",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-21T14:06:38.632707+00:00",
+  "basis_main_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\manifest.json",
+    "bytes": 20679,
+    "sha256": "236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9"
+  },
+  "executor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37FixtureSourceIntake-20261021.py",
+    "bytes": 9719,
+    "sha256": "56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4"
+  },
+  "executor_baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV36FixtureSourceIntake-20261021.py",
+    "bytes": 9709,
+    "sha256": "6613A7F431D132B72C948FBCB61E1988FA4799AD3AE660BC65B9BAA3E9AE48F0"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-filehandle-runtime-fixtures-main-intake-20261021\\executor-finite-adaptation.json",
+    "bytes": 2345,
+    "sha256": "015AC7CCF9B9DCA273874A10E7BF06A7B449248F5A9B40106F73609A53921FDF"
+  },
+  "exact_three_literal_edits_and_full_byte_inverse": true,
+  "all_baseline_helper_and_git_safety_gate_bytes_unchanged": true,
+  "all43_donors_and_two_live_committed_preimages_verified": true,
+  "total_commit_paths": 44,
+  "exact_fixture_replacements": 2,
+  "new_archive_paths_including_manifest": 42,
+  "Main_clean": true,
+  "executor_executed": false,
+  "native_execution_authorized": false,
+  "source_intake_authorized": false,
+  "qualification": false
+}

@@ -1,0 +1,61 @@
+{
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021.py",
+    "bytes": 75542,
+    "sha256": "F40C2032692492E98D61D3B8F72275C56B5C23708C9FAEF50221127D8FA3BD71",
+    "AST_only": true
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\candidate\\Prepare-V37ProgressAndNegativeArchive-20261021-v2.py",
+    "bytes": 75644,
+    "sha256": "079CE8663FFA9C337F5AC04D41E4222E6B2EFB9B39E5B459F6F4E460F9AC790D",
+    "AST_only": true,
+    "complete_one_gate_inverse": true
+  },
+  "parent_finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v37-progress-negative-archive-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 76375,
+    "sha256": "384A47B49862B8311E2503BE122FBC2FE3A01A58E08833D74FCB114244E21ED6"
+  },
+  "edit": {
+    "label": "Use only the actual original initial outer receipt fields; no absent timed_out field",
+    "old": "require(initial_outer[\"status\"]==\"failed\" and initial_outer[\"exit_code\"]==1 and initial_outer[\"timed_out\"] is False,\"initial retained outer failed without timeout\")",
+    "new": "require(initial_outer[\"status\"]==\"failed\" and initial_outer[\"exit_code\"]==1 and initial_outer[\"error\"]==\"Owned terminal failed: \"+initial_outer[\"executable\"] and initial_outer[\"timeout_seconds\"]==1800,\"initial retained outer failed under the original bounded owner\")",
+    "count": 1
+  },
+  "actual_original_outer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-094837\\outer.json",
+    "bytes": 1606,
+    "sha256": "A6DE970F969DD67704188D5DEC071AC55038977CE2DABAE0EB5EA417F5F4D989"
+  },
+  "schema": 1,
+  "status": "unexecuted_one_gate_original_outer_schema_correction",
+  "recorded_utc": "2026-10-21T14:05:16.989391+00:00",
+  "offset": 36332,
+  "whole_forward_and_raw_inverse_exact": true,
+  "preserved_original_candidate": true,
+  "preserved_original_finite_proof": true,
+  "actual_original_outer_keys": [
+    "arguments",
+    "completed_utc",
+    "created_utc",
+    "error",
+    "executable",
+    "executable_sha256",
+    "exit_code",
+    "identity",
+    "live_identity",
+    "pid",
+    "retained_handle",
+    "status",
+    "timeout_seconds",
+    "working_directory"
+  ],
+  "finding": "The newly authored initial-admission check in F40 indexed an absent timed_out field. Original raw A6DE uses failed status, exit_code 1, exact retained-owner error and timeout_seconds 1800. No target or prefix was executed; this successor uses those actual fields while retaining every original pin and accepted initial closure.",
+  "source_only": true,
+  "preparer_executed": false,
+  "prefix_executed": false,
+  "Main_written": false,
+  "native_execution_authorized": false,
+  "qualification": false
+}

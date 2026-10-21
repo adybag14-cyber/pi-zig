@@ -1,0 +1,166 @@
+"""Independent static review of the exact V37 fixture intake. Never imports or executes the candidate."""
+from pathlib import Path,PurePosixPath
+import ast,hashlib,json,os,subprocess
+ROOT=Path(r'C:\Users\adyba\pi-zig')
+MAIN=ROOT/'main'
+OWN=ROOT/'worktrees/modules-io-resume-20261018/verification/v37-filehandle-runtime-fixture-intake-peer-20261021'
+PENDING=ROOT/'evidence/pending-v37-filehandle-runtime-fixtures-main-intake-20261021'
+SDK=ROOT/'worktrees/sdk-owners-resume-20261018/verification/v37-file-handle-runtime-fixtures-sourceonly-20261021'
+HEAD='b13be24e44cc1bbc361639eb35900a368ae60eac'
+ARCHIVE='verification/native-v37-build-runtime-negative-and-fixture-closure-20261021'
+fixed={
+ 'manifest':(PENDING/'manifest.json',20679,'236273E5DF2A6B7C90D505DA5432B0D591C218C9F26F59C0551CD35EBF3A7CE9'),
+ 'executor':(ROOT/'evidence/Apply-ExactV37FixtureSourceIntake-20261021.py',9719,'56DEB85A093C25108A1CA92130729F49DD58960985C044871494380D45036BF4'),
+ 'adaptation':(PENDING/'executor-finite-adaptation.json',2345,'015AC7CCF9B9DCA273874A10E7BF06A7B449248F5A9B40106F73609A53921FDF'),
+ 'baseline':(ROOT/'evidence/Apply-ExactV36FixtureSourceIntake-20261021.py',9709,'6613A7F431D132B72C948FBCB61E1988FA4799AD3AE660BC65B9BAA3E9AE48F0'),
+ 'acceptance':(ROOT/'evidence/root-v37-filehandle-runtime-fixture-source-acceptance-20261021.json',5656,'9896A0FDAE942CF2F579555E602EB23CD4E07BBFD8FFEAAF50787A21A9FBAD85')
+}
+seen={}
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def read(p,n,h):
+ p=Path(p);raw=p.read_bytes();assert len(raw)==n and sha(raw)==h,(str(p),len(raw),sha(raw))
+ pin={'path':str(p),'bytes':n,'sha256':h};old=seen.get(str(p).casefold());assert old is None or old==pin
+ seen[str(p).casefold()]=pin
+ return raw
+def pin(row):return read(row['path'],row['bytes'],row['sha256'])
+def git(*args,input=None,ok=(0,)):
+ env=dict(os.environ);env['GIT_OPTIONAL_LOCKS']='0'
+ r=subprocess.run(['git','-C',str(MAIN),*args],input=input,stdout=subprocess.PIPE,stderr=subprocess.PIPE,env=env)
+ assert r.returncode in ok,(args,r.returncode,r.stderr)
+ return r
+def same_path(a,b):return Path(a).resolve()==Path(b).resolve()
+raw={k:read(*v)for k,v in fixed.items()}
+before_head=git('rev-parse','HEAD').stdout.decode().strip();assert before_head==HEAD
+assert git('branch','--show-current').stdout.decode().strip()=='work/pi-zig-consolidated-20261016'
+assert git('status','--porcelain=v1','--untracked-files=all').stdout==b''
+m=json.loads(raw['manifest']);a=json.loads(raw['adaptation']);accepted=json.loads(raw['acceptance'])
+assert m['comparison_head']==HEAD and m['path_count_including_manifest']==44
+assert m['manifest_target']==ARCHIVE+'/manifest.json'
+assert all(m[k]is False for k in ['source_mutation_hold_released','main_applied','native_execution_authorized','application_qualified'])
+assert accepted['candidate_head']==HEAD and accepted['source_accepted'] is True and accepted['finite_hunks']==8
+for name,key in [('baseline','baseline'),('candidate','executor'),('manifest','manifest')]:
+ row=a[name];p,n,h=fixed[key];assert same_path(row['path'],p)and row['bytes']==n and row['sha256']==h
+x=raw['baseline'];steps=[]
+assert len(a['finite_edits'])==3
+for i,e in enumerate(a['finite_edits']):
+ old=e['old'].encode();new=e['new'].encode();off=e['offset']
+ assert sha(x)==e['before_sha256'] and x.count(old)==1 and x.find(old)==off
+ x=x[:off]+new+x[off+len(old):];assert sha(x)==e['after_sha256']
+ steps.append({'step':i+1,**e})
+assert x==raw['executor']
+for e in reversed(a['finite_edits']):
+ old=e['old'].encode();new=e['new'].encode();off=e['offset']
+ assert sha(x)==e['after_sha256'] and x[off:off+len(new)]==new
+ x=x[:off]+old+x[off+len(new):];assert sha(x)==e['before_sha256']
+assert x==raw['baseline']
+# AST is parsed for source spans and constant values only. No candidate code is evaluated.
+old_ast=ast.parse(raw['baseline']);new_ast=ast.parse(raw['executor'])
+def funcs(tree,b):
+ lines=b.splitlines(keepends=True)
+ return {n.name:b''.join(lines[n.lineno-1:n.end_lineno])for n in tree.body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))}
+old_funcs=funcs(old_ast,raw['baseline']);new_funcs=funcs(new_ast,raw['executor'])
+assert old_funcs==new_funcs and len(new_funcs)==11
+tail_marker=b'def sha(b):'
+old_tail=raw['baseline'][raw['baseline'].index(tail_marker):]
+new_tail=raw['executor'][raw['executor'].index(tail_marker):]
+assert old_tail==new_tail
+consts={}
+for n in new_ast.body:
+ if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name) and n.targets[0].id in ['BASIS','BRANCH','MANIFESTS']:
+  consts[n.targets[0].id]=ast.literal_eval(n.value)
+assert consts['BASIS']==HEAD and consts['BRANCH']=='work/pi-zig-consolidated-20261016'
+assert consts['MANIFESTS']=={'fixture':('evidence/pending-v37-filehandle-runtime-fixtures-main-intake-20261021/manifest.json',fixed['manifest'][2],44,'Correct FileHandle callback resource and invalid descriptor fixtures')}
+# Independently reconstruct exact source/authority archive membership from the accepted source packet.
+proposal=json.loads(pin(accepted['source_proposal']))
+auth=json.loads(pin(accepted['selected_authority_inputs']))
+expected={}
+def expect(target,source,role,before=None):
+ assert target not in expected
+ expected[target]={'source':str(source),'role':role,'before':before}
+for row in accepted['selected_files']:
+ expect(row['relative_path'],row['candidate']['path'],'bounded_fixture_runtime_correction',{'bytes':row['original']['bytes'],'sha256':row['original']['sha256']})
+aliases=[
+ ('source-proposal.json',SDK/'proposal.json','original_immutable_source_proposal'),
+ ('source-causal-proof.json',SDK/'causal-proof.json','additive_causal_source_proof'),
+ ('source-causal-checker.py',SDK/'static-causal-check.py','source_only_causal_checker'),
+ ('selected-authority-inputs.json',SDK/'authority-inputs-v2.json','selected_source_authority_inputs'),
+ ('retained-authority-inputs.json',SDK/'authority-inputs.json','preserved_original_authority_inputs'),
+ ('root-static-review.json',ROOT/'evidence/root-v37-filehandle-runtime-fixture-static-review-20261021.json','root_finite_source_review'),
+ ('root-finite-checker.py',ROOT/'evidence/Review-V37FileHandleRuntimeFixtureFiniteEdits-20261021.py','root_finite_source_checker'),
+ ('root-causal-review.json',ROOT/'evidence/root-v37-filehandle-runtime-fixture-causal-review-20261021.json','root_causal_source_review'),
+ ('root-causal-checker.py',ROOT/'evidence/Review-V37FileHandleFixtureCausalPins-20261021.py','root_causal_source_checker'),
+ ('root-source-acceptance.json',fixed['acceptance'][0],'root_and_independent_peer_source_acceptance'),
+ ('independent-peer.json',accepted['independent_source_peer']['path'],'independent_correction_peer'),
+ ('independent-source-audit.py',accepted['independent_source_checker']['path'],'independent_source_checker'),
+ ('independent-source-audit.json',accepted['independent_source_proof']['path'],'independent_source_proof')
+]
+for target,source,role in aliases:expect(ARCHIVE+'/'+target,source,role)
+excluded={'proposal','catalog','runtime_result','runtime_owner','runtime_stderr','runtime_stdout'}
+assert len(auth['sources'])==31
+for row in auth['sources']:
+ if row['key'] in excluded:continue
+ source=SDK/'authority'/row['snapshot'] if row['snapshot'] else Path(row['path'])
+ expect(ARCHIVE+'/authority/'+row['key']+'.raw',source,'immutable_source_authority_'+row['key'])
+for key,source in [
+ ('completion',MAIN/'src/extensions/native_sdk_owned_completion.zig'),
+ ('uv_fd_hash',MAIN/'vendor/node-v24.13.0/uv/src/win/fs-fd-hash-inl.h'),
+ ('initial_html_extraction',ROOT/'evidence/root-v37-windows-crt-invalid-descriptor-authority-20261021/original-html-extraction-outcome.json')
+]:expect(ARCHIVE+'/authority/'+key+'.raw',source,'immutable_source_authority_'+key)
+assert len(expected)==43 and len(m['rows'])==43
+assert {r['target']for r in m['rows']}==set(expected)
+allrows=m['rows']+[{'target':m['manifest_target'],'source':str(fixed['manifest'][0]),'bytes':fixed['manifest'][1],'sha256':fixed['manifest'][2],'before':None,'role':'exact_intake_manifest'}]
+names=[r['target']for r in allrows];assert len(names)==len(set(n.casefold()for n in names))==44
+tree=set(x.decode()for x in git('ls-tree','-r','--name-only','-z',HEAD).stdout.split(b'\0')if x)
+checks=[];contents=[]
+for row in allrows:
+ rel=row['target'];pp=PurePosixPath(rel)
+ assert str(pp)==rel and not pp.is_absolute() and ':'not in rel and '\\'not in rel and '..'not in pp.parts
+ target=MAIN/rel;donor=Path(row['source'])
+ assert ROOT.resolve() in donor.resolve().parents and MAIN.resolve() in target.resolve().parents
+ if rel!=m['manifest_target']:
+  ex=expected[rel];assert same_path(donor,ex['source'])and row['role']==ex['role'] and row['before']==ex['before']
+ b=read(donor,row['bytes'],row['sha256']);contents.append(b)
+ existing=row['before']is not None
+ if existing:
+  prior=read(target,row['before']['bytes'],row['before']['sha256'])
+  assert rel in tree and git('show',HEAD+':'+rel).stdout==prior
+  assert rel in {r['relative_path']for r in accepted['selected_files']}
+ else:assert not target.exists() and rel not in tree
+ for depth in range(1,len(pp.parts)):
+  ancestor=MAIN.joinpath(*pp.parts[:depth]);assert not ancestor.is_symlink()
+ checks.append({'target':rel,'source':str(donor),'role':row['role'],'bytes':len(b),'sha256':sha(b),'before':row['before'],'current_and_committed_preimage_exact':True if existing else None,'new_target_absent':not existing})
+assert sum(r['before']is not None for r in allrows)==2
+assert sum(r['before']is None for r in allrows)==42
+# Link every explicitly accepted source/review pin to the exact donor rows.
+by_source={str(Path(r['source']).resolve()).casefold():r for r in allrows}
+for key in ['source_proposal','causal_source_proof','selected_authority_inputs','preserved_authority_predecessor','independent_source_peer','independent_source_checker','independent_source_proof','root_finite_review','root_causal_review']:
+ r=accepted[key];pin(r);selected=by_source[str(Path(r['path']).resolve()).casefold()]
+ assert selected['bytes']==r['bytes'] and selected['sha256']==r['sha256']
+for r in accepted['selected_files']:
+ p=r['candidate'];selected=by_source[str(Path(p['path']).resolve()).casefold()]
+ assert selected['bytes']==p['bytes'] and selected['sha256']==p['sha256']
+# Read-only effective filter/encoding and hash-object checks cannot stage or write an object.
+attrs=git('check-attr','-z','--stdin','filter','working-tree-encoding','ident',input=b'\0'.join(s.encode()for s in names)+b'\0').stdout.split(b'\0')[:-1]
+assert len(attrs)==9*44
+attr_rows=[]
+for i in range(0,len(attrs),3):
+ rel,key,val=(v.decode()for v in attrs[i:i+3]);assert rel in names and key in ['filter','working-tree-encoding','ident']and val in ['unspecified','unset']
+ attr_rows.append({'target':rel,'attribute':key,'value':val})
+assert git('config','--get','core.autocrlf').stdout.strip()==b'false'
+assert git('config','--get','core.hooksPath',ok=(0,1)).returncode==1
+hooks=Path(git('rev-parse','--git-path','hooks').stdout.decode().strip())
+if not hooks.is_absolute():hooks=MAIN/hooks
+assert not[p for p in hooks.iterdir()if p.is_file()and not p.name.endswith('.sample')]
+for row,b in zip(checks,contents):
+ expected_blob=hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()
+ actual_blob=git('hash-object','--path='+row['target'],'--stdin',input=b).stdout.decode().strip()
+ assert actual_blob==expected_blob
+ row['raw_git_blob_sha1']=expected_blob
+for r in list(seen.values()):pin(r)
+assert git('rev-parse','HEAD').stdout.decode().strip()==HEAD
+assert git('status','--porcelain=v1','--untracked-files=all').stdout==b''
+proof={'schema':1,'status':'passed_independent_exact_fixture_intake_static_checks','candidate_manifest':{'path':str(fixed['manifest'][0]),'bytes':fixed['manifest'][1],'sha256':fixed['manifest'][2]},'candidate_executor':{'path':str(fixed['executor'][0]),'bytes':fixed['executor'][1],'sha256':fixed['executor'][2]},'finite_adaptation':{'path':str(fixed['adaptation'][0]),'bytes':fixed['adaptation'][1],'sha256':fixed['adaptation'][2]},'main_head':HEAD,'main_clean_before_and_after':True,'finite_edits':steps,'complete_forward_and_raw_inverse':True,'helpers':[{'name':k,'bytes':len(v),'sha256':sha(v)}for k,v in new_funcs.items()],'all_11_helpers_exact':True,'complete_def_sha_through_EOF_exact':{'bytes':len(new_tail),'sha256':sha(new_tail)},'selected_constants':consts,'total_paths':44,'fixture_replacements':2,'new_archives_excluding_manifest':41,'new_targets_including_manifest':42,'exact_membership_independently_reconstructed':True,'rows':checks,'effective_attributes':attr_rows,'core_autocrlf':False,'no_custom_hooks':True,'all_44_raw_Git_filter_results_exact':True,'input_pins':sorted(seen.values(),key=lambda p:p['path'].casefold()),'all_inputs_rehashed_at_end':True,'source_only':True,'candidate_or_prefix_executed':False,'adapter_executed':False,'main_applied':False,'native_execution_authorized':False,'application_qualified':False}
+out=json.dumps(proof,indent=2,ensure_ascii=False).encode()+b'\n'
+OWN.mkdir(parents=True,exist_ok=True)
+with(OWN/'source-audit.json').open('xb')as f:f.write(out)
+print(json.dumps({'path':str(OWN/'source-audit.json'),'bytes':len(out),'sha256':sha(out),'paths':44,'helpers':11,'new_targets_absent':42,'pins':len(seen),'clean':True}))
