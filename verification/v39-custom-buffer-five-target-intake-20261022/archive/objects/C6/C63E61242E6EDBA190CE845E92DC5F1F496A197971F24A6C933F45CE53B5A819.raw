@@ -1,0 +1,244 @@
+{
+  "schema": "pi-zig-independent-custom-buffer-current-e9-source-peer.v1",
+  "status": "accepted_bounded_source_only_custom_buffer_owner_build_control_projection",
+  "source_only": true,
+  "reviewer": "module_io_port",
+  "conclusion": "No concrete blocker in the bounded native CustomBufferJSListener / already-admitted UseUserBuffer owner, unchanged fifteen-control source root, or exact current-e9 build composition. The separately accepted Shutdown support remains an explicit prerequisite.",
+  "candidate_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\handoff.json",
+    "bytes": 6939,
+    "sha256": "74B14D6917D0C9528CCC550CBCF41E8E91E49E7E2AA6837D4F075B788CA9145C"
+  },
+  "candidate_component": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\intake-component.json",
+    "bytes": 6264,
+    "sha256": "2A5DAE3665EA2051046ADC1701E61C629C6BADEABBF0E6F24FD9F32CF0463320"
+  },
+  "candidate_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\source-boundary-and-intake-contract.json",
+    "bytes": 8606,
+    "sha256": "28572B71BF65BA8F52425AFBD3A297B2CB524FD9C8921A0FFDD70CBA35C73D65"
+  },
+  "composition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\composition-and-build-proof.json",
+    "bytes": 16155,
+    "sha256": "6984E7456023F75DF42D13F28E57BBCC7ED10F5544AF09A188F34377A0B3A22A"
+  },
+  "source_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\source-map.json",
+    "bytes": 144892,
+    "sha256": "161766BCF9F3A65B1CE12AA1967093B1745B6381037AC272675553BCFD5E8F4F"
+  },
+  "source_audit_read_not_executed": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\source-audit-v2.py",
+    "bytes": 11838,
+    "sha256": "B85D2642F4E3C9C784BDA85885984C57582ECAEA4D6557B73F25530AAF29F153"
+  },
+  "author_static_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\source-proof.json",
+    "bytes": 322864,
+    "sha256": "DF4C1DB21A528ED6C20EB259DFD9FFD1AEDE5954AB3BC1FFD8757D96B1305947"
+  },
+  "selected_dependency_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\resolved-dependency-inventory.json",
+    "bytes": 1334604,
+    "sha256": "344B351BDB6B2C5692EBE3B1161AA3FE6ADFA9BFDBA10D9D131B5E80C40966B1"
+  },
+  "dependency_resolution": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\dependency-resolution.json",
+    "bytes": 2265,
+    "sha256": "4E478C68DEB71FFE178213D57B49232087C7958168EC2FD76AB0D5A1D64E110D"
+  },
+  "packet_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\packet-inventory.json",
+    "bytes": 8031,
+    "sha256": "3B604F2ED52D7F99FBE35DB93DB937EFE7038EB2DBF4E26B6105847FE081AF7D"
+  },
+  "decisive_source_data_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-custom-buffer-current-e9-peer-20261022\\source-data-proof.json",
+    "bytes": 18516,
+    "sha256": "3F4024B284A99A72994DA2C34BB6929134EE9869584782285D4C502769F3D4B6"
+  },
+  "original_paused_component": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\component.json",
+    "bytes": 4519,
+    "sha256": "436EED3844A4CF7DF7E2FF0461A650D7452B68D7C1CF8EE9E6E293C498193B70"
+  },
+  "basis_raw_commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "selected_build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\build.zig",
+    "bytes": 515962,
+    "sha256": "7AB122A962019B935EB08EE6042BFFDDCB6F7AF6BE6405F47E06A6CF591B7D4F"
+  },
+  "separate_prerequisite": {
+    "target": "src/native_node_stream_shutdown_test_support.zig",
+    "selected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test_support.zig",
+      "bytes": 10325,
+      "sha256": "65388977262D9E61B99A95028D24C592A8D1E79E4328E827ECBEB047ABC72D80"
+    },
+    "raw_preimage": {
+      "relative_path": "src/native_node_stream_shutdown_test_support.zig",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "6bca049ffc704fa1bb9e5a5e111d022c7ba19fd5",
+      "bytes": 10312,
+      "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+    },
+    "root_source_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-shutdown-compile-fixtures-source-acceptance-20261022.json",
+      "bytes": 16831,
+      "sha256": "9F45B1A10A472BE45799461F068C8EFDFFF08DB7E97603B99AE28689B83BEA01"
+    },
+    "independent_source_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-peer-20261022\\peer.json",
+      "bytes": 17460,
+      "sha256": "045B747EA12A28B475AA7093BB9BB795F35C4F6D36F8ADC05CAC8CD7CB44210A"
+    },
+    "included_in_five_target_rows": false,
+    "satisfaction": "Future intake composition must include this exact reviewed support, or prove it already present. This component does not apply or authorize the two-file fixture packet."
+  },
+  "scope": {
+    "selected_source_paths": [
+      "src/extensions/native_node_custom_buffer_listener_allocation.h",
+      "src/extensions/native_node_custom_buffer_listener_allocation.cpp",
+      "src/extensions/native_node_custom_buffer_listener.zig",
+      "src/native_node_custom_buffer_listener_test.zig",
+      "build.zig"
+    ],
+    "source_path_count": 5,
+    "production_paths": 3,
+    "control_roots": 1,
+    "declared_controls": 15,
+    "actual_metadata": null,
+    "production_and_control_bytes_equal_paused_donors": true,
+    "build_delta": "One exact 1,857-byte install-only insertion on raw-e9 build594A; shared diagnostics replace the old paused target-local diagnostic compilation.",
+    "support_in_five_targets": false
+  },
+  "independent_findings": [
+    {
+      "topic": "Original entry and borrowed storage",
+      "finding": "Selected UseUserBuffer preserves actual brand CHECK, Buffer::Data then Length, uv_buf_init(unsigned int), native allocation and listener publication. The listener owns only its native Listener record and uv_buf_t, with no JS root or backing entitlement. The caller must keep the already-backed view/storage alive and valid through I/O.",
+      "evidence": [
+        "source-map:original_use",
+        "source-map:original_buffer_brand_data_length",
+        "source-map:original_inheritance_storage_delete",
+        "source-map:selected_buffer_and_use"
+      ]
+    },
+    {
+      "topic": "Allocation and retirement",
+      "finding": "The native ABI declares DiagnosticContextScope first, then scopes the actual memory domain. The accepted standard allocator retries the real new_handler and reaches native nonreturning bad_alloc policy rather than a nullable or JS allocation result. The max-aligned native allocation prefix retains the independent memory owner on successful allocation and releases charge/domain after storage free; an already unlinked listener can therefore retire after Engine teardown with null diagnostic context.",
+      "evidence": [
+        "source-map:selected_native_allocation",
+        "source-map:original_standard_new",
+        "source-map:native_bad_alloc_policy",
+        "source-map:host_allocation_prefix_complete",
+        "source-map:host_domain_refcount_charge",
+        "source-map:host_engine_release"
+      ]
+    },
+    {
+      "topic": "Read branches and replacement order",
+      "finding": "OnAllocate returns the stored buffer and ignores suggestion. Null-base negative reads take the normal read check and ignore callback replacement. Other reads CHECK base identity and use skip-nread-checks; they do not compare incoming length. Only a present nonundefined result replaces base and then native len, preserving the Windows ULONG versus Unix size_t distinction. Initial uv_buf_init still narrows through unsigned int.",
+      "evidence": [
+        "source-map:original_custom_read",
+        "source-map:selected_read_body",
+        "source-map:original_uv_init_body",
+        "source-map:original_uv_win_width",
+        "source-map:original_uv_unix_width"
+      ]
+    },
+    {
+      "topic": "Self-destruction and completion",
+      "finding": "After callback on empty/undefined or null-negative paths, the selected owner uses only retained local Environment/Scope state, not the potentially destroyed listener or stream. Nonundefined replacement retains the original requirement that the listener remain alive. Ordinary/uncatchable failure is handled through the existing real operation Scope; arbitrary Engine destruction during the callback is not admitted.",
+      "evidence": [
+        "source-map:selected_destroy_alloc_read_scope",
+        "source-map:selected_escaping_completion",
+        "source-map:host_call_js",
+        "source-map:host_scope_pending_own",
+        "source-map:host_scope_finish"
+      ]
+    },
+    {
+      "topic": "Unlink and reporter",
+      "finding": "The actual listener destructor unlinks before freeing native storage. Resource destruction tolerates self-removal using the preserved pointer comparison. after_shutdown selects the genuine reusable shutdown.reportAfterShutdown, not a previous-listener forwarding substitute. Full write-request reporting remains outside the unit.",
+      "evidence": [
+        "source-map:original_resource_destructor_remove",
+        "source-map:host_emit_and_chain_teardown",
+        "source-map:selected_destroy_alloc_read_scope",
+        "source-map:host_actual_shutdown_reporter"
+      ]
+    },
+    {
+      "topic": "VM boundary",
+      "finding": "Actual QuickJS typed-array/DataView predicates and raw view intrinsics are used without guest getters, allocation, backing acquisition or pending-state mutation. Detached, out-of-bounds or zero-length observations do not grant permission to dereference memory. Original V8 on-heap GetBuffer materialization/fatal allocation is explicitly excluded.",
+      "evidence": [
+        "source-map:original_getbuffer_materialization",
+        "source-map:original_view_offset_length",
+        "source-map:host_raw_view_data_length"
+      ]
+    },
+    {
+      "topic": "Controls",
+      "finding": "All fifteen full control bodies were read and remain byte-identical to A252. They cover borrowed physical storage, DataView shadow getters, zero/negative/read replacement paths, actual descriptor reads, ordinary and uncatchable reasons, external backing non-retention, head/interior unlink, self-deleting chains, unlinked post-Engine retirement, callback destruction and the actual Shutdown reporter. They are source controls with no execution claim.",
+      "evidence": [
+        "source-map:control_01 through control_15",
+        "selected control A25266B2"
+      ]
+    },
+    {
+      "topic": "Current build composition",
+      "finding": "The selected block links the already present node_one_byte_diagnostics once and directly compiles only allocation.cpp. Network links the sole native_node_memory owner. The shared diagnostic library supplies TLS C, V8 fatal C++ and OneByteString diagnostics C++ once for this selected artifact. addTest has the existing default cache name and explicit install destination, with no run step. No duplicate member or altered old build bytes found.",
+      "evidence": [
+        "composition:current_build_insertion",
+        "composition:historical_install_block_adaptation",
+        "source-map:host_network_recipe",
+        "source-map:host_memory_recipe",
+        "source-map:host_shared_diagnostic_library",
+        "source-map:selected_install_block"
+      ]
+    }
+  ],
+  "decisive_checks": {
+    "all_23_packet_files_and_membership_exact": true,
+    "all_989_dependency_versions_independently_rehashed": true,
+    "raw_git_entries": 983,
+    "selected_overlay_entries": 6,
+    "source_map_versions_independently_rehashed": 39,
+    "raw_git_map_sources": 24,
+    "exact_excerpt_bindings": 78,
+    "current_build_forward_inverse_and_untouched_prefix_suffix": true,
+    "historical_install_block_forward_inverse": true,
+    "four_source_donors_unchanged_and_absent_in_raw_basis": true,
+    "support6538_one_hunk_inverse_and_canonical_raw_git_preimage": true,
+    "actual_source_declarations_unchanged": 15,
+    "graph_counts": "716 modules / 243 literal plus 2 resolved embeds / 4,389 literal import edges / 8 anonymous source blocks; conservative source accounting only.",
+    "author_source_audit_body_fully_read": true,
+    "author_source_audit_executed_by_peer": false
+  },
+  "corrected_accounting_and_preservation": [
+    "Early literal inventory69EEE and announced nonliteral site remain intact. The exact inline tuple has two static embedded paths; selected344B adds those exact raw-e9 versions and fully reverses to69EEE. The anonymous source count is not an admitted runtime allowlist.",
+    "The inherited origin/source:null label in composition6984 does not change its exact support hash/Git preimage. ProofDF4C and the final contract/handoff explicitly supply the canonical raw-e9 record.",
+    "SDK unexecuted source-audit spelling draft5D7F and one-literal correctionAF29 remain preserved. No selected production/control source changed.",
+    "The peer's read-only inverse-inspector omission of the changed inventory schema, and a truncated data display, are preserved in inspection-observations9C517. The corrected exact raw inverse passed; no candidate or source was changed."
+  ],
+  "limitations": [
+    "This is a bounded source acceptance; no compiler, linker, metadata, runtime, cross-platform or product qualification.",
+    "The public receiver/template identity, liveness, outer-trigger and method-publication boundary remains a caller prerequisite.",
+    "Full WriteWrap completion, V8 on-heap TypedArray materialization, worker/transfer/bootstrap and production tracing clock/platform ownership remain open.",
+    "The two-file Shutdown fixture component is separate. Exact support6538 must be composed or proven already present before future intake.",
+    "The five-source component is not a final normalized intake manifest; future current-head, attributes, raw Git conversion, staging/commit and source/metadata release gates remain required."
+  ],
+  "candidate_executed": false,
+  "prefix_executed": false,
+  "checker_file_executed": false,
+  "executable_checker_created": false,
+  "Main_or_index_accessed": false,
+  "current_native_or_process_evidence_accessed": false,
+  "source_intake_authorized": false,
+  "configuration_issued": false,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "future_root_source_acceptance": null,
+  "future_actual_intake_head": null
+}

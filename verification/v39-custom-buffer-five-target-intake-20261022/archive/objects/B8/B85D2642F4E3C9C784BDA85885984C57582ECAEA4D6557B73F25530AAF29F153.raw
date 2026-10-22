@@ -1,0 +1,144 @@
+"""Static source/data audit. Never evaluates a proposed production/build source.
+Reads only immutable raw Git objects in the owned worktree and exact source evidence.
+The final output is a create-only JSON proof; no Main/index or native access.
+"""
+from pathlib import Path
+import hashlib,json,re,posixpath,subprocess,copy
+W=Path(r"C:\Users\adyba\pi-zig\worktrees\sdk-owners-resume-20261018")
+D=W/"verification/native-node-custom-buffer-current-e9-sourceonly-20261022"
+H="e9f11afa56a923372d957e2fb227f453822c21bf"
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def jp(v):return (json.dumps(v,indent=2,ensure_ascii=True)+"\n").encode()
+def pin(p):
+ b=Path(p).read_bytes();return dict(path=str(p),bytes=len(b),sha256=sha(b))
+inputs={}
+def checked(row):
+ p=Path(row["path"]);b=p.read_bytes()
+ assert len(b)==row["bytes"] and sha(b)==row["sha256"],str(p)
+ inputs[str(p)]=row;return b
+def document(name,h):
+ p=D/name;r=pin(p);assert r["sha256"]==h
+ return json.loads(checked(r))
+comp=document("composition-and-build-proof.json","6984E7456023F75DF42D13F28E57BBCC7ED10F5544AF09A188F34377A0B3A22A")
+inv=document("resolved-dependency-inventory.json","344B351BDB6B2C5692EBE3B1161AA3FE6ADFA9BFDBA10D9D131B5E80C40966B1")
+mp=document("source-map.json","161766BCF9F3A65B1CE12AA1967093B1745B6381037AC272675553BCFD5E8F4F")
+res=document("dependency-resolution.json","4E478C68DEB71FFE178213D57B49232087C7958168EC2FD76AB0D5A1D64E110D")
+for r in comp["inputs"]:checked(r)
+proc=subprocess.Popen(["git","cat-file","--batch"],cwd=W,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+raw={};git_pins={}
+def rawgit(rel):
+ if rel not in raw:
+  proc.stdin.write((H+":"+rel+"\n").encode());proc.stdin.flush()
+  line=proc.stdout.readline().decode().strip()
+  assert not line.endswith(" missing"),rel
+  oid,kind,size=line.split();assert kind=="blob"
+  b=proc.stdout.read(int(size));assert len(b)==int(size) and proc.stdout.read(1)==b"\n"
+  raw[rel]=b;git_pins[rel]={"relative_path":rel,"commit":H,"git_blob":oid,"bytes":len(b),"sha256":sha(b)}
+ return raw[rel]
+overlay={}
+for row in comp["selected_targets"]:
+ b=checked(row["source"]);overlay[row["target"]]=b
+ if row["before"] is None:
+  q=subprocess.run(["git","cat-file","-e",H+":"+row["target"]],cwd=W,stdout=subprocess.PIPE,stderr=subprocess.PIPE);assert q.returncode!=0
+  assert b==checked(row["historical_snapshot"])
+ else:
+  before=rawgit(row["target"]);assert len(before)==row["before"]["bytes"] and sha(before)==row["before"]["sha256"] and git_pins[row["target"]]["git_blob"]==row["before"]["git_blob"]
+assert len(overlay)==5
+base=rawgit("build.zig");assert base==checked(comp["original_build"]);out=overlay["build.zig"]
+e=comp["current_build_insertion"];off=e["offset"];new=e["after"].encode()
+assert e["before"]=="" and sha(base)==e["before_sha256"] and sha(out)==e["after_sha256"]
+assert out==base[:off]+new+base[off:] and out[:off]+out[off+len(new):]==base
+assert sha(base[:off])==e["prefix_sha256"] and sha(base[off:])==e["suffix_sha256"]
+oldbp=json.loads(checked(comp["old_build_proposal"]));old=oldbp["insert"].encode()
+e=comp["historical_install_block_adaptation"];off=e["offset"];a=e["before"].encode();z=e["after"].encode()
+assert old[off:off+len(a)]==a and old[:off]+z+old[off+len(a):]==new
+assert new[off:off+len(z)]==z and new[:off]+a+new[off+len(z):]==old
+assert sha(old)==e["before_sha256"] and sha(new)==e["after_sha256"]
+support=comp["separate_support_prerequisite"];srel="src/native_node_stream_shutdown_test_support.zig"
+old_support=rawgit(srel);sb=checked(support["source"]);a=support["before"].encode();z=support["after"].encode()
+assert old_support.count(a)==1 and old_support.replace(a,z)==sb and sb.replace(z,a)==old_support
+assert len(old_support)==support["raw_preimage"]["bytes"] and sha(old_support)==support["raw_preimage"]["sha256"]
+assert git_pins[srel]["git_blob"]==support["raw_preimage"]["git_blob"]
+overlay[srel]=sb
+def get(rel):return overlay[rel] if rel in overlay else rawgit(rel)
+for row in inv["entries"]:
+ b=get(row["relative_path"]);assert len(b)==row["bytes"] and sha(b)==row["sha256"],row["relative_path"]
+ if row["origin"]=="immutable raw Git blob":assert git_pins[row["relative_path"]]["git_blob"]==row["git_blob"] and row["commit"]==H
+ else:assert checked(row["source"])==b
+literal=json.loads(checked(inv["literal_inventory"]));back=copy.deepcopy(inv)
+for k in ["resolved_embeds","resolved_embed_count","resolved_nonliteral_sites","literal_inventory"]:del back[k]
+extra={e["relative_path"] for e in res["added_raw_members"]}
+back["schema"]=literal["schema"];back["entries"]=[e for e in back["entries"] if e["relative_path"] not in extra];back["entry_count"]=literal["entry_count"]
+assert jp(back)==checked(res["original"]) and pin(D/"resolved-dependency-inventory.json")==res["selected"]
+root=inv["root"];todo=[root];modules=set();embeds=set();edges=[];ext=set();anon=[];nonliteral=[]
+while todo:
+ r=todo.pop()
+ if r in modules:continue
+ modules.add(r);s=get(r).decode()
+ for m in re.finditer(r'@import\s*\(\s*"([^"]+)"\s*\)',s):
+  n=m.group(1)
+  if n.endswith(".zig"):d=posixpath.normpath(posixpath.join(posixpath.dirname(r),n))
+  elif n in inv["named_imports"]:d=inv["named_imports"][n]
+  else:ext.add(n);continue
+  edges.append({"from":r,"literal":n,"to":d,"line":s.count("\n",0,m.start())+1});todo.append(d)
+ for m in re.finditer(r'@embedFile\s*\(\s*"([^"]+)"\s*\)',s):
+  d=posixpath.normpath(posixpath.join(posixpath.dirname(r),m.group(1)));get(d);embeds.add(d)
+ for m in re.finditer(r'^\s*test\s*\{',s,re.M):anon.append({"relative_path":r,"line":s.count("\n",0,m.start())+1,"source_name":r[4:-4].replace("/",".")+".test_0"})
+ for m in re.finditer(r'@(?:import|embedFile)\s*\(',s):
+  if not re.match(r'@(?:import|embedFile)\s*\(\s*"[^"]+"\s*\)',s[m.start():]):nonliteral.append({"relative_path":r,"line":s.count("\n",0,m.start())+1})
+assert sorted(modules)==inv["modules"] and sorted(embeds)==inv["embeds"]
+assert sorted(edges,key=lambda x:(x["from"],x["line"],x["to"]))==inv["edges"]
+assert anon==inv["anonymous_source_blocks"] and sorted(ext)==inv["external_modules"] and nonliteral==inv["nonliteral_sites"]
+site=get("src/extensions/native_sdk_agent_tool.zig").decode().splitlines()
+expected='    inline for (.{ .{ "wrapperIdentitySource", "../durable/fixtures/sdk-agent-tool-wrapper-identity-1ced.json" }, .{ "wrapperContextSource", "../durable/fixtures/sdk-agent-tool-context-1ced.json" } }) |fixture| {'
+assert site[54]==expected and site[55].strip()=="const text = @embedFile(fixture[1]);"
+assert extra=={"src/durable/fixtures/sdk-agent-tool-wrapper-identity-1ced.json","src/durable/fixtures/sdk-agent-tool-context-1ced.json"}
+assert sorted(embeds|extra)==inv["resolved_embeds"]
+assert len(modules)==716 and len(embeds)==243 and len(edges)==4389 and len(inv["entries"])==989 and len(inv["resolved_embeds"])==245
+source_bytes={}
+for key,r in mp["input_sources"].items():
+ if r["kind"]=="raw Git":
+  b=rawgit(r["relative_path"]);assert r["commit"]==H and r["git_blob"]==git_pins[r["relative_path"]]["git_blob"]
+  assert len(b)==r["bytes"] and sha(b)==r["sha256"]
+ else:b=checked(r)
+ source_bytes[key]=b
+for r in mp["authority_acquisition_records"]:checked(r)
+for r in mp["contained_toolchain_snapshots"]:assert checked(r["original"])==checked(r["snapshot"])
+for e in mp["excerpts"]:
+ b=source_bytes[e["source_id"]];lines=b.splitlines(keepends=True);a,z=e["lines"];part=b"".join(lines[a-1:z])
+ assert sum(map(len,lines[:a-1]))==e["offset"] and len(part)==e["bytes"] and sha(part)==e["sha256"] and part.decode()==e["text"]
+ids={e["id"]:e for e in mp["excerpts"]}
+for m in mp["mappings"]:
+ for x in m["original_excerpts"]+m["selected_or_host_excerpts"]:assert x in ids
+assert "__throw_bad_alloc" in ids["native_bad_alloc_noreturn"]["text"]
+assert "_LIBCPP_VERBOSE_ABORT" in ids["native_bad_alloc_policy"]["text"]
+names=re.findall(r'^test "([^"]+)"',get(root).decode(),re.M)
+assert names==inv["named_declarations"]==comp["named_declarations"]==[x["name"] for x in mp["controls"]] and len(names)==15
+assert all(x["runtime_observed"] is False and x["source_excerpt"] in ids for x in mp["controls"])
+# Canonical aliases and actual selected reporter; no second UV import in the new owner.
+listener=source_bytes["listener"];assert b"const c = a.c;" in listener and b"const uv = resources.uv;" in listener and b"@cImport" not in listener
+assert b'pub const uv = @import("native_node_managed_buffers.zig").uv;' in source_bytes["resource"]
+assert b'pub const uv = @cImport({ @cInclude("uv.h"); });' in source_bytes["managed"]
+assert b'pub const c = v.c;' in source_bytes["argument"] and b'pub const c = em.c;' in source_bytes["provider_values"]
+assert b".after_shutdown = shutdown.reportAfterShutdown" in listener
+assert b"listener.deinit();\n        pi_node_custom_buffer_listener_free(context, self);" in listener
+assert listener.index(b"self.buffer.base = bufferData")<listener.index(b"self.buffer.len = @truncate(bufferLength")
+# Actual ownership and one-definition native recipe, read from selected sources.
+cpp=source_bytes["allocation_cpp"]
+assert cpp.count(b"DiagnosticContextScope") == 2 and b"pi_node::AllocationScope allocation_scope(memory_owner)" in cpp
+assert b"pi_node::allocateStandard(allocation_size)" in cpp and b"pi_simd::release(storage)" in cpp
+diag=source_bytes["build"][source_bytes["build"].index(b"        const node_one_byte_diagnostics ="):source_bytes["build"].index(b"        const node_stream_read =",source_bytes["build"].index(b"        const node_one_byte_diagnostics ="))]
+for n in [b"native_node_diagnostic_context.c",b"native_v8_base_fatal.cpp",b"native_node_one_byte_string_diagnostics.cpp"]:
+ assert diag.count(n)==1 and n not in new and n not in source_bytes["network_recipe"]
+assert new.count(b"linkLibrary(node_one_byte_diagnostics)")==1 and new.count(b"addCSourceFile(")==1 and b"addCSourceFiles(" not in new
+assert new.count(b"native_node_custom_buffer_listener_allocation.cpp")==1
+assert b'native_node_memory' in source_bytes["build"] and b"linkLibrary(memory)" in source_bytes["network_recipe"]
+assert source_bytes["memory_recipe"].count(b"native_simdjson_memory.cpp")==1
+assert b".name =" not in new and b"addRunArtifact" not in new and b'build-native-node-custom-buffer-listener' in new
+assert b'.dest_sub_path = b.fmt("native-node-custom-buffer-listener{s}"' in new
+proc.stdin.close();proc.wait(timeout=10);assert proc.returncode==0
+result={"schema":"pi-zig-custom-buffer-current-e9-static-proof.v1","basis_raw_git":H,"checker":pin(__file__),"source_files":list(inputs.values()),"raw_git_inputs":list(git_pins.values()),"five_targets_exact":comp["selected_targets"],"build_current_one_hunk_and_historical_block_inverse_exact":True,"support_separate_one_hunk_inverse_exact":True,"support_raw_preimage_canonical":git_pins[srel],"composition_preimage_note":"6984 raw_preimage inherited an overlay origin label/source:null; canonical authority is the exact raw Git object and bytes reported here. No preimage byte, candidate or scope changes.","all_989_dependency_versions_exact":True,"graph":{"modules":716,"literal_embeds":243,"resolved_embeds":245,"literal_edges":4389,"resolved_nonliteral_sites":1,"anonymous_source_blocks":8,"declarations":15,"actual_metadata":None},"namespace_and_native_recipe_checks":True,"source_map":{"sources":len(source_bytes),"excerpts":len(mp["excerpts"]),"mappings":len(mp["mappings"]),"controls":len(mp["controls"]),"all_exact":True},"all_original_paused_versions_preserved":True,"Main_or_index_read_or_written":False,"candidate_source_evaluated":False,"compiler_or_native_execution":False,"runtime_or_product_qualification":False}
+p=D/"source-proof.json"
+with p.open("xb") as f:f.write(jp(result))
+assert p.read_bytes()==jp(result)
+print(json.dumps({"proof":pin(p),"checker":pin(__file__),"file_inputs":len(inputs),"raw_git_inputs":len(git_pins)},indent=2))

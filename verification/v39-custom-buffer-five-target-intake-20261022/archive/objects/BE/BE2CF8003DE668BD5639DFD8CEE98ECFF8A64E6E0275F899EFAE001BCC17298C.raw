@@ -1,0 +1,24 @@
+/* Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE. */
+#ifndef PI_NATIVE_NODE_FILE_FLAGS_H
+#define PI_NATIVE_NODE_FILE_FLAGS_H
+#include <stdint.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+enum PiNodeFileOpenFlag {
+  PI_NODE_FILE_O_RDONLY,
+  PI_NODE_FILE_O_WRONLY,
+  PI_NODE_FILE_O_RDWR,
+  PI_NODE_FILE_O_APPEND,
+  PI_NODE_FILE_O_CREAT,
+  PI_NODE_FILE_O_EXCL,
+  PI_NODE_FILE_O_TRUNC,
+  PI_NODE_FILE_O_SYNC
+};
+/* Returns whether the actual platform macro exists. The output is written
+ * only when present; no libuv-only alias is substituted for a missing macro. */
+int pi_node_file_open_flag(enum PiNodeFileOpenFlag field, int32_t* value);
+#ifdef __cplusplus
+}
+#endif
+#endif

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "status": "preserved_read_only_data_inspection_observation",
+  "source_only": true,
+  "subject_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 250596,
+    "sha256": "FCF2946B954027511B8C8EAB76B84B477FEC799D38A009DB1CE53A3887F40733"
+  },
+  "observations": [
+    {
+      "kind": "own_schema_lookup_negative",
+      "stage": "after raw Git, file, mode, row, alias and path checks; before proof output",
+      "exception": "KeyError: 'targets'",
+      "failed_expression": "assert len(component['targets'])==5",
+      "actual_schema": "The accepted intake-component.json uses rows, with count=5.",
+      "correction": {
+        "before": "assert len(component['targets'])==5",
+        "after": "assert len(component['rows'])==5\nfor a,b in zip(source,component['rows']):\n b=dict(b)\n if b['before'] is not None:b['before']={k:v for k,v in b['before'].items() if k!='raw_git_blob'}\n assert a==b,(a,b)"
+      },
+      "outcome": "The corrected independent data inspection passed, including exact five rows after the normalized before record omits only its separately bound raw_git_blob citation.",
+      "candidate_or_donor_changed": false,
+      "proof_written_by_failed_inspection": false
+    },
+    {
+      "kind": "tool_result_display_truncation",
+      "description": "The final handoff read completed without file truncation; duplicated tool-envelope text exceeded presentation budget. The full structuredContent file body was retained and read. No file was reconstructed from a truncated display."
+    }
+  ],
+  "authority": {
+    "supplied_checker_or_candidate_executed": false,
+    "Main_or_index_accessed": false,
+    "current_native_or_process_accessed": false,
+    "existing_files_modified": false
+  }
+}

@@ -1,0 +1,11 @@
+# Shutdown compile fixture correction
+
+This source-only packet corrects two compiler failures reported for the frozen e9f11afa source head. It does not assert that either target compiles or runs.
+
+The result assertion selects t.base_support.physical.UV_EBADF, the existing public uv.h import already used by FileHandle owner controls. The expected symbolic error, integer cast, comparison and all surrounding checks are preserved.
+
+The cleanup loop now iterates an explicit [_]*?c.JSValue array. Its three runtime pointer values, order, optional guard, null-before-free body, callback drain and base teardown are unchanged. The pinned Zig language reference distinguishes tuple compile-time indexing from ordinary array iteration.
+
+proposal.json contains both exact raw edits, original Git blob IDs, all original/candidate hashes and full inverse accounting. source-map.json contains exact Git-authority snapshots/excerpts and contained raw documentation excerpts. source-proof.json records the static replay and unchanged 18 + 8 + 12 declared controls. The other two roots are authority snapshots only; no candidate bytes are proposed for them.
+
+original-negative-provenance.json preserves Root-supplied original failure references, explicitly without claiming that this source task opened or independently rehashed those native artifacts. Main, build, production sources, original failures and previous packets were not changed. Only Root can separately admit any future intake, build or runtime.

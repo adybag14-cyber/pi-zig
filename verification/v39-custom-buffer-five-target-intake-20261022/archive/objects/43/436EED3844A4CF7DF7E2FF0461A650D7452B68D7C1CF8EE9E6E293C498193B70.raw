@@ -1,0 +1,77 @@
+{
+  "schema": "pi-zig-custom-buffer-listener-initial-source-component-v1",
+  "status": "Frozen finite source snapshots; source mapping/closure and independent peer still pending",
+  "production": [
+    {
+      "target": "src/extensions/native_node_custom_buffer_listener_allocation.h",
+      "live_draft": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_custom_buffer_listener_allocation.h",
+        "bytes": 1222,
+        "sha256": "95E77F10C01964B18BBB845E0554C5F2F9ABD81D4A4238E5F5133DF1E77EC282"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\production\\src\\extensions\\native_node_custom_buffer_listener_allocation.h",
+        "bytes": 1222,
+        "sha256": "95E77F10C01964B18BBB845E0554C5F2F9ABD81D4A4238E5F5133DF1E77EC282"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_custom_buffer_listener_allocation.cpp",
+      "live_draft": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_custom_buffer_listener_allocation.cpp",
+        "bytes": 1371,
+        "sha256": "DEE3A42BB595DE00E8EC6A2784E40741E233D58E81001A4050449F9D7FE9DD63"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\production\\src\\extensions\\native_node_custom_buffer_listener_allocation.cpp",
+        "bytes": 1371,
+        "sha256": "DEE3A42BB595DE00E8EC6A2784E40741E233D58E81001A4050449F9D7FE9DD63"
+      }
+    },
+    {
+      "target": "src/extensions/native_node_custom_buffer_listener.zig",
+      "live_draft": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_custom_buffer_listener.zig",
+        "bytes": 7760,
+        "sha256": "4CB29FE5A6475123A840A3638EC6D08128249822DC38F775A7B81E661B3085AE"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\production\\src\\extensions\\native_node_custom_buffer_listener.zig",
+        "bytes": 7760,
+        "sha256": "4CB29FE5A6475123A840A3638EC6D08128249822DC38F775A7B81E661B3085AE"
+      }
+    }
+  ],
+  "controls": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\controls\\src\\native_node_custom_buffer_listener_test.zig",
+    "bytes": 20027,
+    "sha256": "A25266B23890A16FB72533F68A040EA8AE81B0F6D20AD178AA1D6037E50F30C2"
+  },
+  "draft_control_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\draft-control-proof.json",
+    "bytes": 6617,
+    "sha256": "98547E4AA1A0A894E7CE9C242B3B5EBA6DC15DDBEF54A08C7BA8A8072D014054"
+  },
+  "build_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\build\\proposal.json",
+    "bytes": 4888,
+    "sha256": "263EDFB588F1AD277A9116772BD197FAB4F0CD97BDBEFA994889B79A437DE28C"
+  },
+  "preparation_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\prepare-component.py",
+    "bytes": 8586,
+    "sha256": "947A853FE046ABFB20162601C3382EA311B81589DF28F4C4B6C458658F1179DD"
+  },
+  "boundaries": [
+    "Admitted native UseUserBuffer body and real CustomBufferJSListener only; no public FunctionTemplate/JSMethod publication",
+    "Caller retains and keeps the actual branded view/backing valid; listener owns no JS/backing entitlement",
+    "Uses accepted raw Buffer address slice; original GetBuffer materialization and unsupported host view obligations stay explicit",
+    "Actual direct Shutdown reporter selected; full WriteWrap completion is still a separate owner",
+    "Real standard-new retry/fatal allocator policy and diagnostic context; no nullable/guest OOM replacement",
+    "Test fixture uses selected observation/hook policy; production trace/bootstrap policy remains a dependency"
+  ],
+  "no_live_sources_written": true,
+  "compiler_executed": false,
+  "native_executed": false,
+  "runtime_qualification": false
+}

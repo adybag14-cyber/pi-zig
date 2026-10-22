@@ -1,0 +1,144 @@
+{
+  "schema": "pi-zig-custom-buffer-current-e9-source-and-intake-contract.v1",
+  "source_basis_raw_commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "selected_source_paths": [
+    "src/extensions/native_node_custom_buffer_listener_allocation.h",
+    "src/extensions/native_node_custom_buffer_listener_allocation.cpp",
+    "src/extensions/native_node_custom_buffer_listener.zig",
+    "src/native_node_custom_buffer_listener_test.zig",
+    "build.zig"
+  ],
+  "source_target_count": 5,
+  "new_production_files": 3,
+  "new_control_roots": 1,
+  "existing_build_insertions": 1,
+  "finite_build_basis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\original\\build.zig",
+    "bytes": 514105,
+    "sha256": "594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF"
+  },
+  "finite_build_selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\build.zig",
+    "bytes": 515962,
+    "sha256": "7AB122A962019B935EB08EE6042BFFDDCB6F7AF6BE6405F47E06A6CF591B7D4F"
+  },
+  "source_body_changes_relative_to_paused_component": 0,
+  "required_separate_prerequisite": {
+    "target": "src/native_node_stream_shutdown_test_support.zig",
+    "selected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test_support.zig",
+      "bytes": 10325,
+      "sha256": "65388977262D9E61B99A95028D24C592A8D1E79E4328E827ECBEB047ABC72D80"
+    },
+    "raw_preimage": {
+      "relative_path": "src/native_node_stream_shutdown_test_support.zig",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "6bca049ffc704fa1bb9e5a5e111d022c7ba19fd5",
+      "bytes": 10312,
+      "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+    },
+    "root_source_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-shutdown-compile-fixtures-source-acceptance-20261022.json",
+      "bytes": 16831,
+      "sha256": "9F45B1A10A472BE45799461F068C8EFDFFF08DB7E97603B99AE28689B83BEA01"
+    },
+    "independent_source_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-peer-20261022\\peer.json",
+      "bytes": 17460,
+      "sha256": "045B747EA12A28B475AA7093BB9BB795F35C4F6D36F8ADC05CAC8CD7CB44210A"
+    },
+    "included_in_five_target_rows": false,
+    "satisfaction": "Future intake composition must include this exact reviewed support, or prove it already present. This component does not apply or authorize the two-file fixture packet."
+  },
+  "source_byte_authority": "Immutable raw e9 Git objects from the owned worktree, four frozen copied donors and the separately reviewed support. No checkout normalization and no claim about an active run input seal.",
+  "build_contract": {
+    "target": "build-native-node-custom-buffer-listener",
+    "source_root": "src/native_node_custom_buffer_listener_test.zig",
+    "filter": "native CustomBuffer listener",
+    "cache_artifact_basename": "test",
+    "installed_artifact_basename": "native-node-custom-buffer-listener",
+    "install_dest": "native-node-custom-buffer-listener.exe on Windows; native-node-custom-buffer-listener otherwise",
+    "run_step_added": false,
+    "direct_new_cpp": [
+      "src/extensions/native_node_custom_buffer_listener_allocation.cpp"
+    ],
+    "shared_diagnostics": "node_one_byte_diagnostics",
+    "shared_diagnostic_members": [
+      "native_node_diagnostic_context.c",
+      "native_v8_base_fatal.cpp",
+      "native_node_one_byte_string_diagnostics.cpp"
+    ],
+    "allocator_domain": "existing network -> native_node_memory -> native_simdjson_memory.cpp",
+    "one_definition_per_artifact": "Verified exact selected source recipe; linker/compiler result remains unobserved."
+  },
+  "source_graph": {
+    "modules": 716,
+    "literal_embeds": 243,
+    "resolved_embeds": 245,
+    "literal_import_edges": 4389,
+    "resolved_nonliteral_embed_sites": 1,
+    "dependency_versions": 989,
+    "anonymous_source_blocks": 8,
+    "anonymous_source_blocks_are_not_runtime_allowlist": true
+  },
+  "declaration_count": 15,
+  "declared_names": [
+    "native CustomBuffer listener publishes the actual borrowed typed view span and writes its physical storage",
+    "native CustomBuffer listener uses actual DataView fields without invoking shadow getters",
+    "native CustomBuffer listener returns the same empty view buffer regardless of suggested size",
+    "native CustomBuffer listener calls onread for zero and nonnull negative reads and retains undefined results",
+    "native CustomBuffer listener null error branch ignores even an invalid replacement result",
+    "native CustomBuffer listener commits the actual returned view for the next allocation",
+    "native CustomBuffer listener actual descriptor reads reuse caller buffers through FileHandle completion",
+    "native CustomBuffer listener actual ordinary and uncatchable callback throws preserve the original buffer",
+    "native CustomBuffer listener does not retain the actual external buffer or its JavaScript view",
+    "native CustomBuffer listener native deletion unlinks the live head before releasing its exact charge",
+    "native CustomBuffer listener interior deletion preserves the actual remaining listener chain",
+    "native CustomBuffer listener StreamBase destruction consumes its actual self deleting chain",
+    "native CustomBuffer listener unlinked allocation survives Engine teardown and retires without a context",
+    "native CustomBuffer listener callback may destroy the actual listener and return undefined",
+    "native CustomBuffer listener selects the genuine shutdown reporter for the real native close request"
+  ],
+  "actual_metadata_count": null,
+  "source_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\source-map.json",
+    "bytes": 144892,
+    "sha256": "161766BCF9F3A65B1CE12AA1967093B1745B6381037AC272675553BCFD5E8F4F"
+  },
+  "source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\source-proof.json",
+    "bytes": 322864,
+    "sha256": "DF4C1DB21A528ED6C20EB259DFD9FFD1AEDE5954AB3BC1FFD8757D96B1305947"
+  },
+  "caller_obligations": [
+    "Real entry/receiver/VM admission already completed.",
+    "Stream/environment/Engine valid for synchronous operation; caller-owned native view and storage remain valid through native I/O.",
+    "No dereference after caller detaches, shrinks or retires backing; valid nonzero buffer required by real I/O.",
+    "A nonundefined replacement result must be returned while listener is alive; undefined/empty/null-negative branches allow self-destruction.",
+    "An unlinked orphan after Engine teardown may only retire its allocation, not be read or reused."
+  ],
+  "excluded_claims": [
+    "Full public FileHandle/StreamBase prototype publication and runtime-owned FunctionTemplate identity.",
+    "Full WriteWrap completion and worker/transfer/bootstrap assembly.",
+    "V8 on-heap TypedArray materialization allocation policy.",
+    "Production tracing clock/platform/Agent integration and hook-policy bootstrap.",
+    "Compiler, metadata, runtime, cross-platform or product qualification."
+  ],
+  "intake_conditions": [
+    "Separate Root and independent source acceptance must identify exact selected packet bytes.",
+    "Recheck complete exact five target preimages/absence, selected donors, paths/modes and separate support prerequisite before any concrete intake.",
+    "Compose any separately accepted fixture-file component explicitly, preserving its own preimages and receipts; do not silently add its paths to these five.",
+    "Fresh source head, catalog/declared policy and compiler metadata require separate actual observation and Root release."
+  ],
+  "future_actual_intake_basis_head": null,
+  "future_root_source_acceptance": null,
+  "future_independent_source_peer": null,
+  "intake_authorized": false,
+  "configuration_issued": false,
+  "native_execution_authorized": false,
+  "compiler_executed": false,
+  "runtime_qualified": false,
+  "public_method_publication_claimed": false,
+  "runtime_template_identity_claimed": false,
+  "production_tracing_clock_claimed": false
+}

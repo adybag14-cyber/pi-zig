@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "status": "unissued_data_only_v39_shutdown_fixture_copy_plan_handoff",
+  "copy_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 91316,
+    "sha256": "C17D422F19D3EC4B7FA9CD5B112FFAF76EC418F4A7EE5BC13D61E800688D8255"
+  },
+  "source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-shutdown-compile-fixtures-source-acceptance-20261022.json",
+    "bytes": 16831,
+    "sha256": "9F45B1A10A472BE45799461F068C8EFDFFF08DB7E97603B99AE28689B83BEA01"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-peer-20261022\\peer.json",
+    "bytes": 17460,
+    "sha256": "045B747EA12A28B475AA7093BB9BB795F35C4F6D36F8ADC05CAC8CD7CB44210A"
+  },
+  "source_basis": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "extra_normalized_rows": [
+    {
+      "target": "verification/v39-shutdown-compile-fixtures-intake-20261022/archive/plan/copy-manifest-plan.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+      "bytes": 91316,
+      "sha256": "C17D422F19D3EC4B7FA9CD5B112FFAF76EC418F4A7EE5BC13D61E800688D8255",
+      "before": null,
+      "role": "immutable_copy_plan_archive",
+      "mode": "100644"
+    }
+  ],
+  "extra_logical_donor_aliases": [
+    {
+      "target": "verification/v39-shutdown-compile-fixtures-intake-20261022/archive/plan/copy-manifest-plan.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+      "bytes": 91316,
+      "sha256": "C17D422F19D3EC4B7FA9CD5B112FFAF76EC418F4A7EE5BC13D61E800688D8255"
+    }
+  ],
+  "plan_counts": {
+    "source_replacements": 2,
+    "source_additions": 0,
+    "archive_physical_rows": 28,
+    "archive_logical_donors": 28,
+    "physical_rows_excluding_plan_and_manifest": 30,
+    "logical_aliases_excluding_plan_and_manifest": 30,
+    "separately_sealed_plan_archive_rows": 1,
+    "planned_paths_including_plan_and_synthetic_manifest": 32,
+    "planned_replacements": 2,
+    "planned_additions_including_manifest": 30
+  },
+  "core_row_count": 30,
+  "core_alias_count": 30,
+  "selected_rows_after_one_plan_supplement": 31,
+  "selected_aliases_after_one_plan_supplement": 31,
+  "synthetic_manifest_rows": 1,
+  "planned_total_paths": 32,
+  "future_actual_basis_head": null,
+  "future_manifest": null,
+  "future_execution_release": null,
+  "handoff_itself_archived": false,
+  "conventions_selected_as_data_only": true,
+  "all_28_archive_inputs_and_two_raw_Git_preimages_verified": true,
+  "external_native_archive_references_explicit": true,
+  "source_only": true,
+  "intake_authorized": false,
+  "adapter_bound_or_executed": false,
+  "Main_or_index_accessed": false,
+  "compiler_native_or_current_process_access": false,
+  "application_qualified": false
+}

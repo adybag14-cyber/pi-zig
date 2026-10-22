@@ -1,0 +1,271 @@
+// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
+//! Actual selected Node v24.13 validators used by fs/promises open/read.
+//! Primordials and error classes come from the one genuine filesystem bootstrap.
+//! Mutable parameters use actual Source argument slots. Default parameter-scope
+//! originals remain in declaration order until the C terminal owner releases them.
+const h = @import("native_sdk_session_locals.zig");
+const v = h.v;
+const c = v.c;
+const Engine = h.Engine;
+const Scope = h.Scope;
+const sync = @import("native_sync_arguments.zig");
+const Arguments = sync.Arguments;
+const Frames = @import("native_public_lexical_frame.zig");
+const a = @import("native_node_argument_values.zig");
+const registration = @import("native_node_argument_error_registration.zig");
+const IntegerFrame = Frames.Frame(enum { value, name, min, max });
+const UintFrame = Frames.Frame(enum { value, name, positive, min, max });
+const BufferFrame = Frames.Frame(enum { buffer, name });
+const ObjectFrame = Frames.Frame(enum {
+    value, name, options, throwOnNullable, throwOnArray, throwOnFunction, typeofValue,
+});
+pub const Inputs = struct {
+    invalid_arg_type: c.JSValue,
+    invalid_arg_value: c.JSValue,
+    out_of_range: c.JSValue,
+    error_constructor: c.JSValue,
+    capture_stack_trace: c.JSValue,
+    reflect_apply: c.JSValue,
+    number_is_integer: c.JSValue,
+    number_parse_int: c.JSValue,
+    number_min_safe_integer: c.JSValue,
+    number_max_safe_integer: c.JSValue,
+    regexp_exec: c.JSValue,
+    array_is_array: c.JSValue,
+    is_array_buffer_view: c.JSValue,
+};
+fn value(s: *Scope, comptime body: anytype, args: anytype) !c.JSValue {
+    return v.own(s, try h.expression(s.engine, body, args));
+}
+fn raised(s: *Scope, reason: c.JSValue) anyerror {
+    var boundary: v.guest.Boundary = .{ .engine = s.engine };
+    boundary.begin() catch |err| return err;
+    _ = boundary.finishValue(s, c.JS_Throw(s.engine.context, v.duplicate(s, reason))) catch |err| return err;
+    return error.MissingActualFilesystemValidatorThrow;
+}
+fn newReason(s: *Scope, constructor: c.JSValue, args: []const c.JSValue) !c.JSValue {
+    return v.duplicate(s, try v.construct(s, constructor, args));
+}
+fn typeReason(s: *Scope, constructor: c.JSValue, name: c.JSValue,
+    expected: []const u8, input: c.JSValue) !c.JSValue
+{
+    return newReason(s, constructor, &.{name, try v.text(s, expected), input});
+}
+fn integerReason(s: *Scope, constructor: c.JSValue, name: c.JSValue, input: c.JSValue) !c.JSValue {
+    return newReason(s, constructor, &.{name, try v.text(s, "an integer"), input});
+}
+fn converted(s: *Scope, input: c.JSValue) !c.JSValue {
+    return v.duplicate(s, try v.stringify(s, input));
+}
+fn rangeText(s: *Scope, minimum: c.JSValue, maximum: c.JSValue) !c.JSValue {
+    const prefix = try v.text(s, ">= ");
+    const min = try value(s, converted, .{minimum});
+    const first = try h.binary(s, .add, prefix, min);
+    const next = try h.binary(s, .add, first, try v.text(s, " && <= "));
+    const max = try value(s, converted, .{maximum});
+    return v.duplicate(s, try h.binary(s, .add, next, max));
+}
+fn rangeReason(s: *Scope, constructor: c.JSValue, name: c.JSValue,
+    minimum: c.JSValue, maximum: c.JSValue, input: c.JSValue) !c.JSValue
+{
+    const range = try value(s, rangeText, .{minimum, maximum});
+    return newReason(s, constructor, &.{name, range, input});
+}
+fn predicateCall(s: *Scope, function: c.JSValue, input: c.JSValue) !c.JSValue {
+    return v.boolean(s, v.truthy(s, try v.call(s, function, c.pi_js_undefined(), &.{input})));
+}
+fn predicate(engine: *Engine, function: c.JSValue, input: c.JSValue) !bool {
+    return h.truthy(engine, try h.expression(engine, predicateCall, .{function, input}));
+}
+fn validateIntegerBody(s: *Scope, args: *Arguments, frame: *IntegerFrame, roots: []const c.JSValue) !c.JSValue {
+    try frame.copy(.value, args.get(0));
+    try frame.copy(.name, args.get(1));
+    if (c.JS_IsUndefined(args.get(2))) try args.copy(2, roots[3]);
+    try frame.copy(.min, args.get(2));
+    if (c.JS_IsUndefined(args.get(3))) try args.copy(3, roots[4]);
+    try frame.copy(.max, args.get(3));
+    if (!c.JS_IsNumber(args.get(0)))
+        return raised(s, try value(s, typeReason, .{roots[0], args.get(1), @as([]const u8, "number"), args.get(0)}));
+    if (!try predicate(s.engine, roots[2], args.get(0)))
+        return raised(s, try value(s, integerReason, .{roots[1], args.get(1), args.get(0)}));
+    if (try h.compare(s.engine, .less, args.get(0), args.get(2)) or
+        try h.compare(s.engine, .greater, args.get(0), args.get(3)))
+    {
+        return raised(s, try value(s, rangeReason, .{roots[1], args.get(1), args.get(2), args.get(3), args.get(0)}));
+    }
+    return c.pi_js_undefined();
+}
+fn validateIntegerCall(engine: *Engine, _: c.JSValue, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    const frame = args.createFrame(&scope, IntegerFrame) catch |err| return v.owned.finishValue(&scope, err);
+    return v.owned.finishValue(&scope, validateIntegerBody(&scope, args, frame, roots));
+}
+fn validateUintBody(s: *Scope, args: *Arguments, frame: *UintFrame, roots: []const c.JSValue) !c.JSValue {
+    try frame.copy(.value, args.get(0));
+    try frame.copy(.name, args.get(1));
+    if (c.JS_IsUndefined(args.get(2))) try args.take(2, v.boolean(s, false));
+    try frame.copy(.positive, args.get(2));
+    if (!c.JS_IsNumber(args.get(0)))
+        return raised(s, try value(s, typeReason, .{roots[0], args.get(1), @as([]const u8, "number"), args.get(0)}));
+    if (!try predicate(s.engine, roots[2], args.get(0)))
+        return raised(s, try value(s, integerReason, .{roots[1], args.get(1), args.get(0)}));
+    try frame.take(.min, v.number(s, if (v.truthy(s, args.get(2))) 1 else 0));
+    try frame.take(.max, v.number(s, 4294967295));
+    if (try h.compare(s.engine, .less, args.get(0), frame.get(.min)) or
+        try h.compare(s.engine, .greater, args.get(0), frame.get(.max)))
+    {
+        return raised(s, try value(s, rangeReason, .{roots[1], args.get(1), frame.get(.min), frame.get(.max), args.get(0)}));
+    }
+    return c.pi_js_undefined();
+}
+fn validateUintCall(engine: *Engine, _: c.JSValue, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    const frame = args.createFrame(&scope, UintFrame) catch |err| return v.owned.finishValue(&scope, err);
+    return v.owned.finishValue(&scope, validateUintBody(&scope, args, frame, roots));
+}
+fn bufferReason(s: *Scope, constructor: c.JSValue, name: c.JSValue, input: c.JSValue) !c.JSValue {
+    const expected = try v.array(s);
+    try v.index(s, expected, 0, try v.text(s, "Buffer"));
+    try v.index(s, expected, 1, try v.text(s, "TypedArray"));
+    try v.index(s, expected, 2, try v.text(s, "DataView"));
+    return newReason(s, constructor, &.{name, expected, input});
+}
+fn validateBufferBody(s: *Scope, args: *Arguments, frame: *BufferFrame, roots: []const c.JSValue) !c.JSValue {
+    try frame.copy(.buffer, args.get(0));
+    if (c.JS_IsUndefined(args.get(1))) try args.take(1, h.text(s.engine, "buffer"));
+    try frame.copy(.name, args.get(1));
+    if (!try predicate(s.engine, roots[1], args.get(0)))
+        return raised(s, try value(s, bufferReason, .{roots[0], args.get(1), args.get(0)}));
+    return c.pi_js_undefined();
+}
+fn validateBufferCall(engine: *Engine, _: c.JSValue, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    const frame = args.createFrame(&scope, BufferFrame) catch |err| return v.owned.finishValue(&scope, err);
+    return v.owned.finishValue(&scope, validateBufferBody(&scope, args, frame, roots));
+}
+fn typeofValue(s: *Scope, input: c.JSValue) !c.JSValue {
+    const name: []const u8 = if (c.JS_IsUndefined(input)) "undefined" else if (c.JS_IsNull(input)) "object"
+        else if (c.JS_IsBool(input)) "boolean" else if (c.JS_IsNumber(input)) "number"
+        else if (c.JS_IsString(input)) "string" else if (c.JS_IsBigInt(input)) "bigint"
+        else if (c.JS_IsSymbol(input)) "symbol" else if (c.JS_IsFunction(s.engine.context, input)) "function"
+        else "object";
+    return v.duplicate(s, try v.text(s, name));
+}
+fn objectType(s: *Scope, input: c.JSValue) bool {
+    return c.JS_IsNull(input) or (c.JS_IsObject(input) and !c.JS_IsFunction(s.engine.context, input));
+}
+fn optionDisallows(s: *Scope, bit: u8, options: c.JSValue) !c.JSValue {
+    const selected = try h.binary(s, .bit_and, v.number(s, @floatFromInt(bit)), options);
+    return v.boolean(s, v.equal(s, selected, v.number(s, 0)));
+}
+fn validateObjectBody(s: *Scope, args: *Arguments, frame: *ObjectFrame, roots: []const c.JSValue) !c.JSValue {
+    try frame.copy(.value, args.get(0));
+    try frame.copy(.name, args.get(1));
+    if (c.JS_IsUndefined(args.get(2))) try args.take(2, v.number(s, 0));
+    try frame.copy(.options, args.get(2));
+    if (v.equal(s, args.get(2), v.number(s, 0))) {
+        if (c.JS_IsNull(args.get(0)) or try predicate(s.engine, roots[1], args.get(0)))
+            return raised(s, try value(s, typeReason, .{roots[0], args.get(1), @as([]const u8, "Object"), args.get(0)}));
+        if (!objectType(s, args.get(0)))
+            return raised(s, try value(s, typeReason, .{roots[0], args.get(1), @as([]const u8, "Object"), args.get(0)}));
+    } else {
+        try frame.take(.throwOnNullable, h.expression(s.engine, optionDisallows, .{@as(u8, 1), args.get(2)}));
+        if (v.truthy(s, frame.get(.throwOnNullable)) and c.JS_IsNull(args.get(0)))
+            return raised(s, try value(s, typeReason, .{roots[0], args.get(1), @as([]const u8, "Object"), args.get(0)}));
+        try frame.take(.throwOnArray, h.expression(s.engine, optionDisallows, .{@as(u8, 2), args.get(2)}));
+        if (v.truthy(s, frame.get(.throwOnArray)) and try predicate(s.engine, roots[1], args.get(0)))
+            return raised(s, try value(s, typeReason, .{roots[0], args.get(1), @as([]const u8, "Object"), args.get(0)}));
+        try frame.take(.throwOnFunction, h.expression(s.engine, optionDisallows, .{@as(u8, 4), args.get(2)}));
+        try frame.take(.typeofValue, h.expression(s.engine, typeofValue, .{args.get(0)}));
+        if (!try v.eq(s, frame.get(.typeofValue), "object") and
+            (v.truthy(s, frame.get(.throwOnFunction)) or !try v.eq(s, frame.get(.typeofValue), "function")))
+        {
+            return raised(s, try value(s, typeReason, .{roots[0], args.get(1), @as([]const u8, "Object"), args.get(0)}));
+        }
+    }
+    return c.pi_js_undefined();
+}
+fn validateObjectCall(engine: *Engine, _: c.JSValue, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    const frame = args.createFrame(&scope, ObjectFrame) catch |err| return v.owned.finishValue(&scope, err);
+    return v.owned.finishValue(&scope, validateObjectBody(&scope, args, frame, roots));
+}
+fn invalidOctal(s: *Scope, exec: c.JSValue, regexp: c.JSValue, input: c.JSValue) !c.JSValue {
+    const result = try v.call(s, exec, regexp, &.{input});
+    return v.boolean(s, c.JS_IsNull(result));
+}
+fn modeReason(s: *Scope, constructor: c.JSValue, name: c.JSValue, input: c.JSValue) !c.JSValue {
+    return newReason(s, constructor, &.{name, input,
+        try v.text(s, "must be a 32-bit unsigned integer or an octal string")});
+}
+fn parsedOctal(s: *Scope, parse: c.JSValue, input: c.JSValue) !c.JSValue {
+    return v.duplicate(s, try v.call(s, parse, c.pi_js_undefined(), &.{input, v.number(s, 8)}));
+}
+fn validateMode(s: *Scope, validator: c.JSValue, input: c.JSValue, name: c.JSValue) !void {
+    _ = try v.call(s, validator, c.pi_js_undefined(), &.{input, name});
+}
+fn parseBody(s: *Scope, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    if (v.nullish(args.get(0))) try args.copy(0, args.get(2));
+    if (c.JS_IsString(args.get(0))) {
+        if (h.truthy(s.engine, try h.expression(s.engine, invalidOctal, .{roots[0], roots[1], args.get(0)})))
+            return raised(s, try value(s, modeReason, .{roots[3], args.get(1), args.get(0)}));
+        try args.take(0, h.expression(s.engine, parsedOctal, .{roots[2], args.get(0)}));
+    }
+    try h.statement(s.engine, validateMode, .{roots[4], args.get(0), args.get(1)});
+    return v.duplicate(s, args.get(0));
+}
+fn parseCall(engine: *Engine, _: c.JSValue, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&scope, parseBody(&scope, args, roots));
+}
+fn makeFunction(s: *Scope, name: [*:0]const u8, length: c_int, definition: sync.Definition,
+    roots: []const c.JSValue, arrow: bool) !c.JSValue
+{
+    var boundary: v.guest.Boundary = .{ .engine = s.engine };
+    try boundary.begin();
+    return boundary.finishValue(s, if (arrow)
+        v.function.createArrowWithArguments(s.engine, name, length, definition, roots)
+    else
+        v.function.createWithArguments(s.engine, name, length, definition, roots));
+}
+fn wrapped(s: *a.Scope, raw: c.JSValue, inputs: Inputs) !c.JSValue {
+    return a.duplicate(s.engine, try registration.wrap(s, raw,
+        inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply));
+}
+fn wrap(s: *Scope, raw: c.JSValue, inputs: Inputs) !c.JSValue {
+    return v.own(s, try a.expression(s.engine, wrapped, .{raw, inputs}));
+}
+fn createBody(s: *Scope, inputs: Inputs) !c.JSValue {
+    const octal = try v.construct(s, s.engine.intrinsic_regexp_constructor,
+        &.{try v.text(s, "^[0-7]+$")});
+    const integer = try wrap(s, try makeFunction(s, "", 2,
+        .{ .formal_count = 4, .callback = validateIntegerCall, .hooks = sync.frameHooks(IntegerFrame) },
+        &.{inputs.invalid_arg_type, inputs.out_of_range, inputs.number_is_integer,
+            inputs.number_min_safe_integer, inputs.number_max_safe_integer}, true), inputs);
+    const int32 = try wrap(s, try makeFunction(s, "", 2,
+        .{ .formal_count = 4, .callback = validateIntegerCall, .hooks = sync.frameHooks(IntegerFrame) },
+        &.{inputs.invalid_arg_type, inputs.out_of_range, inputs.number_is_integer,
+            v.number(s, -2147483648), v.number(s, 2147483647)}, true), inputs);
+    const uint32 = try wrap(s, try makeFunction(s, "", 2,
+        .{ .formal_count = 3, .callback = validateUintCall, .hooks = sync.frameHooks(UintFrame) },
+        &.{inputs.invalid_arg_type, inputs.out_of_range, inputs.number_is_integer}, true), inputs);
+    const buffer = try wrap(s, try makeFunction(s, "", 1,
+        .{ .formal_count = 2, .callback = validateBufferCall, .hooks = sync.frameHooks(BufferFrame) },
+        &.{inputs.invalid_arg_type, inputs.is_array_buffer_view}, true), inputs);
+    const object = try wrap(s, try makeFunction(s, "", 2,
+        .{ .formal_count = 3, .callback = validateObjectCall, .hooks = sync.frameHooks(ObjectFrame) },
+        &.{inputs.invalid_arg_type, inputs.array_is_array}, true), inputs);
+    const parse = try makeFunction(s, "parseFileMode", 3, .{ .formal_count = 3, .callback = parseCall },
+        &.{inputs.regexp_exec, octal, inputs.number_parse_int, inputs.invalid_arg_value, uint32}, false);
+    const record = try v.stateObject(s);
+    try v.put(s, record, "parseFileMode", parse);
+    try v.put(s, record, "validateInteger", integer);
+    try v.put(s, record, "validateInt32", int32);
+    try v.put(s, record, "validateUint32", uint32);
+    try v.put(s, record, "validateBuffer", buffer);
+    try v.put(s, record, "validateObject", object);
+    return v.duplicate(s, record);
+}
+pub fn create(engine: *Engine, inputs: Inputs) !c.JSValue {
+    return h.expression(engine, createBody, .{inputs});
+}

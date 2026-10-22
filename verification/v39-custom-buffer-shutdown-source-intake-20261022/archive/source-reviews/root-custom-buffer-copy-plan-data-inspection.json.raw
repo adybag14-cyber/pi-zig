@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "status": "Root_independent_data_inspection_passed_CustomBuffer_intake_plan",
+  "reviewed_utc": "2026-10-22T18:32:15.874055+00:00",
+  "reviewer": "Root",
+  "plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 250596,
+    "sha256": "FCF2946B954027511B8C8EAB76B84B477FEC799D38A009DB1CE53A3887F40733"
+  },
+  "ledger": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\reference-closure.json",
+    "bytes": 2236215,
+    "sha256": "FF4DDEF11E6F0EDA6A71E92090181E3B4B97A4182B52785B30ACD8769EA8C080"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\handoff.json",
+    "bytes": 14350,
+    "sha256": "514FB330A2BC07418DF86169ED8EB62A76D2682C0D80018C4D6EFBF7A3EC72E2"
+  },
+  "static_checks": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\static-plan-checks.json",
+    "bytes": 4409,
+    "sha256": "664E8202E591C4DB230AC4F3D9B98AD89A321E8DEF993A8CED43A484D4518B0B"
+  },
+  "checks": {
+    "physical_rows_including_two_preservation_supplements": 78,
+    "logical_aliases": 92,
+    "source_paths": 5,
+    "additions": 4,
+    "replacements": 1,
+    "complete_raw_alias_bytes_equal": true,
+    "all_modes": "100644",
+    "distinct_file_pin_versions": 160,
+    "classifications": {
+      "archive_donor": 84,
+      "immutable_basis_git_boundary": 71,
+      "separate_component_plan_or_handoff": 2,
+      "separate_shutdown_component": 3
+    },
+    "raw_git_versions": 1947,
+    "raw_git_reference_sites": 3966,
+    "actual_file_reference_sites_checked": 579,
+    "archive_JSON_documents_walked": 25,
+    "discovered_archive_JSON_file_pin_sites": 559,
+    "all_discovered_sites_classified": true,
+    "immutable_tree_commits": [
+      "79c19fc30c886e85b71aca75d1a025397db04fec",
+      "e9f11afa56a923372d957e2fb227f453822c21bf"
+    ],
+    "distinct_raw_Git_blobs_read": 1027,
+    "embedded_excerpt_records": 79,
+    "all_five_preimages_verified": true,
+    "separate_Shutdown_dependency_membership_verified": true,
+    "planned_case_parent_file_conflicts_absent": true,
+    "all_final_context_slots_null": true
+  },
+  "boundaries": {
+    "ledger": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\reference-closure.json",
+      "bytes": 2236215,
+      "sha256": "FF4DDEF11E6F0EDA6A71E92090181E3B4B97A4182B52785B30ACD8769EA8C080"
+    },
+    "every_bounded_archived_JSON_file_pin_occurrence_classified": true,
+    "file_pin_versions": 160,
+    "file_reference_sites": 630,
+    "raw_Git_versions": 1947,
+    "raw_Git_reference_sites": 3966,
+    "raw_Git_distinct_blobs_read": 1027,
+    "raw_Git_commits": [
+      "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "79c19fc30c886e85b71aca75d1a025397db04fec"
+    ],
+    "immutable_basis_Git_boundary_versions": 71,
+    "separate_component_versions": 3,
+    "separate_plan_and_handoff_versions": 2,
+    "generated_ledger_pin_occurrences_checked": 214,
+    "all_unclassified_or_mismatched_selected_pins": 0,
+    "boundary_policy": "All 71 historical stops have exact committed raw-e9 path/mode/OID and full-byte equality, not an arbitrary depth cutoff. Their internal provenance remains retained in the already committed packet; this plan does not recursively copy that history. The three separate dependencies have exact C17D alias/row membership. Every archived payload JSON is fully walked. The generated ledger itself was checked against the same closed version set.",
+    "no_recursive_self_containment_claim": true,
+    "no_live_Main_substitution_or_hash_mismatch_exemption": true
+  },
+  "Main_or_index_access": false,
+  "supplied_source_or_checker_executed": false,
+  "native_execution_authorized": false,
+  "intake_authorized": false,
+  "application_qualified": false
+}

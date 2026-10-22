@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "status": "two_finite_fixture_edits_statically_verified_uncompiled",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\proposal.json",
+    "bytes": 9725,
+    "sha256": "3F8C1516076850380FB89A3371A394FD2694426D8FBA1E4369381E94A3FC1558"
+  },
+  "source_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\source-map.json",
+    "bytes": 29750,
+    "sha256": "E2E66EBD4A11DCFF62686CDD97E04FEA9FEFDF62947B796EA6001D70AB0076A4"
+  },
+  "source_files": [
+    {
+      "relative_path": "src/native_node_stream_shutdown_test.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17039,
+        "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17058,
+        "sha256": "7C138AE9E92642C3E05A8CD2C6FDB0FAB62E25C5C225916FB36E5AA61869D3AE"
+      },
+      "git_blob": "40528831fdea843263cf40b26c1819bc7dfaba4e",
+      "forward_inverse": true,
+      "all_other_bytes_exact": true,
+      "assertion_lines": 58,
+      "assertions_exact_except_existing_UV_symbol_namespace": true,
+      "literal_imports_unchanged": true,
+      "named_declarations": 18
+    },
+    {
+      "relative_path": "src/native_node_stream_shutdown_test_support.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10312,
+        "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10325,
+        "sha256": "65388977262D9E61B99A95028D24C592A8D1E79E4328E827ECBEB047ABC72D80"
+      },
+      "git_blob": "6bca049ffc704fa1bb9e5a5e111d022c7ba19fd5",
+      "forward_inverse": true,
+      "all_other_bytes_exact": true,
+      "assertion_lines": 6,
+      "assertions_exact_except_existing_UV_symbol_namespace": true,
+      "literal_imports_unchanged": true,
+      "named_declarations": 0
+    }
+  ],
+  "authority_snapshot_count": 11,
+  "exact_source_excerpt_count": 15,
+  "toolchain_excerpt_count": 3,
+  "all_authority_Git_objects_match_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "all_originals_equal_raw_Git": true,
+  "full_forward_and_inverse": true,
+  "all_untouched_bytes_preserved": true,
+  "all_assertions_preserved_except_existing_UV_namespace": true,
+  "cleanup_body_order_and_pointer_types_preserved": true,
+  "imports_and_includes_unchanged": true,
+  "source_declared_controls": [
+    {
+      "relative_path": "src/native_node_stream_shutdown_test.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17058,
+        "sha256": "7C138AE9E92642C3E05A8CD2C6FDB0FAB62E25C5C225916FB36E5AA61869D3AE"
+      },
+      "names": [
+        "native Stream shutdown actual constructor owns original null fields and independent empty slots",
+        "native Stream shutdown genuine Simple wrapper clears request slot before last native pointer retirement",
+        "native Stream shutdown physical close reports after trace end cleanup and AfterClose with borrowed handle",
+        "native Stream shutdown real accepted bad descriptor still performs AfterClose and reports negative status",
+        "native Stream shutdown closed fast path completes synchronously and restores the prior trigger",
+        "native Stream shutdown closing fast path retires its own request while real first close stays queued",
+        "native Stream shutdown nonfunction oncomplete yields undefined without invoking trace or callback",
+        "native Stream shutdown absent oncomplete skips the ordinary Get and native callback",
+        "native Stream shutdown throwing oncomplete getter preserves actual reason and still disposes native request",
+        "native Stream shutdown real close callback exception survives actual Wrapper and event destruction",
+        "native Stream shutdown disabled JavaScript returns before oncomplete getter while native close retires",
+        "native Stream shutdown live listener head uses original predecessor forwarding into real reporter",
+        "native StreamReq Done stores actual Latin1 error bytes then reports and clears request field",
+        "native StreamReq Done failing ordinary error setter returns before OnDone and preserves both native slots",
+        "native StreamReq Done false nonwritable Set still continues to OnDone",
+        "native Stream shutdown reporter converts Latin1 error then clears original stream error",
+        "native Stream shutdown missing caller object uses actual stored InstanceTemplate then real native close",
+        "native Stream shutdown request init inherits actual handle async ID and restores prior trigger"
+      ],
+      "count": 18
+    },
+    {
+      "relative_path": "src/native_node_one_byte_string_test.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\native_node_one_byte_string_test.zig",
+        "bytes": 5064,
+        "sha256": "AC3E1AD12FB0F48905EC8B561094F54DD93653AD7C8DC5DD7CC0EBB54959C461"
+      },
+      "names": [
+        "native OneByteString explicit full byte range preserves all Latin1 code units including high bytes",
+        "native OneByteString UTF8-looking bytes remain two original Latin1 code units",
+        "native OneByteString explicit length preserves embedded NUL before nonASCII bytes",
+        "native OneByteString negative length follows original strlen termination",
+        "native OneByteString zero length accepts null data without reading a byte",
+        "native OneByteString all negative signed lengths select the CString branch",
+        "native OneByteString explicit prefix does not consume trailing buffer bytes",
+        "native OneByteString returned caller ownership survives source scope and real VM collection"
+      ],
+      "count": 8,
+      "unchanged_authority_only": true
+    },
+    {
+      "relative_path": "src/native_vm_array_buffer_view_data_test.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "names": [
+        "VM view data every typed-array width and DataView expose the physical backing offset",
+        "VM view data live empty views retain their exact end pointer",
+        "VM view data bypasses getters and rejects forged live and revoked proxy brands",
+        "VM view data detached typed and DataView addresses are null while lease acquisition still throws",
+        "VM view data fixed resizable views preserve stored offsets while out of bounds and after regrowth",
+        "VM view data tracking resizable views keep the address independently of rounded usable length",
+        "VM view data shared aliases expose one native address across real runtime growth",
+        "VM view data allocates nothing under the actual VM memory limit",
+        "VM view data preserves actual ordinary uncatchable and private termination completions",
+        "VM view data borrows without keeping the actual view or native backing alive",
+        "VM view data observes unmanaged external storage without adding a lease or changing cleanup",
+        "VM view data follows real ArrayBuffer transfer detachment and the receiving physical storage"
+      ],
+      "count": 12,
+      "unchanged_authority_only": true
+    }
+  ],
+  "total_new3_named_declarations": 38,
+  "remaining_root_sources_unchanged": true,
+  "production_and_build_changed": false,
+  "original_negative_provenance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original-negative-provenance.json",
+    "bytes": 1635,
+    "sha256": "3838DE35172CE00AD4277609DCFB6357011F71DCA8773E93623D76892199C050"
+  },
+  "negative_references_not_independently_rehashed": true,
+  "static_method": "Only raw byte splice/inverse, immutable Git blob extraction, literal import/declaration/assertion inventories and pinned source/document reading. No candidate source evaluated.",
+  "inspection_notes": [
+    "An initial read-only path lookup used native_node_fs_io.zig, which is absent; the actual alias was recovered as native_node_fs_request_io.zig. No source write or test occurred during that lookup.",
+    "A broad inline-for text search was truncated; it is not evidence for the selected array correction. The selected correction binds the complete contained tuple/array/for reference excerpts.",
+    "An initial functions wrapper had an unescaped Markdown backtick and was rejected by the JavaScript parser before any Hermes call or file write. The authoring wrapper was corrected; candidate bytes were unaffected."
+  ],
+  "candidate_or_prefix_executed": false,
+  "compiler_or_native_executed": false,
+  "Main_or_index_accessed": false,
+  "configuration_issued": false,
+  "qualification": false
+}

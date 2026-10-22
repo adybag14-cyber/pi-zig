@@ -1,0 +1,53 @@
+{
+  "schema": "pi-zig-custom-buffer-listener-build-source-proposal-v1",
+  "status": "UNEXECUTED install-only proposal",
+  "base": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\current79-with-shutdown-and-buffer.zig",
+    "bytes": 514007,
+    "sha256": "868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+  },
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\build\\original\\build.zig",
+    "bytes": 514007,
+    "sha256": "868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\build\\projected\\build.zig",
+    "bytes": 516288,
+    "sha256": "2D67E7908034610D3F64BD7588ECF3B7360C6630884E50D398DD0933E75DD4D5"
+  },
+  "insert_before": "        const node_one_byte_string = b.addTest(.{",
+  "insert": "        const node_custom_buffer_listener = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_custom_buffer_listener_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native CustomBuffer listener\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_custom_buffer_listener.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_custom_buffer_listener.root_module, typescript_parser);\n        linkSqlite(node_custom_buffer_listener.root_module, sqlite_lib_dir, sqlite_library);\n        node_custom_buffer_listener.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_custom_buffer_listener.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_custom_buffer_listener.root_module.addIncludePath(b.path(\"src/extensions\"));\n        node_custom_buffer_listener.root_module.linkLibrary(network);\n        // This target owns one TLS implementation and one V8 fatal owner.\n        // The selected network library contains neither translation unit.\n        node_custom_buffer_listener.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context.c\"),\n            .flags = &.{\"-std=gnu11\"},\n        });\n        node_custom_buffer_listener.root_module.addCSourceFiles(.{\n            .files = &.{\n                \"src/extensions/native_v8_base_fatal.cpp\",\n                \"src/extensions/native_node_one_byte_string_diagnostics.cpp\",\n                \"src/extensions/native_node_custom_buffer_listener_allocation.cpp\",\n            },\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        if (target.result.os.tag == .windows) {\n            node_custom_buffer_listener.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_custom_buffer_listener.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-custom-buffer-listener\", \"Install 15 actual CustomBuffer controls without execution\").dependOn(&b.addInstallArtifact(node_custom_buffer_listener, .{ .dest_sub_path = b.fmt(\"native-node-custom-buffer-listener{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n",
+  "insert_sha256": "D52F19BA0F2D7B494E74E7968A296EBDC6F3D4EDF13ED8979E04D055D64FFB48",
+  "whole_inverse_exact": true,
+  "source_root": "src/native_node_custom_buffer_listener_test.zig",
+  "target": "build-native-node-custom-buffer-listener",
+  "cache_artifact_basename": "test",
+  "installed_artifact_basename": "native-node-custom-buffer-listener",
+  "windows_cache_artifacts": [
+    "test.exe",
+    "test.pdb"
+  ],
+  "windows_installed_artifacts": [
+    "native-node-custom-buffer-listener.exe",
+    "test.pdb"
+  ],
+  "declared_controls": 15,
+  "actual_future_metadata": null,
+  "dependencies": [
+    "Accepted current79 + Shutdown/Latin1 + raw Buffer build868F2300",
+    "Selected corrected Latin1 + raw Buffer VM C091E5BE0/H05AA4DF2",
+    "C75 accepted Shutdown production/controls and provider fatal H/CPP",
+    "Main79 source owners plus separately reviewed V35 alpha/phase fixture0D09BBA7"
+  ],
+  "retained_order": "Transfer then Shutdown then CustomBuffer listener then Latin1; raw Buffer VM target and Error canonical cache naming remain exact",
+  "native_translation_units": [
+    "src/extensions/native_node_diagnostic_context.c",
+    "src/extensions/native_v8_base_fatal.cpp",
+    "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+    "src/extensions/native_node_custom_buffer_listener_allocation.cpp"
+  ],
+  "source_only": true,
+  "compiler_executed": false,
+  "Main_written": false
+}

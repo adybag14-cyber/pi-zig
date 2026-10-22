@@ -1,0 +1,372 @@
+{
+  "schema": 1,
+  "status": "bounded_source_causal_mapping",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\proposal.json",
+    "bytes": 9725,
+    "sha256": "3F8C1516076850380FB89A3371A394FD2694426D8FBA1E4369381E94A3FC1558"
+  },
+  "git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "authority": [
+    {
+      "relative_path": "src/native_node_file_handle_owner_test_support.zig",
+      "git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "715f662079efe62d704b8f4ab97e8ebc1fa86ee6",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 33411,
+        "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+      }
+    },
+    {
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "c465b5e5beee1fc0e4c2e64099ab3770b972cf28",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28576,
+        "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_fs_request_io.zig",
+      "git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "113b46fa18980f2e8a2724386c450aab223d1d16",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\extensions\\native_node_fs_request_io.zig",
+        "bytes": 15469,
+        "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_node_uv_service.zig",
+      "git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "dee337d66d7efbcc97ca8cd670de25e8207fa6da",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\extensions\\native_node_uv_service.zig",
+        "bytes": 8937,
+        "sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_uv_tcp.h",
+      "git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "4a86a6eb09b6595fa36fa58d41b4e3d1d6e484a8",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\extensions\\native_uv_tcp.h",
+        "bytes": 5344,
+        "sha256": "B6F8D5269B8EF9DC9964E7F356EF1A23DBB483FB9B485C2C6D77D464816B4F45"
+      }
+    },
+    {
+      "relative_path": "src/extensions/native_uv_fs.h",
+      "git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "bececf94687b0ec6c59a726c9f0805761ecf42bb",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\extensions\\native_uv_fs.h",
+        "bytes": 6334,
+        "sha256": "23B85BBB1BD8395D1D5085BE0797F06CE2C323DAACF366F5CF3B587D06EACA6D"
+      }
+    },
+    {
+      "relative_path": "vendor/node-v24.13.0/uv/include/uv.h",
+      "git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "938e998fdc54d17c8d0d4b1949087b968044829f",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\vendor\\node-v24.13.0\\uv\\include\\uv.h",
+        "bytes": 72810,
+        "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+      }
+    },
+    {
+      "relative_path": "vendor/node-v24.13.0/uv/include/uv/errno.h",
+      "git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "ac00778cfc59fb55e361b24fc81a965a5e8f97e7",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\vendor\\node-v24.13.0\\uv\\include\\uv\\errno.h",
+        "bytes": 11216,
+        "sha256": "4242EDF790E4569EF349026AB4C6E31093334EE5FC02B16ED7A0D9FBACDFFD16"
+      }
+    },
+    {
+      "relative_path": "tools/build_native_node_network.zig",
+      "git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "f13440e90d4b6d65a2e6b61c0f3d285f09be8c8a",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\tools\\build_native_node_network.zig",
+        "bytes": 5905,
+        "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+      }
+    },
+    {
+      "relative_path": "src/native_node_one_byte_string_test.zig",
+      "git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "47ef333a315f0cb5f71874c9115c23a89573983e",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\native_node_one_byte_string_test.zig",
+        "bytes": 5064,
+        "sha256": "AC3E1AD12FB0F48905EC8B561094F54DD93653AD7C8DC5DD7CC0EBB54959C461"
+      }
+    },
+    {
+      "relative_path": "src/native_vm_array_buffer_view_data_test.zig",
+      "git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "7ccf655f18a04e7ff2b2c70b309f2db85592dad5",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      }
+    }
+  ],
+  "exact_source_excerpts": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 33411,
+        "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+      },
+      "first_line": 9,
+      "last_line": 33,
+      "bytes": 1353,
+      "sha256": "51A504E82FC83AFCAC57927ADFDA9B6D058E6DFC7D2C0544A976080DC5BEFE59",
+      "text": "pub const a = @import(\"extensions/native_node_argument_values.zig\");\npub const em = a.v.em;\npub const c = a.c;\npub const native = @import(\"extensions/native_node_async_wrap_state.zig\");\npub const callbacks = @import(\"extensions/native_node_callback_scope.zig\");\npub const templates = @import(\"extensions/native_node_async_wrap.zig\");\npub const binding = @import(\"extensions/native_node_fs_binding_data.zig\");\npub const owner = @import(\"extensions/native_node_file_handle_owner.zig\");\npub const Handle = owner.Handle;\nconst providers = @import(\"extensions/native_node_async_providers.zig\");\nconst stream = @import(\"extensions/native_node_stream_base.zig\");\nconst managed = @import(\"extensions/native_node_managed_buffers.zig\");\nconst callable = @import(\"extensions/native_node_module_callable.zig\");\npub const fs_io = @import(\"extensions/native_node_fs_request_io.zig\");\npub const fs_promise = @import(\"extensions/native_node_fs_request_promise.zig\");\nconst fs_read = @import(\"extensions/native_node_file_handle_read_binding.zig\");\npub const uv = fs_io.uv;\npub const immediate = @import(\"extensions/native_node_native_immediates.zig\");\npub const phase = @import(\"extensions/native_immediates.zig\");\npub const physical = @cImport({\n    @cUndef(\"_FORTIFY_SOURCE\");\n    @cDefine(\"_FORTIFY_SOURCE\", \"0\");\n    @cInclude(\"uv.h\");\n    @cInclude(\"fcntl.h\");\n});\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28576,
+        "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+      },
+      "first_line": 6,
+      "last_line": 24,
+      "bytes": 834,
+      "sha256": "BEC1EA959339EF14E4AC6B5FF140DC6E38CB4549D9D1BF8C34CF167054A852F9",
+      "text": "const std = @import(\"std\");\nconst support = @import(\"native_node_file_handle_owner_test_support.zig\");\nconst a = support.a;\nconst c = support.c;\nconst uv = support.uv;\nconst physical = support.physical;\nconst Fixture = support.Fixture;\nconst File = support.File;\nconst Handle = support.Handle;\n\n// Avoid libuv Windows' fd <= 2 close branch and any recycled real descriptor.\nconst invalid_descriptor: c_int = std.math.maxInt(c_int);\n\nfn expectClosed(f: *Fixture, descriptor: c_int) !void {\n    const handle = try f.handle();\n    try std.testing.expect(handle.read_state.closed and !handle.read_state.closing);\n    try std.testing.expectEqual(@as(c_int, -1), handle.getFD());\n    try std.testing.expect(!handle.isAlive() and !handle.isClosing());\n    try std.testing.expectEqual(@as(c_int, physical.UV_EBADF), File.status(descriptor));\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28576,
+        "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+      },
+      "first_line": 188,
+      "last_line": 198,
+      "bytes": 717,
+      "sha256": "E104F9C26795F56960B2793D2397713BDB9BC1451DA19F28306E7CBC65872EB5",
+      "text": "    try f.pumpIo();\n    try expectClosed(&f, invalid_descriptor);\n    try expectDrainedClose(&f, actual);\n    try std.testing.expectEqual(@as(i64, physical.UV_EBADF), uv.pi_uv_fs_request_info(actual).result);\n    try std.testing.expectEqual(c.JS_PROMISE_REJECTED, c.JS_PromiseState(f.engine.context, promise));\n    const reason = c.JS_PromiseResult(f.engine.context, promise);\n    defer f.engine.freeValue(reason);\n    try f.expose(\"ownerRejected\", reason);\n    try f.expose(\"ownerEBADF\", c.JS_NewInt32(f.engine.context, physical.UV_EBADF));\n    try f.expect(\"ownerRejected instanceof Error && ownerRejected.code === 'EBADF' && \" ++\n        \"ownerRejected.errno === ownerEBADF && ownerRejected.syscall === 'close'\");\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\extensions\\native_node_fs_request_io.zig",
+        "bytes": 15469,
+        "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996"
+      },
+      "first_line": 4,
+      "last_line": 15,
+      "bytes": 598,
+      "sha256": "7E574DC4686365AAA3579CED3621006435A2E000D54EB6088AD1CD7FBE3EE4A3",
+      "text": "const std = @import(\"std\");\nconst a = @import(\"native_node_argument_values.zig\");\nconst callbacks = @import(\"native_node_callback_scope.zig\");\nconst request_state = @import(\"native_node_request_state.zig\");\nconst requests = @import(\"native_node_fs_request_promise.zig\");\nconst after_scope = @import(\"native_node_fs_after_scope.zig\");\nconst shared_service = @import(\"native_node_uv_service.zig\");\nconst env_io = @import(\"native_env_io.zig\");\nconst Completion = @import(\"native_sdk_owned_completion.zig\").Completion;\nconst c = a.c;\npub const uv = shared_service.uv;\npub const Engine = a.v.em.Engine;\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\extensions\\native_node_uv_service.zig",
+        "bytes": 8937,
+        "sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5"
+      },
+      "first_line": 4,
+      "last_line": 13,
+      "bytes": 475,
+      "sha256": "B7E41280843A823C0B6AB9FB8CDC93DAD99D8B142598120BA8AE82052ED24E4B",
+      "text": "const std = @import(\"std\");\nconst em = @import(\"engine.zig\");\nconst a = @import(\"native_node_argument_values.zig\");\nconst env = @import(\"native_env_io.zig\");\nconst wake = @import(\"native_owner_wake.zig\");\nconst completion_wake = @import(\"native_owner_completion.zig\");\nconst Completion = @import(\"native_sdk_owned_completion.zig\").Completion;\nconst c = em.c;\npub const uv = @cImport({ @cInclude(\"native_uv_tcp.h\"); @cInclude(\"native_uv_fs.h\"); });\nconst service_tag: u8 = 0;\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\extensions\\native_uv_tcp.h",
+        "bytes": 5344,
+        "sha256": "B6F8D5269B8EF9DC9964E7F356EF1A23DBB483FB9B485C2C6D77D464816B4F45"
+      },
+      "first_line": 1,
+      "last_line": 14,
+      "bytes": 494,
+      "sha256": "C190745447A774CC8469F62413D081A03004F1DA3F7D14D650B5A09262F2EC39",
+      "text": "/* Real Node v24.13.0 libuv TCP transport. No JS/Engine pointers cross this ABI.\n * Every function except retain/release and error names runs on the owning host\n * thread. uv_* handle operations run only on the service's native loop thread.\n * All negative statuses are the actual libuv status, including UV_ENOMEM.\n */\n#ifndef PI_NATIVE_UV_TCP_H\n#define PI_NATIVE_UV_TCP_H\n#include <stddef.h>\n#include <stdint.h>\n#ifdef __cplusplus\nextern \"C\" {\n#endif\n\ntypedef struct PiUvService PiUvService;\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\extensions\\native_uv_fs.h",
+        "bytes": 6334,
+        "sha256": "23B85BBB1BD8395D1D5085BE0797F06CE2C323DAACF366F5CF3B587D06EACA6D"
+      },
+      "first_line": 1,
+      "last_line": 30,
+      "bytes": 1089,
+      "sha256": "2BE5BC22EAB60AE2B772B5BEED2B7FEAE8771EE9739F420AC5C89AB6B4A76739",
+      "text": "/* Typed real filesystem operations on the one native UV service.\n * Asynchronous uv_fs_t and the loop remain private to their actual owner.\n * The selected synchronous close borrows its caller's native stack uv_fs_t.\n * No JS value, Engine pointer or guest callback is accepted by this API. */\n#ifndef PI_NATIVE_UV_FS_H\n#define PI_NATIVE_UV_FS_H\n#include \"native_uv_tcp.h\"\n#include \"quickjs.h\"\n#ifdef __cplusplus\nextern \"C\" {\n#endif\n\ntypedef struct PiUvFsRequest PiUvFsRequest;\nenum PiUvFsKind { PI_UV_FS_UNASSIGNED = 0, PI_UV_FS_READ, PI_UV_FS_OPEN, PI_UV_FS_CLOSE };\ntypedef struct PiUvFsInfo {\n    int kind;\n    int64_t result; /* actual uv_fs_t::result, never a synthesized Promise value */\n    const char *path; /* borrowed until request_cleanup */\n    int accepted;\n    int cleaned;\n} PiUvFsInfo;\ntypedef struct PiUvFsPreparationInfo {\n    int kind;\n    int accepted;\n    int cleaned;\n    int completed;\n} PiUvFsPreparationInfo;\n\n/* Allocate the native request storage during the original ReqWrap allocation,\n * before its actual constructor/init hooks and SetReturnValue. A proven\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\vendor\\node-v24.13.0\\uv\\include\\uv.h",
+        "bytes": 72810,
+        "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+      },
+      "first_line": 54,
+      "last_line": 62,
+      "bytes": 148,
+      "sha256": "164F7ACBF1D936F9CDF8C997101043449671532F7F5E5BD0473D3E97C982DF62",
+      "text": "#endif /* UV_EXTERN */\n\n#include \"uv/errno.h\"\n#include \"uv/version.h\"\n#include <stddef.h>\n#include <stdio.h>\n#include <stdint.h>\n#include <math.h>\n\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\vendor\\node-v24.13.0\\uv\\include\\uv.h",
+        "bytes": 72810,
+        "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+      },
+      "first_line": 90,
+      "last_line": 101,
+      "bytes": 960,
+      "sha256": "C52613DEC768BB601E7DD3EC1EEDBC35856AFE761F038FA7B80860DA16515DE1",
+      "text": "  XX(EAI_MEMORY, \"out of memory\")                                             \\\n  XX(EAI_NODATA, \"no address\")                                                \\\n  XX(EAI_NONAME, \"unknown node or service\")                                   \\\n  XX(EAI_OVERFLOW, \"argument buffer overflow\")                                \\\n  XX(EAI_PROTOCOL, \"resolved protocol is unknown\")                            \\\n  XX(EAI_SERVICE, \"service not available for socket type\")                    \\\n  XX(EAI_SOCKTYPE, \"socket type not supported\")                               \\\n  XX(EALREADY, \"connection already in progress\")                              \\\n  XX(EBADF, \"bad file descriptor\")                                            \\\n  XX(EBUSY, \"resource busy or locked\")                                        \\\n  XX(ECANCELED, \"operation canceled\")                                         \\\n  XX(ECHARSET, \"invalid Unicode character\")                                   \\\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\vendor\\node-v24.13.0\\uv\\include\\uv.h",
+        "bytes": 72810,
+        "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+      },
+      "first_line": 193,
+      "last_line": 198,
+      "bytes": 135,
+      "sha256": "2FC69727B599C49167AEAF59AFDB31ADAB0FE9AF5FAE0095097515CEB464C7D0",
+      "text": "typedef enum {\n#define XX(code, _) UV_ ## code = UV__ ## code,\n  UV_ERRNO_MAP(XX)\n#undef XX\n  UV_ERRNO_MAX = UV__EOF - 1\n} uv_errno_t;\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\vendor\\node-v24.13.0\\uv\\include\\uv\\errno.h",
+        "bytes": 11216,
+        "sha256": "4242EDF790E4569EF349026AB4C6E31093334EE5FC02B16ED7A0D9FBACDFFD16"
+      },
+      "first_line": 90,
+      "last_line": 99,
+      "bytes": 197,
+      "sha256": "D002F840FFD30AF3955EEF7F734813439F27E6A79F8742531CA7D99C5998B9C9",
+      "text": "# define UV__EALREADY UV__ERR(EALREADY)\n#else\n# define UV__EALREADY (-4084)\n#endif\n\n#if defined(EBADF) && !defined(_WIN32)\n# define UV__EBADF UV__ERR(EBADF)\n#else\n# define UV__EBADF (-4083)\n#endif\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\tools\\build_native_node_network.zig",
+        "bytes": 5905,
+        "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+      },
+      "first_line": 1,
+      "last_line": 21,
+      "bytes": 1192,
+      "sha256": "256AEA975494642202C79600E22EAABF915430BEEDFBC5C03FBF661615674404",
+      "text": "//! Build unchanged Node v24.13.0 libuv/llhttp and shared TCP/file I/O owners.\n//! SOURCE-MANIFEST.json pins every imported byte. No source generator is run.\nconst std = @import(\"std\");\nconst uv_root = \"vendor/node-v24.13.0/uv\";\nconst llhttp_root = \"vendor/node-v24.13.0/llhttp\";\n\npub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode,\n    native_memory: ?*std.Build.Step.Compile) *std.Build.Step.Compile {\n    const library = b.addLibrary(.{\n        .name = \"pi-node-network\",\n        .linkage = .static,\n        .root_module = b.createModule(.{ .target = target, .optimize = optimize, .link_libc = true, .link_libcpp = native_memory != null }),\n    });\n    const module = library.root_module;\n    module.addIncludePath(b.path(uv_root ++ \"/include\"));\n    module.addIncludePath(b.path(uv_root ++ \"/src\"));\n    module.addIncludePath(b.path(llhttp_root ++ \"/include\"));\n    module.addIncludePath(b.path(\"src/extensions\"));\n    module.addIncludePath(b.path(\"vendor/quickjs\"));\n    const flags: []const []const u8 = switch (target.result.os.tag) {\n        .windows => &.{ \"-std=gnu11\", \"-D_WIN32_WINNT=0x0602\", \"-D_GNU_SOURCE\", \"-fno-strict-aliasing\" },\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17039,
+        "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+      },
+      "first_line": 100,
+      "last_line": 115,
+      "bytes": 777,
+      "sha256": "5868E0B95ED95D9178DB7D9091C33746DAFDDC6D7A92AB75E70B21543B213263",
+      "text": "    try f.expectRetired(wrapper);\n}\n\ntest \"native Stream shutdown real accepted bad descriptor still performs AfterClose and reports negative status\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const handle = try f.create(std.math.maxInt(c_int));\n    const wrapper = try f.request(); defer f.base.engine.freeValue(wrapper);\n    try f.publishRequest(wrapper);\n    try std.testing.expectEqual(@as(c_int, 0), try f.run(wrapper));\n    try f.base.pumpIo();\n    try std.testing.expectEqual(@as(c_int, t.uv.UV_EBADF), f.end_result);\n    try std.testing.expect(handle.read_state.closed and handle.read_state.fd == -1);\n    try f.base.expect(\"shutdownCalls.length===1 && shutdownCalls[0][1]<0 && shutdownCalls[0][4]===1\");\n    try f.expectRetired(wrapper);\n}\n\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10312,
+        "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+      },
+      "first_line": 16,
+      "last_line": 23,
+      "bytes": 261,
+      "sha256": "27402C7D605FDC48B609E4281DD2F7139A9EE9E4627BB1E0ABBA5439A2FC04FA",
+      "text": "pub const Fixture = struct {\n    base: base_support.Fixture = undefined,\n    base_ready: bool = false,\n    error_key: ?c.JSValue = null,\n    oncomplete_key: ?c.JSValue = null,\n    observed_request: ?c.JSValue = null,\n    begins: usize = 0,\n    ends: usize = 0,\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10312,
+        "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+      },
+      "first_line": 136,
+      "last_line": 154,
+      "bytes": 666,
+      "sha256": "63FAE24147639D576795560A89EEDC3D69D6442F58E18AFA8DBFF79C243A73A7",
+      "text": "        const handle = try self.base.handle();\n        handle.stream.virtuals.error_string = errorString;\n        handle.stream.virtuals.clear_error = clearError;\n        self.message_available = true;\n    }\n    pub fn deinit(self: *Fixture) void {\n        if (!self.base_ready) return;\n        self.base.stopIo(); // drains every accepted callback while keys live\n        for (.{ &self.observed_request, &self.error_key, &self.oncomplete_key }) |slot| {\n            if (slot.*) |value| {\n                slot.* = null;\n                self.base.engine.freeValue(value);\n            }\n        }\n        self.base.deinit();\n        self.base_ready = false;\n    }\n};\n\n"
+    }
+  ],
+  "toolchain_document": {
+    "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\doc\\langref.html",
+    "bytes": 983945,
+    "sha256": "095DAA2D9F1262FB8BC00AFBB44D386F20363FD930E400BF703A8BC4255A4FFD"
+  },
+  "exact_toolchain_excerpts": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\doc\\langref.html",
+        "bytes": 983945,
+        "sha256": "095DAA2D9F1262FB8BC00AFBB44D386F20363FD930E400BF703A8BC4255A4FFD"
+      },
+      "start_offset": 285177,
+      "end_offset": 286117,
+      "contained_excerpt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\zig\\tuples.html.raw",
+        "bytes": 940,
+        "sha256": "DDD4B5F88B837A796E6817C48CFCE106D5FDD391B9C9B9B8AC5E7D5FB4F4935F"
+      },
+      "text": "Tuples \u00a7\n\n      \n      Anonymous structs can be created without specifying field names, and are referred to as \"tuples\". An empty tuple looks like .{} and can be seen in one of the Hello World examples.\n      \n      \n      The fields are implicitly named using numbers starting from 0. Because their names are integers,\n      they cannot be accessed with . syntax without also wrapping them in\n      @\"\". Names inside @\"\" are always recognised as\n      identifiers.\n      \n      \n      Like arrays, tuples have a .len field, can be indexed (provided the index is comptime-known)\n      and work with the ++ and ** operators. They can also be iterated over with inline for.\n      \n      "
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\doc\\langref.html",
+        "bytes": 983945,
+        "sha256": "095DAA2D9F1262FB8BC00AFBB44D386F20363FD930E400BF703A8BC4255A4FFD"
+      },
+      "start_offset": 159412,
+      "end_offset": 160855,
+      "contained_excerpt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\zig\\arrays.html.raw",
+        "bytes": 1443,
+        "sha256": "AD5A6B43D63E0FAE55F53CA7E7F17A5DD4B05874989F75AA84DF784E6C8A2494"
+      },
+      "text": "Arrays \u00a7\n\n      test_arrays.zigconst expectEqual = @import(\"std\").testing.expectEqual;\nconst assert = @import(\"std\").debug.assert;\nconst mem = @import(\"std\").mem;\n\n// array literal\nconst message = [_]u8{ 'h', 'e', 'l', 'l', 'o' };\n\n// alternative initialization using result location\nconst alt_message: [5]u8 = .{ 'h', 'e', 'l', 'l', 'o' };\n\ncomptime {\n    assert(mem.eql(u8, &message, &alt_message));\n}\n\n"
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\doc\\langref.html",
+        "bytes": 983945,
+        "sha256": "095DAA2D9F1262FB8BC00AFBB44D386F20363FD930E400BF703A8BC4255A4FFD"
+      },
+      "start_offset": 384561,
+      "end_offset": 385846,
+      "contained_excerpt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\zig\\runtime_for.html.raw",
+        "bytes": 1285,
+        "sha256": "401A4542BCB1E75A158C4B879E7B6D68344AB620BDA6BAD9A21C2ED77AC13BD0"
+      },
+      "text": "for \u00a7\n\n      test_for.zigconst expectEqual = @import(\"std\").testing.expectEqual;\n\ntest \"for basics\" {\n    const items = [_]i32{ 4, 5, 3, 4, 0 };\n    var sum: i32 = 0;\n\n    // For loops iterate over slices and arrays.\n    for (items) |value| {\n        // Break and continue are supported.\n        if (value == 0) {\n            continue;\n        }\n        sum += value;\n    }\n    try expectEqual(16, sum);\n\n    "
+    }
+  ],
+  "conclusions": [
+    {
+      "error": "missing UV_EBADF in transport C import",
+      "cause": "Shutdown t.uv aliases base_support.uv -> fs_io.uv -> shared_service.uv, whose C import contains only native_uv_tcp.h and native_uv_fs.h. Neither declares UV_EBADF.",
+      "correction": "Select existing public base_support.physical, which includes uv.h. Its UV_ERRNO_MAP enum defines UV_EBADF = UV__EBADF. The existing owner tests already use that namespace; no integer is substituted and no new import is introduced.",
+      "preserved": "Exact c_int cast/equality/actual result, maxInt(c_int) descriptor, error sign checks, AfterClose state and retirement assertions."
+    },
+    {
+      "error": "runtime tuple field index must be comptime-known",
+      "cause": "The inferred .{...} value has tuple semantics; the pinned Zig reference requires compile-time tuple indexing.",
+      "correction": "The three mutable fields are all ?c.JSValue. Explicit [_]*?c.JSValue constructs a fixed three-element runtime array; ordinary for iterates those pointers.",
+      "preserved": "Same observed_request/error_key/oncomplete_key order; same optional test/null-before-free body; stopIo drains before freeing and base.deinit follows; no new ownership or allocation."
+    }
+  ],
+  "static_only": true,
+  "compiler_executed": false
+}

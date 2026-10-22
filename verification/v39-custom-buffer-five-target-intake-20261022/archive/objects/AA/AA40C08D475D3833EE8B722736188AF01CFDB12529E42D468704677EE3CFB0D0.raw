@@ -1,0 +1,308 @@
+//! Selected actual Node v24.13 FileHandle class constructor and read/close
+//! lifecycle. The real EventEmitter superclass, fsCall/read declarations,
+//! Promise helpers and private transfer marker must be supplied by the genuine
+//! module assembler. Other FileHandle operations remain separate dependencies;
+//! this source unit does not publish node:fs/promises by itself.
+const v = @import("native_public_values.zig");
+const a = @import("native_node_argument_values.zig");
+const classes = @import("native_node_error_class.zig");
+const c = v.c;
+const Scope = v.Scope;
+const Engine = v.em.Engine;
+
+pub const Inputs = struct {
+    event_emitter: c.JSValue,
+    mark_transfer_mode: c.JSValue,
+    fs_call: c.JSValue,
+    read: c.JSValue,
+    promise_constructor: c.JSValue,
+    promise_resolve: c.JSValue,
+    promise_then: c.JSValue,
+    safe_finally: c.JSValue,
+    handle: c.JSValue,
+    fd: c.JSValue,
+    refs: c.JSValue,
+    close_promise: c.JSValue,
+    close_resolve: c.JSValue,
+    close_reject: c.JSValue,
+    ref: c.JSValue,
+    unref: c.JSValue,
+};
+const Import = enum {
+    event_emitter, mark_transfer_mode, fs_call, read, promise_constructor,
+    promise_resolve, promise_then, safe_finally, handle, fd, refs, close_promise,
+    close_resolve, close_reject, ref, unref,
+};
+fn imported(roots: []const c.JSValue, comptime field: Import) c.JSValue {
+    return roots[@intFromEnum(field)];
+}
+fn expression(engine: *Engine, comptime body: anytype, args: anytype) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&scope, @call(.auto, body, .{&scope} ++ args));
+}
+fn statement(engine: *Engine, comptime body: anytype, args: anytype) !void {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishVoid(&scope, @call(.auto, body, .{&scope} ++ args));
+}
+fn value(scope: *Scope, comptime body: anytype, args: anytype) !c.JSValue {
+    return v.own(scope, try expression(scope.engine, body, args));
+}
+fn predicate(engine: *Engine, comptime body: anytype, args: anytype) !bool {
+    const result = try expression(engine, body, args);
+    defer engine.freeValue(result);
+    return c.JS_ToBool(engine.context, result) == 1;
+}
+fn keyValue(scope: *Scope, receiver: c.JSValue, key: c.JSValue) !c.JSValue {
+    return v.duplicate(scope, try v.key(scope, receiver, key));
+}
+fn keyEqual(scope: *Scope, receiver: c.JSValue, key: c.JSValue, expected: c.JSValue) !c.JSValue {
+    return v.boolean(scope, v.equal(scope, try v.key(scope, receiver, key), expected));
+}
+fn keyTruthy(scope: *Scope, receiver: c.JSValue, key: c.JSValue) !c.JSValue {
+    return v.boolean(scope, v.truthy(scope, try v.key(scope, receiver, key)));
+}
+fn setKey(scope: *Scope, receiver: c.JSValue, key: c.JSValue, incoming: c.JSValue) !void {
+    // Module symbols are genuine immutable bindings. The actual [[Set]]
+    // operation retains Source setter/proxy behavior and strict failure.
+    var coercion: v.guest.Boundary = .{ .engine = scope.engine };
+    try coercion.begin();
+    const atom = c.JS_ValueToAtom(scope.engine.context, key);
+    defer if (atom != c.JS_ATOM_NULL) c.JS_FreeAtom(scope.engine.context, atom);
+    try coercion.finishStatus(if (atom == c.JS_ATOM_NULL) -1 else 0);
+    var boundary: v.guest.Boundary = .{ .engine = scope.engine };
+    try boundary.begin();
+    try boundary.finishStatus(c.JS_SetProperty(
+        scope.engine.context, receiver, atom, v.duplicate(scope, incoming)));
+}
+fn assignKey(scope: *Scope, receiver: c.JSValue, key: c.JSValue, incoming: c.JSValue) !void {
+    try setKey(scope, receiver, key, incoming);
+}
+fn numericReference(scope: *Scope, receiver: c.JSValue, key: c.JSValue) !c.JSValue {
+    const original = try v.key(scope, receiver, key);
+    var boundary: v.guest.Boundary = .{ .engine = scope.engine };
+    try boundary.begin();
+    const numeric = try boundary.finishValue(scope, c.JS_PiToNumeric(scope.engine.context, original));
+    return v.duplicate(scope, numeric);
+}
+fn updatedReference(scope: *Scope, receiver: c.JSValue, key: c.JSValue, comptime increase: bool) !c.JSValue {
+    // The discarded post-update is emitted as an intrinsic numeric update.
+    // Its original numeric operand retires before the actual property Set.
+    const original = try value(scope, numericReference, .{receiver, key});
+    var boundary: v.guest.Boundary = .{ .engine = scope.engine };
+    try boundary.begin();
+    const updated = try boundary.finishValue(scope, if (increase)
+        c.JS_PiIncrement(scope.engine.context, original) else
+        c.JS_PiDecrement(scope.engine.context, original));
+    return v.duplicate(scope, updated);
+}
+fn updateReference(scope: *Scope, receiver: c.JSValue, key: c.JSValue, comptime increase: bool) !void {
+    const updated = try value(scope, updatedReference, .{receiver, key, increase});
+    try setKey(scope, receiver, key, updated);
+}
+fn markInstance(scope: *Scope, receiver: c.JSValue, callable: c.JSValue) !void {
+    _ = try v.call(scope, callable, c.pi_js_undefined(), &.{
+        receiver, v.boolean(scope, false), v.boolean(scope, true),
+    });
+}
+fn inputFd(scope: *Scope, filehandle: c.JSValue) !c.JSValue {
+    return v.duplicate(scope, if (v.truthy(scope, filehandle))
+        try v.get(scope, filehandle, "fd") else c.JS_NewInt32(scope.engine.context, -1));
+}
+fn initializeFd(scope: *Scope, receiver: c.JSValue, filehandle: c.JSValue, key: c.JSValue) !void {
+    try setKey(scope, receiver, key, try value(scope, inputFd, .{filehandle}));
+}
+fn closeField(scope: *Scope, receiver: c.JSValue, roots: []const c.JSValue) !void {
+    var captures: [1 + @typeInfo(Inputs).@"struct".fields.len]c.JSValue = undefined;
+    captures[0] = receiver;
+    @memcpy(captures[1..], roots);
+    const close = try v.arrow(scope, "close", 0, closeCall, &captures);
+    // Source public instance field initialization bypasses inherited setters.
+    try v.put(scope, receiver, "close", close);
+}
+fn constructBody(scope: *Scope, lexical_class: c.JSValue, new_target: c.JSValue,
+    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
+{
+    const receiver = try classes.superConstruct(scope, lexical_class, new_target, &.{});
+    // Derived instance fields initialize immediately after super(), before
+    // the explicit markTransferMode statement in the constructor body.
+    try statement(scope.engine, closeField, .{receiver, roots});
+    try statement(scope.engine, markInstance, .{receiver, imported(roots, .mark_transfer_mode)});
+    try statement(scope.engine, assignKey, .{receiver, imported(roots, .handle), v.arg(args, 0)});
+    try statement(scope.engine, initializeFd, .{receiver, v.arg(args, 0), imported(roots, .fd)});
+    try statement(scope.engine, assignKey, .{receiver, imported(roots, .refs), c.JS_NewInt32(scope.engine.context, 1)});
+    try statement(scope.engine, assignKey, .{receiver, imported(roots, .close_promise), c.pi_js_null()});
+    return v.duplicate(scope, receiver);
+}
+fn constructCall(engine: *Engine, lexical_class: c.JSValue, new_target: c.JSValue,
+    args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue
+{
+    return expression(engine, constructBody, .{lexical_class, new_target, args, roots});
+}
+fn fdCall(engine: *Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return expression(engine, keyValue, .{receiver, roots[0]});
+}
+fn readBody(scope: *Scope, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return v.duplicate(scope, try v.call(scope, roots[0], c.pi_js_undefined(), &.{
+        roots[1], receiver, v.arg(args, 0), v.arg(args, 1), v.arg(args, 2), v.arg(args, 3),
+    }));
+}
+fn readCall(engine: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return expression(engine, readBody, .{receiver, args, roots});
+}
+fn refCall(engine: *Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    try statement(engine, updateReference, .{receiver, roots[0], true});
+    return c.pi_js_undefined();
+}
+fn innerClose(scope: *Scope, receiver: c.JSValue, handle_key: c.JSValue) !c.JSValue {
+    const native_handle = try v.key(scope, receiver, handle_key);
+    const close = try v.get(scope, native_handle, "close");
+    return v.duplicate(scope, try v.call(scope, close, native_handle, &.{}));
+}
+fn unrefThen(scope: *Scope, receiver: c.JSValue, roots: []const c.JSValue) !void {
+    const promise = try value(scope, innerClose, .{receiver, imported(roots, .handle)});
+    const resolve = try value(scope, keyValue, .{receiver, imported(roots, .close_resolve)});
+    const reject = try value(scope, keyValue, .{receiver, imported(roots, .close_reject)});
+    _ = try v.call(scope, imported(roots, .promise_then), c.pi_js_undefined(), &.{promise, resolve, reject});
+}
+fn unrefBody(scope: *Scope, receiver: c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    try statement(scope.engine, updateReference, .{receiver, imported(roots, .refs), false});
+    if (try predicate(scope.engine, keyEqual, .{
+        receiver, imported(roots, .refs), c.JS_NewInt32(scope.engine.context, 0),
+    })) {
+        try statement(scope.engine, assignKey, .{receiver, imported(roots, .fd), c.JS_NewInt32(scope.engine.context, -1)});
+        try statement(scope.engine, unrefThen, .{receiver, roots});
+    }
+    return c.pi_js_undefined();
+}
+fn unrefCall(engine: *Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return expression(engine, unrefBody, .{receiver, roots});
+}
+fn promiseResolve(scope: *Scope, function: c.JSValue) !c.JSValue {
+    return v.duplicate(scope, try v.call(scope, function, c.pi_js_undefined(), &.{}));
+}
+fn closeFinallyCall(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    try statement(engine, assignKey, .{roots[0], roots[1], c.pi_js_undefined()});
+    return c.pi_js_undefined();
+}
+fn pendingFinallyCall(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    // The three Source assignments have this exact order.
+    try statement(engine, assignKey, .{roots[0], roots[1], c.pi_js_undefined()});
+    try statement(engine, assignKey, .{roots[0], roots[2], c.pi_js_undefined()});
+    try statement(engine, assignKey, .{roots[0], roots[3], c.pi_js_undefined()});
+    return c.pi_js_undefined();
+}
+fn pendingExecutorCall(engine: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    try statement(engine, assignKey, .{roots[0], roots[1], v.arg(args, 0)});
+    try statement(engine, assignKey, .{roots[0], roots[2], v.arg(args, 1)});
+    return c.pi_js_undefined();
+}
+fn pendingPromise(scope: *Scope, receiver: c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    const executor = try v.arrow(scope, "", 2, pendingExecutorCall, &.{
+        receiver, imported(roots, .close_resolve), imported(roots, .close_reject),
+    });
+    return v.duplicate(scope, try v.construct(scope, imported(roots, .promise_constructor), &.{executor}));
+}
+fn closeCompletion(scope: *Scope, receiver: c.JSValue, roots: []const c.JSValue, comptime pending: bool) !c.JSValue {
+    const promise = if (pending)
+        try value(scope, pendingPromise, .{receiver, roots}) else
+        try value(scope, innerClose, .{receiver, imported(roots, .handle)});
+    const callback = if (pending)
+        try v.arrow(scope, "", 0, pendingFinallyCall, &.{
+            receiver, imported(roots, .close_promise), imported(roots, .close_reject), imported(roots, .close_resolve),
+        }) else try v.arrow(scope, "", 0, closeFinallyCall, &.{receiver, imported(roots, .close_promise)});
+    return v.duplicate(scope, try v.call(scope, imported(roots, .safe_finally), c.pi_js_undefined(), &.{promise, callback}));
+}
+fn assignClosePromise(scope: *Scope, receiver: c.JSValue, roots: []const c.JSValue, comptime pending: bool) !void {
+    try setKey(scope, receiver, imported(roots, .close_promise),
+        try value(scope, closeCompletion, .{receiver, roots, pending}));
+}
+fn emitClose(scope: *Scope, receiver: c.JSValue) !void {
+    const method = try v.get(scope, receiver, "emit");
+    _ = try v.call(scope, method, receiver, &.{try v.text(scope, "close")});
+}
+fn closeBody(scope: *Scope, receiver: c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    if (try predicate(scope.engine, keyEqual, .{
+        receiver, imported(roots, .fd), c.JS_NewInt32(scope.engine.context, -1),
+    })) return expression(scope.engine, promiseResolve, .{imported(roots, .promise_resolve)});
+    if (try predicate(scope.engine, keyTruthy, .{receiver, imported(roots, .close_promise)}))
+        return expression(scope.engine, keyValue, .{receiver, imported(roots, .close_promise)});
+
+    try statement(scope.engine, updateReference, .{receiver, imported(roots, .refs), false});
+    if (try predicate(scope.engine, keyEqual, .{
+        receiver, imported(roots, .refs), c.JS_NewInt32(scope.engine.context, 0),
+    })) {
+        try statement(scope.engine, assignKey, .{receiver, imported(roots, .fd), c.JS_NewInt32(scope.engine.context, -1)});
+        try statement(scope.engine, assignClosePromise, .{receiver, roots, false});
+    } else {
+        try statement(scope.engine, assignClosePromise, .{receiver, roots, true});
+    }
+    try statement(scope.engine, emitClose, .{receiver});
+    return expression(scope.engine, keyValue, .{receiver, imported(roots, .close_promise)});
+}
+fn closeCall(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return expression(engine, closeBody, .{roots[0], roots[1..]});
+}
+fn defineSymbolMethod(scope: *a.Scope, prototype: c.JSValue, symbol: c.JSValue, method: c.JSValue) !void {
+    try scope.pending();
+    var boundary: v.guest.Boundary = .{ .engine = scope.engine };
+    try boundary.begin();
+    const atom = c.JS_ValueToAtom(scope.engine.context, symbol);
+    defer if (atom != c.JS_ATOM_NULL) c.JS_FreeAtom(scope.engine.context, atom);
+    try boundary.finishStatus(if (atom == c.JS_ATOM_NULL) -1 else 0);
+    try scope.pending();
+    const status = c.JS_DefinePropertyValue(scope.engine.context, prototype, atom,
+        a.duplicate(scope.engine, method), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE | c.JS_PROP_THROW);
+    try scope.pending();
+    if (status < 0) return error.MissingActualFileHandleSymbolMethodReason;
+}
+fn defineFd(scope: *a.Scope, prototype: c.JSValue, getter: c.JSValue) !void {
+    const property = try scope.text("fd");
+    var boundary: v.guest.Boundary = .{ .engine = scope.engine };
+    try boundary.begin();
+    const atom = c.JS_ValueToAtom(scope.engine.context, property);
+    defer if (atom != c.JS_ATOM_NULL) c.JS_FreeAtom(scope.engine.context, atom);
+    try boundary.finishStatus(if (atom == c.JS_ATOM_NULL) -1 else 0);
+    try scope.pending();
+    const status = c.JS_DefinePropertyGetSet(scope.engine.context, prototype, atom,
+        a.duplicate(scope.engine, getter), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_THROW);
+    try scope.pending();
+    if (status < 0) return error.MissingActualFileHandleFdGetterReason;
+}
+fn createBody(scope: *a.Scope, inputs: Inputs) !c.JSValue {
+    var roots: [@typeInfo(Inputs).@"struct".fields.len]c.JSValue = undefined;
+    inline for (@typeInfo(Inputs).@"struct".fields, 0..) |field, index|
+        roots[index] = @field(inputs, field.name);
+    var parent = c.pi_js_null();
+    var constructor_parent = inputs.event_emitter;
+    if (c.JS_IsNull(inputs.event_emitter)) {
+        constructor_parent = try scope.checked(c.JS_GetFunctionProto(scope.engine.context));
+    } else {
+        try scope.pending();
+        if (!c.JS_IsConstructor(scope.engine.context, inputs.event_emitter)) {
+            const generation = try scope.beforeAllocation();
+            return scope.checkedAllocation(c.JS_ThrowTypeError(
+                scope.engine.context, "parent class must be constructor"), generation);
+        }
+        parent = try scope.get(inputs.event_emitter, "prototype");
+        if (!c.JS_IsObject(parent) and !c.JS_IsNull(parent)) {
+            const generation = try scope.beforeAllocation();
+            return scope.checkedAllocation(c.JS_ThrowTypeError(
+                scope.engine.context, "parent prototype must be an object or null"), generation);
+        }
+    }
+    const prototype = try scope.objectProto(parent);
+    const constructor = try scope.own(try classes.create(scope.engine, "FileHandle", 1,
+        prototype, constructor_parent, constructCall, &roots));
+    const getter = try v.method(&scope.values, "get fd", 0, fdCall, &.{inputs.fd});
+    try defineFd(scope, prototype, getter);
+    const read = try v.method(&scope.values, "read", 4, readCall, &.{inputs.fs_call, inputs.read});
+    try scope.define(prototype, "read", read, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE);
+    const ref = try v.method(&scope.values, "[kRef]", 0, refCall, &.{inputs.refs});
+    try defineSymbolMethod(scope, prototype, inputs.ref, ref);
+    const unref = try v.method(&scope.values, "[kUnref]", 0, unrefCall, &roots);
+    try defineSymbolMethod(scope, prototype, inputs.unref, unref);
+    return a.duplicate(scope.engine, constructor);
+}
+pub fn create(engine: *Engine, inputs: Inputs) !c.JSValue {
+    return a.expression(engine, createBody, .{inputs});
+}

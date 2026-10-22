@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "role": "Root_supplied_original_native_compile_failure_provenance",
+  "source": "Root message, retained as exact references; not independently opened or rehashed by this source-only task",
+  "references": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-173038\\root-compile-negative-closure.json",
+      "bytes": 9907,
+      "sha256": "F11D5FFA7EED451522931522E736BEE24D25557227F481156DBB498E27DE771D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-173038\\independent-observed-job-status.json",
+      "bytes": 1644,
+      "sha256": "412CEF76FC30356156EA28839A8F1BAB4212E5623DBD1D1D8F36B1A9938ACFA7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-173038\\groups\\native-node-stream-shutdown\\compile.stderr.log",
+      "bytes": 22531,
+      "sha256": "126D7430EF27312C4C9A04CA8BF3DA9380703C610DD72BDB588A05A32FC6B4E2"
+    }
+  ],
+  "reported_equal_before_final": {
+    "bytes": 18262847,
+    "sha256": "E449CBE0C75A3A13E541ED62AFEEDFFB5EFC2946CF50908B3BB86B518B091DD8",
+    "exact_paths_not_supplied": true
+  },
+  "reported_job_prefix": "ab5cf",
+  "reported_exit_code": 1,
+  "reported_terminal_utc": "2026-10-22T17:39:14.572Z",
+  "reported_compile_errors": 2,
+  "reported_metadata_or_runtime_started": false,
+  "reported_remaining_groups_unstarted": 2,
+  "native_or_result_qualification": false,
+  "original_artifacts_modified": false,
+  "independently_observed_current_process_or_native_files": false
+}

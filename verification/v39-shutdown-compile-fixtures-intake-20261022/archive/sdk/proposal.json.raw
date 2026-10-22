@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "status": "source_only_two_error_Shutdown_fixture_correction_candidate_uncompiled",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "scope": "Two one-line test/support edits only; original raw frozen Git blobs are contained. No production, build, Main or current runtime evidence accessed.",
+  "files": [
+    {
+      "relative_path": "src/native_node_stream_shutdown_test.zig",
+      "source_git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "source_git_blob": "40528831fdea843263cf40b26c1819bc7dfaba4e",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17039,
+        "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17058,
+        "sha256": "7C138AE9E92642C3E05A8CD2C6FDB0FAB62E25C5C225916FB36E5AA61869D3AE"
+      },
+      "reason": "Select the already-public physical uv.h C import; keep the exact UV_EBADF equality.",
+      "edit": {
+        "offset": 5993,
+        "line": 110,
+        "before": "t.uv.UV_EBADF",
+        "after": "t.base_support.physical.UV_EBADF",
+        "unchanged_prefix_bytes": 5993,
+        "unchanged_prefix_sha256": "392FF5728A401DEBD747BD66F50CA87887064032199C3CB1AA81C9EFCCB0325A",
+        "unchanged_suffix_bytes": 11033,
+        "unchanged_suffix_sha256": "88B2A055662A9803C0412FFB890C1E0C82FFC7FC6122F849EDB3004714CD7ADF"
+      },
+      "full_raw_forward_and_inverse": true,
+      "all_other_bytes_exact": true,
+      "named_declarations": [
+        "native Stream shutdown actual constructor owns original null fields and independent empty slots",
+        "native Stream shutdown genuine Simple wrapper clears request slot before last native pointer retirement",
+        "native Stream shutdown physical close reports after trace end cleanup and AfterClose with borrowed handle",
+        "native Stream shutdown real accepted bad descriptor still performs AfterClose and reports negative status",
+        "native Stream shutdown closed fast path completes synchronously and restores the prior trigger",
+        "native Stream shutdown closing fast path retires its own request while real first close stays queued",
+        "native Stream shutdown nonfunction oncomplete yields undefined without invoking trace or callback",
+        "native Stream shutdown absent oncomplete skips the ordinary Get and native callback",
+        "native Stream shutdown throwing oncomplete getter preserves actual reason and still disposes native request",
+        "native Stream shutdown real close callback exception survives actual Wrapper and event destruction",
+        "native Stream shutdown disabled JavaScript returns before oncomplete getter while native close retires",
+        "native Stream shutdown live listener head uses original predecessor forwarding into real reporter",
+        "native StreamReq Done stores actual Latin1 error bytes then reports and clears request field",
+        "native StreamReq Done failing ordinary error setter returns before OnDone and preserves both native slots",
+        "native StreamReq Done false nonwritable Set still continues to OnDone",
+        "native Stream shutdown reporter converts Latin1 error then clears original stream error",
+        "native Stream shutdown missing caller object uses actual stored InstanceTemplate then real native close",
+        "native Stream shutdown request init inherits actual handle async ID and restores prior trigger"
+      ],
+      "literal_imports": [
+        "std",
+        "native_node_stream_shutdown_test_support.zig",
+        "extensions/native_node_stream_resource.zig"
+      ],
+      "import_cinclude_and_named_declaration_sequences_unchanged": true
+    },
+    {
+      "relative_path": "src/native_node_stream_shutdown_test_support.zig",
+      "source_git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "source_git_blob": "6bca049ffc704fa1bb9e5a5e111d022c7ba19fd5",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10312,
+        "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10325,
+        "sha256": "65388977262D9E61B99A95028D24C592A8D1E79E4328E827ECBEB047ABC72D80"
+      },
+      "reason": "Use a homogeneous runtime array of the same three mutable optional-JSValue pointers; preserve order and the entire loop body.",
+      "edit": {
+        "offset": 6893,
+        "line": 144,
+        "before": "for (.{ &self.observed_request, &self.error_key, &self.oncomplete_key }) |slot| {",
+        "after": "for ([_]*?c.JSValue{ &self.observed_request, &self.error_key, &self.oncomplete_key }) |slot| {",
+        "unchanged_prefix_bytes": 6893,
+        "unchanged_prefix_sha256": "9FFFDF2054463EBC53E0ADC1070D27E6004B0C2D55CEAFEFDA6C72DF204B2617",
+        "unchanged_suffix_bytes": 3338,
+        "unchanged_suffix_sha256": "5F3832F67FDC45FA08766CA4BDB8FABBB729C9EA384CED02747037162380024C"
+      },
+      "full_raw_forward_and_inverse": true,
+      "all_other_bytes_exact": true,
+      "named_declarations": [],
+      "literal_imports": [
+        "std",
+        "native_node_file_handle_owner_test_support.zig",
+        "extensions/native_node_stream_request.zig",
+        "extensions/native_node_stream_shutdown.zig",
+        "extensions/native_node_stream_base.zig"
+      ],
+      "import_cinclude_and_named_declaration_sequences_unchanged": true
+    }
+  ],
+  "finite_hunks": 2,
+  "named_controls": 18,
+  "named_controls_unchanged": [
+    "native Stream shutdown actual constructor owns original null fields and independent empty slots",
+    "native Stream shutdown genuine Simple wrapper clears request slot before last native pointer retirement",
+    "native Stream shutdown physical close reports after trace end cleanup and AfterClose with borrowed handle",
+    "native Stream shutdown real accepted bad descriptor still performs AfterClose and reports negative status",
+    "native Stream shutdown closed fast path completes synchronously and restores the prior trigger",
+    "native Stream shutdown closing fast path retires its own request while real first close stays queued",
+    "native Stream shutdown nonfunction oncomplete yields undefined without invoking trace or callback",
+    "native Stream shutdown absent oncomplete skips the ordinary Get and native callback",
+    "native Stream shutdown throwing oncomplete getter preserves actual reason and still disposes native request",
+    "native Stream shutdown real close callback exception survives actual Wrapper and event destruction",
+    "native Stream shutdown disabled JavaScript returns before oncomplete getter while native close retires",
+    "native Stream shutdown live listener head uses original predecessor forwarding into real reporter",
+    "native StreamReq Done stores actual Latin1 error bytes then reports and clears request field",
+    "native StreamReq Done failing ordinary error setter returns before OnDone and preserves both native slots",
+    "native StreamReq Done false nonwritable Set still continues to OnDone",
+    "native Stream shutdown reporter converts Latin1 error then clears original stream error",
+    "native Stream shutdown missing caller object uses actual stored InstanceTemplate then real native close",
+    "native Stream shutdown request init inherits actual handle async ID and restores prior trigger"
+  ],
+  "production_source_changed": false,
+  "build_changed": false,
+  "reported_failure": {
+    "source": "Root task message; exact original negative artifacts remain Root-owned and will be additively pinned when supplied",
+    "diagnostics": [
+      {
+        "path": "src/native_node_stream_shutdown_test.zig",
+        "line": 110,
+        "column": 48,
+        "message": "root source cimport has no member UV_EBADF"
+      },
+      {
+        "path": "src/native_node_stream_shutdown_test_support.zig",
+        "line": 144,
+        "column": 15,
+        "message": "unable to resolve comptime value; tuple field index must be comptime-known"
+      }
+    ],
+    "reported_compiler_error_count": 2,
+    "reported_metadata": false,
+    "reported_runtime": false,
+    "exact_negative_artifact_pins": null
+  },
+  "semantics": {
+    "error_assertion": "The libuv symbolic error, c_int cast, equality, actual f.end_result and invalid descriptor remain exact; only the existing import namespace is corrected.",
+    "cleanup": "Same runtime pointer values in observed_request/error_key/oncomplete_key order, same optional guard, null-before-free, engine, callback drain and base teardown. No allocation or new JS root."
+  },
+  "all_assertion_bodies_unchanged_except_same_symbol_namespace": true,
+  "all_imports_and_named_declarations_unchanged": true,
+  "candidate_or_prefix_executed": false,
+  "compiler_or_test_executed": false,
+  "Main_or_index_accessed": false,
+  "native_executed": false,
+  "source_intake_authorized": false,
+  "configuration_issued": false,
+  "qualification": false
+}

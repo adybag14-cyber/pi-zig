@@ -1,0 +1,230 @@
+// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
+//! Actual Node v24.13 ERR_OUT_OF_RANGE message and numerical separator.
+//! Registration uses the same genuine Node Error marker, classes and inspector
+//! as the completed argument owner. This creates a private import record.
+const h = @import("native_sdk_session_locals.zig");
+const v = h.v;
+const c = v.c;
+const Engine = h.Engine;
+const Scope = h.Scope;
+const sync = @import("native_sync_arguments.zig");
+const Arguments = sync.Arguments;
+const Frames = @import("native_public_lexical_frame.zig");
+const a = @import("native_node_argument_values.zig");
+const registration = @import("native_node_argument_error_registration.zig");
+const SeparatorFrame = Frames.Frame(enum { res, i, start });
+// A default parameter creates actual parameter-scope LET originals before
+// the body. Later body accesses still use the real raw argument slots.
+const MessageFrame = Frames.Frame(enum {
+    str, range, input, replaceDefaultBoolean, msg, received,
+});
+pub const Inputs = struct {
+    range_error: c.JSValue,
+    error_constructor: c.JSValue,
+    marker: c.JSValue,
+    assert_function: c.JSValue,
+    reflect_apply: c.JSValue,
+    number_is_integer: c.JSValue,
+    math_abs: c.JSValue,
+    string_function: c.JSValue,
+    string_slice: c.JSValue,
+    internal_inspect: c.JSValue,
+};
+fn function(s: *Scope, name: [*:0]const u8, length: c_int,
+    definition: sync.Definition, roots: []const c.JSValue, arrow: bool) !c.JSValue
+{
+    var boundary: v.guest.Boundary = .{ .engine = s.engine };
+    try boundary.begin();
+    return boundary.finishValue(s, if (arrow)
+        v.function.createArrowWithArguments(s.engine, name, length, definition, roots)
+    else
+        v.function.createWithArguments(s.engine, name, length, definition, roots));
+}
+fn value(s: *Scope, comptime body: anytype, args: anytype) !c.JSValue {
+    return v.own(s, try h.expression(s.engine, body, args));
+}
+fn string(s: *Scope, input: c.JSValue) !c.JSValue {
+    return v.duplicate(s, try v.stringify(s, input));
+}
+fn field(s: *Scope, input: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    return v.duplicate(s, try v.get(s, input, name));
+}
+fn signStart(s: *Scope, input: c.JSValue) !c.JSValue {
+    const first = try v.key(s, input, v.number(s, 0));
+    return v.number(s, if (try v.eq(s, first, "-")) 1 else 0);
+}
+fn separatorCondition(s: *Scope, frame: *SeparatorFrame) !c.JSValue {
+    const left = frame.get(.i);
+    const limit = try h.binary(s, .add, frame.get(.start), v.number(s, 4));
+    return v.boolean(s, v.truthy(s, try h.binary(s, .greater_equal, left, limit)));
+}
+fn slice(s: *Scope, slice_function: c.JSValue, input: c.JSValue,
+    begin: c.JSValue, end: c.JSValue) !c.JSValue
+{
+    return v.duplicate(s, try v.call(s, slice_function, input, &.{begin, end}));
+}
+fn groupSlice(s: *Scope, slice_function: c.JSValue, input: c.JSValue, index: c.JSValue) !c.JSValue {
+    const begin = try h.binary(s, .subtract, index, v.number(s, 3));
+    return v.duplicate(s, try v.call(s, slice_function, input, &.{begin, index}));
+}
+fn groupString(s: *Scope, slice_function: c.JSValue, input: c.JSValue, index: c.JSValue) !c.JSValue {
+    const group = try value(s, groupSlice, .{slice_function, input, index});
+    return string(s, group);
+}
+fn firstString(s: *Scope, slice_function: c.JSValue, input: c.JSValue, index: c.JSValue) !c.JSValue {
+    const group = try value(s, slice, .{slice_function, input, v.number(s, 0), index});
+    return string(s, group);
+}
+fn separatorIteration(s: *Scope, frame: *SeparatorFrame, input: c.JSValue, slice_function: c.JSValue) !c.JSValue {
+    const prefix = try v.text(s, "_");
+    const group = try value(s, groupString, .{slice_function, input, frame.get(.i)});
+    const first = try h.binary(s, .add, prefix, group);
+    const tail = try value(s, string, .{frame.get(.res)});
+    return v.duplicate(s, try h.binary(s, .add, first, tail));
+}
+fn decrement(s: *Scope, index: c.JSValue) !c.JSValue {
+    return v.duplicate(s, try h.binary(s, .subtract, index, v.number(s, 3)));
+}
+fn separatorResult(s: *Scope, frame: *SeparatorFrame, input: c.JSValue, slice_function: c.JSValue) !c.JSValue {
+    const first = try value(s, firstString, .{slice_function, input, frame.get(.i)});
+    const tail = try value(s, string, .{frame.get(.res)});
+    return v.duplicate(s, try h.binary(s, .add, first, tail));
+}
+fn separatorBody(s: *Scope, args: *Arguments, frame: *SeparatorFrame, roots: []const c.JSValue) !c.JSValue {
+    try frame.take(.res, h.text(s.engine, ""));
+    try frame.take(.i, h.expression(s.engine, field, .{args.get(0), @as([*:0]const u8, "length")}));
+    try frame.take(.start, h.expression(s.engine, signStart, .{args.get(0)}));
+    var steps: usize = 0;
+    while (h.truthy(s.engine, try h.expression(s.engine, separatorCondition, .{frame}))) {
+        try v.poll(s.engine, &steps);
+        try frame.take(.res, h.expression(s.engine, separatorIteration, .{frame, args.get(0), roots[0]}));
+        try frame.take(.i, h.expression(s.engine, decrement, .{frame.get(.i)}));
+    }
+    return h.expression(s.engine, separatorResult, .{frame, args.get(0), roots[0]});
+}
+fn separatorCall(engine: *Engine, _: c.JSValue, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine };
+    const frame = args.createFrame(&s, SeparatorFrame) catch |err| return v.owned.finishValue(&s, err);
+    return v.owned.finishValue(&s, separatorBody(&s, args, frame, roots));
+}
+fn assertRange(s: *Scope, assertion: c.JSValue, range: c.JSValue) !void {
+    _ = try v.call(s, assertion, c.pi_js_undefined(), &.{range, try v.text(s, "Missing \"range\" argument")});
+}
+fn initialMessage(s: *Scope, args: *Arguments) !c.JSValue {
+    if (v.truthy(s, args.get(3))) return v.duplicate(s, args.get(0));
+    const prefix = try v.text(s, "The value of \"");
+    const name = try value(s, string, .{args.get(0)});
+    const first = try h.binary(s, .add, prefix, name);
+    return v.duplicate(s, try h.binary(s, .add, first, try v.text(s, "\" is out of range.")));
+}
+fn integer(s: *Scope, function_value: c.JSValue, input: c.JSValue) !c.JSValue {
+    return v.boolean(s, v.truthy(s, try v.call(s, function_value, c.pi_js_undefined(), &.{input})));
+}
+fn largeNumber(s: *Scope, abs: c.JSValue, input: c.JSValue) !c.JSValue {
+    const magnitude = try v.call(s, abs, c.pi_js_undefined(), &.{input});
+    return v.boolean(s, v.truthy(s, try h.binary(s, .greater, magnitude, v.number(s, 4294967296))));
+}
+fn bigMagnitude(s: *Scope, input: c.JSValue, two: c.JSValue, exponent: c.JSValue, minus_one: c.JSValue, negative: bool) !c.JSValue {
+    // Keep the actual runtime BigInt exponentiation. The already-numeric
+    // negative branch uses the same primitive-negation product as shell.
+    const magnitude = try h.binary(s, .power, two, exponent);
+    const limit = if (negative) try h.binary(s, .multiply, magnitude, minus_one) else magnitude;
+    return v.boolean(s, v.truthy(s, try h.binary(s, if (negative) .less else .greater, input, limit)));
+}
+fn calledString(s: *Scope, constructor: c.JSValue, input: c.JSValue) !c.JSValue {
+    return v.duplicate(s, try v.call(s, constructor, c.pi_js_undefined(), &.{input}));
+}
+fn separatedNumber(s: *Scope, separator: c.JSValue, constructor: c.JSValue, input: c.JSValue) !c.JSValue {
+    const converted = try value(s, calledString, .{constructor, input});
+    return v.duplicate(s, try v.call(s, separator, c.pi_js_undefined(), &.{converted}));
+}
+fn separatedString(s: *Scope, separator: c.JSValue, input: c.JSValue) !c.JSValue {
+    return v.duplicate(s, try v.call(s, separator, c.pi_js_undefined(), &.{input}));
+}
+fn bigintSuffix(s: *Scope, input: c.JSValue) !c.JSValue {
+    // Source += uses ordinary addition, separate from template substitution.
+    return v.duplicate(s, try h.binary(s, .add, input, try v.text(s, "n")));
+}
+fn inspected(s: *Scope, receiver: c.JSValue, input: c.JSValue) !c.JSValue {
+    const function_value = try v.get(s, receiver, "inspect");
+    return v.duplicate(s, try v.call(s, function_value, receiver, &.{input}));
+}
+fn messageTail(s: *Scope, args: *Arguments, frame: *MessageFrame) !c.JSValue {
+    const prefix = try v.text(s, " It must be ");
+    const range = try value(s, string, .{args.get(1)});
+    const first = try h.binary(s, .add, prefix, range);
+    const next = try h.binary(s, .add, first, try v.text(s, ". Received "));
+    const received = try value(s, string, .{frame.get(.received)});
+    return v.duplicate(s, try h.binary(s, .add, next, received));
+}
+fn finalMessage(s: *Scope, args: *Arguments, frame: *MessageFrame) !c.JSValue {
+    const left = try v.own(s, v.duplicate(s, frame.get(.msg)));
+    const right = try value(s, messageTail, .{args, frame});
+    return v.duplicate(s, try h.binary(s, .add, left, right));
+}
+fn messageBody(s: *Scope, args: *Arguments, frame: *MessageFrame, roots: []const c.JSValue) !c.JSValue {
+    // Each parameter-scope original is installed after its own initialization.
+    try frame.copy(.str, args.get(0));
+    try frame.copy(.range, args.get(1));
+    try frame.copy(.input, args.get(2));
+    if (c.JS_IsUndefined(args.get(3))) try args.take(3, v.boolean(s, false));
+    try frame.copy(.replaceDefaultBoolean, args.get(3));
+    try h.statement(s.engine, assertRange, .{roots[0], args.get(1)});
+    try frame.take(.msg, h.expression(s.engine, initialMessage, .{args}));
+    // roots: assert, NumberIsInteger, MathAbs, String, inspect, separator,
+    // the real BigInt operands retained by this declaration owner.
+    if (h.truthy(s.engine, try h.expression(s.engine, integer, .{roots[1], args.get(2)})) and
+        h.truthy(s.engine, try h.expression(s.engine, largeNumber, .{roots[2], args.get(2)})))
+    {
+        try frame.take(.received, h.expression(s.engine, separatedNumber, .{roots[5], roots[3], args.get(2)}));
+    } else if (c.JS_IsBigInt(args.get(2))) {
+        try frame.take(.received, h.expression(s.engine, calledString, .{roots[3], args.get(2)}));
+        if (h.truthy(s.engine, try h.expression(s.engine, bigMagnitude, .{args.get(2), roots[6], roots[7], roots[8], false})) or
+            h.truthy(s.engine, try h.expression(s.engine, bigMagnitude, .{args.get(2), roots[6], roots[7], roots[8], true})))
+        {
+            try frame.take(.received, h.expression(s.engine, separatedString, .{roots[5], frame.get(.received)}));
+        }
+        try frame.take(.received, h.expression(s.engine, bigintSuffix, .{frame.get(.received)}));
+    } else {
+        try frame.take(.received, h.expression(s.engine, inspected, .{roots[4], args.get(2)}));
+    }
+    try frame.take(.msg, h.expression(s.engine, finalMessage, .{args, frame}));
+    return v.duplicate(s, frame.get(.msg));
+}
+fn messageCall(engine: *Engine, _: c.JSValue, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine };
+    const frame = args.createFrame(&s, MessageFrame) catch |err| return v.owned.finishValue(&s, err);
+    return v.owned.finishValue(&s, messageBody(&s, args, frame, roots));
+}
+fn bigintLiteral(s: *a.Scope, integer_value: i64) !c.JSValue {
+    const generation = try s.beforeAllocation();
+    return a.duplicate(s.engine, try s.checkedAllocation(c.JS_NewBigInt64(s.engine.context, integer_value), generation));
+}
+fn registered(s: *a.Scope, inputs: Inputs, message: c.JSValue) !c.JSValue {
+    const base = try registration.register(s, inputs.range_error, "ERR_OUT_OF_RANGE", message,
+        inputs.marker, inputs.assert_function, inputs.reflect_apply);
+    _ = try registration.hide(s, base, inputs.range_error, inputs.error_constructor);
+    return a.duplicate(s.engine, base);
+}
+fn createBody(s: *Scope, inputs: Inputs) !c.JSValue {
+    const separator = try function(s, "addNumericalSeparator", 1,
+        .{ .formal_count = 1, .callback = separatorCall, .hooks = sync.frameHooks(SeparatorFrame) },
+        &.{inputs.string_slice}, false);
+    const two = try v.own(s, try a.expression(s.engine, bigintLiteral, .{@as(i64, 2)}));
+    const exponent = try v.own(s, try a.expression(s.engine, bigintLiteral, .{@as(i64, 32)}));
+    const minus_one = try v.own(s, try a.expression(s.engine, bigintLiteral, .{@as(i64, -1)}));
+    const message = try function(s, "", 3,
+        .{ .formal_count = 4, .callback = messageCall, .hooks = sync.frameHooks(MessageFrame) },
+        &.{inputs.assert_function, inputs.number_is_integer, inputs.math_abs, inputs.string_function,
+            inputs.internal_inspect, separator, two, exponent, minus_one}, true);
+    const constructor = try v.own(s, try a.expression(s.engine, registered, .{inputs, message}));
+    const record = try v.stateObject(s);
+    try v.put(s, record, "outOfRange", constructor);
+    try v.put(s, record, "message", message);
+    try v.put(s, record, "addNumericalSeparator", separator);
+    return v.duplicate(s, record);
+}
+/// The actual filesystem bootstrap supplies only its retained original imports.
+pub fn create(engine: *Engine, inputs: Inputs) !c.JSValue {
+    return h.expression(engine, createBody, .{inputs});
+}

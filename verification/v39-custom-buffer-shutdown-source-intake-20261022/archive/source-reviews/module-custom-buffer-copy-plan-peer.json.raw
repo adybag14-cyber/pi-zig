@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_custom_buffer_five_target_intake_data_plan",
+  "reviewer": "module_io_port",
+  "source_only": true,
+  "conclusion": "No bounded data-plan blocker found. The five accepted source rows, all selected preservation rows and aliases, and every selected reference-site resolution match their immutable byte authorities. This acceptance is for the unissued component plan only.",
+  "candidate_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 250596,
+    "sha256": "FCF2946B954027511B8C8EAB76B84B477FEC799D38A009DB1CE53A3887F40733"
+  },
+  "candidate_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\handoff.json",
+    "bytes": 14350,
+    "sha256": "514FB330A2BC07418DF86169ED8EB62A76D2682C0D80018C4D6EFBF7A3EC72E2"
+  },
+  "reference_ledger": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\reference-closure.json",
+    "bytes": 2236215,
+    "sha256": "FF4DDEF11E6F0EDA6A71E92090181E3B4B97A4182B52785B30ACD8769EA8C080"
+  },
+  "author_data_checks": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\static-plan-checks.json",
+    "bytes": 4409,
+    "sha256": "664E8202E591C4DB230AC4F3D9B98AD89A321E8DEF993A8CED43A484D4518B0B"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-peer-20261022\\source-data-proof.json",
+    "bytes": 15979,
+    "sha256": "6A14E922185ED4957E51195A3827451E02B5660E3A49024D5BCE3BFE61B3D821"
+  },
+  "inspection_observations": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-peer-20261022\\inspection-observations.json",
+    "bytes": 1883,
+    "sha256": "160000F01470ABD6B62974F08644D731B7281123BC97282D537EAF9AC686720A"
+  },
+  "Root_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-custom-buffer-listener-source-acceptance-20261022.json",
+    "bytes": 26642,
+    "sha256": "7E069F4D15E44ED6683D0E21A032B453CC78CFD1B857006F754653012F90D8B3"
+  },
+  "accepted_source_component": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\intake-component.json",
+    "bytes": 6264,
+    "sha256": "2A5DAE3665EA2051046ADC1701E61C629C6BADEABBF0E6F24FD9F32CF0463320"
+  },
+  "prior_independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-custom-buffer-current-e9-peer-20261022\\peer.json",
+    "bytes": 15708,
+    "sha256": "C63E61242E6EDBA190CE845E92DC5F1F496A197971F24A6C933F45CE53B5A819"
+  },
+  "basis_raw_commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "selected_source_targets": [
+    "src/extensions/native_node_custom_buffer_listener_allocation.h",
+    "src/extensions/native_node_custom_buffer_listener_allocation.cpp",
+    "src/extensions/native_node_custom_buffer_listener.zig",
+    "src/native_node_custom_buffer_listener_test.zig",
+    "build.zig"
+  ],
+  "accepted_findings": [
+    {
+      "finding": "Exact source component",
+      "details": "The four new production/control paths and build.zig replacement equal accepted2A5D byte-for-byte. The normalized build before record keeps exact594A bytes/mode; its original raw Git OID remains independently verified. Four new paths are absent from raw e9."
+    },
+    {
+      "finding": "Exact normalized archive and alias membership",
+      "details": "Core76 rows/90 aliases plus handoff2 rows/2 aliases yields78/92. All rows have the seven strong-adapter fields and mode100644. Every alias equals its primary donor in full bytes, and every physical donor has a matching alias. All planned paths/parent spellings, including the proposed synthetic manifest, are collision-free in this bounded component."
+    },
+    {
+      "finding": "Complete bounded reference accounting",
+      "details": "Independent traversal of all25 archived JSON documents reproduced559 discovered file-pin sites,20 additional absolute seed occurrences and51 synthetic membership occurrences (630 total),3966 raw-Git sites,79 embedded excerpts,61 nested source-pin equalities and3 normalized preimage OID references. All214 generated-ledger pin occurrences are classified. No selected reference remains unresolved."
+    },
+    {
+      "finding": "Historical boundaries are exact raw Git authorities",
+      "details": "All1947 commit/path/mode/blob/byte versions were read through the owned worktree at explicit e9 and79c19 commits. All71 stopped historical file versions equal their162 listed committed copy paths in full bytes. The1027 distinct object bodies were verified; recorded Main repository spellings in old JSON were treated only as historical metadata and never accessed."
+    },
+    {
+      "finding": "Bounded preservation is explicit",
+      "details": "All23 current SDK packet members,19 paused packet members and3 prior independent peer files are accounted.84 archive logical donor versions reduce to70 distinct full-byte objects; the ledger itself and later plan/static-proof rows are retained separately. Historical-boundary payload internals remain in previously committed packets; no recursive self-contained-archive claim is made."
+    },
+    {
+      "finding": "Shutdown support remains separately required",
+      "details": "Exactly three boundary versions resolve to the separate C17D component, with its plan/handoff pinned. Neither Shutdown fixture target is added to this five-target component. A future union must include support6538 or prove it already installed at the released parent."
+    },
+    {
+      "finding": "Authority and future execution remain unresolved",
+      "details": "Actual future parent, archive acceptance, final union manifest/hash/count, bound adapter and Root release remain null. The strong8A676 conversion/preimage/stage/commit gates explicitly cover all rows and the synthetic manifest. Source/control declaration counts do not transfer actual metadata or runtime qualification."
+    }
+  ],
+  "decisive_counts": {
+    "sealed_current_file_versions": 165,
+    "ledger_file_versions": 160,
+    "raw_Git_versions": 1947,
+    "raw_Git_reference_sites": 3966,
+    "distinct_Git_blobs": 1027,
+    "Git_boundary_versions": 71,
+    "exact_committed_boundary_paths": 162,
+    "physical_rows": 78,
+    "logical_aliases": 92,
+    "source_paths": 5,
+    "source_additions": 4,
+    "source_replacements": 1,
+    "archived_JSON_documents": 25,
+    "file_reference_occurrences": 630,
+    "discovered_file_pin_sites": 559,
+    "generated_ledger_pin_occurrences": 214,
+    "embedded_excerpts": 79
+  },
+  "preserved_inspection_history": {
+    "own_read_only_lookup_negative": "A local inspection used targets instead of the accepted component's rows key after earlier data checks. It made no writes; the corrected independent check passed. Exact before/after and exception are retained in inspection-observations.json.",
+    "author_capped_discovery": "Original capped census216495 remains explicitly external non-authoritative planning history. The selected closure was independently verified without a depth cutoff or a generic historical exception."
+  },
+  "limitations": [
+    "This peer does not issue or bind a manifest, adapter, config, grant, or source-hold release.",
+    "Actual later-parent checkout, new-target absences, attributes/configuration and raw/path hash-object conversion must be verified by the released intake procedure; historical e9 checks are not current-parent checks.",
+    "Exact union count and all supplements, including any later peer/Root receipts, require a separate reviewed final composition.",
+    "Public method/template identity, production tracing clocks and native/application qualification remain outside this component."
+  ],
+  "executable_checker_created": false,
+  "supplied_checker_executed": false,
+  "candidate_or_prefix_executed": false,
+  "Main_or_index_accessed": false,
+  "current_native_or_process_evidence_accessed": false,
+  "configuration_issued": false,
+  "intake_authorized": false,
+  "native_execution_authorized": false,
+  "application_qualified": false
+}

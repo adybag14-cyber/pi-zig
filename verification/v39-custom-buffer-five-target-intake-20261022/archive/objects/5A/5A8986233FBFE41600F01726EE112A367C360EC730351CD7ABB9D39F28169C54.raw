@@ -1,0 +1,234 @@
+//! Actual Env I/O tickets for Node FileHandle open/read/close. Workers receive only
+//! stable native inputs and wake entitlements; all JS completion runs on owner.
+//! The public fs/promises body and native FileHandle object own Promise shape.
+const std = @import("std");
+const em = @import("engine.zig");
+const c = em.c;
+const env = @import("native_env_io.zig");
+const wake = @import("native_owner_wake.zig");
+const completion_wake = @import("native_owner_completion.zig");
+const owned = @import("native_sdk_owned_completion.zig");
+pub const uv = @cImport({ @cInclude("native_uv_file_handle.h"); });
+pub const Handle = uv.PiUvFileHandle;
+
+pub const Result = union(enum) {
+    opened: uv.PiUvFileOpenResult,
+    closed: i32,
+    read: uv.PiUvFileReadResult,
+};
+/// The actual binding's retained owner carries its resolver/native wrapper.
+/// This host callback is never a public namespace input. An opened handle is
+/// borrowed for this call: a published native wrapper retains its own reference.
+pub const Completion = struct {
+    owner: c.JSValue,
+    callback: *const fn (*em.Engine, c.JSValue, *const Result) anyerror!void,
+};
+const Open = struct { path: [:0]u8, flags: i32, mode: i32 };
+const Read = struct {
+    descriptor: i32,
+    storage: c.JSPiArrayBufferLease,
+    offset: usize,
+    length: u32,
+    position: i64,
+};
+const Operation = union(enum) { open: Open, close: *Handle, read: Read };
+const Packet = struct {
+    operation: Operation,
+    memory_owner: ?*anyopaque,
+    reference: wake.Ref,
+    stopped: std.atomic.Value(bool) = .init(false),
+    ran: bool = false,
+    result: Result,
+    fn run(self: *Packet) void {
+        if (self.stopped.load(.acquire)) return;
+        self.ran = true;
+        switch (self.operation) {
+            .open => |input| self.result = .{ .opened = uv.pi_uv_file_open(
+                self.memory_owner, input.path.ptr, input.flags, input.mode) },
+            .close => |handle| self.result = .{ .closed = uv.pi_uv_file_close_work(handle) },
+            .read => |input| self.result = .{ .read = uv.pi_uv_file_read(
+                input.descriptor, input.storage.data + input.offset,
+                input.length, input.position) },
+        }
+    }
+    fn allocationFailed(self: *const Packet) bool {
+        return self.ran and switch (self.result) {
+            .opened => |result| result.native_allocation_failure != 0,
+            .closed, .read => false,
+        };
+    }
+};
+const Request = struct {
+    task: env.Task,
+    packet: Packet,
+    completion: Completion,
+    retired: bool = false,
+    charge: usize,
+
+    fn work(task: *env.Task) void {
+        const self: *Request = @alignCast(@fieldParentPtr("task", task));
+        // No Engine dereference, JSValue inspection, coercion or callback.
+        const reference = self.packet.reference;
+        self.packet.run();
+        task.done.store(true, .release);
+        // Completion may destroy the ticket immediately after done. The wake
+        // selector is a copied generation token, never a borrowed packet field.
+        wake.notify(reference);
+    }
+    fn cancel(task: *env.Task) void {
+        const self: *Request = @alignCast(@fieldParentPtr("task", task));
+        self.packet.stopped.store(true, .release);
+    }
+    fn complete(task: *env.Task) !void {
+        const self: *Request = @alignCast(@fieldParentPtr("task", task));
+        const engine = task.hub.engine;
+        try task.hub.assertOwner();
+        if (self.packet.ran and self.packet.operation == .close)
+            uv.pi_uv_file_finish_close(self.packet.operation.close);
+        const result: anyerror!void = body: {
+            engine.checkNativeEntry() catch |err| break :body err;
+            if (self.packet.allocationFailed()) break :body error.OutOfMemory;
+            if (!self.packet.ran) break :body error.NativeFileOperationNotRun;
+            break :body self.completion.callback(engine, self.completion.owner, &self.packet.result);
+        };
+        return self.retire(result);
+    }
+    fn retire(self: *Request, incoming: anyerror!void) !void {
+        if (self.retired) return incoming;
+        self.retired = true;
+        const engine = self.task.hub.engine;
+        const selected: anyerror!void = if (incoming) |_|
+            if (self.packet.allocationFailed()) error.OutOfMemory else {}
+        else |err| err;
+        var completion = owned.Completion.initVoid(engine, selected);
+
+        // A completed open not adopted by the binding still owns one genuine
+        // descriptor. No JS object was published for this ticket entitlement.
+        if (self.packet.ran) switch (self.packet.result) {
+            .opened => |*result| if (result.handle) |handle| {
+                result.handle = null;
+                _ = uv.pi_uv_file_release(handle);
+            },
+            .closed, .read => {},
+        };
+        if (self.packet.operation == .close) {
+            if (self.packet.ran) uv.pi_uv_file_finish_close(self.packet.operation.close);
+            _ = uv.pi_uv_file_release(self.packet.operation.close);
+        }
+
+        if (self.packet.operation == .read)
+            c.JS_PiReleaseArrayBufferLease(&self.packet.operation.read.storage);
+
+        const root = self.completion.owner;
+        self.completion.owner = c.pi_js_undefined();
+        completion.release(root);
+        return completion.finishVoid();
+    }
+    fn destroy(task: *env.Task) void {
+        const self: *Request = @alignCast(@fieldParentPtr("task", task));
+        const engine = task.hub.engine;
+        // Hub joins its real worker group before abandoned ticket destruction.
+        // A stopped runtime invokes no resolver. Preserve actual cleanup events.
+        self.retire({}) catch {};
+        const charge = self.charge;
+        const memory_owner = self.packet.memory_owner;
+        wake.release(self.packet.reference);
+        if (self.packet.operation == .open) engine.gpa.free(self.packet.operation.open.path);
+        engine.gpa.destroy(self);
+        c.pi_js_native_memory_release(memory_owner, charge);
+        c.pi_js_release_memory_owner(memory_owner);
+    }
+};
+
+fn request(engine: *em.Engine, operation: Operation, completion: Completion, path_charge: usize) !*Request {
+    const hub = try env.get(engine);
+    try hub.assertOwner();
+    if (hub.stopping) return error.NativeEnvClosed;
+    const reference = try completion_wake.acquireNativeWake(engine);
+    errdefer wake.release(reference);
+    const charge = try std.math.add(usize, @sizeOf(Request), path_charge);
+    if (c.pi_js_native_memory_reserve(engine.native_memory_owner, @sizeOf(Request)) == 0)
+        return error.OutOfMemory;
+    errdefer c.pi_js_native_memory_release(engine.native_memory_owner, @sizeOf(Request));
+    const self = try engine.gpa.create(Request);
+    c.pi_js_retain_memory_owner(engine.native_memory_owner);
+    self.* = .{
+        .task = .{ .hub = hub, .work = Request.work, .complete = Request.complete,
+            .destroy = Request.destroy, .cancel = Request.cancel,
+            .resolve = c.pi_js_undefined(), .reject = c.pi_js_undefined(),
+            .propagate_completion_errors = true },
+        .packet = .{ .operation = operation, .memory_owner = engine.native_memory_owner,
+            .reference = reference, .result = switch (operation) {
+                .open => .{ .opened = .{ .handle = null, .uv_status = 0,
+                    .native_allocation_failure = 0, .rollback_close_status = 0 } },
+                .close => .{ .closed = 0 },
+                .read => .{ .read = .{ .bytes_read = 0, .uv_status = 0 } },
+            } },
+        .completion = .{ .owner = c.JS_DupValue(engine.context, completion.owner),
+            .callback = completion.callback },
+        .charge = charge,
+    };
+    if (operation == .close) uv.pi_uv_file_retain(operation.close);
+    return self;
+}
+
+/// Input is already converted/validated and namespaced by the actual binding.
+/// It is copied once before dispatch and remains stable through uv_fs_open.
+pub fn open(engine: *em.Engine, path: [:0]const u8, flags: i32, mode: i32, completion: Completion) !void {
+    try engine.checkNativeEntry();
+    const path_charge = try std.math.add(usize, path.len, 1);
+    if (c.pi_js_native_memory_reserve(engine.native_memory_owner, path_charge) == 0)
+        return error.OutOfMemory;
+    var charge_owned = true;
+    defer if (charge_owned) c.pi_js_native_memory_release(engine.native_memory_owner, path_charge);
+    const bytes = try engine.gpa.dupeZ(u8, path);
+    var path_owned = true;
+    defer if (path_owned) engine.gpa.free(bytes);
+    const self = try request(engine, .{ .open = .{ .path = bytes, .flags = flags, .mode = mode } },
+        completion, path_charge);
+    path_owned = false;
+    charge_owned = false;
+    self.task.hub.submit(&self.task) catch |err| {
+        // Record failed admission before either the retained callback owner or
+        // the newly allocated native input is retired.
+        defer Request.destroy(&self.task);
+        return self.retire(err);
+    };
+}
+
+/// The native FileHandle body owns its cached close Promise and begin-close
+/// transition before dispatch. This ticket retains the real handle to join.
+pub fn close(engine: *em.Engine, handle: *Handle, completion: Completion) !void {
+    try engine.checkNativeEntry();
+    const self = try request(engine, .{ .close = handle }, completion, 0);
+    self.task.hub.submit(&self.task) catch |err| {
+        defer Request.destroy(&self.task);
+        return self.retire(err);
+    };
+}
+
+/// Inputs are already validated by the actual binding. The descriptor is the
+/// original numeric argument, not a later read of a mutable handle property.
+/// The native backing entitlement survives worker execution and destruction;
+/// it does not pin guest detachment/resizing or copy bytes back afterwards.
+pub fn read(engine: *em.Engine, descriptor: i32,
+    storage: *const c.JSPiArrayBufferLease, offset: usize, length: u32,
+    position: i64, completion: Completion) !void
+{
+    try engine.checkNativeEntry();
+    if (storage.owner == null) return error.NativeFileReadBackingOwnerRequired;
+    if (length > std.math.maxInt(i32)) return error.NativeFileReadInt32LengthRequired;
+    if (offset > storage.byte_length or length > storage.byte_length - offset)
+        return error.NativeFileReadIntrinsicRangeRequired;
+    const self = try request(engine, .{ .read = .{
+        .descriptor = descriptor, .storage = std.mem.zeroes(c.JSPiArrayBufferLease),
+        .offset = offset, .length = length, .position = position,
+    } }, completion, 0);
+    // No JS wrapper crosses to the worker. This is the actual native storage
+    // owner's retain operation and occurs before the request is submitted.
+    c.JS_PiDupArrayBufferLease(&self.packet.operation.read.storage, storage);
+    self.task.hub.submit(&self.task) catch |err| {
+        defer Request.destroy(&self.task);
+        return self.retire(err);
+    };
+}

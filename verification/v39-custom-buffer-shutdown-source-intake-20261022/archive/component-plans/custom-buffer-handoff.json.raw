@@ -1,0 +1,270 @@
+{
+  "schema": 1,
+  "status": "sealed_unissued_source_only_CustomBuffer_five_target_data_intake_plan",
+  "prepared_utc": "2026-10-22T18:30:22.428396+00:00",
+  "plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 250596,
+    "sha256": "FCF2946B954027511B8C8EAB76B84B477FEC799D38A009DB1CE53A3887F40733"
+  },
+  "reference_closure_and_boundary_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\reference-closure.json",
+    "bytes": 2236215,
+    "sha256": "FF4DDEF11E6F0EDA6A71E92090181E3B4B97A4182B52785B30ACD8769EA8C080"
+  },
+  "static_checks": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\static-plan-checks.json",
+    "bytes": 4409,
+    "sha256": "664E8202E591C4DB230AC4F3D9B98AD89A321E8DEF993A8CED43A484D4518B0B"
+  },
+  "source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-custom-buffer-listener-source-acceptance-20261022.json",
+    "bytes": 26642,
+    "sha256": "7E069F4D15E44ED6683D0E21A032B453CC78CFD1B857006F754653012F90D8B3"
+  },
+  "accepted_source_component": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\intake-component.json",
+    "bytes": 6264,
+    "sha256": "2A5DAE3665EA2051046ADC1701E61C629C6BADEABBF0E6F24FD9F32CF0463320"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-custom-buffer-current-e9-peer-20261022\\peer.json",
+    "bytes": 15708,
+    "sha256": "C63E61242E6EDBA190CE845E92DC5F1F496A197971F24A6C933F45CE53B5A819"
+  },
+  "independent_source_data_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-custom-buffer-current-e9-peer-20261022\\source-data-proof.json",
+    "bytes": 18516,
+    "sha256": "3F4024B284A99A72994DA2C34BB6929134EE9869584782285D4C502769F3D4B6"
+  },
+  "independent_source_inspection_observations": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-custom-buffer-current-e9-peer-20261022\\inspection-observations.json",
+    "bytes": 3815,
+    "sha256": "9C517D29FF3A97CDD14ED64DCC41D9A376651FCCF52338F823FF956D43F8C4F1"
+  },
+  "selected_strong_adapter_template": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py",
+    "bytes": 23634,
+    "sha256": "8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985"
+  },
+  "template_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\unissued-binding-and-schema-contract.json",
+    "bytes": 10902,
+    "sha256": "ACF23FA22E0C380BF744923B5CA8A8B55D30B83B0D655AAFF6FF2EE80790136D"
+  },
+  "Root_template_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending20-strengthened-intake-adapter-v2-source-acceptance-20261022.json",
+    "bytes": 6683,
+    "sha256": "039E21F5F5A82E7AFEC2AD549DF8E27BDF7729BF8D1E8E4015B4E9C06B99B738"
+  },
+  "basis_raw_source_commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "source_targets": [
+    "src/extensions/native_node_custom_buffer_listener_allocation.h",
+    "src/extensions/native_node_custom_buffer_listener_allocation.cpp",
+    "src/extensions/native_node_custom_buffer_listener.zig",
+    "src/native_node_custom_buffer_listener_test.zig",
+    "build.zig"
+  ],
+  "core_counts": {
+    "source_additions": 4,
+    "source_replacements": 1,
+    "archive_distinct_full_byte_rows": 71,
+    "archive_logical_donors": 85,
+    "physical_core_rows_excluding_plan_proof_and_manifest": 76,
+    "logical_core_aliases_excluding_plan_proof_and_manifest": 90,
+    "separately_sealed_plan_and_static_proof_rows": 2,
+    "synthetic_manifest_if_standalone": 1,
+    "final_union_path_count": null,
+    "final_union_alias_count": null
+  },
+  "additional_archive_rows": [
+    {
+      "target": "verification/v39-custom-buffer-five-target-intake-20261022/archive/plan/copy-manifest-plan.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+      "bytes": 250596,
+      "sha256": "FCF2946B954027511B8C8EAB76B84B477FEC799D38A009DB1CE53A3887F40733",
+      "before": null,
+      "role": "immutable data-only intake plan preservation",
+      "mode": "100644"
+    },
+    {
+      "target": "verification/v39-custom-buffer-five-target-intake-20261022/archive/plan/static-plan-checks.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\static-plan-checks.json",
+      "bytes": 4409,
+      "sha256": "664E8202E591C4DB230AC4F3D9B98AD89A321E8DEF993A8CED43A484D4518B0B",
+      "before": null,
+      "role": "immutable data-only intake static_data_proof preservation",
+      "mode": "100644"
+    }
+  ],
+  "additional_logical_donor_aliases": [
+    {
+      "target": "verification/v39-custom-buffer-five-target-intake-20261022/archive/plan/copy-manifest-plan.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+      "bytes": 250596,
+      "sha256": "FCF2946B954027511B8C8EAB76B84B477FEC799D38A009DB1CE53A3887F40733",
+      "logical_archive_relative_path": "plan/copy-manifest-plan.json.raw",
+      "reference_sites": [
+        {
+          "from": "this_handoff",
+          "ref": "$.plan"
+        }
+      ],
+      "historical_reference_aliases": [],
+      "recorded_path_spellings": [
+        "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\copy-manifest-plan.json"
+      ]
+    },
+    {
+      "target": "verification/v39-custom-buffer-five-target-intake-20261022/archive/plan/static-plan-checks.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\static-plan-checks.json",
+      "bytes": 4409,
+      "sha256": "664E8202E591C4DB230AC4F3D9B98AD89A321E8DEF993A8CED43A484D4518B0B",
+      "logical_archive_relative_path": "plan/static-plan-checks.json.raw",
+      "reference_sites": [
+        {
+          "from": "this_handoff",
+          "ref": "$.static_checks"
+        }
+      ],
+      "historical_reference_aliases": [],
+      "recorded_path_spellings": [
+        "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\static-plan-checks.json"
+      ]
+    }
+  ],
+  "component_complete_counts_before_any_synthetic_or_union_manifest": {
+    "physical_rows": 78,
+    "logical_aliases": 92,
+    "actual_source_paths": 5,
+    "source_replacements": 1,
+    "source_additions": 4
+  },
+  "reference_closure": {
+    "original_file_pin_versions": 160,
+    "original_file_reference_sites": 630,
+    "archived_logical_versions_before_ledger": 84,
+    "distinct_archived_byte_groups_before_ledger": 70,
+    "ledger_itself_added": true,
+    "immutable_Git_boundary_versions": 71,
+    "raw_Git_versions": 1947,
+    "raw_Git_reference_sites": 3966,
+    "raw_Git_distinct_blobs_verified": 1027,
+    "separate_C17D_donor_versions": 3,
+    "separate_C17D_plan_or_handoff_versions": 2,
+    "data_locations": [
+      "reference-closure.json:file_versions",
+      "reference-closure.json:raw_Git_versions",
+      "copy-manifest-plan.json:rows",
+      "copy-manifest-plan.json:logical_donor_aliases"
+    ],
+    "rule": "Every payload JSON pin occurrence is accounted. Historical boundaries are exact full-byte matches to raw-e9 committed files, with every path/mode/OID listed. They are not generic exemptions or unbounded recopy claims. All donor aliases compare full bytes."
+  },
+  "separate_Shutdown_component": {
+    "plan": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+      "bytes": 91316,
+      "sha256": "C17D422F19D3EC4B7FA9CD5B112FFAF76EC418F4A7EE5BC13D61E800688D8255"
+    },
+    "handoff": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-copy-plan-sourceonly-20261022\\handoff.json",
+      "bytes": 3165,
+      "sha256": "791B64CF211642432AB5EA2D9A2257C83E4B7B1C3536E66EC07066B820CA21FA"
+    },
+    "source_targets_outside_this_component": [
+      "src/native_node_stream_shutdown_test.zig",
+      "src/native_node_stream_shutdown_test_support.zig"
+    ],
+    "required_support": {
+      "target": "src/native_node_stream_shutdown_test_support.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10325,
+        "sha256": "65388977262D9E61B99A95028D24C592A8D1E79E4328E827ECBEB047ABC72D80"
+      },
+      "raw_preimage": {
+        "relative_path": "src/native_node_stream_shutdown_test_support.zig",
+        "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+        "git_blob": "6bca049ffc704fa1bb9e5a5e111d022c7ba19fd5",
+        "bytes": 10312,
+        "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+      },
+      "root_source_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-shutdown-compile-fixtures-source-acceptance-20261022.json",
+        "bytes": 16831,
+        "sha256": "9F45B1A10A472BE45799461F068C8EFDFFF08DB7E97603B99AE28689B83BEA01"
+      },
+      "independent_source_peer": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-peer-20261022\\peer.json",
+        "bytes": 17460,
+        "sha256": "045B747EA12A28B475AA7093BB9BB795F35C4F6D36F8ADC05CAC8CD7CB44210A"
+      },
+      "included_in_five_target_rows": false,
+      "satisfaction": "Future intake composition must include this exact reviewed support, or prove it already present. This component does not apply or authorize the two-file fixture packet."
+    },
+    "boundary_record_keys": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10325,
+        "sha256": "65388977262D9E61B99A95028D24C592A8D1E79E4328E827ECBEB047ABC72D80"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-shutdown-compile-fixtures-source-acceptance-20261022.json",
+        "bytes": 16831,
+        "sha256": "9F45B1A10A472BE45799461F068C8EFDFFF08DB7E97603B99AE28689B83BEA01"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-peer-20261022\\peer.json",
+        "bytes": 17460,
+        "sha256": "045B747EA12A28B475AA7093BB9BB795F35C4F6D36F8ADC05CAC8CD7CB44210A"
+      }
+    ],
+    "composition_rule": "A future union must contain the separately accepted exact support6538, or Root must prove that exact source already present at the later released parent. This plan does not authorize or apply either Shutdown fixture source. Union physical paths, all logical aliases and complete conversion gates must be reviewed together.",
+    "final_union_head_and_counts_unresolved": true
+  },
+  "preservation": {
+    "all_current_23_source_packet_files": true,
+    "all_paused_19_component_packet_files": true,
+    "Module_three_file_peer_packet": true,
+    "Root_current_source_acceptance": true,
+    "four_new_source_files_match_paused_bytes": true,
+    "original_handoff_null_fields_unchanged": true,
+    "all_original_payload_JSON_paths_and_bytes_unchanged": true,
+    "initial_capped_discovery_remains_external_non_authoritative_inspection": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\recursive-source-pin-census-capped.json",
+      "bytes": 1054427,
+      "sha256": "216495363FA962E5CA3378812340EAB7D4BD52BC4DC4C736A3A2EBD5C1A0B6CD"
+    }
+  },
+  "future_union_contract": {
+    "archive_first": true,
+    "actual_later_parent": null,
+    "archive_acceptance": null,
+    "final_union_manifest": null,
+    "final_total_commit_paths": null,
+    "final_logical_alias_count": null,
+    "bound_adapter": null,
+    "Root_release": null,
+    "plan_independent_peer": null,
+    "source_hold_release": false,
+    "composition": "Root may compose these five source targets with the exact separate two-file Shutdown component only after native-history closure and archive-first intake. Recount and peer every physical path, alias, plan/proof/manifest supplement and conversion gate at the actual later parent.",
+    "handoff_policy": "This handoff remains an external authoring receipt to avoid a hash cycle; a later exact Root manifest may retain it and any later peer through an explicit reviewed additional row."
+  },
+  "no_qualification": {
+    "new_control_declarations": 15,
+    "actual_metadata": null,
+    "actual_runtime": null,
+    "public_method_or_template_identity_publication": false,
+    "production_tracing_clock_coverage": false,
+    "native_or_product_qualification": false
+  },
+  "authority": {
+    "data_only": true,
+    "configuration_issued": false,
+    "adapter_or_candidate_or_prefix_executed": false,
+    "intake_authorized": false,
+    "Main_or_index_access": false,
+    "native_compiler_formatter_or_current_process_access": false,
+    "existing_source_or_evidence_modified": false
+  }
+}

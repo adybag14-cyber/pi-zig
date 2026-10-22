@@ -1,0 +1,279 @@
+//! Actual Node v24.13 internal/fs/promises open/read declarations.
+//! Inputs are the real lexical imports retained by the filesystem bootstrap.
+//! Mutable formals stay in the VM's actual AF argument slots; only Source
+//! locals live in the terminal Frame. No public namespace is published here.
+const std = @import("std");
+const v = @import("native_public_values.zig");
+const c = v.c;
+const af = v.af;
+const Scope = v.Scope;
+const Engine = v.em.Engine;
+const Frames = @import("native_public_lexical_frame.zig");
+const OpenFrame = Frames.Frame(enum { flagsNumber });
+const ReadFrame = Frames.Frame(enum { buffer, bytesRead });
+
+pub const OpenInputs = struct {
+    binding: c.JSValue,
+    use_promises: c.JSValue,
+    file_handle: c.JSValue,
+    promise_then: c.JSValue,
+    binding_error: c.JSValue,
+    get_validated_path: c.JSValue,
+    string_to_flags: c.JSValue,
+    parse_file_mode: c.JSValue,
+};
+pub const ReadInputs = struct {
+    binding: c.JSValue,
+    use_promises: c.JSValue,
+    promise_then: c.JSValue,
+    binding_error: c.JSValue,
+    buffer: c.JSValue,
+    empty_object: c.JSValue,
+    is_array_buffer_view: c.JSValue,
+    validate_object: c.JSValue,
+    validate_object_allow_nullable: c.JSValue,
+    validate_buffer: c.JSValue,
+    validate_integer: c.JSValue,
+    validate_offset_length_read: c.JSValue,
+    validate_position: c.JSValue,
+    invalid_arg_value: c.JSValue,
+};
+fn openImported(roots: []const c.JSValue, comptime name: std.meta.FieldEnum(OpenInputs)) c.JSValue {
+    return roots[@intFromEnum(name)];
+}
+fn readImported(roots: []const c.JSValue, comptime name: std.meta.FieldEnum(ReadInputs)) c.JSValue {
+    return roots[@intFromEnum(name)];
+}
+fn expression(engine: *Engine, comptime body: anytype, args: anytype) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&scope, @call(.auto, body, .{&scope} ++ args));
+}
+fn statement(engine: *Engine, comptime body: anytype, args: anytype) !void {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishVoid(&scope, @call(.auto, body, .{&scope} ++ args));
+}
+fn value(scope: *Scope, comptime body: anytype, args: anytype) !c.JSValue {
+    return v.own(scope, try expression(scope.engine, body, args));
+}
+fn predicate(engine: *Engine, comptime body: anytype, args: anytype) !bool {
+    const result = try expression(engine, body, args);
+    defer engine.freeValue(result);
+    return c.JS_ToBool(engine.context, result) == 1;
+}
+fn identityCall(scope: *Scope, function: c.JSValue, input: c.JSValue) !c.JSValue {
+    return v.duplicate(scope, try v.call(scope, function, c.pi_js_undefined(), &.{input}));
+}
+fn parseMode(scope: *Scope, function: c.JSValue, mode: c.JSValue) !c.JSValue {
+    return v.duplicate(scope, try v.call(scope, function, c.pi_js_undefined(),
+        &.{ mode, try v.text(scope, "mode"), c.JS_NewInt32(scope.engine.context, 0o666) }));
+}
+fn openBinding(scope: *Scope, args: *af.Arguments, frame: *OpenFrame, roots: []const c.JSValue) !c.JSValue {
+    const binding = openImported(roots, .binding);
+    const function = try v.get(scope, binding, "openFileHandle");
+    return v.duplicate(scope, try v.call(scope, function, binding,
+        &.{ args.get(0), frame.get(.flagsNumber), args.get(2), openImported(roots, .use_promises) }));
+}
+fn openAwait(scope: *Scope, args: *af.Arguments, frame: *OpenFrame, roots: []const c.JSValue) !c.JSValue {
+    // The binding call is a completed argument expression before the captured
+    // uncurried PromisePrototypeThen call.
+    const promise = try value(scope, openBinding, .{args, frame, roots});
+    return v.duplicate(scope, try v.call(scope, openImported(roots, .promise_then), c.pi_js_undefined(),
+        &.{ promise, c.pi_js_undefined(), openImported(roots, .binding_error) }));
+}
+fn newHandle(scope: *Scope, constructor: c.JSValue, handle: c.JSValue) !c.JSValue {
+    return v.duplicate(scope, try v.construct(scope, constructor, &.{handle}));
+}
+fn openAdvance(scope: *Scope, args: *af.Arguments, roots: []const c.JSValue,
+    state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action
+{
+    if (completion == .start) {
+        const frame = try OpenFrame.createAsync(scope);
+        af.replaceState(scope.engine, state, v.duplicate(scope, frame.owner));
+        try args.take(0, expression(scope.engine, identityCall, .{openImported(roots, .get_validated_path), args.get(0)}));
+        try frame.take(.flagsNumber, expression(scope.engine, identityCall, .{openImported(roots, .string_to_flags), args.get(1)}));
+        try args.take(2, expression(scope.engine, parseMode, .{openImported(roots, .parse_file_mode), args.get(2)}));
+        return .{ .awaited = try expression(scope.engine, openAwait, .{args, frame, roots}) };
+    }
+    if (completion == .rejected) return .{ .thrown = v.duplicate(scope, input) };
+    return .{ .returned = try expression(scope.engine, newHandle, .{openImported(roots, .file_handle), input}) };
+}
+fn openBody(engine: *Engine, _: c.JSValue, args: *af.Arguments, roots: []const c.JSValue,
+    state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action
+{
+    if (completion == .rejected) try @import("native_async_body.zig").enterRejectedContinuation(engine);
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishAction(&scope, openAdvance(&scope, args, roots, state, completion, input));
+}
+
+fn arrayBufferView(scope: *Scope, function: c.JSValue, input: c.JSValue) !c.JSValue {
+    const result = try v.call(scope, function, c.pi_js_undefined(), &.{input});
+    return v.boolean(scope, v.truthy(scope, result));
+}
+fn validateOptions(scope: *Scope, input: c.JSValue, roots: []const c.JSValue) !void {
+    _ = try v.call(scope, readImported(roots, .validate_object), c.pi_js_undefined(),
+        &.{ input, try v.text(scope, "options"), readImported(roots, .validate_object_allow_nullable) });
+}
+fn validateOne(scope: *Scope, function: c.JSValue, input: c.JSValue) !void {
+    _ = try v.call(scope, function, c.pi_js_undefined(), &.{input});
+}
+fn allocBuffer(scope: *Scope, buffer: c.JSValue) !c.JSValue {
+    const function = try v.get(scope, buffer, "alloc");
+    return v.duplicate(scope, try v.call(scope, function, buffer,
+        &.{c.JS_NewInt32(scope.engine.context, 16384)}));
+}
+fn remainingLength(scope: *Scope, args: *af.Arguments, frame: *ReadFrame) !c.JSValue {
+    const length = try v.get(scope, frame.get(.buffer), "byteLength");
+    return v.duplicate(scope, try v.binary(scope, 1, length, args.get(2)));
+}
+fn bindingField(scope: *Scope, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    return v.duplicate(scope, try v.get(scope, receiver, name));
+}
+fn bufferDefault(scope: *Scope, receiver: c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    const supplied = try v.get(scope, receiver, "buffer");
+    if (!c.JS_IsUndefined(supplied)) return v.duplicate(scope, supplied);
+    return expression(scope.engine, allocBuffer, .{readImported(roots, .buffer)});
+}
+fn offsetDefault(scope: *Scope, receiver: c.JSValue) !c.JSValue {
+    const supplied = try v.get(scope, receiver, "offset");
+    return v.duplicate(scope, if (c.JS_IsUndefined(supplied)) c.JS_NewInt32(scope.engine.context, 0) else supplied);
+}
+fn lengthDefault(scope: *Scope, receiver: c.JSValue, args: *af.Arguments, frame: *ReadFrame) !c.JSValue {
+    const supplied = try v.get(scope, receiver, "length");
+    if (!c.JS_IsUndefined(supplied)) return v.duplicate(scope, supplied);
+    return expression(scope.engine, remainingLength, .{args, frame});
+}
+fn positionDefault(scope: *Scope, receiver: c.JSValue) !c.JSValue {
+    const supplied = try v.get(scope, receiver, "position");
+    return v.duplicate(scope, if (c.JS_IsUndefined(supplied)) c.pi_js_null() else supplied);
+}
+fn bindReadParams(scope: *Scope, args: *af.Arguments, frame: *ReadFrame, roots: []const c.JSValue) !void {
+    const source = if (v.nullish(args.get(1))) readImported(roots, .empty_object) else args.get(1);
+    // One actual BindingPattern ToObject owner survives all four assignments.
+    const receiver = try v.guest.toObject(scope, source);
+    try frame.take(.buffer, expression(scope.engine, bufferDefault, .{receiver, roots}));
+    try args.take(2, expression(scope.engine, offsetDefault, .{receiver}));
+    try args.take(3, expression(scope.engine, lengthDefault, .{receiver, args, frame}));
+    try args.take(4, expression(scope.engine, positionDefault, .{receiver}));
+}
+fn bindOffsetOptions(scope: *Scope, args: *af.Arguments, frame: *ReadFrame) !void {
+    // Assignment to the actual offset formal occurs while this one boxed
+    // RHS receiver remains alive for the length and position getters.
+    const receiver = try v.guest.toObject(scope, args.get(2));
+    try args.take(2, expression(scope.engine, offsetDefault, .{receiver}));
+    try args.take(3, expression(scope.engine, lengthDefault, .{receiver, args, frame}));
+    try args.take(4, expression(scope.engine, positionDefault, .{receiver}));
+}
+fn validateOffset(scope: *Scope, args: *af.Arguments, roots: []const c.JSValue) !void {
+    _ = try v.call(scope, readImported(roots, .validate_integer), c.pi_js_undefined(),
+        &.{ args.get(2), try v.text(scope, "offset"), c.JS_NewInt32(scope.engine.context, 0) });
+}
+fn bufferEmpty(scope: *Scope, frame: *ReadFrame) !c.JSValue {
+    const length = try v.get(scope, frame.get(.buffer), "byteLength");
+    return v.boolean(scope, v.equal(scope, length, c.JS_NewInt32(scope.engine.context, 0)));
+}
+fn emptyBufferReason(scope: *Scope, frame: *ReadFrame, roots: []const c.JSValue) !c.JSValue {
+    const name = try v.text(scope, "buffer");
+    const buffer = frame.get(.buffer);
+    const detail = try v.text(scope, "is empty and cannot be written");
+    return v.duplicate(scope, try v.construct(scope, readImported(roots, .invalid_arg_value), &.{name, buffer, detail}));
+}
+fn raise(scope: *Scope, reason: c.JSValue) anyerror {
+    var boundary: v.guest.Boundary = .{ .engine = scope.engine };
+    boundary.begin() catch |err| return err;
+    _ = boundary.finishValue(scope, c.JS_Throw(scope.engine.context, v.duplicate(scope, reason))) catch |err| return err;
+    unreachable;
+}
+fn validateReadBounds(scope: *Scope, args: *af.Arguments, frame: *ReadFrame, roots: []const c.JSValue) !void {
+    const offset = args.get(2);
+    const length = args.get(3);
+    const byte_length = try v.get(scope, frame.get(.buffer), "byteLength");
+    _ = try v.call(scope, readImported(roots, .validate_offset_length_read), c.pi_js_undefined(),
+        &.{ offset, length, byte_length });
+}
+fn validatePosition(scope: *Scope, args: *af.Arguments, roots: []const c.JSValue) !void {
+    _ = try v.call(scope, readImported(roots, .validate_position), c.pi_js_undefined(),
+        &.{ args.get(4), try v.text(scope, "position"), args.get(3) });
+}
+fn readBinding(scope: *Scope, args: *af.Arguments, frame: *ReadFrame, roots: []const c.JSValue) !c.JSValue {
+    const binding = readImported(roots, .binding);
+    const function = try v.get(scope, binding, "read");
+    const fd = try v.get(scope, args.get(0), "fd");
+    return v.duplicate(scope, try v.call(scope, function, binding,
+        &.{ fd, frame.get(.buffer), args.get(2), args.get(3), args.get(4), readImported(roots, .use_promises) }));
+}
+fn readAwait(scope: *Scope, args: *af.Arguments, frame: *ReadFrame, roots: []const c.JSValue) !c.JSValue {
+    const promise = try value(scope, readBinding, .{args, frame, roots});
+    return v.duplicate(scope, try v.call(scope, readImported(roots, .promise_then), c.pi_js_undefined(),
+        &.{ promise, c.pi_js_undefined(), readImported(roots, .binding_error) }));
+}
+fn readRecord(scope: *Scope, bytes_read: c.JSValue, buffer: c.JSValue) !c.JSValue {
+    const record = try v.stateObject(scope);
+    try v.put(scope, record, "bytesRead", bytes_read);
+    try v.put(scope, record, "buffer", buffer);
+    return v.duplicate(scope, record);
+}
+fn readStart(scope: *Scope, args: *af.Arguments, frame: *ReadFrame, roots: []const c.JSValue) !af.Action {
+    try frame.copy(.buffer, args.get(1));
+    if (!try predicate(scope.engine, arrayBufferView, .{readImported(roots, .is_array_buffer_view), frame.get(.buffer)})) {
+        if (!c.JS_IsUndefined(args.get(1))) try statement(scope.engine, validateOptions, .{args.get(1), roots});
+        try statement(scope.engine, bindReadParams, .{args, frame, roots});
+        try statement(scope.engine, validateOne, .{readImported(roots, .validate_buffer), frame.get(.buffer)});
+    }
+    const offset = args.get(2);
+    if (!c.JS_IsNull(offset) and c.JS_IsObject(offset) and !c.JS_IsFunction(scope.engine.context, offset))
+        try statement(scope.engine, bindOffsetOptions, .{args, frame});
+    if (v.nullish(args.get(2))) try args.take(2, c.JS_NewInt32(scope.engine.context, 0))
+    else try statement(scope.engine, validateOffset, .{args, roots});
+    if (v.nullish(args.get(3))) try args.take(3, expression(scope.engine, remainingLength, .{args, frame}));
+    if (v.equal(scope, args.get(3), c.JS_NewInt32(scope.engine.context, 0)))
+        return .{ .returned = try expression(scope.engine, readRecord, .{args.get(3), frame.get(.buffer)}) };
+    if (try predicate(scope.engine, bufferEmpty, .{frame})) {
+        const reason = try value(scope, emptyBufferReason, .{frame, roots});
+        return @as(anyerror!af.Action, raise(scope, reason));
+    }
+    try statement(scope.engine, validateReadBounds, .{args, frame, roots});
+    if (v.nullish(args.get(4))) try args.take(4, c.JS_NewInt32(scope.engine.context, -1))
+    else try statement(scope.engine, validatePosition, .{args, roots});
+    return .{ .awaited = try expression(scope.engine, readAwait, .{args, frame, roots}) };
+}
+fn readAdvance(scope: *Scope, args: *af.Arguments, roots: []const c.JSValue,
+    state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action
+{
+    if (completion == .start) {
+        const frame = try ReadFrame.createAsync(scope);
+        af.replaceState(scope.engine, state, v.duplicate(scope, frame.owner));
+        return readStart(scope, args, frame, roots);
+    }
+    if (completion == .rejected) return .{ .thrown = v.duplicate(scope, input) };
+    const frame = ReadFrame.from(state.*);
+    try frame.copy(.bytesRead, if (v.truthy(scope, input)) input else c.JS_NewInt32(scope.engine.context, 0));
+    return .{ .returned = try expression(scope.engine, readRecord, .{frame.get(.bytesRead), frame.get(.buffer)}) };
+}
+fn readBody(engine: *Engine, _: c.JSValue, args: *af.Arguments, roots: []const c.JSValue,
+    state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action
+{
+    if (completion == .rejected) try @import("native_async_body.zig").enterRejectedContinuation(engine);
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishAction(&scope, readAdvance(&scope, args, roots, state, completion, input));
+}
+
+fn createOpenBody(scope: *Scope, inputs: OpenInputs) !c.JSValue {
+    var roots: [std.meta.fields(OpenInputs).len]c.JSValue = undefined;
+    inline for (std.meta.fields(OpenInputs), 0..) |field, index| roots[index] = @field(inputs, field.name);
+    return af.createResumableWithArguments(scope.engine, "open", 3,
+        .{ .formal_count = 3, .body = openBody, .close = OpenFrame.closeAtAsyncTerminal }, &roots);
+}
+fn createReadBody(scope: *Scope, inputs: ReadInputs) !c.JSValue {
+    var roots: [std.meta.fields(ReadInputs).len]c.JSValue = undefined;
+    inline for (std.meta.fields(ReadInputs), 0..) |field, index| roots[index] = @field(inputs, field.name);
+    return af.createResumableWithArguments(scope.engine, "read", 5,
+        .{ .formal_count = 5, .body = readBody, .close = ReadFrame.closeAtAsyncTerminal }, &roots);
+}
+/// The module creates its actual read declaration before constructing FileHandle.
+pub fn createRead(engine: *Engine, inputs: ReadInputs) !c.JSValue {
+    return expression(engine, createReadBody, .{inputs});
+}
+/// Called only after the real FileHandle class has received that read callable.
+pub fn createOpen(engine: *Engine, inputs: OpenInputs) !c.JSValue {
+    return expression(engine, createOpenBody, .{inputs});
+}

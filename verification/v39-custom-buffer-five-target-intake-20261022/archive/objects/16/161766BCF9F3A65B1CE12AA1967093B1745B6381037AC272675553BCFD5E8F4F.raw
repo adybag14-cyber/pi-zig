@@ -1,0 +1,1656 @@
+{
+  "schema": "pi-zig-custom-buffer-current-e9-semantic-source-map.v1",
+  "source_basis": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "source_only": true,
+  "input_sources": {
+    "node_cc": {
+      "kind": "immutable source file",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.cc.v24.13.txt",
+      "bytes": 28310,
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+    },
+    "node_h": {
+      "kind": "immutable source file",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base.h.v24.13.txt",
+      "bytes": 18488,
+      "sha256": "E89C31A78F138DEE6FBA5EBF9795BF3A59569D041B9955AE8183B09633103334"
+    },
+    "node_inl": {
+      "kind": "immutable source file",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\stream_base-inl.h.v24.13.txt",
+      "bytes": 5052,
+      "sha256": "CE08E90A41BBFCA00996EB2CF14E228472246F0B8A91D91C17EC7D2F0D4BF2C6"
+    },
+    "node_buffer": {
+      "kind": "immutable source file",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\node_buffer.v24.13.cc",
+      "bytes": 57035,
+      "sha256": "FD7D9A333F4C3DF886E39D6B6A7455D81AD57B109EF81AD8612A8C041422E36F"
+    },
+    "v8_buffer": {
+      "kind": "immutable source file",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\v8-js-array-buffer.v24.13.cc",
+      "bytes": 18909,
+      "sha256": "CE1E02B2A871FD03887A9DEDD26D677EC39AC7CE2B71D3A1D58B255B8099F5B1"
+    },
+    "v8_api": {
+      "kind": "immutable source file",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-owner-sourceonly-20261020\\authority\\v8-api.v24.13.cc",
+      "bytes": 489340,
+      "sha256": "573F6F992A93EB59751953A372F9071E32AEB36D9B6F5328BD50967D3008F201"
+    },
+    "new_original": {
+      "kind": "immutable source file",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-transfer-sourceonly-20261020\\authority\\zig-0.16\\lib\\libcxx\\src\\new.cpp",
+      "bytes": 8638,
+      "sha256": "577F431626811D06993C0B81F9D3042A278573B64BDF6D5EC114DFEA21002671"
+    },
+    "listener": {
+      "kind": "immutable source file",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\src\\extensions\\native_node_custom_buffer_listener.zig",
+      "bytes": 7760,
+      "sha256": "4CB29FE5A6475123A840A3638EC6D08128249822DC38F775A7B81E661B3085AE"
+    },
+    "allocation_h": {
+      "kind": "immutable source file",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\src\\extensions\\native_node_custom_buffer_listener_allocation.h",
+      "bytes": 1222,
+      "sha256": "95E77F10C01964B18BBB845E0554C5F2F9ABD81D4A4238E5F5133DF1E77EC282"
+    },
+    "allocation_cpp": {
+      "kind": "immutable source file",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\src\\extensions\\native_node_custom_buffer_listener_allocation.cpp",
+      "bytes": 1371,
+      "sha256": "DEE3A42BB595DE00E8EC6A2784E40741E233D58E81001A4050449F9D7FE9DD63"
+    },
+    "controls": {
+      "kind": "immutable source file",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\src\\native_node_custom_buffer_listener_test.zig",
+      "bytes": 20027,
+      "sha256": "A25266B23890A16FB72533F68A040EA8AE81B0F6D20AD178AA1D6037E50F30C2"
+    },
+    "support": {
+      "kind": "immutable source file",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test_support.zig",
+      "bytes": 10325,
+      "sha256": "65388977262D9E61B99A95028D24C592A8D1E79E4328E827ECBEB047ABC72D80"
+    },
+    "block": {
+      "kind": "immutable source file",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\build\\install-block.zig",
+      "bytes": 1857,
+      "sha256": "703701E5679B54F4A91AB25A19241A5BA4AFEF2A0F7F3D6CDA0B2794088794E1"
+    },
+    "base": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/native_node_stream_base.zig",
+      "git_blob": "0c997f81fc0723fd31349806bf324f7c60b8dd30",
+      "bytes": 12321,
+      "sha256": "F85721695F41998E3676C196B4791D295EA62C8DE89FD83159F05BACDEF7716E"
+    },
+    "resource": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/native_node_stream_resource.zig",
+      "git_blob": "4fb679ffe7d0b7ff13c272e3fdd75d86c5a0c0b8",
+      "bytes": 6847,
+      "sha256": "39255A86BA9631F95E9CBD13B85AE7264A30A015EF4454F10B2D64BD643F2D8A"
+    },
+    "shutdown": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/native_node_stream_shutdown.zig",
+      "git_blob": "2b57d345cb7eee057c72aae4d5ab6bf77c422c2b",
+      "bytes": 11021,
+      "sha256": "2BEE67EE76015C0549729F3F3B12CD4BBBF32C5DBF5A28D8CEE3F111E0C86D7E"
+    },
+    "standard": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/native_node_standard_allocator.hpp",
+      "git_blob": "e038bff58fa8130d858446a8701cf7909dc3c473",
+      "bytes": 2562,
+      "sha256": "16D82D2C2143DFAF3861B722BD2E9775FB0BD7D6C9BE400D0ECE37E0674E709B"
+    },
+    "memory_h": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/native_simdjson_memory.hpp",
+      "git_blob": "3e7b26a6d2531287248e7e6c2b9d8c8ef4a9cfbd",
+      "bytes": 2449,
+      "sha256": "7554ED1DDCA28FAE7B11E025BD9D7EEF560DB657086A40029E5D95DBEFAE5291"
+    },
+    "memory_cpp": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/native_simdjson_memory.cpp",
+      "git_blob": "a4ba3da3a836f8227eed1bcd485bbdad5ce3f9fb",
+      "bytes": 2714,
+      "sha256": "44794005D36BB3E1EC6B1A7DF3AA9A6B7DE7C02D6F12BBF38115F83E49C5E103"
+    },
+    "diag": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/native_node_diagnostic_context.hpp",
+      "git_blob": "75b3f5e4a6e306096de65abb49a003c0cf19e218",
+      "bytes": 914,
+      "sha256": "7EA7700F4EDCC6ED5C27DF98574BE27A572AFF01E151B9F39667E6737ACC30B9"
+    },
+    "abi": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/engine_abi.c",
+      "git_blob": "b741af68d25eec16d125afeb19346dc0ed8e3fdb",
+      "bytes": 18016,
+      "sha256": "CB380A980D1393D2213205C1E3889EC1E7E3D0CF42C5C71E1B9A3068E6534AFC"
+    },
+    "engine": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/engine.zig",
+      "git_blob": "fb4e177e01f1f49aa202414157b62d436545291d",
+      "bytes": 99337,
+      "sha256": "87DDDFADB30A6BB9F079B3251D342F55E0F0CC980CA6AF354998EAEDC98C1417"
+    },
+    "argument": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/native_node_argument_values.zig",
+      "git_blob": "24904dca102bf40da1570c0490ad0ad4ccfc4399",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+    },
+    "scope": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/native_node_operation_scope.zig",
+      "git_blob": "0ec261c7e32bb7e3997a7efa455cf4fd8b56790c",
+      "bytes": 6995,
+      "sha256": "0663228C40E2982D7809A7D0B143C3E6E96EE803B6FFAA384054CCCF19878F8C"
+    },
+    "provider_values": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/native_ai_provider_values.zig",
+      "git_blob": "4033c59939cb358c99b2591825547dd808214685",
+      "bytes": 2689,
+      "sha256": "2D64F3F5E408790DC0BD374E13F1A9C69EB21E1D62944DAE9C913B87F13629EB"
+    },
+    "managed": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/native_node_managed_buffers.zig",
+      "git_blob": "f098ee3a535ee9d9bf0acebc37ac36f98149e4c0",
+      "bytes": 2875,
+      "sha256": "BE567B795D5129373EEFCF2A7C95E9017C481E020F17472E2C35838689F22B88"
+    },
+    "quickjs": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "vendor/quickjs/quickjs.c",
+      "git_blob": "6aa1943723dc593f986ba507260bcf2c8bc6eca8",
+      "bytes": 2404878,
+      "sha256": "091E5BE0C22F35CE2029852DEA8D8B017B3784013ED93EDB9F1545A49D8D275F"
+    },
+    "uv_h": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "vendor/node-v24.13.0/uv/include/uv.h",
+      "git_blob": "938e998fdc54d17c8d0d4b1949087b968044829f",
+      "bytes": 72810,
+      "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+    },
+    "uv_win": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "vendor/node-v24.13.0/uv/include/uv/win.h",
+      "git_blob": "a88bf29e9ff504e97f15a30085c26c71d38527f3",
+      "bytes": 33836,
+      "sha256": "51B6BF729C4C3E66CD89E0B0B0D734998776E675FE0A5EDA9DB77B634EB83EF0"
+    },
+    "uv_unix": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "vendor/node-v24.13.0/uv/include/uv/unix.h",
+      "git_blob": "7c972026f688e82c62b895f392bc46b3fef184b8",
+      "bytes": 20057,
+      "sha256": "A246095A1476D76631F5EC85BE171AEE8107EB0423007546EC91C58887C28F02"
+    },
+    "uv_init": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "vendor/node-v24.13.0/uv/src/uv-common.c",
+      "git_blob": "60ff56b9dd7391b850f41acc3ad020b9a9aa4a16",
+      "bytes": 23928,
+      "sha256": "C311E17AE0F891C9EBA52626ADF9EA33A91B7459654EB1C20E56C24D30D6B446"
+    },
+    "build": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "build.zig",
+      "git_blob": "b71fa07d61a4a02928a9c1757f6dab513442e8d9",
+      "bytes": 514105,
+      "sha256": "594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF"
+    },
+    "network_recipe": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "tools/build_native_node_network.zig",
+      "git_blob": "f13440e90d4b6d65a2e6b61c0f3d285f09be8c8a",
+      "bytes": 5905,
+      "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    "memory_recipe": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "tools/build_native_node_memory.zig",
+      "git_blob": "3d4cf52a55ea2cec0e123a47a1f10179701d3f4c",
+      "bytes": 1030,
+      "sha256": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17"
+    },
+    "check": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/native_node_check_failure.zig",
+      "git_blob": "2e8b8be1fedc4a65a2a37a526bc74b2339b8aa15",
+      "bytes": 2857,
+      "sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+    },
+    "callback": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/native_node_async_wrap_make_callback.zig",
+      "git_blob": "57bcdaa29eb5627f6f3605d0841d466f8b965dc1",
+      "bytes": 3361,
+      "sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+    },
+    "nonliteral": {
+      "kind": "raw Git",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/extensions/native_sdk_agent_tool.zig",
+      "git_blob": "8437282fb979f5a7ea04ebddd4e2d549fdec495e",
+      "bytes": 4099,
+      "sha256": "36008853FA37D468D900DF0ED22D0B0248A7394575B360AD66DD0D909840600E"
+    },
+    "new_helpers": {
+      "kind": "immutable source file",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\authority\\zig-0.16\\libcxx\\src\\new_helpers.cpp",
+      "bytes": 745,
+      "sha256": "82B6B57506EDC48DCBB13EAA5BF533E680167F983A2A2CF85064C003CB8CDB38"
+    },
+    "new_exceptions": {
+      "kind": "immutable source file",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\authority\\zig-0.16\\libcxx\\include\\__new\\exceptions.h",
+      "bytes": 2544,
+      "sha256": "0A553F0D4476C94B767D71F598EB31FCB48170AD8D7D9504D6B0166F34FC0673"
+    }
+  },
+  "authority_acquisition_records": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-stream-base-sourceonly-20261020\\authority\\source-acquisition.json",
+      "bytes": 1882,
+      "sha256": "6D5256FA0DF2FFD534B04A7DD23307ECDB1F3911DFE18914BFB0BE573B26B2DF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\node-buffer-cc-acquisition.json",
+      "bytes": 557,
+      "sha256": "36C3C53124FBD7CC4133ED518C8C85F87050551EC68690189FA0E2E8D924006B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\node-buffer-header-acquisition.json",
+      "bytes": 563,
+      "sha256": "394FA769971E3896EB6B6DA8B4FDBB9522753AF4A0181BC95CFA58262E269264"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\v8-array-buffer-acquisition.json",
+      "bytes": 754,
+      "sha256": "E0B9FE5DFD88467D5848D83005C521DE8AE5B9E33FBD6037A0B6A78453A566A1"
+    }
+  ],
+  "contained_toolchain_snapshots": [
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libcxx\\src\\new_helpers.cpp",
+        "bytes": 745,
+        "sha256": "82B6B57506EDC48DCBB13EAA5BF533E680167F983A2A2CF85064C003CB8CDB38"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\authority\\zig-0.16\\libcxx\\src\\new_helpers.cpp",
+        "bytes": 745,
+        "sha256": "82B6B57506EDC48DCBB13EAA5BF533E680167F983A2A2CF85064C003CB8CDB38"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libcxx\\include\\__new\\exceptions.h",
+        "bytes": 2544,
+        "sha256": "0A553F0D4476C94B767D71F598EB31FCB48170AD8D7D9504D6B0166F34FC0673"
+      },
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\authority\\zig-0.16\\libcxx\\include\\__new\\exceptions.h",
+        "bytes": 2544,
+        "sha256": "0A553F0D4476C94B767D71F598EB31FCB48170AD8D7D9504D6B0166F34FC0673"
+      }
+    }
+  ],
+  "excerpts": [
+    {
+      "id": "original_use",
+      "source_id": "node_cc",
+      "lines": [
+        160,
+        166
+      ],
+      "offset": 4282,
+      "bytes": 260,
+      "sha256": "2B7017242BF29865F9A4269270E3AEC07710C2CA9C165B0A5B31C73EA414B4F9",
+      "text": "int StreamBase::UseUserBuffer(const FunctionCallbackInfo<Value>& args) {\n  CHECK(Buffer::HasInstance(args[0]));\n\n  uv_buf_t buf = uv_buf_init(Buffer::Data(args[0]), Buffer::Length(args[0]));\n  PushStreamListener(new CustomBufferJSListener(buf));\n  return 0;\n}\n"
+    },
+    {
+      "id": "original_call_js",
+      "source_id": "node_cc",
+      "lines": [
+        447,
+        479
+      ],
+      "offset": 13253,
+      "bytes": 1131,
+      "sha256": "0DB16A4B576B72DD8A4B083DAF035074D590026FDDF0E9E465FE58E3036B4E95",
+      "text": "MaybeLocal<Value> StreamBase::CallJSOnreadMethod(ssize_t nread,\n                                                 Local<ArrayBuffer> ab,\n                                                 size_t offset,\n                                                 StreamBaseJSChecks checks) {\n  Environment* env = env_;\n\n  DCHECK_EQ(static_cast<int32_t>(nread), nread);\n  DCHECK_LE(offset, INT32_MAX);\n\n  if (checks == DONT_SKIP_NREAD_CHECKS) {\n    if (ab.IsEmpty()) {\n      DCHECK_EQ(offset, 0);\n      DCHECK_LE(nread, 0);\n    } else {\n      DCHECK_GE(nread, 0);\n    }\n  }\n\n  env->stream_base_state()[kReadBytesOrError] = static_cast<int32_t>(nread);\n  env->stream_base_state()[kArrayBufferOffset] = offset;\n\n  Local<Value> argv[] = {\n    ab.IsEmpty() ? Undefined(env->isolate()).As<Value>() : ab.As<Value>()\n  };\n\n  AsyncWrap* wrap = GetAsyncWrap();\n  CHECK_NOT_NULL(wrap);\n  Local<Value> onread = wrap->object()\n                            ->GetInternalField(StreamBase::kOnReadFunctionField)\n                            .As<Value>();\n  CHECK(onread->IsFunction());\n  return wrap->MakeCallback(onread.As<Function>(), arraysize(argv), argv);\n}\n"
+    },
+    {
+      "id": "original_public_entry_boundary",
+      "source_id": "node_cc",
+      "lines": [
+        660,
+        669
+      ],
+      "offset": 21443,
+      "bytes": 452,
+      "sha256": "D2C744CAE6EAD26FE897442DDBE677F5787C65AED3FA33286F49D9A264A23221",
+      "text": "template <int (StreamBase::*Method)(const FunctionCallbackInfo<Value>& args)>\nvoid StreamBase::JSMethod(const FunctionCallbackInfo<Value>& args) {\n  StreamBase* wrap = StreamBase::FromObject(args.This().As<Object>());\n  if (wrap == nullptr) return;\n\n  if (!wrap->IsAlive()) return args.GetReturnValue().Set(UV_EINVAL);\n\n  AsyncHooks::DefaultTriggerAsyncIdScope trigger_scope(wrap->GetAsyncWrap());\n  args.GetReturnValue().Set((wrap->*Method)(args));\n}\n"
+    },
+    {
+      "id": "original_custom_read",
+      "source_id": "node_cc",
+      "lines": [
+        720,
+        752
+      ],
+      "offset": 23292,
+      "bytes": 1181,
+      "sha256": "F06ADB2499EF9ED6ED4A3410E918B4A4C21B3E67B83ED9099CDBE75F1A91CFDF",
+      "text": "uv_buf_t CustomBufferJSListener::OnStreamAlloc(size_t suggested_size) {\n  return buffer_;\n}\n\n\nvoid CustomBufferJSListener::OnStreamRead(ssize_t nread, const uv_buf_t& buf) {\n  CHECK_NOT_NULL(stream_);\n\n  StreamBase* stream = static_cast<StreamBase*>(stream_);\n  Environment* env = stream->stream_env();\n  HandleScope handle_scope(env->isolate());\n  Context::Scope context_scope(env->context());\n\n  // In the case that there's an error and buf is null, return immediately.\n  // This can happen on unices when POLLHUP is received and UV_EOF is returned\n  // or when getting an error while performing a UV_HANDLE_ZERO_READ on Windows.\n  if (buf.base == nullptr && nread < 0) {\n    stream->CallJSOnreadMethod(nread, Local<ArrayBuffer>());\n    return;\n  }\n\n  CHECK_EQ(buf.base, buffer_.base);\n\n  MaybeLocal<Value> ret = stream->CallJSOnreadMethod(nread,\n                             Local<ArrayBuffer>(),\n                             0,\n                             StreamBase::SKIP_NREAD_CHECKS);\n  Local<Value> next_buf_v;\n  if (ret.ToLocal(&next_buf_v) && !next_buf_v->IsUndefined()) {\n    buffer_.base = Buffer::Data(next_buf_v);\n    buffer_.len = Buffer::Length(next_buf_v);\n  }\n}\n"
+    },
+    {
+      "id": "original_reporter",
+      "source_id": "node_cc",
+      "lines": [
+        755,
+        790
+      ],
+      "offset": 24475,
+      "bytes": 1213,
+      "sha256": "DF4564DF741250F4A355A08910228380714829DFB313322BA2875E7D57F93D47",
+      "text": "void ReportWritesToJSStreamListener::OnStreamAfterReqFinished(\n    StreamReq* req_wrap, int status) {\n  StreamBase* stream = static_cast<StreamBase*>(stream_);\n  Environment* env = stream->stream_env();\n  if (!env->can_call_into_js()) return;\n  AsyncWrap* async_wrap = req_wrap->GetAsyncWrap();\n  HandleScope handle_scope(env->isolate());\n  Context::Scope context_scope(env->context());\n  CHECK(!async_wrap->persistent().IsEmpty());\n  Local<Object> req_wrap_obj = async_wrap->object();\n\n  Local<Value> argv[] = {\n    Integer::New(env->isolate(), status),\n    stream->GetObject(),\n    Undefined(env->isolate())\n  };\n\n  const char* msg = stream->Error();\n  if (msg != nullptr) {\n    argv[2] = OneByteString(env->isolate(), msg);\n    stream->ClearError();\n  }\n\n  if (req_wrap_obj->Has(env->context(), env->oncomplete_string()).FromJust())\n    async_wrap->MakeCallback(env->oncomplete_string(), arraysize(argv), argv);\n}\n\nvoid ReportWritesToJSStreamListener::OnStreamAfterWrite(\n    WriteWrap* req_wrap, int status) {\n  OnStreamAfterReqFinished(req_wrap, status);\n}\n\nvoid ReportWritesToJSStreamListener::OnStreamAfterShutdown(\n    ShutdownWrap* req_wrap, int status) {\n  OnStreamAfterReqFinished(req_wrap, status);\n}\n"
+    },
+    {
+      "id": "original_listener_destructor",
+      "source_id": "node_cc",
+      "lines": [
+        802,
+        805
+      ],
+      "offset": 25885,
+      "bytes": 105,
+      "sha256": "DDDA128EE8F1B82B0A0608F874347B3FDD9A776EB3BFF35ADB95E748B75EE521",
+      "text": "StreamListener::~StreamListener() {\n  if (stream_ != nullptr)\n    stream_->RemoveStreamListener(this);\n}\n"
+    },
+    {
+      "id": "original_resource_destructor_remove",
+      "source_id": "node_cc",
+      "lines": [
+        817,
+        852
+      ],
+      "offset": 26324,
+      "bytes": 1165,
+      "sha256": "B3949BB776FA3939F4966B1CADC0C8FE219FB95C98D8B875741430FF8F30E31D",
+      "text": "StreamResource::~StreamResource() {\n  while (listener_ != nullptr) {\n    StreamListener* listener = listener_;\n    listener->OnStreamDestroy();\n    // Remove the listener if it didn\u2019t remove itself. This makes the logic\n    // in `OnStreamDestroy()` implementations easier, because they\n    // may call generic cleanup functions which can just remove the\n    // listener unconditionally.\n    if (listener == listener_)\n      RemoveStreamListener(listener_);\n  }\n}\n\nvoid StreamResource::RemoveStreamListener(StreamListener* listener) {\n  CHECK_NOT_NULL(listener);\n\n  StreamListener* previous;\n  StreamListener* current;\n\n  // Remove from the linked list.\n  // No loop condition because we want a crash if listener is not found.\n  for (current = listener_, previous = nullptr;;\n       previous = current, current = current->previous_listener_) {\n    CHECK_NOT_NULL(current);\n    if (current == listener) {\n      if (previous != nullptr)\n        previous->previous_listener_ = current->previous_listener_;\n      else\n        listener_ = listener->previous_listener_;\n      break;\n    }\n  }\n\n  listener->stream_ = nullptr;\n  listener->previous_listener_ = nullptr;\n}\n"
+    },
+    {
+      "id": "original_listener_contract",
+      "source_id": "node_h",
+      "lines": [
+        116,
+        178
+      ],
+      "offset": 3342,
+      "bytes": 3066,
+      "sha256": "AAB741A5756F60E406B4BCF489DF5A6EFC6463774B5214C2BE0703DBA023D907",
+      "text": "class StreamListener {\n public:\n  virtual ~StreamListener();\n\n  // This is called when a stream wants to allocate memory before\n  // reading data into the freshly allocated buffer (i.e. it is always followed\n  // by a `OnStreamRead()` call).\n  // This memory may be statically or dynamically allocated; for example,\n  // a protocol parser may want to read data into a static buffer if it knows\n  // that all data is going to be fully handled during the next\n  // `OnStreamRead()` call.\n  // The returned buffer does not need to contain `suggested_size` bytes.\n  // The default implementation of this method returns a buffer that has exactly\n  // the suggested size and is allocated using malloc().\n  // It is not valid to return a zero-length buffer from this method.\n  // It is not guaranteed that the corresponding `OnStreamRead()` call\n  // happens in the same event loop turn as this call.\n  virtual uv_buf_t OnStreamAlloc(size_t suggested_size) = 0;\n\n  // `OnStreamRead()` is called when data is available on the socket and has\n  // been read into the buffer provided by `OnStreamAlloc()`.\n  // The `buf` argument is the return value of `uv_buf_t`, or may be a buffer\n  // with base nullptr in case of an error.\n  // `nread` is the number of read bytes (which is at most the buffer length),\n  // or, if negative, a libuv error code.\n  virtual void OnStreamRead(ssize_t nread,\n                            const uv_buf_t& buf) = 0;\n\n  // This is called once a write has finished. `status` may be 0 or,\n  // if negative, a libuv error code.\n  // By default, this is simply passed on to the previous listener\n  // (and raises an assertion if there is none).\n  virtual void OnStreamAfterWrite(WriteWrap* w, int status);\n\n  // This is called once a shutdown has finished. `status` may be 0 or,\n  // if negative, a libuv error code.\n  // By default, this is simply passed on to the previous listener\n  // (and raises an assertion if there is none).\n  virtual void OnStreamAfterShutdown(ShutdownWrap* w, int status);\n\n  // This is called by the stream if it determines that it wants more data\n  // to be written to it. Not all streams support this.\n  // This callback will not be called as long as there are active writes.\n  // It is not supported by all streams; `stream->HasWantsWrite()` returns\n  // true if it is supported by a stream.\n  virtual void OnStreamWantsWrite(size_t suggested_size) {}\n\n  // This is called immediately before the stream is destroyed.\n  virtual void OnStreamDestroy() {}\n\n  // The stream this is currently associated with, or nullptr if there is none.\n  StreamResource* stream() const { return stream_; }\n\n protected:\n  // Pass along a read error to the `StreamListener` instance that was active\n  // before this one. For example, a protocol parser does not care about read\n  // errors and may instead want to let the original handler\n  // (e.g. the JS handler) take care of the situation.\n  inline void PassReadErrorToPreviousListener(ssize_t nread);\n\n  StreamResource* stream_ = nullptr;\n  StreamListener* previous_listener_ = nullptr;\n\n"
+    },
+    {
+      "id": "original_inheritance_storage_delete",
+      "source_id": "node_h",
+      "lines": [
+        183,
+        216
+      ],
+      "offset": 6444,
+      "bytes": 1197,
+      "sha256": "1B0EFDC96EF90AA55698FE0A4F4A20CBA2D1CFE78D1E7E4A8607F140D39F01AE",
+      "text": "// An (incomplete) stream listener class that calls the `.oncomplete()`\n// method of the JS objects associated with the wrap objects.\nclass ReportWritesToJSStreamListener : public StreamListener {\n public:\n  void OnStreamAfterWrite(WriteWrap* w, int status) override;\n  void OnStreamAfterShutdown(ShutdownWrap* w, int status) override;\n\n private:\n  void OnStreamAfterReqFinished(StreamReq* req_wrap, int status);\n};\n\n\n// A default emitter that just pushes data chunks as Buffer instances to\n// JS land via the handle\u2019s .ondata method.\nclass EmitToJSStreamListener : public ReportWritesToJSStreamListener {\n public:\n  uv_buf_t OnStreamAlloc(size_t suggested_size) override;\n  void OnStreamRead(ssize_t nread, const uv_buf_t& buf) override;\n};\n\n\n// An alternative listener that uses a custom, user-provided buffer\n// for reading data.\nclass CustomBufferJSListener : public ReportWritesToJSStreamListener {\n public:\n  uv_buf_t OnStreamAlloc(size_t suggested_size) override;\n  void OnStreamRead(ssize_t nread, const uv_buf_t& buf) override;\n  void OnStreamDestroy() override { delete this; }\n\n  explicit CustomBufferJSListener(uv_buf_t buffer) : buffer_(buffer) {}\n\n private:\n  uv_buf_t buffer_;\n};\n"
+    },
+    {
+      "id": "original_push_emit",
+      "source_id": "node_inl",
+      "lines": [
+        60,
+        90
+      ],
+      "offset": 1614,
+      "bytes": 918,
+      "sha256": "CDD6E123E03A2637FD47F0566D599FF9E409589A95080A81216C7D9C9E3CE4F1",
+      "text": "void StreamResource::PushStreamListener(StreamListener* listener) {\n  CHECK_NOT_NULL(listener);\n  CHECK_NULL(listener->stream_);\n\n  listener->previous_listener_ = listener_;\n  listener->stream_ = this;\n\n  listener_ = listener;\n}\n\nuv_buf_t StreamResource::EmitAlloc(size_t suggested_size) {\n  DebugSealHandleScope seal_handle_scope;\n  return listener_->OnStreamAlloc(suggested_size);\n}\n\nvoid StreamResource::EmitRead(ssize_t nread, const uv_buf_t& buf) {\n  DebugSealHandleScope seal_handle_scope;\n  if (nread > 0)\n    bytes_read_ += static_cast<uint64_t>(nread);\n  listener_->OnStreamRead(nread, buf);\n}\n\nvoid StreamResource::EmitAfterWrite(WriteWrap* w, int status) {\n  DebugSealHandleScope seal_handle_scope;\n  listener_->OnStreamAfterWrite(w, status);\n}\n\nvoid StreamResource::EmitAfterShutdown(ShutdownWrap* w, int status) {\n  DebugSealHandleScope seal_handle_scope;\n  listener_->OnStreamAfterShutdown(w, status);\n}\n"
+    },
+    {
+      "id": "original_default_listener",
+      "source_id": "node_inl",
+      "lines": [
+        97,
+        101
+      ],
+      "offset": 2688,
+      "bytes": 130,
+      "sha256": "40F5F0924C5FBB630EAB772DC86F1082213C34A7E7018AA6888123F80CD8B4C0",
+      "text": "StreamBase::StreamBase(Environment* env) : env_(env) {\n  PushStreamListener(&default_listener_);\n}\n\ntemplate <typename OtherBase>\n"
+    },
+    {
+      "id": "original_buffer_brand_data_length",
+      "source_id": "node_buffer",
+      "lines": [
+        239,
+        271
+      ],
+      "offset": 7530,
+      "bytes": 729,
+      "sha256": "AA90CB368B7502B5032074B3177D1D0CBED99953484071D52FC244339B14217B",
+      "text": "bool HasInstance(Local<Value> val) {\n  return val->IsArrayBufferView();\n}\n\n\nbool HasInstance(Local<Object> obj) {\n  return obj->IsArrayBufferView();\n}\n\n\nchar* Data(Local<Value> val) {\n  CHECK(val->IsArrayBufferView());\n  Local<ArrayBufferView> ui = val.As<ArrayBufferView>();\n  return static_cast<char*>(ui->Buffer()->Data()) + ui->ByteOffset();\n}\n\n\nchar* Data(Local<Object> obj) {\n  return Data(obj.As<Value>());\n}\n\n\nsize_t Length(Local<Value> val) {\n  CHECK(val->IsArrayBufferView());\n  Local<ArrayBufferView> ui = val.As<ArrayBufferView>();\n  return ui->ByteLength();\n}\n\n\nsize_t Length(Local<Object> obj) {\n  CHECK(obj->IsArrayBufferView());\n  Local<ArrayBufferView> ui = obj.As<ArrayBufferView>();\n  return ui->ByteLength();\n"
+    },
+    {
+      "id": "original_getbuffer_materialization",
+      "source_id": "v8_buffer",
+      "lines": [
+        297,
+        337
+      ],
+      "offset": 10965,
+      "bytes": 1558,
+      "sha256": "561F65CF22EFD3407969E562A7F2705838ECD4E7E33F63C1BAF56226C535FCA3",
+      "text": "Handle<JSArrayBuffer> JSTypedArray::GetBuffer() {\n  Isolate* isolate = GetIsolate();\n  DirectHandle<JSTypedArray> self(*this, isolate);\n  DCHECK(IsTypedArrayOrRabGsabTypedArrayElementsKind(self->GetElementsKind()));\n  Handle<JSArrayBuffer> array_buffer(Cast<JSArrayBuffer>(self->buffer()),\n                                     isolate);\n  if (!is_on_heap()) {\n    // Already is off heap, so return the existing buffer.\n    return array_buffer;\n  }\n  DCHECK(!array_buffer->is_resizable_by_js());\n\n  // The existing array buffer should be empty.\n  DCHECK(array_buffer->IsEmpty());\n\n  // Allocate a new backing store and attach it to the existing array buffer.\n  size_t byte_length = self->byte_length();\n  auto backing_store =\n      BackingStore::Allocate(isolate, byte_length, SharedFlag::kNotShared,\n                             InitializedFlag::kUninitialized);\n\n  if (!backing_store) {\n    isolate->heap()->FatalProcessOutOfMemory(\"JSTypedArray::GetBuffer\");\n  }\n\n  // Copy the elements into the backing store of the array buffer.\n  if (byte_length > 0) {\n    memcpy(backing_store->buffer_start(), self->DataPtr(), byte_length);\n  }\n\n  // Attach the backing store to the array buffer.\n  array_buffer->Setup(SharedFlag::kNotShared, ResizableFlag::kNotResizable,\n                      std::move(backing_store), isolate);\n\n  // Clear the elements of the typed array.\n  self->set_elements(ReadOnlyRoots(isolate).empty_byte_array());\n  self->SetOffHeapDataPtr(isolate, array_buffer->backing_store(), 0);\n  DCHECK(!self->is_on_heap());\n\n  return array_buffer;\n}\n"
+    },
+    {
+      "id": "original_backing_data",
+      "source_id": "v8_api",
+      "lines": [
+        4067,
+        4069
+      ],
+      "offset": 158680,
+      "bytes": 97,
+      "sha256": "99585D8436127703ABDC6675753A4F6B6A1973A5EEEAE257565CA81EFD9B7268",
+      "text": "void* v8::ArrayBuffer::Data() const {\n  return Utils::OpenDirectHandle(this)->backing_store();\n}\n"
+    },
+    {
+      "id": "original_view_buffer",
+      "source_id": "v8_api",
+      "lines": [
+        9189,
+        9208
+      ],
+      "offset": 362982,
+      "bytes": 907,
+      "sha256": "AA4591D283F93AFD758AE0D39679EDB21A91CD698B22D415BDE7A043FF21BCDD",
+      "text": "Local<ArrayBuffer> v8::ArrayBufferView::Buffer() {\n  auto obj = Utils::OpenDirectHandle(this);\n  i::Isolate* i_isolate = obj->GetIsolate();\n  if (i::IsJSDataView(*obj)) {\n    i::DirectHandle<i::JSDataView> data_view(i::Cast<i::JSDataView>(*obj),\n                                             i_isolate);\n    DCHECK(IsJSArrayBuffer(data_view->buffer()));\n    return Utils::ToLocal(i::direct_handle(\n        i::Cast<i::JSArrayBuffer>(data_view->buffer()), i_isolate));\n  } else if (i::IsJSRabGsabDataView(*obj)) {\n    i::DirectHandle<i::JSRabGsabDataView> data_view(\n        i::Cast<i::JSRabGsabDataView>(*obj), i_isolate);\n    DCHECK(IsJSArrayBuffer(data_view->buffer()));\n    return Utils::ToLocal(i::direct_handle(\n        i::Cast<i::JSArrayBuffer>(data_view->buffer()), i_isolate));\n  } else {\n    DCHECK(IsJSTypedArray(*obj));\n    return Utils::ToLocal(i::Cast<i::JSTypedArray>(*obj)->GetBuffer());\n  }\n}\n"
+    },
+    {
+      "id": "original_view_offset_length",
+      "source_id": "v8_api",
+      "lines": [
+        9266,
+        9291
+      ],
+      "offset": 366205,
+      "bytes": 818,
+      "sha256": "D5725B9AA8EF481976E8DD6843DED0BF26F877CE62E594C66CAC86C84691473C",
+      "text": "bool v8::ArrayBufferView::HasBuffer() const {\n  auto self = Utils::OpenDirectHandle(this);\n  if (!IsJSTypedArray(*self)) return true;\n  auto typed_array = i::Cast<i::JSTypedArray>(self);\n  return !typed_array->is_on_heap();\n}\n\nsize_t v8::ArrayBufferView::ByteOffset() {\n  auto obj = Utils::OpenDirectHandle(this);\n  return obj->WasDetached() ? 0 : obj->byte_offset();\n}\n\nsize_t v8::ArrayBufferView::ByteLength() {\n  i::DisallowGarbageCollection no_gc;\n  i::Tagged<i::JSArrayBufferView> obj = *Utils::OpenDirectHandle(this);\n  if (obj->WasDetached()) {\n    return 0;\n  }\n  if (i::IsJSTypedArray(obj)) {\n    return i::Cast<i::JSTypedArray>(obj)->GetByteLength();\n  }\n  if (i::IsJSDataView(obj)) {\n    return i::Cast<i::JSDataView>(obj)->byte_length();\n  }\n  return i::Cast<i::JSRabGsabDataView>(obj)->GetByteLength();\n}\n"
+    },
+    {
+      "id": "original_standard_new",
+      "source_id": "new_original",
+      "lines": [
+        20,
+        53
+      ],
+      "offset": 727,
+      "bytes": 985,
+      "sha256": "11D2053ED4E004291895884660AF11805689EF55D5C844C99DEBABAD4409659F",
+      "text": "\ninline void __throw_bad_alloc_shim() { std::__throw_bad_alloc(); }\n\n#  define _LIBCPP_ASSERT_SHIM(expr, str) _LIBCPP_ASSERT(expr, str)\n\n// ------------------ BEGIN COPY ------------------\n// Implement all new and delete operators as weak definitions\n// in this shared library, so that they can be overridden by programs\n// that define non-weak copies of the functions.\n\nstatic void* operator_new_impl(std::size_t size) {\n  if (size == 0)\n    size = 1;\n  void* p;\n  while ((p = std::malloc(size)) == nullptr) {\n    // If malloc fails and there is a new_handler,\n    // call it to try free up memory.\n    std::new_handler nh = std::get_new_handler();\n    if (nh)\n      nh();\n    else\n      break;\n  }\n  return p;\n}\n\n_LIBCPP_OVERRIDABLE_FUNCTION(void*, operator new, (std::size_t size)) _THROW_BAD_ALLOC {\n  void* p = operator_new_impl(size);\n  if (p == nullptr)\n    __throw_bad_alloc_shim();\n  return p;\n}\n\n_LIBCPP_WEAK void* operator new(size_t size, const std::nothrow_t&) noexcept {\n"
+    },
+    {
+      "id": "original_standard_delete",
+      "source_id": "new_original",
+      "lines": [
+        97,
+        115
+      ],
+      "offset": 3683,
+      "bytes": 653,
+      "sha256": "78A7B1B99A8D791FDFACB6258EED20B7178B56E76D599CE0C4FF71A9D5416481",
+      "text": "  } catch (...) {\n  }\n  return p;\n#  endif\n}\n\n_LIBCPP_WEAK void operator delete(void* ptr) noexcept { std::free(ptr); }\n\n_LIBCPP_WEAK void operator delete(void* ptr, const std::nothrow_t&) noexcept { ::operator delete(ptr); }\n\n_LIBCPP_WEAK void operator delete(void* ptr, size_t) noexcept { ::operator delete(ptr); }\n\n_LIBCPP_WEAK void operator delete[](void* ptr) noexcept { ::operator delete(ptr); }\n\n_LIBCPP_WEAK void operator delete[](void* ptr, const std::nothrow_t&) noexcept { ::operator delete[](ptr); }\n\n_LIBCPP_WEAK void operator delete[](void* ptr, size_t) noexcept { ::operator delete[](ptr); }\n\n#  if _LIBCPP_HAS_LIBRARY_ALIGNED_ALLOCATION\n"
+    },
+    {
+      "id": "native_bad_alloc_policy",
+      "source_id": "new_helpers",
+      "lines": [
+        18,
+        26
+      ],
+      "offset": 515,
+      "bytes": 188,
+      "sha256": "52595561C7DE60AFA309EC4B884DF600C0DFE849A7EDEFAF22D44B97A104051C",
+      "text": "#ifndef LIBSTDCXX\n\nvoid __throw_bad_alloc() {\n#  if _LIBCPP_HAS_EXCEPTIONS\n  throw bad_alloc();\n#  else\n  _LIBCPP_VERBOSE_ABORT(\"bad_alloc was thrown in -fno-exceptions mode\");\n#  endif\n}\n"
+    },
+    {
+      "id": "native_bad_alloc_noreturn",
+      "source_id": "new_exceptions",
+      "lines": [
+        60,
+        68
+      ],
+      "offset": 2043,
+      "bytes": 416,
+      "sha256": "DD81AB6EAE10F566A60CA82B8FF0B71F2D50C8CBD87D87150ADBE3A70E46FB3E",
+      "text": "#endif // defined(_LIBCPP_ABI_VCRUNTIME) && defined(_HAS_EXCEPTIONS) && _HAS_EXCEPTIONS == 0\n\n[[__noreturn__]] _LIBCPP_EXPORTED_FROM_ABI void __throw_bad_alloc(); // not in C++ spec\n\n[[__noreturn__]] inline _LIBCPP_HIDE_FROM_ABI void __throw_bad_array_new_length() {\n#if _LIBCPP_HAS_EXCEPTIONS\n  throw bad_array_new_length();\n#else\n  _LIBCPP_VERBOSE_ABORT(\"bad_array_new_length was thrown in -fno-exceptions mode\");\n"
+    },
+    {
+      "id": "selected_create",
+      "source_id": "listener",
+      "lines": [
+        1,
+        45
+      ],
+      "offset": 0,
+      "bytes": 2190,
+      "sha256": "2C521D957472EC639167E8C69B9E6075F690C2B719448BE6ADD77844F77B9C7D",
+      "text": "// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.\n//! Actual CustomBufferJSListener and the already-admitted UseUserBuffer body.\n//! The listener stores only the native StreamListener and caller-borrowed\n//! uv_buf_t. It owns no JS value or backing-store entitlement. The caller keeps\n//! the supplied view/storage alive and valid through every native read.\n//!\n//! Full FunctionTemplate receiver admission, JSMethod liveness/outer trigger,\n//! public method publication and the write-request reporter remain separate.\n//! The actual selected Shutdown reporter is used directly, not forwarded.\nconst a = @import(\"native_node_argument_values.zig\");\nconst streams = @import(\"native_node_stream_base.zig\");\nconst resources = @import(\"native_node_stream_resource.zig\");\nconst shutdown = @import(\"native_node_stream_shutdown.zig\");\nconst check = @import(\"native_node_check_failure.zig\");\nconst c = a.c;\nconst uv = resources.uv;\nconst BufferBase = @TypeOf(@as(uv.uv_buf_t, undefined).base);\n\nextern fn pi_node_custom_buffer_listener_allocate(\n    ?*c.JSContext, *anyopaque, usize, usize) *anyopaque;\nextern fn pi_node_custom_buffer_listener_free(\n    ?*c.JSContext, *anyopaque) void;\n\n/// Native instance storage is created by the genuine standard-new policy.\n/// This record must remain at its allocated address until OnStreamDestroy.\n/// It never retains the Engine, JS view, or the view's native backing owner.\npub const CustomBufferJSListener = struct {\n    listener: resources.Listener,\n    buffer: uv.uv_buf_t,\n\n    fn create(engine: *a.v.em.Engine, buffer: uv.uv_buf_t) *CustomBufferJSListener {\n        const storage = pi_node_custom_buffer_listener_allocate(\n            engine.context, engine.native_memory_owner,\n            @sizeOf(CustomBufferJSListener), @alignOf(CustomBufferJSListener));\n        const self: *CustomBufferJSListener = @ptrCast(@alignCast(storage));\n        self.* = .{\n            .listener = .{\n                .on_destroy = onDestroy,\n                .read_methods = &read_methods,\n                .after_shutdown = shutdown.reportAfterShutdown,\n            },\n            .buffer = buffer,\n        };\n        return self;\n    }\n"
+    },
+    {
+      "id": "selected_destroy_alloc_read_scope",
+      "source_id": "listener",
+      "lines": [
+        47,
+        91
+      ],
+      "offset": 2191,
+      "bytes": 2054,
+      "sha256": "EA5F7B2CA139DC556DDF12EC811F3FA6F2CC54AA73129214CE99339CA4C0D190",
+      "text": "    fn onDestroy(listener: *resources.Listener) void {\n        const self: *CustomBufferJSListener = @fieldParentPtr(\"listener\", listener);\n        const context = if (listener.stream) |stream| stream.engine.context else null;\n        // delete this destroys the StreamListener base before freeing storage.\n        listener.deinit();\n        pi_node_custom_buffer_listener_free(context, self);\n    }\n\n    fn onAllocate(listener: *resources.Listener, _: usize) !uv.uv_buf_t {\n        const self: *CustomBufferJSListener = @fieldParentPtr(\"listener\", listener);\n        // Source deliberately ignores suggested_size and does not replace or\n        // acquire the user's backing store.\n        return self.buffer;\n    }\n\n    fn onRead(listener: *resources.Listener, nread: isize,\n        incoming: uv.uv_buf_t) !void\n    {\n        const resource = listener.stream orelse check.assertion(null, .{\n            .file_line = \"src/stream_base.cc:726\",\n            .message = \"(stream_) != nullptr\",\n            .function = \"node::CustomBufferJSListener::OnStreamRead\",\n        });\n        const stream: *streams.Base = @fieldParentPtr(\"resource\", resource);\n        const environment = stream.environment.retain();\n        defer environment.release();\n        const engine = try environment.requireEngine();\n        var handles = a.Scope.init(engine);\n        var failure: ?anyerror = null;\n        readBody(&handles, listener, stream, nread, incoming) catch |err| {\n            recordFailure(&handles, err);\n            failure = err;\n        };\n        // The callback can retire the stream/listener on its undefined or\n        // empty-result path. Only the retained local Environment/Scope is used\n        // here; neither native record is touched after readBody returns.\n        const ignored = try handles.finish(if (failure) |err|\n            @as(anyerror!c.JSValue, err) else c.pi_js_undefined());\n        engine.freeValue(ignored);\n    }\n\n    const read_methods: resources.ReadMethods = .{\n        .allocate = onAllocate,\n        .read = onRead,\n    };\n"
+    },
+    {
+      "id": "selected_read_body",
+      "source_id": "listener",
+      "lines": [
+        94,
+        120
+      ],
+      "offset": 4249,
+      "bytes": 1324,
+      "sha256": "39935C4EA2A66ECEF9FCC122ED591299A733333FB84D787A2434562D87F28420",
+      "text": "fn readBody(handles: *a.Scope, listener: *resources.Listener,\n    stream: *streams.Base, nread: isize, incoming: uv.uv_buf_t) !void\n{\n    // Original null-buffer error/EOF branch neither compares buffer_.base nor\n    // consumes any non-undefined callback result as a replacement buffer.\n    if (incoming.base == null and nread < 0) {\n        _ = try stream.callJSOnread(handles, nread, null, 0, .check_nread);\n        return;\n    }\n    const self: *CustomBufferJSListener = @fieldParentPtr(\"listener\", listener);\n    if (incoming.base != self.buffer.base) check.assertion(handles.engine, .{\n        .file_line = \"src/stream_base.cc:741\",\n        .message = \"(buf.base) == (buffer_.base)\",\n        .function = \"node::CustomBufferJSListener::OnStreamRead\",\n    });\n    const result = try stream.callJSOnread(handles, nread, null, 0,\n        .skip_nread_checks);\n    if (result) |next| {\n        if (!c.JS_IsUndefined(next)) {\n            // These two operations retain their own original Buffer CHECKs.\n            // The source writes base first, then the native uv_buf_t.len field;\n            // unlike initial uv_buf_init, this is not always unsigned-int wide.\n            self.buffer.base = bufferData(handles.engine, next);\n            self.buffer.len = @truncate(bufferLength(handles.engine, next));\n        }\n    }\n}\n"
+    },
+    {
+      "id": "selected_buffer_and_use",
+      "source_id": "listener",
+      "lines": [
+        122,
+        164
+      ],
+      "offset": 5574,
+      "bytes": 1953,
+      "sha256": "A48E5F63088A0D987D61CD376F0EF5B37BDA7003D941E21987EB33E71D0E8DE6",
+      "text": "/// The actual VM class predicates, without getters or a property-name test.\n/// A live empty view still has the proper brand; Data()==NULL is not branding.\nfn hasBufferInstance(value: c.JSValue) bool {\n    return c.JS_GetTypedArrayType(value) >= 0 or c.JS_IsDataView(value);\n}\n\nfn bufferData(engine: *a.v.em.Engine, value: c.JSValue) BufferBase {\n    if (!hasBufferInstance(value)) check.assertion(engine, .{\n        .file_line = \"src/node_buffer.cc:250\",\n        .message = \"val->IsArrayBufferView()\",\n        .function = \"node::Buffer::Data\",\n    });\n    return @ptrCast(c.JS_PiArrayBufferViewData(value));\n}\n\nfn bufferLength(engine: *a.v.em.Engine, value: c.JSValue) usize {\n    if (!hasBufferInstance(value)) check.assertion(engine, .{\n        .file_line = \"src/node_buffer.cc:262\",\n        .message = \"val->IsArrayBufferView()\",\n        .function = \"node::Buffer::Length\",\n    });\n    return c.JS_PiArrayBufferViewByteLength(value);\n}\n\n/// Source StreamBase::UseUserBuffer after its genuine public receiver and VM\n/// entry have already been admitted. The value belongs to stream's actual VM.\n/// This body has no new pending/JS-allocation boundary: CHECK, Data/Length,\n/// native standard allocation and listener publication are the original order.\npub fn useUserBuffer(stream: *streams.Base, value: c.JSValue) c_int {\n    const engine = stream.resource.engine;\n    if (!hasBufferInstance(value)) check.assertion(engine, .{\n        .file_line = \"src/stream_base.cc:161\",\n        .message = \"Buffer::HasInstance(args[0])\",\n        .function = \"node::StreamBase::UseUserBuffer\",\n    });\n    const address = bufferData(engine, value);\n    const length = bufferLength(engine, value);\n    // The actual libuv function takes unsigned int even on 64-bit Unix.\n    const buffer = uv.uv_buf_init(address, @truncate(length));\n    const listener = CustomBufferJSListener.create(engine, buffer);\n    stream.resource.push(&listener.listener);\n    return 0;\n}\n"
+    },
+    {
+      "id": "selected_escaping_completion",
+      "source_id": "listener",
+      "lines": [
+        166,
+        172
+      ],
+      "offset": 7528,
+      "bytes": 232,
+      "sha256": "41716A50B97077FA66F45F24C84FB62450A5EA97CF557C28C88C07E92918A439",
+      "text": "fn recordFailure(s: *a.Scope, err: anyerror) void {\n    s.boundary.escaping();\n    if (err == error.OutOfMemory and !s.boundary.isFatal()) {\n        _ = s.engine.throwNativeOutOfMemoryFatal();\n        s.boundary.escaping();\n    }\n}\n"
+    },
+    {
+      "id": "selected_allocation_abi",
+      "source_id": "allocation_h",
+      "lines": [
+        1,
+        34
+      ],
+      "offset": 0,
+      "bytes": 1222,
+      "sha256": "95E77F10C01964B18BBB845E0554C5F2F9ABD81D4A4238E5F5133DF1E77EC282",
+      "text": "#ifndef PI_NATIVE_NODE_CUSTOM_BUFFER_LISTENER_ALLOCATION_H\n#define PI_NATIVE_NODE_CUSTOM_BUFFER_LISTENER_ALLOCATION_H\n\n#include <stddef.h>\n\ntypedef struct JSContext JSContext;\n\n#ifdef __cplusplus\nextern \"C\" {\n#endif\n\n/*\n * Storage for the Zig port of CustomBufferJSListener. The caller constructs the\n * actual Listener and uv_buf_t in this stable allocation, and runs the real\n * StreamListener destructor before release. There is no JS/backing-store root.\n *\n * These synchronous calls borrow context. allocation_size and alignment are\n * exactly the native Zig record's size/alignment; alignment must not exceed\n * max_align_t. The genuine standard-new retry/fatal policy does not return\n * allocation failure. The native allocation prefix owns its memory-domain\n * entitlement independently of the Engine.\n */\nvoid* pi_node_custom_buffer_listener_allocate(\n    JSContext* context, void* memory_owner,\n    size_t allocation_size, size_t alignment);\n\n/* After unlink/destruction. A NULL context is valid for an unlinked listener;\n * no current or former Engine is needed to retire its allocation prefix. */\nvoid pi_node_custom_buffer_listener_free(JSContext* context, void* storage);\n\n#ifdef __cplusplus\n}\n#endif\n#endif\n"
+    },
+    {
+      "id": "selected_native_allocation",
+      "source_id": "allocation_cpp",
+      "lines": [
+        1,
+        29
+      ],
+      "offset": 0,
+      "bytes": 1371,
+      "sha256": "DEE3A42BB595DE00E8EC6A2784E40741E233D58E81001A4050449F9D7FE9DD63",
+      "text": "// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.\n// Native standard-new allocation for the Zig CustomBufferJSListener record.\n#include \"native_node_custom_buffer_listener_allocation.h\"\n#include \"native_node_diagnostic_context.hpp\"\n#include \"native_node_standard_allocator.hpp\"\n\n#include <cassert>\n#include <cstddef>\n\nextern \"C\" void* pi_node_custom_buffer_listener_allocate(\n    JSContext* context, void* memory_owner,\n    std::size_t allocation_size, std::size_t alignment) {\n    pi::node::DiagnosticContextScope diagnostic_scope(context);\n    assert(memory_owner != nullptr && allocation_size != 0);\n    assert(alignment != 0 && (alignment & (alignment - 1)) == 0);\n    assert(alignment <= alignof(std::max_align_t));\n    pi_node::AllocationScope allocation_scope(memory_owner);\n    // Matches plain new's real new_handler retry / native bad_alloc fatal\n    // policy. A returned nullable allocation or a guest OOM is not substituted.\n    return pi_node::allocateStandard(allocation_size);\n}\n\nextern \"C\" void pi_node_custom_buffer_listener_free(\n    JSContext* context, void* storage) {\n    pi::node::DiagnosticContextScope diagnostic_scope(context);\n    // The caller has completed StreamListener::~StreamListener already.\n    // The prefix owns the allocator domain, including after Engine teardown.\n    pi_simd::release(storage);\n}\n"
+    },
+    {
+      "id": "host_standard_new_policy",
+      "source_id": "standard",
+      "lines": [
+        1,
+        38
+      ],
+      "offset": 0,
+      "bytes": 1471,
+      "sha256": "585E17A40B0BE1E3EFF828BC4921DCAA0C8AF44C844EB74280716068766DD3F6",
+      "text": "// Native C++ standard-container allocation for the pinned libc++ build.\n// The allocation/new-handler sequence follows libc++ new.cpp (Apache-2.0\n// WITH LLVM-exception); the underlying charged block owner is shared with\n// the separately reviewed simdjson owner. No Engine or JS value is stored.\n#ifndef PI_NATIVE_NODE_STANDARD_ALLOCATOR_HPP\n#define PI_NATIVE_NODE_STANDARD_ALLOCATOR_HPP\n#include \"native_simdjson_memory.hpp\"\n#include <__new/exceptions.h>\n#include <cstddef>\n#include <limits>\n#include <new>\n#include <type_traits>\n\n#if !defined(_LIBCPP_VERSION) || _LIBCPP_STD_VER < 20\n#error \"the standard-container owner requires the pinned C++20 libc++ source\"\n#endif\n#if _LIBCPP_HAS_EXCEPTIONS\n#error \"the selected Node standard-container translation units disable exceptions\"\n#endif\n\nnamespace pi_node {\nusing AllocationScope = pi_simd::Scope;\n\n// A standard allocator must not return nullptr. Preserve the actual native\n// new-handler retry and bad_alloc path; this is never a JavaScript exception.\n// The prefix allocator rolls a failed physical malloc reservation back before\n// the handler runs. Every successful block retains its original native owner.\ninline void* allocateStandard(std::size_t bytes) {\n  if (bytes == 0) bytes = 1;\n  for (;;) {\n    if (void* result = pi_simd::allocate(bytes)) return result;\n    const std::new_handler handler = std::get_new_handler();\n    if (handler) handler();\n    else std::__throw_bad_alloc();\n  }\n}\n\ntemplate<class T>\n"
+    },
+    {
+      "id": "host_independent_domain_declarations",
+      "source_id": "memory_h",
+      "lines": [
+        13,
+        37
+      ],
+      "offset": 414,
+      "bytes": 891,
+      "sha256": "D407C2E17B4448087E6FB2F9070C648B8ABECD9C894A1E91CFE641364B3EDB9A",
+      "text": "namespace pi_simd {\n\n// An actual native allocation domain, scoped to one synchronous parser action.\n// There is no Engine or JavaScript value in this owner. Every successful block\n// separately retains its original memory owner until that exact block is freed.\nclass Scope final {\n public:\n  explicit Scope(void* memory_owner) noexcept;\n  ~Scope() noexcept;\n  Scope(const Scope&) = delete;\n  Scope& operator=(const Scope&) = delete;\n  bool failed() const noexcept { return failed_; }\n\n private:\n  friend void* allocate(std::size_t) noexcept;\n  friend void allocationFailure() noexcept;\n  Scope* previous_;\n  void* memory_owner_;\n  bool failed_ = false;\n};\n\n// Allocates exactly payload bytes plus the actual aligned ownership prefix.\n// The same active domain remains charged while an old block is replaced.\nvoid* allocate(std::size_t payload) noexcept;\nvoid release(void* block) noexcept;\n"
+    },
+    {
+      "id": "host_allocation_prefix_complete",
+      "source_id": "memory_cpp",
+      "lines": [
+        1,
+        76
+      ],
+      "offset": 0,
+      "bytes": 2714,
+      "sha256": "44794005D36BB3E1EC6B1A7DF3AA9A6B7DE7C02D6F12BBF38115F83E49C5E103",
+      "text": "// Actual per-allocation accounting for the private simdjson successor.\n// The allocator domain may leave scope before a parser or one of its blocks\n// retires. Each block holds its own native memory-owner entitlement.\n#include \"native_simdjson_memory.hpp\"\n\nextern \"C\" {\nvoid pi_js_retain_memory_owner(void* memory_owner);\nvoid pi_js_release_memory_owner(void* memory_owner);\nint pi_js_native_memory_reserve(void* memory_owner, std::size_t bytes);\nvoid pi_js_native_memory_release(void* memory_owner, std::size_t bytes);\n}\n\nnamespace pi_simd {\nnamespace {\nstruct alignas(std::max_align_t) Allocation {\n  void* memory_owner;\n  std::size_t charge;\n};\nstatic_assert(sizeof(Allocation) % alignof(std::max_align_t) == 0,\n              \"the payload must retain malloc alignment\");\nthread_local Scope* current_scope = nullptr;\n}\n\nScope::Scope(void* memory_owner) noexcept\n    : previous_(current_scope), memory_owner_(memory_owner) {\n  // This is an internal C ABI precondition. The public native parser owner\n  // obtains the actual nonnull memory owner before any parser operation.\n  if (!memory_owner_) std::abort();\n  pi_js_retain_memory_owner(memory_owner_);\n  current_scope = this;\n}\nScope::~Scope() noexcept {\n  if (current_scope != this) std::abort();\n  current_scope = previous_;\n  pi_js_release_memory_owner(memory_owner_);\n}\nvoid allocationFailure() noexcept {\n  if (!current_scope) std::abort();\n  current_scope->failed_ = true;\n}\nvoid* allocate(std::size_t payload) noexcept {\n  Scope* scope = current_scope;\n  if (!scope) std::abort();\n  if (payload > std::numeric_limits<std::size_t>::max() - sizeof(Allocation)) {\n    scope->failed_ = true;\n    return nullptr;\n  }\n  const std::size_t charge = sizeof(Allocation) + payload;\n  void* owner = scope->memory_owner_;\n  if (!pi_js_native_memory_reserve(owner, charge)) {\n    scope->failed_ = true;\n    return nullptr;\n  }\n  auto* allocation = static_cast<Allocation*>(std::malloc(charge));\n  if (!allocation) {\n    // Roll back only this failed request. Existing parser blocks keep both\n    // their exact charges and their independent ownership entitlements.\n    pi_js_native_memory_release(owner, charge);\n    scope->failed_ = true;\n    return nullptr;\n  }\n  pi_js_retain_memory_owner(owner);\n  ::new (static_cast<void*>(allocation)) Allocation{owner, charge};\n  return allocation + 1;\n}\nvoid release(void* block) noexcept {\n  if (!block) return;\n  auto* allocation = static_cast<Allocation*>(block) - 1;\n  void* owner = allocation->memory_owner;\n  const std::size_t charge = allocation->charge;\n  allocation->~Allocation();\n  std::free(allocation);\n  pi_js_native_memory_release(owner, charge);\n  pi_js_release_memory_owner(owner);\n}\n}  // namespace pi_simd\n"
+    },
+    {
+      "id": "host_diagnostic_scope",
+      "source_id": "diag",
+      "lines": [
+        8,
+        21
+      ],
+      "offset": 299,
+      "bytes": 606,
+      "sha256": "7EAE3ADC9DFC6B5B77C49B081D57D6DFBE42FA8662FA11287CCFF5FE797A02AC",
+      "text": "class DiagnosticContextScope final {\n public:\n    explicit DiagnosticContextScope(JSContext *context) noexcept\n        : previous_(pi_node_diagnostic_context_enter(context)) {}\n    ~DiagnosticContextScope() noexcept {\n        pi_node_diagnostic_context_leave(previous_);\n    }\n    DiagnosticContextScope(const DiagnosticContextScope&) = delete;\n    DiagnosticContextScope& operator=(const DiagnosticContextScope&) = delete;\n    DiagnosticContextScope(DiagnosticContextScope&&) = delete;\n    DiagnosticContextScope& operator=(DiagnosticContextScope&&) = delete;\n private:\n    JSContext *const previous_;\n};\n"
+    },
+    {
+      "id": "host_domain_refcount_charge",
+      "source_id": "abi",
+      "lines": [
+        20,
+        55
+      ],
+      "offset": 347,
+      "bytes": 1341,
+      "sha256": "FC4CED05D630ED7C965A3E651103494D2891C75BB36A4C9E4305AE0F14EE59EA",
+      "text": "typedef struct {\n    _Atomic size_t references;\n    _Atomic size_t used;\n    size_t limit;\n} PiMemoryOwner;\nstatic _Atomic size_t pi_memory_owners;\ntypedef struct {\n    size_t size;\n    max_align_t alignment;\n} PiAllocation;\nstatic int pi_reserve(PiMemoryOwner *owner, size_t size) {\n    size_t used = atomic_load_explicit(&owner->used, memory_order_relaxed);\n    do {\n        if (size > owner->limit || used > owner->limit - size) return 0;\n    } while (!atomic_compare_exchange_weak_explicit(&owner->used, &used, used + size,\n                memory_order_relaxed, memory_order_relaxed));\n    return 1;\n}\nvoid pi_js_retain_memory_owner(void *opaque) {\n    PiMemoryOwner *owner = opaque;\n    atomic_fetch_add_explicit(&owner->references, 1, memory_order_relaxed);\n}\nint pi_js_native_memory_reserve(void *opaque, size_t bytes) {\n    return pi_reserve(opaque, bytes);\n}\nvoid pi_js_native_memory_release(void *opaque, size_t bytes) {\n    PiMemoryOwner *owner = opaque;\n    if (atomic_fetch_sub_explicit(&owner->used, bytes, memory_order_relaxed) < bytes) abort();\n}\nvoid pi_js_release_memory_owner(void *opaque) {\n    PiMemoryOwner *owner = opaque;\n    if (atomic_fetch_sub_explicit(&owner->references, 1, memory_order_acq_rel) == 1) {\n        atomic_fetch_sub_explicit(&pi_memory_owners, 1, memory_order_relaxed);\n        free(owner);\n    }\n}\n"
+    },
+    {
+      "id": "host_runtime_domain_create",
+      "source_id": "abi",
+      "lines": [
+        395,
+        427
+      ],
+      "offset": 15209,
+      "bytes": 1557,
+      "sha256": "491B70023F1941B83F42AF37DF87BD47C874F65DE16D372CD7629EE15FD30907",
+      "text": "JSRuntime *pi_js_new_runtime(size_t memory_limit, void **memory_owner) {\n    PiMemoryOwner *owner = malloc(sizeof(*owner));\n    if (!owner) return NULL;\n    atomic_init(&owner->references, 1);\n    atomic_init(&owner->used, 0);\n    owner->limit = memory_limit;\n    atomic_fetch_add_explicit(&pi_memory_owners, 1, memory_order_relaxed);\n    const JSMallocFunctions allocator = {\n        .js_calloc = pi_calloc, .js_malloc = pi_malloc, .js_free = pi_free,\n        .js_realloc = pi_realloc, .js_malloc_usable_size = pi_usable_size,\n    };\n    JSRuntime *runtime = JS_NewRuntime2(&allocator, owner);\n    if (!runtime) { pi_js_release_memory_owner(owner); return NULL; }\n    const JSSharedArrayBufferFunctions functions = {\n        .sab_alloc = pi_shared_alloc,\n        .sab_free = pi_shared_free,\n        .sab_dup = pi_shared_dup,\n        .sab_opaque = owner,\n    };\n    JS_SetSharedArrayBufferFunctions(runtime, &functions);\n#if defined(_WIN32) || defined(__linux__)\n    /* Only these admitted page backends activate managed resizable storage.\n       Other platforms retain the existing QuickJS allocation path. */\n    const JSPiArrayBufferStorageFunctions storage = {\n        .allocate = pi_backing_allocate, .shared_owner = pi_backing_shared_owner,\n        .data = pi_backing_data, .byte_length = pi_backing_length,\n        .resize = pi_backing_resize, .retain = pi_backing_retain,\n        .release = pi_backing_release, .opaque = owner,\n    };\n    JS_PiSetArrayBufferStorageFunctions(runtime, &storage);\n#endif\n    *memory_owner = owner;\n    return runtime;\n"
+    },
+    {
+      "id": "host_engine_init",
+      "source_id": "engine",
+      "lines": [
+        252,
+        268
+      ],
+      "offset": 13242,
+      "bytes": 1106,
+      "sha256": "CB477EADCB7D4D376CD422EB022BE7EFE975A8D47AAA54B476A7E1625D8C6F63",
+      "text": "    pub fn init(gpa: std.mem.Allocator, options: Options) !*Engine {\n        if (options.deterministic_clock) |clock| try clock.validate();\n        const self = try gpa.create(Engine);\n        errdefer gpa.destroy(self);\n        var memory_owner: ?*anyopaque = null;\n        const runtime = c.pi_js_new_runtime(options.memory_limit, &memory_owner) orelse return error.OutOfMemory;\n        errdefer c.pi_js_release_memory_owner(memory_owner);\n        var continuation_owner_initialized = false;\n        errdefer {\n            c.JS_FreeRuntime(runtime);\n            if (continuation_owner_initialized) @import(\"native_typebox_continuation.zig\").deinitAfterRuntime(self);\n        }\n        c.JS_SetMemoryLimit(runtime, options.memory_limit);\n        c.JS_SetMaxStackSize(runtime, options.stack_limit);\n        if (options.deterministic_clock) |clock| if (c.JS_PISetDeterministicTime(runtime, clock.seed, clock.realtime(), clock.elapsed()) < 0) return error.InvalidDeterministicTime;\n        const context = c.JS_NewContext(runtime) orelse return error.OutOfMemory;\n        errdefer c.JS_FreeContext(context);\n"
+    },
+    {
+      "id": "host_engine_release",
+      "source_id": "engine",
+      "lines": [
+        403,
+        409
+      ],
+      "offset": 23659,
+      "bytes": 384,
+      "sha256": "644B3483CC9EC4DF5F952645575A0AD3926C52B37E35F14E42BC56E753C69891",
+      "text": "        self.freeValue(self.commonjs_cache);\n        c.JS_FreeContext(self.context);\n        c.JS_FreeRuntime(self.runtime);\n        @import(\"native_typebox_continuation.zig\").deinitAfterRuntime(self);\n        @import(\"native_durable_storage.zig\").deinit(self);\n        if (self.node_options) |config| config.destroy();\n        c.pi_js_release_memory_owner(self.native_memory_owner);\n"
+    },
+    {
+      "id": "host_listener_uv_and_destructor",
+      "source_id": "resource",
+      "lines": [
+        14,
+        51
+      ],
+      "offset": 774,
+      "bytes": 1772,
+      "sha256": "F3369DB46DCC72E1C7C068B73CF5374FB70ACD2847907236F5057AEE8D3C5C96",
+      "text": "pub const uv = @import(\"native_node_managed_buffers.zig\").uv;\n\n/// Original pure virtual read operations. A listener used by EmitAlloc/EmitRead\n/// must supply its actual compiled implementation; lifecycle-only listeners do\n/// not install a passing placeholder for these operations.\npub const ReadMethods = struct {\n    allocate: *const fn (*Listener, usize) anyerror!uv.uv_buf_t,\n    read: *const fn (*Listener, isize, uv.uv_buf_t) anyerror!void,\n};\n\npub const Listener = struct {\n    stream: ?*Resource = null,\n    previous_listener: ?*Listener = null,\n    on_destroy: *const fn (*Listener) void = defaultOnDestroy,\n    read_methods: ?*const ReadMethods = null,\n    after_shutdown: *const fn (*Listener, *requests.Shutdown, c_int) anyerror!void = forwardAfterShutdown,\n\n    fn forwardAfterShutdown(self: *Listener, request: *requests.Shutdown,\n        status: c_int) anyerror!void\n    {\n        const previous = self.previous_listener orelse check.assertion(\n            if (self.stream) |stream| stream.engine else null, .{\n                .file_line = \"src/stream_base.cc:808\",\n                .message = \"(previous_listener_) != nullptr\",\n                .function = \"node::StreamListener::OnStreamAfterShutdown\",\n            });\n        return previous.after_shutdown(previous, request, status);\n    }\n\n    // The original virtual default OnStreamDestroy() has an empty body.\n    fn defaultOnDestroy(_: *Listener) void {}\n\n    /// Actual StreamListener::~StreamListener. Call this before releasing the\n    /// listener's native storage. Removing an already unlinked listener is not\n    /// attempted; the owning Resource may still be in its destructor callback.\n    pub fn deinit(self: *Listener) void {\n        if (self.stream) |stream| stream.remove(self);\n    }\n"
+    },
+    {
+      "id": "host_list_publication_unlink",
+      "source_id": "resource",
+      "lines": [
+        68,
+        112
+      ],
+      "offset": 3075,
+      "bytes": 1981,
+      "sha256": "670D61C11AEB7F855FE5CB41A1C2D0589344F690E9BD76FCD3DE828FA84B8400",
+      "text": "    pub fn push(self: *Resource, listener: ?*Listener) void {\n        const selected = listener orelse check.assertion(self.engine, .{\n            .file_line = \"src/stream_base-inl.h:61\",\n            .message = \"(listener) != nullptr\",\n            .function = \"node::StreamResource::PushStreamListener\",\n        });\n        if (selected.stream != null) check.assertion(self.engine, .{\n            .file_line = \"src/stream_base-inl.h:62\",\n            .message = \"(listener->stream_) == nullptr\",\n            .function = \"node::StreamResource::PushStreamListener\",\n        });\n        selected.previous_listener = self.listener;\n        selected.stream = self;\n        self.listener = selected;\n    }\n\n    /// The original loop intentionally has no success-free exit. A missing\n    /// listener reaches its native CHECK; it is not an ordinary host error.\n    pub fn remove(self: *Resource, listener: ?*Listener) void {\n        const selected = listener orelse check.assertion(self.engine, .{\n            .file_line = \"src/stream_base.cc:831\",\n            .message = \"(listener) != nullptr\",\n            .function = \"node::StreamResource::RemoveStreamListener\",\n        });\n        var previous: ?*Listener = null;\n        var current = self.listener;\n        while (true) {\n            const actual = current orelse check.assertion(self.engine, .{\n                .file_line = \"src/stream_base.cc:840\",\n                .message = \"(current) != nullptr\",\n                .function = \"node::StreamResource::RemoveStreamListener\",\n            });\n            if (actual == selected) {\n                if (previous) |prior|\n                    prior.previous_listener = actual.previous_listener\n                else\n                    self.listener = selected.previous_listener;\n                break;\n            }\n            previous = actual;\n            current = actual.previous_listener;\n        }\n        selected.stream = null;\n        selected.previous_listener = null;\n    }\n"
+    },
+    {
+      "id": "host_emit_and_chain_teardown",
+      "source_id": "resource",
+      "lines": [
+        116,
+        150
+      ],
+      "offset": 5205,
+      "bytes": 1642,
+      "sha256": "68F7C5880A00663DDC659A8CA63CEAAD02556449D1586CB0F5376CEE0D14AA8F",
+      "text": "    pub fn emitAlloc(self: *Resource, suggested_size: usize) !uv.uv_buf_t {\n        const selected = self.listener.?;\n        std.debug.assert(selected.read_methods != null);\n        return selected.read_methods.?.allocate(selected, suggested_size);\n    }\n\n    /// The original unsigned counter advances before the selected read method.\n    /// This call may delete the native stream; do not access self after it.\n    pub fn emitRead(self: *Resource, nread: isize, buffer: uv.uv_buf_t) !void {\n        if (nread > 0) self.bytes_read +%= @intCast(nread);\n        const selected = self.listener.?;\n        std.debug.assert(selected.read_methods != null);\n        return selected.read_methods.?.read(selected, nread, buffer);\n    }\n\n    /// StreamResource::EmitAfterShutdown selects the live native head. The\n    /// callback may destroy this resource; no self access follows it.\n    pub fn emitAfterShutdown(self: *Resource, request: *requests.Shutdown,\n        status: c_int) anyerror!void\n    {\n        const selected = self.listener.?;\n        return selected.after_shutdown(selected, request, status);\n    }\n\n    /// Actual StreamResource::~StreamResource. OnStreamDestroy may unlink and\n    /// free its own listener or alter the native chain. After that callback,\n    /// use only the saved pointer identity until the live head is established.\n    /// A newly pushed listener is visited by the same original while loop.\n    pub fn deinit(self: *Resource) void {\n        while (self.listener) |selected| {\n            selected.on_destroy(selected);\n            if (self.listener == selected) self.remove(self.listener);\n        }\n    }\n};\n"
+    },
+    {
+      "id": "host_base_member_order",
+      "source_id": "base",
+      "lines": [
+        77,
+        100
+      ],
+      "offset": 3622,
+      "bytes": 963,
+      "sha256": "1F7B2BD65DA1C1A22FCEB8892AD566FC7BD1CBCBECD7B6BE2A52BF6B86BBDFE3",
+      "text": "    pub fn init(self: *Base, environment: *callbacks.Environment,\n        virtuals: Virtuals, operations: Operations) !void\n    {\n        const engine = try environment.requireEngine();\n        self.* = .{\n            .resource = resources.Resource.init(engine),\n            .environment = environment,\n            .default_listener = .{ .read_methods = &default_read_methods,\n                .after_shutdown = shutdown.reportAfterShutdown },\n            .virtuals = virtuals,\n            .operations = operations,\n            .initialized = true,\n        };\n        self.resource.push(&self.default_listener);\n    }\n\n    /// The default listener is a native member. Its destructor unlinks it\n    /// before the StreamResource base destructor processes remaining listeners.\n    pub fn deinit(self: *Base) void {\n        if (!self.initialized) return;\n        self.initialized = false;\n        self.default_listener.deinit();\n        self.resource.deinit();\n    }\n"
+    },
+    {
+      "id": "host_call_js",
+      "source_id": "base",
+      "lines": [
+        120,
+        155
+      ],
+      "offset": 5268,
+      "bytes": 1889,
+      "sha256": "9739A9EB97AB797B6553D360FBE648C77FC1F8349C863E84A438380D723EAA58",
+      "text": "    pub fn callJSOnread(self: *Base, s: *a.Scope, nread: isize,\n        array_buffer: ?c.JSValue, offset: usize, checks: ReadChecks) !?c.JSValue\n    {\n        const environment = self.environment;\n        std.debug.assert(@as(isize, @as(i32, @truncate(nread))) == nread);\n        std.debug.assert(offset <= std.math.maxInt(i32));\n        if (checks == .check_nread) {\n            if (array_buffer == null) {\n                std.debug.assert(offset == 0);\n                std.debug.assert(nread <= 0);\n            } else std.debug.assert(nread >= 0);\n        }\n        environment.streamBaseField(.read_bytes_or_error).* = @truncate(nread);\n        environment.streamBaseField(.array_buffer_offset).* =\n            @bitCast(@as(u32, @truncate(offset)));\n        const arguments = [_]c.JSValue{array_buffer orelse c.pi_js_undefined()};\n\n        const state = self.virtuals.get_async_wrap(self) orelse\n            check.assertion(s.engine, .{\n                .file_line = \"src/stream_base.cc:473\",\n                .message = \"(wrap) != nullptr\",\n                .function = \"node::StreamBase::CallJSOnreadMethod\",\n            });\n        const wrapper = state.object() orelse\n            return environment.operations.native_check_failure(environment, .invalid_wrap_brand);\n        const object = try s.own(a.duplicate(s.engine, wrapper));\n        const onread = try state.registry.streamOnRead(s, object);\n        if (!c.JS_IsFunction(s.engine.context, onread))\n            check.assertion(s.engine, .{\n                .file_line = \"src/stream_base.cc:477\",\n                .message = \"onread->IsFunction()\",\n                .function = \"node::StreamBase::CallJSOnreadMethod\",\n            });\n        // Copy before the callback: neither self nor state is used afterwards.\n        const trace = self.operations.trace;\n        return async_callback.call(s, state, trace, onread, &arguments);\n"
+    },
+    {
+      "id": "host_actual_shutdown_reporter",
+      "source_id": "shutdown",
+      "lines": [
+        175,
+        239
+      ],
+      "offset": 7847,
+      "bytes": 3174,
+      "sha256": "009264682A60F0AC8BDDD047DC047E6BA367F66FDAE7D51CF23A5FFCF919F008",
+      "text": "/// Exact reusable ReportWritesToJSStreamListener native callback. Derived\n/// listeners (including CustomBufferJSListener) select this operation rather\n/// than the base StreamListener's forward-to-previous implementation.\npub fn reportAfterShutdown(listener: *resources.Listener,\n    request: *requests.Shutdown, status: c_int) anyerror!void\n{\n    return reportAfterRequest(listener, &request.request, status);\n}\n\npub fn reportAfterRequest(listener: *resources.Listener,\n    request: *requests.Request, status: c_int) anyerror!void\n{\n    // Source static_cast<StreamBase*>(stream_): the installed listener must be\n    // attached to an actual Base resource, as in the original inheritance.\n    const resource = listener.stream orelse return error.ActualStreamListenerRequired;\n    const stream: *streams.Base = @fieldParentPtr(\"resource\", resource);\n    const environment = stream.environment;\n    if (!environment.canCallIntoJs()) return;\n    _ = environment.retain();\n    defer environment.release();\n    const engine = try environment.requireEngine();\n    const state = request.asyncWrap();\n    var locals = a.Scope.init(engine);\n    const ignored = try locals.finish(reportBody(&locals, stream, state, status));\n    engine.freeValue(ignored);\n}\n\nfn reportBody(s: *a.Scope, stream: *streams.Base, state: *wraps.State,\n    status: c_int) anyerror!c.JSValue\n{\n    const wrapper = state.object() orelse check.assertion(s.engine, .{\n        .file_line = \"src/stream_base.cc:763\",\n        .message = \"!async_wrap->persistent().IsEmpty()\",\n        .function = \"node::ReportWritesToJSStreamListener::OnStreamAfterReqFinished\",\n    });\n    const object = try s.own(a.duplicate(s.engine, wrapper));\n    const stream_object = stream.virtuals.get_object(stream) orelse\n        return error.ActualStreamObjectRequired;\n    var arguments = [_]c.JSValue{\n        c.JS_NewInt32(s.engine.context, status),\n        try s.own(a.duplicate(s.engine, stream_object)),\n        c.pi_js_undefined(),\n    };\n    const bindings = stream.operations.shutdown orelse\n        return error.ActualStreamShutdownBindingsRequired;\n    const diagnostics = stream.operations.heap_diagnostics;\n    if (stream.virtuals.error_string(stream)) |message| {\n        arguments[2] = try latin1.fromCString(s, message, diagnostics);\n        stream.virtuals.clear_error(stream);\n    }\n    // Has(...).FromJust() is the original native terminal policy, even when the\n    // proxy Has trap produced an ordinary pending reason.\n    const has_callback = s.hasKey(object, bindings.oncomplete_string) catch\n        check.maybeCheck(s.engine, diagnostics);\n    if (has_callback) {\n        // AsyncWrap::MakeCallback(Local<Name>) performs ordinary Get and\n        // returns undefined without invoking JS/trace when it is not Function.\n        const callback = try s.getKey(object, bindings.oncomplete_string);\n        if (!c.JS_IsFunction(s.engine.context, callback)) return c.pi_js_undefined();\n        const trace = stream.operations.trace;\n        _ = try async_callback.call(s, state, trace, callback, &arguments);\n        // The native callback may have destroyed stream/state.\n    }\n    return c.pi_js_undefined();\n}\n"
+    },
+    {
+      "id": "host_scope_c_chain",
+      "source_id": "argument",
+      "lines": [
+        4,
+        14
+      ],
+      "offset": 222,
+      "bytes": 706,
+      "sha256": "1FCC999CF5F033AD3372AF794EB4D974D4E9455D6FC6F5AF76C25A2EA99B9FCA",
+      "text": "pub const v = @import(\"native_ai_provider_values.zig\");\npub const c = v.c;\npub const Scope = @import(\"native_node_operation_scope.zig\").Scope;\npub const owned = @import(\"native_sdk_owned_completion.zig\");\npub const frames = @import(\"native_public_lexical_frame.zig\");\npub fn duplicate(engine: *v.em.Engine, value: c.JSValue) c.JSValue { return c.JS_DupValue(engine.context, value); }\npub fn arg(args: []const c.JSValue, position: usize) c.JSValue { return if (position < args.len) args[position] else c.pi_js_undefined(); }\npub fn expression(engine: *v.em.Engine, comptime body: anytype, args: anytype) !c.JSValue {\n    var s = Scope.init(engine);\n    return s.finish(@call(.auto, body, .{&s} ++ args));\n}\n"
+    },
+    {
+      "id": "host_provider_c_chain",
+      "source_id": "provider_values",
+      "lines": [
+        1,
+        5
+      ],
+      "offset": 0,
+      "bytes": 253,
+      "sha256": "9C61119F55F0F8790AB70B393194D67BFDC7F222C37200E8E1665AB6F5953527",
+      "text": "//! Shared owner-thread value operations for actual native provider algorithms.\npub const em = @import(\"engine.zig\");\npub const js = @import(\"native_js_values.zig\");\npub const Scope = @import(\"native_models_stream_scope.zig\").Scope;\npub const c = em.c;\n"
+    },
+    {
+      "id": "host_engine_c_import",
+      "source_id": "engine",
+      "lines": [
+        1,
+        14
+      ],
+      "offset": 0,
+      "bytes": 647,
+      "sha256": "92C4A76B3DE3F2E05947FCDA7B173F609784BC9032F1C08FCDA116D8A9663803",
+      "text": "//! Direct C ABI for the extension language. No Node process or bridge source.\nconst std = @import(\"std\");\nconst builtin = @import(\"builtin\");\nconst file_urls = @import(\"file_urls.zig\");\npub const c = @cImport({\n    // Zig 0.16 translate-c emits invalid unused declarations for MinGW's\n    // fortified wide-string inline wrappers in ReleaseSafe. This affects\n    // declaration import only; the separately compiled C library keeps its\n    // normal compiler safety flags and does not use these inline wrappers.\n    @cUndef(\"_FORTIFY_SOURCE\");\n    @cDefine(\"_FORTIFY_SOURCE\", \"0\");\n    @cInclude(\"engine_abi.h\");\n    @cInclude(\"libregexp.h\");\n});\n"
+    },
+    {
+      "id": "host_scope_pending_own",
+      "source_id": "scope",
+      "lines": [
+        1,
+        28
+      ],
+      "offset": 0,
+      "bytes": 1826,
+      "sha256": "77FD64B6EC7B34033A0C8775584E93ED652FD9EDCD0ECCBD9A87FEC9AF2B4686",
+      "text": "//! Shared native Node local Scope. Guest-capable operations preserve actual\n//! pending/B1 without deriving fatality from a private DATA birth span.\n//! Provider Scope, Engine and C/ABI are unchanged.\nconst v = @import(\"native_ai_provider_values.zig\");\nconst c = v.c;\nconst Boundary = @import(\"native_node_commonjs_owned_boundary.zig\").Boundary;\npub const Scope = struct {\n    engine: *v.em.Engine,\n    values: v.Scope,\n    boundary: Boundary,\n    pub fn init(engine: *v.em.Engine) Scope { return .{ .engine = engine, .values = .{ .engine = engine }, .boundary = Boundary.begin(engine) }; }\n    pub fn pending(self: *Scope) !void { try self.boundary.checkCurrent(); }\n    pub fn beforeAllocation(self: *Scope) !u64 { return self.boundary.beforeAllocation(); }\n    pub fn own(self: *Scope, value: c.JSValue) !c.JSValue { return self.boundary.own(&self.values, value); }\n    /// Raw result with no supplied operation provenance. Do not recover an\n    /// earlier generation from the whole Scope or a captured diagnostic.\n    pub fn checked(self: *Scope, value: c.JSValue) !c.JSValue {\n        self.boundary.checkPendingSince(null) catch |err| { var owned = value; self.boundary.release(&owned); return err; };\n        if (c.JS_IsException(value)) return error.MissingActualCJSBootstrapReason;\n        return self.own(value);\n    }\n    /// Only for a non-guest raw producer (e.g. NewString/NewObject). Never use\n    /// this tag span around getters, JS calls/constructors or coercion.\n    pub fn checkedAllocation(self: *Scope, value: c.JSValue, generation: u64) !c.JSValue {\n        self.boundary.checkPendingSince(generation) catch |err| { var owned = value; self.boundary.release(&owned); return err; };\n        if (c.JS_IsException(value)) return error.MissingActualCJSBootstrapReason;\n        return self.own(value);\n    }\n"
+    },
+    {
+      "id": "host_scope_finish",
+      "source_id": "scope",
+      "lines": [
+        89,
+        92
+      ],
+      "offset": 6618,
+      "bytes": 377,
+      "sha256": "47DFE47B4DCDBBA73AAB7F71465DC25227DC16AD2A7474698968494D67A9745D",
+      "text": "    pub fn truthy(self: *Scope, value: c.JSValue) bool { return c.JS_ToBool(self.engine.context, value) == 1; }\n    pub fn equal(self: *Scope, left: c.JSValue, right: c.JSValue) bool { return c.JS_IsStrictEqual(self.engine.context, left, right); }\n    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }\n};\n"
+    },
+    {
+      "id": "host_canonical_uv_import",
+      "source_id": "managed",
+      "lines": [
+        1,
+        12
+      ],
+      "offset": 0,
+      "bytes": 628,
+      "sha256": "58416618BAD9DB6D6389A3C343917DA555A68E47577A7085C84CCED0600AAD64",
+      "text": "//! The actual native managed-buffer table embedded in one Environment block.\n//! Backing allocation/retry and intrinsic ArrayBuffer adoption are separate.\n//! This owner holds no JS roots and never reconstructs a token from its data.\nconst std = @import(\"std\");\nconst em = @import(\"engine.zig\");\nconst c = em.c;\npub const uv = @cImport({ @cInclude(\"uv.h\"); });\npub const Token = c.JSPiArrayBufferBackingStore;\nconst Native = opaque {};\nextern fn pi_node_managed_buffers_storage_size() usize;\nextern fn pi_node_managed_buffers_storage_alignment() usize;\nextern fn pi_node_managed_buffers_construct(storage: *anyopaque) *Native;\n"
+    },
+    {
+      "id": "host_dataview_brand",
+      "source_id": "quickjs",
+      "lines": [
+        13990,
+        14000
+      ],
+      "offset": 485628,
+      "bytes": 232,
+      "sha256": "E468C10A81FA1445DF891F310BEDE95CB331DB641F8FC8095E28367E7B6C939F",
+      "text": "bool JS_IsDataView(JSValueConst val)\n{\n    return JS_CLASS_DATAVIEW == JS_GetClassID(val);\n}\n\nbool JS_IsError(JSValueConst val)\n{\n    return JS_CLASS_ERROR == JS_GetClassID(val);\n}\n\n/* used to avoid catching interrupt exceptions */\n"
+    },
+    {
+      "id": "host_typedarray_brand",
+      "source_id": "quickjs",
+      "lines": [
+        68201,
+        68212
+      ],
+      "offset": 2304656,
+      "bytes": 241,
+      "sha256": "9E2584903F16364357B129B6EEA28361EDC9BFCD6BFAEC6FB78B136C07162B26",
+      "text": "int JS_GetTypedArrayType(JSValueConst obj)\n{\n    JSClassID class_id = JS_GetClassID(obj);\n    if (is_typed_array(class_id))\n        return class_id - JS_CLASS_UINT8C_ARRAY;\n    else\n        return -1;\n}\n\n/* Atomics */\n#ifdef CONFIG_ATOMICS\n\n"
+    },
+    {
+      "id": "host_raw_view_data_length",
+      "source_id": "quickjs",
+      "lines": [
+        67646,
+        67706
+      ],
+      "offset": 2284497,
+      "bytes": 2244,
+      "sha256": "09C178198A28AF23E5382101C67955BD3A3F2676A952A80EFF1A503228407BB6",
+      "text": "}\n\n/* Intrinsic Buffer::Data projection: borrow the actual ArrayBufferView's\n   native address without consulting guest properties or acquiring storage.\n   V8 ByteOffset is zero only for detached views. A live out-of-bounds RAB\n   view retains its stored offset even though ByteLength is zero. Do address\n   arithmetic as uintptr_t so that merely observing such an address does not\n   form an out-of-allocation C pointer by pointer arithmetic. The result must\n   not be dereferenced beyond the separately observed usable byte length.\n   No context, allocation, ownership, or pending-completion operation occurs. */\nuint8_t *JS_PiArrayBufferViewData(JSValueConst view)\n{\n    JSObject *p;\n    JSTypedArray *ta;\n    JSArrayBuffer *abuf;\n\n    if (JS_VALUE_GET_TAG(view) != JS_TAG_OBJECT)\n        return NULL;\n    p = JS_VALUE_GET_OBJ(view);\n    if (!is_typed_array(p->class_id) && p->class_id != JS_CLASS_DATAVIEW)\n        return NULL;\n    ta = p->u.typed_array;\n    if (!ta)\n        return NULL;\n    abuf = ta->buffer->u.array_buffer;\n    if (abuf->detached)\n        return NULL;\n    return (uint8_t *)((uintptr_t)abuf->data + (uintptr_t)ta->offset);\n}\n\n/* Intrinsic V8 ArrayBufferView::ByteLength projection. Borrow the actual view;\n   do not consult guest properties, acquire storage, allocate, or touch pending\n   state. One current backing-length snapshot supplies tracking and OOB rules. */\nsize_t JS_PiArrayBufferViewByteLength(JSValueConst view)\n{\n    JSObject *p;\n    JSTypedArray *ta;\n    JSArrayBuffer *abuf;\n    size_t length, remaining;\n\n    if (JS_VALUE_GET_TAG(view) != JS_TAG_OBJECT)\n        return 0;\n    p = JS_VALUE_GET_OBJ(view);\n    if (!is_typed_array(p->class_id) && p->class_id != JS_CLASS_DATAVIEW)\n        return 0;\n    ta = p->u.typed_array;\n    if (!ta)\n        return 0;\n    abuf = ta->buffer->u.array_buffer;\n    if (abuf->detached)\n        return 0;\n    length = js_array_buffer_current_length(abuf);\n    if (ta->offset > length)\n        return 0;\n    remaining = length - ta->offset;\n    if (!ta->track_rab)\n        return ta->length <= remaining ? ta->length : 0;\n    if (p->class_id == JS_CLASS_DATAVIEW)\n        return remaining;\n    return remaining & ~(((size_t)1 << typed_array_size_log2(p->class_id)) - 1);\n}\n"
+    },
+    {
+      "id": "original_uv_init_declaration",
+      "source_id": "uv_h",
+      "lines": [
+        510,
+        514
+      ],
+      "offset": 22383,
+      "bytes": 133,
+      "sha256": "D2C12A36438A57B57B7E7724E6E3734F22E9706C83F097F55637A383F601255F",
+      "text": "\nUV_EXTERN int uv_fileno(const uv_handle_t* handle, uv_os_fd_t* fd);\n\nUV_EXTERN uv_buf_t uv_buf_init(char* base, unsigned int len);\n\n"
+    },
+    {
+      "id": "original_uv_init_body",
+      "source_id": "uv_init",
+      "lines": [
+        190,
+        195
+      ],
+      "offset": 4647,
+      "bytes": 121,
+      "sha256": "AA352D3F9C68BED6F1B2F2E493C57787ABCB95B4DC2B6AFE6367B6BEB24BA822",
+      "text": "uv_buf_t uv_buf_init(char* base, unsigned int len) {\n  uv_buf_t buf;\n  buf.base = base;\n  buf.len = len;\n  return buf;\n}\n"
+    },
+    {
+      "id": "original_uv_win_width",
+      "source_id": "uv_win",
+      "lines": [
+        221,
+        229
+      ],
+      "offset": 7596,
+      "bytes": 200,
+      "sha256": "A24FD6B5E7EC0A2C9197E2D60118369F7268690CE2846A2F814E41A0AE863D99",
+      "text": "\n/**\n * It should be possible to cast uv_buf_t[] to WSABUF[]\n * see http://msdn.microsoft.com/en-us/library/ms741542(v=vs.85).aspx\n */\ntypedef struct uv_buf_t {\n  ULONG len;\n  char* base;\n} uv_buf_t;\n"
+    },
+    {
+      "id": "original_uv_unix_width",
+      "source_id": "uv_unix",
+      "lines": [
+        118,
+        123
+      ],
+      "offset": 3402,
+      "bytes": 123,
+      "sha256": "0AAA43F572EC2E8E163BEBF0944DED817C98F1EFB42921BD7E71952B4B5514D5",
+      "text": "\n/* Note: May be cast to struct iovec. See writev(2). */\ntypedef struct uv_buf_t {\n  char* base;\n  size_t len;\n} uv_buf_t;\n"
+    },
+    {
+      "id": "host_native_memory_network_link",
+      "source_id": "build",
+      "lines": [
+        100,
+        110
+      ],
+      "offset": 7127,
+      "bytes": 774,
+      "sha256": "E460F8D74C7E3244938B37A10A3A222A7668F361C4CF1E72BDDB40D5D4EB357E",
+      "text": "    });\n    // One allocator/TLS domain is shared by native C++ parser and containers.\n    const native_node_memory = @import(\"tools/build_native_node_memory.zig\").add(b, target, optimize);\n    // One unchanged libuv/llhttp graph is shared by native TCP and file I/O owners.\n    const native_node_network = switch (target.result.os.tag) {\n        .windows, .linux => @import(\"tools/build_native_node_network.zig\").add(b, target, optimize, native_node_memory),\n        else => null,\n    };\n    // The real filesystem is reachable from every VM; share one static owner.\n    if (native_node_network) |network| quickjs.root_module.linkLibrary(network);\n    const native_package_json = @import(\"tools/build_native_package_json.zig\").add(b, target, optimize, native_node_memory);\n"
+    },
+    {
+      "id": "host_shared_diagnostic_library",
+      "source_id": "build",
+      "lines": [
+        2149,
+        2175
+      ],
+      "offset": 209742,
+      "bytes": 1433,
+      "sha256": "78B36085DF43FBBC3EF1B3BF8B1CB0B2612A9F959686CE253E2B86A5C8FEC6CA",
+      "text": "        // Base.init retains the reporter that calls OneByteString diagnostics.\n        // These consumers share one native TLS, V8 fatal, and string owner.\n        const node_one_byte_diagnostics = b.addLibrary(.{\n            .name = \"pi-node-one-byte-string-diagnostics\",\n            .linkage = .static,\n            .root_module = b.createModule(.{\n                .target = target,\n                .optimize = optimize,\n                .link_libc = true,\n                .link_libcpp = true,\n            }),\n        });\n        node_one_byte_diagnostics.root_module.addIncludePath(b.path(\"src/extensions\"));\n        node_one_byte_diagnostics.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context.c\"),\n            .flags = &.{\"-std=gnu11\"},\n        });\n        node_one_byte_diagnostics.root_module.addCSourceFiles(.{\n            .files = &.{\n                \"src/extensions/native_v8_base_fatal.cpp\",\n                \"src/extensions/native_node_one_byte_string_diagnostics.cpp\",\n            },\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        const node_stream_read = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_stream_read_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"Node StreamBase read\"}, .use_llvm = use_llvm,\n"
+    },
+    {
+      "id": "host_common_native_links",
+      "source_id": "build",
+      "lines": [
+        5295,
+        5331
+      ],
+      "offset": 512269,
+      "bytes": 1836,
+      "sha256": "4293F377394DE3037FC7DBFCCA918FF27441B98CBB6349339716AA92977545B8",
+      "text": "fn linkTypeScriptParser(b: *std.Build, module: *std.Build.Module, library: *std.Build.Step.Compile) void {\n    module.addIncludePath(b.path(\"vendor/tree-sitter/lib/include\"));\n    module.linkLibrary(library);\n    module.link_libc = true;\n}\n\nfn linkQuickJs(b: *std.Build, module: *std.Build.Module, library: *std.Build.Step.Compile, sqlite_lib_dir: ?[]const u8) void {\n    // Every VM can reach the native process owner through SDK and TUI imports.\n    linkDurable(b, module);\n    if (sqlite_lib_dir) |directory| module.addLibraryPath(.{ .cwd_relative = directory });\n    module.addIncludePath(b.path(\"vendor/quickjs\"));\n    module.addIncludePath(b.path(\"vendor/libfyaml\"));\n    module.addIncludePath(b.path(\"src/extensions\"));\n    module.addImport(\"native_icu_api\", b.modules.get(\"native_icu_api\").?);\n    module.addIncludePath(b.path(\"vendor/photon-native\"));\n    module.addImport(\"native_photon_link\", b.modules.get(\"native_photon_link\").?);\n    module.addImport(\"native_vm_identity\", b.modules.get(\"native_vm_identity\").?);\n    module.link_libcpp = true;\n    module.linkLibrary(library);\n    module.link_libc = true;\n}\n\nfn linkSqlite(module: *std.Build.Module, library_dir: ?[]const u8, library: ?*std.Build.Step.Compile) void {\n    if (library) |compiled| module.linkLibrary(compiled) else {\n        if (library_dir) |path| module.addLibraryPath(.{ .cwd_relative = path });\n        module.linkSystemLibrary(\"sqlite3\", .{});\n    }\n    module.link_libc = true;\n}\nfn linkDurable(b: *std.Build, module: *std.Build.Module) void {\n    module.addCSourceFile(.{ .file = b.path(\"src/durable/process_probe.c\"), .flags = &.{\"-std=gnu11\"} });\n    module.link_libc = true;\n    if (module.resolved_target.?.result.os.tag == .macos) {\n        module.linkFramework(\"CoreFoundation\", .{});\n        module.linkFramework(\"CoreServices\", .{});\n    }\n}\n"
+    },
+    {
+      "id": "host_network_recipe",
+      "source_id": "network_recipe",
+      "lines": [
+        1,
+        101
+      ],
+      "offset": 0,
+      "bytes": 5905,
+      "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369",
+      "text": "//! Build unchanged Node v24.13.0 libuv/llhttp and shared TCP/file I/O owners.\n//! SOURCE-MANIFEST.json pins every imported byte. No source generator is run.\nconst std = @import(\"std\");\nconst uv_root = \"vendor/node-v24.13.0/uv\";\nconst llhttp_root = \"vendor/node-v24.13.0/llhttp\";\n\npub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode,\n    native_memory: ?*std.Build.Step.Compile) *std.Build.Step.Compile {\n    const library = b.addLibrary(.{\n        .name = \"pi-node-network\",\n        .linkage = .static,\n        .root_module = b.createModule(.{ .target = target, .optimize = optimize, .link_libc = true, .link_libcpp = native_memory != null }),\n    });\n    const module = library.root_module;\n    module.addIncludePath(b.path(uv_root ++ \"/include\"));\n    module.addIncludePath(b.path(uv_root ++ \"/src\"));\n    module.addIncludePath(b.path(llhttp_root ++ \"/include\"));\n    module.addIncludePath(b.path(\"src/extensions\"));\n    module.addIncludePath(b.path(\"vendor/quickjs\"));\n    const flags: []const []const u8 = switch (target.result.os.tag) {\n        .windows => &.{ \"-std=gnu11\", \"-D_WIN32_WINNT=0x0602\", \"-D_GNU_SOURCE\", \"-fno-strict-aliasing\" },\n        .linux => &.{ \"-std=gnu11\", \"-D_GNU_SOURCE\", \"-D_LARGEFILE_SOURCE\", \"-D_FILE_OFFSET_BITS=64\", \"-fno-strict-aliasing\" },\n        else => std.debug.panic(\"The real Node TCP backend has no admitted source set for {s}\", .{@tagName(target.result.os.tag)}),\n    };\n    module.addCSourceFiles(.{ .root = b.path(uv_root), .files = &common_sources, .flags = flags });\n    switch (target.result.os.tag) {\n        .windows => {\n            module.addCSourceFiles(.{ .root = b.path(uv_root), .files = &windows_sources, .flags = flags });\n            inline for (.{ \"advapi32\", \"dbghelp\", \"ole32\", \"iphlpapi\", \"psapi\", \"shell32\", \"user32\", \"userenv\", \"uuid\", \"ws2_32\" }) |name|\n                module.linkSystemLibrary(name, .{});\n        },\n        .linux => {\n            module.addCSourceFiles(.{ .root = b.path(uv_root), .files = &unix_sources, .flags = flags });\n            module.addCSourceFiles(.{ .root = b.path(uv_root), .files = &linux_sources, .flags = flags });\n            inline for (.{ \"pthread\", \"m\", \"dl\", \"rt\" }) |name| module.linkSystemLibrary(name, .{});\n        },\n        else => unreachable,\n    }\n    module.addCSourceFiles(.{\n        .root = b.path(llhttp_root),\n        .files = &.{ \"src/llhttp.c\", \"src/api.c\", \"src/http.c\" },\n        .flags = &.{\"-std=gnu11\"},\n    });\n    module.addCSourceFile(.{ .file = b.path(\"src/extensions/native_uv_tcp.c\"), .flags = flags });\n    module.addCSourceFile(.{ .file = b.path(\"src/extensions/native_uv_file_handle.c\"), .flags = flags });\n    module.addCSourceFile(.{ .file = b.path(\"src/extensions/native_uv_fs_write.c\"), .flags = flags });\n    module.addCSourceFile(.{ .file = b.path(\"src/extensions/native_node_options_environment.c\"), .flags = flags });\n    module.addCSourceFile(.{ .file = b.path(\"src/extensions/native_node_check_failure.c\"), .flags = flags });\n    if (native_memory) |memory| {\n        module.linkLibrary(memory);\n        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_map.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_managed_buffers.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_environment_paths.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_permission.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_native_debug.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n    }\n    return library;\n}\n\n// Exact C source membership of deps/uv/uv.gyp for Windows/Linux. Header-only\n// entries remain vendored and included normally; no unrelated platform body is\n// compiled as a substitute for the selected target.\nconst common_sources = [_][]const u8{\n    \"src/fs-poll.c\", \"src/idna.c\", \"src/inet.c\", \"src/random.c\",\n    \"src/strscpy.c\", \"src/strtok.c\", \"src/thread-common.c\", \"src/threadpool.c\",\n    \"src/timer.c\", \"src/uv-data-getter-setters.c\", \"src/uv-common.c\", \"src/version.c\",\n};\nconst windows_sources = [_][]const u8{\n    \"src/win/async.c\", \"src/win/core.c\", \"src/win/detect-wakeup.c\", \"src/win/dl.c\",\n    \"src/win/error.c\", \"src/win/fs.c\", \"src/win/fs-event.c\", \"src/win/getaddrinfo.c\",\n    \"src/win/getnameinfo.c\", \"src/win/handle.c\", \"src/win/loop-watcher.c\", \"src/win/pipe.c\",\n    \"src/win/thread.c\", \"src/win/poll.c\", \"src/win/process.c\", \"src/win/process-stdio.c\",\n    \"src/win/signal.c\", \"src/win/snprintf.c\", \"src/win/stream.c\", \"src/win/tcp.c\",\n    \"src/win/tty.c\", \"src/win/udp.c\", \"src/win/util.c\", \"src/win/winapi.c\", \"src/win/winsock.c\",\n};\nconst unix_sources = [_][]const u8{\n    \"src/unix/async.c\", \"src/unix/core.c\", \"src/unix/dl.c\", \"src/unix/fs.c\",\n    \"src/unix/getaddrinfo.c\", \"src/unix/getnameinfo.c\", \"src/unix/loop.c\",\n    \"src/unix/loop-watcher.c\", \"src/unix/pipe.c\", \"src/unix/poll.c\",\n    \"src/unix/process.c\", \"src/unix/random-devurandom.c\", \"src/unix/signal.c\",\n    \"src/unix/stream.c\", \"src/unix/tcp.c\", \"src/unix/thread.c\", \"src/unix/tty.c\", \"src/unix/udp.c\",\n};\nconst linux_sources = [_][]const u8{\n    \"src/unix/linux.c\", \"src/unix/procfs-exepath.c\", \"src/unix/random-getrandom.c\",\n    \"src/unix/random-sysctl-linux.c\", \"src/unix/proctitle.c\",\n};\n"
+    },
+    {
+      "id": "host_memory_recipe",
+      "source_id": "memory_recipe",
+      "lines": [
+        1,
+        24
+      ],
+      "offset": 0,
+      "bytes": 1030,
+      "sha256": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17",
+      "text": "//! One native C++ per-allocation owner and one TLS domain for all consumers.\n//! Build/install wiring never executes a source generator or target.\nconst std = @import(\"std\");\npub fn add(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.builtin.OptimizeMode) ?*std.Build.Step.Compile {\n    if (target.result.ptrBitWidth() != 64) return null;\n    switch (target.result.os.tag) {\n        .windows, .linux => {},\n        else => return null,\n    }\n    const library = b.addLibrary(.{\n        .name = \"pi-node-native-memory\",\n        .linkage = .static,\n        .root_module = b.createModule(.{\n            .target = target, .optimize = optimize,\n            .link_libc = true, .link_libcpp = true,\n        }),\n    });\n    library.root_module.addIncludePath(b.path(\"src/extensions\"));\n    library.root_module.addCSourceFile(.{\n        .file = b.path(\"src/extensions/native_simdjson_memory.cpp\"),\n        .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n    });\n    return library;\n}\n"
+    },
+    {
+      "id": "selected_fixture_namespace",
+      "source_id": "support",
+      "lines": [
+        1,
+        21
+      ],
+      "offset": 0,
+      "bytes": 968,
+      "sha256": "D11EA16B445F1AFFB3F6436AAA12D46871843031D944D2A30FC51C09E8BC26EC",
+      "text": "//! Focused source controls over the frozen concrete FileHandle fixture.\n//! The callbacks below observe real native state. They are not production\n//! trace, allocation, bootstrap or hook-policy implementations.\nconst std = @import(\"std\");\npub const base_support = @import(\"native_node_file_handle_owner_test_support.zig\");\npub const a = base_support.a;\npub const c = a.c;\npub const native = base_support.native;\npub const Handle = base_support.Handle;\npub const requests = @import(\"extensions/native_node_stream_request.zig\");\npub const shutdown = @import(\"extensions/native_node_stream_shutdown.zig\");\npub const streams = @import(\"extensions/native_node_stream_base.zig\");\npub const uv = base_support.uv;\nconst templates = base_support.templates;\n\npub const Fixture = struct {\n    base: base_support.Fixture = undefined,\n    base_ready: bool = false,\n    error_key: ?c.JSValue = null,\n    oncomplete_key: ?c.JSValue = null,\n    observed_request: ?c.JSValue = null,\n"
+    },
+    {
+      "id": "selected_fixture_teardown",
+      "source_id": "support",
+      "lines": [
+        133,
+        158
+      ],
+      "offset": 6388,
+      "bytes": 1003,
+      "sha256": "DA1F2A4BA2F16A15F1A8E13D686D321B79A564106B675A3E30B84EDFC67A791C",
+      "text": "        try std.testing.expectEqual(@as(usize, 0), self.base.queueCount());\n    }\n    pub fn installMessage(self: *Fixture) !void {\n        const handle = try self.base.handle();\n        handle.stream.virtuals.error_string = errorString;\n        handle.stream.virtuals.clear_error = clearError;\n        self.message_available = true;\n    }\n    pub fn deinit(self: *Fixture) void {\n        if (!self.base_ready) return;\n        self.base.stopIo(); // drains every accepted callback while keys live\n        for ([_]*?c.JSValue{ &self.observed_request, &self.error_key, &self.oncomplete_key }) |slot| {\n            if (slot.*) |value| {\n                slot.* = null;\n                self.base.engine.freeValue(value);\n            }\n        }\n        self.base.deinit();\n        self.base_ready = false;\n    }\n};\n\nfn fixture(engine: *base_support.em.Engine) *Fixture {\n    const base: *base_support.Fixture = @ptrCast(@alignCast(engine.host_control_context.?));\n    return @fieldParentPtr(\"base\", base);\n}\n"
+    },
+    {
+      "id": "selected_install_block",
+      "source_id": "block",
+      "lines": [
+        1,
+        21
+      ],
+      "offset": 0,
+      "bytes": 1857,
+      "sha256": "703701E5679B54F4A91AB25A19241A5BA4AFEF2A0F7F3D6CDA0B2794088794E1",
+      "text": "        const node_custom_buffer_listener = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_custom_buffer_listener_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native CustomBuffer listener\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_custom_buffer_listener.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_custom_buffer_listener.root_module, typescript_parser);\n        linkSqlite(node_custom_buffer_listener.root_module, sqlite_lib_dir, sqlite_library);\n        node_custom_buffer_listener.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_custom_buffer_listener.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_custom_buffer_listener.root_module.addIncludePath(b.path(\"src/extensions\"));\n        node_custom_buffer_listener.root_module.linkLibrary(network);\n        node_custom_buffer_listener.root_module.linkLibrary(node_one_byte_diagnostics);\n        node_custom_buffer_listener.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_custom_buffer_listener_allocation.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        if (target.result.os.tag == .windows) {\n            node_custom_buffer_listener.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_custom_buffer_listener.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-custom-buffer-listener\", \"Install 15 actual CustomBuffer controls without execution\").dependOn(&b.addInstallArtifact(node_custom_buffer_listener, .{ .dest_sub_path = b.fmt(\"native-node-custom-buffer-listener{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n"
+    },
+    {
+      "id": "resolved_compile_time_embed_tuple",
+      "source_id": "nonliteral",
+      "lines": [
+        49,
+        59
+      ],
+      "offset": 2982,
+      "bytes": 919,
+      "sha256": "EB2D454AE43BA17717649EA7C81F92C63D479F241F8E293C12FD6DE15C81CE5B",
+      "text": "    defer temporary.cleanup();\n    var cwd_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;\n    const cwd_size = try temporary.dir.realPath(std.testing.io, &cwd_buffer);\n    const global = c.JS_GetGlobalObject(engine.context);\n    defer engine.freeValue(global);\n    try sdk.put(engine, global, \"wrapperCwd\", try sdk.text(engine, cwd_buffer[0..cwd_size]));\n    inline for (.{ .{ \"wrapperIdentitySource\", \"../durable/fixtures/sdk-agent-tool-wrapper-identity-1ced.json\" }, .{ \"wrapperContextSource\", \"../durable/fixtures/sdk-agent-tool-context-1ced.json\" } }) |fixture| {\n        const text = @embedFile(fixture[1]);\n        try sdk.put(engine, global, fixture[0], try engine.checked(c.JS_ParseJSON(engine.context, text, text.len, \"actual-source-sdk-wrapper\")));\n    }\n    const output = try engine.evalModule(@embedFile(\"../durable/fixtures/sdk-agent-tool-wrapper-context.mjs\"), \"sdk-agent-tool-wrapper-context.mjs\");\n"
+    },
+    {
+      "id": "control_01",
+      "source_id": "controls",
+      "lines": [
+        106,
+        126
+      ],
+      "offset": 5030,
+      "bytes": 1367,
+      "sha256": "D9E716572F43CB64A2AF88D941CDA1E985D9F66367E44CC664D9C64D395E95ED",
+      "text": "test \"native CustomBuffer listener publishes the actual borrowed typed view span and writes its physical storage\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const view = try f.base().value(\"globalThis.customBacking=new ArrayBuffer(16);globalThis.customView=new Uint8Array(customBacking,3,6);customView\");\n    defer f.base().engine.freeValue(view);\n    const pointer = @intFromPtr(c.JS_PiArrayBufferViewData(view));\n    const previous = (try f.resource()).listener.?;\n    const listener = try f.use(view);\n    try std.testing.expect(listener.previous_listener == previous);\n    try std.testing.expect(listener.stream == try f.resource());\n    const buffer = try f.allocated(65536);\n    try expectBuffer(buffer, pointer, 6);\n    buffer.base[2] = 0x6b;\n    try f.base().expect(\"customView[2]===0x6b&&new Uint8Array(customBacking)[5]===0x6b\");\n    try f.read(3, buffer);\n    try f.base().expect(\"customReads.length===1&&customReads[0]===3&&customArguments[0][0]===1&&customArguments[0][1]===undefined\");\n    try std.testing.expectEqual(@as(u64, 3), (try f.resource()).bytes_read);\n    try std.testing.expectEqual(@as(usize, 0), f.base().allocations);\n    try std.testing.expectEqual(@as(usize, 0), f.base().env().managed_buffers.count());\n    try std.testing.expectEqual(@as(i32, 0), f.base().env().streamBaseField(.array_buffer_offset).*);\n}\n\n"
+    },
+    {
+      "id": "control_02",
+      "source_id": "controls",
+      "lines": [
+        127,
+        141
+      ],
+      "offset": 6397,
+      "bytes": 917,
+      "sha256": "F20C824C5D43AEC2E68F16F3B92CE5980F26A48CD34732AF636AAC91E05E6DC5",
+      "text": "test \"native CustomBuffer listener uses actual DataView fields without invoking shadow getters\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const view = try f.base().value(\n        \"globalThis.customBacking=new ArrayBuffer(20);globalThis.customView=new DataView(customBacking,5,7);\" ++\n        \"globalThis.customGetterCalls=0;for(const key of ['buffer','byteOffset','byteLength'])Object.defineProperty(customView,key,{get(){customGetterCalls++;throw Error('getter');}});customView\");\n    defer f.base().engine.freeValue(view);\n    _ = try f.use(view);\n    const buffer = try f.allocated(1);\n    try expectBuffer(buffer, @intFromPtr(c.JS_PiArrayBufferViewData(view)), 7);\n    buffer.base[6] = 0x9e;\n    try f.base().expect(\"customGetterCalls===0&&new Uint8Array(customBacking)[11]===0x9e\");\n    try f.read(0, buffer);\n    try f.base().expect(\"customReads.length===1&&customReads[0]===0\");\n}\n\n"
+    },
+    {
+      "id": "control_03",
+      "source_id": "controls",
+      "lines": [
+        142,
+        154
+      ],
+      "offset": 7314,
+      "bytes": 767,
+      "sha256": "CB9C36F265D7FD530B3A147DFAC851A5F644A58C982441789F67D7180609192D",
+      "text": "test \"native CustomBuffer listener returns the same empty view buffer regardless of suggested size\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const view = try f.base().value(\"globalThis.customBacking=new ArrayBuffer(8);new Uint8Array(customBacking,8,0)\");\n    defer f.base().engine.freeValue(view);\n    _ = try f.use(view);\n    const pointer = @intFromPtr(c.JS_PiArrayBufferViewData(view));\n    try expectBuffer(try f.allocated(0), pointer, 0);\n    try expectBuffer(try f.allocated(123456), pointer, 0);\n    // Original UseUserBuffer itself does not reject an empty branded view.\n    // The separate native I/O nonzero-allocation caller precondition is not invoked.\n    try std.testing.expectEqual(@as(usize, 0), f.base().allocations);\n}\n\n"
+    },
+    {
+      "id": "control_04",
+      "source_id": "controls",
+      "lines": [
+        155,
+        170
+      ],
+      "offset": 8081,
+      "bytes": 835,
+      "sha256": "24682941254F1B10E79BF57C7636C9C2826B8243D3544C6E718156D4E1E3C8A7",
+      "text": "test \"native CustomBuffer listener calls onread for zero and nonnull negative reads and retains undefined results\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const view = try f.base().value(\"new Uint8Array(8)\");\n    defer f.base().engine.freeValue(view);\n    _ = try f.use(view);\n    var buffer = try f.allocated(99);\n    const original = buffer;\n    // Only base identity is compared; the incoming len is not buffer_.len.\n    buffer.len = 1;\n    try f.read(0, buffer);\n    try f.read(-7, buffer);\n    try expectBuffer(try f.allocated(1), @intFromPtr(original.base), original.len);\n    try f.base().expect(\"customReads.length===2&&customReads[0]===0&&customReads[1]===-7&&customArguments.every(v=>v[0]===1&&v[1]===undefined)\");\n    try std.testing.expectEqual(@as(u64, 0), (try f.resource()).bytes_read);\n}\n\n"
+    },
+    {
+      "id": "control_05",
+      "source_id": "controls",
+      "lines": [
+        171,
+        183
+      ],
+      "offset": 8916,
+      "bytes": 695,
+      "sha256": "4EE5E0CB367951486A136BD879866CA84885A0CC978674DE8917F66320CBE53B",
+      "text": "test \"native CustomBuffer listener null error branch ignores even an invalid replacement result\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const view = try f.base().value(\"new Uint8Array(9)\");\n    defer f.base().engine.freeValue(view);\n    _ = try f.use(view);\n    const buffer = try f.allocated(1);\n    try f.onread(\"(function(){customReads.push(actualCustomNread());return 17;})\");\n    try f.read(-9, .{ .base = null, .len = 0 });\n    try expectBuffer(try f.allocated(1), @intFromPtr(buffer.base), buffer.len);\n    try f.base().expect(\"customReads.length===1&&customReads[0]===-9\");\n    try std.testing.expectEqual(@as(usize, 1), f.base().after_read_callbacks);\n}\n\n"
+    },
+    {
+      "id": "control_06",
+      "source_id": "controls",
+      "lines": [
+        184,
+        200
+      ],
+      "offset": 9611,
+      "bytes": 973,
+      "sha256": "C6B5383B67F342F0CC6003286A5455D71FFB84FB164B346000888D52B344F0B6",
+      "text": "test \"native CustomBuffer listener commits the actual returned view for the next allocation\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const first = try f.base().value(\"globalThis.customFirst=new Uint8Array(8);globalThis.customNext=new DataView(new ArrayBuffer(18),6,5);customFirst\");\n    defer f.base().engine.freeValue(first);\n    const second = try f.base().global(\"customNext\");\n    defer f.base().engine.freeValue(second);\n    _ = try f.use(first);\n    const first_buffer = try f.allocated(1);\n    try f.onread(\"(function(){customReads.push(actualCustomNread());return customNext;})\");\n    try f.read(2, first_buffer);\n    const next_buffer = try f.allocated(65536);\n    try expectBuffer(next_buffer, @intFromPtr(c.JS_PiArrayBufferViewData(second)), 5);\n    next_buffer.base[4] = 91;\n    try f.base().expect(\"customNext.getUint8(4)===91&&customReads[0]===2\");\n    try std.testing.expectEqual(@as(u64, 2), (try f.resource()).bytes_read);\n}\n\n"
+    },
+    {
+      "id": "control_07",
+      "source_id": "controls",
+      "lines": [
+        201,
+        221
+      ],
+      "offset": 10584,
+      "bytes": 1608,
+      "sha256": "557D47AC25E99A50DD18022EB901254A35CE8907912EEDF255EAEF07426B1495",
+      "text": "test \"native CustomBuffer listener actual descriptor reads reuse caller buffers through FileHandle completion\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    // The real file contains ABCDEFGH. Two physical reads consume its bytes;\n    // a third reaches real EOF and the guest callback invokes actual ReadStop.\n    const handle = try f.base().handle();\n    const first = try f.base().value(\"globalThis.customFirst=new Uint8Array(4);globalThis.customSecond=new Uint8Array(4);customFirst\");\n    defer f.base().engine.freeValue(first);\n    _ = try f.use(first);\n    try f.onread(\"(function(value){const nread=actualCustomNread();customReads.push(nread);customArguments.push(value);if(nread<0)actualStopCustomRead();return customReads.length===1?customSecond:undefined;})\");\n    try std.testing.expectEqual(@as(c_int, 0), try f.base().start());\n    try f.base().pumpIo();\n    try f.base().expect(\"Array.from(customFirst).join(',')==='65,66,67,68'&&Array.from(customSecond).join(',')==='69,70,71,72'\");\n    try f.base().expect(\"customReads.length===3&&customReads[0]===4&&customReads[1]===4&&customReads[2]<0&&customArguments.every(v=>v===undefined)\");\n    try std.testing.expectEqual(@as(usize, 3), f.base().read_begins);\n    try std.testing.expectEqual(@as(usize, 3), f.base().read_ends);\n    try std.testing.expect(f.base().read_member_exact);\n    try std.testing.expectEqual(@as(u64, 8), handle.stream.resource.bytes_read);\n    try std.testing.expectEqual(@as(usize, 0), f.base().allocations);\n    try std.testing.expectEqual(@as(usize, 0), f.base().env().managed_buffers.count());\n}\n\n"
+    },
+    {
+      "id": "control_08",
+      "source_id": "controls",
+      "lines": [
+        222,
+        252
+      ],
+      "offset": 12192,
+      "bytes": 1482,
+      "sha256": "08D530606EA7E9AC50356D30FAE003DC68D83697EA83A6EFCD94D2D2D58872F9",
+      "text": "test \"native CustomBuffer listener actual ordinary and uncatchable callback throws preserve the original buffer\" {\n    for ([_]bool{ false, true }) |fatal| {\n        var f: Fixture = undefined; try f.init(); defer f.deinit();\n        const view = try f.base().value(\"globalThis.customReason=new Error('custom read');new Uint8Array(8)\");\n        defer f.base().engine.freeValue(view);\n        const reason = try f.base().global(\"customReason\");\n        defer f.base().engine.freeValue(reason);\n        if (fatal) c.JS_SetUncatchableError(f.base().engine.context, reason);\n        _ = try f.use(view);\n        const buffer = try f.allocated(1);\n        try f.onread(\"(function(){throw customReason;})\");\n        try expectFailure(&f, reason, f.read(4, buffer));\n        try expectBuffer(try f.allocated(1), @intFromPtr(buffer.base), buffer.len);\n        try std.testing.expectEqual(@as(usize, 1), f.base().after_read_callbacks);\n        try std.testing.expectEqual(@as(u64, 4), (try f.resource()).bytes_read);\n        try std.testing.expectEqual(@as(usize, 1), f.base().env().callback_depth);\n    }\n}\n\nconst External = struct {\n    calls: usize = 0,\n    fn retire(_: ?*c.JSRuntime, raw: ?*anyopaque, pointer: ?*anyopaque,\n        size: usize) callconv(.c) ?*anyopaque\n    {\n        const self: *External = @ptrCast(@alignCast(raw.?));\n        if (pointer == null or size != 0) @panic(\"unexpected CustomBuffer external resize\");\n        self.calls += 1;\n        return null;\n    }\n};\n\n"
+    },
+    {
+      "id": "control_09",
+      "source_id": "controls",
+      "lines": [
+        253,
+        276
+      ],
+      "offset": 13674,
+      "bytes": 1371,
+      "sha256": "003DBC0A792E2861FC39BE23AC51FEEA1A9AD40C51B8372D34E08D520669D6E9",
+      "text": "test \"native CustomBuffer listener does not retain the actual external buffer or its JavaScript view\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    var external: External = .{};\n    var bytes: [16]u8 = @splat(0);\n    var backing = try f.base().engine.checked(c.JS_NewArrayBuffer(\n        f.base().engine.context, &bytes, bytes.len, 0, External.retire, &external, false));\n    defer f.base().engine.freeValue(backing);\n    const args = [_]c.JSValue{ backing, c.JS_NewInt32(f.base().engine.context, 4),\n        c.JS_NewInt32(f.base().engine.context, 6) };\n    var view = try f.base().engine.checked(c.JS_NewTypedArray(\n        f.base().engine.context, args.len, @constCast(&args), c.JS_TYPED_ARRAY_UINT8));\n    defer f.base().engine.freeValue(view);\n    const listener = try f.use(view);\n    try expectBuffer(try f.allocated(1), @intFromPtr(&bytes) + 4, 6);\n    f.base().engine.freeValue(view); view = c.pi_js_undefined();\n    f.base().engine.freeValue(backing); backing = c.pi_js_undefined();\n    c.JS_RunGC(f.base().engine.runtime);\n    try std.testing.expectEqual(@as(usize, 1), external.calls);\n    try std.testing.expect(listener.stream == try f.resource());\n    // The borrowed address has no entitlement now; no further alloc/read uses it.\n    listener.on_destroy(listener);\n    try std.testing.expectEqual(@as(usize, 1), external.calls);\n}\n\n"
+    },
+    {
+      "id": "control_10",
+      "source_id": "controls",
+      "lines": [
+        277,
+        291
+      ],
+      "offset": 15045,
+      "bytes": 750,
+      "sha256": "E580DEB063326F4A3C3D12BE8FBC103025562FA418262D3B87E09827CD716E91",
+      "text": "test \"native CustomBuffer listener native deletion unlinks the live head before releasing its exact charge\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const view = try f.base().value(\"new Uint8Array(4)\");\n    defer f.base().engine.freeValue(view);\n    const resource = try f.resource();\n    const previous = resource.listener;\n    const memory = f.base().engine.native_memory_owner;\n    const before = c.pi_js_native_memory_used(memory);\n    const listener = try f.use(view);\n    try std.testing.expect(c.pi_js_native_memory_used(memory) > before);\n    listener.on_destroy(listener);\n    try std.testing.expect(resource.listener == previous);\n    try std.testing.expectEqual(before, c.pi_js_native_memory_used(memory));\n}\n\n"
+    },
+    {
+      "id": "control_11",
+      "source_id": "controls",
+      "lines": [
+        292,
+        310
+      ],
+      "offset": 15795,
+      "bytes": 987,
+      "sha256": "EB958DCAD42A0D2655B118BDC63525C490144B6E2EA8CF2D71A52EDA68FE904D",
+      "text": "test \"native CustomBuffer listener interior deletion preserves the actual remaining listener chain\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const view = try f.base().value(\"new Uint8Array(4)\");\n    defer f.base().engine.freeValue(view);\n    const resource = try f.resource();\n    const original = resource.listener;\n    const memory = f.base().engine.native_memory_owner;\n    const before = c.pi_js_native_memory_used(memory);\n    const first = try f.use(view);\n    const first_charge = c.pi_js_native_memory_used(memory) - before;\n    const second = try f.use(view);\n    first.on_destroy(first);\n    try std.testing.expect(resource.listener == second and second.previous_listener == original);\n    try std.testing.expectEqual(before + first_charge, c.pi_js_native_memory_used(memory));\n    second.on_destroy(second);\n    try std.testing.expect(resource.listener == original);\n    try std.testing.expectEqual(before, c.pi_js_native_memory_used(memory));\n}\n\n"
+    },
+    {
+      "id": "control_12",
+      "source_id": "controls",
+      "lines": [
+        311,
+        325
+      ],
+      "offset": 16782,
+      "bytes": 719,
+      "sha256": "AB24C871F2900743D5C4E65C8E5775C5F738C5F1664285C78FE0E0D0955B3983",
+      "text": "test \"native CustomBuffer listener StreamBase destruction consumes its actual self deleting chain\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const view = try f.base().value(\"new Uint8Array(4)\");\n    defer f.base().engine.freeValue(view);\n    const handle = try f.base().handle();\n    const memory = f.base().engine.native_memory_owner;\n    const before = c.pi_js_native_memory_used(memory);\n    _ = try f.use(view);\n    _ = try f.use(view);\n    try std.testing.expect(c.pi_js_native_memory_used(memory) > before);\n    handle.stream.deinit();\n    try std.testing.expect(handle.stream.resource.listener == null);\n    try std.testing.expectEqual(before, c.pi_js_native_memory_used(memory));\n}\n\n"
+    },
+    {
+      "id": "control_13",
+      "source_id": "controls",
+      "lines": [
+        326,
+        341
+      ],
+      "offset": 17501,
+      "bytes": 843,
+      "sha256": "216CE99A5B8AB88BBA0579C4978E4ADF1274FF314A75FF1438A87D5C2C35DF3C",
+      "text": "test \"native CustomBuffer listener unlinked allocation survives Engine teardown and retires without a context\" {\n    const owners_before = c.pi_js_native_memory_owners();\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const view = try f.base().value(\"new Uint8Array(4)\");\n    const listener = try f.use(view);\n    (try f.resource()).remove(listener);\n    try std.testing.expect(listener.stream == null and listener.previous_listener == null);\n    f.base().engine.freeValue(view);\n    const memory = f.base().engine.native_memory_owner;\n    f.deinit();\n    try std.testing.expectEqual(owners_before + 1, c.pi_js_native_memory_owners());\n    try std.testing.expect(c.pi_js_native_memory_used(memory) > 0);\n    listener.on_destroy(listener);\n    try std.testing.expectEqual(owners_before, c.pi_js_native_memory_owners());\n}\n\n"
+    },
+    {
+      "id": "control_14",
+      "source_id": "controls",
+      "lines": [
+        342,
+        354
+      ],
+      "offset": 18344,
+      "bytes": 646,
+      "sha256": "C2FF00542557EDCB85B0F6173BA26E0C16DEF0F8CF32496AA3404C64048DDDCE",
+      "text": "test \"native CustomBuffer listener callback may destroy the actual listener and return undefined\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const view = try f.base().value(\"new Uint8Array(4)\");\n    defer f.base().engine.freeValue(view);\n    _ = try f.use(view);\n    const buffer = try f.allocated(1);\n    try f.onread(\"(function(){actualDestroyCustomStream();})\");\n    try f.read(1, buffer);\n    try std.testing.expect((try f.resource()).listener == null);\n    try std.testing.expectEqual(@as(usize, 1), f.base().after_read_callbacks);\n    try std.testing.expectEqual(@as(usize, 1), f.base().env().callback_depth);\n}\n\n"
+    },
+    {
+      "id": "control_15",
+      "source_id": "controls",
+      "lines": [
+        355,
+        370
+      ],
+      "offset": 18990,
+      "bytes": 1037,
+      "sha256": "908A8CBBBAB9582D24F75A1ECE626D0FC28693196722F2E34EB7BB80D24A92E2",
+      "text": "test \"native CustomBuffer listener selects the genuine shutdown reporter for the real native close request\" {\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const view = try f.base().value(\"new Uint8Array(4)\");\n    defer f.base().engine.freeValue(view);\n    const listener = try f.use(view);\n    try std.testing.expect(listener.after_shutdown == shutdown.reportAfterShutdown);\n    const request = try f.native.request();\n    defer f.base().engine.freeValue(request);\n    try f.native.publishRequest(request);\n    try std.testing.expectEqual(@as(c_int, 0), try f.native.run(request));\n    try f.base().pumpIo();\n    try f.base().expect(\"shutdownCalls.length===1&&shutdownCalls[0][0]===shutdownRequest&&shutdownCalls[0][1]===0&&shutdownCalls[0][2]===shutdownHandle&&shutdownCalls[0][3]===undefined\");\n    try std.testing.expect(f.native.callback_cleaned and f.native.callback_uncounted);\n    try std.testing.expectEqual(@as(usize, 1), f.native.begins);\n    try std.testing.expectEqual(@as(usize, 1), f.native.ends);\n}\n"
+    }
+  ],
+  "mappings": [
+    {
+      "id": "entry",
+      "original_excerpts": [
+        "original_use",
+        "original_buffer_brand_data_length",
+        "original_public_entry_boundary"
+      ],
+      "selected_or_host_excerpts": [
+        "selected_buffer_and_use"
+      ],
+      "mapping": "The selected body begins after real receiver/template/liveness/outer-trigger admission. It keeps separate original Buffer CHECKs, Data then Length then native allocation then publication; it does not install a public method or invent entry failure semantics."
+    },
+    {
+      "id": "uv_width",
+      "original_excerpts": [
+        "original_use",
+        "original_uv_init_declaration",
+        "original_uv_init_body",
+        "original_uv_win_width",
+        "original_uv_unix_width"
+      ],
+      "selected_or_host_excerpts": [
+        "selected_buffer_and_use",
+        "selected_read_body"
+      ],
+      "mapping": "Initial size narrows through uv_buf_init(unsigned int). Replacement assigns native uv_buf_t.len after base; Windows ULONG and Unix size_t are not conflated."
+    },
+    {
+      "id": "ownership",
+      "original_excerpts": [
+        "original_inheritance_storage_delete",
+        "original_listener_contract",
+        "original_custom_read"
+      ],
+      "selected_or_host_excerpts": [
+        "selected_create",
+        "selected_allocation_abi",
+        "host_independent_domain_declarations"
+      ],
+      "mapping": "The native listener stores one Listener and one borrowed uv_buf_t; it does not retain a JS view, backing entitlement or Engine. Caller must keep valid storage alive through reads. A live empty view is branded but zero allocation is not passed to real I/O in the focused control."
+    },
+    {
+      "id": "native_allocation",
+      "original_excerpts": [
+        "original_standard_new",
+        "native_bad_alloc_policy",
+        "native_bad_alloc_noreturn"
+      ],
+      "selected_or_host_excerpts": [
+        "selected_native_allocation",
+        "host_standard_new_policy",
+        "host_allocation_prefix_complete",
+        "host_domain_refcount_charge",
+        "host_diagnostic_scope"
+      ],
+      "mapping": "Genuine new-handler retry and native nonreturning bad_alloc policy remain; no nullable/guest OutOfMemory substitute. AllocationScope charges and retains the independent domain in a max-aligned prefix, with rollback on allocation failure."
+    },
+    {
+      "id": "publish_allocate",
+      "original_excerpts": [
+        "original_use",
+        "original_push_emit",
+        "original_custom_read"
+      ],
+      "selected_or_host_excerpts": [
+        "selected_create",
+        "selected_buffer_and_use",
+        "selected_destroy_alloc_read_scope",
+        "host_list_publication_unlink"
+      ],
+      "mapping": "Push publishes previous/stream/head in original order. OnAllocate ignores suggested size and returns the exact borrowed buffer."
+    },
+    {
+      "id": "negative_read",
+      "original_excerpts": [
+        "original_custom_read",
+        "original_call_js"
+      ],
+      "selected_or_host_excerpts": [
+        "selected_read_body",
+        "host_call_js"
+      ],
+      "mapping": "Null-base negative read/EOF invokes the normal check path and ignores callback replacement. Otherwise only base identity is checked; zero and non-null negative reads reach JS under skip checks, and incoming length is not compared."
+    },
+    {
+      "id": "replacement",
+      "original_excerpts": [
+        "original_custom_read"
+      ],
+      "selected_or_host_excerpts": [
+        "selected_read_body"
+      ],
+      "mapping": "Only a present nonundefined callback result replaces base then length. Empty/undefined and null-negative paths never touch listener storage afterward. A nonundefined replacement requires the listener still alive, as the original assignment does."
+    },
+    {
+      "id": "callback_completion",
+      "original_excerpts": [
+        "original_custom_read",
+        "original_call_js"
+      ],
+      "selected_or_host_excerpts": [
+        "selected_destroy_alloc_read_scope",
+        "selected_escaping_completion",
+        "host_scope_pending_own",
+        "host_scope_finish",
+        "host_call_js"
+      ],
+      "mapping": "Real Environment/Scope ownership preserves pending ordinary or uncatchable completion. Trace is copied before callback; after readBody only local Environment/Scope is used. This does not make arbitrary Engine teardown during a callback valid."
+    },
+    {
+      "id": "destroy",
+      "original_excerpts": [
+        "original_listener_destructor",
+        "original_resource_destructor_remove",
+        "original_inheritance_storage_delete",
+        "original_standard_delete"
+      ],
+      "selected_or_host_excerpts": [
+        "selected_destroy_alloc_read_scope",
+        "host_list_publication_unlink",
+        "host_emit_and_chain_teardown",
+        "host_base_member_order",
+        "host_allocation_prefix_complete",
+        "host_engine_release"
+      ],
+      "mapping": "Listener unlinks before its native storage is freed. Resource teardown compares the saved pointer only if callback did not remove it. A deliberately unlinked orphan can free its domain-backed allocation after Engine teardown with null diagnostic context; it cannot be read or republished then."
+    },
+    {
+      "id": "shutdown",
+      "original_excerpts": [
+        "original_inheritance_storage_delete",
+        "original_reporter",
+        "original_push_emit"
+      ],
+      "selected_or_host_excerpts": [
+        "selected_create",
+        "host_actual_shutdown_reporter"
+      ],
+      "mapping": "The actual reusable Shutdown reporter is selected directly: real wrapper/Has/Get/MakeCallback/error text and can-call-into-JS gates remain. Full WriteWrap reporter and public Shutdown dispatch remain separate."
+    },
+    {
+      "id": "vm_boundary",
+      "original_excerpts": [
+        "original_buffer_brand_data_length",
+        "original_getbuffer_materialization",
+        "original_backing_data",
+        "original_view_buffer",
+        "original_view_offset_length"
+      ],
+      "selected_or_host_excerpts": [
+        "host_dataview_brand",
+        "host_typedarray_brand",
+        "host_raw_view_data_length",
+        "selected_buffer_and_use"
+      ],
+      "mapping": "Getter-free actual QuickJS view classes expose already-backed native storage. V8 on-heap TypedArray GetBuffer materialization/allocation remains an explicit unsupported representation boundary. Invalid Node brands retain CHECK caller obligation. Detached/OOB/zero-length observations confer no I/O entitlement."
+    },
+    {
+      "id": "native_recipe",
+      "original_excerpts": [
+        "original_standard_new"
+      ],
+      "selected_or_host_excerpts": [
+        "selected_install_block",
+        "host_shared_diagnostic_library",
+        "host_common_native_links",
+        "host_native_memory_network_link",
+        "host_network_recipe",
+        "host_memory_recipe"
+      ],
+      "mapping": "One new allocation.cpp TU; diagnostics TLS/fatal/string members are supplied once by existing node_one_byte_diagnostics. The network dependency links the single native_node_memory owner. No new clock/tracing/bootstrap implementation or execution is admitted."
+    }
+  ],
+  "controls": [
+    {
+      "index": 0,
+      "name": "native CustomBuffer listener publishes the actual borrowed typed view span and writes its physical storage",
+      "source_excerpt": "control_01",
+      "maps_to": [
+        "entry",
+        "publish_allocate",
+        "ownership"
+      ],
+      "purpose": "Actual offset typed-view storage is physically written; native stream read counters update, no managed-buffer allocation.",
+      "runtime_observed": false
+    },
+    {
+      "index": 1,
+      "name": "native CustomBuffer listener uses actual DataView fields without invoking shadow getters",
+      "source_excerpt": "control_02",
+      "maps_to": [
+        "entry",
+        "vm_boundary"
+      ],
+      "purpose": "Actual DataView native fields are used without guest shadow getters.",
+      "runtime_observed": false
+    },
+    {
+      "index": 2,
+      "name": "native CustomBuffer listener returns the same empty view buffer regardless of suggested size",
+      "source_excerpt": "control_03",
+      "maps_to": [
+        "publish_allocate",
+        "ownership"
+      ],
+      "purpose": "Empty branded view returns exact pointer/zero length for any suggestion; no zero-length native I/O is attempted.",
+      "runtime_observed": false
+    },
+    {
+      "index": 3,
+      "name": "native CustomBuffer listener calls onread for zero and nonnull negative reads and retains undefined results",
+      "source_excerpt": "control_04",
+      "maps_to": [
+        "negative_read",
+        "replacement"
+      ],
+      "purpose": "Zero and non-null negative reads call onread, ignore incoming len and retain buffer on undefined.",
+      "runtime_observed": false
+    },
+    {
+      "index": 4,
+      "name": "native CustomBuffer listener null error branch ignores even an invalid replacement result",
+      "source_excerpt": "control_05",
+      "maps_to": [
+        "negative_read"
+      ],
+      "purpose": "Null-negative branch ignores an invalid replacement result instead of running Buffer CHECKs on it.",
+      "runtime_observed": false
+    },
+    {
+      "index": 5,
+      "name": "native CustomBuffer listener commits the actual returned view for the next allocation",
+      "source_excerpt": "control_06",
+      "maps_to": [
+        "replacement"
+      ],
+      "purpose": "Actual DataView returned from JS is installed for the next allocation.",
+      "runtime_observed": false
+    },
+    {
+      "index": 6,
+      "name": "native CustomBuffer listener actual descriptor reads reuse caller buffers through FileHandle completion",
+      "source_excerpt": "control_07",
+      "maps_to": [
+        "publish_allocate",
+        "replacement"
+      ],
+      "purpose": "Actual descriptor bytes flow through FileHandle reads and caller buffer changes through EOF; direct read-stop control.",
+      "runtime_observed": false
+    },
+    {
+      "index": 7,
+      "name": "native CustomBuffer listener actual ordinary and uncatchable callback throws preserve the original buffer",
+      "source_excerpt": "control_08",
+      "maps_to": [
+        "callback_completion",
+        "replacement"
+      ],
+      "purpose": "Real ordinary and uncatchable throws preserve exact error identity and previous borrowed buffer.",
+      "runtime_observed": false
+    },
+    {
+      "index": 8,
+      "name": "native CustomBuffer listener does not retain the actual external buffer or its JavaScript view",
+      "source_excerpt": "control_09",
+      "maps_to": [
+        "ownership"
+      ],
+      "purpose": "Actual external-buffer finalizer proves absence of listener JS/backing root; no dereference occurs after owner release.",
+      "runtime_observed": false
+    },
+    {
+      "index": 9,
+      "name": "native CustomBuffer listener native deletion unlinks the live head before releasing its exact charge",
+      "source_excerpt": "control_10",
+      "maps_to": [
+        "destroy"
+      ],
+      "purpose": "Head native deletion unlinks before releasing exact native allocation charge.",
+      "runtime_observed": false
+    },
+    {
+      "index": 10,
+      "name": "native CustomBuffer listener interior deletion preserves the actual remaining listener chain",
+      "source_excerpt": "control_11",
+      "maps_to": [
+        "destroy"
+      ],
+      "purpose": "Interior native deletion preserves remaining listener chain.",
+      "runtime_observed": false
+    },
+    {
+      "index": 11,
+      "name": "native CustomBuffer listener StreamBase destruction consumes its actual self deleting chain",
+      "source_excerpt": "control_12",
+      "maps_to": [
+        "destroy"
+      ],
+      "purpose": "Actual Base/Resource teardown consumes the self-deleting chain and releases charges.",
+      "runtime_observed": false
+    },
+    {
+      "index": 12,
+      "name": "native CustomBuffer listener unlinked allocation survives Engine teardown and retires without a context",
+      "source_excerpt": "control_13",
+      "maps_to": [
+        "destroy",
+        "native_allocation"
+      ],
+      "purpose": "Detached orphan allocation outlives Engine because only independent memory owner is retained; final free uses null context.",
+      "runtime_observed": false
+    },
+    {
+      "index": 13,
+      "name": "native CustomBuffer listener callback may destroy the actual listener and return undefined",
+      "source_excerpt": "control_14",
+      "maps_to": [
+        "callback_completion",
+        "destroy"
+      ],
+      "purpose": "Callback destroys the stream/listener and returns undefined; no subsequent listener access.",
+      "runtime_observed": false
+    },
+    {
+      "index": 14,
+      "name": "native CustomBuffer listener selects the genuine shutdown reporter for the real native close request",
+      "source_excerpt": "control_15",
+      "maps_to": [
+        "shutdown"
+      ],
+      "purpose": "Real close request selects actual reusable Shutdown reporter and preserves callback args, counters and teardown.",
+      "runtime_observed": false
+    }
+  ],
+  "declarations": 15,
+  "actual_metadata": null,
+  "namespace": {
+    "JSValue": "argument.c -> native_ai_provider_values.c -> engine.c, actual engine_abi.h @cImport",
+    "uv_buf_t": "resources.uv -> native_node_managed_buffers.uv @cImport(uv.h); Base uses the same module",
+    "shutdown_callback": "CustomBufferJSListener.after_shutdown selects shutdown.reportAfterShutdown directly with resources.Listener/requests.Shutdown",
+    "C_allocation_ABI": "same opaque JSContext pointer and size_t/usize through actual extern C header; storage max_align_t bound; native memory domain pointer, no JS owned value"
+  },
+  "caller_obligations": [
+    "Real entry/receiver/VM admission already completed.",
+    "Stream/environment/Engine valid for synchronous operation; caller-owned native view and storage remain valid through native I/O.",
+    "No dereference after caller detaches, shrinks or retires backing; valid nonzero buffer required by real I/O.",
+    "A nonundefined replacement result must be returned while listener is alive; undefined/empty/null-negative branches allow self-destruction.",
+    "An unlinked orphan after Engine teardown may only retire its allocation, not be read or reused."
+  ],
+  "exclusions": [
+    "Full public FileHandle/StreamBase prototype publication and runtime-owned FunctionTemplate identity.",
+    "Full WriteWrap completion and worker/transfer/bootstrap assembly.",
+    "V8 on-heap TypedArray materialization allocation policy.",
+    "Production tracing clock/platform/Agent integration and hook-policy bootstrap.",
+    "Compiler, metadata, runtime, cross-platform or product qualification."
+  ]
+}

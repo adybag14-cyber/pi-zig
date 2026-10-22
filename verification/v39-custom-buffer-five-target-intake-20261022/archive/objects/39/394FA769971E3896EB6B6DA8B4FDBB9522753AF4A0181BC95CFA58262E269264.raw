@@ -1,0 +1,10 @@
+{
+  "schema": "primary-source-acquisition-v1",
+  "url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/src/node_buffer.h",
+  "transport_evidence": "Hermes native web_fetch returned HTTP 200 and the same body SHA before the raw static copy",
+  "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\node_buffer.v24.13.h",
+  "bytes": 3684,
+  "sha256": "48077ADE87E863A88E75A74C61FD948CB9AE16D7546CC5D61E1207FC95A7AC48",
+  "source_only": true,
+  "executed": false
+}

@@ -1,0 +1,218 @@
+"""Conservative source closure and exact dependency composition for the finite CustomBuffer owner.
+Only immutable Git blobs and sealed source snapshots are read. The final phase writes new evidence.
+"""
+from pathlib import Path
+import hashlib,json,re,posixpath,subprocess
+B=Path(r"C:\Users\adyba\pi-zig");M=B/"main";W=B/"worktrees/sdk-owners-resume-20261018"
+D=W/"verification/native-node-custom-buffer-listener-sourceonly-20261020"
+S=B/"worktrees/modules-io-resume-20261018/verification/native-node-shutdown-wrap-sourceonly-20261020"
+R=W/"verification/native-node-custom-buffer-sourceonly-20261020"
+A=W/"verification/v35-file-handle-fixture-shadowing-sourceonly-20261020"
+F=W/"verification/v35-file-handle-close-observer-sourceonly-20261020"
+HEAD="79c19fc30c886e85b71aca75d1a025397db04fec"
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def jp(o):return (json.dumps(o,indent=2,ensure_ascii=True)+"\n").encode()
+def row(p,b=None):
+ p=Path(p);b=p.read_bytes() if b is None else b
+ return {"path":str(p),"bytes":len(b),"sha256":sha(b)}
+pins={}
+def checked(r):
+ p=Path(r["path"]);b=p.read_bytes()
+ assert len(b)==r["bytes"] and sha(b)==r["sha256"],str(p)
+ pins[str(p)]=r;return b
+def load(p,h=None):
+ r=row(p)
+ if h:assert r["sha256"]==h
+ return json.loads(checked(r))
+def apply(b,edits,reverse=False):
+ for e in reversed(edits) if reverse else edits:
+  old=e["after" if reverse else "before"].encode();new=e["before" if reverse else "after"].encode()
+  assert b.count(old)==1,(old[:120],b.count(old));b=b.replace(old,new,1)
+ return b
+component=load(D/"component.json","436EED3844A4CF7DF7E2FF0461A650D7452B68D7C1CF8EE9E6E293C498193B70")
+build=load(D/"build/proposal.json","263EDFB588F1AD277A9116772BD197FAB4F0CD97BDBEFA994889B79A437DE28C")
+shared=load(S/"shared/proposal.json","C58D31835CCE099D8C99BF7432CE4B0B2FAA83186857EA46EDFC55CEB3542A41")
+successor=load(S/"successor/proposal.json","11FA3C2397945908756CB487FE2F22E8762B56AF7187CD87AF8275678905F9F1")
+shutdown=load(S/"production-proposal.json","C75EDD403EA03303A55CF64C903F2193EA74CBFAE843196DA7096C8AC3A7CAA0")
+raw=load(R/"vm/proposal.json","8F6E77DD9DABDB0112B43139A0EEB56FCF0653C5A040834C23AF40E4DBC48874")
+combined=load(R/"vm/latin1-successor-composition.json","F992DA49E1550C3E46769D2B1D57DA239391B3D05743BC3C64CCCEC022A8D807")
+alpha=load(A/"proposal.json","9CEEC8BF72B9E955697145E989A65C06AB9DB14B94444332545B4E5A233DD16E")
+phase=load(F/"proposal.json","4D8BAC94FF3A5CD4F27F9F4BB19C944F672EBA816A8D73E7453B819870B5EAFA")
+proc=subprocess.Popen(["git","-C",str(M),"cat-file","--batch"],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+rawcache={}
+def baseline(rel):
+ if rel not in rawcache:
+  proc.stdin.write((HEAD+":"+rel+"\n").encode());proc.stdin.flush()
+  header=proc.stdout.readline().decode().strip()
+  assert not header.endswith(" missing"),rel
+  oid,kind,size=header.split();assert kind=="blob"
+  b=proc.stdout.read(int(size));assert len(b)==int(size) and proc.stdout.read(1)==b"\n"
+  rawcache[rel]=(b,oid)
+ return rawcache[rel]
+overlay={};layering=[]
+for entry in shared["files"]:
+ rel=entry["relative_path"];b=checked(entry["original"]);out=checked(entry["projected"])
+ assert baseline(rel)[0]==b,rel
+ es=[x for x in shared["edits"] if x["path"]==rel]
+ assert apply(b,es)==out and apply(out,es,True)==b
+ overlay[rel]=entry["projected"]
+ layering.append({"target":rel,"base":entry["original"],"selected":entry["projected"],"edits":len(es),"full_inverse_exact":True})
+assert checked(successor["original"])==checked(overlay[successor["relative_path"]])
+assert apply(checked(successor["original"]),successor["edits"])==checked(successor["projected"])
+assert apply(checked(successor["projected"]),successor["edits"],True)==checked(successor["original"])
+overlay[successor["relative_path"]]=successor["projected"]
+for item in shutdown["source_build_paths"]:
+ rel=item["relative_path"]
+ if rel=="build.zig":continue
+ if item.get("selected_preimage") is None:
+  checked(item["selected"]);overlay[rel]=item["selected"]
+ else:assert checked(overlay[rel])==checked(item["selected"]),rel
+vm_composition=[]
+for item in combined["files"]:
+ rel=item["relative_path"];before=checked(item["common_predecessor"])
+ assert baseline(rel)[0]==before
+ buf=[{"before":e["old_text"],"after":e["new_text"]} for e in raw["edits"] if e["path"]==rel]
+ latin=[e for e in shared["edits"] if e["path"]==rel]
+ if rel==successor["relative_path"]:latin=latin+successor["edits"]
+ a=apply(apply(before,latin),buf);b=apply(apply(before,buf),latin)
+ assert a==b==checked(item["combined"])
+ assert apply(apply(a,buf,True),latin,True)==before
+ assert apply(apply(b,latin,True),buf,True)==before
+ assert apply(checked(overlay[rel]),buf)==a
+ overlay[rel]=item["combined"]
+ vm_composition.append({"target":rel,"common":item["common_predecessor"],"selected":item["combined"],"raw_edits":len(buf),"latin_edits":len(latin),"both_orders_and_inverses_exact":True})
+# Native fatal and TLS definitions are explicit prerequisites from the accepted Shutdown packet.
+for rel in ["src/extensions/native_v8_base_fatal.h","src/extensions/native_v8_base_fatal.cpp",
+ "src/extensions/native_node_diagnostic_context.h","src/extensions/native_node_diagnostic_context.hpp","src/extensions/native_node_diagnostic_context.c"]:
+ p=S/"dependencies"/rel;overlay[rel]=row(p);checked(overlay[rel])
+ if "native_v8_base_fatal" not in rel:assert baseline(rel)[0]==checked(overlay[rel])
+# Two separately reviewed fixture deltas preserve the V35 negative and commute.
+p=load(A/"token-and-graph-proof.json","68C99BF537F7A9EBDAEEDB9472A4A511E0951DD9AB3F4372FA02B192AD5A6104")
+q=load(F/"composition-and-phase-proof.json","ACE1DFE276227F09A50D6AB0389D855C7BB8481841166E7D56A61A5EB5C70C06")
+rel=alpha["source_target"];base=checked(alpha["original"]);after_alpha=checked(alpha["projected"])
+assert baseline(rel)[0]==base
+b=base
+for e in reversed(p["identifier_token_edits"]):
+ off=e["old_offset"];old=e["before"].encode()
+ assert b[off:off+len(old)]==old
+ b=b[:off]+e["after"].encode()+b[off+len(old):]
+assert b==after_alpha
+inv=b
+for e in reversed(p["identifier_token_edits"]):
+ off=e["new_offset"];old=e["after"].encode()
+ assert inv[off:off+len(old)]==old
+ inv=inv[:off]+e["before"].encode()+inv[off+len(old):]
+assert inv==base
+before=q["phase_hunk"]["before"].encode();after=q["phase_hunk"]["after"].encode()
+selected_fixture=checked(phase["projected_fixture"])
+assert after_alpha.count(before)==1 and after_alpha.replace(before,after)==selected_fixture
+assert selected_fixture.replace(after,before)==after_alpha
+overlay[rel]=phase["projected_fixture"]
+for item in component["production"]:overlay[item["target"]]=item["snapshot"];checked(item["snapshot"])
+control="src/native_node_custom_buffer_listener_test.zig";overlay[control]=component["controls"];checked(component["controls"])
+overlay["build.zig"]=build["projected"];checked(build["projected"])
+old_build=checked(build["base"]);new_build=checked(build["projected"]);block=build["insert"].encode()
+assert sha(block)==build["insert_sha256"]
+anchor=build["insert_before"].encode()
+assert old_build.count(anchor)==1 and old_build.replace(anchor,block+anchor)==new_build
+assert new_build.count(block)==1 and new_build.replace(block,b"")==old_build
+cache={}
+def get(rel):
+ rel=posixpath.normpath(rel);assert not rel.startswith("../") and not rel.startswith("/")
+ if rel not in cache:
+  if rel in overlay:
+   b=checked(overlay[rel]);entry={"relative_path":rel,"origin":"selected immutable snapshot","source":overlay[rel],"bytes":len(b),"sha256":sha(b)}
+  else:
+   b,oid=baseline(rel);entry={"relative_path":rel,"origin":"immutable raw Git blob","repository":str(M),"commit":HEAD,"git_blob":oid,"bytes":len(b),"sha256":sha(b)}
+  cache[rel]=(b,entry)
+ return cache[rel]
+modules=set();embeds=set();edges=[];external=set();todo=[control]
+named={"catalog_tool":"tools/catalog.zig","native_icu_api":"src/extensions/icu/native_icu_api.zig"}
+while todo:
+ rel=todo.pop()
+ if rel in modules:continue
+ modules.add(rel);text=get(rel)[0].decode("utf-8")
+ for name in re.findall(r'@import\s*\(\s*"([^"]+)"\s*\)',text):
+  if name.endswith(".zig"):dest=posixpath.normpath(posixpath.join(posixpath.dirname(rel),name))
+  elif name in named:dest=named[name]
+  else:external.add(name);continue
+  edges.append({"from":rel,"literal":name,"to":dest});todo.append(dest)
+ for name in re.findall(r'@embedFile\s*\(\s*"([^"]+)"\s*\)',text):
+  dest=posixpath.normpath(posixpath.join(posixpath.dirname(rel),name));get(dest);embeds.add(dest)
+assert external<=set(["std","builtin"])
+names=re.findall(r'^test "([^"]+)"',get(control)[0].decode(),re.M)
+assert len(names)==15 and all(n.startswith("native CustomBuffer listener") for n in names)
+anonymous=[]
+for rel in sorted(modules):
+ count=len(re.findall(r"^\s*test\s*\{",get(rel)[0].decode(),re.M))
+ if count:
+  assert count==1 and rel.startswith("src/")
+  anonymous.append(rel[4:-4].replace("/",".")+".test_0")
+assert set(anonymous)==set(p["graphs"][0]["allowed_anonymous"]) and len(anonymous)==8
+native_direct=[
+ "build.zig","vendor/quickjs/quickjs.c","vendor/quickjs/quickjs.h",
+ "src/extensions/native_vm_error_constructor_name.c.inc",
+ "src/extensions/engine_abi.h","src/extensions/engine_abi.c",
+ "src/extensions/native_uv_fs.h","src/extensions/native_uv_tcp.h","src/extensions/native_uv_tcp.c",
+ "src/extensions/native_node_check_failure.h","src/extensions/native_node_check_failure.c",
+ "src/extensions/native_node_diagnostic_context.h","src/extensions/native_node_diagnostic_context.hpp","src/extensions/native_node_diagnostic_context.c",
+ "src/extensions/native_v8_base_fatal.h","src/extensions/native_v8_base_fatal.cpp",
+ "src/extensions/native_node_one_byte_string_diagnostics.h","src/extensions/native_node_one_byte_string_diagnostics.cpp",
+ "src/extensions/native_node_custom_buffer_listener_allocation.h","src/extensions/native_node_custom_buffer_listener_allocation.cpp",
+ "src/extensions/native_node_standard_allocator.hpp","src/extensions/native_simdjson_memory.hpp","src/extensions/native_simdjson_memory.cpp",
+ "tools/build_native_node_network.zig","tools/build_native_node_memory.zig","vendor/node-v24.13.0/uv/include/uv.h","vendor/node-v24.13.0/uv/include/uv/win.h","vendor/node-v24.13.0/uv/include/uv/unix.h","vendor/node-v24.13.0/uv/src/uv-common.c"]
+native_rows=[get(rel)[1] for rel in native_direct]
+network=get("tools/build_native_node_network.zig")[0]
+for name in [b"native_node_diagnostic_context.c",b"native_v8_base_fatal.cpp",b"native_node_one_byte_string_diagnostics.cpp",b"native_node_custom_buffer_listener_allocation.cpp"]:
+ assert name not in network
+callback=get("src/extensions/native_node_async_wrap_make_callback.zig")[1]
+assert callback["sha256"]=="972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+protected=load(R/"closure-and-preservation.json","5C33DE78B6650A92D6EE162A9ACBA6657BEFE6B78310CAFD15453ACC152E9809")
+for item in protected["preserved_prior_sdk_sources"]:checked(item)
+assert len(protected["preserved_prior_sdk_sources"])==40
+for item in component["production"]:assert checked(item["live_draft"])==checked(item["snapshot"])
+control_preserved=D/"preserved-drafts"/control
+assert (W/control).read_bytes()==control_preserved.read_bytes()
+draft_proof=load(D/"draft-control-proof.json")
+assert checked(draft_proof["selected"])==get(control)[0] and checked(draft_proof["original"])==control_preserved.read_bytes()
+assert apply(checked(draft_proof["original"]),draft_proof["edits"])==checked(draft_proof["selected"])
+assert apply(checked(draft_proof["selected"]),draft_proof["edits"],True)==checked(draft_proof["original"])
+proc.stdin.close();proc.wait(timeout=10);assert proc.returncode==0
+graph={"root":control,"declared_count":15,"declared_names":names,
+ "literal_modules":len(modules),"literal_embeds":len(embeds),"literal_edges":len(edges),
+ "modules":sorted(modules),"embeds":sorted(embeds),
+ "edges":sorted(edges,key=lambda e:(e["from"],e["to"],e["literal"])),
+ "anonymous_allowlist":anonymous,"actual_compiler_metadata":None}
+inventory={"schema":"pi-zig-custom-buffer-listener-source-dependencies-v1",
+ "basis_Main_raw_Git_commit":HEAD,"graph":graph,
+ "entries":[cache[k][1] for k in sorted(cache)],"entry_count":len(cache),
+ "selected_overlay":[{"relative_path":r,"source":overlay[r]} for r in sorted(overlay)],
+ "native_direct_inputs":native_rows,"external_modules":sorted(external),
+ "limits":"Literal Zig closure is conservative. Native translation units, direct headers and build recipes are pinned; this is not compiler include selection or requalification of standard-library/toolchain transitive headers.",
+ "runtime_identity_unit_selected":False,"compiler_or_native_execution":False}
+closure={"schema":"pi-zig-custom-buffer-listener-composition-preservation-v1",
+ "basis_Main_commit":HEAD,"source_component":row(D/"component.json"),
+ "inputs":[pins[k] for k in sorted(pins)],
+ "shutdown_seven_files_37_edits_full_inverses":layering,
+ "latin1_argument_successor_two_edits_full_inverse":True,
+ "raw_buffer_latin1_compositions":vm_composition,
+ "fixture_alpha_phase_successors":{"alpha":row(A/"proposal.json"),"phase":row(F/"proposal.json"),
+ "selected":phase["projected_fixture"],"alpha_inverse_and_phase_inverse_exact":True,
+ "both_order_proof":row(F/"composition-and-phase-proof.json")},
+ "build_full_inverse_exact":True,"build_selected":build["projected"],
+ "real_callback_return_try":callback,"source_root_declarations":15,"future_metadata":None,
+ "preserved_prior_sdk_sources":protected["preserved_prior_sdk_sources"],
+ "preserved_prior_sdk_source_count":40,
+ "initial_live_drafts_preserved":[item["live_draft"] for item in component["production"]]+[row(W/control)],
+ "draft_control_correction_full_inverse":True,
+ "no_shared_source_edit_in_this_unit":True,
+ "new_production_count":3,"new_control_count":1,"new_install_target_count":1,
+ "Main_written":False,"live_sources_written":False,"compiler_executed":False,"native_executed":False,
+ "scope":"Source composition only. Public FunctionTemplate admission/publication, actual worker/platform qualification, full write reporter and production tracing/bootstrap policies remain open."}
+# FINAL OUTPUT PHASE: only fresh dependency evidence is written.
+for name,obj in [("dependency-inventory.json",inventory),("closure-and-preservation.json",closure)]:
+ p=D/name
+ with p.open("xb") as f:f.write(jp(obj))
+print(json.dumps({"inventory":row(D/"dependency-inventory.json"),"closure":row(D/"closure-and-preservation.json"),
+ "modules":len(modules),"embeds":len(embeds),"edges":len(edges),"entries":len(cache),
+ "declared":15,"anonymous":len(anonymous),"unique_pins":len(pins)},indent=2))

@@ -1,0 +1,16 @@
+<h2 id="Arrays"><a href="#toc-Arrays">Arrays</a> <a class="hdr" href="#Arrays">§</a></h2>
+
+      <figure><figcaption class="zig-cap"><cite class="file">test_arrays.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> expectEqual = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;std&quot;</span>).testing.expectEqual;
+<span class="tok-kw">const</span> assert = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;std&quot;</span>).debug.assert;
+<span class="tok-kw">const</span> mem = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;std&quot;</span>).mem;
+
+<span class="tok-comment">// array literal</span>
+<span class="tok-kw">const</span> message = [_]<span class="tok-type">u8</span>{ <span class="tok-str">'h'</span>, <span class="tok-str">'e'</span>, <span class="tok-str">'l'</span>, <span class="tok-str">'l'</span>, <span class="tok-str">'o'</span> };
+
+<span class="tok-comment">// alternative initialization using result location</span>
+<span class="tok-kw">const</span> alt_message: [<span class="tok-number">5</span>]<span class="tok-type">u8</span> = .{ <span class="tok-str">'h'</span>, <span class="tok-str">'e'</span>, <span class="tok-str">'l'</span>, <span class="tok-str">'l'</span>, <span class="tok-str">'o'</span> };
+
+<span class="tok-kw">comptime</span> {
+    assert(mem.eql(<span class="tok-type">u8</span>, &amp;message, &amp;alt_message));
+}
+

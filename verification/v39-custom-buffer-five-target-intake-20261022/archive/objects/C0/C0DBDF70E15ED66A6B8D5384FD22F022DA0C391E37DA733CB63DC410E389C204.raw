@@ -1,0 +1,204 @@
+//! Genuine early bootstrap for the selected internal/fs/promises imports.
+//! Called after the real process/Stream/Buffer owners and before guest code.
+//! All callable values come from those owners or the original realm. No
+//! replacement Promise, validator, iterator or filesystem namespace is made.
+const a = @import("native_node_argument_values.zig");
+const c = a.c;
+const Scope = a.Scope;
+const Engine = a.v.em.Engine;
+const argument_bootstrap = @import("native_node_argument_bootstrap.zig");
+const argument_errors = @import("native_node_argument_errors.zig");
+const range_errors = @import("native_node_fs_range_error.zig");
+const validators = @import("native_node_fs_validators.zig");
+const validation = @import("native_node_file_handle_validation.zig");
+const promises = @import("native_node_file_handle_promises.zig");
+const collections = @import("native_node_fs_collections.zig");
+const publication = @import("native_node_fs_private_publication.zig");
+const cache_key = "pi-native:private/file-handle-bootstrap";
+
+fn adoptPrepared(s: *Scope, prepared: argument_bootstrap.Prepared) !void {
+    var incoming = [_]c.JSValue{
+        prepared.internal_inspect, prepared.assert_function,
+        prepared.arguments.invalid_arg_type, prepared.arguments.hidden_invalid_arg_type,
+        prepared.arguments.invalid_arg_value, prepared.arguments.internal_assertion,
+        prepared.arguments.validate_string,
+    };
+    for (&incoming, 0..) |*slot, position| {
+        const moved = slot.*; slot.* = c.pi_js_undefined();
+        _ = s.own(moved) catch |err| {
+            for (incoming[position + 1 ..]) |*rest| s.boundary.release(rest);
+            return err;
+        };
+    }
+}
+fn bound(s: *Scope, bind: c.JSValue, target: c.JSValue, receiver: c.JSValue) !c.JSValue {
+    // An actual bound function made by the retained original Function.bind.
+    return a.duplicate(s.engine, try s.call(bind, target, &.{receiver}));
+}
+fn uncurry(s: *Scope, bind: c.JSValue, call: c.JSValue, target: c.JSValue) !c.JSValue {
+    // Function.prototype.call.bind(target), the same primordials uncurrying.
+    return bound(s, bind, call, target);
+}
+fn iteratorNext(s: *Scope, factory: c.JSValue, array_prototype: c.JSValue) !c.JSValue {
+    const iterator = try s.call(factory, array_prototype, &.{});
+    const prototype = try s.prototype(iterator);
+    return a.duplicate(s.engine, try s.get(prototype, "next"));
+}
+fn nativePromiseSymbol(s: *Scope) !c.JSValue {
+    // Node env_properties.h declares this as a regular per-isolate Symbol,
+    // distinct from its private transfer-mode key.
+    const generation = try s.beforeAllocation();
+    return a.duplicate(s.engine, try s.checkedAllocation(
+        c.JS_NewSymbol(s.engine.context, "fs_use_promises_symbol", false), generation));
+}
+fn moduleSymbols(s: *Scope, symbol: c.JSValue) !c.JSValue {
+    const record = try s.objectProto(c.pi_js_null());
+    inline for (.{ "kHandle", "kFd", "kRefs", "kClosePromise", "kCloseReason",
+        "kCloseResolve", "kCloseReject", "kRef", "kUnref", "kLocked" }) |name|
+    {
+        const value = try s.own(try a.expression(s.engine, symbolCall, .{symbol, @as([]const u8, name)}));
+        try s.put(record, name, value);
+    }
+    const use_promises = try s.own(try a.expression(s.engine, nativePromiseSymbol, .{}));
+    try s.put(record, "kUsePromises", use_promises);
+    return a.duplicate(s.engine, record);
+}
+fn symbolCall(s: *Scope, symbol: c.JSValue, name: []const u8) !c.JSValue {
+    return a.duplicate(s.engine, try s.call(symbol, c.pi_js_undefined(), &.{try s.text(name)}));
+}
+
+fn body(s: *Scope) !c.JSValue {
+    try s.pending();
+    if (s.engine.native_module_values.get(cache_key)) |known| return a.duplicate(s.engine, known);
+
+    const prepared = try argument_bootstrap.prepare(s.engine);
+    try adoptPrepared(s, prepared);
+    const stream = try s.own(a.duplicate(s.engine, try @import("native_node_stream.zig").owner(s.engine)));
+    const system_errors = try s.own(a.duplicate(s.engine, try @import("native_node_system_errors.zig").registry(s.engine)));
+    const path_owner = try s.own(try @import("native_node_fs_path_bootstrap.zig").prepare(s.engine));
+    const path_helpers = try s.get(path_owner, "helpers");
+    const url_owner = try s.own(try @import("native_node_file_url_paths.zig").acquire(s.engine));
+    if (!s.engine.native_module_values.contains("node:events"))
+        try @import("node_events.zig").install(s.engine);
+    const events = try s.own(a.duplicate(s.engine,
+        s.engine.native_module_values.get("node:events") orelse return error.ActualFileHandleEventEmitterRequired));
+
+    const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));
+    const error_constructor = try s.get(stream, "Error");
+    const range_constructor = try s.get(stream, "RangeError");
+    const capture_stack_trace = try s.get(error_constructor, "captureStackTrace");
+    const reflect_apply = try s.own(try argument_errors.reflectApply(s.engine));
+    const number = try s.get(global, "Number");
+    const number_is_integer = try s.get(number, "isInteger");
+    const strings = try s.get(global, "String");
+    const string_slice = try s.get(try s.get(strings, "prototype"), "slice");
+    const math_abs = try s.get(try s.get(global, "Math"), "abs");
+    const arrays = try s.get(global, "Array");
+    const array_prototype = try s.get(arrays, "prototype");
+    const array_is_array = try s.get(arrays, "isArray");
+    const symbol = try s.get(global, "Symbol");
+    const symbol_iterator = try s.get(symbol, "iterator");
+    const functions = try s.get(try s.get(global, "Function"), "prototype");
+    const function_bind = try s.get(functions, "bind");
+    const function_call = try s.get(functions, "call");
+    const actual_promise = try s.get(global, "Promise");
+    const promise_prototype = try s.get(actual_promise, "prototype");
+    const promise_then_raw = try s.get(promise_prototype, "then");
+    const promise_resolve_raw = try s.get(actual_promise, "resolve");
+    const promise_reject_raw = try s.get(actual_promise, "reject");
+    const array_iterator_raw = try s.getKey(array_prototype, symbol_iterator);
+    const next_raw = try s.own(try a.expression(s.engine, iteratorNext, .{array_iterator_raw, array_prototype}));
+    const regexp_exec = try s.get(try s.get(s.engine.intrinsic_regexp_constructor, "prototype"), "exec");
+    // internal/util/types exports this exact original primordial directly.
+    const is_array_buffer_view = try s.get(try s.get(global, "ArrayBuffer"), "isView");
+
+    const promise_then = try s.own(try a.expression(s.engine, uncurry,
+        .{function_bind, function_call, promise_then_raw}));
+    const promise_resolve = try s.own(try a.expression(s.engine, bound,
+        .{function_bind, promise_resolve_raw, actual_promise}));
+    const promise_reject = try s.own(try a.expression(s.engine, bound,
+        .{function_bind, promise_reject_raw, actual_promise}));
+    const array_iterator = try s.own(try a.expression(s.engine, uncurry,
+        .{function_bind, function_call, array_iterator_raw}));
+    const array_next = try s.own(try a.expression(s.engine, uncurry,
+        .{function_bind, function_call, next_raw}));
+    const safe_array_iterator = try s.own(try collections.createSafeIterator(s.engine,
+        array_iterator, array_next, symbol_iterator));
+    const safe_promise = try s.own(try collections.acquireSafePromise(s.engine));
+    const promise_owner = try s.own(try promises.create(s.engine, .{
+        .promise = actual_promise, .promise_then = promise_then,
+        .promise_resolve = promise_resolve, .promise_reject = promise_reject,
+        .safe_promise = safe_promise, .safe_array_iterator = safe_array_iterator,
+        .capture_stack_trace = capture_stack_trace,
+    }));
+
+    const range_owner = try s.own(try range_errors.create(s.engine, .{
+        .range_error = range_constructor, .error_constructor = error_constructor,
+        .marker = try s.get(system_errors, "marker"), .assert_function = prepared.assert_function,
+        .reflect_apply = reflect_apply, .number_is_integer = number_is_integer,
+        .math_abs = math_abs, .string_function = strings, .string_slice = string_slice,
+        .internal_inspect = prepared.internal_inspect,
+    }));
+    const out_of_range = try s.get(range_owner, "outOfRange");
+    const validator_owner = try s.own(try validators.create(s.engine, .{
+        .invalid_arg_type = prepared.arguments.invalid_arg_type,
+        .invalid_arg_value = prepared.arguments.invalid_arg_value,
+        .out_of_range = out_of_range, .error_constructor = error_constructor,
+        .capture_stack_trace = capture_stack_trace, .reflect_apply = reflect_apply,
+        .number_is_integer = number_is_integer, .number_parse_int = try s.get(number, "parseInt"),
+        .number_min_safe_integer = try s.get(number, "MIN_SAFE_INTEGER"),
+        .number_max_safe_integer = try s.get(number, "MAX_SAFE_INTEGER"),
+        .regexp_exec = regexp_exec, .array_is_array = array_is_array,
+        .is_array_buffer_view = is_array_buffer_view,
+    }));
+    const flags = try s.own(try @import("native_node_file_flags.zig").create(s.engine));
+    const validation_owner = try s.own(try validation.create(s.engine, .{
+        .out_of_range = out_of_range,
+        .invalid_arg_type = prepared.arguments.invalid_arg_type,
+        .invalid_arg_value = prepared.arguments.invalid_arg_value,
+        .error_constructor = error_constructor,
+        .capture_stack_trace = capture_stack_trace, .reflect_apply = reflect_apply,
+        .validate_int32 = try s.get(validator_owner, "validateInt32"),
+        .validate_integer = try s.get(validator_owner, "validateInteger"),
+        .validate_path = try s.get(path_helpers, "validatePath"),
+        .to_path_if_file_url = try s.get(url_owner, "toPathIfFileURL"),
+        .bigint = try s.get(global, "BigInt"),
+        .o_rdonly = try s.get(flags, "O_RDONLY"), .o_wronly = try s.get(flags, "O_WRONLY"),
+        .o_rdwr = try s.get(flags, "O_RDWR"), .o_append = try s.get(flags, "O_APPEND"),
+        .o_creat = try s.get(flags, "O_CREAT"), .o_excl = try s.get(flags, "O_EXCL"),
+        .o_trunc = try s.get(flags, "O_TRUNC"), .o_sync = try s.get(flags, "O_SYNC"),
+    }));
+    const symbols = try s.own(try a.expression(s.engine, moduleSymbols, .{symbol}));
+    const record = try s.objectProto(c.pi_js_null());
+    try s.put(record, "promises", promise_owner);
+    try s.put(record, "rangeErrors", range_owner);
+    try s.put(record, "validators", validator_owner);
+    try s.put(record, "validation", validation_owner);
+    try s.put(record, "flags", flags);
+    try s.put(record, "symbols", symbols);
+    try s.put(record, "Buffer", try s.get(path_owner, "Buffer"));
+    try s.put(record, "kEmptyObject", try s.get(path_owner, "kEmptyObject"));
+    try s.put(record, "kValidateObjectAllowNullable", c.JS_NewInt32(s.engine.context, 1));
+    try s.put(record, "isArrayBufferView", is_array_buffer_view);
+    try s.put(record, "ERR_INVALID_ARG_VALUE", prepared.arguments.invalid_arg_value);
+    try s.put(record, "ERR_INVALID_ARG_TYPE", prepared.arguments.invalid_arg_type);
+    try s.put(record, "Error", error_constructor);
+    try s.put(record, "assert", prepared.assert_function);
+    try s.put(record, "EventEmitter", try s.get(events, "EventEmitter"));
+    try s.put(record, "FunctionPrototypeBind", function_bind);
+    return a.duplicate(s.engine, record);
+}
+
+/// One completed actual import graph, retained before the FileHandle class and
+/// native binding are assembled. It is never the public fs/promises namespace.
+pub fn prepare(engine: *Engine) !c.JSValue {
+    try engine.checkNativeEntry();
+    if (engine.native_module_values.get(cache_key)) |known| return a.duplicate(engine, known);
+    const candidate = try a.expression(engine, body, .{});
+    if (engine.native_module_values.get(cache_key)) |known| {
+        var completion = a.owned.Completion.initValue(engine, a.duplicate(engine, known));
+        completion.release(candidate);
+        return completion.finishValue();
+    }
+    return publication.publish(engine, cache_key, candidate);
+}

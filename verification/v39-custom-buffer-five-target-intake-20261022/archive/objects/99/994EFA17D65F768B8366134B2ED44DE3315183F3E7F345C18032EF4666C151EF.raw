@@ -1,0 +1,27 @@
+/* Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE. */
+/* The selected actual node_constants.cc DefineFsConstants macro bindings. */
+#include "native_node_file_flags.h"
+#include <fcntl.h>
+int pi_node_file_open_flag(enum PiNodeFileOpenFlag field, int32_t* value) {
+  switch (field) {
+    case PI_NODE_FILE_O_RDONLY: *value = O_RDONLY; return 1;
+    case PI_NODE_FILE_O_WRONLY: *value = O_WRONLY; return 1;
+    case PI_NODE_FILE_O_RDWR: *value = O_RDWR; return 1;
+#ifdef O_APPEND
+    case PI_NODE_FILE_O_APPEND: *value = O_APPEND; return 1;
+#endif
+#ifdef O_CREAT
+    case PI_NODE_FILE_O_CREAT: *value = O_CREAT; return 1;
+#endif
+#ifdef O_EXCL
+    case PI_NODE_FILE_O_EXCL: *value = O_EXCL; return 1;
+#endif
+#ifdef O_TRUNC
+    case PI_NODE_FILE_O_TRUNC: *value = O_TRUNC; return 1;
+#endif
+#ifdef O_SYNC
+    case PI_NODE_FILE_O_SYNC: *value = O_SYNC; return 1;
+#endif
+    default: return 0;
+  }
+}

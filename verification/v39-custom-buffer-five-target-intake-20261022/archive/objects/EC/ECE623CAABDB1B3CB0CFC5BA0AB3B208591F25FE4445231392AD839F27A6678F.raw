@@ -1,0 +1,264 @@
+// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
+//! Actual selected internal/fs/utils declarations for FileHandle open/read.
+//! These retain the shared validator/path/error owners; no caller-supplied
+//! operations or replacement filesystem namespace is assembled here.
+const h = @import("native_sdk_session_locals.zig");
+const v = h.v;
+const c = v.c;
+const Engine = h.Engine;
+const Scope = h.Scope;
+const sync = @import("native_sync_arguments.zig");
+const Arguments = sync.Arguments;
+const Frames = @import("native_public_lexical_frame.zig");
+const a = @import("native_node_argument_values.zig");
+const registration = @import("native_node_argument_error_registration.zig");
+const PathFrame = Frames.Frame(enum { fileURLOrPath, propName, path });
+const FlagsFrame = Frames.Frame(enum { flags, name });
+const PositionFrame = Frames.Frame(enum { maxPosition });
+pub const Inputs = struct {
+    out_of_range: c.JSValue,
+    invalid_arg_type: c.JSValue,
+    invalid_arg_value: c.JSValue,
+    error_constructor: c.JSValue,
+    capture_stack_trace: c.JSValue,
+    reflect_apply: c.JSValue,
+    validate_int32: c.JSValue,
+    validate_integer: c.JSValue,
+    validate_path: c.JSValue,
+    to_path_if_file_url: c.JSValue,
+    bigint: c.JSValue,
+    o_rdonly: c.JSValue,
+    o_wronly: c.JSValue,
+    o_rdwr: c.JSValue,
+    o_append: c.JSValue,
+    o_creat: c.JSValue,
+    o_excl: c.JSValue,
+    o_trunc: c.JSValue,
+    o_sync: c.JSValue,
+};
+fn value(s: *Scope, comptime body: anytype, args: anytype) !c.JSValue {
+    return v.own(s, try h.expression(s.engine, body, args));
+}
+fn raised(s: *Scope, reason: c.JSValue) anyerror {
+    var boundary: v.guest.Boundary = .{ .engine = s.engine };
+    boundary.begin() catch |err| return err;
+    _ = boundary.finishValue(s, c.JS_Throw(s.engine.context, v.duplicate(s, reason))) catch |err| return err;
+    return error.MissingActualFileHandleValidationThrow;
+}
+fn converted(s: *Scope, input: c.JSValue) !c.JSValue {
+    return v.duplicate(s, try v.stringify(s, input));
+}
+fn invokePath(s: *Scope, function: c.JSValue, input: c.JSValue) !c.JSValue {
+    return v.duplicate(s, try v.call(s, function, c.pi_js_undefined(), &.{input}));
+}
+fn validatePath(s: *Scope, function: c.JSValue, path: c.JSValue, name: c.JSValue) !void {
+    _ = try v.call(s, function, c.pi_js_undefined(), &.{path, name});
+}
+fn pathBody(s: *Scope, args: *Arguments, frame: *PathFrame, roots: []const c.JSValue) !c.JSValue {
+    try frame.copy(.fileURLOrPath, args.get(0));
+    if (c.JS_IsUndefined(args.get(1))) try args.take(1, h.text(s.engine, "path"));
+    try frame.copy(.propName, args.get(1));
+    try frame.take(.path, h.expression(s.engine, invokePath, .{roots[0], args.get(0)}));
+    try h.statement(s.engine, validatePath, .{roots[1], frame.get(.path), args.get(1)});
+    return v.duplicate(s, frame.get(.path));
+}
+fn pathCall(engine: *Engine, _: c.JSValue, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    const frame = args.createFrame(&scope, PathFrame) catch |err| return v.owned.finishValue(&scope, err);
+    return v.owned.finishValue(&scope, pathBody(&scope, args, frame, roots));
+}
+fn validateFlags(s: *Scope, function: c.JSValue, flags: c.JSValue, name: c.JSValue) !void {
+    _ = try v.call(s, function, c.pi_js_undefined(), &.{flags, name});
+}
+fn flagsReason(s: *Scope, constructor: c.JSValue, flags: c.JSValue) !c.JSValue {
+    return v.duplicate(s, try v.construct(s, constructor, &.{try v.text(s, "flags"), flags}));
+}
+fn combinedFlags(s: *Scope, roots: []const c.JSValue, comptime sequence: anytype) !c.JSValue {
+    var current = roots[sequence[0]];
+    inline for (sequence, 0..) |position, index| {
+        if (index != 0) current = try h.binary(s, .bit_or, current, roots[position]);
+    }
+    return v.duplicate(s, current);
+}
+fn flagsBody(s: *Scope, args: *Arguments, frame: *FlagsFrame, roots: []const c.JSValue) !c.JSValue {
+    try frame.copy(.flags, args.get(0));
+    if (c.JS_IsUndefined(args.get(1))) try args.take(1, h.text(s.engine, "flags"));
+    try frame.copy(.name, args.get(1));
+    if (c.JS_IsNumber(args.get(0))) {
+        try h.statement(s.engine, validateFlags, .{roots[0], args.get(0), args.get(1)});
+        return v.duplicate(s, args.get(0));
+    }
+    // roots 2..9 are the actual imported O_RDONLY/O_WRONLY/O_RDWR/O_APPEND/
+    // O_CREAT/O_EXCL/O_TRUNC/O_SYNC values, including platform undefined.
+    if (v.nullish(args.get(0)) or try v.eq(s, args.get(0), "r")) return v.duplicate(s, roots[2]);
+    if (try v.eq(s, args.get(0), "rs") or try v.eq(s, args.get(0), "sr"))
+        return combinedFlags(s, roots, .{2, 9});
+    if (try v.eq(s, args.get(0), "r+")) return v.duplicate(s, roots[4]);
+    if (try v.eq(s, args.get(0), "rs+") or try v.eq(s, args.get(0), "sr+"))
+        return combinedFlags(s, roots, .{4, 9});
+    if (try v.eq(s, args.get(0), "w")) return combinedFlags(s, roots, .{8, 6, 3});
+    if (try v.eq(s, args.get(0), "wx") or try v.eq(s, args.get(0), "xw"))
+        return combinedFlags(s, roots, .{8, 6, 3, 7});
+    if (try v.eq(s, args.get(0), "w+")) return combinedFlags(s, roots, .{8, 6, 4});
+    if (try v.eq(s, args.get(0), "wx+") or try v.eq(s, args.get(0), "xw+"))
+        return combinedFlags(s, roots, .{8, 6, 4, 7});
+    if (try v.eq(s, args.get(0), "a")) return combinedFlags(s, roots, .{5, 6, 3});
+    if (try v.eq(s, args.get(0), "ax") or try v.eq(s, args.get(0), "xa"))
+        return combinedFlags(s, roots, .{5, 6, 3, 7});
+    if (try v.eq(s, args.get(0), "as") or try v.eq(s, args.get(0), "sa"))
+        return combinedFlags(s, roots, .{5, 6, 3, 9});
+    if (try v.eq(s, args.get(0), "a+")) return combinedFlags(s, roots, .{5, 6, 4});
+    if (try v.eq(s, args.get(0), "ax+") or try v.eq(s, args.get(0), "xa+"))
+        return combinedFlags(s, roots, .{5, 6, 4, 7});
+    if (try v.eq(s, args.get(0), "as+") or try v.eq(s, args.get(0), "sa+"))
+        return combinedFlags(s, roots, .{5, 6, 4, 9});
+    return raised(s, try value(s, flagsReason, .{roots[1], args.get(0)}));
+}
+fn flagsCall(engine: *Engine, _: c.JSValue, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    const frame = args.createFrame(&scope, FlagsFrame) catch |err| return v.owned.finishValue(&scope, err);
+    return v.owned.finishValue(&scope, flagsBody(&scope, args, frame, roots));
+}
+fn negativeReason(s: *Scope, base: c.JSValue, name: []const u8, input: c.JSValue) !c.JSValue {
+    const constructor = try v.get(s, base, "HideStackFramesError");
+    return v.duplicate(s, try v.construct(s, constructor,
+        &.{try v.text(s, name), try v.text(s, ">= 0"), input}));
+}
+fn lengthDifference(s: *Scope, buffer_length: c.JSValue, offset: c.JSValue) !c.JSValue {
+    return v.duplicate(s, try h.binary(s, .subtract, buffer_length, offset));
+}
+fn remainingRange(s: *Scope, buffer_length: c.JSValue, offset: c.JSValue) !c.JSValue {
+    const prefix = try v.text(s, "<= ");
+    const difference = try value(s, lengthDifference, .{buffer_length, offset});
+    const text = try value(s, converted, .{difference});
+    return v.duplicate(s, try h.binary(s, .add, prefix, text));
+}
+fn lengthReason(s: *Scope, base: c.JSValue, buffer_length: c.JSValue,
+    offset: c.JSValue, length: c.JSValue) !c.JSValue
+{
+    const constructor = try v.get(s, base, "HideStackFramesError");
+    const name = try v.text(s, "length");
+    const range = try value(s, remainingRange, .{buffer_length, offset});
+    return v.duplicate(s, try v.construct(s, constructor, &.{name, range, length}));
+}
+fn sumExceeds(s: *Scope, offset: c.JSValue, length: c.JSValue, buffer_length: c.JSValue) !c.JSValue {
+    const total = try h.binary(s, .add, offset, length);
+    return v.boolean(s, v.truthy(s, try h.binary(s, .greater, total, buffer_length)));
+}
+fn offsetBody(s: *Scope, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    if (try h.compare(s.engine, .less, args.get(0), v.number(s, 0)))
+        return raised(s, try value(s, negativeReason, .{roots[0], @as([]const u8, "offset"), args.get(0)}));
+    if (try h.compare(s.engine, .less, args.get(1), v.number(s, 0)))
+        return raised(s, try value(s, negativeReason, .{roots[0], @as([]const u8, "length"), args.get(1)}));
+    if (h.truthy(s.engine, try h.expression(s.engine, sumExceeds, .{args.get(0), args.get(1), args.get(2)})))
+        return raised(s, try value(s, lengthReason, .{roots[0], args.get(2), args.get(0), args.get(1)}));
+    return c.pi_js_undefined();
+}
+fn offsetCall(engine: *Engine, _: c.JSValue, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&scope, offsetBody(&scope, args, roots));
+}
+fn integerPosition(s: *Scope, wrapper: c.JSValue, position: c.JSValue, name: c.JSValue) !void {
+    const function = try v.get(s, wrapper, "withoutStackTrace");
+    _ = try v.call(s, function, wrapper, &.{position, name, v.number(s, -1)});
+}
+fn positiveMaximum(s: *Scope, two: c.JSValue, exponent: c.JSValue, one: c.JSValue) !c.JSValue {
+    const power = try h.binary(s, .power, two, exponent);
+    return v.duplicate(s, try h.binary(s, .subtract, power, one));
+}
+fn lengthBigint(s: *Scope, function: c.JSValue, length: c.JSValue) !c.JSValue {
+    return v.duplicate(s, try v.call(s, function, c.pi_js_undefined(), &.{length}));
+}
+fn maximumPosition(s: *Scope, roots: []const c.JSValue, length: c.JSValue) !c.JSValue {
+    const maximum = try value(s, positiveMaximum, .{roots[4], roots[5], roots[6]});
+    const converted_length = try value(s, lengthBigint, .{roots[3], length});
+    return v.duplicate(s, try h.binary(s, .subtract, maximum, converted_length));
+}
+fn positionRange(s: *Scope, maximum: c.JSValue) !c.JSValue {
+    const prefix = try v.text(s, ">= -1 && <= ");
+    const text = try value(s, converted, .{maximum});
+    return v.duplicate(s, try h.binary(s, .add, prefix, text));
+}
+fn positionRangeReason(s: *Scope, base: c.JSValue, name: c.JSValue,
+    maximum: c.JSValue, position: c.JSValue) !c.JSValue
+{
+    const constructor = try v.get(s, base, "HideStackFramesError");
+    const range = try value(s, positionRange, .{maximum});
+    return v.duplicate(s, try v.construct(s, constructor, &.{name, range, position}));
+}
+fn positionTypeReason(s: *Scope, base: c.JSValue, name: c.JSValue, position: c.JSValue) !c.JSValue {
+    const constructor = try v.get(s, base, "HideStackFramesError");
+    const expected = try v.array(s);
+    try v.index(s, expected, 0, try v.text(s, "integer"));
+    try v.index(s, expected, 1, try v.text(s, "bigint"));
+    return v.duplicate(s, try v.construct(s, constructor, &.{name, expected, position}));
+}
+fn positionBody(s: *Scope, args: *Arguments, frame: *PositionFrame, roots: []const c.JSValue) !c.JSValue {
+    if (c.JS_IsNumber(args.get(0))) {
+        try h.statement(s.engine, integerPosition, .{roots[0], args.get(0), args.get(1)});
+    } else if (c.JS_IsBigInt(args.get(0))) {
+        try frame.take(.maxPosition, h.expression(s.engine, maximumPosition, .{roots, args.get(2)}));
+        if (!(try h.compare(s.engine, .greater_equal, args.get(0), roots[7]) and
+            try h.compare(s.engine, .less_equal, args.get(0), frame.get(.maxPosition))))
+        {
+            return raised(s, try value(s, positionRangeReason, .{roots[1], args.get(1), frame.get(.maxPosition), args.get(0)}));
+        }
+    } else {
+        return raised(s, try value(s, positionTypeReason, .{roots[2], args.get(1), args.get(0)}));
+    }
+    return c.pi_js_undefined();
+}
+fn positionCall(engine: *Engine, _: c.JSValue, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    const frame = args.createFrame(&scope, PositionFrame) catch |err| return v.owned.finishValue(&scope, err);
+    return v.owned.finishValue(&scope, positionBody(&scope, args, frame, roots));
+}
+fn makeFunction(s: *Scope, name: [*:0]const u8, length: c_int, definition: sync.Definition,
+    roots: []const c.JSValue, arrow: bool) !c.JSValue
+{
+    var boundary: v.guest.Boundary = .{ .engine = s.engine };
+    try boundary.begin();
+    return boundary.finishValue(s, if (arrow)
+        v.function.createArrowWithArguments(s.engine, name, length, definition, roots)
+    else
+        v.function.createWithArguments(s.engine, name, length, definition, roots));
+}
+fn wrapped(s: *a.Scope, raw: c.JSValue, inputs: Inputs) !c.JSValue {
+    return a.duplicate(s.engine, try registration.wrap(s, raw,
+        inputs.error_constructor, inputs.capture_stack_trace, inputs.reflect_apply));
+}
+fn wrap(s: *Scope, raw: c.JSValue, inputs: Inputs) !c.JSValue {
+    return v.own(s, try a.expression(s.engine, wrapped, .{raw, inputs}));
+}
+fn bigintLiteral(s: *a.Scope, integer: i64) !c.JSValue {
+    const generation = try s.beforeAllocation();
+    return a.duplicate(s.engine, try s.checkedAllocation(c.JS_NewBigInt64(s.engine.context, integer), generation));
+}
+fn createBody(s: *Scope, inputs: Inputs) !c.JSValue {
+    const path = try wrap(s, try makeFunction(s, "", 1,
+        .{ .formal_count = 2, .callback = pathCall, .hooks = sync.frameHooks(PathFrame) },
+        &.{inputs.to_path_if_file_url, inputs.validate_path}, true), inputs);
+    const flags = try makeFunction(s, "stringToFlags", 1,
+        .{ .formal_count = 2, .callback = flagsCall, .hooks = sync.frameHooks(FlagsFrame) },
+        &.{inputs.validate_int32, inputs.invalid_arg_value, inputs.o_rdonly, inputs.o_wronly,
+            inputs.o_rdwr, inputs.o_append, inputs.o_creat, inputs.o_excl, inputs.o_trunc, inputs.o_sync}, false);
+    const offset = try wrap(s, try makeFunction(s, "", 3,
+        .{ .formal_count = 3, .callback = offsetCall }, &.{inputs.out_of_range}, true), inputs);
+    const two = try v.own(s, try a.expression(s.engine, bigintLiteral, .{@as(i64, 2)}));
+    const exponent = try v.own(s, try a.expression(s.engine, bigintLiteral, .{@as(i64, 63)}));
+    const one = try v.own(s, try a.expression(s.engine, bigintLiteral, .{@as(i64, 1)}));
+    const minus_one = try v.own(s, try a.expression(s.engine, bigintLiteral, .{@as(i64, -1)}));
+    const position = try wrap(s, try makeFunction(s, "", 3,
+        .{ .formal_count = 3, .callback = positionCall, .hooks = sync.frameHooks(PositionFrame) },
+        &.{inputs.validate_integer, inputs.out_of_range, inputs.invalid_arg_type, inputs.bigint,
+            two, exponent, one, minus_one}, true), inputs);
+    const record = try v.stateObject(s);
+    try v.put(s, record, "getValidatedPath", path);
+    try v.put(s, record, "stringToFlags", flags);
+    try v.put(s, record, "validateOffsetLengthRead", offset);
+    try v.put(s, record, "validatePosition", position);
+    return v.duplicate(s, record);
+}
+pub fn create(engine: *Engine, inputs: Inputs) !c.JSValue {
+    return h.expression(engine, createBody, .{inputs});
+}

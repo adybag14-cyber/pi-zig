@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "status": "static_data_plan_checks_passed",
+  "prepared_utc": "2026-10-22T18:29:27.347579+00:00",
+  "plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 250596,
+    "sha256": "FCF2946B954027511B8C8EAB76B84B477FEC799D38A009DB1CE53A3887F40733"
+  },
+  "reference_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\reference-closure.json",
+    "bytes": 2236215,
+    "sha256": "FF4DDEF11E6F0EDA6A71E92090181E3B4B97A4182B52785B30ACD8769EA8C080"
+  },
+  "source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-custom-buffer-listener-source-acceptance-20261022.json",
+    "bytes": 26642,
+    "sha256": "7E069F4D15E44ED6683D0E21A032B453CC78CFD1B857006F754653012F90D8B3"
+  },
+  "template": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py",
+      "bytes": 23634,
+      "sha256": "8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\unissued-binding-and-schema-contract.json",
+      "bytes": 10902,
+      "sha256": "ACF23FA22E0C380BF744923B5CA8A8B55D30B83B0D655AAFF6FF2EE80790136D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending20-strengthened-intake-adapter-v2-source-acceptance-20261022.json",
+      "bytes": 6683,
+      "sha256": "039E21F5F5A82E7AFEC2AD549DF8E27BDF7729BF8D1E8E4015B4E9C06B99B738"
+    }
+  ],
+  "checks": {
+    "normalized_seven_key_rows": 76,
+    "source_rows": 5,
+    "source_additions": 4,
+    "source_replacement": 1,
+    "archive_full_byte_groups": 71,
+    "logical_aliases": 90,
+    "alias_full_bytes_and_primary_membership_exact": true,
+    "alias_identity_duplicates": 0,
+    "all_modes": "100644",
+    "archive_or_source_path_collisions": 0,
+    "planned_parent_spelling_collisions": 0,
+    "separate_fixture_source_overlap": 0,
+    "selected_dependency_versions": 989,
+    "complete_reference_pin_version_coverage": 160,
+    "complete_generated_ledger_pin_occurrences": 214,
+    "immutable_Git_boundary_full_bytes_previously_verified_in_ledger": 71,
+    "raw_Git_commit_path_blob_mode_and_bytes_in_ledger": 1947,
+    "unclassified_or_mismatched_selected_pin_versions": 0,
+    "all_future_authority_and_union_count_slots_unresolved": true,
+    "original_handoff_nulls_preserved": true
+  },
+  "source_preimages": [
+    {
+      "target": "src/extensions/native_node_custom_buffer_listener_allocation.h",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "absent_from_raw_tree": true
+    },
+    {
+      "target": "src/extensions/native_node_custom_buffer_listener_allocation.cpp",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "absent_from_raw_tree": true
+    },
+    {
+      "target": "src/extensions/native_node_custom_buffer_listener.zig",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "absent_from_raw_tree": true
+    },
+    {
+      "target": "src/native_node_custom_buffer_listener_test.zig",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "absent_from_raw_tree": true
+    },
+    {
+      "target": "build.zig",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "bytes": 514105,
+      "sha256": "594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF",
+      "mode": "100644",
+      "raw_git_blob": "b71fa07d61a4a02928a9c1757f6dab513442e8d9"
+    }
+  ],
+  "explicit_boundaries": {
+    "basis_Git": 71,
+    "separate_component_donors": 3,
+    "separate_component_plan_and_handoff": 2,
+    "preserved_external_readonly_census": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-custom-buffer-five-target-copy-plan-sourceonly-20261022\\recursive-source-pin-census-capped.json",
+      "bytes": 1054427,
+      "sha256": "216495363FA962E5CA3378812340EAB7D4BD52BC4DC4C736A3A2EBD5C1A0B6CD"
+    }
+  },
+  "current_source_or_runtime_execution": false,
+  "Main_or_index_access": false,
+  "this_is_not_an_intake_receipt": true
+}

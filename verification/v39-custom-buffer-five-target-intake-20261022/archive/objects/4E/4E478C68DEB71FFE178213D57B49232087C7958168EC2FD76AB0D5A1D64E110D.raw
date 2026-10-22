@@ -1,0 +1,53 @@
+{
+  "schema": "pi-zig-custom-buffer-exact-embed-resolution.v1",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\dependency-inventory.json",
+    "bytes": 1316327,
+    "sha256": "69EEE1C0D868C5A09C14B217CEF1D2066DCB54FF1614A5AD1A91127B6ECFC3EA"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\resolved-dependency-inventory.json",
+    "bytes": 1334604,
+    "sha256": "344B351BDB6B2C5692EBE3B1161AA3FE6ADFA9BFDBA10D9D131B5E80C40966B1"
+  },
+  "source_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\source-map.json",
+    "bytes": 144892,
+    "sha256": "161766BCF9F3A65B1CE12AA1967093B1745B6381037AC272675553BCFD5E8F4F"
+  },
+  "added_raw_members": [
+    {
+      "relative_path": "src/durable/fixtures/sdk-agent-tool-wrapper-identity-1ced.json",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "356d2df2dbd517a2f0149a4c1e4dd388464d8d49",
+      "mode": "100644",
+      "bytes": 569,
+      "sha256": "929086C800D158BBF24A5DF70F194E50BF382447C1D4172CEF68D1415886C50C"
+    },
+    {
+      "relative_path": "src/durable/fixtures/sdk-agent-tool-context-1ced.json",
+      "origin": "immutable raw Git blob",
+      "repository": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "36b673390687ab9ea9dee2395f48159925249863",
+      "mode": "100644",
+      "bytes": 10125,
+      "sha256": "0FF3D4D85981D2A3ACD302B9D739F6496D933DE909C67A8F585B41E59D56AEF7"
+    }
+  ],
+  "literal_counts_unchanged": {
+    "modules": 716,
+    "embeds": 243,
+    "edges": 4389
+  },
+  "resolved_counts": {
+    "modules": 716,
+    "embeds": 245,
+    "entries": 989
+  },
+  "complete_original_raw_inverse": true,
+  "source_or_control_changes": false,
+  "runtime_metadata_or_reachability_claimed": false
+}

@@ -1,0 +1,27 @@
+// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
+//! Selected internalBinding(constants).fs values from actual platform macros.
+const h = @import("native_sdk_session_locals.zig");
+const v = h.v;
+const c = v.c;
+const native = @cImport({ @cInclude("native_node_file_flags.h"); });
+fn createBody(s: *h.Scope) !c.JSValue {
+    const record = try v.stateObject(s);
+    inline for (.{
+        .{ "O_RDONLY", native.PI_NODE_FILE_O_RDONLY },
+        .{ "O_WRONLY", native.PI_NODE_FILE_O_WRONLY },
+        .{ "O_RDWR", native.PI_NODE_FILE_O_RDWR },
+        .{ "O_APPEND", native.PI_NODE_FILE_O_APPEND },
+        .{ "O_CREAT", native.PI_NODE_FILE_O_CREAT },
+        .{ "O_EXCL", native.PI_NODE_FILE_O_EXCL },
+        .{ "O_TRUNC", native.PI_NODE_FILE_O_TRUNC },
+        .{ "O_SYNC", native.PI_NODE_FILE_O_SYNC },
+    }) |field| {
+        var number: i32 = undefined;
+        if (native.pi_node_file_open_flag(field[1], &number) != 0)
+            try v.put(s, record, field[0], c.JS_NewInt32(s.engine.context, number));
+    }
+    return v.duplicate(s, record);
+}
+pub fn create(engine: *h.Engine) !c.JSValue {
+    return h.expression(engine, createBody, .{});
+}

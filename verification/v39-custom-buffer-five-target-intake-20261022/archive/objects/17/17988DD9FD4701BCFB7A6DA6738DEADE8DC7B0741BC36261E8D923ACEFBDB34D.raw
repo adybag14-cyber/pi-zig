@@ -1,0 +1,32 @@
+[
+  {
+    "before": "        try self.base().engine.bindFunction(\"actualCustomNread\", readNread, 0);\n",
+    "after": "        try self.base().engine.bindFunction(\"actualCustomNread\", readNread, 0);\n        try self.base().engine.bindFunction(\"actualStopCustomRead\", stopRead, 0);\n",
+    "why": "Bind the actual FileHandle ReadStop body for the guest EOF callback."
+  },
+  {
+    "before": "fn expectBuffer(actual: uv.uv_buf_t, pointer: usize, length: usize) !void {",
+    "after": "fn stopRead(context: ?*c.JSContext, _: c.JSValue,\n    _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue\n{\n    const f = selectedBase(context.?);\n    const handle = f.handle() catch |err| return callable.failure(f.engine, err, 0);\n    return c.JS_NewInt32(context.?, handle.readStop());\n}\nfn expectBuffer(actual: uv.uv_buf_t, pointer: usize, length: usize) !void {",
+    "why": "The selected native control calls the genuine owner, without synthetic state mutation."
+  },
+  {
+    "before": "    try std.testing.expectEqual(@as(u32, 0), f.base().env().streamBaseField(.array_buffer_offset).*);",
+    "after": "    try std.testing.expectEqual(@as(i32, 0), f.base().env().streamBaseField(.array_buffer_offset).*);",
+    "why": "Match the actual Environment Int32Array field type."
+  },
+  {
+    "before": "    // The real file contains ABCDEFGH. Bound the native FileHandle to those\n    // eight bytes; its existing read engine emits the final EOF synchronously.\n    const handle = try f.base().handle();\n    handle.read_state.read_length = 8;",
+    "after": "    // The real file contains ABCDEFGH. Two physical reads consume its bytes;\n    // a third reaches real EOF and the guest callback invokes actual ReadStop.\n    const handle = try f.base().handle();",
+    "why": "Use real descriptor EOF and real owner stopping, without altering native length fields."
+  },
+  {
+    "before": "    try f.onread(\"(function(value){customReads.push(actualCustomNread());customArguments.push(value);return customReads.length===1?customSecond:undefined;})\");",
+    "after": "    try f.onread(\"(function(value){const nread=actualCustomNread();customReads.push(nread);customArguments.push(value);if(nread<0)actualStopCustomRead();return customReads.length===1?customSecond:undefined;})\");",
+    "why": "Stop the actual live read state after EOF to avoid a further native restart."
+  },
+  {
+    "before": "    try std.testing.expectEqual(@as(usize, 2), f.base().read_begins);\n    try std.testing.expectEqual(@as(usize, 2), f.base().read_ends);",
+    "after": "    try std.testing.expectEqual(@as(usize, 3), f.base().read_begins);\n    try std.testing.expectEqual(@as(usize, 3), f.base().read_ends);",
+    "why": "Observe all three real native requests/completions, including EOF."
+  }
+]

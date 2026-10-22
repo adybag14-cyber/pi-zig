@@ -1,0 +1,17 @@
+# Current-e9 CustomBuffer native owner
+
+This packet proposes exactly five source/build paths on raw commit e9f11afa56a923372d957e2fb227f453822c21bf: the unchanged three production donors, unchanged 15-control root, and one install-only build insertion. It is source evidence, not execution or intake authority.
+
+The selected build is 7AB122A9, a complete one-hunk inverse to build594A. It links the existing node_one_byte_diagnostics library and directly compiles only native_node_custom_buffer_listener_allocation.cpp. The shared library supplies diagnostic TLS, V8 fatal and OneByteString diagnostic implementations once. Existing network links the single independent memory-domain allocator owner.
+
+The original Node operations are mapped in source-map.json. UseUserBuffer is selected only after genuine public admission. CustomBufferJSListener holds a borrowed uv_buf_t without retaining a JavaScript view or backing entitlement. Its standard allocation retries the real new_handler and retains native nonreturning bad_alloc policy. Its independent allocation prefix retains the memory domain until destruction, including an already unlinked orphan after Engine teardown. Callback empty/undefined and null-negative branches do not access a destroyed listener. Nonundefined replacement still requires a live listener and writes base before native len. The actual Shutdown reporter is selected directly.
+
+The complete selected conservative source inventory contains 716 modules, 243 literal embedded files plus two exactly resolved compile-time tuple members, and 4,389 literal import edges. The initial literal inventory69EEE remains intact. The resolved inventory344B adds only the two raw-e9 SDK fixture files and carries a complete inverse to the initial inventory. Its eight anonymous source blocks are not a predicted metadata count or an admitted runtime allowlist. Actual metadata remains unknown.
+
+The 65388977 Shutdown support correction is a separate prerequisite, bound to Root9F45 and independent peer045B. It is not one of these five target paths. The data-only intake component requires its explicit composition or exact already-present verification. No live support/production/build source was edited here.
+
+Source-audit-v2.py reads bytes and immutable Git objects only, checking the full build and support inverses, 989 dependency versions, 78 source excerpts, namespaces, 15 unchanged declarations and native recipe membership. Its sole earlier static-checker spelling error was corrected before either checker ran: allocateStandard(size) became the actual allocation_size spelling. That unexecuted checker and the one-literal correction remain preserved. The production candidates did not change.
+
+The 6984 composition record's raw_support_preimage retained an overlay origin label/source:null while recording the correct original hash and Git object. source-proof.json supplies the canonical raw Git record and explicitly qualifies this metadata wording; no preimage or selected byte changed.
+
+Full public method publication, runtime-owned template identity, WriteWrap completion, V8 on-heap typed-array materialization, worker/bootstrap and production tracing clock/platform ownership remain outside this unit. Native compilation, runtime, cross-platform and product qualification are not claimed.

@@ -107,7 +107,7 @@ test "native Stream shutdown real accepted bad descriptor still performs AfterCl
     try f.publishRequest(wrapper);
     try std.testing.expectEqual(@as(c_int, 0), try f.run(wrapper));
     try f.base.pumpIo();
-    try std.testing.expectEqual(@as(c_int, t.uv.UV_EBADF), f.end_result);
+    try std.testing.expectEqual(@as(c_int, t.base_support.physical.UV_EBADF), f.end_result);
     try std.testing.expect(handle.read_state.closed and handle.read_state.fd == -1);
     try f.base.expect("shutdownCalls.length===1 && shutdownCalls[0][1]<0 && shutdownCalls[0][4]===1");
     try f.expectRetired(wrapper);

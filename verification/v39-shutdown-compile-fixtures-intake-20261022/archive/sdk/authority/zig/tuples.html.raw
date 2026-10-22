@@ -1,0 +1,16 @@
+<h3 id="Tuples"><a href="#toc-Tuples">Tuples</a> <a class="hdr" href="#Tuples">§</a></h3>
+
+      <p>
+      Anonymous structs can be created without specifying field names, and are referred to as "tuples". An empty tuple looks like <code>.{}</code> and can be seen in one of the <a href="#Hello-World">Hello World examples</a>.
+      </p>
+      <p>
+      The fields are implicitly named using numbers starting from 0. Because their names are integers,
+      they cannot be accessed with <code>.</code> syntax without also wrapping them in
+      <code>@&quot;&quot;</code>. Names inside <code>@&quot;&quot;</code> are always recognised as
+      <a href="#Identifiers">identifiers</a>.
+      </p>
+      <p>
+      Like arrays, tuples have a .len field, can be indexed (provided the index is comptime-known)
+      and work with the ++ and ** operators. They can also be iterated over with <a href="#inline-for">inline for</a>.
+      </p>
+      

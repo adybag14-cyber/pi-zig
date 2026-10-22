@@ -1,0 +1,19 @@
+<h2 id="for"><a href="#toc-for">for</a> <a class="hdr" href="#for">§</a></h2>
+
+      <figure><figcaption class="zig-cap"><cite class="file">test_for.zig</cite></figcaption><pre><code><span class="tok-kw">const</span> expectEqual = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;std&quot;</span>).testing.expectEqual;
+
+<span class="tok-kw">test</span> <span class="tok-str">&quot;for basics&quot;</span> {
+    <span class="tok-kw">const</span> items = [_]<span class="tok-type">i32</span>{ <span class="tok-number">4</span>, <span class="tok-number">5</span>, <span class="tok-number">3</span>, <span class="tok-number">4</span>, <span class="tok-number">0</span> };
+    <span class="tok-kw">var</span> sum: <span class="tok-type">i32</span> = <span class="tok-number">0</span>;
+
+    <span class="tok-comment">// For loops iterate over slices and arrays.</span>
+    <span class="tok-kw">for</span> (items) |value| {
+        <span class="tok-comment">// Break and continue are supported.</span>
+        <span class="tok-kw">if</span> (value == <span class="tok-number">0</span>) {
+            <span class="tok-kw">continue</span>;
+        }
+        sum += value;
+    }
+    <span class="tok-kw">try</span> expectEqual(<span class="tok-number">16</span>, sum);
+
+    

@@ -1,0 +1,343 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_v39_shutdown_two_compile_fixture_corrections",
+  "reviewer": "module_io_port independent source review",
+  "reviewed_utc": "2026-10-22",
+  "candidate_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\proposal.json",
+    "bytes": 9725,
+    "sha256": "3F8C1516076850380FB89A3371A394FD2694426D8FBA1E4369381E94A3FC1558"
+  },
+  "source_basis": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "source_only": true,
+  "blockers": [],
+  "finding": "No bounded source blocker in the two fixture edits. The assertion selects the same libuv enum through the existing public physical C import. The cleanup loop uses a homogeneous runtime array of the same three mutable optional-JSValue field pointers, preserving the entire loop body and teardown order.",
+  "method": {
+    "complete_projected_test_and_support_read": true,
+    "raw_frozen_Git_originals_read_via_owned_worktree": true,
+    "whole_two_hunk_forward_and_inverse_passed": true,
+    "prefix_suffix_lengths_and_hashes_passed": true,
+    "all_other_bytes_exact": true,
+    "inline_static_check_exit_code": 0,
+    "raw_git_object_count": 13,
+    "own_executable_checker_created": false,
+    "compile_or_runtime_result_claimed": false,
+    "current_immutable_file_versions": 25,
+    "authority_snapshot_count": 11,
+    "exact_source_excerpts": 15,
+    "exact_toolchain_byte_excerpts": 3,
+    "authority_addendum_inline_check_exit_code": 0,
+    "all_23_packet_members_plus_handoff_and_document_rehashed": true,
+    "authority_11_snapshots_equal_frozen_Git": true,
+    "no_source_candidate_or_prefix_evaluation": true
+  },
+  "selected_files": [
+    {
+      "relative_path": "src/native_node_stream_shutdown_test.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17039,
+        "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17058,
+        "sha256": "7C138AE9E92642C3E05A8CD2C6FDB0FAB62E25C5C225916FB36E5AA61869D3AE"
+      },
+      "full_inverse": true,
+      "unchanged_prefix_suffix": true,
+      "named_controls": 18,
+      "imports": [
+        "std",
+        "native_node_stream_shutdown_test_support.zig",
+        "extensions/native_node_stream_resource.zig"
+      ],
+      "assertion_line_count": 58
+    },
+    {
+      "relative_path": "src/native_node_stream_shutdown_test_support.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10312,
+        "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10325,
+        "sha256": "65388977262D9E61B99A95028D24C592A8D1E79E4328E827ECBEB047ABC72D80"
+      },
+      "full_inverse": true,
+      "unchanged_prefix_suffix": true,
+      "named_controls": 0,
+      "imports": [
+        "std",
+        "native_node_file_handle_owner_test_support.zig",
+        "extensions/native_node_stream_request.zig",
+        "extensions/native_node_stream_shutdown.zig",
+        "extensions/native_node_stream_base.zig"
+      ],
+      "assertion_line_count": 6
+    }
+  ],
+  "namespace_and_ABI": {
+    "source_reference": "projected support lines 5-7 and raw e9 owner support lines 25, 28-33",
+    "path": "t.base_support.physical.UV_EBADF",
+    "base_support_public_import": "native_node_file_handle_owner_test_support.zig",
+    "physical_public_C_import_headers": [
+      "uv.h",
+      "fcntl.h"
+    ],
+    "new_import_added": false,
+    "prior_wrapper_uv_namespace_unchanged": true,
+    "uv_enum_source": "vendor/node-v24.13.0/uv/include/uv.h:98,193-198",
+    "uv_errno_source": "vendor/node-v24.13.0/uv/include/uv/errno.h:95-99",
+    "mapping": "UV_ERRNO_MAP emits UV_EBADF = UV__EBADF. The selected Windows branch defines UV__EBADF as -4083; the non-Windows symbolic mapping remains unchanged.",
+    "symbolic_constant_retained": true,
+    "assertion_c_int_cast_retained": true,
+    "actual_result_operand": "f.end_result",
+    "expected_error_equality_not_relaxed": true,
+    "invalid_descriptor": "std.math.maxInt(c_int)",
+    "descriptor_selection_unchanged": true,
+    "existing_pattern": "Raw e9 native_node_file_handle_owner_test.zig imports support.physical at line 11 and compares @as(c_int, physical.UV_EBADF) at line 24; the same namespace appears in further owner and Transfer controls.",
+    "namespace_availability_source_verified": true
+  },
+  "cleanup_lifetime": {
+    "field_declarations": [
+      {
+        "name": "observed_request",
+        "type": "?c.JSValue",
+        "initial": null
+      },
+      {
+        "name": "error_key",
+        "type": "?c.JSValue",
+        "initial": null
+      },
+      {
+        "name": "oncomplete_key",
+        "type": "?c.JSValue",
+        "initial": null
+      }
+    ],
+    "loop_type": "[_]*?c.JSValue",
+    "inferred_array_length": 3,
+    "runtime_elements": [
+      "&self.observed_request",
+      "&self.error_key",
+      "&self.oncomplete_key"
+    ],
+    "element_type": "*?c.JSValue",
+    "exact_shared_c_alias": "support.c = support.a.c; support.a = base_support.a",
+    "addresses_and_order_unchanged": true,
+    "optional_guard_unchanged": true,
+    "slot_cleared_before_each_free": true,
+    "same_Engine_freeValue_call": true,
+    "teardown_order": [
+      "if !base_ready return",
+      "base.stopIo",
+      "observed_request optional release",
+      "error_key optional release",
+      "oncomplete_key optional release",
+      "base.deinit",
+      "base_ready=false"
+    ],
+    "prior_stopIo_is_idempotent_and_does_not_destroy_Engine": true,
+    "base_Engine_deinit_occurs_after_these_three_releases": true,
+    "no_new_native_or_JS_allocation": true,
+    "no_additional_JS_root": true,
+    "no_extra_release_or_duplicated_teardown": true,
+    "error_initialization_unwind_body_unchanged": true,
+    "static_language_reasoning": "The explicit element type and inferred length form a homogeneous three-element array with runtime pointer values. Its for loop does not require a comptime tuple-field index; the loop still loads and clears the original mutable optional slots.",
+    "source_semantics_only": true
+  },
+  "invariants": {
+    "test_declarations": 18,
+    "import_and_cinclude_sequences_unchanged": true,
+    "test_assertion_lines": 58,
+    "support_assertion_lines": 6,
+    "all_assertion_lines_exact_after_only_namespace_substitution": true,
+    "complete_cleanup_loop_body_exact": true,
+    "production_source_changed": false,
+    "build_changed": false,
+    "exact_18_test_names_preserved": true,
+    "source_declared_new3_counts": [
+      18,
+      8,
+      12
+    ],
+    "other_two_new3_root_bytes_unchanged": true
+  },
+  "preserved_read_only_observations": [
+    {
+      "kind": "incorrect_vendor_path_lookup",
+      "attempted_object": "e9f11afa56a923372d957e2fb227f453822c21bf:vendor/libuv/include/uv.h",
+      "git_exit_code": 128,
+      "inline_wrapper_exit_code": 1,
+      "stdout": "",
+      "stderr": "fatal: path 'vendor/libuv/include/uv.h' does not exist in 'e9f11afa56a923372d957e2fb227f453822c21bf'\nTraceback (most recent call last):\r\n  File \"<string>\", line 12, in <module>\r\n    raw=git(\"cat-file\",\"blob\",head+\":\"+path);lines=raw.decode().splitlines()\r\n  File \"<string>\", line 4, in git\r\n    def git(*args):return subprocess.check_output([\"git\",\"--no-optional-locks\",\"-C\",W,*args])\r\n                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Python314\\Lib\\subprocess.py\", line 472, in check_output\r\n    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,\r\n           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n               **kwargs).stdout\r\n               ^^^^^^^^^\r\n  File \"C:\\Python314\\Lib\\subprocess.py\", line 577, in run\r\n    raise CalledProcessError(retcode, process.args,\r\n                             output=stdout, stderr=stderr)\r\nsubprocess.CalledProcessError: Command '['git', '--no-optional-locks', '-C', 'C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\modules-io-resume-20261018', 'cat-file', 'blob', 'e9f11afa56a923372d957e2fb227f453822c21bf:vendor/libuv/include/uv.h']' returned non-zero exit status 128.\r\n",
+      "cause": "The lookup assumed an incorrect vendored directory. No target existed at that immutable Git path.",
+      "resolution": "Read-only ls-tree discovery selected vendor/node-v24.13.0/uv/include/uv.h and vendor/node-v24.13.0/uv/include/uv/errno.h. The subsequent bounded source checks passed.",
+      "candidate_or_Main_write": false,
+      "native_attempt": false
+    },
+    {
+      "kind": "oversized_readout",
+      "status": "One successful source-display call truncated its stdout presentation. A later smaller read recovered the required owner import/teardown, UV_EBADF mapping, and existing namespace example.",
+      "evidence_or_candidate_modified": false,
+      "final_static_result_complete": true
+    }
+  ],
+  "original_compile_failure_scope": {
+    "authority": "Root task message and the pinned SDK original-negative-provenance.json. This review rehashed that data file without following its native/control/closure references.",
+    "reported_diagnostics": [
+      "missing UV_EBADF in t.uv C import",
+      "runtime tuple field index requires a comptime value"
+    ],
+    "metadata_or_behavior_outcomes_inferred": false,
+    "original_failure_reclassified": false,
+    "preserved_provenance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original-negative-provenance.json",
+      "bytes": 1635,
+      "sha256": "3838DE35172CE00AD4277609DCFB6357011F71DCA8773E93623D76892199C050"
+    },
+    "native_references_independently_read_or_rehashed": false,
+    "actual_behavior_outcomes_claimed": false
+  },
+  "limitations": [
+    "This is a source-only fixture correction peer. Compilation, linker admission, control results, full cohort validation, and any intake remain separately owned by Root.",
+    "The source checks read saved candidates and immutable Git objects through the assigned worktree. They did not inspect the live Main working tree, index, current native run, or processes.",
+    "The selected two files remain immutable. This peer does not expand production or build scope."
+  ],
+  "own_executable_checker_created": false,
+  "candidate_or_prefix_executed": false,
+  "compiler_formatter_or_test_executed": false,
+  "Main_or_index_accessed": false,
+  "current_native_or_process_access": false,
+  "source_intake_authorized": false,
+  "configuration_issued": false,
+  "native_execution_authorized": false,
+  "qualification": false,
+  "source_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\source-map.json",
+    "bytes": 29750,
+    "sha256": "E2E66EBD4A11DCFF62686CDD97E04FEA9FEFDF62947B796EA6001D70AB0076A4"
+  },
+  "source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\source-proof.json",
+    "bytes": 10157,
+    "sha256": "58CDDBD19FFB3F8213C6E707AC1AE172E4949FD6B7495425E8FF26B6370A850D"
+  },
+  "packet_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\handoff.json",
+    "bytes": 10805,
+    "sha256": "D22BF12CC01347428417F6FFD4EB45B1D3B0EEA5F592C6F79BEB3A0B9248D0A1"
+  },
+  "raw_Git_authorities_compact_subset": [
+    {
+      "head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/native_node_stream_shutdown_test.zig",
+      "mode": "100644",
+      "blob": "40528831fdea843263cf40b26c1819bc7dfaba4e",
+      "bytes": 17039,
+      "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+    },
+    {
+      "head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/native_node_stream_shutdown_test_support.zig",
+      "mode": "100644",
+      "blob": "6bca049ffc704fa1bb9e5a5e111d022c7ba19fd5",
+      "bytes": 10312,
+      "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+    },
+    {
+      "head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/native_node_file_handle_owner_test_support.zig",
+      "mode": "100644",
+      "blob": "715f662079efe62d704b8f4ab97e8ebc1fa86ee6",
+      "bytes": 33411,
+      "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+    },
+    {
+      "head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "mode": "100644",
+      "blob": "c465b5e5beee1fc0e4c2e64099ab3770b972cf28",
+      "bytes": 28576,
+      "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+    },
+    {
+      "head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "vendor/node-v24.13.0/uv/include/uv.h",
+      "mode": "100644",
+      "blob": "938e998fdc54d17c8d0d4b1949087b968044829f",
+      "bytes": 72810,
+      "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+    },
+    {
+      "head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "relative_path": "vendor/node-v24.13.0/uv/include/uv/errno.h",
+      "mode": "100644",
+      "blob": "ac00778cfc59fb55e361b24fc81a965a5e8f97e7",
+      "bytes": 11216,
+      "sha256": "4242EDF790E4569EF349026AB4C6E31093334EE5FC02B16ED7A0D9FBACDFFD16"
+    }
+  ],
+  "additional_Git_authority_binding": {
+    "source_map": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\source-map.json",
+      "bytes": 29750,
+      "sha256": "E2E66EBD4A11DCFF62686CDD97E04FEA9FEFDF62947B796EA6001D70AB0076A4"
+    },
+    "field": "authority",
+    "all_11_snapshots_raw_e9_equal": true,
+    "complete_13_object_union": "The two fixture originals plus all eleven authority snapshots. The compact subset above records the key namespace and enum objects; the pinned source map records the remaining exact original paths and blobs."
+  },
+  "toolchain_language_authority": {
+    "document": {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\doc\\langref.html",
+      "bytes": 983945,
+      "sha256": "095DAA2D9F1262FB8BC00AFBB44D386F20363FD930E400BF703A8BC4255A4FFD"
+    },
+    "exact_byte_excerpts": [
+      {
+        "start_offset": 285177,
+        "end_offset": 286117,
+        "contained_excerpt": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\zig\\tuples.html.raw",
+          "bytes": 940,
+          "sha256": "DDD4B5F88B837A796E6817C48CFCE106D5FDD391B9C9B9B8AC5E7D5FB4F4935F"
+        }
+      },
+      {
+        "start_offset": 159412,
+        "end_offset": 160855,
+        "contained_excerpt": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\zig\\arrays.html.raw",
+          "bytes": 1443,
+          "sha256": "AD5A6B43D63E0FAE55F53CA7E7F17A5DD4B05874989F75AA84DF784E6C8A2494"
+        }
+      },
+      {
+        "start_offset": 384561,
+        "end_offset": 385846,
+        "contained_excerpt": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\zig\\runtime_for.html.raw",
+          "bytes": 1285,
+          "sha256": "401A4542BCB1E75A158C4B879E7B6D68344AB620BDA6BAD9A21C2ED77AC13BD0"
+        }
+      }
+    ],
+    "all_three_slices_exact": true,
+    "conclusion": "The pinned Zig documentation requires comptime-known tuple indices and defines inferred-length array literals plus ordinary runtime array iteration. The selected [_]*?c.JSValue array gives the three runtime pointer values a single element type; no inline loop or compile-time evaluation is added."
+  },
+  "authoring_preservation": {
+    "sdk_source_proof": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\source-proof.json",
+      "bytes": 10157,
+      "sha256": "58CDDBD19FFB3F8213C6E707AC1AE172E4949FD6B7495425E8FF26B6370A850D"
+    },
+    "own_read_only_observations_embedded": true,
+    "sdk_read_only_observations_preserved_in_source_proof": true,
+    "original_candidates_and_proposals_unchanged": true
+  }
+}

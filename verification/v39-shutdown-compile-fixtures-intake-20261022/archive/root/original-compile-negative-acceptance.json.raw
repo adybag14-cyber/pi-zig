@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "status": "root_accepted_closed_v39_new3_retry1_compile_negative",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-22T17:48:05.241991+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "batch": "new3",
+  "negative_kind": "admitted_compiler_fixture_errors",
+  "original_closed_evidence_accepted_as_negative": true,
+  "root_current_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-173038\\root-compile-negative-closure.json",
+    "bytes": 9907,
+    "sha256": "F11D5FFA7EED451522931522E736BEE24D25557227F481156DBB498E27DE771D"
+  },
+  "independent_original_evidence_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-new3-retry1-compile-negative-peer-20261022\\peer.json",
+    "bytes": 16146,
+    "sha256": "F77FCB4C68B610DD86EFB073BA20775622F1024B1AB3D7887B7548FC986EEC09"
+  },
+  "preserved_Root_inspector_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-compile-negative-review-authoring-negative-20261022.json",
+    "bytes": 1980,
+    "sha256": "8722BEE995DEFC2687638AC0D4EB062AC3AFF86A68FFFE951A707DDB001D565B"
+  },
+  "preserved_independent_inspector_negative": {
+    "original_inline_source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-new3-retry1-compile-negative-peer-20261022\\original-inline-inspection-source.txt",
+      "bytes": 17984,
+      "sha256": "6B4747E3FF15CC537B0E8707A4ECA3DD783AF147D2BF4D56B3D379CC8D592920"
+    },
+    "inspector_negative": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-new3-retry1-compile-negative-peer-20261022\\inspector-assumption-negative.json",
+      "bytes": 3723,
+      "sha256": "A332D6605F1D86014061675F33AE99ED98407D24D4B5CF1CB10ADBF613A3F183"
+    },
+    "corrected_inline_source": {
+      "bytes": 18166,
+      "sha256": "A40101BC6E2ED0E5308BD233C5FAE00EDC64E0C667198C356FA7F78C05EDE5CE",
+      "reconstructed_by_exact_single_hunk": true
+    }
+  },
+  "Root_full_original_failure_and_peer_and_inspector_source_read": true,
+  "Root_independent_current_whole_seal_rehash": true,
+  "Root_inspector_single_hunk_raw_inverse_replayed": true,
+  "source_bookends_raw_equal": true,
+  "distinct_current_files_rehashed": 36915,
+  "seal_counts": {
+    "source": 17346,
+    "tree": 17359,
+    "vendor": 1489,
+    "compiler": 19546,
+    "controls": 14
+  },
+  "granted_groups": [
+    "native-node-stream-shutdown",
+    "native-node-one-byte-string",
+    "native-vm-array-buffer-view-data"
+  ],
+  "attempted_groups": 1,
+  "unstarted_groups": [
+    "native-node-one-byte-string",
+    "native-vm-array-buffer-view-data"
+  ],
+  "compile_owners": 1,
+  "metadata_owners": 0,
+  "runtime_owners": 0,
+  "observed_metadata_records": 0,
+  "actual_metadata_count": null,
+  "selected_tests_started": 0,
+  "compile_exit_code": 1,
+  "outer_exit_code": 1,
+  "durable_job_exit_code": 1,
+  "durable_job_id": "job-op-ab5cf62d537e5d870b46fd198b4434362ba192bb002fd37636bf975dcfcd3eef",
+  "original_positive_owner_binding_invalid_preserved": true,
+  "positive_buildquery_accepted": false,
+  "all_groups_closed": false,
+  "diagnostics": [
+    "Unavailable imported UV_EBADF test constant",
+    "Runtime tuple iteration requires compile-time-known tuple index"
+  ],
+  "source_correction_status": "Two-line fixture successor source-only; unchanged e9 retained63 batch is separately running.",
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "product_qualification": false,
+  "qualification": false
+}

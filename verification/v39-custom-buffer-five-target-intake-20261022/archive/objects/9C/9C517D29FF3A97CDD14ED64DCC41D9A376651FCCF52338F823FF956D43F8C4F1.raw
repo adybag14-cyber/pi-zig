@@ -1,0 +1,51 @@
+{
+  "schema": "pi-zig-custom-buffer-independent-readonly-inspection-observations.v1",
+  "source_only": true,
+  "candidate_executed": false,
+  "checker_file_executed": false,
+  "Main_accessed": false,
+  "native_or_current_process_evidence_accessed": false,
+  "subject_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\resolved-dependency-inventory.json",
+    "bytes": 1334604,
+    "sha256": "344B351BDB6B2C5692EBE3B1161AA3FE6ADFA9BFDBA10D9D131B5E80C40966B1"
+  },
+  "observations": [
+    {
+      "kind": "read_only_display_truncation",
+      "action": "Bulk immutable raw-Git and selected-overlay data rehash; output requested excessive resolved embed-list detail.",
+      "exitCode": 0,
+      "truncated": true,
+      "stdout_original_chars": 17734,
+      "native_execution": false,
+      "meaning": "All 989 raw data comparisons completed before printing. A later compact data readout recovered counts and inventory digest; no source change or second native attempt occurred."
+    },
+    {
+      "kind": "read_only_inverse_inspector_negative",
+      "action": "Initial independent JSON inverse reconstruction removed additive fields and restored entries/count, but omitted the distinct v2 schema value.",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\r\n  File \"<string>\", line 10, in <module>\r\n    assert old==a\r\n           ^^^^^^\r\nAssertionError\r\n",
+      "failed_expression": "assert old==a",
+      "cause": "Inspector omission: selected schema pi-zig-custom-buffer-current-e9-resolved-source-closure.v2 must be restored to literal schema pi-zig-custom-buffer-current-e9-source-closure.v1 along with the additive resolution fields.",
+      "wrote_files": false,
+      "candidate_or_source_mutated": false
+    },
+    {
+      "kind": "read_only_inverse_inspector_correction",
+      "change": "Restore only old['schema']=a['schema'] in the inspector; explicitly constrain the seven actual changed keys.",
+      "exitCode": 0,
+      "stdout": "{\"prior_full_entry_rehash_exit\": 0, \"entry_count\": 989, \"raw_git_count\": 983, \"overlay_count\": 6, \"entry_pin_inventory_sha256\": \"ADB537A9642A74DD8326BE8DBFEF2CA2A2F039C4F826473D6EAF4B1229943A3C\", \"key_differences\": [\"entries\", \"entry_count\", \"literal_inventory\", \"resolved_embed_count\", \"resolved_embeds\", \"resolved_nonliteral_sites\", \"schema\"], \"added_members\": [{\"relative_path\": \"src/durable/fixtures/sdk-agent-tool-context-1ced.json\", \"origin\": \"immutable raw Git blob\", \"repository\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\sdk-owners-resume-20261018\", \"commit\": \"e9f11afa56a923372d957e2fb227f453822c21bf\", \"git_blob\": \"36b673390687ab9ea9dee2395f48159925249863\", \"mode\": \"100644\", \"bytes\": 10125, \"sha256\": \"0FF3D4D85981D2A3ACD302B9D739F6496D933DE909C67A8F585B41E59D56AEF7\"}, {\"relative_path\": \"src/durable/fixtures/sdk-agent-tool-wrapper-identity-1ced.json\", \"origin\": \"immutable raw Git blob\", \"repository\": \"C:\\\\Users\\\\adyba\\\\pi-zig\\\\worktrees\\\\sdk-owners-resume-20261018\", \"commit\": \"e9f11afa56a923372d957e2fb227f453822c21bf\", \"git_blob\": \"356d2df2dbd517a2f0149a4c1e4dd388464d8d49\", \"mode\": \"100644\", \"bytes\": 569, \"sha256\": \"929086C800D158BBF24A5DF70F194E50BF382447C1D4172CEF68D1415886C50C\"}], \"original_literal_counts\": [716, 243, 4389], \"resolved_embed_count\": 245, \"complete_raw_inverse\": true, \"resolved_sites\": 1}\r\n",
+      "complete_raw_inverse": true,
+      "candidate_or_source_mutated": false
+    }
+  ],
+  "authority": {
+    "intake": false,
+    "configuration": false,
+    "compiler": false,
+    "native": false,
+    "metadata": false,
+    "runtime": false
+  }
+}

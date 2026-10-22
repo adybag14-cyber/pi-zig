@@ -1,0 +1,88 @@
+// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
+//! Actual selected internal/worker/js_transferable markTransferMode owner.
+//! The retained key is the original private-symbol kind. The setter is the
+//! reviewed direct own-private operation; ordinary Symbol/Set is not used.
+//! Full messaging, clone and worker module exports remain separate owners.
+const v = @import("native_public_values.zig");
+const c = v.c;
+const Scope = v.Scope;
+const Engine = v.em.Engine;
+const sync = @import("native_sync_arguments.zig");
+const functions = @import("native_node_function.zig");
+const Frame = @import("native_public_lexical_frame.zig").Frame(enum {
+    original_obj, original_cloneable, original_transferable, mode,
+});
+const publication = @import("native_node_fs_private_publication.zig");
+const cache_key = "pi-native:private/js-transferable-mark";
+fn expression(engine: *Engine, comptime body: anytype, args: anytype) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&scope, @call(.auto, body, .{&scope} ++ args));
+}
+fn privateSet(scope: *Scope, receiver: c.JSValue, key: c.JSValue, input: c.JSValue) !void {
+    var boundary: v.guest.Boundary = .{ .engine = scope.engine };
+    try boundary.begin();
+    const status = c.JS_PiSetPrivateProperty(scope.engine.context, receiver,
+        key, v.duplicate(scope, input));
+    _ = try boundary.finishValue(scope,
+        if (status < 0) c.pi_js_exception() else c.pi_js_undefined());
+}
+fn markBody(scope: *Scope, args: *sync.Arguments, frame: *Frame, key: c.JSValue) !c.JSValue {
+    // Once the default-parameter scope exists, its original bindings initialize
+    // sequentially and remain until the actual synchronous C terminal.
+    try frame.copy(.original_obj, args.get(0));
+    if (c.JS_IsUndefined(args.get(1))) try args.copy(1, v.boolean(scope, false));
+    try frame.copy(.original_cloneable, args.get(1));
+    if (c.JS_IsUndefined(args.get(2))) try args.copy(2, v.boolean(scope, false));
+    try frame.copy(.original_transferable, args.get(2));
+    // typeof functions is included by JS_IsObject; null is a primitive tag.
+    if (!c.JS_IsObject(args.get(0))) return c.pi_js_undefined();
+    var mode: i32 = 0;
+    try frame.copy(.mode, c.JS_NewInt32(scope.engine.context, mode));
+    if (v.truthy(scope, args.get(1))) {
+        mode |= 2;
+        try frame.copy(.mode, c.JS_NewInt32(scope.engine.context, mode));
+    }
+    if (v.truthy(scope, args.get(2))) {
+        mode |= 1;
+        try frame.copy(.mode, c.JS_NewInt32(scope.engine.context, mode));
+    }
+    try privateSet(scope, args.get(0), key, frame.get(.mode));
+    return c.pi_js_undefined();
+}
+fn mark(engine: *Engine, _: c.JSValue, args: *sync.Arguments, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    const frame = args.createFrame(&scope, Frame) catch |err|
+        return v.owned.finishValue(&scope, err);
+    return v.owned.finishValue(&scope, markBody(&scope, args, frame, roots[0]));
+}
+fn privateKey(scope: *Scope) !c.JSValue {
+    var boundary: v.guest.Boundary = .{ .engine = scope.engine };
+    try boundary.begin();
+    return v.duplicate(scope, try boundary.finishValue(scope,
+        c.JS_NewPrivateSymbol(scope.engine.context, "node:transfer_mode")));
+}
+fn createBody(scope: *Scope) !c.JSValue {
+    const key = try v.own(scope, try expression(scope.engine, privateKey, .{}));
+    const function = try v.own(scope, try functions.createWithArguments(
+        scope.engine, "markTransferMode", 1,
+        .{ .formal_count = 3, .callback = mark, .hooks = sync.frameHooks(Frame) },
+        &.{key}));
+    const record = try v.stateObject(scope);
+    try v.put(scope, record, "markTransferMode", function);
+    try v.put(scope, record, "transfer_mode_private_symbol", key);
+    return v.duplicate(scope, record);
+}
+/// One private completed owner is retained by the actual FS/bootstrap graph.
+/// The same key can be consumed by the later genuine internal/util owner.
+pub fn acquire(engine: *Engine) !c.JSValue {
+    try engine.checkNativeEntry();
+    if (engine.native_module_values.get(cache_key)) |known|
+        return c.JS_DupValue(engine.context, known);
+    const candidate = try expression(engine, createBody, .{});
+    if (engine.native_module_values.get(cache_key)) |known| {
+        var completion = v.owned.Completion.initValue(engine, c.JS_DupValue(engine.context, known));
+        completion.release(candidate);
+        return completion.finishValue();
+    }
+    return publication.publish(engine, cache_key, candidate);
+}

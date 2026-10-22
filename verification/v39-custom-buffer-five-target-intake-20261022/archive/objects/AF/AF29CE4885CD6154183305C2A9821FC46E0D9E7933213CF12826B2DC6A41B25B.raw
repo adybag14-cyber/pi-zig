@@ -1,0 +1,19 @@
+{
+  "schema": "pi-zig-custom-buffer-static-checker-spelling-correction.v1",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\source-audit.py",
+    "bytes": 11827,
+    "sha256": "5D7FE07DB30CB00ADEF3FF6516333A7BCEC9275C6107DAE2C63DADA7DF2C664C"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\source-audit-v2.py",
+    "bytes": 11838,
+    "sha256": "B85D2642F4E3C9C784BDA85885984C57582ECAEA4D6557B73F25530AAF29F153"
+  },
+  "offset": 9177,
+  "before": "pi_node::allocateStandard(size)",
+  "after": "pi_node::allocateStandard(allocation_size)",
+  "full_raw_inverse_exact": true,
+  "reason": "Pre-execution reading of the actual C++ body found the source parameter spelling allocation_size. Original static checker was never run. All candidate and source-map bytes remain unchanged.",
+  "native_or_candidate_execution": false
+}

@@ -1,0 +1,287 @@
+{
+  "schema": 1,
+  "status": "root_accepted_source_only_v39_shutdown_two_compile_fixture_corrections",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-22T17:50:00.514742+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "source_accepted": true,
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\proposal.json",
+    "bytes": 9725,
+    "sha256": "3F8C1516076850380FB89A3371A394FD2694426D8FBA1E4369381E94A3FC1558"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\handoff.json",
+    "bytes": 10805,
+    "sha256": "D22BF12CC01347428417F6FFD4EB45B1D3B0EEA5F592C6F79BEB3A0B9248D0A1"
+  },
+  "source_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\source-map.json",
+    "bytes": 29750,
+    "sha256": "E2E66EBD4A11DCFF62686CDD97E04FEA9FEFDF62947B796EA6001D70AB0076A4"
+  },
+  "source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\source-proof.json",
+    "bytes": 10157,
+    "sha256": "58CDDBD19FFB3F8213C6E707AC1AE172E4949FD6B7495425E8FF26B6370A850D"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-peer-20261022\\peer.json",
+    "bytes": 17460,
+    "sha256": "045B747EA12A28B475AA7093BB9BB795F35C4F6D36F8ADC05CAC8CD7CB44210A"
+  },
+  "original_compile_negative_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-compile-negative-acceptance-20261022.json",
+    "bytes": 3588,
+    "sha256": "18C5D51278D563512DA1B30F0FC8BB032C7F2F23C124C78198D1EB3508321010"
+  },
+  "selected_files": [
+    {
+      "relative_path": "src/native_node_stream_shutdown_test.zig",
+      "source_git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "source_git_blob": "40528831fdea843263cf40b26c1819bc7dfaba4e",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17039,
+        "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17058,
+        "sha256": "7C138AE9E92642C3E05A8CD2C6FDB0FAB62E25C5C225916FB36E5AA61869D3AE"
+      },
+      "reason": "Select the already-public physical uv.h C import; keep the exact UV_EBADF equality.",
+      "edit": {
+        "offset": 5993,
+        "line": 110,
+        "before": "t.uv.UV_EBADF",
+        "after": "t.base_support.physical.UV_EBADF",
+        "unchanged_prefix_bytes": 5993,
+        "unchanged_prefix_sha256": "392FF5728A401DEBD747BD66F50CA87887064032199C3CB1AA81C9EFCCB0325A",
+        "unchanged_suffix_bytes": 11033,
+        "unchanged_suffix_sha256": "88B2A055662A9803C0412FFB890C1E0C82FFC7FC6122F849EDB3004714CD7ADF"
+      },
+      "full_raw_forward_and_inverse": true,
+      "all_other_bytes_exact": true,
+      "named_declarations": [
+        "native Stream shutdown actual constructor owns original null fields and independent empty slots",
+        "native Stream shutdown genuine Simple wrapper clears request slot before last native pointer retirement",
+        "native Stream shutdown physical close reports after trace end cleanup and AfterClose with borrowed handle",
+        "native Stream shutdown real accepted bad descriptor still performs AfterClose and reports negative status",
+        "native Stream shutdown closed fast path completes synchronously and restores the prior trigger",
+        "native Stream shutdown closing fast path retires its own request while real first close stays queued",
+        "native Stream shutdown nonfunction oncomplete yields undefined without invoking trace or callback",
+        "native Stream shutdown absent oncomplete skips the ordinary Get and native callback",
+        "native Stream shutdown throwing oncomplete getter preserves actual reason and still disposes native request",
+        "native Stream shutdown real close callback exception survives actual Wrapper and event destruction",
+        "native Stream shutdown disabled JavaScript returns before oncomplete getter while native close retires",
+        "native Stream shutdown live listener head uses original predecessor forwarding into real reporter",
+        "native StreamReq Done stores actual Latin1 error bytes then reports and clears request field",
+        "native StreamReq Done failing ordinary error setter returns before OnDone and preserves both native slots",
+        "native StreamReq Done false nonwritable Set still continues to OnDone",
+        "native Stream shutdown reporter converts Latin1 error then clears original stream error",
+        "native Stream shutdown missing caller object uses actual stored InstanceTemplate then real native close",
+        "native Stream shutdown request init inherits actual handle async ID and restores prior trigger"
+      ],
+      "literal_imports": [
+        "std",
+        "native_node_stream_shutdown_test_support.zig",
+        "extensions/native_node_stream_resource.zig"
+      ],
+      "import_cinclude_and_named_declaration_sequences_unchanged": true
+    },
+    {
+      "relative_path": "src/native_node_stream_shutdown_test_support.zig",
+      "source_git_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "source_git_blob": "6bca049ffc704fa1bb9e5a5e111d022c7ba19fd5",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10312,
+        "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10325,
+        "sha256": "65388977262D9E61B99A95028D24C592A8D1E79E4328E827ECBEB047ABC72D80"
+      },
+      "reason": "Use a homogeneous runtime array of the same three mutable optional-JSValue pointers; preserve order and the entire loop body.",
+      "edit": {
+        "offset": 6893,
+        "line": 144,
+        "before": "for (.{ &self.observed_request, &self.error_key, &self.oncomplete_key }) |slot| {",
+        "after": "for ([_]*?c.JSValue{ &self.observed_request, &self.error_key, &self.oncomplete_key }) |slot| {",
+        "unchanged_prefix_bytes": 6893,
+        "unchanged_prefix_sha256": "9FFFDF2054463EBC53E0ADC1070D27E6004B0C2D55CEAFEFDA6C72DF204B2617",
+        "unchanged_suffix_bytes": 3338,
+        "unchanged_suffix_sha256": "5F3832F67FDC45FA08766CA4BDB8FABBB729C9EA384CED02747037162380024C"
+      },
+      "full_raw_forward_and_inverse": true,
+      "all_other_bytes_exact": true,
+      "named_declarations": [],
+      "literal_imports": [
+        "std",
+        "native_node_file_handle_owner_test_support.zig",
+        "extensions/native_node_stream_request.zig",
+        "extensions/native_node_stream_shutdown.zig",
+        "extensions/native_node_stream_base.zig"
+      ],
+      "import_cinclude_and_named_declaration_sequences_unchanged": true
+    }
+  ],
+  "source_changes": 2,
+  "complete_raw_forward_and_inverse": true,
+  "all_untouched_fragments_rehashed": true,
+  "originals_and_eleven_authorities_equal_raw_e9_Git": true,
+  "Root_full_selected_sources_proposal_peer_proof_and_authority_map_read": true,
+  "named_Shutdown_controls_unchanged": 18,
+  "total_new3_source_declarations_unchanged": 38,
+  "assertion_line_subset_replayed": 77,
+  "physical_UV_EBADF_same_symbol_and_c_int_assertion": true,
+  "three_mutable_optional_JSValue_addresses_and_order_unchanged": true,
+  "cleanup_null_before_free_and_teardown_unchanged": true,
+  "current_input_versions": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\handoff.json",
+      "bytes": 10805,
+      "sha256": "D22BF12CC01347428417F6FFD4EB45B1D3B0EEA5F592C6F79BEB3A0B9248D0A1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-peer-20261022\\peer.json",
+      "bytes": 17460,
+      "sha256": "045B747EA12A28B475AA7093BB9BB795F35C4F6D36F8ADC05CAC8CD7CB44210A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\proposal.json",
+      "bytes": 9725,
+      "sha256": "3F8C1516076850380FB89A3371A394FD2694426D8FBA1E4369381E94A3FC1558"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\source-map.json",
+      "bytes": 29750,
+      "sha256": "E2E66EBD4A11DCFF62686CDD97E04FEA9FEFDF62947B796EA6001D70AB0076A4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\source-proof.json",
+      "bytes": 10157,
+      "sha256": "58CDDBD19FFB3F8213C6E707AC1AE172E4949FD6B7495425E8FF26B6370A850D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-compile-negative-acceptance-20261022.json",
+      "bytes": 3588,
+      "sha256": "18C5D51278D563512DA1B30F0FC8BB032C7F2F23C124C78198D1EB3508321010"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\extensions\\native_node_fs_request_io.zig",
+      "bytes": 15469,
+      "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\extensions\\native_node_uv_service.zig",
+      "bytes": 8937,
+      "sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\extensions\\native_uv_fs.h",
+      "bytes": 6334,
+      "sha256": "23B85BBB1BD8395D1D5085BE0797F06CE2C323DAACF366F5CF3B587D06EACA6D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\extensions\\native_uv_tcp.h",
+      "bytes": 5344,
+      "sha256": "B6F8D5269B8EF9DC9964E7F356EF1A23DBB483FB9B485C2C6D77D464816B4F45"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28576,
+      "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33411,
+      "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\native_node_one_byte_string_test.zig",
+      "bytes": 5064,
+      "sha256": "AC3E1AD12FB0F48905EC8B561094F54DD93653AD7C8DC5DD7CC0EBB54959C461"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\src\\native_vm_array_buffer_view_data_test.zig",
+      "bytes": 22131,
+      "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\tools\\build_native_node_network.zig",
+      "bytes": 5905,
+      "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\vendor\\node-v24.13.0\\uv\\include\\uv\\errno.h",
+      "bytes": 11216,
+      "sha256": "4242EDF790E4569EF349026AB4C6E31093334EE5FC02B16ED7A0D9FBACDFFD16"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\raw\\vendor\\node-v24.13.0\\uv\\include\\uv.h",
+      "bytes": 72810,
+      "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\zig\\arrays.html.raw",
+      "bytes": 1443,
+      "sha256": "AD5A6B43D63E0FAE55F53CA7E7F17A5DD4B05874989F75AA84DF784E6C8A2494"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\zig\\runtime_for.html.raw",
+      "bytes": 1285,
+      "sha256": "401A4542BCB1E75A158C4B879E7B6D68344AB620BDA6BAD9A21C2ED77AC13BD0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\authority\\zig\\tuples.html.raw",
+      "bytes": 940,
+      "sha256": "DDD4B5F88B837A796E6817C48CFCE106D5FDD391B9C9B9B8AC5E7D5FB4F4935F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test.zig",
+      "bytes": 17039,
+      "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test_support.zig",
+      "bytes": 10312,
+      "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original-negative-provenance.json",
+      "bytes": 1635,
+      "sha256": "3838DE35172CE00AD4277609DCFB6357011F71DCA8773E93623D76892199C050"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+      "bytes": 17058,
+      "sha256": "7C138AE9E92642C3E05A8CD2C6FDB0FAB62E25C5C225916FB36E5AA61869D3AE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test_support.zig",
+      "bytes": 10325,
+      "sha256": "65388977262D9E61B99A95028D24C592A8D1E79E4328E827ECBEB047ABC72D80"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\README.md",
+      "bytes": 1499,
+      "sha256": "1B5A65CC4F8A4EB55DC58FA28C90746CB0EBA7907CD019C2CE95AEB1FCA3EC80"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\doc\\langref.html",
+      "bytes": 983945,
+      "sha256": "095DAA2D9F1262FB8BC00AFBB44D386F20363FD930E400BF703A8BC4255A4FFD"
+    }
+  ],
+  "current_input_count": 27,
+  "source_only": true,
+  "Main_intake_performed": false,
+  "compiler_validation_performed": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

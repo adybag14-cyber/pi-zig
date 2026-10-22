@@ -1,0 +1,120 @@
+{
+  "schema": "pi-zig-custom-buffer-five-target-data-intake-component.v1",
+  "status": "source-only proposed component; no intake authority",
+  "basis_raw_commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "rows": [
+    {
+      "target": "src/extensions/native_node_custom_buffer_listener_allocation.h",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\src\\extensions\\native_node_custom_buffer_listener_allocation.h",
+      "bytes": 1222,
+      "sha256": "95E77F10C01964B18BBB845E0554C5F2F9ABD81D4A4238E5F5133DF1E77EC282",
+      "before": null,
+      "role": "new production",
+      "mode": "100644"
+    },
+    {
+      "target": "src/extensions/native_node_custom_buffer_listener_allocation.cpp",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\src\\extensions\\native_node_custom_buffer_listener_allocation.cpp",
+      "bytes": 1371,
+      "sha256": "DEE3A42BB595DE00E8EC6A2784E40741E233D58E81001A4050449F9D7FE9DD63",
+      "before": null,
+      "role": "new production",
+      "mode": "100644"
+    },
+    {
+      "target": "src/extensions/native_node_custom_buffer_listener.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\src\\extensions\\native_node_custom_buffer_listener.zig",
+      "bytes": 7760,
+      "sha256": "4CB29FE5A6475123A840A3638EC6D08128249822DC38F775A7B81E661B3085AE",
+      "before": null,
+      "role": "new production",
+      "mode": "100644"
+    },
+    {
+      "target": "src/native_node_custom_buffer_listener_test.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\src\\native_node_custom_buffer_listener_test.zig",
+      "bytes": 20027,
+      "sha256": "A25266B23890A16FB72533F68A040EA8AE81B0F6D20AD178AA1D6037E50F30C2",
+      "before": null,
+      "role": "new control root",
+      "mode": "100644"
+    },
+    {
+      "target": "build.zig",
+      "source": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\build.zig",
+      "bytes": 515962,
+      "sha256": "7AB122A962019B935EB08EE6042BFFDDCB6F7AF6BE6405F47E06A6CF591B7D4F",
+      "before": {
+        "bytes": 514105,
+        "sha256": "594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF",
+        "mode": "100644",
+        "raw_git_blob": "b71fa07d61a4a02928a9c1757f6dab513442e8d9"
+      },
+      "role": "one install-only insertion",
+      "mode": "100644"
+    }
+  ],
+  "count": 5,
+  "separate_prerequisites": [
+    {
+      "target": "src/native_node_stream_shutdown_test_support.zig",
+      "selected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10325,
+        "sha256": "65388977262D9E61B99A95028D24C592A8D1E79E4328E827ECBEB047ABC72D80"
+      },
+      "raw_preimage": {
+        "relative_path": "src/native_node_stream_shutdown_test_support.zig",
+        "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+        "git_blob": "6bca049ffc704fa1bb9e5a5e111d022c7ba19fd5",
+        "bytes": 10312,
+        "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+      },
+      "root_source_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-shutdown-compile-fixtures-source-acceptance-20261022.json",
+        "bytes": 16831,
+        "sha256": "9F45B1A10A472BE45799461F068C8EFDFFF08DB7E97603B99AE28689B83BEA01"
+      },
+      "independent_source_peer": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-peer-20261022\\peer.json",
+        "bytes": 17460,
+        "sha256": "045B747EA12A28B475AA7093BB9BB795F35C4F6D36F8ADC05CAC8CD7CB44210A"
+      },
+      "included_in_five_target_rows": false,
+      "satisfaction": "Future intake composition must include this exact reviewed support, or prove it already present. This component does not apply or authorize the two-file fixture packet."
+    }
+  ],
+  "contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\source-boundary-and-intake-contract.json",
+    "bytes": 8606,
+    "sha256": "28572B71BF65BA8F52425AFBD3A297B2CB524FD9C8921A0FFDD70CBA35C73D65"
+  },
+  "composition": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\composition-and-build-proof.json",
+    "bytes": 16155,
+    "sha256": "6984E7456023F75DF42D13F28E57BBCC7ED10F5544AF09A188F34377A0B3A22A"
+  },
+  "source_map": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\source-map.json",
+    "bytes": 144892,
+    "sha256": "161766BCF9F3A65B1CE12AA1967093B1745B6381037AC272675553BCFD5E8F4F"
+  },
+  "source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\source-proof.json",
+    "bytes": 322864,
+    "sha256": "DF4C1DB21A528ED6C20EB259DFD9FFD1AEDE5954AB3BC1FFD8757D96B1305947"
+  },
+  "selected_dependency_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\resolved-dependency-inventory.json",
+    "bytes": 1334604,
+    "sha256": "344B351BDB6B2C5692EBE3B1161AA3FE6ADFA9BFDBA10D9D131B5E80C40966B1"
+  },
+  "declarations": 15,
+  "future_metadata": null,
+  "future_basis_head": null,
+  "root_release": null,
+  "intake_receipt": null,
+  "source_intake_authorized": false,
+  "native_execution_authorized": false,
+  "Main_or_index_mutation": false
+}

@@ -1,0 +1,270 @@
+{
+  "schema": 1,
+  "status": "root_accepted_data_only_two_file_shutdown_fixture_copy_plan",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-22T18:04:18.936719+00:00",
+  "accepted_source_basis": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-copy-plan-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 91316,
+    "sha256": "C17D422F19D3EC4B7FA9CD5B112FFAF76EC418F4A7EE5BC13D61E800688D8255"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-copy-plan-sourceonly-20261022\\handoff.json",
+    "bytes": 3165,
+    "sha256": "791B64CF211642432AB5EA2D9A2257C83E4B7B1C3536E66EC07066B820CA21FA"
+  },
+  "source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-shutdown-compile-fixtures-source-acceptance-20261022.json",
+    "bytes": 16831,
+    "sha256": "9F45B1A10A472BE45799461F068C8EFDFFF08DB7E97603B99AE28689B83BEA01"
+  },
+  "source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-peer-20261022\\peer.json",
+    "bytes": 17460,
+    "sha256": "045B747EA12A28B475AA7093BB9BB795F35C4F6D36F8ADC05CAC8CD7CB44210A"
+  },
+  "conventions": {
+    "selected_source_template": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\Apply-ExactPending20ReviewedSourceIntake-unresolved-v2-20261022.py",
+      "bytes": 23634,
+      "sha256": "8A676496E4A28B1AFB472E73C6669FBD016B8367005FCCFC78FF594B0C022985"
+    },
+    "template_Root_source_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending20-strengthened-intake-adapter-v2-source-acceptance-20261022.json",
+      "bytes": 6683,
+      "sha256": "039E21F5F5A82E7AFEC2AD549DF8E27BDF7729BF8D1E8E4015B4E9C06B99B738"
+    },
+    "schema_reference": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-pending20-strengthened-intake-adapter-sourceonly-20261022\\unissued-binding-and-schema-contract.json",
+      "bytes": 10902,
+      "sha256": "ACF23FA22E0C380BF744923B5CA8A8B55D30B83B0D655AAFF6FF2EE80790136D"
+    },
+    "schema_reference_limit": "The contract originally cites 1DD560; 8A676 is the accepted one-hunk successor strengthening planned-parent case aliases. This plan selects the actual 8A676 source only as a convention, without binding or executing it.",
+    "normalized_manifest_example": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-bound-20261022\\manifest.json",
+      "bytes": 1124702,
+      "sha256": "E66EDEC79D5F22EAC4E2F8AFC4EFA5E72440714B5C79CB0FCEA2B5B961DB8653"
+    },
+    "physical_row_fields": [
+      "target",
+      "source",
+      "bytes",
+      "sha256",
+      "before",
+      "role",
+      "mode"
+    ],
+    "logical_alias_required_fields": [
+      "target",
+      "source",
+      "bytes",
+      "sha256"
+    ],
+    "byte_contract": "pending20_exact_git_bytes_attributes_aliases_modes_v1",
+    "phase_convention": "fixture",
+    "future_adapter_bound": false
+  },
+  "selected_source_preimages": [
+    {
+      "target": "src/native_node_stream_shutdown_test.zig",
+      "immutable_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_mode": "100644",
+      "git_blob": "40528831fdea843263cf40b26c1819bc7dfaba4e",
+      "original_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17039,
+        "sha256": "CC33A8145F289FA2E054E9547170E3D9EFBE6A1422CA5D20FFE53303F86C4B2F"
+      },
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17058,
+        "sha256": "7C138AE9E92642C3E05A8CD2C6FDB0FAB62E25C5C225916FB36E5AA61869D3AE"
+      },
+      "raw_Git_equal_snapshot": true,
+      "one_hunk_forward_and_inverse": true
+    },
+    {
+      "target": "src/native_node_stream_shutdown_test_support.zig",
+      "immutable_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_mode": "100644",
+      "git_blob": "6bca049ffc704fa1bb9e5a5e111d022c7ba19fd5",
+      "original_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10312,
+        "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3"
+      },
+      "selected_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test_support.zig",
+        "bytes": 10325,
+        "sha256": "65388977262D9E61B99A95028D24C592A8D1E79E4328E827ECBEB047ABC72D80"
+      },
+      "raw_Git_equal_snapshot": true,
+      "one_hunk_forward_and_inverse": true
+    }
+  ],
+  "source_replacements": 2,
+  "archive_donors": 28,
+  "core_rows": 30,
+  "core_aliases": 30,
+  "plan_preservation_rows": 1,
+  "planned_paths_including_synthetic_manifest": 32,
+  "all_donor_bytes_and_aliases_rehashed": true,
+  "both_raw_Git_blobs_and_modes_checked": true,
+  "all_140_actual_JSON_pin_sites_resolved": true,
+  "copied_JSON_pin_sites": 132,
+  "explicit_membership_sites": 28,
+  "external_JSON_pin_sites": 8,
+  "distinct_external_native_references": 7,
+  "external_native_references": [
+    {
+      "pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-173038\\root-compile-negative-closure.json",
+        "bytes": 9907,
+        "sha256": "F11D5FFA7EED451522931522E736BEE24D25557227F481156DBB498E27DE771D"
+      },
+      "reference_sites": [
+        {
+          "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original-negative-provenance.json",
+          "ref": "$.references[0]"
+        },
+        {
+          "from": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-compile-negative-acceptance-20261022.json",
+          "ref": "$.root_current_closure"
+        }
+      ],
+      "opened_or_rehashed_for_this_plan": false,
+      "archive_scope": "external original-native closure/history reference; retained unchanged for the separate archive"
+    },
+    {
+      "pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-173038\\independent-observed-job-status.json",
+        "bytes": 1644,
+        "sha256": "412CEF76FC30356156EA28839A8F1BAB4212E5623DBD1D1D8F36B1A9938ACFA7"
+      },
+      "reference_sites": [
+        {
+          "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original-negative-provenance.json",
+          "ref": "$.references[1]"
+        }
+      ],
+      "opened_or_rehashed_for_this_plan": false,
+      "archive_scope": "external original-native closure/history reference; retained unchanged for the separate archive"
+    },
+    {
+      "pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-173038\\groups\\native-node-stream-shutdown\\compile.stderr.log",
+        "bytes": 22531,
+        "sha256": "126D7430EF27312C4C9A04CA8BF3DA9380703C610DD72BDB588A05A32FC6B4E2"
+      },
+      "reference_sites": [
+        {
+          "from": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\original-negative-provenance.json",
+          "ref": "$.references[2]"
+        }
+      ],
+      "opened_or_rehashed_for_this_plan": false,
+      "archive_scope": "external original-native closure/history reference; retained unchanged for the separate archive"
+    },
+    {
+      "pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-new3-retry1-compile-negative-peer-20261022\\peer.json",
+        "bytes": 16146,
+        "sha256": "F77FCB4C68B610DD86EFB073BA20775622F1024B1AB3D7887B7548FC986EEC09"
+      },
+      "reference_sites": [
+        {
+          "from": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-compile-negative-acceptance-20261022.json",
+          "ref": "$.independent_original_evidence_peer"
+        }
+      ],
+      "opened_or_rehashed_for_this_plan": false,
+      "archive_scope": "external original-native closure/history reference; retained unchanged for the separate archive"
+    },
+    {
+      "pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-compile-negative-review-authoring-negative-20261022.json",
+        "bytes": 1980,
+        "sha256": "8722BEE995DEFC2687638AC0D4EB062AC3AFF86A68FFFE951A707DDB001D565B"
+      },
+      "reference_sites": [
+        {
+          "from": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-compile-negative-acceptance-20261022.json",
+          "ref": "$.preserved_Root_inspector_negative"
+        }
+      ],
+      "opened_or_rehashed_for_this_plan": false,
+      "archive_scope": "external original-native closure/history reference; retained unchanged for the separate archive"
+    },
+    {
+      "pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-new3-retry1-compile-negative-peer-20261022\\original-inline-inspection-source.txt",
+        "bytes": 17984,
+        "sha256": "6B4747E3FF15CC537B0E8707A4ECA3DD783AF147D2BF4D56B3D379CC8D592920"
+      },
+      "reference_sites": [
+        {
+          "from": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-compile-negative-acceptance-20261022.json",
+          "ref": "$.preserved_independent_inspector_negative.original_inline_source"
+        }
+      ],
+      "opened_or_rehashed_for_this_plan": false,
+      "archive_scope": "external original-native closure/history reference; retained unchanged for the separate archive"
+    },
+    {
+      "pin": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-new3-retry1-compile-negative-peer-20261022\\inspector-assumption-negative.json",
+        "bytes": 3723,
+        "sha256": "A332D6605F1D86014061675F33AE99ED98407D24D4B5CF1CB10ADBF613A3F183"
+      },
+      "reference_sites": [
+        {
+          "from": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-compile-negative-acceptance-20261022.json",
+          "ref": "$.preserved_independent_inspector_negative.inspector_negative"
+        }
+      ],
+      "opened_or_rehashed_for_this_plan": false,
+      "archive_scope": "external original-native closure/history reference; retained unchanged for the separate archive"
+    }
+  ],
+  "complete_pin_reference_accounting": true,
+  "planned_paths_and_prefix_spelling_unambiguous": true,
+  "all_modes_100644": true,
+  "future": {
+    "basis_main_head": null,
+    "intervening_archive_commit": null,
+    "intervening_archive_acceptance": null,
+    "final_manifest_path": null,
+    "final_manifest_bytes": null,
+    "final_manifest_sha256": null,
+    "final_total_commit_paths": null,
+    "commit_subject": null,
+    "bound_adapter": null,
+    "bound_adapter_source_peer": null,
+    "Root_intake_release": null,
+    "current_git_byte_preflight": null,
+    "actual_metadata": null,
+    "actual_runtime": null
+  },
+  "future_complete_git_gates": [
+    "Root separately observes and releases the actual later basis HEAD, branch, object format, clean checkout/index, all required native/process closures and any intervening archive commit. No current basis or release is issued here.",
+    "Rehash every selected donor and every logical alias and compare full bytes. The two checkout and committed-basis source preimages must remain the exact e9 bytes/modes recorded here; any mismatch needs a reviewed successor.",
+    "Require all archive additions plus the separately sealed plan row and synthetic final manifest to be absent. Check complete existing and planned Windows prefix spelling, reserved/ADS/traversal/reparse exclusions, and file/directory collisions.",
+    "Apply the complete effective text/eol/filter/working-tree-encoding/ident and conversion-configuration provenance gates to every target, including .raw evidence and manifest. Filter, encoding and ident must be unset/unspecified before any path-aware hash.",
+    "Require independent raw Git blob digest = git hash-object --no-filters = git hash-object --path for exact binary donor stdin, without -w. A .raw suffix does not exempt any target from this gate.",
+    "Complete all donors/preimages/aliases/path/mode/attribute/object checks before copying or index writes. Save immutable preflight and preserve any mismatch without normalizing donors or weakening gates.",
+    "Revalidate unchanged conversion provenance after copy and before staging; require exact readback. Stage only the reviewed NUL-delimited path list; verify stage-zero modes/OIDs/raw bytes and the exact complete path set.",
+    "Require the one-parent commit relation, exact committed changed-path set/modes/OIDs/raw bytes and clean checkout; revalidate conversion provenance. No source intake confers native or product qualification."
+  ],
+  "source_payloads_unchanged": true,
+  "Main_accessed": false,
+  "index_accessed": false,
+  "adapter_bound": false,
+  "configuration_issued": false,
+  "intake_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "scope": "Accept only this immutable data component for later exact normalization/composition. Actual parent, archive closure, complete final manifest, adapter binding and Root write release remain separate."
+}

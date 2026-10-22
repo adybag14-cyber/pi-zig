@@ -1,0 +1,125 @@
+"""Prepare only immutable source snapshots and an unexecuted install-only build proposal.
+This is not a project generator, compiler, formatter, or native/control execution.
+"""
+from pathlib import Path
+import hashlib,json,re,difflib
+B=Path(r"C:\Users\adyba\pi-zig");W=B/"worktrees/sdk-owners-resume-20261018"
+D=W/"verification/native-node-custom-buffer-listener-sourceonly-20261020"
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def jp(o):return (json.dumps(o,indent=2,ensure_ascii=True)+"\n").encode()
+def row(p,b=None):
+ p=Path(p);b=p.read_bytes() if b is None else b
+ return {"path":str(p),"bytes":len(b),"sha256":sha(b)}
+prod=[
+ ("src/extensions/native_node_custom_buffer_listener_allocation.h","95E77F10C01964B18BBB845E0554C5F2F9ABD81D4A4238E5F5133DF1E77EC282"),
+ ("src/extensions/native_node_custom_buffer_listener_allocation.cpp","DEE3A42BB595DE00E8EC6A2784E40741E233D58E81001A4050449F9D7FE9DD63"),
+ ("src/extensions/native_node_custom_buffer_listener.zig","4CB29FE5A6475123A840A3638EC6D08128249822DC38F775A7B81E661B3085AE")]
+control="src/native_node_custom_buffer_listener_test.zig"
+outputs={};pins=[]
+for rel,h in prod:
+ b=(W/rel).read_bytes();assert sha(b)==h
+ outputs["production/"+rel]=b;outputs["preserved-drafts/"+rel]=b
+ pins.append({"target":rel,"live_draft":row(W/rel,b),"snapshot":row(D/"production"/rel,b)})
+old=(W/control).read_bytes()
+assert sha(old)=="987E4A70D1DB8BE81C5E69AD5B5568E5B1BB7D6FE6A8622D7B34C2BE167F0BFC"
+edits=json.loads((D/"draft-control-edits.json").read_text("utf-8"))
+selected=old;steps=[]
+for e in edits:
+ before=e["before"].encode();after=e["after"].encode()
+ assert selected.count(before)==1
+ prior=selected;selected=selected.replace(before,after)
+ steps.append({**e,"input_sha256":sha(prior),"output_sha256":sha(selected)})
+assert selected==(D/"controls"/control).read_bytes()
+inverse=selected
+for e in reversed(edits):
+ before=e["before"].encode();after=e["after"].encode()
+ assert inverse.count(after)==1
+ inverse=inverse.replace(after,before)
+assert inverse==old
+names=lambda b:re.findall(rb'^test "([^"]+)"',b,re.M)
+assert names(old)==names(selected) and len(names(selected))==15
+assert b"handle.read_state.read_length = 8;" not in selected
+assert b"handle.readStop()" in selected and b"if(nread<0)actualStopCustomRead()" in selected
+assert b"@as(usize, 3), f.base().read_begins" in selected and b"@as(usize, 3), f.base().read_ends" in selected
+outputs["preserved-drafts/"+control]=old
+control_proof={"schema":"pi-zig-custom-buffer-draft-control-successor-v1",
+ "original":row(D/"preserved-drafts"/control,old),"selected":row(D/"controls"/control,selected),
+ "edits":steps,"whole_inverse_exact":True,"names_unchanged":[x.decode() for x in names(selected)],
+ "scope":"Unsubmitted initial draft refinement only. Uses actual descriptor EOF and actual owner ReadStop instead of directly writing a native length field; observes three physical reads/completions. Matches the actual Environment i32 stream field.",
+ "no_prior_submitted_control_changed":True,"no_execution":True}
+outputs["draft-control-proof.json"]=jp(control_proof)
+build_path=W/"verification/native-node-custom-buffer-build-successor-20261020/projected/current79-with-shutdown-and-buffer.zig"
+build=build_path.read_bytes()
+assert len(build)==514007 and sha(build)=="868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+start=build.index(b"        const node_stream_shutdown = b.addTest(.{")
+end=build.index(b"        const node_one_byte_string = b.addTest(.{",start)
+donor_block=build[start:end]
+block=donor_block.replace(b"node_stream_shutdown",b"node_custom_buffer_listener")
+block=block.replace(b"native-node-stream-shutdown",b"native-node-custom-buffer-listener")
+assert block.count(b'.filters = &.{"native Stream shutdown", "native StreamReq Done"}')==1
+block=block.replace(b'.filters = &.{"native Stream shutdown", "native StreamReq Done"}',b'.filters = &.{"native CustomBuffer listener"}')
+assert block.count(b"Install 18 concrete source controls without execution")==1
+block=block.replace(b"Install 18 concrete source controls without execution",b"Install 15 actual CustomBuffer controls without execution")
+native_anchor=b'                "src/extensions/native_node_one_byte_string_diagnostics.cpp",\n'
+assert block.count(native_anchor)==1
+block=block.replace(native_anchor,native_anchor+b'                "src/extensions/native_node_custom_buffer_listener_allocation.cpp",\n')
+assert b'.name =' not in block and b"b.addRunArtifact" not in block
+assert block.count(b"native_node_diagnostic_context.c")==1
+assert block.count(b"native_v8_base_fatal.cpp")==1
+assert block.count(b"native_node_custom_buffer_listener_allocation.cpp")==1
+assert block.count(b"native_node_custom_buffer_listener_test.zig")==1
+assert block.count(b"build-native-node-custom-buffer-listener")==1
+assert b'.dest_sub_path = b.fmt("native-node-custom-buffer-listener{s}"' in block
+projected_build=build[:end]+block+build[end:]
+assert projected_build.count(block)==1 and projected_build.replace(block,b"")==build
+outputs["build/original/build.zig"]=build
+outputs["build/projected/build.zig"]=projected_build
+outputs["build/install-block.zig"]=block
+build_proposal={
+ "schema":"pi-zig-custom-buffer-listener-build-source-proposal-v1",
+ "status":"UNEXECUTED install-only proposal",
+ "base":row(build_path,build),"original":row(D/"build/original/build.zig",build),
+ "projected":row(D/"build/projected/build.zig",projected_build),
+ "insert_before":"        const node_one_byte_string = b.addTest(.{",
+ "insert":block.decode(),"insert_sha256":sha(block),"whole_inverse_exact":True,
+ "source_root":control,"target":"build-native-node-custom-buffer-listener",
+ "cache_artifact_basename":"test","installed_artifact_basename":"native-node-custom-buffer-listener",
+ "windows_cache_artifacts":["test.exe","test.pdb"],
+ "windows_installed_artifacts":["native-node-custom-buffer-listener.exe","test.pdb"],
+ "declared_controls":15,"actual_future_metadata":None,
+ "dependencies":["Accepted current79 + Shutdown/Latin1 + raw Buffer build868F2300","Selected corrected Latin1 + raw Buffer VM C091E5BE0/H05AA4DF2","C75 accepted Shutdown production/controls and provider fatal H/CPP","Main79 source owners plus separately reviewed V35 alpha/phase fixture0D09BBA7"],
+ "retained_order":"Transfer then Shutdown then CustomBuffer listener then Latin1; raw Buffer VM target and Error canonical cache naming remain exact",
+ "native_translation_units":[
+ "src/extensions/native_node_diagnostic_context.c",
+ "src/extensions/native_v8_base_fatal.cpp",
+ "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+ "src/extensions/native_node_custom_buffer_listener_allocation.cpp"],
+ "source_only":True,"compiler_executed":False,"Main_written":False}
+outputs["build/proposal.json"]=jp(build_proposal)
+component={
+ "schema":"pi-zig-custom-buffer-listener-initial-source-component-v1",
+ "status":"Frozen finite source snapshots; source mapping/closure and independent peer still pending",
+ "production":pins,"controls":row(D/"controls"/control,selected),
+ "draft_control_proof":row(D/"draft-control-proof.json",jp(control_proof)),
+ "build_proposal":row(D/"build/proposal.json",jp(build_proposal)),
+ "preparation_source":row(Path(__file__)),
+ "boundaries":[
+ "Admitted native UseUserBuffer body and real CustomBufferJSListener only; no public FunctionTemplate/JSMethod publication",
+ "Caller retains and keeps the actual branded view/backing valid; listener owns no JS/backing entitlement",
+ "Uses accepted raw Buffer address slice; original GetBuffer materialization and unsupported host view obligations stay explicit",
+ "Actual direct Shutdown reporter selected; full WriteWrap completion is still a separate owner",
+ "Real standard-new retry/fatal allocator policy and diagnostic context; no nullable/guest OOM replacement",
+ "Test fixture uses selected observation/hook policy; production trace/bootstrap policy remains a dependency"],
+ "no_live_sources_written":True,"compiler_executed":False,"native_executed":False,
+ "runtime_qualification":False}
+outputs["component.json"]=jp(component)
+for rel,h in prod:assert sha((W/rel).read_bytes())==h
+assert (W/control).read_bytes()==old
+# FINAL OUTPUT PHASE: write only fresh evidence/snapshots under this packet.
+for rel,b in outputs.items():
+ p=D/rel;p.parent.mkdir(parents=True,exist_ok=True)
+ with p.open("xb") as f:f.write(b)
+print(json.dumps({"component":row(D/"component.json"),
+ "selected_control":row(D/"controls"/control),
+ "build":row(D/"build/proposal.json"),"declared_controls":15,
+ "production_unchanged":True,"source_only":True},indent=2))

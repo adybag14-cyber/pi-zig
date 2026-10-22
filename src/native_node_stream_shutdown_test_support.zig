@@ -141,7 +141,7 @@ pub const Fixture = struct {
     pub fn deinit(self: *Fixture) void {
         if (!self.base_ready) return;
         self.base.stopIo(); // drains every accepted callback while keys live
-        for (.{ &self.observed_request, &self.error_key, &self.oncomplete_key }) |slot| {
+        for ([_]*?c.JSValue{ &self.observed_request, &self.error_key, &self.oncomplete_key }) |slot| {
             if (slot.*) |value| {
                 slot.* = null;
                 self.base.engine.freeValue(value);

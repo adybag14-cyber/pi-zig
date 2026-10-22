@@ -1,0 +1,120 @@
+// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
+//! Actual selected primordials SafePromisePrototypeFinally and the
+//! internal/fs/promises handleErrorFromBinding declaration.
+//! The caller is the genuine early bootstrap and supplies its retained original
+//! bound/uncurried Promise callables and real frozen SafePromise subclass.
+const h = @import("native_sdk_session_locals.zig");
+const v = h.v;
+const c = v.c;
+const Engine = h.Engine;
+const Scope = h.Scope;
+const sync = @import("native_sync_arguments.zig");
+const Arguments = sync.Arguments;
+pub const Inputs = struct {
+    promise: c.JSValue,
+    promise_then: c.JSValue,
+    promise_resolve: c.JSValue,
+    promise_reject: c.JSValue,
+    safe_promise: c.JSValue,
+    safe_array_iterator: c.JSValue,
+    capture_stack_trace: c.JSValue,
+};
+fn value(s: *Scope, comptime body: anytype, args: anytype) !c.JSValue {
+    return v.own(s, try h.expression(s.engine, body, args));
+}
+fn makeFunction(s: *Scope, name: [*:0]const u8, length: c_int,
+    definition: sync.Definition, roots: []const c.JSValue, arrow: bool) !c.JSValue
+{
+    var boundary: v.guest.Boundary = .{ .engine = s.engine };
+    try boundary.begin();
+    return boundary.finishValue(s, if (arrow)
+        v.function.createArrowWithArguments(s.engine, name, length, definition, roots)
+    else
+        v.function.createWithArguments(s.engine, name, length, definition, roots));
+}
+fn innerBody(s: *Scope, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    // (a, b) => PromisePrototypeThen(thisPromise, a, b)
+    const input = try sync.read(s, roots[1]);
+    return v.duplicate(s, try v.call(s, roots[0], c.pi_js_undefined(),
+        &.{input, args.get(0), args.get(1)}));
+}
+fn innerCall(engine: *Engine, _: c.JSValue, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&scope, innerBody(&scope, args, roots));
+}
+fn safePromiseBody(s: *Scope, roots: []const c.JSValue) !c.JSValue {
+    // The actual SafePromise constructor is selected before creating its
+    // executor. This executor captures only the original thisPromise binding.
+    const executor = try makeFunction(s, "", 2,
+        .{ .formal_count = 2, .callback = innerCall }, &.{roots[1], roots[2]}, true);
+    return v.duplicate(s, try v.construct(s, roots[0], &.{executor}));
+}
+fn finallyResultBody(s: *Scope, roots: []const c.JSValue) !c.JSValue {
+    const promise = try value(s, safePromiseBody, .{roots});
+    const method = try v.get(s, promise, "finally");
+    const on_finally = try sync.read(s, roots[3]);
+    return v.duplicate(s, try v.call(s, method, promise, &.{on_finally}));
+}
+fn outerBody(s: *Scope, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    // new SafePromise(...).finally(onFinally).then(a, b)
+    // The first receiver/callee/argument expression completes before .then.
+    const promise = try value(s, finallyResultBody, .{roots});
+    const method = try v.get(s, promise, "then");
+    return v.duplicate(s, try v.call(s, method, promise, &.{args.get(0), args.get(1)}));
+}
+fn outerCall(engine: *Engine, _: c.JSValue, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&scope, outerBody(&scope, args, roots));
+}
+fn finallyBody(s: *Scope, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    // Original parameter captures use the current real synchronous argument
+    // frame, including callers that keep these executors or settled callbacks.
+    const this_promise = try args.capture(s, 0);
+    const on_finally = try args.capture(s, 1);
+    const executor = try makeFunction(s, "", 2,
+        .{ .formal_count = 2, .callback = outerCall },
+        &.{roots[1], roots[2], this_promise, on_finally}, true);
+    return v.duplicate(s, try v.construct(s, roots[0], &.{executor}));
+}
+fn finallyCall(engine: *Engine, _: c.JSValue, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&scope, finallyBody(&scope, args, roots));
+}
+fn captureErrorStack(s: *Scope, record: c.JSValue, reason: c.JSValue) !void {
+    const capture = try v.get(s, record, "captureStackTrace");
+    const self = try v.get(s, record, "handleErrorFromBinding");
+    _ = try v.call(s, capture, c.pi_js_undefined(), &.{reason, self});
+}
+fn rejectedBody(s: *Scope, record: c.JSValue, reason: c.JSValue) !c.JSValue {
+    const reject = try v.get(s, record, "PromiseReject");
+    return v.duplicate(s, try v.call(s, reject, c.pi_js_undefined(), &.{reason}));
+}
+fn bindingErrorBody(s: *Scope, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    try h.statement(s.engine, captureErrorStack, .{roots[0], args.get(0)});
+    return h.expression(s.engine, rejectedBody, .{roots[0], args.get(0)});
+}
+fn bindingErrorCall(engine: *Engine, _: c.JSValue, args: *Arguments, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&scope, bindingErrorBody(&scope, args, roots));
+}
+fn createBody(s: *Scope, inputs: Inputs) !c.JSValue {
+    const record = try v.stateObject(s);
+    try v.put(s, record, "Promise", inputs.promise);
+    try v.put(s, record, "PromisePrototypeThen", inputs.promise_then);
+    try v.put(s, record, "PromiseResolve", inputs.promise_resolve);
+    try v.put(s, record, "PromiseReject", inputs.promise_reject);
+    try v.put(s, record, "SafePromise", inputs.safe_promise);
+    try v.put(s, record, "SafeArrayIterator", inputs.safe_array_iterator);
+    try v.put(s, record, "captureStackTrace", inputs.capture_stack_trace);
+    const safe_finally = try makeFunction(s, "", 2,
+        .{ .formal_count = 2, .callback = finallyCall },
+        &.{inputs.promise, inputs.safe_promise, inputs.promise_then}, true);
+    try v.put(s, record, "SafePromisePrototypeFinally", safe_finally);
+    const binding_error = try makeFunction(s, "handleErrorFromBinding", 1,
+        .{ .formal_count = 1, .callback = bindingErrorCall }, &.{record}, false);
+    try v.put(s, record, "handleErrorFromBinding", binding_error);
+    return v.duplicate(s, record);
+}
+pub fn create(engine: *Engine, inputs: Inputs) !c.JSValue {
+    return h.expression(engine, createBody, .{inputs});
+}

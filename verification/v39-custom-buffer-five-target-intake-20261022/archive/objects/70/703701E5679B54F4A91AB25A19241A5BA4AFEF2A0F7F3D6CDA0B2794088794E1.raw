@@ -1,0 +1,21 @@
+        const node_custom_buffer_listener = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_custom_buffer_listener_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native CustomBuffer listener"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_custom_buffer_listener.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_custom_buffer_listener.root_module, typescript_parser);
+        linkSqlite(node_custom_buffer_listener.root_module, sqlite_lib_dir, sqlite_library);
+        node_custom_buffer_listener.root_module.addImport("catalog_tool", catalog_tool);
+        node_custom_buffer_listener.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        node_custom_buffer_listener.root_module.addIncludePath(b.path("src/extensions"));
+        node_custom_buffer_listener.root_module.linkLibrary(network);
+        node_custom_buffer_listener.root_module.linkLibrary(node_one_byte_diagnostics);
+        node_custom_buffer_listener.root_module.addCSourceFile(.{
+            .file = b.path("src/extensions/native_node_custom_buffer_listener_allocation.cpp"),
+            .flags = &.{ "-std=gnu++20", "-fno-exceptions", "-fno-rtti", "-fno-strict-aliasing" },
+        });
+        if (target.result.os.tag == .windows) {
+            node_custom_buffer_listener.root_module.linkSystemLibrary("advapi32", .{});
+            node_custom_buffer_listener.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-custom-buffer-listener", "Install 15 actual CustomBuffer controls without execution").dependOn(&b.addInstallArtifact(node_custom_buffer_listener, .{ .dest_sub_path = b.fmt("native-node-custom-buffer-listener{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);

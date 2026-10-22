@@ -1,0 +1,78 @@
+{
+  "schema": "pi-zig-custom-buffer-draft-control-successor-v1",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\preserved-drafts\\src\\native_node_custom_buffer_listener_test.zig",
+    "bytes": 19642,
+    "sha256": "987E4A70D1DB8BE81C5E69AD5B5568E5B1BB7D6FE6A8622D7B34C2BE167F0BFC"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\controls\\src\\native_node_custom_buffer_listener_test.zig",
+    "bytes": 20027,
+    "sha256": "A25266B23890A16FB72533F68A040EA8AE81B0F6D20AD178AA1D6037E50F30C2"
+  },
+  "edits": [
+    {
+      "before": "        try self.base().engine.bindFunction(\"actualCustomNread\", readNread, 0);\n",
+      "after": "        try self.base().engine.bindFunction(\"actualCustomNread\", readNread, 0);\n        try self.base().engine.bindFunction(\"actualStopCustomRead\", stopRead, 0);\n",
+      "why": "Bind the actual FileHandle ReadStop body for the guest EOF callback.",
+      "input_sha256": "987E4A70D1DB8BE81C5E69AD5B5568E5B1BB7D6FE6A8622D7B34C2BE167F0BFC",
+      "output_sha256": "76D4A513D2F060A84ED24B4309B396105B189484FEB149CDA90028CF4EF5DB9C"
+    },
+    {
+      "before": "fn expectBuffer(actual: uv.uv_buf_t, pointer: usize, length: usize) !void {",
+      "after": "fn stopRead(context: ?*c.JSContext, _: c.JSValue,\n    _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue\n{\n    const f = selectedBase(context.?);\n    const handle = f.handle() catch |err| return callable.failure(f.engine, err, 0);\n    return c.JS_NewInt32(context.?, handle.readStop());\n}\nfn expectBuffer(actual: uv.uv_buf_t, pointer: usize, length: usize) !void {",
+      "why": "The selected native control calls the genuine owner, without synthetic state mutation.",
+      "input_sha256": "76D4A513D2F060A84ED24B4309B396105B189484FEB149CDA90028CF4EF5DB9C",
+      "output_sha256": "42EB71C5907C0B4D2FCC36680743CC24A35A17E05A63634D819C89B4070F71EC"
+    },
+    {
+      "before": "    try std.testing.expectEqual(@as(u32, 0), f.base().env().streamBaseField(.array_buffer_offset).*);",
+      "after": "    try std.testing.expectEqual(@as(i32, 0), f.base().env().streamBaseField(.array_buffer_offset).*);",
+      "why": "Match the actual Environment Int32Array field type.",
+      "input_sha256": "42EB71C5907C0B4D2FCC36680743CC24A35A17E05A63634D819C89B4070F71EC",
+      "output_sha256": "9D43A80A59361F2DE9CDA65E7F80330144788E90D24FF4C439E671319659B8A9"
+    },
+    {
+      "before": "    // The real file contains ABCDEFGH. Bound the native FileHandle to those\n    // eight bytes; its existing read engine emits the final EOF synchronously.\n    const handle = try f.base().handle();\n    handle.read_state.read_length = 8;",
+      "after": "    // The real file contains ABCDEFGH. Two physical reads consume its bytes;\n    // a third reaches real EOF and the guest callback invokes actual ReadStop.\n    const handle = try f.base().handle();",
+      "why": "Use real descriptor EOF and real owner stopping, without altering native length fields.",
+      "input_sha256": "9D43A80A59361F2DE9CDA65E7F80330144788E90D24FF4C439E671319659B8A9",
+      "output_sha256": "ACED4F9EC72AF981C12EAACACE10887EC62E932C9C2218A64F596ACA52E7E6AC"
+    },
+    {
+      "before": "    try f.onread(\"(function(value){customReads.push(actualCustomNread());customArguments.push(value);return customReads.length===1?customSecond:undefined;})\");",
+      "after": "    try f.onread(\"(function(value){const nread=actualCustomNread();customReads.push(nread);customArguments.push(value);if(nread<0)actualStopCustomRead();return customReads.length===1?customSecond:undefined;})\");",
+      "why": "Stop the actual live read state after EOF to avoid a further native restart.",
+      "input_sha256": "ACED4F9EC72AF981C12EAACACE10887EC62E932C9C2218A64F596ACA52E7E6AC",
+      "output_sha256": "314AF3C30DCED8372C3DD34B72589FD34A1C4D82F36F6CAE107D9B1F5BD42ADE"
+    },
+    {
+      "before": "    try std.testing.expectEqual(@as(usize, 2), f.base().read_begins);\n    try std.testing.expectEqual(@as(usize, 2), f.base().read_ends);",
+      "after": "    try std.testing.expectEqual(@as(usize, 3), f.base().read_begins);\n    try std.testing.expectEqual(@as(usize, 3), f.base().read_ends);",
+      "why": "Observe all three real native requests/completions, including EOF.",
+      "input_sha256": "314AF3C30DCED8372C3DD34B72589FD34A1C4D82F36F6CAE107D9B1F5BD42ADE",
+      "output_sha256": "A25266B23890A16FB72533F68A040EA8AE81B0F6D20AD178AA1D6037E50F30C2"
+    }
+  ],
+  "whole_inverse_exact": true,
+  "names_unchanged": [
+    "native CustomBuffer listener publishes the actual borrowed typed view span and writes its physical storage",
+    "native CustomBuffer listener uses actual DataView fields without invoking shadow getters",
+    "native CustomBuffer listener returns the same empty view buffer regardless of suggested size",
+    "native CustomBuffer listener calls onread for zero and nonnull negative reads and retains undefined results",
+    "native CustomBuffer listener null error branch ignores even an invalid replacement result",
+    "native CustomBuffer listener commits the actual returned view for the next allocation",
+    "native CustomBuffer listener actual descriptor reads reuse caller buffers through FileHandle completion",
+    "native CustomBuffer listener actual ordinary and uncatchable callback throws preserve the original buffer",
+    "native CustomBuffer listener does not retain the actual external buffer or its JavaScript view",
+    "native CustomBuffer listener native deletion unlinks the live head before releasing its exact charge",
+    "native CustomBuffer listener interior deletion preserves the actual remaining listener chain",
+    "native CustomBuffer listener StreamBase destruction consumes its actual self deleting chain",
+    "native CustomBuffer listener unlinked allocation survives Engine teardown and retires without a context",
+    "native CustomBuffer listener callback may destroy the actual listener and return undefined",
+    "native CustomBuffer listener selects the genuine shutdown reporter for the real native close request"
+  ],
+  "scope": "Unsubmitted initial draft refinement only. Uses actual descriptor EOF and actual owner ReadStop instead of directly writing a native length field; observes three physical reads/completions. Matches the actual Environment i32 stream field.",
+  "no_prior_submitted_control_changed": true,
+  "no_execution": true
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "primary-source-acquisition-v1",
+  "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/deps/v8/src/objects/js-array-buffer.cc",
+  "upstream_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+  "transport_evidence": "Hermes native public web_fetch HTTP200 with exact raw body SHA and length, independently matched by the static raw copy.",
+  "snapshot": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\authority\\v8-js-array-buffer.v24.13.cc",
+    "bytes": 18909,
+    "sha256": "CE1E02B2A871FD03887A9DEDD26D677EC39AC7CE2B71D3A1D58B255B8099F5B1"
+  },
+  "source_only": true,
+  "product_executed": false
+}

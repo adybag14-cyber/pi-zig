@@ -1,0 +1,27 @@
+//! Exact untagged-template evaluation used by the linked QuickJS compiler.
+//! Select the first cooked literal's live concat property before evaluating any
+//! substitution. Pass raw substitution values and each nonempty later cooked
+//! literal to one call. A template without substitutions is just a literal and
+//! must not use this owner. All values here are borrowed from the caller's
+//! expression Scope; the caller chooses the actual Source expression boundary.
+const p = @import("native_public_values.zig");
+
+pub const Template = struct {
+    scope: *p.Scope,
+    receiver: p.c.JSValue,
+    callable: p.c.JSValue,
+
+    /// Evaluate only the first literal and its live method lookup.
+    pub fn begin(scope: *p.Scope, first_literal: []const u8) !Template {
+        const receiver = try p.text(scope, first_literal);
+        const callable = try p.get(scope, receiver, "concat");
+        return .{ .scope = scope, .receiver = receiver, .callable = callable };
+    }
+
+    /// Returns a Scope-borrowed result, including arbitrary guest return values.
+    pub fn call(self: Template, args: []const p.c.JSValue) !p.c.JSValue {
+        return p.call(self.scope, self.callable, self.receiver, args);
+    }
+};
+
+pub const begin = Template.begin;

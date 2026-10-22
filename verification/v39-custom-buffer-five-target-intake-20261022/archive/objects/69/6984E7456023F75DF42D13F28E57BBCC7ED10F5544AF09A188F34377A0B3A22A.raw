@@ -1,0 +1,232 @@
+{
+  "schema": "pi-zig-custom-buffer-current-e9-composition.v1",
+  "source_basis": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "old_component": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\component.json",
+    "bytes": 4519,
+    "sha256": "436EED3844A4CF7DF7E2FF0461A650D7452B68D7C1CF8EE9E6E293C498193B70"
+  },
+  "old_build_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\build\\proposal.json",
+    "bytes": 4888,
+    "sha256": "263EDFB588F1AD277A9116772BD197FAB4F0CD97BDBEFA994889B79A437DE28C"
+  },
+  "selected_targets": [
+    {
+      "target": "src/extensions/native_node_custom_buffer_listener_allocation.h",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\src\\extensions\\native_node_custom_buffer_listener_allocation.h",
+        "bytes": 1222,
+        "sha256": "95E77F10C01964B18BBB845E0554C5F2F9ABD81D4A4238E5F5133DF1E77EC282"
+      },
+      "before": null,
+      "historical_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\production\\src\\extensions\\native_node_custom_buffer_listener_allocation.h",
+        "bytes": 1222,
+        "sha256": "95E77F10C01964B18BBB845E0554C5F2F9ABD81D4A4238E5F5133DF1E77EC282"
+      },
+      "role": "new production"
+    },
+    {
+      "target": "src/extensions/native_node_custom_buffer_listener_allocation.cpp",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\src\\extensions\\native_node_custom_buffer_listener_allocation.cpp",
+        "bytes": 1371,
+        "sha256": "DEE3A42BB595DE00E8EC6A2784E40741E233D58E81001A4050449F9D7FE9DD63"
+      },
+      "before": null,
+      "historical_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\production\\src\\extensions\\native_node_custom_buffer_listener_allocation.cpp",
+        "bytes": 1371,
+        "sha256": "DEE3A42BB595DE00E8EC6A2784E40741E233D58E81001A4050449F9D7FE9DD63"
+      },
+      "role": "new production"
+    },
+    {
+      "target": "src/extensions/native_node_custom_buffer_listener.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\src\\extensions\\native_node_custom_buffer_listener.zig",
+        "bytes": 7760,
+        "sha256": "4CB29FE5A6475123A840A3638EC6D08128249822DC38F775A7B81E661B3085AE"
+      },
+      "before": null,
+      "historical_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\production\\src\\extensions\\native_node_custom_buffer_listener.zig",
+        "bytes": 7760,
+        "sha256": "4CB29FE5A6475123A840A3638EC6D08128249822DC38F775A7B81E661B3085AE"
+      },
+      "role": "new production"
+    },
+    {
+      "target": "src/native_node_custom_buffer_listener_test.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\src\\native_node_custom_buffer_listener_test.zig",
+        "bytes": 20027,
+        "sha256": "A25266B23890A16FB72533F68A040EA8AE81B0F6D20AD178AA1D6037E50F30C2"
+      },
+      "before": null,
+      "historical_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\controls\\src\\native_node_custom_buffer_listener_test.zig",
+        "bytes": 20027,
+        "sha256": "A25266B23890A16FB72533F68A040EA8AE81B0F6D20AD178AA1D6037E50F30C2"
+      },
+      "role": "new control root"
+    },
+    {
+      "target": "build.zig",
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\build.zig",
+        "bytes": 515962,
+        "sha256": "7AB122A962019B935EB08EE6042BFFDDCB6F7AF6BE6405F47E06A6CF591B7D4F"
+      },
+      "before": {
+        "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+        "relative_path": "build.zig",
+        "git_blob": "b71fa07d61a4a02928a9c1757f6dab513442e8d9",
+        "bytes": 514105,
+        "sha256": "594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF"
+      },
+      "role": "one install-only insertion"
+    }
+  ],
+  "target_count": 5,
+  "original_build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\original\\build.zig",
+    "bytes": 514105,
+    "sha256": "594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF"
+  },
+  "projected_build": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-current-e9-sourceonly-20261022\\selected\\build.zig",
+    "bytes": 515962,
+    "sha256": "7AB122A962019B935EB08EE6042BFFDDCB6F7AF6BE6405F47E06A6CF591B7D4F"
+  },
+  "historical_install_block_adaptation": {
+    "offset": 949,
+    "before": "        // This target owns one TLS implementation and one V8 fatal owner.\n        // The selected network library contains neither translation unit.\n        node_custom_buffer_listener.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_diagnostic_context.c\"),\n            .flags = &.{\"-std=gnu11\"},\n        });\n        node_custom_buffer_listener.root_module.addCSourceFiles(.{\n            .files = &.{\n                \"src/extensions/native_v8_base_fatal.cpp\",\n                \"src/extensions/native_node_one_byte_string_diagnostics.cpp\",\n                \"src/extensions/native_node_custom_buffer_listener_allocation.cpp\",\n            },\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n",
+    "after": "        node_custom_buffer_listener.root_module.linkLibrary(node_one_byte_diagnostics);\n        node_custom_buffer_listener.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_custom_buffer_listener_allocation.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n",
+    "before_sha256": "D52F19BA0F2D7B494E74E7968A296EBDC6F3D4EDF13ED8979E04D055D64FFB48",
+    "after_sha256": "703701E5679B54F4A91AB25A19241A5BA4AFEF2A0F7F3D6CDA0B2794088794E1",
+    "full_inverse_exact": true
+  },
+  "current_build_insertion": {
+    "offset": 222978,
+    "before": "",
+    "after": "        const node_custom_buffer_listener = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_custom_buffer_listener_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native CustomBuffer listener\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_custom_buffer_listener.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_custom_buffer_listener.root_module, typescript_parser);\n        linkSqlite(node_custom_buffer_listener.root_module, sqlite_lib_dir, sqlite_library);\n        node_custom_buffer_listener.root_module.addImport(\"catalog_tool\", catalog_tool);\n        node_custom_buffer_listener.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n        node_custom_buffer_listener.root_module.addIncludePath(b.path(\"src/extensions\"));\n        node_custom_buffer_listener.root_module.linkLibrary(network);\n        node_custom_buffer_listener.root_module.linkLibrary(node_one_byte_diagnostics);\n        node_custom_buffer_listener.root_module.addCSourceFile(.{\n            .file = b.path(\"src/extensions/native_node_custom_buffer_listener_allocation.cpp\"),\n            .flags = &.{ \"-std=gnu++20\", \"-fno-exceptions\", \"-fno-rtti\", \"-fno-strict-aliasing\" },\n        });\n        if (target.result.os.tag == .windows) {\n            node_custom_buffer_listener.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_custom_buffer_listener.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-custom-buffer-listener\", \"Install 15 actual CustomBuffer controls without execution\").dependOn(&b.addInstallArtifact(node_custom_buffer_listener, .{ .dest_sub_path = b.fmt(\"native-node-custom-buffer-listener{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n",
+    "before_sha256": "594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF",
+    "after_sha256": "7AB122A962019B935EB08EE6042BFFDDCB6F7AF6BE6405F47E06A6CF591B7D4F",
+    "full_inverse_exact": true,
+    "prefix_sha256": "FFE66840B75F2BD38C201CEB9B3DF25269E1B00F32F9C60F42EC3163637D4A70",
+    "suffix_sha256": "89B93BE1F49095B776A5A48870CC54922773B83E5953537BCA991C0D318186F9"
+  },
+  "separate_support_prerequisite": {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test_support.zig",
+      "bytes": 10325,
+      "sha256": "65388977262D9E61B99A95028D24C592A8D1E79E4328E827ECBEB047ABC72D80"
+    },
+    "raw_preimage": {
+      "relative_path": "src/native_node_stream_shutdown_test_support.zig",
+      "origin": "separate accepted prerequisite",
+      "source": null,
+      "bytes": 10312,
+      "sha256": "3FFA7C6EE88B974CA17EB03972ED4CBD14E5702E19D0DF351B72EDF8BD6D21C3",
+      "commit": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "git_blob": "6bca049ffc704fa1bb9e5a5e111d022c7ba19fd5"
+    },
+    "before": "for (.{ &self.observed_request, &self.error_key, &self.oncomplete_key }) |slot| {",
+    "after": "for ([_]*?c.JSValue{ &self.observed_request, &self.error_key, &self.oncomplete_key }) |slot| {",
+    "forward_and_inverse_exact": true,
+    "included_in_five_targets": false
+  },
+  "named_declarations": [
+    "native CustomBuffer listener publishes the actual borrowed typed view span and writes its physical storage",
+    "native CustomBuffer listener uses actual DataView fields without invoking shadow getters",
+    "native CustomBuffer listener returns the same empty view buffer regardless of suggested size",
+    "native CustomBuffer listener calls onread for zero and nonnull negative reads and retains undefined results",
+    "native CustomBuffer listener null error branch ignores even an invalid replacement result",
+    "native CustomBuffer listener commits the actual returned view for the next allocation",
+    "native CustomBuffer listener actual descriptor reads reuse caller buffers through FileHandle completion",
+    "native CustomBuffer listener actual ordinary and uncatchable callback throws preserve the original buffer",
+    "native CustomBuffer listener does not retain the actual external buffer or its JavaScript view",
+    "native CustomBuffer listener native deletion unlinks the live head before releasing its exact charge",
+    "native CustomBuffer listener interior deletion preserves the actual remaining listener chain",
+    "native CustomBuffer listener StreamBase destruction consumes its actual self deleting chain",
+    "native CustomBuffer listener unlinked allocation survives Engine teardown and retires without a context",
+    "native CustomBuffer listener callback may destroy the actual listener and return undefined",
+    "native CustomBuffer listener selects the genuine shutdown reporter for the real native close request"
+  ],
+  "actual_metadata_count": null,
+  "inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\component.json",
+      "bytes": 4519,
+      "sha256": "436EED3844A4CF7DF7E2FF0461A650D7452B68D7C1CF8EE9E6E293C498193B70"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\build\\proposal.json",
+      "bytes": 4888,
+      "sha256": "263EDFB588F1AD277A9116772BD197FAB4F0CD97BDBEFA994889B79A437DE28C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\closure-and-preservation.json",
+      "bytes": 50002,
+      "sha256": "BB9CC84ACC6E605632465479D9EC159E376E103F3DC994C72E8BE60A8EF52818"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\dependency-inventory.json",
+      "bytes": 1249742,
+      "sha256": "71416FE73D552D1F612E14EA26B8A83112A894EEBA51D9FCEB94E4EE95A10926"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-shutdown-compile-fixtures-sourceonly-20261022\\projected\\src\\native_node_stream_shutdown_test_support.zig",
+      "bytes": 10325,
+      "sha256": "65388977262D9E61B99A95028D24C592A8D1E79E4328E827ECBEB047ABC72D80"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-shutdown-compile-fixtures-source-acceptance-20261022.json",
+      "bytes": 16831,
+      "sha256": "9F45B1A10A472BE45799461F068C8EFDFFF08DB7E97603B99AE28689B83BEA01"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-shutdown-compile-fixtures-peer-20261022\\peer.json",
+      "bytes": 17460,
+      "sha256": "045B747EA12A28B475AA7093BB9BB795F35C4F6D36F8ADC05CAC8CD7CB44210A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\production\\src\\extensions\\native_node_custom_buffer_listener_allocation.h",
+      "bytes": 1222,
+      "sha256": "95E77F10C01964B18BBB845E0554C5F2F9ABD81D4A4238E5F5133DF1E77EC282"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\production\\src\\extensions\\native_node_custom_buffer_listener_allocation.cpp",
+      "bytes": 1371,
+      "sha256": "DEE3A42BB595DE00E8EC6A2784E40741E233D58E81001A4050449F9D7FE9DD63"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\production\\src\\extensions\\native_node_custom_buffer_listener.zig",
+      "bytes": 7760,
+      "sha256": "4CB29FE5A6475123A840A3638EC6D08128249822DC38F775A7B81E661B3085AE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-listener-sourceonly-20261020\\controls\\src\\native_node_custom_buffer_listener_test.zig",
+      "bytes": 20027,
+      "sha256": "A25266B23890A16FB72533F68A040EA8AE81B0F6D20AD178AA1D6037E50F30C2"
+    }
+  ],
+  "native_recipe": {
+    "existing_library": "node_one_byte_diagnostics",
+    "existing_members": [
+      "native_node_diagnostic_context.c",
+      "native_v8_base_fatal.cpp",
+      "native_node_one_byte_string_diagnostics.cpp"
+    ],
+    "new_direct_translation_units": [
+      "src/extensions/native_node_custom_buffer_listener_allocation.cpp"
+    ],
+    "memory_owner_via": "network -> native_node_memory -> native_simdjson_memory.cpp",
+    "one_definition_per_selected_artifact_source_recipe": true
+  },
+  "Main_read_or_written": false,
+  "compiler_or_native_execution": false,
+  "source_only": true
+}
