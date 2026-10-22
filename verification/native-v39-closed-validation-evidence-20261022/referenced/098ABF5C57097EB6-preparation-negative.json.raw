@@ -1,0 +1,151 @@
+{
+  "schema": 1,
+  "utc": "2026-10-22T16:16:43.269182+00:00",
+  "status": "source_only_catalog_preparation_negative_preserved",
+  "source_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-issued-v39-catalog-preparation-20261022\\configuration.json",
+    "bytes": 7060,
+    "sha256": "91A76639943B951D7AE04502D6F06EFADF657B493AF59920AFD20C878117E7F2"
+  },
+  "root_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-catalog-preparer-source-acceptance-20261022.json",
+    "bytes": 38708,
+    "sha256": "FF25A2691C9DEB4BFBD05A5FA903D920B981F28511E2B9B93D37233A72F0DA07"
+  },
+  "original_job_observation": {
+    "submission": {
+      "ok": true,
+      "summary": "Submitted or recovered durable job.",
+      "data": {
+        "id": "job-op-1b537a8069fae3e8fcf45146a4fed5a4f4c04eed49ff8d00ec2aa28cda59638f",
+        "replayed": false,
+        "agent": {
+          "taskId": "pi-zig-port-root-20261020",
+          "operationId": "v39-catalog-preparation-0b422-91a766-20261022",
+          "label": "Root reviewed V39 source-only three-catalog preparation 0B422 with91A766"
+        },
+        "job": {
+          "id": "job-op-1b537a8069fae3e8fcf45146a4fed5a4f4c04eed49ff8d00ec2aa28cda59638f",
+          "status": "queued",
+          "runnerPid": 45828,
+          "jobDir": "C:\\Users\\adyba\\docker-chatgpt-devbox\\run\\jobs\\job-op-1b537a8069fae3e8fcf45146a4fed5a4f4c04eed49ff8d00ec2aa28cda59638f",
+          "mode": "program",
+          "resourceClass": "io-heavy"
+        }
+      },
+      "exitCode": null,
+      "truncated": false
+    },
+    "status": {
+      "ok": true,
+      "summary": "Background job job-op-1b537a8069fae3e8fcf45146a4fed5a4f4c04eed49ff8d00ec2aa28cda59638f is failed.",
+      "data": {
+        "id": "job-op-1b537a8069fae3e8fcf45146a4fed5a4f4c04eed49ff8d00ec2aa28cda59638f",
+        "status": "failed",
+        "mode": "program",
+        "createdAtUtc": "2026-10-22T16:14:54.987Z",
+        "startedAtUtc": "2026-10-22T16:14:55.081Z",
+        "completedAtUtc": "2026-10-22T16:14:57.567Z",
+        "runnerPid": 45828,
+        "exitCode": 1,
+        "readOnly": false,
+        "resourceClass": "io-heavy",
+        "runtimeMode": "host",
+        "queuedAtUtc": "2026-10-22T16:14:55.047Z",
+        "runnerProcessInstance": "134371592950226231",
+        "queueWaitMs": 10,
+        "executionSlot": 1,
+        "executionSlots": [
+          1,
+          0
+        ],
+        "executionPool": "execution",
+        "executionWeight": 2,
+        "childPid": 44996,
+        "error": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-sourceonly-20261022\\third-checkout-distinction-successor-v3\\candidate\\Prepare-FreshV39Catalog-20261022-v3.py\", line 447, in <module>\r\n    name = relative(row[\"relative\"])\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-sourceonly-20261022\\third-checkout-distinction-successor-v3\\candidate\\Prepare-FreshV39Catalog-20261022-v3.py\", line 102, in relative\r\n    assert isinstance(name, str) and re.fullmatch(r\"[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*\", name), name\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: verification/get-tsconfig-sourceonly-20261017/authority/source-src__@types__module.d.ts.txt",
+        "logs": {
+          "stdout": {
+            "maxBytes": 33554432,
+            "rotations": 2,
+            "rotationsPerformed": 0,
+            "totalBytes": 0,
+            "currentBytes": 0,
+            "truncated": false,
+            "failed": false,
+            "error": null
+          },
+          "stderr": {
+            "maxBytes": 33554432,
+            "rotations": 2,
+            "rotationsPerformed": 0,
+            "totalBytes": 891,
+            "currentBytes": 891,
+            "truncated": false,
+            "failed": false,
+            "error": null
+          },
+          "truncated": false
+        },
+        "runnerAlive": false,
+        "jobDir": "C:\\Users\\adyba\\docker-chatgpt-devbox\\run\\jobs\\job-op-1b537a8069fae3e8fcf45146a4fed5a4f4c04eed49ff8d00ec2aa28cda59638f"
+      },
+      "exitCode": null,
+      "truncated": false
+    },
+    "logs": {
+      "ok": true,
+      "summary": "Read logs for background job job-op-1b537a8069fae3e8fcf45146a4fed5a4f4c04eed49ff8d00ec2aa28cda59638f.",
+      "data": {
+        "id": "job-op-1b537a8069fae3e8fcf45146a4fed5a4f4c04eed49ff8d00ec2aa28cda59638f",
+        "status": "failed",
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-sourceonly-20261022\\third-checkout-distinction-successor-v3\\candidate\\Prepare-FreshV39Catalog-20261022-v3.py\", line 447, in <module>\r\n    name = relative(row[\"relative\"])\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-sourceonly-20261022\\third-checkout-distinction-successor-v3\\candidate\\Prepare-FreshV39Catalog-20261022-v3.py\", line 102, in relative\r\n    assert isinstance(name, str) and re.fullmatch(r\"[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*\", name), name\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: verification/get-tsconfig-sourceonly-20261017/authority/source-src__@types__module.d.ts.txt\r\n",
+        "maxChars": 5000,
+        "logs": {
+          "stdout": {
+            "totalBytes": 0,
+            "segments": [
+              {
+                "index": 0,
+                "bytes": 0
+              }
+            ],
+            "rotated": false
+          },
+          "stderr": {
+            "totalBytes": 891,
+            "segments": [
+              {
+                "index": 0,
+                "bytes": 891
+              }
+            ],
+            "rotated": false
+          },
+          "maxBytesPerSegment": 33554432,
+          "rotations": 2,
+          "truncated": false
+        }
+      },
+      "exitCode": null,
+      "truncated": false
+    }
+  },
+  "first_failing_path": "verification/get-tsconfig-sourceonly-20261017/authority/source-src__@types__module.d.ts.txt",
+  "cause": "Source-module relative() grammar was applied to every pinned historical source/tree row, including archived authority filenames with @.",
+  "output_directories_independently_absent": {
+    "new3": true,
+    "new4": true,
+    "regression63": true
+  },
+  "outputs_created": 0,
+  "Main_clean": true,
+  "source_head_unchanged": true,
+  "candidate_ran_as_source_only_preparation": true,
+  "native_compiler_or_test_executed": false,
+  "native_attempt": false,
+  "native_execution_authorized": false,
+  "qualification": false,
+  "original_source_config_review_and_failure_preserved": true
+}

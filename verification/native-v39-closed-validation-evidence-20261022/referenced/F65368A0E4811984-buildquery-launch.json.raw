@@ -1,0 +1,43 @@
+{
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "batch": "new3",
+  "control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-173038",
+  "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-173038",
+  "launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-173038\\launch.ps1",
+    "bytes": 1783,
+    "sha256": "F4C253A10525FC9FFF9B97D15DC5875B50E08827082418D1D0DF271F1BEDD1E1"
+  },
+  "grant": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-173038\\root-grant.json",
+    "bytes": 29622,
+    "sha256": "15A09510519020E8170B807CA5762115B348285A61312B5111DBB0B5C4D47567"
+  },
+  "preparation_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-retry1-prepared-20261022\\preparation-review.json",
+    "bytes": 1230781,
+    "sha256": "98E7FBFC267CD832F1A99D7FD4DA30BEFE0F251008EDE4DAF229739098B43A0F"
+  },
+  "specific_root_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-buildquery-retry1-issued-config-20261022.json",
+    "bytes": 27404,
+    "sha256": "1EEAC48DA252F53257D3893C4AA26E9894A273DF4FE85EC8DE63F604B9F6E19D"
+  },
+  "groups": [
+    "native-node-stream-shutdown",
+    "native-node-one-byte-string",
+    "native-vm-array-buffer-view-data"
+  ],
+  "declared_count": 38,
+  "actual_metadata_count": null,
+  "driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+  "matrix_sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB",
+  "metadata_auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-retry1-prepared-20261022\\Audit-CombinedNativeBatch.py",
+    "bytes": 17703,
+    "sha256": "F96195A24B1FD02801478020B4E4128F90AE799F8AFB01DFE1FA6734FBC3C99B"
+  },
+  "issued_utc": "2026-10-22T17:30:38.237297+00:00",
+  "runtime_authority": false,
+  "qualification": false
+}

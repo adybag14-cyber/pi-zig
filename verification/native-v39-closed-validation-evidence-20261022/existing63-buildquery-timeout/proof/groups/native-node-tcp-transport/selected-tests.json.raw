@@ -1,0 +1,24 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\4af87bcf04f95b16d13b85d52c4635e1\\test.exe",
+  "binary_sha256": "BC99E90886E8866EA6E7B98C2CA1553016774567E6C343F61BCF510543FE4ABC",
+  "version": "0.16.0",
+  "actual_count": 12,
+  "tests": [
+    "native_node_tcp_transport_test.test.native actual TCP empty service owns native loop and closes its independent budget",
+    "native_node_tcp_transport_test.test.native actual TCP binds ephemeral IPv4 and reports actual local and peer addresses",
+    "native_node_tcp_transport_test.test.native actual TCP copies caller write bytes and preserves tokens across real segmented reads",
+    "native_node_tcp_transport_test.test.native actual TCP read packet owns bytes until release and resumes only with new demand",
+    "native_node_tcp_transport_test.test.native actual TCP half close yields real EOF while the opposite direction remains writable",
+    "native_node_tcp_transport_test.test.native actual TCP releasing an unclaimed accept closes the real accepted connection",
+    "native_node_tcp_transport_test.test.native actual TCP numeric argument errors remain ordinary libuv statuses without callbacks",
+    "native_node_tcp_transport_test.test.native actual TCP exhausted shared budget is a distinct wrapper allocation producer",
+    "native_node_tcp_transport_test.test.native actual TCP read allocation failure is delivered by its real embedded owner event",
+    "native_node_tcp_transport_test.test.native actual TCP close tokens use observed native closure and never a second close",
+    "native_node_tcp_transport_test.test.native actual TCP listener reference tracks actual active handle and queued closure separately",
+    "native_node_tcp_transport_test.test.native actual TCP native endpoint and event owners can outlive their original VM runtime"
+  ],
+  "group": "native-node-tcp-transport",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

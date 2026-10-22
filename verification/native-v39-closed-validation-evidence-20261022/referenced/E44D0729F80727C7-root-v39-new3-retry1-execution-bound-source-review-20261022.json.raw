@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "status": "Root_accepted_exact_v39_new3_retry1_execution_sources",
+  "reviewer": "Root",
+  "utc": "2026-10-22T17:25:16.502122+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "matrix_sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB",
+  "source_accepted": true,
+  "sources": [
+    {
+      "kind": "buildquery_constructor",
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+        "bytes": 10269,
+        "sha256": "972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0"
+      },
+      "unchanged": true
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39CompleteBuildQuery-New3Retry1-20261022.py",
+        "bytes": 37331,
+        "sha256": "A04CBCB8C134564CB3D26225A61CB310728A6B01D1CFE0F98BFE8925BC735ADB"
+      },
+      "reviewed_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\candidate\\Audit-PositiveV39CompleteBuildQuery-New3Retry1-20261022.py",
+        "bytes": 37331,
+        "sha256": "A04CBCB8C134564CB3D26225A61CB310728A6B01D1CFE0F98BFE8925BC735ADB"
+      },
+      "finite_adaptation": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\positive_buildquery_auditor-finite-source-adaptation.json",
+        "bytes": 2990,
+        "sha256": "494492AFB7E33F682B677C3A071DF0AD8ED05975FE34F5274B25F4BADC945E0A"
+      },
+      "raw_byte_identical_placement": true
+    },
+    {
+      "kind": "runtime_constructor",
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39RuntimeGrant-New3Retry1-20261022.py",
+        "bytes": 12707,
+        "sha256": "D6A9B3316B14769B3D5502C2D90FBC52909CD63F91B287094C4BD3EE2B156E12"
+      },
+      "reviewed_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\candidate\\Prepare-ReviewedV39RuntimeGrant-New3Retry1-20261022.py",
+        "bytes": 12707,
+        "sha256": "D6A9B3316B14769B3D5502C2D90FBC52909CD63F91B287094C4BD3EE2B156E12"
+      },
+      "finite_adaptation": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\runtime_constructor-finite-source-adaptation.json",
+        "bytes": 3228,
+        "sha256": "A6096E67C54FB2617A2035BDE82BBA89AA50C0D522EED4D0ED82C57F314EB58C"
+      },
+      "raw_byte_identical_placement": true
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39StrictRuntime-New3Retry1-20261022.py",
+        "bytes": 43987,
+        "sha256": "1F934E0125B2C1B4F48D68D94EC833931FE7F316A487A82DF0AF70E592E43998"
+      },
+      "reviewed_candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\candidate\\Audit-PositiveV39StrictRuntime-New3Retry1-20261022.py",
+        "bytes": 43987,
+        "sha256": "1F934E0125B2C1B4F48D68D94EC833931FE7F316A487A82DF0AF70E592E43998"
+      },
+      "finite_adaptation": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\positive_runtime_auditor-finite-source-adaptation.json",
+        "bytes": 5294,
+        "sha256": "BE3F34FD9D1BCD42BC84302470BF18A65AA6A2254AFA8594ED92993EB61D03D6"
+      },
+      "raw_byte_identical_placement": true
+    }
+  ],
+  "original_execution_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-execution-bound-source-review-20261022.json",
+    "bytes": 16559,
+    "sha256": "5056C7EB01BC3DBC3931030A7753423CE2AAD1EDC9A71A00A192D0DA7076450A"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\handoff.json",
+    "bytes": 15796,
+    "sha256": "04BAAA9B0FA2BF8E9412DD5BD83384AF748F22AEAD6D5F80DF2B52544924DF33"
+  },
+  "root_cloner_and_downstream_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-preparation-cloner-source-acceptance-20261022.json",
+    "bytes": 5101,
+    "sha256": "A667DFB2B69F66CD773B3289AEE05C60A792087A800E6017C056D659269B4253"
+  },
+  "Root_static_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-static-source-review-20261022.json",
+    "bytes": 17060,
+    "sha256": "312D93A8A37F15B9554C218396FE495752B3C0376AEEA927DE68199DCBB78C45"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-new3-retry1-preparation-and-execution-source-peer-20261022\\peer.json",
+    "bytes": 15989,
+    "sha256": "13D9A3C142DB4EFC67EE6990F2EDA43824F00248ABDB501F1032EDC0C062768F"
+  },
+  "Root_complete_source_and_all_11_finite_hunks_read": true,
+  "Root_11_hunks_replayed_with_all_fragments_and_complete_raw_inverses": true,
+  "unchanged_helper_bodies": 30,
+  "canonical_placements": 3,
+  "unresolved_observed_new3_helper": {
+    "kind": "observed_new3_input_helper",
+    "candidate": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\candidate\\Prepare-ObservedV39New3PositiveBuildQueryAuditInputs-Retry1-20261022-unresolved.py",
+      "bytes": 18928,
+      "sha256": "1263E63125BF7246C8A196995D6BD74FF35C9A3053E8DE6CBA805889B0044A7D"
+    },
+    "finite_adaptation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\observed_new3_input_helper-finite-source-adaptation.json",
+      "bytes": 11144,
+      "sha256": "A563F66F9B73A2008E205CEBE5D7913C5F449733C67114A8B5DBEFF523699A60"
+    },
+    "finite_hunks": 5,
+    "future_canonical_path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV39New3PositiveBuildQueryAuditInputs-20261022.py",
+    "canonical_placement_authorized": false
+  },
+  "unresolved_actual_binding_slots": 17,
+  "actual_helper_binding_performed": false,
+  "actual_metadata_count": null,
+  "scope": "Distinct new3-retry1 preparation path compatibility, canonical copies of exactly accepted candidate bytes, and unchanged original BQ constructor. Original execution sources and5056 remain intact for new4 and existing63. All strict gates and original evidence remain; each execution needs its own exact Root configuration.",
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

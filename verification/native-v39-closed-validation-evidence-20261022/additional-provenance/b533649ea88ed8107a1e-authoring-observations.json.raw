@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "status": "source_authoring_and_static_checker_observations_only",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\candidate\\Prepare-V39ClosedPhasesAndUnresolved63Archive-20261022.py",
+    "bytes": 72511,
+    "sha256": "02D8A4504E8741E915621AFE35B3DBDBEC8A8EE8F8D0F1712F9BA3C5C2392C2B"
+  },
+  "API_argument_rejections": [
+    {
+      "operation": "bounded source read",
+      "exact_tool_result": {
+        "ok": false,
+        "summary": "arguments.max_bytes_per_file: number is outside the allowed range",
+        "exitCode": null,
+        "truncated": false,
+        "error_code": "INVALID_ARGUMENT"
+      },
+      "host_program_started": false,
+      "files_changed": false
+    },
+    {
+      "operation": "bounded source readout",
+      "exact_tool_result": {
+        "ok": false,
+        "summary": "arguments.max_output_chars: number is outside the allowed range",
+        "exitCode": null,
+        "truncated": false,
+        "error_code": "INVALID_ARGUMENT"
+      },
+      "host_program_started": false,
+      "files_changed": false
+    }
+  ],
+  "in_memory_drafting_observation": {
+    "status": "author_recollection_no_separate_raw_tool_capture",
+    "error": "JavaScript SyntaxError: missing ) after argument list",
+    "cause": "Python-style quoted placeholder appeared in the JavaScript source-drafting cell.",
+    "host_call_made": false,
+    "candidate_file_written": false,
+    "corrected_before_source_persistence": true
+  },
+  "preserved_static_checker_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\source-checker-selector-negative.json",
+    "bytes": 3085,
+    "sha256": "5ED74D727C822C677C167FDB89FD029031B453D94C990316023D0C33227E87D8"
+  },
+  "selected_one_literal_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\source-checker-selector-correction.json",
+    "bytes": 1625,
+    "sha256": "6B73479BA46B4FCDE537A3C74DB41CE0B0A42DF70AA97C829686CAA7CF584736"
+  },
+  "candidate_or_prefix_evaluated": false,
+  "validation_attempt": false,
+  "native_failure": false,
+  "original_native_evidence_changed": false
+}

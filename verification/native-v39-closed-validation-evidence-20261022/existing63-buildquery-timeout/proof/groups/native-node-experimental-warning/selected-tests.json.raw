@@ -1,0 +1,30 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\feb8f0e444ad8b9c7c3152485d5b1de2\\test.exe",
+  "binary_sha256": "E5900DF09AE04F746FAD1D2F6E54F3B128BD30CEDC58A7CA99DE6BF629996605",
+  "version": "0.16.0",
+  "actual_count": 18,
+  "tests": [
+    "native_node_experimental_warning_test.test.native actual experimental warning ordinary function and constructor shape",
+    "native_node_experimental_warning_test.test.native actual experimental warning eager feature and ordinary prefix coercion precede live callee selection",
+    "native_node_experimental_warning_test.test.native actual experimental warning private SafeSet preserves SameValueZero and original object identity",
+    "native_node_experimental_warning_test.test.native actual experimental warning membership survives actual feature and Symbol conversion failures",
+    "native_node_experimental_warning_test.test.native actual experimental warning prefix predicate and failed default-hint addition follow original order",
+    "native_node_experimental_warning_test.test.native actual experimental warning membership precedes both live warning getter and callback failure",
+    "native_node_experimental_warning_test.test.native actual experimental warning same-feature reentry observes the already published membership",
+    "native_node_experimental_warning_test.test.native actual experimental warning completed primordial owner survives late public Set poisoning",
+    "native_node_experimental_warning_test.test.native actual experimental warning retained builtin process survives late global getter and object replacement",
+    "native_node_experimental_warning_test.test.native actual experimental warning retains process through a real global lexical TDZ",
+    "native_node_experimental_warning_test.test.native actual experimental warning selected callee and discarded result retire before caller continuation",
+    "native_node_experimental_warning_test.test.native actual experimental warning ordinary private DATA preserves identity in four fresh routes",
+    "native_node_experimental_warning_test.test.native actual experimental warning successful flagged callback result remains discarded DATA",
+    "native_node_experimental_warning_test.test.native actual experimental warning getter fatal stops callback continuation and guest catch",
+    "native_node_experimental_warning_test.test.native actual experimental warning real callee retirement fatal stops caller continuation and catch",
+    "native_node_experimental_warning_test.test.native actual experimental warning already current fatal prevents original callable entry",
+    "native_node_experimental_warning_test.test.native actual experimental warning one completed owner retains actual feature keys until teardown",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-experimental-warning",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

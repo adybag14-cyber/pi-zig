@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_exact_v37_progress_negative_archive_intake_release",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-21T14:29:41.099147+00:00",
+  "basis_main_head": "f878aa40ab4bc4629f2cf57b281fcd2e7329473b",
+  "branch": "work/pi-zig-consolidated-20261016",
+  "executor_sha256": "3991CF3DD80DDE51C551417644CF1E2AF376BDAF538DC8C7F7D6135538FAE5AC",
+  "authorized_phases": {
+    "progress": {
+      "manifest_sha256": "345F3E3F5B71F6FA14618E402F9D7116AE841BDCD0B534D0E1BEB95933A3D878",
+      "total_commit_paths": 215
+    }
+  },
+  "source_intake_authorized": true,
+  "specific_exact_intake_exception": true,
+  "source_mutation_hold_released": false,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "production_bridge_removed": false,
+  "push_authorized_by_this_release": false,
+  "receipt_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-negative-intake-20261021",
+  "required_current_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\manifest.json",
+      "bytes": 134632,
+      "sha256": "345F3E3F5B71F6FA14618E402F9D7116AE841BDCD0B534D0E1BEB95933A3D878"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV37ProgressNegativeIntake-20261021.py",
+      "bytes": 9721,
+      "sha256": "3991CF3DD80DDE51C551417644CF1E2AF376BDAF538DC8C7F7D6135538FAE5AC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\executor-finite-adaptation.json",
+      "bytes": 4343,
+      "sha256": "8287436A4FB4B6FD0E4859680DF7218C829872985562063DB810152F62EEB2FB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-intake-peer-20261021\\peer.json",
+      "bytes": 7767,
+      "sha256": "3458C9C8AB2913D88BA1787522A180613982DD452714D1D159E7F2D1810A4B1C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-intake-peer-20261021\\source-audit-v2.py",
+      "bytes": 18366,
+      "sha256": "3C3D3849F0F9B0BF42391AACADCE158B366090D3E7A462B844D6E29B4D8544A2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-progress-archive-intake-peer-20261021\\source-audit.json",
+      "bytes": 223324,
+      "sha256": "47EA01C5A4EE26C586023A07AC3BE615B368B38AE768399455CBDC068F2C006E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-archive-intake-static-review-20261021.json",
+      "bytes": 2374,
+      "sha256": "034AF15CCE47D566CFF27915353193B300D72F195E1C0282EDEE962B80102FC6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V37ProgressArchiveIntake-20261021.py",
+      "bytes": 8747,
+      "sha256": "F8C376057022F0788050575F1FE5A88FE36822C24E13C4CA1884B952F6E04360"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-archive-static-checker-correction-20261021.json",
+      "bytes": 2740,
+      "sha256": "8B54B8FD8B882E478E9346A42BC036A2309861D148F5E9F0A5E3F0254D9ECBBD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v37-progress-and-negative-archive-intake-20261021\\preparation-review.json",
+      "bytes": 3272,
+      "sha256": "C5F2B34644690C6B5F11F2B463A5004B3671BA633D743156D21D5D1812C3643C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-negative-archive-issued-configuration-20261021.json",
+      "bytes": 12745,
+      "sha256": "3CD25A720BFA525AC13C761A1C825033DBD3609FDDCEF54F9985CE72E20BFD12"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-negative-archive-preparer-source-acceptance-20261021.json",
+      "bytes": 3999,
+      "sha256": "8FB3820CD97FF00F048F7550CE718D186821734CBAD21E5AB7B554A898472941"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-progress-negative-archive-preparation-job-observation-20261021.json",
+      "bytes": 1574,
+      "sha256": "A8F78B3CE6B2ABF45C780AAFA962FA542CB32104721AD3BBF0499DEC001FF07C"
+    }
+  ],
+  "root_review": {
+    "full_baseline_executor_read": true,
+    "three_exact_source_edits_and_full_inverse": true,
+    "unchanged_helpers": 11,
+    "complete_execution_tail_bytes": 9143,
+    "complete_execution_tail_sha256": "810483D37D5BFA7DBE7F26C44CECE9D325EFC56399C8F5B940CC3ECF670F2FDF",
+    "independent_peer_and_checker_fully_read": true,
+    "independent_inputs_rehashed_by_root": 434,
+    "exact_paths": 215,
+    "existing_replacements": 1,
+    "only_existing_replacement": "verification/port-roadmap-resume-20261018/progress.json",
+    "source_build_changes": 0,
+    "raw_original_mappings": 207,
+    "lossless_bookend_gzip_pairs": 2,
+    "complete_progress_raw_inverse": true,
+    "nested_history_prefixes": 138,
+    "all215raw_Git_blob_bytes_exact": true,
+    "all645attribute_values_checked": true,
+    "original_failures_and_unknown_future_outcomes_preserved": true
+  },
+  "resource_ownership": {
+    "owner": "Root",
+    "maximum_concurrent_intakes": 1,
+    "timeout_seconds": 300,
+    "resource_class": "io-heavy",
+    "memory_budget_bytes": 2147483648,
+    "minimum_available_physical_bytes": 17179869184,
+    "observed_available_physical_bytes": 24657072128,
+    "observed_utc": "2026-10-21T14:29:41.099147+00:00",
+    "compiler_node_native_network_execution_authorized": false
+  },
+  "scope": "Consume this release once for the exact 215-path progress/archive commit at f878. One existing progress replacement and 214 new immutable evidence paths only. All native negatives remain historical; no runtime qualification, production source change, cleanup, push or broad source hold release is granted here."
+}

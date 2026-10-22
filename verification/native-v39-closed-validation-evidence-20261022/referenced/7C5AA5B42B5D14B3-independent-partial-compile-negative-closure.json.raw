@@ -1,0 +1,518 @@
+{
+  "schema": 1,
+  "status": "independently_closed_partial_compile_negative",
+  "candidate_head": "558049f2a77528944412824fba7f3c0823ba8ffa",
+  "reviewed_utc": "2026-10-20T17:08:32.713535+00:00",
+  "reviewer": "Root independent complete inventories/current hashes/original raw metadata and original UTC100ns native process closure",
+  "source_seal_scope": "whole_batch",
+  "whole_bookends_unchanged": true,
+  "current_all_sealed_inputs_rehashed": true,
+  "current_complete_directory_inventories_verified": true,
+  "distinct_current_files_rehashed": 33440,
+  "seal_counts": {
+    "source": 13871,
+    "tree": 13884,
+    "vendor": 1489,
+    "compiler": 19546,
+    "controls": 14
+  },
+  "granted_groups": 54,
+  "attempted_groups": 7,
+  "unstarted_groups": 47,
+  "actual_partial_metadata_count": 112,
+  "actual_tests_started": 0,
+  "native_owner_count": 13,
+  "groups": [
+    {
+      "group": "native-node-environment-map",
+      "status": "partial_batch_not_admissible",
+      "actual_metadata_count": 22,
+      "compiler_errors": [],
+      "actual_tests": [
+        "native_node_environment_map_test.test.native environment map starts empty without exposing a detached key snapshot",
+        "native_node_environment_map_test.test.native environment map copies caller key and value storage before publication",
+        "native_node_environment_map_test.test.native environment map replacement constructs the original long temporary key",
+        "native_node_environment_map_test.test.native environment map Get constructs and retires a long C string lookup key",
+        "native_node_environment_map_test.test.native environment map Query constructs the same real temporary even for an absent key",
+        "native_node_environment_map_test.test.native environment map Get unlocks before its owned value survives a real replacement",
+        "native_node_environment_map_test.test.native environment map JS Get retains both original native string copies",
+        "native_node_environment_map_test.test.native environment map missing Get still allocates and retires its long temporary key",
+        "native_node_environment_map_test.test.native environment map Get and Query use C prefixes while Set retains full spans",
+        "native_node_environment_map_test.test.native environment map Delete selects the full span independently of C prefix lookups",
+        "native_node_environment_map_test.test.native environment map uses the original case sensitive map on admitted platforms",
+        "native_node_environment_map_test.test.native environment map enumeration follows the actual original standard container after growth and erase",
+        "native_node_environment_map_test.test.native environment map Clone copies actual entries before independent mutation",
+        "native_node_environment_map_test.test.native environment map enumeration retains its native owner after caller release",
+        "native_node_environment_map_test.test.native environment map mutation guard independently retains the live native table",
+        "native_node_environment_map_test.test.native environment map retained store survives full runtime and caller domain retirement",
+        "native_node_environment_map_test.test.native environment map actual workers share a mutex and domain after runtime retirement",
+        "native_node_environment_map_test.test.native environment map Clone allocations belong to the actual destination domain",
+        "native_node_environment_map_test.test.native environment map empty keys are ignored but empty values remain real entries",
+        "native_node_environment_map_test.test.native environment map native retry leaves actual pending and VM OOM occurrence untouched",
+        "native_node_environment_map_test.test.native environment map actual short string lookup needs no artificial heap allocation",
+        "native_node_environment_map_test.test.native environment map Delete constructs its real long span temporary before erase"
+      ]
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "status": "partial_batch_not_admissible",
+      "actual_metadata_count": 20,
+      "compiler_errors": [],
+      "actual_tests": [
+        "native_vm_backing_store_adoption_test.test.VM native backing store allocates before a context with no JS wrapper or heap allocation",
+        "native_vm_backing_store_adoption_test.test.VM native backing store exposes real writable bytes before consuming adoption without a copy",
+        "native_vm_backing_store_adoption_test.test.VM native backing store zero initialization is a separate actual allocation mode",
+        "native_vm_backing_store_adoption_test.test.VM native backing store zero length retains a real owner with null logical data",
+        "native_vm_backing_store_adoption_test.test.VM native backing store duplicates and releases independent entitlements with exact charge retirement",
+        "native_vm_backing_store_adoption_test.test.VM native backing store adoption uses the intrinsic realm despite poisoned public constructors",
+        "native_vm_backing_store_adoption_test.test.VM native backing store wrapper allocation failure consumes exactly its native entitlement",
+        "native_vm_backing_store_adoption_test.test.VM native backing store prior ordinary pending consumes the store before any wrapper allocation",
+        "native_vm_backing_store_adoption_test.test.VM native backing store prior generic fatal is preserved without an allocation report",
+        "native_vm_backing_store_adoption_test.test.VM native backing store prior native termination remains the actual published event",
+        "native_vm_backing_store_adoption_test.test.VM native backing store native quota and overflow failure leave pending and OOM history unchanged",
+        "native_vm_backing_store_adoption_test.test.VM native backing store absence of a provider returns empty without inventing a JS failure",
+        "native_vm_backing_store_adoption_test.test.VM native backing store adoption rejects another native allocation domain and consumes the original owner",
+        "native_vm_backing_store_adoption_test.test.VM native backing store missing owner is distinct from an owned zero-length store",
+        "native_vm_backing_store_adoption_test.test.VM native backing store workers retain and retire storage after its runtime and caller domain retire",
+        "native_vm_backing_store_adoption_test.test.VM native backing store short-copy ordering retires the old allocation before wrapper adoption",
+        "native_vm_backing_store_adoption_test.test.VM native backing store adopted wrapper and actual view lease retain independent detach owners",
+        "native_vm_backing_store_adoption_test.test.VM native backing store explicit duplicate can back two intrinsic wrappers without copying",
+        "native_vm_backing_store_adoption_test.test.VM native backing store adopted buffers preserve actual equal and changed transfer ownership",
+        "native_vm_backing_store_adoption_test.test.VM native backing store uninitialized mode leaves JS fixed resizable and shared initialization intact"
+      ]
+    },
+    {
+      "group": "native-vm-script-location",
+      "status": "partial_batch_not_admissible",
+      "actual_metadata_count": 32,
+      "compiler_errors": [],
+      "actual_tests": [
+        "native_vm_script_location_test.test.VM Script complete input and UTF16 length are independent of function presentation source",
+        "native_vm_script_location_test.test.VM Script root nested and sibling bytecode retain one actual native source identity",
+        "native_vm_script_location_test.test.VM Script separate compilations of identical input have distinct owners",
+        "native_vm_script_location_test.test.VM Script duplicate native entitlement outlives function and originating context",
+        "native_vm_script_location_test.test.VM Script brand projection excludes native bound and proxy functions without guest access",
+        "native_vm_script_location_test.test.VM Script source URL and map come from actual lexer comments with last-event semantics",
+        "native_vm_script_location_test.test.VM Script empty later metadata clears earlier recognized lexer metadata",
+        "native_vm_script_location_test.test.VM Script genuine module frames retain complete host module source",
+        "native_vm_script_location_test.test.VM Script direct and indirect eval preserve their actual separate input",
+        "native_vm_script_location_test.test.VM Script all four dynamic constructors retain actual generated eval input",
+        "native_vm_script_location_test.test.VM Script genuine CJS compiler keeps original body without presentation wrapper",
+        "native_vm_script_location_test.test.VM Script UTF16 line table handles CRLF lone CR LS PS negative and EOF positions",
+        "native_vm_script_location_test.test.VM Script empty source and actual initial line offset retain canonical EOF behavior",
+        "native_vm_script_location_test.test.VM Script captured positions use actual token bytes in both compiler modes",
+        "native_vm_script_location_test.test.VM Script source positions survive real backward and long forward branch rewriting",
+        "native_vm_script_location_test.test.VM Script cloned captured frame owns source after original frames retire",
+        "native_vm_script_location_test.test.VM Script native synthetic and proxy frames have no fabricated source owner",
+        "native_vm_script_location_test.test.VM Script raw projections allocate nothing and preserve actual ordinary fatal and private pending",
+        "native_vm_script_location_test.test.VM Script position failure leaves outputs unchanged and source line enforces runtime ownership",
+        "native_vm_script_location_test.test.VM Script native source owner retains no receiver or function graph after frame retirement",
+        "native_vm_script_location_test.test.VM Script serialized siblings keep one source identity without object reference mode under every strip flag",
+        "native_vm_script_location_test.test.VM Script serialized actual token positions survive source and debug stripping in both compilers",
+        "native_vm_script_location_test.test.VM Script ordinary lexer resource and map metadata survive serialization independently of display stripping",
+        "native_vm_script_location_test.test.VM Script serialized module retains complete source module origin and nested identity",
+        "native_vm_script_location_test.test.VM Script real reader rejects invalid owner tags references origin and module bits",
+        "native_vm_script_location_test.test.VM Script reader validates actual PC and source-byte bounds before publication",
+        "native_vm_script_location_test.test.VM Script partial reader failure retires source records position arrays and table entitlements",
+        "native_vm_script_location_test.test.VM Script version31 rejects actual version30 bytes at the unchanged version gate",
+        "native_vm_script_location_test.test.VM Script real compiler and reader heap failure cleanly retire all native source owners",
+        "native_vm_script_location_test.test.VM Script prior actual pending wins before allocating source line while raw getters remain available",
+        "native_vm_script_location_test.test.VM Script existing private logical URL serialization restriction is preserved",
+        "native_vm_script_location_test.test.VM Script failed parsing releases native source without fabricating synthetic-frame provenance"
+      ]
+    },
+    {
+      "group": "native-node-environment-paths",
+      "status": "partial_batch_not_admissible",
+      "actual_metadata_count": 15,
+      "compiler_errors": [],
+      "actual_tests": [
+        "native_node_environment_paths_test.test.native environment paths captures the actual executable independently of caller argv bytes",
+        "native_node_environment_paths_test.test.native environment paths reads the actual native working directory",
+        "native_node_environment_paths_test.test.native environment paths normalizes absolute dot and parent segments without trace",
+        "native_node_environment_paths_test.test.native environment paths selects the rightmost absolute tail and original drive",
+        "native_node_environment_paths_test.test.native environment paths retains real UNC device roots or POSIX backslash bytes",
+        "native_node_environment_paths_test.test.native environment paths selects live supplied drive variables only on Windows",
+        "native_node_environment_paths_test.test.native environment paths SafeGetenv distinguishes an absent value from an empty string",
+        "native_node_environment_paths_test.test.native environment paths SafeGetenv preserves the actual C string key selection",
+        "native_node_environment_paths_test.test.native environment paths copies the live Map value before native trace reentry",
+        "native_node_environment_paths_test.test.native environment paths snapshots trace options before native and JS delegation",
+        "native_node_environment_paths_test.test.native environment paths retains both SafeGetenv string copies through trace only",
+        "native_node_environment_paths_test.test.native environment paths retries a real native allocation with the original new handler",
+        "native_node_environment_paths_test.test.native environment paths preserves actual pending identity under the exhausted JS heap",
+        "native_node_environment_paths_test.test.native environment paths owns its native strings after runtime and caller retirement",
+        "native_node_environment_paths_test.test.native environment paths retains Map through trace and returns a surviving text copy"
+      ]
+    },
+    {
+      "group": "native-node-stream-fields",
+      "status": "partial_batch_not_admissible",
+      "actual_metadata_count": 11,
+      "compiler_errors": [],
+      "actual_tests": [
+        "native_node_stream_wrapper_test.test.Node StreamFields initial internal value is undefined and wrapper brand precedes native attachment",
+        "native_node_stream_wrapper_test.test.Node StreamFields real callback edge is internal and survives collection while wrapper remains rooted",
+        "native_node_stream_wrapper_test.test.Node StreamFields replacement is published before the previous sole callback edge retires",
+        "native_node_stream_wrapper_test.test.Node StreamFields native deletion clears only the State slot and leaves the actual onread value",
+        "native_node_stream_wrapper_test.test.Node StreamFields native strong wrapper root retains a real callback cycle until DeleteMe",
+        "native_node_stream_wrapper_test.test.Node StreamFields real weak wrapper retirement destroys native state before its callback edge",
+        "native_node_stream_wrapper_test.test.Node StreamFields realm cleanup detaches native state while late wrapper releases after disarm",
+        "native_node_stream_wrapper_test.test.Node StreamFields VM teardown retires detached onread after Fixture registry and Environment entitlements",
+        "native_node_stream_wrapper_test.test.Node StreamFields existing pending reason wins before native fields allocation at exhausted quota",
+        "native_node_stream_wrapper_test.test.Node StreamFields failed intrinsic wrapper allocation retires unattached native field storage",
+        "extensions.native_durable_storage.test_0"
+      ]
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "status": "partial_batch_not_admissible",
+      "actual_metadata_count": 12,
+      "compiler_errors": [],
+      "actual_tests": [
+        "native_node_managed_buffers_test.test.Node managed buffers constructs the actual empty native map without a context",
+        "native_node_managed_buffers_test.test.Node managed buffers consumes the actual token before any JS wrapper exists",
+        "native_node_managed_buffers_test.test.Node managed buffers insertion does not enter the exhausted JS heap",
+        "native_node_managed_buffers_test.test.Node managed buffers release keys on actual base and ignores the copied length",
+        "native_node_managed_buffers_test.test.Node managed buffers null base bypasses lookup while retaining other entries",
+        "native_node_managed_buffers_test.test.Node managed buffers preserves the real zero owner until map destruction",
+        "native_node_managed_buffers_test.test.Node managed buffers duplicate insertion retires only the unselected native owner",
+        "native_node_managed_buffers_test.test.Node managed buffers moves out before erase and survives native table destruction",
+        "native_node_managed_buffers_test.test.Node managed buffers release then adopts the same real backing into a later ArrayBuffer",
+        "native_node_managed_buffers_test.test.Node managed buffers native map operations preserve an actual pending reason",
+        "native_node_managed_buffers_test.test.Node managed buffers real node allocation retries through the actual native new handler",
+        "native_node_managed_buffers_test.test.Node managed buffers all native backing and table charges retire after the originating runtime"
+      ]
+    },
+    {
+      "group": "native-node-stream-read",
+      "status": "failed",
+      "actual_metadata_count": null,
+      "compiler_errors": [
+        "src\\extensions\\native_node_async_wrap_make_callback.zig:51:39: error: expected type '@typeInfo(@typeInfo(@TypeOf(extensions.native_node_async_wrap_make_callback.call)).@\"fn\".return_type.?).error_union.error_set!?T', found '@typeInfo(@typeInfo(@TypeOf(extensions.native_node_operation_scope.Scope.own)).@\"fn\".return_type.?).error_union.error_set!T'",
+        "error: 1 compilation errors",
+        "error: the following build command failed with exit code 1:"
+      ]
+    }
+  ],
+  "actual_process_intervals": [
+    {
+      "pid": 21308,
+      "created": 17925152386214351,
+      "completed": 17925155480451937,
+      "role": "compile"
+    },
+    {
+      "pid": 7812,
+      "created": 17925155491207604,
+      "completed": 17925155492877769,
+      "role": "metadata"
+    },
+    {
+      "pid": 49636,
+      "created": 17925155501321359,
+      "completed": 17925155587630429,
+      "role": "compile"
+    },
+    {
+      "pid": 47576,
+      "created": 17925155596392572,
+      "completed": 17925155597736915,
+      "role": "metadata"
+    },
+    {
+      "pid": 42796,
+      "created": 17925155604609576,
+      "completed": 17925155692801026,
+      "role": "compile"
+    },
+    {
+      "pid": 51628,
+      "created": 17925155702994775,
+      "completed": 17925155704545198,
+      "role": "metadata"
+    },
+    {
+      "pid": 43928,
+      "created": 17925155712651485,
+      "completed": 17925155839399271,
+      "role": "compile"
+    },
+    {
+      "pid": 440,
+      "created": 17925155851459664,
+      "completed": 17925155853056203,
+      "role": "metadata"
+    },
+    {
+      "pid": 24432,
+      "created": 17925155860944671,
+      "completed": 17925155983623813,
+      "role": "compile"
+    },
+    {
+      "pid": 14792,
+      "created": 17925155996536075,
+      "completed": 17925155998369886,
+      "role": "metadata"
+    },
+    {
+      "pid": 44972,
+      "created": 17925156007150541,
+      "completed": 17925156105661245,
+      "role": "compile"
+    },
+    {
+      "pid": 44592,
+      "created": 17925156118296862,
+      "completed": 17925156119896384,
+      "role": "metadata"
+    },
+    {
+      "pid": 12568,
+      "created": 17925156129842596,
+      "completed": 17925156214542961,
+      "role": "compile"
+    },
+    {
+      "pid": 44016,
+      "created": 17925152173517900,
+      "completed": 17925156456893381,
+      "role": "outer"
+    },
+    {
+      "pid": 49336,
+      "created": 17925152164999592,
+      "completed": 17925156458550000,
+      "role": "runner"
+    },
+    {
+      "pid": 51524,
+      "created": 17925152164790000,
+      "completed": 17925156458550000,
+      "role": "launcher_job_lifetime_envelope"
+    }
+  ],
+  "current_absence": {
+    "owners": [],
+    "direct_children": [],
+    "native": [],
+    "observed_utc": "2026-10-20T17:08:32.6659899+00:00"
+  },
+  "current_actual_process_instances_absent": true,
+  "current_process_instance_reconciliations": [],
+  "original_receipts": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\result.json",
+      "bytes": 109013,
+      "sha256": "8264B961ABBE258AC9B32308B6C161452A09DE3143AE990716817339E09609B0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\before.json",
+      "bytes": 15185601,
+      "sha256": "A99F44F4AE36262C50ED4723352B137820EE1DE049F330856F4FC59D8A1C8716"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\final.json",
+      "bytes": 15185601,
+      "sha256": "A99F44F4AE36262C50ED4723352B137820EE1DE049F330856F4FC59D8A1C8716"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-control-20261020-165337\\outer.json",
+      "bytes": 1586,
+      "sha256": "F982FA295C6B808FA02082DDCD2C5B2474147CBB1C8FA3D6824AF4DAFA1C99F9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-control-20261020-165337\\outer-absence.json",
+      "bytes": 181,
+      "sha256": "2551EF3501EBD3E07451A1D81F2CE4D996F43604CD5E3B1CC5A552761A8FCD20"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-environment-map\\compile.json",
+      "bytes": 2144,
+      "sha256": "BF4C1F0FD909CBF76A823632011C83061E055C2D7FA3CC446A072017FD36E605"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-environment-map\\compile-absence.json",
+      "bytes": 3254,
+      "sha256": "7F5E8F93CEEAA514EE8E5871F039C98E99584A427B2E7BFE0C1E0FA1C6B886BA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-environment-map\\metadata.json",
+      "bytes": 1210,
+      "sha256": "EA61658ED33663A642B82E14E4B949C124C263D9E637D54E7B4A78DF8D75AD3A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-environment-map\\metadata-absence.json",
+      "bytes": 2262,
+      "sha256": "E93F07BB593422104CF17DF355AB8982FA67DEC6ACF1A04A8D2CA536545A9E68"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-vm-backing-store-adoption\\compile.json",
+      "bytes": 2164,
+      "sha256": "50CEB240BD3B1726F14DF995BAC39EC2984ECA7A0CD8282E294AEC15C6361F5B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-vm-backing-store-adoption\\compile-absence.json",
+      "bytes": 3284,
+      "sha256": "21BA5A0A744AD94BAC2BA57F508390B1F88FE42C2E14C3BBB7F1895EF830DF26"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-vm-backing-store-adoption\\metadata.json",
+      "bytes": 1212,
+      "sha256": "2DDD2D3D3212AF4E49F8FC02F27BAD4499C1009DDDC4CD7A2A11D65CC3CF2C1B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-vm-backing-store-adoption\\metadata-absence.json",
+      "bytes": 2274,
+      "sha256": "7D034709E469A38E17FACDC3CC25C7D5FF3169EE25EEE8CCF9143990175DC364"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-vm-script-location\\compile.json",
+      "bytes": 2136,
+      "sha256": "FB097F3E41582E97B72CC8FD2B28180A4EBF9505999524EF634BF89D40EC73D2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-vm-script-location\\compile-absence.json",
+      "bytes": 3242,
+      "sha256": "C1022FE0ABF69F3C69433E2D4D14FE42F2DBC332F580E2FC81B543A07276A97E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-vm-script-location\\metadata.json",
+      "bytes": 1212,
+      "sha256": "4AC9E93B5AEA62DE38796DF3A0BEBC872BC5A9629A18121F814557C64800654D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-vm-script-location\\metadata-absence.json",
+      "bytes": 2260,
+      "sha256": "CCFAE8CD475744F4218B0599A934D6AE14B6181A36D053B0F729BA6CBABA3739"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-environment-paths\\compile.json",
+      "bytes": 2152,
+      "sha256": "D2B629DB298986C18C6A9FB2B9A42A11D574C4F7924EDCC61DE0E36DC4C8C58B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-environment-paths\\compile-absence.json",
+      "bytes": 3266,
+      "sha256": "ECE4288D11034430C4550135A133CBC23CE332A054752B098BACBA434BC20DA5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-environment-paths\\metadata.json",
+      "bytes": 1208,
+      "sha256": "EAAF7A88F0FCFDD156D465FEC454F92C39AB328BD2DDA5CF780F396998FBABF5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-environment-paths\\metadata-absence.json",
+      "bytes": 2264,
+      "sha256": "5892A34AB07EB673473D585CF28C94E747F91DFC81C84C3009606E96B6C91F0C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-stream-fields\\compile.json",
+      "bytes": 2136,
+      "sha256": "F4E8E23BA5F4559206D55494FFB5B5CDE5772E5CE277093B0935F745B4B11395"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-stream-fields\\compile-absence.json",
+      "bytes": 3242,
+      "sha256": "9A8418858913E71697F9491CDB55ACE2F9F5E30AE2B8FBC316C5FCF2CAAA8471"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-stream-fields\\metadata.json",
+      "bytes": 1212,
+      "sha256": "5867F0F59A4DD045749DA53C860407EBBAB04701EEC93DFD5CFCB5435CF9CE60"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-stream-fields\\metadata-absence.json",
+      "bytes": 2260,
+      "sha256": "92C7C7CF6A74A06A0DC07ABC02D6A34CBEABF18F851DDCB362B4D1DEDC7ADD8D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-managed-buffers\\compile.json",
+      "bytes": 2144,
+      "sha256": "A5FA4E4C2C8F2153153F7057A931F46151E1DDC02421DEBD38B07570DFB39C1F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-managed-buffers\\compile-absence.json",
+      "bytes": 3254,
+      "sha256": "1663DEF2250CACFE2FBE889A2A47DDBC406C3CCBF6310FF41457EBC293F97213"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-managed-buffers\\metadata.json",
+      "bytes": 1212,
+      "sha256": "528E714B14EDCEF0AC36F49AD7EFE4FCAA7250C5D2D47F02C9E65E36A4AB8C13"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-managed-buffers\\metadata-absence.json",
+      "bytes": 2264,
+      "sha256": "2C6902D1FA08FFA45B5FF06FDE33ADF5775AAB52169DD7BB9911177BB0929EEB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-stream-read\\compile.json",
+      "bytes": 2238,
+      "sha256": "F95D2DE0078E105BF5EF4987C9D47DBC779B83113DCB372146CB86CBDF55C1AA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-buildquery-20261020-165337\\groups\\native-node-stream-read\\compile-absence.json",
+      "bytes": 3344,
+      "sha256": "ADA55A712385BED80DC7C5A6C426DB15477FE347080C7E765A5A5D6FF3A18408"
+    }
+  ],
+  "supplemental_current_preparation_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v30-prepared-20261020\\preparation-review.json",
+      "bytes": 7915,
+      "sha256": "A66C0AE25971F56C36B6C5ACD2FD2E82C39E766D8A979786310E3EA61136C5B0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v30-prepared-20261020\\combined-build-source-peer.json",
+      "bytes": 8275,
+      "sha256": "212509F6AAF5E43A29E892C0E85E32BF7DD526B94921EDA324F57AB3398BDFD3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-diagnostic-v29-control-20261020-163817\\independent-diagnostic-compile-negative-closure.json",
+      "bytes": 39898,
+      "sha256": "2F221509291791E5D157383FD095F884EFD0C11029790349FFE3B8E2B3FB15A6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-composed-foundation-intake-20261020\\main-intake.json",
+      "bytes": 68202,
+      "sha256": "DBFF9E992792D325EC4B2398CA498841C7B0278C0116BEE1DAFA6267CF25C551"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v28-control-20261020-161827\\independent-partial-compile-negative-closure.json",
+      "bytes": 10901,
+      "sha256": "B4375D195DA20693F4E718322DA93E3B0CBD2A531C525136169E8EA958E6A3E6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-script-v27-constants-sourceonly-20261020\\main-intake.json",
+      "bytes": 2463,
+      "sha256": "818AB72A1CF294D9A761DB38698A3CEE1980B0C0E2EE26A0260D5971BC1EC9F9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-backing-v28-field-sourceonly-20261020\\main-intake.json",
+      "bytes": 3066,
+      "sha256": "99D365A2EFD929BE95501E02FBBA5EBDE006A19A456BC4844AD5DF8BD2B41B1A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v29-fixture-corrections-main-intake-20261020\\main-intake.json",
+      "bytes": 5941,
+      "sha256": "9954E1870B0A9DD99E4639900CD78030F625AB6C973874BE8B862ED64A78C185"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-FreshV30Grant-20261020.py",
+      "bytes": 5651,
+      "sha256": "C31ED49337E50A66C60FEDAF2B4E3DF66FCAD74EBCB4B4386D389A71BADAE88D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Queue-FreshV30BuildQuery-20261020.py",
+      "bytes": 1377,
+      "sha256": "C5C9D1A69D5A8A99D3D1FEB5B568293D0DC6BC924F9462D9FFB0630D032DF4AD"
+    }
+  ],
+  "original_negative_rejections_preserved": true,
+  "controller_environment_restored": true,
+  "runtime_started": false,
+  "metadata_acceptance": false,
+  "qualification": false,
+  "source_mutation_hold_released": true
+}

@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "status": "root_accepted_complete_strict_v39_new4_runtime",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-22T17:28:59.238598+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "batch": "new4",
+  "groups": [
+    "native-node-file-handle-owner",
+    "native-node-fs-before-hook-continuation",
+    "native-vm-error-constructor-name",
+    "native-node-file-handle-transfer"
+  ],
+  "declared_groups": 4,
+  "declared_controls": 58,
+  "accepted_cohort": 61,
+  "observed_started": 61,
+  "observed_completed": 61,
+  "observed_failed": 0,
+  "not_started": 0,
+  "actual_group_counts": [
+    19,
+    4,
+    24,
+    14
+  ],
+  "complete_strict_runtime_accepted": true,
+  "root_buildquery_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-complete-buildquery-acceptance-20261022.json",
+    "bytes": 3371,
+    "sha256": "4E311101E98D0188F46999774638B9C7056EED91653CD795AEB920B0AC7512AD"
+  },
+  "independent_build_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-control-20261022-165637\\independent-current-seals-and-owners.json",
+    "bytes": 977278,
+    "sha256": "9DA107A6200174B197B83A0F7E4F3618BCB0C3FE8AFB1D0841F8493FAC1B4137"
+  },
+  "metadata_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-control-20261022-165637\\independent-metadata-acceptance.json",
+    "bytes": 14149,
+    "sha256": "A48E902D0AEB0D1C6E4E598F8FF375F0BEA7621E7178E996CF1861BA963B032C"
+  },
+  "runtime_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-20261022-172246\\result.json",
+    "bytes": 55926,
+    "sha256": "AABE89034F326DC1401300473A5C7386F33D353DE251143FADF1854DB9DC0495"
+  },
+  "runtime_before": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-20261022-172246\\before.json",
+    "bytes": 18267712,
+    "sha256": "28FF0F12B4CF88F4CC9A3D493EF649C31B14A8E5BA6234C8328D92E6EAB65964"
+  },
+  "runtime_final": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-20261022-172246\\final.json",
+    "bytes": 18267712,
+    "sha256": "28FF0F12B4CF88F4CC9A3D493EF649C31B14A8E5BA6234C8328D92E6EAB65964"
+  },
+  "independent_runtime_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\independent-positive-runtime-closure.json",
+    "bytes": 31518,
+    "sha256": "F4B556AFDB8B4FE84542B8ECDD581E495AC36C25EF949D173A049A87B50649E8"
+  },
+  "runtime_audit_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\independent-positive-runtime-audit-inputs.json",
+    "bytes": 6497,
+    "sha256": "63027F8C3FC0B998D45F15B68FCDE30EBC2105BD0F8E689D8059DCBC31962DC7"
+  },
+  "runtime_auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39StrictRuntime-20261022.py",
+    "bytes": 43940,
+    "sha256": "73C0D2B7209504A4EE0AA419EC936EED84F02753372B87C3F03651FBDE9D3484"
+  },
+  "runtime_audit_resource_release": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-positive-runtime-audit-resource-release-20261022.json",
+    "bytes": 2639,
+    "sha256": "9B3A888EFBB91AAF772A4D1818B548FE00D54CE3C6A2F159EC8F12FD2E2AAE0A"
+  },
+  "runtime_launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\runtime-launch.json",
+    "bytes": 2768,
+    "sha256": "8567379658E886202704B7B8A429AFEC669508A49E8AEBB062F7591A4AC6ABE1"
+  },
+  "runtime_grant": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\root-grant.json",
+    "bytes": 29181,
+    "sha256": "68ADE94C3BCE397021AA7C945D3BE822C8B461E0EF8ED3EDA991E8EBC28FC5A6"
+  },
+  "runtime_launcher": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\launch.ps1",
+    "bytes": 1777,
+    "sha256": "630E13A5E12B813F2E0DD969DCE60FC654959E4422C1B8AE0CA9DB9C952C4924"
+  },
+  "runtime_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-runtime-issued-config-20261022.json",
+    "bytes": 3732,
+    "sha256": "DD78E24D59E55B11A871D676AE3E972E44166A48C8B846814B62A4FE1193A09B"
+  },
+  "runtime_constructor_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-execution-bound-source-review-20261022.json",
+    "bytes": 16559,
+    "sha256": "5056C7EB01BC3DBC3931030A7753423CE2AAD1EDC9A71A00A192D0DA7076450A"
+  },
+  "runtime_launch_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-runtime-launch-source-acceptance-20261022.json",
+    "bytes": 3152,
+    "sha256": "935C59A637E593A0ADD3A0C48F4D69CDD5B4C7AA21E866B2C03AFC593D1EEEC1"
+  },
+  "job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\independent-observed-job-status.json",
+    "bytes": 1572,
+    "sha256": "E050D89C3313F9FAC424B2FBD4E65799DC7AECC077741BA3781FCE3738A22C59"
+  },
+  "seal_counts": {
+    "source": 17346,
+    "tree": 17359,
+    "vendor": 1489,
+    "compiler": 19546,
+    "controls": 25
+  },
+  "distinct_current_files_rehashed": 36926,
+  "complete_source_and_current_directory_seals": true,
+  "native_runtime_owner_count": 4,
+  "actual_process_intervals_closed": 7,
+  "all_original_strict_empty_stderr_and_all_tests_passing_gates_passed": true,
+  "original_receipts_rehashed": 39,
+  "selected_native_runtime_qualification": true,
+  "product_qualification": false,
+  "application_qualified": false,
+  "source_mutation_hold_released": false,
+  "scope": "Accepted exact fresh four-group runtime at current e9 head, all61 raw protocol results zero, all original strict gates and complete current inventories/process closure passed. This is bounded selected-native qualification; new3 retry and existing63 remain separate pending cohorts."
+}

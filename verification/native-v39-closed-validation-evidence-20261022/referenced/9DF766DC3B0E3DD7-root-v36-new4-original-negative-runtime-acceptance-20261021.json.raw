@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "root_accepted_original_v36_new4_strict_runtime_negative_closure",
+  "reviewer": "root",
+  "reviewed_utc": "2026-10-21T08:46:31.750151+00:00",
+  "candidate_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "batch": "new4",
+  "independent_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-closure.json",
+    "bytes": 26137,
+    "sha256": "8BCCF2D351EEDC42D65C56E8605D2DD10ACFF153231552AD90F496E4668CF9AF"
+  },
+  "independent_negative_auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\Audit-NegativeV36New4StrictRuntime.py",
+    "bytes": 47948,
+    "sha256": "5B32C5507CE78E1DB6BF0CB2AC1FE1ED8A48232E76AA6EFF3378034CF76F0DE0"
+  },
+  "audit_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-audit-inputs.json",
+    "bytes": 14813,
+    "sha256": "62D821EB4E6F0AD4D4F9C3278A137D355533651B5C3542BA885FADE9936AEDE4"
+  },
+  "root_audit_release": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\root-negative-runtime-audit-release.json",
+    "bytes": 7208,
+    "sha256": "45ECC6A0A303288F02FAA9D9AF7A164C2C175376A5E10D3EE3D4C5C1DB680D89"
+  },
+  "audit_job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-audit-job-observation.json",
+    "bytes": 1281,
+    "sha256": "7FB854823E9A919B4804A002E6FC0D8279AA3EE55407A6B110F56C823A4C9AD8"
+  },
+  "complete_buildquery_accepted": true,
+  "actual_metadata_count": 61,
+  "granted_groups": 4,
+  "attempted_groups": 1,
+  "unstarted_groups": 3,
+  "runtime_started": 19,
+  "runtime_completed": 19,
+  "runtime_failed": 18,
+  "runtime_passed": 1,
+  "runtime_unstarted": 42,
+  "whole_bookends_unchanged": true,
+  "all_34171_current_sealed_files_and_complete_inventories_verified": true,
+  "all_four_original_process_instances_and_children_closed": true,
+  "original_nonempty_stderr_and_failure_flags_preserved": true,
+  "negative_closure_accepted": true,
+  "source_intake_requires_separate_exact_root_release": true,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "runtime_qualification": false,
+  "product_qualification": false
+}

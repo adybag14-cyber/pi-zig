@@ -1,0 +1,33 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-buildquery-20261022-165637\\cache\\o\\893b464d9587b213b4c76bbedad64cd2\\test.exe",
+  "binary_sha256": "3033FE9B7D386EE55351506BE33E357FC891B44A9FA9BE6612CD210B56459BB3",
+  "version": "0.16.0",
+  "expected": 4,
+  "started": 4,
+  "completed": 4,
+  "results": [
+    {
+      "index": 0,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 1,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 2,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 3,
+      "flags": 0,
+      "passed": true
+    }
+  ],
+  "failed_or_skipped_or_logged_or_leaked": 0,
+  "owner_receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-20261022-172246\\groups\\native-node-fs-before-hook-continuation\\runtime.json",
+  "status": "passed"
+}

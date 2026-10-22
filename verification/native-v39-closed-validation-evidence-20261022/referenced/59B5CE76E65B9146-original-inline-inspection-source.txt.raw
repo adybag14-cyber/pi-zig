@@ -1,0 +1,162 @@
+from pathlib import Path
+import copy,datetime,hashlib,json,re,sys
+B=Path(r"C:\Users\adyba\pi-zig");E=B/"evidence"
+C=E/"root-native-foundation-fresh-v39-new3-control-20261022-173038";P=E/"root-native-foundation-fresh-v39-new3-buildquery-20261022-173038"
+G=P/"groups"/"native-node-stream-shutdown";D=E/"combined-native-batch-v39-new3-retry1-prepared-20261022"
+pins=json.loads(sys.argv[1]);known={};data={}
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def req(v,m):
+ if not v:raise AssertionError(m)
+def read(p,q=None):
+ p=Path(p);req(p.is_relative_to(E),"Evidence-only read "+str(p))
+ if str(p) not in data:data[str(p)]=p.read_bytes()
+ b=data[str(p)];a=dict(path=str(p),bytes=len(b),sha256=sha(b))
+ if q is not None:req(a==q,"Exact pin "+str(p))
+ known[str(p)]=a
+ return b
+def js(p,q=None):return json.loads(read(p,q))
+for q in pins:read(q["path"],q)
+r=js(P/"result.json");grant=js(C/"root-grant.json");owner=js(G/"compile.json");absence=js(G/"compile-absence.json");admission=js(G/"compile-admission.json")
+outer=js(C/"outer.json");oa=js(C/"outer-absence.json");j=js(C/"independent-observed-job-status.json");job=j["data"]
+root=js(C/"root-compile-negative-closure.json");group=js(G/"result.json");provisional=js(G/"result-provisional.json")
+commands=js(G/"commands.json");artifacts=js(G/"compile-after-artifacts.json")
+cfg=js(grant["specific_root_configuration"]["path"],grant["specific_root_configuration"])
+review=js(D/"preparation-review.json",grant["preparation_review"]);matrix=js(D/"groups.json")
+driver=read(D/"Run-CombinedNativeBatch.ps1");classifier=read(D/"Get-ModelsNativeCandidates.ps1")
+def ticks(v):
+ m=re.fullmatch(r"(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,7}))?(Z|[+-]\d{2}:\d{2})",v)
+ req(m is not None,"Exact timestamp "+v)
+ y,mo,d,h,mi,se=map(int,m.groups()[:6]);frac=m[7]or"";zone=m[8]
+ delta=datetime.datetime(y,mo,d,h,mi,se)-datetime.datetime(1601,1,1)
+ result=(delta.days*86400+delta.seconds)*10000000+int(frac.ljust(7,"0") or "0")
+ if zone!="Z":result-=(1 if zone[0]=="+" else -1)*(int(zone[1:3])*60+int(zone[4:6]))*60*10000000
+ return result
+offset_spellings=[]
+def exact(a,b,path=""):
+ req(type(a)==type(b),"Same type "+path)
+ if isinstance(a,dict):
+  req(set(a)==set(b),"Exact keys "+path)
+  for k in a:exact(a[k],b[k],path+"/"+k)
+ elif isinstance(a,list):
+  req(len(a)==len(b),"Same list size "+path)
+  for i,(x,y) in enumerate(zip(a,b)):exact(x,y,path+"/"+str(i))
+ elif path.rsplit("/",1)[-1] in ("created_utc","completed_utc") and isinstance(a,str):
+  req(ticks(a)==ticks(b),"Exact UTC100ns "+path)
+  if a!=b:offset_spellings.append(dict(path=path,first=a,second=b,utc_filetime_100ns=str(ticks(a))))
+ else:req(a==b,"Exact original field "+path)
+head="e9f11afa56a923372d957e2fb227f453822c21bf"
+names=["native-node-stream-shutdown","native-node-one-byte-string","native-vm-array-buffer-view-data"]
+req(grant["candidate_head"]==r["candidate_head"]==cfg["candidate_head"]==review["candidate_head"]==head,"Exact head")
+req(grant["groups"]==cfg["selected_group_names"]==review["selected_group_names"]==names,"Complete ordered cohort")
+req(cfg["declared_groups"]==review["selected_groups"]==3 and cfg["declared_controls"]==review["selected_declarations"]==38,"Declared counts from actual config")
+req(cfg["actual_metadata_count"] is None and review["actual_metadata_count"] is None and grant["actual_metadata_count"] is None,"No inferred metadata")
+req(grant["mode"]==r["mode"]==commands["mode"]=="BuildQuery","BuildQuery only")
+req(grant["receipt_directory"]==str(P) and grant["candidate_root"]==str(B/"main"),"Exact grant directories")
+req(grant["initial_grant_max_age_seconds"]==300 and grant["minimum_free_kib"]==16777216,"Unchanged admission gates")
+req(grant["compile_outer_seconds"]==owner["timeout_seconds"]==1320 and grant["outer_controller_seconds"]==outer["timeout_seconds"]==1800,"Original deadlines")
+req(grant.get("diagnostic_continue",False) is False,"Strict original")
+req(sha(driver)==grant["driver_sha256"]==r["driver_sha256"]=="1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601","Strict driver")
+req(sha(classifier)==grant["classifier_sha256"]=="3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301","Classifier")
+req(sha(read(D/"groups.json"))==grant["group_manifest_sha256"]==r["group_manifest_sha256"]=="5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB","Exact catalog")
+req(len(matrix["groups"])==120 and sum(len(x["required_named"])for x in matrix["groups"])==2051,"Whole catalog retained")
+byname={x["name"]:x for x in matrix["groups"]}
+req([len(byname[n]["required_named"])for n in names]==[18,8,12],"Complete source declaration accounting")
+req(r["status"]=="failed" and r["postseal"] is True and r["all_groups_closed"] is False,"Original failed whole batch")
+req(r["runtime_requested"] is False and r["product_qualified"] is False and r["cache_seeded"] is False,"Negative runtime/qualification preserved")
+req(r["controller_environment_restored"] is True and r["initial_cache_absence"] is True and r["fresh_cache_reproduction"] is True,"Original environment/fresh-cache flags")
+req(len(r["groups"])==1 and list(group["phases"])==["compile"] and group["status"]=="failed","Exactly one attempted compile")
+exact(group,r["groups"][0],"aggregate-group")
+p2=copy.deepcopy(provisional);req(p2["postseal"] is False and p2["phases"]["compile"]["postchecks"]["source_sealed"] is False,"Original provisional unsealed")
+p2["postseal"]=True;p2["phases"]["compile"]["postchecks"]["source_sealed"]=True
+exact(p2,group,"only-postseal-promotion")
+req(group["attempted_phases"]==group["owned_started_phases"]==["compile"],"Only compile phase owned")
+for k in ("runtime_requested","runtime_owner_launch_attempted","actual_runtime_owner_started"):req(group[k] is False,"No runtime "+k)
+req(group["native_selected_tests_started"] is None,"Preserve raw unqueried test count")
+req(group["cached_executable"] is None and commands["expected_count"] is None and commands["expected_names"]==[],"No metadata or cached artifact transfer")
+req(commands["named_controls"]==18 and commands["compile"]==owner["arguments"],"Exact admitted command")
+req(artifacts==dict(installed=[],cached_executables=[],pe=None,errors=[]),"No bound artifacts")
+cp=group["phases"]["compile"];failure="Owned terminal failed: "+owner["executable"]
+req(cp["failure"]==cp["original_execution_failure"]==owner["error"]==failure and r["errors"]==[failure],"Original compiler failure retained")
+req(cp["owner_binding"]["status"]=="invalid" and cp["owner_binding"]["errors"]==["Exact actual terminal0 owner/deadline required on positive and negative protocol paths"],"Invalid positive owner gate retained")
+req(cp["owner_binding"]["expected_executable"]==owner["executable"] and cp["owner_binding"]["expected_sha256"]==owner["executable_sha256"] and cp["owner_binding"]["expected_deadline"]==1320,"Actual failure identity still matches expected compiler")
+post=cp["postchecks"]
+req(post["evidence_valid"] is True and post["owner_bound"] is False and post["source_sealed"] is True and post["artifacts_bound"] is False and post["absence_closed"] is True,"Original negative postchecks")
+req(absence["phase"]=="compile" and absence["status"]=="closed" and absence["global_native"]==[],"Original compile absence closed")
+ev=absence["evidence"];exact(ev,cp["evidence"],"compile-evidence")
+exact(owner,ev["owner"],"direct-compile-owner")
+req(ev["valid"] is True and ev["evidence_errors"]==[] and ev["canonical_results"] is None,"Original evidence valid but no positive result")
+req(ev["current_owner_pid_present"]==0 and ev["current_owned_descendants"]==[] and ev["preexisting_pid_ancestry"]==[] and ev["absence_error"] is None,"Original instance absence")
+for q in ev["raw_outputs"]:read(q["path"],q)
+req(r["absence"]["native_roots"]==[] and len(r["absence"]["owners"])==1,"Original aggregate absence")
+req(r["absence"]["owners"][0]["group"]==names[0] and r["absence"]["owners"][0]["phase"]=="compile","Absence cohort")
+exact(ev,r["absence"]["owners"][0]["evidence"],"aggregate-absence")
+for o,pid,deadline in [(owner,11360,1320),(outer,47296,1800)]:
+ req(o["pid"]==pid and type(o["retained_handle"]) is int and o["retained_handle"]>0 and o["status"]=="failed" and o["exit_code"]==1,"Retained failed owner")
+ live=o["live_identity"]
+ req(live["pid"]==pid and live["executable"]==o["executable"] and ticks(live["created_utc"])==ticks(o["created_utc"]),"Exact live original instance")
+ req(live["command_line_method"]=="Win32_Process.CommandLine" and live["command_line"]=='"'+o["executable"]+'" '+" ".join(o["arguments"]),"Exact original live command")
+ req(0<ticks(o["completed_utc"])-ticks(o["created_utc"])<=deadline*10000000,"Failed owner within deadline")
+req(owner["working_directory"]==grant["candidate_root"],"Compiler recorded working directory")
+req(outer["arguments"]==["-NoLogo","-NoProfile","-NonInteractive","-File",str(D/"Run-CombinedNativeBatch.ps1"),"-RootGrant",str(C/"root-grant.json"),"-Mode","BuildQuery"],"Exact original outer command")
+req(outer["working_directory"]==str(B),"Outer working directory")
+req(oa["pid"]==outer["pid"] and ticks(oa["created_utc"])==ticks(outer["created_utc"]) and oa["currently_absent"] is True and oa["current_records"]==[],"Original outer instance absence")
+req(ticks(outer["completed_utc"])<=ticks(oa["observed_utc"]),"Outer absence after terminal")
+req(admission["status"]=="admitted" and admission["phase"]=="compile" and admission["probes"]==r["admission_probes"]==[admission["probe"]],"Exact admitted probe")
+probe=admission["probe"]
+req(probe["free_kib"]>=probe["minimum_kib"]==16777216 and probe["native_roots"]==0 and probe["native"]==[],"Original resource admission")
+age=ticks(owner["created_utc"])-ticks(grant["issued_utc"])
+req(0<=ticks(probe["utc"])-ticks(grant["issued_utc"])<=age<=300*10000000,"Fresh admitted first native child")
+req(ticks(probe["utc"])<=ticks(owner["created_utc"]),"Probe precedes creation")
+req(job["id"]=="job-op-ab5cf62d537e5d870b46fd198b4434362ba192bb002fd37636bf975dcfcd3eef" and job["status"]=="failed" and job["exitCode"]==1 and job["runnerAlive"] is False,"Original terminal job")
+req(job["runnerPid"]==9256 and job["childPid"]==42968 and type(job["runnerProcessInstance"]) is str and job["runnerProcessInstance"]=="134371638446031140","Exact string runner instance")
+rt=int(job["runnerProcessInstance"])
+req(ticks(job["createdAtUtc"])<=rt<=ticks(job["startedAtUtc"])<=ticks(outer["created_utc"])<=ticks(owner["created_utc"])<ticks(owner["completed_utc"])<=ticks(r["completed_utc"])<=ticks(outer["completed_utc"])<=ticks(oa["observed_utc"])<=ticks(job["completedAtUtc"]),"Full original event ordering")
+req(job["logs"]["truncated"] is False and all(job["logs"][s]["truncated"] is False and job["logs"][s]["failed"] is False for s in ("stdout","stderr")),"Original job logs not truncated")
+req(read(C/"outer.stdout.bin")==read(P/"result.json") and read(G/"compile.stdout.bin")==b"","Exact original stdout")
+err=read(G/"compile.stderr.log").decode();diagnostics=[line for line in err.splitlines() if re.match(r"^src\\.*:\d+:\d+: error:",line)]
+req(diagnostics==[r"src\native_node_stream_shutdown_test.zig:110:48: error: root source file struct 'cimport' has no member named 'UV_EBADF'",r"src\native_node_stream_shutdown_test_support.zig:144:15: error: unable to resolve comptime value"],"Exactly two original fixture compile diagnostics")
+req("tuple field index must be comptime-known" in err and "Build Summary: 163/166 steps succeeded (1 failed)" in err,"Original compile error context")
+req(b"Native batch terminal negative; no group may enter runtime from this partial batch" in read(C/"outer.stderr.log"),"Outer negative propagation")
+req(b"Exact actual terminal0 owner/deadline required on positive and negative protocol paths" in driver and b"Native batch terminal negative; no group may enter runtime from this partial batch" in driver,"Unchanged strict driver preserves negative")
+before=read(P/"before.json");final=read(P/"final.json");req(before==final,"Complete raw bookend inverse");seal=json.loads(before)
+req(seal["candidate_head"]==head and seal["clean"] is True and seal["errors"]==[],"Original complete seal recorded clean")
+counts={k:len(seal[k])for k in ("source","tree","vendor","compiler","controls")}
+req(counts==dict(source=17346,tree=17359,vendor=1489,compiler=19546,controls=14),"Complete recorded inventory counts")
+union={}
+for kind in counts:
+ rows=seal[kind];seen=set()
+ for row in rows:
+  req(set(row)=={"relative","path","sha256"} and re.fullmatch("[0-9A-F]{64}",row["sha256"]),"Exact recorded seal row")
+  key=row["path"].replace("/","\\").casefold();req(key not in seen,"No duplicate category path");seen.add(key)
+  if key in union:req(union[key]["path"]==row["path"] and union[key]["sha256"]==row["sha256"],"Shared seal path/hash exact")
+  else:union[key]=row
+req(len(union)==36915,"Recorded distinct seal paths")
+for o in (owner,outer):req(union[o["executable"].casefold()]["sha256"]==o["executable_sha256"],"Original executable bound by recorded seal")
+for pth in (C/"root-grant.json",D/"groups.json",D/"Run-CombinedNativeBatch.ps1",D/"Get-ModelsNativeCandidates.ps1"):
+ req(union[str(pth).casefold()]["sha256"]==sha(read(pth)),"Current immutable control equals original seal")
+req([p.name for p in sorted((P/"groups").iterdir())]==[names[0]],"Two later group directories absent")
+expected_files={"commands.json","compile-absence.json","compile-admission.json","compile-after-artifacts.json","compile.json","compile.stderr.log","compile.stdout.bin","result-provisional.json","result.json"}
+req({p.relative_to(G).as_posix()for p in G.rglob("*")if p.is_file()}==expected_files,"Exact nine attempted group files; no metadata/runtime/artifact files")
+req({p.name for p in P.iterdir()if p.is_file()}=={"before.json","final.json","result.json"},"Original top-level proof membership")
+adapt=js(C/"grant-launch-adaptation.json");oldraw=read(adapt["original_grant"]["path"],adapt["original_grant"]);old=json.loads(oldraw)
+req(adapt["grant"]==known[str(C/"root-grant.json")] and adapt["launch"]==known[str(C/"launch.ps1")],"Original emitted grant/launch pins")
+inverse=copy.deepcopy(grant);seen=set()
+for row in adapt["field_changes"]:
+ k=row["key"];req(k not in seen and grant[k]==row["after"] and row["old_present"]==(k in old) and old.get(k)==row["before"],"Exact original grant field")
+ seen.add(k)
+ if row["old_present"]:inverse[k]=row["before"]
+ else:del inverse[k]
+req((json.dumps(inverse,indent=2)+"\n").encode()==oldraw,"Original grant complete raw inverse")
+oldlaunch=read(adapt["original_launch"]["path"],adapt["original_launch"]);newlaunch=read(C/"launch.ps1")
+a=adapt["before"].encode();b=adapt["after"].encode()
+req(oldlaunch.count(a)==1 and newlaunch==oldlaunch.replace(a,b,1) and newlaunch.replace(b,a,1)==oldlaunch,"Original launcher complete raw inverse")
+req(adapt["complete_grant_inverse"] is True and adapt["complete_launch_byte_inverse"] is True and adapt["all_strict_gate_fields_unchanged"] is True and adapt["runtime_authority"] is False and adapt["qualification"] is False,"Original adaptation gates")
+req(root["original_job"]==job and root["job_observation"]==known[str(C/"independent-observed-job-status.json")],"Root closure original job")
+for q in root["input_pins"]:read(q["path"],q)
+req(root["selected_groups"]==names and root["unstarted_groups"]==names[1:] and root["attempted_groups"]==root["compile_owners"]==1 and root["declared_controls"]==38,"Root closure cohort agreement")
+req(root["metadata_owners"]==root["runtime_owners"]==root["selected_tests_started"]==0 and root["actual_metadata_count"] is None,"Root closure count distinction")
+req(root["seal_counts"]==counts and root["current_distinct_files_rehashed"]==len(union) and root["first_child_grant_age_100ns"]==str(age),"Root independently-current closure agreement")
+req(root["runner_unix_100ns"]==str(rt-116444736000000000),"Exact FILETIME to Unix conversion")
+for key in ("runtime_execution_authorized","native_execution_authorized","source_mutation_hold_released","qualification"):req(root[key] is False,"Root closure no authority "+key)
+result=dict(schema=1,status="independent_original_compile_negative_evidence_review_passed",reviewed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),candidate_head=head,input_pins=list(known.values()),whole_bookends_raw_equal=True,recorded_seal_counts=counts,recorded_distinct_seal_paths=len(union),granted_groups=names,declared_controls=38,attempted_groups=[names[0]],unstarted_groups=names[1:],compile_owners=1,metadata_owners=0,runtime_owners=0,observed_metadata_records=0,accepted_actual_metadata_total=None,selected_tests_started_derived_from_no_runtime=0,raw_selected_tests_started_preserved=None,compile_exit_code=1,outer_exit_code=1,job_exit_code=1,original_positive_owner_binding_invalid_preserved=True,original_source_sealed_true_but_artifacts_unbound=True,all_groups_closed_false_preserved=True,diagnostics=diagnostics,exact_timestamp_spelling_comparisons=offset_spellings,first_child_grant_age_100ns=str(age),compiler_duration_100ns=str(ticks(owner["completed_utc"])-ticks(owner["created_utc"])),outer_duration_100ns=str(ticks(outer["completed_utc"])-ticks(outer["created_utc"])),runner_process_instance=job["runnerProcessInstance"],runner_unix_100ns=str(rt-116444736000000000),compiler_and_outer_original_live_identity_exact=True,original_native_and_outer_absence_receipts_closed=True,original_job_terminal_runner_not_alive=True,outer_stdout_exact_result=True,attempted_group_original_files=sorted(expected_files),grant_raw_inverse_changed_fields=len(seen),launcher_single_path_change_raw_inverse=True,root_independent_current_closure=known[str(C/"root-compile-negative-closure.json")],current_Main_or_sealed_members_rehashed_by_this_peer=False,current_process_query_by_this_peer=False,metadata_or_runtime_accepted=False,native_executed=False,source_mutation_hold_released=False,qualification=False)
+print(json.dumps(result,separators=(",",":")))

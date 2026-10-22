@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v39_new4_positive_runtime_audit_resource_release",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-22T17:27:27.968023+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39StrictRuntime-20261022.py",
+    "bytes": 43940,
+    "sha256": "73C0D2B7209504A4EE0AA419EC936EED84F02753372B87C3F03651FBDE9D3484"
+  },
+  "configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\independent-positive-runtime-audit-inputs.json",
+    "bytes": 6497,
+    "sha256": "63027F8C3FC0B998D45F15B68FCDE30EBC2105BD0F8E689D8059DCBC31962DC7"
+  },
+  "original_job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\independent-observed-job-status.json",
+    "bytes": 1572,
+    "sha256": "E050D89C3313F9FAC424B2FBD4E65799DC7AECC077741BA3781FCE3738A22C59"
+  },
+  "output": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\independent-positive-runtime-closure.json",
+  "source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-execution-bound-source-review-20261022.json",
+    "bytes": 16559,
+    "sha256": "5056C7EB01BC3DBC3931030A7753423CE2AAD1EDC9A71A00A192D0DA7076450A"
+  },
+  "runtime_input_contract_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-runtime-input-contract-source-acceptance-20261022.json",
+    "bytes": 14547,
+    "sha256": "213D16C0C4F193A7CDE69112F8F6D5610CD0AC318AE9C7FC1FF0CB448B6C50DB"
+  },
+  "runtime_launch_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-runtime-launch-source-acceptance-20261022.json",
+    "bytes": 3152,
+    "sha256": "935C59A637E593A0ADD3A0C48F4D69CDD5B4C7AA21E866B2C03AFC593D1EEEC1"
+  },
+  "Root_complete_canonical_source_and_all40_actual_fields_reviewed": true,
+  "actual_started": 61,
+  "actual_completed": 61,
+  "actual_failed_indices": 0,
+  "original_wire_decoded_and_canonical_results_matched": true,
+  "resource": {
+    "observed_utc": "2026-10-22T17:27:18.6852833+00:00",
+    "free_physical_kib": 29260360,
+    "required_kib": 16777216,
+    "eligible": true,
+    "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+    "process_rows": 427,
+    "native_candidates": []
+  },
+  "audit_execution_authorized": true,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "product_qualification": false
+}

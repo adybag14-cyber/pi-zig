@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "source_only_exact_v38_partial_negative_progress_archive_prepared",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "prepared_utc": "2026-10-22T14:43:47.815152+00:00",
+  "preparer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\candidate\\Prepare-V38PartialNegativeProgressAndValidationArchive-20261022.py",
+    "bytes": 76267,
+    "sha256": "EE11C073C1D1CAD599D7F88B34B78133A5E3A90F68D1E1094D6AF77D7C5128AB"
+  },
+  "root_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-issued-v38-partial-negative-archive-preparation-20261022\\configuration.json",
+    "bytes": 290023,
+    "sha256": "6A7F24A02AB315126A1E84BECCE6130F50091F65261D00E5196946C15734FBF8"
+  },
+  "source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-progress-archive-preparer-source-acceptance-20261022.json",
+    "bytes": 17708,
+    "sha256": "07950C4FFB6DE67AC8A1739BA585F8646387E66B26AE2B5005B9E6393CC48AD6"
+  },
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\manifest.json",
+    "bytes": 1226916,
+    "sha256": "6D6A2436B3D741070997901B0630F04F0306C85F21D9D347D52CE91A0A3EB85D"
+  },
+  "commit_paths": 1930,
+  "projected_progress": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\projected\\verification\\port-roadmap-resume-20261018\\progress.json",
+    "bytes": 678718,
+    "sha256": "4FF79AE87F671BB8F16283E38D282CB58444A1A0FA42659B0F3CED505EE04343"
+  },
+  "known_original_inputs": 314,
+  "observed_original_inputs": 1919,
+  "all181_historical_prefixes_preserved": true,
+  "complete554689_byte_progress_inverse": true,
+  "new4_actual_metadata": 61,
+  "existing63_actual_metadata": 1285,
+  "original63_buildquery_accepted": true,
+  "original63_partial_runtime_negative_closed": true,
+  "original63_prelaunch_zero_native_negative_preserved": true,
+  "all_original_evidence_raw_bytes_preserved": true,
+  "compressed_bookend_pairs": 4,
+  "represented_original_bookends": 10,
+  "gzip_full_roundtrips_and_second_encodings_verified": true,
+  "frozen_tree_git_attributes_sha256": "5BE770834DDD8464C97C6B6074A162113342EDA657D78B85C39DDE39F23A409F",
+  "Main_and_index_not_accessed": true,
+  "native_execution_authorized": false,
+  "main_intake_authorized": false,
+  "source_mutation_hold_released": false,
+  "application_qualified": false,
+  "production_bridge_removed": false,
+  "published_release": false
+}

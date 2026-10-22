@@ -1,0 +1,27 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\5ed5a84d77ac37f23fe202ca040dc537\\test.exe",
+  "binary_sha256": "E4AC7102F060A4B610202A73C7CBCD0A09F17D43E00388A9979E8AC3F18D09BC",
+  "version": "0.16.0",
+  "actual_count": 15,
+  "tests": [
+    "native_node_environment_paths_test.test.native environment paths captures the actual executable independently of caller argv bytes",
+    "native_node_environment_paths_test.test.native environment paths reads the actual native working directory",
+    "native_node_environment_paths_test.test.native environment paths normalizes absolute dot and parent segments without trace",
+    "native_node_environment_paths_test.test.native environment paths selects the rightmost absolute tail and original drive",
+    "native_node_environment_paths_test.test.native environment paths retains real UNC device roots or POSIX backslash bytes",
+    "native_node_environment_paths_test.test.native environment paths selects live supplied drive variables only on Windows",
+    "native_node_environment_paths_test.test.native environment paths SafeGetenv distinguishes an absent value from an empty string",
+    "native_node_environment_paths_test.test.native environment paths SafeGetenv preserves the actual C string key selection",
+    "native_node_environment_paths_test.test.native environment paths copies the live Map value before native trace reentry",
+    "native_node_environment_paths_test.test.native environment paths snapshots trace options before native and JS delegation",
+    "native_node_environment_paths_test.test.native environment paths retains both SafeGetenv string copies through trace only",
+    "native_node_environment_paths_test.test.native environment paths retries a real native allocation with the original new handler",
+    "native_node_environment_paths_test.test.native environment paths preserves actual pending identity under the exhausted JS heap",
+    "native_node_environment_paths_test.test.native environment paths owns its native strings after runtime and caller retirement",
+    "native_node_environment_paths_test.test.native environment paths retains Map through trace and returns a surviving text copy"
+  ],
+  "group": "native-node-environment-paths",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

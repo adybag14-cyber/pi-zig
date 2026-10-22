@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "status": "Root_reviewed_finite_existing63_buildquery_launch_reviewer_source",
+  "reviewer": "Root",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-launch-review-historical-before-correction-20261022.py",
+    "bytes": 4118,
+    "sha256": "60CB53473AD391B6A3D00427EBD7B2593EDC2DB099B624FE2E841EC4BC6313E5"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V39Existing63BuildQueryLaunch-20261022.py",
+    "bytes": 4475,
+    "sha256": "D8E4F709772E837DFD76FB9471682D9D58A0D8BC46C2D9F7E3501301F2E01802"
+  },
+  "field_changes": [
+    {
+      "index": 0,
+      "offset": 1410,
+      "before": "'evidence/combined-native-batch-v39-new4-prepared-20261022'",
+      "after": "'evidence/combined-native-batch-v39-regression63-prepared-20261022'",
+      "before_bytes": 4118,
+      "before_sha256": "60CB53473AD391B6A3D00427EBD7B2593EDC2DB099B624FE2E841EC4BC6313E5",
+      "after_bytes": 4126,
+      "after_sha256": "D856C899692343431CB565FA7276822B0122E68505E088903274D9BC11CEEBDB",
+      "unchanged_prefix_sha256": "01ED4FEB5B142EC77BC76E21C35E5E267565D74EB4A0BFF0CE4C7E80BC3AC906",
+      "unchanged_suffix_sha256": "0B8CA3471E227457BC3B8550A5E2EC51D23F72D0911FC9016B41E4AABA79D73D"
+    },
+    {
+      "index": 1,
+      "offset": 1705,
+      "before": "assert record['specific_root_configuration']['sha256']=='BFEA1905E686476E6C9A97D6F326D0654E5D2FA0397B8FC34CC7BFC6F5A1E42E'",
+      "after": "assert record['specific_root_configuration']['sha256']==sys.argv[2]",
+      "before_bytes": 4126,
+      "before_sha256": "D856C899692343431CB565FA7276822B0122E68505E088903274D9BC11CEEBDB",
+      "after_bytes": 4071,
+      "after_sha256": "679D5FB9269F521B21AB8623A2EFA50DC60756DA72F51CB5F41720006AAB8A52",
+      "unchanged_prefix_sha256": "721E611B713E2F744FAFAB8E4EF0D82664E14EAF3CC490275B6EEDB77F653737",
+      "unchanged_suffix_sha256": "EE06A53ED5C0F47C6A7B1C786BCD6CB1D67416EB1CF9C9BAA72E9528A9378B17"
+    },
+    {
+      "index": 2,
+      "offset": 1773,
+      "before": "assert cfg['batch']=='new4' and cfg['declared_groups']==4 and cfg['declared_controls']==58 and cfg['actual_metadata_count'] is None",
+      "after": "assert cfg['batch']=='existing63' and cfg['declared_groups']==63 and cfg['declared_controls']==1249 and cfg['actual_metadata_count'] is None",
+      "before_bytes": 4071,
+      "before_sha256": "679D5FB9269F521B21AB8623A2EFA50DC60756DA72F51CB5F41720006AAB8A52",
+      "after_bytes": 4080,
+      "after_sha256": "345FD177B41667162C35E57F31888A57D634D19F3C02C08797892D261F65DAC2",
+      "unchanged_prefix_sha256": "573D9A299A3FE82A2BA6190CBF0542D33634BB5C5B55501604253C35BDDA868B",
+      "unchanged_suffix_sha256": "739A2D866FCBF8764165442144CE70F06B1A5845EE4C10585A880248D840CF9C"
+    },
+    {
+      "index": 3,
+      "offset": 1914,
+      "before": "assert new['groups']==record['groups']==cfg['selected_group_names']",
+      "after": "assert cfg['root_catalog_acceptance']['sha256']=='CB6A78ACEFAA83A6DE31AB917B6460465BF012C99B38CE87425B6893CCB7AB2C'\nassert cfg['grant_provenance_updates']['v39_execution_bound_source_review']['sha256']=='5056C7EB01BC3DBC3931030A7753423CE2AAD1EDC9A71A00A192D0DA7076450A'\nassert cfg['preparation_review']['sha256']=='58E217CF7E2445167523089006FBA042FAF1AAA7C766036A69CE304413042904'\nassert new['groups']==record['groups']==cfg['selected_group_names']",
+      "before_bytes": 4080,
+      "before_sha256": "345FD177B41667162C35E57F31888A57D634D19F3C02C08797892D261F65DAC2",
+      "after_bytes": 4461,
+      "after_sha256": "28D05C2D7663B036949F3E7819E0A191FFC8E6042600A55F593C125FA76BBF4A",
+      "unchanged_prefix_sha256": "582F66DD1AC63302E923F96CBC71A65F912D2E661613F62BD54E03042125DF5E",
+      "unchanged_suffix_sha256": "233245CA9679FA133FB14E7917640CD207320DCF8554E47CF9390D66BBFD11B8"
+    },
+    {
+      "index": 4,
+      "offset": 3394,
+      "before": "'root-v39-new4-buildquery-launch-source-acceptance-20261022.json'",
+      "after": "'root-v39-existing63-buildquery-launch-source-acceptance-20261022.json'",
+      "before_bytes": 4461,
+      "before_sha256": "28D05C2D7663B036949F3E7819E0A191FFC8E6042600A55F593C125FA76BBF4A",
+      "after_bytes": 4467,
+      "after_sha256": "BE2D24BFE1920DD62981FA2CF32229E464F488596724CCB95A80041011FA1074",
+      "unchanged_prefix_sha256": "EDA77048F02E6024AE3266523861495643443CF3057380DB68619FA556FBCFFD",
+      "unchanged_suffix_sha256": "9B353CE795A9397069A30C4BA977D1DC009C93EBB8B71654087BFC4FB6B139FE"
+    },
+    {
+      "index": 5,
+      "offset": 3778,
+      "before": "'combined-native-batch-v39-new4-prepared-20261022/buildquery-launch.json'",
+      "after": "'combined-native-batch-v39-regression63-prepared-20261022/buildquery-launch.json'",
+      "before_bytes": 4467,
+      "before_sha256": "BE2D24BFE1920DD62981FA2CF32229E464F488596724CCB95A80041011FA1074",
+      "after_bytes": 4475,
+      "after_sha256": "D8E4F709772E837DFD76FB9471682D9D58A0D8BC46C2D9F7E3501301F2E01802",
+      "unchanged_prefix_sha256": "7674E963ED907EBBEC3285F8CA52DE8A1C880AD877108465AAEE06BAF9D652A4",
+      "unchanged_suffix_sha256": "14E73D63D6C5143390F86216FEF7D5B00114F31CA031A7DD0C6D54058093F6A0"
+    }
+  ],
+  "complete_raw_forward_and_inverse": true,
+  "only_six_scoped_changes": true,
+  "configuration_hash_supplied_as_exact_second_argument_from_Root_issued_configuration": true,
+  "Root_complete_baseline_and_all_changed_source_read": true,
+  "source_accepted": true,
+  "execution_authorized": false,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

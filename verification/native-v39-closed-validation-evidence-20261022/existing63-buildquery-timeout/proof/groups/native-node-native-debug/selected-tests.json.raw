@@ -1,0 +1,32 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\ec785da1c8a84be1c3295a12beb45c4b\\test.exe",
+  "binary_sha256": "B798A903687114AD94770C5793E11F482063DF891AEE469AC784298131D7E18D",
+  "version": "0.16.0",
+  "actual_count": 20,
+  "tests": [
+    "native_node_native_debug_test.test.native Debug constructs complete original category tables with every field disabled",
+    "native_node_native_debug_test.test.native Debug empty and unmatched input leave original enabled fields false",
+    "native_node_native_debug_test.test.native Debug uses original case-insensitive substring matching",
+    "native_node_native_debug_test.test.native Debug leading and internal empty tokens enable every category",
+    "native_node_native_debug_test.test.native Debug a trailing comma does not invent a final empty token",
+    "native_node_native_debug_test.test.native Debug includes the original literal terminal NUL in category matching",
+    "native_node_native_debug_test.test.native Debug parsing is one-way and separate native lists remain independent",
+    "native_node_native_debug_test.test.native Debug process selection returns one fixed-feature original list",
+    "native_node_native_debug_test.test.native Debug Parse Environment reads the live supplied Map through real SafeGetenv",
+    "native_node_native_debug_test.test.native Debug retains the SafeGetenv text before the actual trace callback mutates Map",
+    "native_node_native_debug_test.test.native Debug selected sized-string formatter preserves binary bytes and retires its native copies",
+    "native_node_native_debug_test.test.native Debug selected tree formatter observes C-string boundaries and UTF8 branch bytes",
+    "native_node_native_debug_test.test.native Debug actual FWrite file route preserves exact binary content",
+    "native_node_native_debug_test.test.native Debug Permission output callbacks use the original selected format and real stderr route",
+    "native_node_native_debug_test.test.native Debug actual Permission insertion reads the live enabled list before printing",
+    "native_node_native_debug_test.test.native Debug formatter and parser use real native new-handler retry without JS allocation",
+    "native_node_native_debug_test.test.native Debug native formatting preserves actual ordinary and generic pending under heap limit one",
+    "native_node_native_debug_test.test.native Debug native operations leave actual private termination pending and generation unchanged",
+    "native_node_native_debug_test.test.native Debug formatting retains a native allocation domain beyond VM and caller retirement",
+    "native_node_native_debug_test.test.native Debug warmed static category Strings are reused while temporary parse Strings retire"
+  ],
+  "group": "native-node-native-debug",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

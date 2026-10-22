@@ -1,0 +1,261 @@
+"""Root-only evidence preparation clone for the closed V39 new3 admission retry.
+This source is unexecuted until an exact Root configuration is separately issued.
+It never reads Main, starts native work, issues a build grant, or edits old evidence.
+"""
+from pathlib import Path
+import ast,copy,hashlib,json,re,sys
+B=Path(r"C:\Users\adyba\pi-zig");E=B/"evidence"
+OLD=E/"combined-native-batch-v39-new3-prepared-20261022"
+NEW=E/"combined-native-batch-v39-new3-retry1-prepared-20261022"
+PROOF=E/"root-v39-new3-retry1-preparation-clone-proof-20261022.json"
+HEAD="e9f11afa56a923372d957e2fb227f453822c21bf"
+OLD_LITERAL="evidence/combined-native-batch-v39-new3-prepared-20261022"
+NEW_LITERAL="evidence/combined-native-batch-v39-new3-retry1-prepared-20261022"
+GROUPS=["native-node-stream-shutdown","native-node-one-byte-string","native-vm-array-buffer-view-data"]
+
+MEMBERS=[
+  {
+    "name": "Audit-CombinedNativeBatch.py",
+    "bytes": 17696,
+    "sha256": "208BBC4759467573F531750778015A1DC5CD8B2B386A476E8092C3327DBA2490"
+  },
+  {
+    "name": "combined-build-source-peer.json",
+    "bytes": 12133,
+    "sha256": "BEAA36175DB36CE596DB8F01C908935C6B7DBDFBA54EE07A90B7874D0423A5E4"
+  },
+  {
+    "name": "complete-batch-partition.json",
+    "bytes": 4333,
+    "sha256": "C237CC8EB80448AC536E1C9928816C56BD46F6BC5FF91E4F7CA615A3118BFADB"
+  },
+  {
+    "name": "exact-intake-source-inventory.json",
+    "bytes": 3016024,
+    "sha256": "8256044984E3300F920D33B6304774E0EAE013448115D88529BB39770C5A2F04"
+  },
+  {
+    "name": "Get-ModelsNativeCandidates.ps1",
+    "bytes": 1786,
+    "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+  },
+  {
+    "name": "groups.json",
+    "bytes": 1469059,
+    "sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB"
+  },
+  {
+    "name": "matrix-refresh-adaptation.json",
+    "bytes": 416297,
+    "sha256": "0E4226D58893DD58F140B948E4172D2D9E4554B7565AD26D88FF4A26FCD56F6A"
+  },
+  {
+    "name": "metadata-auditor-adaptation.json",
+    "bytes": 1188,
+    "sha256": "E00B859676DC622ABBD9D07A769C86CA764CFDAE0C2EBFB2F760EB839250220D"
+  },
+  {
+    "name": "new-roots-source-inventory.json",
+    "bytes": 7047337,
+    "sha256": "FA06ACE73E2472BFE3B175B1C1720BDE6A21142A64EB28F57DF99AEBC8CC9ED3"
+  },
+  {
+    "name": "preparation-review.json",
+    "bytes": 1230704,
+    "sha256": "EA20FC0C6AB01BC00DF2EA29B166C48D2915A7DB4B0C1A71784C862F66ACA256"
+  },
+  {
+    "name": "prior-v38-progress.json",
+    "bytes": 678718,
+    "sha256": "4FF79AE87F671BB8F16283E38D282CB58444A1A0FA42659B0F3CED505EE04343"
+  },
+  {
+    "name": "process-ancestry-peer-modules.json",
+    "bytes": 3241,
+    "sha256": "F16CA88D4FB3E66B1B2A907526740FE038CBAA43C1FF70288E4680B7F0D55531"
+  },
+  {
+    "name": "Run-CombinedNativeBatch.ps1",
+    "bytes": 60094,
+    "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+  },
+  {
+    "name": "source-inventory-refresh-adaptation.json",
+    "bytes": 33689,
+    "sha256": "FA7774F47871DFC04D4A60FFFD4AACC820EDF35D53E452EED8187FE0EF367445"
+  },
+  {
+    "name": "uv-namespace-source-peer.json",
+    "bytes": 10706,
+    "sha256": "6EDDB24D85B7F876BCBA2802D166DE71702E21AF8CFD3B53E5F3E47B8C4329E5"
+  }
+]
+
+ORIGINAL_LAUNCH=dict(path=str(OLD/"buildquery-launch.json"),bytes=2039,sha256="19D523F9F7C3B6BE43CA7C77435BF12D16C3B478E32BC3937C46EED9B56FB95F")
+ORIGINAL_CATALOG=dict(path=str(E/"root-v39-catalog-source-acceptance-20261022.json"),bytes=14221,sha256="CB6A78ACEFAA83A6DE31AB917B6460465BF012C99B38CE87425B6893CCB7AB2C")
+NEGATIVE=dict(path=str(E/"root-native-foundation-fresh-v39-new3-control-20261022-163859/independent-prelaunch-admission-negative-closure.json"),bytes=5480,sha256="9712BD2BBB46133BEAA1D7590CC95570ACF252000E218443488E41EB01F4B181")
+NEGATIVE_ROOT=dict(path=str(E/"root-v39-new3-original-prelaunch-negative-acceptance-20261022.json"),bytes=5627,sha256="1A6F6F0CAA70C5B9F39F9FF815B67429C39B785E472817427A7EF18E4FCEDDD7")
+UNCHANGED_CONSTRUCTOR=dict(path=str(E/"Prepare-ReviewedV39BuildQueryGrant-20261022.py"),bytes=10269,sha256="972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0")
+REVIEW_MEMBERS={
+"driver":"Run-CombinedNativeBatch.ps1",
+"matrix":"groups.json",
+"auditor":"Audit-CombinedNativeBatch.py",
+"classifier":"Get-ModelsNativeCandidates.ps1",
+"combined_build_source_peer":"combined-build-source-peer.json",
+"metadata_auditor_adaptation":"metadata-auditor-adaptation.json",
+"matrix_refresh_adaptation":"matrix-refresh-adaptation.json",
+"source_dependency_inventory":"new-roots-source-inventory.json",
+"source_inventory_refresh_adaptation":"source-inventory-refresh-adaptation.json",
+"exact_intake_inventory":"exact-intake-source-inventory.json",
+"complete_partition":"complete-batch-partition.json"}
+CHANGED={"Audit-CombinedNativeBatch.py","metadata-auditor-adaptation.json","matrix-refresh-adaptation.json","source-inventory-refresh-adaptation.json","complete-batch-partition.json","preparation-review.json"}
+seen={}
+def require(value,message):
+ if not value:raise RuntimeError(message)
+def sha(raw):return hashlib.sha256(raw).hexdigest().upper()
+def encode(v):return (json.dumps(v,indent=2)+"\n").encode()
+def pin_bytes(p,raw):return dict(path=str(p),bytes=len(raw),sha256=sha(raw))
+def verify(row):
+ require(set(row)=={"path","bytes","sha256"},"Exact three-field input pin")
+ p=Path(row["path"])
+ require(p.is_absolute() and p.resolve().is_relative_to(E.resolve()),"Evidence-only input")
+ require(type(row["bytes"])is int and row["bytes"]>0 and re.fullmatch("[0-9A-F]{64}",row["sha256"])is not None,"Exact input length/hash")
+ raw=p.read_bytes();require((len(raw),sha(raw))==(row["bytes"],row["sha256"]),"Pinned input changed: "+str(p))
+ k=str(p.resolve()).casefold();require(k not in seen or seen[k]==row,"Conflicting input version")
+ seen[k]=row
+ return raw
+def read(row):return json.loads(verify(row).decode("utf-8-sig"))
+def equivalent_pin(a,b):
+ return set(a)==set(b)=={"path","bytes","sha256"} and Path(a["path"])==Path(b["path"]) and a["bytes"]==b["bytes"] and a["sha256"]==b["sha256"]
+def at(v,path):
+ for key in path:v=v[key]
+ return v
+def set_at(v,path,value):
+ for key in path[:-1]:v=v[key]
+ v[path[-1]]=value
+def leaves(v,path=()):
+ if isinstance(v,dict):
+  for key,value in v.items():yield from leaves(value,path+(key,))
+ elif isinstance(v,list):
+  for index,value in enumerate(v):yield from leaves(value,path+(index,))
+ else:yield path,v
+def change_json(name,edits,raws):
+ old=raws[name];obj=json.loads(old);require(encode(obj)==old,"Exact original JSON serialization: "+name)
+ current=copy.deepcopy(obj);steps=[]
+ for index,(path,value) in enumerate(edits):
+  path=tuple(path);before_value=copy.deepcopy(at(current,path))
+  require(before_value!=value,"No-op field edit: "+name+str(path))
+  before=encode(current);set_at(current,path,copy.deepcopy(value));after=encode(current)
+  steps.append(dict(index=index,keys=list(path),before=before_value,after=value,before_bytes=len(before),before_sha256=sha(before),after_bytes=len(after),after_sha256=sha(after)))
+ raw=encode(current);inverse=copy.deepcopy(current)
+ for step in reversed(steps):
+  require(at(inverse,step["keys"])==step["after"],"Exact inverse field value")
+  set_at(inverse,step["keys"],copy.deepcopy(step["before"]))
+  require((len(encode(inverse)),sha(encode(inverse)))==(step["before_bytes"],step["before_sha256"]),"Exact intermediate JSON inverse")
+ require(encode(inverse)==old,"Complete raw JSON inverse: "+name)
+ return raw,dict(member=name,kind="finite_JSON_leaf_relocation",steps=steps,complete_raw_forward_and_inverse=True)
+require(len(sys.argv)==3,"Exact separately issued Root configuration path and hash required")
+cp=Path(sys.argv[1]);require(cp.is_absolute() and cp.resolve().is_relative_to(E.resolve()),"Contained Root configuration")
+require(re.fullmatch("[0-9A-F]{64}",sys.argv[2])is not None,"Exact configuration hash")
+cb=cp.read_bytes();require(sha(cb)==sys.argv[2],"Configuration bytes changed")
+cfg=json.loads(cb);cpin=pin_bytes(cp,cb);verify(cpin)
+require(set(cfg)=={"schema","status","reviewer","candidate_head","cloner","clone_execution_authorized","native_execution_authorized","runtime_authority","source_mutation_hold_released","qualification","root_source_review"},"Exact clone-only Root configuration")
+require(cfg["schema"]==1 and cfg["status"]=="root_reviewed_specific_v39_new3_retry1_preparation_clone" and cfg["reviewer"]=="Root" and cfg["candidate_head"]==HEAD,"Specific Root source-only clone review")
+self_pin=pin_bytes(Path(__file__),Path(__file__).read_bytes());require(equivalent_pin(cfg["cloner"],self_pin),"Exact reviewed cloner source")
+verify(cfg["cloner"])
+require(cfg["clone_execution_authorized"]is True,"Specific evidence preparation authorization")
+for key in ("native_execution_authorized","runtime_authority","source_mutation_hold_released","qualification"):require(cfg[key]is False,"No broader authority: "+key)
+sr=read(cfg["root_source_review"])
+require(sr["reviewer"]=="Root" and sr["candidate_head"]==HEAD and sr["source_accepted"]is True and equivalent_pin(sr["source"],self_pin),"Root accepted this exact clone source")
+require(NEW.parent==OLD.parent==E and not NEW.exists() and not NEW.is_symlink(),"Fresh flat retry preparation")
+require(not PROOF.exists() and not PROOF.is_symlink(),"Fresh clone proof")
+require(len(MEMBERS)==15 and len({r["name"]for r in MEMBERS})==15,"Exact fifteen original prepared members")
+expected={r["name"]for r in MEMBERS}|{"buildquery-launch.json"}
+require({p.name for p in OLD.iterdir()}==expected and all((OLD/n).is_file() for n in expected),"Exact original preparation membership")
+raws={r["name"]:verify(dict(path=str(OLD/r["name"]),bytes=r["bytes"],sha256=r["sha256"]))for r in MEMBERS}
+launch=read(ORIGINAL_LAUNCH);catalog=read(ORIGINAL_CATALOG);negative=read(NEGATIVE);root_negative=read(NEGATIVE_ROOT);verify(UNCHANGED_CONSTRUCTOR)
+require(catalog["reviewer"]=="Root" and catalog["candidate_head"]==HEAD and catalog["catalog_source_accepted"]is True and catalog["native_execution_authorized"]is False,"Original accepted source catalog")
+require(catalog["matrix_sha256"]==sha(raws["groups.json"]),"Original catalog exact matrix")
+require(any(equivalent_pin(r,pin_bytes(OLD/"preparation-review.json",raws["preparation-review.json"]))for r in catalog["preparation_reviews"]),"Original preparation remains separately accepted")
+require(negative["status"]=="independently_closed_prelaunch_grant_age_negative" and root_negative["status"]=="root_accepted_original_v39_new3_prelaunch_admission_negative","Actual original negative closure and acceptance")
+for d in (negative,root_negative):
+ require(d["candidate_head"]==HEAD and d["batch"]=="new3" and d["reason"]=="Initial grant must be within300seconds before first child launch","Exact original failed admission")
+ require(d["native_owner_count"]==d["actual_metadata_count"]==d["actual_tests_started"]==0,"No original native phase or metadata acceptance")
+ require(d["granted_groups"]==3 and d["attempted_groups"]==1 and d["unstarted_groups"]==2,"Original rejected first-group cutpoint")
+ require(d["complete_buildquery_accepted"]is False and d["native_execution_authorized"]is False and d["source_mutation_hold_released"]is False and d["qualification"]is False,"Original negative cannot confer positive authority")
+require(negative["original_negative_preserved"]is True and negative["current_all_sealed_inputs_rehashed"]is True and negative["current_complete_directory_inventories_verified"]is True and negative["current_actual_process_instances_absent"]is True,"Accepted original complete closure")
+require(root_negative["reviewer"]=="Root" and root_negative["negative_accepted"]is True and root_negative["all_original_inputs_and_negative_preserved"]is True and root_negative["runtime_execution_authorized"]is False,"Root accepted original negative only")
+require(equivalent_pin(root_negative["independent_closure"],NEGATIVE),"Root exact original independent closure")
+require(root_negative["original_inputs"]==negative["original_inputs"],"Exact original negative receipt inventory")
+for row in negative["original_inputs"].values():verify(row)
+review=json.loads(raws["preparation-review.json"]);matrix=json.loads(raws["groups.json"]);partition=json.loads(raws["complete-batch-partition.json"])
+require(review["status"]=="source_only_fresh_batch_prepared" and review["candidate_head"]==HEAD and review["selected_group_names"]==GROUPS and review["selected_groups"]==3 and review["selected_declarations"]==38,"Original selected declarations")
+for key in ("execution_authority","runtime_authority","qualification"):require(review[key]is False,"Source-only original preparation")
+require(review["actual_metadata_count"]is None and review["catalog_groups"]==120 and review["catalog_declarations"]==2051,"No original predicted metadata")
+require(matrix["source_head_at_preparation"]==HEAD and len(matrix["groups"])==120 and sum(len(g["required_named"])for g in matrix["groups"])==2051,"Unchanged whole catalog")
+require(partition["batches"]["new3"]["selected_group_names"]==GROUPS and partition["group_cap"]==64 and partition["union_groups"]==70 and partition["union_declarations"]==1345,"Complete original disjoint partition")
+require(launch["groups"]==GROUPS and launch["candidate_head"]==HEAD and launch["batch"]=="new3" and launch["actual_metadata_count"]is None and launch["runtime_authority"]is False and launch["qualification"]is False,"Preserved original launch")
+require(equivalent_pin(launch["preparation_review"],pin_bytes(OLD/"preparation-review.json",raws["preparation-review.json"])),"Original launch/review binding")
+for key,name in REVIEW_MEMBERS.items():require(equivalent_pin(review[key],pin_bytes(OLD/name,raws[name])),"Original exact review member: "+key)
+old_refs=[list(p)for p,v in leaves(review)if isinstance(v,str)and OLD.name in v]
+require(old_refs==[[k,"path"]for k in REVIEW_MEMBERS],"Exactly eleven current review path leaves")
+outputs=dict(raws);proofs=[]
+a=OLD_LITERAL.encode();b=NEW_LITERAL.encode();old=raws["Audit-CombinedNativeBatch.py"]
+require(old.count(a)==1 and b not in old,"One original metadata auditor preparation literal")
+new=old.replace(a,b,1);require(new.replace(b,a,1)==old,"Complete metadata auditor raw inverse")
+old_ast=ast.parse(old);new_ast=ast.parse(new)
+class NormalizeLiteral(ast.NodeTransformer):
+ def visit_Constant(self,n):
+  if n.value==NEW_LITERAL:n.value=OLD_LITERAL
+  return n
+require(ast.dump(old_ast,include_attributes=False)==ast.dump(NormalizeLiteral().visit(new_ast),include_attributes=False),"Only one metadata source constant changed")
+outputs["Audit-CombinedNativeBatch.py"]=new
+proofs.append(dict(member="Audit-CombinedNativeBatch.py",kind="one_source_path_literal",before=OLD_LITERAL,after=NEW_LITERAL,offset=old.index(a),baseline=pin_bytes(OLD/"Audit-CombinedNativeBatch.py",old),adapted=pin_bytes(NEW/"Audit-CombinedNativeBatch.py",new),all_other_bytes_unchanged=True,whole_raw_inverse=True))
+ma=json.loads(raws["metadata-auditor-adaptation.json"]);baseline=verify(ma["baseline"])
+require(ma["adapted"]==pin_bytes(OLD/"Audit-CombinedNativeBatch.py",old) and ma["new_preparation_literal"]==OLD_LITERAL and ma["literal_substitutions"]==1,"Exact preserved metadata adaptation")
+old_baseline_literal=ma["old_preparation_literal"].encode()
+require(baseline.count(old_baseline_literal)==1 and baseline.replace(old_baseline_literal,b,1)==new and new.replace(b,old_baseline_literal,1)==baseline,"Retained V38 baseline one-literal full inverse")
+metadata_edits=[(["adapted","path"],str(NEW/"Audit-CombinedNativeBatch.py")),(["adapted","bytes"],len(new)),(["adapted","sha256"],sha(new)),(["new_preparation_literal"],NEW_LITERAL)]
+outputs["metadata-auditor-adaptation.json"],p=change_json("metadata-auditor-adaptation.json",metadata_edits,raws);proofs.append(p)
+for name,target in (("matrix-refresh-adaptation.json","groups.json"),("source-inventory-refresh-adaptation.json","new-roots-source-inventory.json")):
+ doc=json.loads(raws[name]);require(Path(doc["adapted"]["path"])==OLD/target,"Exact original adapted identity")
+ outputs[name],p=change_json(name,[(["adapted","path"],str(NEW/target))],raws);proofs.append(p)
+outputs["complete-batch-partition.json"],p=change_json("complete-batch-partition.json",[(["batches","new3","preparation_directory"],str(NEW))],raws);proofs.append(p)
+edits=[]
+for key,name in REVIEW_MEMBERS.items():
+ replacement=pin_bytes(NEW/name,outputs[name])
+ for field in ("path","bytes","sha256"):
+  if review[key][field]!=replacement[field]:edits.append(([key,field],replacement[field]))
+require(len(edits)==21 and sum(path[-1]=="path" for path,value in edits)==11,"Eleven review paths plus five exact dependent length/hash pairs")
+outputs["preparation-review.json"],p=change_json("preparation-review.json",edits,raws);proofs.append(p)
+require({name for name in outputs if outputs[name]!=raws[name]}==CHANGED and len(CHANGED)==6,"Exactly six changed and nine byte-identical prepared members")
+require(sum(len(p.get("steps",[]))for p in proofs)==28,"Exact complete finite JSON relocation count")
+for name,raw in outputs.items():require(OLD.name.encode()not in raw,"No stale current preparation identity: "+name)
+new_review=json.loads(outputs["preparation-review.json"])
+for key,name in REVIEW_MEMBERS.items():require(new_review[key]==pin_bytes(NEW/name,outputs[name]),"Exact relocated review member")
+require(outputs["groups.json"]==raws["groups.json"] and outputs["Run-CombinedNativeBatch.ps1"]==raws["Run-CombinedNativeBatch.ps1"] and outputs["Get-ModelsNativeCandidates.ps1"]==raws["Get-ModelsNativeCandidates.ps1"],"Unchanged matrix, strict driver and classifier")
+for row in list(seen.values()):verify(row)
+require(not NEW.exists() and not NEW.is_symlink() and not PROOF.exists() and not PROOF.is_symlink(),"Outputs still fresh before first write")
+report=dict(schema=1,status="source_only_exact_v39_new3_retry1_preparation_cloned",candidate_head=HEAD,cloner=self_pin,configuration=cpin,root_source_review=cfg["root_source_review"],
+ original_preparation=str(OLD),retry_preparation=str(NEW),original_catalog_acceptance=ORIGINAL_CATALOG,original_launch_preserved=ORIGINAL_LAUNCH,
+ original_admission_negative=NEGATIVE,original_admission_negative_root_acceptance=NEGATIVE_ROOT,
+ unchanged_buildquery_constructor=UNCHANGED_CONSTRUCTOR,
+ old_members=[pin_bytes(OLD/name,raws[name])for name in raws],new_members=[pin_bytes(NEW/name,outputs[name])for name in outputs],
+ changed_members=sorted(CHANGED),byte_identical_members=sorted(set(outputs)-CHANGED),finite_changes=proofs,
+ all_whole_raw_inverses=True,review_path_leaf_count=11,JSON_field_edit_count=28,metadata_source_literal_edits=1,
+ selected_groups=3,selected_declarations=38,selected_group_names=GROUPS,catalog_groups=120,catalog_declarations=2051,
+ matrix_sha256=sha(outputs["groups.json"]),driver_sha256=sha(outputs["Run-CombinedNativeBatch.ps1"]),classifier_sha256=sha(outputs["Get-ModelsNativeCandidates.ps1"]),
+ preparation_review=pin_bytes(NEW/"preparation-review.json",outputs["preparation-review.json"]),
+ current_inputs=list(seen.values()),actual_metadata_count=None,
+ fresh_buildquery_launch_not_created=True,Root_retry_catalog_acceptance_and_exact_review_membership_required=True,
+ native_execution_authorized=False,runtime_authority=False,source_mutation_hold_released=False,qualification=False)
+NEW.mkdir()
+for name,raw in outputs.items():
+ with (NEW/name).open("xb")as f:f.write(raw)
+ require((NEW/name).read_bytes()==raw,"Exact output roundtrip: "+name)
+require({p.name for p in NEW.iterdir()}==set(outputs)and not(NEW/"buildquery-launch.json").exists(),"Exactly fifteen fresh members and no grant/launch")
+for row in list(seen.values()):verify(row)
+proof_raw=encode(report)
+with PROOF.open("xb")as f:f.write(proof_raw)
+require(PROOF.read_bytes()==proof_raw,"Exact clone proof roundtrip")
+print(json.dumps(dict(proof=pin_bytes(PROOF,proof_raw),preparation_review=report["preparation_review"],members=15,changed_members=6,identical_members=9,actual_metadata_count=None,native_execution_authorized=False)))

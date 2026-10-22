@@ -1,0 +1,36 @@
+{
+  "installed": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\groups\\native-node-fs-callback-template\\installed\\bin\\native-node-fs-callback-template.exe",
+      "bytes": 48867328,
+      "sha256": "AB69E8E9268112A05CABE7F1D3FAE89B580B28389C0B69E39501F4CD723C6575"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\groups\\native-node-fs-callback-template\\installed\\bin\\test.pdb",
+      "bytes": 17367040,
+      "sha256": "9747AB54E24B97BEE33D5E426A85CDCBFCE91F42D9C295B60113CA42E3500223"
+    }
+  ],
+  "cached_executables": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\07833ed6d378e68ff25c7155c9bbfab0\\test.exe",
+      "sha256": "3CA7434C1B21F31B49C3A8B20394B6BDCB4B1565E2F1AA96AC43CA1FD81201BE",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\07833ed6d378e68ff25c7155c9bbfab0\\test.pdb",
+      "pdb_sha256": "C62BB6EF9436F60057A8FF5E4627DD9D04CB3C13C9B6A20447F658DBC44AE534"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\679addf7197be02d53244ea31d897bbb\\test.exe",
+      "sha256": "AB69E8E9268112A05CABE7F1D3FAE89B580B28389C0B69E39501F4CD723C6575",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\679addf7197be02d53244ea31d897bbb\\test.pdb",
+      "pdb_sha256": "9747AB54E24B97BEE33D5E426A85CDCBFCE91F42D9C295B60113CA42E3500223"
+    }
+  ],
+  "pe": {
+    "reserved_stack_bytes": 16777216,
+    "committed_stack_bytes": 4096,
+    "Engine_guard_bytes": 1048576,
+    "guard_authority": "Frozen Engine default1MiB; no controller or source stack override",
+    "dynamic_stack_measured": false
+  },
+  "errors": []
+}

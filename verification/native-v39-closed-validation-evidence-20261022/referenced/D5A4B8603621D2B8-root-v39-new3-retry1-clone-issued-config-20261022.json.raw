@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v39_new3_retry1_preparation_clone",
+  "reviewer": "Root",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "cloner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\Prepare-V39New3Retry1PreparationClone-20261022.py",
+    "bytes": 20014,
+    "sha256": "1B4732B1C003DA2F82DBC4912FF6B7B203889E1C5E4C15B9521F4D9EE4F63422"
+  },
+  "clone_execution_authorized": true,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "root_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-preparation-cloner-source-acceptance-20261022.json",
+    "bytes": 5101,
+    "sha256": "A667DFB2B69F66CD773B3289AEE05C60A792087A800E6017C056D659269B4253"
+  }
+}

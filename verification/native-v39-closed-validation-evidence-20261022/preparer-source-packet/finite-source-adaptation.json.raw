@@ -1,0 +1,1038 @@
+{
+  "schema": 1,
+  "status": "unexecuted_finite_actual_existing63_timeout_outcome_successor",
+  "basis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\candidate\\Prepare-V39ClosedPhasesAndUnresolved63Archive-20261022.py",
+    "bytes": 72511,
+    "sha256": "02D8A4504E8741E915621AFE35B3DBDBEC8A8EE8F8D0F1712F9BA3C5C2392C2B"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\candidate\\Prepare-V39ClosedValidationAndTimeoutArchive-20261022.py",
+    "bytes": 90319,
+    "sha256": "0BD97D2A52ADF9FC624222163049C44DB8D7928BEBB9D5F36B2738BD3735ECF2"
+  },
+  "declared_edits": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\authoring\\declared-edits.json",
+    "bytes": 38596,
+    "sha256": "DF6F1C8C7D6F1AE1183366DC68C0C5E8F9533C8A85BEE154719BFB28B1D143C8"
+  },
+  "author": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\author-finite-timeout-successor.py",
+    "bytes": 7212,
+    "sha256": "B2897D70C5560BCFAE29A970CF939A7396EC90CB789E4304B33B942A91F49ADA"
+  },
+  "step_count": 48,
+  "steps": [
+    {
+      "step": 1,
+      "label": "observed closed timeout scope",
+      "offset_in_step_input": 0,
+      "before": "\"Unexecuted V39 closed-phase archive/progress draft with an unresolved existing63 hard stop.\\n\"\n\"\"\"Requires a separately reviewed exact Root config, source receipt and copy plan.\nOnly the two closed new3 negatives and actual complete new4 pair are implemented.\nExisting63 is deliberately unresolved and fails before payload construction/staging.\nNo Main/index/process/current63 access, native invocation or candidate evaluation is authorized.\n\"\"\"\n",
+      "after": "\"Unexecuted V39 closed validation archive/progress source with the original existing63 timeout preserved.\\n\"\n\"\"\"Requires a separately reviewed exact Root config, source receipt and copy plan.\nThe two closed new3 negatives, complete actual new4 pair and closed existing63\nouter timeout are recorded separately. No missing original closure is reconstructed.\nNo Main/index/process/native access or candidate evaluation is authorized by this source.\n\"\"\"\n",
+      "input_bytes": 72511,
+      "input_sha256": "02D8A4504E8741E915621AFE35B3DBDBEC8A8EE8F8D0F1712F9BA3C5C2392C2B",
+      "output_bytes": 72514,
+      "output_sha256": "DB9F56AE9FD5519CDE0CD80E56A227801093CD425AD44500F0AB0669B1798CD8",
+      "unchanged_prefix_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "unchanged_suffix_sha256": "0667C343E8E4D68245C560C992290608DD086B4157B134FF24B04F49052A4AB0"
+    },
+    {
+      "step": 2,
+      "label": "distinct timeout source directory",
+      "offset_in_step_input": 660,
+      "before": "PLAN_DIR = E / \"v39-closed-phases-progress-archive-sourceonly-20261022\"",
+      "after": "PLAN_DIR = E / \"v39-closed-phases-progress-archive-sourceonly-20261022\"\nTIMEOUT_DIR = E / \"v39-existing63-timeout-progress-archive-sourceonly-20261022\"",
+      "input_bytes": 72514,
+      "input_sha256": "DB9F56AE9FD5519CDE0CD80E56A227801093CD425AD44500F0AB0669B1798CD8",
+      "output_bytes": 72594,
+      "output_sha256": "6E0F0B2B8F63B71DB786B9393FB00191F892E508D774B06977E0BE4DDC8FE5FB",
+      "unchanged_prefix_sha256": "A64C8B93962535EA264EE03F023A78F2BD7F2573AD6E3DECE5E315A93ADB3BCE",
+      "unchanged_suffix_sha256": "061E82682EC640F7A8CEF2791D9104F04B92E59E89E485E172CE39929DCDC858"
+    },
+    {
+      "step": 3,
+      "label": "distinct create-only future output",
+      "offset_in_step_input": 1063,
+      "before": "OUT = E / \"pending-v39-closed-validation-archive-intake-unresolved63-20261022\"",
+      "after": "OUT = E / \"pending-v39-closed-validation-and-timeout-archive-intake-20261022\"",
+      "input_bytes": 72594,
+      "input_sha256": "6E0F0B2B8F63B71DB786B9393FB00191F892E508D774B06977E0BE4DDC8FE5FB",
+      "output_bytes": 72593,
+      "output_sha256": "4B9F900D59883F470D89A7E9A6DBAB84014D480E4EE51C7AF337AD33D811027A",
+      "unchanged_prefix_sha256": "4B90A13CE09E178465129560A1394D309A645AC9F377251868E26F6D782AA580",
+      "unchanged_suffix_sha256": "88B950A5A57F2A3247B86F438B1F734DFAE4BFD8396DA16E92F7AD4A3D0C1214"
+    },
+    {
+      "step": 4,
+      "label": "immutable timeout inventory pin",
+      "offset_in_step_input": 2580,
+      "before": "}\nCONFIG_KEYS = {",
+      "after": " \"timeout\": (TIMEOUT_DIR/\"timeout-observed-inputs.json\",611205,\"AE1E3516FD64740C6348FB98BE834F5E57CD4339F4D066A54C20673A9FE6ADB3\"),\n}\nCONFIG_KEYS = {",
+      "input_bytes": 72593,
+      "input_sha256": "4B9F900D59883F470D89A7E9A6DBAB84014D480E4EE51C7AF337AD33D811027A",
+      "output_bytes": 72725,
+      "output_sha256": "F0827D1C921B03571FF847373FD6FA3E28B354E67E03B930F400F6D03F63EE2C",
+      "unchanged_prefix_sha256": "D0054ED1924BF5B635ABF4883D34F4C98A84FE7F0AB6FCDD8422111C6BEDD7BB",
+      "unchanged_suffix_sha256": "082FA9E6288F0B9C9A81B93AA5F55523CADDCE8C20377EE91B5EB30E6ADB9C2A"
+    },
+    {
+      "step": 5,
+      "label": "fifth closed phase",
+      "offset_in_step_input": 3414,
+      "before": "PHASES = (\"new3-buildquery-prelaunch\",\"new3-retry1-buildquery\",\"new4-buildquery\",\"new4-runtime\")",
+      "after": "PHASES = (\"new3-buildquery-prelaunch\",\"new3-retry1-buildquery\",\"new4-buildquery\",\"new4-runtime\",\"existing63-buildquery-timeout\")",
+      "input_bytes": 72725,
+      "input_sha256": "F0827D1C921B03571FF847373FD6FA3E28B354E67E03B930F400F6D03F63EE2C",
+      "output_bytes": 72757,
+      "output_sha256": "EAA4D9862666CC2F1CC14C0B16A178D737FE928B39512C5C30B59F8710EC4F33",
+      "unchanged_prefix_sha256": "9EAC9835FA079A1C910DC594362B43A589BFF017584A8B2B8E6AAAEBDBA0C13C",
+      "unchanged_suffix_sha256": "301104137DDA451CE8116582EEB2E3A7218BBBEAC1904D3A4DB73C85ADDE1757"
+    },
+    {
+      "step": 6,
+      "label": "no gzip pair for missing final",
+      "offset_in_step_input": 3543,
+      "before": "COMPRESSIBLE_PHASES = tuple(p for p in PHASES if p!=\"new3-buildquery-prelaunch\")",
+      "after": "COMPRESSIBLE_PHASES = tuple(p for p in PHASES if p not in (\"new3-buildquery-prelaunch\",\"existing63-buildquery-timeout\"))",
+      "input_bytes": 72757,
+      "input_sha256": "EAA4D9862666CC2F1CC14C0B16A178D737FE928B39512C5C30B59F8710EC4F33",
+      "output_bytes": 72797,
+      "output_sha256": "87D3D250E2A33B4C047F6B5458ADEB835E09F3F03D1F1FDCA74DDCDD62290366",
+      "unchanged_prefix_sha256": "24D75AB19AE1F06D84FBA1FA0D25C92875D15B857FC2D2CDBB61D52C1238AEFC",
+      "unchanged_suffix_sha256": "14CCBA6B87211C75E2CBBECEAA663A8E7481CE03FF3377969659EFAA59B34B67"
+    },
+    {
+      "step": 7,
+      "label": "actual original timeout suffix",
+      "offset_in_step_input": 3664,
+      "before": "CLOSED_SUFFIXES = (\"20261022-163859\",\"20261022-173038\",\"20261022-165637\",\"20261022-172246\")",
+      "after": "CLOSED_SUFFIXES = (\"20261022-163859\",\"20261022-173038\",\"20261022-165637\",\"20261022-172246\",\"20261022-174353\")",
+      "input_bytes": 72797,
+      "input_sha256": "87D3D250E2A33B4C047F6B5458ADEB835E09F3F03D1F1FDCA74DDCDD62290366",
+      "output_bytes": 72815,
+      "output_sha256": "D71FF56526CA6731F0F9F415C0AE1529E02E86F24491D62D3C6F0CDECFA28D95",
+      "unchanged_prefix_sha256": "69731E4C4C6F8F973B66E7CBAC05E67D25627CE8E3EDF9A31CC6E2086AD90518",
+      "unchanged_suffix_sha256": "B75CFAC9A76A33E0371611A2B0EB28DF9DBA3A803BF87E2CB9DB0593DD3AF2D8"
+    },
+    {
+      "step": 8,
+      "label": "future exact source-only configuration status",
+      "offset_in_step_input": 7979,
+      "before": "\"root_reviewed_specific_v39_closed_phases_unresolved63_archive_preparation\"",
+      "after": "\"root_reviewed_specific_v39_closed_validation_and_timeout_archive_preparation\"",
+      "input_bytes": 72815,
+      "input_sha256": "D71FF56526CA6731F0F9F415C0AE1529E02E86F24491D62D3C6F0CDECFA28D95",
+      "output_bytes": 72818,
+      "output_sha256": "3530975105E82B647697E800EC1A101C0DDB5D7AF4B59D4C5C00C5137E4315C7",
+      "unchanged_prefix_sha256": "7C4CE89669DF51D1433F68D488E6F332619279D74525A46EED508E8E3B6E16A0",
+      "unchanged_suffix_sha256": "528F180702B6DF12DAFAEB467DEA59326058C81D4418095C2DD80A3A931B3D1B"
+    },
+    {
+      "step": 9,
+      "label": "immutable timeout basis admission",
+      "offset_in_step_input": 9101,
+      "before": "preservation = decode(exact(fixed(\"preservation\")))",
+      "after": "preservation = decode(exact(fixed(\"preservation\")))\ntimeout_basis = decode(exact(fixed(\"timeout\")))\nrequire(timeout_basis[\"schema\"]==1 and timeout_basis[\"candidate_head\"]==HEAD and\n        timeout_basis[\"status\"]==\"immutable_original_closed_existing63_timeout_inputs_source_only\" and\n        timeout_basis[\"required_raw_file_count\"]==len(timeout_basis[\"required_raw_files\"])==908 and\n        timeout_basis[\"phase_file_count\"]==len(timeout_basis[\"phase_file_pins\"])==872 and\n        len(timeout_basis[\"direct_pin_relationships\"])==47,\"exact observed original timeout inventory\")",
+      "input_bytes": 72818,
+      "input_sha256": "3530975105E82B647697E800EC1A101C0DDB5D7AF4B59D4C5C00C5137E4315C7",
+      "output_bytes": 73344,
+      "output_sha256": "29F3134276B4365B7642CE1BD47BD622C77E0A00BE8A8DF82A1462742010636C",
+      "unchanged_prefix_sha256": "C527D7D3F78E0FF810A88411CC6509D477DA89E65FD453E0CB54BE8BA85E05C6",
+      "unchanged_suffix_sha256": "0985BF0960E0FC50019B621526A7A1FC015668CF37B2F62015815F7E26851EB7"
+    },
+    {
+      "step": 10,
+      "label": "future separately accepted successor source status",
+      "offset_in_step_input": 10587,
+      "before": "\"root_accepted_bounded_v39_closed_phases_unresolved63_archive_preparer\"",
+      "after": "\"root_accepted_bounded_v39_closed_validation_and_timeout_archive_preparer\"",
+      "input_bytes": 73344,
+      "input_sha256": "29F3134276B4365B7642CE1BD47BD622C77E0A00BE8A8DF82A1462742010636C",
+      "output_bytes": 73347,
+      "output_sha256": "154FC0B4390A27F2D06B0115F8C1592B3E3AF0086981DAEB35CADAA30CEC89F5",
+      "unchanged_prefix_sha256": "913341496973698D9E98EB269BC6D651D57C6A26C0E397F9EB64E7CD09B9A98D",
+      "unchanged_suffix_sha256": "9D22956BE4B731F5BED21C81EA53C33D10B29AAD49F6EA08ABCAA950CDB278E0"
+    },
+    {
+      "step": 11,
+      "label": "Root source acceptance binds timeout input",
+      "offset_in_step_input": 11017,
+      "before": "require(source_review[\"supplemental_preservation_inventory\"]==fixed(\"preservation\"),\"Root exact supplemental preservation scope\")",
+      "after": "require(source_review[\"supplemental_preservation_inventory\"]==fixed(\"preservation\"),\"Root exact supplemental preservation scope\")\nrequire(source_review[\"timeout_observed_input_inventory\"]==fixed(\"timeout\"),\"Root exact closed-timeout scope\")",
+      "input_bytes": 73347,
+      "input_sha256": "154FC0B4390A27F2D06B0115F8C1592B3E3AF0086981DAEB35CADAA30CEC89F5",
+      "output_bytes": 73458,
+      "output_sha256": "4A13A9A1E105D5D47ED0E4D8A866DF19C60AF496ED094C2D827E3CDC9FFC9428",
+      "unchanged_prefix_sha256": "185348EA40A2C725267AB9A2CD9940539FA2A7839778B84238F16A098E8066AE",
+      "unchanged_suffix_sha256": "AABDD7840F6E64C4E018235ED2EFDC8919EC94F91F817D67F9E362BC532FCEC3"
+    },
+    {
+      "step": 12,
+      "label": "future separately accepted copy-plan status",
+      "offset_in_step_input": 11565,
+      "before": "\"root_reviewed_exact_final_v39_closed_phases_unresolved63_archive_copy_plan\"",
+      "after": "\"root_reviewed_exact_final_v39_closed_validation_and_timeout_archive_copy_plan\"",
+      "input_bytes": 73458,
+      "input_sha256": "4A13A9A1E105D5D47ED0E4D8A866DF19C60AF496ED094C2D827E3CDC9FFC9428",
+      "output_bytes": 73461,
+      "output_sha256": "13FAE4A8243D4C684311F04A65B05B5E9CE6BF9E2BC2AE091A983A2D474CD219",
+      "unchanged_prefix_sha256": "E5CFB267B5E33338D652394A080F05C28A86543DF60F6004E93AE87D32F5502A",
+      "unchanged_suffix_sha256": "0EF702BCE6063D160C0B97EEEAC7652B8F8D6C18C29F059A99D1694B15A4A4B6"
+    },
+    {
+      "step": 13,
+      "label": "three cohort roles now all closed",
+      "offset_in_step_input": 12591,
+      "before": "\"two closed new3 negatives, accepted new4 and one unresolved63 contract\"",
+      "after": "\"two closed new3 negatives, accepted new4 and one original63 timeout negative\"",
+      "input_bytes": 73461,
+      "input_sha256": "13FAE4A8243D4C684311F04A65B05B5E9CE6BF9E2BC2AE091A983A2D474CD219",
+      "output_bytes": 73467,
+      "output_sha256": "E297EB6FA15D12E7065626216DAA735D985E5C5B290806EA14798445A17EE5CC",
+      "unchanged_prefix_sha256": "769B65A72DD36D751D5F75952EAA0C906D8AD1F9ABFF3E416E338FAB3F75E11B",
+      "unchanged_suffix_sha256": "7AA801F637D3A4C966BF37B39976D0C531537F154BE894B80958CBFC1DF190CC"
+    },
+    {
+      "step": 14,
+      "label": "exact fifth original membership and absent final/result",
+      "offset_in_step_input": 17340,
+      "before": "membership = copy_plan[\"observed_phase_membership\"]\nrequire([m[\"phase\"] for m in membership]==list(PHASES),\"only four exact closed phase scopes\")\nrequire(membership==inventory[\"observed_phase_membership\"],\"complete immutable closed phase membership, no current63 additions\")\nfor index,m in enumerate(membership):\n    batch = \"new3\" if index<2 else \"new4\"\n    is_build = index<3\n    groups = NEW3[:1] if index<2 else NEW4\n    proof,control = inside(m[\"proof\"]),inside(m[\"control\"])\n    require(proof.parent==control.parent==E,\"phase roots directly under evidence\")\n    cp = \"root-native-foundation-\"+(\"fresh-\" if is_build else \"\")+\"v39-\"+batch+(\"-control-\" if is_build else \"-runtime-control-\")\n    require(control.name==cp+CLOSED_SUFFIXES[index],\"exact actual closed phase instance\")\n    require(proof.name==control.name.replace(\"-control-\",\"-buildquery-\" if is_build else \"-\",1),\"actual phase proof identity\")\n    require(m[\"proof_top_level_files\"]==[\"before.json\",\"final.json\",\"result.json\"]==names(proof),\"whole original proof membership\")\n",
+      "after": "membership = copy_plan[\"observed_phase_membership\"]\nrequire([m[\"phase\"] for m in membership]==list(PHASES),\"all five exact closed phase scopes\")\nrequire(membership[:4]==inventory[\"observed_phase_membership\"] and\n        membership[4]==timeout_basis[\"phase_membership\"],\"all four prior memberships plus only the observed original timeout\")\nfor index,m in enumerate(membership):\n    batch = \"new3\" if index<2 else (\"new4\" if index<4 else \"existing63\")\n    is_build = index!=3\n    groups = NEW3[:1] if index<2 else (NEW4 if index<4 else existing63[:51])\n    proof,control = inside(m[\"proof\"]),inside(m[\"control\"])\n    require(proof.parent==control.parent==E,\"phase roots directly under evidence\")\n    cp = \"root-native-foundation-\"+(\"fresh-\" if is_build else \"\")+\"v39-\"+batch+(\"-control-\" if is_build else \"-runtime-control-\")\n    require(control.name==cp+CLOSED_SUFFIXES[index],\"exact actual closed phase instance\")\n    require(proof.name==control.name.replace(\"-control-\",\"-buildquery-\" if is_build else \"-\",1),\"actual phase proof identity\")\n    expected_proof = [\"before.json\"] if index==4 else [\"before.json\",\"final.json\",\"result.json\"]\n    require(m[\"proof_top_level_files\"]==expected_proof==names(proof),\"whole original proof membership; timeout has no final/result\")\n",
+      "input_bytes": 73467,
+      "input_sha256": "E297EB6FA15D12E7065626216DAA735D985E5C5B290806EA14798445A17EE5CC",
+      "output_bytes": 73695,
+      "output_sha256": "304453C1CF55F85735213A6FD45057DD05E1C8536C72CCBD1346DB23B195D5B6",
+      "unchanged_prefix_sha256": "245E989B6D76C8300247925B208CE4C73586B51B0A9D124BD07E4094BB9922C5",
+      "unchanged_suffix_sha256": "5760C4D1B778C2A36D6A98E3A6132CFCF78D4E1830DC87EB07FBE321C5CB4286"
+    },
+    {
+      "step": 15,
+      "label": "actual accepted timeout outcome validator replaces unresolved stop",
+      "offset_in_step_input": 49051,
+      "before": "def require_unresolved_existing63():\n    slot = copy_plan[\"cohorts\"][\"existing63\"]\n    require(slot=={\"status\":\"unresolved_existing63_acceptance_contract\",\"buildquery_root_acceptance\":None,\n                   \"runtime_root_acceptance\":None,\"metadata_acceptance\":None,\"independent_build_closure\":None,\n                   \"independent_runtime_closure\":None,\"actual_metadata_count\":None,\"actual_group_counts\":None,\n                   \"observed_phase_membership\":None},\"one explicit unresolved existing63 contract, no predicted outcome\")\n    require(False,\"UNRESOLVED existing63 acceptance contract: a separately reviewed finite terminal-outcome successor is required before any staging\")\n",
+      "after": "def check_existing63_timeout_negative():\n    cohort = copy_plan[\"cohorts\"][\"existing63\"]\n    root_pin = timeout_basis[\"role_pins\"][\"root_acceptance\"]\n    require(cohort=={\"buildquery_root_negative\":root_pin},\"only the actual closed existing63 timeout authority\")\n    for required in timeout_basis[\"required_raw_files\"]:\n        require(archived_pin(required[\"path\"])==required and\n                row_by_path[required[\"path\"].casefold()][\"representation\"]==\"raw_byte_exact\",\n                \"all908 closed-timeout and source-predecessor inputs retained raw\")\n    for edge in timeout_basis[\"direct_pin_relationships\"]:\n        require(edge in copy_plan[\"direct_pin_relationships\"],\"all47 additional direct authority relationships preserved\")\n    root = document(root_pin)\n    roles = timeout_basis[\"role_pins\"]\n    peer,proof = document(roles[\"independent_peer\"]),document(roles[\"independent_proof\"])\n    require(root_pin[\"sha256\"]==\"BBE41BE72BD618F43712ECBA196E16859ED55A2782DF248FD0B54FBEB6787700\" and\n            root[\"status\"]==\"root_accepted_closed_v39_existing63_outer_timeout_negative\" and\n            root[\"reviewer\"]==\"Root\" and root[\"candidate_head\"]==HEAD and root[\"batch\"]==\"existing63\",\n            \"actual Root-accepted outer timeout, no positive outcome\")\n    require(root[\"independent_original_evidence_peer\"]==roles[\"independent_peer\"] and\n            root[\"independent_original_evidence_proof\"]==roles[\"independent_proof\"] and\n            root[\"independent_inspector\"]==roles[\"independent_inspector\"],\"exact independent original-only review\")\n    require(peer[\"status\"]==\"independent_original_evidence_peer_accepts_v39_existing63_outer_timeout_negative_only\" and\n            peer[\"reviewer\"]==\"/root/handover_review\" and peer[\"candidate_head\"]==HEAD and\n            peer[\"original_evidence_proof\"]==roles[\"independent_proof\"],\"accepted bounded peer scope\")\n    require(proof[\"status\"]==\"independently_inspected_original_v39_existing63_outer_timeout_negative\" and\n            proof[\"candidate_head\"]==HEAD and proof[\"input_count\"]==len(proof[\"all_input_pins\"])==877,\n            \"complete original-only inspection inventory\")\n    for row in proof[\"all_input_pins\"]:\n        require(row in timeout_basis[\"required_raw_files\"],\"every original inspected version retained\")\n    flags(peer[\"scope\"],false=(\"Main_access\",\"current_process_queries\",\"current_source_rehash\",\n                              \"cache_or_binary_reads\",\"native_or_candidate_or_auditor_execution\",\n                              \"original_receipts_modified\",\"configuration_or_release_issued\"))\n    flags(root,true=(\"original_closed_evidence_accepted_as_negative\",\"Root_full_peer_and_inspector_source_read\",\n                     \"Root_independent_current_before_seal_rehash\",\"Root_all50_raw_query_streams_independently_decoded\",\n                     \"Root_inspector_two_hunk_raw_inverse_replayed\",\"missing_original_closure_not_reconstructed\",\n                     \"original_partial_group_postseal_and_source_sealed_false_preserved\",\n                     \"current_against_before_rehash_equal\",\"all_observed_original_process_instances_closed\"),\n          false=(\"original_final_present\",\"original_result_present\",\"complete_buildquery_accepted\",\n                 \"positive_buildquery_accepted\",\"partial_groups_admissible\",\"metadata_audit_performed\",\n                 \"observed_helper_binding_performed\",\"runtime_configuration_issued\",\n                 \"source_inspection_negative_is_native_attempt\",\"native_execution_authorized\",\n                 \"runtime_authority\",\"source_mutation_hold_released\",\"product_qualification\",\"qualification\"))\n    require(all(root[k] is None for k in (\"actual_metadata_count\",\"accepted_metadata_count\",\n            \"original_source_postseal\",\"original_environment_restoration\",\"source_bookends_raw_equal\")),\n            \"all missing original closure fields remain unknown\")\n    require(root[\"granted_groups\"]==proof[\"granted_group_order\"]==existing63 and\n            root[\"declared_controls\"]==proof[\"declared_controls\"]==1249 and root[\"attempted_groups\"]==proof[\"attempted_groups\"]==51 and\n            root[\"unstarted_groups\"]==proof[\"unstarted_groups\"]==existing63[51:],\"exact63/51/12 source cohort\")\n    require(root[\"compile_owners\"]==proof[\"compile_owners\"]==51 and root[\"metadata_owners\"]==proof[\"metadata_owners\"]==50 and\n            root[\"runtime_owners\"]==proof[\"runtime_owners\"]==0 and root[\"observed_native_owners\"]==proof[\"native_owners\"]==101 and\n            root[\"provisional_compile_and_metadata_groups\"]==proof[\"provisional_groups\"]==50,\"all original native owners and cutpoint\")\n    require(root[\"partial_compile_only_group\"]==existing63[50]==\"native-sdk-tool-search-public\" and\n            root[\"complete_groups_accepted\"]==proof[\"complete_groups_accepted\"]==0 and\n            root[\"selected_tests_started\"]==proof[\"selected_tests_started\"]==0,\"no promoted group or runtime\")\n    counts = root[\"observed_partial_group_counts\"]\n    require(counts==proof[\"observed_partial_group_counts\"] and len(counts)==50 and\n            all(type(n) is int and n>0 for n in counts) and\n            sum(counts)==root[\"observed_partial_metadata_records\"]==proof[\"observed_partial_metadata_count\"]==985,\n            \"985 raw partial query records, never accepted metadata\")\n    require(all(proof[k] is None for k in (\"original_final\",\"original_batch_result\",\"original_source_postseal\",\n            \"original_environment_restoration\",\"accepted_total_metadata_count\")),\"independent peer preserves the same unknowns\")\n    m = membership[4];pp,pc=Path(m[\"proof\"]),Path(m[\"control\"])\n    require(m==timeout_basis[\"phase_membership\"] and m[\"proof_top_level_files\"]==[\"before.json\"] and\n            not (pp/\"final.json\").exists() and not (pp/\"result.json\").exists(),\"only the original before seal exists\")\n    require(root[\"original_before\"]==archived_pin(pp/\"before.json\")==timeout_basis[\"raw_before_without_final\"] and\n            row_by_path[str(pp/\"before.json\").casefold()][\"representation\"]==\"raw_byte_exact\",\n            \"single original before seal retained raw, no synthetic compression partner\")\n    require(root[\"original_outer\"]==archived_pin(pc/\"outer.json\") and\n            root[\"original_outer_absence\"]==archived_pin(pc/\"outer-absence.json\") and\n            root[\"original_job_observation\"]==archived_pin(pc/\"independent-observed-job-status.json\"),\n            \"exact original outer and durable job receipts\")\n    closure = document(root[\"root_current_closure\"])\n    require(root[\"root_current_closure\"]==archived_pin(pc/\"root-outer-timeout-negative-closure.json\") and\n            closure[\"status\"]==\"root_reviewed_closed_v39_existing63_outer_timeout_negative\" and\n            closure[\"reviewer\"]==\"Root\" and closure[\"candidate_head\"]==HEAD,\"separate Root current closure\")\n    require(closure[\"seal_counts\"]==root[\"seal_counts\"]==CLOSED_BUILD_SEAL_COUNTS and\n            closure[\"current_distinct_files_rehashed\"]==root[\"distinct_current_files_rehashed\"]==36915 and\n            closure[\"current_against_before_rehash_equal\"] is True and closure[\"current_source_head_clean\"] is True and\n            closure[\"current_original_owner_instances_and_possible_direct_descendants_absent\"] is True,\n            \"Root separately closed current source and process instances\")\n    require(closure[\"original_final_present\"] is False and closure[\"original_result_present\"] is False and\n            closure[\"original_batch_source_postseal\"] is None and closure[\"original_controller_environment_restored\"] is None and\n            closure[\"source_bookends_raw_equal\"] is None and closure[\"missing_original_records_not_reconstructed\"] is True,\n            \"current Root closure does not reconstruct absent original postseal/restoration\")\n    require(proof[\"Root_current_source_and_process_closure\"][\"receipt\"]==root[\"root_current_closure\"] and\n            peer[\"Root_current_source_and_process_closure\"]==proof[\"Root_current_source_and_process_closure\"] and\n            root[\"current_process_observation\"]==closure[\"current_process_observation\"] and\n            root[\"current_process_observation\"]==archived_pin(pc/\"root-current-owner-instance-absence.json\"),\n            \"original-only peer and separate current authority are not conflated\")\n    outer,absence,job=doc(pc/\"outer.json\"),doc(pc/\"outer-absence.json\"),doc(pc/\"independent-observed-job-status.json\")[\"data\"]\n    require(outer[\"status\"]==\"timeout\" and outer[\"timeout_seconds\"]==root[\"outer_timeout_seconds\"]==1800 and\n            outer[\"pid\"]==49640 and outer[\"exit_code\"]==root[\"outer_exit_code\"]==-1 and\n            outer[\"termination_verified\"] is True and absence[\"currently_absent\"] is True and absence[\"current_records\"]==[],\n            \"original timed-out outer and termination observation retained\")\n    require(job==closure[\"original_job\"] and job[\"id\"]==root[\"durable_job_id\"]==\n            \"job-op-68e7e3262f296a6d0fb4a275f57024fff8c8df3219ed4e23930d2f6588032394\" and\n            job[\"status\"]==\"failed\" and job[\"exitCode\"]==root[\"durable_job_exit_code\"]==1 and job[\"runnerAlive\"] is False and\n            job[\"runnerProcessInstance\"]==closure[\"runner_process_instance_string_preserved\"]==proof[\"runner_process_instance\"]==\n            \"134371646432880998\",\"original failed job with exact decimal100ns runner instance\")\n    require(closure[\"first_child_grant_age_100ns\"]==proof[\"first_child_grant_age100ns\"]==\"663316294\",\n            \"actual admitted first child met unchanged freshness gate\")\n    require(raw(pc/\"outer.stdout.bin\")==\"\".join(\"Group \"+g+\" completed actual BuildQuery phases; awaiting whole-batch closure\\r\\n\"\n            for g in existing63[:50]).encode() and raw(pc/\"outer.stderr.log\")==b\"\",\"exact50 original controller progress lines, no final result\")\n    grant=doc(pc/\"root-grant.json\")\n    require(grant[\"candidate_head\"]==HEAD and grant[\"groups\"]==existing63 and grant[\"mode\"]==\"BuildQuery\" and\n            grant[\"actual_metadata_count\"] is None and grant[\"outer_controller_seconds\"]==1800 and\n            grant[\"driver_sha256\"]==DRIVER_SHA,\"original strict complete63 grant retained\")\n    require(len(proof[\"owner_intervals\"])==len(closure[\"observed_owners\"])==101 and\n            [v[\"group\"] for v in proof[\"group_observations\"]]==existing63[:51],\"all101 exact observed intervals\")\n    for record,observed in zip(proof[\"owner_intervals\"],closure[\"observed_owners\"]):\n        require(all(record[k]==observed[k] for k in (\"group\",\"phase\",\"owner\",\"pid\",\"created_utc\",\"completed_utc\",\"exit_code\")),\n                \"same native owner identities and full timestamp strings across independent inspections\")\n        owner=document(record[\"owner\"])\n        require(owner[\"pid\"]==record[\"pid\"] and owner[\"retained_handle\"]==record[\"retained_handle\"] and\n                owner[\"created_utc\"]==record[\"created_utc\"] and owner[\"completed_utc\"]==record[\"completed_utc\"] and\n                owner[\"status\"]==\"passed\" and owner[\"exit_code\"]==0 and owner[\"timeout_seconds\"]==record[\"deadline_seconds\"],\n                \"every original native owner remains terminal0, distinct from outer timeout\")\n        a=document(record[\"original_absence\"])\n        require(a[\"status\"]==\"closed\" and a[\"global_native\"]==[] and a[\"evidence\"][\"valid\"] is True and\n                a[\"evidence\"][\"current_owner_pid_present\"]==0 and a[\"evidence\"][\"current_owned_descendants\"]==[] and\n                a[\"evidence\"][\"absence_error\"] is None,\"original101 phase absence records preserved\")\n    for index,group in enumerate(existing63[:50]):\n        gd=pp/\"groups\"/group\n        provisional=doc(gd/\"result-provisional.json\")\n        require(provisional[\"status\"]==\"awaiting_batch_closure\" and provisional[\"postseal\"] is False and\n                provisional[\"attempted_phases\"]==provisional[\"owned_started_phases\"]==[\"compile\",\"metadata\"] and\n                provisional[\"native_selected_tests_started\"] is None,\"all50 provisional negative closure flags\")\n        flags(provisional,false=(\"runtime_requested\",\"runtime_owner_launch_attempted\",\"actual_runtime_owner_started\"))\n        for phase in (\"compile\",\"metadata\"):\n            q=provisional[\"phases\"][phase]\n            require(q[\"failure\"] is None and q[\"original_execution_failure\"] is None and q[\"owner_binding\"][\"status\"]==\"passed\" and\n                    q[\"postchecks\"][\"source_sealed\"] is False,\"phase terminal0 cannot substitute for missing batch source closure\")\n        selected=doc(gd/\"selected-tests.json\");observed=proof[\"group_observations\"][index]\n        require(selected[\"tests\"]==observed[\"metadata_names\"] and selected[\"actual_count\"]==counts[index] and\n                observed[\"metadata_raw\"]==archived_pin(gd/\"metadata.stdout.bin\") and raw(gd/\"metadata.stderr.log\")==b\"\",\n                \"exact independently decoded partial metadata retained with original bytes\")\n        require(not (gd/\"result.json\").exists(),\"no synthesized final group result\")\n    last=pp/\"groups\"/existing63[50]\n    require(not (last/\"metadata.json\").exists() and not (last/\"selected-tests.json\").exists() and\n            not (last/\"result-provisional.json\").exists() and not (last/\"result.json\").exists(),\n            \"group51 remains compile-only with no invented query or provisional record\")\n    require(root[\"preserved_Root_inspector_provenance\"]==peer[\"retained_Root_inspector_provenance\"]==\n            proof[\"retained_Root_inspector_provenance\"] and root[\"preserved_Root_inspector_provenance\"][\"native_attempt\"] is False,\n            \"Root inspector assumption/correction remains separate non-native provenance\")\n    return {\"name\":\"V39 existing63 original outer-timeout BuildQuery negative\",\"status\":root[\"status\"],\"source_head\":HEAD,\n      \"batch\":\"existing63\",\"negative_kind\":root[\"negative_kind\"],\"root_acceptance\":root_pin,\n      \"root_current_closure\":root[\"root_current_closure\"],\"independent_original_evidence_peer\":roles[\"independent_peer\"],\n      \"independent_original_evidence_proof\":roles[\"independent_proof\"],\"historical_checkpoint\":roles[\"historical_checkpoint\"],\n      \"granted_groups\":copy.deepcopy(existing63),\"declared_groups\":63,\"declared_controls\":1249,\n      \"attempted_groups\":51,\"unstarted_groups\":copy.deepcopy(existing63[51:]),\"compile_owners\":51,\"metadata_owners\":50,\"runtime_owners\":0,\n      \"native_owner_failures\":0,\"native_validation_negative\":True,\"provisional_groups\":50,\"complete_groups_accepted\":0,\n      \"observed_partial_metadata_records\":985,\"observed_partial_group_counts\":copy.deepcopy(counts),\"accepted_metadata_count\":None,\n      \"actual_metadata_count\":None,\"selected_tests_started\":0,\"runtime_configuration_issued\":False,\n      \"original_before\":root[\"original_before\"],\"original_final\":None,\"original_result\":None,\n      \"original_source_postseal\":None,\"original_environment_restoration\":None,\"original_source_bookends_raw_equal\":None,\n      \"original_missing_closure_not_reconstructed\":True,\"original_provisional_negative_flags_preserved\":True,\n      \"outer_timeout_seconds\":1800,\"outer_exit_code\":-1,\"durable_job_exit_code\":1,\n      \"Root_current_source_and_process_closure_separate\":True,\"distinct_current_files_rehashed_by_Root\":36915,\n      \"preserved_Root_inspector_provenance\":copy.deepcopy(root[\"preserved_Root_inspector_provenance\"]),\n      \"original_evidence_unchanged\":True,\"complete_buildquery_accepted\":False,\"metadata_audit_performed\":False,\n      \"partial_groups_admissible\":False,\"source_inspection_negatives_are_provenance_only\":True,\n      \"new_native_execution_authorized\":False,\"source_mutation_hold_released\":False,\n      \"runtime_qualification\":False,\"product_qualification\":False}\n",
+      "input_bytes": 73695,
+      "input_sha256": "304453C1CF55F85735213A6FD45057DD05E1C8536C72CCBD1346DB23B195D5B6",
+      "output_bytes": 88573,
+      "output_sha256": "3B8D5FBC2BD61DF93C64C482707702A2812461A72CA5E08B5D3407241D8B4F05",
+      "unchanged_prefix_sha256": "07B4F7C6D5EC07A61C216BD371ED8D2969B128227C8F81EB529E6D90756460F5",
+      "unchanged_suffix_sha256": "0328CB6DB7983BEF65374B45D0F19D5E0515932F0B6B32CD35D5F72577FCC40E"
+    },
+    {
+      "step": 16,
+      "label": "validate timeout before payload construction",
+      "offset_in_step_input": 64696,
+      "before": "native_negative_record = check_new3_compile_negative()",
+      "after": "native_negative_record = check_new3_compile_negative()\nexisting63_negative = check_existing63_timeout_negative()",
+      "input_bytes": 88573,
+      "input_sha256": "3B8D5FBC2BD61DF93C64C482707702A2812461A72CA5E08B5D3407241D8B4F05",
+      "output_bytes": 88631,
+      "output_sha256": "F49326E46F8AFB9B271A0403E9E27A0803BE2F04B5EE99D14836D495B8DE94DB",
+      "unchanged_prefix_sha256": "039B6110BDC4B071271300626567F3CD52E57F8963871EC4C91CD9D508B4127A",
+      "unchanged_suffix_sha256": "B4E5CECD13AE1717E64EB30B8B76D3B7F900B749D099118AF398A3AC388C105D"
+    },
+    {
+      "step": 17,
+      "label": "retain nonnative timeout inspector provenance",
+      "offset_in_step_input": 65482,
+      "before": " \"source_inspection_and_authoring_observations_are_validation_attempts\":False,",
+      "after": " \"existing63_Root_inspector_observation\":copy.deepcopy(existing63_negative[\"preserved_Root_inspector_provenance\"]),\n \"existing63_historical_checkpoint\":copy.deepcopy(timeout_basis[\"role_pins\"][\"historical_checkpoint\"]),\n \"source_inspection_and_authoring_observations_are_validation_attempts\":False,",
+      "input_bytes": 88631,
+      "input_sha256": "F49326E46F8AFB9B271A0403E9E27A0803BE2F04B5EE99D14836D495B8DE94DB",
+      "output_bytes": 88851,
+      "output_sha256": "AE88BD2AA34BB2046CBBBDC2E129F29EE1A793DE849CED81C3E1EF4EE52B3A02",
+      "unchanged_prefix_sha256": "1432A0AA3F3F991AF6735219534C687AA1CC51C9A341009CC0B86897C3329AC4",
+      "unchanged_suffix_sha256": "16C15BFF97774AF2A984E21A453D1DD885D3D0AE1E4FE256C6A3B7D338F0FE32"
+    },
+    {
+      "step": 18,
+      "label": "resolved guard call removed only after accepted timeout validator",
+      "offset_in_step_input": 65858,
+      "before": "require_unresolved_existing63()\n\npayloads,",
+      "after": "\npayloads,",
+      "input_bytes": 88851,
+      "input_sha256": "AE88BD2AA34BB2046CBBBDC2E129F29EE1A793DE849CED81C3E1EF4EE52B3A02",
+      "output_bytes": 88819,
+      "output_sha256": "150A34657F34AB79ED840E6B33ADA92D6D78F20B1E2663829C5691D1FB039C37",
+      "unchanged_prefix_sha256": "7C324B20872B161BCB1D13FBDD1EE3D69F3327ADFB312F823EE8097AC070C84F",
+      "unchanged_suffix_sha256": "CDD58D95A8AED6406CC81738559C32E1E492B0F63F19C9F59AD632BBF8334514"
+    },
+    {
+      "step": 19,
+      "label": "raw bookend admission limited to original four complete proof shapes",
+      "offset_in_step_input": 69345,
+      "before": "# Any future phase not explicitly selected for equal-pair gzip retains both raw originals.\nfor m in membership:",
+      "after": "# The four prior phases retain their complete original bookends; the timeout validator requires its lone before raw.\nfor m in membership[:4]:",
+      "input_bytes": 88819,
+      "input_sha256": "150A34657F34AB79ED840E6B33ADA92D6D78F20B1E2663829C5691D1FB039C37",
+      "output_bytes": 88849,
+      "output_sha256": "1B1FB728687AD8DC684B0DC0CA4D9DAFD777388206027A7C97A646138727CE85",
+      "unchanged_prefix_sha256": "6CE7E028996B1C303A3DBB19ADFFF01CCA2524CD71DC11DD160922BAAAA81B6B",
+      "unchanged_suffix_sha256": "2F7DA2087EF6F9E4694667AF2BFBFA931518934D41E4943ED595ECD3B84BA5C3"
+    },
+    {
+      "step": 20,
+      "label": "five actual attempts only",
+      "offset_in_step_input": 69755,
+      "before": "# Only these four closed validation attempts are implemented in this source draft.\n# The existing63 gate above is an unconditional pre-staging stop until separately adapted.",
+      "after": "# Only these five original validation attempts are recorded, after exact closed-outcome acceptance gates.",
+      "input_bytes": 88849,
+      "input_sha256": "1B1FB728687AD8DC684B0DC0CA4D9DAFD777388206027A7C97A646138727CE85",
+      "output_bytes": 88781,
+      "output_sha256": "FF047D4FEA5EA57CDFF54055CE0EBA67D84DD96D40A896814AF40F94FE5D2EEE",
+      "unchanged_prefix_sha256": "46360DBAA6DCE5FFE011410F843BCA7508B1E73B8ECE4047611EEFE236F7FC43",
+      "unchanged_suffix_sha256": "AB94F0FC582F5E8F8B6D0C4EF13877AB0A7D87964438377DFBC5C7FAC663C89B"
+    },
+    {
+      "step": 21,
+      "label": "append fifth attempt",
+      "offset_in_step_input": 70344,
+      "before": " copy.deepcopy(native_negative_record),\n]",
+      "after": " copy.deepcopy(native_negative_record),\n copy.deepcopy(existing63_negative),\n]",
+      "input_bytes": 88781,
+      "input_sha256": "FF047D4FEA5EA57CDFF54055CE0EBA67D84DD96D40A896814AF40F94FE5D2EEE",
+      "output_bytes": 88818,
+      "output_sha256": "F061C0C441D04BE7A592479D148661E14E2B7CCCBD7EB7E6284B3DA3FD5E4AA8",
+      "unchanged_prefix_sha256": "939840ABED3057EE8114AFBB84F2E80465195E9670AA350B9C9DFB05866E8CF5",
+      "unchanged_suffix_sha256": "42F0DC643AB1AC9BEFB371400DA667D47543EDF3CE24CF7700529AE8B229603A"
+    },
+    {
+      "step": 22,
+      "label": "resolved negative scope status",
+      "offset_in_step_input": 70997,
+      "before": "\"status\":\"closed_new3_negatives_new4_positive_existing63_unresolved\"",
+      "after": "\"status\":\"closed_new3_negatives_new4_positive_existing63_outer_timeout_negative\"",
+      "input_bytes": 88818,
+      "input_sha256": "F061C0C441D04BE7A592479D148661E14E2B7CCCBD7EB7E6284B3DA3FD5E4AA8",
+      "output_bytes": 88830,
+      "output_sha256": "2B109BBE6EDF91BE686DCED8532C8BC48C72F9782026F6110F56A956BE1C5032",
+      "unchanged_prefix_sha256": "4EC856809131D21103A3F2967C503886551BECD221B4ED713F1B376EC7C7120B",
+      "unchanged_suffix_sha256": "F79809678581DFF6BF30EC2A7F0EE892D2805CB23776FFA64BC6B4441E40E4F4"
+    },
+    {
+      "step": 23,
+      "label": "partial observation distinct from accepted existing63 metadata",
+      "offset_in_step_input": 71607,
+      "before": " \"existing63_actual_metadata_count\":None,\"existing63_actual_group_counts\":None,\n \"existing63_buildquery_outcome\":None,\"existing63_runtime_outcome\":None,",
+      "after": " \"existing63_actual_metadata_count\":None,\"existing63_actual_group_counts\":None,\n \"existing63_observed_partial_metadata_records\":985,\n \"existing63_observed_partial_group_counts\":copy.deepcopy(existing63_negative[\"observed_partial_group_counts\"]),\n \"existing63_buildquery_outcome\":copy.deepcopy(existing63_negative),\n \"existing63_runtime_outcome\":{\"status\":\"not_issued\",\"runtime_owners\":0,\"selected_tests_started\":0},",
+      "input_bytes": 88830,
+      "input_sha256": "2B109BBE6EDF91BE686DCED8532C8BC48C72F9782026F6110F56A956BE1C5032",
+      "output_bytes": 89093,
+      "output_sha256": "D2338BA0648DFEE0F0EDCCE6C6874B88AAEDB54C6E86778ABE2228B27988139E",
+      "unchanged_prefix_sha256": "63B2CEDA200AC767872D71541A0E4F2B0C9263DFA5117503324594CC1E055E14",
+      "unchanged_suffix_sha256": "6DA6D4A1D6C6CBCB2A94C7611571F0E104969FC0B06931032B8B8DE846B0DD95"
+    },
+    {
+      "step": 24,
+      "label": "resolved negative next-plan status",
+      "offset_in_step_input": 72290,
+      "before": "status=\"v39_closed_new3_negatives_and_new4_positive_existing63_unresolved_no_preparation_authority\"",
+      "after": "status=\"v39_new3_fixture_negative_existing63_outer_timeout_negative_closed_awaiting_separate_next_scope\"",
+      "input_bytes": 89093,
+      "input_sha256": "D2338BA0648DFEE0F0EDCCE6C6874B88AAEDB54C6E86778ABE2228B27988139E",
+      "output_bytes": 89098,
+      "output_sha256": "B50A10ED26C94DA8EF82918BE964EE099E8C805B845AFF29F06CDDB685C38F6A",
+      "unchanged_prefix_sha256": "93674BA2E200D792D3F5795DD7A1ED00734D20E1DCFD352DD077865E75E44530",
+      "unchanged_suffix_sha256": "C818DD9833D9776E2D9884D700F8AB76F4DDB2449404DE3BE8477765433AB77A"
+    },
+    {
+      "step": 25,
+      "label": "actual negative next plan requirements",
+      "offset_in_step_input": 72875,
+      "before": "              \"New4 has separately accepted61 metadata and61 strict runtime completions. Existing63 remains unknown in this draft. \"\n              \"The unresolved acceptance-contract gate must receive a separately reviewed terminal-outcome source successor \"\n              \"before this preparer can stage any progress or archive. No source, native or product authority is issued.\")",
+      "after": "              \"New4 has separately accepted61 metadata and61 strict runtime completions. Existing63 closed as an outer1800-second timeout \"\n              \"after51 compiles and50 metadata queries. Its985 raw partial entries are not accepted metadata, and no runtime was issued. \"\n              \"Original final/result/postseal/environment restoration remain unknown. Source repairs and any future complete native run \"\n              \"require separate exact review and release; this evidence-only preparation issues no source, native or product authority.\")",
+      "input_bytes": 89098,
+      "input_sha256": "B50A10ED26C94DA8EF82918BE964EE099E8C805B845AFF29F06CDDB685C38F6A",
+      "output_bytes": 89271,
+      "output_sha256": "9A4C191D878EDEA44064B072D713E9AA4CA25A625CF93E48FC2C1A89A27BE580",
+      "unchanged_prefix_sha256": "73C63EF50CAF0D5C7DF7A15B6A72C0FE8A1462BE6DF3A08DACC0FF2B7DD7D4AD",
+      "unchanged_suffix_sha256": "A55825490788C8BCCE781ED20509C7DDEBCE69D779DF13497DF9FD4C7ECE2826"
+    },
+    {
+      "step": 26,
+      "label": "append two distinct native-validation negatives",
+      "offset_in_step_input": 73521,
+      "before": "updated[\"retained_recent_native_negatives\"].append(copy.deepcopy(native_negative_record))",
+      "after": "updated[\"retained_recent_native_negatives\"].extend(copy.deepcopy([native_negative_record,existing63_negative]))",
+      "input_bytes": 89271,
+      "input_sha256": "9A4C191D878EDEA44064B072D713E9AA4CA25A625CF93E48FC2C1A89A27BE580",
+      "output_bytes": 89293,
+      "output_sha256": "A31C6F69D6CBFB636C43E5424E60E0D0CFA5392D91F5FD6874BBDAD891E0D850",
+      "unchanged_prefix_sha256": "8861F9AC2F0B41DFD4C288F5BC86DFD5F5DD3A87DD23E9CFD5324957E9DEF111",
+      "unchanged_suffix_sha256": "F79B83F938264AA610CCA0CA67FD03D8A2E1F6E80A4C6EEC82711418F28B18AE"
+    },
+    {
+      "step": 27,
+      "label": "checkpoint exact closed timeout status",
+      "offset_in_step_input": 73816,
+      "before": "schema=10,status=\"v39_closed_new3_negatives_new4_positive_existing63_unresolved_source_draft\"",
+      "after": "schema=10,status=\"v39_closed_new3_fixture_negative_new4_positive_existing63_outer_timeout_negative\"",
+      "input_bytes": 89293,
+      "input_sha256": "A31C6F69D6CBFB636C43E5424E60E0D0CFA5392D91F5FD6874BBDAD891E0D850",
+      "output_bytes": 89299,
+      "output_sha256": "72E8A6AB8741C918F2C7B44013F261CDD45C36E7BCFF8BCE50E9D201642B626F",
+      "unchanged_prefix_sha256": "4C89FE743AC9D52A6164B65CF1273F52342ECFDFEC773E2C9FD33BD74D654FC1",
+      "unchanged_suffix_sha256": "05C45D06B3C679AA02FBA0C6454BB2D5E9B14D3EA6E00DF3AC4DA152CA3D1F15"
+    },
+    {
+      "step": 28,
+      "label": "checkpoint carries actual timeout outcome",
+      "offset_in_step_input": 74109,
+      "before": " v39_new4=copy.deepcopy(new4),v39_existing63_acceptance_contract=copy.deepcopy(copy_plan[\"cohorts\"][\"existing63\"]),",
+      "after": " v39_new4=copy.deepcopy(new4),v39_existing63_acceptance_contract=copy.deepcopy(copy_plan[\"cohorts\"][\"existing63\"]),\n v39_existing63_timeout_negative=copy.deepcopy(existing63_negative),",
+      "input_bytes": 89299,
+      "input_sha256": "72E8A6AB8741C918F2C7B44013F261CDD45C36E7BCFF8BCE50E9D201642B626F",
+      "output_bytes": 89368,
+      "output_sha256": "1F42F02EF805AAC10C2184F48D1E71EA4B24248F8B0F93A997AA1E619B601537",
+      "unchanged_prefix_sha256": "ADCBD7170C68C9A0DF1DE6BB968237945F4826687AAA18C8C4A930C705391941",
+      "unchanged_suffix_sha256": "2911680308DF866AD37860CDB338A7CEA1B7353B8FE8D47064CF75730535123E"
+    },
+    {
+      "step": 29,
+      "label": "checkpoint outcome resolved as negative only",
+      "offset_in_step_input": 74450,
+      "before": " v39_existing63_outcome_resolved=False,runtime_qualification=False,",
+      "after": " v39_existing63_outcome_resolved=True,runtime_qualification=False,",
+      "input_bytes": 89368,
+      "input_sha256": "1F42F02EF805AAC10C2184F48D1E71EA4B24248F8B0F93A997AA1E619B601537",
+      "output_bytes": 89367,
+      "output_sha256": "D7B64DF0AC19BD66938EA7AB0895558167CFB689355E10902889F1C2B85005F4",
+      "unchanged_prefix_sha256": "63463E3CDB287869C85822B138E68D205C22DB7404C92763B48DDD30DBA1A97F",
+      "unchanged_suffix_sha256": "9C2378AB4AD76FFB9E3611B28D6A7DE96374C1F049CA5D03044541847A2B2EC6"
+    },
+    {
+      "step": 30,
+      "label": "progress five observed attempts text",
+      "offset_in_step_input": 74869,
+      "before": "\"V39 source-only draft preserves four closed validation attempts at e9: original new3 prelaunch freshness rejection, \"",
+      "after": "\"V39 source-only preparation preserves five closed validation attempts at e9: original new3 prelaunch freshness rejection, \"",
+      "input_bytes": 89367,
+      "input_sha256": "D7B64DF0AC19BD66938EA7AB0895558167CFB689355E10902889F1C2B85005F4",
+      "output_bytes": 89373,
+      "output_sha256": "CEC8AF201F0C5FDA7393F6F2FC054C4FEC5A47BC3166C7BDF7EC8C7F40EAA066",
+      "unchanged_prefix_sha256": "9A421A103CC5028F9B7A60C0B14E06E4AF81F9B97350F221EBECFBE02F8D3FB6",
+      "unchanged_suffix_sha256": "82AB77FAB47137806EEAE84887DA94301F63AA363D11D6B3D1F12FCF1819FB81"
+    },
+    {
+      "step": 31,
+      "label": "progress fifth attempt description",
+      "offset_in_step_input": 74995,
+      "before": "\"new4 complete fresh BuildQuery61, accepted original new4 strict runtime61/61, and admitted new3 retry1 compiler fixture failure. \"",
+      "after": "\"new4 complete fresh BuildQuery61, accepted original new4 strict runtime61/61, admitted new3 retry1 compiler fixture failure, and the original63 outer timeout. \"",
+      "input_bytes": 89373,
+      "input_sha256": "CEC8AF201F0C5FDA7393F6F2FC054C4FEC5A47BC3166C7BDF7EC8C7F40EAA066",
+      "output_bytes": 89403,
+      "output_sha256": "3EAE252FEC84BD1A9C0C3C17D97C010564CA93CC828467869A04AF344DC68A66",
+      "unchanged_prefix_sha256": "A9195000890B204F7CB4ADE8C2A8899D974CAF68FBD79DB9170FE4D92DEF7DCB",
+      "unchanged_suffix_sha256": "9ED123A75B30DECC2A93532E5500D7E8252421B1DE16EB4BD5E705D0EBE8DAA8"
+    },
+    {
+      "step": 32,
+      "label": "progress preserves partial evidence and absent original closure",
+      "offset_in_step_input": 75306,
+      "before": "\"Existing63 metadata and runtime outcomes remain unresolved; no partial progress is treated as terminal acceptance. \"",
+      "after": "\"Existing63 has51 terminal-zero compiles,50 terminal-zero queries and985 partial metadata entries; all50 provisional source-seal gates remain false. \"\n \"Twelve groups were unstarted and group51 has no query. Accepted metadata stays null, no runtime was issued, and original final/result/postseal/environment restoration stay unknown. \"",
+      "input_bytes": 89403,
+      "input_sha256": "3EAE252FEC84BD1A9C0C3C17D97C010564CA93CC828467869A04AF344DC68A66",
+      "output_bytes": 89621,
+      "output_sha256": "0D79F8344C44A9AC05F848CAEE1485FE99A9CB2FFF283F024255B94BDFABA5F7",
+      "unchanged_prefix_sha256": "328975493765885094BDC9AA97CF914C9BB045CEE5D1CD00E33957441B23EBB5",
+      "unchanged_suffix_sha256": "362F3820183C8795A0CA937E8A65A1631C111D2D986A873BE58D72933158D038"
+    },
+    {
+      "step": 33,
+      "label": "two actual validation negatives separate from inspection provenance",
+      "offset_in_step_input": 75750,
+      "before": "\"Only the actual compiler validation failure would extend native-negative history; source inspection and authoring observations remain separate provenance. \"",
+      "after": "\"Only the admitted compiler failure and original outer-deadline validation failure extend native-negative history; source inspection and authoring observations remain separate provenance. \"",
+      "input_bytes": 89621,
+      "input_sha256": "0D79F8344C44A9AC05F848CAEE1485FE99A9CB2FFF283F024255B94BDFABA5F7",
+      "output_bytes": 89653,
+      "output_sha256": "D5B22FDA441F04812AC885944F389714C4151C500B05C365EED9776AC88C80EC",
+      "unchanged_prefix_sha256": "1B9B294B986BFCF3FB83EF8E094A16942BAA3E08B0DAF7BEC1B73CA86EF46672",
+      "unchanged_suffix_sha256": "D9E9497B3BD2FFB1EF1EFDDC9011C92E76DFA7972266F49D712BF6B1E15A649F"
+    },
+    {
+      "step": 34,
+      "label": "separate Root execution requirement instead of unresolved outcome",
+      "offset_in_step_input": 75941,
+      "before": "\"This unexecuted draft cannot stage progress/archive until a separately reviewed terminal-existing63 outcome successor replaces its hard stop. \"",
+      "after": "\"This unexecuted source still requires exact Root source/copy-plan/configuration acceptance before evidence-only staging. \"",
+      "input_bytes": 89653,
+      "input_sha256": "D5B22FDA441F04812AC885944F389714C4151C500B05C365EED9776AC88C80EC",
+      "output_bytes": 89632,
+      "output_sha256": "51FDFA09DFD7A5136075D2561348777A20CF1C3FA2640942436D9C6E22314D62",
+      "unchanged_prefix_sha256": "2236069992BB2B8766FECF68B5445076781DC28BEE2591C8413AC4CA01D3E854",
+      "unchanged_suffix_sha256": "3100A0B1EDCEE788E6389D4F1937C4A0CCF303E3F278362C883B215C472174A3"
+    },
+    {
+      "step": 35,
+      "label": "record timeout beside acceptance contract",
+      "offset_in_step_input": 76457,
+      "before": " \"new4\":copy.deepcopy(new4),\"existing63_acceptance_contract\":copy.deepcopy(copy_plan[\"cohorts\"][\"existing63\"]),",
+      "after": " \"new4\":copy.deepcopy(new4),\"existing63_acceptance_contract\":copy.deepcopy(copy_plan[\"cohorts\"][\"existing63\"]),\n \"existing63_timeout_negative\":copy.deepcopy(existing63_negative),",
+      "input_bytes": 89632,
+      "input_sha256": "51FDFA09DFD7A5136075D2561348777A20CF1C3FA2640942436D9C6E22314D62",
+      "output_bytes": 89699,
+      "output_sha256": "ECA5036D5BA17D3E99AB280DFC155815FB7C3B4D731DF48791B577822FBE7349",
+      "unchanged_prefix_sha256": "59143B3A9652B91FC93CE789DD4E7D02E299048443A7C8C8C23CB6BCDA4933BB",
+      "unchanged_suffix_sha256": "7C079E4BFC91DCA3EA9558DDF8C1A2BFEBE0140EF75066925AB342F78E46F79C"
+    },
+    {
+      "step": 36,
+      "label": "five attempts and accepted/partial metadata distinct",
+      "offset_in_step_input": 76747,
+      "before": " \"known_closed_attempts\":4,\"known_closed_actual_metadata\":61,\"aggregate_actual_metadata_count\":None,",
+      "after": " \"known_closed_attempts\":5,\"known_closed_actual_metadata\":61,\"aggregate_actual_metadata_count\":None,\n \"observed_existing63_partial_metadata\":985,\"existing63_accepted_metadata_count\":None,",
+      "input_bytes": 89699,
+      "input_sha256": "ECA5036D5BA17D3E99AB280DFC155815FB7C3B4D731DF48791B577822FBE7349",
+      "output_bytes": 89786,
+      "output_sha256": "C55D1249B781F2C9796499EE712C72191FFA44615258C7363732732A704074B8",
+      "unchanged_prefix_sha256": "EDDA4B1E0694BE843DC32F7F963D8CF194FEEED5AE5FC4EC0C0F511E756C5F0F",
+      "unchanged_suffix_sha256": "41BFCD68A23131B9CFA286B6BD701EB23B15B0A367BDFDD4729E5072F4E2AB27"
+    },
+    {
+      "step": 37,
+      "label": "top record outcome resolved only negative",
+      "offset_in_step_input": 77275,
+      "before": " \"existing63_outcome_resolved\":False,\"metadata_transferred_to_another_head\":False,",
+      "after": " \"existing63_outcome_resolved\":True,\"metadata_transferred_to_another_head\":False,",
+      "input_bytes": 89786,
+      "input_sha256": "C55D1249B781F2C9796499EE712C72191FFA44615258C7363732732A704074B8",
+      "output_bytes": 89785,
+      "output_sha256": "20F45159E46BBB21801577565F2476F88895CBD0C5B77893DCC1E7A7AD9404FC",
+      "unchanged_prefix_sha256": "EAC0CB69A42B3B0FA589DA17A1FBC055ECE20286A90391B41B32225DF7F57F50",
+      "unchanged_suffix_sha256": "30F7CCC5E37479CD02F5457C31883ABE507DEA568897E5DA32E0608824F5BCF7"
+    },
+    {
+      "step": 38,
+      "label": "exact two negative suffix with preserved prefix",
+      "offset_in_step_input": 78158,
+      "before": "require(updated[\"retained_recent_native_negatives\"][:-1]==old[\"retained_recent_native_negatives\"] and\n        updated[\"retained_recent_native_negatives\"][-1]==native_negative_record,\"only actual partial native failure extends native-negative history\")",
+      "after": "require(updated[\"retained_recent_native_negatives\"][:-2]==old[\"retained_recent_native_negatives\"] and\n        updated[\"retained_recent_native_negatives\"][-2:]==[native_negative_record,existing63_negative],\n        \"only two actual native-validation negatives extend the unchanged history\")",
+      "input_bytes": 89785,
+      "input_sha256": "20F45159E46BBB21801577565F2476F88895CBD0C5B77893DCC1E7A7AD9404FC",
+      "output_bytes": 89823,
+      "output_sha256": "9C33452EDB9FA7F5ADC7046DB4A9BD81A615DF786BD09569D4D39E9E601FF71F",
+      "unchanged_prefix_sha256": "9F6FBA395243E35C073215A9F3384CDE56E0D6334835E6C35793E2A8091A58EC",
+      "unchanged_suffix_sha256": "04C2F108213EFC60ED6ED6D052D26A74D76611AC75D4E103D3BEA4F053983818"
+    },
+    {
+      "step": 39,
+      "label": "exact history increments",
+      "offset_in_step_input": 78573,
+      "before": "increments = {\"integrated_source_units\":0,\"preserved_attempts\":4,\"retained_recent_native_negatives\":1,\"execution_checkpoint_history\":1}",
+      "after": "increments = {\"integrated_source_units\":0,\"preserved_attempts\":5,\"retained_recent_native_negatives\":2,\"execution_checkpoint_history\":1}",
+      "input_bytes": 89823,
+      "input_sha256": "9C33452EDB9FA7F5ADC7046DB4A9BD81A615DF786BD09569D4D39E9E601FF71F",
+      "output_bytes": 89823,
+      "output_sha256": "5FCD6841B6CDF8E426EE1A91900E8FCDAFB7BDEDD9C01FFD6C3A2776762D48BD",
+      "unchanged_prefix_sha256": "83F66848D6A9C32BD73F6706C5BBFA8DA5706C9D02DDE6F97F433AE160D605D4",
+      "unchanged_suffix_sha256": "6F73DEA47B27FB153713558DCB5C2142B9E4EC92CB52DEB04CA01D4A81968AA4"
+    },
+    {
+      "step": 40,
+      "label": "archive timeout basis automatic preparation input",
+      "offset_in_step_input": 80066,
+      "before": " (\"inert-plan-handoff.json\",fixed(\"handoff\"),exact(fixed(\"handoff\"))),",
+      "after": " (\"inert-plan-handoff.json\",fixed(\"handoff\"),exact(fixed(\"handoff\"))),\n (\"timeout-observed-inputs.json\",fixed(\"timeout\"),exact(fixed(\"timeout\"))),",
+      "input_bytes": 89823,
+      "input_sha256": "5FCD6841B6CDF8E426EE1A91900E8FCDAFB7BDEDD9C01FFD6C3A2776762D48BD",
+      "output_bytes": 89899,
+      "output_sha256": "59B3F039981F8BF413A2E8F04C8C6E63FC023C9587BC14BFC565F29683BEF5C7",
+      "unchanged_prefix_sha256": "264617EBBD0718B64B53BA427CE54029EFAD20C667B15977F8900799C502513D",
+      "unchanged_suffix_sha256": "5CA731FEF2BE409770369CA3E36C5BBE7685393E23540A35BB4174DF3E7DA7A0"
+    },
+    {
+      "step": 41,
+      "label": "history report actual increments",
+      "offset_in_step_input": 81826,
+      "before": "\"native_negative_records_added\":1,\"non_native_negative_records\":1,\"observed_attempts_added\":4",
+      "after": "\"native_negative_records_added\":2,\"non_native_negative_records\":1,\"observed_attempts_added\":5",
+      "input_bytes": 89899,
+      "input_sha256": "59B3F039981F8BF413A2E8F04C8C6E63FC023C9587BC14BFC565F29683BEF5C7",
+      "output_bytes": 89899,
+      "output_sha256": "2EB660ECAD5A9EFB43AD71D49E7CC21B3E18FC194F323C9A9CC0CCC65865BFE5",
+      "unchanged_prefix_sha256": "0DCECBBEDCDD61A8E35D467DED5B2551E3BD5757604E2B6140CA128179C3BD3D",
+      "unchanged_suffix_sha256": "AE9AAEFCE31B9A9875B84AC511CEF8252EFD6B601326F23638CF9C0732C39749"
+    },
+    {
+      "step": 42,
+      "label": "archive index observed timeout status",
+      "offset_in_step_input": 82194,
+      "before": "\"status\":\"exact_closed_v39_new3_negatives_new4_positive_existing63_unresolved_draft\"",
+      "after": "\"status\":\"exact_closed_v39_new3_negatives_new4_positive_existing63_outer_timeout_negative\"",
+      "input_bytes": 89899,
+      "input_sha256": "2EB660ECAD5A9EFB43AD71D49E7CC21B3E18FC194F323C9A9CC0CCC65865BFE5",
+      "output_bytes": 89905,
+      "output_sha256": "17CE3E54607E9DBB3E183A38559322DCB6C28FFBED11339EBD3C7B9900FD72F3",
+      "unchanged_prefix_sha256": "39707DAC3E94B64ED97E4E568703806DCFA3B9E35F3BBAE8678C27CC0826BC36",
+      "unchanged_suffix_sha256": "C772C209FB8F62B24AC95CF5D42CA92024D3B1BD42832AF5EEABEAE224EE7A5A"
+    },
+    {
+      "step": 43,
+      "label": "nine actual original seals include lone before",
+      "offset_in_step_input": 82566,
+      "before": " \"represented_original_bookend_files\":8,\"compressed_bookend_pairs\":len(seal_mappings),\n \"separately_archived_raw_bookend_files\":8-2*len(seal_mappings),",
+      "after": " \"represented_original_bookend_files\":9,\"compressed_bookend_pairs\":len(seal_mappings),\n \"separately_archived_raw_bookend_files\":9-2*len(seal_mappings),\n \"existing63_before_retained_raw\":True,\"existing63_original_final\":None,\"existing63_original_result\":None,",
+      "input_bytes": 89905,
+      "input_sha256": "17CE3E54607E9DBB3E183A38559322DCB6C28FFBED11339EBD3C7B9900FD72F3",
+      "output_bytes": 90012,
+      "output_sha256": "C1AF4F6B27F98E1123D6388AFF4920E1163177EC0EC2D0F439B92E9F790F6202",
+      "unchanged_prefix_sha256": "AB0F2DD46D60FEFF38B535B42886B020C42A5BA0743130865A3AF3CE4DB5943D",
+      "unchanged_suffix_sha256": "088B1F9C87EC5A253847AAADCCC5748F93DC7204564D950713FF0F5AA52E5100"
+    },
+    {
+      "step": 44,
+      "label": "unissued actual timeout archive manifest status",
+      "offset_in_step_input": 83718,
+      "before": "\"status\":\"exact_v39_closed_phases_unresolved63_progress_archive_intake_unissued\"",
+      "after": "\"status\":\"exact_v39_closed_validation_and_timeout_progress_archive_intake_unissued\"",
+      "input_bytes": 90012,
+      "input_sha256": "C1AF4F6B27F98E1123D6388AFF4920E1163177EC0EC2D0F439B92E9F790F6202",
+      "output_bytes": 90015,
+      "output_sha256": "2862ADA163BE33105552ADB013E53DA20DF50B8F4860AEC72DBB5CAAB69C4717",
+      "unchanged_prefix_sha256": "80D68737E94E81CB78661A7F3FFAAA5FBDEBCD61FE070AEE41E08ED7C62DD92D",
+      "unchanged_suffix_sha256": "05553721CB7E906555FC25BD65C1AEC2A1B4C2E5A6E8AA4F267347494A571429"
+    },
+    {
+      "step": 45,
+      "label": "manifest negative resolved flag",
+      "offset_in_step_input": 84264,
+      "before": "\"new4_complete_buildquery_and_strict_runtime_verified\":True,\"existing63_outcome_resolved\":False,",
+      "after": "\"new4_complete_buildquery_and_strict_runtime_verified\":True,\"existing63_outcome_resolved\":True,\n \"existing63_original_outer_timeout_preserved\":True,\"existing63_accepted_metadata_count\":None,",
+      "input_bytes": 90015,
+      "input_sha256": "2862ADA163BE33105552ADB013E53DA20DF50B8F4860AEC72DBB5CAAB69C4717",
+      "output_bytes": 90109,
+      "output_sha256": "80A5EB4712872C3A2C16113CFAE91207C1CF8919079C37159441F802C89C089E",
+      "unchanged_prefix_sha256": "026B894F54FBA79DF726BAD858BA901CF7ED6314345EA91E3738D148F3541FB1",
+      "unchanged_suffix_sha256": "AC45F48C67EA6842721430A38D7CD640CB629BC10EA5567CC9DBDA7ABCABFBCB"
+    },
+    {
+      "step": 46,
+      "label": "future prepared review status",
+      "offset_in_step_input": 88470,
+      "before": "\"status\":\"source_only_exact_v39_closed_phases_unresolved63_archive_prepared\"",
+      "after": "\"status\":\"source_only_exact_v39_closed_validation_and_timeout_archive_prepared\"",
+      "input_bytes": 90109,
+      "input_sha256": "80A5EB4712872C3A2C16113CFAE91207C1CF8919079C37159441F802C89C089E",
+      "output_bytes": 90112,
+      "output_sha256": "A95D5C5A172A50CD950C2FB75B85D8DBEBDDA791EAB6CB3B4CF789BE123A8378",
+      "unchanged_prefix_sha256": "90EED5BEF0EBCED497CB080270A21FC7BA7A402C6D5B63E700D90A174D9021CA",
+      "unchanged_suffix_sha256": "AD260917C348399D85B86BEB3678D281115F291F0B6045DFE8CE8B6B239BEA70"
+    },
+    {
+      "step": 47,
+      "label": "future review partial-only outcome",
+      "offset_in_step_input": 89081,
+      "before": " \"new3_accepted_metadata_count\":None,\"existing63_actual_metadata\":None,\"existing63_outcome_resolved\":False,",
+      "after": " \"new3_accepted_metadata_count\":None,\"existing63_actual_metadata\":None,\"existing63_outcome_resolved\":True,\n \"existing63_observed_partial_metadata\":985,\"existing63_original_final\":None,\"existing63_original_result\":None,\n \"existing63_original_source_postseal\":None,\"existing63_original_environment_restoration\":None,",
+      "input_bytes": 90112,
+      "input_sha256": "A95D5C5A172A50CD950C2FB75B85D8DBEBDDA791EAB6CB3B4CF789BE123A8378",
+      "output_bytes": 90319,
+      "output_sha256": "2C2C77E79CE0F355A9BCA889979E5325C18206A1AE12E8324E43C6DC8B144CBB",
+      "unchanged_prefix_sha256": "6EF8B618EB222E92ED532878065E89391B84C7937CF7CCEDC15C66F6DDAFBD61",
+      "unchanged_suffix_sha256": "A741632E1E21FE67F69BD8A08CE2DDD3789EBC31D0E9F9A618739414E05CBBD1"
+    },
+    {
+      "step": 48,
+      "label": "future review nine originals no false gzip partner",
+      "offset_in_step_input": 89530,
+      "before": "\"compressed_bookend_pairs\":len(seal_mappings),\"represented_original_bookends\":8,",
+      "after": "\"compressed_bookend_pairs\":len(seal_mappings),\"represented_original_bookends\":9,",
+      "input_bytes": 90319,
+      "input_sha256": "2C2C77E79CE0F355A9BCA889979E5325C18206A1AE12E8324E43C6DC8B144CBB",
+      "output_bytes": 90319,
+      "output_sha256": "0BD97D2A52ADF9FC624222163049C44DB8D7928BEBB9D5F36B2738BD3735ECF2",
+      "unchanged_prefix_sha256": "9F759F3299035ED4F4A21FE1E0E1D8758FC55B525F749615658AAFC55A70FEA9",
+      "unchanged_suffix_sha256": "26E0908879B87717130E965EAC9210C8EBFD81193D8AA2A139F2363643BFF473"
+    }
+  ],
+  "complete_forward_and_inverse_exact": true,
+  "all_untouched_prefixes_and_suffixes_verified": true,
+  "AST_parse_only": true,
+  "unchanged_helpers": [
+    {
+      "name": "add",
+      "bytes": 431,
+      "sha256": "385C5EAE6AC4073023F459C7D28A0BCAD4CD3AEDF9803C2050D658E63575944E",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "archived_pin",
+      "bytes": 201,
+      "sha256": "CD3EB4CCACA76A24AFE7C0AFB4536B0CEB75AB6427B2085A133049493C6DF68D",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "check_new3_compile_negative",
+      "bytes": 9619,
+      "sha256": "EDCFB2204638E22F2EB1090F91DA9383BF3F8FAD4BF47F79C141577A0FD51E11",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "check_new3_prelaunch",
+      "bytes": 6727,
+      "sha256": "06A676E191EF5FC4F351C0164CA31B98DB0152EC8D40AEF9B74AD640062ADA9F",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "check_positive",
+      "bytes": 12485,
+      "sha256": "B28664ADD8C13213CA1CDA61F27B7889B2AC6DB77212F5605349122A1E154028",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "decode",
+      "bytes": 64,
+      "sha256": "EF61BA410755AA19D9DFF86842943E163FBC98C7AE9C7E7DBBEE2E490B6EC433",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "doc",
+      "bytes": 67,
+      "sha256": "D0A102EE80BFD9E62AF70BAD1BB5A7CA6B4FABDC6122DA914D847EE75DC6843E",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "document",
+      "bytes": 128,
+      "sha256": "61C465F70390DA5E8C3E923D889FB46C6A62C1E57D741AA722D85C203092FF0F",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "encode",
+      "bytes": 99,
+      "sha256": "F48F8E12BB29E258011E33C6B3EE45E63949EE84DD711022DB3CDA20DF9E1C4A",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "exact",
+      "bytes": 575,
+      "sha256": "2DE72446DC44AED90649C1AD6E21B003A87886624210EC1F57BFCE7C5889A1FE",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "fixed",
+      "bytes": 109,
+      "sha256": "E4BD6B78460C0B035F07A93BEF1238FC094ED1CCADAB31EBA622A75506401B3C",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "flags",
+      "bytes": 211,
+      "sha256": "83397C4CB51A98CFCDD2A7B52A75CB8F0EDED1AFB5507E3D2CF235A8E1AD03C3",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "frozen_ref",
+      "bytes": 115,
+      "sha256": "6C3912E94928F5879D29948D72AF4C0AD6628F0C2C6B343000B49E5F59135438",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "get",
+      "bytes": 88,
+      "sha256": "6FBAEE101D356219745756CAA08AC56CC7F01B178794377F9141C90C8DA7481C",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "git",
+      "bytes": 310,
+      "sha256": "1BE81168B4BD188E3FF8C2AD55F2C53C5DFAC9D63D332AA418A678D78A342854",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "gzip_bytes",
+      "bytes": 181,
+      "sha256": "F3FEE0F7502E42C5112750BEE55ED802E1C682B161214427D9A1A1DFB138E237",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "inside",
+      "bytes": 745,
+      "sha256": "DC1ABC0B743C7EB9475C5505B43A336FE7ACD4F6148739A61034EFF3F2E1AACF",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "list_paths",
+      "bytes": 309,
+      "sha256": "8350FAE5574FC03BC157863B1982C34B8346A5E09F4CA0B4D326480A9BA7E242",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "names",
+      "bytes": 110,
+      "sha256": "EC13812C0206A705A0A20F1EA85938BD1CAD5B307525CE82946132C8102036D7",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "pin",
+      "bytes": 84,
+      "sha256": "3EB4C8D07A7681290D722A16CC43DAB867CA7D886ADB1B07D9EBB71CB53C4029",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "raw",
+      "bytes": 69,
+      "sha256": "AC11B1C0C471E55D72DC96B1C3377F4B7281367BDB6CE4E23EC14A16856CCA05",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "relative",
+      "bytes": 534,
+      "sha256": "D843A26B0950595C46DE852F1D1B27B961DE70BDBED0D9978FD81A95148ECAB6",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "require",
+      "bytes": 74,
+      "sha256": "958F6B995DD5F2799D63FA134494121FD41DD97506C20485426BC902771514E9",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "retained_pin",
+      "bytes": 130,
+      "sha256": "91D191B71B954DE8FB351A0EECB3B0D0499040AF51557657F02F7813F6392034",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "selected_observed",
+      "bytes": 108,
+      "sha256": "986D6D40324EEA30B9A869273508730C2947A77D9217ED11F39C8333168522F8",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "sha",
+      "bytes": 65,
+      "sha256": "ACC12A90964A54F651A83AA95D98D6C1DA6A3CECA2C91DE37FC32A3E285A0AB9",
+      "raw_equal": true,
+      "AST_equal": true
+    }
+  ],
+  "unchanged_non_outcome_helpers": [
+    {
+      "name": "add",
+      "bytes": 431,
+      "sha256": "385C5EAE6AC4073023F459C7D28A0BCAD4CD3AEDF9803C2050D658E63575944E",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "archived_pin",
+      "bytes": 201,
+      "sha256": "CD3EB4CCACA76A24AFE7C0AFB4536B0CEB75AB6427B2085A133049493C6DF68D",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "decode",
+      "bytes": 64,
+      "sha256": "EF61BA410755AA19D9DFF86842943E163FBC98C7AE9C7E7DBBEE2E490B6EC433",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "doc",
+      "bytes": 67,
+      "sha256": "D0A102EE80BFD9E62AF70BAD1BB5A7CA6B4FABDC6122DA914D847EE75DC6843E",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "document",
+      "bytes": 128,
+      "sha256": "61C465F70390DA5E8C3E923D889FB46C6A62C1E57D741AA722D85C203092FF0F",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "encode",
+      "bytes": 99,
+      "sha256": "F48F8E12BB29E258011E33C6B3EE45E63949EE84DD711022DB3CDA20DF9E1C4A",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "exact",
+      "bytes": 575,
+      "sha256": "2DE72446DC44AED90649C1AD6E21B003A87886624210EC1F57BFCE7C5889A1FE",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "fixed",
+      "bytes": 109,
+      "sha256": "E4BD6B78460C0B035F07A93BEF1238FC094ED1CCADAB31EBA622A75506401B3C",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "flags",
+      "bytes": 211,
+      "sha256": "83397C4CB51A98CFCDD2A7B52A75CB8F0EDED1AFB5507E3D2CF235A8E1AD03C3",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "frozen_ref",
+      "bytes": 115,
+      "sha256": "6C3912E94928F5879D29948D72AF4C0AD6628F0C2C6B343000B49E5F59135438",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "get",
+      "bytes": 88,
+      "sha256": "6FBAEE101D356219745756CAA08AC56CC7F01B178794377F9141C90C8DA7481C",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "git",
+      "bytes": 310,
+      "sha256": "1BE81168B4BD188E3FF8C2AD55F2C53C5DFAC9D63D332AA418A678D78A342854",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "gzip_bytes",
+      "bytes": 181,
+      "sha256": "F3FEE0F7502E42C5112750BEE55ED802E1C682B161214427D9A1A1DFB138E237",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "inside",
+      "bytes": 745,
+      "sha256": "DC1ABC0B743C7EB9475C5505B43A336FE7ACD4F6148739A61034EFF3F2E1AACF",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "list_paths",
+      "bytes": 309,
+      "sha256": "8350FAE5574FC03BC157863B1982C34B8346A5E09F4CA0B4D326480A9BA7E242",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "names",
+      "bytes": 110,
+      "sha256": "EC13812C0206A705A0A20F1EA85938BD1CAD5B307525CE82946132C8102036D7",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "pin",
+      "bytes": 84,
+      "sha256": "3EB4C8D07A7681290D722A16CC43DAB867CA7D886ADB1B07D9EBB71CB53C4029",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "raw",
+      "bytes": 69,
+      "sha256": "AC11B1C0C471E55D72DC96B1C3377F4B7281367BDB6CE4E23EC14A16856CCA05",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "relative",
+      "bytes": 534,
+      "sha256": "D843A26B0950595C46DE852F1D1B27B961DE70BDBED0D9978FD81A95148ECAB6",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "require",
+      "bytes": 74,
+      "sha256": "958F6B995DD5F2799D63FA134494121FD41DD97506C20485426BC902771514E9",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "retained_pin",
+      "bytes": 130,
+      "sha256": "91D191B71B954DE8FB351A0EECB3B0D0499040AF51557657F02F7813F6392034",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "selected_observed",
+      "bytes": 108,
+      "sha256": "986D6D40324EEA30B9A869273508730C2947A77D9217ED11F39C8333168522F8",
+      "raw_equal": true,
+      "AST_equal": true
+    },
+    {
+      "name": "sha",
+      "bytes": 65,
+      "sha256": "ACC12A90964A54F651A83AA95D98D6C1DA6A3CECA2C91DE37FC32A3E285A0AB9",
+      "raw_equal": true,
+      "AST_equal": true
+    }
+  ],
+  "unchanged_complete_regions": [
+    {
+      "label": "basic pin/path/Git/gzip helpers",
+      "bytes": 3689,
+      "sha256": "FC5AE4A0FECFFC1FA1396BBA2B466CA44F81E159E0E5FA983D0D92FEB9F84FF7",
+      "raw_equal": true
+    },
+    {
+      "label": "exact raw row admission and direct-pin engine",
+      "bytes": 2239,
+      "sha256": "6038E3EBB73C314EA74446B1F58CE59D182287D504BE263E2DC413C7BD6F510E",
+      "raw_equal": true
+    },
+    {
+      "label": "Git attributes and create-only write tail",
+      "bytes": 2936,
+      "sha256": "841D2206BCDE475C09292F4A7FA08765F2D4B4958F3245300E40A6A78FE4A0AF",
+      "raw_equal": true
+    }
+  ],
+  "raw_copy_gzip_region": {
+    "label": "complete raw-copy/gzip region plus one explicit raw-bookend admission hunk",
+    "basis_bytes": 3866,
+    "basis_sha256": "CD984D3C33F4DEF733E51C874AAE1904EDC091CF07F2EF955C4493262D201B06",
+    "candidate_bytes": 3896,
+    "candidate_sha256": "7CF2E3DFB033953E2DD7D3C945DE9DE0AC7911F61F76660F8C3C38ECECD7DDFC",
+    "one_hunk_full_inverse": true,
+    "old": "# Any future phase not explicitly selected for equal-pair gzip retains both raw originals.\nfor m in membership:",
+    "new": "# The four prior phases retain their complete original bookends; the timeout validator requires its lone before raw.\nfor m in membership[:4]:",
+    "all_actual_raw_copy_compression_roundtrip_and_determinism_statements_unchanged": true
+  },
+  "18_config_11_copy_plan_5_row_field_contracts_unchanged": true,
+  "imports_unchanged": true,
+  "new_outcome_guard_before_payload_construction": true,
+  "candidate_or_prefix_executed": false,
+  "Main_or_process_access": false,
+  "native_execution_authorized": false
+}

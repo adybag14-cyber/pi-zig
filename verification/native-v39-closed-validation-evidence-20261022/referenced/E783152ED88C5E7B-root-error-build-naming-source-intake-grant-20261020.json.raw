@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "status": "root_issued_exact_error_artifact_naming_source_intake",
+  "basis_main_head": "160b4e0562f0eb1139bf2e4e9c00f4c10ab6aa64",
+  "branch": "work/pi-zig-consolidated-20261016",
+  "executor_sha256": "F653FDE67CFA1E201615EE5A49451DF1D9B7044D427CED7041F2327A67C891DB",
+  "source_intake_authorized": true,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "authorized_phases": {
+    "error-naming": {
+      "manifest_sha256": "8C09208FC115AC525CCCB4B64A2A921D2FE95FA58179A02D12A8F6CCA1D30617",
+      "total_commit_paths": 19
+    }
+  },
+  "required_current_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-error-build-naming-main-intake-20261020\\manifest.json",
+      "bytes": 11936,
+      "sha256": "8C09208FC115AC525CCCB4B64A2A921D2FE95FA58179A02D12A8F6CCA1D30617"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-error-artifact-naming-review-20261020.json",
+      "bytes": 1374,
+      "sha256": "48E16158FE09367A9E124889FA05D217E33E4212F5DEFF28A66601866E4A30DA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\error-naming-intake-executor-finite-adaptation-20261020.json",
+      "bytes": 2518,
+      "sha256": "A5517EDB2CF6064EE61F285E46A0EA70BACE57FF92C727D678D57C9493826975"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactReviewedErrorNamingIntake-20261020.py",
+      "bytes": 9692,
+      "sha256": "F653FDE67CFA1E201615EE5A49451DF1D9B7044D427CED7041F2327A67C891DB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\proposal.json",
+      "bytes": 12811,
+      "sha256": "262AFAA489DC7620FECE7D077FCB1C7A4904E6B65BC420A8A697B6C2341A158A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-transfer-intake-receipts-20261020\\transfer-receipt.json",
+      "bytes": 10195,
+      "sha256": "3586E361FEED1576F2A36A2AF89A8EAEF8962CFD20B7B7BA11CD2BB497378C0B"
+    }
+  ],
+  "receipt_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-error-build-naming-intake-receipts-20261020",
+  "scope": "Exact two reviewed build edits and immutable source evidence only. All24 controls and strict driver/auditor remain byte-identical. No compiler, runtime, generator, push or cleanup."
+}

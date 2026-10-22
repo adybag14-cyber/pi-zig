@@ -1,0 +1,299 @@
+{
+  "schema": "pi-zig-v36-file-handle-outer-resource-ownership-proof-v1",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\proposal.json",
+    "bytes": 11951,
+    "sha256": "E40157BF97BD043A541247B885680820560135EE4286F896F031B268C6B5FEFB"
+  },
+  "sources": {
+    "fixture": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33137,
+      "sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127"
+    },
+    "callback": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_callback_scope.zig",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E"
+    },
+    "argument": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_argument_values.zig",
+      "bytes": 3512,
+      "sha256": "8331B750FF6D8D2C87B9ECD9FEA9354B2A363BBC022D4ACAA15EDF7954F64DA9"
+    },
+    "scope": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+      "bytes": 7087,
+      "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+    },
+    "boundary": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_commonjs_owned_boundary.zig",
+      "bytes": 9934,
+      "sha256": "29A3ED131BA4D4D952019FD157315270D57613E50236EAAC970534DCFF405CEA"
+    },
+    "binding": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_binding_data.zig",
+      "bytes": 17792,
+      "sha256": "AB6FB9BD2C6442D19B2EC60BCA0F536DD3BC64636971E5C1E2761E25E11277C8"
+    },
+    "existing_fixture": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_read_test_support.zig",
+      "bytes": 23302,
+      "sha256": "F72A583ED548F7BE10477B0AEFD0F77E3D035FB48F2708324AF2E92EB6CA90EC"
+    },
+    "node_callback": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\node-api-callback.v24.13.cc",
+      "bytes": 13682,
+      "sha256": "0A4C8ECF051F995F9669826DC9D85560ADD6ECD6FB2E28CE6B2F3DD309947DE2"
+    },
+    "callback_authority": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-close-settlement-followup-sourceonly-20261020\\authority\\native-callback-and-exception-source.json",
+      "bytes": 20217,
+      "sha256": "008EEC523290C9547E6F4D2BA2AA108E62FCC57BCB8E5ECB730F1548E7F1977C"
+    },
+    "node_env": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority\\node-env.v24.13.cc",
+      "bytes": 84987,
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+    },
+    "env_authority": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-hook-exception-policy-sourceonly-20261020\\authority-acquisition.json",
+      "bytes": 10905,
+      "sha256": "28C98F0DE650DFA0F97E1D1BCE71E2D7EEE0A61012CE36A1732DD46C81DADF7C"
+    },
+    "runtime_negative": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\runtime.stderr.log",
+      "bytes": 45026,
+      "sha256": "E974EC5E5AA6B6EB9FC5BBFF3CC3826DFD7AF8CB3052AC10B4BF38CA8DC6ED0C"
+    },
+    "candidate": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 33152,
+      "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+    }
+  },
+  "exact_excerpt_ranges": [
+    {
+      "id": 1,
+      "source_key": "node_callback",
+      "first_line": 51,
+      "last_line": 111,
+      "bytes": 1871,
+      "sha256": "A242208EEBC425056CF9171F113229F8E01C005C4D15822EF532780E752B6B83",
+      "mapping": "Original constructor accepts a typed Local<Object> or pointer, always pushes async context before checking skip_hooks; destructor closes before pop."
+    },
+    {
+      "id": 2,
+      "source_key": "node_env",
+      "first_line": 123,
+      "last_line": 154,
+      "bytes": 1359,
+      "sha256": "A3BEA37007806CEDE73870EE0B64A09069AD7189DF2CCC2E8C6E281DBDB9F7CE",
+      "mapping": "Original present Local<Object> pointer must be nonempty; native resource vector stores its stable Local pointer, not a Global."
+    },
+    {
+      "id": 3,
+      "source_key": "fixture",
+      "first_line": 302,
+      "last_line": 332,
+      "bytes": 1588,
+      "sha256": "228BBCA375E7B1945681A19E08434FF39E7F9A24FCEB561DCE4FEFDD64313BED",
+      "mapping": "Original fixture supplied a present JS undefined outer resource; existing errdefer and partial-init unwind are retained."
+    },
+    {
+      "id": 4,
+      "source_key": "candidate",
+      "first_line": 310,
+      "last_line": 332,
+      "bytes": 1126,
+      "sha256": "F07F6EFB673122C54E760112170BA0739DEC0D5039153864452403125E6CEF9D",
+      "mapping": "Selected independent escaped bootstrap object is deferred locally through init; the callback scope duplicates it."
+    },
+    {
+      "id": 5,
+      "source_key": "candidate",
+      "first_line": 353,
+      "last_line": 365,
+      "bytes": 799,
+      "sha256": "F615A1A1195B19390290633305F5929B484011FD668A5DE72463C976C417A63C",
+      "mapping": "Bootstrap adds no object properties or roots to BindingData/FileHandle; allocation uses the real existing Scope object path."
+    },
+    {
+      "id": 6,
+      "source_key": "argument",
+      "first_line": 9,
+      "last_line": 14,
+      "bytes": 438,
+      "sha256": "372E4F7BB59CDAB3DC28D7F8871C4E2DF3CB1ACA643D90AC0DC8DC1839348A2F",
+      "mapping": "Duplicate produces a caller entitlement; expression finishes the actual local scope while preserving the explicit escaped return."
+    },
+    {
+      "id": 7,
+      "source_key": "scope",
+      "first_line": 13,
+      "last_line": 27,
+      "bytes": 1166,
+      "sha256": "F20DD9DD82DEF0B9468F34D6BB2FBB046195DC5AC5628B7677AB5E5A619EF53A",
+      "mapping": "Actual allocation generation and checked ownership failure cleanup."
+    },
+    {
+      "id": 8,
+      "source_key": "scope",
+      "first_line": 71,
+      "last_line": 71,
+      "bytes": 176,
+      "sha256": "6F69000496E6782A9004D19FF03AE99D20D387BE7065246C45E12082DF4361CF",
+      "mapping": "Actual plain JS_NewObject allocation through beforeAllocation and checkedAllocation."
+    },
+    {
+      "id": 9,
+      "source_key": "boundary",
+      "first_line": 85,
+      "last_line": 95,
+      "bytes": 789,
+      "sha256": "EA6B33D5C83CCDD6D377F5F15D32BBAD7B25CB941DCA4CB25C447B255A25C8DF",
+      "mapping": "Actual local root ownership, pending rejection and allocation-error release."
+    },
+    {
+      "id": 10,
+      "source_key": "boundary",
+      "first_line": 114,
+      "last_line": 134,
+      "bytes": 1813,
+      "sha256": "02557D961365D9AC064C712AD85D6E17BB64B00B0C5A489D65BE51025BA692F5",
+      "mapping": "Local roots retire while escaped return is separate; failure releases return roots."
+    },
+    {
+      "id": 11,
+      "source_key": "boundary",
+      "first_line": 158,
+      "last_line": 163,
+      "bytes": 505,
+      "sha256": "9F3FFEA79925A565C91E3784992C94929BD899048D9C3E8DE54A6CFE144FD262",
+      "mapping": "Actual finish returns only the surviving escaped owned result."
+    },
+    {
+      "id": 12,
+      "source_key": "callback",
+      "first_line": 671,
+      "last_line": 691,
+      "bytes": 1070,
+      "sha256": "28FB06E65C4B360E9F25CFCA62AF9717E8C415D9510A4584CE4BF63344D22AA7",
+      "mapping": "Scope.init duplicates resource and retains Environment before possible failure; pushes the stable member address independently of skip flags."
+    },
+    {
+      "id": 13,
+      "source_key": "callback",
+      "first_line": 773,
+      "last_line": 791,
+      "bytes": 929,
+      "sha256": "23700464DF05511B32ED39C55DFE9E2335DA0F918AF1A74A67DBA1491D104AE7",
+      "mapping": "Scope.deinit closes, restores previous scope/depth, releases resource/prior frame and its Environment reference."
+    },
+    {
+      "id": 14,
+      "source_key": "fixture",
+      "first_line": 599,
+      "last_line": 630,
+      "bytes": 1502,
+      "sha256": "55B09D7C1C84CA6C7F00E31DB2101B993A1911A922EECE4A42B3645C1E3D37FA",
+      "mapping": "Unchanged fixture teardown deinitializes outer scope before dropping binding target, roots and Engine."
+    },
+    {
+      "id": 15,
+      "source_key": "binding",
+      "first_line": 188,
+      "last_line": 211,
+      "bytes": 1239,
+      "sha256": "1CE6485CC4A0FBDD7BC9D096E1F6C2AB4C0423C2E3DFDAA8FA270CA0C52AEF97",
+      "mapping": "BindingData briefly owns then explicitly weakens its actual target; retaining it as outer resource would change this lifetime."
+    },
+    {
+      "id": 16,
+      "source_key": "binding",
+      "first_line": 293,
+      "last_line": 305,
+      "bytes": 573,
+      "sha256": "15E9729EC09A4F3D61619A7A82A87310C7DDFA4DE9F0B0845FF839E1458F0017",
+      "mapping": "Actual makeWeak drops the strong wrapper and can trigger real native retirement."
+    },
+    {
+      "id": 17,
+      "source_key": "existing_fixture",
+      "first_line": 258,
+      "last_line": 273,
+      "bytes": 681,
+      "sha256": "58782CC422E7DBEFB535DDB4B2A0E17A328E9217566C9A87A31283A51AB91E39",
+      "mapping": "Existing actual FileHandleRead fixture supplies an object wrapper and uses the same partial-init cleanup pattern."
+    }
+  ],
+  "findings": [
+    {
+      "id": "cause",
+      "finding": "All 18 stderr stacks traverse unselectedCheck -> pushBody invalid_resource -> Scope.init -> Fixture.init:329 before named test bodies. skip_async_hooks only bypasses EmitBefore; it does not bypass the actual present-resource check.",
+      "boundary": "Production check and operation signatures remain exact."
+    },
+    {
+      "id": "construction",
+      "finding": "The existing bootstrap's successful return becomes a.duplicate(s.engine, try s.object()). Scope.object uses beforeAllocation and checkedAllocation on real JS_NewObject; the allocated local root and escaped duplicate have separate entitlements.",
+      "boundary": "No constructor bridge, property lookup, fake owner, binding_target or FileHandle alias is introduced."
+    },
+    {
+      "id": "expression_escape",
+      "finding": "a.expression finishes the local scope. Boundary.retire releases local roots while Boundary.finish preserves the explicit escaped result on success; failureRoots releases it on failure.",
+      "boundary": "The initializer owns exactly the returned local entitlement."
+    },
+    {
+      "id": "scope_ownership",
+      "finding": "The initializer defers freeValue(outer_resource), then passes it to the unchanged Scope.init. Scope.init retains Environment and duplicates the resource into stable scope storage before async-context push.",
+      "boundary": "The local release after successful init leaves the independent Scope resource reference alive."
+    },
+    {
+      "id": "error_unwind",
+      "finding": "Bootstrap failure leaves no initialized outer_resource/defer; existing Fixture.init errdefer runs. Any later failure releases the local object via defer. If Scope.init initialized before failing, the unchanged catch marks failed and deinitializes it, retiring the independent Scope resource and Environment references before the local defer and enclosing cleanup.",
+      "boundary": "No extra cleanup branch or swallowed error was introduced."
+    },
+    {
+      "id": "weak_lifetime",
+      "finding": "BindingData.makeWeak drops its strong wrapper; the new plain object has no properties linking to that target or to a FileHandle. The outer Scope therefore does not keep either object alive.",
+      "boundary": "The owner fixture has no permanent FileHandle to use as a resource, unlike the existing read fixture."
+    },
+    {
+      "id": "teardown",
+      "finding": "The unchanged Fixture.deinit destroys the outer scope before dropping target/template roots and Engine. Scope.deinit restores scope/depth, releases prior_frame and resource, then releases Environment.",
+      "boundary": "Complete fixture test bodies and production bytes remain unchanged."
+    },
+    {
+      "id": "scope",
+      "finding": "All four selected root files retain their exact bytes and qualified named control lists: 18 + 3 + 24 + 13 = 58. Only three non-import changes occur in this fixture; 16 Zig import literals plus std remain exact.",
+      "boundary": "The existing conservative import graph topology is retained; no native metadata/runtime result is inferred."
+    }
+  ],
+  "unchanged_imports": {
+    "zig_files": 16,
+    "standard": 1
+  },
+  "unchanged_declared_controls": 58,
+  "full_forward_inverse": true,
+  "unchanged_partial_init_catch_and_fixture_deinit": true,
+  "original_negative": {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\runtime.stderr.log",
+      "bytes": 45026,
+      "sha256": "E974EC5E5AA6B6EB9FC5BBFF3CC3826DFD7AF8CB3052AC10B4BF38CA8DC6ED0C"
+    },
+    "matching_setup_stacks": 18,
+    "not_reinterpreted_as_pass": true
+  },
+  "authoring_prewrite_observation": {
+    "preserved": true,
+    "first_literal_write_attempt": "Stopped before all filesystem writes at a check that compared unqualified source names to qualified catalog names.",
+    "correction": "Compare exact source-stem + .test. + declaration against the actual catalog list. Original fixture/candidate/control semantics were not changed by this authoring check.",
+    "is_compiler_or_native_result": false
+  },
+  "source_only": true,
+  "Main_written": false,
+  "production_changed": false,
+  "compiler_native_reference_generator_executed": false,
+  "runtime_qualified": false
+}

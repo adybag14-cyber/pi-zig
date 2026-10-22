@@ -1,0 +1,96 @@
+"""Finite source author only. Parses but never evaluates the archive candidate."""
+from pathlib import Path
+import ast,hashlib,json
+R=Path(r"C:\Users\adyba\pi-zig\evidence\v39-existing63-timeout-progress-archive-sourceonly-20261022")
+D=R/"authoring/declared-edits.json"
+def sha(raw):return hashlib.sha256(raw).hexdigest().upper()
+def enc(v):return (json.dumps(v,indent=2,ensure_ascii=False)+"\n").encode()
+def pin(p,b=None):
+ if b is None:b=p.read_bytes()
+ return {"path":str(p),"bytes":len(b),"sha256":sha(b)}
+def put(p,b):
+ p.parent.mkdir(parents=True,exist_ok=True)
+ with p.open("xb") as f:f.write(b)
+ assert p.read_bytes()==b
+ return pin(p,b)
+draw=D.read_bytes()
+assert len(draw)==38596 and sha(draw)=="DF6F1C8C7D6F1AE1183366DC68C0C5E8F9533C8A85BEE154719BFB28B1D143C8"
+decl=json.loads(draw);bp=Path(decl["basis"]["path"]);base=bp.read_bytes()
+assert pin(bp,base)==decl["basis"] and len(base)==72511 and sha(base)=="02D8A4504E8741E915621AFE35B3DBDBEC8A8EE8F8D0F1712F9BA3C5C2392C2B"
+assert len(decl["changes"])==48
+raw=base;steps=[]
+for i,change in enumerate(decl["changes"]):
+ a,b=change["old"].encode(),change["new"].encode();assert a and raw.count(a)==1
+ pos=raw.index(a);old=raw;raw=old[:pos]+b+old[pos+len(a):]
+ assert raw[:pos]==old[:pos] and raw[pos+len(b):]==old[pos+len(a):]
+ steps.append({"step":i+1,"label":change["label"],"offset_in_step_input":pos,
+  "before":change["old"],"after":change["new"],
+  "input_bytes":len(old),"input_sha256":sha(old),"output_bytes":len(raw),"output_sha256":sha(raw),
+  "unchanged_prefix_sha256":sha(old[:pos]),"unchanged_suffix_sha256":sha(old[pos+len(a):])})
+candidate=raw;inverse=raw
+for step in reversed(steps):
+ pos=step["offset_in_step_input"];a=step["before"].encode();b=step["after"].encode()
+ assert inverse[pos:pos+len(b)]==b and sha(inverse)==step["output_sha256"]
+ inverse=inverse[:pos]+a+inverse[pos+len(b):]
+ assert sha(inverse)==step["input_sha256"]
+assert inverse==base
+bt,ct=base.decode(),candidate.decode();ba,ca=ast.parse(bt),ast.parse(ct)
+def funcs(text,tree):
+ lines=text.splitlines(keepends=True)
+ return {n.name:("".join(lines[n.lineno-1:n.end_lineno]).encode(),n) for n in tree.body if isinstance(n,ast.FunctionDef)}
+bf,cf=funcs(bt,ba),funcs(ct,ca)
+assert len(bf)==len(cf)==27 and set(bf)-set(cf)=={"require_unresolved_existing63"} and set(cf)-set(bf)=={"check_existing63_timeout_negative"}
+helpers=[]
+for name in sorted(set(bf)&set(cf)):
+ a,n=bf[name];b,m=cf[name];assert a==b and ast.dump(n,include_attributes=False)==ast.dump(m,include_attributes=False)
+ helpers.append({"name":name,"bytes":len(a),"sha256":sha(a),"raw_equal":True,"AST_equal":True})
+assert len(helpers)==26
+non_outcome=[x for x in helpers if x["name"] not in ("check_positive","check_new3_prelaunch","check_new3_compile_negative")]
+assert len(non_outcome)==23
+def span(text,a,b):
+ assert text.count(a)==text.count(b)==1
+ return text[text.index(a):text.index(b)].encode()
+regions=[]
+for label,a,b in [
+ ("basic pin/path/Git/gzip helpers","def require(ok,label):","require(len(sys.argv)==3"),
+ ("exact raw row admission and direct-pin engine","rows = copy_plan[\"rows\"]","for required in preservation[\"required_raw_files\"]:"),
+ ("Git attributes and create-only write tail","entries,entry_aliases = {},set()","review = {")]:
+ x,y=span(bt,a,b),span(ct,a,b);assert x==y
+ regions.append({"label":label,"bytes":len(x),"sha256":sha(x),"raw_equal":True})
+old_raw_scope=span(bt,"payloads,roles,preimages,payload_aliases","# Only these four closed validation attempts")
+new_raw_scope=span(ct,"payloads,roles,preimages,payload_aliases","# Only these five original validation attempts")
+old_gate='# Any future phase not explicitly selected for equal-pair gzip retains both raw originals.\nfor m in membership:'.encode()
+new_gate='# The four prior phases retain their complete original bookends; the timeout validator requires its lone before raw.\nfor m in membership[:4]:'.encode()
+assert old_raw_scope.count(old_gate)==new_raw_scope.count(new_gate)==1
+assert new_raw_scope.replace(new_gate,old_gate,1)==old_raw_scope
+raw_scope={"label":"complete raw-copy/gzip region plus one explicit raw-bookend admission hunk",
+ "basis_bytes":len(old_raw_scope),"basis_sha256":sha(old_raw_scope),"candidate_bytes":len(new_raw_scope),"candidate_sha256":sha(new_raw_scope),
+ "one_hunk_full_inverse":True,"old":old_gate.decode(),"new":new_gate.decode(),
+ "all_actual_raw_copy_compression_roundtrip_and_determinism_statements_unchanged":True}
+assert [ast.dump(n,include_attributes=False) for n in ba.body if isinstance(n,(ast.Import,ast.ImportFrom))]==[ast.dump(n,include_attributes=False) for n in ca.body if isinstance(n,(ast.Import,ast.ImportFrom))]
+def assigned(tree,name):
+ nodes=[n for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id==name for t in n.targets)]
+ assert len(nodes)==1
+ return nodes[0].value
+for name,n in (("CONFIG_KEYS",18),("COPY_KEYS",11),("ROW_KEYS",5)):
+ a,b=ast.literal_eval(assigned(ba,name)),ast.literal_eval(assigned(ca,name));assert a==b and len(a)==n
+assert not any(isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id in ("eval","exec","compile","__import__") for n in ast.walk(ca))
+assert not any(isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=="require_unresolved_existing63" for n in ast.walk(ca))
+guard=next(n for n in ca.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=="existing63_negative" for t in n.targets))
+payload=next(n for n in ca.body if isinstance(n,ast.Assign) and isinstance(n.targets[0],ast.Tuple) and any(isinstance(t,ast.Name) and t.id=="payloads" for t in n.targets[0].elts))
+assert isinstance(guard.value,ast.Call) and guard.value.func.id=="check_existing63_timeout_negative" and guard.lineno<payload.lineno
+assert all(n.lineno>guard.lineno for statement in ca.body if not isinstance(statement,ast.FunctionDef) for n in ast.walk(statement) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr in ("mkdir","write"))
+assert decl["candidate_filename"]=="Prepare-V39ClosedValidationAndTimeoutArchive-20261022.py"
+cp=R/"candidate"/decl["candidate_filename"]
+candidate_pin=put(cp,candidate)
+finite={"schema":1,"status":"unexecuted_finite_actual_existing63_timeout_outcome_successor",
+ "basis":decl["basis"],"candidate":candidate_pin,"declared_edits":pin(D),"author":pin(Path(__file__)),
+ "step_count":len(steps),"steps":steps,"complete_forward_and_inverse_exact":True,
+ "all_untouched_prefixes_and_suffixes_verified":True,"AST_parse_only":True,
+ "unchanged_helpers":helpers,"unchanged_non_outcome_helpers":non_outcome,
+ "unchanged_complete_regions":regions,"raw_copy_gzip_region":raw_scope,
+ "18_config_11_copy_plan_5_row_field_contracts_unchanged":True,
+ "imports_unchanged":True,"new_outcome_guard_before_payload_construction":True,
+ "candidate_or_prefix_executed":False,"Main_or_process_access":False,"native_execution_authorized":False}
+fp=put(R/"finite-source-adaptation.json",enc(finite))
+print(json.dumps({"candidate":candidate_pin,"finite":fp,"counts":{"steps":len(steps),"unchanged_functions":len(helpers),"non_outcome_helpers":len(non_outcome),"unchanged_regions":len(regions),"one_raw_scope_admission_hunk":True}}))

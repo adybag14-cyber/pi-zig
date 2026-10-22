@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "summary": "Read logs for background job job-op-f6c3ae43152b319798cc6b102ce49dc0d4abb9334c9fafe3ff7ec3d0a44d5ca1.",
+  "data": {
+    "id": "job-op-f6c3ae43152b319798cc6b102ce49dc0d4abb9334c9fafe3ff7ec3d0a44d5ca1",
+    "status": "failed",
+    "stdout": "",
+    "stderr": "Owned terminal failed: C:\\Program Files\\PowerShell\\7\\pwsh.exe\r\n",
+    "maxChars": 2000,
+    "logs": {
+      "stdout": {
+        "totalBytes": 0,
+        "segments": [
+          {
+            "index": 0,
+            "bytes": 0
+          }
+        ],
+        "rotated": false
+      },
+      "stderr": {
+        "totalBytes": 63,
+        "segments": [
+          {
+            "index": 0,
+            "bytes": 63
+          }
+        ],
+        "rotated": false
+      },
+      "maxBytesPerSegment": 33554432,
+      "rotations": 2,
+      "truncated": false
+    }
+  },
+  "exitCode": null,
+  "truncated": false
+}

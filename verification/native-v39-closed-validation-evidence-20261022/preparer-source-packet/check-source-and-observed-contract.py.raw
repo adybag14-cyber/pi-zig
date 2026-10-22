@@ -1,0 +1,206 @@
+"""Independent static data/source checks only; no candidate or prefix evaluation."""
+from pathlib import Path
+import ast,hashlib,json
+R=Path(r"C:\Users\adyba\pi-zig\evidence\v39-existing63-timeout-progress-archive-sourceonly-20261022")
+B=R.parent.parent;E=B/"evidence"
+HEAD="e9f11afa56a923372d957e2fb227f453822c21bf"
+seen={}
+def sha(raw):return hashlib.sha256(raw).hexdigest().upper()
+def enc(v):return (json.dumps(v,indent=2,ensure_ascii=False)+"\n").encode()
+def read(row):
+ p=Path(row["path"]);assert p.is_relative_to(E) or (p.is_relative_to(B/"worktrees") and "verification" in p.parts)
+ assert not any(x in ("cache","global-cache","installed",".zig-cache","zig-out") for x in p.parts)
+ assert p.suffix.lower() not in (".exe",".dll",".pdb")
+ raw=p.read_bytes();q={"path":str(p),"bytes":len(raw),"sha256":sha(raw)};assert q==row
+ k=str(p).casefold();assert k not in seen or seen[k]==q;seen[k]=q
+ return raw
+def doc(row):return json.loads(read(row))
+def pin(p):
+ raw=p.read_bytes();return {"path":str(p),"bytes":len(raw),"sha256":sha(raw)}
+def put(name,value):
+ p=R/name;raw=enc(value)
+ with p.open("xb") as f:f.write(raw)
+ assert p.read_bytes()==raw
+ return pin(p)
+F={"path":str(R/"finite-source-adaptation.json"),"bytes":74668,"sha256":"18701EE0A99AA55ACDE8890127DA750531B2BC30E390DCF3C80B9142A4C70DA6"}
+T={"path":str(R/"timeout-observed-inputs.json"),"bytes":611205,"sha256":"AE1E3516FD64740C6348FB98BE834F5E57CD4339F4D066A54C20673A9FE6ADB3"}
+f=doc(F);t=doc(T);base=read(f["basis"]);selected=read(f["candidate"])
+assert len(selected)==90319 and sha(selected)=="0BD97D2A52ADF9FC624222163049C44DB8D7928BEBB9D5F36B2738BD3735ECF2"
+cur=base
+for h in f["steps"]:
+ assert len(cur)==h["input_bytes"] and sha(cur)==h["input_sha256"]
+ pos=h["offset_in_step_input"];a=h["before"].encode();b=h["after"].encode()
+ assert cur[pos:pos+len(a)]==a and cur.count(a)==1
+ assert sha(cur[:pos])==h["unchanged_prefix_sha256"] and sha(cur[pos+len(a):])==h["unchanged_suffix_sha256"]
+ cur=cur[:pos]+b+cur[pos+len(a):]
+ assert len(cur)==h["output_bytes"] and sha(cur)==h["output_sha256"]
+assert cur==selected and len(f["steps"])==48
+for h in reversed(f["steps"]):
+ pos=h["offset_in_step_input"];a=h["before"].encode();b=h["after"].encode()
+ assert cur[pos:pos+len(b)]==b;cur=cur[:pos]+a+cur[pos+len(b):]
+ assert sha(cur)==h["input_sha256"]
+assert cur==base
+bt,ct=base.decode(),selected.decode();ba,ca=ast.parse(bt),ast.parse(ct)
+def funcs(text,tree):
+ lines=text.splitlines(keepends=True)
+ return {n.name:("".join(lines[n.lineno-1:n.end_lineno]).encode(),n) for n in tree.body if isinstance(n,ast.FunctionDef)}
+bf,cf=funcs(bt,ba),funcs(ct,ca)
+assert len(bf)==len(cf)==27 and set(bf)-set(cf)=={"require_unresolved_existing63"} and set(cf)-set(bf)=={"check_existing63_timeout_negative"}
+for row in f["unchanged_helpers"]:
+ a,n=bf[row["name"]];b,m=cf[row["name"]];assert a==b and len(a)==row["bytes"] and sha(a)==row["sha256"]
+ assert ast.dump(n,include_attributes=False)==ast.dump(m,include_attributes=False)
+assert len(f["unchanged_helpers"])==26 and len(f["unchanged_non_outcome_helpers"])==23
+assert [ast.dump(n,include_attributes=False) for n in ba.body if isinstance(n,(ast.Import,ast.ImportFrom))]==[ast.dump(n,include_attributes=False) for n in ca.body if isinstance(n,(ast.Import,ast.ImportFrom))]
+def value(tree,name):
+ q=[n for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(z,ast.Name) and z.id==name for z in n.targets)]
+ assert len(q)==1
+ return q[0].value
+config_keys=ast.literal_eval(value(ca,"CONFIG_KEYS"));copy_keys=ast.literal_eval(value(ca,"COPY_KEYS"));row_keys=ast.literal_eval(value(ca,"ROW_KEYS"))
+assert config_keys==ast.literal_eval(value(ba,"CONFIG_KEYS")) and len(config_keys)==18
+assert copy_keys==ast.literal_eval(value(ba,"COPY_KEYS")) and len(copy_keys)==11
+assert row_keys==ast.literal_eval(value(ba,"ROW_KEYS")) and len(row_keys)==5
+def span(text,a,b):
+ assert text.count(a)==text.count(b)==1
+ return text[text.index(a):text.index(b)].encode()
+regions=[]
+for label,a,b in [
+ ("basic helpers","def require(ok,label):","require(len(sys.argv)==3"),
+ ("raw row/direct pin engine","rows = copy_plan[\"rows\"]","for required in preservation[\"required_raw_files\"]:"),
+ ("Git/attributes/create-only write tail","entries,entry_aliases = {},set()","review = {")]:
+ x,y=span(bt,a,b),span(ct,a,b);assert x==y;regions.append({"name":label,"bytes":len(x),"sha256":sha(x)})
+x=span(bt,"payloads,roles,preimages,payload_aliases","# Only these four closed validation attempts")
+y=span(ct,"payloads,roles,preimages,payload_aliases","# Only these five original validation attempts")
+r=f["raw_copy_gzip_region"];assert y.count(r["new"].encode())==1 and y.replace(r["new"].encode(),r["old"].encode(),1)==x
+assert len(t["required_raw_files"])==t["required_raw_file_count"]==908 and len(t["phase_file_pins"])==t["phase_file_count"]==872
+for q in t["required_raw_files"]:read(q)
+roles=t["role_pins"];root=doc(roles["root_acceptance"]);peer=doc(roles["independent_peer"]);proof=doc(roles["independent_proof"])
+closure=doc(root["root_current_closure"]);prior=doc(roles["predecessor_handoff"]);prior_review=doc(roles["predecessor_source_acceptance"])
+assert prior["candidate"]==f["basis"] and prior_review["preparer"]==f["basis"]
+assert root["status"]=="root_accepted_closed_v39_existing63_outer_timeout_negative" and root["candidate_head"]==HEAD
+assert proof["input_count"]==len(proof["all_input_pins"])==877
+assert all(q in t["required_raw_files"] for q in proof["all_input_pins"])
+assert root["root_current_closure"]==proof["Root_current_source_and_process_closure"]["receipt"]
+assert peer["Root_current_source_and_process_closure"]==proof["Root_current_source_and_process_closure"]
+assert root["preserved_Root_inspector_provenance"]==peer["retained_Root_inspector_provenance"]==proof["retained_Root_inspector_provenance"]
+assert root["current_process_observation"]==closure["current_process_observation"]
+groups=root["granted_groups"];assert len(groups)==63 and groups==proof["granted_group_order"] and len(set(groups))==63
+assert root["observed_partial_metadata_records"]==proof["observed_partial_metadata_count"]==985
+assert root["observed_partial_group_counts"]==proof["observed_partial_group_counts"] and sum(root["observed_partial_group_counts"])==985
+assert root["actual_metadata_count"] is root["accepted_metadata_count"] is root["original_source_postseal"] is root["original_environment_restoration"] is None
+assert root["original_final_present"] is root["original_result_present"] is root["complete_buildquery_accepted"] is root["metadata_audit_performed"] is root["runtime_configuration_issued"] is False
+assert len(proof["owner_intervals"])==len(closure["observed_owners"])==101
+for q,v in zip(proof["owner_intervals"],closure["observed_owners"]):
+ assert all(q[k]==v[k] for k in ("group","phase","owner","pid","created_utc","completed_utc","exit_code"))
+ owner=doc(q["owner"]);a=doc(q["original_absence"])
+ assert owner["pid"]==q["pid"] and owner["retained_handle"]==q["retained_handle"] and owner["created_utc"]==q["created_utc"] and owner["completed_utc"]==q["completed_utc"]
+ assert owner["status"]=="passed" and owner["exit_code"]==0 and owner["timeout_seconds"]==q["deadline_seconds"]
+ assert a["status"]=="closed" and a["evidence"]["valid"] is True and a["global_native"]==[]
+m=t["phase_membership"];C=Path(m["control"]);P=Path(m["proof"])
+files=lambda p:sorted(q.name for q in p.iterdir() if q.is_file())
+dirs=lambda p:sorted(q.name for q in p.iterdir() if q.is_dir())
+assert m["proof_top_level_files"]==files(P)==["before.json"] and files(C)==m["control_top_level_files"] and dirs(C)==[]
+assert dirs(P/"groups")==sorted(groups[:51]) and len(m["group_files"])==51
+assert not (P/"result.json").exists() and not (P/"final.json").exists()
+assert t["raw_before_without_final"]==root["original_before"] and len(read(root["original_before"]))==18262865
+for i,g in enumerate(groups[:51]):
+ d=P/"groups"/g;assert files(d)==m["group_files"][g] and dirs(d)==m["excluded_group_subdirectories"][g]==["installed"]
+ assert not (d/"result.json").exists()
+ if i<50:
+  q=doc(pin(d/"result-provisional.json"));z=doc(pin(d/"selected-tests.json"))
+  assert q["status"]=="awaiting_batch_closure" and q["postseal"] is False and q["native_selected_tests_started"] is None
+  for phase in ("compile","metadata"):assert q["phases"][phase]["postchecks"]["source_sealed"] is False and q["phases"][phase]["owner_binding"]["status"]=="passed"
+  assert z["tests"]==proof["group_observations"][i]["metadata_names"] and z["actual_count"]==root["observed_partial_group_counts"][i]
+ else:
+  assert not (d/"metadata.json").exists() and not (d/"result-provisional.json").exists()
+# Check actual field inventories referenced by the new validator without evaluating it.
+docs={"root":root,"peer":peer,"proof":proof,"closure":closure,"timeout_basis":t}
+for n in ast.walk(cf["check_existing63_timeout_negative"][1]):
+ if isinstance(n,ast.Subscript) and isinstance(n.value,ast.Name) and n.value.id in docs and isinstance(n.slice,ast.Constant) and isinstance(n.slice.value,str):
+  assert n.slice.value in docs[n.value.id],(n.value.id,n.slice.value)
+ if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=="flags" and isinstance(n.args[0],ast.Name) and n.args[0].id=="root":
+  for kw in n.keywords:
+   want=kw.arg=="true"
+   for k in ast.literal_eval(kw.value):assert root[k] is want,k
+inventory=doc(prior["fixed_data"]["observed-closed-input-inventory.json"])
+plan=doc(prior["fixed_data"]["progress-patch-plan.json"])
+preservation=doc(prior["fixed_data"]["supplemental-preservation-inputs.json"])
+assert len(inventory["rows"])==852 and len(inventory["direct_pin_relationships"])==3684 and len(inventory["bookend_plans"])==3
+for row in inventory["rows"]:read(row["original"])
+assert len(preservation["required_raw_files"])==780
+for q in preservation["required_raw_files"]:read(q)
+old_raw=read(prior["progress_basis"]);old=json.loads(old_raw);assert enc(old)==old_raw and len(old_raw)==678718
+assert old["next_native_batch"]["retained63_group_order"]==groups
+def lists(v,path=()):
+ if isinstance(v,list):
+  yield path,v
+  for i,x in enumerate(v):yield from lists(x,path+(i,))
+ elif isinstance(v,dict):
+  for k,x in v.items():yield from lists(x,path+(k,))
+prefixes=[{"path":list(p),"length":len(v),"canonical_sha256":sha(enc(v))} for p,v in lists(old)]
+assert prefixes==plan["nested_history_prefix_basis"] and len(prefixes)==222
+assert {k:len(old[k]) for k in ("integrated_source_units","preserved_attempts","retained_recent_native_negatives","execution_checkpoint_history")}=={"integrated_source_units":65,"preserved_attempts":45,"retained_recent_native_negatives":15,"execution_checkpoint_history":15}
+assert ast.literal_eval(value(ca,"increments"))=={"integrated_source_units":0,"preserved_attempts":5,"retained_recent_native_negatives":2,"execution_checkpoint_history":1}
+assert ast.literal_eval(value(ca,"PHASES"))==("new3-buildquery-prelaunch","new3-retry1-buildquery","new4-buildquery","new4-runtime","existing63-buildquery-timeout")
+# A literal field contract, not an issued configuration or generated copy plan.
+cfg={"schema":1,"status":"unissued_v39_closed_validation_and_timeout_archive_preparation","candidate_head":HEAD,
+ "preparer_sha256":f["candidate"]["sha256"],"source_review":None,"final_copy_plan":None,"recorded_utc":None,
+ "output_directory":str(E/"pending-v39-closed-validation-and-timeout-archive-intake-20261022"),
+ "archive_target_prefix":"verification/native-v39-closed-validation-evidence-20261022","expected_output_paths":None,
+ "evidence_preparation_authorized":False,"main_intake_authorized":False,"native_execution_authorized":False,"runtime_authority":False,
+ "source_mutation_hold_released":False,"application_qualified":False,"production_bridge_removed":False,"published_release":False}
+assert set(cfg)==config_keys
+shape={"schema":1,"status":"unissued_v39_closed_validation_and_timeout_archive_copy_plan","candidate_head":HEAD,"reviewer":None,
+ "partial_inventory":prior["fixed_data"]["observed-closed-input-inventory.json"],"progress_plan":prior["fixed_data"]["progress-patch-plan.json"],
+ "rows":None,"direct_pin_relationships":None,"observed_phase_membership":None,"bookend_plans":None,
+ "cohorts":{"new3":{"prelaunch_root_negative":plan["known_new3"]["prelaunch_root_acceptance"],"compile_root_negative":plan["known_new3"]["compile_root_acceptance"]},
+            "new4":{"buildquery_root_acceptance":plan["known_new4"]["buildquery_root_acceptance"],"runtime_root_acceptance":plan["known_new4"]["runtime_root_acceptance"]},
+            "existing63":{"buildquery_root_negative":roles["root_acceptance"]}}}
+assert set(shape)==copy_keys
+union={}
+for q in [*(x["original"] for x in inventory["rows"]),*t["required_raw_files"]]:
+ k=q["path"].casefold();assert k not in union or union[k]==q;union[k]=q
+contract={"schema":1,"status":"unissued_finite_original_existing63_timeout_archive_source_contract",
+ "candidate":f["candidate"],"accepted_source_predecessor":f["basis"],"predecessor_Root_source_acceptance":roles["predecessor_source_acceptance"],
+ "finite_source_adaptation":F,"timeout_observed_input_inventory":T,"root_negative_acceptance":roles["root_acceptance"],
+ "configuration_field_count":18,"configuration_shape":cfg,"copy_plan_field_count":11,"copy_plan_shape":shape,
+ "copy_row_fields":sorted(row_keys),
+ "required_source_review_fields":{"status":"root_accepted_bounded_v39_closed_validation_and_timeout_archive_preparer","reviewer":"Root",
+ "candidate_head":HEAD,"preparer":f["candidate"],"partial_inventory":shape["partial_inventory"],"progress_plan":shape["progress_plan"],
+ "supplemental_preservation_inventory":prior["fixed_data"]["supplemental-preservation-inputs.json"],
+ "timeout_observed_input_inventory":T,"source_accepted":True,"execution_authority":False,"main_intake_authorized":False,"native_execution_authorized":False},
+ "issued_status_requirements":{"configuration":"root_reviewed_specific_v39_closed_validation_and_timeout_archive_preparation",
+ "copy_plan":"root_reviewed_exact_final_v39_closed_validation_and_timeout_archive_copy_plan"},
+ "preserved_prefixes":{"rows":852,"direct_pin_relationships":3684,"bookend_plans":3,"phase_memberships":4},
+ "added_timeout_inputs":{"required_raw_versions":908,"phase_file_count":872,"direct_pin_relationships":47,"minimum_union_versions":len(union)},
+ "actual_fifth_membership":m,"equal_pair_gzip_plans_retained":inventory["bookend_plans"],
+ "raw_lone_before":root["original_before"],"original_final":None,"original_result":None,"original_source_postseal":None,"original_environment_restoration":None,
+ "outcomes":{"known_attempts":5,"added_native_validation_negatives":2,"added_nonnative_validation_negatives":1,
+ "new3_observed_metadata":0,"new4_accepted_metadata":61,"new4_strict_passed":61,
+ "existing63_compile_owners":51,"existing63_metadata_owners":50,"existing63_provisional_groups":50,
+ "existing63_unstarted_groups":12,"existing63_partial_metadata_observed":985,"existing63_accepted_metadata":None,
+ "existing63_runtime_owners":0,"existing63_runtime_configuration_issued":False},
+ "history":{"current_prefixes":222,"current_source_units":65,"basis_progress":prior["progress_basis"],
+ "actual_lengths":{"integrated_source_units":65,"preserved_attempts":45,"retained_recent_native_negatives":15,"execution_checkpoint_history":15},
+ "required_future_lengths":{"integrated_source_units":65,"preserved_attempts":50,"retained_recent_native_negatives":17,"execution_checkpoint_history":16},
+ "full_old_checkpoint_append":True,"complete_678718_byte_inverse_required":True,"progress_not_generated":True},
+ "retained_functions":26,"retained_non_outcome_helpers":23,"three_complete_engine_regions_unchanged":True,
+ "only_raw_gzip_scope_delta":"One explicit for m in membership[:4] admission header, with the timeout's lone before separately required raw and original final absent.",
+ "future_intake":"Separate Root-reviewed normalized manifest and strengthened8A676 adapter only; this preparer has no Main/index write authority.",
+ "actual_fixture_intake_not_claimed":True,"future_head_or_metadata_not_predicted":True,
+ "candidate_prefix_preparer_gzip_or_archive_executed":False,"configuration_issued":False,"Main_access":False,"native_execution_authorized":False,"qualification":False}
+for q in list(seen.values()):assert pin(Path(q["path"]))==q
+cfgpin=put("unissued-root-configuration.json",cfg);contractpin=put("source-contract.json",contract)
+proofdoc={"schema":1,"status":"static_finite_source_and_actual_closed_schema_verified",
+ "candidate":f["candidate"],"finite":F,"contract":contractpin,"unissued_configuration":cfgpin,
+ "checker":pin(Path(__file__)),"source_steps":48,"full_forward_inverse":True,
+ "unchanged_functions":f["unchanged_helpers"],"unchanged_non_outcome_helpers":23,
+ "unchanged_complete_regions":regions,"raw_gzip_region_exact_inverse":r,
+ "actual_schema_field_inventory_verified":True,"actual101_owner_record_matches":True,
+ "actual985_partial_metadata_separate_from_acceptance":True,"original_missing_final_result_preserved":True,
+ "actual_before_only_membership_verified":True,"known852_inventory_prefix_and908_timeout_versions_retained":True,
+ "minimum_exact_union_versions":len(union),"all222_history_prefix_inputs_verified":True,
+ "inputs":list(seen.values()),"input_count":len(seen),"candidate_or_prefix_evaluated":False,
+ "Main_index_native_process_or_gzip_execution":False}
+pp=put("static-source-proof.json",proofdoc)
+print(json.dumps({"contract":contractpin,"unissued_configuration":cfgpin,"proof":pp,
+ "counts":{"source_steps":48,"input_versions":len(seen),"minimum_union_versions":len(union),"phase_files":872,"history_prefixes":222}}))

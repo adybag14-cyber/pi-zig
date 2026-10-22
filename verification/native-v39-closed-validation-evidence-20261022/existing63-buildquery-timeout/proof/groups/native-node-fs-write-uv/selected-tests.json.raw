@@ -1,0 +1,25 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\a40edf169168812438207fadf5182651\\test.exe",
+  "binary_sha256": "7C84A75C03A4593EA668406AC254CC6FBA49DFD3342FF70FA163E4F88383C780",
+  "version": "0.16.0",
+  "actual_count": 13,
+  "tests": [
+    "native_node_fs_write_uv_test.test.native actual filesystem writer retains genuine published operations through registry mutation",
+    "native_node_fs_write_uv_test.test.native actual filesystem writer writes scalar vectors flushes and closes real binary bytes",
+    "native_node_fs_write_uv_test.test.native actual filesystem writer append preserves prior content with explicit write position",
+    "native_node_fs_write_uv_test.test.native actual filesystem writer reports actual exclusive and missing path libuv errors asynchronously",
+    "native_node_fs_write_uv_test.test.native actual filesystem writer real Web pipeline reaches Writable finish then close",
+    "native_node_fs_write_uv_test.test.native actual filesystem writer propagates an actual completion throw once after task removal",
+    "native_node_fs_write_uv_test.test.native actual filesystem writer native open publishes a real borrowed CRT descriptor",
+    "native_node_fs_write_uv_test.test.native actual filesystem writer canceled packet never enters physical open",
+    "native_node_fs_write_uv_test.test.native actual filesystem writer unadopted real packet closes before its memory entitlement retires",
+    "native_node_fs_write_uv_test.test.native actual filesystem writer physical close precedes published close with one final release",
+    "native_node_fs_write_uv_test.test.native actual filesystem writer Env shutdown joins and retires a real unadopted open",
+    "native_node_fs_write_uv_test.test.native actual filesystem writer invalid descriptor fails once through the real asynchronous task",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-fs-write-uv",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

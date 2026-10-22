@@ -1,0 +1,282 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-20T19:31:29.741809+00:00",
+  "status": "independently_confirmed_exact_emitted_v33_source_catalog",
+  "candidate_head": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+  "source_only": true,
+  "matrix": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v33-prepared-20261020\\groups.json",
+    "bytes": 573554,
+    "sha256": "E3BB32B3922EE32712AE3D96558C40F13BFE875FAFC0D7FFA5958D65FA8719B8"
+  },
+  "preparation_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v33-prepared-20261020\\preparation-review.json",
+    "bytes": 23570,
+    "sha256": "B81EEC8055A2086033B43603DAA2A1FE5167442299C15FC946C58C97E9DD9DDB"
+  },
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v33-prepared-20261020\\Audit-CombinedNativeBatch.py",
+    "bytes": 17691,
+    "sha256": "88F746313C38A2B861A8C002575837BF5D7F87A193DEAE5549BC4B1385DB2B6B"
+  },
+  "preserved_old_groups": 113,
+  "preserved_old_named_declarations": 1955,
+  "all_group_objects_exact": true,
+  "whole_catalog_complete_raw_byte_inverse": true,
+  "old_catalog_complete_structural_inverse": true,
+  "source_pin_changes": 0,
+  "whole_dependency_pin_changes": 27,
+  "dependency_changes": [
+    {
+      "group": "native-vm-existing-promise-settlement",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-vm-execution-termination",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-typebox-execution-termination",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-host-termination-ownership",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-stream-resource",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-fs-request-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-package-json-parser",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-microtask-checkpoint",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-vm-property-retirement",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-vm-consuming-operands",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-vm-oom-occurrence",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-environment-map",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-vm-script-location",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-environment-paths",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-stream-fields",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-stream-read",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-file-handle-read",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-fs-callback-template",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-vm-simple-stack-source",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-vm-exotic-operations",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-diagnostic-context",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-native-debug",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-permission",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-fs-readwrap-reuse",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    },
+    {
+      "group": "native-node-reqwrap-callback-routing",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "after": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2"
+    }
+  ],
+  "all_selected_groups_retained": 63,
+  "selected_groups": 63,
+  "selected_named_declarations": 1249,
+  "catalog_groups": 113,
+  "catalog_named_declarations": 1955,
+  "selected_order": [
+    "native-node-file-handle-read",
+    "native-node-fs-callback-template",
+    "native-vm-simple-stack-source",
+    "native-vm-exotic-operations",
+    "native-node-diagnostic-context",
+    "native-node-native-debug",
+    "native-node-permission",
+    "native-node-fs-readwrap-reuse",
+    "native-node-reqwrap-callback-routing",
+    "native-vm-script-location",
+    "native-node-stream-read",
+    "native-node-environment-map",
+    "native-vm-backing-store-adoption",
+    "native-node-environment-paths",
+    "native-node-stream-fields",
+    "native-node-managed-buffers",
+    "native-node-fs-request-owner",
+    "native-vm-execution-termination",
+    "native-typebox-execution-termination",
+    "native-host-termination-ownership",
+    "native-node-stream-resource",
+    "native-node-package-json-parser",
+    "native-node-microtask-checkpoint",
+    "native-vm-property-retirement",
+    "native-vm-consuming-operands",
+    "native-vm-oom-occurrence",
+    "native-node-callback-scope",
+    "native-node-inspect-colors",
+    "native-vm-captured-frame-logging",
+    "native-node-experimental-warning",
+    "native-node-commonjs-helpers",
+    "native-node-process-warning",
+    "native-node-fs-request-transport",
+    "native-vm-array-buffer-view-length",
+    "native-vm-array-buffer-backing",
+    "native-vm-private-property",
+    "native-node-tcp-transport",
+    "native-vm-async-arguments",
+    "native-node-fs-write-uv",
+    "native-vm-sync-arguments",
+    "native-vm-async-retirement",
+    "native-vm-template-literal",
+    "native-vm-borrowed-bridges",
+    "vm-af-throw",
+    "native-ai-oauth-anthropic-genuine-af",
+    "native-node-module-creation",
+    "native-node-module-search-paths",
+    "native-node-fs-realpath-classic",
+    "native-node-fs-path-helpers",
+    "native-node-file-url-paths",
+    "native-sdk-tool-search-public",
+    "native-ai-radius-config",
+    "native-ai-radius-provider-genuine-af",
+    "native-node-inspect-entry",
+    "native-ai-oauth-radius-genuine-af",
+    "native-vm-existing-promise-settlement",
+    "native-node-options",
+    "native-node-uv-exception",
+    "native-vm-disallow-javascript",
+    "native-vm-continuation-data",
+    "native-vm-pending-promise",
+    "native-vm-native-global",
+    "native-vm-copy-data-properties"
+  ],
+  "actual_metadata_count": null,
+  "prior_v32_actual_metadata_count_historical_only": 0,
+  "prior_v31_accepted_actual_metadata_count_historical_only": 1121,
+  "anonymous_allowlists_exact": true,
+  "artifact_basenames_exact": true,
+  "current_distinct_catalog_union_external_and_provenance_files_hashed": 654,
+  "source_union_files_verified": 205,
+  "all_preparation_provenance_reverified": true,
+  "strict_driver_byte_identical": true,
+  "metadata_auditor_single_literal_full_byte_inverse": true,
+  "quickjs_three_identifier_source_forward_and_inverse": true,
+  "original_bytecode_reader_and_suffix_exact": true,
+  "prior_progress_complete_committed_blob_preserved": true,
+  "protected_async_wrap_sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2",
+  "concrete_blockers": [],
+  "native_execution": false,
+  "grant_issued": false,
+  "main_modified": false,
+  "qualification": false
+}

@@ -1,0 +1,382 @@
+{
+  "schema": "pi-zig.independent-v36-emitted-catalog-source-peer.v1",
+  "reviewer": "sdk_environment_port",
+  "candidate_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "previous_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v36-catalog-source-peer-20261021\\emitted-checker-v2.py",
+    "bytes": 39458,
+    "sha256": "7BCA4160DAEF44B18DA63B67500863A7D084C5AA0B3927A23F8B38E7F014B62A"
+  },
+  "Root_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-catalog-issued-config-20261021.json",
+    "bytes": 5000,
+    "sha256": "F787BEF7CED69C60A3B5E7F03C24C5985051A32ED800B93199E592414A59BA13"
+  },
+  "reviewed_preparer_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-FreshV36Catalog-20261020.py",
+    "bytes": 39962,
+    "sha256": "368F4F1F0F0AFD81AA58078BACDC80BCB7CA9A22307702E9DDBF47E048D691F8"
+  },
+  "Root_preparer_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-catalog-preparer-source-review-20261020.json",
+    "bytes": 2970,
+    "sha256": "C78362731CFAD8A83D50775C4B0583BBB632B898BBA33A2967BC25B88AD51BC1"
+  },
+  "prior_catalog_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v35-catalog-source-peer-20261020\\emitted-peer.json",
+    "bytes": 18666,
+    "sha256": "5E7945A8C85BDFE66D46AB6E53A274374FBA39FB469D748BF30B239FCB15BCA5"
+  },
+  "matrix": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-new4-prepared-20261020\\groups.json",
+    "bytes": 1104585,
+    "sha256": "2B55BD045392080556925051B7C19810C3546BB6EAACD2672A35E37622DD91DD"
+  },
+  "matrix_second": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-regression63-prepared-20261020\\groups.json",
+    "bytes": 1104585,
+    "sha256": "2B55BD045392080556925051B7C19810C3546BB6EAACD2672A35E37622DD91DD"
+  },
+  "reviews": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-new4-prepared-20261020\\preparation-review.json",
+      "bytes": 79008,
+      "sha256": "00EB18EB73351D5242652C615C88F5241D00103410F49B866A063C2C823A2C64"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-regression63-prepared-20261020\\preparation-review.json",
+      "bytes": 81216,
+      "sha256": "49EBFCED75FC290AD872DB938AE32D3C93151533CBAAD3EA4E6E35FB70C30441"
+    }
+  ],
+  "source_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-new4-prepared-20261020\\new-roots-source-inventory.json",
+    "bytes": 1209440,
+    "sha256": "B848A5C2366F180EE92C52B30FAE73AA756FB5375707E6362914483ACB9D5EC4"
+  },
+  "catalog_groups": 117,
+  "catalog_source_declarations": 2013,
+  "whole_dependency_rows_retained": 576,
+  "source_pin_changes": [
+    {
+      "group": "native-node-file-handle-owner",
+      "group_index": 113,
+      "row_index": 850,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "after": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127"
+    },
+    {
+      "group": "native-node-fs-before-hook-continuation",
+      "group_index": 114,
+      "row_index": 850,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "after": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127"
+    },
+    {
+      "group": "native-node-file-handle-transfer",
+      "group_index": 116,
+      "row_index": 851,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "after": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127"
+    }
+  ],
+  "fixture_inventory_member_changes": [
+    {
+      "root_index": 0,
+      "module_index": 674,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before_bytes": 32558,
+      "after_bytes": 33137,
+      "before_sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "after_sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127"
+    },
+    {
+      "root_index": 1,
+      "module_index": 673,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before_bytes": 32558,
+      "after_bytes": 33137,
+      "before_sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "after_sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127"
+    },
+    {
+      "root_index": 3,
+      "module_index": 674,
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "before_bytes": 32558,
+      "after_bytes": 33137,
+      "before_sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "after_sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127"
+    }
+  ],
+  "complete_catalog_forward_and_byte_inverse": true,
+  "complete_inventory_forward_and_byte_inverse": true,
+  "both_catalog_and_inventory_copies_byte_identical": true,
+  "all117_complete_group_definitions_and_names_preserved": true,
+  "all576_dependency_rows_byte_structurally_preserved": true,
+  "graph_checks": [
+    {
+      "name": "native-node-file-handle-owner",
+      "modules": 710,
+      "embeds": 243,
+      "literal_import_edges": 3334,
+      "declarations": 18,
+      "anonymous_blocks": 8,
+      "source_pins": 907,
+      "dependency_rows": 75
+    },
+    {
+      "name": "native-node-fs-before-hook-continuation",
+      "modules": 710,
+      "embeds": 243,
+      "literal_import_edges": 3334,
+      "declarations": 3,
+      "anonymous_blocks": 8,
+      "source_pins": 907,
+      "dependency_rows": 75
+    },
+    {
+      "name": "native-vm-error-constructor-name",
+      "modules": 1,
+      "embeds": 0,
+      "literal_import_edges": 0,
+      "declarations": 24,
+      "anonymous_blocks": 0,
+      "source_pins": 2,
+      "dependency_rows": 5
+    },
+    {
+      "name": "native-node-file-handle-transfer",
+      "modules": 711,
+      "embeds": 243,
+      "literal_import_edges": 3340,
+      "declarations": 13,
+      "anonymous_blocks": 8,
+      "source_pins": 908,
+      "dependency_rows": 77
+    }
+  ],
+  "partitions": {
+    "schema": 1,
+    "candidate_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+    "catalog_groups": 117,
+    "catalog_declarations": 2013,
+    "partitions": {
+      "new4": {
+        "preparation": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-new4-prepared-20261020",
+        "groups": [
+          "native-node-file-handle-owner",
+          "native-node-fs-before-hook-continuation",
+          "native-vm-error-constructor-name",
+          "native-node-file-handle-transfer"
+        ],
+        "declared_controls": 58,
+        "actual_metadata_count": null
+      },
+      "regression63": {
+        "preparation": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-regression63-prepared-20261020",
+        "groups": [
+          "native-node-file-handle-read",
+          "native-node-fs-callback-template",
+          "native-vm-simple-stack-source",
+          "native-vm-exotic-operations",
+          "native-node-diagnostic-context",
+          "native-node-native-debug",
+          "native-node-permission",
+          "native-node-fs-readwrap-reuse",
+          "native-node-reqwrap-callback-routing",
+          "native-vm-script-location",
+          "native-node-stream-read",
+          "native-node-environment-map",
+          "native-vm-backing-store-adoption",
+          "native-node-environment-paths",
+          "native-node-stream-fields",
+          "native-node-managed-buffers",
+          "native-node-fs-request-owner",
+          "native-vm-execution-termination",
+          "native-typebox-execution-termination",
+          "native-host-termination-ownership",
+          "native-node-stream-resource",
+          "native-node-package-json-parser",
+          "native-node-microtask-checkpoint",
+          "native-vm-property-retirement",
+          "native-vm-consuming-operands",
+          "native-vm-oom-occurrence",
+          "native-node-callback-scope",
+          "native-node-inspect-colors",
+          "native-vm-captured-frame-logging",
+          "native-node-experimental-warning",
+          "native-node-commonjs-helpers",
+          "native-node-process-warning",
+          "native-node-fs-request-transport",
+          "native-vm-array-buffer-view-length",
+          "native-vm-array-buffer-backing",
+          "native-vm-private-property",
+          "native-node-tcp-transport",
+          "native-vm-async-arguments",
+          "native-node-fs-write-uv",
+          "native-vm-sync-arguments",
+          "native-vm-async-retirement",
+          "native-vm-template-literal",
+          "native-vm-borrowed-bridges",
+          "vm-af-throw",
+          "native-ai-oauth-anthropic-genuine-af",
+          "native-node-module-creation",
+          "native-node-module-search-paths",
+          "native-node-fs-realpath-classic",
+          "native-node-fs-path-helpers",
+          "native-node-file-url-paths",
+          "native-sdk-tool-search-public",
+          "native-ai-radius-config",
+          "native-ai-radius-provider-genuine-af",
+          "native-node-inspect-entry",
+          "native-ai-oauth-radius-genuine-af",
+          "native-vm-existing-promise-settlement",
+          "native-node-options",
+          "native-node-uv-exception",
+          "native-vm-disallow-javascript",
+          "native-vm-continuation-data",
+          "native-vm-pending-promise",
+          "native-vm-native-global",
+          "native-vm-copy-data-properties"
+        ],
+        "declared_controls": 1249,
+        "actual_metadata_count": null
+      }
+    },
+    "disjoint": true,
+    "union_groups": 67,
+    "union_declarations": 1307,
+    "original63_order_preserved": true,
+    "per_batch_cap": 64,
+    "actual_metadata_count": null,
+    "execution_authority": false
+  },
+  "auditor_path_only_inverses": [
+    {
+      "batch": "new4",
+      "schema": 1,
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-new4-prepared-20261020\\Audit-CombinedNativeBatch.py",
+        "bytes": 17696,
+        "sha256": "B9AA7515F2494E1181E7418C340E0398B81126C413B6E914B16874FB48CB0A0B"
+      },
+      "adapted": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-new4-prepared-20261020\\Audit-CombinedNativeBatch.py",
+        "bytes": 17696,
+        "sha256": "B91D64912D1E1A5DAB06D6362AD014C8612A25FB9D6D4359AFB355272EF4234D"
+      },
+      "edit_count": 1,
+      "before": "evidence/combined-native-batch-v35-new4-prepared-20261020",
+      "after": "evidence/combined-native-batch-v36-new4-prepared-20261020",
+      "full_byte_inverse": true,
+      "process_instance_reconciliation_unchanged": true,
+      "nested_live_identity_utc100ns_gate_unchanged": true,
+      "all_metadata_artifact_gates_unchanged": true,
+      "original_pid_rejection_preserved": true
+    },
+    {
+      "batch": "regression63",
+      "schema": 1,
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-regression63-prepared-20261020\\Audit-CombinedNativeBatch.py",
+        "bytes": 17704,
+        "sha256": "B2A052C01717AF05C0F05A002D9504F1BA8723D2D62FD0936BBA4A69F0F802DA"
+      },
+      "adapted": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-regression63-prepared-20261020\\Audit-CombinedNativeBatch.py",
+        "bytes": 17704,
+        "sha256": "1D1F876AE3A3B9DB5B6ADD54573A59CF86E9C326EB6A19D5D0318070B7595C70"
+      },
+      "edit_count": 1,
+      "before": "evidence/combined-native-batch-v35-regression63-prepared-20261020",
+      "after": "evidence/combined-native-batch-v36-regression63-prepared-20261020",
+      "full_byte_inverse": true,
+      "process_instance_reconciliation_unchanged": true,
+      "nested_live_identity_utc100ns_gate_unchanged": true,
+      "all_metadata_artifact_gates_unchanged": true,
+      "original_pid_rejection_preserved": true
+    }
+  ],
+  "strict_driver_and_classifier_exact": true,
+  "per_batch_cap_unchanged": 64,
+  "phase_checks": [
+    {
+      "phase": "fixture",
+      "before_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+      "after_head": "4ee30c526cd8909dfadfbbe187061fabcff9460b",
+      "path_count": 42,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    },
+    {
+      "phase": "progress",
+      "before_head": "4ee30c526cd8909dfadfbbe187061fabcff9460b",
+      "after_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+      "path_count": 52,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    }
+  ],
+  "separate_exact_release_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-fixture-source-intake-release-20261021.json",
+      "bytes": 6220,
+      "sha256": "9C5066FCC305D54BE191815EBA09BE3B8C27CD430F646FC29D43E2186F14C9DF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-progress-negative-intake-release-20261021.json",
+      "bytes": 6758,
+      "sha256": "EF6111EBBD4F87998FCB87761CFAA043D443A7C720FE065BD028B6C54F5EC5AC"
+    }
+  ],
+  "all_phase_donors_raw_preimages_committed_bytes_final_checkout_exact": true,
+  "exact_intake_occurrences": 94,
+  "distinct_intake_paths": 94,
+  "only_non_verification_path_changed": "src/native_node_file_handle_owner_test_support.zig",
+  "build_and_return_try_unchanged": true,
+  "prior_V35_first_compile_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\independent-first-compile-negative-closure.json",
+    "bytes": 46548,
+    "sha256": "07883502323A898D097E467FB9E2CE5ED1A52A8A83A0A6B1EA7F877A35657129"
+  },
+  "prior_negative_zero_metadata_and_zero_tests_preserved": true,
+  "current_input_versions": 1309,
+  "immutable_reference_versions": 250,
+  "checkout_vs_raw_Git_distinctions": [
+    {
+      "path": "src/extensions/native_node_operation_scope.zig",
+      "actual_sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+      "git_raw_sha256": "0663228C40E2982D7809A7D0B143C3E6E96EE803B6FFAA384054CCCF19878F8C",
+      "CRLF_count": 92,
+      "LF_count": 92
+    },
+    {
+      "path": "src/native_sdk_chalk_ignore_guest_guard_test.zig",
+      "actual_sha256": "8E5C4E07B578EBE60CE39372F236B27873634AC39A8AC77C3623338FE83568CE",
+      "git_raw_sha256": "DF00D6C1BE401FC026A588EA201E184C8C31C31860F432F85E01DFC65299AA9F",
+      "CRLF_count": 1,
+      "LF_count": 145
+    }
+  ],
+  "input_verification": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v36-catalog-source-peer-20261021\\emitted-input-verification.json",
+    "bytes": 485191,
+    "sha256": "F1222832D09B49CEECAB1DE2445755BBBBA57388545B567FFB0E43CA82546E2B"
+  },
+  "all_current_input_and_reference_end_bookends_exact": true,
+  "future_actual_metadata": null,
+  "compiler_executed": false,
+  "native_executed": false,
+  "metadata_auditor_executed": false,
+  "preparer_executed_by_peer": false,
+  "Main_or_index_written": false,
+  "execution_authority": false,
+  "qualification": false,
+  "bounded_source_blockers": [],
+  "scope": "Independent emitted source/catalog peer only. Complete literal closures are conservative and do not establish compiler reachability, complete C preprocessing, BuildQuery metadata acceptance, runtime acceptance, complete FileHandle/bootstrap/worker assembly or application qualification. Root retains execution authority."
+}

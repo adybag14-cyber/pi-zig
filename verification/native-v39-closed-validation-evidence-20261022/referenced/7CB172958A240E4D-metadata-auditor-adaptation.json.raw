@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-new4-prepared-20261020\\Audit-CombinedNativeBatch.py",
+    "bytes": 17696,
+    "sha256": "B91D64912D1E1A5DAB06D6362AD014C8612A25FB9D6D4359AFB355272EF4234D"
+  },
+  "adapted": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\Audit-CombinedNativeBatch.py",
+    "bytes": 17696,
+    "sha256": "34D2F0302C08A89DDA3E136C0723AA575F0D0ECC22FD0AB4C50DD2A7AA45EA17"
+  },
+  "edit_count": 1,
+  "before": "evidence/combined-native-batch-v36-new4-prepared-20261020",
+  "after": "evidence/combined-native-batch-v37-new4-prepared-20261021",
+  "full_byte_inverse": true,
+  "process_instance_reconciliation_unchanged": true,
+  "nested_live_identity_utc100ns_gate_unchanged": true,
+  "all_metadata_artifact_gates_unchanged": true,
+  "original_pid_rejection_preserved": true
+}

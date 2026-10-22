@@ -1,0 +1,68 @@
+{
+  "schema": "pi-zig-v35-close-observer-independent-candidate-peer-v1",
+  "status": "ACCEPTED FOR THE BOUNDED SOURCE-ONLY PHASE OBSERVER SUCCESSOR",
+  "reviewer": "/root/module_io_port",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\proposal.json",
+    "bytes": 3791,
+    "sha256": "4D8BAC94FF3A5CD4F27F9F4BB19C944F672EBA816A8D73E7453B819870B5EAFA"
+  },
+  "selected_candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+    "bytes": 33137,
+    "sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127"
+  },
+  "alpha_predecessor_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-independent-peer-20261020\\peer.json",
+    "bytes": 4707,
+    "sha256": "EB41FE47065EA84F89B08E477965F6F0BDFFCF16527DA9AF948E3C5B1DEA9C2F"
+  },
+  "original_causal_finding": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-close-observer-source-peer-20261020\\finding.json",
+    "bytes": 1893,
+    "sha256": "AED0E3E9518D691A36068A6B410B11B1D060718AB313E9921FBC665EFBA68DE1"
+  },
+  "original_causal_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-close-observer-source-peer-20261020\\causal-proof.json",
+    "bytes": 22004,
+    "sha256": "9AE461824CBBEB0E87F450FE0E6660EE6A83AF3F3FEBA820D97B8F5ECBBAD724"
+  },
+  "audit_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-close-observer-candidate-peer-20261020\\source-audit.py",
+    "bytes": 15255,
+    "sha256": "127A0EC76A379BC910F236589D04EEE924F20E36BA4C662B19BFBE8952186DF2"
+  },
+  "audit_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-close-observer-candidate-peer-20261020\\source-audit.json",
+    "bytes": 33463,
+    "sha256": "0A2DF2740F08EA76BC4E7EBC66964FC2916944ACE0C0D1C035855D3CEC75D110"
+  },
+  "findings": [
+    "The original beginAsyncClose observation violates the completion-info contract by reading before first Dispatch. This is a source finding; V35 stopped at compilation and did not reproduce this assertion at runtime.",
+    "The selected one-hunk correction uses the existing preparation ABI through the actual shared uv namespace. The caller's ClosePromise retains Controller admission, whose enter path checks the actual owner thread. CloseReq creation owns typed native storage and completes Entry/Reset/Global initialization before the synchronous observer.",
+    "The native allocation zeroes submitted and accepted and initializes atomic cleaned/completed to zero. Initial request_reset returns without setting these fields. Thus the selected actual Entry assertions and accepted/cleaned/completed zero assertions correspond to this first-admission cutpoint.",
+    "The preparation helper asserts unsubmitted and reads only kind, accepted and the two atomic phase flags. It does not access uv.result/path, change state, acquire completion entitlement or create a concurrent lifecycle snapshot.",
+    "All original begin counters, actual pointer/provider, unsubmitted and Global observations remain. The complete 593-byte endAsyncClose body is identical, including the genuine completion-only info call, result, native-reference, waiting-count, accepted and cleanup observations.",
+    "Existing close controls, production C/H owners, helper contract and assertions, build and all 58 source names remain unchanged. The new assertions are fixture phase checks, not added upstream Node policy.",
+    "Independent line-based alpha/phase composition succeeds in both orders and both whole inverses recover raw Main79. The fully read source-only prefix reproduces all 18 packet outputs, 11 sources/22 excerpts and rechecks 960 current inputs.",
+    "No concrete blocker remains in this bounded observer correction."
+  ],
+  "manual_reads": [
+    "Full SDK preparation source and one-hunk patch, entire source map including all 22 selected excerpts, and the selected begin/end observer context.",
+    "Original Node trace-before-Dispatch and host ClosePromise/CloseReq ownership, actual Controller owner-thread gate, Entry initialization/reset, native allocation/admission/reset and both info helper contracts/bodies.",
+    "The retained actual explicit-close test's Promise/request/typed-kind, unsubmitted/Global, completion, cleanup and repeat-close assertions."
+  ],
+  "limits": [
+    "No compiler/native/Node reference/formatter/project generator/metadata auditor/grant constructor execution.",
+    "No Main, live SDK fixture, production helper, build, catalog, cache, lease or unrelated draft modification.",
+    "No runtime success, process closure, full FileHandle lifecycle qualification or future metadata-count prediction.",
+    "Root retains terminal V35 negative closure, exact source intake and fresh-head catalog/grant release authority."
+  ],
+  "preservation": {
+    "base_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+    "main_clean": true,
+    "alpha_packet_preserved": true,
+    "original_phase_finding_preserved": true,
+    "identity_owner_and_16_controls_preserved": true
+  }
+}

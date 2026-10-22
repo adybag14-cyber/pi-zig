@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "status": "root_complete_source_review_of_v35_catalog_preparer",
+  "reviewer": "Root",
+  "candidate_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "preparer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-FreshV35Catalog-20261020.py",
+    "bytes": 42072,
+    "sha256": "CECC64733F5C401CF2C6ED4134F401AF8EC283F1DADC3412EAA36AC2ACBF3DD1"
+  },
+  "adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v35-catalog-preparation-sourceonly-20261020\\preparer-adaptation.json",
+    "bytes": 68411,
+    "sha256": "21AB80B09C4338292741A94E692B5BD09EBE3EDD4EC8D3A48069E3F78F0E3E0C"
+  },
+  "complete_source_read": true,
+  "all22_intermediate_hashes_and_whole_forward_inverse_verified": true,
+  "exact_six_commit_intake_chain_verified_by_preparer": true,
+  "preserve_existing_groups": 113,
+  "preserve_existing_declarations": 1955,
+  "preserve_existing_dependency_rows": 344,
+  "allowed_source_hash_refreshes": 65,
+  "allowed_dependency_hash_refreshes": 79,
+  "new_group_declarations": [
+    18,
+    3,
+    24,
+    13
+  ],
+  "partition": {
+    "new4": 4,
+    "regression63": 63,
+    "declarations": [
+      58,
+      1249
+    ],
+    "union_groups": 67,
+    "union_declarations": 1307
+  },
+  "metadata_auditor_adaptation": "One preparation-path literal only per batch, full original byte inverse; all metadata and UTC100ns process gates preserved.",
+  "scope": "Only create the two exact V35 evidence preparation directories using the pinned script and Root-issued configuration. Rehash and verify accepted input inventories and current clean head before and after. No compiler, metadata query, test runtime, Main write, index write or git mutation.",
+  "catalog_preparation_authorized": true,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "qualification": false,
+  "stalled_atomic_save": "The original long atomic save returned no file; the complete source was recovered with bounded writes and independently hashed before this acceptance.",
+  "reviewed_utc": "2026-10-20T22:26:22.693996+00:00"
+}

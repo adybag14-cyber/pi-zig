@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "status": "root_source_accepted_unexecuted_v35_positive_buildquery_closure_template",
+  "reviewer": "Root",
+  "candidate_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV35CompleteBuildQuery-Template-20261020.py",
+    "bytes": 37257,
+    "sha256": "51FC9472FC8566CC4C5274EB2E48688340BC1CC11E058E08386C255BF7BB7853"
+  },
+  "adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v35-positive-buildquery-auditor-sourceonly-20261020\\finite-adaptation.json",
+    "bytes": 25878,
+    "sha256": "9BD910B5082B37E26514193968DA53DFB34751C5319A76B268FA80C94F0D0786"
+  },
+  "complete_source_read": true,
+  "all27_intermediate_hashes_and_whole_forward_inverse_root_reproduced": true,
+  "source_basis": "Accepted complete V34 positive BuildQuery auditor65DE6DA5; observed fixed V35 head and catalog; complete direct-launch bindings; separate4/58 or63/1249 batches.",
+  "preserved_gates": [
+    "Complete tracked and filesystem source/vendor/compiler inventories and every current hash",
+    "Original serial installed and cached executable/PDB membership and every artifact journal",
+    "Independent original raw metadata framing, version, exact names, ordering and anonymous allowlists",
+    "Actual PE stack reservation/commit and explicit nonmeasurement of dynamic stack",
+    "Retained and live native owners, exact executable/argv/workdir, original zero exits and phase absence",
+    "Fresh serial16GiB admission, unchanged bounds and nested UTC100ns identity",
+    "Original bounded outer plus durable runner and launcher closure, distinguishing later PID reuse"
+  ],
+  "configuration_required": "Exact Root-observed complete terminal success, independently accepted original metadata, all actual identities/counts/hashes, explicit configuration status and SHA. Actual metadata count and process identities remain unknown until observed.",
+  "auditor_executed": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "reviewed_utc": "2026-10-20T22:30:15.631560+00:00"
+}

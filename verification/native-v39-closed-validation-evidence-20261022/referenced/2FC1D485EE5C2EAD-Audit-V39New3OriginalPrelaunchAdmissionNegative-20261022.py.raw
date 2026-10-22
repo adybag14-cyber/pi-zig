@@ -1,0 +1,111 @@
+"""Root independent closure of the original V39 new3 admission failure. No native invocation."""
+from pathlib import Path
+import collections,datetime,hashlib,json,os,re,subprocess,sys
+B=Path(r'C:\Users\adyba\pi-zig');E=B/'evidence';M=B/'main'
+C=E/'root-native-foundation-fresh-v39-new3-control-20261022-163859'
+P=E/'root-native-foundation-fresh-v39-new3-buildquery-20261022-163859'
+PREP=E/'combined-native-batch-v39-new3-prepared-20261022'
+OUT=C/'independent-prelaunch-admission-negative-closure.json'
+HEAD='e9f11afa56a923372d957e2fb227f453822c21bf'
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def digest(p):
+ h=hashlib.sha256()
+ with Path(p).open('rb') as stream:
+  while data:=stream.read(1024*1024):h.update(data)
+ return h.hexdigest().upper()
+def pin(p):
+ p=Path(p);return dict(path=str(p),bytes=p.stat().st_size,sha256=digest(p))
+def read(p):return json.loads(Path(p).read_bytes().decode('utf-8-sig'))
+def check(row):
+ assert pin(row['path'])==row,row;return read(row['path'])
+def put(p,data):
+ raw=(json.dumps(data,indent=2)+'\n').encode()
+ with p.open('xb') as stream:stream.write(raw)
+ assert p.read_bytes()==raw
+def ticks(s):
+ m=re.fullmatch(r'(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d)(?:\.(\d{1,7}))?(Z|[+-]\d\d:\d\d)',s);assert m,s
+ dt=datetime.datetime.fromisoformat(m[1]+('+00:00' if m[3]=='Z' else m[3]))
+ d=dt-datetime.datetime(1970,1,1,tzinfo=datetime.timezone.utc)
+ return (d.days*86400+d.seconds)*10000000+int((m[2]or'').ljust(7,'0'))
+assert len(sys.argv)==3
+release=Path(sys.argv[1]);assert pin(release)['sha256']==sys.argv[2]
+cfg=read(release);assert cfg['reviewer']=='Root' and cfg['audit_execution_authorized'] is True and cfg['native_execution_authorized'] is False
+assert cfg['auditor']==pin(__file__) and cfg['candidate_head']==HEAD
+assert not OUT.exists() and not (C/'independent-prelaunch-negative-process-snapshot.json').exists()
+for row in cfg['inputs'].values():assert pin(row['path'])==row
+r=read(P/'result.json');before=read(P/'before.json');final=read(P/'final.json');grant=read(C/'root-grant.json')
+outer=read(C/'outer.json');absence=read(C/'outer-absence.json');jobenv=read(C/'independent-observed-job-status.json');job=jobenv['data']
+assert jobenv['ok'] is True and jobenv['truncated'] is False and job['status']=='failed' and job['exitCode']==1 and job['runnerAlive'] is False
+assert job['id']==cfg['job_id']=='job-op-f6c3ae43152b319798cc6b102ce49dc0d4abb9334c9fafe3ff7ec3d0a44d5ca1'
+assert isinstance(job['runnerProcessInstance'],str) and re.fullmatch('[0-9]{1,20}',job['runnerProcessInstance'])
+assert (job['runnerPid'],job['childPid'],outer['pid'])==(39468,29572,44604)
+reason='Initial grant must be within300seconds before first child launch'
+assert r['status']=='failed' and r['mode']==grant['mode']=='BuildQuery' and r['candidate_head']==grant['candidate_head']==HEAD
+assert r['errors']==[reason] and r['all_groups_closed'] is False
+for k in ('postseal','controller_environment_restored','initial_cache_absence','qualification_requested','fresh_cache_reproduction'):assert r[k] is True,k
+for k in ('runtime_requested','product_qualified','cache_seeded'):assert r[k] is False,k
+assert r['cache_mode']=='fresh_batch' and r['source_seal_scope']=='whole_batch'
+assert grant['initial_grant_max_age_seconds']==300 and grant['minimum_free_kib']==16777216
+assert grant['driver_sha256']==r['driver_sha256']==digest(PREP/'Run-CombinedNativeBatch.ps1')=='1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601'
+assert grant['group_manifest_sha256']==r['group_manifest_sha256']==digest(PREP/'groups.json')=='5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB'
+assert grant['groups']==['native-node-stream-shutdown','native-node-one-byte-string','native-vm-array-buffer-view-data']
+assert len(r['groups'])==1
+g=r['groups'][0];gp=P/'groups'/g['group']
+assert g==read(gp/'result.json') and g['group']==grant['groups'][0]
+assert g['status']=='failed' and g['errors']==[reason] and g['phases']=={} and g['owned_started_phases']==[] and g['attempted_phases']==['compile']
+assert g['native_selected_tests_started'] is None and g['cached_executable'] is None and g['postseal'] is True
+for k in ('runtime_requested','runtime_owner_launch_attempted','actual_runtime_owner_started'):assert g[k] is False
+assert r['absence']==dict(native_roots=[],owners=[])
+assert {p.name for p in (P/'groups').iterdir()if p.is_dir()}=={g['group']}
+assert {p.name for p in gp.iterdir()if p.is_file()}=={'commands.json','compile-admission.json','result-provisional.json','result.json'}
+assert not any(p.is_file() for p in (P/'cache').rglob('*')) and not any(p.is_file() for p in (P/'global-cache').rglob('*'))
+assert not any(p.suffix.lower() in ('.exe','.pdb') or p.name in ('compile.json','metadata.json','runtime.json','selected-tests.json','build-artifacts.json') for p in P.rglob('*') if p.is_file())
+assert len(r['admission_probes'])==1
+probe=r['admission_probes'][0];age=ticks(probe['utc'])-ticks(grant['issued_utc'])
+assert probe['phase']=='compile' and probe['native_roots']==0 and probe['native']==[] and probe['free_kib']>=probe['minimum_kib']==16777216 and age>3000000000
+assert outer['status']=='failed' and outer['exit_code']==1 and outer['retained_handle']>0 and outer['timeout_seconds']==1800
+assert outer['error']=='Owned terminal failed: C:\\Program Files\\PowerShell\\7\\pwsh.exe'
+assert outer['executable_sha256']=='FA2C8BB1E35CDD62AD15CD06A1D8F2C5961E9725A9BFA1E7CFD2C322F49E9619'
+assert outer['arguments']==['-NoLogo','-NoProfile','-NonInteractive','-File',str(PREP/'Run-CombinedNativeBatch.ps1'),'-RootGrant',str(C/'root-grant.json'),'-Mode','BuildQuery']
+live=outer['live_identity']
+assert live['pid']==outer['pid'] and ticks(live['created_utc'])==ticks(outer['created_utc']) and live['executable']==outer['executable'] and live['command_line']
+assert absence['pid']==outer['pid'] and ticks(absence['created_utc'])==ticks(outer['created_utc']) and absence['currently_absent'] is True and absence['current_records']==[]
+assert ticks(outer['completed_utc'])>=ticks(outer['created_utc']) and ticks(absence['observed_utc'])>=ticks(outer['completed_utc'])
+assert subprocess.check_output(['git','--no-optional-locks','rev-parse','HEAD'],cwd=M,text=True).strip()==HEAD
+assert subprocess.check_output(['git','--no-optional-locks','status','--porcelain'],cwd=M)==b''
+roles=('source','tree','vendor','compiler','controls');allpins={}
+for seal in (before,final):assert seal['candidate_head']==HEAD and seal['clean'] is True and seal['errors']==[]
+for role in roles:
+ assert before[role]==final[role],role
+ counts=collections.Counter(row['relative'] for row in final[role])
+ assert {k:v for k,v in counts.items()if v>1}==({r'C:\Program Files\PowerShell\7\pwsh.exe':2} if role=='controls' else {})
+ for row in final[role]:
+  p=Path(row['path']);assert p.is_relative_to(B) or str(p) in (r'C:\Program Files\PowerShell\7\pwsh.exe',r'C:\Program Files\PowerShell\7\pwsh.dll')
+  assert str(p) not in allpins or allpins[str(p)]==row['sha256'];allpins[str(p)]=row['sha256']
+assert len(final['vendor'])==1489 and len(final['compiler'])==19546
+tracked=subprocess.check_output(['git','--no-optional-locks','ls-files','-z'],cwd=M).decode().split('\0')[:-1]
+assert set(tracked)=={row['relative']for row in final['source']}
+for role,root,excludes in (('tree',M,{'.git','.zig-cache','zig-out'}),('vendor',M/'vendor',set()),('compiler',B/'toolchain/zig-x86_64-windows-0.16.0',set())):
+ paths=[]
+ for directory,dirs,files in os.walk(root):
+  if Path(directory)==root:dirs[:]=[n for n in dirs if n not in excludes]
+  paths.extend(str(Path(directory)/n)for n in files if not(Path(directory)==root and n in excludes))
+ assert set(paths)=={row['path']for row in final[role]},role
+for path,expected in allpins.items():assert digest(path)==expected,path
+classifier=PREP/'Get-ModelsNativeCandidates.ps1';assert digest(classifier)=='3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301'
+command="$ErrorActionPreference='Stop'; . '"+str(classifier)+"'; $taskRows=@(Get-CimInstance Win32_Process -OperationTimeoutSec 5); $taskNative=@(Get-ModelsNativeCandidates -Rows $taskRows -Container '"+str(B)+"'); [ordered]@{observed_utc=[DateTimeOffset]::UtcNow.ToString('o');native_candidates=$taskNative;owner_records=@($taskRows | Where-Object {$_.ProcessId -in @(39468,29572,44604)} | Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath,CommandLine)}|ConvertTo-Json -Depth 12 -Compress"
+raw=subprocess.check_output([r'C:\Program Files\PowerShell\7\pwsh.exe','-NoLogo','-NoProfile','-NonInteractive','-Command',command],timeout=20)
+snapshot=json.loads(raw.decode('utf-8-sig'));assert snapshot['native_candidates']==[]
+bounds=[dict(role='runner',pid=job['runnerPid'],created=int(job['runnerProcessInstance'])-116444736000000000,completed=ticks(job['completedAtUtc'])),dict(role='launcher',pid=job['childPid'],created_lower_bound=ticks(job['createdAtUtc']),completed=ticks(job['completedAtUtc'])),dict(role='outer',pid=outer['pid'],created=ticks(outer['created_utc']),completed=ticks(outer['completed_utc']))]
+reconciled=[]
+for current in snapshot['owner_records']:
+ prior=[b for b in bounds if b['pid']==current['ProcessId']]
+ assert prior and all(ticks(current['CreationDate'])>b['completed']for b in prior)
+ reconciled.append(dict(current_record=current,prior_terminal_intervals=prior,kind='later_process_reusing_retired_pid'))
+for row in cfg['inputs'].values():assert pin(row['path'])==row
+assert subprocess.check_output(['git','--no-optional-locks','status','--porcelain'],cwd=M)==b''
+snap_path=C/'independent-prelaunch-negative-process-snapshot.json'
+with snap_path.open('xb') as stream:stream.write(raw)
+record=dict(schema=1,status='independently_closed_prelaunch_grant_age_negative',reviewer='Root independent Python original-input/source-directory/UTC100ns process closure',candidate_head=HEAD,batch='new3',reason=reason,grant_age_at_admission_ticks=age,grant_age_at_admission_seconds=str(age/10000000),granted_groups=3,attempted_groups=1,unstarted_groups=2,declared_controls=38,native_owner_count=0,actual_metadata_count=0,actual_tests_started=0,original_negative_preserved=True,current_all_sealed_inputs_rehashed=True,current_complete_directory_inventories_verified=True,whole_bookends_unchanged=True,seal_counts={k:len(final[k])for k in roles},distinct_current_files_rehashed=len(allpins),controller_environment_restored=True,actual_process_intervals=bounds,current_process_observation=pin(snap_path),current_process_instance_reconciliations=reconciled,current_actual_process_instances_absent=True,original_inputs=cfg['inputs'],audit_release=pin(release),auditor=pin(__file__),runtime_started=False,native_execution_authorized=False,source_mutation_hold_released=False,qualification=False,complete_buildquery_accepted=False)
+put(OUT,record)
+print(json.dumps(dict(closure=pin(OUT),native_owners=0,metadata=0,tests_started=0,seals=record['seal_counts'],current_files=len(allpins),grant_age_ticks=age,current_process_snapshot=pin(snap_path))))

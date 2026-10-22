@@ -1,0 +1,453 @@
+{
+  "schema": "pi-zig.independent-v35-emitted-catalog-source-peer.v1",
+  "reviewer": "sdk_environment_port",
+  "candidate_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "baseline_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v35-catalog-source-peer-20261020\\baseline-checker.py",
+    "bytes": 12034,
+    "sha256": "EC194894847A3974522EA2C9F956A792B2D4E8E9DE8AB0BC0817177EB05DDA7E"
+  },
+  "emitted_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v35-catalog-source-peer-20261020\\emitted-checker-successor.py",
+    "bytes": 19081,
+    "sha256": "00E80A00CDC3C2123841E489277577ABCC8FC8BD96B1A56BD021F2CB1B9F890B"
+  },
+  "baseline_structure_sha256": "CB58CE659A5051C615FEB606CBA211E89DE0FC9AD0BA3CA1220BBD886E65D491",
+  "matrix": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-new4-prepared-20261020\\groups.json",
+    "bytes": 1104585,
+    "sha256": "B5DDAB29463DC9EEF28A795F702F605AEC013B21236975B857AE66C25A8CD7FA"
+  },
+  "matrix_second": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-regression63-prepared-20261020\\groups.json",
+    "bytes": 1104585,
+    "sha256": "B5DDAB29463DC9EEF28A795F702F605AEC013B21236975B857AE66C25A8CD7FA"
+  },
+  "reviews": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-new4-prepared-20261020\\preparation-review.json",
+      "bytes": 77860,
+      "sha256": "8A2C86365742929786BB4BFEF03C249D01AC1A698CC0B325E21BF69B9188658B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-regression63-prepared-20261020\\preparation-review.json",
+      "bytes": 80052,
+      "sha256": "AAD575EB3C6D136E58ADC02E063CF0817340FAAFDDA521A97D48E8FEE303D328"
+    }
+  ],
+  "catalog_groups": 117,
+  "catalog_source_declarations": 2013,
+  "old_groups_preserved": 113,
+  "old_declarations_preserved": 1955,
+  "old_source_pin_refreshes": 65,
+  "old_dependency_row_refreshes": 79,
+  "old_dependency_prefix_rows": 344,
+  "new_dependency_rows": 232,
+  "complete_catalog_forward_and_old_byte_inverse": true,
+  "both_matrices_byte_identical": true,
+  "graph_checks": [
+    {
+      "name": "native-node-file-handle-owner",
+      "modules": 710,
+      "embeds": 243,
+      "literal_import_edges": 3334,
+      "declarations": 18,
+      "anonymous_source_blocks": 8,
+      "source_pins": 907,
+      "new_dependency_rows": 75
+    },
+    {
+      "name": "native-node-fs-before-hook-continuation",
+      "modules": 710,
+      "embeds": 243,
+      "literal_import_edges": 3334,
+      "declarations": 3,
+      "anonymous_source_blocks": 8,
+      "source_pins": 907,
+      "new_dependency_rows": 75
+    },
+    {
+      "name": "native-vm-error-constructor-name",
+      "modules": 1,
+      "embeds": 0,
+      "literal_import_edges": 0,
+      "declarations": 24,
+      "anonymous_source_blocks": 0,
+      "source_pins": 2,
+      "new_dependency_rows": 5
+    },
+    {
+      "name": "native-node-file-handle-transfer",
+      "modules": 711,
+      "embeds": 243,
+      "literal_import_edges": 3340,
+      "declarations": 13,
+      "anonymous_source_blocks": 8,
+      "source_pins": 908,
+      "new_dependency_rows": 77
+    }
+  ],
+  "new_native_recipe_supplements": [
+    {
+      "group": "native-node-file-handle-owner",
+      "paths": [
+        "build.zig",
+        "src/extensions/engine_abi.c",
+        "src/extensions/engine_abi.h",
+        "src/extensions/native_node_check_failure.c",
+        "src/extensions/native_node_check_failure.h",
+        "src/extensions/native_node_diagnostic_context.c",
+        "src/extensions/native_node_diagnostic_context.h",
+        "src/extensions/native_node_diagnostic_context.hpp",
+        "src/extensions/native_node_diagnostic_context_test_support.cpp",
+        "src/extensions/native_node_diagnostic_context_test_support.h",
+        "src/extensions/native_node_native_debug.cpp",
+        "src/extensions/native_node_native_debug.h",
+        "src/extensions/native_node_native_debug_internal.hpp",
+        "src/extensions/native_node_permission.cpp",
+        "src/extensions/native_node_permission.h",
+        "src/extensions/native_node_permission_internal.hpp",
+        "src/extensions/native_node_permission_test_support.cpp",
+        "src/extensions/native_node_permission_test_support.h",
+        "src/extensions/native_node_standard_allocator.hpp",
+        "src/extensions/native_simdjson_memory.cpp",
+        "src/extensions/native_simdjson_memory.hpp",
+        "src/extensions/native_uv_fs.h",
+        "src/extensions/native_uv_tcp.c",
+        "src/extensions/native_vm_error_constructor_name.c.inc",
+        "tools/build_native_node_memory.zig",
+        "tools/build_native_node_network.zig",
+        "vendor/node-v24.13.0/SOURCE-MANIFEST.json",
+        "vendor/node-v24.13.0/uv/include/uv.h",
+        "vendor/quickjs/quickjs.c",
+        "vendor/quickjs/quickjs.h"
+      ],
+      "source_pin_count": 907,
+      "dependency_row_count": 75
+    },
+    {
+      "group": "native-node-fs-before-hook-continuation",
+      "paths": [
+        "build.zig",
+        "src/extensions/engine_abi.c",
+        "src/extensions/engine_abi.h",
+        "src/extensions/native_node_check_failure.c",
+        "src/extensions/native_node_check_failure.h",
+        "src/extensions/native_node_diagnostic_context.c",
+        "src/extensions/native_node_diagnostic_context.h",
+        "src/extensions/native_node_diagnostic_context.hpp",
+        "src/extensions/native_node_diagnostic_context_test_support.cpp",
+        "src/extensions/native_node_diagnostic_context_test_support.h",
+        "src/extensions/native_node_native_debug.cpp",
+        "src/extensions/native_node_native_debug.h",
+        "src/extensions/native_node_native_debug_internal.hpp",
+        "src/extensions/native_node_permission.cpp",
+        "src/extensions/native_node_permission.h",
+        "src/extensions/native_node_permission_internal.hpp",
+        "src/extensions/native_node_permission_test_support.cpp",
+        "src/extensions/native_node_permission_test_support.h",
+        "src/extensions/native_node_standard_allocator.hpp",
+        "src/extensions/native_simdjson_memory.cpp",
+        "src/extensions/native_simdjson_memory.hpp",
+        "src/extensions/native_uv_fs.h",
+        "src/extensions/native_uv_tcp.c",
+        "src/extensions/native_vm_error_constructor_name.c.inc",
+        "tools/build_native_node_memory.zig",
+        "tools/build_native_node_network.zig",
+        "vendor/node-v24.13.0/SOURCE-MANIFEST.json",
+        "vendor/node-v24.13.0/uv/include/uv.h",
+        "vendor/quickjs/quickjs.c",
+        "vendor/quickjs/quickjs.h"
+      ],
+      "source_pin_count": 907,
+      "dependency_row_count": 75
+    },
+    {
+      "group": "native-vm-error-constructor-name",
+      "paths": [
+        "build.zig",
+        "src/extensions/engine_abi.c",
+        "src/extensions/engine_abi.h",
+        "src/extensions/native_vm_error_constructor_name.c.inc",
+        "vendor/quickjs/quickjs.c",
+        "vendor/quickjs/quickjs.h"
+      ],
+      "source_pin_count": 2,
+      "dependency_row_count": 5
+    },
+    {
+      "group": "native-node-file-handle-transfer",
+      "paths": [
+        "build.zig",
+        "src/extensions/engine_abi.c",
+        "src/extensions/engine_abi.h",
+        "src/extensions/native_node_check_failure.c",
+        "src/extensions/native_node_check_failure.h",
+        "src/extensions/native_node_diagnostic_context.c",
+        "src/extensions/native_node_diagnostic_context.h",
+        "src/extensions/native_node_diagnostic_context.hpp",
+        "src/extensions/native_node_diagnostic_context_test_support.cpp",
+        "src/extensions/native_node_diagnostic_context_test_support.h",
+        "src/extensions/native_node_file_handle_transfer.cpp",
+        "src/extensions/native_node_file_handle_transfer.h",
+        "src/extensions/native_node_native_debug.cpp",
+        "src/extensions/native_node_native_debug.h",
+        "src/extensions/native_node_native_debug_internal.hpp",
+        "src/extensions/native_node_permission.cpp",
+        "src/extensions/native_node_permission.h",
+        "src/extensions/native_node_permission_internal.hpp",
+        "src/extensions/native_node_permission_test_support.cpp",
+        "src/extensions/native_node_permission_test_support.h",
+        "src/extensions/native_node_standard_allocator.hpp",
+        "src/extensions/native_simdjson_memory.cpp",
+        "src/extensions/native_simdjson_memory.hpp",
+        "src/extensions/native_uv_fs.h",
+        "src/extensions/native_uv_tcp.c",
+        "src/extensions/native_vm_error_constructor_name.c.inc",
+        "tools/build_native_node_memory.zig",
+        "tools/build_native_node_network.zig",
+        "vendor/node-v24.13.0/SOURCE-MANIFEST.json",
+        "vendor/node-v24.13.0/uv/include/uv.h",
+        "vendor/quickjs/quickjs.c",
+        "vendor/quickjs/quickjs.h"
+      ],
+      "source_pin_count": 908,
+      "dependency_row_count": 77
+    }
+  ],
+  "partitions": {
+    "schema": 1,
+    "candidate_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+    "catalog_groups": 117,
+    "catalog_declarations": 2013,
+    "partitions": {
+      "new4": {
+        "preparation": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-new4-prepared-20261020",
+        "groups": [
+          "native-node-file-handle-owner",
+          "native-node-fs-before-hook-continuation",
+          "native-vm-error-constructor-name",
+          "native-node-file-handle-transfer"
+        ],
+        "declared_controls": 58,
+        "actual_metadata_count": null
+      },
+      "regression63": {
+        "preparation": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-regression63-prepared-20261020",
+        "groups": [
+          "native-node-file-handle-read",
+          "native-node-fs-callback-template",
+          "native-vm-simple-stack-source",
+          "native-vm-exotic-operations",
+          "native-node-diagnostic-context",
+          "native-node-native-debug",
+          "native-node-permission",
+          "native-node-fs-readwrap-reuse",
+          "native-node-reqwrap-callback-routing",
+          "native-vm-script-location",
+          "native-node-stream-read",
+          "native-node-environment-map",
+          "native-vm-backing-store-adoption",
+          "native-node-environment-paths",
+          "native-node-stream-fields",
+          "native-node-managed-buffers",
+          "native-node-fs-request-owner",
+          "native-vm-execution-termination",
+          "native-typebox-execution-termination",
+          "native-host-termination-ownership",
+          "native-node-stream-resource",
+          "native-node-package-json-parser",
+          "native-node-microtask-checkpoint",
+          "native-vm-property-retirement",
+          "native-vm-consuming-operands",
+          "native-vm-oom-occurrence",
+          "native-node-callback-scope",
+          "native-node-inspect-colors",
+          "native-vm-captured-frame-logging",
+          "native-node-experimental-warning",
+          "native-node-commonjs-helpers",
+          "native-node-process-warning",
+          "native-node-fs-request-transport",
+          "native-vm-array-buffer-view-length",
+          "native-vm-array-buffer-backing",
+          "native-vm-private-property",
+          "native-node-tcp-transport",
+          "native-vm-async-arguments",
+          "native-node-fs-write-uv",
+          "native-vm-sync-arguments",
+          "native-vm-async-retirement",
+          "native-vm-template-literal",
+          "native-vm-borrowed-bridges",
+          "vm-af-throw",
+          "native-ai-oauth-anthropic-genuine-af",
+          "native-node-module-creation",
+          "native-node-module-search-paths",
+          "native-node-fs-realpath-classic",
+          "native-node-fs-path-helpers",
+          "native-node-file-url-paths",
+          "native-sdk-tool-search-public",
+          "native-ai-radius-config",
+          "native-ai-radius-provider-genuine-af",
+          "native-node-inspect-entry",
+          "native-ai-oauth-radius-genuine-af",
+          "native-vm-existing-promise-settlement",
+          "native-node-options",
+          "native-node-uv-exception",
+          "native-vm-disallow-javascript",
+          "native-vm-continuation-data",
+          "native-vm-pending-promise",
+          "native-vm-native-global",
+          "native-vm-copy-data-properties"
+        ],
+        "declared_controls": 1249,
+        "actual_metadata_count": null
+      }
+    },
+    "disjoint": true,
+    "union_groups": 67,
+    "union_declarations": 1307,
+    "original63_order_preserved": true,
+    "per_batch_cap": 64,
+    "actual_metadata_count": null,
+    "execution_authority": false
+  },
+  "auditor_path_only_inverses": [
+    {
+      "batch": "new4",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v34-prepared-20261020\\Audit-CombinedNativeBatch.py",
+        "bytes": 17691,
+        "sha256": "1436211CABD8D2D2C0A31DB4005C05BA3451E50E381F7EC3AFF8ACC094CAE98B"
+      },
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-new4-prepared-20261020\\Audit-CombinedNativeBatch.py",
+        "bytes": 17696,
+        "sha256": "B9AA7515F2494E1181E7418C340E0398B81126C413B6E914B16874FB48CB0A0B"
+      },
+      "one_path_edit_and_full_inverse": true
+    },
+    {
+      "batch": "regression63",
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v34-prepared-20261020\\Audit-CombinedNativeBatch.py",
+        "bytes": 17691,
+        "sha256": "1436211CABD8D2D2C0A31DB4005C05BA3451E50E381F7EC3AFF8ACC094CAE98B"
+      },
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-regression63-prepared-20261020\\Audit-CombinedNativeBatch.py",
+        "bytes": 17704,
+        "sha256": "B2A052C01717AF05C0F05A002D9504F1BA8723D2D62FD0936BBA4A69F0F802DA"
+      },
+      "one_path_edit_and_full_inverse": true
+    }
+  ],
+  "strict_driver_and_classifier_exact": true,
+  "unchanged_group_and_metadata_cap": 64,
+  "actual_current_input_file_versions": 1310,
+  "all_current_input_pins_and_end_bookends_verified": true,
+  "current_checkout_vs_raw_Git_bindings": [
+    {
+      "path": "src/extensions/native_node_operation_scope.zig",
+      "actual_sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+      "git_raw_sha256": "0663228C40E2982D7809A7D0B143C3E6E96EE803B6FFAA384054CCCF19878F8C",
+      "CRLF_count": 92,
+      "LF_count": 92
+    },
+    {
+      "path": "src/native_sdk_chalk_ignore_guest_guard_test.zig",
+      "actual_sha256": "8E5C4E07B578EBE60CE39372F236B27873634AC39A8AC77C3623338FE83568CE",
+      "git_raw_sha256": "DF00D6C1BE401FC026A588EA201E184C8C31C31860F432F85E01DFC65299AA9F",
+      "CRLF_count": 1,
+      "LF_count": 145
+    }
+  ],
+  "prior_V34_actual_seal_bookends": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\before.json",
+      "bytes": 15336677,
+      "sha256": "DBBA4C36736487C477B95EC8745AAF1BFBEDBB7B47C74FAC275B09A7589D193B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-buildquery-20261020-202924\\final.json",
+      "bytes": 15336677,
+      "sha256": "DBBA4C36736487C477B95EC8745AAF1BFBEDBB7B47C74FAC275B09A7589D193B"
+    }
+  ],
+  "prior_V34_all1304_rows_verified_against_actual_seals": true,
+  "phase_checks": [
+    {
+      "phase": "owner-error",
+      "before_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "after_head": "67e2ae2fa78dea304b667f634a40ade3a209581a",
+      "path_count": 192,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    },
+    {
+      "phase": "reqwrap",
+      "before_head": "67e2ae2fa78dea304b667f634a40ade3a209581a",
+      "after_head": "842c76a89909627e589f50e7043852b68fd80f00",
+      "path_count": 10,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    },
+    {
+      "phase": "fs-init",
+      "before_head": "842c76a89909627e589f50e7043852b68fd80f00",
+      "after_head": "2bdafdfa1e41032fcc4e1f0a378b1a97792b72c0",
+      "path_count": 34,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    },
+    {
+      "phase": "transfer",
+      "before_head": "2bdafdfa1e41032fcc4e1f0a378b1a97792b72c0",
+      "after_head": "160b4e0562f0eb1139bf2e4e9c00f4c10ab6aa64",
+      "path_count": 78,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    },
+    {
+      "phase": "error-naming",
+      "before_head": "160b4e0562f0eb1139bf2e4e9c00f4c10ab6aa64",
+      "after_head": "c5047a5b68e15e4ef9279b874064e68174e99d87",
+      "path_count": 19,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    },
+    {
+      "phase": "progress",
+      "before_head": "c5047a5b68e15e4ef9279b874064e68174e99d87",
+      "after_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+      "path_count": 94,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    }
+  ],
+  "explicit_intake_occurrences": 427,
+  "final_intake_paths": 423,
+  "source_build_paths": 23,
+  "phase_donors_commits_preimages_and_final_checkout_exact": true,
+  "immutable_reference_file_versions_verified": 99,
+  "future_actual_metadata": null,
+  "compiler_executed": false,
+  "native_executed": false,
+  "preparer_executed": false,
+  "Main_or_index_written": false,
+  "execution_authority": false,
+  "qualification": false,
+  "bounded_source_blockers": [],
+  "scope": "Independent source/configuration peer only. The literal graph is conservative; this is not compiler reachability, complete C preprocessing, new BuildQuery metadata acceptance, native runtime acceptance, complete FileHandle/worker/bootstrap completion or application qualification. Root retains all new execution authority.",
+  "preserved_checker_negatives": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v35-catalog-source-peer-20261020\\baseline-preflight-negative.json",
+      "bytes": 2085,
+      "sha256": "C94066C80EABE5B6B9FBBB622F9C4780511B8D7094F366F899B5FE77E33E8BC4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v35-catalog-source-peer-20261020\\emitted-preflight-negative.json",
+      "bytes": 2518,
+      "sha256": "C8626E230CFDA1E8F65C5050D4DF168D79046A8C5F726055B0B8DB8E9F4577BA"
+    }
+  ]
+}

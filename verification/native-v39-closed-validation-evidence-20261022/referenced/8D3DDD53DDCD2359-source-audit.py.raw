@@ -1,0 +1,240 @@
+"""Independent static V39 execution-source peer. No target import/eval/prefix execution.
+Only reads pinned evidence and two immutable Git objects through the SDK worktree.
+The sole output is a create-only independent source proof after every check passes.
+"""
+from pathlib import Path
+import ast,collections,copy,datetime,hashlib,json,re,subprocess
+B=Path(r"C:\Users\adyba\pi-zig")
+W=B/"worktrees/sdk-owners-resume-20261018"
+X=B/"evidence/v39-execution-unresolved-sourceonly-20261022"
+D=W/"verification/native-foundation-v39-execution-source-peer-20261022"
+V=W/"verification/native-foundation-v39-catalog-preparer-sourceonly-20261022/third-checkout-distinction-successor-v3"
+versions={}
+def sha(data): return hashlib.sha256(data).hexdigest().upper()
+def pin(path,data): return dict(path=str(path),bytes=len(data),sha256=sha(data))
+def read(row):
+ p=Path(row["path"])
+ assert p.is_absolute() and p.is_relative_to(B) and not p.is_relative_to(B/"main"),str(p)
+ data=p.read_bytes()
+ assert len(data)==row["bytes"] and sha(data)==row["sha256"],row
+ k=str(p).casefold()
+ if k in versions: assert versions[k]==row
+ else: versions[k]=dict(row)
+ return data
+def fixed(path,size,digest): return read(dict(path=str(path),bytes=size,sha256=digest))
+def doc(path,size,digest): return json.loads(fixed(path,size,digest))
+def enc(value): return (json.dumps(value,indent=2,ensure_ascii=True)+"\n").encode()
+h=doc(X/"handoff.json",15709,"BEC44F0C56BDE70EDC990A92D905B2238492CF4D6536691B80614DCAB3599DED")
+f=json.loads(read(h["finite_source_adaptation"]))
+a=json.loads(read(h["own_static_proof"]))
+read(h["own_static_checker"])
+decl=json.loads(read(h["declared_edits"]))
+c=json.loads(read(h["binding_contract"]))
+old_catalog=json.loads(read(h["catalog_execution_contract"]))
+new_catalog=doc(V/"execution-provenance-contract-v3.json",6499,"8FBA8A300458B490C62236AF33F3F5B059BD74458337015EC113EE0A0B0313A6")
+old_catalog_source=read(old_catalog["preparer_candidate"])
+new_catalog_source=read(new_catalog["preparer_candidate"])
+x=copy.deepcopy(new_catalog);x["preparer_candidate"]=old_catalog["preparer_candidate"]
+assert x==old_catalog
+assert new_catalog["preparer_candidate"]["sha256"]=="0B422758050ECB5C6DD2718CC46F67D14B6C476A25AE61BA5EBEB89125484E83"
+assert new_catalog["declared_counts"]==dict(new3=[3,38],new4=[4,58],existing63=[63,1249],catalog=[120,2051],selected_union=[70,1345])
+assert new_catalog["group_cap"]==64 and new_catalog["actual_metadata_count"] is None
+assert new_catalog["future_source_head"] is None and new_catalog["future_matrix_sha256"] is None
+assert new_catalog["existing_runtime_allowlists_unchanged"] and new_catalog["conservative_literal_graphs_not_runtime_anonymous_admission"]
+assert new_catalog["strict_driver_sha256"]=="1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+assert new_catalog["classifier_sha256"]=="3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+for row in a["current_input_versions"]: read(row)
+assert f["total_edits"]==58 and len(f["sources"])==4
+assert f["declarations"]==h["declared_edits"] and f["execution_provenance_contract"]==h["catalog_execution_contract"]
+assert c["execution_provenance_contract"]==h["catalog_execution_contract"] and c["finite_adaptation"]==h["finite_source_adaptation"]
+kinds=["buildquery_constructor","runtime_constructor","positive_buildquery_auditor","positive_runtime_auditor"]
+assert [s["kind"] for s in h["sources"]]==[s["kind"] for s in f["sources"]]==[s["kind"] for s in decl["sources"]]==[s["kind"] for s in c["sources"]]==kinds
+assert [s["edit_count"] for s in f["sources"]]==[12,14,14,18]
+assert h["sources"][3]["baseline"]["sha256"]=="A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+expected_hashes=[
+ ("5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B","1501B39CAE3466FEBC38E39DA5121D33064AECE3206BDBEF998A59BF26491EF3"),
+ ("7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322","FEFA13F724061352D6A2DCFD87E10EAA23EC892E2F87531FC86066FF2EEF25DE"),
+ ("6BCBE32702657CD2B5F62E8779CCF585B86D7A8CFFC04C2EB6FE25B4D6E41A9E","F200CD8E6DDCF56E3900D585C302BFFD97A47CC850DF31C81CD6FA63354DCB49"),
+ ("A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102","82CA5B3712FF3898DD90AA70C2F4296523ED4F4C9EC2CA15A8E8DEF2970DD5D1")]
+def functions(raw,tree):
+ lines=raw.splitlines(keepends=True)
+ return {n.name:b"".join(lines[n.lineno-1:n.end_lineno]) for n in tree.body if isinstance(n,ast.FunctionDef)}
+def imports(tree): return [ast.dump(n,include_attributes=False) for n in tree.body if isinstance(n,(ast.Import,ast.ImportFrom))]
+def v34(tree): return [n.value for n in ast.walk(tree) if isinstance(n,ast.Constant) and isinstance(n.value,str) and re.search("v34",n.value,re.I)]
+def raw_region(data,start,end=None):
+ assert data.count(start)==1,start
+ at=data.index(start);stop=len(data) if end is None else data.index(end,at)
+ return data[at:stop]
+raws={};trees={};replays=[];helper_rows=[];markers=[];categories=collections.Counter()
+for i,kind in enumerate(kinds):
+ hs=h["sources"][i];fs=f["sources"][i];ds=decl["sources"][i];cs=c["sources"][i]
+ assert hs["baseline"]==fs["baseline"]==ds["baseline"]==cs["baseline"]
+ assert hs["candidate"]==fs["candidate"]==ds["candidate"]==cs["unresolved_candidate"]
+ assert (hs["baseline"]["sha256"],hs["candidate"]["sha256"])==expected_hashes[i]
+ old=read(hs["baseline"]);new=read(hs["candidate"])
+ oldtree=ast.parse(old);newtree=ast.parse(new)
+ raws[kind]=(old,new);trees[kind]=(oldtree,newtree)
+ assert fs["edit_count"]==hs["edit_count"]==cs["finite_edit_count"]==len(fs["steps"])==len(ds["edits"])
+ state=old;steps=[]
+ for j,(row,drow) in enumerate(zip(fs["steps"],ds["edits"])):
+  assert row["index"]==j
+  for key in ("before","after","category","reason"): assert row[key]==drow[key]
+  before=row["before"].encode();after=row["after"].encode()
+  assert before!=after and state.count(before)==1,(kind,j)
+  off=state.index(before);assert row["offset"]==off
+  assert row["before_bytes"]==len(state) and row["before_sha256"]==sha(state)
+  prefix=state[:off];suffix=state[off+len(before):]
+  assert row["unchanged_prefix_bytes"]==len(prefix) and row["unchanged_prefix_sha256"]==sha(prefix)
+  assert row["unchanged_suffix_bytes"]==len(suffix) and row["unchanged_suffix_sha256"]==sha(suffix)
+  result=prefix+after+suffix
+  assert row["after_bytes"]==len(result) and row["after_sha256"]==sha(result)
+  assert result[:off]==prefix and result[off+len(after):]==suffix
+  assert result[:off]+before+result[off+len(after):]==state
+  steps.append(dict(index=j,category=row["category"],offset=off,before_bytes=len(state),before_sha256=sha(state),after_bytes=len(result),after_sha256=sha(result),prefix_bytes=len(prefix),prefix_sha256=sha(prefix),suffix_bytes=len(suffix),suffix_sha256=sha(suffix),local_raw_inverse=True))
+  categories[row["category"]]+=1;state=result
+ assert state==new
+ for row in reversed(fs["steps"]):
+  assert sha(state)==row["after_sha256"]
+  off=row["offset"];before=row["before"].encode();after=row["after"].encode()
+  assert state[off:off+len(after)]==after
+  state=state[:off]+before+state[off+len(after):]
+  assert sha(state)==row["before_sha256"]
+ assert state==old and fs["whole_original_bytes_recovered"]==len(old) and fs["whole_original_sha256_recovered"]==sha(old)
+ oh=functions(old,oldtree);nh=functions(new,newtree);assert list(oh)==list(nh)
+ local=[]
+ for name,body in oh.items():
+  assert body==nh[name],(kind,name)
+  row=dict(kind=kind,name=name,bytes=len(body),sha256=sha(body));local.append(row);helper_rows.append(row)
+ assert local==fs["all_helpers_byte_identical"]
+ assert imports(oldtree)==imports(newtree)
+ assert v34(oldtree)==v34(newtree)==fs["all_historical_V34_literals_unchanged"]
+ # AST constants and original byte ranges, not evaluation of target assignments.
+ lines=new.splitlines(keepends=True)
+ for node in ast.walk(newtree):
+  if not isinstance(node,ast.Constant) or not isinstance(node.value,str) or not node.value.startswith("UNRESOLVED_"):continue
+  binding=next(k for k,v in decl["markers"].items() if v==node.value)
+  lo=sum(map(len,lines[:node.lineno-1]))+node.col_offset;hi=sum(map(len,lines[:node.end_lineno-1]))+node.end_col_offset
+  markers.append(dict(kind=kind,binding=binding,path=hs["candidate"]["path"],token_start=lo,token_end=hi,token=new[lo:hi].decode(),decoded_length=len(node.value),value=node.value))
+ replays.append(dict(kind=kind,baseline=hs["baseline"],candidate=hs["candidate"],steps=steps,complete_forward=True,complete_raw_inverse=True,unchanged_helpers=local,imports_AST_exact=True,all_V34_literals_exact=True))
+markers.sort(key=lambda row:(kinds.index(row["kind"]),list(decl["markers"]).index(row["binding"])))
+assert len(helper_rows)==27 and helper_rows==f["all27_helper_bodies_unchanged"]==a["unchanged_helpers"]
+assert sum(len(s["steps"]) for s in replays)==58
+assert markers==f["first_stage_unresolved_bindings"]==a["nine_future_binding_slots"]==c["bindings"]
+assert collections.Counter(r["binding"] for r in markers)==dict(head=4,matrix=3,buildquery_constructor_sha256=1,runtime_constructor_sha256=1)
+for row in markers:
+ assert row["decoded_length"]==(40 if row["binding"]=="head" else 64)
+ assert not re.fullmatch("[0-9a-fA-F]+",row["value"])
+assert sum(len(re.findall(rb"UNRESOLVED_[A-Z0-9_]+",v[1])) for v in raws.values())==9
+regions=[]
+for spec in h["review_scope"]["unchanged_regions"]:
+ old,new=raws[spec["kind"]]
+ if "start" in spec:
+  before=raw_region(old,spec["start"].encode(),None if spec["end"] is None else spec["end"].encode())
+  after=raw_region(new,spec["start"].encode(),None if spec["end"] is None else spec["end"].encode())
+  assert before==after
+ else:
+  before=raw_region(old,b"verify_pins(historical_snapshot)\n",b'verify_pins({key:value for key,value in review.items()')
+  assert new.count(before)==1
+ assert len(before)==spec["bytes"] and sha(before)==spec["sha256"]
+ regions.append(dict(spec))
+assert len(regions)==5 and regions==f["complete_unchanged_regions"]==a["unchanged_critical_regions"]
+# Changed admission regions are checked independently against the agreed catalog.
+new3=["native-node-stream-shutdown","native-node-one-byte-string","native-vm-array-buffer-view-data"]
+new4=["native-node-file-handle-owner","native-node-fs-before-hook-continuation","native-vm-error-constructor-name","native-node-file-handle-transfer"]
+assert new_catalog["new3_order"]==new3
+for kind,(old,new) in raws.items():
+ text=new.decode()
+ assert 'batch in ("new3","new4","existing63")' in text
+ assert '(3,38) if batch=="new3" else (4,58) if batch=="new4" else (63,1249)' in text
+ for needle in (b"<=64",b"16777216",b"19546",b"1489"): assert old.count(needle)==new.count(needle),(kind,needle)
+ assert old.count(b"300")==new.count(b"300"),kind
+ if kind!="positive_buildquery_auditor":
+  assert json.dumps(new3,separators=(",",":")) in text
+  assert json.dumps(new4,separators=(",",":")) in text
+ if kind in ("runtime_constructor","positive_buildquery_auditor","positive_runtime_auditor"):
+  assert '("regression63" if batch=="existing63" else batch)+"-prepared-20261022"' in text
+ assert "/root-native-foundation-fresh-v38-" not in text
+ assert c["sources"][kinds.index(kind)]["canonical_future_path"]==str(B/"evidence"/Path(c["sources"][kinds.index(kind)]["unresolved_candidate"]["path"]).name)
+rt_text=raws["runtime_constructor"][1].decode();bq_text=raws["buildquery_constructor"][1].decode()
+rb_text=raws["positive_buildquery_auditor"][1].decode();rr_text=raws["positive_runtime_auditor"][1].decode()
+assert 'grant_preparer["bytes"]==10269' in rb_text and len(raws["buildquery_constructor"][1])==10269
+assert 'runtime_preparer.stat().st_size==12671' in rr_text and len(raws["runtime_constructor"][1])==12671
+assert all(v is None for v in c["future_values"].values())
+assert c["configuration_requirements"]["buildquery_grant_provenance_updates"]=={"v39_execution_bound_source_review":None}
+assert 'verify_pins(cfg["grant_provenance_updates"])' in bq_text
+assert 'isinstance(runtime_cfg["root_runtime_review"],str)' in rr_text
+assert 'runtime_source_review=runtime_cfg["runtime_constructor_source_review"]' in rr_text
+assert 'digest(runtime_source_review["path"])==cfg["runtime_constructor_source_review_sha256"]' in rr_text
+assert c["cohorts"]["per_batch_cap"]==64
+for batch,prep in new_catalog["execution_batch_spelling"].items():
+ assert c["cohorts"][batch]["preparation"]==new_catalog["preparation_directories"][prep]
+ assert [c["cohorts"][batch]["groups"],c["cohorts"][batch]["declared_controls"]]==new_catalog["declared_counts"][batch]
+assert c["cohorts"]["new3"]["order"]==new3 and c["cohorts"]["new4"]["order"]==new4
+assert (c["cohorts"]["catalog"],c["cohorts"]["selected_union"])==({"groups":120,"declared_controls":2051},{"groups":70,"declared_controls":1345})
+# Parse only static constructor syntax for four pin dictionaries and six literal rows.
+rrtree=trees["positive_runtime_auditor"][1]
+assign={n.targets[0].id:n.value for n in rrtree.body if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name)}
+def dict_literals(node):
+ assert isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and node.func.id=="dict" and not node.args
+ return {k.arg:ast.literal_eval(k.value) for k in node.keywords}
+def source_pin(name):
+ node=assign[name];assert isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and node.func.id=="dict" and not node.args
+ kw={k.arg:k.value for k in node.keywords};assert set(kw)=={"path","bytes","sha256"}
+ s=kw["path"];assert isinstance(s,ast.Call) and isinstance(s.func,ast.Name) and s.func.id=="str" and len(s.args)==1 and not s.keywords
+ p=s.args[0];assert isinstance(p,ast.BinOp) and isinstance(p.op,ast.Div) and isinstance(p.left,ast.Name)
+ root={"main":B/"main","base":B}[p.left.id];relative=ast.literal_eval(p.right);assert not Path(relative).is_absolute()
+ return dict(path=str(root/relative),bytes=ast.literal_eval(kw["bytes"]),sha256=ast.literal_eval(kw["sha256"]))
+original=source_pin("historical_original");snapshot=source_pin("historical_snapshot")
+owner_original=source_pin("historical_owner_original");owner_snapshot=source_pin("historical_owner_snapshot")
+commit=ast.literal_eval(assign["historical_commit"]);owner_commit=ast.literal_eval(assign["historical_owner_commit"])
+assert commit=="b13be24e44cc1bbc361639eb35900a368ae60eac" and owner_commit=="014062f2d139254acab4b985b4ae343db637166f"
+maps=[dict(batch=b,role="fixture_unchanged_root_native-node-file-handle-owner",original=original,immutable_snapshot=snapshot,raw_commit=commit,exact_original_bytes=True) for b in ("new4","regression63")]
+maps.extend(dict(batch=b,role="fixture_causal_owner",original=owner_original,immutable_snapshot=owner_snapshot,raw_commit=owner_commit,exact_original_bytes=True) for b in ("new4","regression63"))
+expected_expr='[dict(batch=b,role="fixture_unchanged_root_native-node-file-handle-owner",original=historical_original,immutable_snapshot=historical_snapshot,raw_commit=historical_commit,exact_original_bytes=True)for b in ("new4","regression63")]+[dict(batch=b,role="fixture_causal_owner",original=historical_owner_original,immutable_snapshot=historical_owner_snapshot,raw_commit=historical_owner_commit,exact_original_bytes=True)for b in ("new4","regression63")]'
+assert ast.dump(assign["historical_expected"],include_attributes=False)==ast.dump(ast.parse(expected_expr,mode="eval").body,include_attributes=False)
+rels=assign["historical_relationships"];assert isinstance(rels,ast.List)
+relationships=[dict_literals(n) for n in rels.elts]
+assert maps==new_catalog["historical_source_rebindings"]==c["historical_source_rebindings"]==a["historical_source_rebindings"]
+assert relationships==new_catalog["historical_provenance_relationships"]==c["historical_provenance_relationships"]==a["historical_provenance_relationships"]
+assert len(maps)==4 and len(relationships)==6 and [r["mapping_index"] for r in relationships]==[0,1,2,0,1,3]
+for s in ('require(historical_rows==historical_expected,','require(review["historical_provenance_relationships"]==historical_relationships,','require(all(review["provenance"][row["provenance_key"]]==historical_rows[row["mapping_index"]]["immutable_snapshot"] for row in historical_relationships),','verify_pins({key:value for key,value in review.items() if key!="historical_source_rebindings"})'):
+ assert rr_text.count(s)==1,s
+assert rr_text.index('digest(prep/"preparation-review.json")==')<rr_text.index('historical_original=')
+def subcalls(tree):
+ return collections.Counter(ast.dump(n,include_attributes=False) for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and isinstance(n.func.value,ast.Name) and n.func.value.id=="subprocess")
+older,newer=map(subcalls,trees["positive_runtime_auditor"])
+assert not (older-newer)
+extra=ast.dump(ast.parse('subprocess.check_output(["git","--no-optional-locks","cat-file","blob",historical_owner_commit+":src/extensions/native_node_file_handle_owner.zig"],cwd=main)',mode="eval").body,include_attributes=False)
+assert newer-older=={extra:1}
+git=[]
+for orig,snap,head,rel in ((original,snapshot,commit,"src/native_node_file_handle_owner_test.zig"),(owner_original,owner_snapshot,owner_commit,"src/extensions/native_node_file_handle_owner.zig")):
+ data=read(snap)
+ argv=["git","--no-optional-locks","-C",str(W),"cat-file","blob",head+":"+rel]
+ q=subprocess.run(argv,capture_output=True,timeout=20)
+ assert q.returncode==0 and q.stderr==b"" and q.stdout==data
+ assert len(data)==orig["bytes"] and sha(data)==orig["sha256"]
+ git.append(dict(commit=head,relative_path=rel,bytes=len(data),sha256=sha(data),immutable_snapshot=snap,exact_documentary_original=orig,raw_blob_equals_snapshot=True,argv=argv))
+# This reviews source declarations and static gates only; no native result is inferred.
+out=dict(schema=1,status="independent_static_v39_execution_source_peer_passed",
+ reviewer="/root/sdk_environment_port",reviewed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+ own_checker=pin(Path(__file__),Path(__file__).read_bytes()),author_handoff=versions[str(X/"handoff.json").casefold()],
+ selected_current_catalog_contract=versions[str(V/"execution-provenance-contract-v3.json").casefold()],
+ original_catalog_contract=versions[str(Path(h["catalog_execution_contract"]["path"])).casefold()],
+ catalog_contract_change_only_preparer_pin=True,finite_sources=replays,finite_steps=58,
+ finite_categories=dict(categories),helpers=helper_rows,helper_count=27,complete_regions=regions,
+ bindings=markers,binding_count=9,historical_source_rebindings=maps,historical_provenance_relationships=relationships,
+ raw_Git_observations=git,cohorts=c["cohorts"],configuration_requirements=c["configuration_requirements"],
+ current_input_versions=list(versions.values()),current_input_count=len(versions),
+ same_300_second_freshness_16GiB_admission_64_cap_and_protocols=True,
+ original_V34_anchors_preserved=True,all_current_provenance_except_explicit_historical_table_remains_strict=True,
+ source_read_scope="All four complete candidates, all58 edits, originalA73A and all changed cohort/history regions; helper and full strict-region bytes compared.",
+ no_bounded_source_blocker_found=True,candidate_or_prefix_executed=False,author_checker_executed=False,
+ constructors_or_auditors_executed=False,Main_accessed=False,Main_or_index_written=False,
+ compiler_or_native_executed=False,execution_configuration_issued=False,native_execution_authorized=False,
+ runtime_authority=False,qualification=False,source_mutation_hold_released=False)
+target=D/"source-proof.json"
+assert target.parent==D and not target.exists()
+raw=enc(out)
+with target.open("xb") as stream: stream.write(raw)
+assert target.read_bytes()==raw
+print(json.dumps(dict(proof=pin(target,raw),checker=out["own_checker"],steps=58,helpers=27,regions=5,bindings=9,current_inputs=len(versions),raw_Git_snapshots=2,no_bounded_source_blocker=True)))

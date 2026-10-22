@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_exact_v35_fixture_source_intake_release",
+  "reviewer": "Root",
+  "basis_main_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "branch": "work/pi-zig-consolidated-20261016",
+  "executor_sha256": "9C834CDB7C83528F9B1DE0F713696D4B816C20E874E16F18F2725AA24A35CA1F",
+  "source_intake_authorized": true,
+  "source_mutation_hold_released": true,
+  "authorized_phases": {
+    "fixture": {
+      "manifest_sha256": "88001A1F0F533194756769F86D0BE306B252BC6EE1D90C13A9D270B3BE278287",
+      "total_commit_paths": 42
+    }
+  },
+  "required_current_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\AGENTS.md",
+      "bytes": 2026,
+      "sha256": "B60E4C447442508242421A05735919B96E3355C366B6998486ADC36695773DB8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\.pi-zig-workspace.json",
+      "bytes": 1195,
+      "sha256": "130333B38F5150EEE50F58259D39D29AAC4088E5BB7282296105F39658074E87"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-fixture-main-intake-20261020\\manifest.json",
+      "bytes": 20327,
+      "sha256": "88001A1F0F533194756769F86D0BE306B252BC6EE1D90C13A9D270B3BE278287"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-fixture-main-intake-20261020\\finite-executor-adaptation.json",
+      "bytes": 5344,
+      "sha256": "11ABF1FF524A11A4BAA43DAC7F9C2C583827534CA834D9DD066B03BE4A855AEB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ReviewedSourceIntakes-v3-20261020.py",
+      "bytes": 11534,
+      "sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV35FixtureSourceIntake-20261020.py",
+      "bytes": 9700,
+      "sha256": "9C834CDB7C83528F9B1DE0F713696D4B816C20E874E16F18F2725AA24A35CA1F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-filehandle-fixture-corrections-source-acceptance-20261020.json",
+      "bytes": 3873,
+      "sha256": "083D5CBD75E1A23F555F556BE1136CA6F0977F9DCBB9BDC073BA2AF8C99FAAB3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-fixture-intake-independent-peer-20261020\\peer.json",
+      "bytes": 4230,
+      "sha256": "CE1DFFD281F522C7D8B2DC5C2627B09805A4DD354E81E6B869C1F31B6EAE5DD2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-fixture-intake-independent-peer-20261020\\source-audit.py",
+      "bytes": 12665,
+      "sha256": "B82904B005ADFCC778F9D9B854614959E9C4B63E181FF20562875625BA70D95B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-fixture-intake-independent-peer-20261020\\source-audit.json",
+      "bytes": 27142,
+      "sha256": "107CF22AF9861B6ABCD8E19CD336F9C4A627FF279DCA6416562718970CEDA57F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\independent-first-compile-negative-closure.json",
+      "bytes": 46548,
+      "sha256": "07883502323A898D097E467FB9E2CE5ED1A52A8A83A0A6B1EA7F877A35657129"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-first-compile-negative-auditor-source-review-20261020.json",
+      "bytes": 3964,
+      "sha256": "9D7293C8A3E75C79A2E3126C1E9305A57806083E66253094BBB1CECBB6917B47"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\independent-observed-auditor-job-status.json",
+      "bytes": 1561,
+      "sha256": "76C5F47A59E8E9F10B9E730D99AD34FE0956C8867C2711847F2117A45B1B17D6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-buildquery-20261020-223254\\before.json",
+      "bytes": 15696103,
+      "sha256": "3A5943BBB8B8C25DDCA86BA055766D9DFE42C1E9DB03F4CFB840C14DBD63A4F4"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-buildquery-20261020-223254\\final.json",
+      "bytes": 15696103,
+      "sha256": "3A5943BBB8B8C25DDCA86BA055766D9DFE42C1E9DB03F4CFB840C14DBD63A4F4"
+    }
+  ],
+  "receipt_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-fixture-source-intake-receipts-20261021",
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "production_bridge_removed": false,
+  "push_authorized_by_this_release": false,
+  "root_review": {
+    "source": "Root accepted 25 token substitutions in 11 local bindings and the separate one-hunk close preparation observer. Both independent semantic peers and all 58 controls/four source graphs are retained.",
+    "executor": "Root read the accepted 20E baseline and all five exact finite edits; independently replayed intermediate hashes and complete inverse. Raw blob, containment, filter, preimage, staging, commit, clean checkout and receipt gates are unchanged. Module current proof 107C and reconciled peer CE1D independently reproduce all 42 paths.",
+    "negative": "V35 remains independently closed with 34,068 files rehashed at original closure, one attempted compile and zero metadata/runtime. Original negative flags and source-hold-false certificates stay immutable; this separate release authorizes only the exact fixture/evidence intake.",
+    "ownership": "Root exclusively owns Main. Recovered Main is clean at 79 on the exact branch; no queued/running/starting Root jobs were returned after reconnection. No native, Node reference or source generator authority is granted.",
+    "scope": "Exactly 40 new immutable archive files, one reviewed fixture replacement and one exact manifest. All 41 new paths must remain absent; live and committed fixture preimage 8E/32558, selected 0D/33137. Fresh successor-head validation is required after the separate progress archive commit."
+  },
+  "retained_authoring_preflight": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-fixture-release-authoring-preflight-20261021.json",
+    "bytes": 1538,
+    "sha256": "E629D3F01651C0CCEA126A02428C3B2D4947647A9F690A69DAF432E610A6E0B3"
+  },
+  "issued_utc": "2026-10-21T07:45:20.256841+00:00"
+}

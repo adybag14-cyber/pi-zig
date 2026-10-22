@@ -1,0 +1,31 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\0350547393f66297da0663f19099fa35\\test.exe",
+  "binary_sha256": "5F400C824499583381307439C8FAD720788001697B65FC208646F141B40B81DC",
+  "version": "0.16.0",
+  "actual_count": 19,
+  "tests": [
+    "native_node_fs_path_helpers_test.test.native actual fs path default empty object and options identities",
+    "native_node_fs_path_helpers_test.test.native actual fs path default spread preserves descriptor getter and assignment order",
+    "native_node_fs_path_helpers_test.test.native actual fs path rejects actual option types and exact buffer sentinel",
+    "native_node_fs_path_helpers_test.test.native actual fs path repeated encoding signal reads preserve live receiver order",
+    "native_node_fs_path_helpers_test.test.native actual fs path buffer and falsy encoding short circuits",
+    "native_node_fs_path_helpers_test.test.native actual fs path consumes the live Buffer encoding predicate",
+    "native_node_fs_path_helpers_test.test.native actual fs path validates the second actual signal value",
+    "native_node_fs_path_helpers_test.test.native actual fs path ordinary option Buffer and spread throws retain identity",
+    "native_node_fs_path_helpers_test.test.native actual fs path hidden validator and raw arrow accept genuine strings and views",
+    "native_node_fs_path_helpers_test.test.native actual fs path hidden validator rejects incompatible view brands",
+    "native_node_fs_path_helpers_test.test.native actual fs path hidden validator rejects actual null bytes",
+    "native_node_fs_path_helpers_test.test.native actual fs path retained original includes methods survive later poisoning",
+    "native_node_fs_path_helpers_test.test.native actual fs path repeated bootstrap retains the same complete helper and Symbol owners",
+    "native_node_fs_path_helpers_test.test.native actual fs path encoding comparison retires its getter result before the second read",
+    "native_node_fs_path_helpers_test.test.native actual fs path predicate finalizer fatal stops before later encoding signal and guest catch",
+    "native_node_fs_path_helpers_test.test.native actual fs path fresh private encoding getter DATA throw remains ordinary",
+    "native_node_fs_path_helpers_test.test.native actual fs path successful flagged Buffer predicate result remains DATA",
+    "native_node_fs_path_helpers_test.test.native actual fs path detached Uint8Array reaches the genuine typed includes failure",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-fs-path-helpers",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

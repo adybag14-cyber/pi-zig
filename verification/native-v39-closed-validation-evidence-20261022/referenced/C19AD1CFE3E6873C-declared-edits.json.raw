@@ -1,0 +1,429 @@
+{
+  "schema": 1,
+  "status": "unexecuted_finite_v39_execution_source_declarations",
+  "author": "/root/handover_review",
+  "sources": [
+    {
+      "kind": "buildquery_constructor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV38BuildQueryGrant-20261021.py",
+        "bytes": 10095,
+        "sha256": "5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+        "bytes": 10269,
+        "sha256": "1501B39CAE3466FEBC38E39DA5121D33064AECE3206BDBEF998A59BF26491EF3"
+      },
+      "edits": [
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "\"\"\"Root-only exact V38 BuildQuery grant construction; no native execution.\"\"\"",
+          "after": "\"\"\"Root-only exact V39 BuildQuery grant construction; no native execution.\"\"\""
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "assert cfg[\"status\"]==\"root_reviewed_specific_v38_buildquery_preparation\"",
+          "after": "assert cfg[\"status\"]==\"root_reviewed_specific_v39_buildquery_preparation\""
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "control=B/(\"evidence/root-native-foundation-fresh-v38-\"+batch+\"-control-\"+suffix)",
+          "after": "control=B/(\"evidence/root-native-foundation-fresh-v39-\"+batch+\"-control-\"+suffix)"
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "proof=B/(\"evidence/root-native-foundation-fresh-v38-\"+batch+\"-buildquery-\"+suffix)",
+          "after": "proof=B/(\"evidence/root-native-foundation-fresh-v39-\"+batch+\"-buildquery-\"+suffix)"
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "grant_id=\"root-native-foundation-fresh-v38-\"+batch+\"-\"+suffix,issued_utc=now.isoformat(),candidate_head=HEAD,",
+          "after": "grant_id=\"root-native-foundation-fresh-v39-\"+batch+\"-\"+suffix,issued_utc=now.isoformat(),candidate_head=HEAD,"
+        },
+        {
+          "category": "unresolved_identity_literal",
+          "reason": "Exact future candidate head remains unresolved until Root observes and binds the post-intake commit.",
+          "before": "\"014062f2d139254acab4b985b4ae343db637166f\"",
+          "after": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\""
+        },
+        {
+          "category": "cohort_admission",
+          "reason": "Admit exactly the independently reviewed new3, retained4, original63 disjoint batches; preserve the unchanged64 cap.",
+          "before": "batch in (\"new4\",\"existing63\")",
+          "after": "batch in (\"new3\",\"new4\",\"existing63\")"
+        },
+        {
+          "category": "cohort_declarations",
+          "reason": "Exact source declaration counts3/38,4/58,63/1249; actual metadata still observed separately.",
+          "before": "expected_groups,expected_declared=(4,58) if batch==\"new4\" else (63,1249)",
+          "after": "expected_groups,expected_declared=(3,38) if batch==\"new3\" else (4,58) if batch==\"new4\" else (63,1249)"
+        },
+        {
+          "category": "full_catalog_counts",
+          "reason": "Preserve all117 prior groups/2013 declarations and append exactly3 complete roots/38 declarations.",
+          "before": "assert review[\"catalog_groups\"]==117 and review[\"catalog_declarations\"]==2013 and review[\"actual_metadata_count\"] is None",
+          "after": "assert review[\"catalog_groups\"]==120 and review[\"catalog_declarations\"]==2051 and review[\"actual_metadata_count\"] is None"
+        },
+        {
+          "category": "full_catalog_counts",
+          "reason": "Preserve all117 prior groups/2013 declarations and append exactly3 complete roots/38 declarations.",
+          "before": "assert len(matrix[\"groups\"])==117 and sum(len(g[\"required_named\"]) for g in matrix[\"groups\"])==2013",
+          "after": "assert len(matrix[\"groups\"])==120 and sum(len(g[\"required_named\"]) for g in matrix[\"groups\"])==2051"
+        },
+        {
+          "category": "full_catalog_counts",
+          "reason": "Preserve all117 prior groups/2013 declarations and append exactly3 complete roots/38 declarations.",
+          "before": "by_name={g[\"name\"]:g for g in matrix[\"groups\"]};assert len(by_name)==117",
+          "after": "by_name={g[\"name\"]:g for g in matrix[\"groups\"]};assert len(by_name)==120"
+        },
+        {
+          "category": "exact_cohort_order",
+          "reason": "Retain exact old63 and retained4 order; new3 order is Shutdown, OneByte, Buffer.",
+          "before": "if batch==\"existing63\":\n    assert selected==read(OLD/\"root-grant.json\")[\"groups\"]\nelse:\n    assert selected==[\"native-node-file-handle-owner\",\"native-node-fs-before-hook-continuation\",\"native-vm-error-constructor-name\",\"native-node-file-handle-transfer\"]",
+          "after": "if batch==\"existing63\":\n    assert selected==read(OLD/\"root-grant.json\")[\"groups\"]\nelif batch==\"new4\":\n    assert selected==[\"native-node-file-handle-owner\",\"native-node-fs-before-hook-continuation\",\"native-vm-error-constructor-name\",\"native-node-file-handle-transfer\"]\nelse:\n    assert selected==[\"native-node-stream-shutdown\",\"native-node-one-byte-string\",\"native-vm-array-buffer-view-data\"]"
+        }
+      ]
+    },
+    {
+      "kind": "runtime_constructor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV38RuntimeGrant-20261021.py",
+        "bytes": 12499,
+        "sha256": "7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39RuntimeGrant-20261022.py",
+        "bytes": 12671,
+        "sha256": "FEFA13F724061352D6A2DCFD87E10EAA23EC892E2F87531FC86066FF2EEF25DE"
+      },
+      "edits": [
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "\"\"\"Root-only V38 strict RuntimeOnly grant construction from a completely closed BuildQuery.",
+          "after": "\"\"\"Root-only V39 strict RuntimeOnly grant construction from a completely closed BuildQuery."
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "assert cfg[\"status\"]==\"root_reviewed_specific_v38_runtime_preparation\"",
+          "after": "assert cfg[\"status\"]==\"root_reviewed_specific_v39_runtime_preparation\""
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "P=E/(\"combined-native-batch-v38-\"+(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\")",
+          "after": "P=E/(\"combined-native-batch-v39-\"+(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\")"
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "assert bc.parent==bp.parent==E and bc.name.startswith(\"root-native-foundation-fresh-v38-\"+batch+\"-control-\")",
+          "after": "assert bc.parent==bp.parent==E and bc.name.startswith(\"root-native-foundation-fresh-v39-\"+batch+\"-control-\")"
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "control=E/(\"root-native-foundation-v38-\"+batch+\"-runtime-control-\"+suffix)",
+          "after": "control=E/(\"root-native-foundation-v39-\"+batch+\"-runtime-control-\"+suffix)"
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "proof=E/(\"root-native-foundation-v38-\"+batch+\"-runtime-\"+suffix)",
+          "after": "proof=E/(\"root-native-foundation-v39-\"+batch+\"-runtime-\"+suffix)"
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "updates=dict(grant_id=\"root-native-foundation-v38-\"+batch+\"-runtime-\"+suffix,issued_utc=now.isoformat(),mode=\"RuntimeOnly\",receipt_directory=str(proof),",
+          "after": "updates=dict(grant_id=\"root-native-foundation-v39-\"+batch+\"-runtime-\"+suffix,issued_utc=now.isoformat(),mode=\"RuntimeOnly\",receipt_directory=str(proof),"
+        },
+        {
+          "category": "unresolved_identity_literal",
+          "reason": "Exact future candidate head remains unresolved until Root observes and binds the post-intake commit.",
+          "before": "\"014062f2d139254acab4b985b4ae343db637166f\"",
+          "after": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\""
+        },
+        {
+          "category": "unresolved_identity_literal",
+          "reason": "Future complete V39 matrix is unobserved and must be bound separately.",
+          "before": "\"8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03\"",
+          "after": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\""
+        },
+        {
+          "category": "cohort_admission",
+          "reason": "Admit exactly the independently reviewed new3, retained4, original63 disjoint batches; preserve the unchanged64 cap.",
+          "before": "batch in (\"new4\",\"existing63\")",
+          "after": "batch in (\"new3\",\"new4\",\"existing63\")"
+        },
+        {
+          "category": "cohort_declarations",
+          "reason": "Exact source declaration counts3/38,4/58,63/1249; actual metadata still observed separately.",
+          "before": "count,declared=(4,58) if batch==\"new4\" else (63,1249)",
+          "after": "count,declared=(3,38) if batch==\"new3\" else (4,58) if batch==\"new4\" else (63,1249)"
+        },
+        {
+          "category": "cohort_preparation_path",
+          "reason": "Exact flat preparations new3/new4/regression63 under evidence; accepted strict controller layout unchanged.",
+          "before": "(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\"",
+          "after": "(\"regression63\" if batch==\"existing63\" else batch)+\"-prepared-20261022\""
+        },
+        {
+          "category": "full_catalog_counts",
+          "reason": "Exact complete V39 catalog120/2051; no cached outcome transfer.",
+          "before": "assert len(matrix[\"groups\"])==117 and sum(len(x[\"required_named\"])for x in matrix[\"groups\"])==2013",
+          "after": "assert len(matrix[\"groups\"])==120 and sum(len(x[\"required_named\"])for x in matrix[\"groups\"])==2051"
+        },
+        {
+          "category": "exact_cohort_order",
+          "reason": "Add only exact new3 order before unchanged retained4/original63 branches.",
+          "before": "if batch==\"new4\":assert groups==[\"native-node-file-handle-owner\",\"native-node-fs-before-hook-continuation\",\"native-vm-error-constructor-name\",\"native-node-file-handle-transfer\"]",
+          "after": "if batch==\"new3\":assert groups==[\"native-node-stream-shutdown\",\"native-node-one-byte-string\",\"native-vm-array-buffer-view-data\"]\nelif batch==\"new4\":assert groups==[\"native-node-file-handle-owner\",\"native-node-fs-before-hook-continuation\",\"native-vm-error-constructor-name\",\"native-node-file-handle-transfer\"]"
+        }
+      ]
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38CompleteBuildQuery-20261021.py",
+        "bytes": 37254,
+        "sha256": "6BCBE32702657CD2B5F62E8779CCF585B86D7A8CFFC04C2EB6FE25B4D6E41A9E"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39CompleteBuildQuery-20261022.py",
+        "bytes": 37295,
+        "sha256": "F200CD8E6DDCF56E3900D585C302BFFD97A47CC850DF31C81CD6FA63354DCB49"
+      },
+      "edits": [
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "\"\"\"Root-only positive V38 BuildQuery closure template; exact observed inputs required.",
+          "after": "\"\"\"Root-only positive V39 BuildQuery closure template; exact observed inputs required."
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "require(re.fullmatch(r\"[0-9A-F]{64}\",sys.argv[2]) is not None and digest(cfg_path)==sys.argv[2],\"Exact independently observed V38 positive inputs\")",
+          "after": "require(re.fullmatch(r\"[0-9A-F]{64}\",sys.argv[2]) is not None and digest(cfg_path)==sys.argv[2],\"Exact independently observed V39 positive inputs\")"
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "require(cfg[\"status\"]==\"root_reviewed_specific_v38_positive_buildquery_closure\" and cfg[\"auditor_sha256\"]==digest(Path(__file__)),\"Specific Root review of this exact auditor\")",
+          "after": "require(cfg[\"status\"]==\"root_reviewed_specific_v39_positive_buildquery_closure\" and cfg[\"auditor_sha256\"]==digest(Path(__file__)),\"Specific Root review of this exact auditor\")"
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "require(batch in (\"new4\",\"existing63\"),\"One exact complete V38 batch\")",
+          "after": "require(batch in (\"new4\",\"existing63\"),\"One exact complete V39 batch\")"
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "prep=base/(\"evidence/combined-native-batch-v38-\"+(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\")",
+          "after": "prep=base/(\"evidence/combined-native-batch-v39-\"+(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\")"
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "require(re.fullmatch(\"root-native-foundation-fresh-v38-\"+batch+r\"-control-\\d{8}-\\d{6}\",control.name) is not None and proof.name==control.name.replace(\"-control-\",\"-buildquery-\",1),\"Exact original batch proof/control identity\")",
+          "after": "require(re.fullmatch(\"root-native-foundation-fresh-v39-\"+batch+r\"-control-\\d{8}-\\d{6}\",control.name) is not None and proof.name==control.name.replace(\"-control-\",\"-buildquery-\",1),\"Exact original batch proof/control identity\")"
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "require(p==base/\"evidence/Prepare-ReviewedV38BuildQueryGrant-20261021.py\" and digest(p)==grant_preparer[\"sha256\"]==\"5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B\" and p.stat().st_size==grant_preparer[\"bytes\"]==10095,\"Exact independently reviewed direct grant constructor\")",
+          "after": "require(p==base/\"evidence/Prepare-ReviewedV39BuildQueryGrant-20261022.py\" and digest(p)==grant_preparer[\"sha256\"]==\"5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B\" and p.stat().st_size==grant_preparer[\"bytes\"]==10095,\"Exact independently reviewed direct grant constructor\")"
+        },
+        {
+          "category": "unresolved_identity_literal",
+          "reason": "Exact future candidate head remains unresolved until Root observes and binds the post-intake commit.",
+          "before": "\"014062f2d139254acab4b985b4ae343db637166f\"",
+          "after": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\""
+        },
+        {
+          "category": "unresolved_identity_literal",
+          "reason": "Future complete V39 matrix is unobserved and must be bound separately.",
+          "before": "\"8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03\"",
+          "after": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\""
+        },
+        {
+          "category": "cohort_admission",
+          "reason": "Admit exactly the independently reviewed new3, retained4, original63 disjoint batches; preserve the unchanged64 cap.",
+          "before": "batch in (\"new4\",\"existing63\")",
+          "after": "batch in (\"new3\",\"new4\",\"existing63\")"
+        },
+        {
+          "category": "cohort_declarations",
+          "reason": "Exact source declaration counts3/38,4/58,63/1249; actual metadata still observed separately.",
+          "before": "group_count,declared_count=(4,58) if batch==\"new4\" else (63,1249)",
+          "after": "group_count,declared_count=(3,38) if batch==\"new3\" else (4,58) if batch==\"new4\" else (63,1249)"
+        },
+        {
+          "category": "cohort_preparation_path",
+          "reason": "Exact flat preparations new3/new4/regression63 under evidence; accepted strict controller layout unchanged.",
+          "before": "(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\"",
+          "after": "(\"regression63\" if batch==\"existing63\" else batch)+\"-prepared-20261022\""
+        },
+        {
+          "category": "unresolved_constructor_binding",
+          "reason": "Require separately bound exact V39 BuildQuery constructor hash; unresolved marker cannot pass a real digest comparison.",
+          "before": "\"5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B\"",
+          "after": "\"UNRESOLVED_V39_BUILDQUERY_CONSTRUCTOR_SHA256____________________\""
+        },
+        {
+          "category": "exact_source_size",
+          "reason": "Derive constructor source size from this finite saved source; later fixed-width head binding preserves size.",
+          "before": "grant_preparer[\"bytes\"]==10095",
+          "after": "grant_preparer[\"bytes\"]==10269"
+        }
+      ]
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-Provenance-20261021.py",
+        "bytes": 41516,
+        "sha256": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39StrictRuntime-20261022.py",
+        "bytes": 43940,
+        "sha256": "82CA5B3712FF3898DD90AA70C2F4296523ED4F4C9EC2CA15A8E8DEF2970DD5D1"
+      },
+      "edits": [
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "\"\"\"Independent complete positive V38 strict runtime closure; every accepted index must retain the original positive gates. No native execution is authorized by this audit.\"\"\"",
+          "after": "\"\"\"Independent complete positive V39 strict runtime closure; every accepted index must retain the original positive gates. No native execution is authorized by this audit.\"\"\""
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "assert cfg[\"status\"]==\"root_reviewed_specific_v38_positive_strict_runtime_closure\"",
+          "after": "assert cfg[\"status\"]==\"root_reviewed_specific_v39_positive_strict_runtime_closure\""
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "assert re.fullmatch(\"root-native-foundation-v38-\"+batch+r\"-runtime-control-\\d{8}-\\d{6}\",control.name)",
+          "after": "assert re.fullmatch(\"root-native-foundation-v39-\"+batch+r\"-runtime-control-\\d{8}-\\d{6}\",control.name)"
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "assert re.fullmatch(\"root-native-foundation-fresh-v38-\"+batch+r\"-control-\\d{8}-\\d{6}\",build_control.name)",
+          "after": "assert re.fullmatch(\"root-native-foundation-fresh-v39-\"+batch+r\"-control-\\d{8}-\\d{6}\",build_control.name)"
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "prep=evidence/(\"combined-native-batch-v38-\"+(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\")",
+          "after": "prep=evidence/(\"combined-native-batch-v39-\"+(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\")"
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "require(runtime_cfg[\"status\"]==\"root_reviewed_specific_v38_runtime_preparation\" and runtime_cfg[\"candidate_head\"]==head and runtime_cfg[\"batch\"]==batch,\"Reviewed actual RuntimeOnly configuration\")",
+          "after": "require(runtime_cfg[\"status\"]==\"root_reviewed_specific_v39_runtime_preparation\" and runtime_cfg[\"candidate_head\"]==head and runtime_cfg[\"batch\"]==batch,\"Reviewed actual RuntimeOnly configuration\")"
+        },
+        {
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "before": "runtime_preparer=evidence/\"Prepare-ReviewedV38RuntimeGrant-20261021.py\"",
+          "after": "runtime_preparer=evidence/\"Prepare-ReviewedV39RuntimeGrant-20261022.py\""
+        },
+        {
+          "category": "unresolved_identity_literal",
+          "reason": "Exact future candidate head remains unresolved until Root observes and binds the post-intake commit.",
+          "before": "\"014062f2d139254acab4b985b4ae343db637166f\"",
+          "after": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\""
+        },
+        {
+          "category": "unresolved_identity_literal",
+          "reason": "Future complete V39 matrix is unobserved and must be bound separately.",
+          "before": "\"8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03\"",
+          "after": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\""
+        },
+        {
+          "category": "cohort_admission",
+          "reason": "Admit exactly the independently reviewed new3, retained4, original63 disjoint batches; preserve the unchanged64 cap.",
+          "before": "batch in (\"new4\",\"existing63\")",
+          "after": "batch in (\"new3\",\"new4\",\"existing63\")"
+        },
+        {
+          "category": "cohort_declarations",
+          "reason": "Exact source declaration counts3/38,4/58,63/1249; actual metadata still observed separately.",
+          "before": "group_count,declared_count=(4,58) if batch==\"new4\" else (63,1249)",
+          "after": "group_count,declared_count=(3,38) if batch==\"new3\" else (4,58) if batch==\"new4\" else (63,1249)"
+        },
+        {
+          "category": "cohort_preparation_path",
+          "reason": "Exact flat preparations new3/new4/regression63 under evidence; accepted strict controller layout unchanged.",
+          "before": "(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\"",
+          "after": "(\"regression63\" if batch==\"existing63\" else batch)+\"-prepared-20261022\""
+        },
+        {
+          "category": "unresolved_constructor_binding",
+          "reason": "Exact V39 runtime constructor hash must be observed after fixed-width final bindings.",
+          "before": "\"7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322\"",
+          "after": "\"UNRESOLVED_V39_RUNTIME_CONSTRUCTOR_SHA256_______________________\""
+        },
+        {
+          "category": "exact_source_size",
+          "reason": "Finite constructor source length measured from the selected unresolved source, unchanged by later fixed-width bindings.",
+          "before": "runtime_preparer.stat().st_size==12499",
+          "after": "runtime_preparer.stat().st_size==12671"
+        },
+        {
+          "category": "full_catalog_counts",
+          "reason": "Exact120 complete roots/2051 declarations; historical outcomes remain separate.",
+          "before": "require(review[\"catalog_groups\"]==len(matrix[\"groups\"])==117 and review[\"catalog_declarations\"]==sum(len(g[\"required_named\"])for g in matrix[\"groups\"])==2013,\"Complete unchanged shared source catalog\")",
+          "after": "require(review[\"catalog_groups\"]==len(matrix[\"groups\"])==120 and review[\"catalog_declarations\"]==sum(len(g[\"required_named\"])for g in matrix[\"groups\"])==2051,\"Complete unchanged shared source catalog\")"
+        },
+        {
+          "category": "exact_cohort_order",
+          "reason": "Add only exact new3 order; retain exact old4 and original63 order with the same unique-cohort gate.",
+          "before": "if batch==\"new4\":\n require(grant[\"groups\"]==[\"native-node-file-handle-owner\",\"native-node-fs-before-hook-continuation\",\"native-vm-error-constructor-name\",\"native-node-file-handle-transfer\"],\"Exact four new roots\")",
+          "after": "if batch==\"new3\":\n require(grant[\"groups\"]==[\"native-node-stream-shutdown\",\"native-node-one-byte-string\",\"native-vm-array-buffer-view-data\"],\"Exact three newly introduced roots\")\nelif batch==\"new4\":\n require(grant[\"groups\"]==[\"native-node-file-handle-owner\",\"native-node-fs-before-hook-continuation\",\"native-vm-error-constructor-name\",\"native-node-file-handle-transfer\"],\"Exact four retained roots\")"
+        },
+        {
+          "category": "explicit_historical_mapping_admission",
+          "reason": "Retain byte-equivalent old V37 owner-test mappings and append only both reviewed raw014 fixture_causal_owner mappings, using exact six SDK513556 relationships.",
+          "before": "historical_rows=review[\"historical_source_rebindings\"]\nrequire(historical_rows==[dict(batch=b,role=\"fixture_unchanged_root_native-node-file-handle-owner\",original=historical_original,immutable_snapshot=historical_snapshot,raw_commit=historical_commit,exact_original_bytes=True)for b in (\"new4\",\"regression63\")],\"Exact complete historical preimage mappings\")\nrequire(all(review[\"provenance\"][\"v37_\"+row[\"batch\"]+\"_\"+row[\"role\"]]==historical_snapshot for row in historical_rows),\"Historical provenance is rebound to the exact immutable snapshot\")",
+          "after": "historical_owner_original=dict(path=str(main/\"src/extensions/native_node_file_handle_owner.zig\"),bytes=16629,sha256=\"2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D\")\nhistorical_owner_snapshot=dict(path=str(base/\"worktrees/modules-io-resume-20261018/verification/native-node-shutdown-wrap-sourceonly-20261020/shared/original/src/extensions/native_node_file_handle_owner.zig\"),bytes=16629,sha256=\"2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D\")\nhistorical_owner_commit=\"014062f2d139254acab4b985b4ae343db637166f\"\nhistorical_rows=review[\"historical_source_rebindings\"]\nhistorical_expected=[dict(batch=b,role=\"fixture_unchanged_root_native-node-file-handle-owner\",original=historical_original,immutable_snapshot=historical_snapshot,raw_commit=historical_commit,exact_original_bytes=True)for b in (\"new4\",\"regression63\")]+[dict(batch=b,role=\"fixture_causal_owner\",original=historical_owner_original,immutable_snapshot=historical_owner_snapshot,raw_commit=historical_owner_commit,exact_original_bytes=True)for b in (\"new4\",\"regression63\")]\nrequire(historical_rows==historical_expected,\"Exact complete four historical preimage mappings; old two rows retained\")\nhistorical_relationships=[\n dict(provenance_key=\"v38_new4_v37_new4_fixture_unchanged_root_native-node-file-handle-owner\",mapping_index=0),\n dict(provenance_key=\"v38_new4_v37_regression63_fixture_unchanged_root_native-node-file-handle-owner\",mapping_index=1),\n dict(provenance_key=\"v38_new4_fixture_causal_owner\",mapping_index=2),\n dict(provenance_key=\"v38_regression63_v37_new4_fixture_unchanged_root_native-node-file-handle-owner\",mapping_index=0),\n dict(provenance_key=\"v38_regression63_v37_regression63_fixture_unchanged_root_native-node-file-handle-owner\",mapping_index=1),\n dict(provenance_key=\"v38_regression63_fixture_causal_owner\",mapping_index=3)]\nrequire(review[\"historical_provenance_relationships\"]==historical_relationships,\"Exact six historical provenance relationships\")\nrequire(all(review[\"provenance\"][row[\"provenance_key\"]]==historical_rows[row[\"mapping_index\"]][\"immutable_snapshot\"] for row in historical_relationships),\"Each historical provenance pin names its exact immutable snapshot\")"
+        },
+        {
+          "category": "additional_exact_historical_raw_blob_check",
+          "reason": "Keep A73A's old raw b13 check unchanged and require independent immutable raw014 equality for the new historical source preimage; no generic hash exemptions.",
+          "before": "require(len(historical_raw)==historical_original[\"bytes\"] and hashlib.sha256(historical_raw).hexdigest().upper()==historical_original[\"sha256\"] and historical_raw==Path(historical_snapshot[\"path\"]).read_bytes(),\"Historical snapshot equals the exact original raw Git blob\")",
+          "after": "require(len(historical_raw)==historical_original[\"bytes\"] and hashlib.sha256(historical_raw).hexdigest().upper()==historical_original[\"sha256\"] and historical_raw==Path(historical_snapshot[\"path\"]).read_bytes(),\"Historical snapshot equals the exact original raw Git blob\")\nverify_pins(historical_owner_snapshot)\nhistorical_owner_raw=subprocess.check_output([\"git\",\"--no-optional-locks\",\"cat-file\",\"blob\",historical_owner_commit+\":src/extensions/native_node_file_handle_owner.zig\"],cwd=main)\nrequire(len(historical_owner_raw)==historical_owner_original[\"bytes\"] and hashlib.sha256(historical_owner_raw).hexdigest().upper()==historical_owner_original[\"sha256\"] and historical_owner_raw==Path(historical_owner_snapshot[\"path\"]).read_bytes(),\"Historical causal owner snapshot equals the exact original raw014 Git blob\")"
+        }
+      ]
+    }
+  ],
+  "markers": {
+    "head": "UNRESOLVED_V39_CANDIDATE_HEAD___________",
+    "matrix": "UNRESOLVED_V39_MATRIX_SHA256____________________________________",
+    "buildquery_constructor_sha256": "UNRESOLVED_V39_BUILDQUERY_CONSTRUCTOR_SHA256____________________",
+    "runtime_constructor_sha256": "UNRESOLVED_V39_RUNTIME_CONSTRUCTOR_SHA256_______________________"
+  },
+  "execution_provenance_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-sourceonly-20261022\\execution-provenance-contract.json",
+    "bytes": 6458,
+    "sha256": "513556032A12F09F056170DD0A37A5EE3E714040A01FD8115B8B8AF1DBBD1B3E"
+  },
+  "candidate_or_prefix_executed": false,
+  "source_or_Main_changed": false,
+  "native_execution_authorized": false
+}

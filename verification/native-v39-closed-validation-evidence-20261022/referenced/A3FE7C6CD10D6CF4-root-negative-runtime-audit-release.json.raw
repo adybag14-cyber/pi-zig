@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v37_retry1_negative_runtime_audit_release",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-21T13:49:41.435227+00:00",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "batch": "new4",
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\Audit-NegativeV37Retry1New4StrictRuntime.py",
+    "bytes": 47992,
+    "sha256": "77B7214537A583410F686B560FA158097087C836C5A7DD34345FE8ED5266ECC8"
+  },
+  "captured_inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-audit-inputs.json",
+    "bytes": 11361,
+    "sha256": "7B5903FF048D7545C9DE37089413BAED532EA7FFDFD7F556EF4631D287BDCD8C"
+  },
+  "root_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-retry1-negative-runtime-auditor-static-review-20261021.json",
+    "bytes": 11625,
+    "sha256": "C7B6F70D4C7C672A7325F2092364DBC0B0793EAE6D39098714F51EF85C3842C7"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v37-retry1-negative-runtime-auditor-source-peer-20261021\\peer.json",
+    "bytes": 12425,
+    "sha256": "2C3D67EDA05DD06FE5CE50622DD5B2BB705BC14BAB7DFEE3FCB4BF225D4B213F"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v37-retry1-negative-runtime-auditor-source-peer-20261021\\independent-static-peer.py",
+    "bytes": 18143,
+    "sha256": "C7844D72E6043901C74A9C247D90C543A8A5A9CE18FACC6A879D3E41B4B0893E"
+  },
+  "independent_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v37-retry1-negative-runtime-auditor-source-peer-20261021\\source-proof.json",
+    "bytes": 58885,
+    "sha256": "E6ED583C8EFB2C47853C7B87589BF8B4F561BCE46F8D2E86FA11F70685418859"
+  },
+  "finite_source_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\finite-source-adaptation.json",
+    "bytes": 26166,
+    "sha256": "34DCA9D9D9C03E881FA0372FBA8FDF06BCAC7C8A5C185A3E1B4EB5E43324C8CB"
+  },
+  "finite_input_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-retry1-negative-runtime-auditor-sourceonly-20261021\\finite-input-adaptation.json",
+    "bytes": 28846,
+    "sha256": "C00A728B2B60F414DA00C5FB3A14E7E734031FA0520760DA87BF179CAFBDBEED"
+  },
+  "source_accepted": true,
+  "reviewed_complete_baseline_and_finite_inverse": true,
+  "exact_source_substitutions": 39,
+  "unchanged_complete_helpers": 6,
+  "unchanged_complete_peer_regions": 10,
+  "independently_rehashed_peer_input_versions": 87,
+  "original_job": "job-op-4d0480e45249519d20b8b2acade1b1e10a0c17a5aa1d8c53cd86b89c6f456f1b",
+  "original_observation": {
+    "declared_groups": 4,
+    "declared_controls": 58,
+    "accepted_metadata_count": 61,
+    "attempted_groups": 1,
+    "started": 19,
+    "completed": 19,
+    "failed_indices": [
+      5,
+      10,
+      11,
+      12,
+      16
+    ],
+    "pass_flags": 14,
+    "unstarted": 42
+  },
+  "program": "python",
+  "arguments": [
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\Audit-NegativeV37Retry1New4StrictRuntime.py",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-audit-inputs.json"
+  ],
+  "working_directory": "C:\\Users\\adyba\\pi-zig",
+  "resource_class": "light",
+  "timeout_seconds": 300,
+  "output": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v37-new4-runtime-control-20261021-132912\\independent-negative-runtime-closure.json",
+  "audit_execution_authorized": true,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "root_review": "Root has fully reviewed accepted baseline5B32 and all39 observed finite substitutions with exact full byte inverses, captured50-field inputs, Module checker and independent Handover checker/peer. Root separately rehashed all87 peer input versions and decoded original wire19 complete with five failures and14 passing flags,42 unstarted. Canonical source/input placement is byte-identical to77B72145/7B5903FF. Authorize one bounded independent negative closure audit of original4d048 run: full current directory inventories and sealed file hashes; all original accepted build artifacts; strict negative wire/stderr/owner and preserved grant gates; exact100ns runtime/outer/job intervals; fresh classifier/process reconciliation. Original negative and Main b13/source hold stay unchanged. Only the distinct create-only negative closure may be emitted; Root must read actual outcome before any specific source intake. No native executable, compiler, Node capture or other generator is authorized."
+}

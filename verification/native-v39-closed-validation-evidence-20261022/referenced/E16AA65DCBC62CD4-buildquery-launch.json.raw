@@ -1,0 +1,43 @@
+{
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "batch": "new3",
+  "control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-163859",
+  "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-163859",
+  "launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-163859\\launch.ps1",
+    "bytes": 1776,
+    "sha256": "7FB73F8838B2E2EBFC3F4B745BF6CB8B65AD8690124682AF6175371716F58A7A"
+  },
+  "grant": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-163859\\root-grant.json",
+    "bytes": 28075,
+    "sha256": "D25518ECC8041572EEE7CE4C1E66D8602B7ED69D0E853BEF17E6EF0D076F7218"
+  },
+  "preparation_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-prepared-20261022\\preparation-review.json",
+    "bytes": 1230704,
+    "sha256": "EA20FC0C6AB01BC00DF2EA29B166C48D2915A7DB4B0C1A71784C862F66ACA256"
+  },
+  "specific_root_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-buildquery-issued-config-20261022.json",
+    "bytes": 25785,
+    "sha256": "70E3E8DEBE211D1F642C72DDFE76E0383084A71EEC0442DDF4CF0745E21AE629"
+  },
+  "groups": [
+    "native-node-stream-shutdown",
+    "native-node-one-byte-string",
+    "native-vm-array-buffer-view-data"
+  ],
+  "declared_count": 38,
+  "actual_metadata_count": null,
+  "driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+  "matrix_sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB",
+  "metadata_auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-prepared-20261022\\Audit-CombinedNativeBatch.py",
+    "bytes": 17696,
+    "sha256": "208BBC4759467573F531750778015A1DC5CD8B2B386A476E8092C3327DBA2490"
+  },
+  "issued_utc": "2026-10-22T16:38:59.829508+00:00",
+  "runtime_authority": false,
+  "qualification": false
+}

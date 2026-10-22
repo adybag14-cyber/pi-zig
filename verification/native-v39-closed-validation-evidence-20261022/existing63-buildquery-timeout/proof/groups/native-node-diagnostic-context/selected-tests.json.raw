@@ -1,0 +1,22 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\0734c952c00a77268d0aef0822c90b3f\\test.exe",
+  "binary_sha256": "6594495CE242D37E237AC59599C17223B3726F6554C25687DAB45F6FDB04FB50",
+  "version": "0.16.0",
+  "actual_count": 10,
+  "tests": [
+    "native_node_diagnostic_context_test.test.Node diagnostic context actual VM creation does not admit an ambient context",
+    "native_node_diagnostic_context_test.test.Node diagnostic context nested actual contexts restore their caller without retaining a VM",
+    "native_node_diagnostic_context_test.test.Node diagnostic context explicit native-only admission masks and restores an entered caller",
+    "native_node_diagnostic_context_test.test.Node diagnostic context same-context reentry leaves the outer borrowed admission live",
+    "native_node_diagnostic_context_test.test.Node diagnostic context native projection works with an exhausted JS heap without allocating",
+    "native_node_diagnostic_context_test.test.Node diagnostic context ordinary and fatal pending reasons remain the same actual owned value",
+    "native_node_diagnostic_context_test.test.Node diagnostic context private termination lease and actual pending token survive admission",
+    "native_node_diagnostic_context_test.test.Node diagnostic context C++ locals retire before nested and outer scopes restore",
+    "native_node_diagnostic_context_test.test.Node diagnostic context C++ early return keeps each destructor in its real caller scope",
+    "native_node_diagnostic_context_test.test.Node diagnostic context actual worker thread neither inherits nor overwrites its caller admission"
+  ],
+  "group": "native-node-diagnostic-context",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

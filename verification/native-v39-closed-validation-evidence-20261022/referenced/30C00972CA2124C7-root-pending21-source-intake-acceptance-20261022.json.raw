@@ -1,0 +1,123 @@
+{
+  "schema": "root_exact_pending21_source_intake_acceptance_v1",
+  "utc": "2026-10-22T15:26:14.670943+00:00",
+  "status": "accepted_exact_source_intake_committed",
+  "semantic_phase": "reviewed21_Shutdown_Latin1_Buffer_and_fixture_source_intake",
+  "before_head": "e65c636b8600d351920cff88aa31c9f804d5f0b9",
+  "after_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "complete_commit_parents": [
+    "e65c636b8600d351920cff88aa31c9f804d5f0b9"
+  ],
+  "branch": "work/pi-zig-consolidated-20261016",
+  "manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-bound-20261022\\manifest.json",
+    "bytes": 1124702,
+    "sha256": "E66EDEC79D5F22EAC4E2F8AFC4EFA5E72440714B5C79CB0FCEA2B5B961DB8653"
+  },
+  "executor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-bound-20261022\\Apply-ExactReviewedPending21SourceIntake-20261022.py",
+    "bytes": 23643,
+    "sha256": "2449CBEC3CCED949A4C839C4F6718D2D4FCBE8E7A66DA8B78F956BBEC1065A03"
+  },
+  "release": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-control-20261022\\root-release.json",
+    "bytes": 119199,
+    "sha256": "DA7E05EE9931244F840D185042CE57A55B33AF1A3E3122A3D1843215FBBFE56F"
+  },
+  "receipt": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-control-20261022\\fixture-receipt.json",
+    "bytes": 329811,
+    "sha256": "9251C64588C29628190FBBF9E6E4FCF1D8A750F897E1857317C371798DFCCBE0"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-pending21-final-source-intake-peer-20261022\\peer.json",
+    "bytes": 8941,
+    "sha256": "1300116D21B1133DDD0B5D1575DD296F313C5495E6835F75C259D80C72DE2E65"
+  },
+  "job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-control-20261022\\root-job-observation.json",
+    "bytes": 3857,
+    "sha256": "B8B5E521D9704EE18BED7A8D56F7C2764B3A7CF95FF760AB5B4CE5F5092D6845"
+  },
+  "control_receipts": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-control-20261022\\fixture-commit-message.txt",
+      "bytes": 170,
+      "sha256": "9B298E5D49E9CE0960F918329DEB11B6E04C0097708797B875ECB3B28400EE03"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-control-20261022\\fixture-paths.nul",
+      "bytes": 45886,
+      "sha256": "7321EDA2D1AB1FD0AE644E83BD90C3FC41FCCAF87E130CF0AEB384FFDF9D2139"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-control-20261022\\fixture-post-copy.json",
+      "bytes": 219,
+      "sha256": "89F9823486B96528B4BCE9F34071205E6CFCB299CB7651A32FB2DBDFC8A811BB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-control-20261022\\fixture-preflight.json",
+      "bytes": 1191839,
+      "sha256": "5B932CAFE143ABFABA72C5E8D0F35436C38A8EEF793C19D6A0A1ECADC9338C42"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-control-20261022\\fixture-receipt.json",
+      "bytes": 329811,
+      "sha256": "9251C64588C29628190FBBF9E6E4FCF1D8A750F897E1857317C371798DFCCBE0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-control-20261022\\fixture-staged.json",
+      "bytes": 137115,
+      "sha256": "9F173066BADE58C0862234DF7C913D6518C0FDD0F97FE489F5A58016916274A2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-control-20261022\\root-release.json",
+      "bytes": 119199,
+      "sha256": "DA7E05EE9931244F840D185042CE57A55B33AF1A3E3122A3D1843215FBBFE56F"
+    }
+  ],
+  "path_count": 384,
+  "logical_alias_count": 411,
+  "source_build_paths": 21,
+  "all384_complete_committed_blobs_and_live_donors_and_worktree_bytes_equal": true,
+  "all384_independently_computed_raw_Git_oids_and100644_modes_equal": true,
+  "all384_staged_and_committed_receipt_rows_verified": true,
+  "source_paths": [
+    "src/extensions/native_node_async_wrap_state.zig",
+    "src/extensions/native_node_async_wrap.zig",
+    "src/extensions/native_node_stream_resource.zig",
+    "src/extensions/native_node_stream_base.zig",
+    "src/extensions/native_node_file_handle_owner.zig",
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "src/extensions/native_node_file_handle_shutdown.zig",
+    "src/extensions/native_node_one_byte_string.zig",
+    "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+    "src/extensions/native_node_one_byte_string_diagnostics.h",
+    "src/extensions/native_node_stream_request.zig",
+    "src/extensions/native_node_stream_shutdown.zig",
+    "src/native_node_one_byte_string_test.zig",
+    "src/native_node_stream_shutdown_test.zig",
+    "src/native_node_stream_shutdown_test_support.zig",
+    "build.zig",
+    "src/native_vm_array_buffer_view_data_test.zig",
+    "src/extensions/native_v8_base_fatal.h",
+    "src/extensions/native_v8_base_fatal.cpp",
+    "src/native_node_fs_request_owner_test.zig"
+  ],
+  "all411_logical_donors_reverified": true,
+  "progress_unchanged_from_archive": true,
+  "complete_committed_rows_digest": "78A218A6D26F355E9028FB8DB99BEAA3E53387FD39AB25F436FBF1EBE418E310",
+  "total_committed_bytes": 58617190,
+  "progress": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+    "bytes": 678718,
+    "sha256": "4FF79AE87F671BB8F16283E38D282CB58444A1A0FA42659B0F3CED505EE04343"
+  },
+  "clean_worktree": true,
+  "actual_remote_head_verification_pending": true,
+  "original_native_outcomes_unchanged": true,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "production_bridge_removed": false
+}

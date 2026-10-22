@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v39_new4_metadata_audit_resource_release",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-22T17:06:33.821311+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022\\Audit-CombinedNativeBatch.py",
+    "bytes": 17696,
+    "sha256": "2DA9B671DC635AB5C6A28679FCBA1CAE7496256E0AA127A3B3CBDA143F620D3F"
+  },
+  "job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-control-20261022-165637\\independent-observed-job-status.json",
+    "bytes": 1572,
+    "sha256": "DAF5626EA54A4F196E482A9922CB38A3AC295BB2D69F6EDA219D5F3DB5BF3A21"
+  },
+  "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-buildquery-20261022-165637",
+  "control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-control-20261022-165637",
+  "driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+  "matrix_sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB",
+  "output": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-control-20261022-165637\\independent-metadata-acceptance.json",
+  "source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-catalog-source-acceptance-20261022.json",
+    "bytes": 14221,
+    "sha256": "CB6A78ACEFAA83A6DE31AB917B6460465BF012C99B38CE87425B6893CCB7AB2C"
+  },
+  "source_inverse_to_fully_read_new3": true,
+  "resource": {
+    "one_process": true,
+    "program": "python",
+    "resource_class": "io-heavy",
+    "read_only_native_evidence": true,
+    "output_create_only": true,
+    "measurement": {
+      "observed_utc": "2026-10-22T17:06:20.4351960+00:00",
+      "free_physical_kib": 30109304,
+      "required_kib": 16777216,
+      "eligible": true,
+      "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+      "process_rows": 424,
+      "native_candidates": []
+    }
+  },
+  "audit_execution_authorized": true,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

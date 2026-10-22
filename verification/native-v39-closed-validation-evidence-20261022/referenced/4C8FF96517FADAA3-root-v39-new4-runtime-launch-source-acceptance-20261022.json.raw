@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "status": "root_accepted_specific_v39_new4_runtime_launch_source",
+  "reviewer": "Root",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "launch_reviewer_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V39New4RuntimeLaunch-20261022.py",
+    "bytes": 5486,
+    "sha256": "B81B7CE73F5C4990E9D183362B858AC6E8E04EB46C4A77458F21975A610705E5"
+  },
+  "runtime_launch_record": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\runtime-launch.json",
+    "bytes": 2768,
+    "sha256": "8567379658E886202704B7B8A429AFEC669508A49E8AEBB062F7591A4AC6ABE1"
+  },
+  "grant": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\root-grant.json",
+    "bytes": 29181,
+    "sha256": "68ADE94C3BCE397021AA7C945D3BE822C8B461E0EF8ED3EDA991E8EBC28FC5A6"
+  },
+  "launcher": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\launch.ps1",
+    "bytes": 1777,
+    "sha256": "630E13A5E12B813F2E0DD969DCE60FC654959E4422C1B8AE0CA9DB9C952C4924"
+  },
+  "specific_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-runtime-issued-config-20261022.json",
+    "bytes": 3732,
+    "sha256": "DD78E24D59E55B11A871D676AE3E972E44166A48C8B846814B62A4FE1193A09B"
+  },
+  "grant_launch_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\grant-launch-adaptation.json",
+    "bytes": 7544,
+    "sha256": "9B16C17FC85E70727EA01D5C15690E1BA46A47C1661994C65308159B544E04B6"
+  },
+  "source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-execution-bound-source-review-20261022.json",
+    "bytes": 16559,
+    "sha256": "5056C7EB01BC3DBC3931030A7753423CE2AAD1EDC9A71A00A192D0DA7076450A"
+  },
+  "root_buildquery_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-complete-buildquery-acceptance-20261022.json",
+    "bytes": 3371,
+    "sha256": "4E311101E98D0188F46999774638B9C7056EED91653CD795AEB920B0AC7512AD"
+  },
+  "exact_changed_grant_fields": [
+    "grant_id",
+    "issued_utc",
+    "mode",
+    "receipt_directory",
+    "build_result_path",
+    "build_result_sha256",
+    "build_source_seal_path",
+    "build_source_seal_sha256",
+    "metadata_acceptance_path",
+    "metadata_acceptance_sha256",
+    "actual_metadata_count",
+    "independent_build_closure_path",
+    "independent_build_closure_sha256",
+    "build_specific_root_configuration",
+    "specific_root_configuration",
+    "root_buildquery_acceptance",
+    "root_review"
+  ],
+  "complete_grant_raw_inverse": true,
+  "single_launcher_mode_change_and_complete_inverse": true,
+  "actual_metadata_count": 61,
+  "Root_complete_source_and_all17_field_changes_reviewed": true,
+  "reviewed_utc": "2026-10-22T17:22:49.990310+00:00",
+  "grant_age_seconds": 3.336166,
+  "launch_authorized_under_exact_specific_runtime_configuration": true,
+  "compile_execution_authorized": false,
+  "qualification": false,
+  "source_mutation_hold_released": false
+}

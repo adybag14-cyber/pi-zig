@@ -1,0 +1,433 @@
+{
+  "schema": 1,
+  "status": "exact_v35_negative_progress_archive_intake_unissued",
+  "comparison_head": "4ee30c526cd8909dfadfbbe187061fabcff9460b",
+  "basis_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "path_count_including_manifest": 52,
+  "rows": [
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/archive-index.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\archive-index.json",
+      "bytes": 37142,
+      "sha256": "195D47A34E0EC8435361DBFF2C8E25B821ED969AAC5CDD0F048E67FCC8931566",
+      "before": null,
+      "role": "complete_bounded_archive_mapping"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/audit/finite-adaptation.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\audit\\finite-adaptation.json.raw",
+      "bytes": 43863,
+      "sha256": "00846BBF125069B5E933C18EC396203B53F3571CEF9416F5C1EA488A79AA8902",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/audit/handoff.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\audit\\handoff.json.raw",
+      "bytes": 4810,
+      "sha256": "071851E603595F097CB58B4585B9AFB3EEAD68C313DEAAA7F39CBB09C9FF7C49",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/audit/root-review-preflight-negative.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\audit\\root-review-preflight-negative.json.raw",
+      "bytes": 1312,
+      "sha256": "0B98E37A816CEC9DD17BFFF67DA2CFBEF7E4A8B654518065D709550B587260D6",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/audit/root-source-review.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\audit\\root-source-review.json.raw",
+      "bytes": 3964,
+      "sha256": "9D7293C8A3E75C79A2E3126C1E9305A57806083E66253094BBB1CECBB6917B47",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/authority/buildquery-issued-config.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\authority\\buildquery-issued-config.json.raw",
+      "bytes": 4004,
+      "sha256": "28F54574401B145D2D24D8E061BA10645EDBB3C385E7FF401C29CC969C89A241",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/authority/buildquery-launch.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\authority\\buildquery-launch.json.raw",
+      "bytes": 2090,
+      "sha256": "EC776BC8437221D235A2820BC1EC0B002458A1F960D6BE33EC700ED7C76F4FF2",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/control/Audit-FreshV35New4FirstCompileNegative.py.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\control\\Audit-FreshV35New4FirstCompileNegative.py.raw",
+      "bytes": 33739,
+      "sha256": "D35C23ED245CF3B33F78075A36FC8316602098AC779E49BD2197950134F5E24E",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/control/grant-launch-adaptation.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\control\\grant-launch-adaptation.json.raw",
+      "bytes": 13020,
+      "sha256": "0FF883103F78DF174BAF233ECA001D90EF1897A7A7A3D7ED09DC9E0D63197BFB",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/control/independent-first-compile-negative-audit-inputs.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\control\\independent-first-compile-negative-audit-inputs.json.raw",
+      "bytes": 4098,
+      "sha256": "E701BA08CC3B4368BAE9A40A2FC7C4F6D0769102D7401AC8363F44DCC03F6ABC",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/control/independent-first-compile-negative-closure.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\control\\independent-first-compile-negative-closure.json.raw",
+      "bytes": 46548,
+      "sha256": "07883502323A898D097E467FB9E2CE5ED1A52A8A83A0A6B1EA7F877A35657129",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/control/independent-observed-auditor-job-status.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\control\\independent-observed-auditor-job-status.json.raw",
+      "bytes": 1561,
+      "sha256": "76C5F47A59E8E9F10B9E730D99AD34FE0956C8867C2711847F2117A45B1B17D6",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/control/independent-observed-job-status.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\control\\independent-observed-job-status.json.raw",
+      "bytes": 1644,
+      "sha256": "69738499527DB47B6FF164FDD16446AF6FB4E4ACD766BB82AD6637F0814E80C8",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/control/launch.ps1.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\control\\launch.ps1.raw",
+      "bytes": 1776,
+      "sha256": "4AC7728393EFE80994996BB7C28CEC21A31740ED9205A5C4459C78C3464F10AE",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/control/outer-absence.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\control\\outer-absence.json.raw",
+      "bytes": 182,
+      "sha256": "D34CB27EA69520C4A1435D019116AFEDAE98DD9A9DC8BF4EC60AB2B39A4F6019",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/control/outer.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\control\\outer.json.raw",
+      "bytes": 1606,
+      "sha256": "864F0D803F752988A6D6A107FDACF553CA00758513F0DC09F51FBABE913082E7",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/control/outer.stderr.log.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\control\\outer.stderr.log.raw",
+      "bytes": 605,
+      "sha256": "A1DDEA9ADCA049AA495D812DB885D05F02B5E81C9BD2FE0B444019D389D513B8",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/control/outer.stdout.bin.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\control\\outer.stdout.bin.raw",
+      "bytes": 12277,
+      "sha256": "EAF7385F7EE0C2109CD22EB8CE1FDAF1176022327755864AB018FADCED3B6941",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/control/root-grant.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\control\\root-grant.json.raw",
+      "bytes": 11138,
+      "sha256": "F811A77512DFC44CC44242FF4DF39B413939D46E5A6404497676065058D523BB",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/fixture-intake-chain.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\fixture-intake-chain.json",
+      "bytes": 5545,
+      "sha256": "F81D8F1A5C0A71B5B5DA5CDDA300796EE87CF951892F676FC9BCB63EEAEE88BD",
+      "before": null,
+      "role": "actual_fixture_phase_provenance"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/fixture/commit-message.txt.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\fixture\\commit-message.txt.raw",
+      "bytes": 166,
+      "sha256": "40A0287BE295F676A0C4AD7E47A01861C9489E633F0E8173EFC088A2525D8021",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/fixture/executor.py.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\fixture\\executor.py.raw",
+      "bytes": 9700,
+      "sha256": "9C834CDB7C83528F9B1DE0F713696D4B816C20E874E16F18F2725AA24A35CA1F",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/fixture/finite-executor-adaptation.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\fixture\\finite-executor-adaptation.json.raw",
+      "bytes": 5344,
+      "sha256": "11ABF1FF524A11A4BAA43DAC7F9C2C583827534CA834D9DD066B03BE4A855AEB",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/fixture/independent-executor-peer.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\fixture\\independent-executor-peer.json.raw",
+      "bytes": 4230,
+      "sha256": "CE1DFFD281F522C7D8B2DC5C2627B09805A4DD354E81E6B869C1F31B6EAE5DD2",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/fixture/independent-source-audit.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\fixture\\independent-source-audit.json.raw",
+      "bytes": 27142,
+      "sha256": "107CF22AF9861B6ABCD8E19CD336F9C4A627FF279DCA6416562718970CEDA57F",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/fixture/independent-source-audit.py.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\fixture\\independent-source-audit.py.raw",
+      "bytes": 12665,
+      "sha256": "B82904B005ADFCC778F9D9B854614959E9C4B63E181FF20562875625BA70D95B",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/fixture/manifest.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\fixture\\manifest.json.raw",
+      "bytes": 20327,
+      "sha256": "88001A1F0F533194756769F86D0BE306B252BC6EE1D90C13A9D270B3BE278287",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/fixture/paths.nul.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\fixture\\paths.nul.raw",
+      "bytes": 3945,
+      "sha256": "E53388E21AD5C636AC5986DBE715B7A828C68A7D49289E1ED01DD41C245A4B88",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/fixture/preflight.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\fixture\\preflight.json.raw",
+      "bytes": 13073,
+      "sha256": "86D31227F87EC07F4425A42921F9C9BAEF2CF8354E8AAEFAA65FA63C04951A71",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/fixture/receipt.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\fixture\\receipt.json.raw",
+      "bytes": 5901,
+      "sha256": "0F99D7FF09280E059C81CCE1175F77A0E493087D8F396861923AE48FE4B52C72",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/fixture/root-release-authoring-preflight.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\fixture\\root-release-authoring-preflight.json.raw",
+      "bytes": 1538,
+      "sha256": "E629D3F01651C0CCEA126A02428C3B2D4947647A9F690A69DAF432E610A6E0B3",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/fixture/root-source-acceptance.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\fixture\\root-source-acceptance.json.raw",
+      "bytes": 3873,
+      "sha256": "083D5CBD75E1A23F555F556BE1136CA6F0977F9DCBB9BDC073BA2AF8C99FAAB3",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/fixture/source-release.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\fixture\\source-release.json.raw",
+      "bytes": 6220,
+      "sha256": "9C5066FCC305D54BE191815EBA09BE3B8C27CD430F646FC29D43E2186F14C9DF",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/fixture/staged.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\fixture\\staged.json.raw",
+      "bytes": 393,
+      "sha256": "64C1407459AD0C8D73AF91DF960A827F0BB7216CB593978EC55BA95840DB2996",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/group/commands.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\group\\commands.json.raw",
+      "bytes": 1625,
+      "sha256": "78DE56CEA2DFFD148513E1946CA6896647F5B8337CE4A4BB8BCEBB425AA8765A",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/group/compile-absence.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\group\\compile-absence.json.raw",
+      "bytes": 3416,
+      "sha256": "50977332331D670B5A450F797C3DEF94934188F5643B9D1BF970E9EF89FC0EF4",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/group/compile-admission.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\group\\compile-admission.json.raw",
+      "bytes": 580,
+      "sha256": "D2CC0A63823C21B71AA506FEF0CAFB809C79274D209B9E218585944A0DF0AAAB",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/group/compile-after-artifacts.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\group\\compile-after-artifacts.json.raw",
+      "bytes": 86,
+      "sha256": "837C612454AFD78C085D929AA7D8AB6673D09F697C24F59F3BB9BA3DDCBD246C",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/group/compile.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\group\\compile.json.raw",
+      "bytes": 2292,
+      "sha256": "8FA9761496EB7C1F63F918B554FC488F76331AE9760B40F9181C3802A404E904",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/group/compile.stderr.log.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\group\\compile.stderr.log.raw",
+      "bytes": 24890,
+      "sha256": "9EBCCA812674DE30F512015FD2FB696D9DDA97F0D81CF617D4E4B3825BC5D25D",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/group/compile.stdout.bin.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\group\\compile.stdout.bin.raw",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/group/result-provisional.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\group\\result-provisional.json.raw",
+      "bytes": 6317,
+      "sha256": "EFFB89E090A358B54D0081A71056A11EDABAE426BE62B1503FD593B18B77958B",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/group/result.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\group\\result.json.raw",
+      "bytes": 6315,
+      "sha256": "CA2E131BA220B4B1DBAE22D21DDB7E7506B0A1D4A79363C2C260D2103C404A74",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/history-preservation.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\history-preservation.json",
+      "bytes": 2293,
+      "sha256": "6F5D1DA0907FBD939BFCD47C5A47191D7D05E01DF6FF420D4192906B5CDF2D17",
+      "before": null,
+      "role": "finite_progress_inverse_and_history_proof"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/preparation/preparer.py.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\preparation\\preparer.py.raw",
+      "bytes": 48039,
+      "sha256": "4ED77FE0A9E7230DFD6CCB8BB989E26C9BCFDEED3491EF7DA3FA716431639FF9",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/preparation/root-issued-config.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\preparation\\root-issued-config.json.raw",
+      "bytes": 3368,
+      "sha256": "1585EB423EA6E76FB34F171519BD6092AC335BABFE85753F92D1DB90606C0F81",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/prior-progress.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\prior-progress.json.raw",
+      "bytes": 294251,
+      "sha256": "3BCB7BF1CE552D95FDD8B34356EB01EAE4C2C0B7E30294920B2975B9D0794F10",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/proof/before-and-final.json.gz",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\proof\\before-and-final.json.gz",
+      "bytes": 2736542,
+      "sha256": "C3296F94FFC1D7AB3F9375BFF11F70ED26248A16249BF5E610E1F456580D775E",
+      "before": null,
+      "role": "one_lossless_copy_of_identical_original_bookends"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/proof/result.json.raw",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\proof\\result.json.raw",
+      "bytes": 12277,
+      "sha256": "EAF7385F7EE0C2109CD22EB8CE1FDAF1176022327755864AB018FADCED3B6941",
+      "before": null,
+      "role": "immutable_original_bytes"
+    },
+    {
+      "target": "verification/native-v35-negative-and-fixture-closure-20261020/seal-archive-map.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\native-v35-negative-and-fixture-closure-20261020\\seal-archive-map.json",
+      "bytes": 1702,
+      "sha256": "1553BF23D7005643C67D1BCB2CD506F7162A6198942C86524488A6F57122A410",
+      "before": null,
+      "role": "lossless_original_seal_mapping"
+    },
+    {
+      "target": "verification/port-roadmap-resume-20261018/progress.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\projected\\verification\\port-roadmap-resume-20261018\\progress.json",
+      "bytes": 354535,
+      "sha256": "23A951AAEB578839CC84AD9548C755F63BD034E966549F5C73B93E2833073DD8",
+      "before": {
+        "bytes": 294251,
+        "sha256": "3BCB7BF1CE552D95FDD8B34356EB01EAE4C2C0B7E30294920B2975B9D0794F10"
+      },
+      "role": "only_existing_progress_replacement"
+    }
+  ],
+  "manifest_target": "verification/native-v35-negative-and-fixture-closure-20261020/manifest.json",
+  "source_build_paths": 0,
+  "existing_progress_replacements": 1,
+  "historical_prefixes_and_full_progress_inverse_verified": true,
+  "actual_fixture_commit": "4ee30c526cd8909dfadfbbe187061fabcff9460b",
+  "original_v35_negative_closure_sha256": "07883502323A898D097E467FB9E2CE5ED1A52A8A83A0A6B1EA7F877A35657129",
+  "source_mutation_hold_released": false,
+  "main_applied": false,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "production_bridge_removed": false,
+  "published_release": false,
+  "scope": "One exact progress replacement and new immutable raw/gzip negative and fixture execution archives only. Separate Root review/release/intake is required. No source, build, index, cache, compiler, test, bridge or publication action is authorized."
+}

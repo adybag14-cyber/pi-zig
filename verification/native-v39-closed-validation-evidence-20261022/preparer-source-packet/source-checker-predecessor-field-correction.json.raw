@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "kind": "one_field_static_checker_schema_correction",
+  "basis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\check-source-and-observed-contract.py",
+    "bytes": 17671,
+    "sha256": "9356F4F5450C0C965C42793BE628A4C99713C7D686FDF8273B0D89A256725C93"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\check-source-and-observed-contract-v2.py",
+    "bytes": 17672,
+    "sha256": "E50A03C345E3F43DF29B8A135853699B074EB73FD1DEB52EB7BC4BA68BB80ED8"
+  },
+  "negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\source-checker-predecessor-field-negative.json",
+    "bytes": 2330,
+    "sha256": "47EE3FF067F5BBC73A46B36AEC1E4598B73A1FB620FD2DFE504AC09FF84C4CA9"
+  },
+  "before": "prior_review[\"preparer\"]",
+  "after": "prior_review[\"candidate\"]",
+  "full_raw_forward_and_inverse_exact": true,
+  "candidate_unchanged": true,
+  "candidate_or_prefix_executed": false,
+  "native_attempt": false
+}

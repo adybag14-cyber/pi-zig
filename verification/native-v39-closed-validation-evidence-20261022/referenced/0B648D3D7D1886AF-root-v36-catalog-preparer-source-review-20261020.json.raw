@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "status": "root_accepted_v36_catalog_preparer_source_only",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-20T23:00:36.110987+00:00",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-FreshV35Catalog-20261020.py",
+    "bytes": 42072,
+    "sha256": "CECC64733F5C401CF2C6ED4134F401AF8EC283F1DADC3412EAA36AC2ACBF3DD1"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-FreshV36Catalog-20261020.py",
+    "bytes": 39962,
+    "sha256": "368F4F1F0F0AFD81AA58078BACDC80BCB7CA9A22307702E9DDBF47E048D691F8"
+  },
+  "adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-catalog-refresh-sourceonly-20261020\\finite-source-adaptation.json",
+    "bytes": 94575,
+    "sha256": "C612A55DE7E5613426E4ADA3D0622271A57135A651A0354ADE02C62FF35539B4"
+  },
+  "entire_candidate_source_read": true,
+  "all60_finite_forward_steps_and_inverses_independently_replayed": true,
+  "complete_byte_inverse_to_accepted_v35": true,
+  "copied_regions": [
+    {
+      "label": "complete_shared_helpers_and_readonly_git_tree_checks",
+      "baseline_byte_offset": 5372,
+      "candidate_byte_offset": 2631,
+      "bytes": 2408,
+      "sha256": "260B2D53C6224CB10C900BA4A057C520F24708D35B31B5DBF4D22B905D11826E",
+      "exact_byte_equality": true
+    },
+    {
+      "label": "complete_literal_import_embed_anonymous_walker",
+      "baseline_byte_offset": 22906,
+      "candidate_byte_offset": 18727,
+      "bytes": 2325,
+      "sha256": "BB0D6D9F26E64DBF19BB631C5260F151E9806850D1BA715CEC84B0AE7D123130",
+      "exact_byte_equality": true
+    }
+  ],
+  "review": {
+    "exact_intakes": "Two separate release pins and exact linear commit/preimage/donor/raw blob chain from79; first phase changes only the fixture and new verification paths, second only progress and new verification paths.",
+    "negative_history": "Exact V35 failed result, complete original bookends and accepted independent closure remain negative; no metadata/runtime acceptance transferred.",
+    "catalog": "All117 groups and2013 declarations unchanged;576 whole dependency rows unchanged; only fixture source hashes at113/850,114/850,116/851 plus head/time.",
+    "source_graphs": "Same710/710/1/711 complete literal module closures and243/243/0/243 embeds; exact anonymous blocks, public control names and source graph topology;3 fixture member byte/hash refreshes only.",
+    "execution_controls": "Strict1DD3 driver and3413 classifier byte-identical; metadata auditors each change one preparation-path literal with exact byte inverse.",
+    "writes": "Create-only two fresh evidence preparation directories after complete assertions; no Main/index/native/source generator mutation."
+  },
+  "source_accepted": true,
+  "catalog_preparation_execution_authorized": false,
+  "requires_separate_exact_root_configuration": true,
+  "candidate_head": null,
+  "actual_metadata_count": null,
+  "native_execution_authorized": false,
+  "qualification": false
+}

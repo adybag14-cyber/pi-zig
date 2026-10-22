@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "status": "root_accepted_v39_new3_retry1_preparation_cloner_source_only",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-22T17:21:23.783570+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\Prepare-V39New3Retry1PreparationClone-20261022.py",
+    "bytes": 20014,
+    "sha256": "1B4732B1C003DA2F82DBC4912FF6B7B203889E1C5E4C15B9521F4D9EE4F63422"
+  },
+  "source_accepted": true,
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\handoff.json",
+    "bytes": 15796,
+    "sha256": "04BAAA9B0FA2BF8E9412DD5BD83384AF748F22AEAD6D5F80DF2B52544924DF33"
+  },
+  "root_static_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-static-source-review-20261022.json",
+    "bytes": 17060,
+    "sha256": "312D93A8A37F15B9554C218396FE495752B3C0376AEEA927DE68199DCBB78C45"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-new3-retry1-preparation-and-execution-source-peer-20261022\\peer.json",
+    "bytes": 15989,
+    "sha256": "13D9A3C142DB4EFC67EE6990F2EDA43824F00248ABDB501F1032EDC0C062768F"
+  },
+  "independent_source_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-new3-retry1-preparation-and-execution-source-peer-20261022\\source-audit-v2.py",
+    "bytes": 19181,
+    "sha256": "5FEA938FDD9CE0DAF10C6513101AB513678567F319C4C5594C5E7FD4B4339145"
+  },
+  "independent_source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-new3-retry1-preparation-and-execution-source-peer-20261022\\source-proof.json",
+    "bytes": 41367,
+    "sha256": "73BAB8661A4ED7D8A53A9034376013634DBE8145F81536A53FE2190D38C1FCB5"
+  },
+  "preserved_peer_lexical_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-new3-retry1-preparation-and-execution-source-peer-20261022\\source-audit-lexical-negative.json",
+    "bytes": 2362,
+    "sha256": "A7F524C6549D0E4DDA5F664144458F07004658908195561E330E0C50B48F43C6"
+  },
+  "peer_checker_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-new3-retry1-preparation-and-execution-source-peer-20261022\\checker-lexical-successor.json",
+    "bytes": 1737,
+    "sha256": "983D808E67FF93C094A30EFCCE732A808A88AE08E15B7F99C061D7D90475D392"
+  },
+  "Root_checker_correction_complete_raw_forward_inverse": true,
+  "Root_complete_cloner_and_source_author_and_both_static_checkers_read": true,
+  "Root_all_11_downstream_hunks_and_30_unchanged_helpers_reviewed": true,
+  "downstream_finite_accounting": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\downstream-source-adaptation.json",
+    "bytes": 3647,
+    "sha256": "450ACECD2B5299F8D2C2F8CB12BE816F653B1089CFC959F24679856713EF68DA"
+  },
+  "source_and_issuance_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\source-and-issuance-contract.json",
+    "bytes": 10042,
+    "sha256": "3D8A27A1FE60629C58131C10784B781F960646C70C79283941E4CE383C81F0DD"
+  },
+  "source_scope": {
+    "current_input_versions": 52,
+    "downstream_hunks": 11,
+    "helper_bodies": 30,
+    "planned_output_members": 15,
+    "changed_members": 6,
+    "unchanged_members": 9,
+    "JSON_field_changes": 28,
+    "unresolved_actual_helper_slots": 17
+  },
+  "original_catalog_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-catalog-source-acceptance-20261022.json",
+    "bytes": 14221,
+    "sha256": "CB6A78ACEFAA83A6DE31AB917B6460465BF012C99B38CE87425B6893CCB7AB2C"
+  },
+  "original_negative": {
+    "root_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-original-prelaunch-negative-acceptance-20261022.json",
+      "bytes": 5627,
+      "sha256": "1A6F6F0CAA70C5B9F39F9FF815B67429C39B785E472817427A7EF18E4FCEDDD7"
+    },
+    "independent_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-163859\\independent-prelaunch-admission-negative-closure.json",
+      "bytes": 5480,
+      "sha256": "9712BD2BBB46133BEAA1D7590CC95570ACF252000E218443488E41EB01F4B181"
+    },
+    "reason": "Initial grant must be within300seconds before first child launch",
+    "granted_groups": 3,
+    "attempted_groups": 1,
+    "unstarted_groups": 2,
+    "native_owners": 0,
+    "actual_metadata_count": 0,
+    "actual_tests_started": 0,
+    "original_inputs_unchanged": true,
+    "no_original_negative_outcome_transferred_to_retry": true
+  },
+  "future_clone_outputs_accepted": false,
+  "clone_execution_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

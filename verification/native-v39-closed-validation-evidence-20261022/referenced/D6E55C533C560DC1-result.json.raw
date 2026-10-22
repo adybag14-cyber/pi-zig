@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "status": "failed",
+  "mode": "RuntimeOnly",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+  "group_manifest_sha256": "8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03",
+  "qualification_requested": true,
+  "cache_mode": "fresh_batch",
+  "cache_seeded": false,
+  "fresh_cache_reproduction": false,
+  "runtime_requested": true,
+  "product_qualified": false,
+  "scope": "One frozen source head; one initially fresh private cache pair shared serially; distinct installed prefixes and actual metadata per group; complete whole-batch source/compiler/control bookend seals",
+  "source_seal_scope": "whole_batch",
+  "groups": [
+    {
+      "group": "native-node-file-handle-read",
+      "status": "failed",
+      "mode": "RuntimeOnly",
+      "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+      "receipt_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-existing63-runtime-20261022-133427\\groups\\native-node-file-handle-read",
+      "output_prefix": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-file-handle-read\\installed",
+      "installed_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-file-handle-read\\installed\\bin\\native-node-file-handle-read.exe",
+      "installed_pdb": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\groups\\native-node-file-handle-read\\installed\\bin\\test.pdb",
+      "cached_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache\\o\\12e80ac6943da4a0b0cff5e0dae74fd1\\test.exe",
+      "phases": {},
+      "postseal": true,
+      "source_seal_scope": "whole_batch",
+      "errors": [
+        "Initial grant must be within300seconds before first child launch"
+      ],
+      "runtime_requested": true,
+      "runtime_owner_launch_attempted": false,
+      "actual_runtime_owner_started": false,
+      "native_selected_tests_started": null,
+      "attempted_phases": [
+        "runtime"
+      ],
+      "owned_started_phases": []
+    }
+  ],
+  "postseal": true,
+  "all_groups_closed": false,
+  "controller_environment_restored": true,
+  "errors": [
+    "Initial grant must be within300seconds before first child launch"
+  ],
+  "absence": {
+    "native_roots": [],
+    "owners": []
+  },
+  "cache_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\cache",
+  "global_cache_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\global-cache",
+  "initial_cache_absence": false,
+  "admission_probes": [
+    {
+      "phase": "runtime",
+      "free_kib": 30076368,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "native": [],
+      "elapsed_seconds": 0.3491199,
+      "utc": "2026-10-22T13:39:42.9801758+00:00"
+    }
+  ],
+  "completed_utc": "2026-10-22T13:40:16.0005589+00:00"
+}

@@ -1,0 +1,439 @@
+{
+  "schema": 1,
+  "status": "sealed_source_only_V39_closed_outcomes_draft_existing63_explicitly_unresolved",
+  "reviewer": "/root/handover_review",
+  "source_only": true,
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\candidate\\Prepare-V39ClosedPhasesAndUnresolved63Archive-20261022.py",
+    "bytes": 72511,
+    "sha256": "02D8A4504E8741E915621AFE35B3DBDBEC8A8EE8F8D0F1712F9BA3C5C2392C2B"
+  },
+  "accepted_baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\candidate\\Prepare-V38PartialNegativeProgressAndValidationArchive-20261022.py",
+    "bytes": 76267,
+    "sha256": "EE11C073C1D1CAD599D7F88B34B78133A5E3A90F68D1E1094D6AF77D7C5128AB"
+  },
+  "finite_source_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\finite-source-adaptation.json",
+    "bytes": 145792,
+    "sha256": "276E8882011918EDE42E50E2EC250D8679C295CEE7B0062932FA6A1D408B2632"
+  },
+  "source_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\source-contract.json",
+    "bytes": 22219,
+    "sha256": "ED0F55B0B2071C6631B9FC2A6E3D82D5BD3FBC8D2E4661665DEB56ABAA125106"
+  },
+  "static_source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\static-source-proof.json",
+    "bytes": 237734,
+    "sha256": "DB13C70318CD03D81CBDBCB4793261A9DF292A5E2D297643C0738BF590BBAC3B"
+  },
+  "selected_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\check-unexecuted-source-and-contract-v2.py",
+    "bytes": 18468,
+    "sha256": "CDF7D3093AF6A7BA7DE1494E4940762A0CF6BFEF630CDAB7B5C158A9FBE220E4"
+  },
+  "original_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\check-unexecuted-source-and-contract.py",
+    "bytes": 18418,
+    "sha256": "E204278E9955850E9D5825713B2E74DFFB09E99B1B02592ADB31AEE04E43E99E"
+  },
+  "checker_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\source-checker-selector-negative.json",
+    "bytes": 3085,
+    "sha256": "5ED74D727C822C677C167FDB89FD029031B453D94C990316023D0C33227E87D8"
+  },
+  "checker_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\source-checker-selector-correction.json",
+    "bytes": 1625,
+    "sha256": "6B73479BA46B4FCDE537A3C74DB41CE0B0A42DF70AA97C829686CAA7CF584736"
+  },
+  "input_basis_author": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\collect-closed-input-basis.py",
+    "bytes": 9482,
+    "sha256": "5DBF3B702E0D01224287CA0E3574CDBDD4A13E2C769EDB7FEB16A7FA78ACC2BA"
+  },
+  "authoring_inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\authoring-inputs.json",
+    "bytes": 6785,
+    "sha256": "69E0E39C6B66936BA87F8C16AEC51DCABB721C1160F2FEC6A834F91E7563E43E"
+  },
+  "declared_edits": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\authoring\\declared-finite-edits.json",
+    "bytes": 110721,
+    "sha256": "50782CA9C0FFB0E3CD46CEAA2FB1E7C656257CD3FE9971B38866C32BBC99ACCB"
+  },
+  "fixed_data": {
+    "observed-closed-input-inventory.json": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\observed-closed-input-inventory.json",
+      "bytes": 3121359,
+      "sha256": "5148DE13C078C6D91E1A4B71B8E64FAA2C74D538BB75B3C6029F8D00F83DFFB7"
+    },
+    "progress-patch-plan.json": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\progress-patch-plan.json",
+      "bytes": 57509,
+      "sha256": "45698308CA7D388D528515F3B12DA490436745CA1632DFFD6FA81A85A1F86279"
+    },
+    "supplemental-preservation-inputs.json": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\supplemental-preservation-inputs.json",
+      "bytes": 384133,
+      "sha256": "FEB94AFD5DAEDB83A2DBDB468E5657CFB60B6FE17D26EB52343B8428F89E2D24"
+    },
+    "inert-input-handoff.json": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\inert-input-handoff.json",
+      "bytes": 2424,
+      "sha256": "D5CC11F34578D95127076EBABEB42BBB7313A1340978F1FD890581F6CD7E667F"
+    }
+  },
+  "source_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "progress_basis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\projected\\verification\\port-roadmap-resume-20261018\\progress.json",
+    "bytes": 678718,
+    "sha256": "4FF79AE87F671BB8F16283E38D282CB58444A1A0FA42659B0F3CED505EE04343"
+  },
+  "changed_source_accounting": {
+    "finite_steps": 54,
+    "complete_forward_and_inverse_exact": true,
+    "baseline_bytes": 76267,
+    "candidate_bytes": 72511,
+    "unchanged_non_outcome_helpers": 23,
+    "unchanged_complete_engine_regions": 4,
+    "AST_parse_only": true,
+    "all_untouched_fragments_verified": true,
+    "semantic_review_groups": [
+      {
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "scope": "Explicit unexecuted scope, actual e9/4FF/5611 identities, four closed phases and exact input files."
+      },
+      {
+        "steps": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "scope": "Future Root statuses and closed-input prefix policy; actual 222-list/65-source-unit progress basis; whole closed phase membership admission."
+      },
+      {
+        "steps": [
+          21
+        ],
+        "scope": "Actual complete new4 BQ/9CFF runtime schema adapter; old positive metadata, raw result, strict flags/stderr and sealed-owner linkage retained."
+      },
+      {
+        "steps": [
+          22
+        ],
+        "scope": "Replace old V38 original63 outcome validators with exact new3 prelaunch and admitted compiler negative validators and unconditional unresolved63 stop."
+      },
+      {
+        "steps": [
+          23
+        ],
+        "scope": "Known outcome calls and separate non-native inspection provenance, followed by hard stop before payload construction."
+      },
+      {
+        "steps": [
+          24
+        ],
+        "scope": "Append exactly four known closed attempts and one admitted compiler negative in the future projection; preserve all old history and source units; old V38 next-plan lists remain history beside separate V39 source scope."
+      },
+      {
+        "steps": [
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54
+        ],
+        "scope": "Finite count/status/path labels in the unreachable future projection/report. No original63 count/outcome value or execution authority introduced."
+      }
+    ],
+    "positive_actual_schema_adaptation": [
+      {
+        "label": "known new4 only",
+        "old": "    cohort = copy_plan[\"cohorts\"][batch]\n",
+        "new": "    require(batch==\"new4\" and groups==NEW4 and declared==58 and index==2,\"only the actual closed new4 positive pair implemented\")\n    cohort = copy_plan[\"cohorts\"][batch]\n"
+      },
+      {
+        "label": "BQ status",
+        "old": "\"root_accepted_complete_fresh_v38_\"",
+        "new": "\"root_accepted_complete_fresh_v39_\""
+      },
+      {
+        "label": "RT status",
+        "old": "\"root_accepted_complete_strict_v38_\"",
+        "new": "\"root_accepted_complete_strict_v39_\""
+      },
+      {
+        "label": "actual runtime accepted_cohort schema",
+        "old": "        require(type(value[\"actual_metadata_count\"]) is int and value[\"actual_metadata_count\"]>0,\"observed positive metadata count\")\n        require(len(value[\"actual_group_counts\"])==count and all(type(n) is int and n>0 for n in value[\"actual_group_counts\"]),\"complete observed group counts\")\n        require(sum(value[\"actual_group_counts\"])==value[\"actual_metadata_count\"],\"observed metadata sum\")",
+        "new": "        observed_count = value[\"actual_metadata_count\"] if value is bq else value[\"accepted_cohort\"]\n        require(type(observed_count) is int and observed_count>0,\"observed positive metadata count\")\n        require(len(value[\"actual_group_counts\"])==count and all(type(n) is int and n>0 for n in value[\"actual_group_counts\"]),\"complete observed group counts\")\n        require(sum(value[\"actual_group_counts\"])==observed_count,\"observed metadata sum\")"
+      },
+      {
+        "label": "RT count comparison",
+        "old": "require(rt[\"actual_metadata_count\"]==actual and rt[\"actual_group_counts\"]==counts,",
+        "new": "require(rt[\"accepted_cohort\"]==actual and rt[\"actual_group_counts\"]==counts,"
+      },
+      {
+        "label": "actual root RT gates",
+        "old": "flags(rt,true=(\"strict_native_runtime_accepted\",\"whole_bookends_unchanged\",\n                   \"complete_source_and_current_directory_seals\",",
+        "new": "flags(rt,true=(\"complete_strict_runtime_accepted\",\n                   \"complete_source_and_current_directory_seals\","
+      },
+      {
+        "label": "actual root owner field",
+        "old": "require(rt[\"runtime_owner_count\"]==count",
+        "new": "require(rt[\"native_runtime_owner_count\"]==count"
+      },
+      {
+        "label": "explicit current root bookend fields",
+        "old": "    require(rt[\"runtime_result\"]==archived_pin(rp/\"result.json\") and rt[\"runtime_final\"]==archived_pin(rp/\"final.json\"),\"Root exact original runtime result/seal\")",
+        "new": "    require(rt[\"runtime_result\"]==archived_pin(rp/\"result.json\") and rt[\"runtime_final\"]==archived_pin(rp/\"final.json\") and\n            rt[\"runtime_before\"]==archived_pin(rp/\"before.json\"),\"Root exact original runtime result/seals\")\n    require(raw(rp/\"before.json\")==raw(rp/\"final.json\"),\"actual original runtime bookends byte identical\")\n    require(bq[\"seal_counts\"]==CLOSED_BUILD_SEAL_COUNTS and\n            rt[\"seal_counts\"]==dict(CLOSED_BUILD_SEAL_COUNTS,controls=25),\"all original closed new4 seal domains\")"
+      },
+      {
+        "label": "actual runtime auditor/source-review schema",
+        "old": "    require(rt[\"auditor\"][\"sha256\"]==\"A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102\" and\n            rt[\"auditor_source_acceptance\"][\"sha256\"]==\"12D45623A19BB66517FF8DF2C47CD69F32A167361572A0313D651505528A8F49\",\"accepted corrected auditor source\")\n    document(rt[\"auditor_source_acceptance\"])\n    require(archived_pin(rt[\"auditor\"][\"path\"])==rt[\"auditor\"],\"exact accepted auditor retained\")\n    audit_cfg = document(rt[\"audit_configuration\"])\n    require(audit_cfg[\"auditor_sha256\"]==rt[\"auditor\"][\"sha256\"] and audit_cfg[\"batch\"]==batch and audit_cfg[\"actual_metadata_count\"]==actual,\"actual positive audit configuration\")",
+        "new": "    require(rt[\"runtime_auditor\"]==selected_observed(\"new4_runtime_auditor\") and\n            rt[\"runtime_auditor\"][\"sha256\"]==\"73C0D2B7209504A4EE0AA419EC936EED84F02753372B87C3F03651FBDE9D3484\" and\n            rt[\"runtime_constructor_source_review\"]==selected_observed(\"new4_execution_source_review\") and\n            rt[\"runtime_constructor_source_review\"][\"sha256\"]==\"5056C7EB01BC3DBC3931030A7753423CE2AAD1EDC9A71A00A192D0DA7076450A\",\n            \"actual reviewed V39 runtime auditor and constructor source review\")\n    document(rt[\"runtime_constructor_source_review\"])\n    require(runtime[\"auditor\"]==rt[\"runtime_auditor\"] and runtime[\"audit_configuration\"]==rt[\"runtime_audit_configuration\"],\n            \"same exact original runtime audit source/configuration\")\n    audit_cfg = document(rt[\"runtime_audit_configuration\"])\n    require(audit_cfg[\"auditor_sha256\"]==rt[\"runtime_auditor\"][\"sha256\"] and audit_cfg[\"batch\"]==batch and\n            audit_cfg[\"actual_metadata_count\"]==actual,\"actual positive audit configuration\")"
+      },
+      {
+        "label": "actual prep path",
+        "old": "prep = E/(\"combined-native-batch-v38-\"+(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\")",
+        "new": "prep = E/\"combined-native-batch-v39-new4-prepared-20261022\""
+      },
+      {
+        "label": "actual shared V39 source catalog",
+        "old": "len(matrix[\"groups\"])==117 and sum(len(g[\"required_named\"]) for g in matrix[\"groups\"])==2013 and len(matrix[\"whole_tree_dependency_pins\"])==576",
+        "new": "len(matrix[\"groups\"])==120 and sum(len(g[\"required_named\"]) for g in matrix[\"groups\"])==2051 and len(matrix[\"whole_tree_dependency_pins\"])==765"
+      },
+      {
+        "label": "exact observed positive run only",
+        "old": "    if batch==\"new4\":\n        require(counts==[19,4,24,14] and actual==61 and rt[\"original_runtime_rerun\"] is False,\"unchanged already accepted original new4 run\")\n    else:\n        require(count==63 and declared==1249,\"original63 source-only constants\")\n        # Original63 needs no invented F846 failure or auditor-config adaptation.",
+        "new": "    require(counts==[19,4,24,14] and actual==61,\"exact observed accepted new4 metadata\")\n    require(rt[\"job_observation\"]==archived_pin(rc/\"independent-observed-job-status.json\") and\n            doc(rc/\"independent-observed-job-status.json\")[\"data\"][\"id\"]==\"job-op-0af09191232645d299b3a160fa99dbfcf72b88e9c63ebbc206811067b50a9965\",\n            \"the accepted original new4 strict runtime job, no synthesized rerun field\")"
+      }
+    ]
+  },
+  "known_outcomes": [
+    {
+      "phase": "new3-buildquery-prelaunch",
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-original-prelaunch-negative-acceptance-20261022.json",
+        "bytes": 5627,
+        "sha256": "1A6F6F0CAA70C5B9F39F9FF815B67429C39B785E472817427A7EF18E4FCEDDD7"
+      },
+      "closure": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-163859\\independent-prelaunch-admission-negative-closure.json",
+        "bytes": 5480,
+        "sha256": "9712BD2BBB46133BEAA1D7590CC95570ACF252000E218443488E41EB01F4B181"
+      },
+      "granted_groups": 3,
+      "admission_attempted_groups": 1,
+      "unstarted_groups": 2,
+      "native_owners": 0,
+      "observed_metadata_records": 0,
+      "accepted_metadata_count": null,
+      "raw_selected_tests_started": null,
+      "classified_tests_started": 0,
+      "native_failure": false
+    },
+    {
+      "phase": "new3-retry1-buildquery",
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-compile-negative-acceptance-20261022.json",
+        "bytes": 3588,
+        "sha256": "18C5D51278D563512DA1B30F0FC8BB032C7F2F23C124C78198D1EB3508321010"
+      },
+      "closure": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-173038\\root-compile-negative-closure.json",
+        "bytes": 9907,
+        "sha256": "F11D5FFA7EED451522931522E736BEE24D25557227F481156DBB498E27DE771D"
+      },
+      "independent_original_peer": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-new3-retry1-compile-negative-peer-20261022\\peer.json",
+        "bytes": 16146,
+        "sha256": "F77FCB4C68B610DD86EFB073BA20775622F1024B1AB3D7887B7548FC986EEC09"
+      },
+      "granted_groups": 3,
+      "attempted_groups": 1,
+      "unstarted_groups": 2,
+      "compile_owners": 1,
+      "metadata_owners": 0,
+      "runtime_owners": 0,
+      "compile_exit_code": 1,
+      "outer_exit_code": 1,
+      "durable_job_exit_code": 1,
+      "accepted_metadata_count": null,
+      "observed_metadata_records": 0,
+      "original_positive_owner_binding_invalid_preserved": true,
+      "native_failure": true
+    },
+    {
+      "phase": "new4-buildquery",
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-complete-buildquery-acceptance-20261022.json",
+        "bytes": 3371,
+        "sha256": "4E311101E98D0188F46999774638B9C7056EED91653CD795AEB920B0AC7512AD"
+      },
+      "declared_controls": 58,
+      "actual_metadata_count": 61,
+      "actual_group_counts": [
+        19,
+        4,
+        24,
+        14
+      ],
+      "runtime_started": false
+    },
+    {
+      "phase": "new4-runtime",
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-complete-runtime-acceptance-20261022.json",
+        "bytes": 6037,
+        "sha256": "9CFF00FA02AB7B2AB2C2660DF16B74127634E16F35B4F4D5375B7DE5406F9F80"
+      },
+      "closure": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\independent-positive-runtime-closure.json",
+        "bytes": 31518,
+        "sha256": "F4B556AFDB8B4FE84542B8ECDD581E495AC36C25EF949D173A049A87B50649E8"
+      },
+      "observed_started": 61,
+      "observed_completed": 61,
+      "observed_failed": 0,
+      "unstarted": 0,
+      "selected_native_runtime_accepted_for_original_head": true,
+      "product_qualification": false
+    }
+  ],
+  "unresolved_existing63": {
+    "status": "unresolved_existing63_acceptance_contract",
+    "buildquery_root_acceptance": null,
+    "runtime_root_acceptance": null,
+    "metadata_acceptance": null,
+    "independent_build_closure": null,
+    "independent_runtime_closure": null,
+    "actual_metadata_count": null,
+    "actual_group_counts": null,
+    "observed_phase_membership": null
+  },
+  "unconditional_stop": "require_unresolved_existing63() asserts the exact null contract and then requires False before payloads/roles/preimages construction. No issued configuration alone can make this draft stage evidence.",
+  "required_next_source_boundary": "Observe and independently close the actual original63 terminal outcome. A separately reviewed finite successor must add only actual outcome/phase membership and replace the hard stop. All actual future source/fixture intake parent/release/receipt pins remain external; this draft records no source intake.",
+  "observed_inventory": {
+    "versions": 852,
+    "direct_pin_relationships": 3684,
+    "known_distinct_archive_targets": 849,
+    "required_raw_files": 780,
+    "role_pins": 15,
+    "phase_file_counts": [
+      {
+        "phase": "new3-buildquery-prelaunch",
+        "original_files": 19
+      },
+      {
+        "phase": "new3-retry1-buildquery",
+        "original_files": 21
+      },
+      {
+        "phase": "new4-buildquery",
+        "original_files": 90
+      },
+      {
+        "phase": "new4-runtime",
+        "original_files": 70
+      }
+    ],
+    "equal_bookend_pair_plans": 3,
+    "gzip_executed": false,
+    "prelaunch_raw_bookends": 2,
+    "static_checker_versions": 859
+  },
+  "history": {
+    "nested_list_prefixes": 222,
+    "integrated_source_units": 65,
+    "preserved_attempts": 45,
+    "retained_recent_native_negatives": 15,
+    "execution_checkpoint_history": 15,
+    "complete_old_checkpoint_append_required": true,
+    "raw_progress_inverse_bytes": 678718,
+    "no_source_units_added": true,
+    "known_attempts_only": 4,
+    "known_native_failures_only": 1,
+    "inspection_and_authoring_observations_are_attempts": false
+  },
+  "retained_scope": {
+    "old_V38_next_plan_lists": "Retained exact [4,63]/[58,1249] as history; no loss of nested prefixes.",
+    "separate_current_V39_source_scope": "[3,4,63]/[38,58,1249], full catalog120/2051,70 selected groups/1345 declarations. Original63 actual outcomes remain null.",
+    "no_metadata_or_runtime_transfer_to_another_head": true,
+    "application_qualification": false,
+    "production_bridge_removed": false,
+    "published_release": false
+  },
+  "future_intake_strategy": "After an authorized future evidence preparation and independent output peer, keep the emitted manifest immutable. Normalize a separate manifest with exact100644/before.mode/aliases and one raw original-manifest row, then bind the accepted strengthened8A676 adapter under a separate Root release. No Main intake is performed by this source.",
+  "not_executed": {
+    "candidate": true,
+    "candidate_prefix": true,
+    "compression": true,
+    "archive_preparation": true,
+    "progress_generation": true,
+    "Main_access": true,
+    "index_access": true,
+    "process_query": true,
+    "current63_evidence_access": true,
+    "native_execution": true,
+    "configuration_issuance": true
+  },
+  "execution_authority": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "authoring_observations": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\authoring-observations.json",
+    "bytes": 2265,
+    "sha256": "706247867956DEA415ABD8A1A4955E28735935BA0AE0E236155F92EABF41B269"
+  },
+  "unissued_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\unissued-root-configuration.json",
+    "bytes": 872,
+    "sha256": "6B18B5DC24B6A922BEF65A7F2CB9C6C0EA0D6F311639FB69E066F54208A9460D"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\0c12c70a8521bb0fb1153ae492c19bfd\\test.exe",
+  "binary_sha256": "EC394E009D2D4E614DA1DD81A7917943402759D44EDE408C32416E7AA3A75216",
+  "version": "0.16.0",
+  "actual_count": 20,
+  "tests": [
+    "native_vm_backing_store_adoption_test.test.VM native backing store allocates before a context with no JS wrapper or heap allocation",
+    "native_vm_backing_store_adoption_test.test.VM native backing store exposes real writable bytes before consuming adoption without a copy",
+    "native_vm_backing_store_adoption_test.test.VM native backing store zero initialization is a separate actual allocation mode",
+    "native_vm_backing_store_adoption_test.test.VM native backing store zero length retains a real owner with null logical data",
+    "native_vm_backing_store_adoption_test.test.VM native backing store duplicates and releases independent entitlements with exact charge retirement",
+    "native_vm_backing_store_adoption_test.test.VM native backing store adoption uses the intrinsic realm despite poisoned public constructors",
+    "native_vm_backing_store_adoption_test.test.VM native backing store wrapper allocation failure consumes exactly its native entitlement",
+    "native_vm_backing_store_adoption_test.test.VM native backing store prior ordinary pending consumes the store before any wrapper allocation",
+    "native_vm_backing_store_adoption_test.test.VM native backing store prior generic fatal is preserved without an allocation report",
+    "native_vm_backing_store_adoption_test.test.VM native backing store prior native termination remains the actual published event",
+    "native_vm_backing_store_adoption_test.test.VM native backing store native quota and overflow failure leave pending and OOM history unchanged",
+    "native_vm_backing_store_adoption_test.test.VM native backing store absence of a provider returns empty without inventing a JS failure",
+    "native_vm_backing_store_adoption_test.test.VM native backing store adoption rejects another native allocation domain and consumes the original owner",
+    "native_vm_backing_store_adoption_test.test.VM native backing store missing owner is distinct from an owned zero-length store",
+    "native_vm_backing_store_adoption_test.test.VM native backing store workers retain and retire storage after its runtime and caller domain retire",
+    "native_vm_backing_store_adoption_test.test.VM native backing store short-copy ordering retires the old allocation before wrapper adoption",
+    "native_vm_backing_store_adoption_test.test.VM native backing store adopted wrapper and actual view lease retain independent detach owners",
+    "native_vm_backing_store_adoption_test.test.VM native backing store explicit duplicate can back two intrinsic wrappers without copying",
+    "native_vm_backing_store_adoption_test.test.VM native backing store adopted buffers preserve actual equal and changed transfer ownership",
+    "native_vm_backing_store_adoption_test.test.VM native backing store uninitialized mode leaves JS fixed resizable and shared initialization intact"
+  ],
+  "group": "native-vm-backing-store-adoption",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

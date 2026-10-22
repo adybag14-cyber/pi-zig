@@ -1,0 +1,284 @@
+{
+  "schema": 1,
+  "status": "independently_reviewed_exact_v32_source_union_and_applier",
+  "candidate_head": "14615dfc179f9e7e2044591a2d8aa9592b9d883b",
+  "projection_sha256": "7131D8A92DF12269437DA1C8610376B0903DBE24193A98919C41F060FE77AC93",
+  "applier_sha256": "DD65AA75DA15DFB5DCB615D7E992D869DB94F619A46C7442FE0A78FFF522B201",
+  "source_only": true,
+  "reviewed_utc": "2026-10-20T18:47:23.314100+00:00",
+  "reviewer": "handover_review independent complete source union and applier peer",
+  "projector": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV32SourceUnion-20261020.py",
+    "bytes": 14580,
+    "sha256": "7E515E5E98482607991D4364E0E7DF183280BE237F07F3B60A130103B3DB9691"
+  },
+  "applier": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ReviewedV32FoundationIntake-v2-20261020.py",
+    "bytes": 8819,
+    "sha256": "DD65AA75DA15DFB5DCB615D7E992D869DB94F619A46C7442FE0A78FFF522B201"
+  },
+  "projection": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\reviewed-v32-source-union-20261020\\source-union.json",
+    "bytes": 145791,
+    "sha256": "7131D8A92DF12269437DA1C8610376B0903DBE24193A98919C41F060FE77AC93"
+  },
+  "sdk_complete_control_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-read-controls-source-peer-20261020\\peer.json",
+    "sha256": "17C2996FB8751E5DA2AD28D2AF1784DBE93CEFBB5A707630A3D386750E5DB505",
+    "bytes": 31460
+  },
+  "canonical_windows_target_aliases_checked": true,
+  "complete_all205_final_bytes_reproduced": true,
+  "complete_original_existing_before_bytes_verified": true,
+  "full_composition_forward_inverse_verified": true,
+  "existing_file_edits": 104,
+  "layer_count": 21,
+  "layers": [
+    {
+      "layer": "seven_reviewed_units",
+      "path": "build.zig",
+      "before_sha256": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+      "after_sha256": "B2CC65057664436C2F40D70175C439BAA8CE7B372899F61DD6AB6BB7113B06D2",
+      "edits": 6,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "seven_reviewed_units",
+      "path": "src/extensions/native_error_stack.zig",
+      "before_sha256": "EC0002CEED53432B26BA135F2D4CDC6FFB8C2D0460ADE1C6B8D003C8194826BF",
+      "after_sha256": "FB755EC4331C26D7CB92294684A89C3F7D282609236AB0CCF76D3CD1D57296E0",
+      "edits": 19,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "seven_reviewed_units",
+      "path": "src/extensions/native_node_callback_checks.zig",
+      "before_sha256": "FFB8FDEC742A0884DE9C1A4819012A172B6253E148505372E928134004335605",
+      "after_sha256": "1E3C1597DF365B561713C7D67EE4A07BBB9245BC75355A57EECDCB224758BC7E",
+      "edits": 1,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "seven_reviewed_units",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "before_sha256": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "after_sha256": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C",
+      "edits": 1,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "seven_reviewed_units",
+      "path": "src/extensions/native_node_check_failure.c",
+      "before_sha256": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F",
+      "after_sha256": "33D2F0524B59E477707937D6589BF4A30C5D959B1EFE4779BE4BF02D39B39593",
+      "edits": 3,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "seven_reviewed_units",
+      "path": "src/extensions/native_node_check_failure.h",
+      "before_sha256": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D",
+      "after_sha256": "5A4B14849140F79C5A3555EC2721914D6C4382FEEB94DA0DACAE07E78EAF1CBD",
+      "edits": 2,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "seven_reviewed_units",
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before_sha256": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC",
+      "after_sha256": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09",
+      "edits": 3,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "seven_reviewed_units",
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "before_sha256": "C360094C29E55F7F9C6BE6677390D94986D1FFED2680A05D8AF34162E20644C4",
+      "after_sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+      "edits": 6,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "seven_reviewed_units",
+      "path": "src/extensions/native_node_request_state.zig",
+      "before_sha256": "01DA46DC010A3108D592172C6F65AAB8100560FC274228FE9F1B6643A70A755A",
+      "after_sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+      "edits": 4,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "seven_reviewed_units",
+      "path": "src/extensions/native_uv_fs.h",
+      "before_sha256": "A8E758C49AC4E0583BA08ABF28771BFC7843A730796A6F3E5C471698249011BE",
+      "after_sha256": "B738A0EAECC8E06781305D953B0FFE56753B774F8507CDBE4052BCBC2014F117",
+      "edits": 3,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "seven_reviewed_units",
+      "path": "src/extensions/native_uv_tcp.c",
+      "before_sha256": "FF046966BB81E915F0A69FD158DD8DD10533A6E2590FE1CA8975A5DCB503EE83",
+      "after_sha256": "6BA884B63C1C89FE65DFD90C97AC2604280749EFA5095755347EA06FC52CE92A",
+      "edits": 5,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "seven_reviewed_units",
+      "path": "tools/build_native_node_network.zig",
+      "before_sha256": "64ADAD93DE12560EB7B14DE6759176876CED7F1E212D2CDBF85A251773EE2091",
+      "after_sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369",
+      "edits": 1,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "seven_reviewed_units",
+      "path": "vendor/quickjs/quickjs.c",
+      "before_sha256": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after_sha256": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+      "edits": 9,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "seven_reviewed_units",
+      "path": "vendor/quickjs/quickjs.h",
+      "before_sha256": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after_sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C",
+      "edits": 5,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "sdk_read_and_fs_callback",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before_sha256": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25",
+      "after_sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994",
+      "edits": 4,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "sdk_read_and_fs_callback",
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before_sha256": "540F5D468DA75E474FDD8731E06C55A48BB2E20470A0BE1DEDC1C6BCF61B0D15",
+      "after_sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0",
+      "edits": 16,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "sdk_read_and_fs_callback",
+      "path": "src/extensions/native_uv_fs.h",
+      "before_sha256": "B738A0EAECC8E06781305D953B0FFE56753B774F8507CDBE4052BCBC2014F117",
+      "after_sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE",
+      "edits": 2,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "sdk_read_and_fs_callback",
+      "path": "src/extensions/native_uv_tcp.c",
+      "before_sha256": "6BA884B63C1C89FE65DFD90C97AC2604280749EFA5095755347EA06FC52CE92A",
+      "after_sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71",
+      "edits": 9,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "sdk_read_and_fs_callback",
+      "path": "build.zig",
+      "before_sha256": "B2CC65057664436C2F40D70175C439BAA8CE7B372899F61DD6AB6BB7113B06D2",
+      "after_sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E",
+      "edits": 1,
+      "whole_forward_inverse": true
+    },
+    {
+      "layer": "fixture_correction",
+      "path": "src/native_vm_script_location_test.zig",
+      "before_sha256": "30A2FEA5671546E4A285E68AD5B6D667A49E698B1C51C699DDF83A84495DA000",
+      "after_sha256": "286A630630468043BD80E8F6A6C99D4DFAA6A09D86C43636D874E28F538C6A3F",
+      "edits": 3,
+      "whole_forward_inverse": true,
+      "ordered_named_declarations_preserved": 32
+    },
+    {
+      "layer": "fixture_correction",
+      "path": "src/native_node_stream_read_test.zig",
+      "before_sha256": "17978D19E46922C6B5A974D57DF0B9131BA7BE149125F923CBA472D09975B55B",
+      "after_sha256": "BF29DB0783C38D6FCA9161C5C5555F3C7666B10675E041B4FEFA23E2E0A43688",
+      "edits": 1,
+      "whole_forward_inverse": true,
+      "ordered_named_declarations_preserved": 18
+    }
+  ],
+  "projected_paths": 205,
+  "projected_existing_paths": 18,
+  "projected_source_paths": 45,
+  "proof_copies_verified": 28,
+  "root_source_names_verified": 160,
+  "roots": [
+    {
+      "path": "src/native_vm_simple_stack_source_test.zig",
+      "count": 33,
+      "sha256": "1863129EC7E28E0F99D3B6C94E3B28FDC754781C7BF0DEF296552688DC0D5DF9"
+    },
+    {
+      "path": "src/native_vm_exotic_operations_test.zig",
+      "count": 28,
+      "sha256": "9FFBDF6B2C033898E7D1738943293DCD13F758EF9893F794293C8AA71A5FAA7B"
+    },
+    {
+      "path": "src/native_node_diagnostic_context_test.zig",
+      "count": 10,
+      "sha256": "536C002F636323E9F2D3C7A195BEEA054DA919DC600E86DA2850E2A63B51B861"
+    },
+    {
+      "path": "src/native_node_native_debug_test.zig",
+      "count": 20,
+      "sha256": "79729DBB464F7F95F89CDD85A9A737897A1D90F6352816E186EFB02EE0470991"
+    },
+    {
+      "path": "src/native_node_permission_test.zig",
+      "count": 18,
+      "sha256": "A01BE231E1AA8A03FB9D343B6DAC06CA8EAA0FD2C58D33C1CA79A596E32F554D"
+    },
+    {
+      "path": "src/native_node_fs_readwrap_reuse_test.zig",
+      "count": 14,
+      "sha256": "1976069B2406CBB9B0B78F67EB8E8DAE562B05EB4E9C5DDE52AEAABB525A9972"
+    },
+    {
+      "path": "src/native_node_reqwrap_callback_routing_test.zig",
+      "count": 12,
+      "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7"
+    },
+    {
+      "path": "src/native_node_file_handle_read_test.zig",
+      "count": 14,
+      "sha256": "FFAEE39E71868A92884A855B886D296686558C955EA700C0D735F68DB8D2777D"
+    },
+    {
+      "path": "src/native_node_fs_callback_template_test.zig",
+      "count": 11,
+      "sha256": "1DC90343E1BB318344F4C9652C73610B8098AA50D6A3F8B3E9EC0C17BECA8BCC"
+    }
+  ],
+  "all_existing_root_names_preserved": true,
+  "expected_applied_paths": 209,
+  "all_four_applier_proof_paths_fresh": true,
+  "protected_async_wrap_sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2",
+  "applier_review": {
+    "complete_source_bytes_read": 8819,
+    "projector_complete_source_bytes_read": 14580,
+    "exact_root_release_self_hash_peer_and_diagnostic_bound": true,
+    "frozen_head_branch_clean_checks": true,
+    "all_before_after_snapshots_checked_before_first_write": true,
+    "old_bytes_backed_up_and_verified_before_replacement": true,
+    "target_before_bytes_rechecked_before_each_replacement": true,
+    "complete_final_hash_verification": true,
+    "no_native_compiler_or_commit_invocation": true,
+    "recovery": "Per-file replacement may stop partially on error; exact original backups and paths are retained. Root keeps Main frozen until separately reviewed application/commit checks complete."
+  },
+  "scope": "Independent finite byte composition, declaration identity, proof copy and complete applier source review. Prior semantic peers remain pinned; no production/runtime qualification inferred.",
+  "source_mutation_authorized": false,
+  "root_source_release_required": true,
+  "main_modified": false,
+  "compiler_or_native_execution": false,
+  "qualification": false,
+  "application_qualification": false,
+  "concrete_blockers": []
+}

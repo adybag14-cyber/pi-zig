@@ -1,0 +1,56 @@
+{
+  "ok": true,
+  "summary": "Background job job-op-0975772fcc8e984e84c4d255a0b9805571c22200314b7111deb9a88e5824bc0c is failed.",
+  "data": {
+    "id": "job-op-0975772fcc8e984e84c4d255a0b9805571c22200314b7111deb9a88e5824bc0c",
+    "status": "failed",
+    "mode": "program",
+    "createdAtUtc": "2026-10-22T13:38:55.174Z",
+    "startedAtUtc": "2026-10-22T13:38:55.259Z",
+    "completedAtUtc": "2026-10-22T13:40:16.253Z",
+    "runnerPid": 43388,
+    "exitCode": 1,
+    "readOnly": false,
+    "resourceClass": "heavy",
+    "runtimeMode": "host",
+    "queuedAtUtc": "2026-10-22T13:38:55.229Z",
+    "runnerProcessInstance": "134371499352045058",
+    "queueWaitMs": 9,
+    "executionSlot": 4,
+    "executionSlots": [
+      4,
+      3
+    ],
+    "executionPool": "execution",
+    "executionWeight": 2,
+    "childPid": 16780,
+    "error": "Owned terminal failed: C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "logs": {
+      "stdout": {
+        "maxBytes": 33554432,
+        "rotations": 2,
+        "rotationsPerformed": 0,
+        "totalBytes": 0,
+        "currentBytes": 0,
+        "truncated": false,
+        "failed": false,
+        "error": null
+      },
+      "stderr": {
+        "maxBytes": 33554432,
+        "rotations": 2,
+        "rotationsPerformed": 0,
+        "totalBytes": 63,
+        "currentBytes": 63,
+        "truncated": false,
+        "failed": false,
+        "error": null
+      },
+      "truncated": false
+    },
+    "runnerAlive": false,
+    "jobDir": "C:\\Users\\adyba\\docker-chatgpt-devbox\\run\\jobs\\job-op-0975772fcc8e984e84c4d255a0b9805571c22200314b7111deb9a88e5824bc0c"
+  },
+  "exitCode": null,
+  "truncated": false
+}

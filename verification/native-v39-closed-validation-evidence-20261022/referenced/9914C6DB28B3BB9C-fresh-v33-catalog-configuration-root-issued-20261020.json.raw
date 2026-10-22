@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v33_catalog_preparation",
+  "candidate_head": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+  "source_integration_commit": "5521437c5581de3232e8fa1a2d017f2f4eb865af",
+  "uv_correction_commit": "39d13e047f55c598cfac0e841fed6d23220025b0",
+  "quickjs_correction_commit": "a547b14255d235f90bc9660eeab974372afa02e5",
+  "preparer_sha256": "5965B035B8E4B7CC9299B746A4FB5729FEED6295A5FC61FDA21B01B8540C41BF",
+  "quickjs_correction_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v33-map-entry-symbol-correction-20261020\\receipt.json",
+    "bytes": 2940,
+    "sha256": "9ABB0B547B74AC7FA090BD82FC9A1834CA67133BF1FF2EB68343637EDD87DE5C"
+  },
+  "progress": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+    "bytes": 203132,
+    "sha256": "2E3318EA85B1F81762E798C5471CC0EFF9F57E110A5D0F894F16F9B9E66D86C9"
+  },
+  "catalog_preparation_authorized": true,
+  "native_execution_authorized": false,
+  "root_reviewed_utc": "2026-10-20T19:28:04.391905+00:00",
+  "root_review": {
+    "adaptation_sha256": "7AE203E6406AEE2239315955700F11A2F95B4EB54853E2BDDFD4488F7F4F9B69",
+    "finite_edits": 28,
+    "complete_forward_inverse": true,
+    "unchanged_group_objects": 113,
+    "unchanged_selected_groups": 63,
+    "allowed_dependency_pin_refreshes": 27
+  }
+}

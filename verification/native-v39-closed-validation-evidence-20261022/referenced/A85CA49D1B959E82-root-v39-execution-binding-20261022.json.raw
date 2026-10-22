@@ -1,0 +1,362 @@
+{
+  "schema": 1,
+  "status": "actual_v39_execution_source_bindings_complete_source_review_pending",
+  "utc": "2026-10-22T16:33:13.767426+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "matrix_sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB",
+  "root_catalog_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-catalog-source-acceptance-20261022.json",
+    "bytes": 14221,
+    "sha256": "CB6A78ACEFAA83A6DE31AB917B6460465BF012C99B38CE87425B6893CCB7AB2C"
+  },
+  "independent_catalog_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-emitted-catalog-peer-20261022\\peer.json",
+    "bytes": 21004,
+    "sha256": "E1EBA02555E8C52689D838A71A9252091469122254C7000DC8850E7A24CEABCA"
+  },
+  "unresolved_Root_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-execution-unresolved-source-acceptance-20261022.json",
+    "bytes": 11052,
+    "sha256": "F23301DA984ADEDDF18B4C7D4A5A8C9369A9A65FCE59EDC84523EA48F2B0C633"
+  },
+  "binding_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\binding-contract.json",
+    "bytes": 17675,
+    "sha256": "B1BBFF83D1D42F4AC1AC512648D637D7B2DB45ABD206C2593E049A5134E95624"
+  },
+  "sources": [
+    {
+      "kind": "buildquery_constructor",
+      "unresolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+        "bytes": 10269,
+        "sha256": "1501B39CAE3466FEBC38E39DA5121D33064AECE3206BDBEF998A59BF26491EF3"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+        "bytes": 10269,
+        "sha256": "972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0"
+      },
+      "binding_steps": [
+        {
+          "kind": "buildquery_constructor",
+          "binding": "head",
+          "offset": 280,
+          "before": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+          "after": "\"e9f11afa56a923372d957e2fb227f453822c21bf\"",
+          "before_bytes": 10269,
+          "before_sha256": "1501B39CAE3466FEBC38E39DA5121D33064AECE3206BDBEF998A59BF26491EF3",
+          "after_bytes": 10269,
+          "after_sha256": "972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0"
+        }
+      ],
+      "complete_fixed_width_raw_inverse": true,
+      "helpers_byte_exact": true
+    },
+    {
+      "kind": "runtime_constructor",
+      "unresolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39RuntimeGrant-20261022.py",
+        "bytes": 12671,
+        "sha256": "FEFA13F724061352D6A2DCFD87E10EAA23EC892E2F87531FC86066FF2EEF25DE"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39RuntimeGrant-20261022.py",
+        "bytes": 12671,
+        "sha256": "15594044FD06B8E1D99D89A20954E2B5C55165C9749E590D63B02809E0FC9C0D"
+      },
+      "binding_steps": [
+        {
+          "kind": "runtime_constructor",
+          "binding": "head",
+          "offset": 311,
+          "before": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+          "after": "\"e9f11afa56a923372d957e2fb227f453822c21bf\"",
+          "before_bytes": 12671,
+          "before_sha256": "FEFA13F724061352D6A2DCFD87E10EAA23EC892E2F87531FC86066FF2EEF25DE",
+          "after_bytes": 12671,
+          "after_sha256": "A76BA59ACA0C9E5CCBE6CBB999FE1B1AD7DAB95EC57A2494361B674FFCCE4B60"
+        },
+        {
+          "kind": "runtime_constructor",
+          "binding": "matrix",
+          "offset": 361,
+          "before": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\"",
+          "after": "\"5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB\"",
+          "before_bytes": 12671,
+          "before_sha256": "A76BA59ACA0C9E5CCBE6CBB999FE1B1AD7DAB95EC57A2494361B674FFCCE4B60",
+          "after_bytes": 12671,
+          "after_sha256": "15594044FD06B8E1D99D89A20954E2B5C55165C9749E590D63B02809E0FC9C0D"
+        }
+      ],
+      "complete_fixed_width_raw_inverse": true,
+      "helpers_byte_exact": true
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "unresolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39CompleteBuildQuery-20261022.py",
+        "bytes": 37295,
+        "sha256": "F200CD8E6DDCF56E3900D585C302BFFD97A47CC850DF31C81CD6FA63354DCB49"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39CompleteBuildQuery-20261022.py",
+        "bytes": 37295,
+        "sha256": "E1A7DEC0B22FC0D1B081641F19B6706608154CD728D645D0685CBE44A02F41E6"
+      },
+      "binding_steps": [
+        {
+          "kind": "positive_buildquery_auditor",
+          "binding": "head",
+          "offset": 322,
+          "before": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+          "after": "\"e9f11afa56a923372d957e2fb227f453822c21bf\"",
+          "before_bytes": 37295,
+          "before_sha256": "F200CD8E6DDCF56E3900D585C302BFFD97A47CC850DF31C81CD6FA63354DCB49",
+          "after_bytes": 37295,
+          "after_sha256": "D676B2BA1869B0CDE99A81880C1C11CCD6176C1B899ABDCA05D8FA29A6164904"
+        },
+        {
+          "kind": "positive_buildquery_auditor",
+          "binding": "matrix",
+          "offset": 6433,
+          "before": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\"",
+          "after": "\"5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB\"",
+          "before_bytes": 37295,
+          "before_sha256": "D676B2BA1869B0CDE99A81880C1C11CCD6176C1B899ABDCA05D8FA29A6164904",
+          "after_bytes": 37295,
+          "after_sha256": "294294260DCE0747EF2BD29C5AC47A451388DD04D746A662281643399B7461D2"
+        },
+        {
+          "kind": "positive_buildquery_auditor",
+          "binding": "buildquery_constructor_sha256",
+          "offset": 14472,
+          "before": "\"UNRESOLVED_V39_BUILDQUERY_CONSTRUCTOR_SHA256____________________\"",
+          "after": "\"972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0\"",
+          "before_bytes": 37295,
+          "before_sha256": "294294260DCE0747EF2BD29C5AC47A451388DD04D746A662281643399B7461D2",
+          "after_bytes": 37295,
+          "after_sha256": "E1A7DEC0B22FC0D1B081641F19B6706608154CD728D645D0685CBE44A02F41E6"
+        }
+      ],
+      "complete_fixed_width_raw_inverse": true,
+      "helpers_byte_exact": true
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "unresolved": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39StrictRuntime-20261022.py",
+        "bytes": 43940,
+        "sha256": "82CA5B3712FF3898DD90AA70C2F4296523ED4F4C9EC2CA15A8E8DEF2970DD5D1"
+      },
+      "bound": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39StrictRuntime-20261022.py",
+        "bytes": 43940,
+        "sha256": "73C0D2B7209504A4EE0AA419EC936EED84F02753372B87C3F03651FBDE9D3484"
+      },
+      "binding_steps": [
+        {
+          "kind": "positive_runtime_auditor",
+          "binding": "head",
+          "offset": 349,
+          "before": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+          "after": "\"e9f11afa56a923372d957e2fb227f453822c21bf\"",
+          "before_bytes": 43940,
+          "before_sha256": "82CA5B3712FF3898DD90AA70C2F4296523ED4F4C9EC2CA15A8E8DEF2970DD5D1",
+          "after_bytes": 43940,
+          "after_sha256": "A884412A9D4886D228A4E3CCF1A696F93DD5C64112795C13EC90A40743111FD2"
+        },
+        {
+          "kind": "positive_runtime_auditor",
+          "binding": "runtime_constructor_sha256",
+          "offset": 6819,
+          "before": "\"UNRESOLVED_V39_RUNTIME_CONSTRUCTOR_SHA256_______________________\"",
+          "after": "\"15594044FD06B8E1D99D89A20954E2B5C55165C9749E590D63B02809E0FC9C0D\"",
+          "before_bytes": 43940,
+          "before_sha256": "A884412A9D4886D228A4E3CCF1A696F93DD5C64112795C13EC90A40743111FD2",
+          "after_bytes": 43940,
+          "after_sha256": "9BD4120C1DF1C671EFB4DC2D0275D6A69EDF337CFF691D4661FBAB8959458185"
+        },
+        {
+          "kind": "positive_runtime_auditor",
+          "binding": "matrix",
+          "offset": 23974,
+          "before": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\"",
+          "after": "\"5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB\"",
+          "before_bytes": 43940,
+          "before_sha256": "9BD4120C1DF1C671EFB4DC2D0275D6A69EDF337CFF691D4661FBAB8959458185",
+          "after_bytes": 43940,
+          "after_sha256": "73C0D2B7209504A4EE0AA419EC936EED84F02753372B87C3F03651FBDE9D3484"
+        }
+      ],
+      "complete_fixed_width_raw_inverse": true,
+      "helpers_byte_exact": true
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "buildquery_constructor",
+      "binding": "head",
+      "offset": 280,
+      "before": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+      "after": "\"e9f11afa56a923372d957e2fb227f453822c21bf\"",
+      "before_bytes": 10269,
+      "before_sha256": "1501B39CAE3466FEBC38E39DA5121D33064AECE3206BDBEF998A59BF26491EF3",
+      "after_bytes": 10269,
+      "after_sha256": "972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0"
+    },
+    {
+      "kind": "runtime_constructor",
+      "binding": "head",
+      "offset": 311,
+      "before": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+      "after": "\"e9f11afa56a923372d957e2fb227f453822c21bf\"",
+      "before_bytes": 12671,
+      "before_sha256": "FEFA13F724061352D6A2DCFD87E10EAA23EC892E2F87531FC86066FF2EEF25DE",
+      "after_bytes": 12671,
+      "after_sha256": "A76BA59ACA0C9E5CCBE6CBB999FE1B1AD7DAB95EC57A2494361B674FFCCE4B60"
+    },
+    {
+      "kind": "runtime_constructor",
+      "binding": "matrix",
+      "offset": 361,
+      "before": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\"",
+      "after": "\"5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB\"",
+      "before_bytes": 12671,
+      "before_sha256": "A76BA59ACA0C9E5CCBE6CBB999FE1B1AD7DAB95EC57A2494361B674FFCCE4B60",
+      "after_bytes": 12671,
+      "after_sha256": "15594044FD06B8E1D99D89A20954E2B5C55165C9749E590D63B02809E0FC9C0D"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "binding": "head",
+      "offset": 322,
+      "before": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+      "after": "\"e9f11afa56a923372d957e2fb227f453822c21bf\"",
+      "before_bytes": 37295,
+      "before_sha256": "F200CD8E6DDCF56E3900D585C302BFFD97A47CC850DF31C81CD6FA63354DCB49",
+      "after_bytes": 37295,
+      "after_sha256": "D676B2BA1869B0CDE99A81880C1C11CCD6176C1B899ABDCA05D8FA29A6164904"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "binding": "matrix",
+      "offset": 6433,
+      "before": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\"",
+      "after": "\"5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB\"",
+      "before_bytes": 37295,
+      "before_sha256": "D676B2BA1869B0CDE99A81880C1C11CCD6176C1B899ABDCA05D8FA29A6164904",
+      "after_bytes": 37295,
+      "after_sha256": "294294260DCE0747EF2BD29C5AC47A451388DD04D746A662281643399B7461D2"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "binding": "buildquery_constructor_sha256",
+      "offset": 14472,
+      "before": "\"UNRESOLVED_V39_BUILDQUERY_CONSTRUCTOR_SHA256____________________\"",
+      "after": "\"972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0\"",
+      "before_bytes": 37295,
+      "before_sha256": "294294260DCE0747EF2BD29C5AC47A451388DD04D746A662281643399B7461D2",
+      "after_bytes": 37295,
+      "after_sha256": "E1A7DEC0B22FC0D1B081641F19B6706608154CD728D645D0685CBE44A02F41E6"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "binding": "head",
+      "offset": 349,
+      "before": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+      "after": "\"e9f11afa56a923372d957e2fb227f453822c21bf\"",
+      "before_bytes": 43940,
+      "before_sha256": "82CA5B3712FF3898DD90AA70C2F4296523ED4F4C9EC2CA15A8E8DEF2970DD5D1",
+      "after_bytes": 43940,
+      "after_sha256": "A884412A9D4886D228A4E3CCF1A696F93DD5C64112795C13EC90A40743111FD2"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "binding": "runtime_constructor_sha256",
+      "offset": 6819,
+      "before": "\"UNRESOLVED_V39_RUNTIME_CONSTRUCTOR_SHA256_______________________\"",
+      "after": "\"15594044FD06B8E1D99D89A20954E2B5C55165C9749E590D63B02809E0FC9C0D\"",
+      "before_bytes": 43940,
+      "before_sha256": "A884412A9D4886D228A4E3CCF1A696F93DD5C64112795C13EC90A40743111FD2",
+      "after_bytes": 43940,
+      "after_sha256": "9BD4120C1DF1C671EFB4DC2D0275D6A69EDF337CFF691D4661FBAB8959458185"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "binding": "matrix",
+      "offset": 23974,
+      "before": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\"",
+      "after": "\"5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB\"",
+      "before_bytes": 43940,
+      "before_sha256": "9BD4120C1DF1C671EFB4DC2D0275D6A69EDF337CFF691D4661FBAB8959458185",
+      "after_bytes": 43940,
+      "after_sha256": "73C0D2B7209504A4EE0AA419EC936EED84F02753372B87C3F03651FBDE9D3484"
+    }
+  ],
+  "binding_count": 9,
+  "exact_fixed_width_bindings_only": true,
+  "all_full_raw_inverses_verified": true,
+  "unresolved_sources_preserved": true,
+  "current_input_versions": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-catalog-source-acceptance-20261022.json",
+      "bytes": 14221,
+      "sha256": "CB6A78ACEFAA83A6DE31AB917B6460465BF012C99B38CE87425B6893CCB7AB2C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-execution-unresolved-source-acceptance-20261022.json",
+      "bytes": 11052,
+      "sha256": "F23301DA984ADEDDF18B4C7D4A5A8C9369A9A65FCE59EDC84523EA48F2B0C633"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\binding-contract.json",
+      "bytes": 17675,
+      "sha256": "B1BBFF83D1D42F4AC1AC512648D637D7B2DB45ABD206C2593E049A5134E95624"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+      "bytes": 10269,
+      "sha256": "1501B39CAE3466FEBC38E39DA5121D33064AECE3206BDBEF998A59BF26491EF3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39RuntimeGrant-20261022.py",
+      "bytes": 12671,
+      "sha256": "FEFA13F724061352D6A2DCFD87E10EAA23EC892E2F87531FC86066FF2EEF25DE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39CompleteBuildQuery-20261022.py",
+      "bytes": 37295,
+      "sha256": "F200CD8E6DDCF56E3900D585C302BFFD97A47CC850DF31C81CD6FA63354DCB49"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39StrictRuntime-20261022.py",
+      "bytes": 43940,
+      "sha256": "82CA5B3712FF3898DD90AA70C2F4296523ED4F4C9EC2CA15A8E8DEF2970DD5D1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-prepared-20261022\\preparation-review.json",
+      "bytes": 1230704,
+      "sha256": "EA20FC0C6AB01BC00DF2EA29B166C48D2915A7DB4B0C1A71784C862F66ACA256"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022\\preparation-review.json",
+      "bytes": 1230758,
+      "sha256": "BC7E87602311E3947D2581F87E4D4AE0FBA9224BDE3B940BC9D1F5D2652F12AB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\preparation-review.json",
+      "bytes": 1232958,
+      "sha256": "58E217CF7E2445167523089006FBA042FAF1AAA7C766036A69CE304413042904"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-emitted-catalog-peer-20261022\\peer.json",
+      "bytes": 21004,
+      "sha256": "E1EBA02555E8C52689D838A71A9252091469122254C7000DC8850E7A24CEABCA"
+    }
+  ],
+  "native_execution_authorized": false,
+  "actual_metadata_count": null,
+  "execution_configuration_issued": false,
+  "qualification": false
+}

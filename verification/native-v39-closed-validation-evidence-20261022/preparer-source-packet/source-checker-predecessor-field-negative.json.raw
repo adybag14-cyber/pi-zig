@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "status": "retained_static_checker_schema_lookup_negative",
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\check-source-and-observed-contract.py",
+    "bytes": 17671,
+    "sha256": "9356F4F5450C0C965C42793BE628A4C99713C7D686FDF8273B0D89A256725C93"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\candidate\\Prepare-V39ClosedValidationAndTimeoutArchive-20261022.py",
+    "bytes": 90319,
+    "sha256": "0BD97D2A52ADF9FC624222163049C44DB8D7928BEBB9D5F36B2738BD3735ECF2"
+  },
+  "actual_receipt": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-unresolved63-archive-preparer-source-acceptance-20261022.json",
+    "bytes": 3392,
+    "sha256": "5737BCE6F6DAE671F0F876E3B5CD7448F8AE9D9F2CFCD326379121F98EEA9CA0"
+  },
+  "original_tool_result": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\check-source-and-observed-contract.py\", line 78, in <module>\r\n    assert prior[\"candidate\"]==f[\"basis\"] and prior_review[\"preparer\"]==f[\"basis\"]\r\n                                              ~~~~~~~~~~~~^^^^^^^^^^^^\r\nKeyError: 'preparer'",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\check-source-and-observed-contract.py\", line 78, in <module>\r\n    assert prior[\"candidate\"]==f[\"basis\"] and prior_review[\"preparer\"]==f[\"basis\"]\r\n                                              ~~~~~~~~~~~~^^^^^^^^^^^^\r\nKeyError: 'preparer'\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "reason": "The interim source acceptance names the exact predecessor source pin candidate, while this static checker incorrectly looked up preparer. No candidate or prefix was evaluated; no contract/proof output existed.",
+  "candidate_unchanged": true,
+  "candidate_or_prefix_executed": false,
+  "Main_access": false,
+  "native_attempt": false
+}

@@ -1,0 +1,673 @@
+{
+  "schema": 1,
+  "status": "inert_unissued_v39_new3_retry1_observed_positive_buildquery_binding_contract",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\candidate\\Prepare-ObservedV39New3PositiveBuildQueryAuditInputs-Retry1-20261022-unresolved.py",
+    "bytes": 18928,
+    "sha256": "1263E63125BF7246C8A196995D6BD74FF35C9A3053E8DE6CBA805889B0044A7D"
+  },
+  "original_helper": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-positive-input-helper-sourceonly-20261022\\candidate\\Prepare-ObservedV39New3PositiveBuildQueryAuditInputs-20261022-unresolved.py",
+    "bytes": 18891,
+    "sha256": "8B60F3FEB4D78F9FCEDE75F7A72FF4FDABAC9A00F269E59F200939E85ACB1B83"
+  },
+  "original_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-positive-input-helper-sourceonly-20261022\\binding-and-observed-input-contract.json",
+    "bytes": 20740,
+    "sha256": "A774CB26CF1BAC03181C409CD183FE4BEBE190138D5A1FAF5E9FB0C3867ECDD2"
+  },
+  "accepted_retry_execution_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-execution-bound-source-review-20261022.json",
+    "bytes": 6708,
+    "sha256": "93DC83198F582C6B57B77B35F6B14027B8E7F0573C9A9AE599B4BD9C053940DE"
+  },
+  "source_finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\observed_new3_input_helper-finite-source-adaptation.json",
+    "bytes": 11144,
+    "sha256": "A563F66F9B73A2008E205CEBE5D7913C5F449733C67114A8B5DBEFF523699A60"
+  },
+  "future_canonical_helper_path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV39New3PositiveBuildQueryAuditInputs-20261022.py",
+  "canonical_self_path_unchanged": true,
+  "cohort": {
+    "batch": "new3",
+    "groups": 3,
+    "declared_controls": 38,
+    "ordered_groups": [
+      "native-node-stream-shutdown",
+      "native-node-one-byte-string",
+      "native-vm-array-buffer-view-data"
+    ],
+    "full_catalog_groups": 120,
+    "full_catalog_declarations": 2051,
+    "per_group_actual_metadata_cap": 64,
+    "actual_metadata_count": null
+  },
+  "fixed_paths": {
+    "preparation": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-retry1-prepared-20261022",
+    "specific_buildquery_configuration": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-buildquery-retry1-issued-config-20261022.json",
+    "buildquery_constructor": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+    "positive_buildquery_auditor": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39CompleteBuildQuery-New3Retry1-20261022.py",
+    "required_root_execution_source_review": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-execution-bound-source-review-20261022.json",
+    "prepared_record_basename": "buildquery-launch.json",
+    "output_basename": "independent-positive-buildquery-audit-inputs.json"
+  },
+  "unresolved_actual_bindings": {
+    "total": 17,
+    "string_tokens": 12,
+    "numeric_observed_sizes": 5,
+    "offset_semantics": "Zero-based UTF-8 byte offsets, end exclusive, against exact 18,928-byte 1263 source. Source is ASCII. All seventeen source tokens remain unchanged/unbound.",
+    "binding_order": "Apply descending offset and retain every intermediate hash/full raw inverse.",
+    "slots": [
+      {
+        "field": "HEAD",
+        "kind": "STRING",
+        "offset": 444,
+        "end": 486,
+        "line": 10,
+        "token": "\"UNRESOLVED_V39_HEAD_XXXXXXXXXXXXXXXXXXXX\"",
+        "decoded_value": "UNRESOLVED_V39_HEAD_XXXXXXXXXXXXXXXXXXXX",
+        "actual_value": null,
+        "value_role": "Exact separately reviewed candidate head; must agree with actual grant, complete result, metadata and accepted retry source review.",
+        "reviewed_source_value": "e9f11afa56a923372d957e2fb227f453822c21bf",
+        "source_value_available": true,
+        "previous_offset": 444
+      },
+      {
+        "field": "JOB",
+        "kind": "STRING",
+        "offset": 491,
+        "end": 564,
+        "line": 11,
+        "token": "\"UNRESOLVED_V39_JOB_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+        "decoded_value": "UNRESOLVED_V39_JOB_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "actual_value": null,
+        "value_role": "Original newly observed durable job id from complete Hermes envelope.data.id after terminal success.",
+        "reviewed_source_value": null,
+        "source_value_available": false,
+        "previous_offset": 491
+      },
+      {
+        "field": "C",
+        "kind": "STRING",
+        "offset": 569,
+        "end": 632,
+        "line": 12,
+        "token": "\"root-native-foundation-fresh-v39-new3-control-UNRESOLVEDSTAMP\"",
+        "decoded_value": "root-native-foundation-fresh-v39-new3-control-UNRESOLVEDSTAMP",
+        "actual_value": null,
+        "value_role": "Actual retry1 BuildQuery control basename under E; keep source-required fresh-v39-new3-control-<stamp> spelling.",
+        "reviewed_source_value": null,
+        "source_value_available": false,
+        "previous_offset": 569
+      },
+      {
+        "field": "P",
+        "kind": "STRING",
+        "offset": 637,
+        "end": 703,
+        "line": 13,
+        "token": "\"root-native-foundation-fresh-v39-new3-buildquery-UNRESOLVEDSTAMP\"",
+        "decoded_value": "root-native-foundation-fresh-v39-new3-buildquery-UNRESOLVEDSTAMP",
+        "actual_value": null,
+        "value_role": "Actual retry1 BuildQuery proof basename under E; actual C basename with -control- replaced once by -buildquery-.",
+        "reviewed_source_value": null,
+        "source_value_available": false,
+        "previous_offset": 637
+      },
+      {
+        "field": "MATRIX",
+        "kind": "STRING",
+        "offset": 950,
+        "end": 1016,
+        "line": 18,
+        "token": "\"UNRESOLVED_V39_MATRIX_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+        "decoded_value": "UNRESOLVED_V39_MATRIX_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "actual_value": null,
+        "value_role": "Exact retry preparation groups.json SHA-256; must agree with actual grant, result, metadata and accepted retry source review.",
+        "reviewed_source_value": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB",
+        "source_value_available": true,
+        "previous_offset": 943
+      },
+      {
+        "field": "grant_bytes",
+        "kind": "NUMBER",
+        "offset": 4010,
+        "end": 4011,
+        "line": 66,
+        "token": "0",
+        "decoded_value": 0,
+        "actual_value": null,
+        "value_role": "Actual byte length of C/root-grant.json.",
+        "reviewed_source_value": null,
+        "source_value_available": false,
+        "previous_offset": 4003
+      },
+      {
+        "field": "grant_sha256",
+        "kind": "STRING",
+        "offset": 4012,
+        "end": 4078,
+        "line": 66,
+        "token": "\"UNRESOLVED_V39_GRANT_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+        "decoded_value": "UNRESOLVED_V39_GRANT_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "actual_value": null,
+        "value_role": "Uppercase SHA-256 of complete C/root-grant.json.",
+        "reviewed_source_value": null,
+        "source_value_available": false,
+        "previous_offset": 4005
+      },
+      {
+        "field": "launch_bytes",
+        "kind": "NUMBER",
+        "offset": 4111,
+        "end": 4112,
+        "line": 67,
+        "token": "0",
+        "decoded_value": 0,
+        "actual_value": null,
+        "value_role": "Actual byte length of C/launch.ps1.",
+        "reviewed_source_value": null,
+        "source_value_available": false,
+        "previous_offset": 4104
+      },
+      {
+        "field": "launch_sha256",
+        "kind": "STRING",
+        "offset": 4113,
+        "end": 4179,
+        "line": 67,
+        "token": "\"UNRESOLVED_V39_LAUNCH_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+        "decoded_value": "UNRESOLVED_V39_LAUNCH_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "actual_value": null,
+        "value_role": "Uppercase SHA-256 of complete C/launch.ps1.",
+        "reviewed_source_value": null,
+        "source_value_available": false,
+        "previous_offset": 4106
+      },
+      {
+        "field": "specific_bytes",
+        "kind": "NUMBER",
+        "offset": 4263,
+        "end": 4264,
+        "line": 68,
+        "token": "0",
+        "decoded_value": 0,
+        "actual_value": null,
+        "value_role": "Actual byte length of the future root-v39-new3-buildquery-retry1-issued-config-20261022.json.",
+        "reviewed_source_value": null,
+        "source_value_available": false,
+        "previous_offset": 4249
+      },
+      {
+        "field": "specific_sha256",
+        "kind": "STRING",
+        "offset": 4265,
+        "end": 4331,
+        "line": 68,
+        "token": "\"UNRESOLVED_V39_SPECIFIC_CONFIG_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+        "decoded_value": "UNRESOLVED_V39_SPECIFIC_CONFIG_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "actual_value": null,
+        "value_role": "Uppercase SHA-256 of the complete future retry1 specific Root BuildQuery configuration.",
+        "reviewed_source_value": null,
+        "source_value_available": false,
+        "previous_offset": 4251
+      },
+      {
+        "field": "prepared_bytes",
+        "kind": "NUMBER",
+        "offset": 4381,
+        "end": 4382,
+        "line": 69,
+        "token": "0",
+        "decoded_value": 0,
+        "actual_value": null,
+        "value_role": "Actual byte length of retry1 PREP/buildquery-launch.json.",
+        "reviewed_source_value": null,
+        "source_value_available": false,
+        "previous_offset": 4367
+      },
+      {
+        "field": "prepared_sha256",
+        "kind": "STRING",
+        "offset": 4383,
+        "end": 4449,
+        "line": 69,
+        "token": "\"UNRESOLVED_V39_PREPARED_LAUNCH_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+        "decoded_value": "UNRESOLVED_V39_PREPARED_LAUNCH_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "actual_value": null,
+        "value_role": "Uppercase SHA-256 of the complete actual retry1 PREP/buildquery-launch.json.",
+        "reviewed_source_value": null,
+        "source_value_available": false,
+        "previous_offset": 4369
+      },
+      {
+        "field": "constructor_sha256",
+        "kind": "STRING",
+        "offset": 4529,
+        "end": 4595,
+        "line": 70,
+        "token": "\"UNRESOLVED_V39_BQ_CONSTRUCTOR_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+        "decoded_value": "UNRESOLVED_V39_BQ_CONSTRUCTOR_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "actual_value": null,
+        "value_role": "Exact canonical unchanged BuildQuery constructor pin in accepted retry source review.",
+        "reviewed_source_value": "972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0",
+        "source_value_available": true,
+        "previous_offset": 4515
+      },
+      {
+        "field": "auditor_sha256",
+        "kind": "STRING",
+        "offset": 4683,
+        "end": 4749,
+        "line": 71,
+        "token": "\"UNRESOLVED_V39_BQ_AUDITOR_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+        "decoded_value": "UNRESOLVED_V39_BQ_AUDITOR_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "actual_value": null,
+        "value_role": "Exact canonical New3Retry1 positive BuildQuery auditor pin in accepted retry source review.",
+        "reviewed_source_value": "A04CBCB8C134564CB3D26225A61CB310728A6B01D1CFE0F98BFE8925BC735ADB",
+        "source_value_available": true,
+        "previous_offset": 4658
+      },
+      {
+        "field": "source_review_bytes",
+        "kind": "NUMBER",
+        "offset": 4843,
+        "end": 4844,
+        "line": 72,
+        "token": "0",
+        "decoded_value": 0,
+        "actual_value": null,
+        "value_role": "Byte length of the exact accepted retry1 execution-bound source review.",
+        "reviewed_source_value": 6708,
+        "source_value_available": true,
+        "previous_offset": 4806
+      },
+      {
+        "field": "source_review_sha256",
+        "kind": "STRING",
+        "offset": 4845,
+        "end": 4911,
+        "line": 72,
+        "token": "\"UNRESOLVED_V39_SOURCE_REVIEW_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\"",
+        "decoded_value": "UNRESOLVED_V39_SOURCE_REVIEW_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "actual_value": null,
+        "value_role": "Uppercase SHA-256 of the exact accepted retry1 execution-bound source review.",
+        "reviewed_source_value": "93DC83198F582C6B57B77B35F6B14027B8E7F0573C9A9AE599B4BD9C053940DE",
+        "source_value_available": true,
+        "previous_offset": 4808
+      }
+    ],
+    "applied_bindings": 0,
+    "future_actual_observation_slots": 11,
+    "reviewed_source_value_slots": 6
+  },
+  "reviewed_source_facts": {
+    "head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+    "matrix_sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB",
+    "buildquery_constructor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+      "bytes": 10269,
+      "sha256": "972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0"
+    },
+    "positive_buildquery_auditor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39CompleteBuildQuery-New3Retry1-20261022.py",
+      "bytes": 37331,
+      "sha256": "A04CBCB8C134564CB3D26225A61CB310728A6B01D1CFE0F98BFE8925BC735ADB"
+    },
+    "execution_source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-execution-bound-source-review-20261022.json",
+      "bytes": 6708,
+      "sha256": "93DC83198F582C6B57B77B35F6B14027B8E7F0573C9A9AE599B4BD9C053940DE"
+    },
+    "actual_metadata_count": null,
+    "actual_job": null,
+    "actual_control": null,
+    "actual_proof": null,
+    "actual_grant": null,
+    "actual_launcher": null,
+    "actual_specific_configuration": null,
+    "actual_prepared_record": null,
+    "known_values_are_source_facts_not_execution_or_observation": true
+  },
+  "required_execution_source_provenance_key": "v39_execution_bound_source_review",
+  "required_Root_execution_source_review_shape": {
+    "source_accepted": true,
+    "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+    "matrix_sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB",
+    "exact_selected_source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-execution-bound-source-review-20261022.json",
+      "bytes": 6708,
+      "sha256": "93DC83198F582C6B57B77B35F6B14027B8E7F0573C9A9AE599B4BD9C053940DE"
+    },
+    "required_sources": [
+      {
+        "kind": "buildquery_constructor",
+        "bound": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+          "bytes": 10269,
+          "sha256": "972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0"
+        }
+      },
+      {
+        "kind": "positive_buildquery_auditor",
+        "bound": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39CompleteBuildQuery-New3Retry1-20261022.py",
+          "bytes": 37331,
+          "sha256": "A04CBCB8C134564CB3D26225A61CB310728A6B01D1CFE0F98BFE8925BC735ADB"
+        }
+      }
+    ]
+  },
+  "helper_configuration_shape": {
+    "schema": 1,
+    "status": "root_reviewed_specific_v39_new3_positive_audit_input_preparation",
+    "reviewer": "Root",
+    "issued_utc": null,
+    "candidate_head": null,
+    "job_id": null,
+    "preparer_sha256": null,
+    "helper_execution_authorized": false,
+    "audit_configuration_issuance_authorized": false,
+    "native_execution_authorized": false,
+    "runtime_authority": false,
+    "source_mutation_hold_released": false,
+    "qualification": false,
+    "observed": {
+      "before": {
+        "path": null,
+        "bytes": null,
+        "sha256": null
+      },
+      "final": {
+        "path": null,
+        "bytes": null,
+        "sha256": null
+      },
+      "result": {
+        "path": null,
+        "bytes": null,
+        "sha256": null
+      },
+      "outer": {
+        "path": null,
+        "bytes": null,
+        "sha256": null
+      },
+      "outer_absence": {
+        "path": null,
+        "bytes": null,
+        "sha256": null
+      },
+      "job_observation": {
+        "path": null,
+        "bytes": null,
+        "sha256": null
+      },
+      "metadata_acceptance": {
+        "path": null,
+        "bytes": null,
+        "sha256": null
+      }
+    },
+    "root_bound_source_review": null,
+    "independent_bound_source_peer": null,
+    "root_full_bound_source_and_peer_checker_read": false,
+    "resource": null,
+    "root_review": null
+  },
+  "configuration_schema_accounting": {
+    "field_count_in_retained_Root_precedent": 19,
+    "fields_consumed_by_helper": [
+      "schema",
+      "status",
+      "reviewer",
+      "candidate_head",
+      "job_id",
+      "preparer_sha256",
+      "helper_execution_authorized",
+      "audit_configuration_issuance_authorized",
+      "native_execution_authorized",
+      "runtime_authority",
+      "source_mutation_hold_released",
+      "qualification",
+      "observed"
+    ],
+    "consumed_field_count": 13,
+    "Root_issuance_context_fields": [
+      "issued_utc",
+      "root_bound_source_review",
+      "independent_bound_source_peer",
+      "root_full_bound_source_and_peer_checker_read",
+      "resource",
+      "root_review"
+    ],
+    "Root_issuance_context_field_count": 6,
+    "extra_context_semantics": "The six Root issuance fields are retained from the accepted prior configuration shape. The helper does not independently validate all their semantics; Root must separately supply and review them. No future execution flags are enabled by this inert shape.",
+    "required_execution_flag_transition": "Only a separately issued exact Root configuration may set helper_execution_authorized and audit_configuration_issuance_authorized true. All native/runtime/source/qualification flags remain false."
+  },
+  "observed_file_paths": {
+    "before": "<actual proof>/before.json",
+    "final": "<actual proof>/final.json",
+    "result": "<actual proof>/result.json",
+    "outer": "<actual control>/outer.json",
+    "outer_absence": "<actual control>/outer-absence.json",
+    "job_observation": "<actual control>/independent-observed-job-status.json",
+    "metadata_acceptance": "<actual control>/independent-metadata-acceptance.json"
+  },
+  "positive_auditor_contract": {
+    "selected_canonical_auditor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39CompleteBuildQuery-New3Retry1-20261022.py",
+      "bytes": 37331,
+      "sha256": "A04CBCB8C134564CB3D26225A61CB310728A6B01D1CFE0F98BFE8925BC735ADB"
+    },
+    "output_field_count": 39,
+    "output_fields": [
+      "status",
+      "audit_execution_authorized",
+      "native_execution_authorized",
+      "auditor_sha256",
+      "batch",
+      "candidate_head",
+      "control",
+      "proof",
+      "preparation",
+      "declared_groups",
+      "declared_controls",
+      "granted_groups",
+      "attempted_groups",
+      "actual_metadata_count",
+      "actual_tests_started",
+      "native_phase_count",
+      "native_owner_pids",
+      "seal_counts",
+      "job",
+      "outer_pid",
+      "grant_preparer",
+      "grant_sha256",
+      "grant_launch_adaptation_sha256",
+      "buildquery_launch_sha256",
+      "matrix_sha256",
+      "preparation_review_sha256",
+      "independent_catalog_peer_sha256",
+      "root_catalog_acceptance_sha256",
+      "metadata_acceptance",
+      "qualification",
+      "runtime_started",
+      "source_mutation_hold_released",
+      "before_sha256",
+      "final_sha256",
+      "result_sha256",
+      "outer_sha256",
+      "outer_absence_sha256",
+      "metadata_acceptance_sha256",
+      "job_observation_sha256"
+    ],
+    "all_39_fields_match_current_auditor_source": true,
+    "output_status": "root_reviewed_specific_v39_positive_buildquery_closure",
+    "output_batch": "new3",
+    "job_mapping_fields": [
+      "id",
+      "runner_pid",
+      "launcher_pid",
+      "runner_process_instance",
+      "created_utc",
+      "completed_utc"
+    ],
+    "metadata_count_source": "Sum Python integers from independently accepted actual per-group metadata; every group count1..64; no count predicted or transferred.",
+    "authority_scope": "Only separate Root helper/audit-input issuance may set the two helper flags true; native/runtime/source/qualification remain false."
+  },
+  "critical_distinctions": [
+    "Retry1 occurs in the preparation directory, specific configuration filename, auditor filename and source-review filename. Batch remains new3; original control/proof basename patterns remain fresh-v39-new3-<role>-<actual stamp>.",
+    "The canonical observed-helper filename remains Prepare-ObservedV39New3PositiveBuildQueryAuditInputs-20261022.py without Retry1. This contract neither creates nor checks that future canonical placement.",
+    "The provenance key remains v39_execution_bound_source_review, but its exact pin must be 93DC8319 retry1 review. The unchanged constructor remains972E; the positive auditor is the37331-byte A04C successor.",
+    "All seventeen literal slots stay null as applied actual values. Six reviewed source facts are supplied separately for later exact binding; no job/control/proof/grant/launcher/config/prepared-record observation is supplied.",
+    "The nineteen-field helper configuration retains thirteen helper-consumed fields and six Root-only context fields. root_bound_source_review is a future helper-binding review, not a substitute for the execution-source review fixed row.",
+    "The complete original Hermes envelope must be saved and pinned. This BuildQuery helper emits the preserved six-field job mapping, retaining runnerProcessInstance as a decimal string and timestamp strings verbatim; do not substitute RuntimeOnly's whole-data job contract.",
+    "A terminal-zero fresh retry job plus complete independent metadata acceptance is required before invocation. The initial new3 admission-only failure cannot be reused as a parent."
+  ],
+  "static_derivation": {
+    "source_finite_steps": 5,
+    "complete_source_raw_forward_and_inverse": true,
+    "slots_independently_derived_from_AST_and_tokenized_raw_bytes": true,
+    "slots_equal_reviewed_retry_finite_record": true,
+    "unchanged_helper_count": 10,
+    "unchanged_helpers": [
+      {
+        "name": "require",
+        "bytes": 67,
+        "sha256": "6BE7166935F5DFB388A5956D4AA6502092E6369CFDFFECA9F3E1E2E490327278"
+      },
+      {
+        "name": "sha",
+        "bytes": 60,
+        "sha256": "0DA028679B0C76DB05C2D4E51461B0715296811B3124685F6AE5A5E7992AA3AA"
+      },
+      {
+        "name": "digest",
+        "bytes": 160,
+        "sha256": "32EA65C3F92328E599E4747D4D6F65AE42B78DA012BEA0134320B8D7C4303457"
+      },
+      {
+        "name": "pin",
+        "bytes": 91,
+        "sha256": "5BC5E0F51AC01263A04662EC3C1F614CD3F53665B2ED276E6C02FE78742DE2A1"
+      },
+      {
+        "name": "verify",
+        "bytes": 429,
+        "sha256": "35321E3086E923AF42E5A0B3F6F8D7B6AD4540C93ED981B1114A532B56BA268B"
+      },
+      {
+        "name": "read_pin",
+        "bytes": 201,
+        "sha256": "ED98E906305412C77F867755EF1142903CE98FA4BA60E3DD1CAE24EB1AF00703"
+      },
+      {
+        "name": "fixed",
+        "bytes": 59,
+        "sha256": "A6EE3A7F72491787F90C604A97194AF4ECA71B6A089A5B73138DA44095F2CA38"
+      },
+      {
+        "name": "current_json",
+        "bytes": 61,
+        "sha256": "257E28B3FA11F7E0C208BCA10A6105A12D20BA37736F1219C8DE3DADD44ADA52"
+      },
+      {
+        "name": "git",
+        "bytes": 100,
+        "sha256": "198C9597406BE5D57C3C110C0DC945E8E71816E5BF661C13FDC3AE79191B0FD0"
+      },
+      {
+        "name": "clean_head",
+        "bytes": 180,
+        "sha256": "0EAABAD47F8550D12ECDBF0669BEAA38E40305AAF67F62551FE68890EB960DE3"
+      }
+    ],
+    "unchanged_regions": [
+      {
+        "name": "ten_helpers",
+        "bytes": 1409,
+        "sha256": "6B84D9B937FB3256B6E13EAEAA5F2EB7A1A5BEE1636582924D4E695018B0D536",
+        "byte_identical_to_8B60": true
+      },
+      {
+        "name": "complete_original_job_and_mapping",
+        "bytes": 1603,
+        "sha256": "C45D6AFA387B7AFC03ECF162960561B9CB8794FF9EA9CCC7A3A0465772AA8999",
+        "byte_identical_to_8B60": true
+      },
+      {
+        "name": "complete_bookends_seals_and_outer",
+        "bytes": 1982,
+        "sha256": "89051C1D7DAAF80A2950ECD6A5EC297C1A302BF00CE5BC359C410988A968785F",
+        "byte_identical_to_8B60": true
+      },
+      {
+        "name": "complete_create_only_write_tail",
+        "bytes": 957,
+        "sha256": "E62940FE4E96849D5103B042285E5C3D343DAA695B12D0D84BFBE6E6581AE8CA",
+        "byte_identical_to_8B60": true
+      },
+      {
+        "name": "complete_result_metadata_and_native_owners",
+        "bytes": 4712,
+        "sha256": "F963DFF85BA3E5B8509F7B6510A0C870CCD979ACDA2C34138C31AD31E814E7DF",
+        "byte_identical_to_8B60": true
+      }
+    ],
+    "helper_config_keys": 19,
+    "helper_consumed_keys": 13,
+    "Root_context_keys": 6,
+    "output_keys": 39,
+    "current_auditor_consumed_keys": 39,
+    "pinned_source_inputs": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-positive-input-helper-sourceonly-20261022\\binding-and-observed-input-contract.json",
+        "bytes": 20740,
+        "sha256": "A774CB26CF1BAC03181C409CD183FE4BEBE190138D5A1FAF5E9FB0C3867ECDD2"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-positive-input-helper-sourceonly-20261022\\candidate\\Prepare-ObservedV39New3PositiveBuildQueryAuditInputs-20261022-unresolved.py",
+        "bytes": 18891,
+        "sha256": "8B60F3FEB4D78F9FCEDE75F7A72FF4FDABAC9A00F269E59F200939E85ACB1B83"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\candidate\\Prepare-ObservedV39New3PositiveBuildQueryAuditInputs-Retry1-20261022-unresolved.py",
+        "bytes": 18928,
+        "sha256": "1263E63125BF7246C8A196995D6BD74FF35C9A3053E8DE6CBA805889B0044A7D"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\observed_new3_input_helper-finite-source-adaptation.json",
+        "bytes": 11144,
+        "sha256": "A563F66F9B73A2008E205CEBE5D7913C5F449733C67114A8B5DBEFF523699A60"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-execution-bound-source-review-20261022.json",
+        "bytes": 6708,
+        "sha256": "93DC83198F582C6B57B77B35F6B14027B8E7F0573C9A9AE599B4BD9C053940DE"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+        "bytes": 10269,
+        "sha256": "972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39CompleteBuildQuery-New3Retry1-20261022.py",
+        "bytes": 37331,
+        "sha256": "A04CBCB8C134564CB3D26225A61CB310728A6B01D1CFE0F98BFE8925BC735ADB"
+      }
+    ]
+  },
+  "source_only": true,
+  "new_executable_helper_or_checker_created": false,
+  "candidate_or_prefix_executed": false,
+  "canonical_placement_performed": false,
+  "actual_binding_performed": false,
+  "configuration_issued": false,
+  "Main_or_index_accessed": false,
+  "native_or_current_process_access": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

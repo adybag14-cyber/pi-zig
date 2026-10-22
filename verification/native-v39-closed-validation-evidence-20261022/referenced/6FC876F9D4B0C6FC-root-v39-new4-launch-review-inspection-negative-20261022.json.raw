@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "original_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-launch-review-original-20261022.py",
+    "bytes": 4126,
+    "sha256": "D6D64357CA89AACEED8F225387D0BD4903DB539811A49D93142C5AEBC9400C02"
+  },
+  "selected_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-launch-review-historical-before-correction-20261022.py",
+    "bytes": 4118,
+    "sha256": "60CB53473AD391B6A3D00427EBD7B2593EDC2DB099B624FE2E841EC4BC6313E5"
+  },
+  "original_error": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"<string>\", line 41, in <module>\r\n    walk(cfg);walk(record);walk(a)\r\n                           ~~~~^^^\r\n  File \"<string>\", line 38, in walk\r\n    for v in o.values():walk(v)\r\n                        ~~~~^^^\r\n  File \"<string>\", line 40, in walk\r\n    for v in o:walk(v)\r\n               ~~~~^^^\r\n  File \"<string>\", line 38, in walk\r\n    for v in o.values():walk(v)\r\n                        ~~~~^^^\r\n  File \"<string>\", line 37, in walk\r\n    row={k:o[k]for k in ('path','bytes','sha256')};checked(row);pins[row['path']]=row\r\n                                                   ~~~~~~~^^^^^\r\n  File \"<string>\", line 7, in checked\r\n    assert pin(p['path'])==p;return Path(p['path']).read_bytes()\r\n           ^^^^^^^^^^^^^^^^^\r\nAssertionError",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"<string>\", line 41, in <module>\r\n    walk(cfg);walk(record);walk(a)\r\n                           ~~~~^^^\r\n  File \"<string>\", line 38, in walk\r\n    for v in o.values():walk(v)\r\n                        ~~~~^^^\r\n  File \"<string>\", line 40, in walk\r\n    for v in o:walk(v)\r\n               ~~~~^^^\r\n  File \"<string>\", line 38, in walk\r\n    for v in o.values():walk(v)\r\n                        ~~~~^^^\r\n  File \"<string>\", line 37, in walk\r\n    row={k:o[k]for k in ('path','bytes','sha256')};checked(row);pins[row['path']]=row\r\n                                                   ~~~~~~~^^^^^\r\n  File \"<string>\", line 7, in checked\r\n    assert pin(p['path'])==p;return Path(p['path']).read_bytes()\r\n           ^^^^^^^^^^^^^^^^^\r\nAssertionError\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "historical_pin_mismatches": [
+    {
+      "key": "v34_progress",
+      "historical_before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+        "bytes": 235681,
+        "sha256": "8711EC0A199BC616F823BE25D08A380F47359284AACB37ABF497297DC32080D6"
+      },
+      "current": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+        "bytes": 678718,
+        "sha256": "4FF79AE87F671BB8F16283E38D282CB58444A1A0FA42659B0F3CED505EE04343"
+      }
+    }
+  ],
+  "correction": {
+    "before": "walk(cfg);walk(record);walk(a)",
+    "after": "walk(cfg);walk(record)",
+    "full_raw_inverse": true
+  },
+  "reason": "The adaptation before values are historical bytes bound by the unchanged original V34 grant and full raw inverse, not current file references. Keep all current cfg/record pins independently rehashed; old grant/launcher files are already separately checked above. Preserve the exact archived v34 progress pin from current cfg. No emitted grant, configuration, policy or target changed.",
+  "native_attempt": false,
+  "launch_authorized": false
+}

@@ -1,0 +1,16 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-buildquery-20261022-165637\\cache\\o\\893b464d9587b213b4c76bbedad64cd2\\test.exe",
+  "binary_sha256": "3033FE9B7D386EE55351506BE33E357FC891B44A9FA9BE6612CD210B56459BB3",
+  "version": "0.16.0",
+  "actual_count": 4,
+  "tests": [
+    "native_node_fs_before_hook_continuation_test.test.native FS before hook actual read fulfills after the same ordinary hook rethrow",
+    "native_node_fs_before_hook_continuation_test.test.native FS before hook actual EBADF read rejects with UVException while the hook reason propagates separately",
+    "native_node_fs_before_hook_continuation_test.test.native FS before hook continuation performs the original live Promise Get before settlement",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-fs-before-hook-continuation",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

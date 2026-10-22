@@ -1,0 +1,31 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\82c0d70cfb4a3325f07489df99506d0b\\test.exe",
+  "binary_sha256": "A8543AAF24D6516961664F0EB67636F735F2110C36D4EC5376C3EDBA4C8EEEBD",
+  "version": "0.16.0",
+  "actual_count": 19,
+  "tests": [
+    "native_vm_captured_frame_logging_test.test.VM logging origin host script and nested functions ignore eval display names",
+    "native_vm_captured_frame_logging_test.test.VM logging origin module and its function retain actual host script origin",
+    "native_vm_captured_frame_logging_test.test.VM logging origin direct eval keeps its host caller distinct",
+    "native_vm_captured_frame_logging_test.test.VM logging origin indirect eval uses actual eval origin without filename inference",
+    "native_vm_captured_frame_logging_test.test.VM logging origin escaped eval functions arrows and methods retain their compiled owner",
+    "native_vm_captured_frame_logging_test.test.VM logging origin all four dynamic Function constructors compile actual eval scripts",
+    "native_vm_captured_frame_logging_test.test.VM logging origin class constructor and field initializer inherit the actual eval compilation",
+    "native_vm_captured_frame_logging_test.test.VM logging origin real foreign context compilation does not use the reading context",
+    "native_vm_captured_frame_logging_test.test.VM logging origin native and filename-only synthetic frames have no compiled Script owner",
+    "native_vm_captured_frame_logging_test.test.VM logging origin cloned frames retain private origin after original frame removal",
+    "native_vm_captured_frame_logging_test.test.VM logging origin projection ignores poisoned public fields and proxy traps",
+    "native_vm_captured_frame_logging_test.test.VM logging origin invalid brand and missing outputs leave caller storage unchanged",
+    "native_vm_captured_frame_logging_test.test.VM logging origin projection allocates nothing and preserves ordinary and actual fatal pending",
+    "native_vm_captured_frame_logging_test.test.VM logging origin projection borrows the frame without extending receiver lifetime",
+    "native_vm_captured_frame_logging_test.test.VM logging origin serialized host bytecode retains origin with source and debug stripped",
+    "native_vm_captured_frame_logging_test.test.VM logging origin serialized module bytecode retains origin in a fresh runtime",
+    "native_vm_captured_frame_logging_test.test.VM logging origin prior bytecode version is rejected by the actual version gate",
+    "native_vm_captured_frame_logging_test.test.VM logging origin malformed serialized origin reaches its exact validation error",
+    "native_vm_captured_frame_logging_test.test.VM logging origin genuine CommonJS compiler root and its nested function are host scripts"
+  ],
+  "group": "native-vm-captured-frame-logging",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

@@ -1,0 +1,335 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_new3_retry1_runtime_launch_reviewer",
+  "reviewer": "/root/handover_review",
+  "source_only": true,
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-runtime-launch-reviewer-sourceonly-20261022\\candidate\\Review-V39New3Retry1RuntimeLaunch-20261022.py",
+    "bytes": 7142,
+    "sha256": "BD7F13E303312B326745C1E9D16BE98A15D13756E03E4E4581F1E11B4AC5A7E0"
+  },
+  "finite_source_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-runtime-launch-reviewer-sourceonly-20261022\\finite-source-adaptation.json",
+    "bytes": 12868,
+    "sha256": "7CE364137FE8F57193E7019903C5346C78AD16F7C32282FECA2F33D13A37FC2B"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-runtime-launch-reviewer-sourceonly-20261022\\handoff.json",
+    "bytes": 2927,
+    "sha256": "71385B540DD11C15F57C6255CA12844B9FD2D00EE7207C6300A97AAE34624DE8"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V39New4RuntimeLaunch-20261022.py",
+    "bytes": 5486,
+    "sha256": "B81B7CE73F5C4990E9D183362B858AC6E8E04EB46C4A77458F21975A610705E5"
+  },
+  "accepted_runtime_constructor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39RuntimeGrant-New3Retry1-20261022.py",
+    "bytes": 12707,
+    "sha256": "D6A9B3316B14769B3D5502C2D90FBC52909CD63F91B287094C4BD3EE2B156E12"
+  },
+  "accepted_execution_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-execution-bound-source-review-20261022.json",
+    "bytes": 6708,
+    "sha256": "93DC83198F582C6B57B77B35F6B14027B8E7F0573C9A9AE599B4BD9C053940DE"
+  },
+  "reviewed_full_source_bytes": {
+    "candidate": 7142,
+    "baseline": 5486,
+    "runtime_constructor": 12707,
+    "root_source_review": 6708
+  },
+  "review_method": "Complete human/model source read followed by a bounded independent inline Python AST/byte/JSON comparison. No executable checker artifact was created; the candidate, constructor and any prefix were never evaluated.",
+  "decisive_static_readout": {
+    "schema": 1,
+    "status": "independent_source_only_seven_hunk_review_passed",
+    "observed_utc": "2026-10-22T17:37:04.361686+00:00",
+    "input_pins": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-runtime-launch-reviewer-sourceonly-20261022\\candidate\\Review-V39New3Retry1RuntimeLaunch-20261022.py",
+        "bytes": 7142,
+        "sha256": "BD7F13E303312B326745C1E9D16BE98A15D13756E03E4E4581F1E11B4AC5A7E0"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-runtime-launch-reviewer-sourceonly-20261022\\finite-source-adaptation.json",
+        "bytes": 12868,
+        "sha256": "7CE364137FE8F57193E7019903C5346C78AD16F7C32282FECA2F33D13A37FC2B"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-runtime-launch-reviewer-sourceonly-20261022\\handoff.json",
+        "bytes": 2927,
+        "sha256": "71385B540DD11C15F57C6255CA12844B9FD2D00EE7207C6300A97AAE34624DE8"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V39New4RuntimeLaunch-20261022.py",
+        "bytes": 5486,
+        "sha256": "B81B7CE73F5C4990E9D183362B858AC6E8E04EB46C4A77458F21975A610705E5"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39RuntimeGrant-New3Retry1-20261022.py",
+        "bytes": 12707,
+        "sha256": "D6A9B3316B14769B3D5502C2D90FBC52909CD63F91B287094C4BD3EE2B156E12"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-execution-bound-source-review-20261022.json",
+        "bytes": 6708,
+        "sha256": "93DC83198F582C6B57B77B35F6B14027B8E7F0573C9A9AE599B4BD9C053940DE"
+      }
+    ],
+    "finite_steps": [
+      {
+        "index": 1,
+        "offset": 715,
+        "before_sha256": "B81B7CE73F5C4990E9D183362B858AC6E8E04EB46C4A77458F21975A610705E5",
+        "after_sha256": "D2B6F7F7A0601DEC282EB93AB67DD4ACA0F007D76046CEA1270431C477E97E71",
+        "fragments_unchanged": true,
+        "inverse_exact": true
+      },
+      {
+        "index": 2,
+        "offset": 2940,
+        "before_sha256": "D2B6F7F7A0601DEC282EB93AB67DD4ACA0F007D76046CEA1270431C477E97E71",
+        "after_sha256": "91A8185D2E8767E51E424E144ACC2B21F4CFFD08328EAFD15C70805B8C7B475F",
+        "fragments_unchanged": true,
+        "inverse_exact": true
+      },
+      {
+        "index": 3,
+        "offset": 3155,
+        "before_sha256": "91A8185D2E8767E51E424E144ACC2B21F4CFFD08328EAFD15C70805B8C7B475F",
+        "after_sha256": "834E6E4E64FA2D3F08658B44CA5BC67CA806B7E1A9763A996970C65C39262D02",
+        "fragments_unchanged": true,
+        "inverse_exact": true
+      },
+      {
+        "index": 4,
+        "offset": 5103,
+        "before_sha256": "834E6E4E64FA2D3F08658B44CA5BC67CA806B7E1A9763A996970C65C39262D02",
+        "after_sha256": "57B918CAFCB59CBB4F98A4E7C04138FB704A27A8612B99BCD5036898C926BA8B",
+        "fragments_unchanged": true,
+        "inverse_exact": true
+      },
+      {
+        "index": 5,
+        "offset": 5663,
+        "before_sha256": "57B918CAFCB59CBB4F98A4E7C04138FB704A27A8612B99BCD5036898C926BA8B",
+        "after_sha256": "DCA3A845F3AB30F5E6949410617ABE8B3DC94E4689537020C996DB72409FD233",
+        "fragments_unchanged": true,
+        "inverse_exact": true
+      },
+      {
+        "index": 6,
+        "offset": 6269,
+        "before_sha256": "DCA3A845F3AB30F5E6949410617ABE8B3DC94E4689537020C996DB72409FD233",
+        "after_sha256": "29DF03004FFCD8088BB2A5099D4BFA828BB0D74C638D19ECDBD42B599A184DD7",
+        "fragments_unchanged": true,
+        "inverse_exact": true
+      },
+      {
+        "index": 7,
+        "offset": 6638,
+        "before_sha256": "29DF03004FFCD8088BB2A5099D4BFA828BB0D74C638D19ECDBD42B599A184DD7",
+        "after_sha256": "BD7F13E303312B326745C1E9D16BE98A15D13756E03E4E4581F1E11B4AC5A7E0",
+        "fragments_unchanged": true,
+        "inverse_exact": true
+      }
+    ],
+    "complete_raw_forward_and_inverse": true,
+    "all_untouched_fragments_preserved": true,
+    "unchanged_helpers": [
+      {
+        "name": "sha",
+        "bytes": 56,
+        "sha256": "B039248BE12F1B2D0E8C61567B4FF89EAD07E700FCD674F3E4CFC47DC8D82DFF",
+        "byte_identical": true
+      },
+      {
+        "name": "pin",
+        "bytes": 92,
+        "sha256": "A8C688649B0E6B427DEC5EE7CFB05D284B19AB49CA0524E8C1F0D995F476F19B",
+        "byte_identical": true
+      },
+      {
+        "name": "require",
+        "bytes": 50,
+        "sha256": "6C8DF542FD7C93F62345B1040647B78D9A34670F8E3B83E1467DAA4B1A5D8B2F",
+        "byte_identical": true
+      },
+      {
+        "name": "verify",
+        "bytes": 76,
+        "sha256": "2672F9003FDDD2FED086DDD7FDAFCA62A9F43046C80E8D2D35FC1B84FEFA38C0",
+        "byte_identical": true
+      },
+      {
+        "name": "walk",
+        "bytes": 188,
+        "sha256": "BC0534F04B7E4F551A187BE92C19E27840C74315D296A5FBD8933F85A2695BF7",
+        "byte_identical": true
+      }
+    ],
+    "unchanged_regions": [
+      {
+        "name": "complete_helpers",
+        "bytes": 462,
+        "sha256": "78C797D8D4CE2D1FDF574C19152F6FD525B04E7836EA3C9DE73AC63A081F6FF2",
+        "baseline_offset": 153,
+        "candidate_offset": 153,
+        "byte_identical": true
+      },
+      {
+        "name": "proof_absence_and_all_record_pins",
+        "bytes": 466,
+        "sha256": "9E55472F78D35E850780A8632165B7A43DAAB04D32DA26FC8D13132A58E484DD",
+        "baseline_offset": 851,
+        "candidate_offset": 905,
+        "byte_identical": true
+      },
+      {
+        "name": "all17_raw_grant_inverse_and_single_launcher_inverse",
+        "bytes": 1528,
+        "sha256": "45C1DF6EC92B4D5C77F5A199348CB5E44ECD0982718E84BC15C0373188167834",
+        "baseline_offset": 1317,
+        "candidate_offset": 1371,
+        "byte_identical": true
+      },
+      {
+        "name": "strict_runtime_configuration_flags",
+        "bytes": 265,
+        "sha256": "3BC4D264E5E432F02F4F815AF4FF944F824D66412B82640C35EDE46F59626C79",
+        "baseline_offset": 3146,
+        "candidate_offset": 4778,
+        "byte_identical": true
+      },
+      {
+        "name": "retained_BuildQuery_configuration_and_narrative",
+        "bytes": 236,
+        "sha256": "44C9DD03913D72317A2D401018DADA4718B6631384A161D6F36A33DB6D0969DB",
+        "baseline_offset": 3579,
+        "candidate_offset": 5211,
+        "byte_identical": true
+      },
+      {
+        "name": "prompt_freshness_margin",
+        "bytes": 191,
+        "sha256": "63F882880B6A1648643BE4A93C99C350867A1E35B3477802D0EEBDB4A6BE3A44",
+        "baseline_offset": 3815,
+        "candidate_offset": 5447,
+        "byte_identical": true
+      },
+      {
+        "name": "exclusive_receipt_write_and_print",
+        "bytes": 434,
+        "sha256": "50853AE6C58EF0F04CD9FA437D7BE5A81B32BA86D169C92076E836AF537D946B",
+        "baseline_offset": 5052,
+        "candidate_offset": 6708,
+        "byte_identical": true
+      }
+    ],
+    "constructor_update_fields": [
+      "grant_id",
+      "issued_utc",
+      "mode",
+      "receipt_directory",
+      "build_result_path",
+      "build_result_sha256",
+      "build_source_seal_path",
+      "build_source_seal_sha256",
+      "metadata_acceptance_path",
+      "metadata_acceptance_sha256",
+      "actual_metadata_count",
+      "independent_build_closure_path",
+      "independent_build_closure_sha256",
+      "build_specific_root_configuration",
+      "specific_root_configuration",
+      "root_buildquery_acceptance",
+      "root_review"
+    ],
+    "constructor_record_keys": [
+      "candidate_head",
+      "batch",
+      "control",
+      "proof",
+      "grant",
+      "launch",
+      "buildquery_launch",
+      "specific_root_configuration",
+      "groups",
+      "declared_count",
+      "actual_metadata_count",
+      "build_result",
+      "build_final",
+      "metadata_acceptance",
+      "independent_build_closure",
+      "issued_utc",
+      "diagnostic_continue",
+      "compile_authority",
+      "qualification"
+    ],
+    "reviewer_record_keys": [
+      "actual_metadata_count",
+      "batch",
+      "candidate_head",
+      "control",
+      "grant",
+      "groups",
+      "issued_utc",
+      "launch",
+      "proof",
+      "specific_root_configuration"
+    ],
+    "canonical_constructor_and_source_review_verified": true,
+    "exact_actual_count_required_at_four_boundaries": true,
+    "exact_accepted_groups_and_four_parent_pins_required": true,
+    "strict_gates_and_create_only_output_preserved": true,
+    "imports_unchanged": true,
+    "actual_metadata_count": null,
+    "actual_runtime_record_or_configuration_read": false,
+    "candidate_or_prefix_executed": false,
+    "Main_or_index_accessed": false,
+    "native_executed": false,
+    "canonical_placement_performed": false,
+    "configuration_issued": false,
+    "qualification": false
+  },
+  "semantic_findings": [
+    {
+      "topic": "Actual metadata count",
+      "finding": "The inherited literal 61 is removed. The reviewer obtains a positive exact Python integer from the future new3 runtime-launch record and requires equality with the actual grant, specific configuration and the hash-pinned complete Root BuildQuery acceptance. It checks exact cohort equality and the four parent input pins. No count or outcome is supplied by this peer."
+    },
+    {
+      "topic": "Accepted retry1 lineage",
+      "finding": "The reviewed runtime constructor is canonical D6A9 under separately accepted Root source receipt 93DC. The reviewer requires its exact hash, the new3-retry1 prepared buildquery-launch path and 93DC configuration pin. The accepted constructor itself checks the exact three-group order, declaration count 38 and complete metadata/artifact/process closure before constructing the future launch record."
+    },
+    {
+      "topic": "Grant and launcher inversion",
+      "finding": "The exact seventeen grant-update fields equal the accepted constructor's updates in order. Complete raw JSON grant inverse and the sole BuildQuery-to-RuntimeOnly launcher-token inverse remain byte-identical to B81B. Original BuildQuery configuration remains pinned."
+    },
+    {
+      "topic": "Strict launch and scope gates",
+      "finding": "The proof-directory absence check, complete pin walks, 300-second initial admission, 16-GiB minimum, 0<=review age<120-second margin, diagnostic false, compile false, qualification false and source-hold false remain. The runtime narrative remains a string, distinct from the source-review pin."
+    },
+    {
+      "topic": "Future output",
+      "finding": "Only the distinct new3-retry1 Root launch-source acceptance path is opened create-only after validation. This independent source peer supplies no launch configuration, placement, runtime authority or result."
+    }
+  ],
+  "no_bounded_source_blocker_found": true,
+  "limitations": [
+    "Future actual runtime-launch/configuration/Root BuildQuery acceptance inputs were not read; their required agreement is source-reviewed only.",
+    "The inherited verifier is a Root-owned second-stage launch-source check after accepted D6A9 construction; this receipt does not replace the constructor's or the driver's checks.",
+    "All actual metadata and runtime outcomes remain unobserved by this peer."
+  ],
+  "execution_observation": {
+    "inline_static_exit_code": 0,
+    "inline_static_stderr_empty": true,
+    "candidate_or_prefix_executed": false,
+    "constructor_executed": false,
+    "canonical_placement_performed": false,
+    "configuration_issued": false,
+    "Main_or_index_accessed": false,
+    "current_native_evidence_or_process_inspected": false,
+    "native_executed": false,
+    "qualification": false
+  }
+}

@@ -1,0 +1,365 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_v39_new3_retry1_observed_helper_binding_contract",
+  "reviewer": "module_io_port independent source/data review",
+  "reviewed_utc": "2026-10-22",
+  "candidate_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-observed-helper-binding-contract-sourceonly-20261022\\binding-and-observed-input-contract.json",
+    "bytes": 27788,
+    "sha256": "01CD18B3CFF1F1548F50638432B6E0FD8A7458ACC88B3A7848BEB29FD6CBFA64"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-observed-helper-binding-contract-sourceonly-20261022\\handoff.json",
+    "bytes": 4022,
+    "sha256": "A84251302778B6A2C9DA0759B358DAC794518D5F4BE83A810C21094FDA8BF6BD"
+  },
+  "unresolved_helper": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\candidate\\Prepare-ObservedV39New3PositiveBuildQueryAuditInputs-Retry1-20261022-unresolved.py",
+    "bytes": 18928,
+    "sha256": "1263E63125BF7246C8A196995D6BD74FF35C9A3053E8DE6CBA805889B0044A7D"
+  },
+  "accepted_execution_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-execution-bound-source-review-20261022.json",
+    "bytes": 6708,
+    "sha256": "93DC83198F582C6B57B77B35F6B14027B8E7F0573C9A9AE599B4BD9C053940DE"
+  },
+  "distinct_retry_catalog": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-catalog-source-acceptance-20261022.json",
+    "bytes": 13169,
+    "sha256": "2240C1B9F95320D1A290B5440055A41350D4E848E49D046A053998C8E1D955F8"
+  },
+  "source_only": true,
+  "blockers": [],
+  "finding": "No bounded source/data blocker. The contract identifies the exact retry helper and source facts while leaving all actual binding slots and observed-input pins unresolved. The helper derives the catalog acceptance hash from the actual validated grant; the selected auditor checks its exact retry preparation-review membership.",
+  "method": {
+    "full_contract_and_handoff_read": true,
+    "complete_unresolved_helper_read": true,
+    "execution_source_review_and_catalog_receipt_read": true,
+    "relevant_auditor_field_and_provenance_bodies_read": true,
+    "inline_AST_token_and_data_check_exit_code": 0,
+    "inline_check_stdout_complete": true,
+    "executable_checker_created": false,
+    "candidate_source_used_only_as_raw_bytes_AST_and_tokens": true,
+    "replayed_accepted_source_hunks_as_inert_bytes": true,
+    "current_source_data_versions_rehashed": 10,
+    "current_run_files_followed": false
+  },
+  "source_identity": {
+    "source_steps": 5,
+    "all_intermediate_pins_and_untouched_prefix_suffix_hashes_passed": true,
+    "whole_forward_and_inverse": true,
+    "unchanged_helper_count": 10,
+    "helper_names": [
+      "require",
+      "sha",
+      "digest",
+      "pin",
+      "verify",
+      "read_pin",
+      "fixed",
+      "current_json",
+      "git",
+      "clean_head"
+    ],
+    "canonical_helper_path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV39New3PositiveBuildQueryAuditInputs-20261022.py",
+    "canonical_helper_current_state_inspected": false,
+    "batch": "new3",
+    "declared_groups": 3,
+    "declared_controls": 38,
+    "full_catalog_groups": 120,
+    "full_catalog_declarations": 2051
+  },
+  "exact_unbound_slots": [
+    {
+      "field": "HEAD",
+      "kind": "STRING",
+      "offset": 444,
+      "end": 486,
+      "line": 10
+    },
+    {
+      "field": "JOB",
+      "kind": "STRING",
+      "offset": 491,
+      "end": 564,
+      "line": 11
+    },
+    {
+      "field": "C",
+      "kind": "STRING",
+      "offset": 569,
+      "end": 632,
+      "line": 12
+    },
+    {
+      "field": "P",
+      "kind": "STRING",
+      "offset": 637,
+      "end": 703,
+      "line": 13
+    },
+    {
+      "field": "MATRIX",
+      "kind": "STRING",
+      "offset": 950,
+      "end": 1016,
+      "line": 18
+    },
+    {
+      "field": "grant_bytes",
+      "kind": "NUMBER",
+      "offset": 4010,
+      "end": 4011,
+      "line": 66
+    },
+    {
+      "field": "grant_sha256",
+      "kind": "STRING",
+      "offset": 4012,
+      "end": 4078,
+      "line": 66
+    },
+    {
+      "field": "launch_bytes",
+      "kind": "NUMBER",
+      "offset": 4111,
+      "end": 4112,
+      "line": 67
+    },
+    {
+      "field": "launch_sha256",
+      "kind": "STRING",
+      "offset": 4113,
+      "end": 4179,
+      "line": 67
+    },
+    {
+      "field": "specific_bytes",
+      "kind": "NUMBER",
+      "offset": 4263,
+      "end": 4264,
+      "line": 68
+    },
+    {
+      "field": "specific_sha256",
+      "kind": "STRING",
+      "offset": 4265,
+      "end": 4331,
+      "line": 68
+    },
+    {
+      "field": "prepared_bytes",
+      "kind": "NUMBER",
+      "offset": 4381,
+      "end": 4382,
+      "line": 69
+    },
+    {
+      "field": "prepared_sha256",
+      "kind": "STRING",
+      "offset": 4383,
+      "end": 4449,
+      "line": 69
+    },
+    {
+      "field": "constructor_sha256",
+      "kind": "STRING",
+      "offset": 4529,
+      "end": 4595,
+      "line": 70
+    },
+    {
+      "field": "auditor_sha256",
+      "kind": "STRING",
+      "offset": 4683,
+      "end": 4749,
+      "line": 71
+    },
+    {
+      "field": "source_review_bytes",
+      "kind": "NUMBER",
+      "offset": 4843,
+      "end": 4844,
+      "line": 72
+    },
+    {
+      "field": "source_review_sha256",
+      "kind": "STRING",
+      "offset": 4845,
+      "end": 4911,
+      "line": 72
+    }
+  ],
+  "binding_scope": {
+    "all_source_tokens_remain_unresolved": true,
+    "string_tokens": 12,
+    "numeric_size_tokens": 5,
+    "source_known_value_slots": 6,
+    "actual_observation_slots": 11,
+    "known_source_facts": {
+      "head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "matrix_sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB",
+      "buildquery_constructor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+        "bytes": 10269,
+        "sha256": "972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0"
+      },
+      "positive_buildquery_auditor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39CompleteBuildQuery-New3Retry1-20261022.py",
+        "bytes": 37331,
+        "sha256": "A04CBCB8C134564CB3D26225A61CB310728A6B01D1CFE0F98BFE8925BC735ADB"
+      },
+      "execution_source_review": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-execution-bound-source-review-20261022.json",
+        "bytes": 6708,
+        "sha256": "93DC83198F582C6B57B77B35F6B14027B8E7F0573C9A9AE599B4BD9C053940DE"
+      },
+      "actual_metadata_count": null,
+      "actual_job": null,
+      "actual_control": null,
+      "actual_proof": null,
+      "actual_grant": null,
+      "actual_launcher": null,
+      "actual_specific_configuration": null,
+      "actual_prepared_record": null,
+      "known_values_are_source_facts_not_execution_or_observation": true
+    },
+    "applied_bindings": 0,
+    "descending_offset_and_full_inverse_required": true,
+    "no_actual_metadata_count_transferred": true
+  },
+  "configuration_and_output": {
+    "helper_configuration_field_count": 19,
+    "consumed_fields": [
+      "schema",
+      "status",
+      "reviewer",
+      "candidate_head",
+      "job_id",
+      "preparer_sha256",
+      "helper_execution_authorized",
+      "audit_configuration_issuance_authorized",
+      "native_execution_authorized",
+      "runtime_authority",
+      "source_mutation_hold_released",
+      "qualification",
+      "observed"
+    ],
+    "Root_context_fields": [
+      "issued_utc",
+      "root_bound_source_review",
+      "independent_bound_source_peer",
+      "root_full_bound_source_and_peer_checker_read",
+      "resource",
+      "root_review"
+    ],
+    "seven_observed_pins_empty": true,
+    "helper_and_audit_input_issuance_flags_false": true,
+    "native_runtime_source_and_qualification_flags_false": true,
+    "output_field_count": 39,
+    "auditor_consumed_field_set_equals_output_field_set": true,
+    "job_mapping_fields": [
+      "id",
+      "runner_pid",
+      "launcher_pid",
+      "runner_process_instance",
+      "created_utc",
+      "completed_utc"
+    ],
+    "decimal_runner_process_instance_preserved_as_string": true,
+    "raw_created_and_completed_timestamp_strings_preserved": true,
+    "actual_metadata_must_be_observed_independently": true,
+    "per_group_actual_metadata_limit": 64,
+    "literal_cohort_source_count_is_not_an_actual_metadata_prediction": true
+  },
+  "catalog_causal_chain": {
+    "helper_grant_admission_lines": "93-103",
+    "helper_catalog_output_line": 188,
+    "selected_auditor_catalog_verification_lines": "122-127",
+    "helper_expression": "grant[\"root_catalog_acceptance\"][\"sha256\"]",
+    "all_direct_grant_pin_objects_verified": true,
+    "distinct_retry_catalog_membership": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-retry1-prepared-20261022\\preparation-review.json",
+      "bytes": 1230781,
+      "sha256": "98E7FBFC267CD832F1A99D7FD4DA30BEFE0F251008EDE4DAF229739098B43A0F"
+    },
+    "membership_verified_from_catalog_receipt_only": true,
+    "retry_preparation_file_not_reread_in_this_peer": true,
+    "original_catalog_sha256": "CB6A78ACEFAA83A6DE31AB917B6460465BF012C99B38CE87425B6893CCB7AB2C",
+    "original_catalog_retained_as_predecessor": true,
+    "original_catalog_not_hardcoded_as_retry_acceptance": true,
+    "accepted_retry_execution_provenance_key": "v39_execution_bound_source_review",
+    "accepted_retry_execution_review_sha256": "93DC83198F582C6B57B77B35F6B14027B8E7F0573C9A9AE599B4BD9C053940DE",
+    "future_actual_binding_obligation": "The separately reviewed actual grant must bind exact 2240 retry catalog acceptance and 98E7 retry preparation review, together with exact 93DC source review. The later bound-helper/input review must verify those observed values; this source-only peer does not establish any actual grant binding.",
+    "historical_new3_admission_negative_not_reused_as_success": true
+  },
+  "pinned_inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-observed-helper-binding-contract-sourceonly-20261022\\binding-and-observed-input-contract.json",
+      "bytes": 27788,
+      "sha256": "01CD18B3CFF1F1548F50638432B6E0FD8A7458ACC88B3A7848BEB29FD6CBFA64"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-observed-helper-binding-contract-sourceonly-20261022\\handoff.json",
+      "bytes": 4022,
+      "sha256": "A84251302778B6A2C9DA0759B358DAC794518D5F4BE83A810C21094FDA8BF6BD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-catalog-source-acceptance-20261022.json",
+      "bytes": 13169,
+      "sha256": "2240C1B9F95320D1A290B5440055A41350D4E848E49D046A053998C8E1D955F8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-positive-input-helper-sourceonly-20261022\\binding-and-observed-input-contract.json",
+      "bytes": 20740,
+      "sha256": "A774CB26CF1BAC03181C409CD183FE4BEBE190138D5A1FAF5E9FB0C3867ECDD2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-positive-input-helper-sourceonly-20261022\\candidate\\Prepare-ObservedV39New3PositiveBuildQueryAuditInputs-20261022-unresolved.py",
+      "bytes": 18891,
+      "sha256": "8B60F3FEB4D78F9FCEDE75F7A72FF4FDABAC9A00F269E59F200939E85ACB1B83"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\candidate\\Prepare-ObservedV39New3PositiveBuildQueryAuditInputs-Retry1-20261022-unresolved.py",
+      "bytes": 18928,
+      "sha256": "1263E63125BF7246C8A196995D6BD74FF35C9A3053E8DE6CBA805889B0044A7D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\observed_new3_input_helper-finite-source-adaptation.json",
+      "bytes": 11144,
+      "sha256": "A563F66F9B73A2008E205CEBE5D7913C5F449733C67114A8B5DBEFF523699A60"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-execution-bound-source-review-20261022.json",
+      "bytes": 6708,
+      "sha256": "93DC83198F582C6B57B77B35F6B14027B8E7F0573C9A9AE599B4BD9C053940DE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+      "bytes": 10269,
+      "sha256": "972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39CompleteBuildQuery-New3Retry1-20261022.py",
+      "bytes": 37331,
+      "sha256": "A04CBCB8C134564CB3D26225A61CB310728A6B01D1CFE0F98BFE8925BC735ADB"
+    }
+  ],
+  "limitations": [
+    "The source-only catalog receipt and source review were read as immutable provenance; no current grant, configuration, durable job, result, metadata, owner, or process evidence was inspected.",
+    "No new executable checker was saved. Only an inline raw-byte/AST/data check ran, without evaluating candidate source, prefixes, or candidate helper functions.",
+    "Future source binding, canonical placement, Root issuance, helper invocation, independent audit, and native qualification remain separate."
+  ],
+  "checker_file_created": false,
+  "candidate_or_prefix_executed": false,
+  "helper_executed": false,
+  "actual_binding_performed": false,
+  "canonical_placement_performed": false,
+  "configuration_issued": false,
+  "Main_or_index_accessed": false,
+  "native_or_current_process_access": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

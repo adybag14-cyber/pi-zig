@@ -1,0 +1,180 @@
+{
+  "schema": 1,
+  "status": "independently_accepted_combined_native_batch_metadata",
+  "accepted": true,
+  "reviewer": "Root independent Python raw-wire, source-seal and artifact audit; distinct from PowerShell batch decoder",
+  "reviewed_utc": "2026-10-22T17:06:45.015518+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+  "group_manifest_sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB",
+  "build_result_sha256": "CD611DC49C528E4F60D6F7D6AE4E49CCCC13DD08410BE3C90230974B701C7652",
+  "build_source_seal_sha256": "3430F9ECCF15B1AD39C20D448E77111C1E8CF630918913DE57F5AC8A117A1984",
+  "groups": [
+    {
+      "group": "native-node-file-handle-owner",
+      "build_artifacts_sha256": "AB99984DD1830921BD55C9E9F51C386644BF7353B5A3E370AD77A8F8D118B03C",
+      "build_metadata_sha256": "00C83497174470962B6A517098872341D889BCDD046E8664F34B28820D339FD5",
+      "executable_sha256": "5F4F9BA4539AB8501A4FD63DE37E55D13603554BFE3D7AD7E0F397223C27D5EB",
+      "pdb_sha256": "2F6C707BF28F0ED2D3F11D308FA36EFFBF220090A8A09FB2A0F83E2838C25903",
+      "actual_count": 19,
+      "tests": [
+        "native_node_file_handle_owner_test.test.native FileHandle owner constructor attaches the same native stream and transfers the real descriptor on release",
+        "native_node_file_handle_owner_test.test.native FileHandle owner optional Number IntegerValue follows pinned V8 truncation and saturation",
+        "native_node_file_handle_owner_test.test.native FileHandle owner non Number optional arguments perform no guest coercion",
+        "native_node_file_handle_owner_test.test.native FileHandle owner keeps the full public method template an explicit dependency",
+        "native_node_file_handle_owner_test.test.native FileHandle owner explicit close keeps one Promise and one actual CLOSE request through cleanup",
+        "native_node_file_handle_owner_test.test.native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose",
+        "native_node_file_handle_owner_test.test.native FileHandle owner real stopped service admission rejects without fabricating completion or closing the descriptor",
+        "native_node_file_handle_owner_test.test.native FileHandle owner retained CloseReq wrapper loses native state after both callback references retire",
+        "native_node_file_handle_owner_test.test.native FileHandle owner CloseReq Global keeps the handle and weak BindingData alive until actual completion",
+        "native_node_file_handle_owner_test.test.native FileHandle owner GC closes synchronously and the warning ticket retains no handle or BindingData",
+        "native_node_file_handle_owner_test.test.native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once",
+        "native_node_file_handle_owner_test.test.native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason",
+        "native_node_file_handle_owner_test.test.native FileHandle owner failed GC close queues one refed actual UVException ticket",
+        "native_node_file_handle_owner_test.test.native FileHandle owner cleanup skips unrefed GC warning execution and destroys its native capture",
+        "native_node_file_handle_owner_test.test.native FileHandle owner GC uses the retained real service for synchronous close after worker join",
+        "native_node_file_handle_owner_test.test.native FileHandle owner consumes the real read engine and reuses its physical ReadWrap across concrete handles",
+        "native_node_file_handle_owner_test.test.native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity",
+        "native_node_file_handle_owner_test.test.native FileHandle owner real Hub shutdown drains accepted close without settling its guest Promise",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "cached_executable_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-buildquery-20261022-165637\\cache\\o\\0e0db76b9d9e21615b7d33a4fc313068\\test.exe",
+      "independent_wire_sha256": "E5154A849826D30FE04B3DA9314B6EBCCF7ABC20A8281E7F6C584F1BF8C519EE"
+    },
+    {
+      "group": "native-node-fs-before-hook-continuation",
+      "build_artifacts_sha256": "149D70FC85726EB55E82354499996B21515DD0B3DBEDBFF0D6CC86C18895B4A6",
+      "build_metadata_sha256": "4F51CE1C43E6A686C063AC5AAB74B130ADF6B93FD8963AC4461898C0AC105D23",
+      "executable_sha256": "3033FE9B7D386EE55351506BE33E357FC891B44A9FA9BE6612CD210B56459BB3",
+      "pdb_sha256": "9839C427C1D7F9EF9F75E681474753ED17AFFC2A47D327EDB5323804F2FCBB89",
+      "actual_count": 4,
+      "tests": [
+        "native_node_fs_before_hook_continuation_test.test.native FS before hook actual read fulfills after the same ordinary hook rethrow",
+        "native_node_fs_before_hook_continuation_test.test.native FS before hook actual EBADF read rejects with UVException while the hook reason propagates separately",
+        "native_node_fs_before_hook_continuation_test.test.native FS before hook continuation performs the original live Promise Get before settlement",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "cached_executable_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-buildquery-20261022-165637\\cache\\o\\893b464d9587b213b4c76bbedad64cd2\\test.exe",
+      "independent_wire_sha256": "BCD33EDD18FFAF8CFC586597E27FF3847B088DB222C63F7F82CB78BEBB63A4EA"
+    },
+    {
+      "group": "native-vm-error-constructor-name",
+      "build_artifacts_sha256": "06A574416DB55EA52C16741D5194878B9C7687DB5C6A980BE8DB7181DDB06826",
+      "build_metadata_sha256": "A9ADD90A913DFF3FC5DFB26ED50AC5BA69B2EFC8DE89645D2D9C51765A588200",
+      "executable_sha256": "5AB907D60CD2F1B96A5C867FF572DEFCAB728B0954F0DF038E408EA413DFFDAB",
+      "pdb_sha256": "CDD2BAD40D496095A97BED66CE18C4A42769F7E0ACDD7AE6AB0C29A6D81207E3",
+      "actual_count": 24,
+      "tests": [
+        "native_vm_error_constructor_name_test.test.VM native Error constructor intrinsic families retain their native initial names",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor direct native creation and throws record real origins",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor real VM stack exhaustion retains RangeError provenance",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor public function and Error names do not replace provenance",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor public replacement cannot redirect native intrinsic factories",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor changing an Error prototype preserves base provenance",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor new inheritors suppress fast provenance with real prototype admission",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor explicit prototype admission uses the same original fallback",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor inherited data tag precedes constructor at the same level",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor receiver constructor and accessor tag are never invoked",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor prototype accessors and mutable builtin name are skipped",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor actual intrinsic Object is skipped without its public name",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor final native class fallback remains Error",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor bound and Proxy constructors are skipped without traps",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor missing general DebugName is explicit without function name Get",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor Proxy prototype storage stays unsupported without traps",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor native exotic descriptors remain uncalled and unsupported",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor different new target is an explicit remaining dependency",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor unrecorded physical Error allocation cannot invent provenance",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor ordinary lookalikes never acquire the actual native class",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor query preserves actual ordinary and uncatchable pending owners",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor active and cancelled native termination state is unchanged",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor all selected query branches allocate no VM storage",
+        "native_vm_error_constructor_name_test.test.VM native Error constructor actual native origin survives released foreign realm and retires with Error"
+      ],
+      "cached_executable_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-buildquery-20261022-165637\\cache\\o\\5f75b28e1e2a5c4de47e355f73f15095\\test.exe",
+      "independent_wire_sha256": "D8F2F86C332F24EC92ADBE1E77C737D7D1E9EEAD0C9E59EE62C50A5BF8FF61AC"
+    },
+    {
+      "group": "native-node-file-handle-transfer",
+      "build_artifacts_sha256": "873D7B6489AAE877EA518B5F4350591331E52E89E6D8DAB92D6F79F6BB7B61EF",
+      "build_metadata_sha256": "55E7681BFD6C84F92C699D8032BD59B1C6A44BD61189303C18D695B812BBD523",
+      "executable_sha256": "037E2022105DA5F2AB6EC112B49016B3F8152A24A7CA05AFDCD338DA8AD6F136",
+      "pdb_sha256": "B0AC368E1355403F9F401C5DD12ED0A6A3448BB4213AF9F45CB31D057266A374",
+      "actual_count": 14,
+      "tests": [
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer changes only the live closed member and retains the real descriptor",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer admission follows real ReadStart and ReadStop with the original pending request",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer rejects real closing and closed state without weakening the close request",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer admission excludes the real released descriptor state",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer packet move preserves one native allocation and closes once",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer packet survives actual sender GC and weak BindingData retirement",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer allocation alone retains its native memory domain after Engine teardown",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer abandoned on a real different thread closes after sender Engine retirement",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer destructor null admission masks and restores an outer real context",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer native member and destructor calls preserve an actual current exception",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer missing real BindingData consumes the packet and closes its descriptor",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer disowns before the explicit missing full template boundary without inventing a receiver",
+        "native_node_file_handle_transfer_test.test.native FileHandle transfer strong result edges clone and move over the same actual weak wrapper",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "cached_executable_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-buildquery-20261022-165637\\cache\\o\\20d49aaa239e79779ef74429db3705a7\\test.exe",
+      "independent_wire_sha256": "CA3D9558F23A3779A51D9FAB26A01A151099334B6615D8B73A3BE26A14EA61A6"
+    }
+  ],
+  "runtime_started": false,
+  "runtime_qualification": false,
+  "source_seal_scope": "whole_batch",
+  "source_count": 17346,
+  "tree_count": 17359,
+  "compiler_count": 19546,
+  "independent_current_owner_absence": true,
+  "independent_current_original_process_instances_absent": true,
+  "independent_current_owner_snapshot": [],
+  "current_pid_reconciliations": [],
+  "original_owner_intervals": [
+    {
+      "pid": 680,
+      "created": 17926883408747476,
+      "completed": 17926886560716131
+    },
+    {
+      "pid": 38248,
+      "created": 17926886572144425,
+      "completed": 17926886573590092
+    },
+    {
+      "pid": 46840,
+      "created": 17926886582961748,
+      "completed": 17926886692812174
+    },
+    {
+      "pid": 40048,
+      "created": 17926886703788141,
+      "completed": 17926886705454538
+    },
+    {
+      "pid": 45564,
+      "created": 17926886713345539,
+      "completed": 17926886797602233
+    },
+    {
+      "pid": 19556,
+      "created": 17926886807806529,
+      "completed": 17926886808988305
+    },
+    {
+      "pid": 45584,
+      "created": 17926886816071609,
+      "completed": 17926886939961523
+    },
+    {
+      "pid": 688,
+      "created": 17926886951725919,
+      "completed": 17926886953105108
+    },
+    {
+      "pid": 30348,
+      "created": 17926882922230742,
+      "completed": 17926887476160904
+    }
+  ]
+}

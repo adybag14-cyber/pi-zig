@@ -1,0 +1,24 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\54098944e6e75011c897161f333617d3\\test.exe",
+  "binary_sha256": "3C5352525ABFACBE0A9FDBFE3F08245774ACB812FEEB2B9793A5E514477AE8CE",
+  "version": "0.16.0",
+  "actual_count": 12,
+  "tests": [
+    "native_node_managed_buffers_test.test.Node managed buffers constructs the actual empty native map without a context",
+    "native_node_managed_buffers_test.test.Node managed buffers consumes the actual token before any JS wrapper exists",
+    "native_node_managed_buffers_test.test.Node managed buffers insertion does not enter the exhausted JS heap",
+    "native_node_managed_buffers_test.test.Node managed buffers release keys on actual base and ignores the copied length",
+    "native_node_managed_buffers_test.test.Node managed buffers null base bypasses lookup while retaining other entries",
+    "native_node_managed_buffers_test.test.Node managed buffers preserves the real zero owner until map destruction",
+    "native_node_managed_buffers_test.test.Node managed buffers duplicate insertion retires only the unselected native owner",
+    "native_node_managed_buffers_test.test.Node managed buffers moves out before erase and survives native table destruction",
+    "native_node_managed_buffers_test.test.Node managed buffers release then adopts the same real backing into a later ArrayBuffer",
+    "native_node_managed_buffers_test.test.Node managed buffers native map operations preserve an actual pending reason",
+    "native_node_managed_buffers_test.test.Node managed buffers real node allocation retries through the actual native new handler",
+    "native_node_managed_buffers_test.test.Node managed buffers all native backing and table charges retire after the originating runtime"
+  ],
+  "group": "native-node-managed-buffers",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

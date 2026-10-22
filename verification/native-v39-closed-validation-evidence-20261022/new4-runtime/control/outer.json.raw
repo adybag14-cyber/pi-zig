@@ -1,0 +1,31 @@
+{
+  "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+  "executable_sha256": "FA2C8BB1E35CDD62AD15CD06A1D8F2C5961E9725A9BFA1E7CFD2C322F49E9619",
+  "arguments": [
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-File",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022\\Run-CombinedNativeBatch.ps1",
+    "-RootGrant",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\root-grant.json",
+    "-Mode",
+    "RuntimeOnly"
+  ],
+  "working_directory": "C:\\Users\\adyba\\pi-zig",
+  "pid": 49764,
+  "retained_handle": 2132,
+  "created_utc": "2026-10-22T17:22:57.3381456Z",
+  "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+  "timeout_seconds": 1800,
+  "status": "passed",
+  "live_identity": {
+    "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022\\Run-CombinedNativeBatch.ps1 -RootGrant C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-control-20261022-172246\\root-grant.json -Mode RuntimeOnly",
+    "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "created_utc": "2026-10-22T17:22:57.3381456Z",
+    "pid": 49764,
+    "command_line_method": "Win32_Process.CommandLine"
+  },
+  "exit_code": 0,
+  "completed_utc": "2026-10-22T17:26:16.8027818+00:00"
+}

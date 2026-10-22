@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "Root_specific_v39_new3_buildquery_resource_preflight",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "resource_observation": {
+    "observed_utc": "2026-10-22T16:38:31.5228006+00:00",
+    "free_physical_kib": 23896792,
+    "required_kib": 16777216,
+    "eligible": true,
+    "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+    "process_rows": 435,
+    "native_candidates": []
+  },
+  "active_jobs_observation": {
+    "ok": true,
+    "summary": "Listed durable jobs.",
+    "data": {
+      "jobs": [],
+      "next_cursor": null,
+      "order": "job_id",
+      "limit": 100
+    },
+    "exitCode": null,
+    "truncated": false
+  },
+  "owner": "Root",
+  "native_lease": "exclusive_serial",
+  "minimum_free_kib": 16777216,
+  "eligible": true,
+  "unrelated_watch_jobs_not_categorically_banned": true,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "status": "failed",
+  "mode": "BuildQuery",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+  "group_manifest_sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB",
+  "qualification_requested": true,
+  "cache_mode": "fresh_batch",
+  "cache_seeded": false,
+  "fresh_cache_reproduction": true,
+  "runtime_requested": false,
+  "product_qualified": false,
+  "scope": "One frozen source head; one initially fresh private cache pair shared serially; distinct installed prefixes and actual metadata per group; complete whole-batch source/compiler/control bookend seals",
+  "source_seal_scope": "whole_batch",
+  "groups": [
+    {
+      "group": "native-node-stream-shutdown",
+      "status": "failed",
+      "mode": "BuildQuery",
+      "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "receipt_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-163859\\groups\\native-node-stream-shutdown",
+      "output_prefix": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-163859\\groups\\native-node-stream-shutdown\\installed",
+      "installed_executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-163859\\groups\\native-node-stream-shutdown\\installed\\bin\\native-node-stream-shutdown.exe",
+      "installed_pdb": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-163859\\groups\\native-node-stream-shutdown\\installed\\bin\\test.pdb",
+      "cached_executable": null,
+      "phases": {},
+      "postseal": true,
+      "source_seal_scope": "whole_batch",
+      "errors": [
+        "Initial grant must be within300seconds before first child launch"
+      ],
+      "runtime_requested": false,
+      "runtime_owner_launch_attempted": false,
+      "actual_runtime_owner_started": false,
+      "native_selected_tests_started": null,
+      "attempted_phases": [
+        "compile"
+      ],
+      "owned_started_phases": []
+    }
+  ],
+  "postseal": true,
+  "all_groups_closed": false,
+  "controller_environment_restored": true,
+  "errors": [
+    "Initial grant must be within300seconds before first child launch"
+  ],
+  "absence": {
+    "native_roots": [],
+    "owners": []
+  },
+  "cache_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-163859\\cache",
+  "global_cache_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-163859\\global-cache",
+  "initial_cache_absence": true,
+  "admission_probes": [
+    {
+      "phase": "compile",
+      "free_kib": 28245632,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "native": [],
+      "elapsed_seconds": 0.3658914,
+      "utc": "2026-10-22T16:44:21.0920298+00:00"
+    }
+  ],
+  "completed_utc": "2026-10-22T16:45:10.6153849+00:00"
+}

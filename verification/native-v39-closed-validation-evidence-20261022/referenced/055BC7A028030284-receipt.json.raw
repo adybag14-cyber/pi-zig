@@ -1,0 +1,159 @@
+{
+  "schema": 1,
+  "status": "closed_finite_independent_build_composition_review",
+  "reviewer": "module_io_port",
+  "recorded_utc": "2026-10-20T17:29:06.614859+00:00",
+  "projection": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-native-integration-projection-20261020-172540\\projection.json",
+    "bytes": 145538,
+    "sha256": "44949486FA0304F822CFF48C587166FBD9F29E1CC51EAF6AAF583E562ACB484B"
+  },
+  "candidate_head": "14615dfc179f9e7e2044591a2d8aa9592b9d883b",
+  "builds": [
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\build.zig",
+        "bytes": 493924,
+        "sha256": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E"
+      },
+      "projection": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-native-integration-projection-20261020-172540\\projected\\build.zig",
+        "bytes": 500710,
+        "sha256": "B2CC65057664436C2F40D70175C439BAA8CE7B372899F61DD6AB6BB7113B06D2"
+      },
+      "additive_edits": 6,
+      "whole_forward_and_inverse_exact": true
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_node_network.zig",
+        "bytes": 5469,
+        "sha256": "64ADAD93DE12560EB7B14DE6759176876CED7F1E212D2CDBF85A251773EE2091"
+      },
+      "projection": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-native-integration-projection-20261020-172540\\projected\\tools\\build_native_node_network.zig",
+        "bytes": 5905,
+        "sha256": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+      },
+      "additive_edits": 1,
+      "whole_forward_and_inverse_exact": true
+    }
+  ],
+  "roots": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-native-integration-projection-20261020-172540\\projected\\src\\native_vm_simple_stack_source_test.zig",
+        "bytes": 53404,
+        "sha256": "1863129EC7E28E0F99D3B6C94E3B28FDC754781C7BF0DEF296552688DC0D5DF9"
+      },
+      "target": "build-native-vm-simple-stack-source",
+      "filter": "VM simple stack source",
+      "declared_count": 33,
+      "all_names_distinct_and_selected": true,
+      "install_only_edge": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-native-integration-projection-20261020-172540\\projected\\src\\native_vm_exotic_operations_test.zig",
+        "bytes": 35891,
+        "sha256": "9FFBDF6B2C033898E7D1738943293DCD13F758EF9893F794293C8AA71A5FAA7B"
+      },
+      "target": "build-native-vm-exotic-operations",
+      "filter": "VM exotic operations",
+      "declared_count": 28,
+      "all_names_distinct_and_selected": true,
+      "install_only_edge": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-native-integration-projection-20261020-172540\\projected\\src\\native_node_diagnostic_context_test.zig",
+        "bytes": 9765,
+        "sha256": "536C002F636323E9F2D3C7A195BEEA054DA919DC600E86DA2850E2A63B51B861"
+      },
+      "target": "build-native-node-diagnostic-context",
+      "filter": "Node diagnostic context",
+      "declared_count": 10,
+      "all_names_distinct_and_selected": true,
+      "install_only_edge": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-native-integration-projection-20261020-172540\\projected\\src\\native_node_native_debug_test.zig",
+        "bytes": 16506,
+        "sha256": "79729DBB464F7F95F89CDD85A9A737897A1D90F6352816E186EFB02EE0470991"
+      },
+      "target": "build-native-node-native-debug",
+      "filter": "native Debug",
+      "declared_count": 20,
+      "all_names_distinct_and_selected": true,
+      "install_only_edge": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-native-integration-projection-20261020-172540\\projected\\src\\native_node_permission_test.zig",
+        "bytes": 19167,
+        "sha256": "A01BE231E1AA8A03FB9D343B6DAC06CA8EAA0FD2C58D33C1CA79A596E32F554D"
+      },
+      "target": "build-native-node-permission",
+      "filter": "native Permission",
+      "declared_count": 18,
+      "all_names_distinct_and_selected": true,
+      "install_only_edge": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-native-integration-projection-20261020-172540\\projected\\src\\native_node_fs_readwrap_reuse_test.zig",
+        "bytes": 28267,
+        "sha256": "1976069B2406CBB9B0B78F67EB8E8DAE562B05EB4E9C5DDE52AEAABB525A9972"
+      },
+      "target": "build-native-node-fs-readwrap-reuse",
+      "filter": "native actual FS reuse",
+      "declared_count": 14,
+      "all_names_distinct_and_selected": true,
+      "install_only_edge": true
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-native-integration-projection-20261020-172540\\projected\\src\\native_node_reqwrap_callback_routing_test.zig",
+        "bytes": 31452,
+        "sha256": "DE140526BC02E92646AD80E207E320DE65B7AABDFF84F5BCBF39DF577C1E3ED7"
+      },
+      "target": "build-native-node-reqwrap-callback-routing",
+      "filter": "native ReqWrap routing",
+      "declared_count": 12,
+      "all_names_distinct_and_selected": true,
+      "install_only_edge": true
+    }
+  ],
+  "total_new_roots": 7,
+  "total_declared_controls": 135,
+  "preserved_arithmetic_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-next-foundation-build-source-peer-20261020\\attempt1-count-negative.json",
+    "bytes": 837,
+    "sha256": "67144C78EEF44AA808EB1758E4F5271D841E6DD26DD84D73B421A7165372C890"
+  },
+  "unchanged_native_memory_builder": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\build_native_node_memory.zig",
+    "bytes": 1030,
+    "sha256": "55F4FF70A62656DD585226545F23DB7D1A50C4D0AEDF91DF4F6ADE0884587E17"
+  },
+  "findings": [
+    "7 build insertions replay and invert exactly against unchanged Main. Existing graph bytes, earlier tests, and source memberships survive.",
+    "Seven unique install-only targets select the seven actual roots and all 135 named declarations. These are source declarations; actual metadata and imported controls are not inferred.",
+    "QuickJS retains the same native network library; that library retains the one existing native-memory Compile object shared with the package parser. No second native allocation TLS translation unit was added.",
+    "Permission and Debug production translation units appear once, under the existing native-memory availability guard, with the original include paths and native C++ flags.",
+    "Diagnostic TLS is compiled exactly once into its dedicated target, followed by only its native test-support translation unit. It is not also compiled into the network library. Public tracing integration remains separate.",
+    "FS reuse and callback routing remain inside the existing admitted native-network target guard. Routing retains real network, TypeScript, SQLite, catalog import and Windows advapi32/userenv linkage.",
+    "Debug and Permission native observers are compiled only into their dedicated test targets and use the existing real network/native-memory owners.",
+    "The review is for the current admitted 64-bit Windows/Linux graph. No new unsupported-platform body or host bridge was selected."
+  ],
+  "blockers": [],
+  "limitations": [
+    "No compiler, linker, formatter, generator, test-listing, target or runtime process executed.",
+    "No production algorithm/lifetime requalification beyond the requested additive build composition.",
+    "Actual metadata/artifact/source/process acceptance and runtime remain Root-owned subsequent gates."
+  ],
+  "main_modified": false,
+  "execution": false,
+  "qualification": false
+}

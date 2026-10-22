@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-20T18:37:56.985692+00:00",
+  "status": "conservative_source_anonymous_declaration_inventory_not_metadata",
+  "dependency_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\dependency-inventory.json",
+    "sha256": "3D515709FB2E2E6208CC700390E9E80E6FCCD74B10C5CE7AE02208F81710CBDE"
+  },
+  "method": "Traverse each root through the pinned complete literal Zig import graph plus named owner edges. Read and verify every reachable module SHA-256. Inventory line-start anonymous test blocks using ^[ tabs]*test[ tabs]*{. No compiler reachability, generated test naming, filter selection, or runtime metadata membership is inferred.",
+  "roots": [
+    {
+      "root": "src/native_node_file_handle_read_test.zig",
+      "installed_artifact_basename": "native-node-file-handle-read",
+      "conservative_module_count": 705,
+      "anonymous_source_declaration_count": 8,
+      "declarations": [
+        {
+          "path": "src/ai/root.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\ai\\root.zig",
+          "sha256": "108E9C52BD5B2201E621E9B47EB7A27F1BA87F4ABA53CA0FA115220E57461163",
+          "source_lines": [
+            329
+          ]
+        },
+        {
+          "path": "src/durable/scheduler.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\durable\\scheduler.zig",
+          "sha256": "3A07F4CE486E2300B713AB84CA908EFF42043AE964083ACEF02DE2BBB014AFE5",
+          "source_lines": [
+            12
+          ]
+        },
+        {
+          "path": "src/durable/session.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\durable\\session.zig",
+          "sha256": "5B242FFEBD7560052C13BD4A81493069651A425926602FC06A0DC6378A63DA6C",
+          "source_lines": [
+            8
+          ]
+        },
+        {
+          "path": "src/durable/tool_read.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\durable\\tool_read.zig",
+          "sha256": "4E151AF6C76F0B480B16F948C0C42FE37D60FBD14DDB09E809D62FFEE03B7DFB",
+          "source_lines": [
+            18
+          ]
+        },
+        {
+          "path": "src/extensions/native_bindings.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_bindings.zig",
+          "sha256": "211362EFE481A02359A5B9ED550E93E6A18598752BADAA3EE7D12C993EAE0F2F",
+          "source_lines": [
+            3451
+          ]
+        },
+        {
+          "path": "src/extensions/native_durable_context_view.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_durable_context_view.zig",
+          "sha256": "458E3A2AC860FCD5F68997DC88C60734BE6D5D8A637E501307235E1A9AC4B2DC",
+          "source_lines": [
+            13
+          ]
+        },
+        {
+          "path": "src/extensions/native_durable_storage.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_durable_storage.zig",
+          "sha256": "46B94ABF031FD9343C8BE8FA85EDE409149C4BC5D1DA22E61577FB7A9279F289",
+          "source_lines": [
+            861
+          ]
+        },
+        {
+          "path": "src/extensions/native_durable_task_abort.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_durable_task_abort.zig",
+          "sha256": "F521853853A4E9299BE7069E1848AD1D9CF4A6AD7A4AF440B5E4BB8E4C7118D9",
+          "source_lines": [
+            13
+          ]
+        }
+      ]
+    },
+    {
+      "root": "src/native_node_fs_callback_template_test.zig",
+      "installed_artifact_basename": "native-node-fs-callback-template",
+      "conservative_module_count": 705,
+      "anonymous_source_declaration_count": 8,
+      "declarations": [
+        {
+          "path": "src/ai/root.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\ai\\root.zig",
+          "sha256": "108E9C52BD5B2201E621E9B47EB7A27F1BA87F4ABA53CA0FA115220E57461163",
+          "source_lines": [
+            329
+          ]
+        },
+        {
+          "path": "src/durable/scheduler.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\durable\\scheduler.zig",
+          "sha256": "3A07F4CE486E2300B713AB84CA908EFF42043AE964083ACEF02DE2BBB014AFE5",
+          "source_lines": [
+            12
+          ]
+        },
+        {
+          "path": "src/durable/session.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\durable\\session.zig",
+          "sha256": "5B242FFEBD7560052C13BD4A81493069651A425926602FC06A0DC6378A63DA6C",
+          "source_lines": [
+            8
+          ]
+        },
+        {
+          "path": "src/durable/tool_read.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\durable\\tool_read.zig",
+          "sha256": "4E151AF6C76F0B480B16F948C0C42FE37D60FBD14DDB09E809D62FFEE03B7DFB",
+          "source_lines": [
+            18
+          ]
+        },
+        {
+          "path": "src/extensions/native_bindings.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_bindings.zig",
+          "sha256": "211362EFE481A02359A5B9ED550E93E6A18598752BADAA3EE7D12C993EAE0F2F",
+          "source_lines": [
+            3451
+          ]
+        },
+        {
+          "path": "src/extensions/native_durable_context_view.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_durable_context_view.zig",
+          "sha256": "458E3A2AC860FCD5F68997DC88C60734BE6D5D8A637E501307235E1A9AC4B2DC",
+          "source_lines": [
+            13
+          ]
+        },
+        {
+          "path": "src/extensions/native_durable_storage.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_durable_storage.zig",
+          "sha256": "46B94ABF031FD9343C8BE8FA85EDE409149C4BC5D1DA22E61577FB7A9279F289",
+          "source_lines": [
+            861
+          ]
+        },
+        {
+          "path": "src/extensions/native_durable_task_abort.zig",
+          "owner": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_durable_task_abort.zig",
+          "sha256": "F521853853A4E9299BE7069E1848AD1D9CF4A6AD7A4AF440B5E4BB8E4C7118D9",
+          "source_lines": [
+            13
+          ]
+        }
+      ]
+    }
+  ],
+  "future_actual_metadata_names": "unknown_until_Root_build_query",
+  "source_owners_all_match_pins": true,
+  "compiled": false,
+  "executed": false,
+  "main_modified": false,
+  "qualification": false
+}

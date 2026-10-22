@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "owner": "Root",
+  "memory_and_native_processes": {
+    "observed_utc": "2026-10-22T16:55:00.7609436+00:00",
+    "free_physical_kib": 28874676,
+    "required_kib": 16777216,
+    "eligible": true,
+    "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+    "process_rows": 430,
+    "native_candidates": []
+  },
+  "original_active_jobs_observation": {
+    "ok": true,
+    "summary": "Listed durable jobs.",
+    "data": {
+      "jobs": [],
+      "next_cursor": null,
+      "order": "job_id",
+      "limit": 30
+    },
+    "exitCode": null,
+    "truncated": false
+  },
+  "prior_new3_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-original-prelaunch-negative-acceptance-20261022.json",
+    "bytes": 5627,
+    "sha256": "1A6F6F0CAA70C5B9F39F9FF815B67429C39B785E472817427A7EF18E4FCEDDD7"
+  },
+  "native_lease_exclusive": true,
+  "native_execution_authorized": false
+}

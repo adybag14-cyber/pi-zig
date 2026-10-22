@@ -1,0 +1,448 @@
+{
+  "schema": 1,
+  "status": "independently_reviewed_exact_v39_emitted_three_batch_source_catalog",
+  "reviewer": "/root/handover_review",
+  "utc": "2026-10-22T16:32:27.222185+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "source_basis_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "archive_head": "e65c636b8600d351920cff88aa31c9f804d5f0b9",
+  "source_only": true,
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-emitted-catalog-peer-20261022\\source-check.py",
+    "bytes": 63001,
+    "sha256": "271C5C51A54447CF1071A2B3B5D631EA11A6B03786927C442D5A520FFF0D9106"
+  },
+  "independent_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-emitted-catalog-peer-20261022\\source-proof.json",
+    "bytes": 3542985,
+    "sha256": "FB4C88179F83F480E685AE6D0CA6C793076CF4A8EB7F6DDE27DC075DCD817EAA"
+  },
+  "checker_binding": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-emitted-catalog-peer-20261022\\checker-v4-binding.json",
+    "bytes": 5892,
+    "sha256": "27ED7C613EC0D28F34F8D632E06F45C0F19DCBD931E834C7E881BDC8E1B77F83"
+  },
+  "preserved_unissued_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-emitted-catalog-peer-20261022\\source-check-draft-unissued.py",
+    "bytes": 62889,
+    "sha256": "9388971626CA4EF00D74B32FF88CC7AB5D933ECC6F5926688919009B4C38C758"
+  },
+  "checker_run": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-emitted-catalog-peer-20261022\\durable-review-terminal-observation.json",
+    "bytes": 2356,
+    "sha256": "EC568570B2C6208BF8B7A7F8F078BF4DBC8E241B526BC4C0A1AAEC4B8C93E4EC"
+  },
+  "preserved_synchronous_timeout": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-emitted-catalog-peer-20261022\\checker-synchronous-timeout-observation.json",
+    "bytes": 813,
+    "sha256": "1976A80668189A15B454CB271BD5DB774F8E6AE6F93E34D53ECFF10513612A25"
+  },
+  "Root_synchronous_checker_absence": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-emitted-catalog-peer-20261022\\root-synchronous-checker-absence.json",
+    "bytes": 130,
+    "sha256": "2E89CE6B9CC51E7660499F04171281A02EBEDD52EFEAD9756255D1CD54D86231"
+  },
+  "selected_preparer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-historical-seal-path-successor-sourceonly-20261022\\candidate\\Prepare-FreshV39Catalog-20261022-v4.py",
+    "bytes": 87049,
+    "sha256": "7D8A6D4E79352501AB73B8EC54B5F126C883277245FCBA9AE44910993110BE8B"
+  },
+  "Root_preparer_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-catalog-preparer-v4-source-acceptance-20261022.json",
+    "bytes": 41604,
+    "sha256": "472D6B7630B4F63DFE1A6BDC0EEF54B3E715DD14A3468AD3511CF88645CC785A"
+  },
+  "issued_catalog_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-issued-v39-catalog-preparation-v4-20261022\\configuration.json",
+    "bytes": 7063,
+    "sha256": "6F1BE55980706AA741FD3D4680ECC39A715AB5C62046A2BEABBB7C0F22EAB3E0"
+  },
+  "successful_preparer_stdout": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-issued-v39-catalog-preparation-v4-20261022\\successful-preparer-stdout.json",
+    "bytes": 12357,
+    "sha256": "0D317A38643C0D47E13115B5EA367BA0185E5D0B22AE27A88FACC0206B37C1BB"
+  },
+  "preserved_original_preparation_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-issued-v39-catalog-preparation-20261022\\preparation-negative.json",
+    "bytes": 7028,
+    "sha256": "78E02C88A884BBB2409EDC67DC10E8CBC0AA54C450999001352A1991784B7CB5"
+  },
+  "separate_current_checkout_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-catalog-preparer-source-acceptance-20261022.json",
+    "bytes": 38708,
+    "sha256": "FF25A2691C9DEB4BFBD05A5FA903D920B981F28511E2B9B93D37233A72F0DA07"
+  },
+  "selected_catalog_artifacts": {
+    "new3": {
+      "groups.json": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-prepared-20261022\\groups.json",
+        "bytes": 1469059,
+        "sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB"
+      },
+      "preparation-review.json": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-prepared-20261022\\preparation-review.json",
+        "bytes": 1230704,
+        "sha256": "EA20FC0C6AB01BC00DF2EA29B166C48D2915A7DB4B0C1A71784C862F66ACA256"
+      },
+      "Audit-CombinedNativeBatch.py": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-prepared-20261022\\Audit-CombinedNativeBatch.py",
+        "bytes": 17696,
+        "sha256": "208BBC4759467573F531750778015A1DC5CD8B2B386A476E8092C3327DBA2490"
+      },
+      "new-roots-source-inventory.json": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-prepared-20261022\\new-roots-source-inventory.json",
+        "bytes": 7047337,
+        "sha256": "FA06ACE73E2472BFE3B175B1C1720BDE6A21142A64EB28F57DF99AEBC8CC9ED3"
+      },
+      "exact-intake-source-inventory.json": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-prepared-20261022\\exact-intake-source-inventory.json",
+        "bytes": 3016024,
+        "sha256": "8256044984E3300F920D33B6304774E0EAE013448115D88529BB39770C5A2F04"
+      },
+      "complete-batch-partition.json": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-prepared-20261022\\complete-batch-partition.json",
+        "bytes": 4333,
+        "sha256": "C237CC8EB80448AC536E1C9928816C56BD46F6BC5FF91E4F7CA615A3118BFADB"
+      }
+    },
+    "new4": {
+      "groups.json": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022\\groups.json",
+        "bytes": 1469059,
+        "sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB"
+      },
+      "preparation-review.json": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022\\preparation-review.json",
+        "bytes": 1230758,
+        "sha256": "BC7E87602311E3947D2581F87E4D4AE0FBA9224BDE3B940BC9D1F5D2652F12AB"
+      },
+      "Audit-CombinedNativeBatch.py": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022\\Audit-CombinedNativeBatch.py",
+        "bytes": 17696,
+        "sha256": "2DA9B671DC635AB5C6A28679FCBA1CAE7496256E0AA127A3B3CBDA143F620D3F"
+      },
+      "new-roots-source-inventory.json": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022\\new-roots-source-inventory.json",
+        "bytes": 7047337,
+        "sha256": "FA06ACE73E2472BFE3B175B1C1720BDE6A21142A64EB28F57DF99AEBC8CC9ED3"
+      },
+      "exact-intake-source-inventory.json": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022\\exact-intake-source-inventory.json",
+        "bytes": 3016024,
+        "sha256": "8256044984E3300F920D33B6304774E0EAE013448115D88529BB39770C5A2F04"
+      },
+      "complete-batch-partition.json": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022\\complete-batch-partition.json",
+        "bytes": 4333,
+        "sha256": "C237CC8EB80448AC536E1C9928816C56BD46F6BC5FF91E4F7CA615A3118BFADB"
+      }
+    },
+    "regression63": {
+      "groups.json": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\groups.json",
+        "bytes": 1469059,
+        "sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB"
+      },
+      "preparation-review.json": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\preparation-review.json",
+        "bytes": 1232958,
+        "sha256": "58E217CF7E2445167523089006FBA042FAF1AAA7C766036A69CE304413042904"
+      },
+      "Audit-CombinedNativeBatch.py": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\Audit-CombinedNativeBatch.py",
+        "bytes": 17704,
+        "sha256": "1030886DD02944E4BC9930711C7F05ABA8F02B1FDAA0C8ED6688B18B7EC2460E"
+      },
+      "new-roots-source-inventory.json": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\new-roots-source-inventory.json",
+        "bytes": 7047337,
+        "sha256": "FA06ACE73E2472BFE3B175B1C1720BDE6A21142A64EB28F57DF99AEBC8CC9ED3"
+      },
+      "exact-intake-source-inventory.json": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\exact-intake-source-inventory.json",
+        "bytes": 3016024,
+        "sha256": "8256044984E3300F920D33B6304774E0EAE013448115D88529BB39770C5A2F04"
+      },
+      "complete-batch-partition.json": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\complete-batch-partition.json",
+        "bytes": 4333,
+        "sha256": "C237CC8EB80448AC536E1C9928816C56BD46F6BC5FF91E4F7CA615A3118BFADB"
+      }
+    }
+  },
+  "catalog_groups": 120,
+  "catalog_declarations": 2051,
+  "partition": {
+    "new3": {
+      "groups": 3,
+      "declarations": 38
+    },
+    "new4": {
+      "groups": 4,
+      "declarations": 58
+    },
+    "regression63": {
+      "groups": 63,
+      "declarations": 1249
+    },
+    "union_groups": 70,
+    "union_declarations": 1345,
+    "catalog_groups": 120,
+    "catalog_declarations": 2051,
+    "group_cap": 64
+  },
+  "selected_group_order": {
+    "new3": [
+      "native-node-stream-shutdown",
+      "native-node-one-byte-string",
+      "native-vm-array-buffer-view-data"
+    ],
+    "new4": [
+      "native-node-file-handle-owner",
+      "native-node-fs-before-hook-continuation",
+      "native-vm-error-constructor-name",
+      "native-node-file-handle-transfer"
+    ],
+    "regression63": [
+      "native-node-file-handle-read",
+      "native-node-fs-callback-template",
+      "native-vm-simple-stack-source",
+      "native-vm-exotic-operations",
+      "native-node-diagnostic-context",
+      "native-node-native-debug",
+      "native-node-permission",
+      "native-node-fs-readwrap-reuse",
+      "native-node-reqwrap-callback-routing",
+      "native-vm-script-location",
+      "native-node-stream-read",
+      "native-node-environment-map",
+      "native-vm-backing-store-adoption",
+      "native-node-environment-paths",
+      "native-node-stream-fields",
+      "native-node-managed-buffers",
+      "native-node-fs-request-owner",
+      "native-vm-execution-termination",
+      "native-typebox-execution-termination",
+      "native-host-termination-ownership",
+      "native-node-stream-resource",
+      "native-node-package-json-parser",
+      "native-node-microtask-checkpoint",
+      "native-vm-property-retirement",
+      "native-vm-consuming-operands",
+      "native-vm-oom-occurrence",
+      "native-node-callback-scope",
+      "native-node-inspect-colors",
+      "native-vm-captured-frame-logging",
+      "native-node-experimental-warning",
+      "native-node-commonjs-helpers",
+      "native-node-process-warning",
+      "native-node-fs-request-transport",
+      "native-vm-array-buffer-view-length",
+      "native-vm-array-buffer-backing",
+      "native-vm-private-property",
+      "native-node-tcp-transport",
+      "native-vm-async-arguments",
+      "native-node-fs-write-uv",
+      "native-vm-sync-arguments",
+      "native-vm-async-retirement",
+      "native-vm-template-literal",
+      "native-vm-borrowed-bridges",
+      "vm-af-throw",
+      "native-ai-oauth-anthropic-genuine-af",
+      "native-node-module-creation",
+      "native-node-module-search-paths",
+      "native-node-fs-realpath-classic",
+      "native-node-fs-path-helpers",
+      "native-node-file-url-paths",
+      "native-sdk-tool-search-public",
+      "native-ai-radius-config",
+      "native-ai-radius-provider-genuine-af",
+      "native-node-inspect-entry",
+      "native-ai-oauth-radius-genuine-af",
+      "native-vm-existing-promise-settlement",
+      "native-node-options",
+      "native-node-uv-exception",
+      "native-vm-disallow-javascript",
+      "native-vm-continuation-data",
+      "native-vm-pending-promise",
+      "native-vm-native-global",
+      "native-vm-copy-data-properties"
+    ]
+  },
+  "actual_metadata_count": null,
+  "new4_and_original63_preserved": true,
+  "new3_source_admitted": true,
+  "all45_emitted_files_exact": true,
+  "all120_import_graphs_rederived": true,
+  "seven_detailed_roots_rederived": true,
+  "whole_graph_path_union": 2150,
+  "all117_prior_group_names_order_and_policies_exact": true,
+  "old_source_hash_refreshes": 65,
+  "old_dependency_hash_refreshes": 82,
+  "retained_source_members_added": 45,
+  "retained_dependency_members_added": 26,
+  "new_group_source_members": 1797,
+  "new_group_dependency_members": 163,
+  "total_dependency_rows": 765,
+  "full_matrix_structural_and_raw_inverse": true,
+  "full_seven_root_inventory_structural_and_raw_inverse": true,
+  "all_three_metadata_auditors_one_path_literal_inverses": true,
+  "strict_driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+  "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+  "source_intake_paths": 384,
+  "archive_intake_paths": 1931,
+  "all_intake_raw_donors_aliases_modes_parent_vectors_verified": true,
+  "distinct_evidence_versions": 2861,
+  "immutable_Git_blob_versions": 6664,
+  "historical_source_mappings": [
+    {
+      "batch": "new4",
+      "role": "fixture_unchanged_root_native-node-file-handle-owner",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "raw_commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+      "exact_original_bytes": true
+    },
+    {
+      "batch": "regression63",
+      "role": "fixture_unchanged_root_native-node-file-handle-owner",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "raw_commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+      "exact_original_bytes": true
+    },
+    {
+      "batch": "new4",
+      "role": "fixture_causal_owner",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "raw_commit": "014062f2d139254acab4b985b4ae343db637166f",
+      "exact_original_bytes": true
+    },
+    {
+      "batch": "regression63",
+      "role": "fixture_causal_owner",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "raw_commit": "014062f2d139254acab4b985b4ae343db637166f",
+      "exact_original_bytes": true
+    }
+  ],
+  "historical_relationships": [
+    {
+      "provenance_key": "v38_new4_v37_new4_fixture_unchanged_root_native-node-file-handle-owner",
+      "mapping_index": 0
+    },
+    {
+      "provenance_key": "v38_new4_v37_regression63_fixture_unchanged_root_native-node-file-handle-owner",
+      "mapping_index": 1
+    },
+    {
+      "provenance_key": "v38_new4_fixture_causal_owner",
+      "mapping_index": 2
+    },
+    {
+      "provenance_key": "v38_regression63_v37_new4_fixture_unchanged_root_native-node-file-handle-owner",
+      "mapping_index": 0
+    },
+    {
+      "provenance_key": "v38_regression63_v37_regression63_fixture_unchanged_root_native-node-file-handle-owner",
+      "mapping_index": 1
+    },
+    {
+      "provenance_key": "v38_regression63_fixture_causal_owner",
+      "mapping_index": 3
+    }
+  ],
+  "historical_progress_rebindings": [
+    {
+      "batch": "new4",
+      "role": "progress",
+      "recorded_reference": {
+        "recorded_path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+        "recorded_bytes": 554689,
+        "recorded_sha256": "BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\projected\\verification\\native-v38-validation-evidence-20261021\\prior-progress.json.raw",
+        "bytes": 554689,
+        "sha256": "BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028"
+      },
+      "raw_commit": "014062f2d139254acab4b985b4ae343db637166f",
+      "path": "verification/port-roadmap-resume-20261018/progress.json",
+      "exact_original_bytes": true
+    },
+    {
+      "batch": "regression63",
+      "role": "progress",
+      "recorded_reference": {
+        "recorded_path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+        "recorded_bytes": 554689,
+        "recorded_sha256": "BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\projected\\verification\\native-v38-validation-evidence-20261021\\prior-progress.json.raw",
+        "bytes": 554689,
+        "sha256": "BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028"
+      },
+      "raw_commit": "014062f2d139254acab4b985b4ae343db637166f",
+      "path": "verification/port-roadmap-resume-20261018/progress.json",
+      "exact_original_bytes": true
+    }
+  ],
+  "scope": {
+    "source_bytes": "Immutable raw014/e65/e9 Git through Module worktree, plus exact accepted source donors. No direct Main access.",
+    "checkout_bytes": "Three current-checkout byte versions are the separate fresh Root FF25 observations. This checker independently verifies their accepted E0B4 seals and unchanged raw BASE/current Git blobs; it never reads Main.",
+    "attributes": "Immutable accepted preflight/stage/final conversion observations checked exactly; no fresh Main attributes or index query.",
+    "preparation_result": "Source catalog only. Conservative graph counts do not predict compiler-selected metadata.",
+    "preserved_V38_history": "new4 metadata61/runtime61 passed; original63 metadata1285 with321 completed,320 passed,1 failed,964 unstarted and16 batch demotions. None transfers to V39.",
+    "timeout": "The unchanged checker exceeded the synchronous60-second envelope. Root confirmed absence before the same source completed successfully in the separate durable job; no checker assertion or source correction occurred."
+  },
+  "bounded_blocker": null,
+  "metadata_transferred": false,
+  "runtime_results_transferred": false,
+  "checker_executed": true,
+  "candidate_or_prefix_executed": false,
+  "Main_accessed": false,
+  "index_accessed": false,
+  "preparer_or_constructor_or_auditor_executed": false,
+  "compiler_or_native_executed": false,
+  "execution_configuration_issued": false,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "native_execution_authorized": false,
+  "qualification": false,
+  "production_bridge_removed": false
+}

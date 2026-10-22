@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v34_catalog_preparation",
+  "catalog_preparation_authorized": true,
+  "native_execution_authorized": false,
+  "candidate_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "preparer_sha256": "F419DE149DA93B6CA1423AA5E12D1853AEDF0D921320A1FFA984DF0BB6490D9C",
+  "source_integration_commit": "5521437c5581de3232e8fa1a2d017f2f4eb865af",
+  "uv_correction_commit": "39d13e047f55c598cfac0e841fed6d23220025b0",
+  "quickjs_correction_commit": "a547b14255d235f90bc9660eeab974372afa02e5",
+  "exotic_correction_commit": "ba167eacb245ca8d35290330eeb2abd6ef17f82e",
+  "exotic_correction_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v34-exotic-query-pointer-correction-20261020\\receipt.json",
+    "bytes": 5507,
+    "sha256": "55B4233397760F2252CB3B67587BE5B0FD114E053FB5EEF2F42A2989137D46C9"
+  },
+  "progress": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+    "bytes": 235681,
+    "sha256": "8711EC0A199BC616F823BE25D08A380F47359284AACB37ABF497297DC32080D6"
+  },
+  "runtime_authority": false,
+  "qualification": false,
+  "reviewed_utc": "2026-10-20T20:27:48.923170+00:00",
+  "root_review": {
+    "finite_source_edits": 38,
+    "complete_forward_and_inverse_verified": true,
+    "full_preparer_read": true,
+    "adaptation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-catalog-preparation-source-adaptation-20261020.json",
+      "bytes": 38465,
+      "sha256": "4959526A16CBBA210520C665453E25D8829D1BAD78B8812D64CC4D160049D0A0"
+    },
+    "native_execution_authorized": false
+  }
+}

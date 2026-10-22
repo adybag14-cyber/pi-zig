@@ -1,0 +1,138 @@
+{
+  "schema": 1,
+  "status": "accepted_finite_source_only_constructor_successor",
+  "reviewer": "/root/module_io_port",
+  "scope": "Independent full source review of the exact V35 BuildQuery grant constructor v2 against its immutable v1 draft, accepted V34 grant/launcher and complete strict 1DD3 driver. No grant construction or execution occurred.",
+  "selected_constructor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV35BuildQueryGrant-20261020-v2.py",
+    "bytes": 10095,
+    "sha256": "25DC73B52687E38B0D6262922AC718C99396A81355657F5BD74978A05113E7DD"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-buildquery-grant-constructor-source-peer-20261020\\source-audit.py",
+    "bytes": 15278,
+    "sha256": "49D275ED6E62999AEA9C34D976D94018F5C4A048AB045FD441D24602ADF45488"
+  },
+  "source_audit_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-buildquery-grant-constructor-source-peer-20261020\\source-audit.json",
+    "bytes": 56648,
+    "sha256": "0CA6AE0E205306400DD9A105076E4FCF17369CFAFDD8E2DD8D7FFF8792B7F831"
+  },
+  "original_negative": {
+    "subject": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV35BuildQueryGrant-20261020.py",
+      "bytes": 9813,
+      "sha256": "8A6D8D8F3BD2A0EBDA5BDB02295D818B4FB9288D0ED3B2595ACD305885B00DCB"
+    },
+    "finding": "workspace_resolver_sha256, workspace_layout_sha256 and path_relocations_sha256 were inherited but absent from fixed/reserved. Root-configured grant_provenance_updates could therefore change those bootstrap control values while the emitted adaptation claimed all strict gates were unchanged.",
+    "strict_source": "The pinned strict driver consumes all three grant values at lines 21-27 before invoking the workspace resolver.",
+    "resolution": "The immutable v2 successor inserts exactly those three original V34 hash values into fixed. reserved is formed from all fixed keys, and the fixed equality loop runs before and after the update. The finite one-insertion forward replay and whole byte inverse passed.",
+    "adaptation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\reviewed-v35-buildquery-grant-v2-adaptation-20261020.json",
+      "bytes": 1218,
+      "sha256": "92551EDA7129D47441996BD2480ACD726FA7B5AB60D80A96B54AE85496676AE4"
+    },
+    "original_preserved": true,
+    "remaining_blocker": false
+  },
+  "reviewed_predecessors": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\root-grant.json",
+      "bytes": 12270,
+      "sha256": "275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15",
+      "read": "complete"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\launch.ps1",
+      "bytes": 1771,
+      "sha256": "3DAC09B54DD866DA95FCAF67E9CA29A687AB9A28B6EAE598931ED69FFE5AA73F",
+      "read": "complete"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v34-prepared-20261020\\Run-CombinedNativeBatch.ps1",
+      "bytes": 60094,
+      "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+      "read": "all 555 lines"
+    }
+  ],
+  "checks": [
+    {
+      "topic": "Root configuration is a prerequisite",
+      "finding": "An exact supplied configuration hash, contained evidence path, Root-specific status, exact head, preparer self pin and explicit BuildQuery-only authority are checked. The current Main branch/head and clean status are checked before and after preparation. No arbitrary subject execution is part of this peer."
+    },
+    {
+      "topic": "Catalog and independent acceptance",
+      "finding": "The constructor verifies the exact preparation review, driver, classifier, matrix, auditor and adaptation pins plus recursive provenance. It requires a Root catalog acceptance bound to the same head, matrix, independent peer and selected preparation-review record. Source pins and whole-tree dependency pins are rehashed before any output write."
+    },
+    {
+      "topic": "Separate batches and counts",
+      "finding": "Only new4 or existing63 is accepted. New4 has the four fixed ordered group names and 58 declared controls. Existing63 must exactly preserve the accepted V34 ordered group array and 1,249 declarations. Selected groups are unique and remain under the 64-group cap; the full matrix is 117 groups / 2,013 declared controls. Actual future metadata must remain null.",
+      "declared_batches": [
+        {
+          "batch": "new4",
+          "groups": 4,
+          "controls": 58
+        },
+        {
+          "batch": "existing63",
+          "groups": 63,
+          "controls": 1249
+        }
+      ],
+      "actual_metadata_count": null
+    },
+    {
+      "topic": "Protected control fields",
+      "finding": "The source audit independently evaluates only AST literal/name/known-string/set expressions, without importing or executing the constructor. All 25 fixed fields equal V34 values, all 11 result/acceptance/count fields remain null, and all 37 literal $taskGrant fields consumed by the strict driver are fixed, null or constructed protected fields. The driver's two dynamic field loops are the seven budget fields and three authority Boolean fields, all already among the protected fields. Provenance updates cannot overlap reserved keys; fixed and null checks run again after the update."
+    },
+    {
+      "topic": "Budgets and cache roles",
+      "finding": "The 300-second freshness, 16,777,216 KiB free-memory floor, compile 1,320 seconds, metadata 30 seconds, runtime whole-group 120 seconds, owner settle 10 seconds and outer 1,800 seconds remain unchanged. qualification_requested means the existing strict fresh-batch validation path, while runtime/product qualification claims remain false. New proof/cache/global-cache roles are freshly named and absent, and no seeded or prior unsealed cache is accepted."
+    },
+    {
+      "topic": "Artifact and metadata contract",
+      "finding": "The unchanged strict driver checks actual installed executable/PDB and exactly matching cached test.exe/test.pdb identities, PE stack reservation, exact actual 0.16.0 metadata protocol, ordered required names and allowed anonymous names. BuildQuery executes compile plus metadata query only; it does not run test indices. The constructor does not predict an actual metadata count."
+    },
+    {
+      "topic": "Source and process closure",
+      "finding": "The unchanged strict driver retains full source/tree/vendor/compiler/control before/final seals, actual executable/hash/argv/process-birth and retained-handle binding, owner/global native absence, per-phase artifact checks and all-group final closure. No group in a partial batch is admissible for runtime. RuntimeOnly additionally requires a separately pinned independent complete BuildQuery acceptance."
+    },
+    {
+      "topic": "Launcher and finite output effects",
+      "finding": "The constructor binds the complete original launcher hash and changes exactly one PREP directory token, with a full byte inverse assertion. The original pinned external owner helper, actual PowerShell -File shape, BuildQuery mode, 1,800-second timeout and final outer absence handling remain unchanged. Static call inspection finds only read-only git commands as subprocesses. First mutation is line 127: creating a fresh control directory, followed by four exclusive xb evidence outputs. It neither creates the proof directory nor launches/queues native work."
+    },
+    {
+      "topic": "Grant inverse",
+      "finding": "The constructor starts from a deep copy of the exact immutable V34 grant, records only the explicit update keys and requires the complete inverse to recover that original grant before writing. The exact eventual grant/launcher bytes remain dependent on Root's supplied configuration and timestamp and were not constructed in this review."
+    }
+  ],
+  "independent_evidence": {
+    "input_pins_rehashed": 6,
+    "finite_successor_edits": 1,
+    "complete_successor_byte_inverse": true,
+    "source_predicates_checked": 36,
+    "strict_driver_literal_fields": 37,
+    "unprotected_literal_fields": [],
+    "driver_section_bindings": 12,
+    "original_draft_unchanged": true
+  },
+  "execution": {
+    "constructor_executed": false,
+    "constructor_imported": false,
+    "launcher_executed": false,
+    "strict_driver_executed": false,
+    "grant_created": false,
+    "main_mutated": false,
+    "native_or_compiler_started": false,
+    "metadata_query_started": false,
+    "runtime_started": false,
+    "authority_granted_by_this_peer": false
+  },
+  "limits": [
+    "This is source acceptance of v2 25DC73B5 only. An actual Root configuration, preparation/catalog acceptance, current pins and exact emitted grant/launcher closure remain necessary before a specific launch.",
+    "This peer is not a catalog peer, BuildQuery artifact acceptance, native execution grant or runtime qualification.",
+    "The original launcher and strict driver are preserved inputs. This review does not replace their later actual artifact/source/process closure or independent metadata acceptance.",
+    "Actual future metadata counts are unknown; declared source counts are recorded separately."
+  ],
+  "conclusion": "No remaining concrete blocker was found in the bounded v2 constructor source and its exact composition with the pinned V34 control contract."
+}

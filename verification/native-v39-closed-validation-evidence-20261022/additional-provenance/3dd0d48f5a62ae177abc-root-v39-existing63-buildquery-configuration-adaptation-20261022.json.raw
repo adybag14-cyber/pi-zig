@@ -1,0 +1,374 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-buildquery-issued-config-20261022.json",
+    "bytes": 26267,
+    "sha256": "BFEA1905E686476E6C9A97D6F326D0654E5D2FA0397B8FC34CC7BFC6F5A1E42E"
+  },
+  "configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-existing63-buildquery-issued-config-20261022.json",
+    "bytes": 30860,
+    "sha256": "95CFF37C187AB108203CF82B1D662F564D4F8A59FDD67376C76883FB30982CC2"
+  },
+  "source_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-existing63-buildquery-field-change-plan-sourceonly-20261022\\field-change-plan.json",
+    "bytes": 33326,
+    "sha256": "E532C9361F9D950BAD2E5D43A366B2CD711457B4989BAE2AB3E45C3E93EB9B55"
+  },
+  "source_plan_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-existing63-buildquery-field-plan-peer-20261022\\peer.json",
+    "bytes": 11714,
+    "sha256": "F37AD32AC9648E6488BAD3C2993C0547B2C01137624BD5A0AC435DE452E670F7"
+  },
+  "logical_field_changes": [
+    {
+      "path": [
+        "batch"
+      ],
+      "before": "new4",
+      "after": "existing63",
+      "known_source_change": true
+    },
+    {
+      "path": [
+        "declared_groups"
+      ],
+      "before": 4,
+      "after": 63,
+      "known_source_change": true
+    },
+    {
+      "path": [
+        "declared_controls"
+      ],
+      "before": 58,
+      "after": 1249,
+      "known_source_change": true
+    },
+    {
+      "path": [
+        "preparation_review"
+      ],
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022\\preparation-review.json",
+        "bytes": 1230758,
+        "sha256": "BC7E87602311E3947D2581F87E4D4AE0FBA9224BDE3B940BC9D1F5D2652F12AB"
+      },
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\preparation-review.json",
+        "bytes": 1232958,
+        "sha256": "58E217CF7E2445167523089006FBA042FAF1AAA7C766036A69CE304413042904"
+      },
+      "known_source_change": true
+    },
+    {
+      "path": [
+        "selected_group_names"
+      ],
+      "before": [
+        "native-node-file-handle-owner",
+        "native-node-fs-before-hook-continuation",
+        "native-vm-error-constructor-name",
+        "native-node-file-handle-transfer"
+      ],
+      "after": [
+        "native-node-file-handle-read",
+        "native-node-fs-callback-template",
+        "native-vm-simple-stack-source",
+        "native-vm-exotic-operations",
+        "native-node-diagnostic-context",
+        "native-node-native-debug",
+        "native-node-permission",
+        "native-node-fs-readwrap-reuse",
+        "native-node-reqwrap-callback-routing",
+        "native-vm-script-location",
+        "native-node-stream-read",
+        "native-node-environment-map",
+        "native-vm-backing-store-adoption",
+        "native-node-environment-paths",
+        "native-node-stream-fields",
+        "native-node-managed-buffers",
+        "native-node-fs-request-owner",
+        "native-vm-execution-termination",
+        "native-typebox-execution-termination",
+        "native-host-termination-ownership",
+        "native-node-stream-resource",
+        "native-node-package-json-parser",
+        "native-node-microtask-checkpoint",
+        "native-vm-property-retirement",
+        "native-vm-consuming-operands",
+        "native-vm-oom-occurrence",
+        "native-node-callback-scope",
+        "native-node-inspect-colors",
+        "native-vm-captured-frame-logging",
+        "native-node-experimental-warning",
+        "native-node-commonjs-helpers",
+        "native-node-process-warning",
+        "native-node-fs-request-transport",
+        "native-vm-array-buffer-view-length",
+        "native-vm-array-buffer-backing",
+        "native-vm-private-property",
+        "native-node-tcp-transport",
+        "native-vm-async-arguments",
+        "native-node-fs-write-uv",
+        "native-vm-sync-arguments",
+        "native-vm-async-retirement",
+        "native-vm-template-literal",
+        "native-vm-borrowed-bridges",
+        "vm-af-throw",
+        "native-ai-oauth-anthropic-genuine-af",
+        "native-node-module-creation",
+        "native-node-module-search-paths",
+        "native-node-fs-realpath-classic",
+        "native-node-fs-path-helpers",
+        "native-node-file-url-paths",
+        "native-sdk-tool-search-public",
+        "native-ai-radius-config",
+        "native-ai-radius-provider-genuine-af",
+        "native-node-inspect-entry",
+        "native-ai-oauth-radius-genuine-af",
+        "native-vm-existing-promise-settlement",
+        "native-node-options",
+        "native-node-uv-exception",
+        "native-vm-disallow-javascript",
+        "native-vm-continuation-data",
+        "native-vm-pending-promise",
+        "native-vm-native-global",
+        "native-vm-copy-data-properties"
+      ],
+      "known_source_change": true
+    },
+    {
+      "path": [
+        "preserved_previous_configuration"
+      ],
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-buildquery-issued-config-20261022.json",
+        "bytes": 25785,
+        "sha256": "70E3E8DEBE211D1F642C72DDFE76E0383084A71EEC0442DDF4CF0745E21AE629"
+      },
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-buildquery-issued-config-20261022.json",
+        "bytes": 26267,
+        "sha256": "BFEA1905E686476E6C9A97D6F326D0654E5D2FA0397B8FC34CC7BFC6F5A1E42E"
+      },
+      "known_source_change": true
+    },
+    {
+      "path": [
+        "root_resource_ownership",
+        "phase"
+      ],
+      "before": "specific_v39_new4_buildquery_constructor_and_exact_reviewed_emitted_launcher",
+      "after": "specific_v39_existing63_buildquery_constructor_and_exact_reviewed_emitted_launcher",
+      "known_source_change": true
+    },
+    {
+      "path": [
+        "root_resource_ownership",
+        "allowed_groups"
+      ],
+      "before": [
+        "native-node-file-handle-owner",
+        "native-node-fs-before-hook-continuation",
+        "native-vm-error-constructor-name",
+        "native-node-file-handle-transfer"
+      ],
+      "after": [
+        "native-node-file-handle-read",
+        "native-node-fs-callback-template",
+        "native-vm-simple-stack-source",
+        "native-vm-exotic-operations",
+        "native-node-diagnostic-context",
+        "native-node-native-debug",
+        "native-node-permission",
+        "native-node-fs-readwrap-reuse",
+        "native-node-reqwrap-callback-routing",
+        "native-vm-script-location",
+        "native-node-stream-read",
+        "native-node-environment-map",
+        "native-vm-backing-store-adoption",
+        "native-node-environment-paths",
+        "native-node-stream-fields",
+        "native-node-managed-buffers",
+        "native-node-fs-request-owner",
+        "native-vm-execution-termination",
+        "native-typebox-execution-termination",
+        "native-host-termination-ownership",
+        "native-node-stream-resource",
+        "native-node-package-json-parser",
+        "native-node-microtask-checkpoint",
+        "native-vm-property-retirement",
+        "native-vm-consuming-operands",
+        "native-vm-oom-occurrence",
+        "native-node-callback-scope",
+        "native-node-inspect-colors",
+        "native-vm-captured-frame-logging",
+        "native-node-experimental-warning",
+        "native-node-commonjs-helpers",
+        "native-node-process-warning",
+        "native-node-fs-request-transport",
+        "native-vm-array-buffer-view-length",
+        "native-vm-array-buffer-backing",
+        "native-vm-private-property",
+        "native-node-tcp-transport",
+        "native-vm-async-arguments",
+        "native-node-fs-write-uv",
+        "native-vm-sync-arguments",
+        "native-vm-async-retirement",
+        "native-vm-template-literal",
+        "native-vm-borrowed-bridges",
+        "vm-af-throw",
+        "native-ai-oauth-anthropic-genuine-af",
+        "native-node-module-creation",
+        "native-node-module-search-paths",
+        "native-node-fs-realpath-classic",
+        "native-node-fs-path-helpers",
+        "native-node-file-url-paths",
+        "native-sdk-tool-search-public",
+        "native-ai-radius-config",
+        "native-ai-radius-provider-genuine-af",
+        "native-node-inspect-entry",
+        "native-ai-oauth-radius-genuine-af",
+        "native-vm-existing-promise-settlement",
+        "native-node-options",
+        "native-node-uv-exception",
+        "native-vm-disallow-javascript",
+        "native-vm-continuation-data",
+        "native-vm-pending-promise",
+        "native-vm-native-global",
+        "native-vm-copy-data-properties"
+      ],
+      "known_source_change": true
+    },
+    {
+      "path": [
+        "root_review"
+      ],
+      "before": "Root authorizes the unchanged accepted972E BuildQuery constructor to create exactly one fresh private new4 grant and launcher at frozen pushed e9f11afa. Root accepted CB6 catalog/E1EB peer,5056 canonical execution sources/D91F peer and A935 retained observed helpers. Select the original four groups in their exact accepted order:4 groups/58 declared controls; actual metadata remains unknown. The original new3 admission-only negative is independently closed1A6F/9712 with zero native owners, metadata or tests; preserve every original attempt and its inputs. Use the serial native slot for this independent retained cohort while a source-only retry1 preparation is reviewed. Retain every67 predecessor provenance role and append only those two explicit negative references. Root will verify the exact emitted grant/launcher full inverses and submit promptly with1900s durable/1800s outer limits. Keep the300s grant age,16GiB free threshold, all1DD3/3413 owner,100ns identity, empty-stderr, artifact, full-seal and test controls. No RuntimeOnly authority or Main/index mutations. Current source remains frozen through complete independent closure.",
+      "after": "Root authorizes the unchanged accepted972E constructor to create exactly one fresh existing63 BuildQuery at frozen pushed e9f11afa. Preserve the original63 order and 1249 source declarations under originalCB6/E1EB catalog, 5056 execution-source review and 58E217 regression63 preparation. Actual metadata remains unknown. The new4 batch completed independent BuildQuery and strict runtime61/61; new3 retry1 is a closed admitted compiler negative F11D with one failed compile, zero metadata/runtime and two unstarted groups. All original failures remain preserved, including the earlier admission-only negative1A6/9712; no success transfers between cohorts. Root independently rehashed36915 current files and clean e9 after the compile negative. Retain all69 predecessor provenance roles byte-for-byte. Use the exclusive serial native lease, strict1DD3 driver and3413 classifier, fresh initially private caches,300-second grant age,16GiB minimum,1320/30 compile/query limits,1800-second outer and1900-second durable limits, exact100ns owner identity, empty successful stderr and complete source/artifact seals. Root fully read planE532/peerF37A and reviewerD8E4/peerA923, will verify the emitted raw grant/launcher inverses and submit promptly. This configuration grants no runtime or Main/index mutation; the two-error fixture successor stays separate until all e9 native evidence is closed.",
+      "actual_Root_issuance_change": true
+    },
+    {
+      "path": [
+        "issued_utc"
+      ],
+      "before": "2026-10-22T16:56:10.523351+00:00",
+      "after": "2026-10-22T17:43:33.531446+00:00",
+      "actual_Root_issuance_change": true
+    },
+    {
+      "path": [
+        "fresh_memory_observation",
+        "observed_utc"
+      ],
+      "before": "2026-10-22T16:55:00.7609436+00:00",
+      "after": "2026-10-22T17:42:56.0788742+00:00",
+      "actual_Root_issuance_change": true
+    },
+    {
+      "path": [
+        "fresh_memory_observation",
+        "free_physical_kib"
+      ],
+      "before": 28874676,
+      "after": 29177140,
+      "actual_Root_issuance_change": true
+    },
+    {
+      "path": [
+        "fresh_memory_observation",
+        "eligible"
+      ],
+      "before": true,
+      "after": true,
+      "actual_Root_issuance_change": true
+    },
+    {
+      "path": [
+        "fresh_memory_observation",
+        "process_rows"
+      ],
+      "before": 430,
+      "after": 433,
+      "actual_Root_issuance_change": true
+    },
+    {
+      "path": [
+        "fresh_memory_observation",
+        "native_candidates"
+      ],
+      "before": [],
+      "after": [],
+      "actual_Root_issuance_change": true
+    },
+    {
+      "path": [
+        "root_resource_ownership",
+        "observed_free_kib"
+      ],
+      "before": 28874676,
+      "after": 29177140,
+      "actual_Root_issuance_change": true
+    },
+    {
+      "path": [
+        "root_resource_ownership",
+        "observed_utc"
+      ],
+      "before": "2026-10-22T16:55:00.7609436+00:00",
+      "after": "2026-10-22T17:42:56.0788742+00:00",
+      "actual_Root_issuance_change": true
+    },
+    {
+      "path": [
+        "root_resource_ownership",
+        "native_candidates"
+      ],
+      "before": [],
+      "after": [],
+      "actual_Root_issuance_change": true
+    },
+    {
+      "path": [
+        "v39_resource_preflight"
+      ],
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-buildquery-resource-preflight-20261022.json",
+        "bytes": 945,
+        "sha256": "F44B39F35584A35F3C5FAD48F05C9B48DB3DB24C1560814F0E0CC4AB34C642A4"
+      },
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-existing63-buildquery-resource-preflight-20261022.json",
+        "bytes": 1300,
+        "sha256": "813ECFA1C874129AE07386EA37A1A47F0F87A2A17D0892FFD97D560B5388E6C0"
+      },
+      "actual_Root_issuance_change": true
+    }
+  ],
+  "logical_change_count": 19,
+  "complete_raw_inverse": true,
+  "unchanged_provenance_roles": 69,
+  "launch_reviewer": {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V39Existing63BuildQueryLaunch-20261022.py",
+      "bytes": 4475,
+      "sha256": "D8E4F709772E837DFD76FB9471682D9D58A0D8BC46C2D9F7E3501301F2E01802"
+    },
+    "source_adaptation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-existing63-buildquery-launch-reviewer-source-adaptation-20261022.json",
+      "bytes": 5581,
+      "sha256": "F59A45246A897E4E842FF903D2128DCFC43320D186BDB4B040694C8C4ED87DAC"
+    },
+    "changes": 6
+  },
+  "launch_reviewer_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-existing63-buildquery-launch-reviewer-source-peer-20261022\\peer.json",
+    "bytes": 11424,
+    "sha256": "A9231D1350546BFEEACA4963E621ACF4F2CE04296E005CB60160D67E2A3E15D1"
+  },
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "status": "root_accepted_bounded_v39_closed_phases_unresolved63_archive_preparer",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-22T18:21:49.550736+00:00",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\candidate\\Prepare-V39ClosedPhasesAndUnresolved63Archive-20261022.py",
+    "bytes": 72511,
+    "sha256": "02D8A4504E8741E915621AFE35B3DBDBEC8A8EE8F8D0F1712F9BA3C5C2392C2B"
+  },
+  "accepted_baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\candidate\\Prepare-V38PartialNegativeProgressAndValidationArchive-20261022.py",
+    "bytes": 76267,
+    "sha256": "EE11C073C1D1CAD599D7F88B34B78133A5E3A90F68D1E1094D6AF77D7C5128AB"
+  },
+  "finite_source_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\finite-source-adaptation.json",
+    "bytes": 145792,
+    "sha256": "276E8882011918EDE42E50E2EC250D8679C295CEE7B0062932FA6A1D408B2632"
+  },
+  "source_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\source-contract.json",
+    "bytes": 22219,
+    "sha256": "ED0F55B0B2071C6631B9FC2A6E3D82D5BD3FBC8D2E4661665DEB56ABAA125106"
+  },
+  "static_source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\static-source-proof.json",
+    "bytes": 237734,
+    "sha256": "DB13C70318CD03D81CBDBCB4793261A9DF292A5E2D297643C0738BF590BBAC3B"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\handoff.json",
+    "bytes": 22062,
+    "sha256": "21A330595BAFECCCDDC9C10D40550CDC43E759DAEA0212E23A65EE1AAE78C75B"
+  },
+  "checks": {
+    "all54_new_edit_bodies_read": true,
+    "raw_forward_inverse_replayed": true,
+    "untouched_fragments_rehashed": true,
+    "nonoutcome_helpers_raw_and_AST_equal": 23,
+    "complete_engine_regions_byte_equal": 4,
+    "source_parse_only": true,
+    "input_versions_independently_rehashed": 859,
+    "existing63_exact_null_contract_and_unconditional_pre_payload_stop": true,
+    "known_new4_actual_schema_read": true,
+    "new3_two_distinct_negatives_read": true,
+    "history_prefixes": 222,
+    "source_units": 65
+  },
+  "source_scope": "Interim source acceptance of known four closed phases only; current actual existing63 negative requires a separately reviewed finite successor. This candidate is deliberately unexecutable for any successful staging.",
+  "known_closed_phase_censuses": {
+    "new3-buildquery-prelaunch": 19,
+    "new3-retry1-buildquery": 21,
+    "new4-buildquery": 90,
+    "new4-runtime": 70
+  },
+  "old_checkpoint_and_source_units_preserved": true,
+  "known_new4_actual_metadata": 61,
+  "known_new3_observed_metadata": 0,
+  "new3_accepted_metadata_count": null,
+  "existing63_accepted_metadata_count": null,
+  "aggregate_metadata_count": null,
+  "full_fixture_intake_excluded": true,
+  "configuration_issued": false,
+  "candidate_or_prefix_executed": false,
+  "archive_compression_or_progress_preparation_executed": false,
+  "Main_or_index_access": false,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

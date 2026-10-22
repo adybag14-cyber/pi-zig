@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v36_new4_original_negative_runtime_audit",
+  "reviewer": "root",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\Audit-NegativeV36New4StrictRuntime.py",
+    "bytes": 47948,
+    "sha256": "5B32C5507CE78E1DB6BF0CB2AC1FE1ED8A48232E76AA6EFF3378034CF76F0DE0"
+  },
+  "captured_inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-audit-inputs.json",
+    "bytes": 14813,
+    "sha256": "62D821EB4E6F0AD4D4F9C3278A137D355533651B5C3542BA885FADE9936AEDE4"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-new4-negative-runtime-auditor-sourceonly-20261021\\finite-adaptation.json",
+    "bytes": 58429,
+    "sha256": "FF2F41C2298AD3372EDE0DD0E912FC228E03639F7DDFE62D041A345B6EE94A6C"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-control-20261020-210255\\Audit-NegativeV34StrictRuntime.py",
+    "bytes": 24260,
+    "sha256": "79093156FAA1813AACA595BC907D18F0593C2A13028E066C31AD4FB88D0C0FD0"
+  },
+  "static_replay": {
+    "status": "root_independent_read_only_finite_replay_passed",
+    "proof": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v36-new4-negative-runtime-auditor-sourceonly-20261021\\finite-adaptation.json",
+      "bytes": 58429,
+      "sha256": "FF2F41C2298AD3372EDE0DD0E912FC228E03639F7DDFE62D041A345B6EE94A6C"
+    },
+    "baseline": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-control-20261020-210255\\Audit-NegativeV34StrictRuntime.py",
+      "bytes": 24260,
+      "sha256": "79093156FAA1813AACA595BC907D18F0593C2A13028E066C31AD4FB88D0C0FD0"
+    },
+    "candidate": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\Audit-NegativeV36New4StrictRuntime.py",
+      "bytes": 47948,
+      "sha256": "5B32C5507CE78E1DB6BF0CB2AC1FE1ED8A48232E76AA6EFF3378034CF76F0DE0"
+    },
+    "captured_inputs": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-audit-inputs.json",
+      "bytes": 14813,
+      "sha256": "62D821EB4E6F0AD4D4F9C3278A137D355533651B5C3542BA885FADE9936AEDE4"
+    },
+    "finite_edit_count": 24,
+    "every_intermediate_hash_verified": true,
+    "complete_forward_bytes_exact": true,
+    "complete_inverse_bytes_exact": true,
+    "unchanged_helpers": 5,
+    "unchanged_critical_blocks": 4,
+    "reviewed_imports": 2,
+    "byte_blocks": [
+      {
+        "name": "require",
+        "bytes": 63,
+        "sha256": "F46B5434C3ADB818928C47EA0FAE12A2D2D368977470F66FBA7928F4D7F1A931",
+        "baseline_offset": 943,
+        "candidate_offset": 1149
+      },
+      {
+        "name": "utc_ticks",
+        "bytes": 575,
+        "sha256": "266CAA56B6ABCD7BEA517763FA768103E9DFFFF5D6728CAEEB3AA17FC31B870F",
+        "baseline_offset": 1008,
+        "candidate_offset": 1214
+      },
+      {
+        "name": "read",
+        "bytes": 76,
+        "sha256": "DE629ABFEF719E002C06E1F2365809916F7926D551A1020E39CE28AE42D4C62B",
+        "baseline_offset": 1585,
+        "candidate_offset": 1791
+      },
+      {
+        "name": "digest",
+        "bytes": 150,
+        "sha256": "38E50D7CE9F2FE28106BDC3AE66D9C14EB4A2B4CB6817013B0787AE69832861B",
+        "baseline_offset": 1662,
+        "candidate_offset": 1868
+      },
+      {
+        "name": "pin",
+        "bytes": 93,
+        "sha256": "E769C30A1014068A304AEE254333FAC59F4DC637578F44048E783BCBFEE106B7",
+        "baseline_offset": 1813,
+        "candidate_offset": 2019
+      },
+      {
+        "name": "complete_current_directory_inventory_and_rehash",
+        "bytes": 899,
+        "sha256": "46E46FE7055166997D19526EE80B81B52C2AE8E986DA2C5C9620B52C8370955A",
+        "baseline_offset": 6580,
+        "candidate_offset": 24528
+      },
+      {
+        "name": "original_strict_negative_owner_and_stderr_gates",
+        "bytes": 1063,
+        "sha256": "4C924F326A731003B5AED6FF9F86AE99437D84DB8623B42F4A57AAB1BFB59D4B",
+        "baseline_offset": 13847,
+        "candidate_offset": 35971
+      },
+      {
+        "name": "complete_raw_runtime_decoder",
+        "bytes": 1267,
+        "sha256": "E2CD4564BD057927C12C38639D4FBBF84D4A1D6B3F076064C2752278B36FB2EF",
+        "baseline_offset": 15256,
+        "candidate_offset": 37396
+      },
+      {
+        "name": "current_exact_process_instance_reconciliation",
+        "bytes": 1049,
+        "sha256": "B7DFCE72D5F2403BFA5DE2E4C9359FA8876AFCDAF4CE6CFB0F421D5EC986CBC7",
+        "baseline_offset": 21479,
+        "candidate_offset": 44333
+      },
+      {
+        "name": "reviewed_recursive_provenance_pin_helper",
+        "bytes": 567,
+        "sha256": "EA0B497CD64C3D13FD641595758EF369AC3701FD1777674B5A1E7F400B1F10E5",
+        "source_offset": 3381,
+        "candidate_offset": 2114
+      },
+      {
+        "name": "complete_reviewed_v36_direct_runtime_provenance_and_positive_parent_closure",
+        "bytes": 14619,
+        "sha256": "7D6C5AC9F88BB279D04799688D447225F6D76A135627520FC79A0D4F02CEFE74",
+        "source_offset": 4354,
+        "candidate_offset": 5653
+      }
+    ],
+    "syntax_valid": true,
+    "candidate_executed": false,
+    "native_execution_authorized": false,
+    "source_mutation_hold_released": false
+  },
+  "source_review": {
+    "complete_source_bytes_read": 47948,
+    "complete_input_bytes_read": 14813,
+    "complete_forward_and_inverse_replay": true,
+    "all_24_intermediate_hashes_verified": true,
+    "unchanged_helpers": 5,
+    "unchanged_critical_blocks": 4,
+    "byte_identical_reviewed_imports": 2,
+    "full_original_negative_owner_and_nonempty_stderr_gates_preserved": true,
+    "raw_19_frame_decoder_and_18_failure_flags_preserved": true,
+    "all_four_accepted_cached_artifacts_and_complete_input_inventory_required": true,
+    "original_timestamps_normalized_only_to_same_utc_100ns_instant": true,
+    "exact_process_instance_and_later_pid_reuse_reconciliation_required": true,
+    "complete_direct_v36_runtime_and_positive_parent_provenance_required": true,
+    "sole_output_create_only": "independent-negative-runtime-closure.json"
+  },
+  "original_runtime_job": "job-op-c8c6744c3b5afaed7a7ee43db871f1edb0abd5430430ea7671ffec45962bfdb4",
+  "original_runtime_status": "failed",
+  "original_runtime_exit_code": 1,
+  "expected_observed_counts": {
+    "granted_groups": 4,
+    "attempted_groups": 1,
+    "metadata": 61,
+    "started": 19,
+    "completed": 19,
+    "failed": 18,
+    "unstarted_groups": 3,
+    "unstarted_indices": 42
+  },
+  "audit_execution_authorized": true,
+  "audit_execution_scope": "Run only the exact pinned independent negative auditor with the exact captured inputs. No native, compiler, preparer, generator, reference capture, Main mutation or retry is authorized by this record.",
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "runtime_qualification": false,
+  "product_qualification": false,
+  "reviewed_utc": "2026-10-21T08:44:39.937037+00:00"
+}

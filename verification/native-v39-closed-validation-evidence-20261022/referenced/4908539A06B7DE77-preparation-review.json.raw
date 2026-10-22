@@ -1,0 +1,196 @@
+{
+  "schema": 1,
+  "status": "source_only_fresh_batch_prepared",
+  "candidate_head": "14615dfc179f9e7e2044591a2d8aa9592b9d883b",
+  "source_integration_commit": "b5ebda01d3b407d123fe2b4d7a894a230565d223",
+  "prepared_utc": "2026-10-20T17:10:39.166637+00:00",
+  "driver": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v31-prepared-20261020\\Run-CombinedNativeBatch.ps1",
+    "bytes": 60094,
+    "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+  },
+  "matrix": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v31-prepared-20261020\\groups.json",
+    "bytes": 486999,
+    "sha256": "844E42808F020C6773129CA9FBD4A1A16B28D779CAD55ADD7DE636B6B2D6644A"
+  },
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v31-prepared-20261020\\Audit-CombinedNativeBatch.py",
+    "bytes": 15852,
+    "sha256": "C38907EAA711F9EBB56B1B197C2BC44C025748CC0CD68AC44BCA3ED0A36282F3"
+  },
+  "classifier": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v31-prepared-20261020\\Get-ModelsNativeCandidates.ps1",
+    "bytes": 1786,
+    "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+  },
+  "prior_matrix": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v30-prepared-20261020\\groups.json",
+    "bytes": 486999,
+    "sha256": "4ED42AD04FE89B2B9E8FE8E921F6BE22167524EF257E84E672F1EE9D13001723"
+  },
+  "prior_strict_preparation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v30-prepared-20261020\\preparation-review.json",
+    "bytes": 7915,
+    "sha256": "A66C0AE25971F56C36B6C5ACD2FD2E82C39E766D8A979786310E3EA61136C5B0"
+  },
+  "prior_compile_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v30-control-20261020-165337\\independent-partial-compile-negative-closure.json",
+    "bytes": 32149,
+    "sha256": "CC4A348630D267A9A9F308D662CC366428C0E74A36E159B5DED41493E06DBE9C"
+  },
+  "callback_correction_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-async-wrap-callback-v30-coercion-sourceonly-20261020\\main-intake.json",
+    "bytes": 3323,
+    "sha256": "B309380148C4A99C20C0B1144D6EF873079483D338E68CFD9454BD5E1DFA2A28"
+  },
+  "progress": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+    "bytes": 161792,
+    "sha256": "680D203E487C56ED1F3E65E08780C8E5B3E5039C117A254BACB5697D9619B380"
+  },
+  "combined_build_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v31-prepared-20261020\\combined-build-source-peer.json",
+    "bytes": 8275,
+    "sha256": "212509F6AAF5E43A29E892C0E85E32BF7DD526B94921EDA324F57AB3398BDFD3"
+  },
+  "source_pin_changes": [
+    {
+      "group": "native-node-environment-map",
+      "path": "src/extensions/native_node_async_wrap_make_callback.zig",
+      "before": "AE550CB8190EB284B576C3F9210EBAF4D9B5CB65589C35EAF38B7FF3274EA188",
+      "after": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "path": "src/extensions/native_node_async_wrap_make_callback.zig",
+      "before": "AE550CB8190EB284B576C3F9210EBAF4D9B5CB65589C35EAF38B7FF3274EA188",
+      "after": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+    },
+    {
+      "group": "native-vm-script-location",
+      "path": "src/extensions/native_node_async_wrap_make_callback.zig",
+      "before": "AE550CB8190EB284B576C3F9210EBAF4D9B5CB65589C35EAF38B7FF3274EA188",
+      "after": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+    },
+    {
+      "group": "native-node-environment-paths",
+      "path": "src/extensions/native_node_async_wrap_make_callback.zig",
+      "before": "AE550CB8190EB284B576C3F9210EBAF4D9B5CB65589C35EAF38B7FF3274EA188",
+      "after": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+    },
+    {
+      "group": "native-node-stream-fields",
+      "path": "src/extensions/native_node_async_wrap_make_callback.zig",
+      "before": "AE550CB8190EB284B576C3F9210EBAF4D9B5CB65589C35EAF38B7FF3274EA188",
+      "after": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "path": "src/extensions/native_node_async_wrap_make_callback.zig",
+      "before": "AE550CB8190EB284B576C3F9210EBAF4D9B5CB65589C35EAF38B7FF3274EA188",
+      "after": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+    },
+    {
+      "group": "native-node-stream-read",
+      "path": "src/extensions/native_node_async_wrap_make_callback.zig",
+      "before": "AE550CB8190EB284B576C3F9210EBAF4D9B5CB65589C35EAF38B7FF3274EA188",
+      "after": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2"
+    }
+  ],
+  "whole_dependency_pin_changes": [],
+  "new_groups": [],
+  "preserved_groups": 104,
+  "preserved_declarations": 1795,
+  "catalog_groups": 104,
+  "catalog_declarations": 1795,
+  "selected_groups": 54,
+  "selected_declarations": 1089,
+  "selected_group_names": [
+    "native-node-environment-map",
+    "native-vm-backing-store-adoption",
+    "native-vm-script-location",
+    "native-node-environment-paths",
+    "native-node-stream-fields",
+    "native-node-managed-buffers",
+    "native-node-stream-read",
+    "native-node-fs-request-owner",
+    "native-vm-execution-termination",
+    "native-typebox-execution-termination",
+    "native-host-termination-ownership",
+    "native-node-stream-resource",
+    "native-node-package-json-parser",
+    "native-node-microtask-checkpoint",
+    "native-vm-property-retirement",
+    "native-vm-consuming-operands",
+    "native-vm-oom-occurrence",
+    "native-node-callback-scope",
+    "native-node-inspect-colors",
+    "native-vm-captured-frame-logging",
+    "native-node-experimental-warning",
+    "native-node-commonjs-helpers",
+    "native-node-process-warning",
+    "native-node-fs-request-transport",
+    "native-vm-array-buffer-view-length",
+    "native-vm-array-buffer-backing",
+    "native-vm-private-property",
+    "native-node-tcp-transport",
+    "native-vm-async-arguments",
+    "native-node-fs-write-uv",
+    "native-vm-sync-arguments",
+    "native-vm-async-retirement",
+    "native-vm-template-literal",
+    "native-vm-borrowed-bridges",
+    "vm-af-throw",
+    "native-ai-oauth-anthropic-genuine-af",
+    "native-node-module-creation",
+    "native-node-module-search-paths",
+    "native-node-fs-realpath-classic",
+    "native-node-fs-path-helpers",
+    "native-node-file-url-paths",
+    "native-sdk-tool-search-public",
+    "native-ai-radius-config",
+    "native-ai-radius-provider-genuine-af",
+    "native-node-inspect-entry",
+    "native-ai-oauth-radius-genuine-af",
+    "native-vm-existing-promise-settlement",
+    "native-node-options",
+    "native-node-uv-exception",
+    "native-vm-disallow-javascript",
+    "native-vm-continuation-data",
+    "native-vm-pending-promise",
+    "native-vm-native-global",
+    "native-vm-copy-data-properties"
+  ],
+  "selected_order_note": "Exactly unchanged V30 strict selection and order.",
+  "auditor_change": "Only exact V30 to V31 preparation path, fully inverted",
+  "runtime_authority": false,
+  "execution_authority": false,
+  "qualification": false,
+  "review": "All104 groups/1795 declarations and selected54 order/1089 declarations remain unchanged. Exactly seven source pins for the same shared AsyncWrap callback refresh after the single reviewed return-try correction; all test roots, declarations, whole-tree dependency pins and build graph remain. Full inverse recovers original V30 matrix apart from preparation metadata. Strict1DD3 and all runtime/process/source/artifact gates unchanged; max64 bound respected. Fresh private caches, no prior compile or diagnostic cache reuse. Complete metadata and independent whole source/compiler/control/artifact/original-process closure precede separately granted RuntimeOnly. No additional source units, runtime, application or release qualification.",
+  "prior_diagnostic_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-diagnostic-v29-control-20261020-163817\\independent-diagnostic-compile-negative-closure.json",
+    "bytes": 39898,
+    "sha256": "2F221509291791E5D157383FD095F884EFD0C11029790349FFE3B8E2B3FB15A6"
+  },
+  "source_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-composed-foundation-intake-20261020\\main-intake.json",
+    "bytes": 68202,
+    "sha256": "DBFF9E992792D325EC4B2398CA498841C7B0278C0116BEE1DAFA6267CF25C551"
+  },
+  "macro_correction_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-script-v27-constants-sourceonly-20261020\\main-intake.json",
+    "bytes": 2463,
+    "sha256": "818AB72A1CF294D9A761DB38698A3CEE1980B0C0E2EE26A0260D5971BC1EC9F9"
+  },
+  "backing_correction_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-backing-v28-field-sourceonly-20261020\\main-intake.json",
+    "bytes": 3066,
+    "sha256": "99D365A2EFD929BE95501E02FBBA5EBDE006A19A456BC4844AD5DF8BD2B41B1A"
+  },
+  "fixture_correction_intake": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v29-fixture-corrections-main-intake-20261020\\main-intake.json",
+    "bytes": 5941,
+    "sha256": "9954E1870B0A9DD99E4639900CD78030F625AB6C973874BE8B862ED64A78C185"
+  }
+}

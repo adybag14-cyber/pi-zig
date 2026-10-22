@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "candidate_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "reviewed_utc": "2026-10-20T22:32:48.128233+00:00",
+  "catalog_source_accepted": true,
+  "native_execution_authorized": false,
+  "new4_and_original63_preserved": true,
+  "matrix_sha256": "B5DDAB29463DC9EEF28A795F702F605AEC013B21236975B857AE66C25A8CD7FA",
+  "independent_catalog_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v35-catalog-source-peer-20261020\\emitted-peer.json",
+    "bytes": 18666,
+    "sha256": "5E7945A8C85BDFE66D46AB6E53A274374FBA39FB469D748BF30B239FCB15BCA5"
+  },
+  "preparation_reviews": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-new4-prepared-20261020\\preparation-review.json",
+      "bytes": 77860,
+      "sha256": "8A2C86365742929786BB4BFEF03C249D01AC1A698CC0B325E21BF69B9188658B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v35-regression63-prepared-20261020\\preparation-review.json",
+      "bytes": 80052,
+      "sha256": "AAD575EB3C6D136E58ADC02E063CF0817340FAAFDDA521A97D48E8FEE303D328"
+    }
+  ],
+  "preparer_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-catalog-preparer-source-review-20261020.json",
+    "bytes": 2058,
+    "sha256": "69921D41E556B9F7161722000E22A77BD624D5F1800860826E56F91A694199C4"
+  },
+  "complete_peer_and_checker_source_read": true,
+  "entire_readonly_peer_proof_reproduced": true,
+  "current_source_versions_reverified": 1310,
+  "immutable_reference_versions_reverified": 99,
+  "existing_groups_preserved": 113,
+  "existing_declarations_preserved": 1955,
+  "catalog_groups": 117,
+  "catalog_declarations": 2013,
+  "source_pin_refreshes": 65,
+  "dependency_pin_refreshes": 79,
+  "added_dependency_rows": 232,
+  "six_commit_chain_occurrences": 427,
+  "six_commit_chain_distinct_paths": 423,
+  "source_only": true,
+  "actual_metadata_count": null,
+  "runtime_authority": false,
+  "qualification": false,
+  "review": "Root fully read the complete emitted peer and independent checker, re-executed only its read-only prefix, and reproduced the entire sealed peer exactly. All original113 groups and344 dependency rows retain complete byte inverse; both full matrices and disjoint4/58 plus original63/1249 ordered selections match. All source/configuration pins and original checkout/Git distinctions remain exact. Driver/classifier and metadata-auditor gates are unchanged. This accepts source preparation only."
+}

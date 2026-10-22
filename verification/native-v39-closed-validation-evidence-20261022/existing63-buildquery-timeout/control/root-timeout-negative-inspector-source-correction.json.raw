@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "kind": "root_read_only_inspector_source_correction",
+  "basis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-control-20261022-174353\\root-timeout-negative-inspector-v1.py",
+    "bytes": 17707,
+    "sha256": "856539EF618B566F04B6A5659728535AFFD5B77D97D999F299D8240221514EE8"
+  },
+  "negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-control-20261022-174353\\root-timeout-negative-inspector-v1-negative.json",
+    "bytes": 1718,
+    "sha256": "E140FA402E066D64F1DFB918C3020566D06A16502B439F82DC8F37DA098FFC7E"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-control-20261022-174353\\root-timeout-negative-inspector-v2.py",
+    "bytes": 18080,
+    "sha256": "4718B07D214F1D7D9626D607DDB6A1A483DB9CA9E2D12EF6AC77073A5F79247A"
+  },
+  "finite_replacements": [
+    {
+      "before": "grant=read(C/'root-grant.json');cfg=read(R['specific_root_configuration']['path']);before=read(P/'before.json')",
+      "after": "grant=read(C/'root-grant.json');cfg=read(R['specific_root_configuration']['path']);before=read(P/'before.json')\nmatrix_path=Path(r'C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\groups.json')\nassert pin(matrix_path)['sha256']==R['matrix_sha256']\nmatrix_by_name={g['name']:g for g in read(matrix_path)['groups']}\nassert all(n in matrix_by_name for n in R['groups'])"
+    },
+    {
+      "before": "assert op['arguments'][:6]==['build','build-'+name,'-Doptimize=Debug','-Duse-llvm=true','-Ddiagnostic-tests=false','-j1']",
+      "after": "assert op['arguments'][:6]==['build',matrix_by_name[name]['target'],'-Doptimize=Debug','-Duse-llvm=true','-Ddiagnostic-tests=false','-j1']\n   assert op['arguments']==read(d/'commands.json')['compile']"
+    }
+  ],
+  "full_raw_forward_and_inverse_equal": true,
+  "change": "Bind compile step to the unchanged pinned catalog target and exact original commands array; vm-af-throw has target build-native-vm-af-throw.",
+  "successful_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-control-20261022-174353\\root-outer-timeout-negative-closure.json",
+    "bytes": 632063,
+    "sha256": "451FF45C40F879CEC5A30DFED6D0D5ED352B9E8C3B558E6BC67CBE53789B85BC"
+  },
+  "native_attempt": false,
+  "qualification": false
+}

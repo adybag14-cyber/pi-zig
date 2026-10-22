@@ -1,0 +1,27 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\07833ed6d378e68ff25c7155c9bbfab0\\test.exe",
+  "binary_sha256": "3CA7434C1B21F31B49C3A8B20394B6BDCB4B1565E2F1AA96AC43CA1FD81201BE",
+  "version": "0.16.0",
+  "actual_count": 15,
+  "tests": [
+    "native_node_file_handle_read_test.test.native FileHandle read closed and closing return EOF before read admission",
+    "native_node_file_handle_read_test.test.native FileHandle zero length emits actual stream EOF without allocating a request",
+    "native_node_file_handle_read_test.test.native FileHandle first read bypasses FSReqCallback construction and retains the real ReadWrap",
+    "native_node_file_handle_read_test.test.native FileHandle repeated start and ReadStop preserve the accepted completion",
+    "native_node_file_handle_read_test.test.native FileHandle bounded offset advances by emitted bytes before inline EOF",
+    "native_node_file_handle_read_test.test.native FileHandle completion uses the live length and preserves the raw trace result",
+    "native_node_file_handle_read_test.test.native FileHandle unbounded restart recycles the same native request through actual EOF",
+    "native_node_file_handle_read_test.test.native FileHandle reentrant onread restarts before old Wrapper and event retirement",
+    "native_node_file_handle_read_test.test.native FileHandle reuse creates a fresh resource and restores the default trigger",
+    "native_node_file_handle_read_test.test.native FileHandle ignored resource Set exception continues reset and real admission",
+    "native_node_file_handle_read_test.test.native FileHandle ordinary onread reason survives restart and the actual second completion",
+    "native_node_file_handle_read_test.test.native FileHandle full freelist releases the completed local after EmitRead",
+    "native_node_file_handle_read_test.test.native FileHandle joined service drains the accepted buffer after JavaScript is disabled",
+    "native_node_file_handle_read_test.test.native FileHandle AfterClose shares the actual flags and emits EOF through StreamBase",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-file-handle-read",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

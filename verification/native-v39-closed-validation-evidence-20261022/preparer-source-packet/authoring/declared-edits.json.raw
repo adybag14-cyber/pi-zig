@@ -1,0 +1,251 @@
+{
+  "schema": 1,
+  "basis": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\candidate\\Prepare-V39ClosedPhasesAndUnresolved63Archive-20261022.py",
+    "bytes": 72511,
+    "sha256": "02D8A4504E8741E915621AFE35B3DBDBEC8A8EE8F8D0F1712F9BA3C5C2392C2B"
+  },
+  "candidate_filename": "Prepare-V39ClosedValidationAndTimeoutArchive-20261022.py",
+  "changes": [
+    {
+      "label": "observed closed timeout scope",
+      "old": "\"Unexecuted V39 closed-phase archive/progress draft with an unresolved existing63 hard stop.\\n\"\n\"\"\"Requires a separately reviewed exact Root config, source receipt and copy plan.\nOnly the two closed new3 negatives and actual complete new4 pair are implemented.\nExisting63 is deliberately unresolved and fails before payload construction/staging.\nNo Main/index/process/current63 access, native invocation or candidate evaluation is authorized.\n\"\"\"\n",
+      "new": "\"Unexecuted V39 closed validation archive/progress source with the original existing63 timeout preserved.\\n\"\n\"\"\"Requires a separately reviewed exact Root config, source receipt and copy plan.\nThe two closed new3 negatives, complete actual new4 pair and closed existing63\nouter timeout are recorded separately. No missing original closure is reconstructed.\nNo Main/index/process/native access or candidate evaluation is authorized by this source.\n\"\"\"\n"
+    },
+    {
+      "label": "distinct timeout source directory",
+      "old": "PLAN_DIR = E / \"v39-closed-phases-progress-archive-sourceonly-20261022\"",
+      "new": "PLAN_DIR = E / \"v39-closed-phases-progress-archive-sourceonly-20261022\"\nTIMEOUT_DIR = E / \"v39-existing63-timeout-progress-archive-sourceonly-20261022\""
+    },
+    {
+      "label": "distinct create-only future output",
+      "old": "OUT = E / \"pending-v39-closed-validation-archive-intake-unresolved63-20261022\"",
+      "new": "OUT = E / \"pending-v39-closed-validation-and-timeout-archive-intake-20261022\""
+    },
+    {
+      "label": "immutable timeout inventory pin",
+      "old": "}\nCONFIG_KEYS = {",
+      "new": " \"timeout\": (TIMEOUT_DIR/\"timeout-observed-inputs.json\",611205,\"AE1E3516FD64740C6348FB98BE834F5E57CD4339F4D066A54C20673A9FE6ADB3\"),\n}\nCONFIG_KEYS = {"
+    },
+    {
+      "label": "fifth closed phase",
+      "old": "PHASES = (\"new3-buildquery-prelaunch\",\"new3-retry1-buildquery\",\"new4-buildquery\",\"new4-runtime\")",
+      "new": "PHASES = (\"new3-buildquery-prelaunch\",\"new3-retry1-buildquery\",\"new4-buildquery\",\"new4-runtime\",\"existing63-buildquery-timeout\")"
+    },
+    {
+      "label": "no gzip pair for missing final",
+      "old": "COMPRESSIBLE_PHASES = tuple(p for p in PHASES if p!=\"new3-buildquery-prelaunch\")",
+      "new": "COMPRESSIBLE_PHASES = tuple(p for p in PHASES if p not in (\"new3-buildquery-prelaunch\",\"existing63-buildquery-timeout\"))"
+    },
+    {
+      "label": "actual original timeout suffix",
+      "old": "CLOSED_SUFFIXES = (\"20261022-163859\",\"20261022-173038\",\"20261022-165637\",\"20261022-172246\")",
+      "new": "CLOSED_SUFFIXES = (\"20261022-163859\",\"20261022-173038\",\"20261022-165637\",\"20261022-172246\",\"20261022-174353\")"
+    },
+    {
+      "label": "future exact source-only configuration status",
+      "old": "\"root_reviewed_specific_v39_closed_phases_unresolved63_archive_preparation\"",
+      "new": "\"root_reviewed_specific_v39_closed_validation_and_timeout_archive_preparation\""
+    },
+    {
+      "label": "immutable timeout basis admission",
+      "old": "preservation = decode(exact(fixed(\"preservation\")))",
+      "new": "preservation = decode(exact(fixed(\"preservation\")))\ntimeout_basis = decode(exact(fixed(\"timeout\")))\nrequire(timeout_basis[\"schema\"]==1 and timeout_basis[\"candidate_head\"]==HEAD and\n        timeout_basis[\"status\"]==\"immutable_original_closed_existing63_timeout_inputs_source_only\" and\n        timeout_basis[\"required_raw_file_count\"]==len(timeout_basis[\"required_raw_files\"])==908 and\n        timeout_basis[\"phase_file_count\"]==len(timeout_basis[\"phase_file_pins\"])==872 and\n        len(timeout_basis[\"direct_pin_relationships\"])==47,\"exact observed original timeout inventory\")"
+    },
+    {
+      "label": "future separately accepted successor source status",
+      "old": "\"root_accepted_bounded_v39_closed_phases_unresolved63_archive_preparer\"",
+      "new": "\"root_accepted_bounded_v39_closed_validation_and_timeout_archive_preparer\""
+    },
+    {
+      "label": "Root source acceptance binds timeout input",
+      "old": "require(source_review[\"supplemental_preservation_inventory\"]==fixed(\"preservation\"),\"Root exact supplemental preservation scope\")",
+      "new": "require(source_review[\"supplemental_preservation_inventory\"]==fixed(\"preservation\"),\"Root exact supplemental preservation scope\")\nrequire(source_review[\"timeout_observed_input_inventory\"]==fixed(\"timeout\"),\"Root exact closed-timeout scope\")"
+    },
+    {
+      "label": "future separately accepted copy-plan status",
+      "old": "\"root_reviewed_exact_final_v39_closed_phases_unresolved63_archive_copy_plan\"",
+      "new": "\"root_reviewed_exact_final_v39_closed_validation_and_timeout_archive_copy_plan\""
+    },
+    {
+      "label": "three cohort roles now all closed",
+      "old": "\"two closed new3 negatives, accepted new4 and one unresolved63 contract\"",
+      "new": "\"two closed new3 negatives, accepted new4 and one original63 timeout negative\""
+    },
+    {
+      "label": "exact fifth original membership and absent final/result",
+      "old": "membership = copy_plan[\"observed_phase_membership\"]\nrequire([m[\"phase\"] for m in membership]==list(PHASES),\"only four exact closed phase scopes\")\nrequire(membership==inventory[\"observed_phase_membership\"],\"complete immutable closed phase membership, no current63 additions\")\nfor index,m in enumerate(membership):\n    batch = \"new3\" if index<2 else \"new4\"\n    is_build = index<3\n    groups = NEW3[:1] if index<2 else NEW4\n    proof,control = inside(m[\"proof\"]),inside(m[\"control\"])\n    require(proof.parent==control.parent==E,\"phase roots directly under evidence\")\n    cp = \"root-native-foundation-\"+(\"fresh-\" if is_build else \"\")+\"v39-\"+batch+(\"-control-\" if is_build else \"-runtime-control-\")\n    require(control.name==cp+CLOSED_SUFFIXES[index],\"exact actual closed phase instance\")\n    require(proof.name==control.name.replace(\"-control-\",\"-buildquery-\" if is_build else \"-\",1),\"actual phase proof identity\")\n    require(m[\"proof_top_level_files\"]==[\"before.json\",\"final.json\",\"result.json\"]==names(proof),\"whole original proof membership\")\n",
+      "new": "membership = copy_plan[\"observed_phase_membership\"]\nrequire([m[\"phase\"] for m in membership]==list(PHASES),\"all five exact closed phase scopes\")\nrequire(membership[:4]==inventory[\"observed_phase_membership\"] and\n        membership[4]==timeout_basis[\"phase_membership\"],\"all four prior memberships plus only the observed original timeout\")\nfor index,m in enumerate(membership):\n    batch = \"new3\" if index<2 else (\"new4\" if index<4 else \"existing63\")\n    is_build = index!=3\n    groups = NEW3[:1] if index<2 else (NEW4 if index<4 else existing63[:51])\n    proof,control = inside(m[\"proof\"]),inside(m[\"control\"])\n    require(proof.parent==control.parent==E,\"phase roots directly under evidence\")\n    cp = \"root-native-foundation-\"+(\"fresh-\" if is_build else \"\")+\"v39-\"+batch+(\"-control-\" if is_build else \"-runtime-control-\")\n    require(control.name==cp+CLOSED_SUFFIXES[index],\"exact actual closed phase instance\")\n    require(proof.name==control.name.replace(\"-control-\",\"-buildquery-\" if is_build else \"-\",1),\"actual phase proof identity\")\n    expected_proof = [\"before.json\"] if index==4 else [\"before.json\",\"final.json\",\"result.json\"]\n    require(m[\"proof_top_level_files\"]==expected_proof==names(proof),\"whole original proof membership; timeout has no final/result\")\n"
+    },
+    {
+      "label": "actual accepted timeout outcome validator replaces unresolved stop",
+      "old": "def require_unresolved_existing63():\n    slot = copy_plan[\"cohorts\"][\"existing63\"]\n    require(slot=={\"status\":\"unresolved_existing63_acceptance_contract\",\"buildquery_root_acceptance\":None,\n                   \"runtime_root_acceptance\":None,\"metadata_acceptance\":None,\"independent_build_closure\":None,\n                   \"independent_runtime_closure\":None,\"actual_metadata_count\":None,\"actual_group_counts\":None,\n                   \"observed_phase_membership\":None},\"one explicit unresolved existing63 contract, no predicted outcome\")\n    require(False,\"UNRESOLVED existing63 acceptance contract: a separately reviewed finite terminal-outcome successor is required before any staging\")\n",
+      "new": "def check_existing63_timeout_negative():\n    cohort = copy_plan[\"cohorts\"][\"existing63\"]\n    root_pin = timeout_basis[\"role_pins\"][\"root_acceptance\"]\n    require(cohort=={\"buildquery_root_negative\":root_pin},\"only the actual closed existing63 timeout authority\")\n    for required in timeout_basis[\"required_raw_files\"]:\n        require(archived_pin(required[\"path\"])==required and\n                row_by_path[required[\"path\"].casefold()][\"representation\"]==\"raw_byte_exact\",\n                \"all908 closed-timeout and source-predecessor inputs retained raw\")\n    for edge in timeout_basis[\"direct_pin_relationships\"]:\n        require(edge in copy_plan[\"direct_pin_relationships\"],\"all47 additional direct authority relationships preserved\")\n    root = document(root_pin)\n    roles = timeout_basis[\"role_pins\"]\n    peer,proof = document(roles[\"independent_peer\"]),document(roles[\"independent_proof\"])\n    require(root_pin[\"sha256\"]==\"BBE41BE72BD618F43712ECBA196E16859ED55A2782DF248FD0B54FBEB6787700\" and\n            root[\"status\"]==\"root_accepted_closed_v39_existing63_outer_timeout_negative\" and\n            root[\"reviewer\"]==\"Root\" and root[\"candidate_head\"]==HEAD and root[\"batch\"]==\"existing63\",\n            \"actual Root-accepted outer timeout, no positive outcome\")\n    require(root[\"independent_original_evidence_peer\"]==roles[\"independent_peer\"] and\n            root[\"independent_original_evidence_proof\"]==roles[\"independent_proof\"] and\n            root[\"independent_inspector\"]==roles[\"independent_inspector\"],\"exact independent original-only review\")\n    require(peer[\"status\"]==\"independent_original_evidence_peer_accepts_v39_existing63_outer_timeout_negative_only\" and\n            peer[\"reviewer\"]==\"/root/handover_review\" and peer[\"candidate_head\"]==HEAD and\n            peer[\"original_evidence_proof\"]==roles[\"independent_proof\"],\"accepted bounded peer scope\")\n    require(proof[\"status\"]==\"independently_inspected_original_v39_existing63_outer_timeout_negative\" and\n            proof[\"candidate_head\"]==HEAD and proof[\"input_count\"]==len(proof[\"all_input_pins\"])==877,\n            \"complete original-only inspection inventory\")\n    for row in proof[\"all_input_pins\"]:\n        require(row in timeout_basis[\"required_raw_files\"],\"every original inspected version retained\")\n    flags(peer[\"scope\"],false=(\"Main_access\",\"current_process_queries\",\"current_source_rehash\",\n                              \"cache_or_binary_reads\",\"native_or_candidate_or_auditor_execution\",\n                              \"original_receipts_modified\",\"configuration_or_release_issued\"))\n    flags(root,true=(\"original_closed_evidence_accepted_as_negative\",\"Root_full_peer_and_inspector_source_read\",\n                     \"Root_independent_current_before_seal_rehash\",\"Root_all50_raw_query_streams_independently_decoded\",\n                     \"Root_inspector_two_hunk_raw_inverse_replayed\",\"missing_original_closure_not_reconstructed\",\n                     \"original_partial_group_postseal_and_source_sealed_false_preserved\",\n                     \"current_against_before_rehash_equal\",\"all_observed_original_process_instances_closed\"),\n          false=(\"original_final_present\",\"original_result_present\",\"complete_buildquery_accepted\",\n                 \"positive_buildquery_accepted\",\"partial_groups_admissible\",\"metadata_audit_performed\",\n                 \"observed_helper_binding_performed\",\"runtime_configuration_issued\",\n                 \"source_inspection_negative_is_native_attempt\",\"native_execution_authorized\",\n                 \"runtime_authority\",\"source_mutation_hold_released\",\"product_qualification\",\"qualification\"))\n    require(all(root[k] is None for k in (\"actual_metadata_count\",\"accepted_metadata_count\",\n            \"original_source_postseal\",\"original_environment_restoration\",\"source_bookends_raw_equal\")),\n            \"all missing original closure fields remain unknown\")\n    require(root[\"granted_groups\"]==proof[\"granted_group_order\"]==existing63 and\n            root[\"declared_controls\"]==proof[\"declared_controls\"]==1249 and root[\"attempted_groups\"]==proof[\"attempted_groups\"]==51 and\n            root[\"unstarted_groups\"]==proof[\"unstarted_groups\"]==existing63[51:],\"exact63/51/12 source cohort\")\n    require(root[\"compile_owners\"]==proof[\"compile_owners\"]==51 and root[\"metadata_owners\"]==proof[\"metadata_owners\"]==50 and\n            root[\"runtime_owners\"]==proof[\"runtime_owners\"]==0 and root[\"observed_native_owners\"]==proof[\"native_owners\"]==101 and\n            root[\"provisional_compile_and_metadata_groups\"]==proof[\"provisional_groups\"]==50,\"all original native owners and cutpoint\")\n    require(root[\"partial_compile_only_group\"]==existing63[50]==\"native-sdk-tool-search-public\" and\n            root[\"complete_groups_accepted\"]==proof[\"complete_groups_accepted\"]==0 and\n            root[\"selected_tests_started\"]==proof[\"selected_tests_started\"]==0,\"no promoted group or runtime\")\n    counts = root[\"observed_partial_group_counts\"]\n    require(counts==proof[\"observed_partial_group_counts\"] and len(counts)==50 and\n            all(type(n) is int and n>0 for n in counts) and\n            sum(counts)==root[\"observed_partial_metadata_records\"]==proof[\"observed_partial_metadata_count\"]==985,\n            \"985 raw partial query records, never accepted metadata\")\n    require(all(proof[k] is None for k in (\"original_final\",\"original_batch_result\",\"original_source_postseal\",\n            \"original_environment_restoration\",\"accepted_total_metadata_count\")),\"independent peer preserves the same unknowns\")\n    m = membership[4];pp,pc=Path(m[\"proof\"]),Path(m[\"control\"])\n    require(m==timeout_basis[\"phase_membership\"] and m[\"proof_top_level_files\"]==[\"before.json\"] and\n            not (pp/\"final.json\").exists() and not (pp/\"result.json\").exists(),\"only the original before seal exists\")\n    require(root[\"original_before\"]==archived_pin(pp/\"before.json\")==timeout_basis[\"raw_before_without_final\"] and\n            row_by_path[str(pp/\"before.json\").casefold()][\"representation\"]==\"raw_byte_exact\",\n            \"single original before seal retained raw, no synthetic compression partner\")\n    require(root[\"original_outer\"]==archived_pin(pc/\"outer.json\") and\n            root[\"original_outer_absence\"]==archived_pin(pc/\"outer-absence.json\") and\n            root[\"original_job_observation\"]==archived_pin(pc/\"independent-observed-job-status.json\"),\n            \"exact original outer and durable job receipts\")\n    closure = document(root[\"root_current_closure\"])\n    require(root[\"root_current_closure\"]==archived_pin(pc/\"root-outer-timeout-negative-closure.json\") and\n            closure[\"status\"]==\"root_reviewed_closed_v39_existing63_outer_timeout_negative\" and\n            closure[\"reviewer\"]==\"Root\" and closure[\"candidate_head\"]==HEAD,\"separate Root current closure\")\n    require(closure[\"seal_counts\"]==root[\"seal_counts\"]==CLOSED_BUILD_SEAL_COUNTS and\n            closure[\"current_distinct_files_rehashed\"]==root[\"distinct_current_files_rehashed\"]==36915 and\n            closure[\"current_against_before_rehash_equal\"] is True and closure[\"current_source_head_clean\"] is True and\n            closure[\"current_original_owner_instances_and_possible_direct_descendants_absent\"] is True,\n            \"Root separately closed current source and process instances\")\n    require(closure[\"original_final_present\"] is False and closure[\"original_result_present\"] is False and\n            closure[\"original_batch_source_postseal\"] is None and closure[\"original_controller_environment_restored\"] is None and\n            closure[\"source_bookends_raw_equal\"] is None and closure[\"missing_original_records_not_reconstructed\"] is True,\n            \"current Root closure does not reconstruct absent original postseal/restoration\")\n    require(proof[\"Root_current_source_and_process_closure\"][\"receipt\"]==root[\"root_current_closure\"] and\n            peer[\"Root_current_source_and_process_closure\"]==proof[\"Root_current_source_and_process_closure\"] and\n            root[\"current_process_observation\"]==closure[\"current_process_observation\"] and\n            root[\"current_process_observation\"]==archived_pin(pc/\"root-current-owner-instance-absence.json\"),\n            \"original-only peer and separate current authority are not conflated\")\n    outer,absence,job=doc(pc/\"outer.json\"),doc(pc/\"outer-absence.json\"),doc(pc/\"independent-observed-job-status.json\")[\"data\"]\n    require(outer[\"status\"]==\"timeout\" and outer[\"timeout_seconds\"]==root[\"outer_timeout_seconds\"]==1800 and\n            outer[\"pid\"]==49640 and outer[\"exit_code\"]==root[\"outer_exit_code\"]==-1 and\n            outer[\"termination_verified\"] is True and absence[\"currently_absent\"] is True and absence[\"current_records\"]==[],\n            \"original timed-out outer and termination observation retained\")\n    require(job==closure[\"original_job\"] and job[\"id\"]==root[\"durable_job_id\"]==\n            \"job-op-68e7e3262f296a6d0fb4a275f57024fff8c8df3219ed4e23930d2f6588032394\" and\n            job[\"status\"]==\"failed\" and job[\"exitCode\"]==root[\"durable_job_exit_code\"]==1 and job[\"runnerAlive\"] is False and\n            job[\"runnerProcessInstance\"]==closure[\"runner_process_instance_string_preserved\"]==proof[\"runner_process_instance\"]==\n            \"134371646432880998\",\"original failed job with exact decimal100ns runner instance\")\n    require(closure[\"first_child_grant_age_100ns\"]==proof[\"first_child_grant_age100ns\"]==\"663316294\",\n            \"actual admitted first child met unchanged freshness gate\")\n    require(raw(pc/\"outer.stdout.bin\")==\"\".join(\"Group \"+g+\" completed actual BuildQuery phases; awaiting whole-batch closure\\r\\n\"\n            for g in existing63[:50]).encode() and raw(pc/\"outer.stderr.log\")==b\"\",\"exact50 original controller progress lines, no final result\")\n    grant=doc(pc/\"root-grant.json\")\n    require(grant[\"candidate_head\"]==HEAD and grant[\"groups\"]==existing63 and grant[\"mode\"]==\"BuildQuery\" and\n            grant[\"actual_metadata_count\"] is None and grant[\"outer_controller_seconds\"]==1800 and\n            grant[\"driver_sha256\"]==DRIVER_SHA,\"original strict complete63 grant retained\")\n    require(len(proof[\"owner_intervals\"])==len(closure[\"observed_owners\"])==101 and\n            [v[\"group\"] for v in proof[\"group_observations\"]]==existing63[:51],\"all101 exact observed intervals\")\n    for record,observed in zip(proof[\"owner_intervals\"],closure[\"observed_owners\"]):\n        require(all(record[k]==observed[k] for k in (\"group\",\"phase\",\"owner\",\"pid\",\"created_utc\",\"completed_utc\",\"exit_code\")),\n                \"same native owner identities and full timestamp strings across independent inspections\")\n        owner=document(record[\"owner\"])\n        require(owner[\"pid\"]==record[\"pid\"] and owner[\"retained_handle\"]==record[\"retained_handle\"] and\n                owner[\"created_utc\"]==record[\"created_utc\"] and owner[\"completed_utc\"]==record[\"completed_utc\"] and\n                owner[\"status\"]==\"passed\" and owner[\"exit_code\"]==0 and owner[\"timeout_seconds\"]==record[\"deadline_seconds\"],\n                \"every original native owner remains terminal0, distinct from outer timeout\")\n        a=document(record[\"original_absence\"])\n        require(a[\"status\"]==\"closed\" and a[\"global_native\"]==[] and a[\"evidence\"][\"valid\"] is True and\n                a[\"evidence\"][\"current_owner_pid_present\"]==0 and a[\"evidence\"][\"current_owned_descendants\"]==[] and\n                a[\"evidence\"][\"absence_error\"] is None,\"original101 phase absence records preserved\")\n    for index,group in enumerate(existing63[:50]):\n        gd=pp/\"groups\"/group\n        provisional=doc(gd/\"result-provisional.json\")\n        require(provisional[\"status\"]==\"awaiting_batch_closure\" and provisional[\"postseal\"] is False and\n                provisional[\"attempted_phases\"]==provisional[\"owned_started_phases\"]==[\"compile\",\"metadata\"] and\n                provisional[\"native_selected_tests_started\"] is None,\"all50 provisional negative closure flags\")\n        flags(provisional,false=(\"runtime_requested\",\"runtime_owner_launch_attempted\",\"actual_runtime_owner_started\"))\n        for phase in (\"compile\",\"metadata\"):\n            q=provisional[\"phases\"][phase]\n            require(q[\"failure\"] is None and q[\"original_execution_failure\"] is None and q[\"owner_binding\"][\"status\"]==\"passed\" and\n                    q[\"postchecks\"][\"source_sealed\"] is False,\"phase terminal0 cannot substitute for missing batch source closure\")\n        selected=doc(gd/\"selected-tests.json\");observed=proof[\"group_observations\"][index]\n        require(selected[\"tests\"]==observed[\"metadata_names\"] and selected[\"actual_count\"]==counts[index] and\n                observed[\"metadata_raw\"]==archived_pin(gd/\"metadata.stdout.bin\") and raw(gd/\"metadata.stderr.log\")==b\"\",\n                \"exact independently decoded partial metadata retained with original bytes\")\n        require(not (gd/\"result.json\").exists(),\"no synthesized final group result\")\n    last=pp/\"groups\"/existing63[50]\n    require(not (last/\"metadata.json\").exists() and not (last/\"selected-tests.json\").exists() and\n            not (last/\"result-provisional.json\").exists() and not (last/\"result.json\").exists(),\n            \"group51 remains compile-only with no invented query or provisional record\")\n    require(root[\"preserved_Root_inspector_provenance\"]==peer[\"retained_Root_inspector_provenance\"]==\n            proof[\"retained_Root_inspector_provenance\"] and root[\"preserved_Root_inspector_provenance\"][\"native_attempt\"] is False,\n            \"Root inspector assumption/correction remains separate non-native provenance\")\n    return {\"name\":\"V39 existing63 original outer-timeout BuildQuery negative\",\"status\":root[\"status\"],\"source_head\":HEAD,\n      \"batch\":\"existing63\",\"negative_kind\":root[\"negative_kind\"],\"root_acceptance\":root_pin,\n      \"root_current_closure\":root[\"root_current_closure\"],\"independent_original_evidence_peer\":roles[\"independent_peer\"],\n      \"independent_original_evidence_proof\":roles[\"independent_proof\"],\"historical_checkpoint\":roles[\"historical_checkpoint\"],\n      \"granted_groups\":copy.deepcopy(existing63),\"declared_groups\":63,\"declared_controls\":1249,\n      \"attempted_groups\":51,\"unstarted_groups\":copy.deepcopy(existing63[51:]),\"compile_owners\":51,\"metadata_owners\":50,\"runtime_owners\":0,\n      \"native_owner_failures\":0,\"native_validation_negative\":True,\"provisional_groups\":50,\"complete_groups_accepted\":0,\n      \"observed_partial_metadata_records\":985,\"observed_partial_group_counts\":copy.deepcopy(counts),\"accepted_metadata_count\":None,\n      \"actual_metadata_count\":None,\"selected_tests_started\":0,\"runtime_configuration_issued\":False,\n      \"original_before\":root[\"original_before\"],\"original_final\":None,\"original_result\":None,\n      \"original_source_postseal\":None,\"original_environment_restoration\":None,\"original_source_bookends_raw_equal\":None,\n      \"original_missing_closure_not_reconstructed\":True,\"original_provisional_negative_flags_preserved\":True,\n      \"outer_timeout_seconds\":1800,\"outer_exit_code\":-1,\"durable_job_exit_code\":1,\n      \"Root_current_source_and_process_closure_separate\":True,\"distinct_current_files_rehashed_by_Root\":36915,\n      \"preserved_Root_inspector_provenance\":copy.deepcopy(root[\"preserved_Root_inspector_provenance\"]),\n      \"original_evidence_unchanged\":True,\"complete_buildquery_accepted\":False,\"metadata_audit_performed\":False,\n      \"partial_groups_admissible\":False,\"source_inspection_negatives_are_provenance_only\":True,\n      \"new_native_execution_authorized\":False,\"source_mutation_hold_released\":False,\n      \"runtime_qualification\":False,\"product_qualification\":False}\n"
+    },
+    {
+      "label": "validate timeout before payload construction",
+      "old": "native_negative_record = check_new3_compile_negative()",
+      "new": "native_negative_record = check_new3_compile_negative()\nexisting63_negative = check_existing63_timeout_negative()"
+    },
+    {
+      "label": "retain nonnative timeout inspector provenance",
+      "old": " \"source_inspection_and_authoring_observations_are_validation_attempts\":False,",
+      "new": " \"existing63_Root_inspector_observation\":copy.deepcopy(existing63_negative[\"preserved_Root_inspector_provenance\"]),\n \"existing63_historical_checkpoint\":copy.deepcopy(timeout_basis[\"role_pins\"][\"historical_checkpoint\"]),\n \"source_inspection_and_authoring_observations_are_validation_attempts\":False,"
+    },
+    {
+      "label": "resolved guard call removed only after accepted timeout validator",
+      "old": "require_unresolved_existing63()\n\npayloads,",
+      "new": "\npayloads,"
+    },
+    {
+      "label": "raw bookend admission limited to original four complete proof shapes",
+      "old": "# Any future phase not explicitly selected for equal-pair gzip retains both raw originals.\nfor m in membership:",
+      "new": "# The four prior phases retain their complete original bookends; the timeout validator requires its lone before raw.\nfor m in membership[:4]:"
+    },
+    {
+      "label": "five actual attempts only",
+      "old": "# Only these four closed validation attempts are implemented in this source draft.\n# The existing63 gate above is an unconditional pre-staging stop until separately adapted.",
+      "new": "# Only these five original validation attempts are recorded, after exact closed-outcome acceptance gates."
+    },
+    {
+      "label": "append fifth attempt",
+      "old": " copy.deepcopy(native_negative_record),\n]",
+      "new": " copy.deepcopy(native_negative_record),\n copy.deepcopy(existing63_negative),\n]"
+    },
+    {
+      "label": "resolved negative scope status",
+      "old": "\"status\":\"closed_new3_negatives_new4_positive_existing63_unresolved\"",
+      "new": "\"status\":\"closed_new3_negatives_new4_positive_existing63_outer_timeout_negative\""
+    },
+    {
+      "label": "partial observation distinct from accepted existing63 metadata",
+      "old": " \"existing63_actual_metadata_count\":None,\"existing63_actual_group_counts\":None,\n \"existing63_buildquery_outcome\":None,\"existing63_runtime_outcome\":None,",
+      "new": " \"existing63_actual_metadata_count\":None,\"existing63_actual_group_counts\":None,\n \"existing63_observed_partial_metadata_records\":985,\n \"existing63_observed_partial_group_counts\":copy.deepcopy(existing63_negative[\"observed_partial_group_counts\"]),\n \"existing63_buildquery_outcome\":copy.deepcopy(existing63_negative),\n \"existing63_runtime_outcome\":{\"status\":\"not_issued\",\"runtime_owners\":0,\"selected_tests_started\":0},"
+    },
+    {
+      "label": "resolved negative next-plan status",
+      "old": "status=\"v39_closed_new3_negatives_and_new4_positive_existing63_unresolved_no_preparation_authority\"",
+      "new": "status=\"v39_new3_fixture_negative_existing63_outer_timeout_negative_closed_awaiting_separate_next_scope\""
+    },
+    {
+      "label": "actual negative next plan requirements",
+      "old": "              \"New4 has separately accepted61 metadata and61 strict runtime completions. Existing63 remains unknown in this draft. \"\n              \"The unresolved acceptance-contract gate must receive a separately reviewed terminal-outcome source successor \"\n              \"before this preparer can stage any progress or archive. No source, native or product authority is issued.\")",
+      "new": "              \"New4 has separately accepted61 metadata and61 strict runtime completions. Existing63 closed as an outer1800-second timeout \"\n              \"after51 compiles and50 metadata queries. Its985 raw partial entries are not accepted metadata, and no runtime was issued. \"\n              \"Original final/result/postseal/environment restoration remain unknown. Source repairs and any future complete native run \"\n              \"require separate exact review and release; this evidence-only preparation issues no source, native or product authority.\")"
+    },
+    {
+      "label": "append two distinct native-validation negatives",
+      "old": "updated[\"retained_recent_native_negatives\"].append(copy.deepcopy(native_negative_record))",
+      "new": "updated[\"retained_recent_native_negatives\"].extend(copy.deepcopy([native_negative_record,existing63_negative]))"
+    },
+    {
+      "label": "checkpoint exact closed timeout status",
+      "old": "schema=10,status=\"v39_closed_new3_negatives_new4_positive_existing63_unresolved_source_draft\"",
+      "new": "schema=10,status=\"v39_closed_new3_fixture_negative_new4_positive_existing63_outer_timeout_negative\""
+    },
+    {
+      "label": "checkpoint carries actual timeout outcome",
+      "old": " v39_new4=copy.deepcopy(new4),v39_existing63_acceptance_contract=copy.deepcopy(copy_plan[\"cohorts\"][\"existing63\"]),",
+      "new": " v39_new4=copy.deepcopy(new4),v39_existing63_acceptance_contract=copy.deepcopy(copy_plan[\"cohorts\"][\"existing63\"]),\n v39_existing63_timeout_negative=copy.deepcopy(existing63_negative),"
+    },
+    {
+      "label": "checkpoint outcome resolved as negative only",
+      "old": " v39_existing63_outcome_resolved=False,runtime_qualification=False,",
+      "new": " v39_existing63_outcome_resolved=True,runtime_qualification=False,"
+    },
+    {
+      "label": "progress five observed attempts text",
+      "old": "\"V39 source-only draft preserves four closed validation attempts at e9: original new3 prelaunch freshness rejection, \"",
+      "new": "\"V39 source-only preparation preserves five closed validation attempts at e9: original new3 prelaunch freshness rejection, \""
+    },
+    {
+      "label": "progress fifth attempt description",
+      "old": "\"new4 complete fresh BuildQuery61, accepted original new4 strict runtime61/61, and admitted new3 retry1 compiler fixture failure. \"",
+      "new": "\"new4 complete fresh BuildQuery61, accepted original new4 strict runtime61/61, admitted new3 retry1 compiler fixture failure, and the original63 outer timeout. \""
+    },
+    {
+      "label": "progress preserves partial evidence and absent original closure",
+      "old": "\"Existing63 metadata and runtime outcomes remain unresolved; no partial progress is treated as terminal acceptance. \"",
+      "new": "\"Existing63 has51 terminal-zero compiles,50 terminal-zero queries and985 partial metadata entries; all50 provisional source-seal gates remain false. \"\n \"Twelve groups were unstarted and group51 has no query. Accepted metadata stays null, no runtime was issued, and original final/result/postseal/environment restoration stay unknown. \""
+    },
+    {
+      "label": "two actual validation negatives separate from inspection provenance",
+      "old": "\"Only the actual compiler validation failure would extend native-negative history; source inspection and authoring observations remain separate provenance. \"",
+      "new": "\"Only the admitted compiler failure and original outer-deadline validation failure extend native-negative history; source inspection and authoring observations remain separate provenance. \""
+    },
+    {
+      "label": "separate Root execution requirement instead of unresolved outcome",
+      "old": "\"This unexecuted draft cannot stage progress/archive until a separately reviewed terminal-existing63 outcome successor replaces its hard stop. \"",
+      "new": "\"This unexecuted source still requires exact Root source/copy-plan/configuration acceptance before evidence-only staging. \""
+    },
+    {
+      "label": "record timeout beside acceptance contract",
+      "old": " \"new4\":copy.deepcopy(new4),\"existing63_acceptance_contract\":copy.deepcopy(copy_plan[\"cohorts\"][\"existing63\"]),",
+      "new": " \"new4\":copy.deepcopy(new4),\"existing63_acceptance_contract\":copy.deepcopy(copy_plan[\"cohorts\"][\"existing63\"]),\n \"existing63_timeout_negative\":copy.deepcopy(existing63_negative),"
+    },
+    {
+      "label": "five attempts and accepted/partial metadata distinct",
+      "old": " \"known_closed_attempts\":4,\"known_closed_actual_metadata\":61,\"aggregate_actual_metadata_count\":None,",
+      "new": " \"known_closed_attempts\":5,\"known_closed_actual_metadata\":61,\"aggregate_actual_metadata_count\":None,\n \"observed_existing63_partial_metadata\":985,\"existing63_accepted_metadata_count\":None,"
+    },
+    {
+      "label": "top record outcome resolved only negative",
+      "old": " \"existing63_outcome_resolved\":False,\"metadata_transferred_to_another_head\":False,",
+      "new": " \"existing63_outcome_resolved\":True,\"metadata_transferred_to_another_head\":False,"
+    },
+    {
+      "label": "exact two negative suffix with preserved prefix",
+      "old": "require(updated[\"retained_recent_native_negatives\"][:-1]==old[\"retained_recent_native_negatives\"] and\n        updated[\"retained_recent_native_negatives\"][-1]==native_negative_record,\"only actual partial native failure extends native-negative history\")",
+      "new": "require(updated[\"retained_recent_native_negatives\"][:-2]==old[\"retained_recent_native_negatives\"] and\n        updated[\"retained_recent_native_negatives\"][-2:]==[native_negative_record,existing63_negative],\n        \"only two actual native-validation negatives extend the unchanged history\")"
+    },
+    {
+      "label": "exact history increments",
+      "old": "increments = {\"integrated_source_units\":0,\"preserved_attempts\":4,\"retained_recent_native_negatives\":1,\"execution_checkpoint_history\":1}",
+      "new": "increments = {\"integrated_source_units\":0,\"preserved_attempts\":5,\"retained_recent_native_negatives\":2,\"execution_checkpoint_history\":1}"
+    },
+    {
+      "label": "archive timeout basis automatic preparation input",
+      "old": " (\"inert-plan-handoff.json\",fixed(\"handoff\"),exact(fixed(\"handoff\"))),",
+      "new": " (\"inert-plan-handoff.json\",fixed(\"handoff\"),exact(fixed(\"handoff\"))),\n (\"timeout-observed-inputs.json\",fixed(\"timeout\"),exact(fixed(\"timeout\"))),"
+    },
+    {
+      "label": "history report actual increments",
+      "old": "\"native_negative_records_added\":1,\"non_native_negative_records\":1,\"observed_attempts_added\":4",
+      "new": "\"native_negative_records_added\":2,\"non_native_negative_records\":1,\"observed_attempts_added\":5"
+    },
+    {
+      "label": "archive index observed timeout status",
+      "old": "\"status\":\"exact_closed_v39_new3_negatives_new4_positive_existing63_unresolved_draft\"",
+      "new": "\"status\":\"exact_closed_v39_new3_negatives_new4_positive_existing63_outer_timeout_negative\""
+    },
+    {
+      "label": "nine actual original seals include lone before",
+      "old": " \"represented_original_bookend_files\":8,\"compressed_bookend_pairs\":len(seal_mappings),\n \"separately_archived_raw_bookend_files\":8-2*len(seal_mappings),",
+      "new": " \"represented_original_bookend_files\":9,\"compressed_bookend_pairs\":len(seal_mappings),\n \"separately_archived_raw_bookend_files\":9-2*len(seal_mappings),\n \"existing63_before_retained_raw\":True,\"existing63_original_final\":None,\"existing63_original_result\":None,"
+    },
+    {
+      "label": "unissued actual timeout archive manifest status",
+      "old": "\"status\":\"exact_v39_closed_phases_unresolved63_progress_archive_intake_unissued\"",
+      "new": "\"status\":\"exact_v39_closed_validation_and_timeout_progress_archive_intake_unissued\""
+    },
+    {
+      "label": "manifest negative resolved flag",
+      "old": "\"new4_complete_buildquery_and_strict_runtime_verified\":True,\"existing63_outcome_resolved\":False,",
+      "new": "\"new4_complete_buildquery_and_strict_runtime_verified\":True,\"existing63_outcome_resolved\":True,\n \"existing63_original_outer_timeout_preserved\":True,\"existing63_accepted_metadata_count\":None,"
+    },
+    {
+      "label": "future prepared review status",
+      "old": "\"status\":\"source_only_exact_v39_closed_phases_unresolved63_archive_prepared\"",
+      "new": "\"status\":\"source_only_exact_v39_closed_validation_and_timeout_archive_prepared\""
+    },
+    {
+      "label": "future review partial-only outcome",
+      "old": " \"new3_accepted_metadata_count\":None,\"existing63_actual_metadata\":None,\"existing63_outcome_resolved\":False,",
+      "new": " \"new3_accepted_metadata_count\":None,\"existing63_actual_metadata\":None,\"existing63_outcome_resolved\":True,\n \"existing63_observed_partial_metadata\":985,\"existing63_original_final\":None,\"existing63_original_result\":None,\n \"existing63_original_source_postseal\":None,\"existing63_original_environment_restoration\":None,"
+    },
+    {
+      "label": "future review nine originals no false gzip partner",
+      "old": "\"compressed_bookend_pairs\":len(seal_mappings),\"represented_original_bookends\":8,",
+      "new": "\"compressed_bookend_pairs\":len(seal_mappings),\"represented_original_bookends\":9,"
+    }
+  ]
+}

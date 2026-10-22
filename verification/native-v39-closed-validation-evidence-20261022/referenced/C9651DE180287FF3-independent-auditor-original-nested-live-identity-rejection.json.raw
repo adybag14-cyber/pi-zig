@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "kind": "Immutable first independent V33 negative auditor execution rejection",
+  "created_utc": "2026-10-20T19:48:51.326829+00:00",
+  "auditor": "Audit-FreshV33PartialCompileNegative.py",
+  "auditor_sha256": "8E6070A675EA374D51FA4800C3961FF889C0C2D7E5E2D4146F5975E06F96E06D",
+  "execution": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\Audit-FreshV33PartialCompileNegative.py\", line 174, in <module>\r\n    if key not in (\"created_utc\",\"completed_utc\"):require(e[\"owner\"][key]==owner[key],\"Exact aggregate original owner field \"+key)\r\n                                                  ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\Audit-FreshV33PartialCompileNegative.py\", line 11, in require\r\n    if not ok:raise RuntimeError(message)\r\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nRuntimeError: Exact aggregate original owner field live_identity",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\Audit-FreshV33PartialCompileNegative.py\", line 174, in <module>\r\n    if key not in (\"created_utc\",\"completed_utc\"):require(e[\"owner\"][key]==owner[key],\"Exact aggregate original owner field \"+key)\r\n                                                  ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v33-control-20261020-193221\\Audit-FreshV33PartialCompileNegative.py\", line 11, in require\r\n    if not ok:raise RuntimeError(message)\r\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nRuntimeError: Exact aggregate original owner field live_identity\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "source_hold_released": false,
+  "closure_written": false,
+  "metadata_acceptance": false,
+  "qualification": false
+}

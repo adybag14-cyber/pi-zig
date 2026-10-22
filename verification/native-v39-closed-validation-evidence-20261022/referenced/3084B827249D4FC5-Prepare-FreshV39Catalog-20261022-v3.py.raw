@@ -1,0 +1,1342 @@
+"""Root-only V39 source catalog preparation after two exact source intakes.
+Creates three new evidence directories. Never compiles, runs tests, issues a
+native grant, edits Main/index, or transfers metadata/runtime acceptance.
+The predecessor 5020211B and historical source observations remain immutable.
+"""
+from pathlib import Path, PurePosixPath
+import subprocess, sys, json, hashlib, datetime, copy, re, posixpath, os, base64
+if not __debug__:
+    raise RuntimeError("This reviewed catalog preparation requires assertions")
+
+B = Path(r"C:\Users\adyba\pi-zig")
+M = B / "main"
+E = B / "evidence"
+S = B / "worktrees/sdk-owners-resume-20261018/verification"
+MODULES = B / "worktrees/modules-io-resume-20261018/verification"
+OLDS = {
+    "new4": E / "combined-native-batch-v38-new4-prepared-20261021",
+    "regression63": E / "combined-native-batch-v38-regression63-prepared-20261021",
+}
+OUTS = {
+    "new3": E / "combined-native-batch-v39-new3-prepared-20261022",
+    "new4": E / "combined-native-batch-v39-new4-prepared-20261022",
+    "regression63": E / "combined-native-batch-v39-regression63-prepared-20261022",
+}
+PREVIOUS_HEAD = "014062f2d139254acab4b985b4ae343db637166f"
+DRIVER = "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+CLASSIFIER = "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+BUILD = "594A048C6593FE0BFC7A99201DBDAD268EB159003163E0C9BACD72C6E9743EFF"
+PROGRESS = "verification/port-roadmap-resume-20261018/progress.json"
+MATRIX = "8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03"
+REVIEWS = {
+    "new4": (545118,"35A3A1E94699B3413179540C2C271A59E4924FF6149DE74FD662BBF3449D1D14"),
+    "regression63": (547326,"9362D1498B75DFEC3E452B1E2F06C8D1C526C16E615DC0F40C17C2C147816A58"),
+}
+AUDITORS = {
+    "new4": (17696,"57B862F828353F830FBAD4F707E2EB483EE7324CD6A62E169ACFECA0FC6119C0"),
+    "regression63": (17704,"5B94D3BD4B6CA0E1B969394926A7F907485717FF25B75BA06D1D67D68A232682"),
+}
+NARROW = re.compile(r"^src/[A-Za-z0-9_./-]+\.(zig|c|mjs|json)$")
+IMPORT = re.compile(r'@import\s*\(\s*"([^"]+)"\s*\)')
+EMBED = re.compile(r'@embedFile\s*\(\s*"([^"]+)"\s*\)')
+NAMED = {"catalog_tool": "tools/catalog.zig", "native_icu_api": "src/extensions/icu/native_icu_api.zig"}
+SPECS = [
+ ("native-node-file-handle-owner","src/native_node_file_handle_owner_test.zig","native FileHandle owner",18,714),
+ ("native-node-fs-before-hook-continuation","src/native_node_fs_before_hook_continuation_test.zig","native FS before hook",3,714),
+ ("native-vm-error-constructor-name","src/native_vm_error_constructor_name_test.zig","VM native Error constructor",24,1),
+ ("native-node-file-handle-transfer","src/native_node_file_handle_transfer_test.zig","native FileHandle transfer",13,715),
+]
+NEW_SPECS = [
+ ("native-node-stream-shutdown","src/native_node_stream_shutdown_test.zig",["native Stream shutdown","native StreamReq Done"],18,715,243),
+ ("native-node-one-byte-string","src/native_node_one_byte_string_test.zig",["native OneByteString"],8,686,243),
+ ("native-vm-array-buffer-view-data","src/native_vm_array_buffer_view_data_test.zig",["VM view data"],12,1,0),
+]
+PARTITION = {
+ "new3":{"groups":3,"declarations":38},
+ "new4":{"groups":4,"declarations":58},
+ "regression63":{"groups":63,"declarations":1249},
+ "union_groups":70,"union_declarations":1345,
+ "catalog_groups":120,"catalog_declarations":2051,"group_cap":64,
+}
+OUTPUT_NAMES = [
+ "Run-CombinedNativeBatch.ps1","Get-ModelsNativeCandidates.ps1",
+ "process-ancestry-peer-modules.json","combined-build-source-peer.json","uv-namespace-source-peer.json",
+ "prior-v38-progress.json","Audit-CombinedNativeBatch.py","metadata-auditor-adaptation.json",
+ "groups.json","matrix-refresh-adaptation.json","new-roots-source-inventory.json",
+ "source-inventory-refresh-adaptation.json","exact-intake-source-inventory.json",
+ "complete-batch-partition.json","preparation-review.json",
+]
+CONFIG_KEYS = {
+ "schema","status","preparer_sha256","root_preparer_source_review","candidate_head","previous_head",
+ "phase_pins","selected_source_plan","progress","archive_preparation_review","partition",
+ "preparation_directories","expected_output_names","catalog_preparation_authorized",
+ "native_execution_authorized","execution_authority","runtime_authority","qualification","actual_metadata_count",
+}
+# Only the exact future Root config binds the two actual commits/releases/receipts.
+# The selected source plan is an already reviewed immutable input, never inferred.
+SELECTED_PLAN = ("worktrees/modules-io-resume-20261018/verification/pending21-shutdown-descriptor-copy-plan-successor-sourceonly-20261022/copy-manifest-plan.json",590893,"836BC121159347F7BC68DBF71E97787B59F532D10A95D18DE318370B5F94AFD6")
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest().upper()
+def h(path):
+    return sha(path.read_bytes())
+def read(path):
+    return json.loads(path.read_bytes().decode("utf-8-sig"))
+def pin(path):
+    raw = path.read_bytes()
+    return dict(path=str(path), bytes=len(raw), sha256=sha(raw))
+def exact(path, digest, size=None):
+    row = pin(path)
+    assert row["sha256"] == digest, str(path)
+    if size is not None:
+        assert row["bytes"] == size, str(path)
+    return row
+def put(path, value):
+    with path.open("xb") as f:
+        f.write((json.dumps(value, indent=2) + "\n").encode())
+def git(*args):
+    return subprocess.check_output(["git", *args], cwd=M)
+def declared(raw):
+    return re.findall(r'^test "([^"]+)"', raw.decode("utf-8"), re.M)
+def relative(name):
+    assert isinstance(name, str) and re.fullmatch(r"[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*", name), name
+    assert not PurePosixPath(name).is_absolute()
+    for part in name.split("/"):
+        assert part not in (".", "..") and not part.endswith((".", " ")), name
+        assert part.split(".")[0].upper() not in {"CON", "PRN", "AUX", "NUL", *["COM"+str(i) for i in range(1,10)], *["LPT"+str(i) for i in range(1,10)]}, name
+    return name
+def state():
+    assert git("rev-parse", "HEAD").decode().strip() == HEAD
+    assert git("branch", "--show-current").decode().strip() == "work/pi-zig-consolidated-20261016"
+    assert git("status", "--porcelain") == b""
+def blob_id(raw):
+    return hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+trees = {}
+def tree(commit):
+    if commit not in trees:
+        entries = {}
+        aliases = {}
+        for item in git("ls-tree", "-r", "-z", commit).split(b"\0"):
+            if not item:
+                continue
+            meta, raw_name = item.split(b"\t", 1)
+            mode, kind, oid = meta.decode().split()
+            name = raw_name.decode("utf-8")
+            assert name.lower() not in aliases or aliases[name.lower()] == name
+            aliases[name.lower()] = name
+            entries[name] = (mode, kind, oid)
+        trees[commit] = entries
+    return trees[commit]
+def committed(commit, name, raw):
+    assert tree(commit).get(name) in [("100644", "blob", blob_id(raw)), ("100755", "blob", blob_id(raw))], (commit, name)
+def changed(a, b):
+    return {p.decode("utf-8") for p in git("diff", "--name-only", "-z", a, b).split(b"\0") if p}
+
+
+# Admission precedes every output write. This creates source evidence only.
+assert len(sys.argv) == 3, "Root configuration path and exact SHA-256 required"
+config_path = Path(sys.argv[1])
+assert config_path.is_absolute() and config_path.resolve().is_relative_to(E.resolve())
+exact(config_path,sys.argv[2])
+config_raw = config_path.read_bytes()
+cfg = read(config_path)
+assert set(cfg) == CONFIG_KEYS and cfg["schema"] == 1
+assert cfg["status"] == "root_reviewed_specific_v39_catalog_preparation"
+assert cfg["catalog_preparation_authorized"] is True
+assert all(cfg[k] is False for k in ("native_execution_authorized","execution_authority","runtime_authority","qualification"))
+assert cfg["actual_metadata_count"] is None
+self_raw = Path(__file__).read_bytes()
+assert cfg["preparer_sha256"] == sha(self_raw)
+HEAD = cfg["candidate_head"]
+assert re.fullmatch(r"[0-9a-f]{40}",HEAD) and HEAD != PREVIOUS_HEAD
+assert cfg["previous_head"] == PREVIOUS_HEAD
+assert cfg["partition"] == PARTITION
+assert cfg["preparation_directories"] == {k:str(v) for k,v in OUTS.items()}
+assert cfg["expected_output_names"] == OUTPUT_NAMES and len(set(OUTPUT_NAMES)) == 15
+assert all(not out.exists() and out.parent.resolve() == E.resolve() for out in OUTS.values())
+assert git("rev-parse","--show-object-format").decode().strip() == "sha1"
+state()
+provenance = {}
+def proof(key, path, digest, size=None):
+    provenance[key] = exact(path,digest,size)
+    return read(path)
+def configured(key, row):
+    assert set(row) == {"path","bytes","sha256"}
+    path = Path(row["path"])
+    assert path.is_absolute() and path.resolve().is_relative_to(B.resolve())
+    assert re.fullmatch(r"[0-9A-F]{64}",row["sha256"]) and isinstance(row["bytes"],int) and row["bytes"] > 0
+    return proof(key,path,row["sha256"],row["bytes"])
+provenance["root_configuration"] = pin(config_path)
+source_review = configured("root_preparer_source_review",cfg["root_preparer_source_review"])
+assert source_review["source_accepted"] is True and source_review["native_execution_authorized"] is False
+assert source_review["preparer"] == pin(Path(__file__))
+assert source_review["source_basis_head"] == PREVIOUS_HEAD
+assert source_review["catalog_groups"] == 120 and source_review["catalog_declarations"] == 2051
+assert source_review["partition"] == PARTITION
+
+# Observations and accepted donor selection are immutable source inputs. Their
+# graphs are re-derived below from actual committed/current files, not trusted
+# as a substitute for observation of the future checkout.
+OBS_DIR = S/"v39-catalog-adaptation-plan-sourceonly-20261022"
+observations = proof("source_observations_before_descriptor_successor",OBS_DIR/"source-observations.json",
+    "03DC239423446BC669FA824232A554FB1D5BF1DDAED6F8CE53F2DAC481F1818B",7053057)
+membership = proof("native_membership_observations",OBS_DIR/"native-membership-observations.json",
+    "1048930BEBD9B728A32EBB24B0A426ADD0835CF64D9AF571B7F50366921356DD",133500)
+old_plan = proof("original_new3_plan",E/"unissued-v39-pending20-catalog-validation-plan-20261021/catalog-validation-plan.json",
+    "EA2AE101AC381659E604478E8303D22E7C508CE38994B43A9367B2FC8506B7F4",43878)
+prior_selection = configured("prior21_source_plan",observations["source_plan"])
+assert provenance["prior21_source_plan"]["sha256"] == "B49017419D95CAF225BF4660E1341380B2A9DF8C24C568BDE82465908A1E28DC"
+selection_ref = dict(path=str(B/SELECTED_PLAN[0]),bytes=SELECTED_PLAN[1],sha256=SELECTED_PLAN[2])
+assert cfg["selected_source_plan"] == selection_ref
+selection = configured("selected21_source_plan",selection_ref)
+source_rows = selection["source_rows"]
+assert len(source_rows) == 21 and len({r["relative_path"] for r in source_rows}) == 21
+assert observations["selected_source_rows"] == prior_selection["source_rows"]
+assert [r["relative_path"] for r in source_rows] == [r["relative_path"] for r in prior_selection["source_rows"]]
+assert observations["basis_head"] == selection["reviewed_immutable_head"] == PREVIOUS_HEAD
+assert observations["declaration_arithmetic"] == dict(
+    retained_groups=117,retained_declarations=2013,new_groups=3,new_declarations=38,
+    total_groups=120,total_declarations=2051,batch_groups=[3,4,63],
+    batch_declarations=[38,58,1249],selected_groups=70,selected_declarations=1345,group_cap=64)
+assert membership["basis_observations"] == provenance["source_observations_before_descriptor_successor"]
+assert membership["counts"] == dict(old_source_hash_substitutions=65,old_supplemental_hash_substitutions=82,
+    old_supplemental_rows_retained=576,added_retained_source_members=45,
+    added_retained_supplemental_members=26,added_new_group_source_members=1797,
+    added_new_group_supplemental_members=163,prospective_total_supplemental_rows=765)
+
+descriptor = proof("shutdown_descriptor_successor",MODULES/"native-node-shutdown-invalid-descriptor-successor-sourceonly-20261022/proposal.json",
+    "331C9A44BA5543C9676324CCB30EC04E79E6DD1A36D23103C59331DEDE851C10",26590)
+descriptor_root = proof("shutdown_descriptor_root_source_acceptance",E/"root-shutdown-invalid-descriptor-fixture-source-acceptance-20261022.json",
+    "0B59166DB17DE39B2CB8B5A975885E5AEADCDF0900C40E8CECB80387BD6053F7",20948)
+assert descriptor_root["source_accepted"] is True and descriptor_root["native_execution_authorized"] is False
+assert descriptor_root["proposal"] == provenance["shutdown_descriptor_successor"]
+assert descriptor_root["candidate"] == descriptor["candidate"]
+shutdown_name = "src/native_node_stream_shutdown_test.zig"
+for before,after in zip(prior_selection["source_rows"],source_rows):
+    if after["relative_path"] == shutdown_name:
+        expected = copy.deepcopy(before)
+        assert before["donor"] == descriptor["original_donor"]
+        expected["donor"] = descriptor["candidate"]
+        assert after == expected
+    else:
+        assert after == before
+old_shutdown = Path(descriptor["original_donor"]["path"]).read_bytes()
+new_shutdown = Path(descriptor["candidate"]["path"]).read_bytes()
+for role in ("original_donor","original_snapshot","candidate"):
+    row = descriptor[role]
+    provenance["descriptor_"+role] = exact(Path(row["path"]),row["sha256"],row["bytes"])
+assert old_shutdown == Path(descriptor["original_snapshot"]["path"]).read_bytes()
+old_expr,new_expr = b"const handle = try f.create(-2);",b"const handle = try f.create(std.math.maxInt(c_int));"
+assert old_shutdown.count(old_expr) == new_shutdown.count(new_expr) == 1
+assert old_shutdown.replace(old_expr,new_expr,1) == new_shutdown
+assert new_shutdown.replace(new_expr,old_expr,1) == old_shutdown
+assert len(declared(old_shutdown)) == 18 and declared(old_shutdown) == declared(new_shutdown)
+assert IMPORT.findall(old_shutdown.decode()) == IMPORT.findall(new_shutdown.decode())
+
+source_union = {r["relative_path"]:r for r in source_rows}
+replacement = {n:r for n,r in source_union.items() if r["preimage"] is not None}
+assert len(replacement) == 9
+for name,row in source_union.items():
+    relative(name)
+    assert row["reviewed_immutable_head"] == PREVIOUS_HEAD
+    provenance["selected_donor_"+name] = exact(Path(row["donor"]["path"]),row["donor"]["sha256"],row["donor"]["bytes"])
+    if row["preimage"] is None:
+        assert row["kind"] == "source_addition" and name not in tree(PREVIOUS_HEAD)
+    else:
+        assert row["kind"] == "source_replacement"
+        pre = row["preimage"]
+        provenance["source_preimage_"+name] = exact(Path(pre["path"]),pre["sha256"],pre["bytes"])
+        raw = Path(pre["path"]).read_bytes()
+        assert raw == git("cat-file","blob",PREVIOUS_HEAD+":"+name)
+        committed(PREVIOUS_HEAD,name,raw)
+assert source_union["build.zig"]["donor"] == membership["build"]
+assert (source_union["build.zig"]["donor"]["bytes"],source_union["build.zig"]["donor"]["sha256"]) == (514105,BUILD)
+assert source_union["src/native_node_fs_request_owner_test.zig"]["donor"]["sha256"] == "FD337AA09700EA151943ED06A86CE5623C37210FA57637B892DCB6AB797C02D6"
+for name in ("src/native_node_fs_request_owner_test.zig",):
+    old,new = Path(replacement[name]["preimage"]["path"]).read_bytes(),Path(source_union[name]["donor"]["path"]).read_bytes()
+    assert declared(old) == declared(new) and len(declared(new)) == 25
+    assert IMPORT.findall(old.decode()) == IMPORT.findall(new.decode())
+
+# The accepted V38 review, complete catalog, actual metadata and phase receipts
+# are historical authority only. Never infer a V39 count, artifact or result.
+prior_reviews = {}
+for key,old in OLDS.items():
+    size,digest = REVIEWS[key]
+    review = proof("prior_v38_"+key+"_preparation",old/"preparation-review.json",digest,size)
+    prior_reviews[key] = review
+    assert review["candidate_head"] == PREVIOUS_HEAD and review["batch"] == key
+    assert review["status"] == "source_only_fresh_batch_prepared"
+    assert (review["catalog_groups"],review["catalog_declarations"]) == (117,2013)
+    assert review["actual_metadata_count"] is None and review["prior_metadata_transferred"] is False
+    assert all(review[k] is False for k in ("execution_authority","runtime_authority","qualification"))
+    for role in ("driver","matrix","auditor","classifier","combined_build_source_peer","metadata_auditor_adaptation","source_dependency_inventory","exact_intake_inventory","complete_partition"):
+        row = review[role]
+        assert Path(row["path"]).parent.resolve() == old.resolve()
+        provenance["prior_v38_"+key+"_"+role] = exact(Path(row["path"]),row["sha256"],row["bytes"])
+    assert review["driver"]["sha256"] == DRIVER and review["classifier"]["sha256"] == CLASSIFIER
+    assert review["matrix"]["sha256"] == MATRIX
+    assert (review["auditor"]["bytes"],review["auditor"]["sha256"]) == AUDITORS[key]
+assert (OLDS["new4"]/"groups.json").read_bytes() == (OLDS["regression63"]/"groups.json").read_bytes()
+prior = read(OLDS["new4"]/"groups.json")
+assert h(OLDS["new4"]/"groups.json") == MATRIX
+assert len(prior["groups"]) == 117 and sum(len(g["required_named"]) for g in prior["groups"]) == 2013
+assert len(prior["whole_tree_dependency_pins"]) == 576 and prior["source_head_at_preparation"] == PREVIOUS_HEAD
+assert prior["preparation_status"] == "source_only_fresh_batch_prepared"
+assert prior["declaration_count_is_not_actual_metadata"] is True
+catalog_acceptance = proof("prior_v38_catalog_acceptance",E/"root-v38-catalog-source-acceptance-20261021.json",
+    "911DCC32CF09C1610CE045572546668FF470EE62E9597DFC4D3DA6919480228B",4758)
+catalog_peer = configured("prior_v38_catalog_peer",catalog_acceptance["independent_catalog_peer"])
+assert provenance["prior_v38_catalog_peer"]["sha256"] == "B69569A2987B1489F3582E72062CE90570FF558C93A3CD3AA5F40A02481612E3"
+assert catalog_acceptance["candidate_head"] == PREVIOUS_HEAD and catalog_acceptance["matrix_sha256"] == MATRIX
+assert catalog_acceptance["catalog_source_accepted"] is True and catalog_acceptance["new4_and_original63_preserved"] is True
+assert catalog_acceptance["native_execution_authorized"] is False
+
+
+# Preserve historical progress separately from changed source. The accepted
+# archive is immutable history at014; it does not become a V39 runtime claim.
+ARCHIVE_STAGE = E/"pending-v38-partial-negative-progress-and-validation-archive-intake-20261022"
+archive_preparation = proof("v38_archive_preparation",ARCHIVE_STAGE/"preparation-review.json",
+    "C7230F42BCCFBA31D222EBAB86E0499BD58B1FA4F11F1B62F0BA0A71BE3F35EB",2671)
+assert cfg["archive_preparation_review"] == provenance["v38_archive_preparation"]
+assert archive_preparation["status"] == "source_only_exact_v38_partial_negative_progress_archive_prepared"
+assert archive_preparation["candidate_head"] == PREVIOUS_HEAD
+assert archive_preparation["all181_historical_prefixes_preserved"] is True
+assert archive_preparation["complete554689_byte_progress_inverse"] is True
+assert archive_preparation["native_execution_authorized"] is False
+assert archive_preparation["projected_progress"]["sha256"] == "4FF79AE87F671BB8F16283E38D282CB58444A1A0FA42659B0F3CED505EE04343"
+projected_progress = configured("accepted_projected_v38_progress",archive_preparation["projected_progress"])
+assert cfg["progress"] == dict(path=str(M/PROGRESS),bytes=678718,
+    sha256="4FF79AE87F671BB8F16283E38D282CB58444A1A0FA42659B0F3CED505EE04343")
+prior_progress_path = ARCHIVE_STAGE/"projected/verification/native-v38-validation-evidence-20261021/prior-progress.json.raw"
+prior_progress = proof("historical_v37_progress",prior_progress_path,
+    "BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028",554689)
+assert prior_progress_path.read_bytes() == git("cat-file","blob",PREVIOUS_HEAD+":"+PROGRESS)
+committed(PREVIOUS_HEAD,PROGRESS,prior_progress_path.read_bytes())
+archive_acceptance = proof("v38_archive_intake_root_acceptance",E/"root-v38-partial-negative-archive-intake-acceptance-20261022.json",
+    "FE26DA5FC688601E1403DB77D67FFA8633B29F107D94DE376A96A7AE7A2CBCA7",4745)
+assert archive_acceptance["status"] == "accepted_exact_archive_intake_committed"
+assert archive_acceptance["before_head"] == PREVIOUS_HEAD
+assert archive_acceptance["after_head"] == "e65c636b8600d351920cff88aa31c9f804d5f0b9"
+assert archive_acceptance["complete_commit_parents"] == [PREVIOUS_HEAD]
+assert archive_acceptance["path_count"] == 1931 and archive_acceptance["source_build_paths"] == 0
+assert archive_acceptance["progress"] == cfg["progress"]
+assert archive_acceptance["native_execution_authorized"] is False
+
+# Four exact source mappings, with raw Git equality, replace no general pin
+# verification rule. The two old rows remain byte-for-byte historical records.
+old_owner_path = "src/native_node_file_handle_owner_test.zig"
+old_owner_snapshot = S/"v37-file-handle-runtime-fixtures-sourceonly-20261021/original"/old_owner_path
+old_owner_pin = exact(old_owner_snapshot,"93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",28378)
+old_owner_original = dict(path=str(M/old_owner_path),bytes=28378,sha256=old_owner_pin["sha256"])
+old_owner_commit = "b13be24e44cc1bbc361639eb35900a368ae60eac"
+assert old_owner_snapshot.read_bytes() == git("cat-file","blob",old_owner_commit+":"+old_owner_path)
+committed(old_owner_commit,old_owner_path,old_owner_snapshot.read_bytes())
+old_mappings = [dict(batch=k,role="fixture_unchanged_root_native-node-file-handle-owner",
+    original=old_owner_original.copy(),immutable_snapshot=old_owner_pin.copy(),
+    raw_commit=old_owner_commit,exact_original_bytes=True) for k in OLDS]
+causal_name = "src/extensions/native_node_file_handle_owner.zig"
+causal_snapshot = replacement[causal_name]["preimage"]
+assert (causal_snapshot["bytes"],causal_snapshot["sha256"]) == (16629,"2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D")
+causal_original = dict(path=str(M/causal_name),bytes=causal_snapshot["bytes"],sha256=causal_snapshot["sha256"])
+historical_source_rebindings = old_mappings + [
+    dict(batch=k,role="fixture_causal_owner",original=causal_original.copy(),
+         immutable_snapshot=causal_snapshot.copy(),raw_commit=PREVIOUS_HEAD,
+         exact_original_bytes=True) for k in OLDS]
+historical_progress_rebindings = []
+historical_provenance_relationships = []
+for key,review in prior_reviews.items():
+    assert review["historical_source_rebindings"] == old_mappings
+    assert len(review["provenance"]) == 1643
+    for old_map in old_mappings:
+        old_key = "v37_"+old_map["batch"]+"_"+old_map["role"]
+        assert review["provenance"][old_key] == old_map["immutable_snapshot"]
+        historical_provenance_relationships.append(dict(provenance_key="v38_"+key+"_"+old_key,
+            mapping_index=old_mappings.index(old_map)))
+    assert review["provenance"]["fixture_causal_owner"] == causal_original
+    assert review["provenance"]["progress"] == dict(path=str(M/PROGRESS),
+        bytes=554689,sha256=provenance["historical_v37_progress"]["sha256"])
+    for role,row in review["provenance"].items():
+        new_key = "v38_"+key+"_"+role
+        assert set(row) == {"path","bytes","sha256"}
+        if role == "fixture_causal_owner":
+            replacement_pin = causal_snapshot
+            historical_provenance_relationships.append(dict(provenance_key=new_key,
+                mapping_index=2+list(OLDS).index(key)))
+        elif role == "progress":
+            replacement_pin = provenance["historical_v37_progress"]
+            historical_progress_rebindings.append(dict(batch=key,role=role,
+                recorded_reference=dict(recorded_path=row["path"],recorded_bytes=row["bytes"],recorded_sha256=row["sha256"]),
+                immutable_snapshot=replacement_pin.copy(),raw_commit=PREVIOUS_HEAD,
+                path=PROGRESS,exact_original_bytes=True))
+        else:
+            replacement_pin = row
+        provenance[new_key] = exact(Path(replacement_pin["path"]),replacement_pin["sha256"],replacement_pin["bytes"])
+assert len(historical_source_rebindings) == 4 and len(historical_provenance_relationships) == 6
+assert len(historical_progress_rebindings) == 2
+
+# Pin each actual V38 record referenced by the accepted, byte-exact checkpoint.
+# This traversal only admits complete pin objects, and never follows arbitrary
+# path strings or redirects an unavailable current path to a historical path.
+def pin_tree(value, label):
+    if isinstance(value,dict):
+        if {"path","bytes","sha256"} <= set(value):
+            assert set(value) == {"path","bytes","sha256"},label
+            path = Path(value["path"])
+            assert path.is_absolute() and path.resolve().is_relative_to(B.resolve()),label
+            provenance[label] = exact(path,value["sha256"],value["bytes"])
+        else:
+            for key,item in value.items():
+                pin_tree(item,label+"/"+str(key))
+    elif isinstance(value,list):
+        for index,item in enumerate(value):
+            pin_tree(item,label+"/"+str(index))
+record = projected_progress["v38_validation_and_archive_checkpoint"]
+assert record["source_head_at_record"] == PREVIOUS_HEAD
+assert record["source_declarations"] == 1307 and record["observed_actual_metadata_total"] == 1346
+assert record["selected_native_runtime_accepted_for_this_head"] is False
+assert record["metadata_transferred_to_another_head"] is False
+assert record["source_mutation_hold_released"] is False and record["native_execution_authorized"] is False
+pin_tree(record,"accepted_v38_record")
+for key,count,decl,actual in (("new4",4,58,61),("original63",63,1249,1285)):
+    item = record[key]
+    assert item["source_head"] == PREVIOUS_HEAD
+    assert (item["declared_groups"],item["declared_controls"],item["actual_metadata_count"]) == (count,decl,actual)
+    assert len(item["groups"]) == len(item["actual_group_counts"]) == count
+    assert sum(item["actual_group_counts"]) == actual
+    assert item["groups"] == prior_reviews["new4" if key=="new4" else "regression63"]["selected_group_names"]
+    assert item["metadata_transferred_to_another_head"] is False
+    bq = read(Path(item["buildquery"]["root_acceptance"]["path"]))
+    assert bq["complete_buildquery_accepted"] is True and bq["candidate_head"] == PREVIOUS_HEAD
+    assert bq["actual_metadata_count"] == actual
+assert record["new4"]["runtime"]["selected_native_runtime_accepted"] is True
+assert tuple(record["new4"]["runtime"][k] for k in ("observed_started","observed_completed","observed_failed","not_started")) == (61,61,0,0)
+partial = record["original63"]["runtime"]
+assert tuple(partial[k] for k in ("observed_started","observed_completed","observed_passed","observed_failed","not_started")) == (321,321,320,1,964)
+assert (partial["attempted_groups"],partial["unstarted_groups"],partial["native_owner_count"],partial["actual_process_intervals_closed"]) == (17,46,17,20)
+assert partial["original_group_statuses"] == ["partial_batch_not_admissible"]*16+["failed"]
+assert partial["selected_native_runtime_accepted"] is partial["positive_group_acceptance"] is False
+assert partial["negative_closure_accepted"] is True and partial["source_mutation_hold_released"] is False
+assert partial["root_acceptance"]["sha256"] == "2F26F9A1CD8FB66B1AC2330F7D2BBD6E5B30F5E842346B21BC8FFAD683D361E4"
+assert partial["closure"]["sha256"] == "C1BA83DB4C8A70DDF1C9170458D44E0CADCAF1F10C85E9898B55736D31663CB9"
+prelaunch = record["original63"]["prelaunch"]
+assert prelaunch["raw_native_selected_tests_started"] is None
+assert prelaunch["classified_native_owners_started"] == prelaunch["classified_native_tests_started"] == 0
+assert prelaunch["native_failure"] is False
+assert prelaunch["root_acceptance"]["sha256"] == "52FA347ED7E7DECDD445613E125281A593DCA51B5B96CB790E3E2AE2FC6CA588"
+assert len(record["non_native_negatives"]) == 3
+assert all(r["native_failure"] is False for r in record["non_native_negatives"])
+assert projected_progress["current_execution_checkpoint"]["source_head"] == PREVIOUS_HEAD
+assert projected_progress["current_execution_checkpoint"]["runtime_qualification"] is False
+assert projected_progress["next_native_batch"]["batch_group_counts"] == [4,63]
+assert projected_progress["next_native_batch"]["actual_metadata_count"] is None
+assert projected_progress["next_native_batch"]["catalog_expected_groups"] == 117
+assert projected_progress["next_native_batch"]["catalog_expected_source_declarations"] == 2013
+
+# The complete accepted before/final checkout seal is separate from Git's raw
+# blobs. Its two known CRLF differences remain unchanged checkout authorities.
+BQ63 = E/"root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711"
+old_seal_pin = exact(BQ63/"before.json","E0B4F23FEB76DFAA549F1B029B9AF55DEAF908CC8EF66335A17FE33E023BFE2A",16165285)
+provenance["prior_v38_source_seal_before"] = old_seal_pin
+provenance["prior_v38_source_seal_final"] = exact(BQ63/"final.json",old_seal_pin["sha256"],old_seal_pin["bytes"])
+assert (BQ63/"before.json").read_bytes() == (BQ63/"final.json").read_bytes()
+old_seal = read(BQ63/"before.json")
+assert old_seal["candidate_head"] == PREVIOUS_HEAD and old_seal["clean"] is True and old_seal["errors"] == []
+old_sealed = {}
+for part in ("source","tree"):
+    for row in old_seal[part]:
+        name = relative(row["relative"])
+        assert name not in old_sealed or old_sealed[name] == row["sha256"]
+        old_sealed[name] = row["sha256"]
+assert len(old_seal["source"]) == 15041 and len(old_seal["tree"]) == 15054
+
+
+# Two strengthened, actual Git intakes are distinct from the semantic order
+# archive→source. The reviewed adapter's record label remains "fixture".
+# No intake/config/index mutation is performed by this read-only validation.
+BYTE_CONTRACT = "pending20_exact_git_bytes_attributes_aliases_modes_v1"
+ATTR_NAMES = ("text","eol","filter","working-tree-encoding","ident")
+PHASE_KEYS = {"before_head","after_head","executor","manifest","release","preflight",
+              "staged","receipt","root_acceptance","expected_path_count"}
+def raw_blobs(refs):
+    result = []
+    for offset in range(0,len(refs),128):
+        batch = refs[offset:offset+128]
+        run = subprocess.run(["git","cat-file","--batch"],cwd=M,
+            input=("\n".join(batch)+"\n").encode(),stdout=subprocess.PIPE,stderr=subprocess.PIPE,check=True)
+        assert not run.stderr
+        data,pos = run.stdout,0
+        for ref in batch:
+            end = data.index(b"\n",pos)
+            fields = data[pos:end].decode("ascii").split()
+            assert len(fields)==3 and fields[1]=="blob",(ref,fields)
+            size = int(fields[2]); pos=end+1
+            raw=data[pos:pos+size];pos+=size
+            assert len(raw)==size and data[pos:pos+1]==b"\n"
+            pos+=1
+            assert blob_id(raw)==fields[0]
+            result.append(raw)
+        assert pos==len(data)
+    return result
+def canonical(path):
+    path=Path(path)
+    assert path.is_absolute() and path.absolute()==path.resolve(),str(path)
+    assert path.resolve().is_relative_to(B.resolve()),str(path)
+    return path
+def conversion_now(names):
+    unsafe={"GIT_DIR","GIT_WORK_TREE","GIT_COMMON_DIR","GIT_INDEX_FILE","GIT_OBJECT_DIRECTORY",
+        "GIT_ALTERNATE_OBJECT_DIRECTORIES","GIT_NAMESPACE","GIT_ATTR_NOSYSTEM","GIT_ATTR_SOURCE","GIT_CONFIG",
+        "GIT_LITERAL_PATHSPECS","GIT_GLOB_PATHSPECS","GIT_NOGLOB_PATHSPECS","GIT_ICASE_PATHSPECS"}
+    present=sorted(k for k in os.environ if k in unsafe or k.startswith("GIT_CONFIG_"))
+    assert not present,present
+    out=lambda *args:git(*args).decode().strip()
+    assert Path(out("rev-parse","--show-toplevel")).resolve()==M.resolve()==M.absolute()
+    assert out("rev-parse","--is-bare-repository")=="false"
+    assert out("rev-parse","--is-inside-work-tree")=="true"
+    repository=dict(canonical_root=str(M.resolve()),git_dir=out("rev-parse","--absolute-git-dir"),
+        common_dir=out("rev-parse","--path-format=absolute","--git-common-dir"),
+        object_format=out("rev-parse","--show-object-format"),git_version=out("--version"),
+        rejected_override_names_present=present)
+    assert repository["object_format"]=="sha1"
+    pattern=r"^(core\.(autocrlf|eol|safecrlf|attributesfile|checkroundtripencoding|filemode|ignorecase|symlinks|protectntfs|protecthfs)|extensions\.objectformat)$"
+    args=("config","--includes","--show-origin","--show-scope","--null","--get-regexp",pattern)
+    run=subprocess.run(["git",*args],cwd=M,stdout=subprocess.PIPE,stderr=subprocess.PIPE,check=False)
+    assert run.returncode in (0,1)
+    sources={}
+    def add(path,role):
+        p=Path(path)
+        if not p.is_absolute():p=M/p
+        key=str(p.absolute()).casefold()
+        if key not in sources:sources[key]=dict(path=str(p.absolute()),roles=[])
+        if role not in sources[key]["roles"]:sources[key]["roles"].append(role)
+    for variable in ("GIT_ATTR_SYSTEM","GIT_ATTR_GLOBAL"):
+        value=out("var",variable)
+        assert value and "\n" not in value and "\r" not in value
+        add(value,variable)
+    add(out("rev-parse","--path-format=absolute","--git-path","info/attributes"),"repository_info_attributes")
+    add(M/".gitattributes","root_attributes")
+    for name in names:
+        parts=PurePosixPath(name).parts
+        for depth in range(1,len(parts)):
+            add(M.joinpath(*parts[:depth])/".gitattributes","target_ancestor_attributes")
+    files=[]
+    for source in sorted(sources.values(),key=lambda x:x["path"].casefold()):
+        path=Path(source["path"]);present=os.path.lexists(path)
+        item={**source,"exists":present,"resolved_path":str(path.resolve())}
+        if present:
+            assert path.is_file()
+            raw=path.read_bytes()
+            item.update(bytes=len(raw),sha256=sha(raw),raw_base64=base64.b64encode(raw).decode("ascii"),
+                is_symlink=path.is_symlink())
+        files.append(item)
+    configuration=dict(argv=list(args),exit_code=run.returncode,
+        stdout_base64=base64.b64encode(run.stdout).decode("ascii"),stdout_sha256=sha(run.stdout),
+        stderr_base64=base64.b64encode(run.stderr).decode("ascii"))
+    return dict(repository=repository,configuration=configuration,attribute_sources=files)
+def attributes_now(names):
+    run=subprocess.run(["git","check-attr","-z","--stdin",*ATTR_NAMES],cwd=M,
+        input=b"\0".join(n.encode() for n in names)+b"\0",
+        stdout=subprocess.PIPE,stderr=subprocess.PIPE,check=True)
+    assert not run.stderr and run.stdout.endswith(b"\0")
+    fields=run.stdout.split(b"\0")[:-1]
+    assert len(fields)==len(names)*len(ATTR_NAMES)*3
+    result={name:{} for name in names}
+    for i in range(0,len(fields),3):
+        name,key,value=(x.decode() for x in fields[i:i+3])
+        assert name in result and key in ATTR_NAMES and key not in result[name]
+        result[name][key]=value
+    for values in result.values():
+        assert set(values)==set(ATTR_NAMES)
+        assert all(values[k] in ("unset","unspecified") for k in ("filter","working-tree-encoding","ident"))
+    return result
+def validate_phase(key,phase,before_head):
+    assert set(phase)==PHASE_KEYS
+    assert phase["before_head"]==before_head
+    after=phase["after_head"]
+    assert re.fullmatch(r"[0-9a-f]{40}",after) and after!=before_head
+    assert git("show","-s","--format=%P",after).decode().strip().split()==[before_head]
+    docs={}
+    for role in ("manifest","release","preflight","staged","receipt","root_acceptance"):
+        docs[role]=configured(key+"_"+role,phase[role])
+    executable=phase["executor"]
+    assert set(executable)=={"path","bytes","sha256"}
+    provenance[key+"_executor"]=exact(canonical(executable["path"]),executable["sha256"],executable["bytes"])
+    manifest,release,preflight,staged,receipt,accepted=(docs[x] for x in
+        ("manifest","release","preflight","staged","receipt","root_acceptance"))
+    assert receipt["status"]=="exact_source_intake_committed" and receipt["phase"]=="fixture"
+    assert receipt["before_head"]==receipt["basis_main_head"]==before_head and receipt["after_head"]==after
+    assert receipt["complete_commit_parents"]==[before_head]
+    assert receipt["branch"]=="work/pi-zig-consolidated-20261016"
+    assert receipt["clean_worktree"] is True
+    assert receipt["native_execution_authorized"] is receipt["application_qualified"] is receipt["production_bridge_removed"] is False
+    assert receipt["git_byte_preflight_contract"]==release["git_byte_preflight_contract"]==preflight["git_byte_preflight_contract"]==BYTE_CONTRACT
+    assert receipt["all_raw_and_path_git_ids_equal"] is receipt["all_expected_modes_verified"] is True
+    assert receipt["staged_and_committed_bytes_match"] is True
+    assert release["basis_main_head"]==before_head and release["branch"]==receipt["branch"]
+    assert release["source_intake_authorized"] is True and release["native_execution_authorized"] is False
+    assert release["application_qualified"] is False and release["expected_git_object_format"]=="sha1"
+    assert release["executor_sha256"]==receipt["executor_sha256"]==executable["sha256"]
+    assert receipt["release_sha256"]==phase["release"]["sha256"]
+    assert receipt["manifest"]==phase["manifest"]["path"] and receipt["manifest_sha256"]==phase["manifest"]["sha256"]
+    assert receipt["path_count"]==phase["expected_path_count"]
+    assert set(release["authorized_phases"])=={"fixture"}
+    issued=release["authorized_phases"]["fixture"]
+    assert issued["manifest_sha256"]==phase["manifest"]["sha256"]
+    assert issued["total_commit_paths"]==phase["expected_path_count"]
+    assert accepted["before_head"]==before_head and accepted["after_head"]==after
+    assert accepted["complete_commit_parents"]==[before_head]
+    assert accepted["path_count"]==phase["expected_path_count"] and accepted["native_execution_authorized"] is False
+    for role in ("executor","manifest","release","receipt"):
+        assert accepted[role]==phase[role]
+    assert accepted["source_build_paths"]==(0 if key=="archive" else 21)
+    target_manifest=relative(manifest.get("target_manifest",manifest.get("manifest_target")))
+    original_rows=manifest["rows"]
+    assert isinstance(original_rows,list)
+    rows=copy.deepcopy(original_rows)+[dict(target=target_manifest,source=phase["manifest"]["path"],
+        bytes=phase["manifest"]["bytes"],sha256=phase["manifest"]["sha256"],before=None,
+        role="exact_intake_manifest",mode="100644")]
+    assert len(rows)==phase["expected_path_count"]
+    names=[relative(r["target"]) for r in rows]
+    assert len(names)==len(set(names))==len({n.casefold() for n in names})
+    assert changed(before_head,after)==set(names)
+    spellings={}
+    for name in tree(before_head):
+        parts=name.split("/")
+        for depth in range(1,len(parts)+1):
+            prefix="/".join(parts[:depth]);folded=prefix.casefold()
+            assert folded not in spellings or spellings[folded]==prefix
+            spellings[folded]=prefix
+    for name in names:
+        parts=name.split("/")
+        for depth in range(1,len(parts)+1):
+            prefix="/".join(parts[:depth]);folded=prefix.casefold()
+            assert folded not in spellings or spellings[folded]==prefix
+            spellings[folded]=prefix
+        assert not any("/".join(parts[:depth]).casefold() in {n.casefold() for n in names}
+            for depth in range(1,len(parts)))
+    physical={}
+    for row in rows:
+        assert set(row)=={"target","source","bytes","sha256","before","role","mode"}
+        assert row["mode"]=="100644"
+        name=row["target"];donor=canonical(row["source"])
+        raw=donor.read_bytes()
+        assert len(raw)==row["bytes"] and sha(raw)==row["sha256"]
+        expected=("100644","blob",blob_id(raw))
+        assert tree(after).get(name)==expected
+        assert canonical(M/name).read_bytes()==raw
+        pre=row["before"]
+        if pre is None:
+            assert name not in tree(before_head)
+        else:
+            assert set(pre)=={"bytes","sha256","mode"} and pre["mode"]=="100644"
+            before_raw=git("cat-file","blob",before_head+":"+name)
+            assert len(before_raw)==pre["bytes"] and sha(before_raw)==pre["sha256"]
+            assert tree(before_head).get(name)==("100644","blob",blob_id(before_raw))
+        physical[name]=(row,raw)
+    committed_raw=raw_blobs([after+":"+name for name in names])
+    assert committed_raw==[physical[name][1] for name in names]
+    aliases=manifest["logical_donor_aliases"]
+    assert len(aliases)==issued["logical_donor_alias_count"]==receipt["logical_alias_count_excluding_manifest"]
+    alias_ids=set();alias_records=[]
+    for alias in aliases:
+        name=alias["target"]
+        assert name in physical and name!=target_manifest
+        donor=canonical(alias["source"]);raw=donor.read_bytes()
+        assert raw==physical[name][1] and len(raw)==alias["bytes"] and sha(raw)==alias["sha256"]
+        identity=(name,str(donor).casefold(),alias["bytes"],alias["sha256"])
+        assert identity not in alias_ids
+        alias_ids.add(identity)
+        alias_records.append({**alias,"canonical_donor":str(donor),"same_physical_bytes":True})
+    for row in original_rows:
+        assert (row["target"],str(canonical(row["source"])).casefold(),row["bytes"],row["sha256"]) in alias_ids
+    alias_records.append(dict(target=target_manifest,source=phase["manifest"]["path"],
+        bytes=phase["manifest"]["bytes"],sha256=phase["manifest"]["sha256"],
+        canonical_donor=str(canonical(phase["manifest"]["path"])),same_physical_bytes=True,synthetic_manifest=True))
+    assert preflight["logical_donor_aliases"]==alias_records
+    assert preflight["logical_alias_count_excluding_manifest"]==len(aliases)
+    assert preflight["phase"]=="fixture" and preflight["before_head"]==preflight["basis_head"]==before_head
+    assert preflight["path_count"]==len(rows) and preflight["rows"]==rows
+    assert preflight["all_donors_live_preimages_and_committed_basis_verified"] is True
+    assert preflight["native_execution_authorized"] is preflight["qualification"] is False
+    for doc in (preflight,staged):
+        assert doc["manifest_sha256"]==phase["manifest"]["sha256"]
+        assert doc["executor_sha256"]==executable["sha256"] and doc["release_sha256"]==phase["release"]["sha256"]
+    assert preflight["release"]==phase["release"]["path"] and preflight["manifest"]==phase["manifest"]["path"]
+    assert staged["before_head"]==before_head and staged["path_count"]==len(rows)
+    assert staged["exact_index_blob_bytes_verified"] is staged["exact_modes_and_preflight_ids_verified"] is True
+    staged_rows=[];committed_rows=[]
+    for name in names:
+        row,raw=physical[name];oid=blob_id(raw)
+        staged_rows.append(dict(target=name,mode="100644",oid=oid,stage=0,bytes=len(raw),sha256=sha(raw)))
+        committed_rows.append(dict(target=name,mode="100644",type="blob",oid=oid,bytes=len(raw),sha256=sha(raw)))
+    assert staged["rows"]==receipt["staged_rows"]==staged_rows
+    assert receipt["committed_rows"]==committed_rows
+    current_provenance=conversion_now(names)
+    current_attributes=attributes_now(names)
+    assert current_provenance==preflight["conversion_provenance"]
+    assert current_attributes==preflight["effective_attributes"]
+    assert receipt["repository"]==preflight["repository"]==current_provenance["repository"]
+    assert len(preflight["byte_rows"])==len(rows)
+    for item,name in zip(preflight["byte_rows"],names):
+        row,raw=physical[name];oid=blob_id(raw)
+        assert item==dict(target=name,donor=row["source"],bytes=len(raw),sha256=sha(raw),
+            expected_mode="100644",object_format="sha1",computed_raw_blob=oid,
+            git_raw_blob=oid,git_path_blob=oid,effective_attributes=current_attributes[name])
+    conversion_sha=sha(json.dumps(current_provenance,sort_keys=True,separators=(",",":")).encode())
+    for item,stage in ((preflight["before_copy_revalidation"],"all_hashes_complete_before_copy"),
+        (staged["pre_commit_revalidation"],"after_staging_before_commit"),
+        (receipt["final_conversion_revalidation"],"after_commit")):
+        assert item==dict(stage=stage,effective_attributes_unchanged=True,
+            conversion_provenance_unchanged=True,provenance_sha256=conversion_sha)
+    return dict(phase=key,before_head=before_head,after_head=after,rows=rows,
+        logical_donor_aliases=aliases,path_count=len(rows),manifest=phase["manifest"],
+        receipt=phase["receipt"],root_acceptance=phase["root_acceptance"],
+        complete_parent_and_raw_blobs_verified=True,complete_modes_attributes_and_aliases_verified=True)
+
+assert set(cfg["phase_pins"])=={"archive","source"}
+archive_phase=cfg["phase_pins"]["archive"]
+assert archive_phase["root_acceptance"]==provenance["v38_archive_intake_root_acceptance"]
+for role in ("executor","manifest","release","receipt"):
+    assert archive_phase[role]==archive_acceptance[role]
+assert archive_phase["expected_path_count"]==1931
+archive_intake=validate_phase("archive",archive_phase,PREVIOUS_HEAD)
+ARCHIVE_HEAD=archive_intake["after_head"]
+assert ARCHIVE_HEAD==archive_acceptance["after_head"]
+assert all(row["target"].startswith("verification/") for row in archive_intake["rows"])
+assert [r["target"] for r in archive_intake["rows"] if r["before"] is not None]==[PROGRESS]
+source_intake=validate_phase("source",cfg["phase_pins"]["source"],ARCHIVE_HEAD)
+assert source_intake["after_head"]==HEAD
+assert set(r["target"] for r in source_intake["rows"] if not r["target"].startswith("verification/"))==set(source_union)
+source_physical={r["target"]:r for r in source_intake["rows"]}
+for name,row in source_union.items():
+    actual=source_physical[name];donor=row["donor"]
+    assert actual["source"]==donor["path"] and actual["bytes"]==donor["bytes"] and actual["sha256"]==donor["sha256"]
+    assert actual["before"]==(None if row["preimage"] is None else {k:row["preimage"][k] for k in ("bytes","sha256")}|{"mode":"100644"})
+    assert tree(ARCHIVE_HEAD).get(name)==tree(PREVIOUS_HEAD).get(name)
+for row in selection["archive_rows"]:
+    actual=source_physical[row["relative_path"]]
+    assert actual["before"] is None
+    assert (actual["source"],actual["bytes"],actual["sha256"])==(row["donor"]["path"],row["donor"]["bytes"],row["donor"]["sha256"])
+assert PROGRESS not in source_physical
+assert set(r["target"] for r in archive_intake["rows"]).isdisjoint(source_physical)
+assert changed(PREVIOUS_HEAD,HEAD)==set(r["target"] for r in archive_intake["rows"])|set(source_physical)
+assert tree(PREVIOUS_HEAD).get(".gitattributes")==tree(ARCHIVE_HEAD).get(".gitattributes")==tree(HEAD).get(".gitattributes")
+progress_raw=Path(archive_preparation["projected_progress"]["path"]).read_bytes()
+assert progress_raw==(M/PROGRESS).read_bytes()==git("cat-file","blob",ARCHIVE_HEAD+":"+PROGRESS)==git("cat-file","blob",HEAD+":"+PROGRESS)
+provenance["progress"]=exact(M/PROGRESS,cfg["progress"]["sha256"],cfg["progress"]["bytes"])
+phase_inventory=dict(schema=1,status="source_only_two_exact_actual_intakes_verified",
+    candidate_head=HEAD,source_basis_head=PREVIOUS_HEAD,archive_head=ARCHIVE_HEAD,
+    archive=archive_intake,source=source_intake,
+    selected_source_plan=selection_ref,source_paths=sorted(source_union),
+    source_paths_count=21,source_replacements=9,source_additions=12,
+    complete_parent_chain_and_changed_path_union_verified=True,
+    progress_preserved_from_archive_commit=True,raw_history_source_head=PREVIOUS_HEAD,
+    native_execution_authorized=False,qualification=False)
+
+# The literal import/embed walker is unchanged from reviewed V35 CECC6473.
+current_bytes = {}
+def current(name):
+    relative(name)
+    if name not in current_bytes:
+        current_bytes[name] = (M/name).read_bytes()
+    return current_bytes[name]
+def expected_pin(name, digest):
+    raw = current(name)
+    actual = sha(raw)
+    if actual != digest:
+        assert name in source_union and actual == source_union[name]["donor"]["sha256"], (name,digest,actual)
+    return dict(path=name,sha256=actual)
+def closure(root):
+    modules, embeds, includes, anonymous = {},{},set(),[]
+    todo = [root]
+    while todo:
+        name = todo.pop()
+        if name in modules:
+            continue
+        raw = current(name)
+        text = raw.decode("utf-8")
+        hits = []
+        for imported in IMPORT.findall(text):
+            if imported in ("std","builtin"):
+                continue
+            if imported in NAMED:
+                target = NAMED[imported]
+            elif imported.endswith(".zig"):
+                target = posixpath.normpath(posixpath.join(posixpath.dirname(name),imported))
+            else:
+                raise AssertionError(("unmapped named import",name,imported))
+            relative(target)
+            hits.append(target)
+            todo.append(target)
+        for operand in re.findall(r"@import\s*\(([^)]*)\)",text):
+            assert re.fullmatch(r'\s*"[^"]+"\s*',operand), ("dynamic import operand",name,operand)
+        for embedded in EMBED.findall(text):
+            target = posixpath.normpath(posixpath.join(posixpath.dirname(name),embedded))
+            raw_embed = current(target)
+            embeds[target] = dict(relative_path=target,bytes=len(raw_embed),sha256=sha(raw_embed))
+        includes.update(re.findall(r'@cInclude\s*\(\s*"([^"]+)"\s*\)',text))
+        for line_no,line in enumerate(text.splitlines(),1):
+            if re.match(r"\s*test\s*\{",line):
+                anonymous.append(dict(relative_path=name,line=line_no))
+        modules[name] = dict(relative_path=name,bytes=len(raw),sha256=sha(raw),literal_imports=sorted(set(hits)))
+    return modules,embeds,sorted(includes),sorted(anonymous,key=lambda r:(r["relative_path"],r["line"]))
+def anonymous_names(rows):
+    assert len({r["relative_path"] for r in rows}) == len(rows)
+    return {r["relative_path"].removeprefix("src/").removesuffix(".zig").replace("/",".")+".test_0" for r in rows}
+
+
+# Reconcile every selected raw Git input independently with its immutable base.
+# Checkout hashes come from the accepted whole-tree seals. Raw CRLF-normalized
+# Git blobs are never substituted for those separately observed checkout bytes.
+git_rows=observations["selected_git_source_versions"]
+assert len(git_rows)==2145 and len({r["relative_path"] for r in git_rows})==2145
+raw_versions=raw_blobs([PREVIOUS_HEAD+":"+r["relative_path"] for r in git_rows])
+raw_distinctions={r["relative_path"]:r for r in observations["immutable_checkout_vs_raw_git_distinctions"]}
+assert set(raw_distinctions)=={
+    "src/extensions/native_node_operation_scope.zig","src/native_sdk_chalk_ignore_guest_guard_test.zig"}
+third_source_authority=proof("third_raw_git_checkout_source_finding",
+    MODULES/"native-foundation-v39-catalog-preparer-source-peer-20261022/raw-checkout-third-distinction-negative.json",
+    "F4F41ED63CB5297FFF2175001E3A22BE4EE320546F282D43D9EBEB37C49C1208",9339)
+assert third_source_authority["observations"]==provenance["source_observations_before_descriptor_successor"]
+assert third_source_authority["raw_commit"]==PREVIOUS_HEAD
+third_name="src/extensions/native_typebox_operators_runtime.zig"
+assert third_name not in raw_distinctions
+raw_distinctions[third_name]=dict(relative_path=third_name,
+    accepted_checkout_sha256="48E86CAFB55871A9769EFC9E732B56A58B59328E1371BC00F7F45B928435A758",
+    raw_git_sha256="76E0B40EC9C55F6945C68900436F4D3E35BEEC4EBF251D5B240A76393BA790A7",
+    raw_git_bytes=11919,git_blob="e51dd260aad404ae6b3398f2a854bd3f14693397",
+    role="Distinct immutable versions; no current checkout equivalence asserted. Future preparation must use actual checkout and preserve the accepted checkout seal.")
+third_comparison=third_source_authority["complete_2145_row_hash_comparison"]
+assert third_comparison["count"]==len(third_comparison["differences"])==len(raw_distinctions)==3
+assert third_comparison["declared_distinctions"]==observations["immutable_checkout_vs_raw_git_distinctions"]
+assert {r["name"] for r in third_comparison["differences"]}==set(raw_distinctions)
+for reported in third_comparison["differences"]:
+    selected=raw_distinctions[reported["name"]]
+    assert (reported["git_sha"],reported["git_bytes"],reported["git_blob"],reported["sealed_sha"])==(
+        selected["raw_git_sha256"],selected["raw_git_bytes"],selected["git_blob"],selected["accepted_checkout_sha256"])
+    assert reported["source_rows"]==reported["tree_rows"]==[
+        dict(relative=reported["name"],path=str(M/reported["name"]),sha256=selected["accepted_checkout_sha256"])]
+for row,raw in zip(git_rows,raw_versions):
+    name=relative(row["relative_path"])
+    assert tree(PREVIOUS_HEAD)[name]==(row["mode"],"blob",row["git_blob"])
+    assert len(raw)==row["bytes"] and sha(raw)==row["sha256"] and blob_id(raw)==row["git_blob"]
+    assert name in old_sealed
+    if row["sha256"]!=old_sealed[name]:
+        difference=raw_distinctions[name]
+        assert difference["raw_git_sha256"]==row["sha256"]
+        assert difference["accepted_checkout_sha256"]==old_sealed[name]
+        assert difference["raw_git_bytes"]==len(raw) and difference["git_blob"]==blob_id(raw)
+    else:
+        assert name not in raw_distinctions
+    expected=source_union[name]["donor"]["sha256"] if name in source_union else old_sealed[name]
+    assert sha(current(name))==expected,(name,expected)
+for name,row in source_union.items():
+    assert current(name)==Path(row["donor"]["path"]).read_bytes()
+checked_current_versions={name:dict(relative_path=name,bytes=len(raw),sha256=sha(raw))
+    for name,raw in current_bytes.items()}
+
+# The concrete build recipe is itself an accepted donor. Recheck the full
+# selected native-member block and all8 consumer link sites from actual bytes.
+build_text=current("build.zig").decode()
+library=membership["library_block"]
+assert len(library["text"].encode())==library["bytes"] and sha(library["text"].encode())==library["sha256"]
+assert build_text.count(library["text"])==1
+assert current("build.zig")==Path(membership["build"]["path"]).read_bytes()
+assert len(membership["consumers"])==8
+linkage_basis=observations["linkage_basis"]
+configured("selected_linkage_source_proof",linkage_basis["source_proof"])
+trio=["src/extensions/native_node_diagnostic_context.c","src/extensions/native_v8_base_fatal.cpp",
+      "src/extensions/native_node_one_byte_string_diagnostics.cpp"]
+headers=["src/extensions/native_node_diagnostic_context.h","src/extensions/native_node_diagnostic_context.hpp",
+         "src/extensions/native_v8_base_fatal.h","src/extensions/native_node_one_byte_string_diagnostics.h"]
+required_native=trio+headers
+assert '.linkage = .static' in library["text"]
+assert '.link_libc = true' in library["text"] and '.link_libcpp = true' in library["text"]
+for path in trio:
+    assert library["text"].count('"'+path+'"')==1
+for flag in ("-std=gnu11","-std=gnu++20","-fno-exceptions","-fno-rtti","-fno-strict-aliasing"):
+    assert '"'+flag+'"' in library["text"]
+actual_consumers=[]
+for selected in linkage_basis["artifact_consumers"]:
+    begin=build_text.index("const "+selected["variable"]+" = b.addTest(")
+    end=build_text.index('b.step("'+selected["target"]+'"',begin)
+    end=build_text.index("\n",end)
+    block=build_text[begin:end]
+    assert selected["root"] in block
+    assert block.count(selected["variable"]+".root_module.linkLibrary(node_one_byte_diagnostics);")==1
+    assert all('"'+path+'"' not in block for path in trio)
+    expected=next(r for r in membership["consumers"] if r["name"]==selected["artifact_basename"])
+    assert expected["root"]==selected["root"] and expected["reason"]==selected["reason"]
+    assert expected["build_block"]==dict(bytes=len(block.encode()),sha256=sha(block.encode()))
+    actual_consumers.append(expected)
+assert actual_consumers==membership["consumers"]
+
+# Exact current literal graph membership for all117 retained roots and new3.
+# This is a conservative source closure; no compiler reachability is inferred.
+module_info={r["relative_path"]:r for r in observations["prospective_module_information"]}
+embed_info={r["relative_path"]:r for r in observations["prospective_embed_information"]}
+graph_info={r["name"]:r for r in observations["graphs"]}
+assert len(graph_info)==len(observations["graphs"])==120
+graphs={}
+catalog_graph_records=[]
+for spec in observations["graphs"]:
+    name,root=spec["name"],spec["root"]
+    modules,embeds,includes,anonymous=closure(root)
+    assert len(modules)==spec["prospective_literal_modules"]
+    assert len(embeds)==spec["prospective_embeds"]
+    assert sorted(modules)==spec["prospective_module_names"]
+    assert sorted(embeds)==spec["prospective_embed_names"]
+    assert not spec["removed_module_names"]
+    assert anonymous==spec["anonymous_blocks"]
+    assert sorted(anonymous_names(anonymous))==spec["prospective_anonymous_names"]
+    for path,row in modules.items():
+        original=module_info[path]
+        expected={k:original[k] for k in ("relative_path","bytes","sha256","literal_imports")}
+        if path==shutdown_name:
+            expected["bytes"],expected["sha256"]=len(new_shutdown),sha(new_shutdown)
+        elif path in raw_distinctions:
+            assert original["sha256"]==raw_distinctions[path]["raw_git_sha256"]
+            expected["bytes"],expected["sha256"]=len(current(path)),old_sealed[path]
+        assert row==expected,(name,path)
+    for path,row in embeds.items():
+        assert row=={k:embed_info[path][k] for k in ("relative_path","bytes","sha256")}
+    graphs[name]=(modules,embeds,includes,anonymous)
+    catalog_graph_records.append(dict(name=name,source_root=root,
+        conservative_module_count=len(modules),conservative_embed_count=len(embeds),
+        module_names=sorted(modules),embed_names=sorted(embeds),
+        c_include_names=includes,anonymous_source_blocks=anonymous,
+        compiler_selected_reachability_claimed=False,compiler_executed=False,native_executed=False))
+
+# Refresh only the observed65 source rows and82 supplemental rows. Every old
+# row first reconciles to the actual V38 checkout seal, not a normalized blob.
+matrix=copy.deepcopy(prior)
+source_changes,dependency_changes=[],[]
+pin_aliases={}
+external_current_pins=[]
+def matrix_current(name,expected):
+    relative(name)
+    assert name.casefold() not in pin_aliases or pin_aliases[name.casefold()]==name,name
+    pin_aliases[name.casefold()]=name
+    assert old_sealed[name]==expected,("accepted V38 checkout seal differs",name)
+    actual=sha(current(name))
+    selected=source_union[name]["donor"]["sha256"] if name in source_union else expected
+    assert actual==selected,(name,expected,actual)
+    return actual
+# Derive the same conservative native support sets from the exact old catalog
+# and four detailed inventories; never accept an unenumerated new recipe row.
+old_by_name={g["name"]:g for g in prior["groups"]}
+native_inventory=read(Path(prior_reviews["new4"]["source_dependency_inventory"]["path"]))
+derived_templates={}
+for name in ("native-node-file-handle-owner","native-vm-error-constructor-name"):
+    row=next(r for r in native_inventory["roots"] if r["name"]==name)
+    own={r["relative_path"] for kind in ("modules","embeds") for r in row[kind]}
+    derived_templates[name]=dict(
+        source_extras=[r for r in old_by_name[name]["source_pins"] if r["path"] not in own],
+        dependency_extras=[r for r in prior["whole_tree_dependency_pins"] if r["group"]==name and r["path"] not in own])
+assert derived_templates==membership["exact_native_templates"]
+derived_source_additions=set()
+derived_dependency_additions=set()
+for name,info in graph_info.items():
+    if info["role"]=="retained":
+        derived_source_additions.update((name,p) for p in info["new_graph_members_missing_old_source_pins"])
+        assert not info["new_graph_members_missing_old_supplemental_pins"]
+for consumer in membership["consumers"]:
+    if consumer["name"] in old_by_name:
+        group=old_by_name[consumer["name"]]
+        existing_source={r["path"] for r in group["source_pins"]}
+        existing_dep={r["path"] for r in prior["whole_tree_dependency_pins"] if r["group"]==group["name"]}
+        missing_source=[p for p in required_native if NARROW.fullmatch(p) and p not in existing_source]
+        missing_dep=[p for p in required_native if not NARROW.fullmatch(p) and p not in existing_dep]
+        assert consumer["missing_old_native_source_members"]==missing_source
+        assert consumer["missing_old_native_supplemental_members"]==missing_dep
+        derived_source_additions.update((group["name"],p) for p in missing_source)
+        derived_dependency_additions.update((group["name"],p) for p in missing_dep)
+assert [dict(group=g,path=p) for g,p in sorted(derived_source_additions)]==membership["retained_new_source_members"]
+assert [dict(group=g,path=p) for g,p in sorted(derived_dependency_additions)]==membership["retained_new_supplemental_members"]
+
+for gi,group in enumerate(matrix["groups"]):
+    assert len({r["path"] for r in group["source_pins"]})==len(group["source_pins"])
+    for ri,row in enumerate(group["source_pins"]):
+        assert NARROW.fullmatch(row["path"]),row["path"]
+        actual=matrix_current(row["path"],row["sha256"])
+        if actual!=row["sha256"]:
+            assert row["path"] in replacement
+            source_changes.append(dict(group=group["name"],group_index=gi,row_index=ri,
+                path=row["path"],before=row["sha256"],after=actual))
+            row["sha256"]=actual
+    for row in group["external_pins"]:
+        path=canonical(row["path"])
+        assert h(path)==row["sha256"]
+        external_current_pins.append(pin(path))
+for ri,row in enumerate(matrix["whole_tree_dependency_pins"]):
+    actual=matrix_current(row["path"],row["sha256"])
+    if actual!=row["sha256"]:
+        assert row["path"] in replacement
+        dependency_changes.append(dict(group=row["group"],row_index=ri,path=row["path"],
+            before=row["sha256"],after=actual))
+        row["sha256"]=actual
+assert source_changes==observations["source_row_hash_substitutions"] and len(source_changes)==65
+assert dependency_changes==observations["dependency_row_hash_substitutions"] and len(dependency_changes)==82
+
+by_name={g["name"]:g for g in matrix["groups"]}
+assert len(by_name)==117
+added_retained_source=[]
+for member in membership["retained_new_source_members"]:
+    group,name=by_name[member["group"]],member["path"]
+    assert NARROW.fullmatch(name) and name not in {r["path"] for r in group["source_pins"]}
+    row=dict(path=name,sha256=sha(current(name)))
+    added_retained_source.append(dict(group=group["name"],group_index=matrix["groups"].index(group),
+        row_index=len(group["source_pins"]),row=row.copy()))
+    group["source_pins"].append(row)
+added_dependency_rows=[]
+old_dependency_keys={(r["group"],r["path"]) for r in matrix["whole_tree_dependency_pins"]}
+assert len(old_dependency_keys)==576
+for member in membership["retained_new_supplemental_members"]:
+    key=(member["group"],member["path"])
+    assert key not in old_dependency_keys
+    old_dependency_keys.add(key)
+    row=dict(group=key[0],path=key[1],sha256=sha(current(key[1])))
+    matrix["whole_tree_dependency_pins"].append(row)
+    added_dependency_rows.append(row.copy())
+assert len(added_retained_source)==45 and len(added_dependency_rows)==26
+new_group_specs={g["name"]:g for g in old_plan["proposed_new_groups"]}
+new_member_specs={g["name"]:g for g in membership["new_root_memberships"]}
+for name,root,filters,count,module_count,embed_count in NEW_SPECS:
+    spec=new_group_specs[name]
+    modules,embeds,includes,anonymous=graphs[name]
+    names=declared(current(root))
+    assert len(names)==len(set(names))==count
+    required=[Path(root).stem+".test."+n for n in names]
+    assert required==spec["required_named"]
+    assert all(any(text in n for text in filters) for n in names)
+    assert len(modules)==module_count and len(embeds)==embed_count
+    member=new_member_specs[name]
+    template="native-vm-error-constructor-name" if name=="native-vm-array-buffer-view-data" else "native-node-file-handle-owner"
+    template_rows=derived_templates[template]
+    members=set(modules)|set(embeds)
+    narrow={p for p in members if NARROW.fullmatch(p)}|{r["path"] for r in template_rows["source_extras"]}
+    supplemental={p for p in members if not NARROW.fullmatch(p)}|{r["path"] for r in template_rows["dependency_extras"]}
+    if template=="native-node-file-handle-owner":
+        narrow|={p for p in required_native if NARROW.fullmatch(p)}
+        supplemental|={p for p in required_native if not NARROW.fullmatch(p)}
+    assert member["accepted_native_template"]==template
+    assert sorted(narrow)==member["source_pin_names"] and sorted(supplemental)==member["supplemental_pin_names"]
+    group=dict(name=name,target="build-"+name,artifact=name,source_root=root,
+        required_named=required,historical_order=None,
+        allowed_anonymous=spec["allowed_anonymous"].copy(),runtime_stderr_policy="empty",
+        source_pins=[dict(path=p,sha256=sha(current(p))) for p in member["source_pin_names"]],
+        external_pins=[])
+    assert set(group)==set(prior["groups"][-1])
+    assert len(group["source_pins"])==member["source_pin_count"]
+    assert all(NARROW.fullmatch(row["path"]) for row in group["source_pins"])
+    assert anonymous_names(anonymous)==set(group["allowed_anonymous"])
+    assert not set(row["path"] for row in group["source_pins"]) & set(member["supplemental_pin_names"])
+    matrix["groups"].append(group);by_name[name]=group
+    for path in member["supplemental_pin_names"]:
+        row=dict(group=name,path=path,sha256=sha(current(path)))
+        assert (name,path) not in old_dependency_keys
+        old_dependency_keys.add((name,path))
+        matrix["whole_tree_dependency_pins"].append(row)
+        added_dependency_rows.append(row.copy())
+    assert len(member["supplemental_pin_names"])==member["supplemental_pin_count"]
+assert len(matrix["groups"])==120 and sum(len(g["required_named"]) for g in matrix["groups"])==2051
+assert len(added_dependency_rows)==189 and len(matrix["whole_tree_dependency_pins"])==765
+assert len({(r["group"],r["path"]) for r in matrix["whole_tree_dependency_pins"]})==765
+# The pre-existing narrow pins are retained. Complete old literal graphs are
+# covered by unchanged whole-source/tree bookends; new graph members receive
+# explicit additional group pins. The seven detailed inventories are complete.
+for name,(modules,embeds,includes,anonymous) in graphs.items():
+    group=by_name[name]
+    covered={r["path"] for r in group["source_pins"]}|{r["path"] for r in matrix["whole_tree_dependency_pins"] if r["group"]==name}
+    assert set(modules)|set(embeds)<=set(old_sealed)|set(source_union)
+    required_new=set(graph_info[name]["added_module_names"])
+    assert required_new<=covered,(name,sorted(required_new-covered))
+    if name in {s[0] for s in SPECS}|{s[0] for s in NEW_SPECS}:
+        assert set(modules)|set(embeds)<=covered,(name,sorted((set(modules)|set(embeds))-covered))
+        assert anonymous_names(anonymous)<=set(group["allowed_anonymous"]),(name,anonymous)
+
+selected_groups={"new3":[s[0] for s in NEW_SPECS],
+    "new4":prior_reviews["new4"]["selected_group_names"].copy(),
+    "regression63":prior_reviews["regression63"]["selected_group_names"].copy()}
+assert selected_groups["new4"]==[s[0] for s in SPECS]
+assert selected_groups=={("regression63" if row["role"]=="original63" else
+    "new4" if row["role"]=="retained4" else "new3"):row["ordered_groups"] for row in observations["cohorts"]}
+assert all(row["actual_metadata_count"] is None for row in observations["cohorts"])
+for key in OUTS:
+    assert len(selected_groups[key])==len(set(selected_groups[key]))==PARTITION[key]["groups"]<=64
+    assert sum(len(by_name[name]["required_named"]) for name in selected_groups[key])==PARTITION[key]["declarations"]
+assert all(set(selected_groups[a]).isdisjoint(selected_groups[b]) for a,b in
+    (("new3","new4"),("new3","regression63"),("new4","regression63")))
+assert len(set().union(*[set(v) for v in selected_groups.values()]))==70
+# Complete raw inverse: delete only appended members/groups, restore every
+# recorded hash, and leave all old order/names/policies/top-level fields exact.
+inverse=copy.deepcopy(matrix)
+del inverse["groups"][117:]
+del inverse["whole_tree_dependency_pins"][576:]
+for row in reversed(added_retained_source):
+    target=inverse["groups"][row["group_index"]]["source_pins"]
+    assert len(target)==row["row_index"]+1 and target.pop()==row["row"]
+for row in source_changes:
+    target=inverse["groups"][row["group_index"]]["source_pins"][row["row_index"]]
+    assert target==dict(path=row["path"],sha256=row["after"])
+    target["sha256"]=row["before"]
+for row in dependency_changes:
+    target=inverse["whole_tree_dependency_pins"][row["row_index"]]
+    assert target==dict(group=row["group"],path=row["path"],sha256=row["after"])
+    target["sha256"]=row["before"]
+assert inverse==prior
+assert (json.dumps(inverse,indent=2)+"\n").encode()==(OLDS["new4"]/"groups.json").read_bytes()
+
+
+# Refresh the four retained detailed inventories and append three complete new
+# inventories. Exact inverse records include changed import edges, not only SHA.
+old_inventory_path=Path(prior_reviews["new4"]["source_dependency_inventory"]["path"])
+old_inventory=read(old_inventory_path)
+assert old_inventory_path.read_bytes()==Path(prior_reviews["regression63"]["source_dependency_inventory"]["path"]).read_bytes()
+assert old_inventory["candidate_head"]==PREVIOUS_HEAD and old_inventory["named_controls"]==58
+assert old_inventory["actual_metadata_count"] is None and old_inventory["source_only"] is True
+assert old_inventory["native_execution"] is old_inventory["qualification"] is False
+assert [r["name"] for r in old_inventory["roots"]]==selected_groups["new4"]
+closure_inventory=copy.deepcopy(old_inventory)
+inventory_edits=[]
+def inventory_set(path,value):
+    target=closure_inventory
+    for key in path[:-1]:target=target[key]
+    key=path[-1]
+    before=copy.deepcopy(target[key])
+    if before!=value:
+        inventory_edits.append(dict(path=path,before=before,after=copy.deepcopy(value)))
+        target[key]=copy.deepcopy(value)
+def inventory_modules(index,modules):
+    target=closure_inventory["roots"][index]["modules"]
+    before_names=[r["relative_path"] for r in target]
+    assert before_names==sorted(before_names)
+    assert set(before_names)<=set(modules)
+    for mi,row in enumerate(target.copy()):
+        path=row["relative_path"]
+        current_row=modules[path]
+        if row!=current_row:
+            assert path in replacement,(index,path)
+            assert row["sha256"]==replacement[path]["preimage"]["sha256"]
+            assert row["bytes"]==replacement[path]["preimage"]["bytes"]
+            inventory_set(["roots",index,"modules",mi],current_row)
+    for path in sorted(set(modules)-set(before_names)):
+        mi=next((i for i,row in enumerate(target) if row["relative_path"]>path),len(target))
+        row=copy.deepcopy(modules[path])
+        inventory_edits.append(dict(path=["roots",index,"modules",mi],insert=row))
+        target.insert(mi,row)
+    assert target==[modules[path] for path in sorted(modules)]
+for index,(name,root,filter_text,count,module_count) in enumerate(SPECS):
+    expected=old_inventory["roots"][index]
+    modules,embeds,includes,anonymous=graphs[name]
+    assert (expected["name"],expected["source_root"],expected["filter"],expected["source_declared_controls"])==(name,root,filter_text,count)
+    names=declared(current(root))
+    assert len(names)==len(set(names))==count and names==expected["named_declarations"]
+    assert all(filter_text in n for n in names)
+    assert by_name[name]["required_named"]==[Path(root).stem+".test."+n for n in names]
+    assert len(modules)==module_count
+    assert len(embeds)==expected["conservative_embed_count"]==(0 if module_count==1 else 243)
+    assert [embeds[p] for p in sorted(embeds)]==expected["embeds"]
+    assert anonymous==expected["anonymous_source_blocks"]
+    assert anonymous_names(anonymous)==set(expected["allowed_anonymous"])==set(by_name[name]["allowed_anonymous"])
+    assert expected["named_import_owners"]==({} if module_count==1 else NAMED)
+    assert expected["actual_metadata_count"] is None
+    assert expected["compiler_selected_reachability_claimed"] is expected["compiler_executed"] is expected["native_executed"] is False
+    inventory_modules(index,modules)
+    inventory_set(["roots",index,"conservative_module_count"],len(modules))
+    inventory_set(["roots",index,"c_include_names"],includes)
+    inventory_set(["roots",index,"source_pins"],len(by_name[name]["source_pins"]))
+    inventory_set(["roots",index,"additional_dependency_rows"],sum(r["group"]==name for r in matrix["whole_tree_dependency_pins"]))
+for name,root,filters,count,module_count,embed_count in NEW_SPECS:
+    modules,embeds,includes,anonymous=graphs[name]
+    names=declared(current(root))
+    inventory_row=dict(name=name,source_root=root,filter=None,build_filters=filters.copy(),
+        source_declared_controls=count,named_declarations=names,
+        conservative_module_count=len(modules),conservative_embed_count=len(embeds),
+        modules=[modules[p] for p in sorted(modules)],embeds=[embeds[p] for p in sorted(embeds)],
+        named_import_owners={} if module_count==1 else NAMED.copy(),c_include_names=includes,
+        anonymous_source_blocks=anonymous,allowed_anonymous=by_name[name]["allowed_anonymous"].copy(),
+        source_pins=len(by_name[name]["source_pins"]),
+        additional_dependency_rows=sum(r["group"]==name for r in matrix["whole_tree_dependency_pins"]),
+        actual_metadata_count=None,compiler_selected_reachability_claimed=False,
+        compiler_executed=False,native_executed=False)
+    closure_inventory["roots"].append(inventory_row)
+assert len(closure_inventory["roots"])==7
+assert sum(r["source_declared_controls"] for r in closure_inventory["roots"])==96
+inventory_inverse=copy.deepcopy(closure_inventory)
+del inventory_inverse["roots"][4:]
+for edit in reversed(inventory_edits):
+    target=inventory_inverse
+    for key in edit["path"][:-1]:target=target[key]
+    key=edit["path"][-1]
+    if "insert" in edit:
+        assert target.pop(key)==edit["insert"]
+    else:
+        assert target[key]==edit["after"]
+        target[key]=copy.deepcopy(edit["before"])
+assert inventory_inverse==old_inventory
+assert (json.dumps(inventory_inverse,indent=2)+"\n").encode()==old_inventory_path.read_bytes()
+
+# Current source identity is bound only after complete admission. Historical
+# result/count fields remain segregated; future metadata is always null.
+now=datetime.datetime.now(datetime.timezone.utc).isoformat()
+matrix["source_head_at_preparation"]=HEAD
+matrix["prepared_utc"]=now
+closure_inventory["schema"]="pi-zig.v39-seven-root-conservative-source-inventories.v1"
+closure_inventory["candidate_head"]=HEAD
+closure_inventory["prepared_utc"]=now
+closure_inventory["named_controls"]=96
+closure_inventory["catalog_literal_graphs"]=catalog_graph_records
+closure_inventory["catalog_literal_graph_count"]=120
+closure_inventory["selected_descriptor_successor"]=descriptor["candidate"].copy()
+closure_inventory["selected_source_plan"]=selection_ref
+closure_inventory["source_inventory_count_is_not_actual_metadata"]=True
+assert closure_inventory["actual_metadata_count"] is None
+
+partition=dict(schema=1,candidate_head=HEAD,source_basis_head=PREVIOUS_HEAD,
+    catalog_groups=120,catalog_declarations=2051,group_cap=64,
+    batches={key:dict(selected_group_names=selected_groups[key],selected_groups=PARTITION[key]["groups"],
+        selected_declarations=PARTITION[key]["declarations"],actual_metadata_count=None,
+        preparation_directory=str(OUTS[key])) for key in OUTS},
+    exact_previous4_and_original63_orders_preserved=True,
+    pairwise_disjoint=True,union_groups=70,union_declarations=1345,
+    all_selected_groups_present=True,all_named_controls_preserved=True,
+    v38_progress_next_batch_retained_as_historical_4_plus63=True,
+    native_execution_authorized=False,execution_authority=False,runtime_authority=False,qualification=False)
+
+# Build each exact15-file output set in memory before opening any output.
+# The driver/classifier and strict metadata audit remain byte-identical except
+# for the auditor's one required preparation-directory literal.
+outputs={}
+for key,out in OUTS.items():
+    old_key="regression63" if key=="regression63" else "new4"
+    old=OLDS[old_key]
+    files={}
+    for name in ("Run-CombinedNativeBatch.ps1","Get-ModelsNativeCandidates.ps1",
+                 "process-ancestry-peer-modules.json","combined-build-source-peer.json","uv-namespace-source-peer.json"):
+        files[name]=(old/name).read_bytes()
+    assert sha(files["Run-CombinedNativeBatch.ps1"])==DRIVER
+    assert sha(files["Get-ModelsNativeCandidates.ps1"])==CLASSIFIER
+    files["prior-v38-progress.json"]=progress_raw
+    old_auditor=(old/"Audit-CombinedNativeBatch.py").read_bytes()
+    old_literal=str(old.relative_to(B)).replace("\\","/").encode()
+    new_literal=str(out.relative_to(B)).replace("\\","/").encode()
+    assert old_auditor.count(old_literal)==1 and new_literal not in old_auditor
+    auditor=old_auditor.replace(old_literal,new_literal,1)
+    assert auditor.replace(new_literal,old_literal,1)==old_auditor
+    files["Audit-CombinedNativeBatch.py"]=auditor
+    def future_pin(name,raw):
+        return dict(path=str(out/name),bytes=len(raw),sha256=sha(raw))
+    def encode(value):
+        return (json.dumps(value,indent=2)+"\n").encode()
+    files["metadata-auditor-adaptation.json"]=encode(dict(
+        schema=1,status="source_only_path_literal_adaptation",candidate_head=HEAD,
+        baseline=prior_reviews[old_key]["auditor"],adapted=future_pin("Audit-CombinedNativeBatch.py",auditor),
+        old_preparation_literal=old_literal.decode(),new_preparation_literal=new_literal.decode(),
+        literal_substitutions=1,whole_raw_inverse=True,all_other_bytes_unchanged=True,
+        strict_driver_sha256=DRIVER,classification_sha256=CLASSIFIER,
+        executed=False,native_execution_authorized=False,qualification=False))
+    files["groups.json"]=encode(matrix)
+    files["matrix-refresh-adaptation.json"]=encode(dict(
+        schema=1,candidate_head=HEAD,basis_head=PREVIOUS_HEAD,
+        original=prior_reviews["new4"]["matrix"],adapted=future_pin("groups.json",files["groups.json"]),
+        source_hash_substitutions=source_changes,dependency_hash_substitutions=dependency_changes,
+        appended_retained_source_rows=added_retained_source,
+        appended_dependency_rows=added_dependency_rows,
+        appended_groups=matrix["groups"][117:],old_groups=117,new_groups=3,
+        old_declarations=2013,new_declarations=38,old_dependency_rows=576,new_dependency_rows=189,
+        inverse_identity_fields={k:prior[k] for k in ("source_head_at_preparation","prepared_utc")},
+        complete_original_structural_and_raw_byte_inverse=True,
+        old_names_order_policies_and_external_pins_unchanged=True,
+        actual_metadata_count=None,execution_authority=False,runtime_authority=False,qualification=False))
+    files["new-roots-source-inventory.json"]=encode(closure_inventory)
+    files["source-inventory-refresh-adaptation.json"]=encode(dict(
+        schema=1,candidate_head=HEAD,original=prior_reviews["new4"]["source_dependency_inventory"],
+        adapted=future_pin("new-roots-source-inventory.json",files["new-roots-source-inventory.json"]),
+        original_roots=4,added_roots=3,retained_root_edits=inventory_edits,
+        appended_root_names=[s[0] for s in NEW_SPECS],
+        original_identity_fields={k:old_inventory[k] for k in ("schema","candidate_head","prepared_utc","named_controls")},
+        appended_top_level_fields=["catalog_literal_graphs","catalog_literal_graph_count",
+            "selected_descriptor_successor","selected_source_plan","source_inventory_count_is_not_actual_metadata"],
+        complete_original_structural_and_raw_byte_inverse=True,
+        all120_literal_graphs_rederived=True,known_checkout_vs_raw_Git_distinctions=list(raw_distinctions.values()),
+        actual_metadata_count=None,compiler_selected_reachability_claimed=False,
+        compiler_executed=False,native_executed=False,qualification=False))
+    files["exact-intake-source-inventory.json"]=encode(phase_inventory)
+    files["complete-batch-partition.json"]=encode(partition)
+    review=copy.deepcopy(prior_reviews[old_key])
+    # Preserve every existing historical field; replace only current preparation
+    # identity, counts, pin roles and the explicitly enumerated old-delta records.
+    for field,value in dict(
+        schema=1,status="source_only_fresh_batch_prepared",candidate_head=HEAD,batch=key,
+        new_intake_commits=[ARCHIVE_HEAD,HEAD],prepared_utc=now,provenance=copy.deepcopy(provenance),
+        source_pin_changes=source_changes,historical_source_rebindings=historical_source_rebindings,
+        historical_progress_rebindings=historical_progress_rebindings,
+        historical_provenance_relationships=historical_provenance_relationships,
+        whole_dependency_pin_changes=dependency_changes,old_dependency_rows_retained=576,
+        new_dependency_rows=189,new_groups=3,preserved_groups=117,preserved_declarations=2013,
+        catalog_groups=120,catalog_declarations=2051,selected_groups=PARTITION[key]["groups"],
+        selected_declarations=PARTITION[key]["declarations"],selected_group_names=selected_groups[key],
+        partition_union_groups=70,partition_union_declarations=1345,actual_metadata_count=None,
+        prior_metadata_transferred=False,old_catalog_complete_structural_and_byte_inverse=True,
+        old_group_objects_except_reviewed_source_pin_hashes_exact=False,
+        old_group_objects_except_reviewed_source_membership_and_hashes_exact=True,
+        old_dependency_prefix_except_reviewed_hashes_exact=True,
+        existing_named_control_lists_and_selected63_order_exact=True,
+        all_driver_classifier_and_strict_gates_unchanged=True,
+        selected_order_note="New3, retained4 and exact original63 are complete disjoint separately authorized selections. Names/declarations do not predict metadata.",
+        auditor_change="Exactly one preparation-directory literal; all gates and all other bytes unchanged.",
+        runtime_authority=False,execution_authority=False,qualification=False).items():
+        review[field]=value
+    review["prior_v38_intake_commits"]=prior_reviews[old_key]["new_intake_commits"].copy()
+    review["semantic_intake_order"]=["archive","source"]
+    review["actual_archive_head"]=ARCHIVE_HEAD
+    review["selected_source_plan"]=selection_ref
+    review["selected_current_source_roots"]=[
+        dict(name=name,source_root=root,source_pin=dict(path=str(M/root),bytes=len(current(root)),sha256=sha(current(root))))
+        for name,root,*_ in SPECS]
+    review["prior_v38_observed"] = copy.deepcopy(record)
+    review["prior_v38_progress_next_batch_preserved_as_history"]=copy.deepcopy(projected_progress["next_native_batch"])
+    review["future_native_execution_requires_separate_exact_Root_grants"]=True
+    review["complete_source_membership_additions"]=dict(retained_source_rows=45,retained_dependency_rows=26,new_group_dependency_rows=163)
+    review["review"]="Source-only catalog preparation. Actual previous outcomes remain historical at014. No metadata, artifacts, process acceptance or runtime qualification transfers to this new source head."
+    roles={"driver":"Run-CombinedNativeBatch.ps1","matrix":"groups.json","auditor":"Audit-CombinedNativeBatch.py",
+        "classifier":"Get-ModelsNativeCandidates.ps1","combined_build_source_peer":"combined-build-source-peer.json",
+        "metadata_auditor_adaptation":"metadata-auditor-adaptation.json","matrix_refresh_adaptation":"matrix-refresh-adaptation.json",
+        "source_dependency_inventory":"new-roots-source-inventory.json","source_inventory_refresh_adaptation":"source-inventory-refresh-adaptation.json",
+        "exact_intake_inventory":"exact-intake-source-inventory.json","complete_partition":"complete-batch-partition.json"}
+    for role,name in roles.items():
+        review[role]=future_pin(name,files[name])
+    files["preparation-review.json"]=encode(review)
+    assert set(files)==set(OUTPUT_NAMES) and len(files)==15
+    outputs[key]=files
+
+assert len({sha(files["groups.json"]) for files in outputs.values()})==1
+assert len({sha(files["new-roots-source-inventory.json"]) for files in outputs.values()})==1
+assert len({sha(files["complete-batch-partition.json"]) for files in outputs.values()})==1
+# Complete final source/provenance bookend before the first create-only write.
+state()
+for row in provenance.values():
+    assert exact(Path(row["path"]),row["sha256"],row["bytes"])==row
+for name,raw in current_bytes.items():
+    assert (M/name).read_bytes()==raw,name
+for row in external_current_pins:
+    exact(Path(row["path"]),row["sha256"],row["bytes"])
+for phase in (archive_intake,source_intake):
+    for row in phase["rows"]:
+        assert Path(row["source"]).read_bytes()==(M/row["target"]).read_bytes()
+assert all(not out.exists() for out in OUTS.values())
+for key,out in OUTS.items():
+    out.mkdir()
+    for name in OUTPUT_NAMES:
+        with (out/name).open("xb") as stream:
+            stream.write(outputs[key][name])
+    assert sorted(p.name for p in out.iterdir())==sorted(OUTPUT_NAMES)
+    for name,raw in outputs[key].items():
+        assert (out/name).read_bytes()==raw
+state()
+print(json.dumps(dict(status="source_only_v39_three_batch_catalog_prepared",
+    candidate_head=HEAD,source_basis_head=PREVIOUS_HEAD,archive_head=ARCHIVE_HEAD,
+    catalog_groups=120,catalog_declarations=2051,partition=PARTITION,
+    outputs={key:{name:pin(out/name) for name in OUTPUT_NAMES} for key,out in OUTS.items()},
+    actual_metadata_count=None,native_execution_authorized=False,qualification=False)))
+

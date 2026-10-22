@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "status": "root_accepted_source_only_v39_new3_retry1_runtime_launch_reviewer",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-22T17:37:55.172586+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "source_accepted": true,
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V39New3Retry1RuntimeLaunch-20261022.py",
+    "bytes": 7142,
+    "sha256": "BD7F13E303312B326745C1E9D16BE98A15D13756E03E4E4581F1E11B4AC5A7E0"
+  },
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-runtime-launch-reviewer-sourceonly-20261022\\candidate\\Review-V39New3Retry1RuntimeLaunch-20261022.py",
+    "bytes": 7142,
+    "sha256": "BD7F13E303312B326745C1E9D16BE98A15D13756E03E4E4581F1E11B4AC5A7E0"
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V39New4RuntimeLaunch-20261022.py",
+    "bytes": 5486,
+    "sha256": "B81B7CE73F5C4990E9D183362B858AC6E8E04EB46C4A77458F21975A610705E5"
+  },
+  "handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-runtime-launch-reviewer-sourceonly-20261022\\handoff.json",
+    "bytes": 2927,
+    "sha256": "71385B540DD11C15F57C6255CA12844B9FD2D00EE7207C6300A97AAE34624DE8"
+  },
+  "finite_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-runtime-launch-reviewer-sourceonly-20261022\\finite-source-adaptation.json",
+    "bytes": 12868,
+    "sha256": "7CE364137FE8F57193E7019903C5346C78AD16F7C32282FECA2F33D13A37FC2B"
+  },
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-new3-retry1-runtime-launch-reviewer-peer-20261022\\peer.json",
+    "bytes": 13981,
+    "sha256": "CCC2A34ACFD43E81A70CF61D59AD502355C57199A31363566E04BA5A3543B6C2"
+  },
+  "accepted_runtime_constructor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39RuntimeGrant-New3Retry1-20261022.py",
+    "bytes": 12707,
+    "sha256": "D6A9B3316B14769B3D5502C2D90FBC52909CD63F91B287094C4BD3EE2B156E12"
+  },
+  "accepted_execution_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-execution-bound-source-review-20261022.json",
+    "bytes": 6708,
+    "sha256": "93DC83198F582C6B57B77B35F6B14027B8E7F0573C9A9AE599B4BD9C053940DE"
+  },
+  "Root_complete_source_peer_and_all7_hunks_read": true,
+  "complete_raw_forward_and_inverse": true,
+  "all14_unchanged_fragments_rehashed": true,
+  "unchanged_helpers": 5,
+  "unchanged_regions": 7,
+  "current_inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-runtime-launch-reviewer-sourceonly-20261022\\handoff.json",
+      "bytes": 2927,
+      "sha256": "71385B540DD11C15F57C6255CA12844B9FD2D00EE7207C6300A97AAE34624DE8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-new3-retry1-runtime-launch-reviewer-peer-20261022\\peer.json",
+      "bytes": 13981,
+      "sha256": "CCC2A34ACFD43E81A70CF61D59AD502355C57199A31363566E04BA5A3543B6C2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-runtime-launch-reviewer-sourceonly-20261022\\finite-source-adaptation.json",
+      "bytes": 12868,
+      "sha256": "7CE364137FE8F57193E7019903C5346C78AD16F7C32282FECA2F33D13A37FC2B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V39New4RuntimeLaunch-20261022.py",
+      "bytes": 5486,
+      "sha256": "B81B7CE73F5C4990E9D183362B858AC6E8E04EB46C4A77458F21975A610705E5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new3-retry1-runtime-launch-reviewer-sourceonly-20261022\\candidate\\Review-V39New3Retry1RuntimeLaunch-20261022.py",
+      "bytes": 7142,
+      "sha256": "BD7F13E303312B326745C1E9D16BE98A15D13756E03E4E4581F1E11B4AC5A7E0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39RuntimeGrant-New3Retry1-20261022.py",
+      "bytes": 12707,
+      "sha256": "D6A9B3316B14769B3D5502C2D90FBC52909CD63F91B287094C4BD3EE2B156E12"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-execution-bound-source-review-20261022.json",
+      "bytes": 6708,
+      "sha256": "93DC83198F582C6B57B77B35F6B14027B8E7F0573C9A9AE599B4BD9C053940DE"
+    }
+  ],
+  "canonical_placement_byte_identical": true,
+  "reviewer_executed": false,
+  "configuration_issued": false,
+  "actual_metadata_count": null,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

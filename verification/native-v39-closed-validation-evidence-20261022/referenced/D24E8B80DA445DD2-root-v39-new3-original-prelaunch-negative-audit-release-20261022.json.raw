@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "reviewer": "Root",
+  "status": "root_reviewed_original_prelaunch_negative_closure_only",
+  "issued_utc": "2026-10-22T16:49:42.252044+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "job_id": "job-op-f6c3ae43152b319798cc6b102ce49dc0d4abb9334c9fafe3ff7ec3d0a44d5ca1",
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-V39New3OriginalPrelaunchAdmissionNegative-20261022.py",
+    "bytes": 10985,
+    "sha256": "11BBC82FE84A64BB7322819D47BBECACC80C69425BEB980EE3D39640D9DF6D3C"
+  },
+  "inputs": {
+    "result": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-163859\\result.json",
+      "bytes": 3114,
+      "sha256": "0777C65015B4CCAEED3595B2DED1FA31D6965A47022DC4573F7BBB56892AEF80"
+    },
+    "group": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-163859\\groups\\native-node-stream-shutdown\\result.json",
+      "bytes": 1338,
+      "sha256": "7C9ABDBD8209457CFFCC5B8E825FEFED98C52D3118CE614A41543A72EFBFDE28"
+    },
+    "before": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-163859\\before.json",
+      "bytes": 18262805,
+      "sha256": "2D4CCB3661E5F36D6773730264ED1DC9643C0CC5E7AD8A2A4116DB012CEE7ACA"
+    },
+    "final": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-163859\\final.json",
+      "bytes": 18262805,
+      "sha256": "2D4CCB3661E5F36D6773730264ED1DC9643C0CC5E7AD8A2A4116DB012CEE7ACA"
+    },
+    "grant": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-163859\\root-grant.json",
+      "bytes": 28075,
+      "sha256": "D25518ECC8041572EEE7CE4C1E66D8602B7ED69D0E853BEF17E6EF0D076F7218"
+    },
+    "launch": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-163859\\launch.ps1",
+      "bytes": 1776,
+      "sha256": "7FB73F8838B2E2EBFC3F4B745BF6CB8B65AD8690124682AF6175371716F58A7A"
+    },
+    "outer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-163859\\outer.json",
+      "bytes": 1606,
+      "sha256": "DF04449CC0AB8D9D4EBB90ECF04FBB60135AE48E5D540F43CE6451FA13EBB7A1"
+    },
+    "outer_absence": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-163859\\outer-absence.json",
+      "bytes": 183,
+      "sha256": "008AA4204BB90A898BC2FD2B6E4C53D5C3C98399796821824811915BEFEDB771"
+    },
+    "job_observation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-163859\\independent-observed-job-status.json",
+      "bytes": 1644,
+      "sha256": "3F9B50FE7ED567B37478EEF8C6717E636A0C918B68C4CF5C78642242D8A21760"
+    },
+    "job_logs": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-163859\\independent-original-job-logs.json",
+      "bytes": 899,
+      "sha256": "E96596B41E7BD4875B2595756BAD42EC582A3758E8CCCA41977CA56135D5701A"
+    },
+    "launch_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-buildquery-launch-source-acceptance-20261022.json",
+      "bytes": 21186,
+      "sha256": "3EC3F2D1A85EF2B87508E1E38C2B9916C905EA713886A07DA5C67D4CF7DEB8C7"
+    }
+  },
+  "audit_execution_authorized": true,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "qualification": false,
+  "root_review": "Review only the original expired grant at first compile admission: no owned compiler, metadata or runtime phase. Retain full original job envelope/string instance, source/tree/vendor/compiler/control bookends, complete current directory inventories and original runner/launcher/outer absence with exact 100ns values. No retry or native authority is conferred."
+}

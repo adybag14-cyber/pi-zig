@@ -1,0 +1,225 @@
+"""Read-only finite/source/data verification for an unexecuted V39 archive draft.
+Never imports/evaluates the candidate or a prefix. Reads only immutable closed
+evidence and emits three own proof/contract files in this packet.
+"""
+from pathlib import Path
+import ast,hashlib,json,re,sys
+R=Path(r"C:\Users\adyba\pi-zig\evidence\v39-closed-phases-progress-archive-sourceonly-20261022")
+B=Path(r"C:\Users\adyba\pi-zig")
+HEAD="e9f11afa56a923372d957e2fb227f453822c21bf"
+INPUTS=(R/"authoring-inputs.json",6785,"69E0E39C6B66936BA87F8C16AEC51DCABB721C1160F2FEC6A834F91E7563E43E")
+EDITS=(R/"authoring/declared-finite-edits.json",110721,"50782CA9C0FFB0E3CD46CEAA2FB1E7C656257CD3FE9971B38866C32BBC99ACCB")
+INVENTORY=(R/"observed-closed-input-inventory.json",3121359,"5148DE13C078C6D91E1A4B71B8E64FAA2C74D538BB75B3C6029F8D00F83DFFB7")
+PLAN=(R/"progress-patch-plan.json",57509,"45698308CA7D388D528515F3B12DA490436745CA1632DFFD6FA81A85A1F86279")
+PRESERVATION=(R/"supplemental-preservation-inputs.json",384133,"FEB94AFD5DAEDB83A2DBDB468E5657CFB60B6FE17D26EB52343B8428F89E2D24")
+observed={}
+def require(ok,label):
+    if not ok: raise AssertionError(label)
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def enc(v):return (json.dumps(v,indent=2,ensure_ascii=False)+"\n").encode()
+def pin(p,b):return dict(path=str(p),bytes=len(b),sha256=sha(b))
+def read(row):
+    if isinstance(row,tuple):row=dict(path=str(row[0]),bytes=row[1],sha256=row[2])
+    p=Path(row["path"]); folded=str(p).casefold()
+    require(p.is_absolute() and p.is_relative_to(B/"evidence") or
+            (p.is_absolute() and p.is_relative_to(B/"worktrees") and "verification" in p.parts),"evidence-only input")
+    require(not p.is_relative_to(B/"main"),"no Main")
+    require(not re.search(r"root-native-foundation-(?:fresh-)?v39-existing63-",folded),"no current63 evidence")
+    require(not any(x in ("cache","global-cache",".zig-cache","installed","zig-out") for x in p.parts),"no cache")
+    b=p.read_bytes();require(pin(p,b)==row,"exact input "+str(p))
+    require(folded not in observed or observed[folded]==row,"one immutable version")
+    observed[folded]=row
+    return b
+def doc(row):return json.loads(read(row))
+def spans(text,tree):
+    lines=text.splitlines(keepends=True)
+    return {n.name:("".join(lines[n.lineno-1:n.end_lineno]).encode(),n)
+            for n in tree.body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))}
+def segment(text,start,end):
+    require(text.count(start)==text.count(end)==1,"unique complete span delimiters")
+    a=text.index(start);z=text.index(end,a);return text[a:z].encode()
+def put(name,obj):
+    p=R/name;b=enc(obj)
+    with p.open("xb") as f:f.write(b)
+    require(p.read_bytes()==b,"proof exact")
+    return pin(p,b)
+inputs=doc(INPUTS);declared=doc(EDITS)
+old=read(declared["baseline"]);new=read(declared["candidate"])
+require(len(declared["edits"])==54,"exact finite step count")
+current=old;steps=[]
+for i,e in enumerate(declared["edits"]):
+    a=e["old"].encode();b=e["new"].encode()
+    count=current.count(a)
+    require(count>0 and (e.get("first_occurrence") is True or count==1),"declared source coordinate")
+    at=current.index(a);after=current[:at]+b+current[at+len(a):]
+    require(after[:at]==current[:at] and after[at+len(b):]==current[at+len(a):],"untouched raw fragments")
+    require(after[:at]+a+after[at+len(b):]==current,"per-step exact inverse")
+    steps.append(dict(index=i+1,label=e["label"],kind=e["kind"],offset=at,
+      before_sha256=sha(current),after_sha256=sha(after),old=e["old"],new=e["new"],
+      old_occurrences=count,selected_occurrence=0,old_bytes=len(a),new_bytes=len(b),
+      untouched_prefix_sha256=sha(current[:at]),untouched_suffix_sha256=sha(current[at+len(a):])))
+    current=after
+require(current==new,"complete forward source")
+inverse=new
+for s in reversed(steps):
+    at=s["offset"];b=s["new"].encode();a=s["old"].encode()
+    require(sha(inverse)==s["after_sha256"] and inverse[at:at+len(b)]==b,"reverse exact coordinate")
+    inverse=inverse[:at]+a+inverse[at+len(b):]
+    require(sha(inverse)==s["before_sha256"],"reverse exact preimage")
+require(inverse==old,"complete 76267-byte source inverse")
+ot,nt=old.decode(),new.decode()
+oa,na=ast.parse(ot),ast.parse(nt)
+of,nf=spans(ot,oa),spans(nt,na)
+outcomes={"check_positive","check_existing63_buildquery","check_existing63_prelaunch",
+          "check_existing63_partial_negative","check_existing63_negative_cohort"}
+kept=set(of)-outcomes
+require(len(of)==28 and len(kept)==23 and len(nf)==27,"exact helper/function inventory")
+require((outcomes-{"check_positive"}).isdisjoint(nf),"old63 outcome functions absent")
+helpers=[]
+for name in sorted(kept):
+    ob,on=of[name];nb,nn=nf[name]
+    require(ob==nb and ast.dump(on,include_attributes=False)==ast.dump(nn,include_attributes=False),"unchanged helper "+name)
+    helpers.append(dict(name=name,bytes=len(ob),sha256=sha(ob),raw_equal=True,AST_equal=True))
+regions=[]
+for label,start,old_end,new_end in [
+ ("basic pin/path/Git/gzip helpers","def require(ok,label):","require(len(sys.argv)==3","require(len(sys.argv)==3"),
+ ("exact raw row admission and direct-pin engine","rows = copy_plan[\"rows\"]","for required in preservation","for required in preservation"),
+ ("raw copy/gzip engine","payloads,roles,preimages,payload_aliases","backup-never-used","backup-never-used"),
+ ("Git attributes and create-only write tail","entries,entry_aliases = {},set()","review = {","review = {")]:
+    if label=="raw copy/gzip engine":
+        old_end="# Derive only the scoped accepted/negative checkpoint"
+        new_end="# Only these four closed validation attempts"
+    ob=segment(ot,start,old_end);nb=segment(nt,start,new_end)
+    require(ob==nb,"unchanged complete engine span "+label)
+    regions.append(dict(label=label,start=start,baseline_end=old_end,candidate_end=new_end,bytes=len(ob),sha256=sha(ob),raw_equal=True))
+def assignment(tree,name):
+    q=[n for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id==name for t in n.targets)]
+    require(len(q)==1,"one assignment "+name)
+    return q[0].value
+cfg_keys=ast.literal_eval(assignment(na,"CONFIG_KEYS"));copy_keys=ast.literal_eval(assignment(na,"COPY_KEYS"))
+require(cfg_keys==ast.literal_eval(assignment(oa,"CONFIG_KEYS")) and len(cfg_keys)==18,"same exact 18 configuration keys")
+require(copy_keys==ast.literal_eval(assignment(oa,"COPY_KEYS")) and len(copy_keys)==11,"same exact 11 copy-plan keys")
+stub=nf["require_unresolved_existing63"][1]
+require(len(stub.body)==3 and isinstance(stub.body[-1],ast.Expr),"explicit three-statement unresolved guard")
+last=stub.body[-1].value
+require(isinstance(last,ast.Call) and isinstance(last.func,ast.Name) and last.func.id=="require" and
+        isinstance(last.args[0],ast.Constant) and last.args[0].value is False,"unconditional hard stop")
+call=[n for n in na.body if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call) and
+      isinstance(n.value.func,ast.Name) and n.value.func.id=="require_unresolved_existing63"]
+require(len(call)==1,"one top-level hard stop")
+payload=[n for n in na.body if isinstance(n,ast.Assign) and isinstance(n.targets[0],ast.Tuple) and
+         any(isinstance(t,ast.Name) and t.id=="payloads" for t in n.targets[0].elts)]
+require(len(payload)==1 and call[0].lineno<payload[0].lineno,"guard before payload construction")
+require(all(n.lineno>call[0].lineno for stmt in na.body if not isinstance(stmt,(ast.FunctionDef,ast.AsyncFunctionDef))
+            for n in ast.walk(stmt) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and
+            n.func.attr in ("mkdir","write")),"no earlier top-level filesystem write")
+require(not any(isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id in ("eval","exec","compile","__import__") for n in ast.walk(na)),"no dynamic evaluation in candidate")
+require([ast.dump(n,include_attributes=False) for n in na.body if isinstance(n,(ast.Import,ast.ImportFrom))]==
+        [ast.dump(n,include_attributes=False) for n in oa.body if isinstance(n,(ast.Import,ast.ImportFrom))],"imports unchanged")
+inventory=doc(INVENTORY);plan=doc(PLAN);preservation=doc(PRESERVATION)
+require(inventory["source_file_versions"]==len(inventory["rows"])==852 and len(inventory["direct_pin_relationships"])==3684,"known inventory count")
+require(inventory["proposed_distinct_archive_paths"]==849 and len(inventory["bookend_plans"])==3,"three equal-pair reductions")
+require(preservation["required_raw_file_count"]==len(preservation["required_raw_files"])==780 and len(preservation["role_pins"])==15,"bounded supplemental scope")
+for row in inventory["rows"]:read(row["original"])
+require(inventory["observed_phase_membership"] and
+ [x["phase"] for x in inventory["observed_phase_membership"]]==
+ ["new3-buildquery-prelaunch","new3-retry1-buildquery","new4-buildquery","new4-runtime"],"closed phases only")
+phase_counts=[]
+for m in inventory["observed_phase_membership"]:
+    n=len(m["proof_top_level_files"])+len(m["control_top_level_files"])+sum(map(len,m["group_files"].values()))
+    phase_counts.append(n)
+require(phase_counts==[19,21,90,70],"all closed original files")
+progress_raw=read(inputs["progress"]);progress=json.loads(progress_raw)
+require(enc(progress)==progress_raw,"exact immutable progress JSON")
+def lists(v,path=()):
+    if isinstance(v,list):
+        yield path,v
+        for i,item in enumerate(v):yield from lists(item,path+(i,))
+    elif isinstance(v,dict):
+        for k,item in v.items():yield from lists(item,path+(k,))
+prefixes=[dict(path=list(p),length=len(v),canonical_sha256=sha(enc(v))) for p,v in lists(progress)]
+require(prefixes==plan["nested_history_prefix_basis"] and len(prefixes)==222,"all actual prior history prefixes")
+lengths={k:len(progress[k]) for k in ("integrated_source_units","preserved_attempts","retained_recent_native_negatives","execution_checkpoint_history")}
+require(lengths=={"integrated_source_units":65,"preserved_attempts":45,"retained_recent_native_negatives":15,"execution_checkpoint_history":15},"exact prior histories")
+require(sha(enc(progress["integrated_source_units"]))=="D5A71F6FF379447A90171FC30A219FA54BD43DDEF4067B5A26D56E4BFEFBF772" and
+        sha(enc(progress["current_execution_checkpoint"]))=="82F7B47958B79C86407B4E0465C83180494A3DD89B7E2BF3035358D400983456","full old source units/checkpoint")
+roles={k:doc(v) for k,v in inputs["roles"].items() if str(v["path"]).endswith(".json")}
+p,c,b,r=[roles[k] for k in ("new3_prelaunch_root","new3_compile_root","new4_buildquery_root","new4_runtime_root")]
+require(p["actual_metadata_count"]==p["actual_tests_started"]==p["native_owner_count"]==0 and p["granted_groups"]==3 and p["attempted_groups"]==1 and p["unstarted_groups"]==2,"actual prelaunch no-native accounting")
+require(p["grant_age_at_first_compile_admission_ticks"]==3212625218 and p["negative_accepted"] and not p["complete_buildquery_accepted"],"actual initial negative preserved")
+require(c["compile_owners"]==1 and c["metadata_owners"]==c["runtime_owners"]==c["observed_metadata_records"]==c["selected_tests_started"]==0 and
+ c["actual_metadata_count"] is None and c["compile_exit_code"]==c["outer_exit_code"]==c["durable_job_exit_code"]==1,"actual admitted compiler failure no metadata")
+require(c["original_positive_owner_binding_invalid_preserved"] and not c["positive_buildquery_accepted"] and not c["all_groups_closed"],"actual strict failed-owner gates retained")
+require(b["actual_metadata_count"]==r["accepted_cohort"]==61 and b["actual_group_counts"]==r["actual_group_counts"]==[19,4,24,14],"actual new4 metadata distinct from58 declarations")
+require(b["complete_buildquery_accepted"] and r["complete_strict_runtime_accepted"] and r["observed_started"]==r["observed_completed"]==61 and r["observed_failed"]==r["not_started"]==0,"actual complete new4 pair")
+require(not r["product_qualification"] and not r["application_qualified"] and not r["source_mutation_hold_released"],"no product/source transfer")
+require(all(x["candidate_head"]==HEAD for x in (p,c,b,r)),"same original source head")
+scope={
+ "closed_phases_only":True,"candidate_and_prefix_executed":False,"Main_accessed":False,
+ "current63_evidence_or_processes_accessed":False,"git_invoked":False,
+ "archive_or_gzip_or_progress_generation_executed":False,"native_execution":False,
+ "configuration_issued":False,"source_mutation_hold_released":False,"qualification":False}
+finite={
+ "schema":1,"status":"unexecuted_source_finite_forward_and_inverse_verified",
+ "baseline":declared["baseline"],"candidate":declared["candidate"],"declared_edits":pin(EDITS[0],read(EDITS)),
+ "steps":steps,"complete_forward_exact":True,"complete_raw_inverse_exact":True,
+ "old_bytes":len(old),"new_bytes":len(new),"all_untouched_fragments_checked":True,
+ "AST_parse_only":True,"unchanged_helpers":helpers,"unchanged_complete_regions":regions,
+ "changed_outcome_functions":sorted(outcomes),"new_outcome_functions":["check_new3_prelaunch","check_new3_compile_negative","require_unresolved_existing63"],
+ "scope":scope}
+finite_pin=put("finite-source-adaptation.json",finite)
+slot={"status":"unresolved_existing63_acceptance_contract","buildquery_root_acceptance":None,
+ "runtime_root_acceptance":None,"metadata_acceptance":None,"independent_build_closure":None,
+ "independent_runtime_closure":None,"actual_metadata_count":None,"actual_group_counts":None,"observed_phase_membership":None}
+config={
+ "schema":1,"status":"unissued_source_only_v39_closed_phases_unresolved63_archive_shape",
+ "candidate_head":HEAD,"preparer_sha256":declared["candidate"]["sha256"],"source_review":None,"final_copy_plan":None,
+ "recorded_utc":None,"output_directory":str(B/"evidence/pending-v39-closed-validation-archive-intake-unresolved63-20261022"),
+ "archive_target_prefix":inputs["archive"],"expected_output_paths":None,"evidence_preparation_authorized":False,
+ "main_intake_authorized":False,"native_execution_authorized":False,"runtime_authority":False,
+ "source_mutation_hold_released":False,"application_qualified":False,"production_bridge_removed":False,"published_release":False}
+require(set(config)==cfg_keys,"exact unissued config shape")
+copy_shape={"schema":1,"status":"unissued_source_only_v39_closed_copy_plan_shape","candidate_head":HEAD,"reviewer":None,
+ "partial_inventory":pin(INVENTORY[0],read(INVENTORY)),"progress_plan":pin(PLAN[0],read(PLAN)),
+ "rows":None,"direct_pin_relationships":None,"observed_phase_membership":inventory["observed_phase_membership"],
+ "bookend_plans":inventory["bookend_plans"],"cohorts":{
+ "new3":{"prelaunch_root_negative":inputs["roles"]["new3_prelaunch_root"],"compile_root_negative":inputs["roles"]["new3_compile_root"]},
+ "new4":{"buildquery_root_acceptance":inputs["roles"]["new4_buildquery_root"],"runtime_root_acceptance":inputs["roles"]["new4_runtime_root"]},
+ "existing63":slot}}
+require(set(copy_shape)==copy_keys,"exact unissued copy-plan shape")
+contract={
+ "schema":1,"status":"source_only_known_outcome_contract_with_unconditional_existing63_stop",
+ "candidate":declared["candidate"],"finite_source_adaptation":finite_pin,
+ "unissued_configuration_shape":config,"unissued_copy_plan_shape":copy_shape,
+ "exact_configuration_keys":sorted(cfg_keys),"exact_copy_plan_keys":sorted(copy_keys),
+ "required_input_prefixes":{"rows":852,"direct_pin_relationships":3684,"bookend_plans":3},
+ "required_raw_supplements":780,"complete_phase_file_counts":dict(zip([x["phase"] for x in inventory["observed_phase_membership"]],phase_counts)),
+ "actual_progress_basis":inputs["progress"],"all_nested_history_prefixes":222,"history_lengths":lengths,
+ "source_units_unchanged":65,"full_old_checkpoint_append_required":True,"progress_inverse_bytes":len(progress_raw),
+ "implemented_attempts":4,"implemented_native_failures":1,"source_inspection_observations_are_attempts":False,
+ "known_new4_accepted_metadata":61,"new4_declared_controls":58,
+ "new3_observed_metadata_records":0,"new3_accepted_metadata_count":None,
+ "existing63_acceptance_contract":slot,"aggregate_metadata_count":None,
+ "required_future_boundary":"Separate Root observation and accepted closure of actual original63; then independently reviewed finite source successor replacing the unconditional stop and adding only observed phase/outcome data. No configuration can bypass this draft stop.",
+ "no_source_fixture_intake_in_this_preparer":True,
+ "retained_engine_contract":"Exactly23 non-outcome helpers and four complete raw-copy/gzip/direct-pin/Git/create-only spans retained; later Main intake must use the separately reviewed normalized manifest and strengthened8A676 adapter, never this evidence preparer.",
+ "future_normalization":"Preserve emitted manifest unchanged, add100644/before.mode/physical aliases and one raw copy of original manifest; separately bind actual parent, final manifest/hash/count/subject and require independent Root release.",
+ "all_known_original_controls_preserved":True,"scope":scope}
+contract_pin=put("source-contract.json",contract)
+proof={
+ "schema":1,"status":"source_static_check_passed_without_candidate_or_prefix_execution",
+ "baseline":declared["baseline"],"candidate":declared["candidate"],"finite_source_adaptation":finite_pin,
+ "source_contract":contract_pin,"source_checker":pin(Path(__file__),Path(__file__).read_bytes()),
+ "finite_steps":54,"unchanged_helper_count":23,"complete_unchanged_regions":regions,
+ "unconditional_existing63_stop":{"definition_line":stub.lineno,"call_line":call[0].lineno,
+ "payload_construction_line":payload[0].lineno,"before_all_writes":True},
+ "source_parse_only":True,"imports_identical":True,"old_63_outcome_vectors_removed":True,
+ "all852_closed_inventory_versions_rehashed":True,"input_versions":sorted(observed.values(),key=lambda x:x["path"].casefold()),
+ "input_version_count":len(observed),"actual_current_progress_prefixes":222,"actual_source_units":65,
+ "phase_file_counts":phase_counts,"history_lengths":lengths,
+ "known_outcome_schema":{"new3_prelaunch_native_owners":0,"new3_compile_owners":1,"new3_metadata_or_runtime_owners":0,
+ "new4_metadata":61,"new4_runtime_started":61,"new4_runtime_completed":61,"new4_runtime_failed":0,
+ "existing63":None},"scope":scope}
+proof_pin=put("static-source-proof.json",proof)
+print(json.dumps({"finite":finite_pin,"contract":contract_pin,"proof":proof_pin,"candidate":declared["candidate"],
+ "counts":{"steps":54,"unchanged_helpers":23,"regions":len(regions),"input_versions":len(observed)}}))

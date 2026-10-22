@@ -1,0 +1,143 @@
+"""Root-only V38 strict RuntimeOnly grant construction from a completely closed BuildQuery.
+No compiler, metadata query or test runtime is executed by this constructor.
+"""
+from pathlib import Path
+import copy,datetime,hashlib,json,subprocess,sys
+B=Path(r"C:\Users\adyba\pi-zig");M=B/"main";E=B/"evidence"
+HEAD="014062f2d139254acab4b985b4ae343db637166f"
+MATRIX="8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03"
+OLD=E/"root-native-foundation-v34-runtime-control-20261020-210255"
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def read(p):return json.loads(Path(p).read_bytes().decode("utf-8-sig"))
+def pin(p):
+ p=Path(p);b=p.read_bytes();return dict(path=str(p),bytes=len(b),sha256=sha(b))
+def verify(row):
+ p=Path(row["path"]);assert p.is_absolute() and p.resolve().is_relative_to(B.resolve()),str(p)
+ actual=pin(p);assert actual["sha256"]==row["sha256"],str(p)
+ if "bytes" in row:assert actual["bytes"]==row["bytes"],str(p)
+ return actual
+def verify_pins(value):
+ if isinstance(value,dict):
+  if isinstance(value.get("path"),str) and isinstance(value.get("sha256"),str):verify(value)
+  for v in value.values():verify_pins(v)
+ elif isinstance(value,list):
+  for v in value:verify_pins(v)
+def put(p,v):
+ with p.open("xb") as f:f.write((json.dumps(v,indent=2)+"\n").encode())
+def git(*args):return subprocess.check_output(["git","-C",str(M),*args])
+def state():
+ assert git("rev-parse","HEAD").decode().strip()==HEAD
+ assert git("branch","--show-current").decode().strip()=="work/pi-zig-consolidated-20261016"
+ assert git("status","--porcelain")==b""
+assert len(sys.argv)==3,"Exact Root runtime configuration path and SHA-256 required"
+cp=Path(sys.argv[1]);assert cp.resolve().is_relative_to(E.resolve()) and pin(cp)["sha256"]==sys.argv[2]
+cfg=read(cp)
+assert cfg["status"]=="root_reviewed_specific_v38_runtime_preparation"
+assert cfg["preparer_sha256"]==pin(Path(__file__))["sha256"] and cfg["candidate_head"]==HEAD
+assert cfg["runtime_execution_authorized"] is True and cfg["compile_execution_authorized"] is False
+assert cfg["diagnostic_continue"] is False and cfg["qualification"] is False and cfg["source_mutation_hold_released"] is False
+batch=cfg["batch"];assert batch in ("new4","existing63")
+count,declared=(4,58) if batch=="new4" else (63,1249)
+assert cfg["declared_groups"]==count and cfg["declared_controls"]==declared
+assert type(cfg["actual_metadata_count"]) is int and cfg["actual_metadata_count"]>0
+P=E/("combined-native-batch-v38-"+("new4" if batch=="new4" else "regression63")+"-prepared-20261021")
+verify_pins(cfg);state()
+assert Path(cfg["buildquery_launch"]["path"])==P/"buildquery-launch.json"
+launch=read(P/"buildquery-launch.json");bc=Path(launch["control"]);bp=Path(launch["proof"])
+assert bc.parent==bp.parent==E and bc.name.startswith("root-native-foundation-fresh-v38-"+batch+"-control-")
+assert bp.name==bc.name.replace("-control-","-buildquery-",1)
+assert launch["candidate_head"]==HEAD and launch["batch"]==batch and launch["actual_metadata_count"] is None
+assert launch["runtime_authority"] is False and launch["qualification"] is False
+verify_pins(launch)
+assert launch["grant"]==pin(bc/"root-grant.json") and launch["launch"]==pin(bc/"launch.ps1")
+expected_paths={"build_result":bp/"result.json","build_final":bp/"final.json","metadata_acceptance":bc/"independent-metadata-acceptance.json","independent_closure":bc/"independent-current-seals-and-owners.json"}
+for key,path in expected_paths.items():assert cfg[key]==pin(path)
+r=read(bp/"result.json");a=read(expected_paths["metadata_acceptance"]);c=read(expected_paths["independent_closure"])
+assert r["status"]=="passed_build_query_batch" and r["mode"]=="BuildQuery" and r["candidate_head"]==HEAD
+for key in ("postseal","all_groups_closed","controller_environment_restored","initial_cache_absence","fresh_cache_reproduction"):assert r[key] is True,key
+for key in ("runtime_requested","product_qualified","cache_seeded"):assert r[key] is False,key
+assert r["errors"]==[] and r["absence"]["native_roots"]==[]
+assert a["status"]=="independently_accepted_combined_native_batch_metadata" and a["accepted"] is True
+assert a["runtime_started"] is False and a["runtime_qualification"] is False and a["candidate_head"]==HEAD
+assert a["build_result_sha256"]==cfg["build_result"]["sha256"] and a["build_source_seal_sha256"]==cfg["build_final"]["sha256"]
+assert c["status"]=="independently_closed_complete_fresh_build_query" and c["candidate_head"]==HEAD
+for key in ("current_actual_process_instances_absent","current_all_sealed_inputs_rehashed","current_complete_directory_inventories_verified","all_original_terminal0_owner_gates_passed","whole_bookends_unchanged","controller_environment_restored"):assert c[key] is True,key
+for key in ("source_mutation_hold_released","runtime_started","qualification","cache_seeded"):assert c[key] is False,key
+assert c["actual_tests_started"]==0 and c["native_owner_count"]==2*count
+assert c["granted_groups"]==c["attempted_groups"]==count and c["unstarted_groups"]==0
+assert c["metadata_acceptance"]==cfg["metadata_acceptance"]
+groups=launch["groups"]
+assert groups==cfg["selected_group_names"] and len(groups)==len(set(groups))==count<=64
+assert [x["group"]for x in r["groups"]]==[x["group"]for x in a["groups"]]==[x["group"]for x in c["groups"]]==groups
+assert all(x["status"]=="passed_build_query" for x in r["groups"])
+actual=sum(x["actual_count"]for x in a["groups"])
+assert actual==sum(x["actual_metadata_count"]for x in c["groups"])==c["actual_metadata_count"]==cfg["actual_metadata_count"]
+root=read(cfg["root_buildquery_acceptance"]["path"])
+assert root["reviewer"]=="Root" and root["candidate_head"]==HEAD and root["batch"]==batch
+assert root["complete_buildquery_accepted"] is True and root["runtime_execution_authorized"] is False and root["qualification"] is False
+assert root["groups"]==groups and root["actual_metadata_count"]==actual
+for key in expected_paths:assert root[key]==cfg[key]
+review=read(P/"preparation-review.json");matrix=read(P/"groups.json")
+assert launch["preparation_review"]==pin(P/"preparation-review.json")
+assert review["selected_group_names"]==groups and review["selected_groups"]==count and review["selected_declarations"]==declared
+assert review["actual_metadata_count"] is None and review["execution_authority"] is False and review["runtime_authority"] is False
+assert pin(P/"groups.json")["sha256"]==MATRIX==launch["matrix_sha256"]==a["group_manifest_sha256"]==r["group_manifest_sha256"]
+assert len(matrix["groups"])==117 and sum(len(x["required_named"])for x in matrix["groups"])==2013
+if batch=="new4":assert groups==["native-node-file-handle-owner","native-node-fs-before-hook-continuation","native-vm-error-constructor-name","native-node-file-handle-transfer"]
+else:
+ old_cohort=E/"root-native-foundation-fresh-v34-control-20261020-202924/root-grant.json"
+ assert pin(old_cohort)["sha256"]=="275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15"
+ assert groups==read(old_cohort)["groups"]
+for group in matrix["groups"]:
+ for row in group["source_pins"]:assert pin(M/row["path"])["sha256"]==row["sha256"],row["path"]
+for row in matrix["whole_tree_dependency_pins"]:assert pin(M/row["path"])["sha256"]==row["sha256"],row["path"]
+assert pin(OLD/"root-grant.json")["sha256"]=="FA3D60CE15F2886D687F140D8DD93FD3B9F1BAADD86153505CA9026512A19303"
+old=read(OLD/"root-grant.json");original=read(bc/"root-grant.json");grant=copy.deepcopy(original)
+fixed_keys=("schema","status","execution_authorized","required_release_status","candidate_root","runtime_restoration_claim","dedicated_external53_controller","initial_grant_max_age_seconds","minimum_free_kib","workspace_resolver_sha256","workspace_layout_sha256","path_relocations_sha256","driver_sha256","compile_outer_seconds","metadata_outer_seconds","runtime_outer_actual_seconds","owner_settle_seconds","outer_controller_seconds","reuse_unsealed_original_compile_caches","classifier_sha256","qualification_requested","cache_mode","cache_seed_manifest_path","cache_seed_manifest_sha256","allow_seed_source_delta_paths","build_artifacts_path","build_artifacts_sha256","build_metadata_path","build_metadata_sha256")
+for key in fixed_keys:assert grant[key]==old[key],key
+assert grant["mode"]=="BuildQuery" and grant["candidate_head"]==HEAD and grant["groups"]==groups
+assert grant.get("diagnostic_continue",False) is False
+assert grant["receipt_directory"]==str(bp) and grant["cache_directory"]==str(bp/"cache") and grant["global_cache_directory"]==str(bp/"global-cache")
+for key in ("build_result_path","build_result_sha256","build_source_seal_path","build_source_seal_sha256","metadata_acceptance_path","metadata_acceptance_sha256","actual_metadata_count"):assert grant[key] is None,key
+assert grant["driver_sha256"]==pin(P/"Run-CombinedNativeBatch.ps1")["sha256"]==a["driver_sha256"]==r["driver_sha256"]
+assert grant["classifier_sha256"]==pin(P/"Get-ModelsNativeCandidates.ps1")["sha256"]
+raw=(bc/"launch.ps1").read_bytes()
+assert raw.count(b"'BuildQuery'")==1 and b"'RuntimeOnly'" not in raw and b"DiagnosticContinue" not in raw
+runtime_launch=raw.replace(b"'BuildQuery'",b"'RuntimeOnly'",1)
+assert runtime_launch.replace(b"'RuntimeOnly'",b"'BuildQuery'",1)==raw
+old_raw=(OLD/"launch.ps1").read_bytes()
+assert sha(old_raw)=="9B6B65EEF10F702596CCBE9E698AC77FB4D63F2F49FDFE1AEB5E0EF49EE4D4DC"
+before=b"evidence/combined-native-batch-v34-prepared-20261020";after=P.relative_to(B).as_posix().encode()
+assert old_raw.count(before)==1 and after not in old_raw
+assert old_raw.replace(before,after,1)==runtime_launch and runtime_launch.replace(after,before,1)==old_raw
+verify_pins(grant);state()
+now=datetime.datetime.now(datetime.timezone.utc);suffix=now.strftime("%Y%m%d-%H%M%S")
+control=E/("root-native-foundation-v38-"+batch+"-runtime-control-"+suffix)
+proof=E/("root-native-foundation-v38-"+batch+"-runtime-"+suffix)
+assert not control.exists() and not proof.exists()
+updates=dict(grant_id="root-native-foundation-v38-"+batch+"-runtime-"+suffix,issued_utc=now.isoformat(),mode="RuntimeOnly",receipt_directory=str(proof),
+build_result_path=str(bp/"result.json"),build_result_sha256=cfg["build_result"]["sha256"],build_source_seal_path=str(bp/"final.json"),build_source_seal_sha256=cfg["build_final"]["sha256"],
+metadata_acceptance_path=str(expected_paths["metadata_acceptance"]),metadata_acceptance_sha256=cfg["metadata_acceptance"]["sha256"],actual_metadata_count=actual,
+independent_build_closure_path=str(expected_paths["independent_closure"]),independent_build_closure_sha256=cfg["independent_closure"]["sha256"],
+build_specific_root_configuration=original["specific_root_configuration"],specific_root_configuration=pin(cp),root_buildquery_acceptance=cfg["root_buildquery_acceptance"],root_review=cfg["root_runtime_review"])
+grant.update(updates)
+for key in fixed_keys:assert grant[key]==old[key],key
+assert grant["mode"]==old["mode"]=="RuntimeOnly" and grant.get("diagnostic_continue",False) is False
+verify_pins(grant)
+inverse=copy.deepcopy(grant)
+for key in updates:
+ if key in original:inverse[key]=original[key]
+ else:del inverse[key]
+assert inverse==original
+state();control.mkdir();put(control/"root-grant.json",grant)
+with (control/"launch.ps1").open("xb") as f:f.write(runtime_launch)
+put(control/"grant-launch-adaptation.json",dict(schema=1,original_grant=pin(bc/"root-grant.json"),grant=pin(control/"root-grant.json"),
+field_changes=[dict(key=k,old_present=k in original,before=original.get(k),after=v)for k,v in updates.items()],complete_grant_inverse=True,
+original_launch=pin(bc/"launch.ps1"),launch=pin(control/"launch.ps1"),launch_edit_count=1,before="'BuildQuery'",after="'RuntimeOnly'",complete_launch_byte_inverse=True,
+prior_strict_runtime_grant=pin(OLD/"root-grant.json"),prior_strict_runtime_launcher=pin(OLD/"launch.ps1"),all_strict_gate_fields_unchanged=True,diagnostic_continue=False,qualification=False))
+record=dict(candidate_head=HEAD,batch=batch,control=str(control),proof=str(proof),grant=pin(control/"root-grant.json"),launch=pin(control/"launch.ps1"),
+buildquery_launch=cfg["buildquery_launch"],specific_root_configuration=pin(cp),groups=groups,declared_count=declared,actual_metadata_count=actual,
+build_result=cfg["build_result"],build_final=cfg["build_final"],metadata_acceptance=cfg["metadata_acceptance"],independent_build_closure=cfg["independent_closure"],
+issued_utc=now.isoformat(),diagnostic_continue=False,compile_authority=False,qualification=False)
+put(control/"runtime-launch.json",record)
+print(json.dumps(record))

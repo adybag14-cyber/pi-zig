@@ -1,0 +1,189 @@
+"""Static finite accounting only. Does not evaluate any execution source or prefix."""
+from pathlib import Path
+import ast,collections,copy,datetime,hashlib,json,subprocess
+B=Path(r"C:\Users\adyba\pi-zig");E=B/"evidence";W=B/"worktrees/modules-io-resume-20261018"
+D=E/"v39-execution-unresolved-sourceonly-20261022"
+inputs={};bodies={}
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def enc(v):return (json.dumps(v,indent=2,ensure_ascii=False)+"\n").encode()
+def pin(p,b):return {"path":str(p),"bytes":len(b),"sha256":sha(b)}
+def read(row):
+ p=Path(row["path"]);assert p.is_absolute() and str(p).casefold().startswith(str(B).casefold()+"\\")
+ assert not str(p).casefold().startswith(str(B/"main").casefold()+"\\"),str(p)
+ b=p.read_bytes();assert len(b)==row["bytes"] and sha(b)==row["sha256"],row
+ key=str(p).casefold()
+ if key in inputs:assert inputs[key]["bytes"]==row["bytes"] and inputs[key]["sha256"]==row["sha256"]
+ else:inputs[key]=row
+ return b
+declared_pin={"path":str(D/"authoring/declared-edits.json"),"bytes":33940,"sha256":"9B0417EC1A8F2D9B3E14CE8C259ADAD1266690AC2B224991061D9B53CE78C491"}
+decl=json.loads(read(declared_pin));contract=json.loads(read(decl["execution_provenance_contract"]))
+read(contract["preparer_candidate"])
+assert contract["status"]=="inert_exact_v39_execution_provenance_contract"
+assert contract["declared_counts"]=={"new3":[3,38],"new4":[4,58],"existing63":[63,1249],"catalog":[120,2051],"selected_union":[70,1345]}
+assert contract["new3_order"]==["native-node-stream-shutdown","native-node-one-byte-string","native-vm-array-buffer-view-data"]
+assert contract["execution_batch_spelling"]=={"new3":"new3","new4":"new4","existing63":"regression63"}
+assert contract["group_cap"]==64 and contract["actual_metadata_count"] is None
+assert contract["future_source_head"] is None and contract["future_matrix_sha256"] is None
+assert contract["strict_driver_sha256"]=="1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+assert contract["classifier_sha256"]=="3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+assert contract["existing_runtime_allowlists_unchanged"] and contract["conservative_literal_graphs_not_runtime_anonymous_admission"]
+assert contract["old_group_objects_except_reviewed_source_pin_hashes_exact"] is False
+assert contract["old_group_objects_except_reviewed_source_membership_and_hashes_exact"] is True
+assert [s["kind"] for s in decl["sources"]]==["buildquery_constructor","runtime_constructor","positive_buildquery_auditor","positive_runtime_auditor"]
+assert [len(s["edits"])for s in decl["sources"]]==[12,14,14,18]
+assert decl["sources"][-1]["baseline"]["sha256"]=="A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+finite=[];helper_records=[];marker_records=[];trees={};raws={};all_categories=collections.Counter()
+def helpers(raw,tree):
+ lines=raw.splitlines(keepends=True)
+ return {n.name:b"".join(lines[n.lineno-1:n.end_lineno])for n in tree.body if isinstance(n,ast.FunctionDef)}
+def span(raw,node):
+ lines=raw.splitlines(keepends=True)
+ return sum(map(len,lines[:node.lineno-1]))+node.col_offset,sum(map(len,lines[:node.end_lineno-1]))+node.end_col_offset
+def source_region(raw,start,end=None):
+ assert raw.count(start)==1
+ at=raw.index(start)
+ stop=len(raw) if end is None else raw.index(end,at)
+ return raw[at:stop]
+for entry in decl["sources"]:
+ kind=entry["kind"];old=read(entry["baseline"]);new=read(entry["candidate"])
+ old_tree=ast.parse(old);new_tree=ast.parse(new);trees[kind]=(old_tree,new_tree);raws[kind]=(old,new)
+ state=old;steps=[]
+ for index,edit in enumerate(entry["edits"]):
+  before=edit["before"].encode();after=edit["after"].encode();assert before!=after and state.count(before)==1,(kind,index)
+  at=state.index(before);prior=state;state=prior[:at]+after+prior[at+len(before):]
+  assert state[:at]==prior[:at] and state[at+len(after):]==prior[at+len(before):]
+  steps.append({"index":index,"category":edit["category"],"reason":edit["reason"],"offset":at,"before":edit["before"],"after":edit["after"],
+   "before_bytes":len(prior),"before_sha256":sha(prior),"after_bytes":len(state),"after_sha256":sha(state),
+   "unchanged_prefix_bytes":at,"unchanged_prefix_sha256":sha(prior[:at]),"unchanged_suffix_bytes":len(prior)-at-len(before),"unchanged_suffix_sha256":sha(prior[at+len(before):])})
+  all_categories[edit["category"]]+=1
+ assert state==new,(kind,"complete_forward")
+ for step in reversed(steps):
+  at=step["offset"];before=step["before"].encode();after=step["after"].encode()
+  assert len(state)==step["after_bytes"] and sha(state)==step["after_sha256"] and state[at:at+len(after)]==after
+  state=state[:at]+before+state[at+len(after):]
+  assert len(state)==step["before_bytes"] and sha(state)==step["before_sha256"]
+ assert state==old,(kind,"complete_raw_inverse")
+ oh=helpers(old,old_tree);nh=helpers(new,new_tree);assert set(oh)==set(nh)
+ local_helpers=[]
+ for name,b in oh.items():
+  assert b==nh[name],(kind,name)
+  row={"kind":kind,"name":name,"bytes":len(b),"sha256":sha(b)}
+  helper_records.append(row);local_helpers.append(row)
+ old_imports=[ast.dump(n,include_attributes=False)for n in old_tree.body if isinstance(n,(ast.Import,ast.ImportFrom))]
+ new_imports=[ast.dump(n,include_attributes=False)for n in new_tree.body if isinstance(n,(ast.Import,ast.ImportFrom))]
+ assert old_imports==new_imports
+ old_v34=[n.value for n in ast.walk(old_tree)if isinstance(n,ast.Constant)and isinstance(n.value,str)and ("v34" in n.value or "V34" in n.value)]
+ new_v34=[n.value for n in ast.walk(new_tree)if isinstance(n,ast.Constant)and isinstance(n.value,str)and ("v34" in n.value or "V34" in n.value)]
+ assert old_v34==new_v34,(kind,"unchanged_all_historical_V34_literals")
+ newtext=new.decode()
+ assert 'batch in ("new3","new4","existing63")' in newtext
+ assert '(3,38) if batch=="new3" else (4,58) if batch=="new4" else (63,1249)' in newtext
+ for expected in (b"<=64",b"16777216",b"19546",b"1489"):
+  assert old.count(expected)==new.count(expected),(kind,expected)
+ for key,value in decl["markers"].items():
+  for node in ast.walk(new_tree):
+   if isinstance(node,ast.Constant)and node.value==value:
+    a,z=span(new,node);marker_records.append({"kind":kind,"binding":key,"path":entry["candidate"]["path"],"token_start":a,"token_end":z,"token":new[a:z].decode(),"decoded_length":len(value),"value":value})
+ finite.append({"kind":kind,"baseline":entry["baseline"],"candidate":entry["candidate"],"edit_count":len(steps),"steps":steps,"all_step_untouched_fragments_exact":True,
+  "complete_forward_and_raw_inverse":True,"whole_original_bytes_recovered":len(old),"whole_original_sha256_recovered":sha(old),
+  "all_helpers_byte_identical":local_helpers,"imports_AST_unchanged":True,"all_historical_V34_literals_unchanged":old_v34})
+assert len(helper_records)==27
+assert collections.Counter(x["binding"]for x in marker_records)=={"head":4,"matrix":3,"buildquery_constructor_sha256":1,"runtime_constructor_sha256":1}
+assert len(decl["markers"]["head"])==40 and all(len(v)==64 for k,v in decl["markers"].items()if k!="head")
+assert all(any(c not in "0123456789ABCDEFabcdef"for c in v)for v in decl["markers"].values())
+# Exact constructor sizes are source observations, not native observations.
+sizes={s["kind"]:s["candidate"]["bytes"]for s in decl["sources"]}
+assert sizes["buildquery_constructor"]==10269 and sizes["runtime_constructor"]==12671
+assert 'grant_preparer["bytes"]==10269' in raws["positive_buildquery_auditor"][1].decode()
+assert 'runtime_preparer.stat().st_size==12671' in raws["positive_runtime_auditor"][1].decode()
+# Broad unchanged regions cover all native gates after the deliberate cohort/history admission changes.
+regions=[]
+region_specs=[
+ ("buildquery_constructor",b"fixed={\n",b"old_launch=(OLD/"),
+ ("runtime_constructor",b"fixed_keys=(",b'raw=(bc/"launch.ps1").read_bytes()'),
+ ("positive_buildquery_auditor",b"pids=[];bounds=[];groups=[];",None),
+ ("positive_runtime_auditor",b"all_pins={}\n",None)]
+for kind,start,end in region_specs:
+ old,new=raws[kind];a=source_region(old,start,end);b=source_region(new,start,end)
+ assert a==b,(kind,"complete_critical_region")
+ regions.append({"kind":kind,"start":start.decode(),"end":None if end is None else end.decode(),"bytes":len(a),"sha256":sha(a)})
+# Preserve A73A's original raw b13 comparison verbatim, then add exactly one explicit raw014 query.
+kind="positive_runtime_auditor";old,new=raws[kind];ot,nt=trees[kind]
+old_check_start=b"verify_pins(historical_snapshot)\n"
+old_check_end=b'verify_pins({key:value for key,value in review.items()'
+old_block=source_region(old,old_check_start,old_check_end)
+assert old_block in new
+regions.append({"kind":kind,"region":"original_A73A_raw_b13_snapshot_verification","bytes":len(old_block),"sha256":sha(old_block)})
+oldsub=[ast.dump(n,include_attributes=False)for n in ast.walk(ot)if isinstance(n,ast.Call)and isinstance(n.func,ast.Attribute)and isinstance(n.func.value,ast.Name)and n.func.value.id=="subprocess"]
+newsub=[ast.dump(n,include_attributes=False)for n in ast.walk(nt)if isinstance(n,ast.Call)and isinstance(n.func,ast.Attribute)and isinstance(n.func.value,ast.Name)and n.func.value.id=="subprocess"]
+removed=collections.Counter(oldsub)-collections.Counter(newsub);added=collections.Counter(newsub)-collections.Counter(oldsub)
+assert not removed and sum(added.values())==1
+expected_query=ast.parse('subprocess.check_output(["git","--no-optional-locks","cat-file","blob",historical_owner_commit+":src/extensions/native_node_file_handle_owner.zig"],cwd=main)',mode="eval").body
+assert added=={ast.dump(expected_query,include_attributes=False):1}
+# Parse only literal historical mapping data; no source/helper/prefix evaluation.
+assign={n.targets[0].id:n.value for n in nt.body if isinstance(n,ast.Assign)and len(n.targets)==1 and isinstance(n.targets[0],ast.Name)}
+def literal_pin(name):
+ node=assign[name];assert isinstance(node,ast.Call)and isinstance(node.func,ast.Name)and node.func.id=="dict"and not node.args
+ kw={x.arg:x.value for x in node.keywords};assert set(kw)=={"path","bytes","sha256"}
+ path=kw["path"];assert isinstance(path,ast.Call)and isinstance(path.func,ast.Name)and path.func.id=="str"and len(path.args)==1
+ term=path.args[0];assert isinstance(term,ast.BinOp)and isinstance(term.op,ast.Div)and isinstance(term.left,ast.Name)
+ root={"main":B/"main","base":B}[term.left.id];relative=ast.literal_eval(term.right)
+ assert isinstance(relative,str) and not Path(relative).is_absolute()
+ return {"path":str(root/relative),"bytes":ast.literal_eval(kw["bytes"]),"sha256":ast.literal_eval(kw["sha256"])}
+historical_original=literal_pin("historical_original");historical_snapshot=literal_pin("historical_snapshot")
+owner_original=literal_pin("historical_owner_original");owner_snapshot=literal_pin("historical_owner_snapshot")
+old_commit=ast.literal_eval(assign["historical_commit"]);owner_commit=ast.literal_eval(assign["historical_owner_commit"])
+expected_maps=[{"batch":b,"role":"fixture_unchanged_root_native-node-file-handle-owner","original":historical_original,"immutable_snapshot":historical_snapshot,"raw_commit":old_commit,"exact_original_bytes":True}for b in ("new4","regression63")]
+expected_maps.extend({"batch":b,"role":"fixture_causal_owner","original":owner_original,"immutable_snapshot":owner_snapshot,"raw_commit":owner_commit,"exact_original_bytes":True}for b in ("new4","regression63"))
+assert expected_maps==contract["historical_source_rebindings"]
+assert old_commit=="b13be24e44cc1bbc361639eb35900a368ae60eac" and owner_commit=="014062f2d139254acab4b985b4ae343db637166f"
+rels=assign["historical_relationships"];assert isinstance(rels,ast.List)
+relationships=[]
+for item in rels.elts:
+ assert isinstance(item,ast.Call)and isinstance(item.func,ast.Name)and item.func.id=="dict"and not item.args
+ relationships.append({kw.arg:ast.literal_eval(kw.value)for kw in item.keywords})
+assert relationships==contract["historical_provenance_relationships"]
+assert [x["mapping_index"]for x in relationships]==[0,1,2,0,1,3]
+for rel in relationships: assert set(rel)=={"provenance_key","mapping_index"}
+git_observations=[]
+for original,snapshot,commit,relative in ((historical_original,historical_snapshot,old_commit,"src/native_node_file_handle_owner_test.zig"),(owner_original,owner_snapshot,owner_commit,"src/extensions/native_node_file_handle_owner.zig")):
+ b=read(snapshot)
+ argv=["git","--no-optional-locks","-C",str(W),"cat-file","blob",commit+":"+relative]
+ q=subprocess.run(argv,capture_output=True,timeout=20);assert q.returncode==0 and q.stdout==b
+ assert len(b)==original["bytes"] and sha(b)==original["sha256"]
+ git_observations.append({"argv":argv,"bytes":len(b),"sha256":sha(b),"snapshot":snapshot,"exact_original_preimage":original,"full_raw_blob_equality":True})
+# All candidate safety-critical historical/current distinction is explicit and exact.
+for fragment in (
+ 'require(historical_rows==historical_expected,',
+ 'require(review["historical_provenance_relationships"]==historical_relationships,',
+ 'require(all(review["provenance"][row["provenance_key"]]==historical_rows[row["mapping_index"]]["immutable_snapshot"] for row in historical_relationships),',
+ 'verify_pins({key:value for key,value in review.items() if key!="historical_source_rebindings"})'):
+ assert fragment in new.decode()
+assert len(expected_maps)==4 and len(relationships)==6
+for entry in decl["sources"]:
+ text=raws[entry["kind"]][1].decode()
+ if entry["kind"]!="positive_buildquery_auditor": assert '["native-node-stream-shutdown","native-node-one-byte-string","native-vm-array-buffer-view-data"]' in text
+ assert contract["strict_driver_sha256"] in text or entry["kind"]=="runtime_constructor"
+ assert '"-prepared-20261020"' not in text or "v34" in text
+# Nine first-stage bindings remain unresolved; actual jobs, metadata, seals, owners and resource observations are still config-only.
+finite_value={"schema":1,"status":"unexecuted_reviewable_exact_v39_execution_source_adaptation","author":"/root/handover_review",
+ "declarations":declared_pin,"execution_provenance_contract":decl["execution_provenance_contract"],"sources":finite,
+ "total_edits":58,"all27_helper_bodies_unchanged":helper_records,"complete_unchanged_regions":regions,
+ "explicit_historical_mapping_count":4,"explicit_historical_relationship_count":6,"added_subprocess_expression_scope":"One exact immutable raw014 Git blob check in the positive runtime auditor.",
+ "first_stage_unresolved_bindings":marker_records,"candidate_or_prefix_executed":False,"Main_accessed":False,"native_execution_authorized":False}
+finite_path=D/"finite-source-adaptation.json";finite_raw=enc(finite_value)
+proof_value={"schema":1,"status":"passed_static_finite_source_accounting_only","reviewer":"/root/handover_review","utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),
+ "finite_adaptation":pin(finite_path,finite_raw),"sources":[{"kind":x["kind"],"baseline":x["baseline"],"candidate":x["candidate"],"edits":len(x["steps"])}for x in finite],
+ "edit_categories":dict(all_categories),"all_intermediate_hashes_and_raw_inverses_exact":True,"unchanged_helpers":helper_records,"unchanged_critical_regions":regions,
+ "historical_source_rebindings":expected_maps,"historical_provenance_relationships":relationships,"immutable_Git_observations":git_observations,
+ "declarations":{"new3":[3,38],"new4":[4,58],"existing63":[63,1249],"catalog":[120,2051],"selected_union":[70,1345]},
+ "original63_and_retained4_order_unchanged":True,"new3_order":contract["new3_order"],"all_batch_caps_64_unchanged":True,
+ "nine_future_binding_slots":marker_records,"constructor_sizes_observed_from_unexecuted_sources":{"buildquery":10269,"runtime":12671},
+ "no_predicted_metadata_or_runtime":True,"no_actual_job_or_resource_or_process_identity_substituted":True,
+ "current_input_versions":list(inputs.values()),"current_input_version_count":len(inputs),"candidate_or_prefix_executed":False,
+ "imports_or_helpers_executed_from_candidate":False,"Main_accessed":False,"compiler_or_native_executed":False,
+ "execution_configuration_issued":False,"source_mutation_hold_released":False,"native_execution_authorized":False,"qualification":False}
+proof_path=D/"source-proof.json";proof_raw=enc(proof_value)
+for p,b in ((finite_path,finite_raw),(proof_path,proof_raw)):
+ with p.open("xb")as f:f.write(b)
+print(json.dumps({"finite":pin(finite_path,finite_raw),"proof":pin(proof_path,proof_raw),"edits":58,"helpers":27,"critical_regions":len(regions),"unresolved_bindings":len(marker_records),"historical_mappings":4,"historical_relationships":6,"current_input_versions":len(inputs)}))

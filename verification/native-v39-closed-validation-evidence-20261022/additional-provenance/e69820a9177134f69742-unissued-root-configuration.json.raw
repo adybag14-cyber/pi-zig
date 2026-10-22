@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "status": "unissued_source_only_v39_closed_phases_unresolved63_archive_shape",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "preparer_sha256": "02D8A4504E8741E915621AFE35B3DBDBEC8A8EE8F8D0F1712F9BA3C5C2392C2B",
+  "source_review": null,
+  "final_copy_plan": null,
+  "recorded_utc": null,
+  "output_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v39-closed-validation-archive-intake-unresolved63-20261022",
+  "archive_target_prefix": "verification/native-v39-closed-validation-evidence-20261022",
+  "expected_output_paths": null,
+  "evidence_preparation_authorized": false,
+  "main_intake_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "application_qualified": false,
+  "production_bridge_removed": false,
+  "published_release": false
+}

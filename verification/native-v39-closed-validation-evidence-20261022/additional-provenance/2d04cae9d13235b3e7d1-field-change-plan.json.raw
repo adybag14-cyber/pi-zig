@@ -1,0 +1,789 @@
+{
+  "schema": 1,
+  "status": "inert_source_only_v39_existing63_buildquery_field_change_plan",
+  "author": "/root/module_io_port",
+  "prepared_utc": "2026-10-22T17:27:33.105405+00:00",
+  "baseline_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-buildquery-issued-config-20261022.json",
+    "bytes": 26267,
+    "sha256": "BFEA1905E686476E6C9A97D6F326D0654E5D2FA0397B8FC34CC7BFC6F5A1E42E"
+  },
+  "unchanged_constructor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+    "bytes": 10269,
+    "sha256": "972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0"
+  },
+  "unchanged_execution_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-execution-bound-source-review-20261022.json",
+    "bytes": 16559,
+    "sha256": "5056C7EB01BC3DBC3931030A7753423CE2AAD1EDC9A71A00A192D0DA7076450A"
+  },
+  "unchanged_catalog_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-catalog-source-acceptance-20261022.json",
+    "bytes": 14221,
+    "sha256": "CB6A78ACEFAA83A6DE31AB917B6460465BF012C99B38CE87425B6893CCB7AB2C"
+  },
+  "unchanged_catalog_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-emitted-catalog-peer-20261022\\peer.json",
+    "bytes": 21004,
+    "sha256": "E1EBA02555E8C52689D838A71A9252091469122254C7000DC8850E7A24CEABCA"
+  },
+  "target_preparation_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\preparation-review.json",
+    "bytes": 1232958,
+    "sha256": "58E217CF7E2445167523089006FBA042FAF1AAA7C766036A69CE304413042904"
+  },
+  "target_preparation_members": {
+    "driver": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\Run-CombinedNativeBatch.ps1",
+      "bytes": 60094,
+      "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+    },
+    "matrix": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\groups.json",
+      "bytes": 1469059,
+      "sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB"
+    },
+    "auditor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\Audit-CombinedNativeBatch.py",
+      "bytes": 17704,
+      "sha256": "1030886DD02944E4BC9930711C7F05ABA8F02B1FDAA0C8ED6688B18B7EC2460E"
+    },
+    "classifier": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\Get-ModelsNativeCandidates.ps1",
+      "bytes": 1786,
+      "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+    },
+    "metadata_auditor_adaptation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\metadata-auditor-adaptation.json",
+      "bytes": 1220,
+      "sha256": "219AF7724B8CCA99AB2B1094D4F4E29EE6072C495F4DA0317B69F5F46D7A32F5"
+    },
+    "complete_partition": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\complete-batch-partition.json",
+      "bytes": 4333,
+      "sha256": "C237CC8EB80448AC536E1C9928816C56BD46F6BC5FF91E4F7CA615A3118BFADB"
+    }
+  },
+  "original63_order_authority": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\root-grant.json",
+    "bytes": 12270,
+    "sha256": "275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15"
+  },
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "future_specific_configuration_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-existing63-buildquery-issued-config-20261022.json",
+  "scope": "Exact data-only field plan from the actual issued new4 configuration. No proposed configuration object is produced, no authority is issued, and no candidate source is evaluated.",
+  "baseline_top_level_field_count": 25,
+  "constructor_consumed_fields": [
+    "actual_metadata_count",
+    "batch",
+    "candidate_head",
+    "declared_controls",
+    "declared_groups",
+    "execution_authorized",
+    "grant_provenance_updates",
+    "independent_catalog_peer",
+    "preparation_review",
+    "preparer_sha256",
+    "qualification",
+    "root_catalog_acceptance",
+    "root_review",
+    "runtime_authority",
+    "selected_group_names",
+    "status"
+  ],
+  "issuance_context_fields": [
+    "schema",
+    "issued_utc",
+    "matrix_sha256",
+    "fresh_memory_observation",
+    "preserved_previous_configuration",
+    "historical_progress_rebinding",
+    "root_resource_ownership",
+    "v39_resource_preflight",
+    "v39_historical_progress_rebinding"
+  ],
+  "selected_group_names": [
+    "native-node-file-handle-read",
+    "native-node-fs-callback-template",
+    "native-vm-simple-stack-source",
+    "native-vm-exotic-operations",
+    "native-node-diagnostic-context",
+    "native-node-native-debug",
+    "native-node-permission",
+    "native-node-fs-readwrap-reuse",
+    "native-node-reqwrap-callback-routing",
+    "native-vm-script-location",
+    "native-node-stream-read",
+    "native-node-environment-map",
+    "native-vm-backing-store-adoption",
+    "native-node-environment-paths",
+    "native-node-stream-fields",
+    "native-node-managed-buffers",
+    "native-node-fs-request-owner",
+    "native-vm-execution-termination",
+    "native-typebox-execution-termination",
+    "native-host-termination-ownership",
+    "native-node-stream-resource",
+    "native-node-package-json-parser",
+    "native-node-microtask-checkpoint",
+    "native-vm-property-retirement",
+    "native-vm-consuming-operands",
+    "native-vm-oom-occurrence",
+    "native-node-callback-scope",
+    "native-node-inspect-colors",
+    "native-vm-captured-frame-logging",
+    "native-node-experimental-warning",
+    "native-node-commonjs-helpers",
+    "native-node-process-warning",
+    "native-node-fs-request-transport",
+    "native-vm-array-buffer-view-length",
+    "native-vm-array-buffer-backing",
+    "native-vm-private-property",
+    "native-node-tcp-transport",
+    "native-vm-async-arguments",
+    "native-node-fs-write-uv",
+    "native-vm-sync-arguments",
+    "native-vm-async-retirement",
+    "native-vm-template-literal",
+    "native-vm-borrowed-bridges",
+    "vm-af-throw",
+    "native-ai-oauth-anthropic-genuine-af",
+    "native-node-module-creation",
+    "native-node-module-search-paths",
+    "native-node-fs-realpath-classic",
+    "native-node-fs-path-helpers",
+    "native-node-file-url-paths",
+    "native-sdk-tool-search-public",
+    "native-ai-radius-config",
+    "native-ai-radius-provider-genuine-af",
+    "native-node-inspect-entry",
+    "native-ai-oauth-radius-genuine-af",
+    "native-vm-existing-promise-settlement",
+    "native-node-options",
+    "native-node-uv-exception",
+    "native-vm-disallow-javascript",
+    "native-vm-continuation-data",
+    "native-vm-pending-promise",
+    "native-vm-native-global",
+    "native-vm-copy-data-properties"
+  ],
+  "declared_groups": 63,
+  "declared_controls": 1249,
+  "actual_metadata_count": null,
+  "known_field_changes": [
+    {
+      "path": [
+        "batch"
+      ],
+      "before": "new4",
+      "reason": "Constructor cohort spelling; prepared directory remains regression63.",
+      "after": "existing63"
+    },
+    {
+      "path": [
+        "declared_groups"
+      ],
+      "before": 4,
+      "reason": "Exact selected preparation/V34 order.",
+      "after": 63
+    },
+    {
+      "path": [
+        "declared_controls"
+      ],
+      "before": 58,
+      "reason": "Source declaration sum; future metadata is unknown.",
+      "after": 1249
+    },
+    {
+      "path": [
+        "preparation_review"
+      ],
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022\\preparation-review.json",
+        "bytes": 1230758,
+        "sha256": "BC7E87602311E3947D2581F87E4D4AE0FBA9224BDE3B940BC9D1F5D2652F12AB"
+      },
+      "reason": "Original CB6 acceptance explicitly includes this preparation review.",
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\preparation-review.json",
+        "bytes": 1232958,
+        "sha256": "58E217CF7E2445167523089006FBA042FAF1AAA7C766036A69CE304413042904"
+      }
+    },
+    {
+      "path": [
+        "selected_group_names"
+      ],
+      "before": [
+        "native-node-file-handle-owner",
+        "native-node-fs-before-hook-continuation",
+        "native-vm-error-constructor-name",
+        "native-node-file-handle-transfer"
+      ],
+      "reason": "All63 accepted names in exact V34 order.",
+      "after_from_plan": [
+        "selected_group_names"
+      ]
+    },
+    {
+      "path": [
+        "preserved_previous_configuration"
+      ],
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-buildquery-issued-config-20261022.json",
+        "bytes": 25785,
+        "sha256": "70E3E8DEBE211D1F642C72DDFE76E0383084A71EEC0442DDF4CF0745E21AE629"
+      },
+      "reason": "Preserve the actual new4 configuration as the direct predecessor; its own previous new3 configuration remains unchanged.",
+      "after": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-buildquery-issued-config-20261022.json",
+        "bytes": 26267,
+        "sha256": "BFEA1905E686476E6C9A97D6F326D0654E5D2FA0397B8FC34CC7BFC6F5A1E42E"
+      }
+    },
+    {
+      "path": [
+        "root_resource_ownership",
+        "phase"
+      ],
+      "before": "specific_v39_new4_buildquery_constructor_and_exact_reviewed_emitted_launcher",
+      "reason": "Same exclusive Root resource ownership; cohort-only wording.",
+      "after": "specific_v39_existing63_buildquery_constructor_and_exact_reviewed_emitted_launcher"
+    },
+    {
+      "path": [
+        "root_resource_ownership",
+        "allowed_groups"
+      ],
+      "before": [
+        "native-node-file-handle-owner",
+        "native-node-fs-before-hook-continuation",
+        "native-vm-error-constructor-name",
+        "native-node-file-handle-transfer"
+      ],
+      "reason": "Same exact63 order as selection.",
+      "after_from_plan": [
+        "selected_group_names"
+      ]
+    }
+  ],
+  "unresolved_issuance_field_changes": [
+    {
+      "path": [
+        "root_review"
+      ],
+      "before": "Root authorizes the unchanged accepted972E BuildQuery constructor to create exactly one fresh private new4 grant and launcher at frozen pushed e9f11afa. Root accepted CB6 catalog/E1EB peer,5056 canonical execution sources/D91F peer and A935 retained observed helpers. Select the original four groups in their exact accepted order:4 groups/58 declared controls; actual metadata remains unknown. The original new3 admission-only negative is independently closed1A6F/9712 with zero native owners, metadata or tests; preserve every original attempt and its inputs. Use the serial native slot for this independent retained cohort while a source-only retry1 preparation is reviewed. Retain every67 predecessor provenance role and append only those two explicit negative references. Root will verify the exact emitted grant/launcher full inverses and submit promptly with1900s durable/1800s outer limits. Keep the300s grant age,16GiB free threshold, all1DD3/3413 owner,100ns identity, empty-stderr, artifact, full-seal and test controls. No RuntimeOnly authority or Main/index mutations. Current source remains frozen through complete independent closure.",
+      "after": null,
+      "required_source": "New Root narrative explicitly authorizing only the existing63 BuildQuery after serial predecessors close; retain original negatives and all strict gates."
+    },
+    {
+      "path": [
+        "issued_utc"
+      ],
+      "before": "2026-10-22T16:56:10.523351+00:00",
+      "after": null,
+      "required_source": "Actual future Root configuration issuance time; not the old new4 time and not the constructor's separately generated grant clock."
+    },
+    {
+      "path": [
+        "fresh_memory_observation",
+        "observed_utc"
+      ],
+      "before": "2026-10-22T16:55:00.7609436+00:00",
+      "after": null,
+      "required_source": "Fresh actual resource observation time."
+    },
+    {
+      "path": [
+        "fresh_memory_observation",
+        "free_physical_kib"
+      ],
+      "before": 28874676,
+      "after": null,
+      "required_source": "Fresh measured free memory; no copied value."
+    },
+    {
+      "path": [
+        "fresh_memory_observation",
+        "eligible"
+      ],
+      "before": true,
+      "after": null,
+      "required_source": "Derive only from fresh observation against unchanged16777216KiB threshold."
+    },
+    {
+      "path": [
+        "fresh_memory_observation",
+        "process_rows"
+      ],
+      "before": 430,
+      "after": null,
+      "required_source": "Fresh actual process observation count."
+    },
+    {
+      "path": [
+        "fresh_memory_observation",
+        "native_candidates"
+      ],
+      "before": [],
+      "after": null,
+      "required_source": "Fresh classifier result, unresolved here; native admission requires the actual empty candidate set."
+    },
+    {
+      "path": [
+        "root_resource_ownership",
+        "observed_free_kib"
+      ],
+      "before": 28874676,
+      "after": null,
+      "required_source": "Must equal the fresh observation's free_physical_kib."
+    },
+    {
+      "path": [
+        "root_resource_ownership",
+        "observed_utc"
+      ],
+      "before": "2026-10-22T16:55:00.7609436+00:00",
+      "after": null,
+      "required_source": "Must equal the fresh observation's observed_utc."
+    },
+    {
+      "path": [
+        "root_resource_ownership",
+        "native_candidates"
+      ],
+      "before": [],
+      "after": null,
+      "required_source": "Must equal the fresh actual classifier result."
+    },
+    {
+      "path": [
+        "v39_resource_preflight"
+      ],
+      "before": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-buildquery-resource-preflight-20261022.json",
+        "bytes": 945,
+        "sha256": "F44B39F35584A35F3C5FAD48F05C9B48DB3DB24C1560814F0E0CC4AB34C642A4"
+      },
+      "after": null,
+      "required_source": "Exact future contained resource-preflight path/bytes/SHA, reflecting observed serial admission; not the F44B new4 receipt."
+    }
+  ],
+  "known_field_changes_count": 8,
+  "unresolved_field_changes_count": 11,
+  "total_logical_field_changes": 19,
+  "unchanged_top_level_fields": [
+    "schema",
+    "status",
+    "candidate_head",
+    "preparer_sha256",
+    "execution_authorized",
+    "runtime_authority",
+    "actual_metadata_count",
+    "qualification",
+    "independent_catalog_peer",
+    "root_catalog_acceptance",
+    "grant_provenance_updates",
+    "matrix_sha256",
+    "historical_progress_rebinding",
+    "v39_historical_progress_rebinding"
+  ],
+  "unchanged_top_level_field_count": 14,
+  "all_other_fields_and_values_retained_verbatim": true,
+  "future_execution_authorized_field": "The baseline true value is a constructor admission requirement for a separately issued Root configuration; this plan itself authorizes nothing.",
+  "preserved_grant_provenance": {
+    "count": 69,
+    "keys": [
+      "v34_progress",
+      "v35_current_progress",
+      "v35_catalog_preparer_source_review",
+      "v35_catalog_configuration",
+      "v35_grant_constructor_source_peer",
+      "v35_positive_closure_auditor_source_review",
+      "v36_current_progress",
+      "v36_catalog_preparer_source_review",
+      "v36_catalog_configuration",
+      "v36_execution_finite_bindings",
+      "v36_progress_intake_receipt",
+      "v36_prior_first_compile_negative_closure",
+      "v36_execution_bound_source_review",
+      "v37_current_progress",
+      "v37_catalog_preparer_source_review",
+      "v37_catalog_configuration",
+      "v37_execution_finite_bindings",
+      "v37_fixture_intake_receipt",
+      "v37_progress_intake_receipt",
+      "v37_prior_new4_complete_buildquery_closure",
+      "v37_prior_new4_strict_runtime_negative_closure",
+      "v37_prior_new4_strict_runtime_root_acceptance",
+      "v37_execution_bound_source_review",
+      "prior_v36_strict_runtime_negative_closure",
+      "prior_v36_complete_buildquery_closure",
+      "prior_v36_metadata_acceptance",
+      "prior_v36_root_negative_acceptance",
+      "prior_v36_root_buildquery_acceptance",
+      "prior_v37_initial_admission_root",
+      "prior_v37_initial_admission_peer",
+      "prior_v37_retry1_strict_runtime_negative_closure",
+      "prior_v37_retry1_complete_buildquery_closure",
+      "prior_v37_retry1_metadata_acceptance",
+      "prior_v37_retry1_root_negative_acceptance",
+      "prior_v37_retry1_root_buildquery_acceptance",
+      "progress",
+      "fixture_manifest",
+      "fixture_receipt",
+      "fixture_release",
+      "progress_manifest",
+      "progress_receipt",
+      "progress_release",
+      "fixture_independent_peer",
+      "fixture_root_source_review",
+      "root_configuration",
+      "root_preparer_source_review",
+      "fixture_runtime_correction",
+      "fixture_runtime_causal_proof",
+      "fixture_selected_authority",
+      "fixture_preserved_authority_predecessor",
+      "v38_execution_bound_source_review",
+      "v38_execution_finite_bindings",
+      "v38_catalog_initial_preparation_negative",
+      "v38_prior_progress",
+      "v39_catalog_preparer_source_review",
+      "v39_catalog_configuration",
+      "v39_catalog_preparation_original_negative",
+      "v39_execution_bound_source_review",
+      "v39_execution_finite_bindings",
+      "v39_selected_source_plan",
+      "v39_current_progress",
+      "v39_archive_manifest",
+      "v39_archive_receipt",
+      "v39_archive_root_acceptance",
+      "v39_source_manifest",
+      "v39_source_receipt",
+      "v39_source_root_acceptance",
+      "v39_original_new3_prelaunch_negative_acceptance",
+      "v39_original_new3_prelaunch_negative_closure"
+    ],
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-buildquery-issued-config-20261022.json",
+      "bytes": 26267,
+      "sha256": "BFEA1905E686476E6C9A97D6F326D0654E5D2FA0397B8FC34CC7BFC6F5A1E42E"
+    },
+    "field": "grant_provenance_updates",
+    "object_encoding": "json.dumps(value,indent=2) plus one LF, UTF-8",
+    "object_bytes": 18673,
+    "object_sha256": "517FE1ED289F489322D626535343B96F776290694816C0A3C66C9D4EED1FDF72",
+    "must_remain_exact": true,
+    "mandatory_role": "v39_execution_bound_source_review",
+    "mandatory_pin": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-execution-bound-source-review-20261022.json",
+      "bytes": 16559,
+      "sha256": "5056C7EB01BC3DBC3931030A7753423CE2AAD1EDC9A71A00A192D0DA7076450A"
+    },
+    "original_new3_negative_pins": {
+      "v39_original_new3_prelaunch_negative_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-original-prelaunch-negative-acceptance-20261022.json",
+        "bytes": 5627,
+        "sha256": "1A6F6F0CAA70C5B9F39F9FF815B67429C39B785E472817427A7EF18E4FCEDDD7"
+      },
+      "v39_original_new3_prelaunch_negative_closure": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-163859\\independent-prelaunch-admission-negative-closure.json",
+        "bytes": 5480,
+        "sha256": "9712BD2BBB46133BEAA1D7590CC95570ACF252000E218443488E41EB01F4B181"
+      }
+    },
+    "no_new_provenance_keys_required_for_cohort_selection": true
+  },
+  "preserved_configuration_lineage": {
+    "direct_predecessor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-buildquery-issued-config-20261022.json",
+      "bytes": 26267,
+      "sha256": "BFEA1905E686476E6C9A97D6F326D0654E5D2FA0397B8FC34CC7BFC6F5A1E42E"
+    },
+    "prior_new3_configuration": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-buildquery-issued-config-20261022.json",
+      "bytes": 25785,
+      "sha256": "70E3E8DEBE211D1F642C72DDFE76E0383084A71EEC0442DDF4CF0745E21AE629"
+    },
+    "historical_progress_rebinding": {
+      "role": "v37_current_progress",
+      "original_configuration": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-buildquery-retry1-issued-config-20261021.json",
+        "bytes": 9887,
+        "sha256": "7D8D8F2701A39D4F14B8C61629482463FCDE64318EC75A974BEB78CAD3A865B7"
+      },
+      "original_bytes": 438396,
+      "original_sha256": "18E61B7DFE07DA5D13C64E4B933EC519312AFED1DC7B29AC4789AC0C3A5EB49F",
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\prior-v37-progress.json",
+        "bytes": 438396,
+        "sha256": "18E61B7DFE07DA5D13C64E4B933EC519312AFED1DC7B29AC4789AC0C3A5EB49F"
+      },
+      "exact_original_bytes": true
+    },
+    "v39_historical_progress_rebinding": {
+      "original_configuration": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-existing63-buildquery-issued-config-20261021.json",
+        "bytes": 24863,
+        "sha256": "E00D37EA2826EA5E4E9F9568EF7770FEC5F9A8FCD425CA4DBA3C2E52773EF28B"
+      },
+      "recorded_reference": {
+        "recorded_path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+        "recorded_bytes": 554689,
+        "recorded_sha256": "BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\projected\\verification\\native-v38-validation-evidence-20261021\\prior-progress.json.raw",
+        "bytes": 554689,
+        "sha256": "BEB78B96C31D97681B3F1858AAD303939CEECCB9AD772D73BEE4923034EAC028"
+      },
+      "exact_original_bytes": true,
+      "current_progress": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+        "bytes": 678718,
+        "sha256": "4FF79AE87F671BB8F16283E38D282CB58444A1A0FA42659B0F3CED505EE04343"
+      }
+    }
+  },
+  "preserved_resource_policy": {
+    "owner": "Root",
+    "constructor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+      "bytes": 10269,
+      "sha256": "972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0"
+    },
+    "source_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-execution-bound-source-review-20261022.json",
+      "bytes": 16559,
+      "sha256": "5056C7EB01BC3DBC3931030A7753423CE2AAD1EDC9A71A00A192D0DA7076450A"
+    },
+    "constructor_timeout_seconds": 90,
+    "maximum_concurrent_preparers": 1,
+    "maximum_concurrent_native_batches": 1,
+    "minimum_free_kib": 16777216,
+    "native_job_resource_class": "heavy",
+    "native_job_max_seconds": 1900,
+    "owned_outer_max_seconds": 1800,
+    "compile_max_seconds": 1320,
+    "metadata_max_seconds": 30,
+    "runtime_authorized": false,
+    "Main_or_index_write_authorized": false,
+    "source_mutation_hold_released": false
+  },
+  "preserve_fresh_observation_policy": {
+    "required_kib": 16777216,
+    "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+  },
+  "original_new4_resource_observation_is_historical_only": true,
+  "required_later_Root_checks": [
+    "Serial predecessor jobs and their exact process/source closures must be accepted before a fresh lease; this plan records no current process or job state.",
+    "Observe actual fresh memory/classifier data and pin a new resource-preflight receipt; all corresponding future fields here are null.",
+    "Keep original source/canonical972E and5056, catalogCB6/peerE1EB and regression63 review58E; do not substitute the new3 retry-only preparation or downstream source review.",
+    "Preserve all25 field names and all69 grant-provenance roles. Fill only these19 logical field positions unless Root separately reviews an explicit additional provenance append.",
+    "Root must recheck frozen clean e9/Main and every current source/provenance input at issuance through the unchanged constructor; this source-only plan did not access Main.",
+    "The actual grant/control/proof/cache/launcher identities and timestamp are generated freshly by972E, with one original V34 launcher-path edit and full grant/launcher inverses. No precomputed job or output pin belongs here.",
+    "The300-second initial grant-age limit,16GiB threshold,1320-second compile,30-second metadata,1800-second outer and1900-second durable limits remain unchanged. Keep serial ownership and submit promptly.",
+    "Actual metadata remains null until this exact cohort completes and the independent metadata audit accepts its original output. Historical1285 or any other prior count is not a forecast.",
+    "RuntimeOnly requires a later separate review/grant after actual complete BuildQuery/artifact/source/process closure; this plan does not authorize it."
+  ],
+  "constructor_source_anchors": [
+    {
+      "role": "cohort_selection",
+      "line": 35,
+      "text": "batch=cfg[\"batch\"];assert batch in (\"new3\",\"new4\",\"existing63\")"
+    },
+    {
+      "role": "preparation_admission",
+      "line": 42,
+      "text": "verify(cfg[\"preparation_review\"]);PREP=Path(cfg[\"preparation_review\"][\"path\"]).parent"
+    },
+    {
+      "role": "catalog_membership",
+      "line": 63,
+      "text": "assert cfg[\"preparation_review\"] in root_review[\"preparation_reviews\"]"
+    },
+    {
+      "role": "original63_order",
+      "line": 71,
+      "text": "    assert selected==read(OLD/\"root-grant.json\")[\"groups\"]"
+    },
+    {
+      "role": "fixed_strict_fields",
+      "line": 82,
+      "text": "fixed={"
+    },
+    {
+      "role": "metadata_null_fields",
+      "line": 92,
+      "text": "null_fields=(\"build_result_path\",\"build_result_sha256\",\"build_artifacts_path\",\"build_artifacts_sha256\","
+    },
+    {
+      "role": "grant_clock",
+      "line": 105,
+      "text": "now=datetime.datetime.now(datetime.timezone.utc);suffix=now.strftime(\"%Y%m%d-%H%M%S\")"
+    },
+    {
+      "role": "provenance_reserved",
+      "line": 110,
+      "text": "reserved=set(fixed)|set(null_fields)|{\"groups\",\"candidate_head\",\"issued_utc\",\"grant_id\",\"receipt_directory\",\"cache_directory\",\"global_cache_directory\",\"group_manifest_sha256\",\"preparation_review\",\"specific_root_configuration\",\"root_review\",\"independent_catalog_peer\",\"root_catalog_acceptance\"}"
+    },
+    {
+      "role": "new_grant_provenance",
+      "line": 112,
+      "text": "updates.update("
+    },
+    {
+      "role": "create_only_output",
+      "line": 129,
+      "text": "control.mkdir()"
+    }
+  ],
+  "unchanged_grant_null_fields": [
+    "build_result_path",
+    "build_result_sha256",
+    "build_artifacts_path",
+    "build_artifacts_sha256",
+    "build_metadata_path",
+    "build_metadata_sha256",
+    "build_source_seal_path",
+    "build_source_seal_sha256",
+    "metadata_acceptance_path",
+    "metadata_acceptance_sha256",
+    "actual_metadata_count"
+  ],
+  "unresolved_future_artifacts": {
+    "resource_preflight": null,
+    "Root_serial_predecessor_closure": null,
+    "configuration_issued_utc": null,
+    "grant_issued_utc": null,
+    "control_directory": null,
+    "proof_directory": null,
+    "grant": null,
+    "launcher": null,
+    "prepared_launch": null,
+    "durable_job": null,
+    "actual_metadata_count": null,
+    "buildquery_result": null,
+    "metadata_acceptance": null,
+    "source_process_closure": null
+  },
+  "exact_data_checks": {
+    "original63_order_and_declaration_sum": true,
+    "CB6_exact_preparation_membership": true,
+    "source5056_exact_constructor_binding": true,
+    "six_prepared_member_hashes": true,
+    "all69_provenance_values_preserved_by_frozen_baseline": true,
+    "new3_original_negative_pins_current": true,
+    "all_selected_inputs_rehashed": true,
+    "prepared_launch_absent_at_read": true
+  },
+  "current_read_inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-buildquery-issued-config-20261022.json",
+      "bytes": 26267,
+      "sha256": "BFEA1905E686476E6C9A97D6F326D0654E5D2FA0397B8FC34CC7BFC6F5A1E42E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+      "bytes": 10269,
+      "sha256": "972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-execution-bound-source-review-20261022.json",
+      "bytes": 16559,
+      "sha256": "5056C7EB01BC3DBC3931030A7753423CE2AAD1EDC9A71A00A192D0DA7076450A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-catalog-source-acceptance-20261022.json",
+      "bytes": 14221,
+      "sha256": "CB6A78ACEFAA83A6DE31AB917B6460465BF012C99B38CE87425B6893CCB7AB2C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-emitted-catalog-peer-20261022\\peer.json",
+      "bytes": 21004,
+      "sha256": "E1EBA02555E8C52689D838A71A9252091469122254C7000DC8850E7A24CEABCA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\preparation-review.json",
+      "bytes": 1232958,
+      "sha256": "58E217CF7E2445167523089006FBA042FAF1AAA7C766036A69CE304413042904"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\root-grant.json",
+      "bytes": 12270,
+      "sha256": "275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022\\preparation-review.json",
+      "bytes": 1230758,
+      "sha256": "BC7E87602311E3947D2581F87E4D4AE0FBA9224BDE3B940BC9D1F5D2652F12AB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-buildquery-issued-config-20261022.json",
+      "bytes": 25785,
+      "sha256": "70E3E8DEBE211D1F642C72DDFE76E0383084A71EEC0442DDF4CF0745E21AE629"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\Run-CombinedNativeBatch.ps1",
+      "bytes": 60094,
+      "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\groups.json",
+      "bytes": 1469059,
+      "sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\Audit-CombinedNativeBatch.py",
+      "bytes": 17704,
+      "sha256": "1030886DD02944E4BC9930711C7F05ABA8F02B1FDAA0C8ED6688B18B7EC2460E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\Get-ModelsNativeCandidates.ps1",
+      "bytes": 1786,
+      "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\metadata-auditor-adaptation.json",
+      "bytes": 1220,
+      "sha256": "219AF7724B8CCA99AB2B1094D4F4E29EE6072C495F4DA0317B69F5F46D7A32F5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\complete-batch-partition.json",
+      "bytes": 4333,
+      "sha256": "C237CC8EB80448AC536E1C9928816C56BD46F6BC5FF91E4F7CA615A3118BFADB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-original-prelaunch-negative-acceptance-20261022.json",
+      "bytes": 5627,
+      "sha256": "1A6F6F0CAA70C5B9F39F9FF815B67429C39B785E472817427A7EF18E4FCEDDD7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-163859\\independent-prelaunch-admission-negative-closure.json",
+      "bytes": 5480,
+      "sha256": "9712BD2BBB46133BEAA1D7590CC95570ACF252000E218443488E41EB01F4B181"
+    }
+  ],
+  "current_read_input_count": 17,
+  "no_recursive_live_Main_provenance_rehash": true,
+  "Main_path_values_retained_as_recorded_references_only": true,
+  "readout_observation": "One read-only summary included the3398-key preparation provenance inventory and its displayed output was bounded. A second compact read recovered the required schema/member fields; no candidate, output preparation, or configuration write occurred.",
+  "preserved_authoring_parse_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-existing63-buildquery-field-change-plan-sourceonly-20261022\\authoring-parse-negative.json",
+    "bytes": 16740,
+    "sha256": "1AC0CA9A1A1CDBF7918C3ED60AD29B6FC72A5628D6D343B778E93929E49C28A8"
+  },
+  "data_only": true,
+  "configuration_issued": false,
+  "constructor_or_prefix_executed": false,
+  "helper_or_auditor_executed": false,
+  "canonical_placement_performed": false,
+  "Main_accessed": false,
+  "index_accessed": false,
+  "current_processes_inspected": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "qualification": false
+}

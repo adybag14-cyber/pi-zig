@@ -1,0 +1,169 @@
+{
+  "schema": "pi-zig.independent-finite-source-peer.v1",
+  "created_utc": "2026-10-20T19:48:07.116149+00:00",
+  "reviewer": "sdk_environment_port",
+  "verdict": "No concrete source blocker in this exact one-line correction.",
+  "qualification": "Independent source review only. No compiler, native product, tests, formatter, source generator or reference executable was run; no runtime acceptance or future compile result is asserted.",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v33-exotic-query-c-pointer-sourceonly-20261020\\proposal.json",
+    "bytes": 9920,
+    "sha256": "3B35845AE48573E44603748C3633D1926C3E3D08DCAE092960ABCF94CF39225D"
+  },
+  "comparison_main_head": "f4c6abbc62ecd18b72ec50ab8fa206fe1664909f",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v33-exotic-query-c-pointer-sourceonly-20261020\\original-native_vm_exotic_operations_test.zig",
+    "bytes": 35891,
+    "sha256": "9FFBDF6B2C033898E7D1738943293DCD13F758EF9893F794293C8AA71A5FAA7B"
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v33-exotic-query-c-pointer-sourceonly-20261020\\projected-native_vm_exotic_operations_test.zig",
+    "bytes": 35887,
+    "sha256": "2DF3DD07FA56593700ECAB9D5EA9FBD5C42493B985F28DB98467D8F2BE14D79B"
+  },
+  "edits": [
+    {
+      "byte_offset": 4015,
+      "before": "    return p.query(atom, &flags[0]);\n",
+      "after": "    return p.query(atom, flags);\n",
+      "occurrences_before": 1,
+      "occurrences_after": 1
+    }
+  ],
+  "verified": {
+    "original_equals_frozen_main": true,
+    "forward_all_bytes_exact": true,
+    "inverse_all_bytes_exact": true,
+    "everything_outside_single_expression_identical": true,
+    "complete_test_section_bytes_unchanged": true,
+    "test_section_sha256": "8D45B1D30AA8D8B35F07440195C09E23AF5B7A491FA7AFF5A0CBE4F8199C542D",
+    "named_declarations": 28,
+    "names_and_assertions_unchanged": true,
+    "callback_and_helper_signatures_unchanged": [
+      "fn query(self: *Probe, atom: c.JSAtom, flags: *c_int) c_int {",
+      "fn queryFlags(context: ?*c.JSContext, flags: [*c]c_int, value: c.JSValue, atom: c.JSAtom) callconv(.c) c_int {"
+    ],
+    "source_authority_hashes_and_excerpts_exact": true,
+    "main_tracked_status_clean": true
+  },
+  "named_test_declarations": [
+    "VM exotic operations enumerable keys query flags without fetching values",
+    "VM exotic operations full descriptors still query then fetch an owned value",
+    "VM exotic operations existence requests retain their original descriptor callback",
+    "VM exotic operations unfiltered own keys enumerate without a descriptor query",
+    "VM exotic operations values filter each key before its actual Get",
+    "VM exotic operations missing flags hook retains temporary descriptor ownership",
+    "VM exotic operations physical own data precedes the optional query hook",
+    "VM exotic operations SET_ENUM queries both string and Symbol descriptors without Get",
+    "VM exotic operations ordinary Proxy descriptor traps retain their original order",
+    "VM exotic operations admitted query performs no VM allocation under heap limit",
+    "VM exotic operations descriptor getter may return flagged Error DATA successfully",
+    "VM exotic operations ordinary query failure remains the exact catchable reason",
+    "VM exotic operations actual fatal query stops later guest catch and finally",
+    "VM exotic operations active and cancelled private query completions stay native",
+    "VM exotic operations Reflect prevent rejection is normal and allocation free",
+    "VM exotic operations Object prevent keeps its actual throwing rejection path",
+    "VM exotic operations seal rejection uses SEALED before any enumeration",
+    "VM exotic operations freeze rejection uses FROZEN before any definition",
+    "VM exotic operations positive admission completes each real integrity mutation",
+    "VM exotic operations a missing admission hook preserves legacy extension mutation",
+    "VM exotic operations ordinary objects and Proxy refusal retain their old behavior",
+    "VM exotic operations a Proxy forwarding trap selects only its actual prevent call",
+    "VM exotic operations nonobject integrity requests keep existing public semantics",
+    "VM exotic operations ordinary integrity failure preserves its exact reason",
+    "VM exotic operations actual fatal integrity failure bypasses guest cleanup",
+    "VM exotic operations active and cancelled private integrity completion bypasses handlers",
+    "VM exotic operations normal native rejection preserves the actual prior pending owner",
+    "VM exotic operations borrowed receiver callbacks create no lasting object root"
+  ],
+  "source_findings": [
+    {
+      "finding": "The unchanged imported hook callback deliberately retains the actual C ABI [*c]c_int, while Probe.query retains its nonoptional single-item *c_int contract.",
+      "test_lines": [
+        65,
+        74,
+        95,
+        100
+      ],
+      "header_lines": [
+        836,
+        841
+      ]
+    },
+    {
+      "finding": "The sole production callback dispatch is guarded by flags_only; that flag is true only for desc == NULL and pflags != NULL. Therefore this specific forwarding path receives a nonnull flags destination.",
+      "c_lines": [
+        11473,
+        11478,
+        11549,
+        11554
+      ],
+      "sole_direct_call_line": 11552
+    },
+    {
+      "finding": "Pinned Zig 0.16 documentation explicitly permits C-pointer coercion to other pointer types and safety-checks zero when coercing to a nonoptional pointer. Direct flags forwarding selects that documented coercion to the unchanged helper parameter.",
+      "documentation_lines": [
+        14482,
+        14489
+      ]
+    },
+    {
+      "finding": "The original address-of-index expression has the *allowzero c_int type reported by the original failed compiler diagnostic. Removing only & and [0] preserves the pointer value while using the C-pointer coercion rule; this is a source inference supported by the documentation and retained diagnostic, not a fresh compilation."
+    },
+    {
+      "finding": "The complete test section and every byte outside the single forwarding line remain identical. Query ordering, flags writes, exception paths, resource observations and all 28 declarations/assertions therefore remain unchanged."
+    }
+  ],
+  "authority_files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.h",
+      "bytes": 113474,
+      "sha256": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C",
+      "source_ranges": [
+        {
+          "first": 836,
+          "last": 841,
+          "text": "    /* Optional attribute-only lookup. Called only when the VM requests\n       existence/flags without a descriptor value. obj and prop are borrowed.\n       Return -1 on exception, 0 if absent, or 1 after writing *flags.\n       A missing hook retains the get_own_property temporary-descriptor path. */\n    int (*get_own_property_flags)(JSContext *ctx, int *flags,\n                                  JSValueConst obj, JSAtom prop);"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\vendor\\quickjs\\quickjs.c",
+      "bytes": 2399340,
+      "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2",
+      "source_ranges": [
+        {
+          "first": 11469,
+          "last": 11487,
+          "text": "\n/* Return -1 if exception,\n   false if the property does not exist, true if it exists. If true is\n   returned, the property descriptor 'desc' is filled present. */\nstatic int JS_GetOwnPropertyInternal2(JSContext *ctx, JSPropertyDescriptor *desc,\n                                      JSObject *p, JSAtom prop, int *pflags)\n{\n    JSShapeProperty *prs;\n    JSProperty *pr;\n    int flags_only = (desc == NULL && pflags != NULL);\n\nretry:\n    prs = find_own_property(&pr, p, prop);\n    if (prs) {\n        if (desc) {\n            desc->flags = prs->flags & JS_PROP_C_W_E;\n            desc->getter = JS_UNDEFINED;\n            desc->setter = JS_UNDEFINED;\n            desc->value = JS_UNDEFINED;"
+        },
+        {
+          "first": 11549,
+          "last": 11554,
+          "text": "        } else {\n            const JSClassExoticMethods *em = ctx->rt->class_array[p->class_id].exotic;\n            if (flags_only && em && em->get_own_property_flags) {\n                return em->get_own_property_flags(ctx, pflags,\n                                                  JS_MKPTR(JS_TAG_OBJECT, p),\n                                                  prop);"
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\doc\\langref.html",
+      "bytes": 983945,
+      "sha256": "095DAA2D9F1262FB8BC00AFBB44D386F20363FD930E400BF703A8BC4255A4FFD",
+      "source_ranges": [
+        {
+          "first": 14471,
+          "last": 14496,
+          "text": "      <h3 id=\"C-Pointers\"><a href=\"#toc-C-Pointers\">C Pointers</a> <a class=\"hdr\" href=\"#C-Pointers\">\u00a7</a></h3>\n\n      <p>\n      This type is to be avoided whenever possible. The only valid reason for using a C pointer is in\n      auto-generated code from translating C code.\n      </p>\n      <p>\n      When importing C header files, it is ambiguous whether pointers should be translated as\n      single-item pointers (<code>*T</code>) or many-item pointers (<code>[*]T</code>).\n      C pointers are a compromise so that Zig code can utilize translated header files directly.\n      </p>\n      <p><code>[*c]T</code> - C pointer.</p>\n      <ul>\n        <li>Supports all the syntax of the other two pointer types (<code>*T</code>) and (<code>[*]T</code>).</li>\n        <li>Coerces to other pointer types, as well as <a href=\"#Optional-Pointers\">Optional Pointers</a>.\n            When a C pointer is coerced to a non-optional pointer, safety-checked\n            <a href=\"#Illegal-Behavior\">Illegal Behavior</a> occurs if the address is 0.\n        </li>\n        <li>Allows address 0. On non-freestanding targets, dereferencing address 0 is safety-checked\n            <a href=\"#Illegal-Behavior\">Illegal Behavior</a>. Optional C pointers introduce another bit to keep track of\n            null, just like <code>?<span class=\"tok-type\">usize</span></code>. Note that creating an optional C pointer\n            is unnecessary as one can use normal <a href=\"#Optional-Pointers\">Optional Pointers</a>.\n        </li>\n        <li>Supports <a href=\"#Type-Coercion\">Type Coercion</a> to and from integers.</li>\n        <li>Supports comparison with integers.</li>\n        <li>Does not support Zig-only pointer attributes such as alignment. Use normal <a href=\"#Pointers\">Pointers</a>"
+        }
+      ]
+    }
+  ],
+  "original_failure_snapshot": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v33-exotic-query-c-pointer-sourceonly-20261020\\v33-original-compile.stderr.log",
+    "bytes": 19982,
+    "sha256": "3000182486D92CAB5D519AD08E2AABA599E4337CC40BC7E1D5208314C55DD92A"
+  },
+  "main_modified": false,
+  "source_modified": false,
+  "compiler_executed": false,
+  "native_executed": false,
+  "source_hold_released": false
+}

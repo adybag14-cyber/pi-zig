@@ -1,0 +1,30 @@
+{
+  "error": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"<string>\", line 32, in <module>\r\n    assert grant['groups']==R['groups'] and len(grant['groups'])==3 and grant['declared_named_count']==38\r\n                                                                        ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\r\nKeyError: 'declared_named_count'",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"<string>\", line 32, in <module>\r\n    assert grant['groups']==R['groups'] and len(grant['groups'])==3 and grant['declared_named_count']==38\r\n                                                                        ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\r\nKeyError: 'declared_named_count'\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "before": "assert grant['groups']==R['groups'] and len(grant['groups'])==3 and grant['declared_named_count']==38",
+  "after": "cfg=read(Path(R['specific_root_configuration']['path']))\nassert grant['groups']==R['groups'] and len(grant['groups'])==3 and cfg['declared_groups']==3 and cfg['declared_controls']==38 and cfg['actual_metadata_count'] is None\nassert grant['specific_root_configuration']==R['specific_root_configuration']",
+  "schema": 1,
+  "status": "preserved_Root_inline_review_authoring_keyerror_not_native_failure",
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-compile-negative-review-authoring-before-correction-20261022.py",
+    "bytes": 10990,
+    "sha256": "EB2EF3E097997BDAC20D2B5D7755F50B883311B9DD830F6B92D7A788A43679D3"
+  },
+  "review_execution_reached_native_start": false,
+  "native_evidence_mutated": false,
+  "closure_written": false,
+  "correction": "Read actual declaration counts from the pinned specific configuration; the grant itself carries only groups and null metadata."
+}

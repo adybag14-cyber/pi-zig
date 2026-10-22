@@ -1,0 +1,472 @@
+{
+  "schema": "pi-zig-v35-close-observer-phase-source-map-v1",
+  "source_basis_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "sources": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test_support.zig",
+      "bytes": 32558,
+      "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "relative_path": "src/native_node_file_handle_owner_test_support.zig",
+      "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+      "raw_git_blob_equal": true,
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\authority\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 32558,
+        "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+      }
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D",
+      "relative_path": "src/extensions/native_node_file_handle_owner.zig",
+      "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+      "raw_git_blob_equal": true,
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\authority\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      }
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_close_request.zig",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A",
+      "relative_path": "src/extensions/native_node_file_handle_close_request.zig",
+      "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+      "raw_git_blob_equal": true,
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\authority\\src\\extensions\\native_node_file_handle_close_request.zig",
+        "bytes": 15879,
+        "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A"
+      }
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_request_io.zig",
+      "bytes": 15469,
+      "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996",
+      "relative_path": "src/extensions/native_node_fs_request_io.zig",
+      "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+      "raw_git_blob_equal": true,
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\authority\\src\\extensions\\native_node_fs_request_io.zig",
+        "bytes": 15469,
+        "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996"
+      }
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_fs.h",
+      "bytes": 6334,
+      "sha256": "23B85BBB1BD8395D1D5085BE0797F06CE2C323DAACF366F5CF3B587D06EACA6D",
+      "relative_path": "src/extensions/native_uv_fs.h",
+      "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+      "raw_git_blob_equal": true,
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\authority\\src\\extensions\\native_uv_fs.h",
+        "bytes": 6334,
+        "sha256": "23B85BBB1BD8395D1D5085BE0797F06CE2C323DAACF366F5CF3B587D06EACA6D"
+      }
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+      "bytes": 46648,
+      "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+      "relative_path": "src/extensions/native_uv_tcp.c",
+      "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+      "raw_git_blob_equal": true,
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\authority\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 46648,
+        "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2"
+      }
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-stream-public-shutdown-analysis-20261020\\authority\\node_file.cc",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F",
+      "upstream_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "upstream_path": "src/node_file.cc",
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\authority\\node_file.cc.v24.13",
+        "bytes": 139386,
+        "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+      }
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_env_io.zig",
+      "bytes": 8014,
+      "sha256": "4BC66694AB6B22FC9A51A0943192BDCD61F0213C6846B0A69E0B459C26EF120E",
+      "relative_path": "src/extensions/native_env_io.zig",
+      "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+      "raw_git_blob_equal": true,
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\authority\\src\\extensions\\native_env_io.zig",
+        "bytes": 8014,
+        "sha256": "4BC66694AB6B22FC9A51A0943192BDCD61F0213C6846B0A69E0B459C26EF120E"
+      }
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_request_state.zig",
+      "bytes": 5818,
+      "sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+      "relative_path": "src/extensions/native_node_request_state.zig",
+      "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+      "raw_git_blob_equal": true,
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\authority\\src\\extensions\\native_node_request_state.zig",
+        "bytes": 5818,
+        "sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF"
+      }
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_uv_service.zig",
+      "bytes": 8937,
+      "sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5",
+      "relative_path": "src/extensions/native_node_uv_service.zig",
+      "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+      "raw_git_blob_equal": true,
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\authority\\src\\extensions\\native_node_uv_service.zig",
+        "bytes": 8937,
+        "sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5"
+      }
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+      "raw_git_blob_equal": true,
+      "snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\authority\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      }
+    }
+  ],
+  "excerpts": [
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 32558,
+        "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+        "relative_path": "src/native_node_file_handle_owner_test_support.zig",
+        "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+        "raw_git_blob_equal": true
+      },
+      "first_line": 196,
+      "last_line": 215,
+      "bytes": 1148,
+      "sha256": "EF15E57B116D549DCB5647C12BA55652C3C941BBCAC240E61CB290DF8EEF7A06",
+      "text": "fn beginAsyncClose(raw: ?*anyopaque, value: *anyopaque) void {\n    const f: *Fixture = @ptrCast(@alignCast(raw.?));\n    const request: *Handle.CloseReq = @ptrCast(@alignCast(value));\n    f.close_begins += 1;\n    f.close_actual = @intFromPtr(request.actual.?);\n    f.close_begin_provider = request.wrap.provider;\n    f.close_begin_kind = uv.pi_uv_fs_request_info(request.actual.?).kind;\n    f.close_begin_unsubmitted = !request.entry.dispatched and !request.entry.counted;\n    f.close_begin_globals = request.promise != null and request.reference != null;\n}\nfn endAsyncClose(raw: ?*anyopaque, value: *anyopaque, result: c_int) void {\n    const f: *Fixture = @ptrCast(@alignCast(raw.?));\n    const request: *Handle.CloseReq = @ptrCast(@alignCast(value));\n    const info = uv.pi_uv_fs_request_info(request.actual.?);\n    f.close_ends += 1;\n    f.close_result = result;\n    f.close_end_actual = @intFromPtr(request.actual.?);\n    f.close_end_references = request.wrap.native_references;\n    f.close_end_uncounted = !request.entry.counted and f.env().requests.waiting == 0;\n    f.close_end_accepted_uncleaned = info.accepted != 0 and info.cleaned == 0;\n",
+      "claim": "The begin observer uses completion-only info; end observer genuinely runs at completion."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D",
+        "relative_path": "src/extensions/native_node_file_handle_owner.zig",
+        "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+        "raw_git_blob_equal": true
+      },
+      "first_line": 275,
+      "last_line": 288,
+      "bytes": 905,
+      "sha256": "F3A7F3D8D0EE9997E6D3C8EEA3B032E841004ECACE9526BAF16DC021E82163D3",
+      "text": "        const close_wrapper = try s.own(try templates.newInstance(\n            s.engine, self.getBindingData().template_owner, .filehandleclosereq));\n        self.read_state.closing = true;\n        try registry.setFileHandleClosingPromise(s, wrapper, promise);\n        const request = try CloseReq.create(s, self, close_wrapper, promise, wrapper);\n        if (self.read_state.fd == -1) check.assertion(s.engine, .{\n            .file_line = \"src/node_file.cc:495\", .message = \"(fd_) != (-1)\",\n            .function = \"node::fs::FileHandle::ClosePromise\",\n        });\n        self.close_trace.begin_async(self.close_trace.raw, request);\n        const result = try self.controller.dispatchRawClose(s, &request.entry,\n            request.actual.?, self.read_state.fd, CloseReq.completed);\n        if (result < 0) try request.rejectImmediateAndDelete(s, result);\n        return a.duplicate(s.engine, promise);\n",
+      "claim": "The owned CloseReq is created, begin_async runs synchronously, then dispatchRawClose admits it."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_close_request.zig",
+        "bytes": 15879,
+        "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A",
+        "relative_path": "src/extensions/native_node_file_handle_close_request.zig",
+        "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+        "raw_git_blob_equal": true
+      },
+      "first_line": 127,
+      "last_line": 154,
+      "bytes": 1596,
+      "sha256": "4E7D26156541BB0E2BFA827028B6DC4225DA59F8D72FF1F342CF2FCFF563065D",
+      "text": "        pub fn create(s: *Scope, handle: *Handle, wrapper: c.JSValue,\n            promise: c.JSValue, reference: c.JSValue) !*CloseReq\n        {\n            const registry = handle.getAsyncWrap().registry;\n            const inputs = handle.getReadInputs();\n            if ((try registry.environment.requireEngine()) != s.engine or\n                inputs.controller.environment != registry.environment or\n                c.JS_GetClassID(wrapper) != registry.classId(.filehandleclosereq))\n                return error.ActualFileHandleCloseEnvironmentMismatch;\n            try inputs.controller.beginCall(s.engine);\n            defer inputs.controller.endCall();\n            try s.pending();\n            const self = try registry.environment.allocator().create(CloseReq);\n            self.* = .{\n                .trace = handle.getCloseTrace(),\n                .diagnostics = handle.getStreamBase().operations.heap_diagnostics,\n            };\n            const result = uv.pi_uv_fs_request_create(inputs.controller.service,\n                uv.PI_UV_FS_CLOSE, 0, &self.actual);\n            if (result.allocation_failed != 0 or result.status < 0 or self.actual == null) {\n                const failure: anyerror = if (result.allocation_failed != 0)\n                    error.OutOfMemory else error.ActualFileHandleCloseStorageRequired;\n                return failConstruction(s, self, registry, failure);\n            }\n            self.initialize(s, registry, wrapper, promise, reference) catch |err|\n                return failConstruction(s, self, registry, err);\n            return self;\n        }\n",
+      "claim": "Create owns a newly allocated typed CLOSE request and returns it after actual State/Global initialization."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_request_io.zig",
+        "bytes": 15469,
+        "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996",
+        "relative_path": "src/extensions/native_node_fs_request_io.zig",
+        "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+        "raw_git_blob_equal": true
+      },
+      "first_line": 125,
+      "last_line": 142,
+      "bytes": 966,
+      "sha256": "EE41DF8ECF06B22F94BB8E339483F375580E35B0E487C0A6B6069D90BC4EC7B5",
+      "text": "    /// FileHandle::CloseReq supplies the original CLOSE callback and physical\n    /// request. A negative admission remains the caller's Reject/delete path;\n    /// only real successful admission strengthens and increments the request.\n    pub fn dispatchRawClose(self: *Controller, s: *Scope, entry: *request_state.Entry,\n        actual: *uv.PiUvFsRequest, descriptor: c_int,\n        callback: *const fn (*request_state.Entry, *anyopaque) anyerror!void) !c_int\n    {\n        try self.enter(s.engine);\n        defer self.leave();\n        if (entry.wrap.registry.environment != self.environment or\n            entry.queue != &self.environment.requests)\n            return error.ActualFSRequestEnvironmentMismatch;\n        entry.dispatchStarted();\n        try entry.setCallback(.{ .request = actual, .call = callback });\n        const status = uv.pi_uv_fs_close(actual, descriptor);\n        if (status >= 0) try entry.dispatchAccepted();\n        return status;\n    }\n",
+      "claim": "Only later dispatch installs the callback and calls the native close admission."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_fs.h",
+        "bytes": 6334,
+        "sha256": "23B85BBB1BD8395D1D5085BE0797F06CE2C323DAACF366F5CF3B587D06EACA6D",
+        "relative_path": "src/extensions/native_uv_fs.h",
+        "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+        "raw_git_blob_equal": true
+      },
+      "first_line": 92,
+      "last_line": 109,
+      "bytes": 1132,
+      "sha256": "A4FC1A22652CE70EC6D4BB2371EA53335304F99A42D8CA5604F9313FB7D6A060",
+      "text": "/* Observe actual native storage during its caller-owned unsubmitted phase:\n * before first admission, or after request_reset returned successfully.\n * The caller must retain the request and invoke this on its dispatch/owner\n * thread, with no concurrent admission, cleanup, reset or release. This is\n * not a concurrent lifecycle snapshot. The unsubmitted assertion guards the\n * phase; it does not establish thread ownership. No uv.result/path is read,\n * no completion is inferred, and no request state or entitlement is changed.\n */\nPiUvFsPreparationInfo pi_uv_fs_request_preparation_info(\n    const PiUvFsRequest *request);\n/* Info is available after immediate negative admission or actual event\n * acquisition, and before a successful request_reset invalidates that result.\n * Cleanup is idempotent and occurs at FSReqAfterScope::Clear;\n * release also handles an unsubmitted native construction rollback.\n * Cleanup does not close a descriptor returned by OPEN: the selected original\n * FileHandle/descriptor consumer owns that independent native resource.\n */\nPiUvFsInfo pi_uv_fs_request_info(const PiUvFsRequest *request);\n",
+      "claim": "Preparation requires owner-thread retained unsubmitted request; completion info has a different phase contract."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 46648,
+        "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+        "relative_path": "src/extensions/native_uv_tcp.c",
+        "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+        "raw_git_blob_equal": true
+      },
+      "first_line": 19,
+      "last_line": 31,
+      "bytes": 500,
+      "sha256": "AA75FA683D43DA0A40C40E00D04C5865AD9B64AB7AB18F150F8A6D0EC40A0F0D",
+      "text": "static void *pi_uv_alloc(void *owner, size_t size) {\n    if (size > SIZE_MAX - sizeof(PiUvAllocation)) return NULL;\n    size_t charge = sizeof(PiUvAllocation) + size;\n    if (!pi_js_native_memory_reserve(owner, charge)) return NULL;\n    PiUvAllocation *allocation = malloc(charge);\n    if (!allocation) {\n        pi_js_native_memory_release(owner, charge);\n        return NULL;\n    }\n    allocation->charge = charge;\n    void *result = allocation + 1;\n    memset(result, 0, size);\n    return result;\n",
+      "claim": "Native allocation is zero-initialized, including submitted and accepted."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 46648,
+        "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+        "relative_path": "src/extensions/native_uv_tcp.c",
+        "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+        "raw_git_blob_equal": true
+      },
+      "first_line": 416,
+      "last_line": 431,
+      "bytes": 733,
+      "sha256": "D80F95DD0AA9779EA1CA57B0282EEC4A4E653E6E4A6510BBEA372E0FC2D03D39",
+      "text": "static PiUvFsRequest *pi_uv_fs_request_allocate(PiUvService *service,\n                                               int kind, uint64_t token) {\n    PiUvFsRequest *request = pi_uv_alloc(service->memory_owner, sizeof(*request));\n    if (!request) return NULL;\n    request->service = service;\n    request->kind = kind;\n    request->storage_kind = kind;\n    atomic_init(&request->references, 1);\n    atomic_init(&request->completed, 0);\n    atomic_init(&request->cleaned, 0);\n    atomic_init(&request->event_queued, 0);\n    pi_uv_service_retain(service);\n    pi_uv_event_prepare(&request->event, service, NULL, NULL,\n        PI_UV_FS_REQUEST, PI_UV_FS_COMPLETION, 0, token);\n    request->event.allocation = request;\n    return request;\n",
+      "claim": "Typed kind and real service reference are retained; completed and cleaned initialize to zero."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 46648,
+        "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+        "relative_path": "src/extensions/native_uv_tcp.c",
+        "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+        "raw_git_blob_equal": true
+      },
+      "first_line": 803,
+      "last_line": 835,
+      "bytes": 1501,
+      "sha256": "AE4FB63B2F1E47236E928E7CE01D2EEEFAE3050FF78182C7505E73E9EA951043",
+      "text": "PiUvFsPreparationInfo pi_uv_fs_request_preparation_info(\n    const PiUvFsRequest *request) {\n    assert(request != NULL);\n    assert(!request->submitted);\n    PiUvFsPreparationInfo result = {\n        .kind = request->kind,\n        .accepted = request->accepted,\n        .cleaned = atomic_load_explicit(&request->cleaned, memory_order_acquire),\n        .completed = atomic_load_explicit(&request->completed, memory_order_acquire)\n    };\n    return result;\n}\nPiUvFsInfo pi_uv_fs_request_info(const PiUvFsRequest *request) {\n    assert(atomic_load_explicit(&request->completed, memory_order_acquire));\n    const int cleaned = atomic_load_explicit(&request->cleaned, memory_order_acquire);\n    PiUvFsInfo result = {\n        .kind = request->kind, .result = (int64_t)request->uv.result,\n        .path = cleaned ? NULL : request->uv.path,\n        .accepted = request->accepted, .cleaned = cleaned\n    };\n    return result;\n}\nPiUvResult pi_uv_fs_request_create(PiUvService *service, int kind,\n                                     uint64_t token, PiUvFsRequest **out) {\n    if (!out) return pi_uv_result(UV_EINVAL, 0);\n    *out = NULL;\n    if (!service || (kind != PI_UV_FS_UNASSIGNED && kind != PI_UV_FS_READ &&\n                     kind != PI_UV_FS_OPEN && kind != PI_UV_FS_CLOSE))\n        return pi_uv_result(UV_EINVAL, 0);\n    PiUvFsRequest *request = pi_uv_fs_request_allocate(service, kind, token);\n    if (!request) return pi_uv_result(UV_ENOMEM, 1);\n    *out = request;\n    return pi_uv_result(0, 0);\n",
+      "claim": "Preparation reads only kind/accepted/atomic flags; completion info asserts completed before reading uv.result/path."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 46648,
+        "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+        "relative_path": "src/extensions/native_uv_tcp.c",
+        "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+        "raw_git_blob_equal": true
+      },
+      "first_line": 837,
+      "last_line": 855,
+      "bytes": 960,
+      "sha256": "09E67D8187DE55B5B9B2F5D31EDA5EC504BC622F7A57DFB457C2613F09F1F3D7",
+      "text": "static int pi_uv_fs_submit(PiUvFsRequest *request, PiUvCommand *command, int kind) {\n    /* Generic FSReqCallback storage receives its actual operation only after\n     * all native input/state checks, at the same real admission cutpoint. */\n    assert(request->storage_kind == PI_UV_FS_UNASSIGNED || request->storage_kind == kind);\n    request->kind = kind;\n    request->submitted = 1;\n    const int status = pi_uv_submit(request->service, command);\n    if (status < 0 && !request->entered) {\n        request->uv.result = status;\n        request->uv.path = NULL;\n        atomic_store_explicit(&request->completed, 1, memory_order_release);\n    }\n    return status;\n}\nstatic int pi_uv_fs_unsubmitted(PiUvFsRequest *request, int kind) {\n    return request && (request->storage_kind == PI_UV_FS_UNASSIGNED ||\n                       request->storage_kind == kind) && !request->submitted &&\n        !atomic_load_explicit(&request->cleaned, memory_order_acquire);\n}\n",
+      "claim": "Only actual submission sets submitted; immediate failed admission may produce a completed result."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 46648,
+        "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+        "relative_path": "src/extensions/native_uv_tcp.c",
+        "raw_git_commit": "79c19fc30c886e85b71aca75d1a025397db04fec",
+        "raw_git_blob_equal": true
+      },
+      "first_line": 927,
+      "last_line": 931,
+      "bytes": 317,
+      "sha256": "1E494D4D7799A14587BF9D896A3B799665AF25913D47AC61D7F8463D3F0AA496",
+      "text": "int pi_uv_fs_close(PiUvFsRequest *request, int descriptor) {\n    if (!pi_uv_fs_unsubmitted(request, PI_UV_FS_CLOSE)) return UV_EINVAL;\n    request->descriptor = descriptor;\n    PiUvCommand command = { .kind = PI_UV_CMD_FS_CLOSE, .fs_request = request };\n    return pi_uv_fs_submit(request, &command, PI_UV_FS_CLOSE);\n",
+      "claim": "Physical close first requires unsubmitted CLOSE storage and then invokes submission."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-stream-public-shutdown-analysis-20261020\\authority\\node_file.cc",
+        "bytes": 139386,
+        "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F",
+        "upstream_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+        "upstream_path": "src/node_file.cc"
+      },
+      "first_line": 477,
+      "last_line": 503,
+      "bytes": 933,
+      "sha256": "F7E9233E179DC6E3FC979CAA48C6A921CB492D8BDF7DB0859299F8E74B206B80",
+      "text": "  CloseReq* req = new CloseReq(env(), close_req_obj, promise, object());\n  auto AfterClose = uv_fs_callback_t{[](uv_fs_t* req) {\n    CloseReq* req_wrap = CloseReq::from_req(req);\n    FS_ASYNC_TRACE_END1(\n        req->fs_type, req_wrap, \"result\", static_cast<int>(req->result))\n    BaseObjectPtr<CloseReq> close(req_wrap);\n    CHECK(close);\n    close->file_handle()->AfterClose();\n    if (!close->env()->can_call_into_js()) return;\n    Isolate* isolate = close->env()->isolate();\n    if (req->result < 0) {\n      HandleScope handle_scope(isolate);\n      close->Reject(\n          UVException(isolate, static_cast<int>(req->result), \"close\"));\n    } else {\n      close->Resolve();\n    }\n  }};\n  CHECK_NE(fd_, -1);\n  FS_ASYNC_TRACE_BEGIN0(UV_FS_CLOSE, req)\n  int ret = req->Dispatch(uv_fs_close, fd_, AfterClose);\n  if (ret < 0) {\n    req->Reject(UVException(isolate, ret, \"close\"));\n    delete req;\n  }\n\n  return scope.Escape(promise);\n",
+      "claim": "Original native trace begin at496 precedes Dispatch at497; this does not grant completion-info access to a test observer."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "first_line": 243,
+      "last_line": 246,
+      "bytes": 220,
+      "sha256": "8F0FF479A860E7E4E6342FA36CB7B30164919085ADF5254A67A64DB505443B22",
+      "text": "        const engine = try self.wrap.registry.environment.requireEngine();\n        try self.controller.beginCall(engine);\n        defer self.controller.endCall();\n        return a.expression(engine, closeBody, .{self});\n",
+      "claim": "ClosePromise retains Controller busy admission across the synchronous body, including the trace observer."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_request_io.zig",
+        "bytes": 15469,
+        "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996"
+      },
+      "first_line": 43,
+      "last_line": 59,
+      "bytes": 825,
+      "sha256": "7D0C47E118EDE17403CE04C261CB3F1BEFBAA5D31D87D1DB8F2C08EBA12A6A24",
+      "text": "    pub fn beginCall(self: *Controller, engine: *Engine) !void { return self.enter(engine); }\n    pub fn endCall(self: *Controller) void { self.leave(); }\n\n    fn enter(self: *Controller, engine: *Engine) !void {\n        // A retained actual binding can outlive the Hub. Never dereference\n        // that retired Hub after its native resource has been stopped.\n        if (self.stopping) return error.NativeEnvClosed;\n        try self.hub.assertOwner();\n        if ((try self.environment.requireEngine()) != engine or self.hub.engine != engine)\n            return error.ActualFSRequestEnvironmentMismatch;\n        if (self.stopping or self.hub.stopping) return error.NativeEnvClosed;\n        self.busy += 1;\n    }\n    fn leave(self: *Controller) void {\n        std.debug.assert(self.busy != 0);\n        self.busy -= 1;\n    }\n",
+      "claim": "Controller.enter verifies the actual Hub dispatch thread before incrementing busy."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_env_io.zig",
+        "bytes": 8014,
+        "sha256": "4BC66694AB6B22FC9A51A0943192BDCD61F0213C6846B0A69E0B459C26EF120E"
+      },
+      "first_line": 45,
+      "last_line": 56,
+      "bytes": 415,
+      "sha256": "E277BB24D3CC9B2CEC53B68CE1B74481665C87B34F265562AFCED9BA3E8EEE85",
+      "text": "pub const Hub = struct {\n    engine: *js.Engine,\n    io: std.Io,\n    owner: std.Thread.Id,\n    group: std.Io.Group = .init,\n    tasks: std.ArrayList(*Task) = .empty,\n    resources: std.ArrayList(Resource) = .empty,\n    stopping: bool = false,\n    pumping: bool = false,\n    pub fn assertOwner(self: *Hub) !void {\n        if (std.Thread.getCurrentId() != self.owner) return error.NativeEnvOwnerThreadRequired;\n    }\n",
+      "claim": "Hub.assertOwner compares the current native thread ID with the concrete owner."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_close_request.zig",
+        "bytes": 15879,
+        "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A"
+      },
+      "first_line": 99,
+      "last_line": 122,
+      "bytes": 1213,
+      "sha256": "107786676B2DBDCDB886B5112D827018A54171998D1E99981ABDF9F012692786",
+      "text": "        fn initialize(self: *CloseReq, s: *Scope, registry: *native.Registry,\n            wrapper: c.JSValue, promise: c.JSValue, reference: c.JSValue) !void\n        {\n            self.wrap.initialize(registry, wrapper, derived,\n                native.Provider.filehandleclosereq, -1) catch |err|\n            {\n                self.attached = registry.unwrap(wrapper) == &self.wrap;\n                record(s, err);\n                // ReqWrap construction follows the completed void AsyncReset,\n                // including an ordinary init-hook rethrow.\n                if (!self.attached or !self.wrap.init_hook_ran or\n                    !canContinue(s, err)) return err;\n            };\n            self.attached = true;\n            try self.entry.initialize(&self.wrap, cancel);\n            self.entry_initialized = true;\n            try self.wrap.makeWeak();\n            self.entry.reset();\n            if (uv.pi_uv_fs_request_reset(self.actual.?) != 0)\n                return error.ActualFileHandleCloseInitialResetRequired;\n            self.promise = try globals.Global.create(s, promise);\n            self.reference = try globals.Global.create(s, reference);\n            self.constructed = true;\n        }\n",
+      "claim": "Completed CloseReq construction initializes its queue entry, resets the native storage and installs both actual Globals."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_request_state.zig",
+        "bytes": 5818,
+        "sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF"
+      },
+      "first_line": 59,
+      "last_line": 108,
+      "bytes": 2334,
+      "sha256": "0A987D72656D3D703065F4E5B9D99F840ABD92B7BC87DFC9DF94F41599FDA97E",
+      "text": "pub const Entry = struct {\n    wrap: *wraps.State,\n    cancel_native: Cancel,\n    original_callback: ?NativeCallback = null,\n    queue: ?*Registry = null,\n    previous: ?*Entry = null,\n    next: ?*Entry = null,\n    dispatched: bool = false,\n    counted: bool = false,\n\n    /// ReqWrapBase construction follows AsyncWrap initialization and precedes\n    /// MakeWeak/Reset and the derived FSReqBase member initialization.\n    pub fn initialize(self: *Entry, wrap: *wraps.State, cancel_native: Cancel) !void {\n        const environment = wrap.registry.environment;\n        _ = try environment.requireEngine();\n        if (!environment.has_run_bootstrapping_code)\n            return environment.operations.native_check_failure(environment, .request_before_bootstrap);\n        self.* = .{ .wrap = wrap, .cancel_native = cancel_native };\n        environment.requests.append(self);\n    }\n    /// The real derived destructor removes ReqWrapBase's ListNode before the\n    /// AsyncWrap base destructor. There is no independently owned queue root.\n    pub fn deinit(self: *Entry) void {\n        if (self.queue) |queue| queue.remove(self);\n    }\n    pub fn reset(self: *Entry) void {\n        std.debug.assert(!self.counted);\n        self.original_callback = null;\n        self.dispatched = false;\n    }\n    /// Source Dispatched() precedes the actual uv request initialization call.\n    pub fn dispatchStarted(self: *Entry) void {\n        self.dispatched = true;\n    }\n    /// MakeLibuvRequestCallback::For follows Dispatched and precedes the real\n    /// libuv call. Reset clears this same field before a reused Dispatch.\n    pub fn setCallback(self: *Entry, callback: NativeCallback) !void {\n        if (self.original_callback != null) {\n            const environment = self.wrap.registry.environment;\n            return environment.operations.native_check_failure(environment, .request_callback_already_set);\n        }\n        self.original_callback = callback;\n    }\n    /// Call only after successful real admission. A negative native Dispatch\n    /// result neither strengthens the persistent nor increments this counter.\n    pub fn dispatchAccepted(self: *Entry) !void {\n        const environment = self.wrap.registry.environment;\n        try self.wrap.clearWeak();\n        environment.requests.waiting += 1;\n        self.counted = true;\n",
+      "claim": "Actual Entry defaults and Reset leave dispatched/count false; only later admission sets them."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_tcp.c",
+        "bytes": 46648,
+        "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2"
+      },
+      "first_line": 856,
+      "last_line": 881,
+      "bytes": 1372,
+      "sha256": "5425C903B1886358F1346DBA4C97F987F415A59330627D0A7AC99A1912C3B575",
+      "text": "int pi_uv_fs_request_reset(PiUvFsRequest *request) {\n    if (!request) return UV_EINVAL;\n    /* Initial ReqWrap::Reset has no completed native operation to clean. */\n    if (!request->submitted)\n        return atomic_load_explicit(&request->cleaned, memory_order_acquire)\n            ? UV_EBUSY : 0;\n    if (!atomic_load_explicit(&request->completed, memory_order_acquire) ||\n        !atomic_load_explicit(&request->cleaned, memory_order_acquire) ||\n        atomic_load_explicit(&request->event_queued, memory_order_acquire))\n        return UV_EBUSY;\n    assert(request->previous == NULL && request->next == NULL);\n    assert(request->backing.owner == NULL);\n    /* The prior event was taken from the FIFO. Its independent entitlement\n     * may still be alive in the host callback, but release reads only stable\n     * service/storage/allocation/source fields. Do not reinitialize that event\n     * or clear its next link: a new completion can already occupy the FIFO\n     * when the prior event entitlement is finally retired. */\n    request->uv.data = NULL;\n    request->submitted = 0;\n    request->entered = 0;\n    request->accepted = 0;\n    request->event.info.status = 0;\n    request->event.info.length = 0;\n    atomic_store_explicit(&request->completed, 0, memory_order_release);\n    atomic_store_explicit(&request->cleaned, 0, memory_order_release);\n    return 0;\n",
+      "claim": "Initial request_reset checks cleaned and returns without setting completed or accepted."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_uv_fs.h",
+        "bytes": 6334,
+        "sha256": "23B85BBB1BD8395D1D5085BE0797F06CE2C323DAACF366F5CF3B587D06EACA6D"
+      },
+      "first_line": 15,
+      "last_line": 27,
+      "bytes": 366,
+      "sha256": "AF1982C3E383297E52C04645BB9CAD3E13E3473D99B162CFACE877F2D8A9BC77",
+      "text": "typedef struct PiUvFsInfo {\n    int kind;\n    int64_t result; /* actual uv_fs_t::result, never a synthesized Promise value */\n    const char *path; /* borrowed until request_cleanup */\n    int accepted;\n    int cleaned;\n} PiUvFsInfo;\ntypedef struct PiUvFsPreparationInfo {\n    int kind;\n    int accepted;\n    int cleaned;\n    int completed;\n} PiUvFsPreparationInfo;\n",
+      "claim": "The existing preparation ABI contains only kind and accepted/cleaned/completed integers."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_uv_service.zig",
+        "bytes": 8937,
+        "sha256": "CDA7A2AEBD9B752E38521E72A33F4BEE3A7A7453AA8DA38F33F04A61D0E369D5"
+      },
+      "first_line": 4,
+      "last_line": 12,
+      "bytes": 448,
+      "sha256": "92A74E73E4BDBE51F70B0B8346CB48557EDE7FF0C8985125D2D7091F5B8CE48F",
+      "text": "const std = @import(\"std\");\nconst em = @import(\"engine.zig\");\nconst a = @import(\"native_node_argument_values.zig\");\nconst env = @import(\"native_env_io.zig\");\nconst wake = @import(\"native_owner_wake.zig\");\nconst completion_wake = @import(\"native_owner_completion.zig\");\nconst Completion = @import(\"native_sdk_owned_completion.zig\").Completion;\nconst c = em.c;\npub const uv = @cImport({ @cInclude(\"native_uv_tcp.h\"); @cInclude(\"native_uv_fs.h\"); });\n",
+      "claim": "Controller.uv is the canonical shared cImport of native_uv_fs.h; no new ABI owner or type is introduced."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_fs_request_io.zig",
+        "bytes": 15469,
+        "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996"
+      },
+      "first_line": 5,
+      "last_line": 15,
+      "bytes": 570,
+      "sha256": "04AF824384602BADB381E304FAAE2BAF9D86E014CF09DBCA8F5099F9DCC519FF",
+      "text": "const a = @import(\"native_node_argument_values.zig\");\nconst callbacks = @import(\"native_node_callback_scope.zig\");\nconst request_state = @import(\"native_node_request_state.zig\");\nconst requests = @import(\"native_node_fs_request_promise.zig\");\nconst after_scope = @import(\"native_node_fs_after_scope.zig\");\nconst shared_service = @import(\"native_node_uv_service.zig\");\nconst env_io = @import(\"native_env_io.zig\");\nconst Completion = @import(\"native_sdk_owned_completion.zig\").Completion;\nconst c = a.c;\npub const uv = shared_service.uv;\npub const Engine = a.v.em.Engine;\n",
+      "claim": "FS request I/O exports that shared canonical UV namespace."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_close_request.zig",
+        "bytes": 15879,
+        "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A"
+      },
+      "first_line": 237,
+      "last_line": 245,
+      "bytes": 641,
+      "sha256": "04D28A664F207BF64B4E26EE64C07B2AD371D64CC4C6228192EE741D50A4E745",
+      "text": "        /// Runs only through the real Controller/ReqWrap callback wrapper.\n        /// That wrapper already holds one native pointer and decremented the\n        /// Environment's waiting count before entering this original callback.\n        pub fn completed(entry: *requests.Entry, actual_raw: *anyopaque) !void {\n            const self = fromEntry(entry);\n            const actual: *uv.PiUvFsRequest = @ptrCast(@alignCast(actual_raw));\n            const info = uv.pi_uv_fs_request_info(actual);\n            self.trace.end_async(self.trace.raw, self, @truncate(info.result));\n            const environment = self.wrap.registry.environment;\n",
+      "claim": "The unchanged genuine completion callback reads completion info only after actual callback-wrapper admission."
+    },
+    {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "first_line": 141,
+      "last_line": 168,
+      "bytes": 1709,
+      "sha256": "4F2DF95587DB237485EB8E0B5D801B97311F6FB81FEC2E74F3D4713D4EED0D3A",
+      "text": "test \"native FileHandle owner explicit close keeps one Promise and one actual CLOSE request through cleanup\" {\n    var file: File = undefined; try file.init(); defer file.deinit();\n    var f: Fixture = undefined; try f.init(); defer f.deinit();\n    const descriptor = file.take();\n    const handle = try f.create(descriptor, null, null);\n    const promise = try handle.closePromise();\n    defer f.engine.freeValue(promise);\n    const again = try handle.closePromise();\n    defer f.engine.freeValue(again);\n    try std.testing.expect(c.JS_IsStrictEqual(f.engine.context, promise, again));\n    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(f.engine.context, promise));\n    try std.testing.expect(handle.read_state.closing and !handle.read_state.closed);\n    try std.testing.expectEqual(@as(c_int, 1), f.env().requests.waiting);\n    try std.testing.expectEqual(@as(usize, 1), f.queueCount());\n    try std.testing.expectEqual(@as(usize, 1), f.close_begins);\n    try std.testing.expectEqual(@as(u32, 5), f.close_begin_provider);\n    try std.testing.expectEqual(@as(c_int, uv.PI_UV_FS_CLOSE), f.close_begin_kind);\n    try std.testing.expect(f.close_begin_unsubmitted and f.close_begin_globals);\n    const actual = try retainCloseStorage(&f);\n    defer uv.pi_uv_fs_request_release(actual);\n    try f.pumpIo();\n    try expectClosed(&f, descriptor);\n    try expectDrainedClose(&f, actual);\n    try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, c.JS_PromiseState(f.engine.context, promise));\n    const result = c.JS_PromiseResult(f.engine.context, promise);\n    defer f.engine.freeValue(result);\n    try std.testing.expect(c.JS_IsUndefined(result));\n    const after = try handle.closePromise();\n",
+      "claim": "Existing named control still asserts typed CLOSE, unsubmitted entry and Globals, then actual completion/result and cleanup."
+    }
+  ],
+  "causal_conclusion": "The trace-begin call is synchronous after owned typed CLOSE construction and its initial Reset, before first dispatch. The caller's retained Controller has verified the owner thread. Native allocation zeros accepted, completed and cleaned; initial Reset preserves them. Existing preparation-info is valid at this retained unsubmitted cutpoint and exposes those actual flags without uv.result/path, mutation or entitlement. Completion-info still requires completed and remains unchanged at endAsyncClose.",
+  "original_policy_scope": "Original Node calls trace begin before Dispatch. The added assertions are fixture observations of the host storage/entry phase, not added original Node policy.",
+  "native_ABI_changed": false,
+  "production_source_changed": false
+}

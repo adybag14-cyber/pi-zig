@@ -1,0 +1,771 @@
+{
+  "schema": 1,
+  "basis_main_head": "c5047a5b68e15e4ef9279b874064e68174e99d87",
+  "target_manifest": "verification/native-v34-validation-and-intake-closure-20261020/manifest.json",
+  "total_commit_paths": 94,
+  "source_build_paths": 0,
+  "existing_progress_paths": 1,
+  "evidence_paths": 92,
+  "rows": [
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/Apply-ExactReviewedErrorNamingIntake-20261020.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactReviewedErrorNamingIntake-20261020.py",
+      "bytes": 9692,
+      "sha256": "F653FDE67CFA1E201615EE5A49451DF1D9B7044D427CED7041F2327A67C891DB",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/Apply-ExactReviewedTransferSourceIntake-20261020.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactReviewedTransferSourceIntake-20261020.py",
+      "bytes": 9697,
+      "sha256": "DF7290181F00B28CA0F602358AA2DB78F15D5C67E89A3134C99D829DA99FB9D5",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/Apply-ExactV34ReviewedSourceIntakes-20261020.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ReviewedSourceIntakes-20261020.py",
+      "bytes": 9547,
+      "sha256": "2DBB8B373038AD54095AB7E1EADB09594C593F923321F461000CEFBCE2283F1A",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/Apply-ExactV34ReviewedSourceIntakes-v2-20261020.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ReviewedSourceIntakes-v2-20261020.py",
+      "bytes": 10699,
+      "sha256": "B60099300A49E9281270B6E85048F86D61F3823BEFA8D25317916CFBEBF9D66E",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/Apply-ExactV34ReviewedSourceIntakes-v3-20261020.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ReviewedSourceIntakes-v3-20261020.py",
+      "bytes": 11534,
+      "sha256": "20E068A4537D96B30823DA910FCBC83587585125CA0CB628C1044F98068A51C4",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/error-naming-intake-executor-finite-adaptation-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\error-naming-intake-executor-finite-adaptation-20261020.json",
+      "bytes": 2518,
+      "sha256": "A5517EDB2CF6064EE61F285E46A0EA70BACE57FF92C727D678D57C9493826975",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/independent-file-handle-transfer-source-peer-20261020/peer.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-transfer-source-peer-20261020\\peer.json",
+      "bytes": 18642,
+      "sha256": "7DFCAB11908312CBCC39EF2181F550DA2368A8E957B45697FBC7FAAB68E8EFF7",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/independent-v34-fs-request-init-observer-source-peer-20261020/peer.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-fs-request-init-observer-source-peer-20261020\\peer.json",
+      "bytes": 7387,
+      "sha256": "01BB78974EAF63864A20ACD1FE17A49E8EF57A1F718D70EC11C1ACABA6E13841",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/independent-v34-source-intake-applier-peer-20261020/all-target-git-conversion-observation.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\all-target-git-conversion-observation.json",
+      "bytes": 181636,
+      "sha256": "BFE8403E3AAB65092954842E3B809F523BC124BEBFE1AFFD741EF94174971E04",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/independent-v34-source-intake-applier-peer-20261020/Observe-AllIntakeGitConversions.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Observe-AllIntakeGitConversions.py",
+      "bytes": 4076,
+      "sha256": "605FE6AB842F57FF50DD8CC10026E079AB456DF44BD754497A6F9F8C34BF9007",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/independent-v34-source-intake-applier-peer-20261020/protected-filename-clarification.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\protected-filename-clarification.json",
+      "bytes": 729,
+      "sha256": "D52BFF94BE0A4156B1C52AA5C42CF91243DE212447D1597BC417B53655FE79B5",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/independent-v34-source-intake-applier-peer-20261020/source-review-preflight-negative.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\source-review-preflight-negative.json",
+      "bytes": 6169,
+      "sha256": "5942BF34E68E5CFE5B6A9738DF55E992111D26EC038F21C96FF334D79AF69AFB",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/independent-v34-source-intake-applier-peer-20261020/successor-checker-raw-basis-pin-correction.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\successor-checker-raw-basis-pin-correction.json",
+      "bytes": 2609,
+      "sha256": "D4AFF7AB35E22323B177ED1E7AB7A8626147B0A167655C2049863DF407091130",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/independent-v34-source-intake-applier-peer-20261020/successor-checker-stale-protected-pin-negative.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\successor-checker-stale-protected-pin-negative.json",
+      "bytes": 2356,
+      "sha256": "7FEF7D75EE04AC977B300866680E5F97C2AAE0BE1EC1EF09C49A3248A7ED3671",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/independent-v34-source-intake-applier-peer-20261020/successor-peer.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\successor-peer.json",
+      "bytes": 7331,
+      "sha256": "4B19037C401B2D663D8ECE2E9384E4EFC2FE553B50FF916936601A59BA027D82",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/independent-v34-source-intake-applier-peer-20261020/successor-source-audit.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\successor-source-audit.json",
+      "bytes": 227272,
+      "sha256": "922BBC8FF587EAF760049A14850C0002FFC3158234CC366C35D9120460EDD3E0",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/independent-v34-source-intake-applier-peer-20261020/Verify-SourceOnlyExactIntake.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntake.py",
+      "bytes": 7924,
+      "sha256": "1FFE2B0F8CEE2A96181A630CBAD74932611DA62C1A064AD7C3945C91630602C3",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/independent-v34-source-intake-applier-peer-20261020/Verify-SourceOnlyExactIntakeSuccessor-v2.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntakeSuccessor-v2.py",
+      "bytes": 12067,
+      "sha256": "8D3D8FF961346201E927432D2FF509416A63AFF35C14D5FA7315EB267B61D4CD",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/independent-v34-source-intake-applier-peer-20261020/Verify-SourceOnlyExactIntakeSuccessor.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v34-source-intake-applier-peer-20261020\\Verify-SourceOnlyExactIntakeSuccessor.py",
+      "bytes": 11915,
+      "sha256": "CF2082667D4966445A173049853FB1F75D5EF9FBAB265A46DE37F142A7B7EF6D",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/native-error-build-artifact-naming-sourceonly-20261020/proposal.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\native-error-build-artifact-naming-sourceonly-20261020\\proposal.json",
+      "bytes": 12811,
+      "sha256": "262AFAA489DC7620FECE7D077FCB1C7A4904E6B65BC420A8A697B6C2341A158A",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/pending-error-build-naming-main-intake-20261020/manifest.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-error-build-naming-main-intake-20261020\\manifest.json",
+      "bytes": 11936,
+      "sha256": "8C09208FC115AC525CCCB4B64A2A921D2FE95FA58179A02D12A8F6CCA1D30617",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/pending-file-handle-error-main-intake-20261020/manifest-v2.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-error-main-intake-20261020\\manifest-v2.json",
+      "bytes": 107917,
+      "sha256": "5730CB5FA9F17FE33478C128E763287E59A37477B2AF2A0820BBCA002D0FADCF",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/pending-file-handle-error-main-intake-20261020/manifest.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-error-main-intake-20261020\\manifest.json",
+      "bytes": 106210,
+      "sha256": "A905E15D794738ADDED8DE272771545D72380B085750175804E82139B78869C4",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/pending-file-handle-transfer-main-intake-20261020/manifest.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-transfer-main-intake-20261020\\manifest.json",
+      "bytes": 54892,
+      "sha256": "94E02E52D90FB962ACBE82BE8E531E222E04F50B11DDA887F89C8B205FFD4ADE",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/pending-v34-fs-init-observer-main-intake-20261020/manifest-v2.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-fs-init-observer-main-intake-20261020\\manifest-v2.json",
+      "bytes": 19257,
+      "sha256": "21093750D07017BCA35F42D958AA758B8B4BC030920190ADC003BDA1246371E8",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/pending-v34-fs-init-observer-main-intake-20261020/manifest.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-fs-init-observer-main-intake-20261020\\manifest.json",
+      "bytes": 18837,
+      "sha256": "8CCF654B605C496E1E188E12EFD8CAFA6BF54B84CEBD58731A3219196DCA6D70",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/pending-v34-reqwrap-fixture-main-intake-20261020/manifest-v2.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-reqwrap-fixture-main-intake-20261020\\manifest-v2.json",
+      "bytes": 5515,
+      "sha256": "BA8482D0DA4837630E158C5F345C9D5F58D8AE2614F8F372E164EDB9894EEF73",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/pending-v34-reqwrap-fixture-main-intake-20261020/manifest.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-reqwrap-fixture-main-intake-20261020\\manifest.json",
+      "bytes": 5044,
+      "sha256": "068136AC825829162A45AB03D9A1F60633EF8AF2D83061BAEC7CD7082FDE60E1",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-error-build-naming-intake-receipts-20261020/error-naming-commit-message.txt",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-error-build-naming-intake-receipts-20261020\\error-naming-commit-message.txt",
+      "bytes": 146,
+      "sha256": "7798B771FDEA725A852746ECDE7A6D4F73B3781F36EF942F83797054988FB309",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-error-build-naming-intake-receipts-20261020/error-naming-paths.nul",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-error-build-naming-intake-receipts-20261020\\error-naming-paths.nul",
+      "bytes": 1846,
+      "sha256": "2CC12C45AA29AB8BD09C74B767D42F2CD6F05AE733BC1091C5FF5F9AD30EC6F7",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-error-build-naming-intake-receipts-20261020/error-naming-preflight.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-error-build-naming-intake-receipts-20261020\\error-naming-preflight.json",
+      "bytes": 6644,
+      "sha256": "D0C06C31F193B256651A4A267E4B8525A79B4CEBCDA6BECD3EB7F66807DC0308",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-error-build-naming-intake-receipts-20261020/error-naming-receipt.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-error-build-naming-intake-receipts-20261020\\error-naming-receipt.json",
+      "bytes": 3351,
+      "sha256": "008068C07400489B25DD301F7F30923391BCF26223F387280AEACC46FD2C9BA4",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-error-build-naming-intake-receipts-20261020/error-naming-staged.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-error-build-naming-intake-receipts-20261020\\error-naming-staged.json",
+      "bytes": 393,
+      "sha256": "A6C81054A47733C6BD701BCD76C2DFFBFF1FA34AD43DA4B2075F53E93448BBA5",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-error-build-naming-source-intake-grant-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-error-build-naming-source-intake-grant-20261020.json",
+      "bytes": 2316,
+      "sha256": "5743829C7CE96FE627CA8D15FDA29CA6259B01B6EAED717DE5B6F0339D223616",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-file-handle-owner-controls-review-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-owner-controls-review-20261020.json",
+      "bytes": 2726,
+      "sha256": "626F84EFE41C3E7D2D35C61C4DEB1953FDCC1BD16A18B90BAFF2BF632717BCF1",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-file-handle-transfer-intake-receipts-20261020/transfer-commit-message.txt",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-transfer-intake-receipts-20261020\\transfer-commit-message.txt",
+      "bytes": 149,
+      "sha256": "67F96EF10BB7B4009079F1198D88B7210C4AF1495EACCC86DBEF77957940EFF7",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-file-handle-transfer-intake-receipts-20261020/transfer-paths.nul",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-transfer-intake-receipts-20261020\\transfer-paths.nul",
+      "bytes": 7466,
+      "sha256": "D52EED05B22D74C01C2D563DD891FAB0039075F92332E35DE97C64472FD5C68C",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-file-handle-transfer-intake-receipts-20261020/transfer-preflight.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-transfer-intake-receipts-20261020\\transfer-preflight.json",
+      "bytes": 23881,
+      "sha256": "925CE08C7C66322E96F3D50ACE0A6C2C0E640E32C66FF2FD77BB8693CB8A3429",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-file-handle-transfer-intake-receipts-20261020/transfer-receipt.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-transfer-intake-receipts-20261020\\transfer-receipt.json",
+      "bytes": 10195,
+      "sha256": "3586E361FEED1576F2A36A2AF89A8EAEF8962CFD20B7B7BA11CD2BB497378C0B",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-file-handle-transfer-intake-receipts-20261020/transfer-staged.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-transfer-intake-receipts-20261020\\transfer-staged.json",
+      "bytes": 393,
+      "sha256": "1536B5AB95B97FE9B28A3FB6D609CF67327D6AFC251F5A114BE7E4D841AFB110",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-file-handle-transfer-peer-acceptance-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-transfer-peer-acceptance-20261020.json",
+      "bytes": 1811,
+      "sha256": "0BD6192135BEA1C212A8578A447961431D6F1591F6DE33CA4E3ED652762FA831",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-file-handle-transfer-source-intake-grant-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-transfer-source-intake-grant-20261020.json",
+      "bytes": 4400,
+      "sha256": "5B7F74BEC67ECC63B5A6E76CAA9F76E66D68B67414EFDF8C48E72C5C26B10388",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-file-handle-transfer-source-review-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-transfer-source-review-20261020.json",
+      "bytes": 5082,
+      "sha256": "5FCD9066B81EE284AA1034552009C5A5999E0B3B85BC57BFA7208065CFF73904",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-error-artifact-naming-review-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-error-artifact-naming-review-20261020.json",
+      "bytes": 1374,
+      "sha256": "48E16158FE09367A9E124889FA05D217E33E4212F5DEFF28A66601866E4A30DA",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-error-constructor-source-review-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-error-constructor-source-review-20261020.json",
+      "bytes": 3789,
+      "sha256": "E7002286BC0ACCBDF13BC6D404503B2442D83FB8407D97383452FB49F03D82FC",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-fresh-v34-control-20261020-202924/independent-current-seals-and-owners.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v34-control-20261020-202924\\independent-current-seals-and-owners.json",
+      "bytes": 479501,
+      "sha256": "28AB425BC5C149E1642C0839CC6FBD590C0F98BD2DB5D844CE4C79BB5748BFF3",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/Audit-PartialV34DiagnosticRuntime-v2.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\Audit-PartialV34DiagnosticRuntime-v2.py",
+      "bytes": 29756,
+      "sha256": "6842784CBD09B8A9D300F0E69C8256FF22401E5A6423A912D2173E6B68960855",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/Audit-PartialV34DiagnosticRuntime.py",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\Audit-PartialV34DiagnosticRuntime.py",
+      "bytes": 29754,
+      "sha256": "C66FDE863016A5A9B29BCEE4A93E0A371AE1E70E01773756F5FF9686841FDDDD",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/independent-diagnostic-runtime-audit-inputs.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\independent-diagnostic-runtime-audit-inputs.json",
+      "bytes": 13585,
+      "sha256": "7A913995E512F587262BB1A64D82438EC27CB72C706D578741E10004AB55F301",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/independent-observed-job-status.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\independent-observed-job-status.json",
+      "bytes": 1645,
+      "sha256": "E1A0446F81C1C4BB20E02489D38AA372DC6452233366202FE7A0188E1AE0A703",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/independent-partial-diagnostic-runtime-closure.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\independent-partial-diagnostic-runtime-closure.json",
+      "bytes": 125745,
+      "sha256": "148F05BF9EA92133B21C88508D035CC7C1A983CC1B7F4E829DBE216280011456",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/independent-terminal-diagnostic-runtime-observation.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\independent-terminal-diagnostic-runtime-observation.json",
+      "bytes": 73035,
+      "sha256": "0919BC9FF5516FD8A83E0C668B71555B69595E405328A6368CB9CA1CAA15712D",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/launch.ps1",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\launch.ps1",
+      "bytes": 1795,
+      "sha256": "FE66BA4B5C8434CAD46FA30ADE9250991D86B3413FB6C082D1D6264E51D3111F",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/outer-absence.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\outer-absence.json",
+      "bytes": 183,
+      "sha256": "F901A879AD25EBEDA774000ADECFCE6E7AE2D0EE79AA053CFAA7DBD77C98C520",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/outer.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\outer.json",
+      "bytes": 1660,
+      "sha256": "CC43C64B9BB83BFF02272CB8929C7CFF328969A5AB0B3A8B766ED52172563E75",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/outer.stderr.log",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\outer.stderr.log",
+      "bytes": 603,
+      "sha256": "0F2DBFD16DE0AE219F2053C04574A04306E29EA0B34D1206DB591A006C9824CF",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/outer.stdout.bin",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\outer.stdout.bin",
+      "bytes": 251699,
+      "sha256": "1EFFB79F24B1508F920002AC92DE717860D56FBEA2B8BD9C672E653ACB7ED570",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/partial-diagnostic-runtime-auditor-adaptation.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\partial-diagnostic-runtime-auditor-adaptation.json",
+      "bytes": 33897,
+      "sha256": "3C7870E0C53E451D28111B1DDBAE966C9EC3A469BF27D4D5D8F699F77D70CF2E",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/partial-diagnostic-runtime-auditor-review-packet.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\partial-diagnostic-runtime-auditor-review-packet.json",
+      "bytes": 3739,
+      "sha256": "759C3AE49C5C9B975A94FE7639EEDC2D68A841B82A50F2C96B4F2CF32FFFFD21",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/root-grant.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\root-grant.json",
+      "bytes": 10005,
+      "sha256": "B9A91A955663A8489ADF9DF99DCB723874863063351ED62D2F2420016A5ECD8F",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/root-partial-diagnostic-auditor-source-review.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\root-partial-diagnostic-auditor-source-review.json",
+      "bytes": 2338,
+      "sha256": "AF66CCAFED63816FA770676E22D231AD2A823F710BF6AA2859C56B4F83A70D3C",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/root-partial-diagnostic-runtime-auditor-crlf-successor.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\root-partial-diagnostic-runtime-auditor-crlf-successor.json",
+      "bytes": 1688,
+      "sha256": "20C0A4C69AAD704F1136B0863984C2C47CDEBA41DD01BB3735086AB0211FA219",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/root-retained-auditor-literal-preflight-negative.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\root-retained-auditor-literal-preflight-negative.json",
+      "bytes": 951,
+      "sha256": "9D3BF6B4A352E5ABEEA6CBA17FEC901258148C20F83B908B256EA9960FF0F439",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-diagnostic-runtime-control-20261020-211629/runtime-launch.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-diagnostic-runtime-control-20261020-211629\\runtime-launch.json",
+      "bytes": 2974,
+      "sha256": "F7EBF62A2899D386DBC41F34C070F594A6D3151C2F97B54C26D12E7FA3EC2A2D",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-native-foundation-v34-runtime-control-20261020-210255/independent-negative-runtime-closure.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v34-runtime-control-20261020-210255\\independent-negative-runtime-closure.json",
+      "bytes": 64836,
+      "sha256": "038180C2284FB568EEB9368F033BC894A4E4AD8D6CCB3615B0C438AF336BCEDA",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-transfer-intake-executor-review-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-transfer-intake-executor-review-20261020.json",
+      "bytes": 1235,
+      "sha256": "DC8F049B9DEE069529C3BC3D540A788C81317B0EBFE92FDE14104569BD76F14F",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-exact-three-phase-source-release-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-exact-three-phase-source-release-20261020.json",
+      "bytes": 8595,
+      "sha256": "B4648B29C5CBCC3CE9695A49B76F69055782D075180EE6D8C69CD0C7A1D3FE03",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-fs-init-observer-peer-acceptance-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-fs-init-observer-peer-acceptance-20261020.json",
+      "bytes": 1052,
+      "sha256": "1BF72157A797F8FCF0C9B20F39F8616B215C2592BAC8E9C7DEC1339449403113",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-fs-init-observer-source-review-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-fs-init-observer-source-review-20261020.json",
+      "bytes": 2404,
+      "sha256": "7F86896E6895ADA3E9DC5E0920E14460063B195F417C1A2865F731E1A852A110",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-intake-final-peer-acceptance-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-intake-final-peer-acceptance-20261020.json",
+      "bytes": 2171,
+      "sha256": "B7BF464498424ED1E9D122F6912477DE6CAE63DD30C16434B8C2890AE07543E5",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reqwrap-host-error-fixture-review-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reqwrap-host-error-fixture-review-20261020.json",
+      "bytes": 1930,
+      "sha256": "C7847BB9FAF6BB5335B4F4589388F944997A2061BD2FF89AF37FDE1E8AAF229E",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reviewed-source-intake-receipts-20261020/fs-init-commit-message.txt",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\fs-init-commit-message.txt",
+      "bytes": 152,
+      "sha256": "928B31C6AF4379EF03D4B9F9324C6CB3BD0F59CD6EA8C1A803EF905D2DDC3278",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reviewed-source-intake-receipts-20261020/fs-init-paths.nul",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\fs-init-paths.nul",
+      "bytes": 3549,
+      "sha256": "D034E181D861DA8D35D09E7CE8B2DC8E0425E1D16B38A1C0A6AE36CEC786387A",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reviewed-source-intake-receipts-20261020/fs-init-preflight.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\fs-init-preflight.json",
+      "bytes": 11553,
+      "sha256": "A66A0B7F3E711C9EB617B8A99FF63F74727629757C33DA212548C2C129B0424B",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reviewed-source-intake-receipts-20261020/fs-init-receipt.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\fs-init-receipt.json",
+      "bytes": 5240,
+      "sha256": "17C2FC135C1E4DDB4334F5A0425F9B771A27F0F513BB016A974DF1196D8A7C90",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reviewed-source-intake-receipts-20261020/fs-init-staged.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\fs-init-staged.json",
+      "bytes": 393,
+      "sha256": "4977CF404F17999D58C7F09AF87F7F3B8B5DA2D68C0D687435BFA3DEB922BAAC",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reviewed-source-intake-receipts-20261020/owner-error-commit-message.txt",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\owner-error-commit-message.txt",
+      "bytes": 162,
+      "sha256": "25AEEBE86447D672334BD035749D9CD670B2073A147BDD339A25AEC65919DFEA",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reviewed-source-intake-receipts-20261020/owner-error-paths.nul",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\owner-error-paths.nul",
+      "bytes": 26837,
+      "sha256": "0D3C46873CF21025AEC418D6CEA5596076607F1A31B0BEF5D3661BE7056E6FB9",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reviewed-source-intake-receipts-20261020/owner-error-preflight.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\owner-error-preflight.json",
+      "bytes": 68078,
+      "sha256": "1423F65995C1BD89B48C73CB965290A3099BFA79AB0D36A8EF9A37D3E2B70061",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reviewed-source-intake-receipts-20261020/owner-error-receipt.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\owner-error-receipt.json",
+      "bytes": 31527,
+      "sha256": "F62CC7E334D9F4199BBA7E2DAA679F7D6DA80704426A20EFFE676C3C129A5F73",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reviewed-source-intake-receipts-20261020/owner-error-staged.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\owner-error-staged.json",
+      "bytes": 394,
+      "sha256": "FA123678B2B1459F7024E4EB38FFAB7B6FF48D1D78CE1D656FE4EE840B70D925",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reviewed-source-intake-receipts-20261020/reqwrap-commit-message.txt",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\reqwrap-commit-message.txt",
+      "bytes": 155,
+      "sha256": "A5FED5B58AB12BB204D762ACF05C7DF8712EE68B73BD4B4D97CE0B90CEA37646",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reviewed-source-intake-receipts-20261020/reqwrap-paths.nul",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\reqwrap-paths.nul",
+      "bytes": 865,
+      "sha256": "FF2CC93111EBFDC0F55D90D283CC0A8709C4D2B8D38C80AB7F482E70A1F623E6",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reviewed-source-intake-receipts-20261020/reqwrap-preflight.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\reqwrap-preflight.json",
+      "bytes": 3775,
+      "sha256": "1902386EEE003001836AB72D5F43DD00703E0CD46B5076B3D49604FD297B7FE5",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reviewed-source-intake-receipts-20261020/reqwrap-receipt.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\reqwrap-receipt.json",
+      "bytes": 2147,
+      "sha256": "AFA5D51604AC23480AC5D0212776EE16D4F6515E3C7CB0B8186CE76B647A41B1",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-reviewed-source-intake-receipts-20261020/reqwrap-staged.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\reqwrap-staged.json",
+      "bytes": 393,
+      "sha256": "D35225346B8AAF0D0226FB78CF4F74951AD2ED579EF44205DF7F761D46419604",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/root-v34-three-phase-intake-executor-review-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-three-phase-intake-executor-review-20261020.json",
+      "bytes": 3033,
+      "sha256": "095191C0E29BCBF15C72753F8FEED20596FF882F2F31974EACF6FE8254E4E7F3",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/transfer-intake-executor-finite-adaptation-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\transfer-intake-executor-finite-adaptation-20261020.json",
+      "bytes": 4950,
+      "sha256": "E5046B328C8C9CF6BFE429E9BE90C0BF48276452D9D0E5B9A0267DB070E9DDE0",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/v34-intake-executor-exact-blob-successor.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-intake-executor-exact-blob-successor.json",
+      "bytes": 4629,
+      "sha256": "511C9AA1362EEDE9000197415D25EC08E72438B566D23B2DFAF313D4D4220798",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/v34-source-intake-manifest-successors-20261020.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-source-intake-manifest-successors-20261020.json",
+      "bytes": 1555,
+      "sha256": "9782AF11C510DFBBBCE4874720F313D01E090BA3A227264E10E027A1697F489B",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/evidence/v34-three-phase-intake-executor-successor.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-three-phase-intake-executor-successor.json",
+      "bytes": 4538,
+      "sha256": "EA06B70FD1264C46866B5C98CFBD00F4EF38F8A985E66D952BCB0F7C432F0B63",
+      "before": null,
+      "role": "immutable_closure_and_intake_evidence"
+    },
+    {
+      "target": "verification/native-v34-validation-and-intake-closure-20261020/prior-progress.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-progress-and-closure-intake-20261020\\prior-progress.json",
+      "bytes": 235681,
+      "sha256": "8711EC0A199BC616F823BE25D08A380F47359284AACB37ABF497297DC32080D6",
+      "before": null,
+      "role": "prior_progress_raw_bytes"
+    },
+    {
+      "target": "verification/port-roadmap-resume-20261018/progress.json",
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-progress-and-closure-intake-20261020\\projected-progress.json",
+      "bytes": 294251,
+      "sha256": "3BCB7BF1CE552D95FDD8B34356EB01EAE4C2C0B7E30294920B2975B9D0794F10",
+      "before": {
+        "bytes": 235681,
+        "sha256": "8711EC0A199BC616F823BE25D08A380F47359284AACB37ABF497297DC32080D6"
+      },
+      "role": "progress_update"
+    }
+  ],
+  "archive_byte_preservation_renames": [],
+  "preservation": {
+    "old_integrated_units": 57,
+    "new_integrated_units": 62,
+    "old_attempts": 29,
+    "new_attempts": 32,
+    "old_history": 10,
+    "new_history": 11,
+    "all_old_list_prefixes_and_untouched_fields_exact": true
+  },
+  "evidence_scope": "Selected complete closure/intake/control records and retained negatives copied byte-exactly. Original complete proof/cache/inventory directories remain at their recorded contained paths; no prior outcome is rewritten.",
+  "native_execution_authorized": false,
+  "qualification": false
+}

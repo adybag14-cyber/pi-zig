@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v39_new4_positive_buildquery_audit_resource_release",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-22T17:20:54.410739+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39CompleteBuildQuery-20261022.py",
+    "bytes": 37295,
+    "sha256": "E1A7DEC0B22FC0D1B081641F19B6706608154CD728D645D0685CBE44A02F41E6"
+  },
+  "configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-control-20261022-165637\\independent-positive-buildquery-audit-inputs.json",
+    "bytes": 3076,
+    "sha256": "289321FA31FC02F82250F2FE03A00FDE46A49C1CD75C312A2BF668939335D693"
+  },
+  "source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-execution-bound-source-review-20261022.json",
+    "bytes": 16559,
+    "sha256": "5056C7EB01BC3DBC3931030A7753423CE2AAD1EDC9A71A00A192D0DA7076450A"
+  },
+  "helper_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-observed-helper-bound-source-acceptance-20261022.json",
+    "bytes": 11335,
+    "sha256": "C6859CD0B1556B89D9F7503C149F89ECE2165DAA3BBC96E1ABB190EE1E779167"
+  },
+  "output": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-control-20261022-165637\\independent-current-seals-and-owners.json",
+  "original_native_job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-control-20261022-165637\\independent-observed-job-status.json",
+    "bytes": 1572,
+    "sha256": "DAF5626EA54A4F196E482A9922CB38A3AC295BB2D69F6EDA219D5F3DB5BF3A21"
+  },
+  "actual_metadata_count": 61,
+  "resource": {
+    "observed_utc": "2026-10-22T17:20:45.0875258+00:00",
+    "free_physical_kib": 29471684,
+    "required_kib": 16777216,
+    "eligible": true,
+    "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+    "process_rows": 436,
+    "native_candidates": []
+  },
+  "audit_execution_authorized": true,
+  "native_execution_authorized": false,
+  "runtime_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "Root_complete_source_and_actual_configuration_reviewed": true
+}

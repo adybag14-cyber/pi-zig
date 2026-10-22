@@ -1,0 +1,991 @@
+{
+  "schema": 2,
+  "status": "source_only_fresh_batch_prepared",
+  "candidate_head": "2a45648545c961f9008a783ae352f233869505b4",
+  "source_integration_commit": "5521437c5581de3232e8fa1a2d017f2f4eb865af",
+  "uv_correction_commit": "39d13e047f55c598cfac0e841fed6d23220025b0",
+  "prepared_utc": "2026-10-20T19:05:06.325786+00:00",
+  "driver": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v32-prepared-20261020\\Run-CombinedNativeBatch.ps1",
+    "bytes": 60094,
+    "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+  },
+  "matrix": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v32-prepared-20261020\\groups.json",
+    "bytes": 573554,
+    "sha256": "C1C3D9BCE68FCEBF00F97DAF8ED2675F957AED3EACFCCC1A3B201A4222ABAE46"
+  },
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v32-prepared-20261020\\Audit-CombinedNativeBatch.py",
+    "bytes": 17691,
+    "sha256": "6C162C0C586A59800BF7618D7DFF5421768AAF4E21001C35F265AD6FB3AE61EA"
+  },
+  "classifier": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v32-prepared-20261020\\Get-ModelsNativeCandidates.ps1",
+    "bytes": 1786,
+    "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+  },
+  "combined_build_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v32-prepared-20261020\\combined-build-source-peer.json",
+    "bytes": 12133,
+    "sha256": "BEAA36175DB36CE596DB8F01C908935C6B7DBDFBA54EE07A90B7874D0423A5E4"
+  },
+  "metadata_auditor_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v32-prepared-20261020\\metadata-auditor-adaptation.json",
+    "bytes": 869,
+    "sha256": "ACA2D44E9E2DAE8EA0EBF151D960CDD2904BF3B1DD226E4544C60E4E460B8222"
+  },
+  "provenance": {
+    "prior_strict_preparation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v31-prepared-20261020\\preparation-review.json",
+      "bytes": 9457,
+      "sha256": "49BE6E91F58657C403A385DC821B342082695C6A3F547062D00CC022BF5B5978"
+    },
+    "prior_matrix": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v31-prepared-20261020\\groups.json",
+      "bytes": 486999,
+      "sha256": "844E42808F020C6773129CA9FBD4A1A16B28D779CAD55ADD7DE636B6B2D6644A"
+    },
+    "source_union": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\reviewed-v32-source-union-20261020\\source-union.json",
+      "bytes": 145791,
+      "sha256": "7131D8A92DF12269437DA1C8610376B0903DBE24193A98919C41F060FE77AC93"
+    },
+    "source_union_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\reviewed-v32-source-union-20261020\\independent-source-union-applier-peer.json",
+      "bytes": 12133,
+      "sha256": "BEAA36175DB36CE596DB8F01C908935C6B7DBDFBA54EE07A90B7874D0423A5E4"
+    },
+    "source_intake": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-foundation-intake-20261020\\receipt.json",
+      "bytes": 72248,
+      "sha256": "75B8888E6AFDDA487D3BEEF9A6AFC100F6A4FF5F08CA090F03E3E43FB6F8E1C4"
+    },
+    "uv_namespace_proposal": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-uv-import-sourceonly-20261020\\proposal.json",
+      "bytes": 21484,
+      "sha256": "ADE2B2C28D558A48AE20896E4204360ADADFADD4C30EE72E60C8ED0BB5659407"
+    },
+    "uv_namespace_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-uv-namespace-source-peer-20261020.json",
+      "bytes": 10706,
+      "sha256": "6EDDB24D85B7F876BCBA2802D166DE71702E21AF8CFD3B53E5F3E47B8C4329E5"
+    },
+    "seven_build_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-next-foundation-build-source-peer-20261020\\receipt.json",
+      "bytes": 7933,
+      "sha256": "7FA32682E6E7FBF02F718157A9CA95630706E3B2EF719E739F8F02A55B474371"
+    },
+    "seven_anonymous_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-next-foundation-build-source-peer-20261020\\anonymous-controls-source-peer.json",
+      "bytes": 225975,
+      "sha256": "19B626D2E14982325A6DA7DA9A0427001597D38B7CACB24E72DB4F1926F5F70E"
+    },
+    "artifact_default_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-next-foundation-build-source-peer-20261020\\artifact-default-source-peer.json",
+      "bytes": 14472,
+      "sha256": "6041970EDBC9CC21E33340520ED5DA34A1BF3243235F991B5E3553BAF8759110"
+    },
+    "sdk_control_inventory": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\control-inventory.json",
+      "bytes": 3543,
+      "sha256": "F4DA82AE992A3F22F63B3882174835E7DD75B80306D539287A647BC6329B74FF"
+    },
+    "sdk_anonymous_inventory": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\anonymous-source-inventory.json",
+      "bytes": 6433,
+      "sha256": "09DDAB0F3637F608636CAE0AD8EC533C947D99CB0496399A353E31A16AEBE55D"
+    },
+    "sdk_complete_control_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-read-controls-source-peer-20261020\\peer.json",
+      "bytes": 31460,
+      "sha256": "17C2996FB8751E5DA2AD28D2AF1784DBE93CEFBB5A707630A3D386750E5DB505"
+    },
+    "declared_actual_count_separation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\handoff-count-separation.json",
+      "bytes": 6633,
+      "sha256": "310687BC2ACDB06CA017E1BF810149C57FEE85BBDBFB686A7523869E2FFE1499"
+    },
+    "prior_build_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v31-control-20261020-171134\\independent-current-seals-and-owners.json",
+      "bytes": 253761,
+      "sha256": "A7750EE7463D338AE5CB77E8D13FD7098C52941FE4EC3319252B2A1B8B6D8367"
+    },
+    "prior_metadata_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v31-control-20261020-171134\\independent-metadata-acceptance.json",
+      "bytes": 209684,
+      "sha256": "5C951AAC2128A2C67A92C6E347CE5B4D1E744816975E725B91C293C650A41392"
+    },
+    "prior_strict_negative_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-runtime-control-20261020-175939\\independent-negative-runtime-closure.json",
+      "bytes": 28759,
+      "sha256": "8F55C557EC227EE9803F7C7D9969B4202C5C539BA482F18790C2694B5C356BEA"
+    },
+    "prior_partial_diagnostic_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v31-diagnostic-runtime-control-20261020-181658\\independent-partial-diagnostic-runtime-closure.json",
+      "bytes": 51849,
+      "sha256": "36D4EAB4F1D7A1E9632C847220F8CD6FE03DDF1FEC422C3F431F96B8519B71BD"
+    },
+    "uv_correction_intake": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\native-v32-uv-namespace-correction-20261020\\receipt.json",
+      "bytes": 2335,
+      "sha256": "E4BD386169320FD193D8F0FDE656CEBF82B9BAA0CAA7D9BE0E44EF96C0F97108"
+    },
+    "progress": {
+      "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+      "bytes": 180536,
+      "sha256": "BCCEBFD7E8A6116F63300FEE6C2500F3A794585C708951E6C292A2591E7D3D27"
+    },
+    "root_configuration": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\fresh-v32-catalog-configuration-root-issued-20261020.json",
+      "bytes": 1709,
+      "sha256": "8316D33B3224318980FBA06A660F3B153F40E80678C00A1826EA837FBA8CE9AC"
+    }
+  },
+  "source_pin_changes": [
+    {
+      "group": "native-node-tcp-transport",
+      "path": "src/extensions/native_uv_tcp.c",
+      "before": "FF046966BB81E915F0A69FD158DD8DD10533A6E2590FE1CA8975A5DCB503EE83",
+      "after": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71"
+    },
+    {
+      "group": "native-node-options",
+      "path": "src/extensions/native_node_check_failure.c",
+      "before": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F",
+      "after": "33D2F0524B59E477707937D6589BF4A30C5D959B1EFE4779BE4BF02D39B39593"
+    },
+    {
+      "group": "native-node-options",
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC",
+      "after": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+    },
+    {
+      "group": "native-node-callback-scope",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "before": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "after": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C"
+    },
+    {
+      "group": "native-node-callback-scope",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25",
+      "after": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "group": "native-node-callback-scope",
+      "path": "src/extensions/native_node_request_state.zig",
+      "before": "01DA46DC010A3108D592172C6F65AAB8100560FC274228FE9F1B6643A70A755A",
+      "after": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF"
+    },
+    {
+      "group": "native-node-fs-request-transport",
+      "path": "src/extensions/native_uv_tcp.c",
+      "before": "FF046966BB81E915F0A69FD158DD8DD10533A6E2590FE1CA8975A5DCB503EE83",
+      "after": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71"
+    },
+    {
+      "group": "native-node-process-warning",
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC",
+      "after": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+    },
+    {
+      "group": "native-node-process-warning",
+      "path": "src/extensions/native_node_check_failure.c",
+      "before": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F",
+      "after": "33D2F0524B59E477707937D6589BF4A30C5D959B1EFE4779BE4BF02D39B39593"
+    },
+    {
+      "group": "native-node-fs-request-owner",
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "540F5D468DA75E474FDD8731E06C55A48BB2E20470A0BE1DEDC1C6BCF61B0D15",
+      "after": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+    },
+    {
+      "group": "native-node-fs-request-owner",
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "before": "C360094C29E55F7F9C6BE6677390D94986D1FFED2680A05D8AF34162E20644C4",
+      "after": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393"
+    },
+    {
+      "group": "native-node-environment-map",
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "540F5D468DA75E474FDD8731E06C55A48BB2E20470A0BE1DEDC1C6BCF61B0D15",
+      "after": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+    },
+    {
+      "group": "native-node-environment-map",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25",
+      "after": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "group": "native-node-environment-map",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "before": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "after": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C"
+    },
+    {
+      "group": "native-node-environment-map",
+      "path": "src/extensions/native_node_check_failure.c",
+      "before": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F",
+      "after": "33D2F0524B59E477707937D6589BF4A30C5D959B1EFE4779BE4BF02D39B39593"
+    },
+    {
+      "group": "native-node-environment-map",
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC",
+      "after": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "540F5D468DA75E474FDD8731E06C55A48BB2E20470A0BE1DEDC1C6BCF61B0D15",
+      "after": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25",
+      "after": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "before": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "after": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C"
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "path": "src/extensions/native_node_check_failure.c",
+      "before": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F",
+      "after": "33D2F0524B59E477707937D6589BF4A30C5D959B1EFE4779BE4BF02D39B39593"
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC",
+      "after": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+    },
+    {
+      "group": "native-vm-script-location",
+      "path": "src/native_vm_script_location_test.zig",
+      "before": "30A2FEA5671546E4A285E68AD5B6D667A49E698B1C51C699DDF83A84495DA000",
+      "after": "286A630630468043BD80E8F6A6C99D4DFAA6A09D86C43636D874E28F538C6A3F"
+    },
+    {
+      "group": "native-vm-script-location",
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "540F5D468DA75E474FDD8731E06C55A48BB2E20470A0BE1DEDC1C6BCF61B0D15",
+      "after": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+    },
+    {
+      "group": "native-vm-script-location",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25",
+      "after": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "group": "native-vm-script-location",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "before": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "after": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C"
+    },
+    {
+      "group": "native-vm-script-location",
+      "path": "src/extensions/native_node_check_failure.c",
+      "before": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F",
+      "after": "33D2F0524B59E477707937D6589BF4A30C5D959B1EFE4779BE4BF02D39B39593"
+    },
+    {
+      "group": "native-vm-script-location",
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC",
+      "after": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+    },
+    {
+      "group": "native-node-environment-paths",
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "540F5D468DA75E474FDD8731E06C55A48BB2E20470A0BE1DEDC1C6BCF61B0D15",
+      "after": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+    },
+    {
+      "group": "native-node-environment-paths",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25",
+      "after": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "group": "native-node-environment-paths",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "before": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "after": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C"
+    },
+    {
+      "group": "native-node-environment-paths",
+      "path": "src/extensions/native_node_check_failure.c",
+      "before": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F",
+      "after": "33D2F0524B59E477707937D6589BF4A30C5D959B1EFE4779BE4BF02D39B39593"
+    },
+    {
+      "group": "native-node-environment-paths",
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC",
+      "after": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+    },
+    {
+      "group": "native-node-stream-fields",
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "540F5D468DA75E474FDD8731E06C55A48BB2E20470A0BE1DEDC1C6BCF61B0D15",
+      "after": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+    },
+    {
+      "group": "native-node-stream-fields",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25",
+      "after": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "group": "native-node-stream-fields",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "before": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "after": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C"
+    },
+    {
+      "group": "native-node-stream-fields",
+      "path": "src/extensions/native_node_check_failure.c",
+      "before": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F",
+      "after": "33D2F0524B59E477707937D6589BF4A30C5D959B1EFE4779BE4BF02D39B39593"
+    },
+    {
+      "group": "native-node-stream-fields",
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC",
+      "after": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "540F5D468DA75E474FDD8731E06C55A48BB2E20470A0BE1DEDC1C6BCF61B0D15",
+      "after": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25",
+      "after": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "before": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "after": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C"
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "path": "src/extensions/native_node_check_failure.c",
+      "before": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F",
+      "after": "33D2F0524B59E477707937D6589BF4A30C5D959B1EFE4779BE4BF02D39B39593"
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC",
+      "after": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+    },
+    {
+      "group": "native-node-stream-read",
+      "path": "src/native_node_stream_read_test.zig",
+      "before": "17978D19E46922C6B5A974D57DF0B9131BA7BE149125F923CBA472D09975B55B",
+      "after": "BF29DB0783C38D6FCA9161C5C5555F3C7666B10675E041B4FEFA23E2E0A43688"
+    },
+    {
+      "group": "native-node-stream-read",
+      "path": "src/extensions/native_node_async_wrap.zig",
+      "before": "540F5D468DA75E474FDD8731E06C55A48BB2E20470A0BE1DEDC1C6BCF61B0D15",
+      "after": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+    },
+    {
+      "group": "native-node-stream-read",
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "before": "4912FF07128124D77D896B9E1271A5F6D7D8F3323C90DE7B718735B94E137C25",
+      "after": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "group": "native-node-stream-read",
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "before": "EEF21C90D71CE7B4B9FE29D68728D3E0055540EC62254C7F3AC21DCE65278B0E",
+      "after": "C7DCC3EE151E4F85A345BCA74C0B6D806D2350F0BEE88632A7481786BD0C674C"
+    },
+    {
+      "group": "native-node-stream-read",
+      "path": "src/extensions/native_node_check_failure.c",
+      "before": "1DCF20ECC9BF4F68B21EF92967BFD66673E5EFED30C1B4FC322FEA42129B577F",
+      "after": "33D2F0524B59E477707937D6589BF4A30C5D959B1EFE4779BE4BF02D39B39593"
+    },
+    {
+      "group": "native-node-stream-read",
+      "path": "src/extensions/native_node_check_failure.zig",
+      "before": "37F7E5959900532EE15EAA5505709B603881B156A7AD71015B20FA16651D57DC",
+      "after": "C1027AB8038527ED1EB8F9D5F21B60DF736990BB098535F2393C834D445A7C09"
+    }
+  ],
+  "whole_dependency_pin_changes": [
+    {
+      "group": "native-vm-existing-promise-settlement",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-vm-existing-promise-settlement",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-node-options",
+      "path": "tools/build_native_node_network.zig",
+      "before": "64ADAD93DE12560EB7B14DE6759176876CED7F1E212D2CDBF85A251773EE2091",
+      "after": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    {
+      "group": "native-node-options",
+      "path": "src/extensions/native_node_check_failure.h",
+      "before": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D",
+      "after": "5A4B14849140F79C5A3555EC2721914D6C4382FEEB94DA0DACAE07E78EAF1CBD"
+    },
+    {
+      "group": "native-vm-execution-termination",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-vm-execution-termination",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-typebox-execution-termination",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-typebox-execution-termination",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-host-termination-ownership",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-host-termination-ownership",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-node-stream-resource",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-node-stream-resource",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-node-fs-request-owner",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-node-fs-request-owner",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-node-package-json-parser",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-node-package-json-parser",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-node-microtask-checkpoint",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-node-microtask-checkpoint",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-vm-property-retirement",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-vm-property-retirement",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-vm-consuming-operands",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-vm-consuming-operands",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-vm-oom-occurrence",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-vm-oom-occurrence",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-node-environment-map",
+      "path": "build.zig",
+      "before": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+      "after": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+    },
+    {
+      "group": "native-node-environment-map",
+      "path": "src/extensions/native_node_check_failure.h",
+      "before": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D",
+      "after": "5A4B14849140F79C5A3555EC2721914D6C4382FEEB94DA0DACAE07E78EAF1CBD"
+    },
+    {
+      "group": "native-node-environment-map",
+      "path": "tools/build_native_node_network.zig",
+      "before": "64ADAD93DE12560EB7B14DE6759176876CED7F1E212D2CDBF85A251773EE2091",
+      "after": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    {
+      "group": "native-node-environment-map",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-node-environment-map",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "path": "build.zig",
+      "before": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+      "after": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "path": "src/extensions/native_node_check_failure.h",
+      "before": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D",
+      "after": "5A4B14849140F79C5A3555EC2721914D6C4382FEEB94DA0DACAE07E78EAF1CBD"
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "path": "tools/build_native_node_network.zig",
+      "before": "64ADAD93DE12560EB7B14DE6759176876CED7F1E212D2CDBF85A251773EE2091",
+      "after": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-vm-backing-store-adoption",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-vm-script-location",
+      "path": "build.zig",
+      "before": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+      "after": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+    },
+    {
+      "group": "native-vm-script-location",
+      "path": "src/extensions/native_node_check_failure.h",
+      "before": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D",
+      "after": "5A4B14849140F79C5A3555EC2721914D6C4382FEEB94DA0DACAE07E78EAF1CBD"
+    },
+    {
+      "group": "native-vm-script-location",
+      "path": "tools/build_native_node_network.zig",
+      "before": "64ADAD93DE12560EB7B14DE6759176876CED7F1E212D2CDBF85A251773EE2091",
+      "after": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    {
+      "group": "native-vm-script-location",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-vm-script-location",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-node-environment-paths",
+      "path": "build.zig",
+      "before": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+      "after": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+    },
+    {
+      "group": "native-node-environment-paths",
+      "path": "src/extensions/native_node_check_failure.h",
+      "before": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D",
+      "after": "5A4B14849140F79C5A3555EC2721914D6C4382FEEB94DA0DACAE07E78EAF1CBD"
+    },
+    {
+      "group": "native-node-environment-paths",
+      "path": "tools/build_native_node_network.zig",
+      "before": "64ADAD93DE12560EB7B14DE6759176876CED7F1E212D2CDBF85A251773EE2091",
+      "after": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    {
+      "group": "native-node-environment-paths",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-node-environment-paths",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-node-stream-fields",
+      "path": "build.zig",
+      "before": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+      "after": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+    },
+    {
+      "group": "native-node-stream-fields",
+      "path": "src/extensions/native_node_check_failure.h",
+      "before": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D",
+      "after": "5A4B14849140F79C5A3555EC2721914D6C4382FEEB94DA0DACAE07E78EAF1CBD"
+    },
+    {
+      "group": "native-node-stream-fields",
+      "path": "tools/build_native_node_network.zig",
+      "before": "64ADAD93DE12560EB7B14DE6759176876CED7F1E212D2CDBF85A251773EE2091",
+      "after": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    {
+      "group": "native-node-stream-fields",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-node-stream-fields",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "path": "build.zig",
+      "before": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+      "after": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "path": "src/extensions/native_node_check_failure.h",
+      "before": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D",
+      "after": "5A4B14849140F79C5A3555EC2721914D6C4382FEEB94DA0DACAE07E78EAF1CBD"
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "path": "tools/build_native_node_network.zig",
+      "before": "64ADAD93DE12560EB7B14DE6759176876CED7F1E212D2CDBF85A251773EE2091",
+      "after": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-node-managed-buffers",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    },
+    {
+      "group": "native-node-stream-read",
+      "path": "build.zig",
+      "before": "AD72C1790FCA4E850340EEF3D48E379D300AD5CAD6A50ECC308B8484AD5A481E",
+      "after": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E"
+    },
+    {
+      "group": "native-node-stream-read",
+      "path": "src/extensions/native_node_check_failure.h",
+      "before": "972AB8DA7CAE3A3ECE098342AB4F8ACFA4845036E75A5210D4A157D241CC2E7D",
+      "after": "5A4B14849140F79C5A3555EC2721914D6C4382FEEB94DA0DACAE07E78EAF1CBD"
+    },
+    {
+      "group": "native-node-stream-read",
+      "path": "tools/build_native_node_network.zig",
+      "before": "64ADAD93DE12560EB7B14DE6759176876CED7F1E212D2CDBF85A251773EE2091",
+      "after": "59652262FA1B09715F5BFB99DBA9FDB255BC0C023DE1A73960F27DD56133F369"
+    },
+    {
+      "group": "native-node-stream-read",
+      "path": "vendor/quickjs/quickjs.c",
+      "before": "317A0E476BDA8AC4071A47EAF8E17ED296E8ED6F2A60E43A95B5C5B5E61A35FC",
+      "after": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4"
+    },
+    {
+      "group": "native-node-stream-read",
+      "path": "vendor/quickjs/quickjs.h",
+      "before": "05E5D1A5935259E79633588B2841B03171976A93FEBDBA42F3738C433ED121D4",
+      "after": "5D18897CF447EDF7C4CD1453EBA1E23F5CBCBAFC5478C6270CEA573739202D6C"
+    }
+  ],
+  "new_groups": [
+    {
+      "name": "native-node-file-handle-read",
+      "target": "build-native-node-file-handle-read",
+      "artifact": "native-node-file-handle-read",
+      "root": "src/native_node_file_handle_read_test.zig",
+      "declared": 14,
+      "filter": "native FileHandle",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ]
+    },
+    {
+      "name": "native-node-fs-callback-template",
+      "target": "build-native-node-fs-callback-template",
+      "artifact": "native-node-fs-callback-template",
+      "root": "src/native_node_fs_callback_template_test.zig",
+      "declared": 11,
+      "filter": "native FSReqCallback",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ]
+    },
+    {
+      "name": "native-vm-simple-stack-source",
+      "target": "build-native-vm-simple-stack-source",
+      "artifact": "test",
+      "root": "src/native_vm_simple_stack_source_test.zig",
+      "declared": 33,
+      "filter": "VM simple stack source",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ]
+    },
+    {
+      "name": "native-vm-exotic-operations",
+      "target": "build-native-vm-exotic-operations",
+      "artifact": "test",
+      "root": "src/native_vm_exotic_operations_test.zig",
+      "declared": 28,
+      "filter": "VM exotic operations",
+      "allowed_anonymous": []
+    },
+    {
+      "name": "native-node-diagnostic-context",
+      "target": "build-native-node-diagnostic-context",
+      "artifact": "test",
+      "root": "src/native_node_diagnostic_context_test.zig",
+      "declared": 10,
+      "filter": "Node diagnostic context",
+      "allowed_anonymous": []
+    },
+    {
+      "name": "native-node-native-debug",
+      "target": "build-native-node-native-debug",
+      "artifact": "test",
+      "root": "src/native_node_native_debug_test.zig",
+      "declared": 20,
+      "filter": "native Debug",
+      "allowed_anonymous": []
+    },
+    {
+      "name": "native-node-permission",
+      "target": "build-native-node-permission",
+      "artifact": "test",
+      "root": "src/native_node_permission_test.zig",
+      "declared": 18,
+      "filter": "native Permission",
+      "allowed_anonymous": []
+    },
+    {
+      "name": "native-node-fs-readwrap-reuse",
+      "target": "build-native-node-fs-readwrap-reuse",
+      "artifact": "test",
+      "root": "src/native_node_fs_readwrap_reuse_test.zig",
+      "declared": 14,
+      "filter": "native actual FS reuse",
+      "allowed_anonymous": []
+    },
+    {
+      "name": "native-node-reqwrap-callback-routing",
+      "target": "build-native-node-reqwrap-callback-routing",
+      "artifact": "native-node-reqwrap-callback-routing",
+      "root": "src/native_node_reqwrap_callback_routing_test.zig",
+      "declared": 12,
+      "filter": "native ReqWrap routing",
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ]
+    }
+  ],
+  "preserved_groups": 104,
+  "preserved_declarations": 1795,
+  "catalog_groups": 113,
+  "catalog_declarations": 1955,
+  "selected_groups": 63,
+  "selected_declarations": 1249,
+  "selected_group_names": [
+    "native-node-file-handle-read",
+    "native-node-fs-callback-template",
+    "native-vm-simple-stack-source",
+    "native-vm-exotic-operations",
+    "native-node-diagnostic-context",
+    "native-node-native-debug",
+    "native-node-permission",
+    "native-node-fs-readwrap-reuse",
+    "native-node-reqwrap-callback-routing",
+    "native-vm-script-location",
+    "native-node-stream-read",
+    "native-node-environment-map",
+    "native-vm-backing-store-adoption",
+    "native-node-environment-paths",
+    "native-node-stream-fields",
+    "native-node-managed-buffers",
+    "native-node-fs-request-owner",
+    "native-vm-execution-termination",
+    "native-typebox-execution-termination",
+    "native-host-termination-ownership",
+    "native-node-stream-resource",
+    "native-node-package-json-parser",
+    "native-node-microtask-checkpoint",
+    "native-vm-property-retirement",
+    "native-vm-consuming-operands",
+    "native-vm-oom-occurrence",
+    "native-node-callback-scope",
+    "native-node-inspect-colors",
+    "native-vm-captured-frame-logging",
+    "native-node-experimental-warning",
+    "native-node-commonjs-helpers",
+    "native-node-process-warning",
+    "native-node-fs-request-transport",
+    "native-vm-array-buffer-view-length",
+    "native-vm-array-buffer-backing",
+    "native-vm-private-property",
+    "native-node-tcp-transport",
+    "native-vm-async-arguments",
+    "native-node-fs-write-uv",
+    "native-vm-sync-arguments",
+    "native-vm-async-retirement",
+    "native-vm-template-literal",
+    "native-vm-borrowed-bridges",
+    "vm-af-throw",
+    "native-ai-oauth-anthropic-genuine-af",
+    "native-node-module-creation",
+    "native-node-module-search-paths",
+    "native-node-fs-realpath-classic",
+    "native-node-fs-path-helpers",
+    "native-node-file-url-paths",
+    "native-sdk-tool-search-public",
+    "native-ai-radius-config",
+    "native-ai-radius-provider-genuine-af",
+    "native-node-inspect-entry",
+    "native-ai-oauth-radius-genuine-af",
+    "native-vm-existing-promise-settlement",
+    "native-node-options",
+    "native-node-uv-exception",
+    "native-vm-disallow-javascript",
+    "native-vm-continuation-data",
+    "native-vm-pending-promise",
+    "native-vm-native-global",
+    "native-vm-copy-data-properties"
+  ],
+  "prior_v31_selected_declarations": 1089,
+  "prior_v31_accepted_actual_metadata_count": 1121,
+  "actual_metadata_count": null,
+  "old_catalog_complete_structural_inverse": true,
+  "selected_order_note": "SDK Read and FSReqCallback, seven other new roots, repaired Script and StreamRead, then all remaining52 prior groups in their original relative order.",
+  "auditor_change": "Only one V31 to V32 preparation path in accepted EE9F exact-instance auditor, with complete raw-byte inverse.",
+  "runtime_authority": false,
+  "execution_authority": false,
+  "qualification": false,
+  "review": "Retain every original V31 negative and all104 old catalog groups/1795 names. Add only nine reviewed roots/160 declarations. Selected63/1249 and catalog113/1955 are source declarations; fresh actual metadata is unknown. Existing source/dependency pins change only through the exact reviewed205-file union and separate four-file UV successor. Strict1DD3/classifier3413, max64 and all strict build/metadata/runtime gates remain. EE9F exact original-instance closure is unchanged. Fresh private caches and complete actual metadata/artifact/source/tree/vendor/compiler/control/original-process closure precede a separate strict RuntimeOnly grant. No application, release, production trace/backing controller or complete FileHandle GC qualification."
+}

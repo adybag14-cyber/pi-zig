@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "status": "root_read_only_inspector_negative",
+  "observed_utc": "2026-10-22T18:16:57.257183+00:00",
+  "inspector": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-control-20261022-174353\\root-timeout-negative-inspector-v1.py",
+    "bytes": 17707,
+    "sha256": "856539EF618B566F04B6A5659728535AFFD5B77D97D999F299D8240221514EE8"
+  },
+  "original_tool_result": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"<string>\", line 78, in <module>\r\n    assert op['arguments'][:6]==['build','build-'+name,'-Doptimize=Debug','-Duse-llvm=true','-Ddiagnostic-tests=false','-j1']\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"<string>\", line 78, in <module>\r\n    assert op['arguments'][:6]==['build','build-'+name,'-Doptimize=Debug','-Duse-llvm=true','-Ddiagnostic-tests=false','-j1']\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "reason": "Inspection incorrectly assumed every group name equals its build-step suffix; original commands and matrix must supply exact build-step mapping.",
+  "native_attempt": false,
+  "native_qualification": false,
+  "main_changed": false,
+  "closure_receipt_created": false,
+  "process_observation_created": false
+}

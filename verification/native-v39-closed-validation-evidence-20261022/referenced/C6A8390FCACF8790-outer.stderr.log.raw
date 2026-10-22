@@ -1,0 +1,5 @@
+[31;1mException: [0mC:\Users\adyba\pi-zig\evidence\combined-native-batch-v37-new4-prepared-20261021\Run-CombinedNativeBatch.ps1:44[0m
+[31;1m[0m[36;1mLine |[0m
+[31;1m[0m[36;1m[36;1m  44 | [0m . $age-gt300){[36;1mthrow 'Initial grant must be within300seconds before firs[0m .[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mInitial grant must be within300seconds before first child launch[0m

@@ -1,0 +1,108 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v36-new4-buildquery-20261021-080944\\cache\\o\\19622f3ea3c42f35e8485ed093db414d\\test.exe",
+  "binary_sha256": "D4F15741A14A899C2B190C959BF98CD4AFA2289DB9436ADE093A2516C630ECF3",
+  "version": "0.16.0",
+  "expected": 19,
+  "started": 19,
+  "completed": 19,
+  "results": [
+    {
+      "index": 0,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 1,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 2,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 3,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 4,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 5,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 6,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 7,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 8,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 9,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 10,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 11,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 12,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 13,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 14,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 15,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 16,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 17,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 18,
+      "flags": 0,
+      "passed": true
+    }
+  ],
+  "failed_or_skipped_or_logged_or_leaked": 18,
+  "owner_receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-20261021-082608\\groups\\native-node-file-handle-owner\\runtime.json",
+  "status": "failed"
+}

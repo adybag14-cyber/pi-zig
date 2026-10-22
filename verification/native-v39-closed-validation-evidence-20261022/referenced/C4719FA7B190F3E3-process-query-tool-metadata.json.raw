@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "tool": "mcp__codex_apps__devbox_hermes_devbox_run_program",
+  "arguments": {
+    "program": "pwsh",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-File",
+      "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\process-query.ps1"
+    ],
+    "working_dir": "C:\\Users\\adyba\\pi-zig",
+    "max_output_chars": 50000,
+    "max_output_lines": 0,
+    "timeout_seconds": 30
+  },
+  "result_without_stdout": {
+    "ok": true,
+    "summary": "Ran pwsh directly in the Windows host devbox.",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      },
+      "output": {
+        "mode": "tail",
+        "max_chars": 50000,
+        "max_lines": 0,
+        "stdout_original_chars": 39167,
+        "stderr_original_chars": 0,
+        "stdout_capture_truncated": false,
+        "stderr_capture_truncated": false
+      }
+    },
+    "exitCode": 0,
+    "truncated": false
+  },
+  "stdout_file": "process-observation.json"
+}

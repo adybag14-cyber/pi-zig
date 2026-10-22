@@ -1,0 +1,191 @@
+{
+  "schema": 1,
+  "status": "independently_reviewed_exact_v39_new3_retry1_preparation_clone",
+  "reviewer": "/root/handover_review",
+  "reviewed_utc": "2026-10-22T17:21:41.190888+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "source_only": true,
+  "checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-new3-retry1-emitted-clone-peer-20261022\\check-emitted-clone.py",
+    "bytes": 22014,
+    "sha256": "E9176D28A29471C9938824380392F39539E9EC0B5543CE9D9E11576951EDB4C3"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-new3-retry1-emitted-clone-peer-20261022\\source-proof.json",
+    "bytes": 44894,
+    "sha256": "7912C2220A4D1D71F383BD868A8871C0D765AC5C1F9FB3D3794661BBDA9CE6FB"
+  },
+  "unexecuted_checker_handoff_preserved": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-new3-retry1-emitted-clone-peer-20261022\\checker-handoff.json",
+    "bytes": 2496,
+    "sha256": "67E9F2C338C3E4C37366C19E3649F1EC9083B7B33569197D25479893C4039CA3"
+  },
+  "actual_clone_receipt": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-preparation-clone-proof-20261022.json",
+    "bytes": 39146,
+    "sha256": "AAD396D8B23BA31351D8D1ECECE7541DFA219BD5F72EDFC2EBF540411ED0BC16"
+  },
+  "actual_Root_clone_only_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-clone-issued-config-20261022.json",
+    "bytes": 890,
+    "sha256": "7C69A4793886F4BF6299F75A59E0A7BEE540BA27C8F0F37E537D60E91F90D7BE"
+  },
+  "actual_Root_cloner_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-retry1-preparation-cloner-source-acceptance-20261022.json",
+    "bytes": 5101,
+    "sha256": "A667DFB2B69F66CD773B3289AEE05C60A792087A800E6017C056D659269B4253"
+  },
+  "cloner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\Prepare-V39New3Retry1PreparationClone-20261022.py",
+    "bytes": 20014,
+    "sha256": "1B4732B1C003DA2F82DBC4912FF6B7B203889E1C5E4C15B9521F4D9EE4F63422"
+  },
+  "unchanged_buildquery_constructor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+    "bytes": 10269,
+    "sha256": "972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0"
+  },
+  "retry_preparation_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-retry1-prepared-20261022\\preparation-review.json",
+    "bytes": 1230781,
+    "sha256": "98E7FBFC267CD832F1A99D7FD4DA30BEFE0F251008EDE4DAF229739098B43A0F"
+  },
+  "retry_metadata_auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-retry1-prepared-20261022\\Audit-CombinedNativeBatch.py",
+    "bytes": 17703,
+    "sha256": "F96195A24B1FD02801478020B4E4128F90AE799F8AFB01DFE1FA6734FBC3C99B"
+  },
+  "original_catalog_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-catalog-source-acceptance-20261022.json",
+    "bytes": 14221,
+    "sha256": "CB6A78ACEFAA83A6DE31AB917B6460465BF012C99B38CE87425B6893CCB7AB2C"
+  },
+  "original_negative_independent_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-163859\\independent-prelaunch-admission-negative-closure.json",
+    "bytes": 5480,
+    "sha256": "9712BD2BBB46133BEAA1D7590CC95570ACF252000E218443488E41EB01F4B181"
+  },
+  "original_negative_Root_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-original-prelaunch-negative-acceptance-20261022.json",
+    "bytes": 5627,
+    "sha256": "1A6F6F0CAA70C5B9F39F9FF815B67429C39B785E472817427A7EF18E4FCEDDD7"
+  },
+  "membership_and_inverse": {
+    "original_members": 16,
+    "original_launch_unchanged": true,
+    "retry_members": 15,
+    "byte_identical_members": [
+      "Get-ModelsNativeCandidates.ps1",
+      "Run-CombinedNativeBatch.ps1",
+      "combined-build-source-peer.json",
+      "exact-intake-source-inventory.json",
+      "groups.json",
+      "new-roots-source-inventory.json",
+      "prior-v38-progress.json",
+      "process-ancestry-peer-modules.json",
+      "uv-namespace-source-peer.json"
+    ],
+    "changed_members": [
+      "Audit-CombinedNativeBatch.py",
+      "complete-batch-partition.json",
+      "matrix-refresh-adaptation.json",
+      "metadata-auditor-adaptation.json",
+      "preparation-review.json",
+      "source-inventory-refresh-adaptation.json"
+    ],
+    "JSON_field_changes": 28,
+    "metadata_source_literal_changes": 1,
+    "review_path_leaves": 11,
+    "dependent_review_length_hash_pairs": 5,
+    "all_intermediate_and_whole_raw_forward_inverse_exact": true,
+    "all_other_original_JSON_fields_and_lists_exact": true,
+    "V38_metadata_baseline_inverse_retained": true,
+    "actual_report_finite_steps_equal_independent_reconstruction": true,
+    "all_paths_are_exact_flat_preparation_paths": true,
+    "no_stale_current_original_preparation_identity": true,
+    "fresh_retry_launch_absent_at_observation": true,
+    "all_original_and_retry_directory_memberships_rechecked": true
+  },
+  "unchanged_scope": {
+    "matrix": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-retry1-prepared-20261022\\groups.json",
+      "bytes": 1469059,
+      "sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB"
+    },
+    "driver": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-retry1-prepared-20261022\\Run-CombinedNativeBatch.ps1",
+      "bytes": 60094,
+      "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+    },
+    "classifier": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-retry1-prepared-20261022\\Get-ModelsNativeCandidates.ps1",
+      "bytes": 1786,
+      "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+    },
+    "selected_group_names": [
+      "native-node-stream-shutdown",
+      "native-node-one-byte-string",
+      "native-vm-array-buffer-view-data"
+    ],
+    "declared_per_group": [
+      18,
+      8,
+      12
+    ],
+    "selected_groups": 3,
+    "selected_declarations": 38,
+    "catalog_groups": 120,
+    "catalog_declarations": 2051,
+    "complete_partition_groups": 70,
+    "complete_partition_declarations": 1345,
+    "group_cap": 64,
+    "retained4_and_original63_order_and_policy_exact": true
+  },
+  "authority_review": {
+    "actual_configuration_keys": 11,
+    "only_unissued_shape_changes": [
+      "status",
+      "clone_execution_authorized",
+      "root_source_review"
+    ],
+    "exact_Root_source_acceptance_matches_cloner": true,
+    "clone_authority_separate_from_native_authority": true,
+    "original_CB6_kept_unchanged": true,
+    "original_9712_and_1A6_preserved": true,
+    "original_negative_granted_attempted_unstarted": [
+      3,
+      1,
+      2
+    ],
+    "original_native_owners_metadata_tests": [
+      0,
+      0,
+      0
+    ],
+    "no_negative_or_prior_runtime_outcome_transferred": true
+  },
+  "scope_of_this_peer": [
+    "This source/data peer independently verifies the actually emitted retry fifteen-member clone and its exact authority/inverse chain.",
+    "The earlier original catalog peer and CB6 acceptance cover the original catalog/graphs. This peer preserves that authority and separately supplies the relocated-output proof; it does not claim a fresh graph reconstruction or current Main rehash.",
+    "Root must separately accept retry catalog membership with the exact actual preparation-review pin before the unchanged BuildQuery constructor may be issued.",
+    "No BuildQuery, metadata, runtime or application outcome is accepted by this source-only clone peer."
+  ],
+  "checker_execution": {
+    "exit_code": 0,
+    "stderr": "",
+    "runs": 1,
+    "preserved_checker_negative": null
+  },
+  "decisive_checker_current_input_versions": 53,
+  "current_Main_rehash_or_process_absence_asserted": false,
+  "candidate_or_prefix_executed_by_reviewer": false,
+  "cloner_executed_by_reviewer": false,
+  "constructor_or_helper_or_auditor_executed_by_reviewer": false,
+  "Main_accessed": false,
+  "configuration_issued_by_reviewer": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "actual_metadata_count": null
+}

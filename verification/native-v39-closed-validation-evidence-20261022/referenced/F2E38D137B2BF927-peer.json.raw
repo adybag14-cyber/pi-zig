@@ -1,0 +1,138 @@
+{
+  "schema": 1,
+  "kind": "Independent finite source-only QuickJS private map-entry identifier peer",
+  "created_utc": "2026-10-20T19:15:27.069264+00:00",
+  "proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v32-quickjs-map-entry-symbol-sourceonly-20261020\\proposal.json",
+    "bytes": 2478,
+    "sha256": "A8772BE6DF8751092EA186636366513BC62297C8870FFF37A8876F616D7C4272"
+  },
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v32-quickjs-map-entry-symbol-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+    "sha256": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+    "bytes": 2399313
+  },
+  "projected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v32-quickjs-map-entry-symbol-sourceonly-20261020\\projected\\vendor\\quickjs\\quickjs.c",
+    "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2",
+    "bytes": 2399340
+  },
+  "main_predecessor_head": "2a45648545c961f9008a783ae352f233869505b4",
+  "main_head_observed": "2a45648545c961f9008a783ae352f233869505b4",
+  "candidate_blob_and_live_original_exact": true,
+  "all_three_forward_edits_and_whole_inverse_exact": true,
+  "edits": [
+    {
+      "index": 0,
+      "before_byte_offset": 1976949,
+      "after_byte_offset": 1976949,
+      "before": "js_map_read",
+      "after": "js_pi_map_read_entry",
+      "anchor": "static JSValue js_map_read(JSContext *ctx, JSMapState *s,"
+    },
+    {
+      "index": 1,
+      "before_byte_offset": 1977517,
+      "after_byte_offset": 1977526,
+      "before": "js_map_read",
+      "after": "js_pi_map_read_entry",
+      "anchor": "return js_map_read(ctx, s, argv[0], NULL);"
+    },
+    {
+      "index": 2,
+      "before_byte_offset": 1977805,
+      "after_byte_offset": 1977823,
+      "before": "js_map_read",
+      "after": "js_pi_map_read_entry",
+      "anchor": "*value = js_map_read(ctx, s, key, &present);"
+    }
+  ],
+  "original_old_name_tokens": [
+    {
+      "byte_offset": 1976949,
+      "line": 58716
+    },
+    {
+      "byte_offset": 1977517,
+      "line": 58733
+    },
+    {
+      "byte_offset": 1977805,
+      "line": 58743
+    },
+    {
+      "byte_offset": 1989440,
+      "line": 59155
+    },
+    {
+      "byte_offset": 1991280,
+      "line": 59220
+    },
+    {
+      "byte_offset": 1991359,
+      "line": 59225
+    }
+  ],
+  "projected_old_name_tokens": [
+    {
+      "byte_offset": 1989467,
+      "line": 59155
+    },
+    {
+      "byte_offset": 1991307,
+      "line": 59220
+    },
+    {
+      "byte_offset": 1991386,
+      "line": 59225
+    }
+  ],
+  "projected_new_name_tokens": [
+    {
+      "byte_offset": 1976949,
+      "line": 58716
+    },
+    {
+      "byte_offset": 1977526,
+      "line": 58733
+    },
+    {
+      "byte_offset": 1977823,
+      "line": 58743
+    }
+  ],
+  "new_private_name_previously_absent": true,
+  "complete_suffix_from_original_BCReader_function_preserved": true,
+  "complete_suffix_after_last_selected_identifier_preserved": true,
+  "outside_selected_three_identifier_spans_byte_exact": true,
+  "source_line_count_unchanged": true,
+  "byte_growth": 27,
+  "read_ranges": [
+    [
+      58703,
+      58765
+    ],
+    [
+      59148,
+      59232
+    ]
+  ],
+  "semantic_findings": [
+    "C has no function overloading; the two existing same-name static declarations have incompatible parameter lists. A distinct private helper name removes that source-level collision.",
+    "The new four-argument helper definition and its only two callers use the same new identifier. map_normalize_key_const, map_find_record, optional presence write, retained value duplication and JS_UNDEFINED path remain byte-exact.",
+    "The existing two-argument BCReader function and JS_ReadMap/JS_ReadSet calls retain js_map_read and all original bytes.",
+    "JS_PiReadWeakMapEntry and every other public API spelling, function signature, body token and control declaration are unchanged outside the three selected private identifiers."
+  ],
+  "verdict": "No concrete source blocker in the bounded private-identifier correction.",
+  "scope_limits": [
+    "This independently checks the proposed source correction and exact frozen candidate binding only.",
+    "The observed compiler failure remains retained by Root. No compiler or native run was performed by this reviewer, and no successful build, runtime or application qualification is claimed.",
+    "No Main or SDK source was edited. This reviewer wrote only this receipt and its source-only audit in the assigned modules-io worktree.",
+    "Declared 63-group / 1249-control selection is not changed by a private C identifier rename. Future compiler metadata count remains unknown and was not predicted."
+  ],
+  "compiler_execution": false,
+  "native_execution": false,
+  "source_generator_execution": false,
+  "main_modified": false,
+  "qualification": false
+}

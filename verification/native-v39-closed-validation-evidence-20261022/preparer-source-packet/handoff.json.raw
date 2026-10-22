@@ -1,0 +1,356 @@
+{
+  "schema": 1,
+  "status": "sealed_unexecuted_finite_V39_closed_timeout_archive_source_successor",
+  "reviewer": "/root/handover_review",
+  "source_only": true,
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\candidate\\Prepare-V39ClosedValidationAndTimeoutArchive-20261022.py",
+    "bytes": 90319,
+    "sha256": "0BD97D2A52ADF9FC624222163049C44DB8D7928BEBB9D5F36B2738BD3735ECF2"
+  },
+  "finite_source_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\finite-source-adaptation.json",
+    "bytes": 74668,
+    "sha256": "18701EE0A99AA55ACDE8890127DA750531B2BC30E390DCF3C80B9142A4C70DA6"
+  },
+  "source_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\source-contract.json",
+    "bytes": 48762,
+    "sha256": "3964C0A8114EA3FC43A42DBA0434F2B204EE7B63317412B8B44A0A0E61D5EEFD"
+  },
+  "static_source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\static-source-proof.json",
+    "bytes": 512069,
+    "sha256": "F492E0911C8095FA941A744F61EB82107C66D266F30272D9A4720DC750D878DE"
+  },
+  "unissued_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\unissued-root-configuration.json",
+    "bytes": 868,
+    "sha256": "CBF121C0FF28ABA41F48026E64F5CDBD626039E9345F0041B15BF6E6040C7199"
+  },
+  "selected_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\check-source-and-observed-contract-v2.py",
+    "bytes": 17672,
+    "sha256": "E50A03C345E3F43DF29B8A135853699B074EB73FD1DEB52EB7BC4BA68BB80ED8"
+  },
+  "original_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\check-source-and-observed-contract.py",
+    "bytes": 17671,
+    "sha256": "9356F4F5450C0C965C42793BE628A4C99713C7D686FDF8273B0D89A256725C93"
+  },
+  "checker_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\source-checker-predecessor-field-negative.json",
+    "bytes": 2330,
+    "sha256": "47EE3FF067F5BBC73A46B36AEC1E4598B73A1FB620FD2DFE504AC09FF84C4CA9"
+  },
+  "checker_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\source-checker-predecessor-field-correction.json",
+    "bytes": 1127,
+    "sha256": "F1C48E874D8C57C5D23A476CBB1886B5CFF6BAACD6C2675B4FBEDDDDC37C7018"
+  },
+  "timeout_observed_inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\timeout-observed-inputs.json",
+    "bytes": 611205,
+    "sha256": "AE1E3516FD64740C6348FB98BE834F5E57CD4339F4D066A54C20673A9FE6ADB3"
+  },
+  "inert_input_collector": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\collect-timeout-observed-inputs.py",
+    "bytes": 5666,
+    "sha256": "EEE3B877259761FB12514D21051DE86AA8F40A0DB16339456E831B822C545DA3"
+  },
+  "authoring_inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\authoring-inputs.json",
+    "bytes": 6214,
+    "sha256": "D52DEFD5362DB7B915B4F534159EE74245E056A1E74C81DA9BFE9CA0765AA3C4"
+  },
+  "finite_source_author": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\author-finite-timeout-successor.py",
+    "bytes": 7212,
+    "sha256": "B2897D70C5560BCFAE29A970CF939A7396EC90CB789E4304B33B942A91F49ADA"
+  },
+  "declared_source_edits": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\authoring\\declared-edits.json",
+    "bytes": 38596,
+    "sha256": "DF6F1C8C7D6F1AE1183366DC68C0C5E8F9533C8A85BEE154719BFB28B1D143C8"
+  },
+  "accepted_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\candidate\\Prepare-V39ClosedPhasesAndUnresolved63Archive-20261022.py",
+    "bytes": 72511,
+    "sha256": "02D8A4504E8741E915621AFE35B3DBDBEC8A8EE8F8D0F1712F9BA3C5C2392C2B"
+  },
+  "predecessor_Root_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-unresolved63-archive-preparer-source-acceptance-20261022.json",
+    "bytes": 3392,
+    "sha256": "5737BCE6F6DAE671F0F876E3B5CD7448F8AE9D9F2CFCD326379121F98EEA9CA0"
+  },
+  "source_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "Root_closed_timeout_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-existing63-outer-timeout-negative-acceptance-20261022.json",
+    "bytes": 9836,
+    "sha256": "BBE41BE72BD618F43712ECBA196E16859ED55A2782DF248FD0B54FBEB6787700"
+  },
+  "closed_timeout_history": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-task-v39-existing63-closed-outer-timeout-history-20261022.json",
+    "bytes": 12456,
+    "sha256": "A0418D08D53953EF9AA56ABAA28042E1B6CCD545A467486EE4DB9BB50BE6123F"
+  },
+  "source_accounting": {
+    "finite_steps": 48,
+    "complete_forward_and_inverse_exact": true,
+    "unchanged_function_count": 26,
+    "unchanged_non_outcome_helpers": 23,
+    "unchanged_previous_outcome_validators": 3,
+    "unchanged_complete_engine_regions": 3,
+    "raw_gzip_region": "The complete region has only one declared comment/header replacement: for m in membership[:4]. Its full inverse is exact; compression, deterministic reencoding, both-source comparison and every write statement remain unchanged. The timeout validator separately requires its before.json raw, absent final/result, and no pair.",
+    "configuration_fields": 18,
+    "copy_plan_fields": 11,
+    "row_fields": 5,
+    "actual_schema_inputs_rehashed": 1764,
+    "semantic_edit_groups": [
+      {
+        "steps": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "scope": "Separate unissued output/status identities, exact fifth closed phase and immutable 908-input timeout basis; existing source/input prefixes stay fixed."
+      },
+      {
+        "steps": [
+          14
+        ],
+        "scope": "Only the fifth membership admits its actual before-only proof and 51 directories; all four previous phase memberships remain exact."
+      },
+      {
+        "steps": [
+          15,
+          16,
+          17,
+          18
+        ],
+        "scope": "Replace the unresolved stop with actual BBE4/451F/251A/6BFF acceptance, original negative flags and complete before-staging validation; preserve inspection provenance separately."
+      },
+      {
+        "steps": [
+          19
+        ],
+        "scope": "Single explicit raw-bookend admission header change; timeout requires lone before raw outside unchanged gzip calculations."
+      },
+      {
+        "steps": [
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48
+        ],
+        "scope": "Add exactly fifth actual attempt/second native-validation negative and observed timeout fields, retain complete original progress/history inverse and unknown original closure fields."
+      }
+    ]
+  },
+  "observed_outcomes": {
+    "new3_original_prelaunch": {
+      "native_owners": 0,
+      "observed_metadata": 0,
+      "runtime_started": 0
+    },
+    "new3_retry1_compile": {
+      "compile_owner_exit_code": 1,
+      "metadata_owners": 0,
+      "runtime_started": 0
+    },
+    "new4": {
+      "accepted_metadata": 61,
+      "strict_completed": 61,
+      "strict_failed": 0
+    },
+    "existing63": {
+      "compile_owners_terminal0": 51,
+      "metadata_owners_terminal0": 50,
+      "provisional_groups": 50,
+      "partial_metadata_observed": 985,
+      "accepted_metadata": null,
+      "complete_groups_accepted": 0,
+      "unstarted_groups": 12,
+      "outer_timeout_seconds": 1800,
+      "outer_exit_code": -1,
+      "durable_exit_code": 1,
+      "runtime_owners": 0,
+      "original_final": null,
+      "original_result": null,
+      "original_source_postseal": null,
+      "original_environment_restoration": null
+    }
+  },
+  "history": {
+    "basis_progress": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\projected\\verification\\port-roadmap-resume-20261018\\progress.json",
+      "bytes": 678718,
+      "sha256": "4FF79AE87F671BB8F16283E38D282CB58444A1A0FA42659B0F3CED505EE04343"
+    },
+    "current_nested_list_prefixes": 222,
+    "current_source_units": 65,
+    "current_attempts": 45,
+    "current_native_negatives": 15,
+    "current_checkpoint_history": 15,
+    "required_future_lengths": {
+      "integrated_source_units": 65,
+      "preserved_attempts": 50,
+      "retained_recent_native_negatives": 17,
+      "execution_checkpoint_history": 16
+    },
+    "complete_old_checkpoint_appended": true,
+    "full_678718_byte_inverse_required": true,
+    "progress_not_generated": true,
+    "no_source_intake_record_fabricated": true
+  },
+  "final_copy_plan_boundary": {
+    "old_rows_prefix": 852,
+    "old_direct_edges_prefix": 3684,
+    "old_equal_bookend_plans": 3,
+    "old_phase_memberships": 4,
+    "additional_required_timeout_raw_versions": 908,
+    "minimum_distinct_union_versions": 1758,
+    "timeout_phase_files": 872,
+    "additional_direct_relationships": 47,
+    "timeout_before_remains_raw": true,
+    "timeout_missing_final_not_created": true,
+    "proposed_final_copy_plan_not_yet_authored": true,
+    "source_packet_reference_pins": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\candidate\\Prepare-V39ClosedValidationAndTimeoutArchive-20261022.py",
+        "bytes": 90319,
+        "sha256": "0BD97D2A52ADF9FC624222163049C44DB8D7928BEBB9D5F36B2738BD3735ECF2"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\finite-source-adaptation.json",
+        "bytes": 74668,
+        "sha256": "18701EE0A99AA55ACDE8890127DA750531B2BC30E390DCF3C80B9142A4C70DA6"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\source-contract.json",
+        "bytes": 48762,
+        "sha256": "3964C0A8114EA3FC43A42DBA0434F2B204EE7B63317412B8B44A0A0E61D5EEFD"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\static-source-proof.json",
+        "bytes": 512069,
+        "sha256": "F492E0911C8095FA941A744F61EB82107C66D266F30272D9A4720DC750D878DE"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\unissued-root-configuration.json",
+        "bytes": 868,
+        "sha256": "CBF121C0FF28ABA41F48026E64F5CDBD626039E9345F0041B15BF6E6040C7199"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\check-source-and-observed-contract-v2.py",
+        "bytes": 17672,
+        "sha256": "E50A03C345E3F43DF29B8A135853699B074EB73FD1DEB52EB7BC4BA68BB80ED8"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\check-source-and-observed-contract.py",
+        "bytes": 17671,
+        "sha256": "9356F4F5450C0C965C42793BE628A4C99713C7D686FDF8273B0D89A256725C93"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\source-checker-predecessor-field-negative.json",
+        "bytes": 2330,
+        "sha256": "47EE3FF067F5BBC73A46B36AEC1E4598B73A1FB620FD2DFE504AC09FF84C4CA9"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\source-checker-predecessor-field-correction.json",
+        "bytes": 1127,
+        "sha256": "F1C48E874D8C57C5D23A476CBB1886B5CFF6BAACD6C2675B4FBEDDDDC37C7018"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\timeout-observed-inputs.json",
+        "bytes": 611205,
+        "sha256": "AE1E3516FD64740C6348FB98BE834F5E57CD4339F4D066A54C20673A9FE6ADB3"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\collect-timeout-observed-inputs.py",
+        "bytes": 5666,
+        "sha256": "EEE3B877259761FB12514D21051DE86AA8F40A0DB16339456E831B822C545DA3"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\authoring-inputs.json",
+        "bytes": 6214,
+        "sha256": "D52DEFD5362DB7B915B4F534159EE74245E056A1E74C81DA9BFE9CA0765AA3C4"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\author-finite-timeout-successor.py",
+        "bytes": 7212,
+        "sha256": "B2897D70C5560BCFAE29A970CF939A7396EC90CB789E4304B33B942A91F49ADA"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\authoring\\declared-edits.json",
+        "bytes": 38596,
+        "sha256": "DF6F1C8C7D6F1AE1183366DC68C0C5E8F9533C8A85BEE154719BFB28B1D143C8"
+      }
+    ],
+    "source_packet_including_this_handoff": 15,
+    "no_self_reference_in_this_packet": true
+  },
+  "retained_checker_observation": {
+    "negative": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\source-checker-predecessor-field-negative.json",
+      "bytes": 2330,
+      "sha256": "47EE3FF067F5BBC73A46B36AEC1E4598B73A1FB620FD2DFE504AC09FF84C4CA9"
+    },
+    "correction": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\source-checker-predecessor-field-correction.json",
+      "bytes": 1127,
+      "sha256": "F1C48E874D8C57C5D23A476CBB1886B5CFF6BAACD6C2675B4FBEDDDDC37C7018"
+    },
+    "original_field": "preparer",
+    "actual_interim_receipt_field": "candidate",
+    "candidate_unchanged": true,
+    "failed_checker_wrote_no_output": true,
+    "native_attempt": false
+  },
+  "required_future_Root_source_receipt": "Use source-contract.json's required_source_review_fields, including preparer plus timeout_observed_input_inventory. The actual interim 5737 receipt has candidate and remains immutable.",
+  "future_intake": "Root alone issues exact source/copy-plan/config acceptance, runs evidence preparation, reviews outputs, creates a separate normalized manifest and five-literal strengthened8A676 adapter binding, and releases any Main intake.",
+  "candidate_or_prefix_executed": false,
+  "preparer_or_gzip_or_archive_execution": false,
+  "projected_progress_created": false,
+  "Main_or_index_access": false,
+  "current_process_queries": false,
+  "native_execution_authorized": false,
+  "configuration_issued": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

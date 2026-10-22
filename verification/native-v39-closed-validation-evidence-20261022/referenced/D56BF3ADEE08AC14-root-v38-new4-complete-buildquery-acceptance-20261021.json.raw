@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "status": "root_accepted_complete_fresh_v38_new4_buildquery",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-21T15:16:51.241704+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "batch": "new4",
+  "groups": [
+    "native-node-file-handle-owner",
+    "native-node-fs-before-hook-continuation",
+    "native-vm-error-constructor-name",
+    "native-node-file-handle-transfer"
+  ],
+  "declared_groups": 4,
+  "declared_controls": 58,
+  "actual_metadata_count": 61,
+  "actual_group_counts": [
+    19,
+    4,
+    24,
+    14
+  ],
+  "complete_buildquery_accepted": true,
+  "build_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\result.json",
+    "bytes": 67219,
+    "sha256": "16307DDF6331643E0268AD6FB4D2B737F266FCFFE2117DAE28B0C6604C8CD77A"
+  },
+  "build_final": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\final.json",
+    "bytes": 16165225,
+    "sha256": "5AEC1D0C366EF90B9C4B5A2D0F77FB0D8C78CF523176EEB5AA206E47F10881E5"
+  },
+  "metadata_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-control-20261021-145503\\independent-metadata-acceptance.json",
+    "bytes": 14150,
+    "sha256": "9786B2A3CACBB66E95FF5852447CF1676BFFEBD24B5F26194755150147F685AF"
+  },
+  "independent_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-control-20261021-145503\\independent-current-seals-and-owners.json",
+    "bytes": 499851,
+    "sha256": "D2278B82C53DFC2CB9AB2351B9DF7BFDAE80D57C6D670F60A1E7269AF71E5CEB"
+  },
+  "buildquery_launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\buildquery-launch.json",
+    "bytes": 2092,
+    "sha256": "3309BAC061E13596E9FC2E149A6FE360E5D0ABD789351275D07BDF9CE4E1DEDC"
+  },
+  "observed_input_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-control-20261021-145503\\independent-positive-buildquery-audit-inputs.json",
+    "bytes": 3077,
+    "sha256": "D377A46DB7BC3A27CAE49F3CF4AA651880EE2B4464617D2B7880BE6976FEB851"
+  },
+  "positive_auditor_resource_release": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-buildquery-audit-resource-release-20261021.json",
+    "bytes": 2051,
+    "sha256": "EA65D3BA05FD0923F5F7762F93AAB9D330A0044BA641910ECBF008DA962E571B"
+  },
+  "complete_source_and_current_directory_seals": true,
+  "seal_counts": {
+    "source": 15041,
+    "tree": 15054,
+    "vendor": 1489,
+    "compiler": 19546,
+    "controls": 14
+  },
+  "distinct_current_files_rehashed": 34610,
+  "native_owner_count": 8,
+  "actual_process_intervals_closed": 11,
+  "all_original_terminal0_owner_gates_passed": true,
+  "original_receipts_rehashed": 60,
+  "actual_tests_started": 0,
+  "runtime_started": false,
+  "runtime_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "scope": "Complete fresh4-group BuildQuery accepted from exact original raw metadata, current sealed directories/artifacts and exact process-instance closure. This receipt authorizes no native runtime; separate fresh RuntimeOnly issuance is required."
+}

@@ -1,0 +1,482 @@
+{
+  "schema": 1,
+  "kind": "Independent finite FileHandle read and FSReqCallback source-control, fixture and integration peer",
+  "reviewer": "module_io_port",
+  "created_utc": "2026-10-20T18:42:01.741673+00:00",
+  "status": "no_concrete_blocker_in_reviewed_source_scope",
+  "scope": {
+    "all_new_control_bodies_read": true,
+    "read_controls": 14,
+    "callback_template_controls": 11,
+    "shared_fixture_full_body_read": true,
+    "actual_production_algorithm_and_owner_paths_reviewed": true,
+    "original_Node_read_and_constructor_source_selected_spans_read": true,
+    "eleven_file_exact_layering_reviewed": true,
+    "source_only": true
+  },
+  "packet_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-native-integration-projection-20261020-172540\\projection.json",
+      "bytes": 145538,
+      "sha256": "44949486FA0304F822CFF48C587166FBD9F29E1CC51EAF6AAF583E562ACB484B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\finite-integration-delta.json",
+      "bytes": 20528,
+      "sha256": "E112095F84AAAE433B8317E1D18B30B05A15A2349FBDAA62F4FEEEC1BCE151BF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\control-inventory.json",
+      "bytes": 3543,
+      "sha256": "F4DA82AE992A3F22F63B3882174835E7DD75B80306D539287A647BC6329B74FF"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\dependency-inventory.json",
+      "bytes": 500708,
+      "sha256": "3D515709FB2E2E6208CC700390E9E80E6FCCD74B10C5CE7AE02208F81710CBDE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\handoff.json",
+      "bytes": 3847,
+      "sha256": "015C6FB355B1556C9DF0FEF256933BD5832E1448A519D64E2213EFCBB2D9D3AE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\handoff-count-separation.json",
+      "bytes": 6633,
+      "sha256": "310687BC2ACDB06CA017E1BF810149C57FEE85BBDBFB686A7523869E2FFE1499"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-read-controls-sourceonly-20261020\\README-count-separation.md",
+      "bytes": 7386,
+      "sha256": "5F151964A20DAA301AFD7988FB6DBE9F169EF70B238A5D462676DCCF5E996E80"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-fsreqcallback-template-sourceonly-20261020\\production-proposal.json",
+      "bytes": 6540,
+      "sha256": "0753466963F6EB964F582B99E7CD5002A278CB82C13C5F8722A22C9DBC563313"
+    }
+  ],
+  "independent_layering_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-read-controls-source-peer-20261020\\layering-audit.json",
+    "bytes": 15712,
+    "sha256": "272C89E90A7362859C05AC290C6FCD1E8C34C25B729B8027FA677EC8680B2EA2"
+  },
+  "audit_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-read-controls-source-peer-20261020\\layering-audit.py",
+    "bytes": 7636,
+    "sha256": "C8511CA7218387E8BCF0B7EAC95E4A7528E4EBC3F0DDF97F2A887AAC90F70754"
+  },
+  "preserved_auditor_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-read-controls-source-peer-20261020\\layering-audit-attempt1.json",
+    "bytes": 669,
+    "sha256": "249F2619A653663A70F026DD1D706CD3AC277149637B7E3415388C1E025FBD92"
+  },
+  "preserved_auditor_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-file-handle-read-controls-source-peer-20261020\\original\\layering-audit-before-path-correction.py",
+    "bytes": 7631,
+    "sha256": "217E9986361C0F9703C2EC82FD554931D64417E8B58C667E3420B492E6F489AE"
+  },
+  "prior_production_peer_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-fsreqcallback-template-source-peer-20261020\\peer.json",
+      "bytes": 16889,
+      "sha256": "3E2950011B1B5492A91AFB73B111ABD79F4B8D93FC31038C92C7D2EDC6E7DC52"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-file-handle-read-source-peer-20261020.json",
+      "bytes": 10087,
+      "sha256": "D3F8D6910760F2E2D0F7FF89FF419C8A62A55D75868A45CF1267AA8661E90DB0"
+    }
+  ],
+  "production_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_async_wrap_state.zig",
+      "bytes": 26761,
+      "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_async_wrap.zig",
+      "bytes": 19741,
+      "sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_uv_fs.h",
+      "bytes": 4931,
+      "sha256": "E4DC253302062445270904800B2816374DBF840C2BEF4C66C57D6C42D039A8CE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_uv_tcp.c",
+      "bytes": 45730,
+      "sha256": "5A8DA6FA8AD86DCB44FD5E0B20A139FEF1B1A7D9A7E0CCBD24545702DC00AE71"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_fs_request_callback.zig",
+      "bytes": 7570,
+      "sha256": "85EA8C7E5B7020F6BCB6AB88AD2B20A85EE0DFC0383861239185D898C5FC82E2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_read.zig",
+      "bytes": 14225,
+      "sha256": "DEEEDCB2CFA51512571574F676091D71E49448FFDF23F1B60DF881B73B9307FD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_read_wrap.zig",
+      "bytes": 9466,
+      "sha256": "1E98E0231C43EF57A35010CD2B531BB2FE23A84D8A6AA9DD0A885286799E6A49"
+    }
+  ],
+  "authority_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\node_file.v24.13.cc",
+      "bytes": 139386,
+      "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\node_file.v24.13.h",
+      "bytes": 17193,
+      "sha256": "A63A31D1BCAEB7AF416B19ABEAFAB880DB7D424378DC27050F9FC2EE4921E16F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-file-handle-readwrap-sourceonly-20261020\\authority\\node_file-inl.v24.13.h",
+      "bytes": 14756,
+      "sha256": "2E96C28CB0BBB4520D8E0C0997188922C3DDE28853D14A3E19D7D559BC9493D5"
+    }
+  ],
+  "source_authority_mapping": [
+    "Pinned node_file.cc541-665: actual ReadWrap constructor, ReadStart/ReadStop, inner trigger/local scopes, freelist and completion ownership/ordering, live range clipping and live restart.",
+    "Pinned node_file.cc726-730: genuine FSReqCallback constructor CHECK, realm BindingData and strict IsTrue.",
+    "Pinned node_file.cc3931-3947: real callback template inheritance and the stored fst->InstanceTemplate path used for ReadWrap, without inventing a callback constructor invocation.",
+    "The prior seven-file source peer includes the original node_file-inl.h42-49/77-83 and original FSReqBase/FSReqCallback header ownership mapping. This control peer retains that exact production snapshot and inspects the selected actual owner paths."
+  ],
+  "control_matrix": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_file_handle_read_test.zig",
+      "sha256": "FFAEE39E71868A92884A855B886D296686558C955EA700C0D735F68DB8D2777D",
+      "filter": "native FileHandle",
+      "declared_controls": 14,
+      "review": [
+        {
+          "name": "native FileHandle read closed and closing return EOF before read admission",
+          "finding": "Both original closed/closing guards return real UV_EOF before setting up a request; assertions cover no allocation, trace or waiting admission.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FileHandle zero length emits actual stream EOF without allocating a request",
+          "finding": "The zero-length branch emits real EOF through StreamBase and its native JS callback scopes without acquiring a ReadWrap or buffer.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FileHandle first read bypasses FSReqCallback construction and retains the real ReadWrap",
+          "finding": "A first read uses the stored actual FSReqCallback instance template and detached actual ReadWrap. Same brand/provider does not permit Request.unwrap because the derived owner differs. Native references, cleanup/reset, 65536-to-8 backing shrink and freelist retention match the actual callback path.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FileHandle repeated start and ReadStop preserve the accepted completion",
+          "finding": "Repeated starts see the same current_read. ReadStop changes reading only, so an accepted read still completes and releases its managed span; no cancellation or synthetic completion is introduced.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FileHandle bounded offset advances by emitted bytes before inline EOF",
+          "finding": "The physical file read at offset 2 with length 3 yields CDE, advances the actual offset to 5 and length to 0, then takes inline EOF after the listener leaves reading enabled.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FileHandle completion uses the live length and preserves the raw trace result",
+          "finding": "Reducing the live read_length after an accepted 8-byte read clips emission and offset/length arithmetic to 2 while the trace observes the native result 8; StreamBase performs the real 8-to-2 shrink.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FileHandle unbounded restart recycles the same native request through actual EOF",
+          "finding": "An unbounded read restarts through the real freelist until the actual native zero result becomes UV_EOF; the pointer is reused with a fresh AsyncReset identity and original -1 offset/length semantics.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FileHandle reentrant onread restarts before old Wrapper and event retirement",
+          "finding": "Reentrant onread restarts after current_read moved to a local and after Reset/freelist insertion but before the old Wrapper entitlement retires. The test checks the same actual request and the overlap reference count.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FileHandle reuse creates a fresh resource and restores the default trigger",
+          "finding": "Freelist reuse creates a fresh actual resource object, uses the cached handle key and real request wrapper, assigns the original handle trigger ID and restores the caller default trigger 77.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FileHandle ignored resource Set exception continues reset and real admission",
+          "finding": "An ordinary resource Set exception is retained while original void constructor/AsyncReset continuation still admits the request. The test removes its injected setter before delivery and checks the real accepted completion and exact pending reason.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FileHandle ordinary onread reason survives restart and the actual second completion",
+          "finding": "An ordinary onread exception is retained across the original live-reading restart; the second accepted native request is later pumped to actual EOF. The test observes both queue ownership and the original exception.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FileHandle full freelist releases the completed local after EmitRead",
+          "finding": "Filling the real 100-entry freelist while one read is pending forces the completed Source local to retire after EmitRead. Only the retained JS wrapper is inspected afterward; no freed native pointer is dereferenced.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FileHandle joined service drains the accepted buffer after JavaScript is disabled",
+          "finding": "Shutdown disables JS, joins/drains the real shared controller before cleanup, and delivers the accepted native callback sufficiently to clean/reset/recycle the request and return its backing without invoking the JS listener.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FileHandle AfterClose shares the actual flags and emits EOF through StreamBase",
+          "finding": "The fixture closes the real descriptor before calling the actual afterClose transition. Tests assert closed/nonclosing/fd=-1, selected reading EOF emission and later start guard; no full production close owner is claimed.",
+          "concrete_source_blocker": false
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_fs_callback_template_test.zig",
+      "sha256": "1DC90343E1BB318344F4C9652C73610B8098AA50D6A3F8B3E9EC0C17BECA8BCC",
+      "filter": "native FSReqCallback",
+      "declared_controls": 11,
+      "review": [
+        {
+          "name": "native FSReqCallback no argument initializes the actual selected FSReqBase defaults",
+          "finding": "Default construction checks the real selected FSReqBase fields, inline capacity, provider/queue and absent promise; it does not synthesize general FS continuation behavior.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FSReqCallback IsTrue accepts only literal true and never coerces an argument",
+          "finding": "Only actual primitive true selects use_bigint. False, numbers, strings, null, undefined, Boolean objects and a throwing coercion candidate stay false without coercion.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FSReqCallback caller local owns a weak actual request and one BindingData pointer",
+          "finding": "The constructor starts as the actual weak caller-local object with zero native pointers, one real Registry Entry and a retained BindingData owner; unassigned actual UV storage supports Reset before dispatch.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FSReqCallback weak finalization removes its actual Entry and releases BindingData",
+          "finding": "Dropping the weak local retires the actual Request, queue Entry and one BindingData native entitlement without disturbing the realm BindingData owner.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FSReqCallback stored InstanceTemplate creates a real blank brand without calling its constructor",
+          "finding": "The stored InstanceTemplate operation creates distinct branded JS instances while bypassing the callback and therefore allocates no native Request, request queue node, async ID or BindingData entitlement.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FSReqCallback stored brand distinguishes the actual FileHandleReadWrap native allocation",
+          "finding": "Actual detached ReadWrap construction uses the same FSReqCallback brand/provider but its own derived owner; Request.unwrap rejects it and ownership remains the real detached pointer.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FSReqCallback inherits actual AsyncWrap methods and constructor descriptors",
+          "finding": "Constructor name/length, prototype constructor descriptor and AsyncWrap methods are checked through actual native template/property APIs.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FSReqCallback subclass prototype is selected before its genuine native constructor",
+          "finding": "Reflect.construct with a Derived newTarget uses the actual Derived prototype and still selects the true constructor field.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FSReqCallback throwing new target prototype preserves the reason before native allocation",
+          "finding": "A newTarget prototype getter failure preserves the exact sentinel before State/native allocation, leaving async ID, native BindingData count and request queue unchanged.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FSReqCallback configuration retains the actual shared Controller once and rejects retired Hub entry",
+          "finding": "Configuring the same real shared Controller twice retains it once. After Hub shutdown, the template-owned reference remains alive and the stopping guard rejects further configuration before dereferencing retired Hub state.",
+          "concrete_source_blocker": false
+        },
+        {
+          "name": "native FSReqCallback generic storage admits the actual read and retires through the real Wrapper",
+          "finding": "The generic-storage control first rejects invalid spans/path synchronously, then submits a real raw read through the actual shared Controller and Entry. The observer checks the real UV result/cleanup and Wrapper state, records only the actual result on the JS wrapper, and confirms final Request/BindingData retirement. It is not a fake FSReqBase settlement callback.",
+          "concrete_source_blocker": false
+        }
+      ]
+    }
+  ],
+  "shared_fixture": {
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\native_node_file_handle_read_test_support.zig",
+      "bytes": 23302,
+      "sha256": "F72A583ED548F7BE10477B0AEFD0F77E3D035FB48F2708324AF2E92EB6CA90EC"
+    },
+    "finding": "No concrete lifetime or actual-API blocker in the selected fixture scope.",
+    "weak_binding_data_setup": [
+      "BindingData.create returns the actual weak realm owner. bootstrap duplicates and stores its actual target JS value before the local bootstrap scope ends.",
+      "assemble initializes the actual Handle State while that target remains rooted, then calls data.retainNative and stores the same pointer on the actual derived Handle.",
+      "Only after assembly does init drop the setup-only target duplicate; the real Handle entitlement now keeps BindingData alive.",
+      "The fixture preserves the earlier uncorrected setup source in SDK original snapshots; it does not claim a production FileHandle constructor implementation."
+    ],
+    "teardown": [
+      "File.deinit first calls Fixture.stopIo, which disables JS and performs actual native environment join/drain before descriptor close, local JS roots or realm owners retire.",
+      "The real Environment Realm cleanup walks its current head instead of retaining a next pointer across destructor effects. BindingData with a live Handle entitlement detaches first and completes retirement when Handle derived retirement releases it.",
+      "Handle derived retirement requires current_read empty, invokes StreamBase.deinit and releases its actual BindingData native entitlement before base State cleanup.",
+      "BindingData retirement releases the real freelist native ReadWrap pointers. ReadWrap derived destruction only retires Entry/UV storage and does not dereference its borrowed FileHandle pointer.",
+      "StreamBase initialized=false protects the partial assembly error path. Fixture init error cleanup retains the setup target until ordinary cleanup can release actual attached owners.",
+      "Templates retain the actual Controller separately from the Hub; post-stop test observations use that live entitlement. Controller.enter checks stopping before touching a possibly retired Hub."
+    ],
+    "actual_dependencies": [
+      "Actual Engine, Environment, native State/Registry, StreamBase, BindingData, callback Scope, shared filesystem Controller, uv_fs request storage and native completion queue.",
+      "Trace probes observe actual request pointer/async ID/count/cleanup state only.",
+      "The selected allocation fixture uses the actual first-success native ArrayBuffer backing allocation and fails explicitly otherwise; production retry/GC policy is not replaced.",
+      "The generic-storage callback observes the actual Entry/UV result and records it on the actual wrapper. It does not imitate general FSReqBase Init/Resolve/Reject/stat behavior."
+    ],
+    "dependency_pins_and_inspection_scopes": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_request_state.zig",
+        "bytes": 5818,
+        "sha256": "6FACD1ACF162570BF3435E4F962BAB5CA8BAF4237673CD04D66A708F4CC371AF",
+        "review_scope": "full source; Registry/Entry admission, callback retain/detach/count ordering, reset and retirement"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_fs_request_io.zig",
+        "bytes": 14502,
+        "sha256": "1A2B9D08780AD8F94E1730351CE11B18185E95C1202708A6A15E26DE9F979393",
+        "review_scope": "selected Controller retain/release, enter stopping guard, dispatchRawRead, delivery, stopped and abandon paths"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_fs_binding_data.zig",
+        "bytes": 17792,
+        "sha256": "AB6FB9BD2C6442D19B2EC60BCA0F536DD3BC64636971E5C1E2761E25E11277C8",
+        "review_scope": "selected weak/native pointer entitlement, deleteMe/retire/freelist cleanup and borrowed get paths"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_async_wrap_state.zig",
+        "bytes": 26761,
+        "sha256": "16C3B02F8DC9398131A2E691986B82A792DAF29A5132B50E66FE7738744D5994",
+        "review_scope": "selected initialization, Registry cleanup, strong/weak, retain/detach/release and derived retirement paths"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_async_wrap.zig",
+        "bytes": 19741,
+        "sha256": "7E970CA3B0A6A1A2519849E52054F4865E0FE926AE53F2502E15FF400048ACF0",
+        "review_scope": "selected actual template constructor/instance, class/provider, Controller configuration and finalizer paths"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_stream_base.zig",
+        "bytes": 10864,
+        "sha256": "0A3F4EB5133BC9543D5AD77DC33F4753ABEC866EB721BCE0A8F08C16BECD5ABF",
+        "review_scope": "selected initialized guard, real onread callback and complete defaultAllocate/defaultRead/readBody shrink path"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_read.zig",
+        "bytes": 14225,
+        "sha256": "DEEEDCB2CFA51512571574F676091D71E49448FFDF23F1B60DF881B73B9307FD",
+        "review_scope": "full source; reread complete ReadStart/ReadStop/afterClose, acquire and completion algorithms"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_file_handle_read_wrap.zig",
+        "bytes": 9466,
+        "sha256": "1E98E0231C43EF57A35010CD2B531BB2FE23A84D8A6AA9DD0A885286799E6A49",
+        "review_scope": "full source; actual typed storage, detached native ownership, reset and derived destruction"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\src\\extensions\\native_node_fs_request_callback.zig",
+        "bytes": 7570,
+        "sha256": "85EA8C7E5B7020F6BCB6AB88AD2B20A85EE0DFC0383861239185D898C5FC82E2",
+        "review_scope": "full source; actual weak constructor owner, precise unwrap, Entry and BindingData ownership"
+      }
+    ]
+  },
+  "layering": {
+    "base_projection": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-native-integration-projection-20261020-172540\\projection.json",
+      "bytes": 145538,
+      "sha256": "44949486FA0304F822CFF48C587166FBD9F29E1CC51EAF6AAF583E562ACB484B"
+    },
+    "base_candidate_commit": "14615dfc179f9e7e2044591a2d8aa9592b9d883b",
+    "eleven_declared_paths_only": true,
+    "four_shared_production_modifications": true,
+    "existing_file_hunks": 32,
+    "new_files": 6,
+    "full_existing_forward_and_inverse_exact": true,
+    "all_ten_nonbuild_live_sdk_files_equal_declared_projection": true,
+    "all_seven_production_files_still_match_prior_reviewed_proposal": true,
+    "build_base_sha256": "B2CC65057664436C2F40D70175C439BAA8CE7B372899F61DD6AB6BB7113B06D2",
+    "projected_build_sha256": "C1EE1F66B6FD240B5B9BE01E92625BD602EA19B052A93AA837B452677C71455E",
+    "build_single_insertion": {
+      "before_byte_offset": 211049,
+      "existing_source_removed": false,
+      "new_roots": 2,
+      "new_native_compilation_units": 0,
+      "run_artifacts": 0
+    },
+    "build_owner_mapping": [
+      "Both roots use the same resolved target, optimize and use_llvm settings as the existing gated filesystem group and follow the actual ReqWrap routing block.",
+      "Each links QuickJS through the unchanged helper, actual TypeScript parser and SQLite, imports catalog_tool, includes the existing libuv headers, and links the existing shared network library.",
+      "Neither block recompiles native_uv_tcp.c, memory owner or TLS diagnostic owner. Existing quickjs/network recipes and all parent build bytes are retained exactly outside the single insertion.",
+      "The actual Windows library additions are advapi32 and userenv, matching the existing neighboring owner test setup.",
+      "Both steps only depend on b.addInstallArtifact and set explicit per-root executable basenames. No b.addRunArtifact is introduced."
+    ],
+    "root_artifacts": [
+      {
+        "path": "src/native_node_file_handle_read_test.zig",
+        "filter": "native FileHandle",
+        "step": "build-native-node-file-handle-read",
+        "windows_basename": "native-node-file-handle-read.exe",
+        "other_basename": "native-node-file-handle-read",
+        "declared_controls": 14
+      },
+      {
+        "path": "src/native_node_fs_callback_template_test.zig",
+        "filter": "native FSReqCallback",
+        "step": "build-native-node-fs-callback-template",
+        "windows_basename": "native-node-fs-callback-template.exe",
+        "other_basename": "native-node-fs-callback-template",
+        "declared_controls": 11
+      }
+    ],
+    "preserved_main_callback": {
+      "path": "src/extensions/native_node_async_wrap_make_callback.zig",
+      "base_source": "git:14615dfc179f9e7e2044591a2d8aa9592b9d883b:src/extensions/native_node_async_wrap_make_callback.zig",
+      "sha256": "972B9D098E93A138A8F6333CDAD829CAFE4D6E6855B2E1811B4623F57E39FCA2",
+      "not_in_delta": true
+    }
+  },
+  "findings": [
+    {
+      "kind": "resolved_metadata_schema_negative",
+      "original_handoff_sha256": "015C6FB355B1556C9DF0FEF256933BD5832E1448A519D64E2213EFCBB2D9D3AE",
+      "description": "The original existing_controls=1121 was a prior metadata observation but was placed in a sum using source declarations. 1121+135+25 does not equal 1249.",
+      "resolution": "Separate additive handoff-count-separation.json SHA310687BC2ACDB06CA017E1BF810149C57FEE85BBDBFB686A7523869E2FFE1499 correctly separates 54/1089 declared, seven/135 declared and two/25 declared, yielding 63/1249 declared. Prior V31 54/1121 accepted metadata stays separate and future actual metadata is unknown. The original is preserved.",
+      "production_or_controls_changed": false
+    },
+    {
+      "kind": "resolved_auditor_path_negative",
+      "description": "An initial source audit used a nonexistent shortened callback filename. It reached the callback preservation pin only after all 11 file and 7 production checks succeeded, then raised TypeError on a missing byte value. The original auditor and negative are retained. The corrected path comes directly from the handoff and actual candidate tree, and the complete audit now passes.",
+      "production_or_controls_changed": false
+    }
+  ],
+  "counts": {
+    "this_source_names_independently_counted": 25,
+    "this_roots": 2,
+    "parent_projection_roots": 7,
+    "parent_projection_declared_controls": 135,
+    "prior_source_basis_as_confirmed_by_Root": {
+      "roots": 54,
+      "declared_controls": 1089
+    },
+    "future_declared_basis": {
+      "roots": 63,
+      "declared_controls": 1249
+    },
+    "prior_V31_accepted_metadata_separate": {
+      "roots": 54,
+      "names": 1121
+    },
+    "future_actual_metadata": "unknown; no forecast of 1281 or any other runtime count"
+  },
+  "remaining_scope_limits": [
+    "No Zig/C/C++ compiler, preprocessor, native test/executable, Node reference, source generator, formatter or additional native resource lease was used.",
+    "No Main source, SDK source or existing production file was edited during this peer. Only new reviewer evidence was written in the modules-io worktree.",
+    "No compilation, linkage, test success, executable metadata, runtime timing/concurrency or platform qualification is inferred from this static review.",
+    "The fixture does not implement or qualify the full native FileHandle constructor, close/GC/transfer owner or complete internal/fs assembly.",
+    "Production tracing category/controller and backing-allocation retry/GC composition remain explicit production obligations.",
+    "General FSReqBase Init, continuation, stat and Resolve/Reject methods remain open; the observer test is restricted to actual unassigned native-storage dispatch and lifetime.",
+    "The dependency inventory is conservatively pinned lexical input, not compiler-selected module or C preprocessor reachability.",
+    "Root owns eventual concrete combined intake, build/query/runtime packet and all associated gates."
+  ],
+  "compiler_executed": false,
+  "native_executed": false,
+  "node_executed": false,
+  "main_modified": false,
+  "sdk_modified": false,
+  "application_qualification": false
+}

@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "status": "root_issued_exact_progress_and_evidence_intake",
+  "basis_main_head": "c5047a5b68e15e4ef9279b874064e68174e99d87",
+  "branch": "work/pi-zig-consolidated-20261016",
+  "executor_sha256": "D77858671C6FF98157D974A6D45D2EE8331A85088F05FDB6C4362988D193BBB6",
+  "source_intake_authorized": true,
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "authorized_phases": {
+    "progress": {
+      "manifest_sha256": "0A780A92E6A511F05C20DCB1E75B9A105190B573D2B678938320093D6901C906",
+      "total_commit_paths": 94
+    }
+  },
+  "required_current_pins": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-progress-and-closure-intake-20261020\\manifest.json",
+      "bytes": 46751,
+      "sha256": "0A780A92E6A511F05C20DCB1E75B9A105190B573D2B678938320093D6901C906"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Apply-ExactV34ProgressAndEvidenceIntake-20261020.py",
+      "bytes": 9706,
+      "sha256": "D77858671C6FF98157D974A6D45D2EE8331A85088F05FDB6C4362988D193BBB6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v34-progress-intake-executor-finite-adaptation-20261020.json",
+      "bytes": 2517,
+      "sha256": "2AECAE9FE2A533248B5309D87F08D67B7F7B4A6D588D9CD9C25C993C9E89A22D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-progress-and-closure-intake-20261020\\projected-progress.json",
+      "bytes": 294251,
+      "sha256": "3BCB7BF1CE552D95FDD8B34356EB01EAE4C2C0B7E30294920B2975B9D0794F10"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-progress-and-closure-intake-20261020\\prior-progress.json",
+      "bytes": 235681,
+      "sha256": "8711EC0A199BC616F823BE25D08A380F47359284AACB37ABF497297DC32080D6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-error-build-naming-intake-receipts-20261020\\error-naming-receipt.json",
+      "bytes": 3351,
+      "sha256": "008068C07400489B25DD301F7F30923391BCF26223F387280AEACC46FD2C9BA4"
+    }
+  ],
+  "receipt_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-progress-and-closure-intake-receipts-20261020",
+  "scope": "Only94 explicit verification paths: one progress update plus92 evidence copies and manifest. No source/build mutation; all prior history/list prefixes preserved. No compiler/runtime/generator/push/cleanup authority."
+}

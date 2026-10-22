@@ -1,0 +1,1515 @@
+{
+  "schema": 1,
+  "status": "unexecuted_reviewable_exact_v39_execution_source_adaptation",
+  "author": "/root/handover_review",
+  "declarations": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\authoring\\declared-edits.json",
+    "bytes": 33940,
+    "sha256": "9B0417EC1A8F2D9B3E14CE8C259ADAD1266690AC2B224991061D9B53CE78C491"
+  },
+  "execution_provenance_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-sourceonly-20261022\\execution-provenance-contract.json",
+    "bytes": 6458,
+    "sha256": "513556032A12F09F056170DD0A37A5EE3E714040A01FD8115B8B8AF1DBBD1B3E"
+  },
+  "sources": [
+    {
+      "kind": "buildquery_constructor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV38BuildQueryGrant-20261021.py",
+        "bytes": 10095,
+        "sha256": "5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+        "bytes": 10269,
+        "sha256": "1501B39CAE3466FEBC38E39DA5121D33064AECE3206BDBEF998A59BF26491EF3"
+      },
+      "edit_count": 12,
+      "steps": [
+        {
+          "index": 0,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 0,
+          "before": "\"\"\"Root-only exact V38 BuildQuery grant construction; no native execution.\"\"\"",
+          "after": "\"\"\"Root-only exact V39 BuildQuery grant construction; no native execution.\"\"\"",
+          "before_bytes": 10095,
+          "before_sha256": "5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B",
+          "after_bytes": 10095,
+          "after_sha256": "66BCC8DF910A1AF68A796BFC136D8F2AC1E3CF64D1B28748B21B592B217C7C02",
+          "unchanged_prefix_bytes": 0,
+          "unchanged_prefix_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "unchanged_suffix_bytes": 10018,
+          "unchanged_suffix_sha256": "9406A88CC5B3E90937E1357B29632A76ED720E279CB78509CDAD7F0CE5FF51A2"
+        },
+        {
+          "index": 1,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 1642,
+          "before": "assert cfg[\"status\"]==\"root_reviewed_specific_v38_buildquery_preparation\"",
+          "after": "assert cfg[\"status\"]==\"root_reviewed_specific_v39_buildquery_preparation\"",
+          "before_bytes": 10095,
+          "before_sha256": "66BCC8DF910A1AF68A796BFC136D8F2AC1E3CF64D1B28748B21B592B217C7C02",
+          "after_bytes": 10095,
+          "after_sha256": "EAA9E201353FCEF2D09D4B362EC8DAA4CB7061B995D2409D1471CF7AB402D5BF",
+          "unchanged_prefix_bytes": 1642,
+          "unchanged_prefix_sha256": "3C22DD66DAA0921A9210F9296820A43BE70927A0E985BA297CB7A89E04E4C4C8",
+          "unchanged_suffix_bytes": 8380,
+          "unchanged_suffix_sha256": "52AF852CB2331C819C269E63E4574D7E6F8D2A9BD12EFA26E536EBC3D15FE856"
+        },
+        {
+          "index": 2,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 7398,
+          "before": "control=B/(\"evidence/root-native-foundation-fresh-v38-\"+batch+\"-control-\"+suffix)",
+          "after": "control=B/(\"evidence/root-native-foundation-fresh-v39-\"+batch+\"-control-\"+suffix)",
+          "before_bytes": 10095,
+          "before_sha256": "EAA9E201353FCEF2D09D4B362EC8DAA4CB7061B995D2409D1471CF7AB402D5BF",
+          "after_bytes": 10095,
+          "after_sha256": "4BC1A00C9FA9E91E3C08AB057C8986615624C846B7A1C2E88C820AA366A24333",
+          "unchanged_prefix_bytes": 7398,
+          "unchanged_prefix_sha256": "D3884E4A490596A728609EA6474FEF60ADAF5528212823C27ACD1EBB0406AE91",
+          "unchanged_suffix_bytes": 2616,
+          "unchanged_suffix_sha256": "4653A9289FDC7E69010D9B1CCD457E8A578001D1D51B402EF7AA12E89F2597B2"
+        },
+        {
+          "index": 3,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 7480,
+          "before": "proof=B/(\"evidence/root-native-foundation-fresh-v38-\"+batch+\"-buildquery-\"+suffix)",
+          "after": "proof=B/(\"evidence/root-native-foundation-fresh-v39-\"+batch+\"-buildquery-\"+suffix)",
+          "before_bytes": 10095,
+          "before_sha256": "4BC1A00C9FA9E91E3C08AB057C8986615624C846B7A1C2E88C820AA366A24333",
+          "after_bytes": 10095,
+          "after_sha256": "EB00978D86A28445E2AB75AD2981633A2DBD91AFE816BF0F48126DFA6645CFF7",
+          "unchanged_prefix_bytes": 7480,
+          "unchanged_prefix_sha256": "E4615D20D789311AC0DB2AB897FCEEE871F580F2D6C13A7A765616EBE00D5AC9",
+          "unchanged_suffix_bytes": 2533,
+          "unchanged_suffix_sha256": "A654E31ACFC0EB42EF527A3D318AEF1D9AC6AAA13C2B9CFF3F913A00E0350B0C"
+        },
+        {
+          "index": 4,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 8005,
+          "before": "grant_id=\"root-native-foundation-fresh-v38-\"+batch+\"-\"+suffix,issued_utc=now.isoformat(),candidate_head=HEAD,",
+          "after": "grant_id=\"root-native-foundation-fresh-v39-\"+batch+\"-\"+suffix,issued_utc=now.isoformat(),candidate_head=HEAD,",
+          "before_bytes": 10095,
+          "before_sha256": "EB00978D86A28445E2AB75AD2981633A2DBD91AFE816BF0F48126DFA6645CFF7",
+          "after_bytes": 10095,
+          "after_sha256": "A97A5BA308053FFCADDA25359E90FC90B18A2324F2F4A74BEAB33DD2676FE0AF",
+          "unchanged_prefix_bytes": 8005,
+          "unchanged_prefix_sha256": "70B29C66A188324F8555EE22E22CB2AD692AFE0FBC81FCA76110C2FA70310B1F",
+          "unchanged_suffix_bytes": 1981,
+          "unchanged_suffix_sha256": "C909F4612F80DEEE1DD6B75F6271BE5DB0F10C7495A0D2523B8C6EDAC7D1CC65"
+        },
+        {
+          "index": 5,
+          "category": "unresolved_identity_literal",
+          "reason": "Exact future candidate head remains unresolved until Root observes and binds the post-intake commit.",
+          "offset": 280,
+          "before": "\"014062f2d139254acab4b985b4ae343db637166f\"",
+          "after": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+          "before_bytes": 10095,
+          "before_sha256": "A97A5BA308053FFCADDA25359E90FC90B18A2324F2F4A74BEAB33DD2676FE0AF",
+          "after_bytes": 10095,
+          "after_sha256": "6CFE4E1CABF6E94660E1B2C9F2ED262CA28AF3B8611C562DCF8CCF0E39D43082",
+          "unchanged_prefix_bytes": 280,
+          "unchanged_prefix_sha256": "0F95577BA5486606063720F3617EBD1F5E70E021C68BBC4DBEDC718E767865FD",
+          "unchanged_suffix_bytes": 9773,
+          "unchanged_suffix_sha256": "A2098533B9DB636FEF7CECF595DEB6593CD659DCA8B5B0AD06B02954724B4BF6"
+        },
+        {
+          "index": 6,
+          "category": "cohort_admission",
+          "reason": "Admit exactly the independently reviewed new3, retained4, original63 disjoint batches; preserve the unchanged64 cap.",
+          "offset": 1916,
+          "before": "batch in (\"new4\",\"existing63\")",
+          "after": "batch in (\"new3\",\"new4\",\"existing63\")",
+          "before_bytes": 10095,
+          "before_sha256": "6CFE4E1CABF6E94660E1B2C9F2ED262CA28AF3B8611C562DCF8CCF0E39D43082",
+          "after_bytes": 10102,
+          "after_sha256": "5F80E24A76584B51F1CBD3DCE0085F6DE910326F3781D81216C866F3666B59B0",
+          "unchanged_prefix_bytes": 1916,
+          "unchanged_prefix_sha256": "A7791C3BE41C31A7CD009425DE840464E26B3A51451B9152A2DC8B202713DABC",
+          "unchanged_suffix_bytes": 8149,
+          "unchanged_suffix_sha256": "4F8550C25887D0EA109910ABA0C3512EAE344FD4124BC9C7B2979886A88E92E5"
+        },
+        {
+          "index": 7,
+          "category": "cohort_declarations",
+          "reason": "Exact source declaration counts3/38,4/58,63/1249; actual metadata still observed separately.",
+          "offset": 1954,
+          "before": "expected_groups,expected_declared=(4,58) if batch==\"new4\" else (63,1249)",
+          "after": "expected_groups,expected_declared=(3,38) if batch==\"new3\" else (4,58) if batch==\"new4\" else (63,1249)",
+          "before_bytes": 10102,
+          "before_sha256": "5F80E24A76584B51F1CBD3DCE0085F6DE910326F3781D81216C866F3666B59B0",
+          "after_bytes": 10131,
+          "after_sha256": "1AB8D18F96766899A176336A5C65EDDB142E00E10F9F5445CCF8E2D98025E10F",
+          "unchanged_prefix_bytes": 1954,
+          "unchanged_prefix_sha256": "6DF738846F00FD0D3AFFDA70F0A958EAAAD6FC9ACABEB5171D5E693B58AC6EC4",
+          "unchanged_suffix_bytes": 8076,
+          "unchanged_suffix_sha256": "5D52B9184C4F700A70D0E610DE1111A4F8FCD746A0D2C3F6F664FF344A99AE50"
+        },
+        {
+          "index": 8,
+          "category": "full_catalog_counts",
+          "reason": "Preserve all117 prior groups/2013 declarations and append exactly3 complete roots/38 declarations.",
+          "offset": 3012,
+          "before": "assert review[\"catalog_groups\"]==117 and review[\"catalog_declarations\"]==2013 and review[\"actual_metadata_count\"] is None",
+          "after": "assert review[\"catalog_groups\"]==120 and review[\"catalog_declarations\"]==2051 and review[\"actual_metadata_count\"] is None",
+          "before_bytes": 10131,
+          "before_sha256": "1AB8D18F96766899A176336A5C65EDDB142E00E10F9F5445CCF8E2D98025E10F",
+          "after_bytes": 10131,
+          "after_sha256": "189A0F5AF98F2A53A13228CA5CC8A045205EC8453E29F2EA02ECEE1B6A5B65EF",
+          "unchanged_prefix_bytes": 3012,
+          "unchanged_prefix_sha256": "5DDAE23D060320F7CEE94B2CA62C868447DEFD23A628CF2D38F51E8A3EC5B8CD",
+          "unchanged_suffix_bytes": 6998,
+          "unchanged_suffix_sha256": "99B16908EA14335D1A4B668C0186C88079C23A363C81195A45AB86A7DF94B85E"
+        },
+        {
+          "index": 9,
+          "category": "full_catalog_counts",
+          "reason": "Preserve all117 prior groups/2013 declarations and append exactly3 complete roots/38 declarations.",
+          "offset": 4356,
+          "before": "assert len(matrix[\"groups\"])==117 and sum(len(g[\"required_named\"]) for g in matrix[\"groups\"])==2013",
+          "after": "assert len(matrix[\"groups\"])==120 and sum(len(g[\"required_named\"]) for g in matrix[\"groups\"])==2051",
+          "before_bytes": 10131,
+          "before_sha256": "189A0F5AF98F2A53A13228CA5CC8A045205EC8453E29F2EA02ECEE1B6A5B65EF",
+          "after_bytes": 10131,
+          "after_sha256": "563AE41956704083C54D053EAE5FB9EFD8FE0B177D29C4C5D7B8515D910A2EF5",
+          "unchanged_prefix_bytes": 4356,
+          "unchanged_prefix_sha256": "380FB96043894CA08B79766C38491E4971261FF8EC70A1502D38D5B9EABB6038",
+          "unchanged_suffix_bytes": 5676,
+          "unchanged_suffix_sha256": "8C50387E4EE6882CE69798D64A40C8BA79400B2274F485370F961A763387F121"
+        },
+        {
+          "index": 10,
+          "category": "full_catalog_counts",
+          "reason": "Preserve all117 prior groups/2013 declarations and append exactly3 complete roots/38 declarations.",
+          "offset": 4600,
+          "before": "by_name={g[\"name\"]:g for g in matrix[\"groups\"]};assert len(by_name)==117",
+          "after": "by_name={g[\"name\"]:g for g in matrix[\"groups\"]};assert len(by_name)==120",
+          "before_bytes": 10131,
+          "before_sha256": "563AE41956704083C54D053EAE5FB9EFD8FE0B177D29C4C5D7B8515D910A2EF5",
+          "after_bytes": 10131,
+          "after_sha256": "EA23C58B64A667E330DCD24C4ED4C9215AE3A74E10E823D09EF32ECF92101FCE",
+          "unchanged_prefix_bytes": 4600,
+          "unchanged_prefix_sha256": "3E5F5A6DE59344C8B9BCC658B499EC2EB7051B9AC3C09FEA14884A915C5AD672",
+          "unchanged_suffix_bytes": 5459,
+          "unchanged_suffix_sha256": "573AEFD1EF32F804E10468F43C64385DBB6E89CCEBE52993317DDB12568C975C"
+        },
+        {
+          "index": 11,
+          "category": "exact_cohort_order",
+          "reason": "Retain exact old63 and retained4 order; new3 order is Shutdown, OneByte, Buffer.",
+          "offset": 4756,
+          "before": "if batch==\"existing63\":\n    assert selected==read(OLD/\"root-grant.json\")[\"groups\"]\nelse:\n    assert selected==[\"native-node-file-handle-owner\",\"native-node-fs-before-hook-continuation\",\"native-vm-error-constructor-name\",\"native-node-file-handle-transfer\"]",
+          "after": "if batch==\"existing63\":\n    assert selected==read(OLD/\"root-grant.json\")[\"groups\"]\nelif batch==\"new4\":\n    assert selected==[\"native-node-file-handle-owner\",\"native-node-fs-before-hook-continuation\",\"native-vm-error-constructor-name\",\"native-node-file-handle-transfer\"]\nelse:\n    assert selected==[\"native-node-stream-shutdown\",\"native-node-one-byte-string\",\"native-vm-array-buffer-view-data\"]",
+          "before_bytes": 10131,
+          "before_sha256": "EA23C58B64A667E330DCD24C4ED4C9215AE3A74E10E823D09EF32ECF92101FCE",
+          "after_bytes": 10269,
+          "after_sha256": "1501B39CAE3466FEBC38E39DA5121D33064AECE3206BDBEF998A59BF26491EF3",
+          "unchanged_prefix_bytes": 4756,
+          "unchanged_prefix_sha256": "7CC7D64D47C785F7A434E7ECD39C64998A597680B382F9C7F22DBBBCEFD31350",
+          "unchanged_suffix_bytes": 5120,
+          "unchanged_suffix_sha256": "B6AA7291817631C4E8588CCEF09875B480C4653D057AC538BC9397293864C96C"
+        }
+      ],
+      "all_step_untouched_fragments_exact": true,
+      "complete_forward_and_raw_inverse": true,
+      "whole_original_bytes_recovered": 10095,
+      "whole_original_sha256_recovered": "5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B",
+      "all_helpers_byte_identical": [
+        {
+          "kind": "buildquery_constructor",
+          "name": "sha",
+          "bytes": 56,
+          "sha256": "B039248BE12F1B2D0E8C61567B4FF89EAD07E700FCD674F3E4CFC47DC8D82DFF"
+        },
+        {
+          "kind": "buildquery_constructor",
+          "name": "read",
+          "bytes": 72,
+          "sha256": "8E3857AEC558153A79BECAFA5517C2F233B502620310CE0012CE0C67E3FA72E6"
+        },
+        {
+          "kind": "buildquery_constructor",
+          "name": "pin",
+          "bytes": 95,
+          "sha256": "3EAB5E7A1F4F969C2AAECE64A14EA73C033DE2CA297593FD7E5C718B6ABD36DB"
+        },
+        {
+          "kind": "buildquery_constructor",
+          "name": "verify",
+          "bytes": 263,
+          "sha256": "0B95EFF3B9ECE3EB28B68C519A4FC268F7B31439DE1ED0179ABC6E34A6C18B1B"
+        },
+        {
+          "kind": "buildquery_constructor",
+          "name": "verify_pins",
+          "bytes": 288,
+          "sha256": "96E8F654E265CA4D2DA213F558DF02FBEFD1E5504839FFDD5A51914BE3EC88C7"
+        },
+        {
+          "kind": "buildquery_constructor",
+          "name": "put",
+          "bytes": 89,
+          "sha256": "CD6F4AA01CB1840202FB4119841109497D9522851838342592292B230E8F8BD9"
+        },
+        {
+          "kind": "buildquery_constructor",
+          "name": "git",
+          "bytes": 73,
+          "sha256": "587656637E31B34B477B76CF6836C5C42D3C4808D1B929CBD4B49F5C34E8D115"
+        }
+      ],
+      "imports_AST_unchanged": true,
+      "all_historical_V34_literals_unchanged": [
+        "evidence/root-native-foundation-fresh-v34-control-20261020-202924"
+      ]
+    },
+    {
+      "kind": "runtime_constructor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV38RuntimeGrant-20261021.py",
+        "bytes": 12499,
+        "sha256": "7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39RuntimeGrant-20261022.py",
+        "bytes": 12671,
+        "sha256": "FEFA13F724061352D6A2DCFD87E10EAA23EC892E2F87531FC86066FF2EEF25DE"
+      },
+      "edit_count": 14,
+      "steps": [
+        {
+          "index": 0,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 0,
+          "before": "\"\"\"Root-only V38 strict RuntimeOnly grant construction from a completely closed BuildQuery.",
+          "after": "\"\"\"Root-only V39 strict RuntimeOnly grant construction from a completely closed BuildQuery.",
+          "before_bytes": 12499,
+          "before_sha256": "7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322",
+          "after_bytes": 12499,
+          "after_sha256": "819B07F5796D7D558D2A118D43941BB13A751EE935C671B5D069E8B629C80100",
+          "unchanged_prefix_bytes": 0,
+          "unchanged_prefix_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "unchanged_suffix_bytes": 12408,
+          "unchanged_suffix_sha256": "34A96E32DF05AE57BA39F6908A6C293A442894072865DCDE9952DF21F13F4933"
+        },
+        {
+          "index": 1,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 1777,
+          "before": "assert cfg[\"status\"]==\"root_reviewed_specific_v38_runtime_preparation\"",
+          "after": "assert cfg[\"status\"]==\"root_reviewed_specific_v39_runtime_preparation\"",
+          "before_bytes": 12499,
+          "before_sha256": "819B07F5796D7D558D2A118D43941BB13A751EE935C671B5D069E8B629C80100",
+          "after_bytes": 12499,
+          "after_sha256": "2D8F28C41E4CA6BAE35108AD5A6E410CE52C6B703ED125AEB672005F3570FCBF",
+          "unchanged_prefix_bytes": 1777,
+          "unchanged_prefix_sha256": "639567FDF74674DC63964DAD7BFF48CE7F6F5BC2F14BA13080814999CF6DA617",
+          "unchanged_suffix_bytes": 10652,
+          "unchanged_suffix_sha256": "B9256CF0525CF74740F2C8EF485053492D27134C73063B4D8EF943BAC0E99AE8"
+        },
+        {
+          "index": 2,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 2439,
+          "before": "P=E/(\"combined-native-batch-v38-\"+(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\")",
+          "after": "P=E/(\"combined-native-batch-v39-\"+(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\")",
+          "before_bytes": 12499,
+          "before_sha256": "2D8F28C41E4CA6BAE35108AD5A6E410CE52C6B703ED125AEB672005F3570FCBF",
+          "after_bytes": 12499,
+          "after_sha256": "DEBF6971E8BBCEAA5311BEFB47C7F2338909C3D06A8BD4BB5995571AC340A007",
+          "unchanged_prefix_bytes": 2439,
+          "unchanged_prefix_sha256": "E97AD3E89DE78B13EE0A2DB8CFEE9686A2CF9A8A491D9CE5394F7A3D12AEBDA3",
+          "unchanged_suffix_bytes": 9959,
+          "unchanged_suffix_sha256": "DF45A5ADECC0333AE50925D4B1706439D979108EF0E64DC2DB5A1FCBFB7C1CE4"
+        },
+        {
+          "index": 3,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 2732,
+          "before": "assert bc.parent==bp.parent==E and bc.name.startswith(\"root-native-foundation-fresh-v38-\"+batch+\"-control-\")",
+          "after": "assert bc.parent==bp.parent==E and bc.name.startswith(\"root-native-foundation-fresh-v39-\"+batch+\"-control-\")",
+          "before_bytes": 12499,
+          "before_sha256": "DEBF6971E8BBCEAA5311BEFB47C7F2338909C3D06A8BD4BB5995571AC340A007",
+          "after_bytes": 12499,
+          "after_sha256": "EC6E725CF7503D6B5572E3D62B6B66488C0FF182220CA49277E0A399F318E96D",
+          "unchanged_prefix_bytes": 2732,
+          "unchanged_prefix_sha256": "9395106130BE92971BEC82A5BCAC943F30910B691B4058D45043066FD1507B20",
+          "unchanged_suffix_bytes": 9659,
+          "unchanged_suffix_sha256": "2B4A5FBFC4DCD47A6E764977062783F91F17BAA44443FE527261D7B1EF812757"
+        },
+        {
+          "index": 4,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 9711,
+          "before": "control=E/(\"root-native-foundation-v38-\"+batch+\"-runtime-control-\"+suffix)",
+          "after": "control=E/(\"root-native-foundation-v39-\"+batch+\"-runtime-control-\"+suffix)",
+          "before_bytes": 12499,
+          "before_sha256": "EC6E725CF7503D6B5572E3D62B6B66488C0FF182220CA49277E0A399F318E96D",
+          "after_bytes": 12499,
+          "after_sha256": "ADCC5AF678A4AABBF03379B688BE8AF75FB45CAB1FDD53DC6E61775649B62754",
+          "unchanged_prefix_bytes": 9711,
+          "unchanged_prefix_sha256": "03FF51BE0C54BE53D59DB4C1B1D9DE5F7D970CFF29DBC2F62A4FD921C4C8C7F2",
+          "unchanged_suffix_bytes": 2714,
+          "unchanged_suffix_sha256": "C93ABAE540D36BD179500A2CAE2E1ACDC2FF4D69C18E7277AD8CC6B6F534B42C"
+        },
+        {
+          "index": 5,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 9786,
+          "before": "proof=E/(\"root-native-foundation-v38-\"+batch+\"-runtime-\"+suffix)",
+          "after": "proof=E/(\"root-native-foundation-v39-\"+batch+\"-runtime-\"+suffix)",
+          "before_bytes": 12499,
+          "before_sha256": "ADCC5AF678A4AABBF03379B688BE8AF75FB45CAB1FDD53DC6E61775649B62754",
+          "after_bytes": 12499,
+          "after_sha256": "C0F71B9A706075AA463E0E906C1118528E4CA7DDE572C8381CEBF13286CB233C",
+          "unchanged_prefix_bytes": 9786,
+          "unchanged_prefix_sha256": "B61CC18CC37946D220742DC4B5158D479CE3FF41DD8C4F9C6CBF9E706B3C858B",
+          "unchanged_suffix_bytes": 2649,
+          "unchanged_suffix_sha256": "25B2AB174E926CAFD43B34C683DCCB782C948F021729CA8CCC517B9ED321F94A"
+        },
+        {
+          "index": 6,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 9902,
+          "before": "updates=dict(grant_id=\"root-native-foundation-v38-\"+batch+\"-runtime-\"+suffix,issued_utc=now.isoformat(),mode=\"RuntimeOnly\",receipt_directory=str(proof),",
+          "after": "updates=dict(grant_id=\"root-native-foundation-v39-\"+batch+\"-runtime-\"+suffix,issued_utc=now.isoformat(),mode=\"RuntimeOnly\",receipt_directory=str(proof),",
+          "before_bytes": 12499,
+          "before_sha256": "C0F71B9A706075AA463E0E906C1118528E4CA7DDE572C8381CEBF13286CB233C",
+          "after_bytes": 12499,
+          "after_sha256": "43BE9EAD6D8506C3E954CA3CF40D225D6B418DE871131E8A30BFEAF9BC25E92A",
+          "unchanged_prefix_bytes": 9902,
+          "unchanged_prefix_sha256": "60A3D31C56B6870F5EFA6963901897EDE075A19902E288760B844DCF8FD24C41",
+          "unchanged_suffix_bytes": 2445,
+          "unchanged_suffix_sha256": "A2AE1C46847301249DA930FA6C8BCD3AD8A1289E5624CEF36BF811E5DD005C70"
+        },
+        {
+          "index": 7,
+          "category": "unresolved_identity_literal",
+          "reason": "Exact future candidate head remains unresolved until Root observes and binds the post-intake commit.",
+          "offset": 311,
+          "before": "\"014062f2d139254acab4b985b4ae343db637166f\"",
+          "after": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+          "before_bytes": 12499,
+          "before_sha256": "43BE9EAD6D8506C3E954CA3CF40D225D6B418DE871131E8A30BFEAF9BC25E92A",
+          "after_bytes": 12499,
+          "after_sha256": "D75017581CED6102D483373B41DEF52FEA6C9872D0257281BFC940CFA690C3E3",
+          "unchanged_prefix_bytes": 311,
+          "unchanged_prefix_sha256": "86C10B1FA32D1E9577C28BAEF270D1D0FCB02B0D6C34C6CCCC57B77B8FE60104",
+          "unchanged_suffix_bytes": 12146,
+          "unchanged_suffix_sha256": "E120F98C6286F0EE69C143B40ECDEF30A46AF682E513EB6589285049E79BEA67"
+        },
+        {
+          "index": 8,
+          "category": "unresolved_identity_literal",
+          "reason": "Future complete V39 matrix is unobserved and must be bound separately.",
+          "offset": 361,
+          "before": "\"8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03\"",
+          "after": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\"",
+          "before_bytes": 12499,
+          "before_sha256": "D75017581CED6102D483373B41DEF52FEA6C9872D0257281BFC940CFA690C3E3",
+          "after_bytes": 12499,
+          "after_sha256": "60370770AD828598ABA91223222FAB26E0028904A071DCF1EFDBB465E15617F3",
+          "unchanged_prefix_bytes": 361,
+          "unchanged_prefix_sha256": "8ACA893090E46BE9E41F7E865AA70926A7A048CACEC431C3D2FB643E32213A71",
+          "unchanged_suffix_bytes": 12072,
+          "unchanged_suffix_sha256": "71D43AD9F8E3394ABEAC2B1E7FCBB5046487B8FD372DB2E80D9D822694085F71"
+        },
+        {
+          "index": 9,
+          "category": "cohort_admission",
+          "reason": "Admit exactly the independently reviewed new3, retained4, original63 disjoint batches; preserve the unchanged64 cap.",
+          "offset": 2194,
+          "before": "batch in (\"new4\",\"existing63\")",
+          "after": "batch in (\"new3\",\"new4\",\"existing63\")",
+          "before_bytes": 12499,
+          "before_sha256": "60370770AD828598ABA91223222FAB26E0028904A071DCF1EFDBB465E15617F3",
+          "after_bytes": 12506,
+          "after_sha256": "368E6BCFCDB5EF8C915F5B41DC4A8971699A37DC6B02DF02CF3F377B9B576D55",
+          "unchanged_prefix_bytes": 2194,
+          "unchanged_prefix_sha256": "6B3C4CA36957F308D39B58D4B5B5F1BA7046DE8D66D70BDDD9C579659850CE99",
+          "unchanged_suffix_bytes": 10275,
+          "unchanged_suffix_sha256": "D6AFAECC204CF615CF287457361FA566DE01FCE9A701E398607FD68410C5F5F7"
+        },
+        {
+          "index": 10,
+          "category": "cohort_declarations",
+          "reason": "Exact source declaration counts3/38,4/58,63/1249; actual metadata still observed separately.",
+          "offset": 2232,
+          "before": "count,declared=(4,58) if batch==\"new4\" else (63,1249)",
+          "after": "count,declared=(3,38) if batch==\"new3\" else (4,58) if batch==\"new4\" else (63,1249)",
+          "before_bytes": 12506,
+          "before_sha256": "368E6BCFCDB5EF8C915F5B41DC4A8971699A37DC6B02DF02CF3F377B9B576D55",
+          "after_bytes": 12535,
+          "after_sha256": "23AEB133DE64643D1FDD9380DFF73FF6276E1A1D49BCC0C5D4988BB049633AE8",
+          "unchanged_prefix_bytes": 2232,
+          "unchanged_prefix_sha256": "713C6EF083B99AD4BB05F3CFECFF7A922BA9A2D520CCF11F27288364C3D82031",
+          "unchanged_suffix_bytes": 10221,
+          "unchanged_suffix_sha256": "8BFFAAFD8019C22027637473CB5BA6C0AABB7A42E61CECFB5A3C91C5DDFBBA49"
+        },
+        {
+          "index": 11,
+          "category": "cohort_preparation_path",
+          "reason": "Exact flat preparations new3/new4/regression63 under evidence; accepted strict controller layout unchanged.",
+          "offset": 2509,
+          "before": "(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\"",
+          "after": "(\"regression63\" if batch==\"existing63\" else batch)+\"-prepared-20261022\"",
+          "before_bytes": 12535,
+          "before_sha256": "23AEB133DE64643D1FDD9380DFF73FF6276E1A1D49BCC0C5D4988BB049633AE8",
+          "after_bytes": 12540,
+          "after_sha256": "ADB5EAA88205DC3948C6423D7743C7D9B91643A6AEC173B16D56D156FA60D7F8",
+          "unchanged_prefix_bytes": 2509,
+          "unchanged_prefix_sha256": "28A2BB9A1CD09B3D67F53485AC94CC9E1876C967F6313A3F250A91ABC077A9E5",
+          "unchanged_suffix_bytes": 9960,
+          "unchanged_suffix_sha256": "62DBB859DF271D0C25C567B71CAEF2AB737D787D6BDB16B9902592EC3C5953D4"
+        },
+        {
+          "index": 12,
+          "category": "full_catalog_counts",
+          "reason": "Exact complete V39 catalog120/2051; no cached outcome transfer.",
+          "offset": 6508,
+          "before": "assert len(matrix[\"groups\"])==117 and sum(len(x[\"required_named\"])for x in matrix[\"groups\"])==2013",
+          "after": "assert len(matrix[\"groups\"])==120 and sum(len(x[\"required_named\"])for x in matrix[\"groups\"])==2051",
+          "before_bytes": 12540,
+          "before_sha256": "ADB5EAA88205DC3948C6423D7743C7D9B91643A6AEC173B16D56D156FA60D7F8",
+          "after_bytes": 12540,
+          "after_sha256": "720ED17A44079843E18D04738A784EF33F4792CB8A484EEA6ECC325C1DB510D1",
+          "unchanged_prefix_bytes": 6508,
+          "unchanged_prefix_sha256": "E883AE7E4251D3F0AF753902D8B9CDF1F9224627AD5A55B57C91D4D6F5B477B2",
+          "unchanged_suffix_bytes": 5934,
+          "unchanged_suffix_sha256": "296B31CE01EC633F0A12392416CF68715F4BBE5FC9C7EB19E2EE55BCC9BD283F"
+        },
+        {
+          "index": 13,
+          "category": "exact_cohort_order",
+          "reason": "Add only exact new3 order before unchanged retained4/original63 branches.",
+          "offset": 6607,
+          "before": "if batch==\"new4\":assert groups==[\"native-node-file-handle-owner\",\"native-node-fs-before-hook-continuation\",\"native-vm-error-constructor-name\",\"native-node-file-handle-transfer\"]",
+          "after": "if batch==\"new3\":assert groups==[\"native-node-stream-shutdown\",\"native-node-one-byte-string\",\"native-vm-array-buffer-view-data\"]\nelif batch==\"new4\":assert groups==[\"native-node-file-handle-owner\",\"native-node-fs-before-hook-continuation\",\"native-vm-error-constructor-name\",\"native-node-file-handle-transfer\"]",
+          "before_bytes": 12540,
+          "before_sha256": "720ED17A44079843E18D04738A784EF33F4792CB8A484EEA6ECC325C1DB510D1",
+          "after_bytes": 12671,
+          "after_sha256": "FEFA13F724061352D6A2DCFD87E10EAA23EC892E2F87531FC86066FF2EEF25DE",
+          "unchanged_prefix_bytes": 6607,
+          "unchanged_prefix_sha256": "1827F4BF7640A2E8854429BD134CD390FF434F8EB9B633948B45449DF28CC829",
+          "unchanged_suffix_bytes": 5756,
+          "unchanged_suffix_sha256": "6AB47540212393611B7A4C7A1584F02AF14BFBD4FEF10D3440C78327AEDE6FB1"
+        }
+      ],
+      "all_step_untouched_fragments_exact": true,
+      "complete_forward_and_raw_inverse": true,
+      "whole_original_bytes_recovered": 12499,
+      "whole_original_sha256_recovered": "7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322",
+      "all_helpers_byte_identical": [
+        {
+          "kind": "runtime_constructor",
+          "name": "sha",
+          "bytes": 56,
+          "sha256": "B039248BE12F1B2D0E8C61567B4FF89EAD07E700FCD674F3E4CFC47DC8D82DFF"
+        },
+        {
+          "kind": "runtime_constructor",
+          "name": "read",
+          "bytes": 72,
+          "sha256": "8E3857AEC558153A79BECAFA5517C2F233B502620310CE0012CE0C67E3FA72E6"
+        },
+        {
+          "kind": "runtime_constructor",
+          "name": "pin",
+          "bytes": 92,
+          "sha256": "A8C688649B0E6B427DEC5EE7CFB05D284B19AB49CA0524E8C1F0D995F476F19B"
+        },
+        {
+          "kind": "runtime_constructor",
+          "name": "verify",
+          "bytes": 251,
+          "sha256": "D706A9ED45BF54FD735447D5BF44CAE88F1A789B7FC29390A6F3F99D22ADEF22"
+        },
+        {
+          "kind": "runtime_constructor",
+          "name": "verify_pins",
+          "bytes": 248,
+          "sha256": "77A8B1DA837DF9D76A972DD58C5A426E6A5A7B33B6C8AA966C6177A02C27B1E5"
+        },
+        {
+          "kind": "runtime_constructor",
+          "name": "put",
+          "bytes": 86,
+          "sha256": "9AF2631B808218365CB5BF246D1277915BD871EFDB1152965D9BEE3FD6E57AAE"
+        },
+        {
+          "kind": "runtime_constructor",
+          "name": "git",
+          "bytes": 73,
+          "sha256": "587656637E31B34B477B76CF6836C5C42D3C4808D1B929CBD4B49F5C34E8D115"
+        },
+        {
+          "kind": "runtime_constructor",
+          "name": "state",
+          "bytes": 202,
+          "sha256": "65E00CA27BB3B545F9630F099C28B26F04D55475C473DBFBD4724468A204FF25"
+        }
+      ],
+      "imports_AST_unchanged": true,
+      "all_historical_V34_literals_unchanged": [
+        "root-native-foundation-v34-runtime-control-20261020-210255",
+        "root-native-foundation-fresh-v34-control-20261020-202924/root-grant.json"
+      ]
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38CompleteBuildQuery-20261021.py",
+        "bytes": 37254,
+        "sha256": "6BCBE32702657CD2B5F62E8779CCF585B86D7A8CFFC04C2EB6FE25B4D6E41A9E"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39CompleteBuildQuery-20261022.py",
+        "bytes": 37295,
+        "sha256": "F200CD8E6DDCF56E3900D585C302BFFD97A47CC850DF31C81CD6FA63354DCB49"
+      },
+      "edit_count": 14,
+      "steps": [
+        {
+          "index": 0,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 0,
+          "before": "\"\"\"Root-only positive V38 BuildQuery closure template; exact observed inputs required.",
+          "after": "\"\"\"Root-only positive V39 BuildQuery closure template; exact observed inputs required.",
+          "before_bytes": 37254,
+          "before_sha256": "6BCBE32702657CD2B5F62E8779CCF585B86D7A8CFFC04C2EB6FE25B4D6E41A9E",
+          "after_bytes": 37254,
+          "after_sha256": "C517603A7790EDC2E9498C905763E5BAAD7C8C700889C57033A99B0F4AA4C0DF",
+          "unchanged_prefix_bytes": 0,
+          "unchanged_prefix_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "unchanged_suffix_bytes": 37168,
+          "unchanged_suffix_sha256": "DDB1930DA408F57C0596210353B603512F22F2A9BDE9F73B6B3C4A4713E08942"
+        },
+        {
+          "index": 1,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 1593,
+          "before": "require(re.fullmatch(r\"[0-9A-F]{64}\",sys.argv[2]) is not None and digest(cfg_path)==sys.argv[2],\"Exact independently observed V38 positive inputs\")",
+          "after": "require(re.fullmatch(r\"[0-9A-F]{64}\",sys.argv[2]) is not None and digest(cfg_path)==sys.argv[2],\"Exact independently observed V39 positive inputs\")",
+          "before_bytes": 37254,
+          "before_sha256": "C517603A7790EDC2E9498C905763E5BAAD7C8C700889C57033A99B0F4AA4C0DF",
+          "after_bytes": 37254,
+          "after_sha256": "69371AC8B3C8AD24B6F1AB42D1128EFCD83274BBC004CB80A37852FD1276F323",
+          "unchanged_prefix_bytes": 1593,
+          "unchanged_prefix_sha256": "9F2B06B674B6FAD3EBB09EC16673A749D57DE07A6700A3F7B7F8374E52AED8DA",
+          "unchanged_suffix_bytes": 35514,
+          "unchanged_suffix_sha256": "E4A86A01AF38FEE260D38128C32857BD3837F776BE639D3856C96CB467365420"
+        },
+        {
+          "index": 2,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 1760,
+          "before": "require(cfg[\"status\"]==\"root_reviewed_specific_v38_positive_buildquery_closure\" and cfg[\"auditor_sha256\"]==digest(Path(__file__)),\"Specific Root review of this exact auditor\")",
+          "after": "require(cfg[\"status\"]==\"root_reviewed_specific_v39_positive_buildquery_closure\" and cfg[\"auditor_sha256\"]==digest(Path(__file__)),\"Specific Root review of this exact auditor\")",
+          "before_bytes": 37254,
+          "before_sha256": "69371AC8B3C8AD24B6F1AB42D1128EFCD83274BBC004CB80A37852FD1276F323",
+          "after_bytes": 37254,
+          "after_sha256": "4AAFF9A7BFED8815F25F065434B7BFFFF76674FE47E35CFA4862AE6FFC8A263E",
+          "unchanged_prefix_bytes": 1760,
+          "unchanged_prefix_sha256": "F16BF6D7A185A666898975DCEC7762580ECE2825E8BB3506CF82E74E38E2F4CB",
+          "unchanged_suffix_bytes": 35319,
+          "unchanged_suffix_sha256": "3B268F9DAAE86D245FC4C3C999402930F4C1829D30BA63CFA798F7A5F57B12AE"
+        },
+        {
+          "index": 3,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 2101,
+          "before": "require(batch in (\"new4\",\"existing63\"),\"One exact complete V38 batch\")",
+          "after": "require(batch in (\"new4\",\"existing63\"),\"One exact complete V39 batch\")",
+          "before_bytes": 37254,
+          "before_sha256": "4AAFF9A7BFED8815F25F065434B7BFFFF76674FE47E35CFA4862AE6FFC8A263E",
+          "after_bytes": 37254,
+          "after_sha256": "9BDC1B051EA027AB40F9006B8A73208171842E4B5D981A2EC9EEB4872CA063C4",
+          "unchanged_prefix_bytes": 2101,
+          "unchanged_prefix_sha256": "AB991CD9E54A73BEEAA1A42D4AA1AAE5B2933A8FAA1537037250F71485727CD2",
+          "unchanged_suffix_bytes": 35083,
+          "unchanged_suffix_sha256": "9E34B0924A619EBFB030B0D8EC6F9BB9659DDF450FE1651AF13E8B2F19E0D371"
+        },
+        {
+          "index": 4,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 2238,
+          "before": "prep=base/(\"evidence/combined-native-batch-v38-\"+(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\")",
+          "after": "prep=base/(\"evidence/combined-native-batch-v39-\"+(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\")",
+          "before_bytes": 37254,
+          "before_sha256": "9BDC1B051EA027AB40F9006B8A73208171842E4B5D981A2EC9EEB4872CA063C4",
+          "after_bytes": 37254,
+          "after_sha256": "3742C34C75197A539655A8819639EB00A84B6EEC7C9E1C392B96B89956D98FFF",
+          "unchanged_prefix_bytes": 2238,
+          "unchanged_prefix_sha256": "F6024DB435F47C7E944AE8B5BAFF12D9EE76775D35FB822EECC924410B47230D",
+          "unchanged_suffix_bytes": 34900,
+          "unchanged_suffix_sha256": "0862A0D2656A918A2A82BE1BFD477BFC7A4E631F1AA65DD5F91A269CA0B267C8"
+        },
+        {
+          "index": 5,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 2621,
+          "before": "require(re.fullmatch(\"root-native-foundation-fresh-v38-\"+batch+r\"-control-\\d{8}-\\d{6}\",control.name) is not None and proof.name==control.name.replace(\"-control-\",\"-buildquery-\",1),\"Exact original batch proof/control identity\")",
+          "after": "require(re.fullmatch(\"root-native-foundation-fresh-v39-\"+batch+r\"-control-\\d{8}-\\d{6}\",control.name) is not None and proof.name==control.name.replace(\"-control-\",\"-buildquery-\",1),\"Exact original batch proof/control identity\")",
+          "before_bytes": 37254,
+          "before_sha256": "3742C34C75197A539655A8819639EB00A84B6EEC7C9E1C392B96B89956D98FFF",
+          "after_bytes": 37254,
+          "after_sha256": "2509C1A452ACEEEE514E6C06723DA1AB01D37240C2B2BA45CEA9A89551D9E39D",
+          "unchanged_prefix_bytes": 2621,
+          "unchanged_prefix_sha256": "5C4F1DF23D781F92799BF2C3E3F5AD471719ABA0D8A510AED5EC6F7DB587FC90",
+          "unchanged_suffix_bytes": 34407,
+          "unchanged_suffix_sha256": "520C18B875ECDCE01175BD6CE242D74632E1B8508AF0CE5E67950C8F28E4633A"
+        },
+        {
+          "index": 6,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 14316,
+          "before": "require(p==base/\"evidence/Prepare-ReviewedV38BuildQueryGrant-20261021.py\" and digest(p)==grant_preparer[\"sha256\"]==\"5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B\" and p.stat().st_size==grant_preparer[\"bytes\"]==10095,\"Exact independently reviewed direct grant constructor\")",
+          "after": "require(p==base/\"evidence/Prepare-ReviewedV39BuildQueryGrant-20261022.py\" and digest(p)==grant_preparer[\"sha256\"]==\"5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B\" and p.stat().st_size==grant_preparer[\"bytes\"]==10095,\"Exact independently reviewed direct grant constructor\")",
+          "before_bytes": 37254,
+          "before_sha256": "2509C1A452ACEEEE514E6C06723DA1AB01D37240C2B2BA45CEA9A89551D9E39D",
+          "after_bytes": 37254,
+          "after_sha256": "280C92E359C5911C69732E3683ABECC37C0BCD26A4B25E47F06D219CCCA94C74",
+          "unchanged_prefix_bytes": 14316,
+          "unchanged_prefix_sha256": "94B82FCC4DAF311170C7FF0637C865A29F363164167B7FD35F8BBD04F716D3C2",
+          "unchanged_suffix_bytes": 22647,
+          "unchanged_suffix_sha256": "0D469AB929B3AB816290AD7FA6D1B0B8DA1498F256F7D99CD15739ED74C860AC"
+        },
+        {
+          "index": 7,
+          "category": "unresolved_identity_literal",
+          "reason": "Exact future candidate head remains unresolved until Root observes and binds the post-intake commit.",
+          "offset": 322,
+          "before": "\"014062f2d139254acab4b985b4ae343db637166f\"",
+          "after": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+          "before_bytes": 37254,
+          "before_sha256": "280C92E359C5911C69732E3683ABECC37C0BCD26A4B25E47F06D219CCCA94C74",
+          "after_bytes": 37254,
+          "after_sha256": "DF5D374D1597668E36AEA3C0B46C530EF4B652B32AF189DC3278B2AB3445CB83",
+          "unchanged_prefix_bytes": 322,
+          "unchanged_prefix_sha256": "B00D70A8B517F887170B2D390B892A2764BEE13F571DD88F71D0A33C06864D13",
+          "unchanged_suffix_bytes": 36890,
+          "unchanged_suffix_sha256": "BF4F9FC648FF3FAEB6D7CE2979F9AB596B751D07557EF21D1AFFE871113AFD3F"
+        },
+        {
+          "index": 8,
+          "category": "unresolved_identity_literal",
+          "reason": "Future complete V39 matrix is unobserved and must be bound separately.",
+          "offset": 6392,
+          "before": "\"8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03\"",
+          "after": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\"",
+          "before_bytes": 37254,
+          "before_sha256": "DF5D374D1597668E36AEA3C0B46C530EF4B652B32AF189DC3278B2AB3445CB83",
+          "after_bytes": 37254,
+          "after_sha256": "50132F829A8270E2D23327713D6A67EAC9174D2A8060F72A119A77810962A8DF",
+          "unchanged_prefix_bytes": 6392,
+          "unchanged_prefix_sha256": "7B800C9A6F1369AB7C94EEBA73E990723DC76E997437CDAA8338C81303A3ECFC",
+          "unchanged_suffix_bytes": 30796,
+          "unchanged_suffix_sha256": "433AB11C94982B92BF7ADD3513C9DFD7EDA08B1942800A3FD09333ACDEC61FBA"
+        },
+        {
+          "index": 9,
+          "category": "cohort_admission",
+          "reason": "Admit exactly the independently reviewed new3, retained4, original63 disjoint batches; preserve the unchanged64 cap.",
+          "offset": 2109,
+          "before": "batch in (\"new4\",\"existing63\")",
+          "after": "batch in (\"new3\",\"new4\",\"existing63\")",
+          "before_bytes": 37254,
+          "before_sha256": "50132F829A8270E2D23327713D6A67EAC9174D2A8060F72A119A77810962A8DF",
+          "after_bytes": 37261,
+          "after_sha256": "175D0BD2316DE0871C8CF9914C3855E9BB3F83716E20FD5C4835297D38CB16D4",
+          "unchanged_prefix_bytes": 2109,
+          "unchanged_prefix_sha256": "FA5C6E69B8C42071B548F2682E1590C2361B3CA238F908A9A561402F60BE6F75",
+          "unchanged_suffix_bytes": 35115,
+          "unchanged_suffix_sha256": "26990578879162AC3999FB66443C97CA0B4318242EA2B8710742CE82A184635C"
+        },
+        {
+          "index": 10,
+          "category": "cohort_declarations",
+          "reason": "Exact source declaration counts3/38,4/58,63/1249; actual metadata still observed separately.",
+          "offset": 2179,
+          "before": "group_count,declared_count=(4,58) if batch==\"new4\" else (63,1249)",
+          "after": "group_count,declared_count=(3,38) if batch==\"new3\" else (4,58) if batch==\"new4\" else (63,1249)",
+          "before_bytes": 37261,
+          "before_sha256": "175D0BD2316DE0871C8CF9914C3855E9BB3F83716E20FD5C4835297D38CB16D4",
+          "after_bytes": 37290,
+          "after_sha256": "A31A861FABF0EAB1663120E76BD5A102BB9EB6158F04F2A7EDA9BB2A1421BAE0",
+          "unchanged_prefix_bytes": 2179,
+          "unchanged_prefix_sha256": "2A999A841A6013108E3DA677BA6D3993508DB736F0E31BBB9C6665808E1E1A1A",
+          "unchanged_suffix_bytes": 35017,
+          "unchanged_suffix_sha256": "0F7ACD8DCDD6BDA840D0B500F04DAB1FF9FA06114763CE4BC56C7D5A6268870B"
+        },
+        {
+          "index": 11,
+          "category": "cohort_preparation_path",
+          "reason": "Exact flat preparations new3/new4/regression63 under evidence; accepted strict controller layout unchanged.",
+          "offset": 2323,
+          "before": "(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\"",
+          "after": "(\"regression63\" if batch==\"existing63\" else batch)+\"-prepared-20261022\"",
+          "before_bytes": 37290,
+          "before_sha256": "A31A861FABF0EAB1663120E76BD5A102BB9EB6158F04F2A7EDA9BB2A1421BAE0",
+          "after_bytes": 37295,
+          "after_sha256": "9377AE368360BA98F9682FCDC75643DA6749412C95E3F33CBF496DF744555E42",
+          "unchanged_prefix_bytes": 2323,
+          "unchanged_prefix_sha256": "BA7EE6D4914C1BB5EE6321444495E89D3E4BF6BB5F313FE9F3149790DE448B73",
+          "unchanged_suffix_bytes": 34901,
+          "unchanged_suffix_sha256": "C198CD469745C44F77D7E3441881B87F22FCA76509D4C14C4E10188FA1435EE5"
+        },
+        {
+          "index": 12,
+          "category": "unresolved_constructor_binding",
+          "reason": "Require separately bound exact V39 BuildQuery constructor hash; unresolved marker cannot pass a real digest comparison.",
+          "offset": 14472,
+          "before": "\"5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B\"",
+          "after": "\"UNRESOLVED_V39_BUILDQUERY_CONSTRUCTOR_SHA256____________________\"",
+          "before_bytes": 37295,
+          "before_sha256": "9377AE368360BA98F9682FCDC75643DA6749412C95E3F33CBF496DF744555E42",
+          "after_bytes": 37295,
+          "after_sha256": "B557951AB567EB6F27ACFB538F4DC70F656826CB2D2E77964D26D020D4655AF3",
+          "unchanged_prefix_bytes": 14472,
+          "unchanged_prefix_sha256": "989ADB4D8C0DC5FA145D7D591DCC6BA248134A962D0E9AA2510554017515AB61",
+          "unchanged_suffix_bytes": 22757,
+          "unchanged_suffix_sha256": "46D1CD593ED633D2FD8CFB88EB4ED86CF0EADA5D17108542A93ADE6269FA0204"
+        },
+        {
+          "index": 13,
+          "category": "exact_source_size",
+          "reason": "Derive constructor source size from this finite saved source; later fixed-width head binding preserves size.",
+          "offset": 14561,
+          "before": "grant_preparer[\"bytes\"]==10095",
+          "after": "grant_preparer[\"bytes\"]==10269",
+          "before_bytes": 37295,
+          "before_sha256": "B557951AB567EB6F27ACFB538F4DC70F656826CB2D2E77964D26D020D4655AF3",
+          "after_bytes": 37295,
+          "after_sha256": "F200CD8E6DDCF56E3900D585C302BFFD97A47CC850DF31C81CD6FA63354DCB49",
+          "unchanged_prefix_bytes": 14561,
+          "unchanged_prefix_sha256": "3CFE374B49A365FFFDE490DD21CFF0DD14FB5E610AED5D05199F219D775D1FF4",
+          "unchanged_suffix_bytes": 22704,
+          "unchanged_suffix_sha256": "BD5D7F64BCF6EAD0EC11D3AF39EB1581EBF626BCC39E899A0ABB852CCA13B7CE"
+        }
+      ],
+      "all_step_untouched_fragments_exact": true,
+      "complete_forward_and_raw_inverse": true,
+      "whole_original_bytes_recovered": 37254,
+      "whole_original_sha256_recovered": "6BCBE32702657CD2B5F62E8779CCF585B86D7A8CFFC04C2EB6FE25B4D6E41A9E",
+      "all_helpers_byte_identical": [
+        {
+          "kind": "positive_buildquery_auditor",
+          "name": "require",
+          "bytes": 64,
+          "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB"
+        },
+        {
+          "kind": "positive_buildquery_auditor",
+          "name": "utc_ticks",
+          "bytes": 576,
+          "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245"
+        },
+        {
+          "kind": "positive_buildquery_auditor",
+          "name": "read",
+          "bytes": 77,
+          "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E"
+        },
+        {
+          "kind": "positive_buildquery_auditor",
+          "name": "digest",
+          "bytes": 151,
+          "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC"
+        },
+        {
+          "kind": "positive_buildquery_auditor",
+          "name": "pin",
+          "bytes": 94,
+          "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C"
+        },
+        {
+          "kind": "positive_buildquery_auditor",
+          "name": "owner_identity",
+          "bytes": 974,
+          "sha256": "C960E7F5AFEBDDEF082CB4E4FA635A52BD018C4BF10043C4C45C548BADC7F6C9"
+        }
+      ],
+      "imports_AST_unchanged": true,
+      "all_historical_V34_literals_unchanged": [
+        "v34_progress",
+        "Exact accepted V34 grant/launcher baseline"
+      ]
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-Provenance-20261021.py",
+        "bytes": 41516,
+        "sha256": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39StrictRuntime-20261022.py",
+        "bytes": 43940,
+        "sha256": "82CA5B3712FF3898DD90AA70C2F4296523ED4F4C9EC2CA15A8E8DEF2970DD5D1"
+      },
+      "edit_count": 18,
+      "steps": [
+        {
+          "index": 0,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 0,
+          "before": "\"\"\"Independent complete positive V38 strict runtime closure; every accepted index must retain the original positive gates. No native execution is authorized by this audit.\"\"\"",
+          "after": "\"\"\"Independent complete positive V39 strict runtime closure; every accepted index must retain the original positive gates. No native execution is authorized by this audit.\"\"\"",
+          "before_bytes": 41516,
+          "before_sha256": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102",
+          "after_bytes": 41516,
+          "after_sha256": "91A7C76A429772413002B8335314FEFE54A6F40EFE4AE20EDBAA020B82D198EB",
+          "unchanged_prefix_bytes": 0,
+          "unchanged_prefix_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "unchanged_suffix_bytes": 41342,
+          "unchanged_suffix_sha256": "2F8E49509D681DBDAE3931495E838C66C20E6FE773E4EE9D1AC9DFD6E8AA5978"
+        },
+        {
+          "index": 1,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 811,
+          "before": "assert cfg[\"status\"]==\"root_reviewed_specific_v38_positive_strict_runtime_closure\"",
+          "after": "assert cfg[\"status\"]==\"root_reviewed_specific_v39_positive_strict_runtime_closure\"",
+          "before_bytes": 41516,
+          "before_sha256": "91A7C76A429772413002B8335314FEFE54A6F40EFE4AE20EDBAA020B82D198EB",
+          "after_bytes": 41516,
+          "after_sha256": "30BD5E609A0AE8A2466865450ECB4871953741558FF33A4A9046F36C23A622D0",
+          "unchanged_prefix_bytes": 811,
+          "unchanged_prefix_sha256": "4E1A18987C06824A20CDDA3E95D364DD53464464FF567B382F9F32CBEB931691",
+          "unchanged_suffix_bytes": 40623,
+          "unchanged_suffix_sha256": "2809F20D50998FDB0E44CCE59EE2A4A90D6C857CB123B2F89AF0FACC30FB20B5"
+        },
+        {
+          "index": 2,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 1798,
+          "before": "assert re.fullmatch(\"root-native-foundation-v38-\"+batch+r\"-runtime-control-\\d{8}-\\d{6}\",control.name)",
+          "after": "assert re.fullmatch(\"root-native-foundation-v39-\"+batch+r\"-runtime-control-\\d{8}-\\d{6}\",control.name)",
+          "before_bytes": 41516,
+          "before_sha256": "30BD5E609A0AE8A2466865450ECB4871953741558FF33A4A9046F36C23A622D0",
+          "after_bytes": 41516,
+          "after_sha256": "97035F55378E01319BDABE70284E0D44A917CA44B2E4DDF6ACD7AA1511BB8262",
+          "unchanged_prefix_bytes": 1798,
+          "unchanged_prefix_sha256": "D0928870218EEA2EA2B4623E8092103F4CDDF2E960A3E182D47548B5D82689CB",
+          "unchanged_suffix_bytes": 39617,
+          "unchanged_suffix_sha256": "C72223A0C4ABDAC28146002C0C5A60319195D4A28E58C588FD80627CD23BDD29"
+        },
+        {
+          "index": 3,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 1975,
+          "before": "assert re.fullmatch(\"root-native-foundation-fresh-v38-\"+batch+r\"-control-\\d{8}-\\d{6}\",build_control.name)",
+          "after": "assert re.fullmatch(\"root-native-foundation-fresh-v39-\"+batch+r\"-control-\\d{8}-\\d{6}\",build_control.name)",
+          "before_bytes": 41516,
+          "before_sha256": "97035F55378E01319BDABE70284E0D44A917CA44B2E4DDF6ACD7AA1511BB8262",
+          "after_bytes": 41516,
+          "after_sha256": "7740E7592BBE28DE29C9C09D8FD7C81D6FC613FB70FC4EA85B8FE0CC8DA595F8",
+          "unchanged_prefix_bytes": 1975,
+          "unchanged_prefix_sha256": "8BBDEE6A9B2FE305B5169CDCC2BC6371C750E1458C9BA4E678260C4F765FEB53",
+          "unchanged_suffix_bytes": 39436,
+          "unchanged_suffix_sha256": "13941DFDE13B3EE72E6D7F11A96FB3DF4D3742BFCDC28EDDDEE054708C2F75BF"
+        },
+        {
+          "index": 4,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 2208,
+          "before": "prep=evidence/(\"combined-native-batch-v38-\"+(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\")",
+          "after": "prep=evidence/(\"combined-native-batch-v39-\"+(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\")",
+          "before_bytes": 41516,
+          "before_sha256": "7740E7592BBE28DE29C9C09D8FD7C81D6FC613FB70FC4EA85B8FE0CC8DA595F8",
+          "after_bytes": 41516,
+          "after_sha256": "A3033F839B26018DA691B4CABC69A18BA2B6C400FE6EBE66D317A07804422D21",
+          "unchanged_prefix_bytes": 2208,
+          "unchanged_prefix_sha256": "7ACA0CEE512B2C8CE7C583CA2E70671B8707AEA40DDCFEBCEA2D0A61F64E8408",
+          "unchanged_suffix_bytes": 39197,
+          "unchanged_suffix_sha256": "663C3556EE69072B6EA541F2D2E77C90EA6A5CCD3895801220348EBADBDE47C6"
+        },
+        {
+          "index": 5,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 5760,
+          "before": "require(runtime_cfg[\"status\"]==\"root_reviewed_specific_v38_runtime_preparation\" and runtime_cfg[\"candidate_head\"]==head and runtime_cfg[\"batch\"]==batch,\"Reviewed actual RuntimeOnly configuration\")",
+          "after": "require(runtime_cfg[\"status\"]==\"root_reviewed_specific_v39_runtime_preparation\" and runtime_cfg[\"candidate_head\"]==head and runtime_cfg[\"batch\"]==batch,\"Reviewed actual RuntimeOnly configuration\")",
+          "before_bytes": 41516,
+          "before_sha256": "A3033F839B26018DA691B4CABC69A18BA2B6C400FE6EBE66D317A07804422D21",
+          "after_bytes": 41516,
+          "after_sha256": "0384F72FE9F3455CF5A36585815C29CE93F69DD977867B1642E3CD0AA1BFAA1C",
+          "unchanged_prefix_bytes": 5760,
+          "unchanged_prefix_sha256": "6C890BF510903DCDD95FD1A65CD73781DA3CFB895336BFBAB577B229D8FEE2CB",
+          "unchanged_suffix_bytes": 35560,
+          "unchanged_suffix_sha256": "9735270100629423B7CCE553624A43D344AF334CD7F9B9A12938B49D98BF856F"
+        },
+        {
+          "index": 6,
+          "category": "version_or_canonical_path_literal",
+          "reason": "Advance only this execution generation's version/status/path labels; historical V34 and V37 anchors remain exact.",
+          "offset": 6540,
+          "before": "runtime_preparer=evidence/\"Prepare-ReviewedV38RuntimeGrant-20261021.py\"",
+          "after": "runtime_preparer=evidence/\"Prepare-ReviewedV39RuntimeGrant-20261022.py\"",
+          "before_bytes": 41516,
+          "before_sha256": "0384F72FE9F3455CF5A36585815C29CE93F69DD977867B1642E3CD0AA1BFAA1C",
+          "after_bytes": 41516,
+          "after_sha256": "D8A4831CC4EF22B5F2ABBD3D2229B2255C33C0BB8D4F4CD21011FB3827E2F32D",
+          "unchanged_prefix_bytes": 6540,
+          "unchanged_prefix_sha256": "BC2618142A08DA38CF64E0852F7887EE1F8D92250A5B5C2F13CC7EB809899368",
+          "unchanged_suffix_bytes": 34905,
+          "unchanged_suffix_sha256": "41480CBC3949DF2FB1C10BEF19ACC43D55D7F793E6D7C6051A4A6193720C7EE3"
+        },
+        {
+          "index": 7,
+          "category": "unresolved_identity_literal",
+          "reason": "Exact future candidate head remains unresolved until Root observes and binds the post-intake commit.",
+          "offset": 349,
+          "before": "\"014062f2d139254acab4b985b4ae343db637166f\"",
+          "after": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+          "before_bytes": 41516,
+          "before_sha256": "D8A4831CC4EF22B5F2ABBD3D2229B2255C33C0BB8D4F4CD21011FB3827E2F32D",
+          "after_bytes": 41516,
+          "after_sha256": "9577274B42E92F3E9BB8DCA3AD2B7002493943BA948CDEC6E44AB6A9C6DD0322",
+          "unchanged_prefix_bytes": 349,
+          "unchanged_prefix_sha256": "D2B419D67BC74C1754EC15D3871FE5CD17D43FE33B4FC2A66AA36D32672BA1E5",
+          "unchanged_suffix_bytes": 41125,
+          "unchanged_suffix_sha256": "1F9A403387B35711F2C4E5644EDF76F6CFDA2CE2691FA5CF994963F9F458F00E"
+        },
+        {
+          "index": 8,
+          "category": "unresolved_identity_literal",
+          "reason": "Future complete V39 matrix is unobserved and must be bound separately.",
+          "offset": 21550,
+          "before": "\"8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03\"",
+          "after": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\"",
+          "before_bytes": 41516,
+          "before_sha256": "9577274B42E92F3E9BB8DCA3AD2B7002493943BA948CDEC6E44AB6A9C6DD0322",
+          "after_bytes": 41516,
+          "after_sha256": "3372A750CA33ABE4F8EDD9A120CA6AB47330BEDE698552816CF9DDAA15B30B68",
+          "unchanged_prefix_bytes": 21550,
+          "unchanged_prefix_sha256": "67486F6C5E3EE55BAB4BA7600027FB023ECE39472D68406B06722E3F67E5B4C8",
+          "unchanged_suffix_bytes": 19900,
+          "unchanged_suffix_sha256": "724BF416AC993E2E65783C9AEAAED6DDE2AFB36ECC21630C455D7FD65FF13FEA"
+        },
+        {
+          "index": 9,
+          "category": "cohort_admission",
+          "reason": "Admit exactly the independently reviewed new3, retained4, original63 disjoint batches; preserve the unchanged64 cap.",
+          "offset": 1281,
+          "before": "batch in (\"new4\",\"existing63\")",
+          "after": "batch in (\"new3\",\"new4\",\"existing63\")",
+          "before_bytes": 41516,
+          "before_sha256": "3372A750CA33ABE4F8EDD9A120CA6AB47330BEDE698552816CF9DDAA15B30B68",
+          "after_bytes": 41523,
+          "after_sha256": "4FDED5E6095A4E559FD1BB124066C50557A73894F2D5271F79587995A1F1CF18",
+          "unchanged_prefix_bytes": 1281,
+          "unchanged_prefix_sha256": "80EF6905275033B387FDF1A6CA280988A94A7AB60093F818B953ACB5DB27D153",
+          "unchanged_suffix_bytes": 40205,
+          "unchanged_suffix_sha256": "D3D48388921F6B4487EBFA4CD48D343C1E27B8B083640FE189CE31D4265E1ECA"
+        },
+        {
+          "index": 10,
+          "category": "cohort_declarations",
+          "reason": "Exact source declaration counts3/38,4/58,63/1249; actual metadata still observed separately.",
+          "offset": 1319,
+          "before": "group_count,declared_count=(4,58) if batch==\"new4\" else (63,1249)",
+          "after": "group_count,declared_count=(3,38) if batch==\"new3\" else (4,58) if batch==\"new4\" else (63,1249)",
+          "before_bytes": 41523,
+          "before_sha256": "4FDED5E6095A4E559FD1BB124066C50557A73894F2D5271F79587995A1F1CF18",
+          "after_bytes": 41552,
+          "after_sha256": "3CF47F0C0A2895C4D22A1E38746B3CCDC99E65313992C6901500C3880795AD5F",
+          "unchanged_prefix_bytes": 1319,
+          "unchanged_prefix_sha256": "B4E4C490BAEC051E6719EF32E4E691DB1DDC67A37ADD69F0A420B8A2FE1AE489",
+          "unchanged_suffix_bytes": 40139,
+          "unchanged_suffix_sha256": "5D5230359370614D6E3CD40C5E1E9D5A2379B2986C7D895AB192DA087E896AF1"
+        },
+        {
+          "index": 11,
+          "category": "cohort_preparation_path",
+          "reason": "Exact flat preparations new3/new4/regression63 under evidence; accepted strict controller layout unchanged.",
+          "offset": 2288,
+          "before": "(\"new4\" if batch==\"new4\" else \"regression63\")+\"-prepared-20261021\"",
+          "after": "(\"regression63\" if batch==\"existing63\" else batch)+\"-prepared-20261022\"",
+          "before_bytes": 41552,
+          "before_sha256": "3CF47F0C0A2895C4D22A1E38746B3CCDC99E65313992C6901500C3880795AD5F",
+          "after_bytes": 41557,
+          "after_sha256": "4BADB3A93F349F14FE70D873C273BCCC8B71217D4CF8533276F020F1EF948D44",
+          "unchanged_prefix_bytes": 2288,
+          "unchanged_prefix_sha256": "C85D1536A608FFDC1AE973E2E1A78CE6EEAF1A01218316FFE0F6AE7292053D09",
+          "unchanged_suffix_bytes": 39198,
+          "unchanged_suffix_sha256": "FCA25E76EA492E065B8631C1F894A15BFC2CB86918E2DEBD3C1DEEC279172E11"
+        },
+        {
+          "index": 12,
+          "category": "unresolved_constructor_binding",
+          "reason": "Exact V39 runtime constructor hash must be observed after fixed-width final bindings.",
+          "offset": 6819,
+          "before": "\"7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322\"",
+          "after": "\"UNRESOLVED_V39_RUNTIME_CONSTRUCTOR_SHA256_______________________\"",
+          "before_bytes": 41557,
+          "before_sha256": "4BADB3A93F349F14FE70D873C273BCCC8B71217D4CF8533276F020F1EF948D44",
+          "after_bytes": 41557,
+          "after_sha256": "3690E8539980E90919DD4B6E07920C96ACA95DC814873AF1438B77274E64F0E4",
+          "unchanged_prefix_bytes": 6819,
+          "unchanged_prefix_sha256": "607D8E91509B66E4FFF9056C3EB868D2F10B80C22F3EE2ADB0A977211B8EEF43",
+          "unchanged_suffix_bytes": 34672,
+          "unchanged_suffix_sha256": "8DF0E8A38D0050DA83C4C32A408912D06711467D27378560DE1214D03694F4B4"
+        },
+        {
+          "index": 13,
+          "category": "exact_source_size",
+          "reason": "Finite constructor source length measured from the selected unresolved source, unchanged by later fixed-width bindings.",
+          "offset": 6718,
+          "before": "runtime_preparer.stat().st_size==12499",
+          "after": "runtime_preparer.stat().st_size==12671",
+          "before_bytes": 41557,
+          "before_sha256": "3690E8539980E90919DD4B6E07920C96ACA95DC814873AF1438B77274E64F0E4",
+          "after_bytes": 41557,
+          "after_sha256": "B08402F6A6BD3CFE98F5D2C6F18DA371DAABDEE4D622D2EC5636089648E4FDDB",
+          "unchanged_prefix_bytes": 6718,
+          "unchanged_prefix_sha256": "F47F6906565F62C641D29362A0B93BD85A293765CFFA37D566B681A465D94002",
+          "unchanged_suffix_bytes": 34801,
+          "unchanged_suffix_sha256": "9ABFAA4A9EA3CD659C14F24349A0B23D12700B23F5AD0BAA74D2748BE8A3D95B"
+        },
+        {
+          "index": 14,
+          "category": "full_catalog_counts",
+          "reason": "Exact120 complete roots/2051 declarations; historical outcomes remain separate.",
+          "offset": 10228,
+          "before": "require(review[\"catalog_groups\"]==len(matrix[\"groups\"])==117 and review[\"catalog_declarations\"]==sum(len(g[\"required_named\"])for g in matrix[\"groups\"])==2013,\"Complete unchanged shared source catalog\")",
+          "after": "require(review[\"catalog_groups\"]==len(matrix[\"groups\"])==120 and review[\"catalog_declarations\"]==sum(len(g[\"required_named\"])for g in matrix[\"groups\"])==2051,\"Complete unchanged shared source catalog\")",
+          "before_bytes": 41557,
+          "before_sha256": "B08402F6A6BD3CFE98F5D2C6F18DA371DAABDEE4D622D2EC5636089648E4FDDB",
+          "after_bytes": 41557,
+          "after_sha256": "07FFD9BE765CDA9A14C04DB6BDBB55E4530AF0F80763A221794F98CCF028C23A",
+          "unchanged_prefix_bytes": 10228,
+          "unchanged_prefix_sha256": "F58CAB3E849B7CB433BDE4732A6F76FC3E25CAA95D13792282C8AC3D9BBFEEF5",
+          "unchanged_suffix_bytes": 31128,
+          "unchanged_suffix_sha256": "FC7914C5ED833A4778CABA0CE6D4E6C46C7C43716F603AD74EE2DA802D643774"
+        },
+        {
+          "index": 15,
+          "category": "exact_cohort_order",
+          "reason": "Add only exact new3 order; retain exact old4 and original63 order with the same unique-cohort gate.",
+          "offset": 10661,
+          "before": "if batch==\"new4\":\n require(grant[\"groups\"]==[\"native-node-file-handle-owner\",\"native-node-fs-before-hook-continuation\",\"native-vm-error-constructor-name\",\"native-node-file-handle-transfer\"],\"Exact four new roots\")",
+          "after": "if batch==\"new3\":\n require(grant[\"groups\"]==[\"native-node-stream-shutdown\",\"native-node-one-byte-string\",\"native-vm-array-buffer-view-data\"],\"Exact three newly introduced roots\")\nelif batch==\"new4\":\n require(grant[\"groups\"]==[\"native-node-file-handle-owner\",\"native-node-fs-before-hook-continuation\",\"native-vm-error-constructor-name\",\"native-node-file-handle-transfer\"],\"Exact four retained roots\")",
+          "before_bytes": 41557,
+          "before_sha256": "07FFD9BE765CDA9A14C04DB6BDBB55E4530AF0F80763A221794F98CCF028C23A",
+          "after_bytes": 41743,
+          "after_sha256": "899B72DD8996259120AF3624ACA3383F5920B8A8DA587D73E05B692797F82FC2",
+          "unchanged_prefix_bytes": 10661,
+          "unchanged_prefix_sha256": "519BD172A7C1643CF25EFF499213C4565664B051ECC7A0DA40354F12FFA9E1DC",
+          "unchanged_suffix_bytes": 30683,
+          "unchanged_suffix_sha256": "B5FE2AE1515DBAFF9607DFE16A8FDEB9D859CBAE0B010D75BD41640ECDBED9EA"
+        },
+        {
+          "index": 16,
+          "category": "explicit_historical_mapping_admission",
+          "reason": "Retain byte-equivalent old V37 owner-test mappings and append only both reviewed raw014 fixture_causal_owner mappings, using exact six SDK513556 relationships.",
+          "offset": 8820,
+          "before": "historical_rows=review[\"historical_source_rebindings\"]\nrequire(historical_rows==[dict(batch=b,role=\"fixture_unchanged_root_native-node-file-handle-owner\",original=historical_original,immutable_snapshot=historical_snapshot,raw_commit=historical_commit,exact_original_bytes=True)for b in (\"new4\",\"regression63\")],\"Exact complete historical preimage mappings\")\nrequire(all(review[\"provenance\"][\"v37_\"+row[\"batch\"]+\"_\"+row[\"role\"]]==historical_snapshot for row in historical_rows),\"Historical provenance is rebound to the exact immutable snapshot\")",
+          "after": "historical_owner_original=dict(path=str(main/\"src/extensions/native_node_file_handle_owner.zig\"),bytes=16629,sha256=\"2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D\")\nhistorical_owner_snapshot=dict(path=str(base/\"worktrees/modules-io-resume-20261018/verification/native-node-shutdown-wrap-sourceonly-20261020/shared/original/src/extensions/native_node_file_handle_owner.zig\"),bytes=16629,sha256=\"2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D\")\nhistorical_owner_commit=\"014062f2d139254acab4b985b4ae343db637166f\"\nhistorical_rows=review[\"historical_source_rebindings\"]\nhistorical_expected=[dict(batch=b,role=\"fixture_unchanged_root_native-node-file-handle-owner\",original=historical_original,immutable_snapshot=historical_snapshot,raw_commit=historical_commit,exact_original_bytes=True)for b in (\"new4\",\"regression63\")]+[dict(batch=b,role=\"fixture_causal_owner\",original=historical_owner_original,immutable_snapshot=historical_owner_snapshot,raw_commit=historical_owner_commit,exact_original_bytes=True)for b in (\"new4\",\"regression63\")]\nrequire(historical_rows==historical_expected,\"Exact complete four historical preimage mappings; old two rows retained\")\nhistorical_relationships=[\n dict(provenance_key=\"v38_new4_v37_new4_fixture_unchanged_root_native-node-file-handle-owner\",mapping_index=0),\n dict(provenance_key=\"v38_new4_v37_regression63_fixture_unchanged_root_native-node-file-handle-owner\",mapping_index=1),\n dict(provenance_key=\"v38_new4_fixture_causal_owner\",mapping_index=2),\n dict(provenance_key=\"v38_regression63_v37_new4_fixture_unchanged_root_native-node-file-handle-owner\",mapping_index=0),\n dict(provenance_key=\"v38_regression63_v37_regression63_fixture_unchanged_root_native-node-file-handle-owner\",mapping_index=1),\n dict(provenance_key=\"v38_regression63_fixture_causal_owner\",mapping_index=3)]\nrequire(review[\"historical_provenance_relationships\"]==historical_relationships,\"Exact six historical provenance relationships\")\nrequire(all(review[\"provenance\"][row[\"provenance_key\"]]==historical_rows[row[\"mapping_index\"]][\"immutable_snapshot\"] for row in historical_relationships),\"Each historical provenance pin names its exact immutable snapshot\")",
+          "before_bytes": 41743,
+          "before_sha256": "899B72DD8996259120AF3624ACA3383F5920B8A8DA587D73E05B692797F82FC2",
+          "after_bytes": 43397,
+          "after_sha256": "FA7A6AB33BD6429132EDC24F2AB3FEF43323933DA81AE906BC2AB7973E510BA6",
+          "unchanged_prefix_bytes": 8820,
+          "unchanged_prefix_sha256": "88E2EFF21FEC24FEF90552F9D0796DFD9E0F53E320C5E96B24B28EA3227B74FB",
+          "unchanged_suffix_bytes": 32379,
+          "unchanged_suffix_sha256": "FD379EA890F6DEE0BBD04A4BC0AC7A56EEF00607582B34657CAD31D326F3A644"
+        },
+        {
+          "index": 17,
+          "category": "additional_exact_historical_raw_blob_check",
+          "reason": "Keep A73A's old raw b13 check unchanged and require independent immutable raw014 equality for the new historical source preimage; no generic hash exemptions.",
+          "offset": 11213,
+          "before": "require(len(historical_raw)==historical_original[\"bytes\"] and hashlib.sha256(historical_raw).hexdigest().upper()==historical_original[\"sha256\"] and historical_raw==Path(historical_snapshot[\"path\"]).read_bytes(),\"Historical snapshot equals the exact original raw Git blob\")",
+          "after": "require(len(historical_raw)==historical_original[\"bytes\"] and hashlib.sha256(historical_raw).hexdigest().upper()==historical_original[\"sha256\"] and historical_raw==Path(historical_snapshot[\"path\"]).read_bytes(),\"Historical snapshot equals the exact original raw Git blob\")\nverify_pins(historical_owner_snapshot)\nhistorical_owner_raw=subprocess.check_output([\"git\",\"--no-optional-locks\",\"cat-file\",\"blob\",historical_owner_commit+\":src/extensions/native_node_file_handle_owner.zig\"],cwd=main)\nrequire(len(historical_owner_raw)==historical_owner_original[\"bytes\"] and hashlib.sha256(historical_owner_raw).hexdigest().upper()==historical_owner_original[\"sha256\"] and historical_owner_raw==Path(historical_owner_snapshot[\"path\"]).read_bytes(),\"Historical causal owner snapshot equals the exact original raw014 Git blob\")",
+          "before_bytes": 43397,
+          "before_sha256": "FA7A6AB33BD6429132EDC24F2AB3FEF43323933DA81AE906BC2AB7973E510BA6",
+          "after_bytes": 43940,
+          "after_sha256": "82CA5B3712FF3898DD90AA70C2F4296523ED4F4C9EC2CA15A8E8DEF2970DD5D1",
+          "unchanged_prefix_bytes": 11213,
+          "unchanged_prefix_sha256": "C13DD97ED6710C53C2A80FEA0FED778E0C7F355EB3C8B501D2DF86E07E988AEF",
+          "unchanged_suffix_bytes": 31912,
+          "unchanged_suffix_sha256": "54FBF54B23DC3785B6074EFB29693240347C501D97E66F765C9BDB798B97F041"
+        }
+      ],
+      "all_step_untouched_fragments_exact": true,
+      "complete_forward_and_raw_inverse": true,
+      "whole_original_bytes_recovered": 41516,
+      "whole_original_sha256_recovered": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102",
+      "all_helpers_byte_identical": [
+        {
+          "kind": "positive_runtime_auditor",
+          "name": "require",
+          "bytes": 64,
+          "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB"
+        },
+        {
+          "kind": "positive_runtime_auditor",
+          "name": "utc_ticks",
+          "bytes": 576,
+          "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245"
+        },
+        {
+          "kind": "positive_runtime_auditor",
+          "name": "read",
+          "bytes": 77,
+          "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E"
+        },
+        {
+          "kind": "positive_runtime_auditor",
+          "name": "digest",
+          "bytes": 151,
+          "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC"
+        },
+        {
+          "kind": "positive_runtime_auditor",
+          "name": "pin",
+          "bytes": 94,
+          "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C"
+        },
+        {
+          "kind": "positive_runtime_auditor",
+          "name": "verify_pins",
+          "bytes": 568,
+          "sha256": "5576E465D77460F5AE653A28E3513FBCF8A935CF87A29D444F5239CB153B3EA6"
+        }
+      ],
+      "imports_AST_unchanged": true,
+      "all_historical_V34_literals_unchanged": [
+        "root-native-foundation-v34-runtime-control-20261020-210255",
+        "Pinned preserved V34 strict runtime grant",
+        "Pinned preserved V34 strict runtime launcher",
+        "root-native-foundation-fresh-v34-control-20261020-202924/root-grant.json"
+      ]
+    }
+  ],
+  "total_edits": 58,
+  "all27_helper_bodies_unchanged": [
+    {
+      "kind": "buildquery_constructor",
+      "name": "sha",
+      "bytes": 56,
+      "sha256": "B039248BE12F1B2D0E8C61567B4FF89EAD07E700FCD674F3E4CFC47DC8D82DFF"
+    },
+    {
+      "kind": "buildquery_constructor",
+      "name": "read",
+      "bytes": 72,
+      "sha256": "8E3857AEC558153A79BECAFA5517C2F233B502620310CE0012CE0C67E3FA72E6"
+    },
+    {
+      "kind": "buildquery_constructor",
+      "name": "pin",
+      "bytes": 95,
+      "sha256": "3EAB5E7A1F4F969C2AAECE64A14EA73C033DE2CA297593FD7E5C718B6ABD36DB"
+    },
+    {
+      "kind": "buildquery_constructor",
+      "name": "verify",
+      "bytes": 263,
+      "sha256": "0B95EFF3B9ECE3EB28B68C519A4FC268F7B31439DE1ED0179ABC6E34A6C18B1B"
+    },
+    {
+      "kind": "buildquery_constructor",
+      "name": "verify_pins",
+      "bytes": 288,
+      "sha256": "96E8F654E265CA4D2DA213F558DF02FBEFD1E5504839FFDD5A51914BE3EC88C7"
+    },
+    {
+      "kind": "buildquery_constructor",
+      "name": "put",
+      "bytes": 89,
+      "sha256": "CD6F4AA01CB1840202FB4119841109497D9522851838342592292B230E8F8BD9"
+    },
+    {
+      "kind": "buildquery_constructor",
+      "name": "git",
+      "bytes": 73,
+      "sha256": "587656637E31B34B477B76CF6836C5C42D3C4808D1B929CBD4B49F5C34E8D115"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "sha",
+      "bytes": 56,
+      "sha256": "B039248BE12F1B2D0E8C61567B4FF89EAD07E700FCD674F3E4CFC47DC8D82DFF"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "read",
+      "bytes": 72,
+      "sha256": "8E3857AEC558153A79BECAFA5517C2F233B502620310CE0012CE0C67E3FA72E6"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "pin",
+      "bytes": 92,
+      "sha256": "A8C688649B0E6B427DEC5EE7CFB05D284B19AB49CA0524E8C1F0D995F476F19B"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "verify",
+      "bytes": 251,
+      "sha256": "D706A9ED45BF54FD735447D5BF44CAE88F1A789B7FC29390A6F3F99D22ADEF22"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "verify_pins",
+      "bytes": 248,
+      "sha256": "77A8B1DA837DF9D76A972DD58C5A426E6A5A7B33B6C8AA966C6177A02C27B1E5"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "put",
+      "bytes": 86,
+      "sha256": "9AF2631B808218365CB5BF246D1277915BD871EFDB1152965D9BEE3FD6E57AAE"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "git",
+      "bytes": 73,
+      "sha256": "587656637E31B34B477B76CF6836C5C42D3C4808D1B929CBD4B49F5C34E8D115"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "state",
+      "bytes": 202,
+      "sha256": "65E00CA27BB3B545F9630F099C28B26F04D55475C473DBFBD4724468A204FF25"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "name": "require",
+      "bytes": 64,
+      "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "name": "utc_ticks",
+      "bytes": 576,
+      "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "name": "read",
+      "bytes": 77,
+      "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "name": "digest",
+      "bytes": 151,
+      "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "name": "pin",
+      "bytes": 94,
+      "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "name": "owner_identity",
+      "bytes": 974,
+      "sha256": "C960E7F5AFEBDDEF082CB4E4FA635A52BD018C4BF10043C4C45C548BADC7F6C9"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "name": "require",
+      "bytes": 64,
+      "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "name": "utc_ticks",
+      "bytes": 576,
+      "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "name": "read",
+      "bytes": 77,
+      "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "name": "digest",
+      "bytes": 151,
+      "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "name": "pin",
+      "bytes": 94,
+      "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "name": "verify_pins",
+      "bytes": 568,
+      "sha256": "5576E465D77460F5AE653A28E3513FBCF8A935CF87A29D444F5239CB153B3EA6"
+    }
+  ],
+  "complete_unchanged_regions": [
+    {
+      "kind": "buildquery_constructor",
+      "start": "fixed={\n",
+      "end": "old_launch=(OLD/",
+      "bytes": 1421,
+      "sha256": "CCA80DDA036B6548BE3A0AB7C4D2A6D216CE721D631CA0893C4AAD56242BA502"
+    },
+    {
+      "kind": "runtime_constructor",
+      "start": "fixed_keys=(",
+      "end": "raw=(bc/\"launch.ps1\").read_bytes()",
+      "bytes": 1493,
+      "sha256": "54C468F1CEA879D31E235AD58F3394B06024320F1CA4CFB19ACB026F47B252FC"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "start": "pids=[];bounds=[];groups=[];",
+      "end": null,
+      "bytes": 21394,
+      "sha256": "2E1F57D939435E3BD5D02A8014F71315BDC59624204E804F6A43C90E95718A29"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "start": "all_pins={}\n",
+      "end": null,
+      "bytes": 18545,
+      "sha256": "E43B34B635AE23B5B65CCAC4D7FEA1376E7CCD695F592413156FADCC912CD7A6"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "region": "original_A73A_raw_b13_snapshot_verification",
+      "bytes": 467,
+      "sha256": "D1387C98271DBEA5D944BA27CF60A0453B7AFB6D1B3A307C17F2B876611FAC3C"
+    }
+  ],
+  "explicit_historical_mapping_count": 4,
+  "explicit_historical_relationship_count": 6,
+  "added_subprocess_expression_scope": "One exact immutable raw014 Git blob check in the positive runtime auditor.",
+  "first_stage_unresolved_bindings": [
+    {
+      "kind": "buildquery_constructor",
+      "binding": "head",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+      "token_start": 280,
+      "token_end": 322,
+      "token": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+      "decoded_length": 40,
+      "value": "UNRESOLVED_V39_CANDIDATE_HEAD___________"
+    },
+    {
+      "kind": "runtime_constructor",
+      "binding": "head",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39RuntimeGrant-20261022.py",
+      "token_start": 311,
+      "token_end": 353,
+      "token": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+      "decoded_length": 40,
+      "value": "UNRESOLVED_V39_CANDIDATE_HEAD___________"
+    },
+    {
+      "kind": "runtime_constructor",
+      "binding": "matrix",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39RuntimeGrant-20261022.py",
+      "token_start": 361,
+      "token_end": 427,
+      "token": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\"",
+      "decoded_length": 64,
+      "value": "UNRESOLVED_V39_MATRIX_SHA256____________________________________"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "binding": "head",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39CompleteBuildQuery-20261022.py",
+      "token_start": 322,
+      "token_end": 364,
+      "token": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+      "decoded_length": 40,
+      "value": "UNRESOLVED_V39_CANDIDATE_HEAD___________"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "binding": "matrix",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39CompleteBuildQuery-20261022.py",
+      "token_start": 6433,
+      "token_end": 6499,
+      "token": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\"",
+      "decoded_length": 64,
+      "value": "UNRESOLVED_V39_MATRIX_SHA256____________________________________"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "binding": "buildquery_constructor_sha256",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39CompleteBuildQuery-20261022.py",
+      "token_start": 14472,
+      "token_end": 14538,
+      "token": "\"UNRESOLVED_V39_BUILDQUERY_CONSTRUCTOR_SHA256____________________\"",
+      "decoded_length": 64,
+      "value": "UNRESOLVED_V39_BUILDQUERY_CONSTRUCTOR_SHA256____________________"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "binding": "head",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39StrictRuntime-20261022.py",
+      "token_start": 349,
+      "token_end": 391,
+      "token": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+      "decoded_length": 40,
+      "value": "UNRESOLVED_V39_CANDIDATE_HEAD___________"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "binding": "matrix",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39StrictRuntime-20261022.py",
+      "token_start": 23974,
+      "token_end": 24040,
+      "token": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\"",
+      "decoded_length": 64,
+      "value": "UNRESOLVED_V39_MATRIX_SHA256____________________________________"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "binding": "runtime_constructor_sha256",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39StrictRuntime-20261022.py",
+      "token_start": 6819,
+      "token_end": 6885,
+      "token": "\"UNRESOLVED_V39_RUNTIME_CONSTRUCTOR_SHA256_______________________\"",
+      "decoded_length": 64,
+      "value": "UNRESOLVED_V39_RUNTIME_CONSTRUCTOR_SHA256_______________________"
+    }
+  ],
+  "candidate_or_prefix_executed": false,
+  "Main_accessed": false,
+  "native_execution_authorized": false
+}

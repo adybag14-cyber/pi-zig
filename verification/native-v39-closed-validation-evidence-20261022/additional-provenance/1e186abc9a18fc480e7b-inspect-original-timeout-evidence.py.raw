@@ -1,0 +1,262 @@
+"""Original-evidence-only V39 existing63 timeout inspection.
+Reads closed receipts and pinned immutable preparation sources. Does not query
+processes, read Main/cache/binaries, or execute any native/candidate/auditor.
+"""
+from pathlib import Path
+import datetime,hashlib,json,re,struct
+B=Path(r"C:\Users\adyba\pi-zig")
+E=B/"evidence"
+C=E/"root-native-foundation-fresh-v39-existing63-control-20261022-174353"
+P=E/"root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353"
+PREP=E/"combined-native-batch-v39-regression63-prepared-20261022"
+R=E/"independent-v39-existing63-outer-timeout-negative-peer-20261022"
+HEAD="e9f11afa56a923372d957e2fb227f453822c21bf"
+EXPECTED={
+ str(C/"root-grant.json"):(30869,"DE1CA61B727A495BBCCDD194711EC08E2ED184CB61A31EA708C38E842A53AB37"),
+ str(C/"independent-observed-job-status.json"):(1645,"C471341D1114090FA160B7BAE3BB43806730C25938182AC2B4EE3D7642D00017"),
+ str(C/"outer.json"):(2276,"D52E2B1DBDA63E7C44E361E2B42F20A3C2C7B3253D1A23EE5EC8902BFE2AB93A"),
+ str(C/"outer-absence.json"):(183,"D8052A942EDAC8A0E098A3528DD431F601CFAAC8D658D990E9A54851AB1404BC"),
+ str(C/"outer.stdout.bin"):(5051,"609D8F84CA06EB41AA6B0B6E863A68BA95DEE520BB1C44E9DF22CA69035EB54D"),
+ str(P/"before.json"):(18262865,"D554630776A1A0B7349D46ABDE606B11CDDB7DC54D784D39594B4FA4B7CD66A7"),
+ str(PREP/"groups.json"):(1469059,"5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB"),
+ str(PREP/"Audit-CombinedNativeBatch.py"):(17704,"1030886DD02944E4BC9930711C7F05ABA8F02B1FDAA0C8ED6688B18B7EC2460E")}
+pins={};raws={};equal_times=[];intervals=[];ancestry=[]
+def need(v,label):
+ if not v:raise AssertionError(label)
+def digest(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p,b):return {"path":str(p),"bytes":len(b),"sha256":digest(b)}
+def read(p,expected=None):
+ p=Path(p)
+ need(p.is_relative_to(E) and not any(x in ("cache","global-cache","installed") for x in p.parts),"original evidence/source only")
+ b=p.read_bytes();q=pin(p,b)
+ need(str(p) not in pins or pins[str(p)]==q,"input unchanged")
+ if str(p) in EXPECTED:need((len(b),digest(b))==EXPECTED[str(p)],"known original pin")
+ if expected is not None:need(q==expected,"exact referenced input")
+ pins[str(p)]=q;raws[str(p)]=b;return b
+def doc(p,expected=None):return json.loads(read(p,expected))
+def utc_ticks(v):
+ need(isinstance(v,str),"timestamp string")
+ m=re.fullmatch(r"(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,7}))?(Z|[+-]\d{2}:\d{2})",v)
+ need(m is not None,"full-precision supported timestamp "+str(v))
+ y,mo,d,h,mi,s=map(int,m.groups()[:6]);frac=m[7] or "";zone=m[8]
+ days=(datetime.date(y,mo,d)-datetime.date(1970,1,1)).days
+ seconds=days*86400+h*3600+mi*60+s
+ if zone!="Z":
+  offset=(int(zone[1:3])*60+int(zone[4:6]))*60
+  seconds-=offset if zone[0]=="+" else -offset
+ return seconds*10000000+int(frac.ljust(7,"0") or "0")
+def same(a,b,where,key=None):
+ if isinstance(a,dict):
+  need(isinstance(b,dict) and set(a)==set(b),"exact nested key inventory "+where)
+  for k in a:same(a[k],b[k],where+"/"+k,k)
+ elif isinstance(a,list):
+  need(isinstance(b,list) and len(a)==len(b),"exact nested list "+where)
+  for i,(x,y) in enumerate(zip(a,b)):same(x,y,where+"/"+str(i))
+ elif a!=b:
+  need(key in ("created_utc","completed_utc","CreationDate") and utc_ticks(a)==utc_ticks(b),"only exact UTC-offset spelling may differ "+where)
+  equal_times.append({"field":where,"original":a,"nested":b,"utc_100ns":str(utc_ticks(a))})
+def frames(raw):
+ off=0;tags=[];names=None
+ while off<len(raw):
+  need(len(raw)-off>=8,"raw metadata frame header")
+  tag,n=struct.unpack_from("<II",raw,off);off+=8
+  need(n<=1048576 and n<=len(raw)-off,"metadata frame bounds")
+  body=raw[off:off+n];off+=n;tags.append(tag)
+  if tag==0:need(tags==[0] and body.decode("utf-8","strict")=="0.16.0","one pinned version")
+  elif tag==3:
+   need(tags==[0,3] and len(body)>=8 and names is None,"one query metadata frame")
+   size,count=struct.unpack_from("<II",body)
+   need(1<=count<=64 and len(body)==8+8*count+size,"metadata complete table")
+   table=body[8+8*count:];names=[]
+   for i in range(count):
+    pos=struct.unpack_from("<I",body,8+4*i)[0];panic=struct.unpack_from("<I",body,8+4*count+4*i)[0]
+    need(panic==0 and pos<size,"metadata panic/name bound")
+    end=table.find(b"\0",pos);need(end>=pos,"metadata name termination")
+    name=table[pos:end].decode("utf-8","strict");need(bool(name),"nonempty actual name");names.append(name)
+  else:raise AssertionError("Non-query frame in original BuildQuery")
+ need(tags==[0,3] and names is not None and len(names)==len(set(names)),"complete unique partial query names")
+ return names
+grant=doc(C/"root-grant.json");job=doc(C/"independent-observed-job-status.json")["data"]
+outer=doc(C/"outer.json");oa=doc(C/"outer-absence.json");seal=doc(P/"before.json")
+need(job["id"]=="job-op-68e7e3262f296a6d0fb4a275f57024fff8c8df3219ed4e23930d2f6588032394" and job["status"]=="failed" and job["exitCode"]==1 and job["runnerAlive"] is False,"original failed durable job")
+need(job["runnerPid"]==45240 and job["runnerProcessInstance"]=="134371646432880998","exact original runner decimal100ns instance")
+runner_ticks=int(job["runnerProcessInstance"])-116444736000000000
+need(utc_ticks(job["createdAtUtc"])<=runner_ticks<=utc_ticks(job["completedAtUtc"]),"runner exact time range")
+need(outer["pid"]==49640 and outer["timeout_seconds"]==1800 and outer["status"]=="timeout" and outer["exit_code"]==-1 and outer["termination_verified"] is True,"original unchanged timeout, not native failure")
+need(outer["retained_handle"]>0 and isinstance(outer["retained_handle"],int),"retained outer handle")
+same(outer["live_identity"],outer["cleanup_identity"],"outer cleanup")
+need(outer["live_identity"]["pid"]==outer["pid"] and utc_ticks(outer["live_identity"]["created_utc"])==utc_ticks(outer["created_utc"]),"outer exact live instance")
+outer_start,outer_end=utc_ticks(outer["created_utc"]),utc_ticks(outer["completed_utc"])
+need(outer_end-outer_start>=1800*10000000 and outer_end<=utc_ticks(job["completedAtUtc"]),"actual expired outer budget")
+need(oa["pid"]==outer["pid"] and utc_ticks(oa["created_utc"])==outer_start and oa["currently_absent"] is True and oa["current_records"]==[] and utc_ticks(oa["observed_utc"])>=outer_end,"original outer absence")
+need(grant["candidate_head"]==HEAD and grant["mode"]=="BuildQuery" and grant["actual_metadata_count"] is None and grant["groups"] and len(grant["groups"])==63,"original63 grant")
+need(grant["initial_grant_max_age_seconds"]==300 and grant["minimum_free_kib"]==16777216 and grant["compile_outer_seconds"]==1320 and grant["metadata_outer_seconds"]==30 and grant["outer_controller_seconds"]==1800,"unchanged strict budgets")
+need(grant["cache_mode"]=="fresh_batch" and grant["reuse_unsealed_original_compile_caches"] is False and grant["runtime_restoration_claim"] is False,"original fresh query only")
+need(grant["receipt_directory"]==str(P) and grant["driver_sha256"]=="1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601","strict driver")
+driver=read(PREP/"Run-CombinedNativeBatch.ps1")
+need(digest(driver)==grant["driver_sha256"],"unchanged driver source")
+metadata_source=read(PREP/"Audit-CombinedNativeBatch.py")
+matrix=doc(PREP/"groups.json");groups=grant["groups"];gmap={g["name"]:g for g in matrix["groups"]}
+review=doc(grant["preparation_review"]["path"],grant["preparation_review"])
+cfg=doc(grant["specific_root_configuration"]["path"],grant["specific_root_configuration"])
+need(review["selected_group_names"]==groups and review["selected_groups"]==63 and review["selected_declarations"]==1249 and review["candidate_head"]==HEAD and review["actual_metadata_count"] is None,"exact source cohort unchanged")
+need(sum(len(gmap[x]["required_named"]) for x in groups)==1249 and len(matrix["groups"])==120,"declared controls remain source data")
+need(seal["candidate_head"]==HEAD and seal["clean"] is True and seal["errors"]==[],"original clean initial seal only")
+seal_counts={k:len(seal[k]) for k in ("source","tree","vendor","compiler","controls")}
+need(seal_counts=={"source":17346,"tree":17359,"vendor":1489,"compiler":19546,"controls":14},"all before-seal domain counts")
+sealed_paths={};duplicates=[]
+for role in seal_counts:
+ for i,row in enumerate(seal[role]):
+  path=row["path"];sha=row["sha256"]
+  if path in sealed_paths:
+   need(sealed_paths[path]["sha256"]==sha,"all repeated original-seal versions agree")
+   duplicates.append({"path":path,"prior_role":sealed_paths[path]["role"],"role":role,"sha256":sha})
+  else:sealed_paths[path]={"sha256":sha,"role":role}
+need(len(sealed_paths)==36915,"distinct initial sealed path count, no current rehash claim")
+need(not (P/"final.json").exists() and not (P/"result.json").exists(),"original final and result remain absent")
+need(sorted(x.name for x in (P/"groups").iterdir())==sorted(groups[:51]),"51 exact attempted directories and12 absent")
+need(sorted(x.name for x in P.iterdir() if x.is_file())==["before.json"],"only original initial proof file")
+control_original=["grant-launch-adaptation.json","independent-observed-job-status.json","launch.ps1","outer-absence.json","outer.json","outer.stderr.log","outer.stdout.bin","root-grant.json"]
+for name in control_original:read(C/name)
+need(read(C/"outer.stderr.log")==b"","original outer stderr empty")
+expected_stdout="".join("Group "+g+" completed actual BuildQuery phases; awaiting whole-batch closure\r\n" for g in groups[:50]).encode()
+need(read(C/"outer.stdout.bin")==expected_stdout,"exact50 original progress lines, no batch result suffix")
+full_members=["build-artifacts.json","commands.json","compile-absence.json","compile-admission.json","compile-after-artifacts.json","compile.json","compile.stderr.log","compile.stdout.bin","metadata-absence.json","metadata-admission.json","metadata-after-artifacts.json","metadata-before-artifacts.json","metadata.json","metadata.stderr.log","metadata.stdout.bin","result-provisional.json","selected-tests.json"]
+last_members=["commands.json","compile-absence.json","compile-admission.json","compile-after-artifacts.json","compile.json","compile.stderr.log","compile.stdout.bin"]
+summaries=[];previous_end=outer_start;metadata_counts=[];original_members=[]
+for index,name in enumerate(groups[:51]):
+ gd=P/"groups"/name
+ files=sorted(x.name for x in gd.iterdir() if x.is_file());subdirs=sorted(x.name for x in gd.iterdir() if x.is_dir())
+ need(files==sorted(full_members if index<50 else last_members) and subdirs==["installed"],"complete original group membership "+name)
+ for f in files:read(gd/f)
+ original_members.append({"group":name,"files":[pins[str(gd/f)] for f in files],"unread_native_directory":"installed"})
+ command=doc(gd/"commands.json")
+ need(command["mode"]=="BuildQuery" and command["group"]==name and command["named_controls"]==len(gmap[name]["required_named"]) and command["expected_count"] is None,"original command/source role")
+ need(command["compile"][:6]==["build",gmap[name]["target"],"-Doptimize=Debug","-Duse-llvm=true","-Ddiagnostic-tests=false","-j1"],"exact catalog build target and strict compile flags")
+ provisional=doc(gd/"result-provisional.json") if index<50 else None
+ if provisional is not None:
+  need(provisional["status"]=="awaiting_batch_closure" and provisional["postseal"] is False and provisional["mode"]=="BuildQuery" and provisional["candidate_head"]==HEAD and provisional["errors"]==[],"all50 unqualified provisional statuses")
+  need(provisional["attempted_phases"]==provisional["owned_started_phases"]==["compile","metadata"] and set(provisional["phases"])=={"compile","metadata"},"two actual owned query phases")
+  need(provisional["runtime_requested"] is False and provisional["runtime_owner_launch_attempted"] is False and provisional["actual_runtime_owner_started"] is False and provisional["native_selected_tests_started"] is None,"no runtime claim")
+ for phase in (("compile","metadata") if index<50 else ("compile",)):
+  owner=doc(gd/(phase+".json"));absence=doc(gd/(phase+"-absence.json"));admission=doc(gd/(phase+"-admission.json"))
+  start,end=utc_ticks(owner["created_utc"]),utc_ticks(owner["completed_utc"])
+  deadline=1320 if phase=="compile" else 30
+  need(owner["status"]=="passed" and owner["exit_code"]==0 and owner["timeout_seconds"]==deadline and type(owner["retained_handle"]) is int and owner["retained_handle"]>0,"native owner actual terminal0")
+  need(outer_start<=start<=end<=outer_end and start>=previous_end and end-start<=deadline*10000000,"serial full100ns owner/deadline interval")
+  previous_end=end
+  live=owner["live_identity"]
+  need(set(live)=={"pid","executable","command_line","command_line_method","created_utc"} and live["pid"]==owner["pid"] and live["executable"].casefold()==owner["executable"].casefold() and utc_ticks(live["created_utc"])==start and live["command_line_method"]=="Win32_Process.CommandLine","actual live identity")
+  need(owner["arguments"]==command[phase],"exact original command arguments")
+  if phase=="compile":need(owner["executable_sha256"]=="086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864","pinned compiler hash in original owner")
+  else:need(owner["arguments"]==["--listen=-"],"query-only owner command")
+  need(absence["status"]=="closed" and absence["phase"]==phase and absence["global_native"]==[],"original bounded absence")
+  ev=absence["evidence"];same(owner,ev["owner"],name+"/"+phase+"/absence")
+  need(ev["valid"] is True and ev["evidence_errors"]==[] and ev["current_owner_pid_present"]==0 and ev["current_owned_descendants"]==[] and ev["absence_error"] is None,"recorded original native absence gates")
+  for row in ev["raw_outputs"]:
+   rp=Path(row["path"]);need(rp.parent==gd and rp.name in (phase+".stdout.bin",phase+".stderr.log"),"original contained raw output pin")
+   read(rp,row)
+  need({Path(r["path"]).name for r in ev["raw_outputs"]}=={phase+".stdout.bin",phase+".stderr.log"},"both raw log pins")
+  for a in ev["preexisting_pid_ancestry"]:
+   observed=a["observed_process"]
+   need(a["reason"]=="Child creation predates this parent instance" and a["parent_pid"]==owner["pid"] and observed["ParentProcessId"]==owner["pid"],"exact preexisting ancestry reason")
+   child=utc_ticks(observed["CreationDate"])
+   need(a["parent_created_utc_ticks"]==start+621355968000000000 and a["child_created_utc_ticks"]==child+621355968000000000 and child<start-10,"full100ns excluded earlier child")
+   ancestry.append({"group":name,"phase":phase,"original":a})
+  probe=admission["probe"]
+  need(admission["status"]=="admitted" and admission["phase"]==phase and probe["phase"]==phase and probe["minimum_kib"]==16777216 and probe["free_kib"]>=16777216 and probe["native_roots"]==0 and probe["native"]==[] and utc_ticks(probe["utc"])<=start,"actual original16GiB/no-owner admission")
+  if index==0 and phase=="compile":
+   first_age=start-utc_ticks(grant["issued_utc"]);need(0<=first_age<=300*10000000,"actual first child within freshness")
+  if provisional is not None:
+   part=provisional["phases"][phase]
+   need(part["failure"] is None and part["original_execution_failure"] is None,"original phase itself terminal0")
+   same(ev,part["evidence"],name+"/"+phase+"/provisional")
+   binding=part["owner_binding"];post=part["postchecks"]
+   need(binding["status"]=="passed" and binding["errors"]==[] and binding["expected_deadline"]==deadline and binding["expected_sha256"]==owner["executable_sha256"] and binding["expected_executable"]==owner["executable"],"original phase owner binding only")
+   need(post["source_sealed"] is False and all(post[k] is True for k in ("evidence_valid","owner_bound","artifacts_bound","absence_closed")) and post["errors"]==[],"source-seal gate remains false")
+  intervals.append({"group":name,"phase":phase,"owner":pins[str(gd/(phase+".json"))],"pid":owner["pid"],"retained_handle":owner["retained_handle"],"created_utc":owner["created_utc"],"completed_utc":owner["completed_utc"],"created_utc100ns":str(start),"completed_utc100ns":str(end),"elapsed100ns":str(end-start),"deadline_seconds":deadline,"exit_code":0,"original_absence":pins[str(gd/(phase+"-absence.json"))],"current_absence_queried_by_this_peer":False})
+ if index<50:
+  selected=doc(gd/"selected-tests.json");actual=frames(read(gd/"metadata.stdout.bin"))
+  need(read(gd/"metadata.stderr.log")==b"" and selected["version"]=="0.16.0" and selected["actual_count"]==len(actual) and selected["tests"]==actual and selected["group"]==name and selected["candidate_head"]==HEAD and selected["runtime_started"] is False,"raw query/selected metadata exact")
+  required=gmap[name]["required_named"];allowed=gmap[name]["allowed_anonymous"]
+  need(all(actual.count(t)==1 for t in required) and all(t in required or t in allowed for t in actual),"observed partial named/anonymous policy")
+  if gmap[name].get("historical_order") is not None:need(actual==gmap[name]["historical_order"],"retained raw query order")
+  need(selected["binary"]==owner["executable"] and selected["binary_sha256"]==owner["executable_sha256"],"recorded exact metadata executable identity; binary not reread")
+  metadata_counts.append(len(actual))
+  summaries.append({"group":name,"original_status":"awaiting_batch_closure","original_postseal":False,"both_original_phase_source_sealed":False,"declared_controls":len(required),"observed_partial_metadata_count":len(actual),"metadata_names":actual,"metadata_raw":pins[str(gd/"metadata.stdout.bin")],"provisional":pins[str(gd/"result-provisional.json")],"complete_group_accepted":False,"runtime_started":False})
+ else:
+  need(owner["pid"]==36844 and owner["completed_utc"]=="2026-10-22T18:13:37.7706910+00:00","exact last completed compiler")
+  try:last_artifacts={"json_decoded":True,"top_keys":list(json.loads(read(gd/"compile-after-artifacts.json")))}
+  except (ValueError,UnicodeError) as exc:last_artifacts={"json_decoded":False,"original_parse_error":str(exc)}
+  summaries.append({"group":name,"original_status":None,"original_postseal":None,"compile_owner":pins[str(gd/"compile.json")],"compile_absence":pins[str(gd/"compile-absence.json")],"metadata_owner":None,"provisional_result":None,"metadata_count":None,"compile_artifact_journal":pins[str(gd/"compile-after-artifacts.json")],"compile_artifact_journal_shape":last_artifacts,"complete_group_accepted":False,"runtime_started":False})
+need(len(intervals)==101 and len(metadata_counts)==50,"exact51compile/50metadata cutpoint")
+need(all(not (P/"groups"/g/"result.json").exists() for g in groups[:51]),"no manufactured final group results")
+need(not (P/"final.json").exists() and not (P/"result.json").exists(),"original final missing still")
+need(all(not (C/n).exists() for n in ("independent-metadata-acceptance.json","independent-current-seals-and-owners.json")),"no positive independent acceptance synthesized")
+root_closure=doc(C/"root-outer-timeout-negative-closure.json",{"path":str(C/"root-outer-timeout-negative-closure.json"),"bytes":632063,"sha256":"451FF45C40F879CEC5A30DFED6D0D5ED352B9E8C3B558E6BC67CBE53789B85BC"})
+need(root_closure["status"]=="root_reviewed_closed_v39_existing63_outer_timeout_negative" and root_closure["reviewer"]=="Root" and root_closure["candidate_head"]==HEAD,"separate Root current closure identity")
+need(root_closure["attempted_groups"]==51 and root_closure["compile_owners"]==51 and root_closure["metadata_owners"]==50 and root_closure["runtime_owners"]==0 and root_closure["current_distinct_files_rehashed"]==36915 and root_closure["seal_counts"]==seal_counts,"separate Root current closure count agreement")
+need(root_closure["original_final_present"] is False and root_closure["original_result_present"] is False and root_closure["original_batch_source_postseal"] is None and root_closure["original_controller_environment_restored"] is None and root_closure["missing_original_records_not_reconstructed"] is True,"Root preserves original unknowns")
+need(root_closure["current_against_before_rehash_equal"] is True and root_closure["current_source_head_clean"] is True and root_closure["current_original_owner_instances_and_possible_direct_descendants_absent"] is True and root_closure["source_mutation_hold_released"] is False,"Root separate current observations and hold")
+rp=read(C/"root-current-owner-instance-absence.json",{"path":str(C/"root-current-owner-instance-absence.json"),"bytes":137,"sha256":"3A7278BCAA5034F019D1DC836D629D318D778EECEC44C729D38B552067009B98"})
+root_correction=doc(C/"root-timeout-negative-inspector-source-correction.json",{"path":str(C/"root-timeout-negative-inspector-source-correction.json"),"bytes":2455,"sha256":"3724A035F6E7188E930C59328C0A4B14A5A7B3CC663D859900495EBC0C12B44B"})
+rb=read(root_correction["basis"]["path"],root_correction["basis"]);rs=read(root_correction["selected"]["path"],root_correction["selected"]);rn=doc(root_correction["negative"]["path"],root_correction["negative"])
+need(rn["status"]=="root_read_only_inspector_negative" and rn["native_attempt"] is False and rn["main_changed"] is False,"separate Root nonnative inspector finding")
+forward=rb
+for h in root_correction["finite_replacements"]:
+ a=h["before"].encode();b=h["after"].encode();need(forward.count(a)==1,"unique Root inspector correction before");forward=forward.replace(a,b,1)
+need(forward==rs,"Root inspector complete two-hunk forward")
+for h in reversed(root_correction["finite_replacements"]):
+ a=h["before"].encode();b=h["after"].encode();need(forward.count(b)==1,"unique Root inspector correction inverse");forward=forward.replace(b,a,1)
+need(forward==rb and len(root_correction["finite_replacements"])==2,"Root inspector complete raw inverse")
+need(root_closure["first_child_grant_age_100ns"]==str(first_age) and root_closure["runner_process_instance_string_preserved"]==job["runnerProcessInstance"],"Root exact first-child and runner instances agree")
+root_current_authority={"receipt":pins[str(C/"root-outer-timeout-negative-closure.json")],"process_observation":pins[str(C/"root-current-owner-instance-absence.json")],"Root_reports_current_distinct_files_rehashed":36915,"Root_reports_current_source_matches_before":True,"Root_reports_current_original_instances_absent":True,"this_peer_did_not_reperform_current_checks":True,"original_final_result_and_environment_restoration_remain_unknown":True}
+root_inspector_provenance={"basis":root_correction["basis"],"negative":root_correction["negative"],"selected":root_correction["selected"],"correction":pins[str(C/"root-timeout-negative-inspector-source-correction.json")],"two_hunk_forward_and_raw_inverse_verified":True,"native_attempt":False,"finding":"The original inspector inferred build-step names; its exact correction reads the pinned matrix target and original commands. Original run receipts are unchanged."}
+for p,q in list(pins.items()):need(pin(Path(p),Path(p).read_bytes())==q,"all read original bytes stable")
+R.mkdir(parents=True,exist_ok=True)
+def put(name,value):
+ p=R/name;b=(json.dumps(value,indent=2,ensure_ascii=False)+"\n").encode()
+ with p.open("xb") as f:f.write(b)
+ need(p.read_bytes()==b,"exact own output")
+ return pin(p,b)
+scope={"original_evidence_only":True,"separate_Root_current_closure_read_as_authority_only":True,"Main_access":False,"current_process_queries":False,"current_source_rehash":False,"cache_or_binary_reads":False,"native_or_candidate_or_auditor_execution":False,"original_receipts_modified":False,"configuration_or_release_issued":False}
+proof={"schema":1,"status":"independently_inspected_original_v39_existing63_outer_timeout_negative",
+ "candidate_head":HEAD,"grant":pins[str(C/"root-grant.json")],"job":pins[str(C/"independent-observed-job-status.json")],
+ "outer":pins[str(C/"outer.json")],"outer_absence":pins[str(C/"outer-absence.json")],
+ "before":pins[str(P/"before.json")],"original_before_seal_counts":seal_counts,
+ "distinct_original_before_path_count":len(sealed_paths),"duplicate_seal_path_occurrences":len(duplicates),"duplicate_hash_agreement":True,
+ "original_final":None,"original_batch_result":None,"original_source_postseal":None,"original_environment_restoration":None,
+ "controller_timeout_seconds":1800,"outer_exit_code":-1,"durable_exit_code":1,"outer_elapsed100ns":str(outer_end-outer_start),
+ "runner_process_instance":job["runnerProcessInstance"],"runner_unix100ns":str(runner_ticks),
+ "granted_group_order":groups,"declared_controls":1249,"attempted_groups":51,"unstarted_groups":groups[51:],
+ "compile_owners":51,"metadata_owners":50,"runtime_owners":0,"native_owners":101,
+ "provisional_groups":50,"provisional_status":"awaiting_batch_closure","complete_groups_accepted":0,
+ "observed_partial_metadata_count":sum(metadata_counts),"observed_partial_group_counts":metadata_counts,"accepted_total_metadata_count":None,
+ "groups_without_metadata":groups[50:],"selected_tests_started":0,"first_child_grant_age100ns":str(first_age),
+ "owner_intervals":intervals,"offset_spelling_equivalences":equal_times,"preexisting_pid_ancestry":ancestry,
+ "group_observations":summaries,"original_group_membership":original_members,"original_control_members":[pins[str(C/n)] for n in control_original],
+ "exact_outer_stdout_50_lines":True,"outer_stdout":pins[str(C/"outer.stdout.bin")],
+ "metadata_wire_decoder_authority":pins[str(PREP/"Audit-CombinedNativeBatch.py")],"metadata_wire_decoder_lines":[112,142],
+ "before_only_source_authority":True,"full_raw_before_final_comparison_available":False,
+ "complete_metadata_accepted":False,"complete_buildquery_accepted":False,"runtime_qualified":False,"product_qualified":False,
+ "Root_current_source_and_process_closure":root_current_authority,"retained_Root_inspector_provenance":root_inspector_provenance,
+ "all_input_pins":list(pins.values()),"input_count":len(pins),"scope":scope}
+pp=put("original-evidence-proof.json",proof)
+peer={"schema":1,"status":"independent_original_evidence_peer_accepts_v39_existing63_outer_timeout_negative_only",
+ "reviewer":"/root/handover_review","candidate_head":HEAD,"control":str(C),"proof":str(P),
+ "original_evidence_proof":pp,"inspector":pin(Path(__file__),Path(__file__).read_bytes()),
+ "durable_job":pins[str(C/"independent-observed-job-status.json")],"original_outer":pins[str(C/"outer.json")],
+ "original_before":pins[str(P/"before.json")],"granted_groups":63,"attempted_groups":51,
+ "unstarted_groups":12,"compile_owners_terminal0":51,"metadata_owners_terminal0":50,"runtime_owners":0,
+ "provisional_groups":50,"complete_groups_accepted":0,"observed_partial_metadata_count":sum(metadata_counts),
+ "actual_accepted_metadata_count":None,"selected_tests_started":0,
+ "original_controller_status":"timeout","original_outer_exit_code":-1,"original_durable_exit_code":1,
+ "original_final_seal":None,"original_batch_result":None,"original_source_postseal":None,
+ "original_environment_restoration":None,"all_original_missing_evidence_retained_as_unknown":True,
+ "original_phase_absence_receipts_verified":101,"exact_UTC100ns_owner_and_nested_fields_verified":True,
+ "original50_source_seal_negative_flags_preserved":True,"original_progress_lines_no_result_suffix":True,
+ "Root_current_source_and_process_closure":root_current_authority,"retained_Root_inspector_provenance":root_inspector_provenance,
+ "separate_current_closure_required":"Root performs its own fresh source/process closure; this peer reads only original captured receipts and does not replace the absent original final/result/environment-restoration records.",
+ "native_or_runtime_authority":False,"source_mutation_hold_released":False,"qualification":False,"scope":scope}
+pq=put("peer.json",peer)
+print(json.dumps({"proof":pp,"peer":pq,"counts":{"total_read_input_versions":len(pins),"original_group_files":sum(len(x["files"]) for x in original_members),"native_owners":101,"partial_metadata":sum(metadata_counts),"provisional_groups":50,"attempted_groups":51,"unstarted_groups":12,"time_spelling_equivalences":len(equal_times),"preexisting_ancestry":len(ancestry)}}))

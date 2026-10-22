@@ -1,0 +1,156 @@
+"""Independent static review of exactly nine V39 execution source bindings.
+Does not import or execute a candidate, prefix, constructor, auditor, or native tool.
+"""
+from pathlib import Path
+import ast,copy,datetime,hashlib,io,json,tokenize
+if not __debug__:raise RuntimeError("Assertions required")
+B=Path(r"C:\Users\adyba\pi-zig");E=B/"evidence";M=B/"main"
+D=E/"independent-v39-execution-bound-source-peer-20261022"
+U=E/"v39-execution-unresolved-sourceonly-20261022"
+HEAD="e9f11afa56a923372d957e2fb227f453822c21bf"
+MATRIX="5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB"
+seen={};raws={}
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p,b):return dict(path=str(p),bytes=len(b),sha256=sha(b))
+def take(r):
+ p=Path(r["path"]);assert p.is_absolute()and B in p.parents and M not in p.resolve().parents and p.resolve()!=M
+ b=p.read_bytes();assert len(b)==r["bytes"]and sha(b)==r["sha256"],r
+ key=str(p).casefold();assert key not in seen or seen[key]==r
+ seen[key]=r;return b
+def exact(p,size,digest):r=dict(path=str(p),bytes=size,sha256=digest);take(r);return r
+def doc(r):return json.loads(take(r).decode("utf-8-sig"))
+def helpers(raw,tree):
+ lines=raw.splitlines(keepends=True)
+ return {n.name:b"".join(lines[n.lineno-1:n.end_lineno])for n in tree.body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))}
+def tokens(raw):
+ text=raw.decode();lines=text.splitlines(keepends=True);starts=[];at=0
+ for line in lines:starts.append(at);at+=len(line.encode())
+ def off(pos):return starts[pos[0]-1]+len(lines[pos[0]-1][:pos[1]].encode())
+ return [(t.type,t.string,off(t.start),off(t.end),t.start)for t in tokenize.generate_tokens(io.StringIO(text).readline)if t.type==tokenize.STRING]
+def region(raw,start,end):
+ assert raw.count(start)==1
+ a=raw.index(start);z=len(raw)if end is None else raw.index(end,a)
+ return raw[a:z]
+def normalized(raw,bindings,old):
+ tree=ast.parse(raw)
+ values={x["before_value"if old else"after_value"]:"BOUND_"+x["binding"]for x in bindings}
+ count=0
+ for n in ast.walk(tree):
+  if isinstance(n,ast.Constant)and isinstance(n.value,str)and n.value in values:
+   n.value=values[n.value];count+=1
+ assert count==len(bindings)
+ return ast.dump(tree,include_attributes=False)
+receipt_pin=exact(E/"root-v39-execution-binding-20261022.json",16572,"7DF0B2CD29C57821099D7C1C411863667847585D969A07A95DAEA29AA01F35F2")
+catalog_pin=exact(E/"root-v39-catalog-source-acceptance-20261022.json",14221,"CB6A78ACEFAA83A6DE31AB917B6460465BF012C99B38CE87425B6893CCB7AB2C")
+receipt=doc(receipt_pin);catalog=doc(catalog_pin)
+assert receipt["candidate_head"]==catalog["candidate_head"]==HEAD and receipt["matrix_sha256"]==catalog["matrix_sha256"]==MATRIX
+assert receipt["root_catalog_acceptance"]==catalog_pin
+assert catalog["catalog_source_accepted"]is catalog["new4_and_original63_preserved"]is catalog["new3_source_admitted"]is True
+assert catalog["catalog_groups"]==120 and catalog["catalog_declarations"]==2051
+assert catalog["actual_metadata_count"]is None and catalog["native_execution_authorized"]is catalog["qualification"]is False
+assert receipt["actual_metadata_count"]is None and receipt["native_execution_authorized"]is receipt["execution_configuration_issued"]is receipt["qualification"]is False
+assert receipt["binding_count"]==9 and receipt["exact_fixed_width_bindings_only"]is receipt["all_full_raw_inverses_verified"]is receipt["unresolved_sources_preserved"]is True
+assert receipt["independent_catalog_peer"]==catalog["independent_catalog_peer"]
+peer=doc(catalog["independent_catalog_peer"])
+assert peer["status"]=="independently_reviewed_exact_v39_emitted_three_batch_source_catalog"and peer["candidate_head"]==HEAD
+assert peer["partition"]==catalog["partition"]and peer["selected_group_order"]==catalog["selected_group_names"]
+matrix=doc(catalog["matrix"]);assert catalog["matrix"]["sha256"]==MATRIX and matrix["source_head_at_preparation"]==HEAD
+assert len(matrix["groups"])==120 and sum(len(g["required_named"])for g in matrix["groups"])==2051
+for ref in catalog["preparation_reviews"]:
+ review=doc(ref);assert review["candidate_head"]==HEAD and review["matrix"]["sha256"]==MATRIX and review["actual_metadata_count"]is None
+ assert review["selected_group_names"]==catalog["selected_group_names"][review["batch"]]
+ assert review["historical_source_rebindings"]==catalog["historical_source_rebindings"]
+ assert review["historical_provenance_relationships"]==catalog["historical_provenance_relationships"]
+ take(review["matrix"])
+root=doc(receipt["unresolved_Root_source_review"]);contract=doc(receipt["binding_contract"])
+assert root["source_accepted"]is True and root["all58_edits_and_full_inverses_read_and_replayed"]is True
+assert root["native_execution_authorized"]is root["runtime_authority"]is root["qualification"]is False
+assert root["mandatory_future_grant_provenance"]=="v39_execution_bound_source_review"
+assert contract["historical_source_rebindings"]==catalog["historical_source_rebindings"]
+assert contract["historical_provenance_relationships"]==catalog["historical_provenance_relationships"]
+sdk=doc(root["independent_peer"]);assert sdk["independent_results"]["no_bounded_source_blocker_found"]is True
+assert root["independent_peer"]["sha256"]=="B96BE7D7D1775C9B44C0A12024DAA968C567BB501DC040C24711B78E5AAA39D9"
+for r in receipt["current_input_versions"]:take(r)
+for r in root["current_input_versions"]:take(r)
+prior_proof=doc(contract["static_source_proof"]);assert len(prior_proof["unchanged_helpers"])==27
+markers={
+ "head":"UNRESOLVED_V39_CANDIDATE_HEAD___________",
+ "matrix":"UNRESOLVED_V39_MATRIX_SHA256____________________________________",
+ "buildquery_constructor_sha256":"UNRESOLVED_V39_BUILDQUERY_CONSTRUCTOR_SHA256____________________",
+ "runtime_constructor_sha256":"UNRESOLVED_V39_RUNTIME_CONSTRUCTOR_SHA256_______________________"}
+expected={
+ "buildquery_constructor":(10269,"1501B39CAE3466FEBC38E39DA5121D33064AECE3206BDBEF998A59BF26491EF3","972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0",["head"]),
+ "runtime_constructor":(12671,"FEFA13F724061352D6A2DCFD87E10EAA23EC892E2F87531FC86066FF2EEF25DE","15594044FD06B8E1D99D89A20954E2B5C55165C9749E590D63B02809E0FC9C0D",["head","matrix"]),
+ "positive_buildquery_auditor":(37295,"F200CD8E6DDCF56E3900D585C302BFFD97A47CC850DF31C81CD6FA63354DCB49","E1A7DEC0B22FC0D1B081641F19B6706608154CD728D645D0685CBE44A02F41E6",["head","matrix","buildquery_constructor_sha256"]),
+ "positive_runtime_auditor":(43940,"82CA5B3712FF3898DD90AA70C2F4296523ED4F4C9EC2CA15A8E8DEF2970DD5D1","73C0D2B7209504A4EE0AA419EC936EED84F02753372B87C3F03651FBDE9D3484",["head","runtime_constructor_sha256","matrix"])}
+values={"head":HEAD,"matrix":MATRIX,"buildquery_constructor_sha256":expected["buildquery_constructor"][2],"runtime_constructor_sha256":expected["runtime_constructor"][2]}
+assert [x["kind"]for x in receipt["sources"]]==list(expected)
+all_steps=[];checks=[];all_helpers=[];all_untouched=[]
+for row in receipt["sources"]:
+ kind=row["kind"];size,oldsha,newsha,wanted=expected[kind]
+ assert (row["unresolved"]["bytes"],row["unresolved"]["sha256"],row["bound"]["bytes"],row["bound"]["sha256"])==(size,oldsha,size,newsha)
+ accepted=next(x for x in root["reviewed_sources"]if x["kind"]==kind)
+ bc=next(x for x in contract["sources"]if x["kind"]==kind)
+ assert row["unresolved"]==accepted["candidate"]==bc["unresolved_candidate"]
+ assert row["bound"]["path"]==bc["canonical_future_path"]
+ old=take(row["unresolved"]);new=take(row["bound"]);raws[kind]=(old,new)
+ assert b"UNRESOLVED_V39_"not in new
+ ot,nt=ast.parse(old),ast.parse(new)
+ hs,ns=helpers(old,ot),helpers(new,nt);assert hs==ns
+ for name,b in hs.items():
+  p=dict(kind=kind,name=name,bytes=len(b),sha256=sha(b));assert p in prior_proof["unchanged_helpers"];all_helpers.append(p)
+ slots=[]
+ for token_kind,literal,start,end,pos in tokens(old):
+  value=ast.literal_eval(literal)
+  if value in markers.values():
+   name=next(k for k,v in markers.items()if v==value);after='"'+values[name]+'"'
+   assert len(literal.encode())==len(after.encode())and len(value)==(40 if name=="head"else 64)
+   slot=dict(kind=kind,binding=name,offset=start,before=literal,after=after,before_value=value,after_value=values[name],end=end)
+   cr=next(x for x in contract["bindings"]if x["kind"]==kind and x["binding"]==name)
+   assert cr==dict(kind=kind,binding=name,path=row["unresolved"]["path"],token_start=start,token_end=end,token=literal,decoded_length=len(value),value=value)
+   slots.append(slot)
+ slots.sort(key=lambda x:x["offset"]);assert[x["binding"]for x in slots]==wanted
+ steps=[];buf=old;cursor=0;fragments=[]
+ for slot in slots:
+  a=slot["before"].encode();b=slot["after"].encode();off=slot["offset"]
+  assert buf[off:off+len(a)]==a and old[off:off+len(a)]==a
+  assert old[cursor:off]==new[cursor:off]
+  fragments.append(dict(start=cursor,end=off,bytes=off-cursor,sha256=sha(old[cursor:off])))
+  before=sha(buf);nxt=buf[:off]+b+buf[off+len(a):]
+  step=dict(kind=kind,binding=slot["binding"],offset=off,before=slot["before"],after=slot["after"],before_bytes=len(buf),before_sha256=before,after_bytes=len(nxt),after_sha256=sha(nxt))
+  steps.append(step);buf=nxt;cursor=off+len(a)
+ assert old[cursor:]==new[cursor:];fragments.append(dict(start=cursor,end=len(old),bytes=len(old)-cursor,sha256=sha(old[cursor:])))
+ assert buf==new and steps==row["binding_steps"]
+ reverse=new
+ for step in reversed(steps):
+  off=step["offset"];a=step["after"].encode();b=step["before"].encode();assert reverse[off:off+len(a)]==a
+  reverse=reverse[:off]+b+reverse[off+len(a):];assert sha(reverse)==step["before_sha256"]
+ assert reverse==old and normalized(old,slots,True)==normalized(new,slots,False)
+ oldtokens=list(tokenize.generate_tokens(io.StringIO(old.decode()).readline));newtokens=list(tokenize.generate_tokens(io.StringIO(new.decode()).readline))
+ assert len(oldtokens)==len(newtokens)
+ actualdiff=[(a.type,a.string,b.type,b.string)for a,b in zip(oldtokens,newtokens)if a.string!=b.string]
+ assert len(actualdiff)==len(slots)and all(a==b==tokenize.STRING for a,_,b,_ in actualdiff)
+ assert {(before,after)for _,before,_,after in actualdiff}=={(x["before"],x["after"])for x in slots}
+ checks.append(dict(kind=kind,unresolved=row["unresolved"],bound=row["bound"],bindings=slots,intermediates=steps,whole_raw_inverse=True,full_AST_other_than_nine_values_exact=True,all_other_tokens_and_raw_fragments_exact=True,helper_count=len(hs)))
+ all_steps+=steps;all_untouched.append(dict(kind=kind,fragments=fragments))
+assert all_steps==receipt["bindings"]and len(all_steps)==9 and len(all_helpers)==27
+regions=[]
+for r in prior_proof["unchanged_critical_regions"]:
+ kind=r["kind"];old,new=raws[kind]
+ if "start"in r:
+  start=r["start"].encode();end=None if r["end"]is None else r["end"].encode();a=region(old,start,end);b=region(new,start,end);assert a==b
+ else:
+  baseline=next(x for x in contract["sources"]if x["kind"]==kind)["baseline"]
+  raw=take(baseline);assert baseline["sha256"]=="A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+  a=region(raw,b"verify_pins(historical_snapshot)\n",b'verify_pins({key:value for key,value in review.items()')
+  assert old.count(a)==new.count(a)==1
+ assert len(a)==r["bytes"]and sha(a)==r["sha256"];regions.append(r)
+assert len(regions)==5
+assert b'grant_preparer["bytes"]==10269'in raws["positive_buildquery_auditor"][1]
+assert b'runtime_preparer.stat().st_size==12671'in raws["positive_runtime_auditor"][1]
+for r in list(seen.values()):take(r)
+proof=dict(schema=1,status="independent_nine_actual_v39_execution_bindings_passed",reviewer="/root/handover_review",utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),candidate_head=HEAD,matrix_sha256=MATRIX,root_binding_receipt=receipt_pin,root_catalog_acceptance=catalog_pin,unresolved_root_source_review=receipt["unresolved_Root_source_review"],independent_unresolved_source_peer=root["independent_peer"],binding_contract=receipt["binding_contract"],checker=pin(Path(__file__),Path(__file__).read_bytes()),sources=checks,all_nine_steps=all_steps,untouched_raw_fragments=all_untouched,unchanged_helpers=all_helpers,unchanged_critical_regions=regions,cohort_counts=[[3,38],[4,58],[63,1249]],catalog_counts=[120,2051],all_fixed_width_raw_inverses_exact=True,all27_helpers_and5_regions_exact=True,all_other_tokens_and_AST_exact=True,constructor_hashes_bound_to_actual_bytes=True,all_four_heads_and_three_matrix_slots_equal_actual_observations=True,canonical_paths_match_accepted_contract=True,four_history_mappings_and_six_relationships_unchanged=True,required_future_grant_provenance="v39_execution_bound_source_review",root_runtime_review_remains_narrative_string=True,actual_metadata_count=None,runtime_results_transferred=False,current_input_versions=list(seen.values()),current_input_version_count=len(seen),candidate_or_prefix_executed=False,constructors_or_auditors_executed=False,Main_accessed=False,index_accessed=False,compiler_or_native_executed=False,execution_configuration_issued=False,native_execution_authorized=False,runtime_authority=False,qualification=False)
+raw=(json.dumps(proof,indent=2)+"\n").encode();out=D/"source-proof.json"
+with out.open("xb")as f:f.write(raw)
+assert out.read_bytes()==raw
+print(json.dumps(dict(status=proof["status"],proof=pin(out,raw),checker=proof["checker"],nine_bindings=9,helpers=27,regions=5,input_versions=len(seen),candidate_executed=False)))

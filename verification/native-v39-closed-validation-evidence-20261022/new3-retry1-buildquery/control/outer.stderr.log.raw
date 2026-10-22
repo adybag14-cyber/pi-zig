@@ -1,0 +1,5 @@
+[31;1mException: [0mC:\Users\adyba\pi-zig\evidence\combined-native-batch-v39-new3-retry1-prepared-20261022\Run-CombinedNativeBatch.ps1:555[0m
+[31;1m[0m[36;1mLine |[0m
+[31;1m[0m[36;1m[36;1m 555 | [0m . ve_batch')){[36;1mthrow 'Native batch terminal negative; no group may enter[0m .[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mNative batch terminal negative; no group may enter runtime from this partial batch[0m

@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "status": "independent_source_review_blocked_on_missing_third_raw_checkout_distinction",
+  "source_only": true,
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-sourceonly-20261022\\candidate\\Prepare-FreshV39Catalog-20261022-v2.py",
+    "bytes": 83821,
+    "sha256": "B43F321C1975BCBA6BC2E01732AED6E14154126D9E083C4B4B6183F0F54E8738"
+  },
+  "observations": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-catalog-adaptation-plan-sourceonly-20261022\\source-observations.json",
+    "bytes": 7053057,
+    "sha256": "03DC239423446BC669FA824232A554FB1D5BF1DDAED6F8CE53F2DAC481F1818B"
+  },
+  "accepted_checkout_before": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\before.json",
+    "bytes": 16165285,
+    "sha256": "E0B4F23FEB76DFAA549F1B029B9AF55DEAF908CC8EF66335A17FE33E023BFE2A"
+  },
+  "accepted_checkout_final": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-existing63-buildquery-20261021-153711\\final.json",
+    "bytes": 16165285,
+    "sha256": "E0B4F23FEB76DFAA549F1B029B9AF55DEAF908CC8EF66335A17FE33E023BFE2A"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-source-peer-20261022\\source-audit.py",
+    "bytes": 26825,
+    "sha256": "6FE29CD98C1147D64328CEC704DADB5A46201D3ED5423A91465FD16BCF17ED9A"
+  },
+  "checker_original_observation": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"<string>\", line 6, in <module>\r\n    runpy.run_path(str(p),run_name='__main__')\r\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"<frozen runpy>\", line 287, in run_path\r\n  File \"<frozen runpy>\", line 98, in _run_module_code\r\n  File \"<frozen runpy>\", line 88, in _run_code\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-source-peer-20261022\\source-audit.py\", line 144, in <module>\r\n    d=diffs[n]\r\n      ~~~~~^^^\r\nKeyError: 'src/extensions/native_typebox_operators_runtime.zig'",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"<string>\", line 6, in <module>\r\n    runpy.run_path(str(p),run_name='__main__')\r\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"<frozen runpy>\", line 287, in run_path\r\n  File \"<frozen runpy>\", line 98, in _run_module_code\r\n  File \"<frozen runpy>\", line 88, in _run_code\r\n  File \"C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-source-peer-20261022\\source-audit.py\", line 144, in <module>\r\n    d=diffs[n]\r\n      ~~~~~^^^\r\nKeyError: 'src/extensions/native_typebox_operators_runtime.zig'\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "candidate_failing_source": {
+    "first_line": 798,
+    "last_line": 806,
+    "body": "    assert tree(PREVIOUS_HEAD)[name]==(row[\"mode\"],\"blob\",row[\"git_blob\"])\n    assert len(raw)==row[\"bytes\"] and sha(raw)==row[\"sha256\"] and blob_id(raw)==row[\"git_blob\"]\n    assert name in old_sealed\n    if row[\"sha256\"]!=old_sealed[name]:\n        difference=raw_distinctions[name]\n        assert difference[\"raw_git_sha256\"]==row[\"sha256\"]\n        assert difference[\"accepted_checkout_sha256\"]==old_sealed[name]\n        assert difference[\"raw_git_bytes\"]==len(raw) and difference[\"git_blob\"]==blob_id(raw)\n    else:\n"
+  },
+  "immutable_Git_read_worktree": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018",
+  "raw_commit": "014062f2d139254acab4b985b4ae343db637166f",
+  "all_2145_raw_input_blobs_verified_before_checker_stop": true,
+  "complete_2145_row_hash_comparison": {
+    "count": 3,
+    "all_raw_Git_verified": true,
+    "differences": [
+      {
+        "name": "src/extensions/native_node_operation_scope.zig",
+        "git_sha": "0663228C40E2982D7809A7D0B143C3E6E96EE803B6FFAA384054CCCF19878F8C",
+        "git_bytes": 6995,
+        "git_blob": "0ec261c7e32bb7e3997a7efa455cf4fd8b56790c",
+        "sealed_sha": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+        "source_rows": [
+          {
+            "relative": "src/extensions/native_node_operation_scope.zig",
+            "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+            "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+          }
+        ],
+        "tree_rows": [
+          {
+            "relative": "src/extensions/native_node_operation_scope.zig",
+            "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_operation_scope.zig",
+            "sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9"
+          }
+        ]
+      },
+      {
+        "name": "src/extensions/native_typebox_operators_runtime.zig",
+        "git_sha": "76E0B40EC9C55F6945C68900436F4D3E35BEEC4EBF251D5B240A76393BA790A7",
+        "git_bytes": 11919,
+        "git_blob": "e51dd260aad404ae6b3398f2a854bd3f14693397",
+        "sealed_sha": "48E86CAFB55871A9769EFC9E732B56A58B59328E1371BC00F7F45B928435A758",
+        "source_rows": [
+          {
+            "relative": "src/extensions/native_typebox_operators_runtime.zig",
+            "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_typebox_operators_runtime.zig",
+            "sha256": "48E86CAFB55871A9769EFC9E732B56A58B59328E1371BC00F7F45B928435A758"
+          }
+        ],
+        "tree_rows": [
+          {
+            "relative": "src/extensions/native_typebox_operators_runtime.zig",
+            "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_typebox_operators_runtime.zig",
+            "sha256": "48E86CAFB55871A9769EFC9E732B56A58B59328E1371BC00F7F45B928435A758"
+          }
+        ]
+      },
+      {
+        "name": "src/native_sdk_chalk_ignore_guest_guard_test.zig",
+        "git_sha": "DF00D6C1BE401FC026A588EA201E184C8C31C31860F432F85E01DFC65299AA9F",
+        "git_bytes": 9449,
+        "git_blob": "28eb8c6a609dd60ac95f83569e9bc673688a6d23",
+        "sealed_sha": "8E5C4E07B578EBE60CE39372F236B27873634AC39A8AC77C3623338FE83568CE",
+        "source_rows": [
+          {
+            "relative": "src/native_sdk_chalk_ignore_guest_guard_test.zig",
+            "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_chalk_ignore_guest_guard_test.zig",
+            "sha256": "8E5C4E07B578EBE60CE39372F236B27873634AC39A8AC77C3623338FE83568CE"
+          }
+        ],
+        "tree_rows": [
+          {
+            "relative": "src/native_sdk_chalk_ignore_guest_guard_test.zig",
+            "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_sdk_chalk_ignore_guest_guard_test.zig",
+            "sha256": "8E5C4E07B578EBE60CE39372F236B27873634AC39A8AC77C3623338FE83568CE"
+          }
+        ]
+      }
+    ],
+    "declared_distinctions": [
+      {
+        "relative_path": "src/extensions/native_node_operation_scope.zig",
+        "accepted_checkout_sha256": "CD8111EE00100BE90E741BD658770EC7E4344EF1EF90689908EDC39C1CE5C1F9",
+        "raw_git_sha256": "0663228C40E2982D7809A7D0B143C3E6E96EE803B6FFAA384054CCCF19878F8C",
+        "raw_git_bytes": 6995,
+        "git_blob": "0ec261c7e32bb7e3997a7efa455cf4fd8b56790c",
+        "role": "Distinct immutable versions; no current checkout equivalence asserted. Future preparation must use actual checkout and preserve the accepted checkout seal."
+      },
+      {
+        "relative_path": "src/native_sdk_chalk_ignore_guest_guard_test.zig",
+        "accepted_checkout_sha256": "8E5C4E07B578EBE60CE39372F236B27873634AC39A8AC77C3623338FE83568CE",
+        "raw_git_sha256": "DF00D6C1BE401FC026A588EA201E184C8C31C31860F432F85E01DFC65299AA9F",
+        "raw_git_bytes": 9449,
+        "git_blob": "28eb8c6a609dd60ac95f83569e9bc673688a6d23",
+        "role": "Distinct immutable versions; no current checkout equivalence asserted. Future preparation must use actual checkout and preserve the accepted checkout seal."
+      }
+    ]
+  },
+  "finding": "The candidate requires the distinct raw/checkout table to contain exactly two named files, but the full selected raw014 set has one additional exact mismatch against the accepted E0B4 source/tree seal. The lookup for native_typebox_operators_runtime.zig has no row. This is a source-admission failure inferred from exact data, not an executed candidate failure.",
+  "required_correction": "Retain B43F and 03DC. Add an explicitly pinned third raw-Git/accepted-checkout authority in a finite source-only successor and update the exact table/count contracts; preserve strict checking of every other path, actual checkout bytes and all current runtime allowlists. Do not normalize bytes or accept a generic mismatch.",
+  "candidate_or_prefix_executed": false,
+  "catalog_generated": false,
+  "Main_accessed": false,
+  "index_accessed": false,
+  "compiler_executed": false,
+  "native_executed": false,
+  "configuration_issued": false,
+  "qualification": false
+}

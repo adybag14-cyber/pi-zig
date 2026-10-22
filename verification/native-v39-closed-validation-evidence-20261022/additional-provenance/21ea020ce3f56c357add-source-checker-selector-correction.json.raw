@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\check-unexecuted-source-and-contract.py",
+    "bytes": 18418,
+    "sha256": "E204278E9955850E9D5825713B2E74DFFB09E99B1B02592ADB31AEE04E43E99E"
+  },
+  "selected": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\check-unexecuted-source-and-contract-v2.py",
+    "bytes": 18468,
+    "sha256": "CDF7D3093AF6A7BA7DE1494E4940762A0CF6BFEF630CDAB7B5C158A9FBE220E4"
+  },
+  "retained_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\source-checker-selector-negative.json",
+    "bytes": 3085,
+    "sha256": "5ED74D727C822C677C167FDB89FD029031B453D94C990316023D0C33227E87D8"
+  },
+  "old": "(\"exact raw row admission and direct-pin engine\",\"rows = copy_plan[\\\"rows\\\"]\",\"for required in preservation\",\"for required in preservation\"),",
+  "new": "(\"exact raw row admission and direct-pin engine\",\"rows = copy_plan[\\\"rows\\\"]\",\"for required in preservation[\\\"required_raw_files\\\"]:\",\"for required in preservation[\\\"required_raw_files\\\"]:\"),",
+  "hunks": 1,
+  "complete_forward_and_inverse_exact": true,
+  "candidate_unchanged": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\candidate\\Prepare-V39ClosedPhasesAndUnresolved63Archive-20261022.py",
+    "bytes": 72511,
+    "sha256": "02D8A4504E8741E915621AFE35B3DBDBEC8A8EE8F8D0F1712F9BA3C5C2392C2B"
+  },
+  "execution_authority": false
+}

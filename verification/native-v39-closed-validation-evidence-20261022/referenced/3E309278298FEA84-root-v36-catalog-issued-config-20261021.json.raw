@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v36_catalog_preparation",
+  "catalog_preparation_authorized": true,
+  "native_execution_authorized": false,
+  "preparer_sha256": "368F4F1F0F0AFD81AA58078BACDC80BCB7CA9A22307702E9DDBF47E048D691F8",
+  "candidate_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "previous_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "partition": {
+    "new4": 4,
+    "regression63": 63,
+    "declarations": [
+      58,
+      1249
+    ],
+    "union_groups": 67,
+    "union_declarations": 1307
+  },
+  "preparation_directories": {
+    "new4": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-new4-prepared-20261020",
+    "regression63": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v36-regression63-prepared-20261020"
+  },
+  "fixture": {
+    "path": "src/native_node_file_handle_owner_test_support.zig",
+    "before_sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+    "after_sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127",
+    "after_bytes": 33137
+  },
+  "progress": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+    "bytes": 354535,
+    "sha256": "23A951AAEB578839CC84AD9548C755F63BD034E966549F5C73B93E2833073DD8"
+  },
+  "prior_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v35-new4-control-20261020-223254\\independent-first-compile-negative-closure.json",
+    "bytes": 46548,
+    "sha256": "07883502323A898D097E467FB9E2CE5ED1A52A8A83A0A6B1EA7F877A35657129"
+  },
+  "phase_pins": [
+    {
+      "phase": "fixture",
+      "manifest": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-fixture-main-intake-20261020\\manifest.json",
+        "bytes": 20327,
+        "sha256": "88001A1F0F533194756769F86D0BE306B252BC6EE1D90C13A9D270B3BE278287"
+      },
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-fixture-source-intake-receipts-20261021\\fixture-receipt.json",
+        "bytes": 5901,
+        "sha256": "0F99D7FF09280E059C81CCE1175F77A0E493087D8F396861923AE48FE4B52C72"
+      },
+      "release": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-fixture-source-intake-release-20261021.json",
+        "bytes": 6220,
+        "sha256": "9C5066FCC305D54BE191815EBA09BE3B8C27CD430F646FC29D43E2186F14C9DF"
+      },
+      "commit": "4ee30c526cd8909dfadfbbe187061fabcff9460b",
+      "path_count": 42
+    },
+    {
+      "phase": "progress",
+      "manifest": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v35-progress-and-negative-archive-intake-20261021\\manifest.json",
+        "bytes": 27734,
+        "sha256": "4440ECF69E451CA916598AA2CCB41378E43938CCFB73DBE1DD9DB822332BF742"
+      },
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-progress-negative-intake-receipts-20261021\\progress-receipt.json",
+        "bytes": 7079,
+        "sha256": "C9A78181E0C1BE2212524550A22B9AD68D665F52C888293D6748025030E9604F"
+      },
+      "release": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-progress-negative-intake-release-20261021.json",
+        "bytes": 6758,
+        "sha256": "EF6111EBBD4F87998FCB87761CFAA043D443A7C720FE065BD028B6C54F5EC5AC"
+      },
+      "commit": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+      "path_count": 52
+    }
+  ],
+  "fixture_independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-close-observer-candidate-peer-20261020\\peer.json",
+    "bytes": 5512,
+    "sha256": "419398D6FEA22337A10972741687944AB86CBB1FD32B9771A24CCF1272AE9284"
+  },
+  "fixture_root_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v35-filehandle-fixture-corrections-source-acceptance-20261020.json",
+    "bytes": 3873,
+    "sha256": "083D5CBD75E1A23F555F556BE1136CA6F0977F9DCBB9BDC073BA2AF8C99FAAB3"
+  },
+  "actual_metadata_count": null,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "qualification": false,
+  "root_preparer_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-catalog-preparer-source-review-20261020.json",
+    "bytes": 2970,
+    "sha256": "C78362731CFAD8A83D50775C4B0583BBB632B898BBA33A2967BC25B88AD51BC1"
+  },
+  "root_review": "Root authorizes only the exact reviewed 368F V36 catalog preparation at frozen clean a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8. Both separate committed intake phases and their exact releases are complete. Preserve the entire 117-group/2013-declaration catalog, 576 dependencies, strict driver/classifier and cap, changing only the three reviewed fixture hash rows and preparation identity. Preserve the same complete disjoint new4/58 and original63/1249 order. Create only the two absent evidence preparation directories. No Main/index/native/test/runtime execution or qualification authority.",
+  "issued_utc": "2026-10-21T08:02:24.616149+00:00"
+}

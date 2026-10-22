@@ -1,0 +1,112 @@
+"""Source-authoring only: pin four immutable closed V39 phases and the current raw progress basis.
+No candidate evaluation, Main/index, processes, current existing63 evidence, compression or archive staging.
+"""
+from pathlib import Path
+import sys,json,hashlib,re
+B=Path(r"C:\Users\adyba\pi-zig");E=B/"evidence"
+cfg=json.loads(Path(sys.argv[1]).read_bytes());D=Path(cfg["root"]);HEAD=cfg["head"];ARCHIVE=cfg["archive"]
+enc=lambda x:(json.dumps(x,indent=2,ensure_ascii=False)+"\n").encode()
+sha=lambda b:hashlib.sha256(b).hexdigest().upper()
+def permitted(p):
+ p=Path(p)
+ return p.is_absolute() and (p.is_relative_to(E) or (p.is_relative_to(B/"worktrees") and "verification" in p.parts)) and not p.is_relative_to(B/"main") and not any(x in ("cache","global-cache",".zig-cache","zig-out","installed") for x in p.parts) and p.suffix.lower() not in (".exe",".dll",".pdb") and "root-native-foundation-fresh-v39-existing63" not in str(p) and "root-native-foundation-v39-existing63" not in str(p)
+def pin(p,b=None):
+ p=Path(p);assert permitted(p),str(p)
+ b=p.read_bytes() if b is None else b
+ return {"path":str(p),"bytes":len(b),"sha256":sha(b)}
+seen={};blobs={};targets={};roles={};edges=[];excluded=[]
+def add(p,target,role,expected=None):
+ p=Path(p);assert permitted(p);key=str(p).casefold()
+ if key in seen:
+  if expected is not None:assert seen[key]==expected
+  if role not in roles[key]:roles[key].append(role)
+  return seen[key]
+ b=p.read_bytes();q=pin(p,b)
+ if expected is not None:assert q==expected,(q,expected)
+ seen[key]=q;blobs[key]=b;targets[key]=target;roles[key]=[role]
+ return q
+members=[];pairs=[];phase_counts=[]
+for phase in cfg["phases"]:
+ P,C=Path(phase["proof"]),Path(phase["control"])
+ assert P.parent==C.parent==E
+ assert sorted(p.name for p in P.iterdir() if p.is_file())==["before.json","final.json","result.json"]
+ proof_dirs=sorted(p.name for p in P.iterdir() if p.is_dir())
+ assert "groups" in proof_dirs and set(proof_dirs)-{"groups"}<=({"cache","global-cache"} if phase["is_build"] else set())
+ assert not any(p.is_dir() for p in C.iterdir())
+ assert sorted(p.name for p in (P/"groups").iterdir() if p.is_dir())==sorted(phase["groups"])
+ m={"phase":phase["phase"],"proof":str(P),"control":str(C),"proof_top_level_files":["before.json","final.json","result.json"],"control_top_level_files":sorted(p.name for p in C.iterdir() if p.is_file()),"group_files":{},"excluded_subdirectories":[x for x in proof_dirs if x!="groups"],"excluded_group_subdirectories":{}}
+ count=0
+ for sub,base in (("proof",P),("control",C)):
+  for p in sorted(base.iterdir(),key=lambda x:x.name):
+   if p.is_file():
+    add(p,ARCHIVE+"/"+phase["phase"]+"/"+sub+"/"+p.name+".raw","closed_phase_"+phase["phase"]);count+=1
+ for group in phase["groups"]:
+  gd=P/"groups"/group
+  m["group_files"][group]=sorted(p.name for p in gd.iterdir() if p.is_file())
+  m["excluded_group_subdirectories"][group]=sorted(p.name for p in gd.iterdir() if p.is_dir())
+  assert set(m["excluded_group_subdirectories"][group])<=({"installed"} if phase["is_build"] else set())
+  for name in m["group_files"][group]:
+   add(gd/name,ARCHIVE+"/"+phase["phase"]+"/proof/groups/"+group+"/"+name+".raw","closed_phase_"+phase["phase"]);count+=1
+ before,final=blobs[str(P/"before.json").casefold()],blobs[str(P/"final.json").casefold()]
+ assert before==final
+ if phase["phase"]!="new3-buildquery-prelaunch":
+  target=ARCHIVE+"/"+phase["phase"]+"/proof/before-and-final.json.gz"
+  original=[seen[str(P/name).casefold()] for name in ("before.json","final.json")]
+  for name in ("before.json","final.json"):targets[str(P/name).casefold()]=target
+  seal=json.loads(before)
+  assert seal["candidate_head"]==HEAD and seal["clean"] is True and seal["errors"]==[]
+  pairs.append({"phase":phase["phase"],"originals":original,"proposed_archive_relative_path":target,"byte_identical_verified":True,"seal_counts":{k:len(seal[k]) for k in ("source","tree","vendor","compiler","controls")},"future_parameters":{"filename":"","mtime":0,"compresslevel":9,"header_hex":"1f8b08000000000002ff"},"compressed_pin":None,"compression_executed":False})
+ members.append(m);phase_counts.append({"phase":phase["phase"],"original_files":count})
+seed=[]
+for role,q in cfg["roles"].items():
+ p=Path(q["path"]);key=str(p).casefold()
+ target=ARCHIVE+"/authority/"+role+"/"+p.name+".raw"
+ add(p,target,role,q)
+ if p.suffix.lower()==".json":seed.append(q)
+def pins(value,path=()):
+ if isinstance(value,dict):
+  if {"path","bytes","sha256"}<=set(value) and isinstance(value["path"],str) and type(value["bytes"]) is int and isinstance(value["sha256"],str):
+   yield path,{k:value[k] for k in ("path","bytes","sha256")}
+  for k,x in value.items():yield from pins(x,path+(k,))
+ elif isinstance(value,list):
+  for i,x in enumerate(value):yield from pins(x,path+(i,))
+for q in seed:
+ data=json.loads(blobs[q["path"].casefold()])
+ for path,ref in pins(data):
+  if not permitted(ref["path"]):
+   excluded.append({"document":q,"json_path":list(path),"referenced_pin":ref,"reason":"outside_closed_evidence_archive_scope_no_file_read"})
+   continue
+  target=ARCHIVE+"/referenced/"+sha(ref["path"].casefold().encode())[:16]+"-"+re.sub("[^A-Za-z0-9_.-]","_",Path(ref["path"]).name)+".raw"
+  add(ref["path"],target,"direct_closed_authority_reference",ref)
+  edges.append({"document":q,"json_path":list(path),"exact_referenced_pin":ref})
+compressed={r["path"].casefold() for p in pairs for r in p["originals"]}
+rows=[{"original":q,"roles":roles[k],"proposed_archive_relative_path":targets[k],"representation":"proposed_lossless_gzip_identical_bookend_pair" if k in compressed else "raw_byte_exact","archive_created":False} for k,q in seen.items()]
+assert len(set(r["proposed_archive_relative_path"].casefold() for r in rows))==len(rows)-len(pairs)
+pr=cfg["progress"];old_raw=Path(pr["path"]).read_bytes();assert pin(pr["path"],old_raw)==pr
+old=json.loads(old_raw);assert enc(old)==old_raw
+def lists(v,path=()):
+ if isinstance(v,list):
+  yield path,v
+  for i,x in enumerate(v):yield from lists(x,path+(i,))
+ elif isinstance(v,dict):
+  for k,x in v.items():yield from lists(x,path+(k,))
+basis=[{"path":list(p),"length":len(a),"canonical_sha256":sha(enc(a))} for p,a in lists(old)]
+assert len(basis)==222
+lengths={k:len(old[k]) for k in ("integrated_source_units","preserved_attempts","retained_recent_native_negatives","execution_checkpoint_history")}
+assert lengths=={"integrated_source_units":65,"preserved_attempts":45,"retained_recent_native_negatives":15,"execution_checkpoint_history":15}
+inv={"schema":1,"status":"inert_observed_closed_v39_phase_source_inventory","candidate_head":HEAD,"source_file_versions":len(rows),"rows":rows,"direct_pin_relationships":edges,"proposed_distinct_archive_paths":len(rows)-len(pairs),"observed_phase_membership":members,"bookend_plans":pairs,"phase_counts":phase_counts,"scope":"Only four closed phases and direct pins in the three immutable histories/Root acceptances/closures; no current existing63 inspection.","existing63_outcome":None,"candidate_executed":False,"archive_created":False}
+plan={"schema":1,"status":"inert_v39_closed_phase_progress_patch_basis","candidate_head":HEAD,"original_progress":pr,"raw_git_blob_sha1":hashlib.sha1(b"blob "+str(len(old_raw)).encode()+b"\0"+old_raw).hexdigest(),"history_prefix_count":len(basis),"nested_history_prefix_basis":basis,"preserved_top_level_history_lengths":lengths,"source_units_sha256":sha(enc(old["integrated_source_units"])),"checkpoint_sha256":sha(enc(old["current_execution_checkpoint"])),"checkpoint_schema":old["current_execution_checkpoint"]["schema"],"known_new4":{"buildquery_root_acceptance":cfg["roles"]["new4_buildquery_root"],"runtime_root_acceptance":cfg["roles"]["new4_runtime_root"]},"known_new3":{"prelaunch_root_acceptance":cfg["roles"]["new3_prelaunch_root"],"compile_root_acceptance":cfg["roles"]["new3_compile_root"]},"existing63_acceptance_contract":None,"stage_authorized":False}
+required=[q for k,q in seen.items() if k not in compressed and any(not r.startswith("closed_phase_") for r in roles[k])]
+pres={"schema":1,"candidate_head":HEAD,"required_raw_file_count":len(required),"required_raw_files":required,"role_pins":cfg["roles"],"excluded_descriptor_count":len(excluded),"excluded_descriptors":excluded,"candidate_executed":False,"future_existing63_outcome":None}
+D.mkdir(parents=True,exist_ok=True)
+outputs={}
+for name,value in (("observed-closed-input-inventory.json",inv),("progress-patch-plan.json",plan),("supplemental-preservation-inputs.json",pres)):
+ b=enc(value);p=D/name
+ with p.open("xb") as f:f.write(b)
+ assert p.read_bytes()==b
+ outputs[name]=pin(p,b)
+handoff={"schema":1,"status":"source_only_closed_input_basis_unissued","candidate_head":HEAD,"outputs":outputs,"baseline":cfg["baseline"],"original_progress":pr,"phase_counts":phase_counts,"known_input_versions":len(rows),"known_direct_pin_relationships":len(edges),"known_bookend_pairs":len(pairs),"nested_history_prefix_count":222,"unchanged_source_unit_count":65,"no_current63_inspection":True,"Main_accessed":False,"candidate_or_prefix_executed":False,"archive_prepared":False,"existing63_acceptance_contract":None}
+p=D/"inert-input-handoff.json";b=enc(handoff)
+with p.open("xb") as f:f.write(b)
+outputs[p.name]=pin(p,b)
+print(json.dumps({"outputs":outputs,"counts":{"versions":len(rows),"edges":len(edges),"pairs":len(pairs),"required_raw":len(required),"roles":len(cfg["roles"]),"excluded_descriptors":len(excluded)},"phases":phase_counts,"no_Main_or_current63":True}))

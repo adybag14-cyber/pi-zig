@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "status": "independently_closed_initial_admission_negative_before_proof_creation",
+  "review_scope": "Original failed V37 new4 initial grant admission only; no build acceptance or retry authority.",
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\source-audit.py",
+    "bytes": 17828,
+    "sha256": "EAECD99591D740BD9880A37F3DD8412BDEEF3E1589B184B8A58D5DFD866272A3"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\source-audit.json",
+    "bytes": 30601,
+    "sha256": "D9C0D2D1D202069E5BFFA95AE8632DBE1E495D63DC150DE8E7B1D40016F12F0F"
+  },
+  "full_job_tool_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\job-tool-observation.json",
+    "bytes": 3511,
+    "sha256": "D38CF38CBFBE5072F2A76483506531E124EFA315474DB53B79D51CC5C4CC93A5"
+  },
+  "fresh_process_query": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\process-query.ps1",
+    "bytes": 4213,
+    "sha256": "AD2BEAEC4DDAE1690B8396B387BD6602E4D0D7AFE292AD5E9F7F056D5717D8ED"
+  },
+  "fresh_process_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\process-observation.json",
+    "bytes": 39167,
+    "sha256": "08DC1C3A05A051FFB4395822BB209581A1E24B2E13DC0D401353C14C634B088E"
+  },
+  "process_query_tool_metadata": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\process-query-tool-metadata.json",
+    "bytes": 1071,
+    "sha256": "810F68CB15808F40B67CB95C0CC2DBE80AEDADE0CCDF902694E7087F84A6C45B"
+  },
+  "original_job_id": "job-op-91a26b7a9a5f34e0321f75a4566081f085bb28ec0b26bc25b7c89cccbd7e381c",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "original_control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-094837",
+  "original_proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-094837",
+  "original_control_members": [
+    "grant-launch-adaptation.json",
+    "launch.ps1",
+    "outer-absence.json",
+    "outer.json",
+    "outer.stderr.log",
+    "outer.stdout.bin",
+    "root-grant.json"
+  ],
+  "original_control_and_required_current_pins_verified": 73,
+  "original_prepared_launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\buildquery-launch.json",
+    "bytes": 2091,
+    "sha256": "94A0A3134BF95B96E92A6CE9486F826E3A412C3F3F280B5DEE414396D079AC31"
+  },
+  "failure": {
+    "reason": "Initial grant must be within300seconds before first child launch",
+    "source_line": 44,
+    "first_call_line": 45,
+    "grant_issued_utc": "2026-10-21T09:48:37.244867+00:00",
+    "driver_created_utc": "2026-10-21T12:55:22.0262399Z",
+    "elapsed_lower_bound_seconds_exact": "11204.7813729",
+    "maximum_seconds": 300,
+    "driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+    "terminal_job_status": "failed",
+    "terminal_job_exit_code": 1,
+    "terminal_outer_status": "failed",
+    "terminal_outer_exit_code": 1
+  },
+  "findings": [
+    "The original driver's first freshness call at line 45 throws from line 44. The unchanged source proves this precedes the proof-existence check at line 46, host/context checks at 47 onward, compiler/control acquisition at 59 onward, and imports of native classifier/CI/protocol owners at lines 73-75.",
+    "The later proof-directory creation (414), private observer-environment change (422), initial task seal (426), second freshness call (465), and compiler/metadata/runtime operations (469-471) are not reached. The original proof directory remains absent; no source/vendor/compiler bookend seals or results are claimed.",
+    "The pinned read-only workspace resolver runs at line 27 before the failed guard. The original outer owner already launched PowerShell, cleared three NODE_* variables in child ProcessStartInfo, and wrote its retained ownership/log records. This closure does not claim zero outer-process environment activity.",
+    "The complete durable-job tool observation is retained. Runner FILETIME 134370609217126858 remains an exact decimal string; driver identity retains its seven-digit UTC start and original executable/arguments. The durable tool reports launcher PID 8612 without a creation timestamp, so no timestamp is invented.",
+    "The independent 13:02:24 UTC Win32_Process observation contains 474 identity rows, no original runner/launcher/driver PID, no direct children of those three PIDs, and zero native candidates. All five pinned classifier conditions and the contained-path pattern match after variable-only normalization. No classifier/helper was imported or executed.",
+    "All 73 bounded current file pins were rehashed twice, including original controls, actual provenance/configuration/catalog pins, four selected source roots, workspace bootstrap and outer owner. Exact 36-field grant inverse and one-literal launcher inverse recover the immutable original V34 authorities.",
+    "Main remains clean at b13be24e44cc1bbc361639eb35900a368ae60eac before and after checking. The original seven control files and prepared launch remain unchanged. All four groups and all 58 declarations are unattempted; actual metadata is unknown."
+  ],
+  "process_observation": {
+    "began_utc": "2026-10-21T13:02:24.5749784+00:00",
+    "completed_utc": "2026-10-21T13:02:24.8493502+00:00",
+    "current_rows": 474,
+    "original_pids_present": [],
+    "original_direct_children_present": [],
+    "native_candidates": [],
+    "all_five_classifier_conditions_and_pattern_equal": true,
+    "runner_instance_preserved_as_string": true,
+    "cim_timestamp_precision": "CIM microsecond-resolution timestamps are not claimed to equal retained 100ns process identities; no original PID is present."
+  },
+  "groups": [
+    {
+      "group": "native-node-file-handle-owner",
+      "source_root": "src/native_node_file_handle_owner_test.zig",
+      "declared_controls": 18,
+      "compile_attempted": false,
+      "metadata_attempted": false,
+      "runtime_attempted": false,
+      "actual_metadata_count": null
+    },
+    {
+      "group": "native-node-fs-before-hook-continuation",
+      "source_root": "src/native_node_fs_before_hook_continuation_test.zig",
+      "declared_controls": 3,
+      "compile_attempted": false,
+      "metadata_attempted": false,
+      "runtime_attempted": false,
+      "actual_metadata_count": null
+    },
+    {
+      "group": "native-vm-error-constructor-name",
+      "source_root": "src/native_vm_error_constructor_name_test.zig",
+      "declared_controls": 24,
+      "compile_attempted": false,
+      "metadata_attempted": false,
+      "runtime_attempted": false,
+      "actual_metadata_count": null
+    },
+    {
+      "group": "native-node-file-handle-transfer",
+      "source_root": "src/native_node_file_handle_transfer_test.zig",
+      "declared_controls": 13,
+      "compile_attempted": false,
+      "metadata_attempted": false,
+      "runtime_attempted": false,
+      "actual_metadata_count": null
+    }
+  ],
+  "source_only": true,
+  "target_or_helper_executed_by_reviewer": false,
+  "native_execution_authorized": false,
+  "main_mutated": false,
+  "compiler_or_reference_or_generator_executed": false,
+  "full_source_vendor_compiler_seal_claim": false,
+  "build_acceptance": false,
+  "runtime_authority": false,
+  "application_qualified": false,
+  "retry_authorized": false,
+  "remaining_gate": "Root must independently review this closure and issue a fresh, separate grant before any retry. The process observation is historical at its recorded time, not a fresh admission for a later launch."
+}

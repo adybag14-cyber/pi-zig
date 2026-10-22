@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "status": "root_accepted_original_v37_new4_initial_admission_negative",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-21T13:13:14.300759+00:00",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "original_job_id": "job-op-91a26b7a9a5f34e0321f75a4566081f085bb28ec0b26bc25b7c89cccbd7e381c",
+  "independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\peer.json",
+    "bytes": 8119,
+    "sha256": "97CA02ED14001C8AC9D1043647660D112052580B99BB478EBE069BDE939EFA67"
+  },
+  "independent_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\source-audit.json",
+    "bytes": 30601,
+    "sha256": "D9C0D2D1D202069E5BFFA95AE8632DBE1E495D63DC150DE8E7B1D40016F12F0F"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\source-audit.py",
+    "bytes": 17828,
+    "sha256": "EAECD99591D740BD9880A37F3DD8412BDEEF3E1589B184B8A58D5DFD866272A3"
+  },
+  "original_control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-094837",
+  "original_proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-094837",
+  "original_prepared_launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\buildquery-launch.json",
+    "bytes": 2091,
+    "sha256": "94A0A3134BF95B96E92A6CE9486F826E3A412C3F3F280B5DEE414396D079AC31"
+  },
+  "full_job_tool_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\job-tool-observation.json",
+    "bytes": 3511,
+    "sha256": "D38CF38CBFBE5072F2A76483506531E124EFA315474DB53B79D51CC5C4CC93A5"
+  },
+  "process_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-new4-admission-negative-independent-20261021\\process-observation.json",
+    "bytes": 39167,
+    "sha256": "08DC1C3A05A051FFB4395822BB209581A1E24B2E13DC0D401353C14C634B088E"
+  },
+  "failure": {
+    "reason": "Initial grant must be within300seconds before first child launch",
+    "source_line": 44,
+    "first_call_line": 45,
+    "grant_issued_utc": "2026-10-21T09:48:37.244867+00:00",
+    "driver_created_utc": "2026-10-21T12:55:22.0262399Z",
+    "elapsed_lower_bound_seconds_exact": "11204.7813729",
+    "maximum_seconds": 300,
+    "driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+    "terminal_job_status": "failed",
+    "terminal_job_exit_code": 1,
+    "terminal_outer_status": "failed",
+    "terminal_outer_exit_code": 1
+  },
+  "root_verified_current_pins": 73,
+  "original_control_exact_names": [
+    "grant-launch-adaptation.json",
+    "launch.ps1",
+    "outer-absence.json",
+    "outer.json",
+    "outer.stderr.log",
+    "outer.stdout.bin",
+    "root-grant.json"
+  ],
+  "proof_absent": true,
+  "all_groups_unattempted": true,
+  "declared_groups": 4,
+  "declared_controls": 58,
+  "actual_metadata_count": null,
+  "root_review": "Root fully read the independent checker and receipt, reconciled the original terminal durable job and exact driver ownership, independently rehashed every one of the 73 current inputs and all source excerpts, and accepts only closure of the initial expired-grant rejection. The first freshness guard stopped the original driver before proof creation or native compilation. The read-only resolver and outer PowerShell/environment/log activity are explicitly retained. The recorded independent process snapshot has no original owners, their direct children or classifier-native candidates. This is historical closure only; a later launch requires a fresh memory/process admission and a separate fresh grant.",
+  "negative_accepted": true,
+  "build_acceptance": false,
+  "full_source_vendor_compiler_seal_claim": false,
+  "runtime_authority": false,
+  "native_execution_authorized": false,
+  "source_mutation_hold_released": false,
+  "application_qualified": false
+}

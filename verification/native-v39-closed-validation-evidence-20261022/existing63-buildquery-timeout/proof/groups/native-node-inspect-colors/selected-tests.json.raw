@@ -1,0 +1,28 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\91564df27d90a6b1820ea7458f61270e\\test.exe",
+  "binary_sha256": "E0321BFBA9F0E8C6DB70568C2C9D56C017CDCC2A7B4A01826969958EB425C8DA",
+  "version": "0.16.0",
+  "actual_count": 16,
+  "tests": [
+    "native_node_inspect_colors_test.test.native actual inspect color original tables arrays style order and function shape",
+    "native_node_inspect_colors_test.test.native actual inspect color aliases use real captured targets and call receivers",
+    "native_node_inspect_colors_test.test.native actual inspect color style and code guards are exactly undefined-only",
+    "native_node_inspect_colors_test.test.native actual inspect color reads live styles colors and computed keys in order",
+    "native_node_inspect_colors_test.test.native actual inspect color templates use eager string hints and intrinsic additions",
+    "native_node_inspect_colors_test.test.native actual inspect color template abrupt substitutions stop before later getters",
+    "native_node_inspect_colors_test.test.native actual inspect color ordinary private DATA throw retains exact identity",
+    "native_node_inspect_colors_test.test.native actual inspect color successful flagged key remains ordinary DATA",
+    "native_node_inspect_colors_test.test.native actual inspect color style receiver retires before live color table",
+    "native_node_inspect_colors_test.test.native actual inspect color code temporary retires before later substitutions",
+    "native_node_inspect_colors_test.test.native actual inspect color original local holders survive until actual terminal",
+    "native_node_inspect_colors_test.test.native actual inspect color current native fatal prevents guest catch and later reads",
+    "native_node_inspect_colors_test.test.native actual inspect color receiver retirement fatal prevents guest catch and later reads",
+    "native_node_inspect_colors_test.test.native actual inspect color genuine inspector shares live tables and typed layout",
+    "native_node_inspect_colors_test.test.native actual inspect color option overrides supplied stylizer after actual getter",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-inspect-colors",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

@@ -1,0 +1,87 @@
+"""Own inert closed-timeout data collector. Never evaluates any preparer or target."""
+from pathlib import Path
+import hashlib,json
+R=Path(r"C:\Users\adyba\pi-zig\evidence\v39-existing63-timeout-progress-archive-sourceonly-20261022")
+B=R.parent.parent
+E=B/"evidence"
+inputs=json.loads((R/"authoring-inputs.json").read_text())
+assert hashlib.sha256((R/"authoring-inputs.json").read_bytes()).hexdigest().upper()=="D52DEFD5362DB7B915B4F534159EE74245E056A1E74C81DA9BFE9CA0765AA3C4"
+pins={};raws={}
+def read(row):
+ p=Path(row["path"])
+ assert p.is_relative_to(E) or (p.is_relative_to(B/"worktrees") and "verification" in p.parts)
+ assert not any(x in ("cache","global-cache","installed",".zig-cache","zig-out") for x in p.parts)
+ assert p.suffix.lower() not in (".exe",".dll",".pdb")
+ raw=p.read_bytes();q={"path":str(p),"bytes":len(raw),"sha256":hashlib.sha256(raw).hexdigest().upper()}
+ assert q==row
+ k=str(p).casefold();assert k not in pins or pins[k]==q
+ pins[k]=q;raws[k]=raw
+ return raw
+def doc(row):return json.loads(read(row))
+def pin(p):
+ raw=p.read_bytes()
+ return {"path":str(p),"bytes":len(raw),"sha256":hashlib.sha256(raw).hexdigest().upper()}
+def walk(v,where=()):
+ if isinstance(v,dict):
+  if {"path","bytes","sha256"}.issubset(v) and isinstance(v["path"],str):
+   yield where,{k:v[k] for k in ("path","bytes","sha256")}
+  for k,x in v.items():yield from walk(x,where+(k,))
+ elif isinstance(v,list):
+  for i,x in enumerate(v):yield from walk(x,where+(i,))
+roles=inputs["roles"]
+for q in roles.values():read(q)
+proof=doc(roles["independent_proof"]);root=doc(roles["root_acceptance"]);peer=doc(roles["independent_peer"])
+assert proof["status"]=="independently_inspected_original_v39_existing63_outer_timeout_negative"
+assert root["status"]=="root_accepted_closed_v39_existing63_outer_timeout_negative"
+assert root["independent_original_evidence_peer"]==roles["independent_peer"]
+assert root["independent_original_evidence_proof"]==roles["independent_proof"]
+assert root["independent_inspector"]==roles["independent_inspector"]
+assert proof["input_count"]==len(proof["all_input_pins"])==877
+for q in proof["all_input_pins"]:read(q)
+C=Path(inputs["phase_control"]);P=Path(inputs["phase_proof"])
+grant=json.loads((C/"root-grant.json").read_bytes());groups=grant["groups"]
+files=lambda p:sorted(x.name for x in p.iterdir() if x.is_file())
+dirs=lambda p:sorted(x.name for x in p.iterdir() if x.is_dir())
+assert files(P)==["before.json"] and len(groups)==63 and dirs(P/"groups")==sorted(groups[:51])
+membership={"phase":"existing63-buildquery-timeout","control":str(C),"proof":str(P),
+ "control_top_level_files":files(C),"proof_top_level_files":files(P),
+ "excluded_subdirectories":sorted(set(dirs(P))-{"groups"}),
+ "group_files":{n:files(P/"groups"/n) for n in groups[:51]},
+ "excluded_group_subdirectories":{n:dirs(P/"groups"/n) for n in groups[:51]}}
+phase_pins=[]
+for p in [*(C/n for n in files(C)),*(P/n for n in files(P)),
+ *(P/"groups"/g/n for g in groups[:51] for n in files(P/"groups"/g))]:
+ q=pin(p);read(q);phase_pins.append(q)
+assert len(phase_pins)==872 and sum(len(v) for v in membership["group_files"].values())==857
+assert not (P/"final.json").exists() and not (P/"result.json").exists()
+hist=doc(roles["historical_checkpoint"])
+edges=[];excluded=[]
+for role in ("root_acceptance","historical_checkpoint","independent_peer"):
+ d=doc(roles[role])
+ for where,q in walk(d):
+  p=Path(q["path"])
+  if not (p.is_relative_to(E) or (p.is_relative_to(B/"worktrees") and "verification" in p.parts)) or any(x in ("cache","global-cache","installed",".zig-cache","zig-out") for x in p.parts) or p.suffix.lower() in (".exe",".dll",".pdb"):
+   excluded.append({"document":roles[role],"json_path":list(where),"exact_referenced_pin":q,"reason":"not an immutable evidence/source archive input"})
+   continue
+  read(q);edges.append({"document":roles[role],"json_path":list(where),"exact_referenced_pin":q})
+assert not excluded
+before=next(q for q in phase_pins if q["path"]==str(P/"before.json"))
+assert before==root["original_before"] and before["sha256"]=="D554630776A1A0B7349D46ABDE606B11CDDB7DC54D784D39594B4FA4B7CD66A7"
+for key,q in pins.items():assert pin(Path(q["path"]))==q
+value={"schema":1,"status":"immutable_original_closed_existing63_timeout_inputs_source_only",
+ "candidate_head":inputs["candidate_head"],"role_pins":roles,
+ "phase_membership":membership,"phase_file_count":len(phase_pins),"phase_file_pins":phase_pins,
+ "required_raw_file_count":len(pins),"required_raw_files":list(pins.values()),
+ "direct_pin_relationships":edges,"raw_before_without_final":before,
+ "observed_partial_metadata_records":985,"accepted_metadata_count":None,
+ "selected_group_order":groups,"attempted_group_order":groups[:51],"unstarted_group_order":groups[51:],
+ "original_final":None,"original_result":None,"original_source_postseal":None,"original_environment_restoration":None,
+ "original_unknowns_are_not_reconstructed":True,"provisional_negative_flags_preserved":True,
+ "original63_runtime_configuration_issued":False,"Root_current_closure_is_separate":True,
+ "predecessor_source_and_checker_negatives_preserved":True,
+ "candidate_prefix_or_preparer_executed":False,"Main_access":False,
+ "current_process_queries":False,"archive_or_gzip_execution":False,"native_execution_authorized":False,"qualification":False}
+raw=(json.dumps(value,indent=2,ensure_ascii=False)+"\n").encode()
+with (R/"timeout-observed-inputs.json").open("xb") as f:f.write(raw)
+assert (R/"timeout-observed-inputs.json").read_bytes()==raw
+print(json.dumps({"output":pin(R/"timeout-observed-inputs.json"),"required_raw_inputs":len(pins),"phase_files":len(phase_pins),"direct_edges":len(edges)}))

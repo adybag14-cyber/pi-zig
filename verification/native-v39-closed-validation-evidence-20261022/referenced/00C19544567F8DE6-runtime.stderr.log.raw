@@ -1,0 +1,540 @@
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:57:33: 0x7ff63aa66d16 in test.native FileHandle owner constructor attaches the same native stream and transfers the real descriptor on release (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:90:33: 0x7ff63aa663de in test.native FileHandle owner optional Number IntegerValue follows pinned V8 truncation and saturation (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:115:33: 0x7ff63aa65c39 in test.native FileHandle owner non Number optional arguments perform no guest coercion (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:133:33: 0x7ff63aa5eb99 in test.native FileHandle owner keeps the full public method template an explicit dependency (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:143:33: 0x7ff63aa5d35b in test.native FileHandle owner explicit close keeps one Promise and one actual CLOSE request through cleanup (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:177:33: 0x7ff63aa5c606 in test.native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:202:33: 0x7ff63aa5b02b in test.native FileHandle owner real stopped service admission rejects without fabricating completion or closing the descriptor (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:238:33: 0x7ff63aa5a0ac in test.native FileHandle owner retained CloseReq wrapper loses native state after both callback references retire (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:259:33: 0x7ff63aa58f4b in test.native FileHandle owner CloseReq Global keeps the handle and weak BindingData alive until actual completion (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:286:33: 0x7ff63aa5851b in test.native FileHandle owner GC closes synchronously and the warning ticket retains no handle or BindingData (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:305:33: 0x7ff63aa578e5 in test.native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:337:33: 0x7ff63aa56df9 in test.native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:360:33: 0x7ff63aa561d8 in test.native FileHandle owner failed GC close queues one refed actual UVException ticket (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:383:33: 0x7ff63aa55868 in test.native FileHandle owner cleanup skips unrefed GC warning execution and destroys its native capture (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:402:33: 0x7ff63aa54fec in test.native FileHandle owner GC uses the retained real service for synchronous close after worker join (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:419:33: 0x7ff63aa4bd03 in test.native FileHandle owner consumes the real read engine and reuses its physical ReadWrap across concrete handles (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:456:37: 0x7ff63aa45aa1 in test.native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity (test_zcu.obj)
+        var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                    ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:68:5: 0x7ff63a942a7a in unselectedCheck (test_zcu.obj)
+    return error.UnselectedConcreteFileHandleCheck;
+    ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:441:13: 0x7ff63a910356 in pushBody (test_zcu.obj)
+            return self.operations.native_check_failure(self, .invalid_resource);
+            ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:156:28: 0x7ff63a8d3cbd in finishRetired (test_zcu.obj)
+        if(host_error)|err|return err;
+                           ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:158:136: 0x7ff63a8d3daf in finishMany (test_zcu.obj)
+    pub fn finishMany(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)!void{self.retire(host_error,scope,values);return self.finishRetired(host_error,values);}
+                                                                                                                                       ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_commonjs_owned_boundary.zig:162:9: 0x7ff63a8d3f3e in finish (test_zcu.obj)
+        try self.finishMany(host_error,scope,&values);return values[0];
+        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_operation_scope.zig:91:74: 0x7ff63a8d406d in finish (test_zcu.obj)
+    pub fn finish(self: *Scope, result: anyerror!c.JSValue) !c.JSValue { return self.boundary.finish(result, &self.values); }
+                                                                         ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:436:25: 0x7ff63a8dcec3 in pushAsyncContext (test_zcu.obj)
+        const ignored = try s.finish(pushBody(&s, self, id, resource));
+                        ^
+C:\Users\adyba\pi-zig\main\src\extensions\native_node_callback_scope.zig:688:9: 0x7ff63a8dd469 in init (test_zcu.obj)
+        try environment.pushAsyncContext(id, &self.resource);
+        ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test_support.zig:329:13: 0x7ff63a8de2bb in init (test_zcu.obj)
+            return err;
+            ^
+C:\Users\adyba\pi-zig\main\src\native_node_file_handle_owner_test.zig:493:33: 0x7ff63a8dffbb in test.native FileHandle owner real Hub shutdown drains accepted close without settling its guest Promise (test_zcu.obj)
+    var f: Fixture = undefined; try f.init(); defer f.deinit();
+                                ^

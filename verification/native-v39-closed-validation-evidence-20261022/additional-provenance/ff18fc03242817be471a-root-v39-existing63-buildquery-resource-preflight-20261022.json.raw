@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "status": "Root_fresh_specific_v39_existing63_buildquery_resource_preflight",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-22T17:43:33.531446+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "measurement": {
+    "observed_utc": "2026-10-22T17:42:56.0788742+00:00",
+    "free_physical_kib": 29177140,
+    "required_kib": 16777216,
+    "eligible": true,
+    "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+    "process_rows": 433,
+    "native_candidates": []
+  },
+  "queued_or_running_Root_jobs": [],
+  "prior_new4_complete_runtime_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-complete-runtime-acceptance-20261022.json",
+    "bytes": 6037,
+    "sha256": "9CFF00FA02AB7B2AB2C2660DF16B74127634E16F35B4F4D5375B7DE5406F9F80"
+  },
+  "prior_new3_retry1_compile_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-173038\\root-compile-negative-closure.json",
+    "bytes": 9907,
+    "sha256": "F11D5FFA7EED451522931522E736BEE24D25557227F481156DBB498E27DE771D"
+  },
+  "serial_native_lease_owner": "Root",
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false
+}

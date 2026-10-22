@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "status": "root_accepted_exact_emitted_v38_catalog_and_disjoint_batches",
+  "reviewer": "Root",
+  "recorded_utc": "2026-10-21T14:54:42.014702+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "catalog_source_accepted": true,
+  "native_execution_authorized": false,
+  "new4_and_original63_preserved": true,
+  "matrix_sha256": "8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03",
+  "independent_catalog_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-emitted-catalog-peer-20261021\\peer.json",
+    "bytes": 11113,
+    "sha256": "B69569A2987B1489F3582E72062CE90570FF558C93A3CD3AA5F40A02481612E3"
+  },
+  "preparation_reviews": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\preparation-review.json",
+      "bytes": 545118,
+      "sha256": "35A3A1E94699B3413179540C2C271A59E4924FF6149DE74FD662BBF3449D1D14"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-regression63-prepared-20261021\\preparation-review.json",
+      "bytes": 547326,
+      "sha256": "9362D1498B75DFEC3E452B1E2F06C8D1C526C16E615DC0F40C17C2C147816A58"
+    }
+  ],
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-emitted-catalog-peer-20261021\\emitted-source-audit.py",
+    "bytes": 22170,
+    "sha256": "A9D6C455651DAEAEF9F323713C551131DD0CF33CD8D16466C4E39351DA9E7189"
+  },
+  "independent_decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v38-emitted-catalog-peer-20261021\\emitted-source-proof.json",
+    "bytes": 597650,
+    "sha256": "B65410B992198B95850CF3B396E136C403E8A40F1E1FB39B6B0C598FEDA547E8"
+  },
+  "root_actual_static_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-emitted-catalog-static-review-20261021.json",
+    "bytes": 416225,
+    "sha256": "B155A131D2B26118E3D42BFDFF33ED8A7CD9EC5751030E8028912F9F985D1F08"
+  },
+  "root_preparer_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-v2-preparer-source-acceptance-20261021.json",
+    "bytes": 4160,
+    "sha256": "C5B9F16EE27C977AAE9E278123A3F6A3B09CF0BC0627B6F83D58041EC9DE9440"
+  },
+  "issued_catalog_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-v2-issued-configuration-20261021.json",
+    "bytes": 8974,
+    "sha256": "7FE2F897B309AD7DD5FDD182529885D525D541227ADE616EF84798FDB503DAD9"
+  },
+  "actual_preparation_job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-catalog-v2-preparation-job-observation-20261021.json",
+    "bytes": 1575,
+    "sha256": "B1E83E427B46B897E573ED459C96B8D1E5A37BA357E15DBD129AEFA4C7C2884A"
+  },
+  "root_review": "Root completely read the independent peer and22170-byte checker, independently rehashed all2279 decisive inputs, and verified all30 actual output files and1309 matrix inputs inB155. Complete matrix/inventory/auditor raw inverses preserve every group/name/dependency and all strict gates. Independent source audit also binds all1643 provenance entries per batch and262 raw Git blobs across the exact44+215-path two-commit chain. Initial A112 preparation failure remains preserved; reviewed502021 v2 supplies names from exact accepted metadata without changing any historical outcome. Actual native metadata and runtime for014062 remain unobserved. This accepts source and catalog only; Root must separately issue each exact constructor and native launcher grant.",
+  "catalog_groups": 117,
+  "catalog_declarations": 2013,
+  "whole_dependency_rows": 576,
+  "whole_dependency_row_changes": 0,
+  "source_pin_changes": 4,
+  "inventory_member_changes": 4,
+  "partition": {
+    "new4_groups": 4,
+    "new4_declarations": 58,
+    "original_groups": 63,
+    "original_declarations": 1249,
+    "disjoint": true,
+    "union_groups": 67,
+    "union_declarations": 1307,
+    "maximum_selected_groups": 64
+  },
+  "all_current_matrix_files_rehashed": 1309,
+  "independent_input_paths_rehashed": 2279,
+  "all_output_files": 30,
+  "original63_order_exact": true,
+  "strict_driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+  "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+  "metadata_auditors_path_literal_only": true,
+  "whole_raw_inverses": true,
+  "historical_v36_v37_outcomes_preserved": true,
+  "actual_metadata_count": null,
+  "prior_metadata_transferred": false,
+  "Main_clean": true,
+  "Main_written": false,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

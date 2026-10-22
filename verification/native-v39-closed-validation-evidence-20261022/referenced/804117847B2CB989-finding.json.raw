@@ -1,0 +1,22 @@
+{
+  "schema": "pi-zig.independent-close-observer-phase-source-finding.v1",
+  "status": "confirmed concrete source defect in existing test observer; candidate correction not yet reviewed",
+  "finding": "beginAsyncClose reads completion-only PiUvFsInfo before dispatch. Actual completed is zero at this cutpoint, so the existing assert is inconsistent with this observer call.",
+  "source_basis": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-close-observer-source-peer-20261020\\causal-proof.json",
+    "bytes": 22004,
+    "sha256": "9AE461824CBBEB0E87F450FE0E6660EE6A83AF3F3FEBA820D97B8F5ECBBAD724"
+  },
+  "independent_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-close-observer-source-peer-20261020\\source-audit.py",
+    "bytes": 7195,
+    "sha256": "0561DDA610B2270BDDE726151F2B37B755D6E33390ACE7EC55140762AD3A30ED"
+  },
+  "bounded_correction_basis": "Reuse existing pi_uv_fs_request_preparation_info for this unsubmitted owner-thread kind observation; no production lifecycle/helper or completion-path weakening is required.",
+  "ownership_reason": "CloseReq owns the actual request returned from typed CLOSE allocation. The observer is synchronous on the caller/dispatch thread before the first command makes that pointer visible to the service. There is no concurrent admission, cleanup, reset or release in this selected call.",
+  "separation": "Identifier alpha-renaming is a different finite proposal. This finding does not alter it and is not a claim that a later compile or runtime cohort passes.",
+  "remaining": "A separately sealed fixture correction and exact full inverse still need review before any Root source intake.",
+  "no_Main_mutation": true,
+  "no_native_execution": true
+}

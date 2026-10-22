@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "status": "source_only_closed_input_basis_unissued",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "outputs": {
+    "observed-closed-input-inventory.json": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\observed-closed-input-inventory.json",
+      "bytes": 3121359,
+      "sha256": "5148DE13C078C6D91E1A4B71B8E64FAA2C74D538BB75B3C6029F8D00F83DFFB7"
+    },
+    "progress-patch-plan.json": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\progress-patch-plan.json",
+      "bytes": 57509,
+      "sha256": "45698308CA7D388D528515F3B12DA490436745CA1632DFFD6FA81A85A1F86279"
+    },
+    "supplemental-preservation-inputs.json": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\supplemental-preservation-inputs.json",
+      "bytes": 384133,
+      "sha256": "FEB94AFD5DAEDB83A2DBDB468E5657CFB60B6FE17D26EB52343B8428F89E2D24"
+    }
+  },
+  "baseline": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v38-partial-negative-progress-archive-preparer-sourceonly-20261022\\candidate\\Prepare-V38PartialNegativeProgressAndValidationArchive-20261022.py",
+    "bytes": 76267,
+    "sha256": "EE11C073C1D1CAD599D7F88B34B78133A5E3A90F68D1E1094D6AF77D7C5128AB"
+  },
+  "original_progress": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\projected\\verification\\port-roadmap-resume-20261018\\progress.json",
+    "bytes": 678718,
+    "sha256": "4FF79AE87F671BB8F16283E38D282CB58444A1A0FA42659B0F3CED505EE04343"
+  },
+  "phase_counts": [
+    {
+      "phase": "new3-buildquery-prelaunch",
+      "original_files": 19
+    },
+    {
+      "phase": "new3-retry1-buildquery",
+      "original_files": 21
+    },
+    {
+      "phase": "new4-buildquery",
+      "original_files": 90
+    },
+    {
+      "phase": "new4-runtime",
+      "original_files": 70
+    }
+  ],
+  "known_input_versions": 852,
+  "known_direct_pin_relationships": 3684,
+  "known_bookend_pairs": 3,
+  "nested_history_prefix_count": 222,
+  "unchanged_source_unit_count": 65,
+  "no_current63_inspection": true,
+  "Main_accessed": false,
+  "candidate_or_prefix_executed": false,
+  "archive_prepared": false,
+  "existing63_acceptance_contract": null
+}

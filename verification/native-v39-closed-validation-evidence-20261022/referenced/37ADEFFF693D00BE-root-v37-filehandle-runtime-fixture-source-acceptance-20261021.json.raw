@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "status": "root_and_independent_peer_accepted_bounded_filehandle_runtime_fixture_corrections",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-21T14:01:10.623304+00:00",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "source_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\proposal.json",
+    "bytes": 21669,
+    "sha256": "2933A7AB4CCC196984FC27419B3E4A64DCCEB99B0834734AA7B357EE1280C7FC"
+  },
+  "causal_source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\causal-proof.json",
+    "bytes": 83979,
+    "sha256": "39DF95F9780D1A663A6CAC9542B1F7656AAD5EE6CDCCD4761219142295E81C5D"
+  },
+  "selected_authority_inputs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs-v2.json",
+    "bytes": 16810,
+    "sha256": "B97468E1DD34137C80A6199BABE6E227FEBDB5BD3FD0654B31EA3F05CF8C123F"
+  },
+  "preserved_authority_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\authority-inputs.json",
+    "bytes": 16810,
+    "sha256": "940ED7F295FDE2A6D4F2F7770B7041E15F810B2A3D6C8FF8CCA8B5079A1B7727"
+  },
+  "independent_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\peer.json",
+    "bytes": 9273,
+    "sha256": "9CB321CDEC59D5FE1A616B13FBCB4EB07D14D663F8CF445462F1E4A9A2C5B703"
+  },
+  "independent_source_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\source-audit.py",
+    "bytes": 13017,
+    "sha256": "CC8CF1D47EAC0B4C9EABF739370F78896288030782C090F33DC6248A71AD7DD8"
+  },
+  "independent_source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-peer-20261021\\source-audit.json",
+    "bytes": 101785,
+    "sha256": "74591C1609D2A07397D44585C0BD92C1BEDB406AC9663AFF77161D4449CA9512"
+  },
+  "root_finite_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-static-review-20261021.json",
+    "bytes": 11302,
+    "sha256": "FF6A9635CD6D2243D7836FB938B0214BEC719D751183F012139ECEB8D1FFD60D"
+  },
+  "root_causal_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-filehandle-runtime-fixture-causal-review-20261021.json",
+    "bytes": 21711,
+    "sha256": "776422BCBEFAC73EF451B3B33A8A0894C9217CCE15BC4FA7CF1B3BF134C43A22"
+  },
+  "original_negative_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-retry1-original-negative-runtime-acceptance-20261021.json",
+    "bytes": 3131,
+    "sha256": "D305B2B2E462CA38BCC4D0E8B44F51E8F997DA902ABBD323E1F9283B51BC6557"
+  },
+  "source_accepted": true,
+  "source_corrections_accepted": true,
+  "finite_hunks": 8,
+  "selected_files": [
+    {
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28576,
+        "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+      },
+      "finite_edits": 6
+    },
+    {
+      "relative_path": "src/native_node_file_handle_owner_test_support.zig",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 33152,
+        "sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+        "bytes": 33411,
+        "sha256": "DAAFD9A8B6FFFC0FD3971749F8A9515EA066BE81AEA90B44ADA397A70E76488B"
+      },
+      "finite_edits": 2
+    }
+  ],
+  "all58_declared_controls_and4_root_import_topologies_unchanged": true,
+  "production_source_unchanged": true,
+  "existing_assertions_preserved_except_exact_descriptor_message": true,
+  "bounded_corrections": [
+    "Use positive out-of-range INT_MAX in three failed-close fixture inputs and matching descriptor expectations; retain real close/UV_EBADF/Promise/GC/AfterClose controls.",
+    "Allocate and own the plain callback resource through existing Scope only when canCallIntoJs; keep all initialized-aware cleanup and production object checks."
+  ],
+  "original_negative_preserved": true,
+  "future_actual_metadata": null,
+  "source_intake_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "application_qualified": false,
+  "production_bridge_removed": false
+}

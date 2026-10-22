@@ -1,0 +1,896 @@
+{
+  "schema": "pi-zig.pending20.v39-catalog-validation-plan.v1",
+  "status": "unissued_source_only_catalog_and_validation_plan",
+  "author": "/root/handover_review",
+  "created_utc_date": "2026-10-21",
+  "reviewed_preintake_source_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "authority": {
+    "source_only": true,
+    "Main_accessed": false,
+    "Main_changed": false,
+    "catalog_generated": false,
+    "configuration_issued": false,
+    "target_or_prefix_executed": false,
+    "compiler_executed": false,
+    "native_executed": false,
+    "intake_authorized": false,
+    "runtime_qualified": false,
+    "application_qualified": false
+  },
+  "scope": {
+    "selected_source_paths": 20,
+    "existing_replacements": 8,
+    "new_source_paths": 12,
+    "exclusions": [
+      "runtime template identity",
+      "full CustomBuffer listener"
+    ],
+    "selected_build_under_review": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\current79-with-shutdown-and-buffer.zig",
+      "bytes": 514007,
+      "sha256": "868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+    },
+    "required_build_linkage_followup": true
+  },
+  "basis": {
+    "paused_union": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-source-intake-20261020\\paused-resolved-inputs.json",
+      "bytes": 14121,
+      "sha256": "83F392D93DB3E4EC59721BD728275B0A9312EF97261E30939FB2E43EDC95C48E"
+    },
+    "source_replay_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-shutdown-latin1-buffer-union014-source-peer-20261021\\peer.json",
+      "bytes": 9106,
+      "sha256": "19603E22021A2CFC8B980A63BEDD3B9DD8924458C6038577B0BC0A686EF32688"
+    },
+    "Root_source_replay_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-buffer-union014-source-peer-acceptance-20261021.json",
+      "bytes": 4491,
+      "sha256": "DCD89661CDA72A4B4003DD4FDF80D443FB166407767D73F07F698473D52C7BAA"
+    },
+    "copy_plan": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\unissued-shutdown-latin1-buffer-union014-intake-plan-20261021\\copy-manifest-plan.json",
+      "bytes": 378545,
+      "sha256": "E2B029B3F00709B40FD82233194961CDEFE0E7949931EEE15C39D757EB6B4B74"
+    },
+    "Root_copy_plan_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-shutdown-latin1-buffer-unissued-copy-plan-acceptance-20261021.json",
+      "bytes": 7059,
+      "sha256": "4B97947A3A185D0D6E9ED282B2FC4E19621BD792AED4F18F4A0D7E594A682788"
+    },
+    "matrices": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\groups.json",
+        "bytes": 1104585,
+        "sha256": "8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-regression63-prepared-20261021\\groups.json",
+        "bytes": 1104585,
+        "sha256": "8D21C64BE6E7A0F7B62A1CA8C07DBF4A8F45243D7CF9FC5D31C5DB2D055ACC03"
+      }
+    ],
+    "preparation_reviews": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\preparation-review.json",
+        "bytes": 545118,
+        "sha256": "35A3A1E94699B3413179540C2C271A59E4924FF6149DE74FD662BBF3449D1D14"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-regression63-prepared-20261021\\preparation-review.json",
+        "bytes": 547326,
+        "sha256": "9362D1498B75DFEC3E452B1E2F06C8D1C526C16E615DC0F40C17C2C147816A58"
+      }
+    ],
+    "retained4_source_inventory": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\new-roots-source-inventory.json",
+      "bytes": 1209440,
+      "sha256": "712285FBB72CEB735171817DA17997D6D82FC380F20BA8CE49245EC94BCD31EB"
+    },
+    "prior_catalog_groups": 117,
+    "prior_catalog_declarations": 2013,
+    "prior_whole_dependency_rows": 576,
+    "unchanged_driver": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\Run-CombinedNativeBatch.ps1",
+      "bytes": 60094,
+      "sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601"
+    },
+    "unchanged_classifier": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\Get-ModelsNativeCandidates.ps1",
+      "bytes": 1786,
+      "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+    },
+    "metadata_auditor_baselines": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\Audit-CombinedNativeBatch.py",
+        "bytes": 17696,
+        "sha256": "57B862F828353F830FBAD4F707E2EB483EE7324CD6A62E169ACFECA0FC6119C0"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-regression63-prepared-20261021\\Audit-CombinedNativeBatch.py",
+        "bytes": 17704,
+        "sha256": "5B94D3BD4B6CA0E1B969394926A7F907485717FF25B75BA06D1D67D68A232682"
+      }
+    ]
+  },
+  "proposed_source_arithmetic": {
+    "added_groups": 3,
+    "added_declarations": 38,
+    "catalog_groups": 120,
+    "catalog_declarations": 2051,
+    "selected_groups": 70,
+    "selected_declarations": 1345,
+    "maximum_groups_per_grant": 64,
+    "actual_metadata_count": null,
+    "actual_runtime_pass_count": null
+  },
+  "proposed_new_groups": [
+    {
+      "name": "native-node-stream-shutdown",
+      "target": "build-native-node-stream-shutdown",
+      "artifact": "native-node-stream-shutdown",
+      "source_root": "src/native_node_stream_shutdown_test.zig",
+      "build_filters": [
+        "native Stream shutdown",
+        "native StreamReq Done"
+      ],
+      "source_declared_controls": 18,
+      "required_named": [
+        "native_node_stream_shutdown_test.test.native Stream shutdown actual constructor owns original null fields and independent empty slots",
+        "native_node_stream_shutdown_test.test.native Stream shutdown genuine Simple wrapper clears request slot before last native pointer retirement",
+        "native_node_stream_shutdown_test.test.native Stream shutdown physical close reports after trace end cleanup and AfterClose with borrowed handle",
+        "native_node_stream_shutdown_test.test.native Stream shutdown real accepted bad descriptor still performs AfterClose and reports negative status",
+        "native_node_stream_shutdown_test.test.native Stream shutdown closed fast path completes synchronously and restores the prior trigger",
+        "native_node_stream_shutdown_test.test.native Stream shutdown closing fast path retires its own request while real first close stays queued",
+        "native_node_stream_shutdown_test.test.native Stream shutdown nonfunction oncomplete yields undefined without invoking trace or callback",
+        "native_node_stream_shutdown_test.test.native Stream shutdown absent oncomplete skips the ordinary Get and native callback",
+        "native_node_stream_shutdown_test.test.native Stream shutdown throwing oncomplete getter preserves actual reason and still disposes native request",
+        "native_node_stream_shutdown_test.test.native Stream shutdown real close callback exception survives actual Wrapper and event destruction",
+        "native_node_stream_shutdown_test.test.native Stream shutdown disabled JavaScript returns before oncomplete getter while native close retires",
+        "native_node_stream_shutdown_test.test.native Stream shutdown live listener head uses original predecessor forwarding into real reporter",
+        "native_node_stream_shutdown_test.test.native StreamReq Done stores actual Latin1 error bytes then reports and clears request field",
+        "native_node_stream_shutdown_test.test.native StreamReq Done failing ordinary error setter returns before OnDone and preserves both native slots",
+        "native_node_stream_shutdown_test.test.native StreamReq Done false nonwritable Set still continues to OnDone",
+        "native_node_stream_shutdown_test.test.native Stream shutdown reporter converts Latin1 error then clears original stream error",
+        "native_node_stream_shutdown_test.test.native Stream shutdown missing caller object uses actual stored InstanceTemplate then real native close",
+        "native_node_stream_shutdown_test.test.native Stream shutdown request init inherits actual handle async ID and restores prior trigger"
+      ],
+      "historical_order": null,
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty",
+      "source_root_donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_stream_shutdown_test.zig",
+        "bytes": 17019,
+        "sha256": "11AA50598B81B0B5A9C91B62B889827F119208C71213B6023EE362D2FA028C85"
+      },
+      "source_pins": null,
+      "external_pins": [],
+      "actual_metadata_count": null,
+      "prior_conservative_inventory": {
+        "basis_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+        "pin": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\dependency-inventory.json",
+          "bytes": 2079317,
+          "sha256": "B141BD5D0E85A45EAB5A9588F895AF3AEF01FED8580B51F362A0D136BBFC5677"
+        },
+        "modules": 708,
+        "embeds": 242,
+        "anonymous_blocks": 8
+      },
+      "current_post_intake_inventory": null
+    },
+    {
+      "name": "native-node-one-byte-string",
+      "target": "build-native-node-one-byte-string",
+      "artifact": "native-node-one-byte-string",
+      "source_root": "src/native_node_one_byte_string_test.zig",
+      "build_filters": [
+        "native OneByteString"
+      ],
+      "source_declared_controls": 8,
+      "required_named": [
+        "native_node_one_byte_string_test.test.native OneByteString explicit full byte range preserves all Latin1 code units including high bytes",
+        "native_node_one_byte_string_test.test.native OneByteString UTF8-looking bytes remain two original Latin1 code units",
+        "native_node_one_byte_string_test.test.native OneByteString explicit length preserves embedded NUL before nonASCII bytes",
+        "native_node_one_byte_string_test.test.native OneByteString negative length follows original strlen termination",
+        "native_node_one_byte_string_test.test.native OneByteString zero length accepts null data without reading a byte",
+        "native_node_one_byte_string_test.test.native OneByteString all negative signed lengths select the CString branch",
+        "native_node_one_byte_string_test.test.native OneByteString explicit prefix does not consume trailing buffer bytes",
+        "native_node_one_byte_string_test.test.native OneByteString returned caller ownership survives source scope and real VM collection"
+      ],
+      "historical_order": null,
+      "allowed_anonymous": [
+        "extensions.native_durable_storage.test_0",
+        "durable.session.test_0",
+        "durable.scheduler.test_0",
+        "extensions.native_durable_context_view.test_0",
+        "extensions.native_durable_task_abort.test_0",
+        "extensions.native_bindings.test_0",
+        "ai.root.test_0",
+        "durable.tool_read.test_0"
+      ],
+      "runtime_stderr_policy": "empty",
+      "source_root_donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\controls\\src\\native_node_one_byte_string_test.zig",
+        "bytes": 5064,
+        "sha256": "AC3E1AD12FB0F48905EC8B561094F54DD93653AD7C8DC5DD7CC0EBB54959C461"
+      },
+      "source_pins": null,
+      "external_pins": [],
+      "actual_metadata_count": null,
+      "prior_conservative_inventory": {
+        "basis_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+        "pin": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\successor\\dependency-inventory.json",
+          "bytes": 2079317,
+          "sha256": "B141BD5D0E85A45EAB5A9588F895AF3AEF01FED8580B51F362A0D136BBFC5677"
+        },
+        "modules": 679,
+        "embeds": 242,
+        "anonymous_blocks": 8
+      },
+      "current_post_intake_inventory": null
+    },
+    {
+      "name": "native-vm-array-buffer-view-data",
+      "target": "build-native-vm-array-buffer-view-data",
+      "artifact": "native-vm-array-buffer-view-data",
+      "source_root": "src/native_vm_array_buffer_view_data_test.zig",
+      "build_filters": [
+        "VM view data"
+      ],
+      "source_declared_controls": 12,
+      "required_named": [
+        "native_vm_array_buffer_view_data_test.test.VM view data every typed-array width and DataView expose the physical backing offset",
+        "native_vm_array_buffer_view_data_test.test.VM view data live empty views retain their exact end pointer",
+        "native_vm_array_buffer_view_data_test.test.VM view data bypasses getters and rejects forged live and revoked proxy brands",
+        "native_vm_array_buffer_view_data_test.test.VM view data detached typed and DataView addresses are null while lease acquisition still throws",
+        "native_vm_array_buffer_view_data_test.test.VM view data fixed resizable views preserve stored offsets while out of bounds and after regrowth",
+        "native_vm_array_buffer_view_data_test.test.VM view data tracking resizable views keep the address independently of rounded usable length",
+        "native_vm_array_buffer_view_data_test.test.VM view data shared aliases expose one native address across real runtime growth",
+        "native_vm_array_buffer_view_data_test.test.VM view data allocates nothing under the actual VM memory limit",
+        "native_vm_array_buffer_view_data_test.test.VM view data preserves actual ordinary uncatchable and private termination completions",
+        "native_vm_array_buffer_view_data_test.test.VM view data borrows without keeping the actual view or native backing alive",
+        "native_vm_array_buffer_view_data_test.test.VM view data observes unmanaged external storage without adding a lease or changing cleanup",
+        "native_vm_array_buffer_view_data_test.test.VM view data follows real ArrayBuffer transfer detachment and the receiving physical storage"
+      ],
+      "historical_order": null,
+      "allowed_anonymous": [],
+      "runtime_stderr_policy": "empty",
+      "source_root_donor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\controls\\src\\native_vm_array_buffer_view_data_test.zig",
+        "bytes": 22131,
+        "sha256": "5F31607FE1A4531F266F14B084618B9D6FF4CE359D703C355B16756AD9FC40E6"
+      },
+      "source_pins": null,
+      "external_pins": [],
+      "actual_metadata_count": null,
+      "prior_conservative_inventory": {
+        "basis_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+        "pin": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\dependency-inventory.json",
+          "bytes": 44600,
+          "sha256": "9843533B132D9C04C273F05F794B36BCB85E68B08C1FB8D71F2738071129DF5D"
+        },
+        "modules": 1,
+        "embeds": 0,
+        "anonymous_blocks": 0
+      },
+      "current_post_intake_inventory": null
+    }
+  ],
+  "cohorts": [
+    {
+      "role": "new3",
+      "source_declared_groups": 3,
+      "source_declared_controls": 38,
+      "ordered_groups": [
+        "native-node-stream-shutdown",
+        "native-node-one-byte-string",
+        "native-vm-array-buffer-view-data"
+      ],
+      "actual_metadata_count": null,
+      "execution_key_proposal": "new3"
+    },
+    {
+      "role": "retained4",
+      "source_declared_groups": 4,
+      "source_declared_controls": 58,
+      "ordered_groups": [
+        "native-node-file-handle-owner",
+        "native-node-fs-before-hook-continuation",
+        "native-vm-error-constructor-name",
+        "native-node-file-handle-transfer"
+      ],
+      "actual_metadata_count": null,
+      "execution_key_proposal": "new4",
+      "reason": "Retain the existing four-group order and source declaration contract. The new4 key can remain historical bookkeeping; no V38 accepted artifacts or results are carried over."
+    },
+    {
+      "role": "original63",
+      "source_declared_groups": 63,
+      "source_declared_controls": 1249,
+      "ordered_groups": [
+        "native-node-file-handle-read",
+        "native-node-fs-callback-template",
+        "native-vm-simple-stack-source",
+        "native-vm-exotic-operations",
+        "native-node-diagnostic-context",
+        "native-node-native-debug",
+        "native-node-permission",
+        "native-node-fs-readwrap-reuse",
+        "native-node-reqwrap-callback-routing",
+        "native-vm-script-location",
+        "native-node-stream-read",
+        "native-node-environment-map",
+        "native-vm-backing-store-adoption",
+        "native-node-environment-paths",
+        "native-node-stream-fields",
+        "native-node-managed-buffers",
+        "native-node-fs-request-owner",
+        "native-vm-execution-termination",
+        "native-typebox-execution-termination",
+        "native-host-termination-ownership",
+        "native-node-stream-resource",
+        "native-node-package-json-parser",
+        "native-node-microtask-checkpoint",
+        "native-vm-property-retirement",
+        "native-vm-consuming-operands",
+        "native-vm-oom-occurrence",
+        "native-node-callback-scope",
+        "native-node-inspect-colors",
+        "native-vm-captured-frame-logging",
+        "native-node-experimental-warning",
+        "native-node-commonjs-helpers",
+        "native-node-process-warning",
+        "native-node-fs-request-transport",
+        "native-vm-array-buffer-view-length",
+        "native-vm-array-buffer-backing",
+        "native-vm-private-property",
+        "native-node-tcp-transport",
+        "native-vm-async-arguments",
+        "native-node-fs-write-uv",
+        "native-vm-sync-arguments",
+        "native-vm-async-retirement",
+        "native-vm-template-literal",
+        "native-vm-borrowed-bridges",
+        "vm-af-throw",
+        "native-ai-oauth-anthropic-genuine-af",
+        "native-node-module-creation",
+        "native-node-module-search-paths",
+        "native-node-fs-realpath-classic",
+        "native-node-fs-path-helpers",
+        "native-node-file-url-paths",
+        "native-sdk-tool-search-public",
+        "native-ai-radius-config",
+        "native-ai-radius-provider-genuine-af",
+        "native-node-inspect-entry",
+        "native-ai-oauth-radius-genuine-af",
+        "native-vm-existing-promise-settlement",
+        "native-node-options",
+        "native-node-uv-exception",
+        "native-vm-disallow-javascript",
+        "native-vm-continuation-data",
+        "native-vm-pending-promise",
+        "native-vm-native-global",
+        "native-vm-copy-data-properties"
+      ],
+      "actual_metadata_count": null,
+      "execution_key_proposal": "existing63"
+    }
+  ],
+  "finite_matrix_boundaries": {
+    "retain_all_117_group_definitions_and_order": true,
+    "retain_named_controls_anonymous_policy_target_artifact_stderr_and_external_pins": true,
+    "existing_pin_refreshes": [
+      {
+        "relative_path": "src/extensions/native_node_async_wrap_state.zig",
+        "selected_donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_async_wrap_state.zig",
+          "bytes": 34046,
+          "sha256": "1530C4043859CFF37D7F157F5557E4597E68972C1F1A1B82D208978F47E3D67A"
+        },
+        "old_source_pin_rows": 20,
+        "old_whole_dependency_rows": 0
+      },
+      {
+        "relative_path": "src/extensions/native_node_async_wrap.zig",
+        "selected_donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_async_wrap.zig",
+          "bytes": 20655,
+          "sha256": "F2BEC62AC7817F16EE57E50B80D903ECCB0F8D60AFCB8B61FED920245918CC27"
+        },
+        "old_source_pin_rows": 20,
+        "old_whole_dependency_rows": 0
+      },
+      {
+        "relative_path": "src/extensions/native_node_stream_resource.zig",
+        "selected_donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_stream_resource.zig",
+          "bytes": 6847,
+          "sha256": "39255A86BA9631F95E9CBD13B85AE7264A30A015EF4454F10B2D64BD643F2D8A"
+        },
+        "old_source_pin_rows": 11,
+        "old_whole_dependency_rows": 0
+      },
+      {
+        "relative_path": "src/extensions/native_node_stream_base.zig",
+        "selected_donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_stream_base.zig",
+          "bytes": 12321,
+          "sha256": "F85721695F41998E3676C196B4791D295EA62C8DE89FD83159F05BACDEF7716E"
+        },
+        "old_source_pin_rows": 10,
+        "old_whole_dependency_rows": 0
+      },
+      {
+        "relative_path": "src/extensions/native_node_file_handle_owner.zig",
+        "selected_donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\projected\\src\\extensions\\native_node_file_handle_owner.zig",
+          "bytes": 17650,
+          "sha256": "F2672292FBEBEEF74B35C32C38203E3D1E1D259052E7AB5AFB34DA29840B544D"
+        },
+        "old_source_pin_rows": 3,
+        "old_whole_dependency_rows": 0
+      },
+      {
+        "relative_path": "vendor/quickjs/quickjs.c",
+        "selected_donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\combined-with-latin1-successor\\vendor\\quickjs\\quickjs.c",
+          "bytes": 2404878,
+          "sha256": "091E5BE0C22F35CE2029852DEA8D8B017B3784013ED93EDB9F1545A49D8D275F"
+        },
+        "old_source_pin_rows": 0,
+        "old_whole_dependency_rows": 31
+      },
+      {
+        "relative_path": "vendor/quickjs/quickjs.h",
+        "selected_donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\combined-with-latin1-successor\\vendor\\quickjs\\quickjs.h",
+          "bytes": 115346,
+          "sha256": "05AA4DF250CB642536077C5DF80C08C92C1C40BAA347C18140AFB577B583B0EB"
+        },
+        "old_source_pin_rows": 0,
+        "old_whole_dependency_rows": 31
+      },
+      {
+        "relative_path": "build.zig",
+        "selected_donor": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-build-successor-20261020\\projected\\current79-with-shutdown-and-buffer.zig",
+          "bytes": 514007,
+          "sha256": "868F2300C28AE51F80A294BA7BA26A97C1C34B39FD03D25472BA644057A780B7"
+        },
+        "old_source_pin_rows": 0,
+        "old_whole_dependency_rows": 20
+      }
+    ],
+    "existing_source_row_refresh_count": 64,
+    "existing_dependency_row_refresh_count": 82,
+    "preserve_all_576_original_dependency_rows_and_order": true,
+    "graph_membership_rule": "Retain original memberships and add only exact source-reviewed new dependencies proved by the post-intake literal graph and native recipe walk. Complete inverse must remove additions and restore every changed hash to 8D21. Existing groups with newly reached shared modules must not retain a stale dependency inventory.",
+    "new_groups_append_order": [
+      "native-node-stream-shutdown",
+      "native-node-one-byte-string",
+      "native-vm-array-buffer-view-data"
+    ],
+    "new_group_source_pins_rule": "Populate only from actual post-intake source bytes and complete conservative literal imports/embeds with explicit named import owners. Narrow source_pins schema stays src/(zig|c|mjs|json); all other required native/header/build/vendor bytes go into supplemental whole_tree_dependency_pins.",
+    "top_level_mutable_fields": [
+      "source_head_at_preparation",
+      "prepared_utc",
+      "groups (append three; reviewed pin/membership deltas only)",
+      "whole_tree_dependency_pins (reviewed hash refreshes and additions only)"
+    ],
+    "historical_fields_to_preserve": [
+      "schema",
+      "source_basis_head",
+      "scope",
+      "preparation_status",
+      "declaration_count_is_not_actual_metadata",
+      "retained_baseline_sha256",
+      "whole_tree_dependency_pin_role"
+    ],
+    "post_intake_preparation_outputs": "One byte-identical complete matrix in three separate direct children of evidence; each has its own exact ordered selection, dependency inventory and preparation review. No nested driver directory.",
+    "preparation_review_contract": [
+      "status=source_only_fresh_batch_prepared",
+      "candidate_head=actual final post-intake head",
+      "selected_groups and selected_declarations match the chosen complete cohort",
+      "catalog_groups=120 and catalog_declarations=2051",
+      "selected_group_names exact ordered cohort",
+      "actual_metadata_count=null",
+      "driver/matrix/auditor/classifier/metadata_auditor_adaptation/provenance recursively pinned",
+      "execution_authority/runtime_authority/qualification=false"
+    ],
+    "metadata_auditor_change": "Only one preparation-directory literal per new flat preparation, with exact raw inverse to an accepted current auditor. Do not alter actual metadata decoding, named/anonymous policies, PE/PDB checks or original process-instance predicates.",
+    "existing_pin_refresh_count_qualification": "Counts cover exact old-row hash substitutions against8D21 only, before added graph members or a separately reviewed build-recipe successor."
+  },
+  "dependency_and_recipe_requirements": {
+    "changed_literal_imports": [
+      {
+        "path": "src/extensions/native_node_async_wrap_state.zig",
+        "added": [
+          "native_node_check_failure.zig"
+        ],
+        "removed": [],
+        "quoted_includes_added": []
+      },
+      {
+        "path": "src/extensions/native_node_stream_resource.zig",
+        "added": [
+          "native_node_stream_request.zig"
+        ],
+        "removed": [],
+        "quoted_includes_added": []
+      },
+      {
+        "path": "src/extensions/native_node_stream_base.zig",
+        "added": [
+          "native_node_stream_request.zig",
+          "native_node_stream_shutdown.zig"
+        ],
+        "removed": [],
+        "quoted_includes_added": []
+      },
+      {
+        "path": "src/extensions/native_node_file_handle_owner.zig",
+        "added": [
+          "native_node_file_handle_shutdown.zig",
+          "native_node_stream_request.zig"
+        ],
+        "removed": [],
+        "quoted_includes_added": []
+      }
+    ],
+    "new_source_imports": [
+      {
+        "path": "src/extensions/native_node_file_handle_shutdown.zig",
+        "imports": [
+          "native_node_argument_values.zig",
+          "native_node_async_wrap_state.zig",
+          "native_node_stream_request.zig",
+          "native_node_request_state.zig",
+          "native_node_fs_request_io.zig",
+          "native_node_file_handle_close_request.zig",
+          "native_node_check_failure.zig"
+        ]
+      },
+      {
+        "path": "src/extensions/native_node_one_byte_string.zig",
+        "imports": [
+          "native_node_argument_values.zig",
+          "native_node_check_failure.zig"
+        ]
+      },
+      {
+        "path": "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+        "imports": []
+      },
+      {
+        "path": "src/extensions/native_node_one_byte_string_diagnostics.h",
+        "imports": []
+      },
+      {
+        "path": "src/extensions/native_node_stream_request.zig",
+        "imports": [
+          "native_node_argument_values.zig",
+          "native_node_async_wrap_state.zig",
+          "native_node_stream_base.zig",
+          "native_node_one_byte_string.zig"
+        ]
+      },
+      {
+        "path": "src/extensions/native_node_stream_shutdown.zig",
+        "imports": [
+          "native_node_argument_values.zig",
+          "native_node_async_wrap_state.zig",
+          "native_node_async_wrap.zig",
+          "native_node_stream_base.zig",
+          "native_node_stream_resource.zig",
+          "native_node_stream_request.zig",
+          "native_node_async_wrap_make_callback.zig",
+          "native_node_one_byte_string.zig",
+          "native_node_check_failure.zig"
+        ]
+      },
+      {
+        "path": "src/native_node_one_byte_string_test.zig",
+        "imports": [
+          "std",
+          "extensions/native_node_argument_values.zig",
+          "extensions/native_node_one_byte_string.zig"
+        ]
+      },
+      {
+        "path": "src/native_node_stream_shutdown_test.zig",
+        "imports": [
+          "std",
+          "native_node_stream_shutdown_test_support.zig",
+          "extensions/native_node_stream_resource.zig"
+        ]
+      },
+      {
+        "path": "src/native_node_stream_shutdown_test_support.zig",
+        "imports": [
+          "std",
+          "native_node_file_handle_owner_test_support.zig",
+          "extensions/native_node_stream_request.zig",
+          "extensions/native_node_stream_shutdown.zig",
+          "extensions/native_node_stream_base.zig"
+        ]
+      },
+      {
+        "path": "src/native_vm_array_buffer_view_data_test.zig",
+        "imports": [
+          "std"
+        ]
+      },
+      {
+        "path": "src/extensions/native_v8_base_fatal.h",
+        "imports": []
+      },
+      {
+        "path": "src/extensions/native_v8_base_fatal.cpp",
+        "imports": []
+      }
+    ],
+    "retained4_roots": [
+      {
+        "source_root": "src/native_node_file_handle_owner_test.zig",
+        "declared_controls": 18,
+        "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6",
+        "actual_metadata_count": null
+      },
+      {
+        "source_root": "src/native_node_fs_before_hook_continuation_test.zig",
+        "declared_controls": 3,
+        "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92",
+        "actual_metadata_count": null
+      },
+      {
+        "source_root": "src/native_vm_error_constructor_name_test.zig",
+        "declared_controls": 24,
+        "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525",
+        "actual_metadata_count": null
+      },
+      {
+        "source_root": "src/native_node_file_handle_transfer_test.zig",
+        "declared_controls": 13,
+        "sha256": "E5656DE3AEC771F144939E5852CC7161B1B0499D4764A3F2E0BF42460570C5B1",
+        "actual_metadata_count": null
+      }
+    ],
+    "retained4_graphs_at_014": [
+      {
+        "name": "native-node-file-handle-owner",
+        "source_root": "src/native_node_file_handle_owner_test.zig",
+        "conservative_module_count": 710,
+        "conservative_embed_count": 243,
+        "named_import_owners": {
+          "catalog_tool": "tools/catalog.zig",
+          "native_icu_api": "src/extensions/icu/native_icu_api.zig"
+        },
+        "actual_metadata_count": null
+      },
+      {
+        "name": "native-node-fs-before-hook-continuation",
+        "source_root": "src/native_node_fs_before_hook_continuation_test.zig",
+        "conservative_module_count": 710,
+        "conservative_embed_count": 243,
+        "named_import_owners": {
+          "catalog_tool": "tools/catalog.zig",
+          "native_icu_api": "src/extensions/icu/native_icu_api.zig"
+        },
+        "actual_metadata_count": null
+      },
+      {
+        "name": "native-vm-error-constructor-name",
+        "source_root": "src/native_vm_error_constructor_name_test.zig",
+        "conservative_module_count": 1,
+        "conservative_embed_count": 0,
+        "named_import_owners": {},
+        "actual_metadata_count": null
+      },
+      {
+        "name": "native-node-file-handle-transfer",
+        "source_root": "src/native_node_file_handle_transfer_test.zig",
+        "conservative_module_count": 711,
+        "conservative_embed_count": 243,
+        "named_import_owners": {
+          "catalog_tool": "tools/catalog.zig",
+          "native_icu_api": "src/extensions/icu/native_icu_api.zig"
+        },
+        "actual_metadata_count": null
+      }
+    ],
+    "refresh_method": [
+      "After an independently closed V38 run and explicit Root source release, observe actual intake commits, manifests, exact donor/checkout/Git bytes, final clean head and progress. No current draft fills those future fields.",
+      "Resolve all new3 and retained4 imports and embeds from the exact post-intake checkout, with immutable donor/current-root provenance; recompute impacted existing group closures where the shared import edges changed.",
+      "Rehash every original group source row and all576 dependency rows, not just the64+82 changed rows. Verify unexpected source changes fail before catalog emission.",
+      "Historical Shutdown708/242 and OneByte679/242 graphs have the c764 basis and must not be copied as post-intake counts. They omit later fixture and graph changes; use them only as authority and expected source members.",
+      "Resolve native C/C++ quoted includes and actual link recipe ownership separately from Zig literal imports. Record conditional/standard toolchain headers as limits, not inferred completeness.",
+      "Retain exact source/tree/vendor/compiler/control before/final inventories and fresh process/seal acceptance in every later native phase."
+    ],
+    "named_imports_and_libraries": {
+      "shutdown_and_onebyte": {
+        "explicit_named_imports": [
+          "catalog_tool -> tools/catalog.zig"
+        ],
+        "linkQuickJs_named_imports": [
+          "native_icu_api",
+          "native_photon_link",
+          "native_vm_identity"
+        ],
+        "actual_reachable_named_imports": "Derive from current literal closure; injected and reachable modules are distinct.",
+        "libraries": [
+          "QuickJS",
+          "TypeScript parser",
+          "SQLite",
+          "native network",
+          "inherited durable/libc/libcpp"
+        ],
+        "include_directories": [
+          "vendor/node-v24.13.0/uv/include",
+          "src/extensions"
+        ],
+        "windows_system_libraries": [
+          "advapi32",
+          "userenv"
+        ]
+      },
+      "buffer": {
+        "target_platforms": [
+          "Windows",
+          "Linux"
+        ],
+        "root_imports": [
+          "std"
+        ],
+        "c_includes": [
+          "engine_abi.h"
+        ],
+        "direct_recipe": "linkQuickJs; inherited durable/libc/libcpp and named imports remain exact. No new catalog_tool or network recipe is inferred.",
+        "native_direct_roots": [
+          "vendor/quickjs/dtoa.c",
+          "vendor/quickjs/libregexp.c",
+          "vendor/quickjs/libunicode.c",
+          "vendor/quickjs/quickjs.c",
+          "src/extensions/engine_abi.c",
+          "src/durable/process_probe.c",
+          "src/extensions/engine_abi.h"
+        ]
+      }
+    },
+    "new_shutdown_onebyte_direct_translation_units": [
+      {
+        "relative_path": "src/extensions/native_node_diagnostic_context.c",
+        "flags": [
+          "-std=gnu11"
+        ],
+        "ownership": "Exactly one TLS owner per artifact; already present in014, preserve raw bytes."
+      },
+      {
+        "relative_path": "src/extensions/native_v8_base_fatal.cpp",
+        "flags": [
+          "-std=gnu++20",
+          "-fno-exceptions",
+          "-fno-rtti",
+          "-fno-strict-aliasing"
+        ],
+        "ownership": "New explicit5059 raw donor plus header; no shared library duplicate."
+      },
+      {
+        "relative_path": "src/extensions/native_node_one_byte_string_diagnostics.cpp",
+        "flags": [
+          "-std=gnu++20",
+          "-fno-exceptions",
+          "-fno-rtti",
+          "-fno-strict-aliasing"
+        ],
+        "ownership": "New explicit donor plus header; preserve pinned DEBUG/OFFICIAL_BUILD configuration."
+      }
+    ],
+    "fatal_and_TLS_provenance": {
+      "fatal_source_commit": "5059d6a04a29232fa3a39614d7e73e3690472c4f",
+      "two_fatal_sources_explicitly_in_new_path_union": true,
+      "raw_fatal_commit_bytes_equal_selected_donors": true,
+      "three_TLS_sources_already_exact_in_014": true,
+      "selected_network_and_memory_recipes_equal_raw_014": true,
+      "each_new_Shutdown_Latin1_artifact_has_one_direct_TLS_C_fatal_CPP_and_OneByte_diagnostics_CPP": true,
+      "no_duplicate_translation_unit_in_network_or_memory": true
+    },
+    "selected_VM_composition": [
+      {
+        "relative_path": "vendor/quickjs/quickjs.c",
+        "selected": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\combined-with-latin1-successor\\vendor\\quickjs\\quickjs.c",
+          "bytes": 2404878,
+          "sha256": "091E5BE0C22F35CE2029852DEA8D8B017B3784013ED93EDB9F1545A49D8D275F"
+        },
+        "preimage": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\vendor\\quickjs\\quickjs.c",
+          "bytes": 2403205,
+          "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464"
+        }
+      },
+      {
+        "relative_path": "vendor/quickjs/quickjs.h",
+        "selected": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-custom-buffer-sourceonly-20261020\\vm\\combined-with-latin1-successor\\vendor\\quickjs\\quickjs.h",
+          "bytes": 115346,
+          "sha256": "05AA4DF250CB642536077C5DF80C08C92C1C40BAA347C18140AFB577B583B0EB"
+        },
+        "preimage": {
+          "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\vendor\\quickjs\\quickjs.h",
+          "bytes": 114656,
+          "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952"
+        }
+      }
+    ],
+    "ordering": "Preserve Transfer-before-Shutdown and canonical Error/Buffer cached names. The accepted Buffer+Shutdown insertion orders commute; Transfer+Shutdown does not.",
+    "cache_artifacts": "All three addTest roots keep Zig's default cached test.exe/test.pdb on Windows; explicit install basenames are the three artifact values. Do not add a custom addTest.name."
+  },
+  "concrete_build_linkage_followup": {
+    "status": "unresolved_source_level_native_recipe_gap_before_full_post_intake_validation",
+    "findings": [
+      "Selected StreamBase.Base.init unconditionally stores shutdown.reportAfterShutdown in default_listener.after_shutdown.",
+      "The reporter reaches reportBody, which can call latin1.fromCString; fromOneByte references pi_node_one_byte_string_cstring_length and pi_node_one_byte_string_empty_maybe_handle.",
+      "The definitions live in selected native_node_one_byte_string_diagnostics.cpp, whose dependencies include DiagnosticContextScope TLS and pi_v8_base_fatal.",
+      "Selected build868F explicitly adds this trio only to the two new targets. The retained FileHandle owner, before-hook, StreamRead and FileHandleRead target blocks have no trio; Transfer has its existing TLS C and transfer CPP but lacks the new diagnostics/fatal CPP.",
+      "The selected native network and memory recipes do not supply these new translation units."
+    ],
+    "catalog_groups_already_listing_StreamBase": [
+      "native-node-environment-map",
+      "native-vm-backing-store-adoption",
+      "native-vm-script-location",
+      "native-node-environment-paths",
+      "native-node-stream-fields",
+      "native-node-managed-buffers",
+      "native-node-stream-read",
+      "native-node-file-handle-owner",
+      "native-node-fs-before-hook-continuation",
+      "native-node-file-handle-transfer"
+    ],
+    "affected_targets_exact_final_set": null,
+    "required_resolution": "Before any full post-intake compile grant, independently trace actual retained Base.init consumers and their selected link recipes. Supply one reviewed native implementation of each newly referenced symbol and exactly one TLS/fatal owner in each affected artifact, or prove an exact selected target does not instantiate the callable path. Preserve20-path proposal unchanged; any required build-recipe change is a distinct finite source-only successor with full inverse and new review.",
+    "compiler_or_linker_failure_claimed": false,
+    "production_scope_expansion_authorized": false,
+    "prior_source_peer_scope": "Module independently confirmed the accepted Shutdown source packet did not establish compiler-selected absence of these calls in every retained target; the per-target link-composition check remains outstanding."
+  },
+  "later_execution_adaptation_boundaries": [
+    "Retain strict1DD3 driver,3413 classifier,64group cap,300second first-child grant age, serial resource admission and all source/artifact/owner/deadline gates.",
+    "The current two-cohort constructor/config logic must receive a separately reviewed explicit new3 branch (3/38) and preserve new4(4/58),existing63(63/1249); changing a generic else branch silently is not permitted.",
+    "Positive BuildQuery helper/count/selection templates require a separately reviewed three-group shape. Actual counts, job IDs, process creation instances, grant/launch hashes, bookends and accepted metadata/closure are bound only after observation.",
+    "Every cohort requires fresh BuildQuery and metadata/artifact/process closure, then a distinct strict RuntimeOnly grant bound to its own exact accepted artifacts. All V38 results stay historical.",
+    "Keep all original failed/partial attempts and source-only qualifications distinct. No aggregate application/Node bridge/release acceptance follows from selected native cohorts."
+  ],
+  "future_observed_inputs": {
+    "final_source_head": null,
+    "source_intake_commit": null,
+    "source_intake_manifest": null,
+    "source_intake_receipt": null,
+    "source_release": null,
+    "required_build_recipe_successor": null,
+    "progress_commit": null,
+    "progress_pin": null,
+    "actual_matrix": null,
+    "new_source_inventory": null,
+    "fresh_admission": null,
+    "job_ids": null,
+    "actual_metadata_by_cohort": null,
+    "runtime_outcomes": null
+  },
+  "unresolved_requirements": [
+    "Exact retained-target native-linkage closure described above.",
+    "Actual post-intake head and all source/graph/native recipe pins.",
+    "Exact separately reviewed future catalog preparer, three-cohort constructors and actual observed audit inputs.",
+    "Complete V38 original63 closure and Root source release before intake; this plan supplies neither."
+  ]
+}

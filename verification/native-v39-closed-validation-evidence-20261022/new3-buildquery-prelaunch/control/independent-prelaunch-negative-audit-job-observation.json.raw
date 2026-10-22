@@ -1,0 +1,60 @@
+{
+  "original_durable_job": {
+    "ok": true,
+    "summary": "Background job job-op-21f6228088bc7a767ded02a0ba6d6241216790fe9ebb992663b0461b0c2e5f84 is succeeded.",
+    "data": {
+      "id": "job-op-21f6228088bc7a767ded02a0ba6d6241216790fe9ebb992663b0461b0c2e5f84",
+      "status": "succeeded",
+      "mode": "program",
+      "createdAtUtc": "2026-10-22T16:50:04.338Z",
+      "startedAtUtc": "2026-10-22T16:50:04.409Z",
+      "completedAtUtc": "2026-10-22T16:50:21.175Z",
+      "runnerPid": 7616,
+      "exitCode": 0,
+      "readOnly": false,
+      "resourceClass": "light",
+      "runtimeMode": "host",
+      "queuedAtUtc": "2026-10-22T16:50:04.386Z",
+      "runnerProcessInstance": "134371614043613295",
+      "queueWaitMs": 8,
+      "executionSlot": 8,
+      "executionSlots": [
+        8
+      ],
+      "executionPool": "execution",
+      "executionWeight": 1,
+      "childPid": 44868,
+      "logs": {
+        "stdout": {
+          "maxBytes": 33554432,
+          "rotations": 2,
+          "rotationsPerformed": 0,
+          "totalBytes": 760,
+          "currentBytes": 760,
+          "truncated": false,
+          "failed": false,
+          "error": null
+        },
+        "stderr": {
+          "maxBytes": 33554432,
+          "rotations": 2,
+          "rotationsPerformed": 0,
+          "totalBytes": 0,
+          "currentBytes": 0,
+          "truncated": false,
+          "failed": false,
+          "error": null
+        },
+        "truncated": false
+      },
+      "runnerAlive": false,
+      "jobDir": "C:\\Users\\adyba\\docker-chatgpt-devbox\\run\\jobs\\job-op-21f6228088bc7a767ded02a0ba6d6241216790fe9ebb992663b0461b0c2e5f84"
+    },
+    "exitCode": null,
+    "truncated": false
+  },
+  "independent_current_process_absence": {
+    "observed_utc": "2026-10-22T16:52:20.6683193+00:00",
+    "records": []
+  }
+}

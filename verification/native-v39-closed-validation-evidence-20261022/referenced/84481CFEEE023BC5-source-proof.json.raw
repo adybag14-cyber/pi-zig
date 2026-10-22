@@ -1,0 +1,1716 @@
+{
+  "schema": 1,
+  "status": "independent_static_v39_execution_source_peer_passed",
+  "reviewer": "/root/sdk_environment_port",
+  "reviewed_utc": "2026-10-22T16:16:00.997221+00:00",
+  "own_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v39-execution-source-peer-20261022\\source-audit.py",
+    "bytes": 19870,
+    "sha256": "56DD663C2C913E7EFF7E48744ABDA085B3036C386F011F3E23EF30F8888FD7E6"
+  },
+  "author_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\handoff.json",
+    "bytes": 15709,
+    "sha256": "BEC44F0C56BDE70EDC990A92D905B2238492CF4D6536691B80614DCAB3599DED"
+  },
+  "selected_current_catalog_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-sourceonly-20261022\\third-checkout-distinction-successor-v3\\execution-provenance-contract-v3.json",
+    "bytes": 6499,
+    "sha256": "8FBA8A300458B490C62236AF33F3F5B059BD74458337015EC113EE0A0B0313A6"
+  },
+  "original_catalog_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-sourceonly-20261022\\execution-provenance-contract.json",
+    "bytes": 6458,
+    "sha256": "513556032A12F09F056170DD0A37A5EE3E714040A01FD8115B8B8AF1DBBD1B3E"
+  },
+  "catalog_contract_change_only_preparer_pin": true,
+  "finite_sources": [
+    {
+      "kind": "buildquery_constructor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV38BuildQueryGrant-20261021.py",
+        "bytes": 10095,
+        "sha256": "5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+        "bytes": 10269,
+        "sha256": "1501B39CAE3466FEBC38E39DA5121D33064AECE3206BDBEF998A59BF26491EF3"
+      },
+      "steps": [
+        {
+          "index": 0,
+          "category": "version_or_canonical_path_literal",
+          "offset": 0,
+          "before_bytes": 10095,
+          "before_sha256": "5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B",
+          "after_bytes": 10095,
+          "after_sha256": "66BCC8DF910A1AF68A796BFC136D8F2AC1E3CF64D1B28748B21B592B217C7C02",
+          "prefix_bytes": 0,
+          "prefix_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "suffix_bytes": 10018,
+          "suffix_sha256": "9406A88CC5B3E90937E1357B29632A76ED720E279CB78509CDAD7F0CE5FF51A2",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 1,
+          "category": "version_or_canonical_path_literal",
+          "offset": 1642,
+          "before_bytes": 10095,
+          "before_sha256": "66BCC8DF910A1AF68A796BFC136D8F2AC1E3CF64D1B28748B21B592B217C7C02",
+          "after_bytes": 10095,
+          "after_sha256": "EAA9E201353FCEF2D09D4B362EC8DAA4CB7061B995D2409D1471CF7AB402D5BF",
+          "prefix_bytes": 1642,
+          "prefix_sha256": "3C22DD66DAA0921A9210F9296820A43BE70927A0E985BA297CB7A89E04E4C4C8",
+          "suffix_bytes": 8380,
+          "suffix_sha256": "52AF852CB2331C819C269E63E4574D7E6F8D2A9BD12EFA26E536EBC3D15FE856",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 2,
+          "category": "version_or_canonical_path_literal",
+          "offset": 7398,
+          "before_bytes": 10095,
+          "before_sha256": "EAA9E201353FCEF2D09D4B362EC8DAA4CB7061B995D2409D1471CF7AB402D5BF",
+          "after_bytes": 10095,
+          "after_sha256": "4BC1A00C9FA9E91E3C08AB057C8986615624C846B7A1C2E88C820AA366A24333",
+          "prefix_bytes": 7398,
+          "prefix_sha256": "D3884E4A490596A728609EA6474FEF60ADAF5528212823C27ACD1EBB0406AE91",
+          "suffix_bytes": 2616,
+          "suffix_sha256": "4653A9289FDC7E69010D9B1CCD457E8A578001D1D51B402EF7AA12E89F2597B2",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 3,
+          "category": "version_or_canonical_path_literal",
+          "offset": 7480,
+          "before_bytes": 10095,
+          "before_sha256": "4BC1A00C9FA9E91E3C08AB057C8986615624C846B7A1C2E88C820AA366A24333",
+          "after_bytes": 10095,
+          "after_sha256": "EB00978D86A28445E2AB75AD2981633A2DBD91AFE816BF0F48126DFA6645CFF7",
+          "prefix_bytes": 7480,
+          "prefix_sha256": "E4615D20D789311AC0DB2AB897FCEEE871F580F2D6C13A7A765616EBE00D5AC9",
+          "suffix_bytes": 2533,
+          "suffix_sha256": "A654E31ACFC0EB42EF527A3D318AEF1D9AC6AAA13C2B9CFF3F913A00E0350B0C",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 4,
+          "category": "version_or_canonical_path_literal",
+          "offset": 8005,
+          "before_bytes": 10095,
+          "before_sha256": "EB00978D86A28445E2AB75AD2981633A2DBD91AFE816BF0F48126DFA6645CFF7",
+          "after_bytes": 10095,
+          "after_sha256": "A97A5BA308053FFCADDA25359E90FC90B18A2324F2F4A74BEAB33DD2676FE0AF",
+          "prefix_bytes": 8005,
+          "prefix_sha256": "70B29C66A188324F8555EE22E22CB2AD692AFE0FBC81FCA76110C2FA70310B1F",
+          "suffix_bytes": 1981,
+          "suffix_sha256": "C909F4612F80DEEE1DD6B75F6271BE5DB0F10C7495A0D2523B8C6EDAC7D1CC65",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 5,
+          "category": "unresolved_identity_literal",
+          "offset": 280,
+          "before_bytes": 10095,
+          "before_sha256": "A97A5BA308053FFCADDA25359E90FC90B18A2324F2F4A74BEAB33DD2676FE0AF",
+          "after_bytes": 10095,
+          "after_sha256": "6CFE4E1CABF6E94660E1B2C9F2ED262CA28AF3B8611C562DCF8CCF0E39D43082",
+          "prefix_bytes": 280,
+          "prefix_sha256": "0F95577BA5486606063720F3617EBD1F5E70E021C68BBC4DBEDC718E767865FD",
+          "suffix_bytes": 9773,
+          "suffix_sha256": "A2098533B9DB636FEF7CECF595DEB6593CD659DCA8B5B0AD06B02954724B4BF6",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 6,
+          "category": "cohort_admission",
+          "offset": 1916,
+          "before_bytes": 10095,
+          "before_sha256": "6CFE4E1CABF6E94660E1B2C9F2ED262CA28AF3B8611C562DCF8CCF0E39D43082",
+          "after_bytes": 10102,
+          "after_sha256": "5F80E24A76584B51F1CBD3DCE0085F6DE910326F3781D81216C866F3666B59B0",
+          "prefix_bytes": 1916,
+          "prefix_sha256": "A7791C3BE41C31A7CD009425DE840464E26B3A51451B9152A2DC8B202713DABC",
+          "suffix_bytes": 8149,
+          "suffix_sha256": "4F8550C25887D0EA109910ABA0C3512EAE344FD4124BC9C7B2979886A88E92E5",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 7,
+          "category": "cohort_declarations",
+          "offset": 1954,
+          "before_bytes": 10102,
+          "before_sha256": "5F80E24A76584B51F1CBD3DCE0085F6DE910326F3781D81216C866F3666B59B0",
+          "after_bytes": 10131,
+          "after_sha256": "1AB8D18F96766899A176336A5C65EDDB142E00E10F9F5445CCF8E2D98025E10F",
+          "prefix_bytes": 1954,
+          "prefix_sha256": "6DF738846F00FD0D3AFFDA70F0A958EAAAD6FC9ACABEB5171D5E693B58AC6EC4",
+          "suffix_bytes": 8076,
+          "suffix_sha256": "5D52B9184C4F700A70D0E610DE1111A4F8FCD746A0D2C3F6F664FF344A99AE50",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 8,
+          "category": "full_catalog_counts",
+          "offset": 3012,
+          "before_bytes": 10131,
+          "before_sha256": "1AB8D18F96766899A176336A5C65EDDB142E00E10F9F5445CCF8E2D98025E10F",
+          "after_bytes": 10131,
+          "after_sha256": "189A0F5AF98F2A53A13228CA5CC8A045205EC8453E29F2EA02ECEE1B6A5B65EF",
+          "prefix_bytes": 3012,
+          "prefix_sha256": "5DDAE23D060320F7CEE94B2CA62C868447DEFD23A628CF2D38F51E8A3EC5B8CD",
+          "suffix_bytes": 6998,
+          "suffix_sha256": "99B16908EA14335D1A4B668C0186C88079C23A363C81195A45AB86A7DF94B85E",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 9,
+          "category": "full_catalog_counts",
+          "offset": 4356,
+          "before_bytes": 10131,
+          "before_sha256": "189A0F5AF98F2A53A13228CA5CC8A045205EC8453E29F2EA02ECEE1B6A5B65EF",
+          "after_bytes": 10131,
+          "after_sha256": "563AE41956704083C54D053EAE5FB9EFD8FE0B177D29C4C5D7B8515D910A2EF5",
+          "prefix_bytes": 4356,
+          "prefix_sha256": "380FB96043894CA08B79766C38491E4971261FF8EC70A1502D38D5B9EABB6038",
+          "suffix_bytes": 5676,
+          "suffix_sha256": "8C50387E4EE6882CE69798D64A40C8BA79400B2274F485370F961A763387F121",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 10,
+          "category": "full_catalog_counts",
+          "offset": 4600,
+          "before_bytes": 10131,
+          "before_sha256": "563AE41956704083C54D053EAE5FB9EFD8FE0B177D29C4C5D7B8515D910A2EF5",
+          "after_bytes": 10131,
+          "after_sha256": "EA23C58B64A667E330DCD24C4ED4C9215AE3A74E10E823D09EF32ECF92101FCE",
+          "prefix_bytes": 4600,
+          "prefix_sha256": "3E5F5A6DE59344C8B9BCC658B499EC2EB7051B9AC3C09FEA14884A915C5AD672",
+          "suffix_bytes": 5459,
+          "suffix_sha256": "573AEFD1EF32F804E10468F43C64385DBB6E89CCEBE52993317DDB12568C975C",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 11,
+          "category": "exact_cohort_order",
+          "offset": 4756,
+          "before_bytes": 10131,
+          "before_sha256": "EA23C58B64A667E330DCD24C4ED4C9215AE3A74E10E823D09EF32ECF92101FCE",
+          "after_bytes": 10269,
+          "after_sha256": "1501B39CAE3466FEBC38E39DA5121D33064AECE3206BDBEF998A59BF26491EF3",
+          "prefix_bytes": 4756,
+          "prefix_sha256": "7CC7D64D47C785F7A434E7ECD39C64998A597680B382F9C7F22DBBBCEFD31350",
+          "suffix_bytes": 5120,
+          "suffix_sha256": "B6AA7291817631C4E8588CCEF09875B480C4653D057AC538BC9397293864C96C",
+          "local_raw_inverse": true
+        }
+      ],
+      "complete_forward": true,
+      "complete_raw_inverse": true,
+      "unchanged_helpers": [
+        {
+          "kind": "buildquery_constructor",
+          "name": "sha",
+          "bytes": 56,
+          "sha256": "B039248BE12F1B2D0E8C61567B4FF89EAD07E700FCD674F3E4CFC47DC8D82DFF"
+        },
+        {
+          "kind": "buildquery_constructor",
+          "name": "read",
+          "bytes": 72,
+          "sha256": "8E3857AEC558153A79BECAFA5517C2F233B502620310CE0012CE0C67E3FA72E6"
+        },
+        {
+          "kind": "buildquery_constructor",
+          "name": "pin",
+          "bytes": 95,
+          "sha256": "3EAB5E7A1F4F969C2AAECE64A14EA73C033DE2CA297593FD7E5C718B6ABD36DB"
+        },
+        {
+          "kind": "buildquery_constructor",
+          "name": "verify",
+          "bytes": 263,
+          "sha256": "0B95EFF3B9ECE3EB28B68C519A4FC268F7B31439DE1ED0179ABC6E34A6C18B1B"
+        },
+        {
+          "kind": "buildquery_constructor",
+          "name": "verify_pins",
+          "bytes": 288,
+          "sha256": "96E8F654E265CA4D2DA213F558DF02FBEFD1E5504839FFDD5A51914BE3EC88C7"
+        },
+        {
+          "kind": "buildquery_constructor",
+          "name": "put",
+          "bytes": 89,
+          "sha256": "CD6F4AA01CB1840202FB4119841109497D9522851838342592292B230E8F8BD9"
+        },
+        {
+          "kind": "buildquery_constructor",
+          "name": "git",
+          "bytes": 73,
+          "sha256": "587656637E31B34B477B76CF6836C5C42D3C4808D1B929CBD4B49F5C34E8D115"
+        }
+      ],
+      "imports_AST_exact": true,
+      "all_V34_literals_exact": true
+    },
+    {
+      "kind": "runtime_constructor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV38RuntimeGrant-20261021.py",
+        "bytes": 12499,
+        "sha256": "7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39RuntimeGrant-20261022.py",
+        "bytes": 12671,
+        "sha256": "FEFA13F724061352D6A2DCFD87E10EAA23EC892E2F87531FC86066FF2EEF25DE"
+      },
+      "steps": [
+        {
+          "index": 0,
+          "category": "version_or_canonical_path_literal",
+          "offset": 0,
+          "before_bytes": 12499,
+          "before_sha256": "7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322",
+          "after_bytes": 12499,
+          "after_sha256": "819B07F5796D7D558D2A118D43941BB13A751EE935C671B5D069E8B629C80100",
+          "prefix_bytes": 0,
+          "prefix_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "suffix_bytes": 12408,
+          "suffix_sha256": "34A96E32DF05AE57BA39F6908A6C293A442894072865DCDE9952DF21F13F4933",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 1,
+          "category": "version_or_canonical_path_literal",
+          "offset": 1777,
+          "before_bytes": 12499,
+          "before_sha256": "819B07F5796D7D558D2A118D43941BB13A751EE935C671B5D069E8B629C80100",
+          "after_bytes": 12499,
+          "after_sha256": "2D8F28C41E4CA6BAE35108AD5A6E410CE52C6B703ED125AEB672005F3570FCBF",
+          "prefix_bytes": 1777,
+          "prefix_sha256": "639567FDF74674DC63964DAD7BFF48CE7F6F5BC2F14BA13080814999CF6DA617",
+          "suffix_bytes": 10652,
+          "suffix_sha256": "B9256CF0525CF74740F2C8EF485053492D27134C73063B4D8EF943BAC0E99AE8",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 2,
+          "category": "version_or_canonical_path_literal",
+          "offset": 2439,
+          "before_bytes": 12499,
+          "before_sha256": "2D8F28C41E4CA6BAE35108AD5A6E410CE52C6B703ED125AEB672005F3570FCBF",
+          "after_bytes": 12499,
+          "after_sha256": "DEBF6971E8BBCEAA5311BEFB47C7F2338909C3D06A8BD4BB5995571AC340A007",
+          "prefix_bytes": 2439,
+          "prefix_sha256": "E97AD3E89DE78B13EE0A2DB8CFEE9686A2CF9A8A491D9CE5394F7A3D12AEBDA3",
+          "suffix_bytes": 9959,
+          "suffix_sha256": "DF45A5ADECC0333AE50925D4B1706439D979108EF0E64DC2DB5A1FCBFB7C1CE4",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 3,
+          "category": "version_or_canonical_path_literal",
+          "offset": 2732,
+          "before_bytes": 12499,
+          "before_sha256": "DEBF6971E8BBCEAA5311BEFB47C7F2338909C3D06A8BD4BB5995571AC340A007",
+          "after_bytes": 12499,
+          "after_sha256": "EC6E725CF7503D6B5572E3D62B6B66488C0FF182220CA49277E0A399F318E96D",
+          "prefix_bytes": 2732,
+          "prefix_sha256": "9395106130BE92971BEC82A5BCAC943F30910B691B4058D45043066FD1507B20",
+          "suffix_bytes": 9659,
+          "suffix_sha256": "2B4A5FBFC4DCD47A6E764977062783F91F17BAA44443FE527261D7B1EF812757",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 4,
+          "category": "version_or_canonical_path_literal",
+          "offset": 9711,
+          "before_bytes": 12499,
+          "before_sha256": "EC6E725CF7503D6B5572E3D62B6B66488C0FF182220CA49277E0A399F318E96D",
+          "after_bytes": 12499,
+          "after_sha256": "ADCC5AF678A4AABBF03379B688BE8AF75FB45CAB1FDD53DC6E61775649B62754",
+          "prefix_bytes": 9711,
+          "prefix_sha256": "03FF51BE0C54BE53D59DB4C1B1D9DE5F7D970CFF29DBC2F62A4FD921C4C8C7F2",
+          "suffix_bytes": 2714,
+          "suffix_sha256": "C93ABAE540D36BD179500A2CAE2E1ACDC2FF4D69C18E7277AD8CC6B6F534B42C",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 5,
+          "category": "version_or_canonical_path_literal",
+          "offset": 9786,
+          "before_bytes": 12499,
+          "before_sha256": "ADCC5AF678A4AABBF03379B688BE8AF75FB45CAB1FDD53DC6E61775649B62754",
+          "after_bytes": 12499,
+          "after_sha256": "C0F71B9A706075AA463E0E906C1118528E4CA7DDE572C8381CEBF13286CB233C",
+          "prefix_bytes": 9786,
+          "prefix_sha256": "B61CC18CC37946D220742DC4B5158D479CE3FF41DD8C4F9C6CBF9E706B3C858B",
+          "suffix_bytes": 2649,
+          "suffix_sha256": "25B2AB174E926CAFD43B34C683DCCB782C948F021729CA8CCC517B9ED321F94A",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 6,
+          "category": "version_or_canonical_path_literal",
+          "offset": 9902,
+          "before_bytes": 12499,
+          "before_sha256": "C0F71B9A706075AA463E0E906C1118528E4CA7DDE572C8381CEBF13286CB233C",
+          "after_bytes": 12499,
+          "after_sha256": "43BE9EAD6D8506C3E954CA3CF40D225D6B418DE871131E8A30BFEAF9BC25E92A",
+          "prefix_bytes": 9902,
+          "prefix_sha256": "60A3D31C56B6870F5EFA6963901897EDE075A19902E288760B844DCF8FD24C41",
+          "suffix_bytes": 2445,
+          "suffix_sha256": "A2AE1C46847301249DA930FA6C8BCD3AD8A1289E5624CEF36BF811E5DD005C70",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 7,
+          "category": "unresolved_identity_literal",
+          "offset": 311,
+          "before_bytes": 12499,
+          "before_sha256": "43BE9EAD6D8506C3E954CA3CF40D225D6B418DE871131E8A30BFEAF9BC25E92A",
+          "after_bytes": 12499,
+          "after_sha256": "D75017581CED6102D483373B41DEF52FEA6C9872D0257281BFC940CFA690C3E3",
+          "prefix_bytes": 311,
+          "prefix_sha256": "86C10B1FA32D1E9577C28BAEF270D1D0FCB02B0D6C34C6CCCC57B77B8FE60104",
+          "suffix_bytes": 12146,
+          "suffix_sha256": "E120F98C6286F0EE69C143B40ECDEF30A46AF682E513EB6589285049E79BEA67",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 8,
+          "category": "unresolved_identity_literal",
+          "offset": 361,
+          "before_bytes": 12499,
+          "before_sha256": "D75017581CED6102D483373B41DEF52FEA6C9872D0257281BFC940CFA690C3E3",
+          "after_bytes": 12499,
+          "after_sha256": "60370770AD828598ABA91223222FAB26E0028904A071DCF1EFDBB465E15617F3",
+          "prefix_bytes": 361,
+          "prefix_sha256": "8ACA893090E46BE9E41F7E865AA70926A7A048CACEC431C3D2FB643E32213A71",
+          "suffix_bytes": 12072,
+          "suffix_sha256": "71D43AD9F8E3394ABEAC2B1E7FCBB5046487B8FD372DB2E80D9D822694085F71",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 9,
+          "category": "cohort_admission",
+          "offset": 2194,
+          "before_bytes": 12499,
+          "before_sha256": "60370770AD828598ABA91223222FAB26E0028904A071DCF1EFDBB465E15617F3",
+          "after_bytes": 12506,
+          "after_sha256": "368E6BCFCDB5EF8C915F5B41DC4A8971699A37DC6B02DF02CF3F377B9B576D55",
+          "prefix_bytes": 2194,
+          "prefix_sha256": "6B3C4CA36957F308D39B58D4B5B5F1BA7046DE8D66D70BDDD9C579659850CE99",
+          "suffix_bytes": 10275,
+          "suffix_sha256": "D6AFAECC204CF615CF287457361FA566DE01FCE9A701E398607FD68410C5F5F7",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 10,
+          "category": "cohort_declarations",
+          "offset": 2232,
+          "before_bytes": 12506,
+          "before_sha256": "368E6BCFCDB5EF8C915F5B41DC4A8971699A37DC6B02DF02CF3F377B9B576D55",
+          "after_bytes": 12535,
+          "after_sha256": "23AEB133DE64643D1FDD9380DFF73FF6276E1A1D49BCC0C5D4988BB049633AE8",
+          "prefix_bytes": 2232,
+          "prefix_sha256": "713C6EF083B99AD4BB05F3CFECFF7A922BA9A2D520CCF11F27288364C3D82031",
+          "suffix_bytes": 10221,
+          "suffix_sha256": "8BFFAAFD8019C22027637473CB5BA6C0AABB7A42E61CECFB5A3C91C5DDFBBA49",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 11,
+          "category": "cohort_preparation_path",
+          "offset": 2509,
+          "before_bytes": 12535,
+          "before_sha256": "23AEB133DE64643D1FDD9380DFF73FF6276E1A1D49BCC0C5D4988BB049633AE8",
+          "after_bytes": 12540,
+          "after_sha256": "ADB5EAA88205DC3948C6423D7743C7D9B91643A6AEC173B16D56D156FA60D7F8",
+          "prefix_bytes": 2509,
+          "prefix_sha256": "28A2BB9A1CD09B3D67F53485AC94CC9E1876C967F6313A3F250A91ABC077A9E5",
+          "suffix_bytes": 9960,
+          "suffix_sha256": "62DBB859DF271D0C25C567B71CAEF2AB737D787D6BDB16B9902592EC3C5953D4",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 12,
+          "category": "full_catalog_counts",
+          "offset": 6508,
+          "before_bytes": 12540,
+          "before_sha256": "ADB5EAA88205DC3948C6423D7743C7D9B91643A6AEC173B16D56D156FA60D7F8",
+          "after_bytes": 12540,
+          "after_sha256": "720ED17A44079843E18D04738A784EF33F4792CB8A484EEA6ECC325C1DB510D1",
+          "prefix_bytes": 6508,
+          "prefix_sha256": "E883AE7E4251D3F0AF753902D8B9CDF1F9224627AD5A55B57C91D4D6F5B477B2",
+          "suffix_bytes": 5934,
+          "suffix_sha256": "296B31CE01EC633F0A12392416CF68715F4BBE5FC9C7EB19E2EE55BCC9BD283F",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 13,
+          "category": "exact_cohort_order",
+          "offset": 6607,
+          "before_bytes": 12540,
+          "before_sha256": "720ED17A44079843E18D04738A784EF33F4792CB8A484EEA6ECC325C1DB510D1",
+          "after_bytes": 12671,
+          "after_sha256": "FEFA13F724061352D6A2DCFD87E10EAA23EC892E2F87531FC86066FF2EEF25DE",
+          "prefix_bytes": 6607,
+          "prefix_sha256": "1827F4BF7640A2E8854429BD134CD390FF434F8EB9B633948B45449DF28CC829",
+          "suffix_bytes": 5756,
+          "suffix_sha256": "6AB47540212393611B7A4C7A1584F02AF14BFBD4FEF10D3440C78327AEDE6FB1",
+          "local_raw_inverse": true
+        }
+      ],
+      "complete_forward": true,
+      "complete_raw_inverse": true,
+      "unchanged_helpers": [
+        {
+          "kind": "runtime_constructor",
+          "name": "sha",
+          "bytes": 56,
+          "sha256": "B039248BE12F1B2D0E8C61567B4FF89EAD07E700FCD674F3E4CFC47DC8D82DFF"
+        },
+        {
+          "kind": "runtime_constructor",
+          "name": "read",
+          "bytes": 72,
+          "sha256": "8E3857AEC558153A79BECAFA5517C2F233B502620310CE0012CE0C67E3FA72E6"
+        },
+        {
+          "kind": "runtime_constructor",
+          "name": "pin",
+          "bytes": 92,
+          "sha256": "A8C688649B0E6B427DEC5EE7CFB05D284B19AB49CA0524E8C1F0D995F476F19B"
+        },
+        {
+          "kind": "runtime_constructor",
+          "name": "verify",
+          "bytes": 251,
+          "sha256": "D706A9ED45BF54FD735447D5BF44CAE88F1A789B7FC29390A6F3F99D22ADEF22"
+        },
+        {
+          "kind": "runtime_constructor",
+          "name": "verify_pins",
+          "bytes": 248,
+          "sha256": "77A8B1DA837DF9D76A972DD58C5A426E6A5A7B33B6C8AA966C6177A02C27B1E5"
+        },
+        {
+          "kind": "runtime_constructor",
+          "name": "put",
+          "bytes": 86,
+          "sha256": "9AF2631B808218365CB5BF246D1277915BD871EFDB1152965D9BEE3FD6E57AAE"
+        },
+        {
+          "kind": "runtime_constructor",
+          "name": "git",
+          "bytes": 73,
+          "sha256": "587656637E31B34B477B76CF6836C5C42D3C4808D1B929CBD4B49F5C34E8D115"
+        },
+        {
+          "kind": "runtime_constructor",
+          "name": "state",
+          "bytes": 202,
+          "sha256": "65E00CA27BB3B545F9630F099C28B26F04D55475C473DBFBD4724468A204FF25"
+        }
+      ],
+      "imports_AST_exact": true,
+      "all_V34_literals_exact": true
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38CompleteBuildQuery-20261021.py",
+        "bytes": 37254,
+        "sha256": "6BCBE32702657CD2B5F62E8779CCF585B86D7A8CFFC04C2EB6FE25B4D6E41A9E"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39CompleteBuildQuery-20261022.py",
+        "bytes": 37295,
+        "sha256": "F200CD8E6DDCF56E3900D585C302BFFD97A47CC850DF31C81CD6FA63354DCB49"
+      },
+      "steps": [
+        {
+          "index": 0,
+          "category": "version_or_canonical_path_literal",
+          "offset": 0,
+          "before_bytes": 37254,
+          "before_sha256": "6BCBE32702657CD2B5F62E8779CCF585B86D7A8CFFC04C2EB6FE25B4D6E41A9E",
+          "after_bytes": 37254,
+          "after_sha256": "C517603A7790EDC2E9498C905763E5BAAD7C8C700889C57033A99B0F4AA4C0DF",
+          "prefix_bytes": 0,
+          "prefix_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "suffix_bytes": 37168,
+          "suffix_sha256": "DDB1930DA408F57C0596210353B603512F22F2A9BDE9F73B6B3C4A4713E08942",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 1,
+          "category": "version_or_canonical_path_literal",
+          "offset": 1593,
+          "before_bytes": 37254,
+          "before_sha256": "C517603A7790EDC2E9498C905763E5BAAD7C8C700889C57033A99B0F4AA4C0DF",
+          "after_bytes": 37254,
+          "after_sha256": "69371AC8B3C8AD24B6F1AB42D1128EFCD83274BBC004CB80A37852FD1276F323",
+          "prefix_bytes": 1593,
+          "prefix_sha256": "9F2B06B674B6FAD3EBB09EC16673A749D57DE07A6700A3F7B7F8374E52AED8DA",
+          "suffix_bytes": 35514,
+          "suffix_sha256": "E4A86A01AF38FEE260D38128C32857BD3837F776BE639D3856C96CB467365420",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 2,
+          "category": "version_or_canonical_path_literal",
+          "offset": 1760,
+          "before_bytes": 37254,
+          "before_sha256": "69371AC8B3C8AD24B6F1AB42D1128EFCD83274BBC004CB80A37852FD1276F323",
+          "after_bytes": 37254,
+          "after_sha256": "4AAFF9A7BFED8815F25F065434B7BFFFF76674FE47E35CFA4862AE6FFC8A263E",
+          "prefix_bytes": 1760,
+          "prefix_sha256": "F16BF6D7A185A666898975DCEC7762580ECE2825E8BB3506CF82E74E38E2F4CB",
+          "suffix_bytes": 35319,
+          "suffix_sha256": "3B268F9DAAE86D245FC4C3C999402930F4C1829D30BA63CFA798F7A5F57B12AE",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 3,
+          "category": "version_or_canonical_path_literal",
+          "offset": 2101,
+          "before_bytes": 37254,
+          "before_sha256": "4AAFF9A7BFED8815F25F065434B7BFFFF76674FE47E35CFA4862AE6FFC8A263E",
+          "after_bytes": 37254,
+          "after_sha256": "9BDC1B051EA027AB40F9006B8A73208171842E4B5D981A2EC9EEB4872CA063C4",
+          "prefix_bytes": 2101,
+          "prefix_sha256": "AB991CD9E54A73BEEAA1A42D4AA1AAE5B2933A8FAA1537037250F71485727CD2",
+          "suffix_bytes": 35083,
+          "suffix_sha256": "9E34B0924A619EBFB030B0D8EC6F9BB9659DDF450FE1651AF13E8B2F19E0D371",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 4,
+          "category": "version_or_canonical_path_literal",
+          "offset": 2238,
+          "before_bytes": 37254,
+          "before_sha256": "9BDC1B051EA027AB40F9006B8A73208171842E4B5D981A2EC9EEB4872CA063C4",
+          "after_bytes": 37254,
+          "after_sha256": "3742C34C75197A539655A8819639EB00A84B6EEC7C9E1C392B96B89956D98FFF",
+          "prefix_bytes": 2238,
+          "prefix_sha256": "F6024DB435F47C7E944AE8B5BAFF12D9EE76775D35FB822EECC924410B47230D",
+          "suffix_bytes": 34900,
+          "suffix_sha256": "0862A0D2656A918A2A82BE1BFD477BFC7A4E631F1AA65DD5F91A269CA0B267C8",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 5,
+          "category": "version_or_canonical_path_literal",
+          "offset": 2621,
+          "before_bytes": 37254,
+          "before_sha256": "3742C34C75197A539655A8819639EB00A84B6EEC7C9E1C392B96B89956D98FFF",
+          "after_bytes": 37254,
+          "after_sha256": "2509C1A452ACEEEE514E6C06723DA1AB01D37240C2B2BA45CEA9A89551D9E39D",
+          "prefix_bytes": 2621,
+          "prefix_sha256": "5C4F1DF23D781F92799BF2C3E3F5AD471719ABA0D8A510AED5EC6F7DB587FC90",
+          "suffix_bytes": 34407,
+          "suffix_sha256": "520C18B875ECDCE01175BD6CE242D74632E1B8508AF0CE5E67950C8F28E4633A",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 6,
+          "category": "version_or_canonical_path_literal",
+          "offset": 14316,
+          "before_bytes": 37254,
+          "before_sha256": "2509C1A452ACEEEE514E6C06723DA1AB01D37240C2B2BA45CEA9A89551D9E39D",
+          "after_bytes": 37254,
+          "after_sha256": "280C92E359C5911C69732E3683ABECC37C0BCD26A4B25E47F06D219CCCA94C74",
+          "prefix_bytes": 14316,
+          "prefix_sha256": "94B82FCC4DAF311170C7FF0637C865A29F363164167B7FD35F8BBD04F716D3C2",
+          "suffix_bytes": 22647,
+          "suffix_sha256": "0D469AB929B3AB816290AD7FA6D1B0B8DA1498F256F7D99CD15739ED74C860AC",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 7,
+          "category": "unresolved_identity_literal",
+          "offset": 322,
+          "before_bytes": 37254,
+          "before_sha256": "280C92E359C5911C69732E3683ABECC37C0BCD26A4B25E47F06D219CCCA94C74",
+          "after_bytes": 37254,
+          "after_sha256": "DF5D374D1597668E36AEA3C0B46C530EF4B652B32AF189DC3278B2AB3445CB83",
+          "prefix_bytes": 322,
+          "prefix_sha256": "B00D70A8B517F887170B2D390B892A2764BEE13F571DD88F71D0A33C06864D13",
+          "suffix_bytes": 36890,
+          "suffix_sha256": "BF4F9FC648FF3FAEB6D7CE2979F9AB596B751D07557EF21D1AFFE871113AFD3F",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 8,
+          "category": "unresolved_identity_literal",
+          "offset": 6392,
+          "before_bytes": 37254,
+          "before_sha256": "DF5D374D1597668E36AEA3C0B46C530EF4B652B32AF189DC3278B2AB3445CB83",
+          "after_bytes": 37254,
+          "after_sha256": "50132F829A8270E2D23327713D6A67EAC9174D2A8060F72A119A77810962A8DF",
+          "prefix_bytes": 6392,
+          "prefix_sha256": "7B800C9A6F1369AB7C94EEBA73E990723DC76E997437CDAA8338C81303A3ECFC",
+          "suffix_bytes": 30796,
+          "suffix_sha256": "433AB11C94982B92BF7ADD3513C9DFD7EDA08B1942800A3FD09333ACDEC61FBA",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 9,
+          "category": "cohort_admission",
+          "offset": 2109,
+          "before_bytes": 37254,
+          "before_sha256": "50132F829A8270E2D23327713D6A67EAC9174D2A8060F72A119A77810962A8DF",
+          "after_bytes": 37261,
+          "after_sha256": "175D0BD2316DE0871C8CF9914C3855E9BB3F83716E20FD5C4835297D38CB16D4",
+          "prefix_bytes": 2109,
+          "prefix_sha256": "FA5C6E69B8C42071B548F2682E1590C2361B3CA238F908A9A561402F60BE6F75",
+          "suffix_bytes": 35115,
+          "suffix_sha256": "26990578879162AC3999FB66443C97CA0B4318242EA2B8710742CE82A184635C",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 10,
+          "category": "cohort_declarations",
+          "offset": 2179,
+          "before_bytes": 37261,
+          "before_sha256": "175D0BD2316DE0871C8CF9914C3855E9BB3F83716E20FD5C4835297D38CB16D4",
+          "after_bytes": 37290,
+          "after_sha256": "A31A861FABF0EAB1663120E76BD5A102BB9EB6158F04F2A7EDA9BB2A1421BAE0",
+          "prefix_bytes": 2179,
+          "prefix_sha256": "2A999A841A6013108E3DA677BA6D3993508DB736F0E31BBB9C6665808E1E1A1A",
+          "suffix_bytes": 35017,
+          "suffix_sha256": "0F7ACD8DCDD6BDA840D0B500F04DAB1FF9FA06114763CE4BC56C7D5A6268870B",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 11,
+          "category": "cohort_preparation_path",
+          "offset": 2323,
+          "before_bytes": 37290,
+          "before_sha256": "A31A861FABF0EAB1663120E76BD5A102BB9EB6158F04F2A7EDA9BB2A1421BAE0",
+          "after_bytes": 37295,
+          "after_sha256": "9377AE368360BA98F9682FCDC75643DA6749412C95E3F33CBF496DF744555E42",
+          "prefix_bytes": 2323,
+          "prefix_sha256": "BA7EE6D4914C1BB5EE6321444495E89D3E4BF6BB5F313FE9F3149790DE448B73",
+          "suffix_bytes": 34901,
+          "suffix_sha256": "C198CD469745C44F77D7E3441881B87F22FCA76509D4C14C4E10188FA1435EE5",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 12,
+          "category": "unresolved_constructor_binding",
+          "offset": 14472,
+          "before_bytes": 37295,
+          "before_sha256": "9377AE368360BA98F9682FCDC75643DA6749412C95E3F33CBF496DF744555E42",
+          "after_bytes": 37295,
+          "after_sha256": "B557951AB567EB6F27ACFB538F4DC70F656826CB2D2E77964D26D020D4655AF3",
+          "prefix_bytes": 14472,
+          "prefix_sha256": "989ADB4D8C0DC5FA145D7D591DCC6BA248134A962D0E9AA2510554017515AB61",
+          "suffix_bytes": 22757,
+          "suffix_sha256": "46D1CD593ED633D2FD8CFB88EB4ED86CF0EADA5D17108542A93ADE6269FA0204",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 13,
+          "category": "exact_source_size",
+          "offset": 14561,
+          "before_bytes": 37295,
+          "before_sha256": "B557951AB567EB6F27ACFB538F4DC70F656826CB2D2E77964D26D020D4655AF3",
+          "after_bytes": 37295,
+          "after_sha256": "F200CD8E6DDCF56E3900D585C302BFFD97A47CC850DF31C81CD6FA63354DCB49",
+          "prefix_bytes": 14561,
+          "prefix_sha256": "3CFE374B49A365FFFDE490DD21CFF0DD14FB5E610AED5D05199F219D775D1FF4",
+          "suffix_bytes": 22704,
+          "suffix_sha256": "BD5D7F64BCF6EAD0EC11D3AF39EB1581EBF626BCC39E899A0ABB852CCA13B7CE",
+          "local_raw_inverse": true
+        }
+      ],
+      "complete_forward": true,
+      "complete_raw_inverse": true,
+      "unchanged_helpers": [
+        {
+          "kind": "positive_buildquery_auditor",
+          "name": "require",
+          "bytes": 64,
+          "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB"
+        },
+        {
+          "kind": "positive_buildquery_auditor",
+          "name": "utc_ticks",
+          "bytes": 576,
+          "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245"
+        },
+        {
+          "kind": "positive_buildquery_auditor",
+          "name": "read",
+          "bytes": 77,
+          "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E"
+        },
+        {
+          "kind": "positive_buildquery_auditor",
+          "name": "digest",
+          "bytes": 151,
+          "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC"
+        },
+        {
+          "kind": "positive_buildquery_auditor",
+          "name": "pin",
+          "bytes": 94,
+          "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C"
+        },
+        {
+          "kind": "positive_buildquery_auditor",
+          "name": "owner_identity",
+          "bytes": 974,
+          "sha256": "C960E7F5AFEBDDEF082CB4E4FA635A52BD018C4BF10043C4C45C548BADC7F6C9"
+        }
+      ],
+      "imports_AST_exact": true,
+      "all_V34_literals_exact": true
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "baseline": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-Provenance-20261021.py",
+        "bytes": 41516,
+        "sha256": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+      },
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39StrictRuntime-20261022.py",
+        "bytes": 43940,
+        "sha256": "82CA5B3712FF3898DD90AA70C2F4296523ED4F4C9EC2CA15A8E8DEF2970DD5D1"
+      },
+      "steps": [
+        {
+          "index": 0,
+          "category": "version_or_canonical_path_literal",
+          "offset": 0,
+          "before_bytes": 41516,
+          "before_sha256": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102",
+          "after_bytes": 41516,
+          "after_sha256": "91A7C76A429772413002B8335314FEFE54A6F40EFE4AE20EDBAA020B82D198EB",
+          "prefix_bytes": 0,
+          "prefix_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "suffix_bytes": 41342,
+          "suffix_sha256": "2F8E49509D681DBDAE3931495E838C66C20E6FE773E4EE9D1AC9DFD6E8AA5978",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 1,
+          "category": "version_or_canonical_path_literal",
+          "offset": 811,
+          "before_bytes": 41516,
+          "before_sha256": "91A7C76A429772413002B8335314FEFE54A6F40EFE4AE20EDBAA020B82D198EB",
+          "after_bytes": 41516,
+          "after_sha256": "30BD5E609A0AE8A2466865450ECB4871953741558FF33A4A9046F36C23A622D0",
+          "prefix_bytes": 811,
+          "prefix_sha256": "4E1A18987C06824A20CDDA3E95D364DD53464464FF567B382F9F32CBEB931691",
+          "suffix_bytes": 40623,
+          "suffix_sha256": "2809F20D50998FDB0E44CCE59EE2A4A90D6C857CB123B2F89AF0FACC30FB20B5",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 2,
+          "category": "version_or_canonical_path_literal",
+          "offset": 1798,
+          "before_bytes": 41516,
+          "before_sha256": "30BD5E609A0AE8A2466865450ECB4871953741558FF33A4A9046F36C23A622D0",
+          "after_bytes": 41516,
+          "after_sha256": "97035F55378E01319BDABE70284E0D44A917CA44B2E4DDF6ACD7AA1511BB8262",
+          "prefix_bytes": 1798,
+          "prefix_sha256": "D0928870218EEA2EA2B4623E8092103F4CDDF2E960A3E182D47548B5D82689CB",
+          "suffix_bytes": 39617,
+          "suffix_sha256": "C72223A0C4ABDAC28146002C0C5A60319195D4A28E58C588FD80627CD23BDD29",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 3,
+          "category": "version_or_canonical_path_literal",
+          "offset": 1975,
+          "before_bytes": 41516,
+          "before_sha256": "97035F55378E01319BDABE70284E0D44A917CA44B2E4DDF6ACD7AA1511BB8262",
+          "after_bytes": 41516,
+          "after_sha256": "7740E7592BBE28DE29C9C09D8FD7C81D6FC613FB70FC4EA85B8FE0CC8DA595F8",
+          "prefix_bytes": 1975,
+          "prefix_sha256": "8BBDEE6A9B2FE305B5169CDCC2BC6371C750E1458C9BA4E678260C4F765FEB53",
+          "suffix_bytes": 39436,
+          "suffix_sha256": "13941DFDE13B3EE72E6D7F11A96FB3DF4D3742BFCDC28EDDDEE054708C2F75BF",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 4,
+          "category": "version_or_canonical_path_literal",
+          "offset": 2208,
+          "before_bytes": 41516,
+          "before_sha256": "7740E7592BBE28DE29C9C09D8FD7C81D6FC613FB70FC4EA85B8FE0CC8DA595F8",
+          "after_bytes": 41516,
+          "after_sha256": "A3033F839B26018DA691B4CABC69A18BA2B6C400FE6EBE66D317A07804422D21",
+          "prefix_bytes": 2208,
+          "prefix_sha256": "7ACA0CEE512B2C8CE7C583CA2E70671B8707AEA40DDCFEBCEA2D0A61F64E8408",
+          "suffix_bytes": 39197,
+          "suffix_sha256": "663C3556EE69072B6EA541F2D2E77C90EA6A5CCD3895801220348EBADBDE47C6",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 5,
+          "category": "version_or_canonical_path_literal",
+          "offset": 5760,
+          "before_bytes": 41516,
+          "before_sha256": "A3033F839B26018DA691B4CABC69A18BA2B6C400FE6EBE66D317A07804422D21",
+          "after_bytes": 41516,
+          "after_sha256": "0384F72FE9F3455CF5A36585815C29CE93F69DD977867B1642E3CD0AA1BFAA1C",
+          "prefix_bytes": 5760,
+          "prefix_sha256": "6C890BF510903DCDD95FD1A65CD73781DA3CFB895336BFBAB577B229D8FEE2CB",
+          "suffix_bytes": 35560,
+          "suffix_sha256": "9735270100629423B7CCE553624A43D344AF334CD7F9B9A12938B49D98BF856F",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 6,
+          "category": "version_or_canonical_path_literal",
+          "offset": 6540,
+          "before_bytes": 41516,
+          "before_sha256": "0384F72FE9F3455CF5A36585815C29CE93F69DD977867B1642E3CD0AA1BFAA1C",
+          "after_bytes": 41516,
+          "after_sha256": "D8A4831CC4EF22B5F2ABBD3D2229B2255C33C0BB8D4F4CD21011FB3827E2F32D",
+          "prefix_bytes": 6540,
+          "prefix_sha256": "BC2618142A08DA38CF64E0852F7887EE1F8D92250A5B5C2F13CC7EB809899368",
+          "suffix_bytes": 34905,
+          "suffix_sha256": "41480CBC3949DF2FB1C10BEF19ACC43D55D7F793E6D7C6051A4A6193720C7EE3",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 7,
+          "category": "unresolved_identity_literal",
+          "offset": 349,
+          "before_bytes": 41516,
+          "before_sha256": "D8A4831CC4EF22B5F2ABBD3D2229B2255C33C0BB8D4F4CD21011FB3827E2F32D",
+          "after_bytes": 41516,
+          "after_sha256": "9577274B42E92F3E9BB8DCA3AD2B7002493943BA948CDEC6E44AB6A9C6DD0322",
+          "prefix_bytes": 349,
+          "prefix_sha256": "D2B419D67BC74C1754EC15D3871FE5CD17D43FE33B4FC2A66AA36D32672BA1E5",
+          "suffix_bytes": 41125,
+          "suffix_sha256": "1F9A403387B35711F2C4E5644EDF76F6CFDA2CE2691FA5CF994963F9F458F00E",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 8,
+          "category": "unresolved_identity_literal",
+          "offset": 21550,
+          "before_bytes": 41516,
+          "before_sha256": "9577274B42E92F3E9BB8DCA3AD2B7002493943BA948CDEC6E44AB6A9C6DD0322",
+          "after_bytes": 41516,
+          "after_sha256": "3372A750CA33ABE4F8EDD9A120CA6AB47330BEDE698552816CF9DDAA15B30B68",
+          "prefix_bytes": 21550,
+          "prefix_sha256": "67486F6C5E3EE55BAB4BA7600027FB023ECE39472D68406B06722E3F67E5B4C8",
+          "suffix_bytes": 19900,
+          "suffix_sha256": "724BF416AC993E2E65783C9AEAAED6DDE2AFB36ECC21630C455D7FD65FF13FEA",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 9,
+          "category": "cohort_admission",
+          "offset": 1281,
+          "before_bytes": 41516,
+          "before_sha256": "3372A750CA33ABE4F8EDD9A120CA6AB47330BEDE698552816CF9DDAA15B30B68",
+          "after_bytes": 41523,
+          "after_sha256": "4FDED5E6095A4E559FD1BB124066C50557A73894F2D5271F79587995A1F1CF18",
+          "prefix_bytes": 1281,
+          "prefix_sha256": "80EF6905275033B387FDF1A6CA280988A94A7AB60093F818B953ACB5DB27D153",
+          "suffix_bytes": 40205,
+          "suffix_sha256": "D3D48388921F6B4487EBFA4CD48D343C1E27B8B083640FE189CE31D4265E1ECA",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 10,
+          "category": "cohort_declarations",
+          "offset": 1319,
+          "before_bytes": 41523,
+          "before_sha256": "4FDED5E6095A4E559FD1BB124066C50557A73894F2D5271F79587995A1F1CF18",
+          "after_bytes": 41552,
+          "after_sha256": "3CF47F0C0A2895C4D22A1E38746B3CCDC99E65313992C6901500C3880795AD5F",
+          "prefix_bytes": 1319,
+          "prefix_sha256": "B4E4C490BAEC051E6719EF32E4E691DB1DDC67A37ADD69F0A420B8A2FE1AE489",
+          "suffix_bytes": 40139,
+          "suffix_sha256": "5D5230359370614D6E3CD40C5E1E9D5A2379B2986C7D895AB192DA087E896AF1",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 11,
+          "category": "cohort_preparation_path",
+          "offset": 2288,
+          "before_bytes": 41552,
+          "before_sha256": "3CF47F0C0A2895C4D22A1E38746B3CCDC99E65313992C6901500C3880795AD5F",
+          "after_bytes": 41557,
+          "after_sha256": "4BADB3A93F349F14FE70D873C273BCCC8B71217D4CF8533276F020F1EF948D44",
+          "prefix_bytes": 2288,
+          "prefix_sha256": "C85D1536A608FFDC1AE973E2E1A78CE6EEAF1A01218316FFE0F6AE7292053D09",
+          "suffix_bytes": 39198,
+          "suffix_sha256": "FCA25E76EA492E065B8631C1F894A15BFC2CB86918E2DEBD3C1DEEC279172E11",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 12,
+          "category": "unresolved_constructor_binding",
+          "offset": 6819,
+          "before_bytes": 41557,
+          "before_sha256": "4BADB3A93F349F14FE70D873C273BCCC8B71217D4CF8533276F020F1EF948D44",
+          "after_bytes": 41557,
+          "after_sha256": "3690E8539980E90919DD4B6E07920C96ACA95DC814873AF1438B77274E64F0E4",
+          "prefix_bytes": 6819,
+          "prefix_sha256": "607D8E91509B66E4FFF9056C3EB868D2F10B80C22F3EE2ADB0A977211B8EEF43",
+          "suffix_bytes": 34672,
+          "suffix_sha256": "8DF0E8A38D0050DA83C4C32A408912D06711467D27378560DE1214D03694F4B4",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 13,
+          "category": "exact_source_size",
+          "offset": 6718,
+          "before_bytes": 41557,
+          "before_sha256": "3690E8539980E90919DD4B6E07920C96ACA95DC814873AF1438B77274E64F0E4",
+          "after_bytes": 41557,
+          "after_sha256": "B08402F6A6BD3CFE98F5D2C6F18DA371DAABDEE4D622D2EC5636089648E4FDDB",
+          "prefix_bytes": 6718,
+          "prefix_sha256": "F47F6906565F62C641D29362A0B93BD85A293765CFFA37D566B681A465D94002",
+          "suffix_bytes": 34801,
+          "suffix_sha256": "9ABFAA4A9EA3CD659C14F24349A0B23D12700B23F5AD0BAA74D2748BE8A3D95B",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 14,
+          "category": "full_catalog_counts",
+          "offset": 10228,
+          "before_bytes": 41557,
+          "before_sha256": "B08402F6A6BD3CFE98F5D2C6F18DA371DAABDEE4D622D2EC5636089648E4FDDB",
+          "after_bytes": 41557,
+          "after_sha256": "07FFD9BE765CDA9A14C04DB6BDBB55E4530AF0F80763A221794F98CCF028C23A",
+          "prefix_bytes": 10228,
+          "prefix_sha256": "F58CAB3E849B7CB433BDE4732A6F76FC3E25CAA95D13792282C8AC3D9BBFEEF5",
+          "suffix_bytes": 31128,
+          "suffix_sha256": "FC7914C5ED833A4778CABA0CE6D4E6C46C7C43716F603AD74EE2DA802D643774",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 15,
+          "category": "exact_cohort_order",
+          "offset": 10661,
+          "before_bytes": 41557,
+          "before_sha256": "07FFD9BE765CDA9A14C04DB6BDBB55E4530AF0F80763A221794F98CCF028C23A",
+          "after_bytes": 41743,
+          "after_sha256": "899B72DD8996259120AF3624ACA3383F5920B8A8DA587D73E05B692797F82FC2",
+          "prefix_bytes": 10661,
+          "prefix_sha256": "519BD172A7C1643CF25EFF499213C4565664B051ECC7A0DA40354F12FFA9E1DC",
+          "suffix_bytes": 30683,
+          "suffix_sha256": "B5FE2AE1515DBAFF9607DFE16A8FDEB9D859CBAE0B010D75BD41640ECDBED9EA",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 16,
+          "category": "explicit_historical_mapping_admission",
+          "offset": 8820,
+          "before_bytes": 41743,
+          "before_sha256": "899B72DD8996259120AF3624ACA3383F5920B8A8DA587D73E05B692797F82FC2",
+          "after_bytes": 43397,
+          "after_sha256": "FA7A6AB33BD6429132EDC24F2AB3FEF43323933DA81AE906BC2AB7973E510BA6",
+          "prefix_bytes": 8820,
+          "prefix_sha256": "88E2EFF21FEC24FEF90552F9D0796DFD9E0F53E320C5E96B24B28EA3227B74FB",
+          "suffix_bytes": 32379,
+          "suffix_sha256": "FD379EA890F6DEE0BBD04A4BC0AC7A56EEF00607582B34657CAD31D326F3A644",
+          "local_raw_inverse": true
+        },
+        {
+          "index": 17,
+          "category": "additional_exact_historical_raw_blob_check",
+          "offset": 11213,
+          "before_bytes": 43397,
+          "before_sha256": "FA7A6AB33BD6429132EDC24F2AB3FEF43323933DA81AE906BC2AB7973E510BA6",
+          "after_bytes": 43940,
+          "after_sha256": "82CA5B3712FF3898DD90AA70C2F4296523ED4F4C9EC2CA15A8E8DEF2970DD5D1",
+          "prefix_bytes": 11213,
+          "prefix_sha256": "C13DD97ED6710C53C2A80FEA0FED778E0C7F355EB3C8B501D2DF86E07E988AEF",
+          "suffix_bytes": 31912,
+          "suffix_sha256": "54FBF54B23DC3785B6074EFB29693240347C501D97E66F765C9BDB798B97F041",
+          "local_raw_inverse": true
+        }
+      ],
+      "complete_forward": true,
+      "complete_raw_inverse": true,
+      "unchanged_helpers": [
+        {
+          "kind": "positive_runtime_auditor",
+          "name": "require",
+          "bytes": 64,
+          "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB"
+        },
+        {
+          "kind": "positive_runtime_auditor",
+          "name": "utc_ticks",
+          "bytes": 576,
+          "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245"
+        },
+        {
+          "kind": "positive_runtime_auditor",
+          "name": "read",
+          "bytes": 77,
+          "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E"
+        },
+        {
+          "kind": "positive_runtime_auditor",
+          "name": "digest",
+          "bytes": 151,
+          "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC"
+        },
+        {
+          "kind": "positive_runtime_auditor",
+          "name": "pin",
+          "bytes": 94,
+          "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C"
+        },
+        {
+          "kind": "positive_runtime_auditor",
+          "name": "verify_pins",
+          "bytes": 568,
+          "sha256": "5576E465D77460F5AE653A28E3513FBCF8A935CF87A29D444F5239CB153B3EA6"
+        }
+      ],
+      "imports_AST_exact": true,
+      "all_V34_literals_exact": true
+    }
+  ],
+  "finite_steps": 58,
+  "finite_categories": {
+    "version_or_canonical_path_literal": 26,
+    "unresolved_identity_literal": 7,
+    "cohort_admission": 4,
+    "cohort_declarations": 4,
+    "full_catalog_counts": 5,
+    "exact_cohort_order": 3,
+    "cohort_preparation_path": 3,
+    "unresolved_constructor_binding": 2,
+    "exact_source_size": 2,
+    "explicit_historical_mapping_admission": 1,
+    "additional_exact_historical_raw_blob_check": 1
+  },
+  "helpers": [
+    {
+      "kind": "buildquery_constructor",
+      "name": "sha",
+      "bytes": 56,
+      "sha256": "B039248BE12F1B2D0E8C61567B4FF89EAD07E700FCD674F3E4CFC47DC8D82DFF"
+    },
+    {
+      "kind": "buildquery_constructor",
+      "name": "read",
+      "bytes": 72,
+      "sha256": "8E3857AEC558153A79BECAFA5517C2F233B502620310CE0012CE0C67E3FA72E6"
+    },
+    {
+      "kind": "buildquery_constructor",
+      "name": "pin",
+      "bytes": 95,
+      "sha256": "3EAB5E7A1F4F969C2AAECE64A14EA73C033DE2CA297593FD7E5C718B6ABD36DB"
+    },
+    {
+      "kind": "buildquery_constructor",
+      "name": "verify",
+      "bytes": 263,
+      "sha256": "0B95EFF3B9ECE3EB28B68C519A4FC268F7B31439DE1ED0179ABC6E34A6C18B1B"
+    },
+    {
+      "kind": "buildquery_constructor",
+      "name": "verify_pins",
+      "bytes": 288,
+      "sha256": "96E8F654E265CA4D2DA213F558DF02FBEFD1E5504839FFDD5A51914BE3EC88C7"
+    },
+    {
+      "kind": "buildquery_constructor",
+      "name": "put",
+      "bytes": 89,
+      "sha256": "CD6F4AA01CB1840202FB4119841109497D9522851838342592292B230E8F8BD9"
+    },
+    {
+      "kind": "buildquery_constructor",
+      "name": "git",
+      "bytes": 73,
+      "sha256": "587656637E31B34B477B76CF6836C5C42D3C4808D1B929CBD4B49F5C34E8D115"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "sha",
+      "bytes": 56,
+      "sha256": "B039248BE12F1B2D0E8C61567B4FF89EAD07E700FCD674F3E4CFC47DC8D82DFF"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "read",
+      "bytes": 72,
+      "sha256": "8E3857AEC558153A79BECAFA5517C2F233B502620310CE0012CE0C67E3FA72E6"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "pin",
+      "bytes": 92,
+      "sha256": "A8C688649B0E6B427DEC5EE7CFB05D284B19AB49CA0524E8C1F0D995F476F19B"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "verify",
+      "bytes": 251,
+      "sha256": "D706A9ED45BF54FD735447D5BF44CAE88F1A789B7FC29390A6F3F99D22ADEF22"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "verify_pins",
+      "bytes": 248,
+      "sha256": "77A8B1DA837DF9D76A972DD58C5A426E6A5A7B33B6C8AA966C6177A02C27B1E5"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "put",
+      "bytes": 86,
+      "sha256": "9AF2631B808218365CB5BF246D1277915BD871EFDB1152965D9BEE3FD6E57AAE"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "git",
+      "bytes": 73,
+      "sha256": "587656637E31B34B477B76CF6836C5C42D3C4808D1B929CBD4B49F5C34E8D115"
+    },
+    {
+      "kind": "runtime_constructor",
+      "name": "state",
+      "bytes": 202,
+      "sha256": "65E00CA27BB3B545F9630F099C28B26F04D55475C473DBFBD4724468A204FF25"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "name": "require",
+      "bytes": 64,
+      "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "name": "utc_ticks",
+      "bytes": 576,
+      "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "name": "read",
+      "bytes": 77,
+      "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "name": "digest",
+      "bytes": 151,
+      "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "name": "pin",
+      "bytes": 94,
+      "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "name": "owner_identity",
+      "bytes": 974,
+      "sha256": "C960E7F5AFEBDDEF082CB4E4FA635A52BD018C4BF10043C4C45C548BADC7F6C9"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "name": "require",
+      "bytes": 64,
+      "sha256": "4DFA25C6C5968B5F0AF22D8A1EDC48B6642E1B35203A3FE7DC37B26843B435AB"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "name": "utc_ticks",
+      "bytes": 576,
+      "sha256": "6C4F18E8E83B6D96712890A902FB8E2E77578C506DD2C1E669595FC714139245"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "name": "read",
+      "bytes": 77,
+      "sha256": "175DBFD572CB3B24CBBA04F30ACC552FC639C8A6E20D463671D1C207D147622E"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "name": "digest",
+      "bytes": 151,
+      "sha256": "E120F1DECC813A35D4B4B105BBEF540C3196C9CA931C985B15258D87D74BE9CC"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "name": "pin",
+      "bytes": 94,
+      "sha256": "59637BBA0CCCA7AB069EC928A4B3E264D2F1783AE55ED8AFCB240A9AE5882C1C"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "name": "verify_pins",
+      "bytes": 568,
+      "sha256": "5576E465D77460F5AE653A28E3513FBCF8A935CF87A29D444F5239CB153B3EA6"
+    }
+  ],
+  "helper_count": 27,
+  "complete_regions": [
+    {
+      "kind": "buildquery_constructor",
+      "start": "fixed={\n",
+      "end": "old_launch=(OLD/",
+      "bytes": 1421,
+      "sha256": "CCA80DDA036B6548BE3A0AB7C4D2A6D216CE721D631CA0893C4AAD56242BA502"
+    },
+    {
+      "kind": "runtime_constructor",
+      "start": "fixed_keys=(",
+      "end": "raw=(bc/\"launch.ps1\").read_bytes()",
+      "bytes": 1493,
+      "sha256": "54C468F1CEA879D31E235AD58F3394B06024320F1CA4CFB19ACB026F47B252FC"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "start": "pids=[];bounds=[];groups=[];",
+      "end": null,
+      "bytes": 21394,
+      "sha256": "2E1F57D939435E3BD5D02A8014F71315BDC59624204E804F6A43C90E95718A29"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "start": "all_pins={}\n",
+      "end": null,
+      "bytes": 18545,
+      "sha256": "E43B34B635AE23B5B65CCAC4D7FEA1376E7CCD695F592413156FADCC912CD7A6"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "region": "original_A73A_raw_b13_snapshot_verification",
+      "bytes": 467,
+      "sha256": "D1387C98271DBEA5D944BA27CF60A0453B7AFB6D1B3A307C17F2B876611FAC3C"
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "buildquery_constructor",
+      "binding": "head",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+      "token_start": 280,
+      "token_end": 322,
+      "token": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+      "decoded_length": 40,
+      "value": "UNRESOLVED_V39_CANDIDATE_HEAD___________"
+    },
+    {
+      "kind": "runtime_constructor",
+      "binding": "head",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39RuntimeGrant-20261022.py",
+      "token_start": 311,
+      "token_end": 353,
+      "token": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+      "decoded_length": 40,
+      "value": "UNRESOLVED_V39_CANDIDATE_HEAD___________"
+    },
+    {
+      "kind": "runtime_constructor",
+      "binding": "matrix",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39RuntimeGrant-20261022.py",
+      "token_start": 361,
+      "token_end": 427,
+      "token": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\"",
+      "decoded_length": 64,
+      "value": "UNRESOLVED_V39_MATRIX_SHA256____________________________________"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "binding": "head",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39CompleteBuildQuery-20261022.py",
+      "token_start": 322,
+      "token_end": 364,
+      "token": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+      "decoded_length": 40,
+      "value": "UNRESOLVED_V39_CANDIDATE_HEAD___________"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "binding": "matrix",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39CompleteBuildQuery-20261022.py",
+      "token_start": 6433,
+      "token_end": 6499,
+      "token": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\"",
+      "decoded_length": 64,
+      "value": "UNRESOLVED_V39_MATRIX_SHA256____________________________________"
+    },
+    {
+      "kind": "positive_buildquery_auditor",
+      "binding": "buildquery_constructor_sha256",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39CompleteBuildQuery-20261022.py",
+      "token_start": 14472,
+      "token_end": 14538,
+      "token": "\"UNRESOLVED_V39_BUILDQUERY_CONSTRUCTOR_SHA256____________________\"",
+      "decoded_length": 64,
+      "value": "UNRESOLVED_V39_BUILDQUERY_CONSTRUCTOR_SHA256____________________"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "binding": "head",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39StrictRuntime-20261022.py",
+      "token_start": 349,
+      "token_end": 391,
+      "token": "\"UNRESOLVED_V39_CANDIDATE_HEAD___________\"",
+      "decoded_length": 40,
+      "value": "UNRESOLVED_V39_CANDIDATE_HEAD___________"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "binding": "matrix",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39StrictRuntime-20261022.py",
+      "token_start": 23974,
+      "token_end": 24040,
+      "token": "\"UNRESOLVED_V39_MATRIX_SHA256____________________________________\"",
+      "decoded_length": 64,
+      "value": "UNRESOLVED_V39_MATRIX_SHA256____________________________________"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "binding": "runtime_constructor_sha256",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39StrictRuntime-20261022.py",
+      "token_start": 6819,
+      "token_end": 6885,
+      "token": "\"UNRESOLVED_V39_RUNTIME_CONSTRUCTOR_SHA256_______________________\"",
+      "decoded_length": 64,
+      "value": "UNRESOLVED_V39_RUNTIME_CONSTRUCTOR_SHA256_______________________"
+    }
+  ],
+  "binding_count": 9,
+  "historical_source_rebindings": [
+    {
+      "batch": "new4",
+      "role": "fixture_unchanged_root_native-node-file-handle-owner",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "raw_commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+      "exact_original_bytes": true
+    },
+    {
+      "batch": "regression63",
+      "role": "fixture_unchanged_root_native-node-file-handle-owner",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "raw_commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+      "exact_original_bytes": true
+    },
+    {
+      "batch": "new4",
+      "role": "fixture_causal_owner",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "raw_commit": "014062f2d139254acab4b985b4ae343db637166f",
+      "exact_original_bytes": true
+    },
+    {
+      "batch": "regression63",
+      "role": "fixture_causal_owner",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "raw_commit": "014062f2d139254acab4b985b4ae343db637166f",
+      "exact_original_bytes": true
+    }
+  ],
+  "historical_provenance_relationships": [
+    {
+      "provenance_key": "v38_new4_v37_new4_fixture_unchanged_root_native-node-file-handle-owner",
+      "mapping_index": 0
+    },
+    {
+      "provenance_key": "v38_new4_v37_regression63_fixture_unchanged_root_native-node-file-handle-owner",
+      "mapping_index": 1
+    },
+    {
+      "provenance_key": "v38_new4_fixture_causal_owner",
+      "mapping_index": 2
+    },
+    {
+      "provenance_key": "v38_regression63_v37_new4_fixture_unchanged_root_native-node-file-handle-owner",
+      "mapping_index": 0
+    },
+    {
+      "provenance_key": "v38_regression63_v37_regression63_fixture_unchanged_root_native-node-file-handle-owner",
+      "mapping_index": 1
+    },
+    {
+      "provenance_key": "v38_regression63_fixture_causal_owner",
+      "mapping_index": 3
+    }
+  ],
+  "raw_Git_observations": [
+    {
+      "commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+      "relative_path": "src/native_node_file_handle_owner_test.zig",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "exact_documentary_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "raw_blob_equals_snapshot": true,
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-C",
+        "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+        "cat-file",
+        "blob",
+        "b13be24e44cc1bbc361639eb35900a368ae60eac:src/native_node_file_handle_owner_test.zig"
+      ]
+    },
+    {
+      "commit": "014062f2d139254acab4b985b4ae343db637166f",
+      "relative_path": "src/extensions/native_node_file_handle_owner.zig",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D",
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "exact_documentary_original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "raw_blob_equals_snapshot": true,
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-C",
+        "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018",
+        "cat-file",
+        "blob",
+        "014062f2d139254acab4b985b4ae343db637166f:src/extensions/native_node_file_handle_owner.zig"
+      ]
+    }
+  ],
+  "cohorts": {
+    "new3": {
+      "groups": 3,
+      "declared_controls": 38,
+      "order": [
+        "native-node-stream-shutdown",
+        "native-node-one-byte-string",
+        "native-vm-array-buffer-view-data"
+      ],
+      "preparation": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-prepared-20261022"
+    },
+    "new4": {
+      "groups": 4,
+      "declared_controls": 58,
+      "order": [
+        "native-node-file-handle-owner",
+        "native-node-fs-before-hook-continuation",
+        "native-vm-error-constructor-name",
+        "native-node-file-handle-transfer"
+      ],
+      "preparation": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022"
+    },
+    "existing63": {
+      "groups": 63,
+      "declared_controls": 1249,
+      "order_source": "The exact unchanged V34 root-grant groups array, pinned by the inherited constructor/auditor gates.",
+      "preparation": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022"
+    },
+    "catalog": {
+      "groups": 120,
+      "declared_controls": 2051
+    },
+    "selected_union": {
+      "groups": 70,
+      "declared_controls": 1345
+    },
+    "per_batch_cap": 64
+  },
+  "configuration_requirements": {
+    "buildquery_status": "root_reviewed_specific_v39_buildquery_preparation",
+    "runtime_status": "root_reviewed_specific_v39_runtime_preparation",
+    "positive_buildquery_audit_status": "root_reviewed_specific_v39_positive_buildquery_closure",
+    "positive_runtime_audit_status": "root_reviewed_specific_v39_positive_strict_runtime_closure",
+    "all_CLI_contracts": "Two arguments: exact configuration path and SHA256. This source packet provides no executable configuration.",
+    "buildquery_grant_provenance_updates": {
+      "v39_execution_bound_source_review": null
+    },
+    "runtime_root_runtime_review": "A narrative string, retained verbatim in the grant; never substitute a pin object.",
+    "runtime_constructor_source_review": null,
+    "audit_runtime_constructor_source_review_sha256": null,
+    "source_review_requirement": "Use the distinct actual pinned Root canonical-source acceptance in the future grant provenance and runtime source-review field; its concrete path/hash is not issued here.",
+    "buildquery_actual_metadata": "null until the exact observed BuildQuery metadata is independently accepted.",
+    "runtime_actual_metadata": "The observed accepted count of the same current complete BuildQuery cohort; no declaration count substitution.",
+    "observed_audit_inputs": "Actual original jobs, creation instances, controls, source/compiler inventories, raw artifacts, metadata and runtime receipts must be captured and independently pinned after their actual outcomes.",
+    "historical_provenance": "Only the complete four explicitly named source-preimage rows use immutable snapshots; all six relationships must match exactly. Every other provenance pin remains current and strict."
+  },
+  "current_input_versions": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\handoff.json",
+      "bytes": 15709,
+      "sha256": "BEC44F0C56BDE70EDC990A92D905B2238492CF4D6536691B80614DCAB3599DED"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\finite-source-adaptation.json",
+      "bytes": 86709,
+      "sha256": "A1B4A4796312367FB4615B552E927AD3BD441D78A0443528DCD940F15A829C5D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\source-proof.json",
+      "bytes": 24377,
+      "sha256": "7AC09E24FC7F495BD7BED7DA2403B53E370730232BB401DEE1AA7C94A19E3CCE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\source-adaptation-check.py",
+      "bytes": 16577,
+      "sha256": "D8386827D9DB09FACE02ECFB9C20644B28A7E4EABD11BF7E357DA37F456FCAF2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\authoring\\declared-edits.json",
+      "bytes": 33940,
+      "sha256": "9B0417EC1A8F2D9B3E14CE8C259ADAD1266690AC2B224991061D9B53CE78C491"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\binding-contract.json",
+      "bytes": 17675,
+      "sha256": "B1BBFF83D1D42F4AC1AC512648D637D7B2DB45ABD206C2593E049A5134E95624"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-sourceonly-20261022\\execution-provenance-contract.json",
+      "bytes": 6458,
+      "sha256": "513556032A12F09F056170DD0A37A5EE3E714040A01FD8115B8B8AF1DBBD1B3E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-sourceonly-20261022\\third-checkout-distinction-successor-v3\\execution-provenance-contract-v3.json",
+      "bytes": 6499,
+      "sha256": "8FBA8A300458B490C62236AF33F3F5B059BD74458337015EC113EE0A0B0313A6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-sourceonly-20261022\\candidate\\Prepare-FreshV39Catalog-20261022-v2.py",
+      "bytes": 83821,
+      "sha256": "B43F321C1975BCBA6BC2E01732AED6E14154126D9E083C4B4B6183F0F54E8738"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-sourceonly-20261022\\third-checkout-distinction-successor-v3\\candidate\\Prepare-FreshV39Catalog-20261022-v3.py",
+      "bytes": 85685,
+      "sha256": "0B422758050ECB5C6DD2718CC46F67D14B6C476A25AE61BA5EBEB89125484E83"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV38BuildQueryGrant-20261021.py",
+      "bytes": 10095,
+      "sha256": "5ACED5A1A0F22BFE1444B76A1323E2AACA107856E485C2DD121560E7F08B761B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+      "bytes": 10269,
+      "sha256": "1501B39CAE3466FEBC38E39DA5121D33064AECE3206BDBEF998A59BF26491EF3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV38RuntimeGrant-20261021.py",
+      "bytes": 12499,
+      "sha256": "7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Prepare-ReviewedV39RuntimeGrant-20261022.py",
+      "bytes": 12671,
+      "sha256": "FEFA13F724061352D6A2DCFD87E10EAA23EC892E2F87531FC86066FF2EEF25DE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38CompleteBuildQuery-20261021.py",
+      "bytes": 37254,
+      "sha256": "6BCBE32702657CD2B5F62E8779CCF585B86D7A8CFFC04C2EB6FE25B4D6E41A9E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39CompleteBuildQuery-20261022.py",
+      "bytes": 37295,
+      "sha256": "F200CD8E6DDCF56E3900D585C302BFFD97A47CC850DF31C81CD6FA63354DCB49"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-Provenance-20261021.py",
+      "bytes": 41516,
+      "sha256": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-execution-unresolved-sourceonly-20261022\\candidate\\Audit-PositiveV39StrictRuntime-20261022.py",
+      "bytes": 43940,
+      "sha256": "82CA5B3712FF3898DD90AA70C2F4296523ED4F4C9EC2CA15A8E8DEF2970DD5D1"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_file_handle_owner.zig",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+    }
+  ],
+  "current_input_count": 20,
+  "same_300_second_freshness_16GiB_admission_64_cap_and_protocols": true,
+  "original_V34_anchors_preserved": true,
+  "all_current_provenance_except_explicit_historical_table_remains_strict": true,
+  "source_read_scope": "All four complete candidates, all58 edits, originalA73A and all changed cohort/history regions; helper and full strict-region bytes compared.",
+  "no_bounded_source_blocker_found": true,
+  "candidate_or_prefix_executed": false,
+  "author_checker_executed": false,
+  "constructors_or_auditors_executed": false,
+  "Main_accessed": false,
+  "Main_or_index_written": false,
+  "compiler_or_native_executed": false,
+  "execution_configuration_issued": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "qualification": false,
+  "source_mutation_hold_released": false
+}

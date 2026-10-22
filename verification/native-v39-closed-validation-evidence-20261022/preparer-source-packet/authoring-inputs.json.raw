@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "roles": {
+    "root_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-existing63-outer-timeout-negative-acceptance-20261022.json",
+      "bytes": 9836,
+      "sha256": "BBE41BE72BD618F43712ECBA196E16859ED55A2782DF248FD0B54FBEB6787700"
+    },
+    "independent_peer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-existing63-outer-timeout-negative-peer-20261022\\peer.json",
+      "bytes": 5894,
+      "sha256": "251A19E01BF3E8DE588207C789E7BC825FA049B7CF0A258F34CCFFE9FB82F40D"
+    },
+    "independent_proof": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-existing63-outer-timeout-negative-peer-20261022\\original-evidence-proof.json",
+      "bytes": 886275,
+      "sha256": "6BFF2A1682FFF974393F49A80FD6B7A996696820235FF05CBE7750AD5664D7F3"
+    },
+    "independent_inspector": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-existing63-outer-timeout-negative-peer-20261022\\inspect-original-timeout-evidence.py",
+      "bytes": 27841,
+      "sha256": "9776CFB1B0302852DD0DC23D0CB38D7425333944E35032BC4691CA7B9DEF2927"
+    },
+    "historical_checkpoint": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-task-v39-existing63-closed-outer-timeout-history-20261022.json",
+      "bytes": 12456,
+      "sha256": "A0418D08D53953EF9AA56ABAA28042E1B6CCD545A467486EE4DB9BB50BE6123F"
+    },
+    "predecessor_handoff": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\handoff.json",
+      "bytes": 22062,
+      "sha256": "21A330595BAFECCCDDC9C10D40550CDC43E759DAEA0212E23A65EE1AAE78C75B"
+    },
+    "predecessor_source_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-unresolved63-archive-preparer-source-acceptance-20261022.json",
+      "bytes": 3392,
+      "sha256": "5737BCE6F6DAE671F0F876E3B5CD7448F8AE9D9F2CFCD326379121F98EEA9CA0"
+    },
+    "predecessor_candidate": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\candidate\\Prepare-V39ClosedPhasesAndUnresolved63Archive-20261022.py",
+      "bytes": 72511,
+      "sha256": "02D8A4504E8741E915621AFE35B3DBDBEC8A8EE8F8D0F1712F9BA3C5C2392C2B"
+    },
+    "predecessor_finite_source_adaptation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\finite-source-adaptation.json",
+      "bytes": 145792,
+      "sha256": "276E8882011918EDE42E50E2EC250D8679C295CEE7B0062932FA6A1D408B2632"
+    },
+    "predecessor_source_contract": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\source-contract.json",
+      "bytes": 22219,
+      "sha256": "ED0F55B0B2071C6631B9FC2A6E3D82D5BD3FBC8D2E4661665DEB56ABAA125106"
+    },
+    "predecessor_static_source_proof": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\static-source-proof.json",
+      "bytes": 237734,
+      "sha256": "DB13C70318CD03D81CBDBCB4793261A9DF292A5E2D297643C0738BF590BBAC3B"
+    },
+    "predecessor_selected_checker": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\check-unexecuted-source-and-contract-v2.py",
+      "bytes": 18468,
+      "sha256": "CDF7D3093AF6A7BA7DE1494E4940762A0CF6BFEF630CDAB7B5C158A9FBE220E4"
+    },
+    "predecessor_original_checker": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\check-unexecuted-source-and-contract.py",
+      "bytes": 18418,
+      "sha256": "E204278E9955850E9D5825713B2E74DFFB09E99B1B02592ADB31AEE04E43E99E"
+    },
+    "predecessor_checker_negative": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\source-checker-selector-negative.json",
+      "bytes": 3085,
+      "sha256": "5ED74D727C822C677C167FDB89FD029031B453D94C990316023D0C33227E87D8"
+    },
+    "predecessor_checker_correction": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\source-checker-selector-correction.json",
+      "bytes": 1625,
+      "sha256": "6B73479BA46B4FCDE537A3C74DB41CE0B0A42DF70AA97C829686CAA7CF584736"
+    },
+    "predecessor_input_basis_author": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\collect-closed-input-basis.py",
+      "bytes": 9482,
+      "sha256": "5DBF3B702E0D01224287CA0E3574CDBDD4A13E2C769EDB7FEB16A7FA78ACC2BA"
+    },
+    "predecessor_authoring_inputs": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\authoring-inputs.json",
+      "bytes": 6785,
+      "sha256": "69E0E39C6B66936BA87F8C16AEC51DCABB721C1160F2FEC6A834F91E7563E43E"
+    },
+    "predecessor_declared_edits": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\authoring\\declared-finite-edits.json",
+      "bytes": 110721,
+      "sha256": "50782CA9C0FFB0E3CD46CEAA2FB1E7C656257CD3FE9971B38866C32BBC99ACCB"
+    },
+    "predecessor_authoring_observations": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\authoring-observations.json",
+      "bytes": 2265,
+      "sha256": "706247867956DEA415ABD8A1A4955E28735935BA0AE0E236155F92EABF41B269"
+    },
+    "predecessor_unissued_configuration": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\unissued-root-configuration.json",
+      "bytes": 872,
+      "sha256": "6B18B5DC24B6A922BEF65A7F2CB9C6C0EA0D6F311639FB69E066F54208A9460D"
+    }
+  },
+  "phase_control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-control-20261022-174353",
+  "phase_proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353",
+  "source_only": true,
+  "preparer_executed": false,
+  "Main_access": false,
+  "native_execution_authorized": false
+}

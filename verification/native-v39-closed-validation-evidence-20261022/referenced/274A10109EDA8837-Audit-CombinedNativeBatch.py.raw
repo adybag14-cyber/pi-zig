@@ -1,0 +1,190 @@
+"""Independent raw-wire, source-seal and artifact audit of a closed fresh native batch."""
+from pathlib import Path
+import argparse,collections,datetime,hashlib,json,struct,subprocess
+p=argparse.ArgumentParser()
+for name in ("proof","control","head","driver-sha256","matrix-sha256","output"):
+    p.add_argument("--"+name,required=True)
+a=p.parse_args()
+base=Path(r"C:\Users\adyba\pi-zig");main=base/"main"
+proof=Path(a.proof);control=Path(a.control);output=Path(a.output)
+prep=base/"evidence/combined-native-batch-v38-new4-prepared-20261021"
+def require(ok,message):
+    if not ok: raise RuntimeError(message)
+def utc_ticks(value):
+ # Preserve the full seven-digit Windows timestamp, permitting only equivalent
+ # ISO spelling/offsets. Python datetime alone truncates the seventh digit.
+ import re
+ m=re.fullmatch(r"(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d)(?:\.(\d{1,7}))?(Z|[+-]\d\d:\d\d)",value)
+ require(m is not None,"Explicit bounded ISO timestamp required")
+ stamp=datetime.datetime.fromisoformat(m[1]+("+00:00" if m[3]=="Z" else m[3]))
+ delta=stamp-datetime.datetime(1970,1,1,tzinfo=datetime.timezone.utc)
+ return (delta.days*86400+delta.seconds)*10000000+int((m[2] or "").ljust(7,"0"))
+
+def digest(path):
+    h=hashlib.sha256()
+    with Path(path).open("rb") as f:
+        while chunk:=f.read(1024*1024):h.update(chunk)
+    return h.hexdigest().upper()
+def read(path):return json.loads(Path(path).read_text(encoding="utf-8-sig"))
+def contained(path,root):
+    q=Path(path).resolve()
+    require(q.is_relative_to(root.resolve()),"Path escapes its explicit role")
+    return q
+def rows(value):
+    require(isinstance(value,list),"Missing complete rows")
+    result={r["relative"]:r["sha256"] for r in value}
+    require(len(result)==len(value),"Duplicate seal path")
+    return result
+
+require(not output.exists(),"Acceptance output must be new")
+for path in (proof,control,output.parent):contained(path,base/"evidence")
+expected_driver=a.driver_sha256;expected_groups=a.matrix_sha256
+require(digest(prep/"Run-CombinedNativeBatch.ps1")==expected_driver,"Controller changed")
+require(digest(prep/"groups.json")==expected_groups,"Group matrix changed")
+matrix=read(prep/"groups.json");grant=read(control/"root-grant.json")
+result=read(proof/"result.json");before=read(proof/"before.json");final=read(proof/"final.json")
+outer=read(control/"outer.json");outer_absence=read(control/"outer-absence.json")
+require(grant["driver_sha256"]==expected_driver and grant["group_manifest_sha256"]==expected_groups and grant["candidate_head"]==a.head,"Root grant identity differs")
+require(grant["status"]=="root_reviewed_combined_native_batch_release" and grant["execution_authorized"] is True,"Root execution authority differs")
+require(result["status"]=="passed_build_query_batch" and result["mode"]=="BuildQuery","Complete successful BuildQuery batch required")
+require(result["candidate_head"]==a.head and result["driver_sha256"]==expected_driver and result["group_manifest_sha256"]==expected_groups,"Batch identity differs")
+require(result["source_seal_scope"]=="whole_batch","Exact declared source seal scope required")
+for key in ("postseal","controller_environment_restored","fresh_cache_reproduction","qualification_requested","initial_cache_absence","all_groups_closed"):
+    require(result[key] is True,"Required actual complete batch Boolean "+key)
+for key in ("runtime_requested","product_qualified","cache_seeded"):
+    require(result[key] is False,"BuildQuery must not run tests, claim product or use seeded lineage")
+require(result["cache_mode"]=="fresh_batch" and result["errors"]==[] and result["absence"]["native_roots"]==[],"Complete fresh batch closure required")
+require(Path(result["cache_directory"])==proof/"cache" and Path(result["global_cache_directory"])==proof/"global-cache","Fresh private batch cache roles required")
+require([g["group"] for g in result["groups"]]==grant["groups"] and 1<=len(grant["groups"])<=64 and len(set(grant["groups"]))==len(grant["groups"]),"Exact ordered bounded batch groups")
+groups=[]
+for name in grant["groups"]:
+    matches=[g for g in matrix["groups"] if g["name"]==name]
+    require(len(matches)==1,"Exactly one selected manifest group")
+    groups.append(matches[0])
+require(len(result["absence"]["owners"])==2*len(groups),"Every compile/query owned closure required")
+require(subprocess.check_output(["git","rev-parse","HEAD"],cwd=main,text=True).strip()==a.head,"Current source head changed")
+require(subprocess.check_output(["git","status","--porcelain"],cwd=main,text=True)=="","Current source tree dirty")
+for seal in (before,final):
+    require(seal["candidate_head"]==a.head and seal["clean"] is True and seal["errors"]==[],"Source identity/seal failure")
+for role in ("source","tree","vendor","compiler"):
+    require(rows(before[role])==rows(final[role]),"Before/final "+role+" changed")
+# Controller executable and explicit PowerShell command role intentionally name
+# the same immutable file. Preserve both rows; only this exact duplicate is valid.
+for seal in (before,final):
+    counts=collections.Counter(row["relative"] for row in seal["controls"])
+    repeated={path:count for path,count in counts.items() if count>1}
+    require(repeated=={r"C:\Program Files\PowerShell\7\pwsh.exe":2},"Unexpected duplicate control path")
+    require(all(row["sha256"]=="FA2C8BB1E35CDD62AD15CD06A1D8F2C5961E9725A9BFA1E7CFD2C322F49E9619" for row in seal["controls"] if row["relative"]==r"C:\Program Files\PowerShell\7\pwsh.exe"),"Pinned duplicate executable roles disagree")
+require(sorted((r["relative"],r["sha256"]) for r in before["controls"])==sorted((r["relative"],r["sha256"]) for r in final["controls"]),"Complete control multiset changed")
+require(len(final["compiler"])==19546,"Pinned complete compiler19546 required")
+
+pids=[];accepted_groups=[]
+for group,group_result in zip(groups,result["groups"],strict=True):
+    group_proof=proof/"groups"/group["name"]
+    artifact=read(group_proof/"build-artifacts.json")
+    metadata=read(group_proof/"selected-tests.json")
+    require(group_result["status"]=="passed_build_query" and group_result["postseal"] is True and group_result["errors"]==[],"Complete group and batch closure required")
+    require(group_result["candidate_head"]==a.head and group_result["source_seal_scope"]=="whole_batch" and Path(group_result["receipt_directory"])==group_proof,"Group identity differs")
+    require(group_result["attempted_phases"]==["compile","metadata"] and group_result["owned_started_phases"]==["compile","metadata"],"Actual exact two owned phases required")
+    for key in ("runtime_requested","runtime_owner_launch_attempted","actual_runtime_owner_started"):
+        require(group_result[key] is False,"No runtime may be launched during metadata discovery")
+    for pin in group["source_pins"]:
+        require(rows(final["source"])[pin["path"]]==pin["sha256"] and digest(main/pin["path"])==pin["sha256"],"Actual control source pin changed")
+    for pin in group.get("external_pins",[]):
+        path=contained(pin["path"],base/"upstream")
+        require(digest(path)==pin["sha256"] and any(Path(row["path"])==path and row["sha256"]==pin["sha256"] for row in final["controls"]),"Actual external reference input differs")
+    require(artifact["errors"]==[] and len(artifact["installed"])==2,"Installed executable and PDB roles required")
+    expected_installed=group_proof/"installed/bin"/(group["artifact"]+".exe")
+    expected_pdb=group_proof/"installed/bin/test.pdb"
+    installed=[r for r in artifact["installed"] if Path(r["path"])==expected_installed]
+    pdb=[r for r in artifact["installed"] if Path(r["path"])==expected_pdb]
+    require(len(installed)==len(pdb)==1,"Exact installed roles required")
+    installed=installed[0];pdb=pdb[0]
+    cached=[r for r in artifact["cached_executables"] if r["sha256"]==installed["sha256"]]
+    require(len(cached)==1 and cached[0]["pdb_sha256"]==pdb["sha256"],"Unique matching cached pair required")
+    cached=cached[0]; executable=contained(cached["path"],proof/"cache")
+    cached_pdb=contained(cached["pdb_path"],proof/"cache")
+    require(executable.name=="test.exe" and cached_pdb==executable.with_suffix(".pdb"),"Canonical actual cached roles required")
+    for path,expected in ((expected_installed,installed["sha256"]),(expected_pdb,pdb["sha256"]),(executable,cached["sha256"]),(cached_pdb,cached["pdb_sha256"])):
+        require(digest(path)==expected,"Actual executable/PDB bytes changed")
+    require(metadata["binary"]==str(executable) and metadata["binary_sha256"]==installed["sha256"],"Metadata artifact binding mismatch")
+    require(metadata["candidate_head"]==a.head and metadata["group"]==group["name"] and metadata["runtime_started"] is False,"Metadata identity mismatch")
+    raw=(group_proof/"metadata.stdout.bin").read_bytes()
+    require((group_proof/"metadata.stderr.log").read_bytes()==b"","Metadata stderr must be empty")
+    offset=0;frames=[];names=None
+    while offset<len(raw):
+        require(len(raw)-offset>=8,"Truncated metadata frame")
+        tag,length=struct.unpack_from("<II",raw,offset);offset+=8
+        require(length<=1024*1024 and length<=len(raw)-offset,"Invalid frame length")
+        payload=raw[offset:offset+length];offset+=length;frames.append(tag)
+        if tag==0:
+            require(frames==[0] and payload.decode("utf-8","strict")=="0.16.0","One leading pinned version required")
+        elif tag==3:
+            require(frames==[0,3] and len(payload)>=8 and names is None,"One actual metadata frame required")
+            strings,count=struct.unpack_from("<II",payload)
+            require(1<=count<=64 and len(payload)==8+8*count+strings,"Metadata batch bounds")
+            names=[];table=payload[8+8*count:]
+            for i in range(count):
+                pos=struct.unpack_from("<I",payload,8+4*i)[0]
+                panic=struct.unpack_from("<I",payload,8+4*count+4*i)[0]
+                require(panic==0 and pos<strings,"Unexpected panic/name offset")
+                end=table.find(b"\0",pos)
+                require(end>=pos,"Unterminated test name")
+                name=table[pos:end].decode("utf-8","strict")
+                require(bool(name),"Empty test name")
+                names.append(name)
+        else: raise RuntimeError("Non-metadata frame in BuildQuery")
+    require(frames==[0,3] and names is not None and len(set(names))==len(names),"Complete unique metadata array")
+    require(metadata["version"]=="0.16.0" and type(metadata["actual_count"]) is int and metadata["actual_count"]==len(names) and metadata["tests"]==names,"Independent raw ordered metadata differs")
+    required=group["required_named"];allowed=group["allowed_anonymous"]
+    require(all(names.count(name)==1 for name in required),"Missing real declared control")
+    require(all(name in required or name in allowed for name in names),"Unexpected imported test")
+    if group.get("historical_order") is not None:require(names==group["historical_order"],"Retained complete order changed")
+    for phase in ("compile","metadata"):
+        part=group_result["phases"][phase]; owner=read(group_proof/(phase+".json"))
+        require(part["failure"] is None and part["original_execution_failure"] is None,"Actual phase failure")
+        require(part["owner_binding"]["status"]=="passed" and part["owner_binding"]["errors"]==[],"Phase binding negative")
+        require(part["evidence"]["valid"] is True and part["evidence"]["evidence_errors"]==[],"Phase evidence negative")
+        require(part["postchecks"]["errors"]==[] and all(part["postchecks"][key] is True for key in ("evidence_valid","owner_bound","source_sealed","artifacts_bound","absence_closed")),"Actual postchecks required")
+        require(owner["status"]=="passed" and owner["exit_code"]==0 and owner["live_identity"] and owner["retained_handle"],"Actual bounded live owner missing")
+        require(owner["pid"]==part["evidence"]["owner"]["pid"] and owner["executable_sha256"]==part["owner_binding"]["expected_sha256"],"Owner identity mismatch")
+        require(part["evidence"]["current_owner_pid_present"]==0 and part["evidence"]["current_owned_descendants"]==[] and part["evidence"]["absence_error"] is None,"Phase absence missing")
+        ignored=part["evidence"].get("preexisting_pid_ancestry")
+        require(isinstance(ignored,list),"Explicit original process-instance ancestry evidence")
+        for item in ignored:
+            observed=item["observed_process"]
+            require(item["reason"]=="Child creation predates this parent instance" and item["parent_pid"]==owner["pid"] and observed["ParentProcessId"]==owner["pid"],"Excluded ancestry must name the actual original parent")
+            require(item["parent_created_utc_ticks"]==utc_ticks(owner["created_utc"])+621355968000000000 and item["child_created_utc_ticks"]==utc_ticks(observed["CreationDate"])+621355968000000000,"Independent exact UTC100ns ancestry conversion")
+            require(utc_ticks(observed["CreationDate"])<utc_ticks(owner["created_utc"])-10,"Only independently proven preexisting child instances may be excluded")
+        for row in part["evidence"]["raw_outputs"]:
+            path=contained(row["path"],group_proof)
+            require(path.stat().st_size==row["bytes"] and digest(path)==row["sha256"],"Raw phase output changed")
+        pids.append(owner["pid"])
+
+    accepted_groups.append(dict(group=group["name"],build_artifacts_sha256=digest(group_proof/"build-artifacts.json"),build_metadata_sha256=digest(group_proof/"selected-tests.json"),executable_sha256=installed["sha256"],pdb_sha256=pdb["sha256"],actual_count=len(names),tests=names,cached_executable_path=str(executable),independent_wire_sha256=digest(group_proof/"metadata.stdout.bin")))
+require(outer["status"]=="passed" and outer["exit_code"]==0 and outer["timeout_seconds"]==1800,"Outer controller did not close")
+require(outer_absence["pid"]==outer["pid"] and utc_ticks(outer_absence["created_utc"])==utc_ticks(outer["created_utc"]) and outer_absence["currently_absent"] is True and outer_absence["current_records"]==[],"Independent outer absence missing")
+pids.append(outer["pid"])
+# Reconcile the exact retired creation instances, retaining later reused PIDs
+# as observations rather than treating those new processes as the original owner.
+metadata_owner_bounds=[]
+for recorded_group in grant["groups"]:
+    for recorded_phase in ("compile","metadata"):
+        recorded_owner=read(proof/"groups"/recorded_group/(recorded_phase+".json"))
+        metadata_owner_bounds.append(dict(pid=recorded_owner["pid"],created=utc_ticks(recorded_owner["created_utc"]),completed=utc_ticks(recorded_owner["completed_utc"])))
+metadata_owner_bounds.append(dict(pid=outer["pid"],created=utc_ticks(outer["created_utc"]),completed=utc_ticks(outer["completed_utc"])))
+require([bound["pid"] for bound in metadata_owner_bounds]==pids and len(metadata_owner_bounds)==2*len(groups)+1,"Every actual original compile/query/outer creation interval is present")
+require(len({(bound["pid"],bound["created"]) for bound in metadata_owner_bounds})==len(metadata_owner_bounds) and all(bound["completed"]>=bound["created"] for bound in metadata_owner_bounds),"Distinct actual original creation intervals with valid terminal order")
+query="ConvertTo-Json -InputObject @(Get-CimInstance Win32_Process -Filter '"+ " OR ".join("ProcessId = "+str(int(pid)) for pid in pids) +"' -OperationTimeoutSec 5 -ErrorAction Stop | Select-Object ProcessId,ParentProcessId,CreationDate,ExecutablePath,CommandLine) -Compress"
+live=json.loads(subprocess.check_output([r"C:\Program Files\PowerShell\7\pwsh.exe","-NoLogo","-NoProfile","-NonInteractive","-Command",query],text=True,timeout=15))
+metadata_pid_reconciliations=[]
+for current_owner in live:
+    candidates=[bound for bound in metadata_owner_bounds if bound["pid"]==current_owner["ProcessId"]]
+    current_created=utc_ticks(current_owner["CreationDate"])
+    require(candidates and all(current_created>bound["completed"] for bound in candidates),"Original owner may still be present or creation identity is not proven later than every original completion")
+    metadata_pid_reconciliations.append(dict(kind="later_process_reusing_retired_pid",current_record=current_owner,prior_terminal_intervals=candidates))
+
+acceptance=dict(schema=1,status="independently_accepted_combined_native_batch_metadata",accepted=True,reviewer="Root independent Python raw-wire, source-seal and artifact audit; distinct from PowerShell batch decoder",reviewed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),candidate_head=a.head,driver_sha256=expected_driver,group_manifest_sha256=expected_groups,build_result_sha256=digest(proof/"result.json"),build_source_seal_sha256=digest(proof/"final.json"),groups=accepted_groups,runtime_started=False,runtime_qualification=False,source_seal_scope="whole_batch",source_count=len(final["source"]),tree_count=len(final["tree"]),compiler_count=len(final["compiler"]),independent_current_owner_absence=True,independent_current_original_process_instances_absent=True,independent_current_owner_snapshot=live,current_pid_reconciliations=metadata_pid_reconciliations,original_owner_intervals=metadata_owner_bounds)
+output.parent.mkdir(parents=True,exist_ok=True)
+output.write_text(json.dumps(acceptance,indent=2)+"\n",encoding="utf-8")
+print(json.dumps({"status":acceptance["status"],"groups":[{"group":g["group"],"actual_count":g["actual_count"]} for g in accepted_groups],"head":a.head,"acceptance":str(output),"sha256":digest(output),"runtime_started":False}))

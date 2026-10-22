@@ -1,0 +1,735 @@
+{
+  "schema": 1,
+  "status": "independently_closed_positive_strict_runtime",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "batch": "new4",
+  "reviewed_utc": "2026-10-21T15:34:22.412683+00:00",
+  "reviewer": "Independent complete current inventory/hash, original artifact, raw canonical wire and actual100ns process-instance audit",
+  "source_seal_scope": "whole_batch",
+  "whole_bookends_unchanged": true,
+  "current_all_sealed_inputs_rehashed": true,
+  "current_complete_directory_inventories_verified": true,
+  "distinct_current_files_rehashed": 34621,
+  "seal_counts": {
+    "source": 15041,
+    "tree": 15054,
+    "vendor": 1489,
+    "compiler": 19546,
+    "controls": 25
+  },
+  "declared_groups": 4,
+  "declared_controls": 58,
+  "metadata_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-control-20261021-145503\\independent-metadata-acceptance.json",
+    "bytes": 14150,
+    "sha256": "9786B2A3CACBB66E95FF5852447CF1676BFFEBD24B5F26194755150147F685AF"
+  },
+  "independent_build_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-control-20261021-145503\\independent-current-seals-and-owners.json",
+    "bytes": 499851,
+    "sha256": "D2278B82C53DFC2CB9AB2351B9DF7BFDAE80D57C6D670F60A1E7269AF71E5CEB"
+  },
+  "accepted_cohort": 61,
+  "runtime_owner_count": 4,
+  "actual_process_intervals": [
+    {
+      "pid": 50520,
+      "created": 17925958852484064,
+      "completed": 17925958857731989,
+      "role": "runtime",
+      "group": "native-node-file-handle-owner"
+    },
+    {
+      "pid": 7856,
+      "created": 17925958877354991,
+      "completed": 17925958880132302,
+      "role": "runtime",
+      "group": "native-node-fs-before-hook-continuation"
+    },
+    {
+      "pid": 40384,
+      "created": 17925958897177173,
+      "completed": 17925958899050643,
+      "role": "runtime",
+      "group": "native-vm-error-constructor-name"
+    },
+    {
+      "pid": 45524,
+      "created": 17925958915861118,
+      "completed": 17925958919392093,
+      "role": "runtime",
+      "group": "native-node-file-handle-transfer"
+    },
+    {
+      "pid": 48268,
+      "created": 17925958428146844,
+      "completed": 17925959338894867,
+      "role": "outer"
+    },
+    {
+      "pid": 39228,
+      "created": 17925958424923043,
+      "completed": 17925959340730000,
+      "role": "runner"
+    },
+    {
+      "pid": 47704,
+      "created": 17925958424730000,
+      "completed": 17925959340730000,
+      "role": "launcher_job_lifetime_envelope"
+    }
+  ],
+  "observed_started": 61,
+  "observed_completed": 61,
+  "observed_failed": 0,
+  "observed_groups": [
+    {
+      "group": "native-node-file-handle-owner",
+      "started": 19,
+      "completed": 19,
+      "failed": 0,
+      "results": [
+        {
+          "index": 0,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner constructor attaches the same native stream and transfers the real descriptor on release"
+        },
+        {
+          "index": 1,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner optional Number IntegerValue follows pinned V8 truncation and saturation"
+        },
+        {
+          "index": 2,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner non Number optional arguments perform no guest coercion"
+        },
+        {
+          "index": 3,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner keeps the full public method template an explicit dependency"
+        },
+        {
+          "index": 4,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner explicit close keeps one Promise and one actual CLOSE request through cleanup"
+        },
+        {
+          "index": 5,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner accepted bad descriptor close rejects the real UVException after AfterClose"
+        },
+        {
+          "index": 6,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner real stopped service admission rejects without fabricating completion or closing the descriptor"
+        },
+        {
+          "index": 7,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner retained CloseReq wrapper loses native state after both callback references retire"
+        },
+        {
+          "index": 8,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner CloseReq Global keeps the handle and weak BindingData alive until actual completion"
+        },
+        {
+          "index": 9,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner GC closes synchronously and the warning ticket retains no handle or BindingData"
+        },
+        {
+          "index": 10,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner GC warnings use the live process function and consume the Environment deprecation flag once"
+        },
+        {
+          "index": 11,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner ordinary GC warning throw still reaches deprecation and preserves the exact caught reason"
+        },
+        {
+          "index": 12,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner failed GC close queues one refed actual UVException ticket"
+        },
+        {
+          "index": 13,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner cleanup skips unrefed GC warning execution and destroys its native capture"
+        },
+        {
+          "index": 14,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner GC uses the retained real service for synchronous close after worker join"
+        },
+        {
+          "index": 15,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner consumes the real read engine and reuses its physical ReadWrap across concrete handles"
+        },
+        {
+          "index": 16,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner real throwing before hook still settles close and runs after with the original pending identity"
+        },
+        {
+          "index": 17,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_owner_test.test.native FileHandle owner real Hub shutdown drains accepted close without settling its guest Promise"
+        },
+        {
+          "index": 18,
+          "flags": 0,
+          "passed": true,
+          "name": "extensions.native_durable_storage.test_0"
+        }
+      ],
+      "original_group_status": "passed_selected_native_controls",
+      "canonical": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-file-handle-owner\\runtime.results.json",
+        "bytes": 2038,
+        "sha256": "31092E6E7AC7E14459F844196B8B92C9AD7871C0CAE89D6A14A16814432CA8BA"
+      }
+    },
+    {
+      "group": "native-node-fs-before-hook-continuation",
+      "started": 4,
+      "completed": 4,
+      "failed": 0,
+      "results": [
+        {
+          "index": 0,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_before_hook_continuation_test.test.native FS before hook actual read fulfills after the same ordinary hook rethrow"
+        },
+        {
+          "index": 1,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_before_hook_continuation_test.test.native FS before hook actual EBADF read rejects with UVException while the hook reason propagates separately"
+        },
+        {
+          "index": 2,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_fs_before_hook_continuation_test.test.native FS before hook continuation performs the original live Promise Get before settlement"
+        },
+        {
+          "index": 3,
+          "flags": 0,
+          "passed": true,
+          "name": "extensions.native_durable_storage.test_0"
+        }
+      ],
+      "original_group_status": "passed_selected_native_controls",
+      "canonical": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-fs-before-hook-continuation\\runtime.results.json",
+        "bytes": 911,
+        "sha256": "7D14AE74FF38A0EA02BDAC7CB2CD67CA620ED51EF7827D4BC06A5C00240F3357"
+      }
+    },
+    {
+      "group": "native-vm-error-constructor-name",
+      "started": 24,
+      "completed": 24,
+      "failed": 0,
+      "results": [
+        {
+          "index": 0,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor intrinsic families retain their native initial names"
+        },
+        {
+          "index": 1,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor direct native creation and throws record real origins"
+        },
+        {
+          "index": 2,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor real VM stack exhaustion retains RangeError provenance"
+        },
+        {
+          "index": 3,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor public function and Error names do not replace provenance"
+        },
+        {
+          "index": 4,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor public replacement cannot redirect native intrinsic factories"
+        },
+        {
+          "index": 5,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor changing an Error prototype preserves base provenance"
+        },
+        {
+          "index": 6,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor new inheritors suppress fast provenance with real prototype admission"
+        },
+        {
+          "index": 7,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor explicit prototype admission uses the same original fallback"
+        },
+        {
+          "index": 8,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor inherited data tag precedes constructor at the same level"
+        },
+        {
+          "index": 9,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor receiver constructor and accessor tag are never invoked"
+        },
+        {
+          "index": 10,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor prototype accessors and mutable builtin name are skipped"
+        },
+        {
+          "index": 11,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor actual intrinsic Object is skipped without its public name"
+        },
+        {
+          "index": 12,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor final native class fallback remains Error"
+        },
+        {
+          "index": 13,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor bound and Proxy constructors are skipped without traps"
+        },
+        {
+          "index": 14,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor missing general DebugName is explicit without function name Get"
+        },
+        {
+          "index": 15,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor Proxy prototype storage stays unsupported without traps"
+        },
+        {
+          "index": 16,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor native exotic descriptors remain uncalled and unsupported"
+        },
+        {
+          "index": 17,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor different new target is an explicit remaining dependency"
+        },
+        {
+          "index": 18,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor unrecorded physical Error allocation cannot invent provenance"
+        },
+        {
+          "index": 19,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor ordinary lookalikes never acquire the actual native class"
+        },
+        {
+          "index": 20,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor query preserves actual ordinary and uncatchable pending owners"
+        },
+        {
+          "index": 21,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor active and cancelled native termination state is unchanged"
+        },
+        {
+          "index": 22,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor all selected query branches allocate no VM storage"
+        },
+        {
+          "index": 23,
+          "flags": 0,
+          "passed": true,
+          "name": "native_vm_error_constructor_name_test.test.VM native Error constructor actual native origin survives released foreign realm and retires with Error"
+        }
+      ],
+      "original_group_status": "passed_selected_native_controls",
+      "canonical": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-vm-error-constructor-name\\runtime.results.json",
+        "bytes": 2421,
+        "sha256": "3D36FDCA4CD85A32483E140E45475D30AED928DF9BD68D2AC4AAF2DB06C6892E"
+      }
+    },
+    {
+      "group": "native-node-file-handle-transfer",
+      "started": 14,
+      "completed": 14,
+      "failed": 0,
+      "results": [
+        {
+          "index": 0,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_transfer_test.test.native FileHandle transfer changes only the live closed member and retains the real descriptor"
+        },
+        {
+          "index": 1,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_transfer_test.test.native FileHandle transfer admission follows real ReadStart and ReadStop with the original pending request"
+        },
+        {
+          "index": 2,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_transfer_test.test.native FileHandle transfer rejects real closing and closed state without weakening the close request"
+        },
+        {
+          "index": 3,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_transfer_test.test.native FileHandle transfer admission excludes the real released descriptor state"
+        },
+        {
+          "index": 4,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_transfer_test.test.native FileHandle transfer packet move preserves one native allocation and closes once"
+        },
+        {
+          "index": 5,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_transfer_test.test.native FileHandle transfer packet survives actual sender GC and weak BindingData retirement"
+        },
+        {
+          "index": 6,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_transfer_test.test.native FileHandle transfer allocation alone retains its native memory domain after Engine teardown"
+        },
+        {
+          "index": 7,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_transfer_test.test.native FileHandle transfer abandoned on a real different thread closes after sender Engine retirement"
+        },
+        {
+          "index": 8,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_transfer_test.test.native FileHandle transfer destructor null admission masks and restores an outer real context"
+        },
+        {
+          "index": 9,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_transfer_test.test.native FileHandle transfer native member and destructor calls preserve an actual current exception"
+        },
+        {
+          "index": 10,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_transfer_test.test.native FileHandle transfer missing real BindingData consumes the packet and closes its descriptor"
+        },
+        {
+          "index": 11,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_transfer_test.test.native FileHandle transfer disowns before the explicit missing full template boundary without inventing a receiver"
+        },
+        {
+          "index": 12,
+          "flags": 0,
+          "passed": true,
+          "name": "native_node_file_handle_transfer_test.test.native FileHandle transfer strong result edges clone and move over the same actual weak wrapper"
+        },
+        {
+          "index": 13,
+          "flags": 0,
+          "passed": true,
+          "name": "extensions.native_durable_storage.test_0"
+        }
+      ],
+      "original_group_status": "passed_selected_native_controls",
+      "canonical": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-file-handle-transfer\\runtime.results.json",
+        "bytes": 1661,
+        "sha256": "D1E257FF69E1EF2B14C7BDF483D332197B1A024FD0451570EA3D8BAD44DDE7F5"
+      }
+    }
+  ],
+  "not_started": 0,
+  "current_absence": {
+    "owners": [],
+    "direct_children": [],
+    "native": [],
+    "observed_utc": "2026-10-21T15:34:22.3706040+00:00"
+  },
+  "current_actual_process_instances_absent": true,
+  "current_process_instance_reconciliations": [],
+  "original_receipts": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\result.json",
+      "bytes": 55926,
+      "sha256": "08E1098A7466ED0B5D27E4A8F7676EE80AA9E6FA04548B92DF1C04A6408F57B5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\before.json",
+      "bytes": 16170132,
+      "sha256": "1FFA9287420E5CBB51EB9D42D673D48B2FBC967F0DABAE9DC356478F36BBCBEB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\final.json",
+      "bytes": 16170132,
+      "sha256": "1FFA9287420E5CBB51EB9D42D673D48B2FBC967F0DABAE9DC356478F36BBCBEB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\outer.json",
+      "bytes": 1531,
+      "sha256": "B338ECACE1F8AC447A1B1521F8067D5F3890EED79BDDAEEA347C1CDBFA4000A8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\outer-absence.json",
+      "bytes": 183,
+      "sha256": "84485BA692556B9755AF5EAC531DA79101963605BE888F7D0B9C765F041BFD1C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\independent-observed-job-status.json",
+      "bytes": 1572,
+      "sha256": "A247E8C5FB9128F65B84FCA7CB6DC02CF5EC5E6D63AB0B7D2819D519C7F5E069"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\root-grant.json",
+      "bytes": 24817,
+      "sha256": "7A39EF3B1246A654418D04FDFC2DEAEE2E258872EDBC60CCC3AA550080858C55"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\launch.ps1",
+      "bytes": 1777,
+      "sha256": "B807CC4411FEEF616D3F63F7DE32051AA68C3E4DA1258042CC873DC03C5F2D67"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\runtime-launch.json",
+      "bytes": 2768,
+      "sha256": "54E393998E10D98F02753226D7ED9AF8BB3655E7934B0321DE98D19816B47C98"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\grant-launch-adaptation.json",
+      "bytes": 7716,
+      "sha256": "671BCAF0084E215FEF77CA34536724A8EFD991BDA16172C48E5095D4A287CB98"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-runtime-issued-config-20261021.json",
+      "bytes": 3730,
+      "sha256": "019247F93100DB33C2432A4D2252713DE42B7A82A51235933E53B125C5A17033"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-complete-buildquery-acceptance-20261021.json",
+      "bytes": 3322,
+      "sha256": "AD8E19A0F01BCE2455EFC4A670881BD085CDD3A80A748D37F2BACBDA16C7F539"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\buildquery-launch.json",
+      "bytes": 2092,
+      "sha256": "3309BAC061E13596E9FC2E149A6FE360E5D0ABD789351275D07BDF9CE4E1DEDC"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\result.json",
+      "bytes": 67219,
+      "sha256": "16307DDF6331643E0268AD6FB4D2B737F266FCFFE2117DAE28B0C6604C8CD77A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v38-new4-buildquery-20261021-145503\\final.json",
+      "bytes": 16165225,
+      "sha256": "5AEC1D0C366EF90B9C4B5A2D0F77FB0D8C78CF523176EEB5AA206E47F10881E5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-file-handle-owner\\runtime.json",
+      "bytes": 1228,
+      "sha256": "1EEC9EC4BDEA353043182AD9D6B86FB21A2A3ED7E638EA11AD5703E075604072"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-file-handle-owner\\runtime.results.json",
+      "bytes": 2038,
+      "sha256": "31092E6E7AC7E14459F844196B8B92C9AD7871C0CAE89D6A14A16814432CA8BA"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-file-handle-owner\\runtime.stdout.bin",
+      "bytes": 546,
+      "sha256": "136FCB278196BA0C61F737899375B0E7E36AED09697212D11295B7702ECCFA7D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-file-handle-owner\\runtime.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-file-handle-owner\\runtime-absence.json",
+      "bytes": 4732,
+      "sha256": "44A84D9609945056B348FE58FA45D2CB581621C49A72E3ECD05AEF5E7A23D889"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-file-handle-owner\\result.json",
+      "bytes": 7846,
+      "sha256": "92D9D92B383F96D3FCB2E80747E22E95F0C6FCB932508E54FD62138812162FA3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-fs-before-hook-continuation\\runtime.json",
+      "bytes": 1226,
+      "sha256": "9AAE19ACD56DD0C85FC81F7371778CBF6913DB3B0C7D4B632EDDF0EA6484025D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-fs-before-hook-continuation\\runtime.results.json",
+      "bytes": 911,
+      "sha256": "7D14AE74FF38A0EA02BDAC7CB2CD67CA620ED51EF7827D4BC06A5C00240F3357"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-fs-before-hook-continuation\\runtime.stdout.bin",
+      "bytes": 126,
+      "sha256": "FB0D3AF85B02A8610D216651CDEC6114A70E470397F07FD0F098C7F40AFF3E38"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-fs-before-hook-continuation\\runtime.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-fs-before-hook-continuation\\runtime-absence.json",
+      "bytes": 3323,
+      "sha256": "940BE19703A18E050CB858D322DEFFF736B7B45448A9A3DDC1B1BF2447F9F4B0"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-fs-before-hook-continuation\\result.json",
+      "bytes": 6193,
+      "sha256": "8BAAD62BF1C6FB3B00B2E2FC61524D9D918BC7A2C9615673F56E734BBF4F0F6D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-vm-error-constructor-name\\runtime.json",
+      "bytes": 1228,
+      "sha256": "884DFC8B874054B81BC6C541327B0645AEA5936C3A6FFD89ED1C181D3F499F32"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-vm-error-constructor-name\\runtime.results.json",
+      "bytes": 2421,
+      "sha256": "3D36FDCA4CD85A32483E140E45475D30AED928DF9BD68D2AC4AAF2DB06C6892E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-vm-error-constructor-name\\runtime.stdout.bin",
+      "bytes": 686,
+      "sha256": "44A029BEA59174E2587159EC5547513AE3FD84E361E21B8E0BA12454E6A70DFB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-vm-error-constructor-name\\runtime.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-vm-error-constructor-name\\runtime-absence.json",
+      "bytes": 5221,
+      "sha256": "524D9F68D7A1FA4B98DFD54E447A26BB25EC6AEE33211147203A10C0EDA23177"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-vm-error-constructor-name\\result.json",
+      "bytes": 8453,
+      "sha256": "7EB1E2A0559C1CAE469286DD9CC7F2EAEF88AFB07A5354E2291D2326571B8C5F"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-file-handle-transfer\\runtime.json",
+      "bytes": 1228,
+      "sha256": "18246FACC889B364738CD3ADB07032954A7C26DFE3C20316E7A574F6191F51AE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-file-handle-transfer\\runtime.results.json",
+      "bytes": 1661,
+      "sha256": "D1E257FF69E1EF2B14C7BDF483D332197B1A024FD0451570EA3D8BAD44DDE7F5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-file-handle-transfer\\runtime.stdout.bin",
+      "bytes": 406,
+      "sha256": "EFAC1262A88D804380F66F05B0DDCD24A22C574EE1344CE7360A5880AE054012"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-file-handle-transfer\\runtime.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-file-handle-transfer\\runtime-absence.json",
+      "bytes": 4261,
+      "sha256": "5168DB68694DB1CEDCDD38903726BC54E81516630E770050461E82CB9C4FD2F5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-20261021-151713\\groups\\native-node-file-handle-transfer\\result.json",
+      "bytes": 7293,
+      "sha256": "E7D4F4328E945E02A38A3AAFEB988FFFF4813F35C066B74528C0A5DEDD2AD404"
+    }
+  ],
+  "audit_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\independent-positive-runtime-audit-inputs-provenance.json",
+    "bytes": 6496,
+    "sha256": "DE8E88C773C7B2DB6AD536FC0F4C748B70DC5EF8C8C009E5370C3312EB5E6DC4"
+  },
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-Provenance-20261021.py",
+    "bytes": 41516,
+    "sha256": "A73ACCCD565E4B3D66C993F061F63DFA8C92B238EE979778D48CCA562643D102"
+  },
+  "runtime_grant_preparer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV38RuntimeGrant-20261021.py",
+    "bytes": 12499,
+    "sha256": "7832E8918FA494323688223208C877E01449D033DF7EF572E3053731767AA322"
+  },
+  "controller_environment_restored": true,
+  "all_original_strict_empty_stderr_and_all_tests_passing_gates_passed": true,
+  "runtime_qualification": true,
+  "product_qualification": false,
+  "source_mutation_hold_released": false
+}

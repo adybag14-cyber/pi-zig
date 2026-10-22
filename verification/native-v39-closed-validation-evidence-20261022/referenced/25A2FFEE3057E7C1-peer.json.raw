@@ -1,0 +1,268 @@
+{
+  "schema": 1,
+  "status": "accepted_bounded_source_only_v39_new3_retry1_preparation_cloner_and_downstream",
+  "reviewer": "/root/module_io_port",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "selected_handoff": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\handoff.json",
+    "bytes": 15796,
+    "sha256": "04BAAA9B0FA2BF8E9412DD5BD83384AF748F22AEAD6D5F80DF2B52544924DF33"
+  },
+  "cloner": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\Prepare-V39New3Retry1PreparationClone-20261022.py",
+    "bytes": 20014,
+    "sha256": "1B4732B1C003DA2F82DBC4912FF6B7B203889E1C5E4C15B9521F4D9EE4F63422"
+  },
+  "unissued_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\unissued-root-clone-configuration.json",
+    "bytes": 653,
+    "sha256": "1AE1DE23AD06EE289AA6B2D9737B3AF3BBCDFDF14E05010C9653628E61268455"
+  },
+  "source_and_issuance_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\source-and-issuance-contract.json",
+    "bytes": 10042,
+    "sha256": "3D8A27A1FE60629C58131C10784B781F960646C70C79283941E4CE383C81F0DD"
+  },
+  "downstream_finite_accounting": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\downstream-source-adaptation.json",
+    "bytes": 3647,
+    "sha256": "450ACECD2B5299F8D2C2F8CB12BE816F653B1089CFC959F24679856713EF68DA"
+  },
+  "source_author": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\source-author.py",
+    "bytes": 8955,
+    "sha256": "A5C76D09AD6648339BCBAD843C1734E692719D9B4C0C825DA3BCC2DC22D12A0F"
+  },
+  "author_static_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\static-source-check.py",
+    "bytes": 12158,
+    "sha256": "904CAC0B8B69CE93EC9EF1048697B5B57F62EB0F5B95812A5869437C9374FFE5"
+  },
+  "author_static_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\static-source-proof.json",
+    "bytes": 19268,
+    "sha256": "07D989FF0EF75228C009CC5366CFE24D3155E0A1FBDFD69FB74D02269BE0B252"
+  },
+  "source_audit": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-new3-retry1-preparation-and-execution-source-peer-20261022\\source-audit-v2.py",
+    "bytes": 19181,
+    "sha256": "5FEA938FDD9CE0DAF10C6513101AB513678567F319C4C5594C5E7FD4B4339145"
+  },
+  "decisive_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-new3-retry1-preparation-and-execution-source-peer-20261022\\source-proof.json",
+    "bytes": 41367,
+    "sha256": "73BAB8661A4ED7D8A53A9034376013634DBE8145F81536A53FE2190D38C1FCB5"
+  },
+  "source_only": true,
+  "concrete_blockers": [],
+  "read_scope": "Full 20,014-byte new cloner, four complete finite downstream adaptations, selected source/issuance contract, inert configuration, original negative and Root acceptance, original current preparation data, and preserved baseline source fragments. Candidate sources were parsed and treated as bytes/data only.",
+  "downstream_sources": [
+    {
+      "kind": "positive_buildquery_auditor",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\candidate\\Audit-PositiveV39CompleteBuildQuery-New3Retry1-20261022.py",
+        "bytes": 37331,
+        "sha256": "A04CBCB8C134564CB3D26225A61CB310728A6B01D1CFE0F98BFE8925BC735ADB"
+      },
+      "finite_adaptation": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\positive_buildquery_auditor-finite-source-adaptation.json",
+        "bytes": 2990,
+        "sha256": "494492AFB7E33F682B677C3A071DF0AD8ED05975FE34F5274B25F4BADC945E0A"
+      },
+      "hunks": 1,
+      "future_canonical_path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39CompleteBuildQuery-New3Retry1-20261022.py"
+    },
+    {
+      "kind": "runtime_constructor",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\candidate\\Prepare-ReviewedV39RuntimeGrant-New3Retry1-20261022.py",
+        "bytes": 12707,
+        "sha256": "D6A9B3316B14769B3D5502C2D90FBC52909CD63F91B287094C4BD3EE2B156E12"
+      },
+      "finite_adaptation": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\runtime_constructor-finite-source-adaptation.json",
+        "bytes": 3228,
+        "sha256": "A6096E67C54FB2617A2035BDE82BBA89AA50C0D522EED4D0ED82C57F314EB58C"
+      },
+      "hunks": 1,
+      "future_canonical_path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39RuntimeGrant-New3Retry1-20261022.py"
+    },
+    {
+      "kind": "positive_runtime_auditor",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\candidate\\Audit-PositiveV39StrictRuntime-New3Retry1-20261022.py",
+        "bytes": 43987,
+        "sha256": "1F934E0125B2C1B4F48D68D94EC833931FE7F316A487A82DF0AF70E592E43998"
+      },
+      "finite_adaptation": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\positive_runtime_auditor-finite-source-adaptation.json",
+        "bytes": 5294,
+        "sha256": "BE3F34FD9D1BCD42BC84302470BF18A65AA6A2254AFA8594ED92993EB61D03D6"
+      },
+      "hunks": 4,
+      "future_canonical_path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV39StrictRuntime-New3Retry1-20261022.py"
+    },
+    {
+      "kind": "observed_new3_input_helper",
+      "candidate": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\candidate\\Prepare-ObservedV39New3PositiveBuildQueryAuditInputs-Retry1-20261022-unresolved.py",
+        "bytes": 18928,
+        "sha256": "1263E63125BF7246C8A196995D6BD74FF35C9A3053E8DE6CBA805889B0044A7D"
+      },
+      "finite_adaptation": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-new3-retry1-preparation-and-execution-sourceonly-20261022\\observed_new3_input_helper-finite-source-adaptation.json",
+        "bytes": 11144,
+        "sha256": "A563F66F9B73A2008E205CEBE5D7913C5F449733C67114A8B5DBEFF523699A60"
+      },
+      "hunks": 5,
+      "future_canonical_path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ObservedV39New3PositiveBuildQueryAuditInputs-20261022.py"
+    }
+  ],
+  "decisive_checks": {
+    "current_input_versions": 52,
+    "source_hunks": [
+      1,
+      1,
+      4,
+      5
+    ],
+    "total_source_hunks": 11,
+    "full_forward_intermediate_and_whole_raw_inverses": 4,
+    "unchanged_prefix_suffix_fragments": 22,
+    "unchanged_helper_bodies": 30,
+    "helpers_per_source": [
+      6,
+      8,
+      6,
+      10
+    ],
+    "original_prepared_members": 15,
+    "original_launch_extra_preserved": true,
+    "exact_original_JSON_roundtrips": 5,
+    "metadata_source_one_path_raw_and_AST_inverse_in_memory": true,
+    "retained_V38_metadata_baseline_inverse_in_memory": true,
+    "planned_clone_members": 15,
+    "planned_changed_members": 6,
+    "planned_byte_identical_members": 9,
+    "planned_JSON_field_coordinates": 28,
+    "review_path_leaves": 11,
+    "dependent_review_length_hash_pairs": 5,
+    "exact_configuration_fields": 11,
+    "explicit_future_issued_fields": 3,
+    "unresolved_actual_helper_slots": 17,
+    "unresolved_string_slots": 12,
+    "unresolved_size_slots": 5,
+    "all_current_inputs_rehashed_at_close": true,
+    "selected_groups": [
+      "native-node-stream-shutdown",
+      "native-node-one-byte-string",
+      "native-vm-array-buffer-view-data"
+    ],
+    "declared_counts": [
+      18,
+      8,
+      12
+    ],
+    "catalog_groups": 120,
+    "catalog_declarations": 2051,
+    "disjoint_partition_groups": 70,
+    "disjoint_partition_declarations": 1345,
+    "future_actual_metadata_count": null,
+    "retry_preparation_and_clone_proof_absent_at_check": true
+  },
+  "findings": [
+    {
+      "area": "Bounded downstream source changes",
+      "finding": "The BuildQuery auditor and runtime constructor each change only the new3 preparation branch to new3-retry1; retained new4 and existing63 branches remain exact. The runtime auditor additionally binds the successor constructor's precise canonical name, 12,707-byte size and D6A9 hash. The observed input helper's five edits select the retry preparation/configuration, the A04C auditor name/size and a separate Root retry source review. Every other source byte reverses to its accepted baseline; all thirty full-line helper bodies are unchanged."
+    },
+    {
+      "area": "Original attempt preserved",
+      "finding": "All fifteen original prepared files plus the original buildquery-launch.json retain exact bytes. Root CB6 catalog acceptance, independent 9712 negative, Root 1A6 acceptance and eleven original negative-input versions were rehashed. The original rejection remains three granted groups, one attempted, two unstarted and zero native owners, metadata or tests. Those immutable accepted closure records supply provenance; this peer performs no new process-absence audit and transfers no outcome to the retry."
+    },
+    {
+      "area": "Clone admission and mutation boundary",
+      "finding": "The new cloner requires an exact contained Root configuration/hash, exact self/source-review pins and a specific clone-only authorization. It verifies original membership/pins, original negative closure, source-only catalog/partition, exact path-leaf census and full in-memory inverse checks before NEW.mkdir. The only two file-open sites use xb after that boundary; outputs and originals are reread, and the new directory must have exactly fifteen files without a grant or launch. It has no Main access, subprocess/native invocation or configuration-issuance path."
+    },
+    {
+      "area": "Finite relocation scope",
+      "finding": "Six members are selected for relocation: the metadata auditor, four subordinate JSON documents and preparation-review.json. The other nine members are byte-identical, including the complete matrix, strict driver and classifier. The planned twenty-eight JSON field coordinates are exact; eleven review paths plus five dependent length/hash pairs account for the review edit. Original JSON serialization and the one metadata source path inverse are verified here. Actual emitted JSON bytes, their per-step inverses and output pins remain deferred to separately authorized cloning and subsequent emitted-output review."
+    },
+    {
+      "area": "Policy and observation separation",
+      "finding": "The unchanged matrix preserves all 120 groups/2,051 source declarations, new3 order 18/8/12 and the disjoint 70-group/1,345-declaration partition. These are source declarations, not metadata predictions. The unchanged BQ constructor, strict driver and source outside the eleven edits preserve serial admission, 300-second initial grant freshness, 16 GiB memory and all positive source/artifact/process gates. Exact raw job and 100 ns time handling helpers remain byte-identical; no timestamps or outcomes are synthesized."
+    },
+    {
+      "area": "Fresh retry authority remains explicit",
+      "finding": "The inert eleven-field configuration is not executable as issued authority: clone authorization is false and Root source review is null. A distinct issued copy may change only status, clone authorization and the exact Root review pin. A separate retry catalog/relocation acceptance must then bind the actual new preparation-review and independently reviewed clone output. Original CB6 and the original catalog peer retain their original scope and cannot alone attest to relocated bytes."
+    },
+    {
+      "area": "Downstream readiness",
+      "finding": "No canonical placement occurred in this review. The helper retains all seventeen unresolved actual-only slots, and its eventual execution requires a fresh terminal-positive BuildQuery plus actual independent metadata acceptance. A separate Root retry execution source review must bind unchanged BQ constructor 972E and new auditor A04C. Runtime source canonicals and the separate runtime review remain future steps; this packet grants no native execution."
+    }
+  ],
+  "unchanged_buildquery_constructor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Prepare-ReviewedV39BuildQueryGrant-20261022.py",
+    "bytes": 10269,
+    "sha256": "972E2DFB47C405296D7A9B98E397597F0AC2702B65A29DB6FD1A50FA67C185E0"
+  },
+  "original_catalog_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-catalog-source-acceptance-20261022.json",
+    "bytes": 14221,
+    "sha256": "CB6A78ACEFAA83A6DE31AB917B6460465BF012C99B38CE87425B6893CCB7AB2C"
+  },
+  "original_negative": {
+    "root_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new3-original-prelaunch-negative-acceptance-20261022.json",
+      "bytes": 5627,
+      "sha256": "1A6F6F0CAA70C5B9F39F9FF815B67429C39B785E472817427A7EF18E4FCEDDD7"
+    },
+    "independent_closure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-control-20261022-163859\\independent-prelaunch-admission-negative-closure.json",
+      "bytes": 5480,
+      "sha256": "9712BD2BBB46133BEAA1D7590CC95570ACF252000E218443488E41EB01F4B181"
+    },
+    "reason": "Initial grant must be within300seconds before first child launch",
+    "granted_groups": 3,
+    "attempted_groups": 1,
+    "unstarted_groups": 2,
+    "native_owners": 0,
+    "actual_metadata_count": 0,
+    "actual_tests_started": 0,
+    "original_inputs_unchanged": true,
+    "no_original_negative_outcome_transferred_to_retry": true
+  },
+  "own_checker_observation": {
+    "original_checker": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-new3-retry1-preparation-and-execution-source-peer-20261022\\source-audit.py",
+      "bytes": 19141,
+      "sha256": "CA51E0678C314E98130F890C088F30BA637C8CC59B2D1406E5A7A6B036AB5198"
+    },
+    "preserved_failure": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-new3-retry1-preparation-and-execution-source-peer-20261022\\source-audit-lexical-negative.json",
+      "bytes": 2362,
+      "sha256": "A7F524C6549D0E4DDA5F664144458F07004658908195561E330E0C50B48F43C6"
+    },
+    "finite_successor": {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-new3-retry1-preparation-and-execution-source-peer-20261022\\checker-lexical-successor.json",
+      "bytes": 1737,
+      "sha256": "983D808E67FF93C094A30EFCCE732A808A88AE08E15B7F99C061D7D90475D392"
+    },
+    "description": "The first independent checker passed the eleven source edits/inverses and thirty helper comparisons, then its token census encountered a bytes literal. It stopped before proof creation. The create-only v2 adds only a str type guard, with full one-hunk raw inverse; selected cloner and downstream sources were never changed.",
+    "selected_checker_exit": 0,
+    "selected_checker_stderr_bytes": 0
+  },
+  "cloner_executed": false,
+  "candidate_or_prefix_executed": false,
+  "helper_executed": false,
+  "constructors_or_auditors_executed": false,
+  "clone_outputs_generated": false,
+  "canonical_source_placement_performed": false,
+  "configuration_issued": false,
+  "Main_accessed": false,
+  "index_accessed": false,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "application_qualified": false,
+  "qualification": false
+}

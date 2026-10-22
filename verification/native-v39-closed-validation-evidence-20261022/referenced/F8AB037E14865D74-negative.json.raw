@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "status": "preserved_original_v38_positive_runtime_auditor_provenance_negative",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-21T15:24:20.086405+00:00",
+  "candidate_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "auditor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Audit-PositiveV38StrictRuntime-20261021.py",
+    "bytes": 39911,
+    "sha256": "F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07"
+  },
+  "configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v38-new4-runtime-control-20261021-151713\\independent-positive-runtime-audit-inputs.json",
+    "bytes": 6496,
+    "sha256": "2636533F9B87A9FDC5737C239C0A7B230294359621EF4F8AB958B36EF457C6F7"
+  },
+  "audit_resource_release": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-resource-release-20261021.json",
+    "bytes": 2007,
+    "sha256": "B3159AF49FC0282E8392B09109531C6066DFA6FA34F15414B3EB8828293267ED"
+  },
+  "job_observation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\job-observation.json",
+    "bytes": 3359,
+    "sha256": "422AE27D68B89B8D4D6359667D847502885730A71E446BC3B902955F89AA263D"
+  },
+  "job_logs": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\job-logs.json",
+    "bytes": 2610,
+    "sha256": "BF5CD13FE7EF216A3E3F8C96252F4CDC5749095DFE54B0DEE8AB5D037B62CC39"
+  },
+  "stderr": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\stderr.log",
+    "bytes": 1674,
+    "sha256": "523094075D3753A14F0732C1DE7FC3B29257EC8CA0CA3AA7DAADD9E7F7A18005"
+  },
+  "stdout": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  "preserved_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\original-auditor.py",
+    "bytes": 39911,
+    "sha256": "F84688C8A47F96EC3374363C178B6D573F20B40665CE77D81D66E38285530D07"
+  },
+  "preserved_configuration": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-new4-positive-runtime-audit-original-negative-20261021\\original-issued-inputs.json",
+    "bytes": 6496,
+    "sha256": "2636533F9B87A9FDC5737C239C0A7B230294359621EF4F8AB958B36EF457C6F7"
+  },
+  "original_audit_exit_code": 1,
+  "failed_gate": "line90 recursive verify_pins(preparation-review) treats two historical_source_rebindings.original pins as current filesystem pins",
+  "preparation_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v38-new4-prepared-20261021\\preparation-review.json",
+    "bytes": 545118,
+    "sha256": "35A3A1E94699B3413179540C2C271A59E4924FF6149DE74FD662BBF3449D1D14"
+  },
+  "historical_source_rebindings": [
+    {
+      "batch": "new4",
+      "role": "fixture_unchanged_root_native-node-file-handle-owner",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "raw_commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+      "exact_original_bytes": true
+    },
+    {
+      "batch": "regression63",
+      "role": "fixture_unchanged_root_native-node-file-handle-owner",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "raw_commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+      "exact_original_bytes": true
+    }
+  ],
+  "current_fixture_pin": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+    "bytes": 28576,
+    "sha256": "03327CE42A03D3F6FCACFB1BD74CE7B2C8833BD00396BADD02EC561A1E3B2EE6"
+  },
+  "current_Main_head_and_clean_verified": true,
+  "original_runtime_job_id": "job-op-fdd37cd9d50eb9c68ce43708ab950745d34cf298e91b0fd11fc1b4dd9e2111d5",
+  "native_outcome": {
+    "started": 61,
+    "completed": 61,
+    "failed": 0,
+    "all_four_stderr_empty": true,
+    "batch_status": "passed_selected_native_batch"
+  },
+  "independent_positive_runtime_closure_emitted": false,
+  "original_source_configuration_and_raw_runtime_unchanged": true,
+  "correction_pending": true,
+  "runtime_acceptance": false,
+  "source_mutation_hold_released": false,
+  "product_qualification": false
+}

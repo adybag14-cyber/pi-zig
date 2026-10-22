@@ -1,0 +1,110 @@
+[
+  {
+    "phase": "new3-retry1-buildquery",
+    "originals": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-173038\\before.json",
+        "bytes": 18262847,
+        "sha256": "E449CBE0C75A3A13E541ED62AFEEDFFB5EFC2946CF50908B3BB86B518B091DD8"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new3-buildquery-20261022-173038\\final.json",
+        "bytes": 18262847,
+        "sha256": "E449CBE0C75A3A13E541ED62AFEEDFFB5EFC2946CF50908B3BB86B518B091DD8"
+      }
+    ],
+    "target": "verification/native-v39-closed-validation-evidence-20261022/new3-retry1-buildquery/proof/before-and-final.json.gz",
+    "projected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v39-closed-validation-and-timeout-archive-intake-20261022\\projected\\verification\\native-v39-closed-validation-evidence-20261022\\new3-retry1-buildquery\\proof\\before-and-final.json.gz",
+      "bytes": 3021523,
+      "sha256": "AA06862DDED598EA4B0C4D718A301C0452064AF0D804CB53500E0958E3F83435"
+    },
+    "seal_counts": {
+      "source": 17346,
+      "tree": 17359,
+      "vendor": 1489,
+      "compiler": 19546,
+      "controls": 14
+    },
+    "complete_two_source_roundtrip": true,
+    "deterministic_second_encoding_equal": true,
+    "gzip": {
+      "filename": "",
+      "mtime": 0,
+      "compresslevel": 9,
+      "header_hex": "1f8b08000000000002ff"
+    }
+  },
+  {
+    "phase": "new4-buildquery",
+    "originals": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-buildquery-20261022-165637\\before.json",
+        "bytes": 18262805,
+        "sha256": "3430F9ECCF15B1AD39C20D448E77111C1E8CF630918913DE57F5AC8A117A1984"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-buildquery-20261022-165637\\final.json",
+        "bytes": 18262805,
+        "sha256": "3430F9ECCF15B1AD39C20D448E77111C1E8CF630918913DE57F5AC8A117A1984"
+      }
+    ],
+    "target": "verification/native-v39-closed-validation-evidence-20261022/new4-buildquery/proof/before-and-final.json.gz",
+    "projected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v39-closed-validation-and-timeout-archive-intake-20261022\\projected\\verification\\native-v39-closed-validation-evidence-20261022\\new4-buildquery\\proof\\before-and-final.json.gz",
+      "bytes": 3021517,
+      "sha256": "5E9D4DA9F5E37B21477F756630B130F72BF0C109BED2B1B9232C1CE6FE114954"
+    },
+    "seal_counts": {
+      "source": 17346,
+      "tree": 17359,
+      "vendor": 1489,
+      "compiler": 19546,
+      "controls": 14
+    },
+    "complete_two_source_roundtrip": true,
+    "deterministic_second_encoding_equal": true,
+    "gzip": {
+      "filename": "",
+      "mtime": 0,
+      "compresslevel": 9,
+      "header_hex": "1f8b08000000000002ff"
+    }
+  },
+  {
+    "phase": "new4-runtime",
+    "originals": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-20261022-172246\\before.json",
+        "bytes": 18267712,
+        "sha256": "28FF0F12B4CF88F4CC9A3D493EF649C31B14A8E5BA6234C8328D92E6EAB65964"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v39-new4-runtime-20261022-172246\\final.json",
+        "bytes": 18267712,
+        "sha256": "28FF0F12B4CF88F4CC9A3D493EF649C31B14A8E5BA6234C8328D92E6EAB65964"
+      }
+    ],
+    "target": "verification/native-v39-closed-validation-evidence-20261022/new4-runtime/proof/before-and-final.json.gz",
+    "projected": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v39-closed-validation-and-timeout-archive-intake-20261022\\projected\\verification\\native-v39-closed-validation-evidence-20261022\\new4-runtime\\proof\\before-and-final.json.gz",
+      "bytes": 3022263,
+      "sha256": "23EFC900DB3AD1FD76AF2F6A6434BD99E7C0EB1DA8E5A0C44685BDB5091EC4F0"
+    },
+    "seal_counts": {
+      "source": 17346,
+      "tree": 17359,
+      "vendor": 1489,
+      "compiler": 19546,
+      "controls": 25
+    },
+    "complete_two_source_roundtrip": true,
+    "deterministic_second_encoding_equal": true,
+    "gzip": {
+      "filename": "",
+      "mtime": 0,
+      "compresslevel": 9,
+      "header_hex": "1f8b08000000000002ff"
+    }
+  }
+]

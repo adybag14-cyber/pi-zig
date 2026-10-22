@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v39_new4_positive_audit_input_preparation",
+  "reviewer": "Root",
+  "issued_utc": "2026-10-22T17:16:22.061158+00:00",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "job_id": "job-op-8a38853d511779c2f37986210f3d880a7ca442ea7c0f55628f9748f8d3bf9cdd",
+  "preparer_sha256": "A9122EC019C9BC7ED719C94057D5F6829C9D146539A68A106629B972772D48ED",
+  "helper_execution_authorized": true,
+  "audit_configuration_issuance_authorized": true,
+  "native_execution_authorized": false,
+  "runtime_authority": false,
+  "source_mutation_hold_released": false,
+  "qualification": false,
+  "observed": {
+    "before": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-buildquery-20261022-165637\\before.json",
+      "bytes": 18262805,
+      "sha256": "3430F9ECCF15B1AD39C20D448E77111C1E8CF630918913DE57F5AC8A117A1984"
+    },
+    "final": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-buildquery-20261022-165637\\final.json",
+      "bytes": 18262805,
+      "sha256": "3430F9ECCF15B1AD39C20D448E77111C1E8CF630918913DE57F5AC8A117A1984"
+    },
+    "result": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-buildquery-20261022-165637\\result.json",
+      "bytes": 67218,
+      "sha256": "CD611DC49C528E4F60D6F7D6AE4E49CCCC13DD08410BE3C90230974B701C7652"
+    },
+    "outer": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-control-20261022-165637\\outer.json",
+      "bytes": 1525,
+      "sha256": "31F0E0294A7D6151C8048154CB03A95240DE886474C612444B6166FDD6687EED"
+    },
+    "outer_absence": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-control-20261022-165637\\outer-absence.json",
+      "bytes": 183,
+      "sha256": "1CFF49C5BA4B8507FC5A6D216DA13F0FE45DFBFD37D2C25D8A6A23C0BA2EE500"
+    },
+    "job_observation": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-control-20261022-165637\\independent-observed-job-status.json",
+      "bytes": 1572,
+      "sha256": "DAF5626EA54A4F196E482A9922CB38A3AC295BB2D69F6EDA219D5F3DB5BF3A21"
+    },
+    "metadata_acceptance": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-new4-control-20261022-165637\\independent-metadata-acceptance.json",
+      "bytes": 14149,
+      "sha256": "A48E902D0AEB0D1C6E4E598F8FF375F0BEA7621E7178E996CF1861BA963B032C"
+    }
+  },
+  "root_bound_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-new4-observed-helper-bound-source-acceptance-20261022.json",
+    "bytes": 11335,
+    "sha256": "C6859CD0B1556B89D9F7503C149F89ECE2165DAA3BBC96E1ABB190EE1E779167"
+  },
+  "independent_bound_source_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v39-new4-observed-helper-binding-source-peer-20261022\\peer.json",
+    "bytes": 20648,
+    "sha256": "F8D1430866F68C560D2FC255289F42799D99578276C28C8887F29964A4FFD542"
+  },
+  "root_full_bound_source_and_peer_checker_read": true,
+  "resource": {
+    "program": "python",
+    "one_process": true,
+    "resource_class": "io-heavy",
+    "read_only_native_evidence": true,
+    "output_create_only": true,
+    "measurement": {
+      "observed_utc": "2026-10-22T17:12:11.6909652+00:00",
+      "free_physical_kib": 31123948,
+      "required_kib": 16777216,
+      "eligible": true,
+      "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+      "process_rows": 425,
+      "native_candidates": []
+    },
+    "active_native_jobs": []
+  },
+  "root_review": "Root read the full bound helper, all17 actual bindings and independent checker/peer, replayed all raw inverses and current pins, and accepted the original terminal job and independent actual61 metadata. Execute this exact helper only to create the39-field audit inputs; the complete positive auditor requires a separate release."
+}

@@ -1,0 +1,138 @@
+{
+  "status": "root_accepted_bounded_v39_closed_validation_and_timeout_archive_preparer",
+  "reviewer": "Root",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "preparer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\candidate\\Prepare-V39ClosedValidationAndTimeoutArchive-20261022.py",
+    "bytes": 90319,
+    "sha256": "0BD97D2A52ADF9FC624222163049C44DB8D7928BEBB9D5F36B2738BD3735ECF2"
+  },
+  "partial_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\observed-closed-input-inventory.json",
+    "bytes": 3121359,
+    "sha256": "5148DE13C078C6D91E1A4B71B8E64FAA2C74D538BB75B3C6029F8D00F83DFFB7"
+  },
+  "progress_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\progress-patch-plan.json",
+    "bytes": 57509,
+    "sha256": "45698308CA7D388D528515F3B12DA490436745CA1632DFFD6FA81A85A1F86279"
+  },
+  "supplemental_preservation_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\supplemental-preservation-inputs.json",
+    "bytes": 384133,
+    "sha256": "FEB94AFD5DAEDB83A2DBDB468E5657CFB60B6FE17D26EB52343B8428F89E2D24"
+  },
+  "timeout_observed_input_inventory": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\timeout-observed-inputs.json",
+    "bytes": 611205,
+    "sha256": "AE1E3516FD64740C6348FB98BE834F5E57CD4339F4D066A54C20673A9FE6ADB3"
+  },
+  "source_accepted": true,
+  "execution_authority": false,
+  "main_intake_authorized": false,
+  "native_execution_authorized": false,
+  "schema": 1,
+  "reviewed_utc": "2026-10-22T18:33:14.759217+00:00",
+  "accepted_predecessor": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\candidate\\Prepare-V39ClosedPhasesAndUnresolved63Archive-20261022.py",
+    "bytes": 72511,
+    "sha256": "02D8A4504E8741E915621AFE35B3DBDBEC8A8EE8F8D0F1712F9BA3C5C2392C2B"
+  },
+  "predecessor_source_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-unresolved63-archive-preparer-source-acceptance-20261022.json",
+    "bytes": 3392,
+    "sha256": "5737BCE6F6DAE671F0F876E3B5CD7448F8AE9D9F2CFCD326379121F98EEA9CA0"
+  },
+  "finite_source_adaptation": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\finite-source-adaptation.json",
+    "bytes": 74668,
+    "sha256": "18701EE0A99AA55ACDE8890127DA750531B2BC30E390DCF3C80B9142A4C70DA6"
+  },
+  "source_contract": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\source-contract.json",
+    "bytes": 48762,
+    "sha256": "3964C0A8114EA3FC43A42DBA0434F2B204EE7B63317412B8B44A0A0E61D5EEFD"
+  },
+  "static_source_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\static-source-proof.json",
+    "bytes": 512069,
+    "sha256": "F492E0911C8095FA941A744F61EB82107C66D266F30272D9A4720DC750D878DE"
+  },
+  "checker_correction": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\source-checker-predecessor-field-correction.json",
+    "bytes": 1127,
+    "sha256": "F1C48E874D8C57C5D23A476CBB1886B5CFF6BAACD6C2675B4FBEDDDDC37C7018"
+  },
+  "checker_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-existing63-timeout-progress-archive-sourceonly-20261022\\source-checker-predecessor-field-negative.json",
+    "bytes": 2330,
+    "sha256": "47EE3FF067F5BBC73A46B36AEC1E4598B73A1FB620FD2DFE504AC09FF84C4CA9"
+  },
+  "checks": {
+    "all48_changed_bodies_and_complete_new_outcome_validator_read": true,
+    "complete_forward_and_raw_inverse": true,
+    "all_step_prefix_suffix_hashes": true,
+    "retained_functions_raw_and_AST_equal": 26,
+    "nonoutcome_helpers_unchanged": 23,
+    "complete_engine_regions_raw_equal": 3,
+    "raw_copy_gzip_region_exact_one_header_inverse": true,
+    "configuration_fields": 18,
+    "copy_plan_fields": 11,
+    "row_fields": 5,
+    "input_versions_independently_rehashed": 1764,
+    "timeout_direct_edges_checked": 47,
+    "timeout_phase_files_checked": 872,
+    "actual_missing_final_result_preserved": true,
+    "accepted_source_guard_precedes_all_payload_construction": true,
+    "checker_one_field_inverse_checked": true,
+    "all_outcome_counts_match_original_Root_acceptance": true
+  },
+  "outcomes": {
+    "known_attempts": 5,
+    "added_native_validation_negatives": 2,
+    "added_nonnative_validation_negatives": 1,
+    "new3_observed_metadata": 0,
+    "new4_accepted_metadata": 61,
+    "new4_strict_passed": 61,
+    "existing63_compile_owners": 51,
+    "existing63_metadata_owners": 50,
+    "existing63_provisional_groups": 50,
+    "existing63_unstarted_groups": 12,
+    "existing63_partial_metadata_observed": 985,
+    "existing63_accepted_metadata": null,
+    "existing63_runtime_owners": 0,
+    "existing63_runtime_configuration_issued": false
+  },
+  "history": {
+    "current_prefixes": 222,
+    "current_source_units": 65,
+    "basis_progress": {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\projected\\verification\\port-roadmap-resume-20261018\\progress.json",
+      "bytes": 678718,
+      "sha256": "4FF79AE87F671BB8F16283E38D282CB58444A1A0FA42659B0F3CED505EE04343"
+    },
+    "actual_lengths": {
+      "integrated_source_units": 65,
+      "preserved_attempts": 45,
+      "retained_recent_native_negatives": 15,
+      "execution_checkpoint_history": 15
+    },
+    "required_future_lengths": {
+      "integrated_source_units": 65,
+      "preserved_attempts": 50,
+      "retained_recent_native_negatives": 17,
+      "execution_checkpoint_history": 16
+    },
+    "full_old_checkpoint_append": true,
+    "complete_678718_byte_inverse_required": true,
+    "progress_not_generated": true
+  },
+  "source_scope": "Evidence/progress preparation only. Five actual observed attempts and two native-validation negatives. Existing63 partial985 remain unaccepted; original final/result/postseal/restoration remain null. Exactly one existing progress replacement and new immutable evidence only.",
+  "configuration_issued": false,
+  "source_intake_authorized": false,
+  "candidate_or_prefix_or_supplied_checker_executed_by_Root": false,
+  "archive_preparation_executed": false,
+  "Main_or_index_access": false,
+  "source_mutation_hold_released": false,
+  "application_qualified": false
+}

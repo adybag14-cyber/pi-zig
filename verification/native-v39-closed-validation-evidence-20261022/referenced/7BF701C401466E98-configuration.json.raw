@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v39_catalog_preparation",
+  "preparer_sha256": "7D8A6D4E79352501AB73B8EC54B5F126C883277245FCBA9AE44910993110BE8B",
+  "root_preparer_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-catalog-preparer-v4-source-acceptance-20261022.json",
+    "bytes": 41604,
+    "sha256": "472D6B7630B4F63DFE1A6BDC0EEF54B3E715DD14A3468AD3511CF88645CC785A"
+  },
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "previous_head": "014062f2d139254acab4b985b4ae343db637166f",
+  "phase_pins": {
+    "archive": {
+      "before_head": "014062f2d139254acab4b985b4ae343db637166f",
+      "after_head": "e65c636b8600d351920cff88aa31c9f804d5f0b9",
+      "executor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-bound-20261022\\Apply-ExactV38PartialNegativeArchiveIntake-20261022.py",
+        "bytes": 23653,
+        "sha256": "A492D0C5F151E87F2A2538C2E570D1EC2C2FF905442FA3B87E89A59A277E7C09"
+      },
+      "manifest": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-bound-20261022\\manifest.json",
+        "bytes": 2376374,
+        "sha256": "5BB0608FA530405D87A99000A9A305DBD7A6E3049AF592A0D2DF0C8489A9479C"
+      },
+      "release": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-control-20261022\\root-release.json",
+        "bytes": 1356696,
+        "sha256": "FE57E859542C550D90A7F252C4DEE4465607093207B26219595CBF5FF132EFF8"
+      },
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-control-20261022\\fixture-receipt.json",
+        "bytes": 1783479,
+        "sha256": "64FBA8893AF3396D0AA482C9BFC6DB794D8856782958212CAD08D753F8484096"
+      },
+      "preflight": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-control-20261022\\fixture-preflight.json",
+        "bytes": 5773824,
+        "sha256": "1088B20089887DA58AE298A6A25321829A8C2344944CCCE4B40F3C718C61C2EE"
+      },
+      "staged": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-control-20261022\\fixture-staged.json",
+        "bytes": 729714,
+        "sha256": "192014F10DAB572B925DF53B2F3CACC92B23B4BA8CD4CF0A1804C5401DF0B12B"
+      },
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v38-partial-negative-archive-intake-acceptance-20261022.json",
+        "bytes": 4745,
+        "sha256": "FE26DA5FC688601E1403DB77D67FFA8633B29F107D94DE376A96A7AE7A2CBCA7"
+      },
+      "expected_path_count": 1931
+    },
+    "source": {
+      "before_head": "e65c636b8600d351920cff88aa31c9f804d5f0b9",
+      "after_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "executor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-bound-20261022\\Apply-ExactReviewedPending21SourceIntake-20261022.py",
+        "bytes": 23643,
+        "sha256": "2449CBEC3CCED949A4C839C4F6718D2D4FCBE8E7A66DA8B78F956BBEC1065A03"
+      },
+      "manifest": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-bound-20261022\\manifest.json",
+        "bytes": 1124702,
+        "sha256": "E66EDEC79D5F22EAC4E2F8AFC4EFA5E72440714B5C79CB0FCEA2B5B961DB8653"
+      },
+      "release": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-control-20261022\\root-release.json",
+        "bytes": 119199,
+        "sha256": "DA7E05EE9931244F840D185042CE57A55B33AF1A3E3122A3D1843215FBBFE56F"
+      },
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-control-20261022\\fixture-receipt.json",
+        "bytes": 329811,
+        "sha256": "9251C64588C29628190FBBF9E6E4FCF1D8A750F897E1857317C371798DFCCBE0"
+      },
+      "preflight": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-control-20261022\\fixture-preflight.json",
+        "bytes": 1191839,
+        "sha256": "5B932CAFE143ABFABA72C5E8D0F35436C38A8EEF793C19D6A0A1ECADC9338C42"
+      },
+      "staged": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-control-20261022\\fixture-staged.json",
+        "bytes": 137115,
+        "sha256": "9F173066BADE58C0862234DF7C913D6518C0FDD0F97FE489F5A58016916274A2"
+      },
+      "root_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-pending21-source-intake-acceptance-20261022.json",
+        "bytes": 5746,
+        "sha256": "FC09BDD84E6E2463D25E03DD92740E4FDBEF66898F1473B0C7BF7570DCDB01E4"
+      },
+      "expected_path_count": 384
+    }
+  },
+  "selected_source_plan": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\pending21-shutdown-descriptor-copy-plan-successor-sourceonly-20261022\\copy-manifest-plan.json",
+    "bytes": 590893,
+    "sha256": "836BC121159347F7BC68DBF71E97787B59F532D10A95D18DE318370B5F94AFD6"
+  },
+  "progress": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+    "bytes": 678718,
+    "sha256": "4FF79AE87F671BB8F16283E38D282CB58444A1A0FA42659B0F3CED505EE04343"
+  },
+  "archive_preparation_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v38-partial-negative-progress-and-validation-archive-intake-20261022\\preparation-review.json",
+    "bytes": 2671,
+    "sha256": "C7230F42BCCFBA31D222EBAB86E0499BD58B1FA4F11F1B62F0BA0A71BE3F35EB"
+  },
+  "partition": {
+    "new3": {
+      "groups": 3,
+      "declarations": 38
+    },
+    "new4": {
+      "groups": 4,
+      "declarations": 58
+    },
+    "regression63": {
+      "groups": 63,
+      "declarations": 1249
+    },
+    "union_groups": 70,
+    "union_declarations": 1345,
+    "catalog_groups": 120,
+    "catalog_declarations": 2051,
+    "group_cap": 64
+  },
+  "preparation_directories": {
+    "new3": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-prepared-20261022",
+    "new4": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022",
+    "regression63": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022"
+  },
+  "expected_output_names": [
+    "Run-CombinedNativeBatch.ps1",
+    "Get-ModelsNativeCandidates.ps1",
+    "process-ancestry-peer-modules.json",
+    "combined-build-source-peer.json",
+    "uv-namespace-source-peer.json",
+    "prior-v38-progress.json",
+    "Audit-CombinedNativeBatch.py",
+    "metadata-auditor-adaptation.json",
+    "groups.json",
+    "matrix-refresh-adaptation.json",
+    "new-roots-source-inventory.json",
+    "source-inventory-refresh-adaptation.json",
+    "exact-intake-source-inventory.json",
+    "complete-batch-partition.json",
+    "preparation-review.json"
+  ],
+  "catalog_preparation_authorized": true,
+  "native_execution_authorized": false,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "qualification": false,
+  "actual_metadata_count": null
+}

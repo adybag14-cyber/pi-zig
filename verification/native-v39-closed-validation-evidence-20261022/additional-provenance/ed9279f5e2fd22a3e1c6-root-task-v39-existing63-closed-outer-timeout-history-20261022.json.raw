@@ -1,0 +1,265 @@
+{
+  "schema": 1,
+  "status": "preserved_closed_v39_existing63_outer_timeout_negative_history",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "fields": {
+    "v39_existing63_buildquery": {
+      "status": "closed_outer_timeout_negative_accepted",
+      "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+      "batch": "existing63",
+      "control": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-control-20261022-174353",
+      "proof": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353",
+      "launch": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-control-20261022-174353\\launch.ps1",
+        "bytes": 1784,
+        "sha256": "4003BC8863790666F4A74D803156B481A5B538A5FAB1DB3E5BDF6CE97EAD000D"
+      },
+      "grant": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-control-20261022-174353\\root-grant.json",
+        "bytes": 30869,
+        "sha256": "DE1CA61B727A495BBCCDD194711EC08E2ED184CB61A31EA708C38E842A53AB37"
+      },
+      "preparation_review": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\preparation-review.json",
+        "bytes": 1232958,
+        "sha256": "58E217CF7E2445167523089006FBA042FAF1AAA7C766036A69CE304413042904"
+      },
+      "specific_root_configuration": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-existing63-buildquery-issued-config-20261022.json",
+        "bytes": 30860,
+        "sha256": "95CFF37C187AB108203CF82B1D662F564D4F8A59FDD67376C76883FB30982CC2"
+      },
+      "groups": [
+        "native-node-file-handle-read",
+        "native-node-fs-callback-template",
+        "native-vm-simple-stack-source",
+        "native-vm-exotic-operations",
+        "native-node-diagnostic-context",
+        "native-node-native-debug",
+        "native-node-permission",
+        "native-node-fs-readwrap-reuse",
+        "native-node-reqwrap-callback-routing",
+        "native-vm-script-location",
+        "native-node-stream-read",
+        "native-node-environment-map",
+        "native-vm-backing-store-adoption",
+        "native-node-environment-paths",
+        "native-node-stream-fields",
+        "native-node-managed-buffers",
+        "native-node-fs-request-owner",
+        "native-vm-execution-termination",
+        "native-typebox-execution-termination",
+        "native-host-termination-ownership",
+        "native-node-stream-resource",
+        "native-node-package-json-parser",
+        "native-node-microtask-checkpoint",
+        "native-vm-property-retirement",
+        "native-vm-consuming-operands",
+        "native-vm-oom-occurrence",
+        "native-node-callback-scope",
+        "native-node-inspect-colors",
+        "native-vm-captured-frame-logging",
+        "native-node-experimental-warning",
+        "native-node-commonjs-helpers",
+        "native-node-process-warning",
+        "native-node-fs-request-transport",
+        "native-vm-array-buffer-view-length",
+        "native-vm-array-buffer-backing",
+        "native-vm-private-property",
+        "native-node-tcp-transport",
+        "native-vm-async-arguments",
+        "native-node-fs-write-uv",
+        "native-vm-sync-arguments",
+        "native-vm-async-retirement",
+        "native-vm-template-literal",
+        "native-vm-borrowed-bridges",
+        "vm-af-throw",
+        "native-ai-oauth-anthropic-genuine-af",
+        "native-node-module-creation",
+        "native-node-module-search-paths",
+        "native-node-fs-realpath-classic",
+        "native-node-fs-path-helpers",
+        "native-node-file-url-paths",
+        "native-sdk-tool-search-public",
+        "native-ai-radius-config",
+        "native-ai-radius-provider-genuine-af",
+        "native-node-inspect-entry",
+        "native-ai-oauth-radius-genuine-af",
+        "native-vm-existing-promise-settlement",
+        "native-node-options",
+        "native-node-uv-exception",
+        "native-vm-disallow-javascript",
+        "native-vm-continuation-data",
+        "native-vm-pending-promise",
+        "native-vm-native-global",
+        "native-vm-copy-data-properties"
+      ],
+      "declared_count": 1249,
+      "actual_metadata_count": null,
+      "driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+      "matrix_sha256": "5611B22186C7197516F88303A414707C26ADD17B731CFACA264B225CC8A27CDB",
+      "metadata_auditor": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\Audit-CombinedNativeBatch.py",
+        "bytes": 17704,
+        "sha256": "1030886DD02944E4BC9930711C7F05ABA8F02B1FDAA0C8ED6688B18B7EC2460E"
+      },
+      "issued_utc": "2026-10-22T17:43:53.691781+00:00",
+      "runtime_authority": false,
+      "qualification": false,
+      "configuration": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-existing63-buildquery-issued-config-20261022.json",
+        "bytes": 30860,
+        "sha256": "95CFF37C187AB108203CF82B1D662F564D4F8A59FDD67376C76883FB30982CC2"
+      },
+      "configuration_adaptation": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-existing63-buildquery-configuration-adaptation-20261022.json",
+        "bytes": 14949,
+        "sha256": "2F1C729E485EE3D5B30A9732AE8AE97151DD834750C15E2F41E856A562BE039B"
+      },
+      "resource_preflight": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-existing63-buildquery-resource-preflight-20261022.json",
+        "bytes": 1300,
+        "sha256": "813ECFA1C874129AE07386EA37A1A47F0F87A2A17D0892FFD97D560B5388E6C0"
+      },
+      "launch_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-existing63-buildquery-launch-source-acceptance-20261022.json",
+        "bytes": 20732,
+        "sha256": "69ABC967AE167B4D4A7C56046E077EBD81C369E7AD4EF0F891C6C6737F89E9F7"
+      },
+      "grant_launch_adaptation": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-control-20261022-174353\\grant-launch-adaptation.json",
+        "bytes": 39559,
+        "sha256": "69616DC7D854B068C93503477D0A2ABFF7D0781D9E83D7051B16C0D12EA87D2D"
+      },
+      "launch_record": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022\\buildquery-launch.json",
+        "bytes": 4248,
+        "sha256": "8CB24EC5733BBEE84522C62E531C070DBAC857C52706A334E5FD8F6F2F07B24A"
+      },
+      "grant_age_at_source_review_seconds": 5.713665,
+      "job_id": "job-op-68e7e3262f296a6d0fb4a275f57024fff8c8df3219ed4e23930d2f6588032394",
+      "runner_pid": 45240,
+      "runner_process_instance": "134371646432880998",
+      "root_native_lease_exclusive": true,
+      "complete_buildquery_accepted": false,
+      "source_mutation_hold_released": false,
+      "first_compiler": {
+        "pid": 3612,
+        "created_utc": "2026-10-22T17:45:00.0234104Z",
+        "free_kib_at_admission": 29384592,
+        "first_child_grant_age_seconds": 66.3316294
+      },
+      "terminal_job_status": "failed",
+      "terminal_job_exit_code": 1,
+      "root_current_closure": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-control-20261022-174353\\root-outer-timeout-negative-closure.json",
+        "bytes": 632063,
+        "sha256": "451FF45C40F879CEC5A30DFED6D0D5ED352B9E8C3B558E6BC67CBE53789B85BC"
+      },
+      "current_process_observation": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-control-20261022-174353\\root-current-owner-instance-absence.json",
+        "bytes": 137,
+        "sha256": "3A7278BCAA5034F019D1DC836D629D318D778EECEC44C729D38B552067009B98"
+      },
+      "compile_owners": 51,
+      "metadata_owners": 50,
+      "runtime_owners": 0,
+      "provisional_completed_groups": 50,
+      "partial_compile_only_group": "native-sdk-tool-search-public",
+      "unstarted_groups": 12,
+      "original_final_present": false,
+      "original_result_present": false,
+      "original_controller_environment_restored": null,
+      "observed_helper_bindings_performed": false,
+      "inspector_source_correction": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-control-20261022-174353\\root-timeout-negative-inspector-source-correction.json",
+        "bytes": 2455,
+        "sha256": "3724A035F6E7188E930C59328C0A4B14A5A7B3CC663D859900495EBC0C12B44B"
+      },
+      "negative_acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-existing63-outer-timeout-negative-acceptance-20261022.json",
+        "bytes": 9836,
+        "sha256": "BBE41BE72BD618F43712ECBA196E16859ED55A2782DF248FD0B54FBEB6787700"
+      },
+      "observed_partial_metadata_records": 985,
+      "independent_original_peer": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-existing63-outer-timeout-negative-peer-20261022\\peer.json",
+        "bytes": 5894,
+        "sha256": "251A19E01BF3E8DE588207C789E7BC825FA049B7CF0A258F34CCFFE9FB82F40D"
+      }
+    },
+    "v39_existing63_configuration_plan": {
+      "status": "Root_issued_actual_configuration_and_launched_fresh_original63",
+      "plan": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-existing63-buildquery-field-change-plan-sourceonly-20261022\\field-change-plan.json",
+        "bytes": 33326,
+        "sha256": "E532C9361F9D950BAD2E5D43A366B2CD711457B4989BAE2AB3E45C3E93EB9B55"
+      },
+      "configuration_issued": false,
+      "peer": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\independent-v39-existing63-buildquery-field-plan-peer-20261022\\peer.json",
+        "bytes": 11714,
+        "sha256": "F37AD32AC9648E6488BAD3C2993C0547B2C01137624BD5A0AC435DE452E670F7"
+      },
+      "launch_reviewer": {
+        "source": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V39Existing63BuildQueryLaunch-20261022.py",
+          "bytes": 4475,
+          "sha256": "D8E4F709772E837DFD76FB9471682D9D58A0D8BC46C2D9F7E3501301F2E01802"
+        },
+        "source_adaptation": {
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-existing63-buildquery-launch-reviewer-source-adaptation-20261022.json",
+          "bytes": 5581,
+          "sha256": "F59A45246A897E4E842FF903D2128DCFC43320D186BDB4B040694C8C4ED87DAC"
+        },
+        "changes": 6
+      }
+    },
+    "v39_existing63_runtime_source": {
+      "source": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\Review-V39Existing63RuntimeLaunch-20261022.py",
+        "bytes": 7175,
+        "sha256": "0C20466C42D267DBD1D2F6634C1F542D4053711CF23DE15CBD13EB70E518C761"
+      },
+      "acceptance": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v39-existing63-runtime-launch-reviewer-source-acceptance-20261022.json",
+        "bytes": 6344,
+        "sha256": "675275C30B92507FC870CE8A06064156A5F274250749378CC12C057EC670F7EA"
+      },
+      "peer": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v39-existing63-runtime-launch-reviewer-peer-20261022\\peer.json",
+        "bytes": 13000,
+        "sha256": "BA43B51ECF72E0B24D8163581D9C6F032D7E7EE2A4EC63EDD5A9575CF3FAFE03"
+      },
+      "hunks": 11,
+      "composed_steps": 18,
+      "helpers": 5,
+      "regions": 7
+    }
+  },
+  "interpretation": {
+    "one_original_validation_attempt": true,
+    "original_outer_timeout_preserved": true,
+    "granted_groups": 63,
+    "attempted_groups": 51,
+    "compile_owners": 51,
+    "metadata_owners": 50,
+    "runtime_owners": 0,
+    "provisional_groups": 50,
+    "observed_partial_metadata_records": 985,
+    "accepted_metadata_count": null,
+    "complete_groups_accepted": 0,
+    "original_final_and_result_absent": true,
+    "original_source_postseal": null,
+    "original_environment_restoration": null,
+    "all17_observed_helper_slots_remained_unbound": true,
+    "positive_helper_configuration_issued": false,
+    "runtime_configuration_issued": false,
+    "positive_auditors_not_executed": true,
+    "inert_positive_body_drafts_never_issued": true,
+    "source_inspector_correction_is_not_native_attempt": true,
+    "source_mutation_hold_released": false,
+    "qualification": false
+  },
+  "recorded_utc": "2026-10-22T18:24:55.672718+00:00"
+}

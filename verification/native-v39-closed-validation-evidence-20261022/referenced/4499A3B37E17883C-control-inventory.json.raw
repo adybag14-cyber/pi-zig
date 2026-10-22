@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "status": "source_declarations_only_not_executed",
+  "roots": [
+    {
+      "path": "src/native_node_file_handle_read_test.zig",
+      "filter": "native FileHandle",
+      "step": "build-native-node-file-handle-read",
+      "artifact": "native-node-file-handle-read.exe",
+      "expected_count": 14,
+      "names": [
+        "native FileHandle read closed and closing return EOF before read admission",
+        "native FileHandle zero length emits actual stream EOF without allocating a request",
+        "native FileHandle first read bypasses FSReqCallback construction and retains the real ReadWrap",
+        "native FileHandle repeated start and ReadStop preserve the accepted completion",
+        "native FileHandle bounded offset advances by emitted bytes before inline EOF",
+        "native FileHandle completion uses the live length and preserves the raw trace result",
+        "native FileHandle unbounded restart recycles the same native request through actual EOF",
+        "native FileHandle reentrant onread restarts before old Wrapper and event retirement",
+        "native FileHandle reuse creates a fresh resource and restores the default trigger",
+        "native FileHandle ignored resource Set exception continues reset and real admission",
+        "native FileHandle ordinary onread reason survives restart and the actual second completion",
+        "native FileHandle full freelist releases the completed local after EmitRead",
+        "native FileHandle joined service drains the accepted buffer after JavaScript is disabled",
+        "native FileHandle AfterClose shares the actual flags and emits EOF through StreamBase"
+      ],
+      "sha256": "FFAEE39E71868A92884A855B886D296686558C955EA700C0D735F68DB8D2777D"
+    },
+    {
+      "path": "src/native_node_fs_callback_template_test.zig",
+      "filter": "native FSReqCallback",
+      "step": "build-native-node-fs-callback-template",
+      "artifact": "native-node-fs-callback-template.exe",
+      "expected_count": 11,
+      "names": [
+        "native FSReqCallback no argument initializes the actual selected FSReqBase defaults",
+        "native FSReqCallback IsTrue accepts only literal true and never coerces an argument",
+        "native FSReqCallback caller local owns a weak actual request and one BindingData pointer",
+        "native FSReqCallback weak finalization removes its actual Entry and releases BindingData",
+        "native FSReqCallback stored InstanceTemplate creates a real blank brand without calling its constructor",
+        "native FSReqCallback stored brand distinguishes the actual FileHandleReadWrap native allocation",
+        "native FSReqCallback inherits actual AsyncWrap methods and constructor descriptors",
+        "native FSReqCallback subclass prototype is selected before its genuine native constructor",
+        "native FSReqCallback throwing new target prototype preserves the reason before native allocation",
+        "native FSReqCallback configuration retains the actual shared Controller once and rejects retired Hub entry",
+        "native FSReqCallback generic storage admits the actual read and retires through the real Wrapper"
+      ],
+      "sha256": "1DC90343E1BB318344F4C9652C73610B8098AA50D6A3F8B3E9EC0C17BECA8BCC"
+    }
+  ],
+  "support": {
+    "path": "src/native_node_file_handle_read_test_support.zig",
+    "sha256": "F72A583ED548F7BE10477B0AEFD0F77E3D035FB48F2708324AF2E92EB6CA90EC"
+  },
+  "count": 25,
+  "no_assertions_removed": true,
+  "native_execution": false,
+  "qualification": false
+}

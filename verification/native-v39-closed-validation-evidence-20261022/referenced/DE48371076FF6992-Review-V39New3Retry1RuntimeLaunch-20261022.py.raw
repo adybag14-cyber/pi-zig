@@ -1,0 +1,61 @@
+from pathlib import Path
+import copy,datetime,hashlib,json,sys
+E=Path(r"C:\Users\adyba\pi-zig\evidence")
+HEAD="e9f11afa56a923372d957e2fb227f453822c21bf"
+def sha(b):return hashlib.sha256(b).hexdigest().upper()
+def pin(p):
+ p=Path(p);b=p.read_bytes();return dict(path=str(p),bytes=len(b),sha256=sha(b))
+def require(v,m):
+ if not v:raise RuntimeError(m)
+def verify(q):
+ require(pin(q["path"])==q,"Current pin changed "+q["path"])
+def walk(v):
+ if isinstance(v,dict):
+  if set(v)=={"path","bytes","sha256"}:verify(v)
+  else:
+   for value in v.values():walk(value)
+ elif isinstance(v,list):
+  for value in v:walk(value)
+record=json.loads(Path(sys.argv[1]).read_bytes());C=Path(record["control"]);P=Path(record["proof"])
+actual_count=record["actual_metadata_count"]
+require(record["candidate_head"]==HEAD and record["batch"]=="new3" and type(actual_count) is int and actual_count>0,"Exact real runtime record")
+require(not P.exists(),"Runtime proof not started")
+walk(record)
+grant_raw=(C/"root-grant.json").read_bytes();grant=json.loads(grant_raw)
+adapt=json.loads((C/"grant-launch-adaptation.json").read_bytes())
+require(adapt["grant"]==record["grant"] and adapt["launch"]==record["launch"],"Actual original emitted adaptation")
+verify(adapt["original_grant"]);verify(adapt["original_launch"])
+oldraw=Path(adapt["original_grant"]["path"]).read_bytes();old=json.loads(oldraw)
+keys=["grant_id","issued_utc","mode","receipt_directory","build_result_path","build_result_sha256","build_source_seal_path","build_source_seal_sha256","metadata_acceptance_path","metadata_acceptance_sha256","actual_metadata_count","independent_build_closure_path","independent_build_closure_sha256","build_specific_root_configuration","specific_root_configuration","root_buildquery_acceptance","root_review"]
+require([row["key"] for row in adapt["field_changes"]]==keys,"Exact seventeen runtime fields")
+inverse=copy.deepcopy(grant)
+for row in adapt["field_changes"]:
+ k=row["key"];require(grant[k]==row["after"] and row["old_present"]==(k in old) and old.get(k)==row["before"],"Exact runtime adaptation leaf")
+ if row["old_present"]:inverse[k]=row["before"]
+ else:del inverse[k]
+require(inverse==old and (json.dumps(inverse,indent=2)+"\n").encode()==oldraw,"Entire original BuildQuery raw grant inverse")
+launcher=(C/"launch.ps1").read_bytes();original=Path(adapt["original_launch"]["path"]).read_bytes()
+require(original.count(b"'BuildQuery'")==1 and launcher==original.replace(b"'BuildQuery'",b"'RuntimeOnly'",1),"Single exact RuntimeOnly mode token")
+require(launcher.replace(b"'RuntimeOnly'",b"'BuildQuery'",1)==original,"Complete launcher inverse")
+for k in ("complete_grant_inverse","complete_launch_byte_inverse","all_strict_gate_fields_unchanged"):require(adapt[k] is True,k)
+require(adapt["launch_edit_count"]==1 and adapt["diagnostic_continue"] is False and adapt["qualification"] is False,"Strict adaptation scope")
+require(grant["mode"]=="RuntimeOnly" and type(grant["actual_metadata_count"]) is int and grant["actual_metadata_count"]==actual_count and grant["initial_grant_max_age_seconds"]==300 and grant["minimum_free_kib"]==16777216,"Unchanged strict runtime gates")
+cfg=json.loads(Path(record["specific_root_configuration"]["path"]).read_bytes());walk(cfg);walk(grant)
+require(cfg["candidate_head"]==HEAD and cfg["batch"]=="new3" and type(cfg["actual_metadata_count"]) is int and cfg["actual_metadata_count"]==actual_count,"Exact actual new3 runtime configuration count")
+require(grant["specific_root_configuration"]==record["specific_root_configuration"],"Same pinned actual runtime configuration")
+require(cfg["preparer_sha256"]=="D6A9B3316B14769B3D5502C2D90FBC52909CD63F91B287094C4BD3EE2B156E12" and cfg["buildquery_launch"]["path"]==str(E/"combined-native-batch-v39-new3-retry1-prepared-20261022"/"buildquery-launch.json"),"Accepted retry1 constructor and preparation")
+root_bq=json.loads(Path(cfg["root_buildquery_acceptance"]["path"]).read_bytes());walk(root_bq)
+require(grant["root_buildquery_acceptance"]==cfg["root_buildquery_acceptance"],"Same pinned complete Root BuildQuery acceptance")
+require(root_bq["reviewer"]=="Root" and root_bq["candidate_head"]==HEAD and root_bq["batch"]=="new3" and root_bq["complete_buildquery_accepted"] is True and root_bq["runtime_execution_authorized"] is False and root_bq["qualification"] is False,"Complete positive new3 BuildQuery acceptance only")
+require(type(root_bq["actual_metadata_count"]) is int and root_bq["actual_metadata_count"]==actual_count and root_bq["groups"]==record["groups"]==cfg["selected_group_names"]==grant["groups"],"Same accepted actual count and complete cohort")
+for key in ("build_result","build_final","metadata_acceptance","independent_closure"):require(root_bq[key]==cfg[key],"Same accepted parent input "+key)
+require(cfg["runtime_execution_authorized"] is True and cfg["compile_execution_authorized"] is False and cfg["diagnostic_continue"] is False and cfg["qualification"] is False and cfg["source_mutation_hold_released"] is False,"Root specific runtime-only authority")
+require(cfg["runtime_constructor_source_review"]["sha256"]=="93DC83198F582C6B57B77B35F6B14027B8E7F0573C9A9AE599B4BD9C053940DE","Actual accepted runtime source review")
+require(grant["build_specific_root_configuration"]==old["specific_root_configuration"],"Retained BuildQuery config")
+require(grant["root_review"]==cfg["root_runtime_review"] and isinstance(grant["root_review"],str),"Runtime narrative")
+age=(datetime.datetime.now(datetime.timezone.utc)-datetime.datetime.fromisoformat(record["issued_utc"])).total_seconds()
+require(0<=age<120,"Prompt launch margin before initial source seal")
+out={"schema":1,"status":"root_accepted_specific_v39_new3_retry1_runtime_launch_source","reviewer":"Root","candidate_head":HEAD,"launch_reviewer_source":pin(__file__),"runtime_launch_record":pin(sys.argv[1]),"grant":record["grant"],"launcher":record["launch"],"specific_configuration":record["specific_root_configuration"],"grant_launch_adaptation":pin(C/"grant-launch-adaptation.json"),"source_review":cfg["runtime_constructor_source_review"],"root_buildquery_acceptance":cfg["root_buildquery_acceptance"],"exact_changed_grant_fields":keys,"complete_grant_raw_inverse":True,"single_launcher_mode_change_and_complete_inverse":True,"actual_metadata_count":actual_count,"Root_complete_source_and_all17_field_changes_reviewed":True,"reviewed_utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),"grant_age_seconds":age,"launch_authorized_under_exact_specific_runtime_configuration":True,"compile_execution_authorized":False,"qualification":False,"source_mutation_hold_released":False}
+target=E/"root-v39-new3-retry1-runtime-launch-source-acceptance-20261022.json"
+with target.open("x",encoding="utf-8",newline="\n") as stream:stream.write(json.dumps(out,indent=2)+"\n")
+print(json.dumps({"acceptance":pin(target),"record":pin(sys.argv[1]),"control":str(C),"proof":str(P),"launch":record["launch"],"grant":record["grant"],"adaptation":pin(C/"grant-launch-adaptation.json"),"age_seconds":age,"changed_fields":[{"key":r["key"],"after":r["after"]} for r in adapt["field_changes"]]},ensure_ascii=True))

@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v37_catalog_preparation",
+  "catalog_preparation_authorized": true,
+  "native_execution_authorized": false,
+  "preparer_sha256": "BDEDEE0A5A00C895C6E2375AE67C910223D091A8286B4B85201DF8BE7A72A30F",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "previous_head": "a6b6c37680d4b66f8cb90b9eb03a6efff6d0bef8",
+  "partition": {
+    "new4": 4,
+    "regression63": 63,
+    "declarations": [
+      58,
+      1249
+    ],
+    "union_groups": 67,
+    "union_declarations": 1307
+  },
+  "preparation_directories": {
+    "new4": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021",
+    "regression63": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-regression63-prepared-20261021"
+  },
+  "fixture": {
+    "path": "src/native_node_file_handle_owner_test_support.zig",
+    "before_sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127",
+    "after_sha256": "EEDD73ADC5B2F260B07DD3877658FABE2C11A6AAC2BF4216E17E7328E27CA47F",
+    "after_bytes": 33152
+  },
+  "progress": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\verification\\port-roadmap-resume-20261018\\progress.json",
+    "bytes": 438396,
+    "sha256": "18E61B7DFE07DA5D13C64E4B933EC519312AFED1DC7B29AC4789AC0C3A5EB49F"
+  },
+  "prior_negative_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-v36-new4-runtime-control-20261021-082608\\independent-negative-runtime-closure.json",
+    "bytes": 26137,
+    "sha256": "8BCCF2D351EEDC42D65C56E8605D2DD10ACFF153231552AD90F496E4668CF9AF"
+  },
+  "phase_pins": [
+    {
+      "phase": "fixture",
+      "manifest": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-filehandle-resource-fixture-main-intake-20261021\\manifest.json",
+        "bytes": 12777,
+        "sha256": "3905D6C0319E27D8467C0B720833030F048200A97BCFD3B2816ABBD452928F38"
+      },
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-receipts-20261021\\fixture-receipt.json",
+        "bytes": 4122,
+        "sha256": "CC0A39654C92BAAD563B11AA15247403FC839189351F99DE0C41BF26C813E982"
+      },
+      "release": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-fixture-source-intake-release-20261021.json",
+        "bytes": 7697,
+        "sha256": "D64FCF4D848FAB1717A8F9A243FFB6381AA5DF8BBF5E9D5A5EA4F1CA1B5DA6E3"
+      },
+      "commit": "891b74c94b1d9fc859587762187bb1040970b8a8",
+      "path_count": 26
+    },
+    {
+      "phase": "progress",
+      "manifest": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v36-progress-and-negative-archive-intake-20261021\\manifest.json",
+        "bytes": 103885,
+        "sha256": "0CBA646DD610545E9E91A03E1AEBD6B472095AAA8B09163817FEC3084E61BED1"
+      },
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-progress-negative-intake-receipts-20261021\\progress-receipt.json",
+        "bytes": 27955,
+        "sha256": "E50786A89214CBA2E7E5E0A6C7E19B6A998F9CF2D46F309E0A34323488594EC9"
+      },
+      "release": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-progress-negative-intake-release-20261021.json",
+        "bytes": 9596,
+        "sha256": "D85AA49353C973975FA256D4EC10566958DBFE07225F70C4BDA9FBD215BEA19D"
+      },
+      "commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+      "path_count": 170
+    }
+  ],
+  "fixture_independent_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v36-file-handle-outer-scope-independent-peer-20261021\\peer.json",
+    "bytes": 7852,
+    "sha256": "1474959A14A6212AEC8673296A5F8A616CB5007E17DF2DA3667D09D97B0A37E2"
+  },
+  "fixture_root_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v36-filehandle-outer-resource-fixture-source-acceptance-20261021.json",
+    "bytes": 7035,
+    "sha256": "590FA13B117F79761FE1C1FA634EC4AF9B685EAAD6CA69FF49B80F3E688AA973"
+  },
+  "actual_metadata_count": null,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "qualification": false,
+  "root_preparer_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-catalog-preparer-source-acceptance-20261021.json",
+    "bytes": 6131,
+    "sha256": "C2C57834807501FB9B228BCBE0F7A3DF061718F9903C9B417CF57CC8A271597E"
+  },
+  "root_review": "Root read the entire54634-byte preparer, all36 finite changes and intermediate/full inverse evidence,20 unchanged helpers plus the one diagnostic-only helper, and all four critical regions. Root read independent SDK871D source peer and598C checker and independently rehashed1577 inputs. Exact actual parent chain is a6 ->891 fixture26 ->b13 progress170, with both releases and actual receipts bound above and final clean/pushed Main. Only fixtureEEDD and progress18E61 replace existing files; all archive bytes, historical lists and original negative remain preserved. Prepare only the two fixed new V37 evidence directories with the complete117-group/2013-declaration/576-dependency catalog, unchanged disjoint4/58 and original63/1249 order, strict driver1DD3/classifier3413, exact three fixture matrix and three inventory substitutions, independent literal import/embed graphs and path-only metadata-auditor adaptation. Actual successor metadata is unknown. No target build, compiler, runtime, Node reference, source generator, cache reuse, Main/index mutation or qualification is authorized.",
+  "unresolved_required_before_issuance": [],
+  "source_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\proposal.json",
+    "bytes": 11951,
+    "sha256": "E40157BF97BD043A541247B885680820560135EE4286F896F031B268C6B5FEFB"
+  },
+  "ownership_proof": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v36-file-handle-outer-scope-sourceonly-20261021\\ownership-proof.json",
+    "bytes": 14106,
+    "sha256": "D12FC3C071251FC75B1CAD32E684522F443E903167C6055765E862BCE5475D73"
+  },
+  "historical_outcomes": {
+    "v36_buildquery_actual_metadata": [
+      19,
+      4,
+      24,
+      14
+    ],
+    "v36_runtime_started": 19,
+    "v36_runtime_completed": 19,
+    "v36_runtime_failed": 18,
+    "v36_runtime_passed": 1,
+    "v36_runtime_unstarted": 42,
+    "prior_metadata_transferred": false
+  },
+  "issuance_note": "Root issues this exact configuration for source-only catalog preparation after reading its actual bytes and verifying the specific preparer source acceptance and both actual committed intake phases. Native/runtime/qualification flags remain false.",
+  "issued_utc": "2026-10-21T09:33:24.959647+00:00"
+}

@@ -1,0 +1,33 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\b1bb7c9072c7feac683e4cc0afdd2ad2\\test.exe",
+  "binary_sha256": "971FEA07BB93C1FB52CD22508CC98E8574EA36BEC7D6F0B13AC27A2E1057BDD8",
+  "version": "0.16.0",
+  "actual_count": 21,
+  "tests": [
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint empty queue runs completed callbacks with the outer frame",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint preserves pair order and deduplicates only identical pairs",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint callback mutations take effect after every original callback",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint duplicate add during iteration still creates the COW owner",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint absent remove during iteration still creates the COW owner",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint suppression and actual scope depth postpone all work",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint reentry and close during completed callbacks preserve the live owner",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint drains the actual FIFO including jobs enqueued by a running job",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint reports the actual ordinary reason and failed job frame then continues",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint retains actual FIFO work enqueued by the ordinary report operation",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint preserves a generic actual fatal and leaves later queued work",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint a flagged Error returned as DATA is not a failed job",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint active termination clears the live queue before completed callbacks",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint cancelled native unwind stops one round and retains the live queue",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint cancellation in a completed callback consumes the actual active event",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint all native completed callbacks see an earlier selected termination",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint an empty queue does not service a request-only termination",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint clears actual kept WeakRef targets after the completed phase",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint a completed callback ordinary throw survives later native callbacks",
+    "native_node_microtask_checkpoint_test.test.native Node microtask checkpoint closed native owner rejects new entry and callback mutation",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-node-microtask-checkpoint",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

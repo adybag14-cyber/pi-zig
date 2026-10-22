@@ -1,0 +1,51 @@
+from pathlib import Path
+import copy,datetime,hashlib,json,subprocess,sys
+B=Path(r'C:\Users\adyba\pi-zig');E=B/'evidence';record=json.loads(sys.argv[1]);C=Path(record['control'])
+def pin(p):
+ p=Path(p);raw=p.read_bytes();return dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest().upper())
+def checked(p):
+ assert pin(p['path'])==p;return Path(p['path']).read_bytes()
+a=json.loads((C/'grant-launch-adaptation.json').read_bytes())
+assert a['grant']==record['grant'] and a['launch']==record['launch']
+oldraw=checked(a['original_grant']);old=json.loads(oldraw);new=json.loads(checked(a['grant']));fwd=copy.deepcopy(old)
+assert a['original_grant']['sha256']=='275233CC558EF649EB82F22A0BCDCF41DF055A48BB89A461D4361A65966C0A15'
+assert len({x['key']for x in a['field_changes']})==len(a['field_changes'])
+for x in a['field_changes']:
+ k=x['key'];assert (k in fwd)==x['old_present'] and fwd.get(k)==x['before'];fwd[k]=x['after']
+assert fwd==new
+rev=copy.deepcopy(new)
+for x in reversed(a['field_changes']):
+ if x['old_present']:rev[x['key']]=x['before']
+ else:del rev[x['key']]
+assert rev==old and (json.dumps(rev,indent=2)+'\n').encode()==oldraw
+lo=checked(a['original_launch']);ln=checked(a['launch'])
+assert a['original_launch']['sha256']=='3DAC09B54DD866DA95FCAF67E9CA29A687AB9A28B6EAE598931ED69FFE5AA73F'
+assert a['before']=='evidence/combined-native-batch-v34-prepared-20261020' and a['after']=='evidence/combined-native-batch-v39-regression63-prepared-20261022'
+before,after=a['before'].encode(),a['after'].encode()
+assert lo.count(before)==ln.count(after)==1 and lo.replace(before,after)==ln and ln.replace(after,before)==lo
+cfg=json.loads(checked(record['specific_root_configuration']))
+assert record['specific_root_configuration']['sha256']==sys.argv[2]
+assert cfg['batch']=='existing63' and cfg['declared_groups']==63 and cfg['declared_controls']==1249 and cfg['actual_metadata_count'] is None
+assert cfg['root_catalog_acceptance']['sha256']=='CB6A78ACEFAA83A6DE31AB917B6460465BF012C99B38CE87425B6893CCB7AB2C'
+assert cfg['grant_provenance_updates']['v39_execution_bound_source_review']['sha256']=='5056C7EB01BC3DBC3931030A7753423CE2AAD1EDC9A71A00A192D0DA7076450A'
+assert cfg['preparation_review']['sha256']=='58E217CF7E2445167523089006FBA042FAF1AAA7C766036A69CE304413042904'
+assert new['groups']==record['groups']==cfg['selected_group_names']
+for k,v in cfg['grant_provenance_updates'].items():assert new[k]==v
+assert new['initial_grant_max_age_seconds']==300 and new['minimum_free_kib']==16777216 and new['outer_controller_seconds']==1800 and new['mode']=='BuildQuery'
+assert a['all_strict_gate_fields_unchanged'] is True and a['runtime_authority'] is False and a['qualification'] is False
+pins={}
+def walk(o):
+ if isinstance(o,dict):
+  if {'path','bytes','sha256'}<=o.keys() and isinstance(o['path'],str):
+   row={k:o[k]for k in ('path','bytes','sha256')};checked(row);pins[row['path']]=row
+  for v in o.values():walk(v)
+ elif isinstance(o,list):
+  for v in o:walk(v)
+walk(cfg);walk(record)
+assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=B/'main',text=True).strip()==new['candidate_head']=='e9f11afa56a923372d957e2fb227f453822c21bf'
+assert subprocess.check_output(['git','status','--porcelain'],cwd=B/'main')==b''
+age=(datetime.datetime.now(datetime.timezone.utc)-datetime.datetime.fromisoformat(new['issued_utc'])).total_seconds();assert age<120,age
+out=E/'root-v39-existing63-buildquery-launch-source-acceptance-20261022.json'
+review=dict(schema=1,reviewer='Root',candidate_head=new['candidate_head'],reviewed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),grant=a['grant'],launch=a['launch'],adaptation=pin(C/'grant-launch-adaptation.json'),configuration=record['specific_root_configuration'],buildquery_launch_record=pin(E/'combined-native-batch-v39-regression63-prepared-20261022/buildquery-launch.json'),root_full_grant_launcher_and_all_change_values_reviewed=True,field_changes=len(a['field_changes']),complete_grant_structural_and_byte_inverse=True,complete_launch_byte_inverse=True,all_fixed_control_fields_unchanged=True,current_input_versions=list(pins.values()),grant_age_seconds=age,exact_single_buildquery_launch_authorized=True,runtime_authority=False,qualification=False)
+with out.open('xb') as stream:stream.write((json.dumps(review,indent=2)+'\n').encode())
+print(json.dumps(dict(acceptance=pin(out),adaptation=review['adaptation'],launch_record=review['buildquery_launch_record'],grant_age_seconds=age)))

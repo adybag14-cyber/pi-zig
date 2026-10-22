@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "status": "root_reviewed_specific_v37_runtime_preparation",
+  "reviewer": "Root",
+  "preparer_sha256": "414B3058238FD05D64392C1AECC8F9DBBB081364CA4CD4D29C047D5A1A4F72C0",
+  "candidate_head": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+  "batch": "new4",
+  "runtime_execution_authorized": true,
+  "compile_execution_authorized": false,
+  "diagnostic_continue": false,
+  "qualification": false,
+  "source_mutation_hold_released": false,
+  "declared_groups": 4,
+  "declared_controls": 58,
+  "actual_metadata_count": 61,
+  "selected_group_names": [
+    "native-node-file-handle-owner",
+    "native-node-fs-before-hook-continuation",
+    "native-vm-error-constructor-name",
+    "native-node-file-handle-transfer"
+  ],
+  "buildquery_launch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v37-new4-prepared-20261021\\buildquery-retry1-launch.json",
+    "bytes": 2098,
+    "sha256": "02B61D9076D6E5DD5E870722D939DDF53EBB21293FEB231692B807D26A9FE88A"
+  },
+  "build_result": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\result.json",
+    "bytes": 67229,
+    "sha256": "8A86FD362D0E48FABAB9BE0F6E6902BECDDDA8F4F779AE8E73FB6492D927DBFC"
+  },
+  "build_final": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-buildquery-20261021-131435\\final.json",
+    "bytes": 15933885,
+    "sha256": "14FE33B72795CE1E113C68BF0D8508CE2BE02096E8A1C1EAA938A65DC8026D27"
+  },
+  "metadata_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-metadata-acceptance.json",
+    "bytes": 14153,
+    "sha256": "6D28EB7608FB6ED4ABF1EAFAA2ACC2EE618C8A549C3AE64213E4C4892A27125B"
+  },
+  "independent_closure": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v37-new4-control-20261021-131435\\independent-current-seals-and-owners.json",
+    "bytes": 224405,
+    "sha256": "7299F65541DED34F87D3671FAA895C2F0E9B2C8B9149AE4757DE466B5FD11382"
+  },
+  "runtime_constructor_source_review": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-retry1-execution-bound-source-review-20261021.json",
+    "bytes": 8935,
+    "sha256": "67148BD40AA1DACA49B6575CD22853CCD56229D95517CC58E7897A89ABCA9F77"
+  },
+  "root_runtime_review": "Root separately authorizes the exact12513-byte414B Retry1 RuntimeOnly constructor with this immutable configuration after accepting original fa17 fresh BuildQuery in30CF28F1. The original four groups, source58/actual61 metadata19/4/24/14, complete7299F655 closure, original6D28EB76 metadata and14FE33B7 full source bookends are verified, with no build processes remaining. The separate canonical67148 runtime-constructor source-review pin is mandatory and must match inherited v37_execution_bound_source_review. Use exact02B61 retry launch and only its accepted original cached executables/PDBs. Root grants one strict RuntimeOnly run after reading and checking the newly emitted grant/launcher/adaptation and immediately submitting within the unchanged300-second initial-age gate. Fresh serial16GiB admission, 1DD3 strict driver/3413 classifier, original CI/protocol/outer owners,120s actual runtime owner,10s settlement and1800s outer remain. Every selected raw result must pass original wire/stderr/source/artifact/owner gates; DiagnosticContinue is false. No compile, metadata rerun, diagnostic weakening, Main mutation or application qualification. Preserve any original negative and independently close all actual intervals and full current seals before ending the source hold or considering another cohort.",
+  "issued_utc": "2026-10-21T13:28:47.872705+00:00",
+  "root_buildquery_acceptance": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v37-new4-retry1-complete-buildquery-acceptance-20261021.json",
+    "bytes": 3420,
+    "sha256": "30CF28F108FCA7C9210237E23A1253AA7B6F93E534DA099E1E9738AF2D71877B"
+  },
+  "runtime_authority": true,
+  "source_only": false,
+  "matrix_sha256": "E4B682D08139EBC7837424C8157CFFB503BD5278C84EFE626828F6DA0E8DBB37",
+  "fresh_memory_observation": {
+    "observed_utc": "2026-10-21T13:28:47.7238053Z",
+    "free_physical_kib": 23779632,
+    "required_kib": 16777216,
+    "eligible": true,
+    "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+    "process_rows": 478,
+    "native_candidates": []
+  }
+}

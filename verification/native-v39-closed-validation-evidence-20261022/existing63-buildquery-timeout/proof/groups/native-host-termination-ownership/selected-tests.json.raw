@@ -1,0 +1,29 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native-foundation-fresh-v39-existing63-buildquery-20261022-174353\\cache\\o\\38c5e740fb648b247da06e6a976eb86a\\test.exe",
+  "binary_sha256": "29038AC7477597F70782A8662E48608320094AEE1F68307301997D380CF69810",
+  "version": "0.16.0",
+  "actual_count": 17,
+  "tests": [
+    "native_host_termination_ownership_test.test.native host termination normal owners retire roots before returning the actual result",
+    "native_host_termination_ownership_test.test.native host termination actual entry event survives owned roots and result retirement",
+    "native_host_termination_ownership_test.test.native host termination genuine cleanup event displaces the owned normal result",
+    "native_host_termination_ownership_test.test.native host termination cancel during cleanup preserves only the native abrupt completion",
+    "native_host_termination_ownership_test.test.native host termination cancellation allows a later actual ordinary cleanup reason",
+    "native_host_termination_ownership_test.test.native host termination cancellation allows a later actual generic fatal cleanup",
+    "native_host_termination_ownership_test.test.native host termination earlier generic fatal retires a losing cleanup event lease",
+    "native_host_termination_ownership_test.test.native host termination cached ordinary owner remains ordinary after its flag is set",
+    "native_host_termination_ownership_test.test.native host termination cached generic fatal survives later clearing of its public flag",
+    "native_host_termination_ownership_test.test.native host termination flagged actual Promise DATA stays ordinary through ordinary cleanup",
+    "native_host_termination_ownership_test.test.native host termination actual event overrides flagged DATA without publishing it as a native token",
+    "native_host_termination_ownership_test.test.native host termination cancelled actual token remains native through repeated cleanup ownership",
+    "native_host_termination_ownership_test.test.native host termination explicit error after Cancel survives without pending or diagnostic authority",
+    "native_host_termination_ownership_test.test.native host termination later actual cleanup replaces an explicit already cancelled native error",
+    "native_host_termination_ownership_test.test.native host termination real ModuleCallable preserves cancelled owner errors at the native return gateway",
+    "native_host_termination_ownership_test.test.native host termination cancelled invocation record does not poison a later normal owned return",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "group": "native-host-termination-ownership",
+  "candidate_head": "e9f11afa56a923372d957e2fb227f453822c21bf",
+  "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+  "runtime_started": false
+}

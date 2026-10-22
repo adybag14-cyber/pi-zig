@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "preserved_read_only_checker_span_selector_negative",
+  "candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\candidate\\Prepare-V39ClosedPhasesAndUnresolved63Archive-20261022.py",
+    "bytes": 72511,
+    "sha256": "02D8A4504E8741E915621AFE35B3DBDBEC8A8EE8F8D0F1712F9BA3C5C2392C2B"
+  },
+  "original_checker": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\check-unexecuted-source-and-contract.py",
+    "bytes": 18418,
+    "sha256": "E204278E9955850E9D5825713B2E74DFFB09E99B1B02592ADB31AEE04E43E99E"
+  },
+  "execution": {
+    "ok": false,
+    "summary": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\check-unexecuted-source-and-contract.py\", line 92, in <module>\r\n    ob=segment(ot,start,old_end);nb=segment(nt,start,new_end)\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\check-unexecuted-source-and-contract.py\", line 39, in segment\r\n    require(text.count(start)==text.count(end)==1,\"unique complete span delimiters\")\r\n    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\check-unexecuted-source-and-contract.py\", line 17, in require\r\n    if not ok: raise AssertionError(label)\r\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: unique complete span delimiters",
+    "data": {
+      "execution": {
+        "queue_wait_ms": 1,
+        "slot": 9
+      }
+    },
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\check-unexecuted-source-and-contract.py\", line 92, in <module>\r\n    ob=segment(ot,start,old_end);nb=segment(nt,start,new_end)\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\check-unexecuted-source-and-contract.py\", line 39, in segment\r\n    require(text.count(start)==text.count(end)==1,\"unique complete span delimiters\")\r\n    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\adyba\\pi-zig\\evidence\\v39-closed-phases-progress-archive-sourceonly-20261022\\check-unexecuted-source-and-contract.py\", line 17, in require\r\n    if not ok: raise AssertionError(label)\r\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError: unique complete span delimiters\r\n",
+    "exitCode": 1,
+    "truncated": false,
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "concrete_cause": "The selector `for required in preservation` appears twice in both baseline and candidate: required_raw_files and role_pins. The source span must end at the full required_raw_files line.",
+  "candidate_or_prefix_executed": false,
+  "candidate_changed": false,
+  "native_attempt": false
+}

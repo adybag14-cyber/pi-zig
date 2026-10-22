@@ -1,0 +1,35 @@
+$ErrorActionPreference='Stop'
+$taskReviewContainer='C:\Users\adyba\pi-zig'
+$taskReviewClassifier=Join-Path $taskReviewContainer 'evidence/combined-native-batch-v37-new4-prepared-20261021/Get-ModelsNativeCandidates.ps1'
+if((Get-FileHash -LiteralPath $taskReviewClassifier).Hash -cne '3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301'){throw 'Pinned classifier bytes changed'}
+$taskReviewBegin=[DateTimeOffset]::UtcNow.ToString('o')
+$taskReviewRows=@(Get-CimInstance Win32_Process -ErrorAction Stop)
+$taskReviewPrefix=[IO.Path]::GetFullPath($taskReviewContainer).TrimEnd('\')+'\'
+$taskReviewPattern=[regex]::Escape($taskReviewPrefix)+'(?:.*\\)?(?:\.zig-cache|zig-out)\\.*\.exe(?:["\s]|$)'
+$taskReviewIndex=@()
+$taskReviewRelevant=@()
+$taskReviewNative=@()
+foreach($taskReviewRow in $taskReviewRows){
+ $taskReviewName=([string]$taskReviewRow.Name).Trim()
+ $taskReviewExe=([string]$taskReviewRow.ExecutablePath).Replace('/','\')
+ $taskReviewCommand=([string]$taskReviewRow.CommandLine).Replace('/','\')
+ $taskReviewReasons=@()
+ if($taskReviewName -iin @('zig.exe','build.exe','test.exe')){$taskReviewReasons+='known_native_name'}
+ if($taskReviewExe.EndsWith('\zig.exe',[StringComparison]::OrdinalIgnoreCase)){$taskReviewReasons+='zig_executable'}
+ if($taskReviewExe.StartsWith($taskReviewPrefix,[StringComparison]::OrdinalIgnoreCase)-and$taskReviewExe -imatch '\\(?:\.zig-cache|zig-out)\\.*\.exe$'){$taskReviewReasons+='contained_native_executable'}
+ if($taskReviewCommand -imatch $taskReviewPattern){$taskReviewReasons+='contained_native_command_line'}
+ if(!$taskReviewName-and!$taskReviewExe-and!$taskReviewCommand){$taskReviewReasons+='unclassified_missing_identity'}
+ $taskReviewCreated=$null;$taskReviewTicks=$null
+ if($null -ne $taskReviewRow.CreationDate){$taskReviewDate=([DateTimeOffset]$taskReviewRow.CreationDate).UtcDateTime;$taskReviewCreated=$taskReviewDate.ToString('o');$taskReviewTicks=$taskReviewDate.ToFileTimeUtc().ToString([Globalization.CultureInfo]::InvariantCulture)}
+ $taskReviewIndex+=,@([int]$taskReviewRow.ProcessId,[int]$taskReviewRow.ParentProcessId,$taskReviewName,$taskReviewCreated,$taskReviewTicks)
+ $taskReviewIsRelevant=($taskReviewRow.ProcessId -in @(17540,8612,29764)-or$taskReviewRow.ParentProcessId -in @(17540,8612,29764))
+ if($taskReviewReasons.Count-or$taskReviewIsRelevant){
+  $taskReviewRecord=[ordered]@{pid=[int]$taskReviewRow.ProcessId;parent_pid=[int]$taskReviewRow.ParentProcessId;name=$taskReviewName;executable=$taskReviewRow.ExecutablePath;command_line=$taskReviewRow.CommandLine;cim_created_utc=$taskReviewCreated;cim_filetime=$taskReviewTicks;native_admission_reasons=@($taskReviewReasons);incomplete_native_identity=(!$taskReviewExe-or!$taskReviewCommand-or!$taskReviewCreated-or!$taskReviewRow.ProcessId);exact_process_start_utc=$null;exact_process_filetime=$null;identity_error=$null}
+  if($taskReviewRow.ProcessId -in @(17540,8612,29764)){
+   try{$taskReviewProcess=[Diagnostics.Process]::GetProcessById([int]$taskReviewRow.ProcessId);try{$taskReviewStart=$taskReviewProcess.StartTime.ToUniversalTime();$taskReviewRecord.exact_process_start_utc=$taskReviewStart.ToString('o');$taskReviewRecord.exact_process_filetime=$taskReviewStart.ToFileTimeUtc().ToString([Globalization.CultureInfo]::InvariantCulture)}finally{$taskReviewProcess.Dispose()}}catch{$taskReviewRecord.identity_error=[string]$_}
+  }
+  if($taskReviewReasons.Count){$taskReviewNative+=,$taskReviewRecord}
+  if($taskReviewIsRelevant){$taskReviewRelevant+=,$taskReviewRecord}
+ }
+}
+[ordered]@{schema=1;method='Fresh direct Win32_Process query; five pinned3413 predicates applied inline, no classifier/helper import';began_utc=$taskReviewBegin;completed_utc=[DateTimeOffset]::UtcNow.ToString('o');query_pid=$PID;process_rows=$taskReviewRows.Count;classifier_sha256='3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301';native_candidates=@($taskReviewNative);original_pid_or_direct_child_records=@($taskReviewRelevant);all_process_identity_index=@($taskReviewIndex);index_columns=@('pid','parent_pid','name','cim_created_utc','cim_filetime_decimal_string');target_executed=$false;native_execution=$false;target_helper_executed=$false}|ConvertTo-Json -Depth 12 -Compress

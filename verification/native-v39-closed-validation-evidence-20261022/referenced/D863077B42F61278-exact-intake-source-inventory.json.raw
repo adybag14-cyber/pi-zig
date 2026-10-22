@@ -1,0 +1,344 @@
+{
+  "schema": 1,
+  "candidate_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "previous_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+  "phase_pins": [
+    {
+      "phase": "owner-error",
+      "manifest": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-error-main-intake-20261020\\manifest-v2.json",
+        "bytes": 107917,
+        "sha256": "5730CB5FA9F17FE33478C128E763287E59A37477B2AF2A0820BBCA002D0FADCF"
+      },
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\owner-error-receipt.json",
+        "bytes": 31527,
+        "sha256": "F62CC7E334D9F4199BBA7E2DAA679F7D6DA80704426A20EFFE676C3C129A5F73"
+      },
+      "release": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-exact-three-phase-source-release-20261020.json",
+        "bytes": 8595,
+        "sha256": "B4648B29C5CBCC3CE9695A49B76F69055782D075180EE6D8C69CD0C7A1D3FE03"
+      },
+      "commit": "67e2ae2fa78dea304b667f634a40ade3a209581a"
+    },
+    {
+      "phase": "reqwrap",
+      "manifest": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-reqwrap-fixture-main-intake-20261020\\manifest-v2.json",
+        "bytes": 5515,
+        "sha256": "BA8482D0DA4837630E158C5F345C9D5F58D8AE2614F8F372E164EDB9894EEF73"
+      },
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\reqwrap-receipt.json",
+        "bytes": 2147,
+        "sha256": "AFA5D51604AC23480AC5D0212776EE16D4F6515E3C7CB0B8186CE76B647A41B1"
+      },
+      "release": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-exact-three-phase-source-release-20261020.json",
+        "bytes": 8595,
+        "sha256": "B4648B29C5CBCC3CE9695A49B76F69055782D075180EE6D8C69CD0C7A1D3FE03"
+      },
+      "commit": "842c76a89909627e589f50e7043852b68fd80f00"
+    },
+    {
+      "phase": "fs-init",
+      "manifest": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-fs-init-observer-main-intake-20261020\\manifest-v2.json",
+        "bytes": 19257,
+        "sha256": "21093750D07017BCA35F42D958AA758B8B4BC030920190ADC003BDA1246371E8"
+      },
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-reviewed-source-intake-receipts-20261020\\fs-init-receipt.json",
+        "bytes": 5240,
+        "sha256": "17C2FC135C1E4DDB4334F5A0425F9B771A27F0F513BB016A974DF1196D8A7C90"
+      },
+      "release": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-exact-three-phase-source-release-20261020.json",
+        "bytes": 8595,
+        "sha256": "B4648B29C5CBCC3CE9695A49B76F69055782D075180EE6D8C69CD0C7A1D3FE03"
+      },
+      "commit": "2bdafdfa1e41032fcc4e1f0a378b1a97792b72c0"
+    },
+    {
+      "phase": "transfer",
+      "manifest": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-file-handle-transfer-main-intake-20261020\\manifest.json",
+        "bytes": 54892,
+        "sha256": "94E02E52D90FB962ACBE82BE8E531E222E04F50B11DDA887F89C8B205FFD4ADE"
+      },
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-transfer-intake-receipts-20261020\\transfer-receipt.json",
+        "bytes": 10195,
+        "sha256": "3586E361FEED1576F2A36A2AF89A8EAEF8962CFD20B7B7BA11CD2BB497378C0B"
+      },
+      "release": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-file-handle-transfer-source-intake-grant-20261020.json",
+        "bytes": 4400,
+        "sha256": "5B7F74BEC67ECC63B5A6E76CAA9F76E66D68B67414EFDF8C48E72C5C26B10388"
+      },
+      "commit": "160b4e0562f0eb1139bf2e4e9c00f4c10ab6aa64"
+    },
+    {
+      "phase": "error-naming",
+      "manifest": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-error-build-naming-main-intake-20261020\\manifest.json",
+        "bytes": 11936,
+        "sha256": "8C09208FC115AC525CCCB4B64A2A921D2FE95FA58179A02D12A8F6CCA1D30617"
+      },
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-error-build-naming-intake-receipts-20261020\\error-naming-receipt.json",
+        "bytes": 3351,
+        "sha256": "008068C07400489B25DD301F7F30923391BCF26223F387280AEACC46FD2C9BA4"
+      },
+      "release": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-error-build-naming-source-intake-grant-20261020.json",
+        "bytes": 2316,
+        "sha256": "5743829C7CE96FE627CA8D15FDA29CA6259B01B6EAED717DE5B6F0339D223616"
+      },
+      "commit": "c5047a5b68e15e4ef9279b874064e68174e99d87"
+    },
+    {
+      "phase": "progress",
+      "manifest": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-v34-progress-and-closure-intake-20261020\\manifest.json",
+        "bytes": 46751,
+        "sha256": "0A780A92E6A511F05C20DCB1E75B9A105190B573D2B678938320093D6901C906"
+      },
+      "receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-progress-and-closure-intake-receipts-20261020\\progress-receipt.json",
+        "bytes": 16771,
+        "sha256": "8290D2FB6CA483063D9F8DE98FDDE0987385D1295CB5774A274593FEE677212B"
+      },
+      "release": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v34-progress-and-closure-intake-grant-20261020.json",
+        "bytes": 2373,
+        "sha256": "F8EC4F4DCA335871904530752D9DA3FA03E1AAFB83545C67AADD01E9D3144628"
+      },
+      "commit": "79c19fc30c886e85b71aca75d1a025397db04fec"
+    }
+  ],
+  "phases": [
+    {
+      "phase": "owner-error",
+      "before_head": "c764130caf2f2c7c63728bec0f6d1e16ac5c59a4",
+      "after_head": "67e2ae2fa78dea304b667f634a40ade3a209581a",
+      "path_count": 192,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    },
+    {
+      "phase": "reqwrap",
+      "before_head": "67e2ae2fa78dea304b667f634a40ade3a209581a",
+      "after_head": "842c76a89909627e589f50e7043852b68fd80f00",
+      "path_count": 10,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    },
+    {
+      "phase": "fs-init",
+      "before_head": "842c76a89909627e589f50e7043852b68fd80f00",
+      "after_head": "2bdafdfa1e41032fcc4e1f0a378b1a97792b72c0",
+      "path_count": 34,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    },
+    {
+      "phase": "transfer",
+      "before_head": "2bdafdfa1e41032fcc4e1f0a378b1a97792b72c0",
+      "after_head": "160b4e0562f0eb1139bf2e4e9c00f4c10ab6aa64",
+      "path_count": 78,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    },
+    {
+      "phase": "error-naming",
+      "before_head": "160b4e0562f0eb1139bf2e4e9c00f4c10ab6aa64",
+      "after_head": "c5047a5b68e15e4ef9279b874064e68174e99d87",
+      "path_count": 19,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    },
+    {
+      "phase": "progress",
+      "before_head": "c5047a5b68e15e4ef9279b874064e68174e99d87",
+      "after_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+      "path_count": 94,
+      "all_donor_and_commit_bytes_exact": true,
+      "all_raw_preimages_exact": true
+    }
+  ],
+  "explicit_phase_path_occurrences": 427,
+  "distinct_final_paths": 423,
+  "source_build_paths": 23,
+  "repeated_paths": [
+    {
+      "phase": "fs-init",
+      "path": "src/extensions/native_uv_fs.h",
+      "before": "D5BB021DFECD726A7FBB6860616753957C1B25B11C4776BAFD24F2C935589D34",
+      "after": "23B85BBB1BD8395D1D5085BE0797F06CE2C323DAACF366F5CF3B587D06EACA6D"
+    },
+    {
+      "phase": "fs-init",
+      "path": "src/extensions/native_uv_tcp.c",
+      "before": "85E49522C7C05764957ADACF6B80F2745D5C06E0A361D33531A8BAF9FEA49F87",
+      "after": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2"
+    },
+    {
+      "phase": "transfer",
+      "path": "build.zig",
+      "before": "399BD2EF5A4360C60478C30A6AB4BD36F151CC538C93174BC3EFA603536E4A52",
+      "after": "DB9BEE3C8B7C8FF817F1FB2AE761F7A7400EA3250CDD7AF7AFBAA4118FD13909"
+    },
+    {
+      "phase": "error-naming",
+      "path": "build.zig",
+      "before": "DB9BEE3C8B7C8FF817F1FB2AE761F7A7400EA3250CDD7AF7AFBAA4118FD13909",
+      "after": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55"
+    }
+  ],
+  "all_donor_and_commit_bytes_exact": true,
+  "all_raw_preimages_exact": true,
+  "complete_changed_path_set_exact": true,
+  "source_union": [
+    {
+      "path": "build.zig",
+      "bytes": 509023,
+      "sha256": "4746B7E154B4F6A3441A387A7A3C66FEE7B1CDC75652C13D0969CC4160451D55",
+      "last_phase": "error-naming"
+    },
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "bytes": 28133,
+      "sha256": "48429726BE834396EFB669ABA15C90940CB024D3A2095DF27D1C4BA8CB297CE1",
+      "last_phase": "owner-error"
+    },
+    {
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "bytes": 40069,
+      "sha256": "E7F27B5E240664B1B24664B2B4AB406979D0467B27917EE9F50B3F675C711D6E",
+      "last_phase": "owner-error"
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_close_request.zig",
+      "bytes": 15879,
+      "sha256": "C2016812A084329BCFC9DC113485F2732B2CC095C9ED6B8B21A18158205C443A",
+      "last_phase": "owner-error"
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_gc_close.zig",
+      "bytes": 6402,
+      "sha256": "86E1100598B32022BB38D2DDAD2ABF904C061E915EC0E955C9CAE62B371B83F4",
+      "last_phase": "owner-error"
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_owner.zig",
+      "bytes": 16629,
+      "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D",
+      "last_phase": "owner-error"
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_transfer.cpp",
+      "bytes": 3857,
+      "sha256": "543B895047E5DCA9B9C8B9761180B80D7A7C59A4B4EE544E97F9A2E41BA43E1A",
+      "last_phase": "transfer"
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_transfer.h",
+      "bytes": 2307,
+      "sha256": "1A90649959DECCDE24ECFDD15AEC6EEDB03DA88333C48D4D0F2BDB1C020CF91C",
+      "last_phase": "transfer"
+    },
+    {
+      "path": "src/extensions/native_node_file_handle_transfer.zig",
+      "bytes": 6335,
+      "sha256": "A69A902FBA95862F2922C71F0069BED4DD9B2596B780F618D74FB608CBEFC9F6",
+      "last_phase": "transfer"
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_io.zig",
+      "bytes": 15469,
+      "sha256": "B6792DCB053DDC2CFBC26350D9AD580CC5419CF3BDBEB595AF1F19B0922AF996",
+      "last_phase": "owner-error"
+    },
+    {
+      "path": "src/extensions/native_node_fs_request_promise.zig",
+      "bytes": 19385,
+      "sha256": "8EFC2D58C1B1BD5069777FE1D06618F4572F54EEDAC09265EAD26BE8E675A4DF",
+      "last_phase": "owner-error"
+    },
+    {
+      "path": "src/extensions/native_uv_fs.h",
+      "bytes": 6334,
+      "sha256": "23B85BBB1BD8395D1D5085BE0797F06CE2C323DAACF366F5CF3B587D06EACA6D",
+      "last_phase": "fs-init"
+    },
+    {
+      "path": "src/extensions/native_uv_tcp.c",
+      "bytes": 46648,
+      "sha256": "8BFEFBB59ADCD7414A8C9358CA2422989784043B3BF651D8006D1C86DED261B2",
+      "last_phase": "fs-init"
+    },
+    {
+      "path": "src/extensions/native_vm_error_constructor_name.c.inc",
+      "bytes": 8944,
+      "sha256": "8171A738F35A984FB902C29ACB31F422C2EF079AFCE98601598BFDC945BC8843",
+      "last_phase": "owner-error"
+    },
+    {
+      "path": "src/native_node_file_handle_owner_test.zig",
+      "bytes": 28378,
+      "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422",
+      "last_phase": "owner-error"
+    },
+    {
+      "path": "src/native_node_file_handle_owner_test_support.zig",
+      "bytes": 32558,
+      "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60",
+      "last_phase": "owner-error"
+    },
+    {
+      "path": "src/native_node_file_handle_transfer_test.zig",
+      "bytes": 23797,
+      "sha256": "E5656DE3AEC771F144939E5852CC7161B1B0499D4764A3F2E0BF42460570C5B1",
+      "last_phase": "transfer"
+    },
+    {
+      "path": "src/native_node_fs_before_hook_continuation_test.zig",
+      "bytes": 6578,
+      "sha256": "D3F918F36D0E343332088E6925025559A68673A4A31E496A65AD2A678AC8AF92",
+      "last_phase": "owner-error"
+    },
+    {
+      "path": "src/native_node_fs_request_owner_test.zig",
+      "bytes": 57263,
+      "sha256": "402C1B4E417E21AAF0E3520E7A62B89D0742673FCB6E45412940CDA6CE15AC81",
+      "last_phase": "fs-init"
+    },
+    {
+      "path": "src/native_node_reqwrap_callback_routing_test.zig",
+      "bytes": 32833,
+      "sha256": "47D2CFC945D48041119904392CE0BC677E46CAA012FA9A32215C521EB2D4E16E",
+      "last_phase": "reqwrap"
+    },
+    {
+      "path": "src/native_vm_error_constructor_name_test.zig",
+      "bytes": 28931,
+      "sha256": "64BA3A1BF4490255F333960EC1DE80364F8410C59E73BB35C5BA085A1E611525",
+      "last_phase": "owner-error"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2403205,
+      "sha256": "5C74683747165024EEEB1D54A3D34085C0ACC094B820C433B7D493613A864464",
+      "last_phase": "owner-error"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 114656,
+      "sha256": "7FBD8411454695434D67C7F09E5C7BE3C1F19837730ED889F392E04CC48D5952",
+      "last_phase": "owner-error"
+    }
+  ],
+  "no_main_or_index_write": true
+}

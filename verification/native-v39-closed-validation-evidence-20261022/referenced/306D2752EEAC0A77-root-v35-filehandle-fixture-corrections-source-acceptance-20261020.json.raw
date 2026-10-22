@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "status": "root_and_independent_peer_accepted_bounded_fixture_source_corrections",
+  "reviewer": "Root",
+  "reviewed_utc": "2026-10-20T22:52:32.152301+00:00",
+  "candidate_head": "79c19fc30c886e85b71aca75d1a025397db04fec",
+  "target": "src/native_node_file_handle_owner_test_support.zig",
+  "original": {
+    "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test_support.zig",
+    "bytes": 32558,
+    "sha256": "8E1205EAFD05CB18C6FD984258A1D153AE3E6262103EE0E13934FBB54FCC2E60"
+  },
+  "identifier_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-sourceonly-20261020\\proposal.json",
+    "bytes": 5249,
+    "sha256": "9CEEC8BF72B9E955697145E989A65C06AB9DB14B94444332545B4E5A233DD16E"
+  },
+  "phase_proposal": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\proposal.json",
+    "bytes": 3791,
+    "sha256": "4D8BAC94FF3A5CD4F27F9F4BB19C944F672EBA816A8D73E7453B819870B5EAFA"
+  },
+  "selected_fixture": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v35-file-handle-close-observer-sourceonly-20261020\\projected\\src\\native_node_file_handle_owner_test_support.zig",
+    "bytes": 33137,
+    "sha256": "0D09BBA76254B22996F4D6B8EB7C43B8487FE4F9C22A02709B4839580AD29127"
+  },
+  "independent_identifier_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-fixture-shadowing-independent-peer-20261020\\peer.json",
+    "bytes": 4707,
+    "sha256": "EB41FE47065EA84F89B08E477965F6F0BDFFCF16527DA9AF948E3C5B1DEA9C2F"
+  },
+  "independent_phase_peer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\v35-file-handle-close-observer-candidate-peer-20261020\\peer.json",
+    "bytes": 5512,
+    "sha256": "419398D6FEA22337A10972741687944AB86CBB1FD32B9771A24CCF1272AE9284"
+  },
+  "source_accepted": true,
+  "source_corrections_accepted": true,
+  "root_full_original_fixture_read": true,
+  "root_all_identifier_edits_and_phase_hunk_read": true,
+  "root_entire_preparation_sources_read": true,
+  "root_all22_phase_authority_excerpts_and_Zig_authority_read": true,
+  "root_reproduced_identifier_outputs": 10,
+  "root_reproduced_phase_outputs": 18,
+  "root_complete_current_inputs_verified": 960,
+  "identifier_token_edits": 25,
+  "local_bindings": 11,
+  "original_compiler_diagnostics": 10,
+  "additional_adjacent_source_binding": 1,
+  "phase_hunks": 1,
+  "both_composition_orders_and_complete_inverses_verified": true,
+  "unchanged_completion_observer": {
+    "bytes": 593,
+    "sha256": "9FF6EFA60530AAC84182CC7A254B709009605E3471FE420C677590DCF859F07F"
+  },
+  "all58_declared_controls_and4_root_import_topologies_unchanged": true,
+  "production_source_unchanged": true,
+  "source_mutation_hold_released": false,
+  "main_intake_authorized": false,
+  "native_execution_authorized": false,
+  "runtime_qualification": false,
+  "application_qualified": false,
+  "future_actual_metadata_count": null,
+  "reason": "Local bindings conflict with existing Fixture/File declarations. The separate synchronous close-begin observer executes on the actual dispatch owner thread after owned typed CLOSE construction and initial Reset but before admission. Existing preparation-info reads actual unsubmitted kind/flags; both native and entry phase assertions apply there. All completion-only helpers and actual close controls remain exact.",
+  "scope": "Source acceptance only. V35 compile failure, owner-binding rejection and absent metadata/runtime remain negative. Independent failed-run closure and a separate exact Root source release must precede Main intake; fresh successor-head native validation follows."
+}

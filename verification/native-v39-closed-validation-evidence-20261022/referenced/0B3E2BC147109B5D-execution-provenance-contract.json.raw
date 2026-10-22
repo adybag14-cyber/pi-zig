@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "status": "inert_exact_v39_execution_provenance_contract",
+  "preparer_candidate": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-foundation-v39-catalog-preparer-sourceonly-20261022\\candidate\\Prepare-FreshV39Catalog-20261022-v2.py",
+    "bytes": 83821,
+    "sha256": "B43F321C1975BCBA6BC2E01732AED6E14154126D9E083C4B4B6183F0F54E8738"
+  },
+  "historical_source_rebindings": [
+    {
+      "batch": "new4",
+      "role": "fixture_unchanged_root_native-node-file-handle-owner",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "raw_commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+      "exact_original_bytes": true
+    },
+    {
+      "batch": "regression63",
+      "role": "fixture_unchanged_root_native-node-file-handle-owner",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\v37-file-handle-runtime-fixtures-sourceonly-20261021\\original\\src\\native_node_file_handle_owner_test.zig",
+        "bytes": 28378,
+        "sha256": "93D00DE989F6F675E862A61FB93BE2EF91FD6FC7D85CC59FC769CB4842543422"
+      },
+      "raw_commit": "b13be24e44cc1bbc361639eb35900a368ae60eac",
+      "exact_original_bytes": true
+    },
+    {
+      "batch": "new4",
+      "role": "fixture_causal_owner",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "raw_commit": "014062f2d139254acab4b985b4ae343db637166f",
+      "exact_original_bytes": true
+    },
+    {
+      "batch": "regression63",
+      "role": "fixture_causal_owner",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\main\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "immutable_snapshot": {
+        "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\native-node-shutdown-wrap-sourceonly-20261020\\shared\\original\\src\\extensions\\native_node_file_handle_owner.zig",
+        "bytes": 16629,
+        "sha256": "2D90F772D2177C7DB4EF4F945F78529C0061C809E171C22CECC324125C9A461D"
+      },
+      "raw_commit": "014062f2d139254acab4b985b4ae343db637166f",
+      "exact_original_bytes": true
+    }
+  ],
+  "historical_provenance_relationships": [
+    {
+      "provenance_key": "v38_new4_v37_new4_fixture_unchanged_root_native-node-file-handle-owner",
+      "mapping_index": 0
+    },
+    {
+      "provenance_key": "v38_new4_v37_regression63_fixture_unchanged_root_native-node-file-handle-owner",
+      "mapping_index": 1
+    },
+    {
+      "provenance_key": "v38_new4_fixture_causal_owner",
+      "mapping_index": 2
+    },
+    {
+      "provenance_key": "v38_regression63_v37_new4_fixture_unchanged_root_native-node-file-handle-owner",
+      "mapping_index": 0
+    },
+    {
+      "provenance_key": "v38_regression63_v37_regression63_fixture_unchanged_root_native-node-file-handle-owner",
+      "mapping_index": 1
+    },
+    {
+      "provenance_key": "v38_regression63_fixture_causal_owner",
+      "mapping_index": 3
+    }
+  ],
+  "progress_citation_policy": "Two recorded_reference dictionaries have recorded_path/recorded_bytes/recorded_sha256, alongside a strict immutable_snapshot pin and raw014 identity; they are historical citations, not current Main pins. The preparer verifies exact old review rows and raw Git before emitting them.",
+  "preparation_directories": {
+    "new3": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new3-prepared-20261022",
+    "new4": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-new4-prepared-20261022",
+    "regression63": "C:\\Users\\adyba\\pi-zig\\evidence\\combined-native-batch-v39-regression63-prepared-20261022"
+  },
+  "execution_batch_spelling": {
+    "new3": "new3",
+    "new4": "new4",
+    "existing63": "regression63"
+  },
+  "new3_order": [
+    "native-node-stream-shutdown",
+    "native-node-one-byte-string",
+    "native-vm-array-buffer-view-data"
+  ],
+  "declared_counts": {
+    "new3": [
+      3,
+      38
+    ],
+    "new4": [
+      4,
+      58
+    ],
+    "existing63": [
+      63,
+      1249
+    ],
+    "catalog": [
+      120,
+      2051
+    ],
+    "selected_union": [
+      70,
+      1345
+    ]
+  },
+  "group_cap": 64,
+  "strict_driver_sha256": "1DD3A9D27FA7B54F9383F325792A9E5259C66C32FA6C601F21216B4DBB483601",
+  "classifier_sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+  "existing_runtime_allowlists_unchanged": true,
+  "conservative_literal_graphs_not_runtime_anonymous_admission": true,
+  "old_group_objects_except_reviewed_source_pin_hashes_exact": false,
+  "old_group_objects_except_reviewed_source_membership_and_hashes_exact": true,
+  "root_catalog_new4_and_original63_preserved_field_may_remain_true": true,
+  "future_source_head": null,
+  "future_matrix_sha256": null,
+  "actual_metadata_count": null,
+  "historical_data_is_not_future_native_acceptance": true,
+  "candidate_or_prefix_executed": false,
+  "execution_authority": false,
+  "runtime_authority": false,
+  "native_execution_authorized": false,
+  "qualification": false
+}

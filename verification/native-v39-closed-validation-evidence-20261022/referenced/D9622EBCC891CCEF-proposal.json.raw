@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-20T19:14:09.216975+00:00",
+  "status": "finite_map_entry_helper_symbol_correction_pending_peer_and_negative_closure",
+  "main_predecessor_head": "2a45648545c961f9008a783ae352f233869505b4",
+  "failure_job_id": "job-op-6e43ef20ed16697021d6c7fa4185db7025eb039d8a69d3f0e4dafd8a154dcb56",
+  "failure": "First selected group failed C compilation: new four-argument map-entry helper collided with existing two-argument bytecode Map/Set reader.",
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v32-quickjs-map-entry-symbol-sourceonly-20261020\\original\\vendor\\quickjs\\quickjs.c",
+        "sha256": "492151437B2721D61B0847C06BD3510A897CB761B5B1E157940EADD343BF22D4",
+        "bytes": 2399313
+      },
+      "projected": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\v32-quickjs-map-entry-symbol-sourceonly-20261020\\projected\\vendor\\quickjs\\quickjs.c",
+        "sha256": "2D625940688B1BE334585048731B42F4F1E3CDCCA60CE6B5F6D0478D7274AFC2",
+        "bytes": 2399340
+      },
+      "edits": [
+        {
+          "index": 0,
+          "before_byte_offset": 1976949,
+          "after_byte_offset": 1976949,
+          "before": "js_map_read",
+          "after": "js_pi_map_read_entry",
+          "anchor": "static JSValue js_map_read(JSContext *ctx, JSMapState *s,"
+        },
+        {
+          "index": 1,
+          "before_byte_offset": 1977517,
+          "after_byte_offset": 1977526,
+          "before": "js_map_read",
+          "after": "js_pi_map_read_entry",
+          "anchor": "return js_map_read(ctx, s, argv[0], NULL);"
+        },
+        {
+          "index": 2,
+          "before_byte_offset": 1977805,
+          "after_byte_offset": 1977823,
+          "before": "js_map_read",
+          "after": "js_pi_map_read_entry",
+          "anchor": "*value = js_map_read(ctx, s, key, &present);"
+        }
+      ]
+    }
+  ],
+  "finite_token_edits": 3,
+  "whole_forward_inverse": true,
+  "only_private_helper_identifier_changed": true,
+  "original_bytecode_reader_and_all_following_bytes_preserved": true,
+  "public_C_API_unchanged": true,
+  "named_control_declarations_unchanged": true,
+  "selection_declarations": 1249,
+  "selected_groups": 63,
+  "actual_future_metadata_count": null,
+  "main_modified": false,
+  "compiler_execution": false,
+  "native_execution": false,
+  "source_mutation_hold_released": false,
+  "qualification": false
+}

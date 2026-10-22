@@ -1,0 +1,21 @@
+{
+  "status": "exact_source_intake_committed",
+  "phase": "error-naming",
+  "utc": "2026-10-20T21:50:11.516655+00:00",
+  "before_head": "160b4e0562f0eb1139bf2e4e9c00f4c10ab6aa64",
+  "after_head": "c5047a5b68e15e4ef9279b874064e68174e99d87",
+  "basis_main_head": "160b4e0562f0eb1139bf2e4e9c00f4c10ab6aa64",
+  "branch": "work/pi-zig-consolidated-20261016",
+  "manifest": "C:\\Users\\adyba\\pi-zig\\evidence\\pending-error-build-naming-main-intake-20261020\\manifest.json",
+  "manifest_sha256": "8C09208FC115AC525CCCB4B64A2A921D2FE95FA58179A02D12A8F6CCA1D30617",
+  "executor_sha256": "F653FDE67CFA1E201615EE5A49451DF1D9B7044D427CED7041F2327A67C891DB",
+  "release_sha256": "5743829C7CE96FE627CA8D15FDA29CA6259B01B6EAED717DE5B6F0339D223616",
+  "path_count": 19,
+  "staged_and_committed_bytes_match": true,
+  "clean_worktree": true,
+  "commit_stdout": "[work/pi-zig-consolidated-20261016 c5047a5b] Preserve strict native Error test artifact naming\n 19 files changed, 33097 insertions(+), 2 deletions(-)\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/manifest.json\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/Prepare-ErrorBuildNaming-SourceOnly.py\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/authority/zig/Build.zig\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/authority/zig/Build/Step/Compile.zig\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/authority/zig/Build/Step/InstallArtifact.zig\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/authority/zig/Target.zig\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/authority/zig/zig.zig\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/control/src/native_vm_error_constructor_name_test.zig\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/original/Audit-CombinedNativeBatch.py\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/original/Run-CombinedNativeBatch.ps1\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/original/before-transfer-build.zig\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/original/build.zig\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/original/transfer-build-proposal.json\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/projected/before-transfer-build.zig\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/projected/build.zig\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/proposal.json\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/proposal/zig-naming-authority.json\n create mode 100644 verification/native-error-build-artifact-naming-intake-20261020/root-review.json\n",
+  "commit_stderr": "",
+  "native_execution_authorized": false,
+  "application_qualified": false,
+  "production_bridge_removed": false
+}
